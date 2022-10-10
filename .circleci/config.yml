@@ -38,6 +38,8 @@ commands:
             ddev dkan-init --force
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
+            mkdir -p test-results
+            mkdir -p coverage-results
 
   prepare_site:
     parameters:
@@ -59,7 +61,6 @@ commands:
                 # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
                 name: Cypressify ddev
                 command: |
-                  mkdir -p test_results
                   mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
                   ddev restart
       - when:
@@ -139,7 +140,7 @@ jobs:
                   fi
                   ddev xdebug on
                   ddev dkan-test-phpunit \
-                    --coverage-clover $COVERAGE_FILE \
+                    --coverage-clover ../coverage_results \
                     --log-junit ../test_results/phpunit_results.xml
                   TEST_RESULTS=$?
                   if [ -f $COVERAGE_FILE ]; then
@@ -154,7 +155,8 @@ jobs:
                   exit $TEST_RESULTS
       - store_test_results:
           path: test_results
-
+      - store_artifacts:
+          path: coverage_results
   cypress:
     machine:
       image: ubuntu-2004:current
@@ -197,15 +199,3 @@ workflows:
     jobs:
       - phpunit:
           name: install_test_phpunit
-      - cypress:
-          name: install_test_cypress
-          needs_cypress: true
-  upgrade_and_test:
-    jobs:
-      - phpunit:
-          name: upgrade_test_phpunit
-          upgrade: true
-      - cypress:
-          name: upgrade_test_cypress
-          upgrade: true
-          needs_cypress: true
