@@ -12,6 +12,7 @@ commands:
             curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
             echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
             sudo apt update && sudo apt install -y ddev
+            which composer
   prepare_build:
     # TODO: Figure out the best way to share this build between the various jobs.
     parameters:
@@ -38,8 +39,7 @@ commands:
             ddev dkan-init --force
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
-            mkdir -p test-results
-            mkdir -p coverage-results
+            mkdir -p test_results
 
   prepare_site:
     parameters:
@@ -130,33 +130,27 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
-                  COVERAGE_DIR=$PWD/build/logs
-                  COVERAGE_FILE=$COVERAGE_DIR/clover.xml
-                  mkdir -p $COVERAGE_DIR
-                  if [ -d $COVERAGE_DIR ]; then
-                    echo "Coverage directory: $COVERAGE_DIR"
-                  else
-                    echo "Coverage directory not created: $COVERAGE_DIR"
-                  fi
+                  COVERAGE_FILE=$CIRCLE_WORKING_DIRECTORY/clover.xml
                   ddev xdebug on
                   ddev dkan-test-phpunit \
                     --coverage-clover ../coverage_results \
                     --log-junit ../test_results/phpunit_results.xml
-                  TEST_RESULTS=$?
+                  TEST_RESULT=$?
                   if [ -f $COVERAGE_FILE ]; then
                     echo "Coverage file: $COVERAGE_FILE"
                   else
                     echo "Coverage file not created: $COVERAGE_FILE"
                   fi
                   ./cc-test-reporter after-build \
-                    --prefix $PWD/docroot/modules/contrib/dkan \
+                    --prefix $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan \
                     --coverage-input-type clover \
-                    --exit-code $TEST_RESULTS
-                  exit $TEST_RESULTS
+                    --exit-code $TEST_RESULT
+                  exit $TEST_RESULT
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: coverage_results
+          path: $CIRCLE_WORKING_DIRECTORY/clover.xml
+
   cypress:
     machine:
       image: ubuntu-2004:current
