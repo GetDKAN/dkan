@@ -132,13 +132,13 @@ jobs:
                   COVERAGE_FILE=/var/www/html/clover.xml
                   ddev xdebug on
                   ddev dkan-test-phpunit \
-                    --coverage-clover ../coverage_results \
+                    --coverage-clover $COVERAGE_FILE \
                     --log-junit ../test_results/phpunit_results.xml
                   TEST_RESULT=$?
-                  if [ -f $COVERAGE_FILE ]; then
-                    echo "Coverage file: $COVERAGE_FILE"
+                  if [ -f $CIRCLE_WORKING_DIRECTORY/clover.xml ]; then
+                    echo "Coverage file: $CIRCLE_WORKING_DIRECTORY/clover.xml"
                   else
-                    echo "Coverage file not created: $COVERAGE_FILE"
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/clover.xml"
                   fi
                   ./cc-test-reporter after-build \
                     --prefix docroot/modules/contrib/dkan \
