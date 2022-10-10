@@ -131,6 +131,7 @@ jobs:
                 command: |
                   ddev xdebug on
                   ddev dkan-test-phpunit \
+                    --verbose \
                     --coverage-clover clover.xml \
                     --log-junit ../test_results/phpunit_results.xml
                   TEST_RESULT=$?
