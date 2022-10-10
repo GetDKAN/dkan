@@ -129,7 +129,7 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
-                  COVERAGE_FILE=$CIRCLE_WORKING_DIRECTORY/clover.xml
+                  COVERAGE_FILE=/var/www/html/clover.xml
                   ddev xdebug on
                   ddev dkan-test-phpunit \
                     --coverage-clover ../coverage_results \
@@ -141,7 +141,7 @@ jobs:
                     echo "Coverage file not created: $COVERAGE_FILE"
                   fi
                   ./cc-test-reporter after-build \
-                    --prefix $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan \
+                    --prefix docroot/modules/contrib/dkan \
                     --coverage-input-type clover \
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
