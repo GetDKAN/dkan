@@ -71,7 +71,7 @@ commands:
                   ddev dkan-site-install
                   # Switch over to using the repo code for dkan and update.
                   ddev composer config repositories.dkan path dkan
-                  ddev composer require getdkan/dkan:@dev --no-install
+                  ddev composer require getdkan/dkan:@dev --no-install -W
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
                   ddev drush updb -y
@@ -83,7 +83,7 @@ commands:
                 name: Install site
                 command: |
                   ddev composer config repositories.dkan path dkan
-                  ddev composer require getdkan/dkan:@dev --no-install
+                  ddev composer require getdkan/dkan:@dev --no-install -W
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
                   ddev dkan-site-install
