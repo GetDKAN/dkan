@@ -93,6 +93,9 @@ commands:
                   ddev drush rq
 
 jobs:
+
+
+
   phpunit:
     machine:
       image: ubuntu-2004:current
@@ -121,7 +124,6 @@ jobs:
                     --log-junit ../test_results/phpunit_results.xml
       - unless:
           # Only collect coverage info for non-upgrade PHPUnit tests.
-          # TODO: Output structured coverage information for nifty reports.
           condition: << parameters.upgrade >>
           steps:
             - run:
@@ -131,8 +133,7 @@ jobs:
                 command: |
                   ddev xdebug on
                   ddev dkan-test-phpunit \
-                    --debug \
-                    --coverage-clover clover.xml \
+                    --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                     --log-junit ../test_results/phpunit_results.xml
                   TEST_RESULT=$?
                   if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
@@ -141,6 +142,7 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
                   fi
                   cd docroot/modules/contrib/dkan
+                  pwd
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
                     --coverage-input-type clover \
                     --exit-code $TEST_RESULT
