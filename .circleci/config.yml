@@ -141,7 +141,7 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
                   fi
                   cd docroot/modules/contrib/dkan
-                  ./cc-test-reporter after-build \
+                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
                     --coverage-input-type clover \
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
