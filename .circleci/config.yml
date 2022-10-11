@@ -12,8 +12,13 @@ commands:
             curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
             echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
             sudo apt update && sudo apt install -y ddev
-
   prepare_build:
+    # TODO: Figure out the best way to share this build between the various jobs.
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
     steps:
       - run:
           name: Set up composer config
@@ -28,7 +33,6 @@ commands:
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
-            mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
             ddev restart
             ddev status
             ddev dkan-init --force
@@ -42,9 +46,22 @@ commands:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
       - checkout:
           path: dkan
+      - when:
+          condition: << parameters.needs_cypress >>
+          steps:
+            - run:
+                # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
+                name: Cypressify ddev
+                command: |
+                  mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
+                  ddev restart
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -76,32 +93,24 @@ commands:
                   ddev drush rq
 
 jobs:
-  create_common_workspace:
-    machine:
-      image: ubuntu-2004:current
-      docker_layer_caching: true
-    steps:
-      - install-ddev
-      - prepare_build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
   phpunit:
     machine:
       image: ubuntu-2004:current
-      docker_layer_caching: true
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
-      - install-ddev
-      - attach_workspace:
-          at: .
+      - prepare_build:
+          upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
+          needs_cypress: << parameters.needs_cypress >>
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -142,19 +151,22 @@ jobs:
   cypress:
     machine:
       image: ubuntu-2004:current
-      docker_layer_caching: true
     parallelism: 4
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
-      - install-ddev
-      - attach_workspace:
-          at: .
+      - prepare_build:
+          upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
+          needs_cypress: << parameters.needs_cypress >>
       - run:
           name: Run Cypress tests
           command: |
@@ -174,24 +186,19 @@ jobs:
 
 workflows:
   version: 2
-  test-dkan:
+  install_and_test:
     jobs:
-      - create_common_workspace
       - phpunit:
           name: install_test_phpunit
-          requires:
-            - create_common_workspace
       - cypress:
           name: install_test_cypress
-          requires:
-            - create_common_workspace
+          needs_cypress: true
+  upgrade_and_test:
+    jobs:
       - phpunit:
           name: upgrade_test_phpunit
           upgrade: true
-          requires:
-            - create_common_workspace
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          requires:
-            - create_common_workspace
+          needs_cypress: true
