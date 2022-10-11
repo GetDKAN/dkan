@@ -79,6 +79,7 @@ jobs:
   create_common_workspace:
     machine:
       image: ubuntu-2004:current
+      docker_layer_caching: true
     steps:
       - install-ddev
       - prepare_build
@@ -89,6 +90,7 @@ jobs:
   phpunit:
     machine:
       image: ubuntu-2004:current
+      docker_layer_caching: true
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -140,6 +142,7 @@ jobs:
   cypress:
     machine:
       image: ubuntu-2004:current
+      docker_layer_caching: true
     parallelism: 4
     parameters:
       upgrade:
