@@ -78,8 +78,8 @@ commands:
 jobs:
 
   create_common_workspace:
-    docker:
-      - image: cimg/php:8.0
+    machine:
+      image: ubuntu-2004:current
     steps:
       - install-ddev
       - prepare_build
