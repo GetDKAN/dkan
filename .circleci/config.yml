@@ -175,7 +175,7 @@ jobs:
 
 workflows:
   version: 2
-  test:
+  test-dkan:
     jobs:
       - create_common_workspace
       - phpunit:
