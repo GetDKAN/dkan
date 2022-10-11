@@ -93,9 +93,6 @@ commands:
                   ddev drush rq
 
 jobs:
-
-
-
   phpunit:
     machine:
       image: ubuntu-2004:current
@@ -142,7 +139,6 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
                   fi
                   cd docroot/modules/contrib/dkan
-                  pwd
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
                     --coverage-input-type clover \
                     --prefix /var/www/html/dkan \
@@ -150,8 +146,6 @@ jobs:
                   exit $TEST_RESULT
       - store_test_results:
           path: test_results
-      - store_artifacts:
-          path: docroot/modules/contrib/dkan/clover.xml
 
   cypress:
     machine:
@@ -195,3 +189,15 @@ workflows:
     jobs:
       - phpunit:
           name: install_test_phpunit
+      - cypress:
+          name: install_test_cypress
+          needs_cypress: true
+  upgrade_and_test:
+    jobs:
+      - phpunit:
+          name: upgrade_test_phpunit
+          upgrade: true
+      - cypress:
+          name: upgrade_test_cypress
+          upgrade: true
+          needs_cypress: true
