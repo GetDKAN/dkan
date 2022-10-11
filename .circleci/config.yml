@@ -129,6 +129,7 @@ jobs:
                   XDEBUG_MODE: coverage
                 command: |
                   ddev xdebug on
+                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-test-phpunit \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                     --log-junit ../test_results/phpunit_results.xml
