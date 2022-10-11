@@ -146,16 +146,11 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-      needs_cypress:
-        description: "If true, will add Cypress to the DDev environment"
-        default: false
-        type: boolean
     steps:
       - attach_workspace:
           at: .
       - prepare_site:
           upgrade: << parameters.upgrade >>
-          needs_cypress: << parameters.needs_cypress >>
       - run:
           name: Run Cypress tests
           command: |
