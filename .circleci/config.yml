@@ -76,7 +76,6 @@ commands:
                   ddev drush rq
 
 jobs:
-
   create_common_workspace:
     machine:
       image: ubuntu-2004:current
@@ -96,6 +95,7 @@ jobs:
         default: false
         type: boolean
     steps:
+      - install-ddev
       - attach_workspace:
           at: .
       - prepare_site:
@@ -147,6 +147,7 @@ jobs:
         default: false
         type: boolean
     steps:
+      - install-ddev
       - attach_workspace:
           at: .
       - prepare_site:
