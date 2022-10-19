@@ -12,8 +12,6 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @package Drupal\sql_endpoint\Form
  * @todo Remove
- *
- * @codeCoverageIgnore
  */
 class DkanSqlEndpointSettingsForm extends ConfigFormBase {
 

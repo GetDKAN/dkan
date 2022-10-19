@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- *
+ * @coversDefaultClass Drupal\datastore_mysql_import\Service\MysqlImport
  */
 class MysqlImportTest extends TestCase {
 
@@ -34,6 +34,10 @@ class MysqlImportTest extends TestCase {
 
   /**
    * Test spec generation.
+   *
+   * @covers ::generateTableSpec
+   * @covers ::sanitizeHeader
+   * @covers ::truncateHeader
    */
   public function testGenerateTableSpec() {
     $mysqlImporter = $this->getMysqlImporter();
@@ -122,6 +126,21 @@ class MysqlImportTest extends TestCase {
       '(a_b,c)',
       'SET record_number = NULL;',
     ]));
+  }
+
+  public function sanitizeHeaderProvider() {
+    return [
+      'reserved_word' => ['accessible', '_accessible'],
+      'numeric' => [1, '_1'],
+    ];
+  }
+
+  /**
+   * @dataProvider sanitizeHeaderProvider
+   * @covers ::sanitizeHeader
+   */
+  public function testSanitizeHeader($column, $expected) {
+    $this->assertEquals(MysqlImport::sanitizeHeader($column), $expected);
   }
 
   protected function getMysqlImporter() {

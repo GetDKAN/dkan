@@ -8,8 +8,6 @@ use Drush\Utils\StringUtils;
 
 /**
  * Datastore-related Drush commands.
- *
- * @codeCoverageIgnore
  */
 class PurgeCommands extends DrushCommands {
 

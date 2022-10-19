@@ -10,8 +10,6 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * Expiremental MySQL LOAD DATA importer.
- *
- * @codeCoverageIgnore
  */
 class MysqlImport extends ImportJob {
 

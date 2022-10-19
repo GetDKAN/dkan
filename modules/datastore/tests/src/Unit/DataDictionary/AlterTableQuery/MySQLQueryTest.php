@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery.
+ *
+ * @coversDefaultClass Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
  */
 class MySQLQueryTest extends TestCase {
 
@@ -37,6 +39,8 @@ class MySQLQueryTest extends TestCase {
 
   /**
    * Build MySQLQuery arguments.
+   *
+   * @todo Include an update() mock for buildBoolPreAlterCommands().
    */
   public function buildConnectionChain(): Chain {
     return (new Chain($this))
@@ -48,6 +52,7 @@ class MySQLQueryTest extends TestCase {
         'foo' => 'Foo',
         'bar' => 'Bar',
         'baz' => 'Baz',
+        'boolz' => 'Boolz',
       ])
       ->add(StatementInterface::class, 'fetchField', (new Sequence())
         ->add('5')
@@ -69,6 +74,7 @@ class MySQLQueryTest extends TestCase {
       ['name' => 'foo', 'type' => 'string', 'format' => 'default', 'title' => 'Foo'],
       ['name' => 'bar', 'type' => 'number', 'format' => 'default', 'title' => 'Bar'],
       ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d', 'title' => 'Baz'],
+      ['name' => 'boolz', 'type' => 'boolean', 'format' => 'default', 'title' => 'Boolz'],
     ];
     $dictionary_indexes ??= [
       ['name' => 'index1', 'type' => 'index', 'description' => 'Fizz', 'fields' => [
@@ -132,6 +138,33 @@ class MySQLQueryTest extends TestCase {
     $this->expectException(IncompatibleTypeException::class);
     $this->expectExceptionMessage("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
     $mysql_query->execute();
+  }
+
+  public function baseTypeProvider() {
+    return [
+      'string' => ['string', 'TEXT'],
+      // @todo getBaseType() performs no type checking, has no error result.
+      'getBaseType-does-no-error-checking' => ['not-a-frictionless-type', NULL],
+    ];
+  }
+
+  /**
+   * @dataProvider baseTypeProvider
+   * @covers ::getBaseType
+   */
+  public function _testGetBaseType($frictionless_type, $expected_type) {
+    // Instantiate a MySQL query object.
+    $connection_chain = $this->buildConnectionChain();
+    $table = 'datastore_' . uniqid();
+    $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), $table);
+
+    // getBaseType() is protected.
+    $get_test_base = new \ReflectionMethod($mysql_query, 'getBaseType');
+    $get_test_base->setAccessible(TRUE);
+    $this->assertEquals(
+      $expected_type,
+      $get_test_base->invokeArgs($mysql_query, [$frictionless_type])
+    );
   }
 
 }
