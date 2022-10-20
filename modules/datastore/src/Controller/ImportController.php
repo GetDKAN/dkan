@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class Api.
  *
  * @package Drupal\datastore
+ *
+ * @codeCoverageIgnore
  */
 class ImportController implements ContainerInjectionInterface {
   use JsonResponseTrait;

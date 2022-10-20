@@ -11,6 +11,8 @@ use Drush\Commands\DrushCommands;
 
 /**
  * Drush commands for controlling the datastore.
+ *
+ * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
   /**

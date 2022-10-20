@@ -10,6 +10,8 @@ use Drupal\datastore_mysql_import\Service\MysqlImport;
 
 /**
  * Importer factory.
+ *
+ * @codeCoverageIgnore
  */
 class MysqlImportFactory implements ImportFactoryInterface {
 

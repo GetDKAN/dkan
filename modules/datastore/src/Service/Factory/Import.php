@@ -8,6 +8,8 @@ use Drupal\common\Storage\JobStoreFactory;
 
 /**
  * Create an importer object for a given resource.
+ *
+ * @codeCoverageIgnore
  */
 class Import implements ImportFactoryInterface {
 
