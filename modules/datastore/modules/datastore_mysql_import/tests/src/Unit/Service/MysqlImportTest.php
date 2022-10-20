@@ -128,21 +128,6 @@ class MysqlImportTest extends TestCase {
     ]));
   }
 
-  public function sanitizeHeaderProvider() {
-    return [
-      'reserved_word' => ['accessible', '_accessible'],
-      'numeric' => [1, '_1'],
-    ];
-  }
-
-  /**
-   * @dataProvider sanitizeHeaderProvider
-   * @covers ::sanitizeHeader
-   */
-  public function testSanitizeHeader($column, $expected) {
-    $this->assertEquals(MysqlImport::sanitizeHeader($column), $expected);
-  }
-
   protected function getMysqlImporter() {
     $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();

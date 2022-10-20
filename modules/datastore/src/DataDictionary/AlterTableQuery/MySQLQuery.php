@@ -4,7 +4,7 @@ namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\StatementInterface;
 
-use Drupal\datastore_mysql_import\Service\MysqlImport;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\IncompatibleTypeException;
@@ -130,7 +130,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       // Create reference to index field name.
       $field_name = &$fields[$key]['name'];
       // Sanitize field name.
-      $field_name = MysqlImport::sanitizeHeader($field_name);
+      $field_name = ImportJob::sanitizeHeader($field_name);
     }
 
     return $fields;
@@ -156,7 +156,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
         // Create reference to index field name.
         $field_name = &$index_fields[$field_key]['name'];
         // Sanitize field name.
-        $field_name = MysqlImport::sanitizeHeader($field_name);
+        $field_name = ImportJob::sanitizeHeader($field_name);
       }
     }
 
