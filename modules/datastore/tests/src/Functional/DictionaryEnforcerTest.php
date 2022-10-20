@@ -196,7 +196,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
 
     // Validate schema.
     $this->assertEquals([
-      'numOfColumns' => 5,
+      'numOfColumns' => 6,
       'columns' => [
         'record_number' => [
           'type' => 'serial',
@@ -227,9 +227,11 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'description' => 'D',
         ],
         'e' => [
-          'type' => 'boolean',
-          'mysql_type' => 'BOOL',
+          'type' => 'int',
+          'mysql_type' => 'tinyint',
           'description' => 'E',
+          'length' => 1,
+          'size' => 'tiny',
         ],
       ],
       'indexes' => [
