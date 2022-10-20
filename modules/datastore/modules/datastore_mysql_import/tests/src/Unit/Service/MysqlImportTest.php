@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @coversDefaultClass Drupal\datastore_mysql_import\Service\MysqlImport
+ *
  */
 class MysqlImportTest extends TestCase {
 
@@ -34,10 +34,6 @@ class MysqlImportTest extends TestCase {
 
   /**
    * Test spec generation.
-   *
-   * @covers ::generateTableSpec
-   * @covers ::sanitizeHeader
-   * @covers ::truncateHeader
    */
   public function testGenerateTableSpec() {
     $mysqlImporter = $this->getMysqlImporter();

@@ -143,7 +143,6 @@ class MySQLQueryTest extends TestCase {
   public function baseTypeProvider() {
     return [
       'string' => ['string', 'TEXT'],
-      // @todo getBaseType() performs no type checking, has no error result.
       'getBaseType-does-no-error-checking' => ['not-a-frictionless-type', NULL],
     ];
   }
