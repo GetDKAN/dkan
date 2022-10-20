@@ -161,8 +161,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'type' => 'fulltext',
       ],
     ];
-    $dd = $this->getDataDictionary($fields, $indexes, $dict_id);
-    $data_dict = $this->validMetadataFactory->get($dd, 'data-dictionary');
+    $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $indexes, $dict_id), 'data-dictionary');
     // Create data-dictionary.
     $this->metastore->post('data-dictionary', $data_dict);
     $this->metastore->publish('data-dictionary', $dict_id);
@@ -176,11 +175,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
 
     // Build dataset.
     $dataset_id = $this->uuid->generate();
-    $dataset = $this->validMetadataFactory->get(
-      $this->getDataset(
-        $dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE
-      ), 'dataset'
-    );
+    $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
     // Create dataset.
     $this->metastore->post('dataset', $dataset);
     $this->metastore->publish('dataset', $dataset_id);
@@ -248,7 +243,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'd',
         ],
       ],
-      'numOfRows' => 2,
+      'numOfRows' => 3,
     ], $result);
   }
 

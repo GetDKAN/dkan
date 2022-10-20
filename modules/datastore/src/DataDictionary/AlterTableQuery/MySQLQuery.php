@@ -69,6 +69,30 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   ];
 
   /**
+   * Mapping between frictionless types and SQL types.
+   *
+   * Frictionless type is key, SQL is value.
+   *
+   * @var string[]
+   */
+  protected static $frictionlessTypes = [
+    'string' => 'TEXT',
+    'number' => 'DECIMAL',
+    'integer' => 'INT',
+    'date' => 'DATE',
+    'time' => 'TIME',
+    'datetime' => 'DATETIME',
+    'year' => 'YEAR',
+    'yearmonth' => 'TINYTEXT',
+    'boolean' => 'BOOL',
+    'object' => 'TEXT',
+    'geopoint' => 'TEXT',
+    'geojson' => 'TEXT',
+    'array' => 'TEXT',
+    'duration' => 'TINYTEXT',
+  ];
+
+  /**
    * {@inheritdoc}
    */
   public function doExecute(): void {
@@ -237,22 +261,10 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Base MySQL data type.
    */
   protected function getBaseType(string $frictionless_type): string {
-    return ([
-      'string'    => 'TEXT',
-      'number'    => 'DECIMAL',
-      'integer'   => 'INT',
-      'date'      => 'DATE',
-      'time'      => 'TIME',
-      'datetime'  => 'DATETIME',
-      'year'      => 'YEAR',
-      'yearmonth' => 'TINYTEXT',
-      'boolean'   => 'BOOL',
-      'object'    => 'TEXT',
-      'geopoint'  => 'TEXT',
-      'geojson'   => 'TEXT',
-      'array'     => 'TEXT',
-      'duration'  => 'TINYTEXT',
-    ])[$frictionless_type];
+    if ($sql_type = static::$frictionlessTypes[$frictionless_type] ?? FALSE) {
+      return $sql_type;
+    }
+    throw new \InvalidArgumentException($frictionless_type . ' is not a valid frictionless type.');
   }
 
   /**
