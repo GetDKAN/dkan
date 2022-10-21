@@ -39,8 +39,6 @@ class MySQLQueryTest extends TestCase {
 
   /**
    * Build MySQLQuery arguments.
-   *
-   * @todo Include an update() mock for buildBoolPreAlterCommands().
    */
   public function buildConnectionChain(): Chain {
     return (new Chain($this))
@@ -52,7 +50,6 @@ class MySQLQueryTest extends TestCase {
         'foo' => 'Foo',
         'bar' => 'Bar',
         'baz' => 'Baz',
-        'boolz' => 'Boolz',
       ])
       ->add(StatementInterface::class, 'fetchField', (new Sequence())
         ->add('5')
@@ -74,7 +71,6 @@ class MySQLQueryTest extends TestCase {
       ['name' => 'foo', 'type' => 'string', 'format' => 'default', 'title' => 'Foo'],
       ['name' => 'bar', 'type' => 'number', 'format' => 'default', 'title' => 'Bar'],
       ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d', 'title' => 'Baz'],
-      ['name' => 'boolz', 'type' => 'boolean', 'format' => 'default', 'title' => 'Boolz'],
     ];
     $dictionary_indexes ??= [
       ['name' => 'index1', 'type' => 'index', 'description' => 'Fizz', 'fields' => [
