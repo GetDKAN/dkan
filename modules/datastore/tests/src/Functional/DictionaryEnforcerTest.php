@@ -17,6 +17,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
+ * @group intermittent_fail
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
   use GetDataTrait;
@@ -184,22 +185,25 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $response = $this->webServiceApi->summary($dist_id, $request);
     $result = json_decode($response->getContent(), true);
 
+//    throw new \Exception(print_r($result, true));
+
     // Validate schema.
     $this->assertEquals([
+      // Four data columns plus record_number.
       'numOfColumns' => 5,
       'columns' => [
         'record_number' => [
           'type' => 'serial',
           'length' => 10,
-          'unsigned' => true,
-          'not null' => true,
+          'unsigned' => TRUE,
+          'not null' => TRUE,
           'mysql_type' => 'int',
         ],
         'a' => [
-            'type' => 'int',
-            'length' => 11,
-            'mysql_type' => 'int',
-          ],
+          'type' => 'int',
+          'length' => 11,
+          'mysql_type' => 'int',
+        ],
         'b' => [
           'type' => 'varchar',
           'mysql_type' => 'date',
