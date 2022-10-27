@@ -20,7 +20,6 @@ class SearchTest extends ExistingSiteBase {
    *
    */
   public function testDrushCommands() {
-    $this->markTestIncomplete('drush does not work');
     $output = NULL;
     $return = NULL;
     exec('drush dkan:metastore-search:rebuild-tracker', $output, $return);
