@@ -9,6 +9,7 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -167,7 +168,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     // Build dataset.
     $dataset_id = $this->uuid->generate();
     $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
-    // Create datset.
+    // Create dataset.
     $this->metastore->post('dataset', $dataset);
     $this->metastore->publish('dataset', $dataset_id);
 

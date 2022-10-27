@@ -22,7 +22,7 @@ use MockChain\Options;
 use RootedData\RootedJsonData;
 
 /**
- *
+ * @coversDefaultClass Drupal\metastore\Service
  */
 class ServiceTest extends TestCase {
 
@@ -296,7 +296,7 @@ EOF;
     $result = $service->publish('dataset', 1);
     $this->assertTrue($result);
   }
-  
+
   /**
    *
    */

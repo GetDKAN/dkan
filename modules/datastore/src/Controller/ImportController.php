@@ -86,6 +86,7 @@ class ImportController implements ContainerInjectionInterface {
    *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
    */
   private function getDependencies($identifier) {
+    $distributions = [];
     // If a proper UUID, probably a distribution.
     if (Uuid::isValid($identifier)) {
       $distributions = [$identifier];
@@ -97,11 +98,7 @@ class ImportController implements ContainerInjectionInterface {
       $resourceId = "{$identifier}__source";
       $distributions = $this->referenceLookup->getReferencers('distribution', $resourceId, 'downloadURL');
     }
-    else {
-      $distributions = [];
-    }
-    $dependencies = empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
-    return $dependencies;
+    return empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
   }
 
   /**
