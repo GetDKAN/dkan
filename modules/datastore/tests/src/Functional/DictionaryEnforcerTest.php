@@ -9,7 +9,6 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -99,7 +98,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
     $this->webServiceApi = ImportController::create(\Drupal::getContainer());
     $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
-    // Copy resource file to uploads directory.
+    // Copy resource file to the uploads directory.
     $file_system = \Drupal::service('file_system');
     $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
     $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
@@ -159,7 +158,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->metastore->post('data-dictionary', $data_dict);
     $this->metastore->publish('data-dictionary', $dict_id);
 
-    // Set global data-dictinary in metastore config.
+    // Set global data-dictionary in metastore config.
     $metastore_config = \Drupal::configFactory()->getEditable('metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE);
     $metastore_config->set('data_dictionary_sitewide', $dict_id);
@@ -185,6 +184,9 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     // Retrieve schema for dataset resource.
     $response = $this->webServiceApi->summary($dist_id, $request);
     $result = json_decode($response->getContent(), true);
+
+    // Clean up after ourselves, before performing the assertion.
+    $this->metastore->delete('dataset', $dataset_id);
 
 //    throw new \Exception(print_r($result, true));
 

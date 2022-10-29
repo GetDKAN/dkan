@@ -4,6 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
@@ -243,12 +244,10 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
 
     $entity = $this->entityStorage->load($entity_id);
-    $published = $entity->status->value ?? FALSE;
-    if (!$published) {
-      return NULL;
+    if ($entity instanceof EntityPublishedInterface) {
+      return $entity->isPublished() ? $entity : NULL;
     }
-
-    return $entity;
+    return NULL;
   }
 
   /**
