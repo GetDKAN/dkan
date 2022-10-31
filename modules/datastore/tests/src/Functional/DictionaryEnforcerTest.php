@@ -187,8 +187,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     // Clean up after ourselves, before performing the assertion.
     $this->metastore->delete('dataset', $dataset_id);
 
-//    throw new \Exception(print_r($result, true));
-
     // Validate schema.
     $this->assertEquals([
       // Four data columns plus record_number.
