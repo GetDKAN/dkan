@@ -22,7 +22,6 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group intermittent_fail
  */
 class DatasetTest extends ExistingSiteBase {
   use CleanUp;

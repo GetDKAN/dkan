@@ -4,7 +4,6 @@ type: module
 core_version_requirement: ^9.1
 package: DKAN
 dependencies:
-  - datastore_mysql_import
   - metastore
   - metastore_admin
   - metastore_search

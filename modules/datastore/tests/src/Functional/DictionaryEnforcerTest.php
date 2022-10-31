@@ -17,7 +17,6 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
- * @group intermittent_fail
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
   use GetDataTrait;
