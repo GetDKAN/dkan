@@ -19,6 +19,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @group datastore
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
+
   use GetDataTrait;
 
   /**
@@ -96,14 +97,17 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->uuid = \Drupal::service('uuid');
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
     $this->webServiceApi = ImportController::create(\Drupal::getContainer());
-    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
+    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')
+      ->getInstance('dataset');
     // Copy resource file to uploads directory.
     $file_system = \Drupal::service('file_system');
     $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
     $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
     $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path);
     // Create resource URL.
-    $this->resourceUrl = \Drupal::service('stream_wrapper_manager')->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)->getExternalUrl();
+    $this->resourceUrl = \Drupal::service('stream_wrapper_manager')
+      ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
+      ->getExternalUrl();
   }
 
   /**
@@ -134,6 +138,11 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'title' => 'D',
         'type' => 'string',
       ],
+      [
+        'name' => 'e',
+        'title' => 'E',
+        'type' => 'boolean',
+      ],
     ];
     $indexes = [
       [
@@ -158,7 +167,8 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->metastore->publish('data-dictionary', $dict_id);
 
     // Set global data-dictinary in metastore config.
-    $metastore_config = \Drupal::configFactory()->getEditable('metastore.settings');
+    $metastore_config = \Drupal::configFactory()
+      ->getEditable('metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE);
     $metastore_config->set('data_dictionary_sitewide', $dict_id);
     $metastore_config->save();
@@ -166,7 +176,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     // Build dataset.
     $dataset_id = $this->uuid->generate();
     $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
-    // Create datset.
+    // Create dataset.
     $this->metastore->post('dataset', $dataset);
     $this->metastore->publish('dataset', $dataset_id);
 
@@ -182,24 +192,24 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $request = Request::create('http://blah/api');
     // Retrieve schema for dataset resource.
     $response = $this->webServiceApi->summary($dist_id, $request);
-    $result = json_decode($response->getContent(), true);
+    $result = json_decode($response->getContent(), TRUE);
 
     // Validate schema.
     $this->assertEquals([
-      'numOfColumns' => 5,
+      'numOfColumns' => 6,
       'columns' => [
         'record_number' => [
           'type' => 'serial',
           'length' => 10,
-          'unsigned' => true,
-          'not null' => true,
+          'unsigned' => TRUE,
+          'not null' => TRUE,
           'mysql_type' => 'int',
         ],
         'a' => [
-            'type' => 'int',
-            'length' => 11,
-            'mysql_type' => 'int',
-          ],
+          'type' => 'int',
+          'length' => 11,
+          'mysql_type' => 'int',
+        ],
         'b' => [
           'type' => 'varchar',
           'mysql_type' => 'date',
@@ -216,6 +226,13 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'mysql_type' => 'text',
           'description' => 'D',
         ],
+        'e' => [
+          'type' => 'int',
+          'mysql_type' => 'tinyint',
+          'description' => 'E',
+          'length' => 1,
+          'size' => 'tiny',
+        ],
       ],
       'indexes' => [
         'index_a' => [
@@ -228,7 +245,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'd',
         ],
       ],
-      'numOfRows' => 2,
+      'numOfRows' => 3,
     ], $result);
   }
 
