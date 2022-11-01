@@ -6,6 +6,7 @@ use Drupal\Core\File\FileSystemInterface;
 
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 
@@ -20,7 +21,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
 
-  use GetDataTrait;
+  use GetDataTrait, CleanUp;
 
   /**
    * Uploaded resource file destination.
@@ -86,6 +87,13 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
   protected $webServiceApi;
 
   /**
+   * External URL for the fixture CSV file.
+   *
+   * @var string
+   */
+  protected $resourceUrl;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
@@ -100,14 +108,20 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->datasetStorage = \Drupal::service('dkan.metastore.storage')
       ->getInstance('dataset');
     // Copy resource file to uploads directory.
+    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
     $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
     $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
-    $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path);
+    $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path, FileSystemInterface::EXISTS_REPLACE);
     // Create resource URL.
     $this->resourceUrl = \Drupal::service('stream_wrapper_manager')
       ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
       ->getExternalUrl();
+  }
+
+  public function tearDown() {
+    parent::tearDown();
+    $this->removeAllMappedFiles();
   }
 
   /**
