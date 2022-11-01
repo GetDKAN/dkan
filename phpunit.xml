@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
   bootstrap="/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
   colors="true"
   stopOnFailure="false"
@@ -9,39 +9,21 @@
   verbose="true">
   <coverage>
     <include>
-      <directory>modules/common/src</directory>
-      <directory>modules/metastore/src</directory>
-      <directory>modules/metastore/modules/metastore/src</directory>
-      <directory>modules/metastore/modules/metastore_search/src</directory>
-      <directory>modules/metastore/modules/metastore_admin/src</directory>
-      <directory>modules/datastore/src</directory>
-      <directory>modules/datastore/modules/datastore_mysql_import/src</directory>
-      <directory>modules/frontend/src</directory>
-      <directory>modules/harvest/src</directory>
-      <directory>modules/harvest/modules/harvest_dashboard/src</directory>
-      <directory>modules/json_form_widget/src</directory>
+      <directory>.</directory>
     </include>
     <exclude>
-      <directory>modules/common/src/Tests</directory>
+      <directory>modules/common/tests</directory>
+      <directory>modules/datastore/tests</directory>
+      <directory>modules/dkan_js_frontend/tests</directory>
+      <directory>modules/metastore/tests</directory>
+      <directory>modules/sample_content</directory>
       <directory suffix="Test.php">./</directory>
       <directory suffix="TestBase.php">./</directory>
     </exclude>
   </coverage>
   <testsuites>
     <testsuite name="DKAN Test Suite">
-      <directory>modules/common/tests/src</directory>
-      <directory>modules/metastore/tests/src</directory>
-      <directory>modules/metastore/modules/metastore/tests/src</directory>
-      <directory>modules/metastore/modules/metastore_search/tests/src</directory>
-      <directory>modules/metastore/modules/metastore_admin/tests/src</directory>
-      <directory>modules/datastore/tests/src</directory>
-      <directory>modules/datastore/modules/datastore_mysql_import/tests/src</directory>
-      <directory>modules/frontend/tests/src</directory>
-      <directory>modules/dkan_js_frontend/tests/src</directory>
-      <directory>modules/harvest/tests/src</directory>
-      <directory>modules/harvest/modules/harvest_dashboard/tests/src</directory>
-      <directory>modules/json_form_widget/tests/src</directory>
-      <directory>tests/src</directory>
+      <directory>.</directory>
     </testsuite>
     <testsuite name="DkanUnitTests">
       <directory>tests/src/Unit</directory>

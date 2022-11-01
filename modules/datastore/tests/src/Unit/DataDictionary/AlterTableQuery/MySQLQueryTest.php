@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery.
+ *
+ * @coversDefaultClass Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
  */
 class MySQLQueryTest extends TestCase {
 
@@ -132,6 +134,83 @@ class MySQLQueryTest extends TestCase {
     $this->expectException(IncompatibleTypeException::class);
     $this->expectExceptionMessage("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
     $mysql_query->execute();
+  }
+
+  public function baseTypeProvider() {
+    return [
+      'string' => ['string', 'TEXT'],
+      'getBaseType-does-no-error-checking' => ['not-a-frictionless-type', NULL],
+    ];
+  }
+
+  /**
+   * @dataProvider baseTypeProvider
+   * @covers ::getBaseType
+   */
+  public function testGetBaseType($frictionless_type, $expected_type) {
+    // Mock an object so we don't have to set up dependencies.
+    $mysql_query = $this->getMockBuilder(MySQLQuery::class)
+      ->disableOriginalConstructor()
+      // Don't mock the method we're testing.
+      ->setMethodsExcept(['getBaseType'])
+      ->getMock();
+
+    // getBaseType() is protected.
+    $get_test_base = new \ReflectionMethod($mysql_query, 'getBaseType');
+    $get_test_base->setAccessible(TRUE);
+
+    // Handle the case of exceptions.
+    if ($expected_type === NULL) {
+      $this->expectException(\InvalidArgumentException::class);
+    }
+
+    $sql_type = $get_test_base->invokeArgs($mysql_query, [$frictionless_type]);
+    if ($expected_type !== NULL) {
+      $this->assertEquals($expected_type, $sql_type);
+    }
+  }
+
+  /**
+   * Make sure that buildBoolPreAlterCommands calls buildBoolPreAlterCommands.
+   *
+   * @covers ::buildBoolPreAlterCommands
+   *
+   * @todo This is brittle, feel free to replace.
+   */
+  public function testBuildPreAlterCommandsForBool() {
+    // Our test data.
+    $query_fields = [[
+      'name' => 'col',
+      'type' => 'boolean',
+      'format' => 'default',
+      'title' => 'Boolz',
+    ]];
+
+    // Mock an object so we can call buildPreAlterCommands() against it.
+    $mysql_query = $this->getMockBuilder(MySQLQuery::class)
+      ->disableOriginalConstructor()
+      // Mock buildBoolPreAlterCommands() so we can set expectations on it.
+      ->onlyMethods(['buildBoolPreAlterCommands'])
+      // Don't mock these methods because they're called from
+      // buildPreAlterCommands()
+      ->setMethodsExcept(['buildPreAlterCommands', 'getBaseType'])
+      ->getMock();
+    $mysql_query->expects($this->once())
+      ->method('buildBoolPreAlterCommands')
+      ->with(
+        $this->equalTo('table'),
+        $this->equalTo('col')
+      );
+
+    // Mock a connection so buildPreAlterCommands() can call it.
+    $query_connection = new \ReflectionProperty($mysql_query, 'connection');
+    $query_connection->setAccessible(TRUE);
+    $query_connection->setValue($mysql_query, $this->buildConnectionChain()->getMock());
+
+    // Set up the method so we can run it.
+    $build_pre_alter_command = new \ReflectionMethod($mysql_query, 'buildPreAlterCommands');
+    $build_pre_alter_command->setAccessible(TRUE);
+    $build_pre_alter_command->invokeArgs($mysql_query, [$query_fields, 'table']);
   }
 
 }
