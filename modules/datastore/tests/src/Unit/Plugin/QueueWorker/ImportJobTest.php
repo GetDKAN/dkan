@@ -26,6 +26,11 @@ class ImportJobTest extends TestCase {
     $this->assertTrue($this->database instanceof DatabaseTableInterface);
   }
 
+  protected function tearDown() {
+    parent::tearDown();
+    $this->database = NULL;
+  }
+
   /**
    *
    */
