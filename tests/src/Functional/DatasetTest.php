@@ -42,8 +42,20 @@ class DatasetTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState();
     $this->changeDatasetsResourceOutputPerspective();
-
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+  }
+
+  public function tearDown() {
+    parent::tearDown();
+    $this->removeHarvests();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
+    $this->setDefaultModerationState();
+    $this->changeDatasetsResourceOutputPerspective();
   }
 
   public function testChangingDatasetResourcePerspectiveOnOutput() {
