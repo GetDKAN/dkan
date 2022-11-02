@@ -33,6 +33,15 @@ class DatasetTest extends ExistingSiteBase {
 
   public function setUp(): void {
     parent::setUp();
+    $this->removeHarvests();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
+    $this->setDefaultModerationState();
+    $this->changeDatasetsResourceOutputPerspective();
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
