@@ -173,4 +173,4 @@ metastore.data_dictionary.settings:
     _title: 'Data-Dictionary Settings'
     _form: '\Drupal\metastore\Form\DataDictionarySettingsForm'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'access administration pages'
