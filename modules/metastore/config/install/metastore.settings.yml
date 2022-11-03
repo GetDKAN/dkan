@@ -1,7 +1,7 @@
 property_list:
   'theme': 'theme'
   'keyword': 'keyword'
-  'publisher' : 'publisher'
+  'publisher': 'publisher'
   'distribution': 'distribution'
   'contactPoint': '0'
   '@type': '0'
