@@ -79,28 +79,35 @@ class QueryDownloadController extends AbstractQueryController {
 
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
+        //Get the DD definition to get the original date format.
+        $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
 
-        while ($row = $result->fetchAssoc()) {
-          //Get the DD definition to get the original date format.
-          $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
-          //Create a new array to place the updated values.
-          $formated_data = [];
-          foreach ($row as $key => $value) {
-            //Get the field definition from the DD.
-            $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
-            //Do something if the field is a date field and isn't empty.
-            if ($field_definition['type'] == 'date' && !empty($value)) {
-              //Format the date.
-              $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
-              //Return the new date in the array.
-              $formated_data[] = strval($newDate);
-            }else{
-              //It's not a date so return the original value.
-              $formated_data[] = $value;
+        if ($data_dictionary_fields) {
+          while ($row = $result->fetchAssoc()) {
+            //Create a new array to place the updated values.
+            $formated_data = [];
+            foreach ($row as $key => $value) {
+              //Get the field definition from the DD.
+              $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
+              //Do something if the field is a date field and isn't empty.
+              if ($field_definition['type'] == 'date' && !empty($value)) {
+                //Format the date.
+                $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
+                //Return the new date in the array.
+                $formated_data[] = strval($newDate);
+              }else{
+                //It's not a date so return the original value.
+                $formated_data[] = $value;
+              }
             }
+            //Send the updated array to the csv file.
+            $this->sendRow($handle, $formated_data);
           }
-          //Send the updated array to the csv file.
-          $this->sendRow($handle, $formated_data);
+
+        }else{
+          while ($row = $result->fetchAssoc()) {
+            $this->sendRow($handle, array_values($row));
+          }
         }
       }
       catch (\Exception $e) {
@@ -115,14 +122,21 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Create initial streamed response object.
    *
-   * @return array
+   *  {@inheritdoc}
    *
    */
   private function returnDataDictionaryFields($resource_id) {
+    //Get DD is mode.
+    $dd_mode = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getDataDictionaryMode();
     //Get data dictionary info.
-    $dict_id =  \Drupal::service('dkan.metastore.data_dictionary_discovery')->dictionaryIdFromResource($resource_id);
-    $metaData = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
-    return $metaData;
+    if ($dd_mode != "none") {
+      $dict_id =  \Drupal::service('dkan.metastore.data_dictionary_discovery')->dictionaryIdFromResource($resource_id);
+      $metaData = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
+      return $metaData;
+    }else{
+      return null;
+    }
+
   }
 
   /**
