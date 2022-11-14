@@ -98,17 +98,13 @@ class QueryDownloadController extends AbstractQueryController {
     $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
     while ($row = $result->fetchAssoc()) {
       if ($data_dictionary_fields) {
-        $formated_data = [];
-        foreach ($row as $key => $value) {
-          $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
-          $formated_data = $this->returnFormattedData($field_definition, $value);
-        }
+        $formated_data = $this->returnFormattedData($data_dictionary_fields, $row);
         // Send the updated array to the csv file.
         $this->sendRow($handle, $formated_data);
       }
       else {
         $this->sendRow($handle, array_values($row));
-    }
+      }
 
     }
   }
@@ -118,19 +114,25 @@ class QueryDownloadController extends AbstractQueryController {
    *
    *  {@inheritdoc}
    */
-  private function returnFormattedData($field_definition, $value) {
-    // Get the field definition from the DD.
-    // Do something if the field is a date field and isn't empty.
-    if ($field_definition['type'] == 'date' && !empty($value)) {
-      // Format the date.
-      $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
-      // Return the new date in the array.
-      return strval($newDate);
+  private function returnFormattedData($data_dictionary_fields, $row) {
+    $formated_data = [];
+    foreach ($row as $key => $value) {
+      $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
+      // Get the field definition from the DD.
+      // Do something if the field is a date field and isn't empty.
+      if ($field_definition['type'] == 'date' && !empty($value)) {
+        // Format the date.
+        $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
+        // Return the new date in the array.
+        $formated_data[] = strval($newDate);
+      }
+      else {
+        // It's not a date so return the original value.
+        $formated_data[] =  $value;
+      }
     }
-    else{
-      // It's not a date so return the original value.
-      return $value;
-    }
+    return $formated_data;
+
   }
 
   /**
