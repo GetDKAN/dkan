@@ -64,7 +64,7 @@ class QueryDownloadController extends AbstractQueryController {
    */
   protected function streamCsvResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $response = $this->initStreamedCsvResponse();
-    $response->setCallback(function () use ($result, $datastoreQuery, $resource_id) {
+    $response->setCallback(function () use ($result, $datastoreQuery) {
       // Open the stream and send the header.
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
@@ -73,7 +73,7 @@ class QueryDownloadController extends AbstractQueryController {
       try {
         // Send the header row.
         $this->sendRow($handle, $this->getHeaderRow($result));
-        $this->getData($handle, $result, $datastoreQuery, $resource_id);
+        $this->getData($handle, $result, $datastoreQuery);
 
       }
       catch (\Exception $e) {
