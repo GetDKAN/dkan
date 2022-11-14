@@ -76,22 +76,8 @@ class QueryDownloadController extends AbstractQueryController {
       try {
         // Send the header row.
         $this->sendRow($handle, $this->getHeaderRow($result));
-        // Get the result pointer and send each row to the stream one by one.
-        $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
-        // Get the DD definition to get the original date format.
-        $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
-        if ($data_dictionary_fields) {
-          while ($row = $result->fetchAssoc()) {
-            $formated_data = $this->returnFormattedData($data_dictionary_fields, $row);
-            // Send the updated array to the csv file.
-            $this->sendRow($handle, $formated_data);
-          }
-        }
-        else {
-          while ($row = $result->fetchAssoc()) {
-            $this->sendRow($handle, array_values($row));
-          }
-        }
+        $this->getData($handle, $result, $datastoreQuery);
+
       }
       catch (\Exception $e) {
         $this->sendRow($handle, [$e->getMessage()]);
@@ -104,28 +90,40 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Return formatted date value.
    *
-   * @return array $definition
-   *  Array of data dictionary definition.
+   *  {@inheritdoc}
    */
-  private function returnFormattedData($data_dictionary_fields, $row){
-    $formated_data = [];
-    foreach ($row as $key => $value) {
-      $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
-      // Get the field definition from the DD.
-      // Do something if the field is a date field and isn't empty.
-      if ($field_definition['type'] == 'date' && !empty($value)) {
-        // Format the date.
-        $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
-        // Return the new date in the array.
-        $formated_data[] = strval($newDate);
-      }
-      else {
-        // It's not a date so return the original value.
-        $formated_data[] = $value;
+  private function getData($handle, $result, $datastoreQuery){
+    // Get the result pointer and send each row to the stream one by one.
+    $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
+    // Get the DD definition to get the original date format.
+    $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
+    if ($data_dictionary_fields) {
+      while ($row = $result->fetchAssoc()) {
+        $formated_data = [];
+        foreach ($row as $key => $value) {
+          $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
+          // Get the field definition from the DD.
+          // Do something if the field is a date field and isn't empty.
+          if ($field_definition['type'] == 'date' && !empty($value)) {
+            // Format the date.
+            $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
+            // Return the new date in the array.
+            $formated_data[] = strval($newDate);
+          }
+          else {
+            // It's not a date so return the original value.
+            $formated_data[] = $value;
+          }
+        }
+            // Send the updated array to the csv file.
+            $this->sendRow($handle, $formated_data);
       }
     }
-    return $formated_data;
-
+    else {
+      while ($row = $result->fetchAssoc()) {
+        $this->sendRow($handle, array_values($row));
+      }
+    }
   }
 
   /**
@@ -151,8 +149,8 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Create initial streamed response object.
    *
-   * @return array $definition
-   * Array of data dictionary definition
+   * @return array
+   *   Array of data dictionary definition
    */
   private function returnFieldDefinition($dataDictionaryFields, $field) {
     // Get data dictionary info.
