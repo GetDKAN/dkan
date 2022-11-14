@@ -1,8 +1,8 @@
 'post put delete datasets through the api':
-  title: 'post, put, and delete datasets through the api'
-  description: 'post, put, and delete datasets through the api'
-'administer dkan dictionary settings':
-  title: 'Administer DKAN Dictionary Settings'
-  description: 'Administer dkan dictionary settings'
+  title: 'Metastore: post, put, patch, and delete datasets through the api'
+  description: 'post, put, patch, and delete datasets through the api'
+'administer data dictionary settings':
+  title: 'Metastore: Administer Data Dictionary Settings'
+  description: 'Administer data dictionary settings'
 
 
