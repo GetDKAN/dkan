@@ -100,19 +100,7 @@ class QueryDownloadController extends AbstractQueryController {
       while ($row = $result->fetchAssoc()) {
         $formated_data = [];
         foreach ($row as $key => $value) {
-          $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
-          // Get the field definition from the DD.
-          // Do something if the field is a date field and isn't empty.
-          if ($field_definition['type'] == 'date' && !empty($value)) {
-            // Format the date.
-            $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
-            // Return the new date in the array.
-            $formated_data[] = strval($newDate);
-          }
-          else {
-            // It's not a date so return the original value.
-            $formated_data[] = $value;
-          }
+        $formated_data = $this->returnFormattedData($field_definition, $value);
         }
         // Send the updated array to the csv file.
         $this->sendRow($handle, $formated_data);
@@ -122,6 +110,27 @@ class QueryDownloadController extends AbstractQueryController {
       while ($row = $result->fetchAssoc()) {
         $this->sendRow($handle, array_values($row));
       }
+    }
+  }
+
+  /**
+   * Return formatted date value.
+   *
+   *  {@inheritdoc}
+   *
+   */
+  private function returnFormattedData($field_definition, $value){
+    // Get the field definition from the DD.
+    // Do something if the field is a date field and isn't empty.
+    if ($field_definition['type'] == 'date' && !empty($value)) {
+    // Format the date.
+      $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
+      // Return the new date in the array.
+      return strval($newDate);
+    }
+    else{
+      //It's not a date so return the original value.
+      return $value;
     }
   }
 
