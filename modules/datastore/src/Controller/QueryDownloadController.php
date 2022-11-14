@@ -64,7 +64,7 @@ class QueryDownloadController extends AbstractQueryController {
    */
   protected function streamCsvResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $response = $this->initStreamedCsvResponse();
-    //Getting the resource id to be used for getting the data dictionary (DD).
+    // Getting the resource id to be used for getting the data dictionary (DD).
     $resource_id = $result->{"$.query.resources.0.id"};
 
     $response->setCallback(function () use ($result, $datastoreQuery,$resource_id) {
@@ -79,28 +79,18 @@ class QueryDownloadController extends AbstractQueryController {
 
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
-        //Get the DD definition to get the original date format.
+        // Get the DD definition to get the original date format.
         $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
 
         if ($data_dictionary_fields) {
           while ($row = $result->fetchAssoc()) {
-            //Create a new array to place the updated values.
+            // Create a new array to place the updated values.
             $formated_data = [];
             foreach ($row as $key => $value) {
-              //Get the field definition from the DD.
               $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
-              //Do something if the field is a date field and isn't empty.
-              if ($field_definition['type'] == 'date' && !empty($value)) {
-                //Format the date.
-                $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
-                //Return the new date in the array.
-                $formated_data[] = strval($newDate);
-              }else{
-                //It's not a date so return the original value.
-                $formated_data[] = $value;
-              }
+              $formated_data[] = returnFormattedData($field_definition, $value);
             }
-            //Send the updated array to the csv file.
+            // Send the updated array to the csv file.
             $this->sendRow($handle, $formated_data);
           }
 
@@ -120,20 +110,40 @@ class QueryDownloadController extends AbstractQueryController {
   }
 
   /**
+   * Return formatted date value.
+   *
+   *  {@inheritdoc}
+   */
+  private function returnFormattedData($field_definition, $value){
+    // Get the field definition from the DD.
+    // Do something if the field is a date field and isn't empty.
+    if ($field_definition['type'] == 'date' && !empty($value)) {
+    // Format the date.
+      $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
+      // Return the new date in the array.
+      return strval($newDate);
+    }
+    else{
+      // It's not a date so return the original value.
+      return $value;
+    }
+  }
+
+  /**
    * Create initial streamed response object.
    *
    *  {@inheritdoc}
-   *
    */
   private function returnDataDictionaryFields($resource_id) {
-    //Get DD is mode.
+    // Get DD is mode.
     $dd_mode = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getDataDictionaryMode();
-    //Get data dictionary info.
+    // Get data dictionary info.
     if ($dd_mode != "none") {
       $dict_id =  \Drupal::service('dkan.metastore.data_dictionary_discovery')->dictionaryIdFromResource($resource_id);
       $metaData = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
       return $metaData;
-    }else{
+    }
+    else{
       return null;
     }
 
@@ -143,10 +153,9 @@ class QueryDownloadController extends AbstractQueryController {
    * Create initial streamed response object.
    *
    * @return array
-   *
    */
   private function returnFieldDefinition($dataDictionaryFields, $field) {
-    //Get data dictionary info.
+    // Get data dictionary info.
     foreach ($dataDictionaryFields as $definition) {
       if ($field == $definition['name']) {
         return $definition;
