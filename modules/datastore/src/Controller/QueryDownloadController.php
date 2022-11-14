@@ -128,7 +128,7 @@ class QueryDownloadController extends AbstractQueryController {
       }
       else {
         // It's not a date so return the original value.
-        $formated_data[] =  $value;
+        $formated_data[] = $value;
       }
     }
     return $formated_data;
