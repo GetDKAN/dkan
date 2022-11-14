@@ -67,7 +67,7 @@ class QueryDownloadController extends AbstractQueryController {
     // Getting the resource id to be used for getting the data dictionary (DD).
     $resource_id = $result->{"$.query.resources.0.id"};
 
-    $response->setCallback(function () use ($result, $datastoreQuery,$resource_id) {
+    $response->setCallback(function () use ($result, $datastoreQuery, $resource_id) {
       // Open the stream and send the header.
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
@@ -76,25 +76,22 @@ class QueryDownloadController extends AbstractQueryController {
       try {
         // Send the header row.
         $this->sendRow($handle, $this->getHeaderRow($result));
-
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
         // Get the DD definition to get the original date format.
         $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
-
         if ($data_dictionary_fields) {
           while ($row = $result->fetchAssoc()) {
-            // Create a new array to place the updated values.
             $formated_data = [];
             foreach ($row as $key => $value) {
               $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
-              $formated_data[] = returnFormattedData($field_definition, $value);
+              $formated_data[] = $this->returnFormattedData($field_definition, $value);
             }
             // Send the updated array to the csv file.
             $this->sendRow($handle, $formated_data);
           }
-
-        }else{
+        }
+        else{
           while ($row = $result->fetchAssoc()) {
             $this->sendRow($handle, array_values($row));
           }
@@ -103,7 +100,6 @@ class QueryDownloadController extends AbstractQueryController {
       catch (\Exception $e) {
         $this->sendRow($handle, [$e->getMessage()]);
       }
-
       fclose($handle);
     });
     return $response;
@@ -118,15 +114,15 @@ class QueryDownloadController extends AbstractQueryController {
     // Get the field definition from the DD.
     // Do something if the field is a date field and isn't empty.
     if ($field_definition['type'] == 'date' && !empty($value)) {
-    // Format the date.
+      // Format the date.
       $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
       // Return the new date in the array.
       return strval($newDate);
     }
-    else{
-      // It's not a date so return the original value.
-      return $value;
-    }
+      else{
+        // It's not a date so return the original value.
+        return $value;
+      }
   }
 
   /**
@@ -144,7 +140,7 @@ class QueryDownloadController extends AbstractQueryController {
       return $metaData;
     }
     else{
-      return null;
+      return NULL;
     }
 
   }
@@ -152,7 +148,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Create initial streamed response object.
    *
-   * @return array
+   * @return array $definition
    */
   private function returnFieldDefinition($dataDictionaryFields, $field) {
     // Get data dictionary info.
