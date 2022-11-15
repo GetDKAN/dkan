@@ -94,7 +94,7 @@ class QueryDownloadController extends AbstractQueryController {
    *
    *  {@inheritdoc}
    */
-  private function getData($handle, RootedJsonData $result, $resource_id) {
+  private function getData($handle, $result, $resource_id) {
 
     // Get the DD definition to get the original date format.
     $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
