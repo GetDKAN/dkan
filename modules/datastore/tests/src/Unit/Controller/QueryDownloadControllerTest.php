@@ -340,6 +340,8 @@ class QueryDownloadControllerTest extends TestCase {
   private function getQueryContainer(int $rowLimit) {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
+      ->add("dkan.metastore.data_dictionary_discovery", Service::class)
+      ->add("dkan.metastore.service", Service::class)
       ->add("dkan.datastore.service", Service::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
