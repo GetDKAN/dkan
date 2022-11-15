@@ -78,7 +78,7 @@ class QueryDownloadController extends AbstractQueryController {
         $this->sendRow($handle, $this->getHeaderRow($result));
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
-        $this->getData($handle, $result, $datastoreQuery, $resource_id);
+        $this->getData($handle, $result, $resource_id);
 
       }
       catch (\Exception $e) {
@@ -94,7 +94,7 @@ class QueryDownloadController extends AbstractQueryController {
    *
    *  {@inheritdoc}
    */
-  private function getData($handle, $result, $datastoreQuery, $resource_id) {
+  private function getData($handle, RootedJsonData $result, $resource_id) {
 
     // Get the DD definition to get the original date format.
     $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
