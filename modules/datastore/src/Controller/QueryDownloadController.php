@@ -64,7 +64,10 @@ class QueryDownloadController extends AbstractQueryController {
    */
   protected function streamCsvResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $response = $this->initStreamedCsvResponse();
-    $response->setCallback(function () use ($result, $datastoreQuery) {
+    // Getting the resource id to be used for getting the data dictionary (DD).
+    $resource_id = $result->{"$.query.resources.0.id"};
+
+    $response->setCallback(function () use ($result, $datastoreQuery, $resource_id) {
       // Open the stream and send the header.
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
@@ -75,7 +78,7 @@ class QueryDownloadController extends AbstractQueryController {
         $this->sendRow($handle, $this->getHeaderRow($result));
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
-        $this->getData($handle, $result, $datastoreQuery);
+        $this->getData($handle, $result, $datastoreQuery, $resource_id);
 
       }
       catch (\Exception $e) {
@@ -91,9 +94,8 @@ class QueryDownloadController extends AbstractQueryController {
    *
    *  {@inheritdoc}
    */
-  private function getData($handle, $result, $datastoreQuery) {
-    // Getting the resource id to be used for getting the data dictionary (DD).
-    $resource_id = $result->{"$.query.resources.0.id"};
+  private function getData($handle, $result, $datastoreQuery, $resource_id) {
+
     // Get the DD definition to get the original date format.
     $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
     while ($row = $result->fetchAssoc()) {
