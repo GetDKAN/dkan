@@ -7,11 +7,11 @@ commands:
           name: Install DDev
           command: |
             set -e
+            sudo rm -rf /etc/apt/sources.list.d/heroku.list
             sudo apt-get update
             sudo apt-get install ca-certificates
             curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
             echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
-            sudo rm -rf /etc/apt/sources.list.d/heroku.list
             sudo apt update && sudo apt install -y ddev
   prepare_build:
     # TODO: Figure out the best way to share this build between the various jobs.
