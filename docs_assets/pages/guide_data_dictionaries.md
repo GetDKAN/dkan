@@ -1,9 +1,36 @@
-# How to use Data Dictionaries {#guide_data_dictionaries}
+# Data Dictionaries {#guide_data_dictionaries}
+
+## What is the purpose of data dictionaries?
+
+A data dictionary describes the structure and content of data elements, provides guidance on interpretation, reduces data inconsistencies, and makes data easier to analyze.
+
+### How Data Dictionaries are Used
+
+* **Documentation** - provide data structure details for users, developers, and other stakeholders
+* **Communication** - equip users with a common vocabulary and definitions for shared data, data standards, data flow and exchange, and help developers gage impacts of schema changes
+* **Application Design** - help application developers create forms and reports with proper data types and controls
+* **Systems Analysis** - enable analysts to understand overall system design and data flow, and to find where data interact with various processes or components
+* **Data Integration** - clear definitions of data elements provide the contextual understanding needed when deciding how to map one data system to another, or whether to subset, merge, stack, or transform data for a specific use
+* **Decision Making** - assist in planning data collection, project development, and other collaborative efforts
+
+In DKAN, data dictionaries are used as instructions for how to store the data in the database. When you add datasets to your catalog, any distribution with a csv file will be queued for import into the database as a datastore table. At this stage, everything is imported as strings. Once the import of the file has completed, a post import job is generated to apply the data dictionary to the datastore table. Without these instructions, date and numeric data will not sort as expected.
+
+You can check how many jobs are in each queue by running `drush queue-list`. Be sure that cron is running often enough to process the jobs to completion.
+
+The structure of your data dictionary should follow [Frictionless Standards table schema](https://specs.frictionlessdata.io/table-schema/).
+
+The **name** and **type** properties are required. The **format** property is important for fields where you need to specify the format of the values. See [Types & Formats](https://specs.frictionlessdata.io/table-schema/#types-and-formats) for details.
 
 ## Tutorial I: Catalog-wide data dictionary
 
 ### Creating a data dictionary via the API
-The simplest way to use data dictionaries on your site is to create one for the entire catalog. To do this, let's first create a new dictionary using the API. We are going to take our list of fields from one of the sample datasets that ships with DKAN, "Data on bike lanes in Florida."
+The simplest way to use data dictionaries on your site is to create one for the entire catalog. To do this, let's first create a new dictionary using the API. We will define a list of fields based on the example header row below.
+
+| project_id | project_name | start_date | end_date | cost | contact |
+| -- | -- | -- | -- | -- | -- |
+| 94 | Terrapene | 01/16/2019 | 05/28/2021 | 124748.34 | `info@example.com` |
+
+---
 
 ```http
 POST http://mydomain.com/api/1/metastore/schemas/data-dictionary/items
@@ -14,44 +41,37 @@ Authorization: Basic username:password
     "data": {
         "fields": [
             {
-                "name": "objectid",
-                "type": "integer",
-                "title": "OBJECTID"
+                "name": "project_id",
+                "title": "Project ID",
+                "type": "integer"
             },
             {
-                "name": "roadway",
-                "type": "integer",
-                "title": "ROADWAY"
+                "name": "project_name",
+                "title": "Project",
+                "type": "string"
             },
             {
-                "name": "road_side",
+                "name": "start_date",
+                "title": "Start Date",
+                "type": "date",
+                "format": "%m/%d/%Y"
+            },
+            {
+                "name": "end_date",
+                "title": "End Date",
+                "type": "date",
+                "format": "%m/%d/%Y"
+            },
+            {
+                "name": "cost",
+                "title": "Cost",
+                "type": "number"
+            },
+            {
+                "name": "contact",
+                "title": "Contact",
                 "type": "string",
-                "title": "ROAD_SIDE"
-            },
-            {
-                "name": "lncd",
-                "type": "integer",
-                "title": "LNCD"
-            },
-            {
-                "name": "descr",
-                "type": "string",
-                "title": "DESCR"
-            },
-            {
-                "name": "begin_post",
-                "type": "number",
-                "title": "BEGIN_POST"
-            },
-            {
-                "name": "end_post",
-                "type": "number",
-                "title": "END_POST"
-            },
-            {
-                "name": "shape_leng",
-                "type": "number",
-                "title": "Shape Leng"
+                "format": "email"
             }
         ]
     }
@@ -73,7 +93,7 @@ drush -y config:set metastore.settings data_dictionary_sitewide 7fd6bb1f-2752-54
 3. Enter a name for your data dictionary that will serve as its identifier.
 4. Define the fields for your data dictionary
 5. Click the "Save" button.
-6. From the DKAN menu, seclect Data Dictionary -> Settings.
+6. From the DKAN menu, select Data Dictionary -> Settings.
 7. Select "Sitewide" from the Dictionary Mode options.
 8. Type in the name of the data-dictionary you created in step 3.
 9. Click the "Save configuration" button.
