@@ -34,7 +34,7 @@ class MysqlImport extends ImportJob {
     $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
 
     $mimeType = $this->resource->getMimeType();
-    $delimiter = $mimeType == 'text/tab-separated-values' ? '/t' : ',';
+    $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ",";
 
     if ($file_path === FALSE) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
