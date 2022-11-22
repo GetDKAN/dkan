@@ -81,7 +81,6 @@ class MysqlImport extends ImportJob {
    *
    * @param string $file_path
    *   File path.
-   *
    * @param string $delimiter
    *   File delimiter.
    *
@@ -110,7 +109,7 @@ class MysqlImport extends ImportJob {
     }
 
     // Attempt to retrieve the columns from the resource file.
-    $columns = fgetcsv($f, 0 , $delimiter);
+    $columns = fgetcsv($f, 0, $delimiter);
     // Attempt to read the column lines from the resource file.
     $end_pointer = ftell($f);
     rewind($f);
@@ -213,8 +212,8 @@ class MysqlImport extends ImportJob {
    *   End Of Line character for file importation.
    * @param int $header_line_count
    *   Number of lines occupied by the csv header row.
-   * @param $delimiter
-   *  File delimiter.
+   * @param string $delimiter
+   *   File delimiter.
    *
    * @return string
    *   Generated SQL file import statement.
