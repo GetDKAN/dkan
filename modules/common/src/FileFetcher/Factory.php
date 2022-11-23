@@ -4,7 +4,6 @@ namespace Drupal\common\FileFetcher;
 
 use Contracts\FactoryInterface;
 use Drupal\common\Storage\JobStoreFactory;
-use FileFetcher\FileFetcher;
 
 /**
  * File fetcher Factory.
@@ -41,7 +40,7 @@ class Factory implements FactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []) {
     $config = array_merge($this->configDefault, $config);
-    return FileFetcher::get($identifier, $this->getFileFetcherJobStore(), $config);
+    return FileFetcherJob::get($identifier, $this->getFileFetcherJobStore(), $config);
   }
 
   /**
@@ -50,7 +49,7 @@ class Factory implements FactoryInterface {
   private function getFileFetcherJobStore() {
     /** @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
     $jobStoreFactory = $this->factory;
-    return $jobStoreFactory->getInstance(FileFetcher::class);
+    return $jobStoreFactory->getInstance(FileFetcherJob::class);
   }
 
 }

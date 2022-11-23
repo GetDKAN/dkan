@@ -12,9 +12,9 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
 use Procrastinator\Result;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\common\FileFetcher\FileFetcherJob;
 
 /**
  * Resource localizer.
@@ -114,7 +114,7 @@ class ResourceLocalizer {
   /**
    * Private.
    */
-  private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
+  private function registerNewPerspectives(DataResource $resource, FileFetcherJob $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
     $dir = "file://" . $this->drupalFiles->getPublicFilesDirectory();
@@ -179,7 +179,7 @@ class ResourceLocalizer {
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
+      $this->getJobStoreFactory()->getInstance(FileFetcherJob::class)->remove($uuid);
     }
   }
 
@@ -193,7 +193,7 @@ class ResourceLocalizer {
   /**
    * Get FileFetcher.
    */
-  public function getFileFetcher(DataResource $resource): FileFetcher {
+  public function getFileFetcher(DataResource $resource): FileFetcherJob {
     $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
     $directory = "public://resources/{$uuid}";
     $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
