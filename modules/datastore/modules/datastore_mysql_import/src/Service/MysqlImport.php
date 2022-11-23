@@ -32,13 +32,17 @@ class MysqlImport extends ImportJob {
   protected function runIt() {
     // Attempt to resolve resource file name from file path.
     $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
+
+    $mimeType = $this->resource->getMimeType();
+    $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ",";
+
     if ($file_path === FALSE) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
     // Read the columns and EOL character sequence from the CSV file.
     try {
-      [$columns, $column_lines] = $this->getColsFromFile($file_path);
+      [$columns, $column_lines] = $this->getColsFromFile($file_path, $delimiter);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
@@ -61,7 +65,7 @@ class MysqlImport extends ImportJob {
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count));
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter));
 
     Database::setActiveConnection();
 
@@ -75,6 +79,8 @@ class MysqlImport extends ImportJob {
    *
    * @param string $file_path
    *   File path.
+   * @param string $delimiter
+   *   File delimiter.
    *
    * @return array
    *   An array containing only two elements; the CSV columns and the column
@@ -84,7 +90,8 @@ class MysqlImport extends ImportJob {
    *   On failure to open the file;
    *   on failure to read the first line from the file.
    */
-  protected function getColsFromFile(string $file_path): array {
+  protected function getColsFromFile(string $file_path, string $delimiter): array {
+
     // Ensure the "auto_detect_line_endings" ini setting is enabled before
     // openning the file to ensure Mac style EOL characters are detected.
     $old_ini = ini_set('auto_detect_line_endings', '1');
@@ -100,7 +107,7 @@ class MysqlImport extends ImportJob {
     }
 
     // Attempt to retrieve the columns from the resource file.
-    $columns = fgetcsv($f);
+    $columns = fgetcsv($f, 0, $delimiter);
     // Attempt to read the column lines from the resource file.
     $end_pointer = ftell($f);
     rewind($f);
@@ -203,15 +210,17 @@ class MysqlImport extends ImportJob {
    *   End Of Line character for file importation.
    * @param int $header_line_count
    *   Number of lines occupied by the csv header row.
+   * @param string $delimiter
+   *   File delimiter.
    *
    * @return string
    *   Generated SQL file import statement.
    */
-  protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count): string {
+  protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count, string $delimiter): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
       'INTO TABLE ' . $tablename,
-      'FIELDS TERMINATED BY \',\'',
+      'FIELDS TERMINATED BY \'' . $delimiter . '\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',
       'LINES TERMINATED BY \'' . $eol . '\'',
