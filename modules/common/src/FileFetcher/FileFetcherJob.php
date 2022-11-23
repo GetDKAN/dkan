@@ -3,7 +3,6 @@
 namespace Drupal\common\FileFetcher;
 
 use Drupal\datastore\Exception\LocalizeException;
-use FileFetcher\Processor\LastResort;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 
@@ -27,7 +26,6 @@ class FileFetcherJob extends AbstractPersistentJob {
       'keep_original_filename' => $config['keep_original_filename'] ?? FALSE,
       'destination' => $config['filePath'],
       'temporary_directory' => $config['temporaryDirectory'],
-      'processor' => LastResort::class,
     ];
 
     $this->getResult()->setData(json_encode($state));

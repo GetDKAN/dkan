@@ -15,11 +15,10 @@ use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
+use Drupal\common\FileFetcher\FileFetcherJob;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
 use TypeError;
@@ -38,7 +37,7 @@ class ServiceTest extends TestCase {
     $chain = $this->getContainerChainForService('dkan.datastore.service')
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceLocalizer::class, 'getResult', Result::class)
-      ->add(FileFetcher::class, 'run', Result::class)
+      ->add(FileFetcherJob::class, 'run', Result::class)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "import", NULL)

@@ -12,7 +12,7 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
+use Drupal\common\FileFetcher\FileFetcherJob;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -69,7 +69,7 @@ class ResourceLocalizerTest extends TestCase {
       ->getMock();
 
     $fileFetcher = $this->getFileFetcherFactoryChain()
-      ->add(FileFetcher::class, 'getStateProperty', $file_path)
+      ->add(FileFetcherJob::class, 'getStateProperty', $file_path)
       ->getMock();
 
     $service = new ResourceLocalizer(
@@ -128,8 +128,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getFileFetcherFactoryChain() {
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', FileFetcher::class)
-      ->add(FileFetcher::class, 'getResult', Result::class)
+      ->add(JobStoreFactory::class, 'getInstance', FileFetcherJob::class)
+      ->add(FileFetcherJob::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE);
   }
 

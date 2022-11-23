@@ -9,9 +9,9 @@ use Drupal\Core\Database\Query\Update;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\StatementWrapper;
 use Drupal\common\Storage\JobStore;
+use Drupal\common\FileFetcher\FileFetcherJob;
 
 use Contracts\Mock\Storage\Memory;
-use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +30,7 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", FALSE);
 
-    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
+    $jobStore = new JobStore(FileFetcherJob::class, $chain->getMock());
     $this->assertTrue(is_object($jobStore));
   }
 
@@ -59,8 +59,8 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, 'query', StatementWrapper::class)
       ->add(StatementWrapper::class, 'fetchAll', $fieldInfo);
 
-    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
-    $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcher::class));
+    $jobStore = new JobStore(FileFetcherJob::class, $chain->getMock());
+    $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcherJob::class));
   }
 
   /**
@@ -90,7 +90,7 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, 'query', StatementWrapper::class)
       ->add(StatementWrapper::class, 'fetchAll', $sequence);
 
-    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
+    $jobStore = new JobStore(FileFetcherJob::class, $chain->getMock());
     $this->assertTrue(is_array($jobStore->retrieveAll()));
   }
 
@@ -127,7 +127,7 @@ class JobStoreTest extends TestCase {
       ->add(StatementWrapper::class, 'fetchAll', $fieldInfo)
       ->getMock();
 
-    $jobStore = new JobStore(FileFetcher::class, $connection);
+    $jobStore = new JobStore(FileFetcherJob::class, $connection);
 
     $this->assertEquals("1", $jobStore->store(json_encode($jobObject), "1"));
   }
@@ -151,16 +151,16 @@ class JobStoreTest extends TestCase {
       ->add(StatementWrapper::class, 'fetchAll', $fieldInfo)
       ->getMock();
 
-    $jobStore = new JobStore(FileFetcher::class, $connection);
+    $jobStore = new JobStore(FileFetcherJob::class, $connection);
 
-    $this->assertEquals("", $jobStore->remove("1", FileFetcher::class));
+    $this->assertEquals("", $jobStore->remove("1", FileFetcherJob::class));
   }
 
   /**
    * Private.
    */
   private function getFileFetcher() {
-    return FileFetcher::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../data/countries.csv"]);
+    return FileFetcherJob::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../data/countries.csv"]);
   }
 
 }
