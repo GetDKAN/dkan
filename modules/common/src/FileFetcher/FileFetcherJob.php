@@ -78,8 +78,6 @@ class FileFetcherJob extends AbstractPersistentJob {
   /**
    * Actually copy the file to disk.
    *
-   * @param array $state
-   *   State array.
    * @param \Procrastinator\Result $result
    *   Job result object.
    * @param int $timeLimit
@@ -90,7 +88,7 @@ class FileFetcherJob extends AbstractPersistentJob {
    *
    * @throws \Drupal\datastore\Exception\LocalizeException
    */
-  public function copy(array $state, Result $result, int $timeLimit = PHP_INT_MAX): array {
+  public function copy(array $state, Result $result): array {
     $bytesToRead = 10 * 1000 * 1000;
     $bytesCopied = 0;
 
