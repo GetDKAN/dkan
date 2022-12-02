@@ -64,7 +64,7 @@ The following are acceptable values:
 ### format
 This property is important for fields where you need to specify the format of the values. See [Types & Formats](https://specs.frictionlessdata.io/table-schema/#types-and-formats) for details.
 
-If your date values are not in ISO8601 format, use this property to define the format of your date values so that they will import into the datastore correctly. Month and day values must be zero-padded. See https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior to determine the pattern to use in your format property. For example, if your dates are in mm/dd/YYYY format, use "format": "%m/%d/%Y".
+If your date values are not in ISO8601 format, use this property to define the format being used so that the data will import into the datastore correctly. Month and day values must be zero-padded. Follow the date formatting syntax of C / Python [strftime](http://strftime.org/) to determine the pattern to use in your format property. For example, if your dates are in mm/dd/YYYY format, use "format": "%m/%d/%Y".
 
 ## Tutorial I: Catalog-wide data dictionary
 
