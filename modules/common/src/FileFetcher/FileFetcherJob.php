@@ -17,15 +17,17 @@ class FileFetcherJob extends AbstractPersistentJob {
   public function __construct(string $identifier, $storage, array $config = NULL) {
     parent::__construct($identifier, $storage, $config);
 
-    $config = $this->validateConfig($config);
+    if (!isset($config['filePath'])) {
+      throw new \Exception("Constructor missing expected config filePath.");
+    }
+
     $state = [
       'source' => $config['filePath'],
       'total_bytes' => 0,
       'total_bytes_copied' => 0,
       'temporary' => FALSE,
-      'keep_original_filename' => $config['keep_original_filename'] ?? FALSE,
       'destination' => $config['filePath'],
-      'temporary_directory' => $config['temporaryDirectory'],
+      'temporary_directory' => $config['temporaryDirectory'] ?? '/tmp',
     ];
 
     $this->getResult()->setData(json_encode($state));
@@ -40,28 +42,6 @@ class FileFetcherJob extends AbstractPersistentJob {
     $info = $this->copy($this->getState(), $this->getResult(), $this->getTimeLimit());
     $this->setState($info['state']);
     return $info['result'];
-  }
-
-  /**
-   * Validate configuration for localizer.
-   *
-   * @param mixed $config
-   *   Config array, must contain a filePath element.
-   *
-   * @return array
-   *   Validated configuration.
-   */
-  private function validateConfig($config): array {
-    if (!is_array($config)) {
-      throw new \Exception("Constructor missing expected config filePath.");
-    }
-    if (!isset($config['temporaryDirectory'])) {
-      $config['temporaryDirectory'] = "/tmp";
-    }
-    if (!isset($config['filePath'])) {
-      throw new \Exception("Constructor missing expected config filePath.");
-    }
-    return $config;
   }
 
   /**
@@ -91,58 +71,8 @@ class FileFetcherJob extends AbstractPersistentJob {
    *   Temporary file path.
    */
   private function getTemporaryFilePath(array $state): string {
-    if ($state['keep_original_filename']) {
-      return $this->getTemporaryFileOriginalName($state);
-    }
-    else {
-      return $this->getTemporaryFile($state);
-    }
-  }
-
-  /**
-   * Create a temporary path and filename based on original.
-   *
-   * @param array $state
-   *   State array.
-   *
-   * @return string
-   *   Temporary filename.
-   */
-  private function getTemporaryFileOriginalName(array $state): string {
     $file_name = basename($state['source']);
     return "{$state['temporary_directory']}/{$file_name}";
-  }
-
-  /**
-   * Get a temporary path and filename not strictly based on original.
-   *
-   * @param array $state
-   *   State array.
-   *
-   * @return string
-   *   Temporary file name with path.
-   */
-  private function getTemporaryFile(array $state): string {
-    $info = parse_url($state['source']);
-    $file_name = "";
-    if (isset($info["host"])) {
-      $file_name .= str_replace(".", "_", $info["host"]);
-    }
-    $file_name .= str_replace("/", "_", $info['path']);
-    return $state['temporary_directory'] . '/' . $this->sanitizeString($file_name);
-  }
-
-  /**
-   * Sanitize string, replacing non-alphanumeric characters with underscores.
-   *
-   * @param string $string
-   *   Incoming string.
-   *
-   * @return string
-   *   Sanitized string.
-   */
-  private function sanitizeString(string $string): string {
-    return preg_replace('~[^a-z0-9.]+~', '_', strtolower($string));
   }
 
   /**
@@ -161,20 +91,14 @@ class FileFetcherJob extends AbstractPersistentJob {
    * @throws \Drupal\datastore\Exception\LocalizeException
    */
   public function copy(array $state, Result $result, int $timeLimit = PHP_INT_MAX): array {
-    [$from, $to] = $this->validateAndGetInfoFromState($state);
     $bytesToRead = 10 * 1000 * 1000;
     $bytesCopied = 0;
 
-    $fin = $this->ensureExistsForReading($from);
-    $fout = $this->ensureCreatingForWriting($to);
+    $fin = $this->ensureExistsForReading($state['source']);
+    $fout = $this->ensureCreatingForWriting($state['destination']);
 
     while (!feof($fin)) {
-      $bytesCopied += $this->readAndWrite(
-        $fin,
-        $fout,
-        $bytesToRead,
-        $state
-      );
+      $bytesCopied += $this->readAndWrite($fin, $fout, $bytesToRead);
     }
 
     $result->setStatus(Result::DONE);
@@ -203,34 +127,10 @@ class FileFetcherJob extends AbstractPersistentJob {
    *
    * @throws \Drupal\datastore\Exception\LocalizeException
    */
-  private function readAndWrite($fin, $fout, int $bytesToRead, array $state): int {
-    [$from, $to] = $this->validateAndGetInfoFromState($state);
-
+  private function readAndWrite($fin, $fout, int $bytesToRead): int {
     $bytesRead = fread($fin, $bytesToRead);
-    if ($bytesRead === FALSE) {
-      throw new LocalizeException("reading from", $from);
-    }
     $bytesWritten = fwrite($fout, $bytesRead);
-    if ($bytesWritten === FALSE) {
-      throw new LocalizeException("writing to", $to);
-    }
     return $bytesWritten;
-  }
-
-  /**
-   * Validate state for presence of source and destination, return them.
-   *
-   * @param array $state
-   *   State array.
-   *
-   * @return array
-   *   Array of source and destination strings.
-   */
-  private function validateAndGetInfoFromState(array $state): array {
-    if (!isset($state['source']) && !isset($state['destination'])) {
-      throw new \Exception("Incorrect state missing source, destination, or both.");
-    }
-    return [$state['source'], $state['destination']];
   }
 
   /**
@@ -265,10 +165,6 @@ class FileFetcherJob extends AbstractPersistentJob {
       unlink($to);
     }
     $fout = fopen($to, "w");
-
-    if ($fout === FALSE) {
-      throw new LocalizeException("creating", $to);
-    }
 
     return $fout;
   }

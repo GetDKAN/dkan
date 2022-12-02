@@ -47,13 +47,6 @@ class ResourceLocalizer {
   private $fileMapper;
 
   /**
-   * DKAN resource file fetcher factory.
-   *
-   * @var \Contracts\FactoryInterface
-   */
-  private $fileFetcherFactory;
-
-  /**
    * Drupal files utility service.
    *
    * @var \Drupal\common\Util\DrupalFiles
@@ -70,9 +63,8 @@ class ResourceLocalizer {
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
+  public function __construct(ResourceMapper $fileMapper, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
     $this->fileMapper = $fileMapper;
-    $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
   }
@@ -179,7 +171,7 @@ class ResourceLocalizer {
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      $this->getJobStoreFactory()->getInstance(FileFetcherJob::class)->remove($uuid);
+      $this->jobStoreFactory->getInstance(FileFetcherJob::class)->remove($uuid);
     }
   }
 
@@ -201,7 +193,7 @@ class ResourceLocalizer {
       'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
-    return $this->fileFetcherFactory->getInstance($uuid, $config);
+    return FileFetcherJob::get($uuid, $this->jobStoreFactory->getInstance(FileFetcherJob::class), $config);
   }
 
   /**
@@ -209,13 +201,6 @@ class ResourceLocalizer {
    */
   private function getFileMapper(): ResourceMapper {
     return $this->fileMapper;
-  }
-
-  /**
-   * Private.
-   */
-  private function getJobStoreFactory() {
-    return $this->jobStoreFactory;
   }
 
   /**
