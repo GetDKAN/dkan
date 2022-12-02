@@ -3,7 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;

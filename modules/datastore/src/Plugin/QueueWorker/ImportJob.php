@@ -361,7 +361,7 @@ class ImportJob extends AbstractPersistentJob {
    * Verify headers are unique.
    *
    * @param array $header
-   *   List of strings
+   *   List of strings.
    *
    * @throws \Exception
    */

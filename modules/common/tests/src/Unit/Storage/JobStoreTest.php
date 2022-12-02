@@ -9,7 +9,7 @@ use Drupal\Core\Database\Query\Update;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\StatementWrapper;
 use Drupal\common\Storage\JobStore;
-use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 
 use Contracts\Mock\Storage\Memory;
 use MockChain\Chain;

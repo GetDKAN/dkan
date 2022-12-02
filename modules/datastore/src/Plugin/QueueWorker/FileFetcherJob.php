@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\FileFetcher;
+namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\datastore\Exception\LocalizeException;
 use Procrastinator\Job\AbstractPersistentJob;
@@ -78,10 +78,10 @@ class FileFetcherJob extends AbstractPersistentJob {
   /**
    * Actually copy the file to disk.
    *
+   * @param array $state
+   *   State array.
    * @param \Procrastinator\Result $result
    *   Job result object.
-   * @param int $timeLimit
-   *   Time limit for executing job.
    *
    * @return array
    *   Array with two elements: state and result.
@@ -117,8 +117,6 @@ class FileFetcherJob extends AbstractPersistentJob {
    *   Local file resource to write to.
    * @param int $bytesToRead
    *   How many bytes to read.
-   * @param array $state
-   *   Job state array.
    *
    * @return int
    *   Bytes written.

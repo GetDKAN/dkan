@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\FileFetcher;
+namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
-use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use Drupal\common\Storage\JobStore;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class FileFetcherJobTest extends TestCase {
     $jobStore = $this->getJobstore();
     $config = [
       'temporaryDirectory' => '/tmp',
-      'filePath' => __DIR__ . '/../../../files/tiny.csv',
+      'filePath' => __DIR__ . '/../../../../data/tiny.csv',
     ];
     $fetcher = new FileFetcherJob('abc', $jobStore, $config);
     $fetcher->run();
@@ -38,7 +38,7 @@ class FileFetcherJobTest extends TestCase {
     $jobStore = $this->getJobstore();
     $config = [
       'temporaryDirectory' => '/tmp',
-      'filePath' => __DIR__ . '/../../../files/missing.csv',
+      'filePath' => __DIR__ . '/../../../../data/missing.csv',
     ];
     $fetcher = new FileFetcherJob('abc', $jobStore, $config);
     $fetcher->run();
@@ -70,7 +70,7 @@ class FileFetcherJobTest extends TestCase {
     $jobStore = $this->getJobstore();
     $config = [
       'temporaryDirectory' => '/badTempDir',
-      'filePath' => __DIR__ . '/../../../files/tiny.csv',
+      'filePath' => __DIR__ . '/../../../../data/tiny.csv',
     ];
     $fetcher = new FileFetcherJob('abc', $jobStore, $config);
     $fetcher->run();

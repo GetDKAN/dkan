@@ -12,7 +12,7 @@ use Drupal\Core\Database\StatementWrapper;
 use MockChain\Chain;
 use MockChain\Sequence;
 use Drupal\common\Storage\JobStore;
-use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use PHPUnit\Framework\TestCase;
 
 /**

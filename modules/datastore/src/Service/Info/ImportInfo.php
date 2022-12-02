@@ -37,7 +37,7 @@ class ImportInfo {
   /**
    * FileFetcher service.
    *
-   * @var \Drupal\common\FileFetcher\FileFetcherJob
+   * @var \Drupal\datastore\Plugin\QueueWorker\FileFetcherJob
    */
   private $fileFetcher;
 

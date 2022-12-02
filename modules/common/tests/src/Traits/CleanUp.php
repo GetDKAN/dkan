@@ -3,7 +3,7 @@
 namespace Drupal\Tests\common\Traits;
 
 use Drupal\node\Entity\Node;
-use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 
 /**
  *

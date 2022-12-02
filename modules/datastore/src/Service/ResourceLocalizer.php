@@ -13,7 +13,7 @@ use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Procrastinator\Result;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 
 /**
  * Resource localizer.

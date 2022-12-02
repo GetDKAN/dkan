@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
