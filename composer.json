@@ -8,7 +8,7 @@
         "drupal/admin_toolbar": "^3",
         "drupal/config_update": "^1.6",
         "drupal/indexer": "1.0.x-dev",
-        "drupal/moderated_content_bulk_publish": "^2.0",
+        "drupal/moderated_content_bulk_publish": "2.0.x-dev#7f3061ea",
         "drupal/search_api": "^1.15",
         "drupal/select_or_other": "dev-4.x#ae0585ff8c",
         "drupal/select2": "^1.13",
