@@ -14,7 +14,7 @@ class FileFetcherJob extends AbstractPersistentJob {
   /**
    * Constructor.
    */
-  protected function __construct(string $identifier, $storage, array $config = NULL) {
+  public function __construct(string $identifier, $storage, array $config = NULL) {
     parent::__construct($identifier, $storage, $config);
 
     $config = $this->validateConfig($config);

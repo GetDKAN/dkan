@@ -2,22 +2,26 @@
 
 namespace Drupal\Tests\common\Unit\FileFetcher;
 
-use Contracts\Mock\Storage\Memory;
 use Drupal\common\FileFetcher\FileFetcherJob;
+use Drupal\common\Storage\JobStore;
+use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \Drupal\common\Storage\JobStore
- * @group datastore
+ * Test FileFetcherJob class.
  */
-class FileFetcherTest extends TestCase {
+class FileFetcherJobTest extends TestCase {
 
-  public function testCopyALocalFile() {
+  /**
+   * Test local file copy.
+   */
+  public function testCopyLocalFile() {
     $config = [
       'temporaryDirectory' => '/tmp',
-      'filePath' => __DIR__ . '/files/tiny.csv',
+      'filePath' => __DIR__ . '/../../../files/tiny.csv',
     ];
-    $fetcher = new FileFetcherJob('abc', [], $config);
+    $jobStore = $this->getJobstore();
+    $fetcher = new FileFetcherJob('abc', $jobStore, $config);
     $fetcher->run();
 
     // [Basic Usage]
@@ -30,85 +34,15 @@ class FileFetcherTest extends TestCase {
     );
   }
 
-  public function testKeepOriginalFilename()
-  {
-      $fetcher = FileFetcher::get(
-          "2",
-          new Memory(),
-          [
-              "filePath" => __DIR__ . '/files/tiny.csv',
-              "keep_original_filename" => true,
-              "processors" => [Local::class],
-          ]
-      );
+  /**
+   * Get a mock JobStore object.
+   */
+  protected function getJobstore() {
+    $chain = (new Chain($this))
+      ->add(JobStore::class, "setTable", TRUE)
+      ->add(JobStore::class, "store", "foo");
 
-      $fetcher->run();
-      $state = $fetcher->getState();
-
-      $this->assertEquals(
-          basename($state['source']),
-          basename($state['destination'])
-      );
+    return $chain->getMock();
   }
 
-  public function testConfigValidationErrorConfigurationMissing()
-  {
-      $this->expectExceptionMessage('Constructor missing expected config filePath.');
-      FileFetcher::get(
-          "2",
-          new Memory()
-      );
-  }
-
-  public function testConfigValidationErrorMissingFilePath()
-  {
-      $this->expectExceptionMessage('Constructor missing expected config filePath.');
-      FileFetcher::get(
-          "2",
-          new Memory(),
-          []
-      );
-  }
-
-  public function testCustomProcessorsValidationIsNotAnArray()
-  {
-      $fetcher = FileFetcher::get(
-          "2",
-          new Memory(),
-          [
-              "filePath" => __DIR__ . '/files/tiny.csv',
-              "processors" => "hello"
-          ]
-      );
-      // Not sure what to assert.
-      $this->assertTrue(true);
-  }
-
-  public function testCustomProcessorsValidationNotAClass()
-  {
-      $fetcher = FileFetcher::get(
-          "2",
-          new Memory(),
-          [
-              "filePath" => __DIR__ . '/files/tiny.csv',
-              "processors" => ["hello"]
-          ]
-      );
-      // Not sure what to assert.
-      $this->assertTrue(true);
-  }
-
-  public function testCustomProcessorsValidationImproperClass()
-  {
-      $fetcher = FileFetcher::get(
-          "2",
-          new Memory(),
-          [
-              "filePath" => __DIR__ . '/files/tiny.csv',
-              "processors" => [\SplFileInfo::class]
-          ]
-      );
-      // Not sure what to assert.
-      $this->assertTrue(true);
-  }
 }
