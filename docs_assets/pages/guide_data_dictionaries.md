@@ -17,9 +17,54 @@ In DKAN, data dictionaries are used as instructions for how to store the data in
 
 You can check how many jobs are in each queue by running `drush queue-list`. Be sure that cron is running often enough to process the jobs to completion.
 
+## Table Schema
 The structure of your data dictionary should follow [Frictionless Standards table schema](https://specs.frictionlessdata.io/table-schema/).
 
-The **name** and **type** properties are required. The **format** property is important for fields where you need to specify the format of the values. See [Types & Formats](https://specs.frictionlessdata.io/table-schema/#types-and-formats) for details.
+```json
+{
+  "title": "A human readable label",
+  "data": {
+   "fields": [
+    {
+      "name": "(REQUIRED) machine name of field (e.g. column name)",
+      "title": "(optional) A nicer human readable label or title for the field",
+      "type": "(REQUIRED) A string specifying the type",
+      "format": "(only required if NOT using default) A string specifying a format",
+      "description": "(optional) A description for the field"
+    },
+    ... more field descriptors
+   ],
+  }
+}
+
+```
+
+### name
+The "name" should match name of the column header. Spaces will be converted to underscores, uppercase will convert to lowercase, special characters will be dropped, and there is a 64 char limit, anything longer will be truncated and given a unique 4 digit hash at the end. It is the machine name that users will use when running queries on the datastore API so it is helpful to not use overly long name values.
+
+### type
+The following are acceptable values:
+
+| value | description |
+| - | - |
+| string | Value MUST be a string. |
+| number | Value MUST be a number, floating point numbers are allowed. Cannot contain non-numeric content other than "." |
+| integer | Value MUST be an integer, no floating point numbers are allowed. This is a subset of the number type. Cannot contain non-numeric content. |
+| boolean | Value MUST be a boolean. |
+| object | Value MUST be an object. |
+| array | Value MUST be an array. |
+| any | Value MAY be of any type including null. |
+| date | A date without a time, in ISO8601 format YYYY-MM-DD. |
+| time | A time without a date. |
+| datetime | A date with a time, in ISO8601 format YYYY-MM-DDThh:mm:ssZ in UTC time. |
+| year | A calendar year. |
+| yearmonth | A specific month in a specific year. |
+| duration | A duration of time. |
+
+### format
+This property is important for fields where you need to specify the format of the values. See [Types & Formats](https://specs.frictionlessdata.io/table-schema/#types-and-formats) for details.
+
+If your date values are not in ISO8601 format, use this property to define the format of your date values so that they will import into the datastore correctly. Month and day values must be zero-padded. See https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior to determine the pattern to use in your format property. For example, if your dates are in mm/dd/YYYY format, use "format": "%m/%d/%Y".
 
 ## Tutorial I: Catalog-wide data dictionary
 
