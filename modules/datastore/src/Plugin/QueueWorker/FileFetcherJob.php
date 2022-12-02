@@ -2,7 +2,6 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\datastore\Exception\LocalizeException;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 
@@ -85,8 +84,6 @@ class FileFetcherJob extends AbstractPersistentJob {
    *
    * @return array
    *   Array with two elements: state and result.
-   *
-   * @throws \Drupal\datastore\Exception\LocalizeException
    */
   public function copy(array $state, Result $result): array {
     $bytesToRead = 10 * 1000 * 1000;
@@ -120,8 +117,6 @@ class FileFetcherJob extends AbstractPersistentJob {
    *
    * @return int
    *   Bytes written.
-   *
-   * @throws \Drupal\datastore\Exception\LocalizeException
    */
   private function readAndWrite($fin, $fout, int $bytesToRead): int {
     $bytesRead = fread($fin, $bytesToRead);
@@ -141,7 +136,7 @@ class FileFetcherJob extends AbstractPersistentJob {
   private function ensureExistsForReading(string $from) {
     $fin = @fopen($from, "rb");
     if ($fin === FALSE) {
-      throw new LocalizeException("opening", $from);
+      throw new \Exception("Error opening file {$from}.");
     }
     return $fin;
   }
