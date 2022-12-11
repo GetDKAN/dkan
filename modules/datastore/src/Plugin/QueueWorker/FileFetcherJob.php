@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
+use GuzzleHttp\Client;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 
@@ -75,7 +76,7 @@ class FileFetcherJob extends AbstractPersistentJob {
   }
 
   /**
-   * Actually copy the file to disk.
+   * Copy the file to local storage.
    *
    * @param array $state
    *   State array.
@@ -86,59 +87,69 @@ class FileFetcherJob extends AbstractPersistentJob {
    *   Array with two elements: state and result.
    */
   public function copy(array $state, Result $result): array {
-    $bytesToRead = 10 * 1000 * 1000;
-    $bytesCopied = 0;
+    if (stream_is_local($state['source'])) {
+      return $this->copyLocal($state, $result);
+    }
+    else {
+      return $this->copyRemote($state, $result);
+    }
+  }
 
-    $fin = $this->ensureExistsForReading($state['source']);
-    $fout = $this->ensureCreatingForWriting($state['destination']);
-
-    while (!feof($fin)) {
-      $bytesCopied += $this->readAndWrite($fin, $fout, $bytesToRead);
+  /**
+   * Copy local file to proper local storage.
+   *
+   * @param array $state
+   *   State array.
+   * @param \Procrastinator\Result $result
+   *   Job result object.
+   *
+   * @return array
+   *   Array with two elements: state and result.
+   */
+  protected function copyLocal(array $state, Result $result): array {
+    try {
+      // $this->ensureCreatingForWriting($state['destination']);
+      if (copy($state['source'], $state['destination'])) {
+        $result->setStatus(Result::DONE);
+      }
+      else {
+        throw new \Exception("File copy failed.");
+      }
+    }
+    catch (\Exception $e) {
+      $result->setStatus(Result::ERROR);
+      $result->setError($e->getMessage());
     }
 
-    $result->setStatus(Result::DONE);
-    fclose($fin);
-    fclose($fout);
-    $state['total_bytes_copied'] = $bytesCopied;
-    $state['total_bytes'] = $bytesCopied;
-
+    $state['total_bytes_copied'] = $state['total_bytes'] = filesize($state['destination']);
     return ['state' => $state, 'result' => $result];
   }
 
   /**
-   * Read incoming data and write to disk.
+   * Copy remote file to local storage.
    *
-   * @param resource $fin
-   *   Incoming file resource/stream.
-   * @param resource $fout
-   *   Local file resource to write to.
-   * @param int $bytesToRead
-   *   How many bytes to read.
+   * @param array $state
+   *   State array.
+   * @param \Procrastinator\Result $result
+   *   Job result object.
    *
-   * @return int
-   *   Bytes written.
+   * @return array
+   *   Array with two elements: state and result.
    */
-  private function readAndWrite($fin, $fout, int $bytesToRead): int {
-    $bytesRead = fread($fin, $bytesToRead);
-    $bytesWritten = fwrite($fout, $bytesRead);
-    return $bytesWritten;
-  }
-
-  /**
-   * Ensure the target file can be read from.
-   *
-   * @param string $from
-   *   The target filename.
-   *
-   * @return false|resource
-   *   File resource.
-   */
-  private function ensureExistsForReading(string $from) {
-    $fin = @fopen($from, "rb");
-    if ($fin === FALSE) {
-      throw new \Exception("Error opening file {$from}.");
+  protected function copyRemote(array $state, Result $result): array {
+    $client = new Client();
+    try {
+      $fout = $this->ensureCreatingForWriting($state['destination']);
+      $client->get($state['source'], ['sink' => $fout]);
+      $result->setStatus(Result::DONE);
     }
-    return $fin;
+    catch (\Exception $e) {
+      $result->setStatus(Result::ERROR);
+      $result->setError($e->getMessage());
+    }
+
+    $state['total_bytes_copied'] = $state['total_bytes'] = filesize($state['destination']);
+    return ['state' => $state, 'result' => $result];
   }
 
   /**
@@ -156,7 +167,6 @@ class FileFetcherJob extends AbstractPersistentJob {
       unlink($to);
     }
     $fout = fopen($to, "w");
-
     return $fout;
   }
 
