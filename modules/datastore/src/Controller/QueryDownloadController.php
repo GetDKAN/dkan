@@ -64,10 +64,8 @@ class QueryDownloadController extends AbstractQueryController {
    */
   protected function streamCsvResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $response = $this->initStreamedCsvResponse();
-    // Getting the resource id to be used for getting the data dictionary (DD).
-    $resource_id = $result->{"$.query.resources.0.id"};
 
-    $response->setCallback(function () use ($result, $datastoreQuery, $resource_id) {
+    $response->setCallback(function () use ($result, $datastoreQuery) {
       // Open the stream and send the header.
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
@@ -76,100 +74,20 @@ class QueryDownloadController extends AbstractQueryController {
       try {
         // Send the header row.
         $this->sendRow($handle, $this->getHeaderRow($result));
+
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE);
-        $this->getData($handle, $result, $resource_id);
-
+        while ($row = $result->fetchAssoc()) {
+          $this->sendRow($handle, array_values($row));
+        }
       }
       catch (\Exception $e) {
         $this->sendRow($handle, [$e->getMessage()]);
       }
+
       fclose($handle);
     });
     return $response;
-  }
-
-  /**
-   * Return formatted date value.
-   *
-   *  {@inheritdoc}
-   */
-  private function getData($handle, $result, $resource_id) {
-
-    // Get the DD definition to get the original date format.
-    $data_dictionary_fields = $this->returnDataDictionaryFields($resource_id);
-    while ($row = $result->fetchAssoc()) {
-      if ($data_dictionary_fields) {
-        $formated_data = $this->returnFormattedData($data_dictionary_fields, $row);
-        // Send the updated array to the csv file.
-        $this->sendRow($handle, $formated_data);
-      }
-      else {
-        $this->sendRow($handle, array_values($row));
-      }
-
-    }
-  }
-
-  /**
-   * Return formatted date value.
-   *
-   *  {@inheritdoc}
-   */
-  private function returnFormattedData($data_dictionary_fields, $row) {
-    $formated_data = [];
-    foreach ($row as $key => $value) {
-      $field_definition = $this->returnFieldDefinition($data_dictionary_fields, $key);
-      // Get the field definition from the DD.
-      // Do something if the field is a date field and isn't empty.
-      if ($field_definition['type'] == 'date' && !empty($value)) {
-        // Format the date.
-        $newDate = str_replace('%', '', date($field_definition['format'], strtotime($value)));
-        // Return the new date in the array.
-        $formated_data[] = strval($newDate);
-      }
-      else {
-        // It's not a date so return the original value.
-        $formated_data[] = $value;
-      }
-    }
-    return $formated_data;
-
-  }
-
-  /**
-   * Create initial streamed response object.
-   *
-   *  {@inheritdoc}
-   */
-  private function returnDataDictionaryFields($resource_id) {
-    // Get DD is mode.
-    $dd_mode = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getDataDictionaryMode();
-    // Get data dictionary info.
-    if ($dd_mode != "none") {
-      $dict_id = \Drupal::service('dkan.metastore.data_dictionary_discovery')->dictionaryIdFromResource($resource_id);
-      $metaData = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
-      return $metaData;
-    }
-    else {
-      return NULL;
-    }
-
-  }
-
-  /**
-   * Create initial streamed response object.
-   *
-   * @return array
-   *   Array of data dictionary definition
-   */
-  private function returnFieldDefinition($dataDictionaryFields, $field) {
-    // Get data dictionary info.
-    foreach ($dataDictionaryFields as $definition) {
-      if ($field == $definition['name']) {
-        return $definition;
-      }
-    }
   }
 
   /**
