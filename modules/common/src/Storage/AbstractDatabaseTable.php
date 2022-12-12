@@ -23,13 +23,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   protected $schema;
 
   /**
-   * The resource ID if the dataset
-   *
-   * @var array
-   */
-  protected $resource_id;
-
-  /**
    * Drupal DB connection object.
    *
    * @var \Drupal\Core\Database\Connection
@@ -246,12 +239,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   public function query(Query $query, string $alias = 't', $fetch = TRUE) {
     $this->setTable();
     $query->collection = $this->getTableName();
-    $this->resource_id = isset($query->conditions[0]->value) ?? $query->conditions[0]->value ;
+    $this->resource_id = isset($query->conditions[0]->value) ?? $query->conditions[0]->value;
     $selectFactory = new SelectFactory($this->connection, $alias);
     $db_query = $selectFactory->create($query);
-    if($query->collection !== 'dkan_metastore_resource_mapper'){
+    if ($query->collection !== 'dkan_metastore_resource_mapper') {
       $fields = $db_query->getFields();
-      $resource_id =  str_replace("datastore_", "", $query->collection);
+      $resource_id = str_replace("datastore_", "", $query->collection);
       $date_fields = $this->returnDataDictionaryDateFields($resource_id);
       $this->addDateExpressions($db_query, $fields, $date_fields);
     }
@@ -271,7 +264,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    *  {@inheritdoc}
    */
-  private function addDateExpressions($db_query, $fields, $date_fields){
+  private function addDateExpressions ($db_query, $fields, $date_fields) {
     if ($fields && $date_fields) {
       foreach ($date_fields as $definition) {
         if (isset($fields[$definition['name']])) {
@@ -287,14 +280,14 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    *  {@inheritdoc}
    */
-  private function returnDataDictionaryDateFields($resource_id) {
+  private function returnDataDictionaryDateFields ($resource_id) {
     // Get DD is mode.
     $dd_mode = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getDataDictionaryMode();
     // Get data dictionary info.
     if ($dd_mode != "none") {
       $dateFields = [];
-      $dict_id = $resource_id ? \Drupal::service('dkan.metastore.data_dictionary_discovery')->dictionaryIdFromResource($resource_id) : null;
-      $metaData = $dict_id ? \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"} : null;
+      $dict_id = $resource_id ? \Drupal::service('dkan.metastore.data_dictionary_discovery')->dictionaryIdFromResource($resource_id) : NULL;
+      $metaData = $dict_id ? \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"} : NULL;
       foreach ($metaData as $definition) {
         if ($definition['type'] == 'date') {
           $dateFields[] = $definition;
