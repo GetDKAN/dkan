@@ -246,7 +246,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       $fields = $db_query->getFields();
       $resource_id = str_replace("datastore_", "", $query->collection);
       $date_fields = $this->returnDataDictionaryDateFields($resource_id);
-      $this->addDateExpressions($db_query, $fields, $date_fields);
+      if ($fields && $date_fields) {
+      foreach ($date_fields as $definition) {
+        if (isset($fields[$definition['name']])) {
+          $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
+        }
+      }
+    }
     }
 
     try {
@@ -264,30 +270,22 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    *  {@inheritdoc}
    */
-  private function addDateExpressions ($db_query, $fields, $date_fields) {
-    if ($fields && $date_fields) {
-      foreach ($date_fields as $definition) {
-        if (isset($fields[$definition['name']])) {
-          $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
-        }
+ /* private function addDateExpressions($db_query, $fields, $date_fields) {
 
-      }
-    }
-  }
+  }*/
 
   /**
    * Returning data dictionary fields from schema.
    *
    *  {@inheritdoc}
    */
-  private function returnDataDictionaryDateFields ($resource_id) {
+  private function returnDataDictionaryDateFields() {
     // Get DD is mode.
     $dd_mode = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getDataDictionaryMode();
     // Get data dictionary info.
-    if ($dd_mode != "none") {
-      $dateFields = [];
-      $dict_id = $resource_id ? \Drupal::service('dkan.metastore.data_dictionary_discovery')->dictionaryIdFromResource($resource_id) : NULL;
-      $metaData = $dict_id ? \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"} : NULL;
+    if ($dd_mode == "sitewide") {
+      $dict_id = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getSitewideDictionaryId();
+      $metaData =  \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
       foreach ($metaData as $definition) {
         if ($definition['type'] == 'date') {
           $dateFields[] = $definition;
@@ -295,10 +293,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       }
       return $dateFields;
     }
-    else {
-      return NULL;
-    }
-
   }
 
   /**
@@ -466,5 +460,4 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $md5 = md5($field);
     return substr($md5, 0, 4);
   }
-
 }
