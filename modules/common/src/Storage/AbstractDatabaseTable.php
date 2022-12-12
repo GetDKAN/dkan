@@ -245,14 +245,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     if ($query->collection !== 'dkan_metastore_resource_mapper') {
       $fields = $db_query->getFields();
       $resource_id = str_replace("datastore_", "", $query->collection);
-      $date_fields = $this->returnDataDictionaryDateFields($resource_id);
-      if ($fields && $date_fields) {
-      foreach ($date_fields as $definition) {
-        if (isset($fields[$definition['name']])) {
-          $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
-        }
+      $meta_data = $this->returnDataDictionaryDateFields($resource_id);
+      if ($meta_data) {
+        $this->addDateExpressions($db_query, $fields, $meta_data);
       }
-    }
     }
 
     try {
@@ -270,9 +266,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    *  {@inheritdoc}
    */
- /* private function addDateExpressions($db_query, $fields, $date_fields) {
-
-  }*/
+  private function addDateExpressions($db_query, $fields, $meta_data) {
+    foreach ($meta_data as $definition) {
+      if (isset($fields[$definition['name']]) && $definition['type'] == 'date') {
+        $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
+      }
+    }
+  }
 
   /**
    * Returning data dictionary fields from schema.
@@ -285,13 +285,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     // Get data dictionary info.
     if ($dd_mode == "sitewide") {
       $dict_id = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getSitewideDictionaryId();
-      $metaData =  \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
-      foreach ($metaData as $definition) {
-        if ($definition['type'] == 'date') {
-          $dateFields[] = $definition;
-        }
-      }
-      return $dateFields;
+      $metaData = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
+      return $metaData;
     }
   }
 
@@ -460,4 +455,5 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $md5 = md5($field);
     return substr($md5, 0, 4);
   }
+
 }
