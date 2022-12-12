@@ -107,20 +107,13 @@ class FileFetcherJob extends AbstractPersistentJob {
    *   Array with two elements: state and result.
    */
   protected function copyLocal(array $state, Result $result): array {
-    try {
-      // $this->ensureCreatingForWriting($state['destination']);
-      if (copy($state['source'], $state['destination'])) {
-        $result->setStatus(Result::DONE);
-      }
-      else {
-        throw new \Exception("File copy failed.");
-      }
+    $this->ensureCreatingForWriting($state['destination']);
+    if (copy($state['source'], $state['destination'])) {
+      $result->setStatus(Result::DONE);
     }
-    catch (\Exception $e) {
-      $result->setStatus(Result::ERROR);
-      $result->setError($e->getMessage());
+    else {
+      throw new \Exception("File copy failed.");
     }
-
     $state['total_bytes_copied'] = $state['total_bytes'] = filesize($state['destination']);
     return ['state' => $state, 'result' => $result];
   }

@@ -67,7 +67,6 @@ class FileFetcherJobTest extends TestCase {
    * Test bad destination.
    */
   public function testBadDestinationPath() {
-    $this->markTestSkipped('Work in progress');
     $jobStore = $this->getJobstore();
     $config = [
       'temporaryDirectory' => '/badTempDir',
