@@ -58,10 +58,7 @@ class MysqlImport extends ImportJob {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
-    // @todo Find a better way to ensure creation of datastore tables.
-    $this->dataStorage->innodbStrictMode(FALSE);
     $this->dataStorage->count();
-    $this->dataStorage->innodbStrictMode(TRUE);
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
