@@ -17,7 +17,6 @@ services:
     class: \Drupal\datastore\Service\ResourceLocalizer
     arguments:
       - '@dkan.metastore.resource_mapper'
-      - '@dkan.common.file_fetcher'
       - '@dkan.common.drupal_files'
       - '@dkan.common.job_store'
 

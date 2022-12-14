@@ -24,11 +24,6 @@ services:
     factory: entity_type.manager:getStorage
     arguments: ['node']
 
-  dkan.common.file_fetcher:
-    class: \Drupal\common\FileFetcher\Factory
-    arguments:
-      - '@dkan.common.job_store'
-
   dkan.common.dataset_info:
     class: \Drupal\common\DatasetInfo
     calls:

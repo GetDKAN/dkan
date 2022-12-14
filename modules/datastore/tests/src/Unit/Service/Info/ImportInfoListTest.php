@@ -7,7 +7,7 @@ use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\Info\ImportInfoList;
-use FileFetcher\FileFetcher;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Container;
 class ImportInfoListTest extends TestCase {
   public function test() {
 
-    $ff = FileFetcher::hydrate('{}');
+    $ff = FileFetcherJob::hydrate('{}');
 
     $result = Result::hydrate('{"status":"error","data":"","error":"File import error"}');
 

@@ -12,7 +12,7 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
+use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +40,6 @@ class ResourceLocalizerTest extends TestCase {
 
     $service = new ResourceLocalizer(
       $this->getFileMapperChain()->getMock(),
-      $this->getFileFetcherFactoryChain()->getMock(),
       $this->getDrupalFilesChain()->getMock(),
       $this->getJobStoreFactoryChain()->getMock()
     );
@@ -68,13 +67,8 @@ class ResourceLocalizerTest extends TestCase {
       ->add(ResourceMapper::class, 'get', $resource)
       ->getMock();
 
-    $fileFetcher = $this->getFileFetcherFactoryChain()
-      ->add(FileFetcher::class, 'getStateProperty', $file_path)
-      ->getMock();
-
     $service = new ResourceLocalizer(
       $fileMapper,
-      $fileFetcher,
       $this->getDrupalFilesChain()->getMock(),
       $this->getJobStoreFactoryChain()->getMock()
     );
@@ -126,16 +120,6 @@ class ResourceLocalizerTest extends TestCase {
   /**
    *
    */
-  private function getFileFetcherFactoryChain() {
-    return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', FileFetcher::class)
-      ->add(FileFetcher::class, 'getResult', Result::class)
-      ->add(Result::class, 'getStatus', Result::DONE);
-  }
-
-  /**
-   *
-   */
   private function getDrupalFilesChain() {
     return (new Chain($this))
       ->add(DrupalFiles::class, 'getFileSystem', FileSystem::class)
@@ -151,7 +135,11 @@ class ResourceLocalizerTest extends TestCase {
   private function getJobStoreFactoryChain() {
     return (new Chain($this))
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', NULL);
+      ->add(JobStore::class, 'remove', NULL)
+      ->add(JobStore::class, 'tableExist', FALSE)
+      ->add(JobStore::class, 'setTable', TRUE)
+      ->add(JobStore::class, 'retrieve', [])
+      ->add(JobStore::class, 'store', "abc");
   }
 
   /**
