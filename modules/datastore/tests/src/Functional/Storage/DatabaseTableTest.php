@@ -25,13 +25,13 @@ class DatabaseTableTest extends ExistingSiteBase {
     $connection = \Drupal::service('dkan.datastore.database');
     $result = $connection->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
     $this->assertEquals($result->Value, "ON");
-
+    
     $resource = new DatastoreResource('123', '/tmp', 'text/csv');
-
+    
     $databaseTable = new DatabaseTable($connection, $resource);
-    $databaseTable->innodbStrictMode(FALSE);
 
-    $result = $connection->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
+    $databaseTable->innodbStrictMode(FALSE);
+    $result = $databaseTable->getConnection()->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
     $this->assertEquals($result->Value, "OFF");
 
     // Other database connection not affected.

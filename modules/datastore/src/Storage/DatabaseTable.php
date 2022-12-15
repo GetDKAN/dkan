@@ -306,4 +306,8 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     ];
   }
 
+  public function getConnection(): Connection {
+    return $this->connection;
+  }
+
 }
