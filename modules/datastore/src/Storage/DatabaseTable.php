@@ -3,6 +3,7 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Driver\mysql\Connection as MysqlConnection;
 use Drupal\datastore\DatastoreResource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
@@ -196,6 +197,46 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $this->addIndexInfo($schema);
 
     return $schema;
+  }
+
+  /**
+   * Create a table given a name and schema.
+   */
+  protected function tableCreate($table_name, $schema) {
+    // Set strict_mode to OFF to ensure table creation.
+    $orig_mode = $this->getInnodbStrictMode();
+    $this->innodbStrictMode(FALSE);
+    parent::tableCreate($table_name, $schema);
+    // Set it back.
+    $this->innodbStrictMode($orig_mode);
+  }
+
+  /**
+   * Disable/enable InnoDB strict mode for the given database connection.
+   *
+   * @param bool $on
+   *   Whether strict mode should be "ON" or "OFF".
+   */
+  public function innodbStrictMode(bool $on) {
+    $value = $on ? "ON" : "OFF";
+    // Only if we're using MySQL.
+    if ($this->connection instanceof MysqlConnection) {
+      $this->connection->query("SET SESSION innodb_strict_mode=:value", [':value' => $value]);
+    }
+  }
+
+  /**
+   * Get current value of innodb_strict_mode.
+   *
+   * @return bool
+   *   Whether strict mode is be "ON" or "OFF".
+   */
+  public function getInnodbStrictMode() {
+    // Only if we're using MySQL.
+    if ($this->connection instanceof MysqlConnection) {
+      $result = $this->connection->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
+      return (isset($result->Value) && $result->Value == "ON") ? TRUE : FALSE;
+    }
   }
 
   /**
