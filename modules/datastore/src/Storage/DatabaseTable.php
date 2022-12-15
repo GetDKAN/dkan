@@ -237,6 +237,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       $result = $this->connection->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
       return (isset($result->Value) && $result->Value == "ON") ? TRUE : FALSE;
     }
+    return FALSE;
   }
 
   /**
