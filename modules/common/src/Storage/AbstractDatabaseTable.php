@@ -239,17 +239,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   public function query(Query $query, string $alias = 't', $fetch = TRUE) {
     $this->setTable();
     $query->collection = $this->getTableName();
-    $this->resource_id = isset($query->conditions[0]->value) ?? $query->conditions[0]->value;
     $selectFactory = new SelectFactory($this->connection, $alias);
     $db_query = $selectFactory->create($query);
-    if ($query->collection !== 'dkan_metastore_resource_mapper') {
-      $fields = $db_query->getFields();
-      $resource_id = str_replace("datastore_", "", $query->collection);
-      $meta_data = $this->returnDataDictionaryDateFields($resource_id);
-      if ($meta_data) {
-        $this->addDateExpressions($db_query, $fields, $meta_data);
-      }
-    }
 
     try {
       $result = $db_query->execute();
@@ -259,35 +250,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     }
 
     return $fetch ? $result->fetchAll() : $result;
-  }
-
-  /**
-   * Reformatting date fields.
-   *
-   *  {@inheritdoc}
-   */
-  private function addDateExpressions($db_query, $fields, $meta_data) {
-    foreach ($meta_data as $definition) {
-      if (isset($fields[$definition['name']]) && $definition['type'] == 'date') {
-        $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
-      }
-    }
-  }
-
-  /**
-   * Returning data dictionary fields from schema.
-   *
-   *  {@inheritdoc}
-   */
-  private function returnDataDictionaryDateFields() {
-    // Get DD is mode.
-    $dd_mode = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getDataDictionaryMode();
-    // Get data dictionary info.
-    if ($dd_mode == "sitewide") {
-      $dict_id = \Drupal::service('dkan.metastore.data_dictionary_discovery')->getSitewideDictionaryId();
-      $metaData = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $dict_id)->{"$.data.fields"};
-      return $metaData;
-    }
   }
 
   /**

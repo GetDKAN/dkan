@@ -4,6 +4,9 @@ namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Connection;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\metastore\Service;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Class to convert a DKAN Query object into a Drupal DB API Select Object.
@@ -23,6 +26,20 @@ class SelectFactory {
    * @var string
    */
   private $alias;
+
+  /**
+   * Data dictionary discovery service.
+   *
+   * @var \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
+   */
+  protected $dataDictionaryDiscovery;
+
+  /**
+   * The metastore service.
+   *
+   * @var \Drupal\metastore\Service
+   */
+  protected $metastore;
 
   /**
    * Our select object.
@@ -45,8 +62,15 @@ class SelectFactory {
    *   A database table object, which includes a database connection.
    * @param string $alias
    *   Alias for primary table.
+   * @param \Drupal\metastore\Service $metastore
+   *   The metastore service.
+   * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscovery $data_dictionary_discovery
+   *   The data-dictionary discovery service.
    */
-  public function __construct(Connection $connection, string $alias = 't') {
+  public function __construct(
+    Connection $connection,
+    string $alias = 't'
+  ) {
     $this->connection = $connection;
     $this->alias = $alias;
   }
@@ -58,8 +82,8 @@ class SelectFactory {
    *   DKAN Query object.
    */
   public function create(Query $query): Select {
-    $this->dbQuery = $this->connection->select($query->collection, $this->alias);
 
+    $this->dbQuery = $this->connection->select($query->collection, $this->alias);
     $this->setQueryProperties($query);
     $this->setQueryConditions($query);
     $this->setQueryGroupBy($query);
@@ -71,6 +95,16 @@ class SelectFactory {
     if ($query->count) {
       $this->dbQuery = $this->dbQuery->countQuery();
     }
+
+    if ($query->collection !== 'dkan_metastore_resource_mapper') {
+      $fields = $this->dbQuery->getFields();
+      $resource_id = str_replace("datastore_", "", $query->collection);
+      $meta_data = $this->returnDataDictionaryDateFields($resource_id);
+      if ($meta_data) {
+        $this->addDateExpressions($this->dbQuery, $fields, $meta_data);
+      }
+    }
+
     return $this->dbQuery;
   }
 
@@ -81,9 +115,12 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private function setQueryProperties(Query $query) {
+
+
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
       $this->dbQuery->fields($this->alias);
+
       return;
     }
 
@@ -93,12 +130,43 @@ class SelectFactory {
   }
 
   /**
+   * Reformatting date fields.
+   *
+   *  {@inheritdoc}
+   */
+  private function addDateExpressions($db_query, $fields, $meta_data) {
+    foreach ($meta_data as $definition) {
+      if (isset($fields[$definition['name']]) && $definition['type'] == 'date') {
+        $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
+      }
+    }
+  }
+
+  /**
+   * Returning data dictionary fields from schema.
+   *
+   *  {@inheritdoc}
+   */
+  private function returnDataDictionaryDateFields() {
+    //$dataDictionaryDiscovery = new DataDictionaryDiscovery();
+    // Get DD is mode.
+    $dd_mode = DataDictionaryDiscovery::getDataDictionaryMode();
+    // Get data dictionary info.
+    if ($dd_mode == "sitewide") {
+      $dict_id = $dataDictionaryDiscovery->getSitewideDictionaryId();
+      $metaData = Service::get('data-dictionary', $dict_id)->{"$.data.fields"};
+      return $metaData;
+    }
+  }
+
+  /**
    * Set a single property.
    *
    * @param mixed $property
    *   One property from a query properties array.
    */
-  private function setQueryProperty($property) {
+  private function setQueryProperty($property)  {
+
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);
       $this->dbQuery->addExpression($expressionStr, $property->alias);
