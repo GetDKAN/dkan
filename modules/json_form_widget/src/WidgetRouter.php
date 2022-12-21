@@ -179,6 +179,9 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
       $element['#input_type'] = isset($spec->other_type) ? $spec->other_type : 'textfield';
     }
+    if (!isset($element['#other_option'])) {
+      $element['#other_option'] = '';
+    }
     if ($element['#type'] === 'select2') {
       $element['#multiple'] = isset($spec->multiple) ? TRUE : FALSE;
       $element['#autocreate'] = isset($spec->allowCreate) ? TRUE : FALSE;
