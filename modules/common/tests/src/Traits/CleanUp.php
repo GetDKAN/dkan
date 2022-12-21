@@ -3,7 +3,7 @@
 namespace Drupal\Tests\common\Traits;
 
 use Drupal\node\Entity\Node;
-use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
+use FileFetcher\FileFetcher;
 
 /**
  *
@@ -50,7 +50,7 @@ trait CleanUp {
     $jobStoreFactory = \Drupal::service('dkan.common.job_store');
 
     /** @var \Drupal\common\Storage\JobStore $jobStore */
-    $jobStore = $jobStoreFactory->getInstance(FileFetcherJob::class);
+    $jobStore = $jobStoreFactory->getInstance(FileFetcher::class);
     foreach ($jobStore->retrieveAll() as $id) {
       $jobStore->remove($id);
     }

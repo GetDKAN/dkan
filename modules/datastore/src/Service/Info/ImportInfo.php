@@ -6,6 +6,7 @@ use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
+use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
 
 /**
@@ -37,7 +38,7 @@ class ImportInfo {
   /**
    * FileFetcher service.
    *
-   * @var \Drupal\datastore\Plugin\QueueWorker\FileFetcherJob
+   * @var \FileFetcher\FileFetcher
    */
   private $fileFetcher;
 

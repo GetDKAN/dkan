@@ -7,13 +7,14 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
+use Contracts\FactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
+use FileFetcher\FileFetcher;
 use Procrastinator\Result;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 
 /**
  * Resource localizer.
@@ -46,6 +47,13 @@ class ResourceLocalizer {
   private $fileMapper;
 
   /**
+   * DKAN resource file fetcher factory.
+   *
+   * @var \Contracts\FactoryInterface
+   */
+  private $fileFetcherFactory;
+
+  /**
    * Drupal files utility service.
    *
    * @var \Drupal\common\Util\DrupalFiles
@@ -62,8 +70,9 @@ class ResourceLocalizer {
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
+  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
     $this->fileMapper = $fileMapper;
+    $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
   }
@@ -105,7 +114,7 @@ class ResourceLocalizer {
   /**
    * Private.
    */
-  private function registerNewPerspectives(DataResource $resource, FileFetcherJob $fileFetcher) {
+  private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
     $dir = "file://" . $this->drupalFiles->getPublicFilesDirectory();
@@ -170,7 +179,7 @@ class ResourceLocalizer {
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      $this->jobStoreFactory->getInstance(FileFetcherJob::class)->remove($uuid);
+      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
     }
   }
 
@@ -184,7 +193,7 @@ class ResourceLocalizer {
   /**
    * Get FileFetcher.
    */
-  public function getFileFetcher(DataResource $resource): FileFetcherJob {
+  public function getFileFetcher(DataResource $resource): FileFetcher {
     $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
     $directory = "public://resources/{$uuid}";
     $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
@@ -192,7 +201,7 @@ class ResourceLocalizer {
       'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
-    return FileFetcherJob::get($uuid, $this->jobStoreFactory->getInstance(FileFetcherJob::class), $config);
+    return $this->fileFetcherFactory->getInstance($uuid, $config);
   }
 
   /**
@@ -200,6 +209,13 @@ class ResourceLocalizer {
    */
   private function getFileMapper(): ResourceMapper {
     return $this->fileMapper;
+  }
+
+  /**
+   * Private.
+   */
+  private function getJobStoreFactory() {
+    return $this->jobStoreFactory;
   }
 
   /**

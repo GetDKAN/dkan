@@ -14,6 +14,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\TypedData\TypedDataInterface;
 use Drupal\datastore\Service\Service;
 use Drupal\node\NodeInterface;
+use FileFetcher\Processor\Local;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -37,6 +38,7 @@ class Container {
     $fileFetcherContent = file_get_contents(__DIR__ . '/../../../data/filefetcher.json');
     $fileFetcherObject = json_decode($fileFetcherContent);
     $data = json_decode($fileFetcherObject->result->data);
+    $data->processor = Local::class;
     $fileFetcherObject->result->data = json_encode($data);
 
     $this->jobStoreData = (object) [

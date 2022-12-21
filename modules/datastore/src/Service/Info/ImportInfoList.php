@@ -2,9 +2,9 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use FileFetcher\FileFetcher;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -58,7 +58,7 @@ class ImportInfoList implements ContainerInjectionInterface {
   public function buildList() {
     $list = [];
 
-    $store = $this->jobStoreFactory->getInstance(FileFetcherJob::class);
+    $store = $this->jobStoreFactory->getInstance(FileFetcher::class);
 
     foreach ($store->retrieveAll() as $id) {
       $pieces = explode("_", $id);
