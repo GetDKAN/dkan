@@ -12,7 +12,7 @@ use Drupal\Core\Database\StatementWrapper;
 use MockChain\Chain;
 use MockChain\Sequence;
 use Drupal\common\Storage\JobStore;
-use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
+use FileFetcher\FileFetcher;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,7 +29,7 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", FALSE);
 
-    $jobStore = new JobStore(FileFetcherJob::class, $chain->getMock());
+    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
     $this->assertTrue(is_object($jobStore));
   }
 
@@ -58,8 +58,8 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, 'query', StatementWrapper::class)
       ->add(StatementWrapper::class, 'fetchAll', $fieldInfo);
 
-    $jobStore = new JobStore(FileFetcherJob::class, $chain->getMock());
-    $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcherJob::class));
+    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
+    $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcher::class));
   }
 
   /**
@@ -89,7 +89,7 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, 'query', StatementWrapper::class)
       ->add(StatementWrapper::class, 'fetchAll', $sequence);
 
-    $jobStore = new JobStore(FileFetcherJob::class, $chain->getMock());
+    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
     $this->assertTrue(is_array($jobStore->retrieveAll()));
   }
 
@@ -126,7 +126,7 @@ class JobStoreTest extends TestCase {
       ->add(StatementWrapper::class, 'fetchAll', $fieldInfo)
       ->getMock();
 
-    $jobStore = new JobStore(FileFetcherJob::class, $connection);
+    $jobStore = new JobStore(FileFetcher::class, $connection);
 
     $this->assertEquals("1", $jobStore->store(json_encode($jobObject), "1"));
   }
@@ -150,16 +150,16 @@ class JobStoreTest extends TestCase {
       ->add(StatementWrapper::class, 'fetchAll', $fieldInfo)
       ->getMock();
 
-    $jobStore = new JobStore(FileFetcherJob::class, $connection);
+    $jobStore = new JobStore(FileFetcher::class, $connection);
 
-    $this->assertEquals("", $jobStore->remove("1", FileFetcherJob::class));
+    $this->assertEquals("", $jobStore->remove("1", FileFetcher::class));
   }
 
   /**
    * Private.
    */
   private function getFileFetcher() {
-    return FileFetcherJob::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../data/countries.csv"]);
+    return FileFetcher::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../data/countries.csv"]);
   }
 
 }

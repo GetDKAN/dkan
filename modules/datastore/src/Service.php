@@ -3,7 +3,6 @@
 namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
-use Drupal\datastore\Plugin\QueueWorker\FileFetcherJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -13,6 +12,7 @@ use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\Info\ImportInfoList;
+use FileFetcher\FileFetcher;
 
 /**
  * Main services for the datastore.
@@ -32,13 +32,6 @@ class Service implements ContainerInjectionInterface {
    * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
    */
   private $importServiceFactory;
-
-  /**
-   * Import info list service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
-   */
-  private ImportInfoList $importInfoList;
 
   /**
    * Drupal queue.
@@ -211,7 +204,7 @@ class Service implements ContainerInjectionInterface {
     if ($local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
       $this->jobStoreFactory
-        ->getInstance(FileFetcherJob::class)
+        ->getInstance(FileFetcher::class)
         ->remove(substr(str_replace('__', '_', $resource_id), 0, -11));
     }
   }
