@@ -137,7 +137,6 @@ class ValueHandler {
         $data = array_merge($data, $this->flattenArraysInArrays($value));
       }
     }
-
     return !empty($data) ? $data : FALSE;
   }
 
