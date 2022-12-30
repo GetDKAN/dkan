@@ -132,9 +132,10 @@ class ValueHandler {
     if ($subschema->type === "object") {
       return $this->getObjectInArrayData($formValues, $property, $subschema);
     }
-
-    foreach ($formValues[$property][$property] as $value) {
-      $data = array_merge($data, $this->flattenArraysInArrays($value));
+    if (isset($formValues[$property][$property])) {
+      foreach ($formValues[$property][$property] as $value) {
+        $data = array_merge($data, $this->flattenArraysInArrays($value));
+      }
     }
     return !empty($data) ? $data : FALSE;
   }
