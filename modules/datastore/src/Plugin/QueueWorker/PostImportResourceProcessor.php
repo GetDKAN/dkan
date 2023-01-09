@@ -21,8 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "post_import",
  *   title = @Translation("Pass along new resources to resource processors"),
  *   cron = {
- *     "time" = 180,
- *     "lease_time" = 10800
+ *     "time" = 10800
  *   }
  * )
  */
@@ -83,7 +82,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
-    $timeout = (int) $plugin_definition['cron']['lease_time'];
+    $timeout = (int) $plugin_definition['cron']['time'];
     $alter_table_query_builder->setConnectionTimeout($timeout);
   }
 

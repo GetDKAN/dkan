@@ -22,8 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "datastore_import",
  *   title = @Translation("Queue to process datastore import"),
  *   cron = {
- *     "time" = 180,
- *     "lease_time" = 10800
+ *     "time" = 10800
  *   }
  * )
  */
@@ -108,7 +107,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
-    $timeout = (int) $plugin_definition['cron']['lease_time'];
+    $timeout = (int) $plugin_definition['cron']['time'];
     $defaultConnectionFactory->setConnectionTimeout($timeout);
     $datastoreConnectionFactory->setConnectionTimeout($timeout);
   }

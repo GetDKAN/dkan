@@ -52,7 +52,7 @@ class PostImportResourceProcessorTest extends TestCase {
     \Drupal::setContainer($container_chain->getMock());
 
     $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+       $container_chain->getMock(), [], '', ['cron' => ['time' => 10800]]
     );
     $dictionaryEnforcer->processItem($resource);
 
@@ -80,7 +80,7 @@ class PostImportResourceProcessorTest extends TestCase {
     \Drupal::setContainer($container_chain->getMock());
 
     $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+       $container_chain->getMock(), [], '', ['cron' => ['time' => 10800]]
     );
     $dictionaryEnforcer->processItem($resource);
 
@@ -109,7 +109,7 @@ class PostImportResourceProcessorTest extends TestCase {
     \Drupal::setContainer($container_chain->getMock());
 
     $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+       $container_chain->getMock(), [], '', ['cron' => ['time' => 10800]]
     );
     $dictionaryEnforcer->processItem($resource_b);
 
@@ -137,7 +137,7 @@ class PostImportResourceProcessorTest extends TestCase {
     \Drupal::setContainer($container_chain->getMock());
 
     $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+       $container_chain->getMock(), [], '', ['cron' => ['time' => 10800]]
     );
     $dictionaryEnforcer->processItem($resource);
 
