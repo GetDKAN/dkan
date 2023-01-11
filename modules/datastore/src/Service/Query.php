@@ -142,11 +142,9 @@ class Query implements ContainerInjectionInterface {
     // Get Resource ID and data dictionary fields.
     $resource_id = $datastoreQuery->{"$.resources.0.id"};
     $meta_data = $this->datastore->getDataDictionaryFields($resource_id);
-    if ($csv && $meta_data) {
+    // Pass the data dictionary metadata to the query.
+    $query->dataDictionaryFields = $csv && $meta_data ? $meta_data : NULL;
 
-      // Pass the data dictionary metadata to the query.
-       $query->dataDictionaryFields = $meta_data;
-    }
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias, $fetch);
 
     if ($datastoreQuery->{"$.keys"} === FALSE && is_array($result)) {
