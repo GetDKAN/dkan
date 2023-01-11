@@ -26,7 +26,7 @@ class Query implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.datastore.service')
+      $container->get('dkan.datastore.service'),
     );
   }
 
@@ -123,12 +123,11 @@ class Query implements ContainerInjectionInterface {
    * @return array|\Drupal\Core\Database\StatementInterface
    *   Array of result objects or result statement of $fetch is false.
    */
-  public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE) {
+  public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE, $csv = FALSE) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return [];
     }
-
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
     $storage = $storageMap[$primaryAlias];
@@ -138,8 +137,17 @@ class Query implements ContainerInjectionInterface {
       $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
 
-    $query = QueryFactory::create($datastoreQuery, $storageMap);
 
+    $query = QueryFactory::create($datastoreQuery, $storageMap);
+    //If this is a csv download reformat the date fields.
+    if ($csv) {
+      $resource_id = $datastoreQuery->{"$.resources.0.id"};
+      $meta_data = $this->datastore->getDataDictionaryFields($resource_id);
+      if ($meta_data) {
+        //Pass the data dictionary metadata to the query.
+        $query->dataDictionaryFields = $meta_data;
+      }
+    }
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias, $fetch);
 
     if ($datastoreQuery->{"$.keys"} === FALSE && is_array($result)) {
@@ -148,6 +156,8 @@ class Query implements ContainerInjectionInterface {
     return $result;
 
   }
+
+
 
   /**
    * Remove the primary key from the schema field list.

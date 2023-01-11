@@ -4,9 +4,7 @@ namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Connection;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
-use Drupal\metastore\Service;
-use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\datastore\Service\DatastoreQuery;
 
 /**
  * Class to convert a DKAN Query object into a Drupal DB API Select Object.
@@ -28,25 +26,19 @@ class SelectFactory {
   private $alias;
 
   /**
-   * Data dictionary discovery service.
-   *
-   * @var \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
-   */
-  protected $dataDictionaryDiscovery;
-
-  /**
-   * The metastore service.
-   *
-   * @var \Drupal\metastore\Service
-   */
-  protected $metastore;
-
-  /**
    * Our select object.
    *
    * @var \Drupal\Core\Database\Query\Select
    */
   private $dbQuery;
+
+
+  /**
+   * Our select object.
+   *
+   * @var \Drupal\datastore\Service\DatastoreQuery
+   */
+  private $datastoreQuery;
 
   /**
    * Iterator for "words" named placeholder.
@@ -62,15 +54,8 @@ class SelectFactory {
    *   A database table object, which includes a database connection.
    * @param string $alias
    *   Alias for primary table.
-   * @param \Drupal\metastore\Service $metastore
-   *   The metastore service.
-   * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscovery $data_dictionary_discovery
-   *   The data-dictionary discovery service.
    */
-  public function __construct(
-    Connection $connection,
-    string $alias = 't'
-  ) {
+  public function __construct(Connection $connection, string $alias = 't') {
     $this->connection = $connection;
     $this->alias = $alias;
   }
@@ -90,21 +75,15 @@ class SelectFactory {
     $this->setQueryOrderBy($query);
     $this->setQueryLimitAndOffset($query);
     $this->setQueryJoins($query);
-
+    if (!empty($query->dataDictionaryFields)) {
+      $meta_data = $query->dataDictionaryFields;
+      $fields = $this->dbQuery->getFields();
+      $this->addDateExpressions($this->dbQuery, $fields, $meta_data);
+    }
     // $string = $this->dbQuery->__toString();
     if ($query->count) {
       $this->dbQuery = $this->dbQuery->countQuery();
     }
-
-    if ($query->collection !== 'dkan_metastore_resource_mapper') {
-      $fields = $this->dbQuery->getFields();
-      $resource_id = str_replace("datastore_", "", $query->collection);
-      $meta_data = $this->returnDataDictionaryDateFields($resource_id);
-      if ($meta_data) {
-        $this->addDateExpressions($this->dbQuery, $fields, $meta_data);
-      }
-    }
-
     return $this->dbQuery;
   }
 
@@ -115,15 +94,12 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private function setQueryProperties(Query $query) {
-
-
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
       $this->dbQuery->fields($this->alias);
 
       return;
     }
-
     foreach ($query->properties as $p) {
       $this->setQueryProperty($p);
     }
@@ -136,26 +112,10 @@ class SelectFactory {
    */
   private function addDateExpressions($db_query, $fields, $meta_data) {
     foreach ($meta_data as $definition) {
-      if (isset($fields[$definition['name']]) && $definition['type'] == 'date') {
+      //Confirm definition name is in the fields list and the definition is a date.
+      if ($fields[$definition['name']]['field'] && $definition['type'] == 'date') {
         $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
       }
-    }
-  }
-
-  /**
-   * Returning data dictionary fields from schema.
-   *
-   *  {@inheritdoc}
-   */
-  private function returnDataDictionaryDateFields() {
-    //$dataDictionaryDiscovery = new DataDictionaryDiscovery();
-    // Get DD is mode.
-    $dd_mode = DataDictionaryDiscovery::getDataDictionaryMode();
-    // Get data dictionary info.
-    if ($dd_mode == "sitewide") {
-      $dict_id = $dataDictionaryDiscovery->getSitewideDictionaryId();
-      $metaData = Service::get('data-dictionary', $dict_id)->{"$.data.fields"};
-      return $metaData;
     }
   }
 
