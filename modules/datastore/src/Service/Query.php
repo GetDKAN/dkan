@@ -141,7 +141,7 @@ class Query implements ContainerInjectionInterface {
     $query = QueryFactory::create($datastoreQuery, $storageMap);
     // Get Resource ID and data dictionary fields.
     $resource_id = $datastoreQuery->{"$.resources.0.id"};
-    $meta_data = $this->datastore->getDataDictionaryFields($resource_id);
+    $meta_data = $resource_id ? $this->datastore->getDataDictionaryFields($resource_id) : NULL;
     // Pass the data dictionary metadata to the query.
     $query->dataDictionaryFields = $csv && $meta_data ? $meta_data : NULL;
 
