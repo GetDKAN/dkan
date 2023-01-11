@@ -119,6 +119,8 @@ class Query implements ContainerInjectionInterface {
    *   DatastoreQuery object.
    * @param bool $fetch
    *   Perform fetchAll and return array if true, else just statement (cursor).
+   * @param bool $csv
+   *   Flag for csv downloads.
    *
    * @return array|\Drupal\Core\Database\StatementInterface
    *   Array of result objects or result statement of $fetch is false.
@@ -136,17 +138,13 @@ class Query implements ContainerInjectionInterface {
       $schema = $this->filterSchemaFields($storage->getSchema(), $storage->primaryKey());
       $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
-
-
     $query = QueryFactory::create($datastoreQuery, $storageMap);
-    //If this is a csv download reformat the date fields.
-    if ($csv) {
-      $resource_id = $datastoreQuery->{"$.resources.0.id"};
-      $meta_data = $this->datastore->getDataDictionaryFields($resource_id);
-      if ($meta_data) {
-        //Pass the data dictionary metadata to the query.
-        $query->dataDictionaryFields = $meta_data;
-      }
+    // Get Resource ID and data dictionary fields.
+    $resource_id = $datastoreQuery->{"$.resources.0.id"};
+    $meta_data = $this->datastore->getDataDictionaryFields($resource_id);
+    if ($csv && $meta_data) {    $
+      // Pass the data dictionary metadata to the query.
+      query->dataDictionaryFields = $meta_data;
     }
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias, $fetch);
 
@@ -156,8 +154,6 @@ class Query implements ContainerInjectionInterface {
     return $result;
 
   }
-
-
 
   /**
    * Remove the primary key from the schema field list.

@@ -4,7 +4,6 @@ namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Connection;
-use Drupal\datastore\Service\DatastoreQuery;
 
 /**
  * Class to convert a DKAN Query object into a Drupal DB API Select Object.
@@ -31,14 +30,6 @@ class SelectFactory {
    * @var \Drupal\Core\Database\Query\Select
    */
   private $dbQuery;
-
-
-  /**
-   * Our select object.
-   *
-   * @var \Drupal\datastore\Service\DatastoreQuery
-   */
-  private $datastoreQuery;
 
   /**
    * Iterator for "words" named placeholder.
@@ -112,7 +103,7 @@ class SelectFactory {
    */
   private function addDateExpressions($db_query, $fields, $meta_data) {
     foreach ($meta_data as $definition) {
-      //Confirm definition name is in the fields list and the definition is a date.
+      // Confirm definition name is in the fields list.
       if ($fields[$definition['name']]['field'] && $definition['type'] == 'date') {
         $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
       }
@@ -125,7 +116,7 @@ class SelectFactory {
    * @param mixed $property
    *   One property from a query properties array.
    */
-  private function setQueryProperty($property)  {
+  private function setQueryProperty($property) {
 
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);

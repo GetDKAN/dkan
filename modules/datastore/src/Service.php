@@ -82,8 +82,6 @@ class Service implements ContainerInjectionInterface {
    *   Jobstore factory service.
    * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
    *   Import info list service.
-   * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
-   *   Import info list service.
    * @param Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */
@@ -197,7 +195,9 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Returns the Data Dictionary fields.
+   *
    * @param string $resource_id
+   * Dataset id.
    */
   public function getDataDictionaryFields($resource_id) {
     return $this->dictionaryEnforcer->returnDataDictionaryFields($resource_id);

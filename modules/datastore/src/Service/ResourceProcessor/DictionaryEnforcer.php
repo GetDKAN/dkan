@@ -130,7 +130,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
     // Get data dictionary info.
     if ($dd_mode == "sitewide") {
       $dict_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
-      $metaData =  $this->metastore->get('data-dictionary', $dict_id)->{"$.data.fields"};
+      $metaData = $this->metastore->get('data-dictionary', $dict_id)->{"$.data.fields"};
       return $metaData;
     }
   }
