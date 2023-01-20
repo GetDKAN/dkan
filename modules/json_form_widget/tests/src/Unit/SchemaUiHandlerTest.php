@@ -560,6 +560,7 @@ class SchemaUiHandlerTest extends TestCase {
           'arcgis' => 'arcgis',
           'csv' => 'csv',
         ],
+        '#other_option' => '',
         '#default_value' => 'csv',
       ],
     ];
@@ -604,6 +605,7 @@ class SchemaUiHandlerTest extends TestCase {
         ],
         '#default_value' => 'https://url.to.api.or.file',
         '#input_type' => 'textfield',
+        '#other_option' => '',
       ],
     ];
     $form = $ui_handler->applySchemaUi($form);
@@ -675,6 +677,7 @@ class SchemaUiHandlerTest extends TestCase {
             'Option 1' => 'Option 1',
             'Option 2' => 'Option 2',
           ],
+          '#other_option' => '',
           '#multiple' => TRUE,
           '#autocreate' => TRUE,
           '#target_type' => 'node',
@@ -737,6 +740,7 @@ class SchemaUiHandlerTest extends TestCase {
           'Option 1' => 'Option 1',
           'Option 2' => 'Option 2',
         ],
+        '#other_option' => '',
         '#multiple' => TRUE,
         '#autocreate' => TRUE,
         '#target_type' => 'node',
@@ -828,6 +832,7 @@ class SchemaUiHandlerTest extends TestCase {
               'Option 1' => 'Option 1',
               'Option 2' => 'Option 2',
             ],
+            '#other_option' => '',
             '#multiple' => TRUE,
             '#autocreate' => TRUE,
             '#target_type' => 'node',
@@ -881,6 +886,7 @@ class SchemaUiHandlerTest extends TestCase {
               'Option 1' => 'Option 1',
               'Option 2' => 'Option 2',
             ],
+            '#other_option' => '',
             '#multiple' => TRUE,
             '#autocreate' => TRUE,
             '#target_type' => 'node',
