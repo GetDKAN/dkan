@@ -38,6 +38,7 @@ class QueryDownloadControllerTest extends TestCase {
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add("dkan.datastore.service", Service::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
