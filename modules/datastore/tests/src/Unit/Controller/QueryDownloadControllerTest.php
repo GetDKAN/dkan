@@ -383,6 +383,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
       ->add(Query::class, 'getDatastoreService',  Service::class)
+      ->add(Service::class, 'getDataDictionaryFields', NULL)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
