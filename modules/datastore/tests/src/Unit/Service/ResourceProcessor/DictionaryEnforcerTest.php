@@ -144,6 +144,35 @@ class DictionaryEnforcerTest extends TestCase {
   }
 
   /**
+   * Test getting data dictionary fields.
+   */
+  public function testReturnDataDictionaryFields() {
+    $resource = new DataResource('test.csv', 'text/csv');
+
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryInterface::class, 'execute')
+      ->getMock();
+    $metastore_service = (new Chain($this))
+      ->add(MetastoreService::class, 'get', new RootedJsonData(json_encode(['data' => ['fields' => []]])))
+      ->getMock();
+    $dictionary_discovery_service = (new Chain($this))
+      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'dictionary-id')
+      ->getMock();
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
+
+    $container_chain = $this->getContainerChain($resource->getVersion())
+      ->add(AlterTableQueryInterface::class, 'execute')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
+    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
+
+    $result = $dictionary_enforcer->returnDataDictionaryFields();
+    var_dump($result);
+    $this->assertIsArray($result);
+  }
+
+  /**
    * Get container chain.
    */
   protected function getContainerChain(int $resource_version) {
