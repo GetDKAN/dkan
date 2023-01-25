@@ -167,7 +167,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
 
-    $result = $this->returnDataDictionaryFields();
+    $result = $container_chain->returnDataDictionaryFields();
     var_dump($result);
     $this->assertIsArray($result);
   }
