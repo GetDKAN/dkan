@@ -375,7 +375,6 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Container::class, "get", $options)
       ->add(DatasetInfo::class, "gather", [])
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
-      ->add(Service::class, 'getDataDictionaryFields', NULL)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
       ->add(Data::class, 'getCacheContexts', ['url'])
@@ -383,6 +382,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
+      ->add(Service::class, 'getDataDictionaryFields', NULL)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
