@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
+use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use TypeError;
 
 /**
@@ -82,6 +83,7 @@ class ServiceTest extends TestCase {
       ->add('queue', QueueFactory::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
+      ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->index(0);
 
     return (new Chain($this))
