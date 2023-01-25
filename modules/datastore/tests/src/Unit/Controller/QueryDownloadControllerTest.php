@@ -38,7 +38,6 @@ class QueryDownloadControllerTest extends TestCase {
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
-      ->add("dkan.datastore.service", Service::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
@@ -376,6 +375,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Container::class, "get", $options)
       ->add(DatasetInfo::class, "gather", [])
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
+      ->add(Service::class, 'getDataDictionaryFields', NULL)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
       ->add(Data::class, 'getCacheContexts', ['url'])
