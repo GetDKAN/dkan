@@ -382,7 +382,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
-      ->add(Query::class, 'getDatastoreService', NULL)
+      ->add(Query::class, 'getDatastoreService',  Service::class)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
