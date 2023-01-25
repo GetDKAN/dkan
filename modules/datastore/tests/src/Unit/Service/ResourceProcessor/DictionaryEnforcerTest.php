@@ -167,7 +167,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
       ->add(DataDictionaryDiscovery::class, 'returnDataDictionaryFields');
 
-    $result = $containerChain->getMock($resource->getVersion());
+    $result = $container_chain->getMock($resource->getVersion());
 
     var_dump($result);
     $this->assertIsArray($result);
