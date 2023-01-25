@@ -346,6 +346,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->index(0);
 
     $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
@@ -382,7 +383,8 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
-      ->add(Query::class, 'getDataDictionaryFields', NULL)
+      ->add(Query::class, 'getDataDictionaryFields', Service::getDataDictionaryFields(NULL))
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields',  DictionaryEnforcer::returnDataDictionaryFields())
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
