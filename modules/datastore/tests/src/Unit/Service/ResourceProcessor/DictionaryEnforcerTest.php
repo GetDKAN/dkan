@@ -165,7 +165,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
-      ->add(DataDictionaryDiscovery::class, 'getDataDictionaryForResource');
+      ->add(DataDictionaryDiscovery::class, 'returnDataDictionaryFields');
 
     $result = $containerChain->getMock($resource->getVersion());
 
