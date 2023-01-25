@@ -169,7 +169,6 @@ class DictionaryEnforcerTest extends TestCase {
 
     $result = $container_chain->getMock($resource->getVersion());
 
-    var_dump($result);
     $this->assertIsArray($result);
   }
 
