@@ -85,7 +85,7 @@ class ServiceTest extends TestCase {
     \Drupal::setContainer($chain->getMock());
 
     $service = Service::create($chain->getMock());
-    $result = $service->returnDataDictionaryFields();
+    $result = $service->getDataDictionaryFields();
 
     $this->assertTrue(is_array($result));
   }
