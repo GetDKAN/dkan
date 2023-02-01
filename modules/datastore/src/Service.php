@@ -199,10 +199,8 @@ class Service implements ContainerInjectionInterface {
    * @param string $resource_id
    *   Dataset id.
    */
-  public function getDataDictionaryFields($resource_id) {
-    if ($resource_id) {
-      return $this->dictionaryEnforcer->returnDataDictionaryFields($resource_id);
-    }
+  public function getDataDictionaryFields() {
+      return $this->dictionaryEnforcer->returnDataDictionaryFields();
   }
 
   /**
