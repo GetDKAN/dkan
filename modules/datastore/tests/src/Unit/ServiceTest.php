@@ -80,7 +80,7 @@ class ServiceTest extends TestCase {
    * Testing Get Data Dictionary Fields.
    */
   public function testGetDataDictionaryFields() {
-    $chain = $this->getContainerChainForService('dkan.datastore.service')
+    $chain = $this->getCommonChain()
       ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
     \Drupal::setContainer($chain->getMock());
 
