@@ -76,6 +76,20 @@ class ServiceTest extends TestCase {
     $actual = $service->drop('foo', NULL, NULL);
   }
 
+  /**
+   * Testing Get Data Dictionary Fields.
+   */
+  public function testGetDataDictionaryFields() {
+    $chain = $this->getContainerChainForService('dkan.datastore.service')
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
+    \Drupal::setContainer($chain->getMock());
+
+    $service = Service::create($chain->getMock());
+    $result = $service->returnDataDictionaryFields();
+
+    $this->assertTrue(is_array($result));
+  }
+
   private function getCommonChain() {
     $options = (new Options())
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
