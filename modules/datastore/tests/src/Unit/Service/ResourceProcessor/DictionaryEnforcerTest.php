@@ -159,7 +159,7 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'dictionary-id')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
-      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', getSitewideDictionaryId::2)
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', getSitewideDictionaryId::class,2)
       ->getMock();
     $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
 
