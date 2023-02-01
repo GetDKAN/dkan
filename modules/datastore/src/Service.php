@@ -195,7 +195,6 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Returns the Data Dictionary fields.
-   *
    */
   public function getDataDictionaryFields() {
     return $this->dictionaryEnforcer->returnDataDictionaryFields();
