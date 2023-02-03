@@ -14,7 +14,6 @@ use Drupal\metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use UnexpectedValueException;
 
 /**
  * Abstract Controller providing base functionality used to query datastores.
