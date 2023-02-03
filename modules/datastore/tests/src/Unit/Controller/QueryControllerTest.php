@@ -24,6 +24,13 @@ use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Drupal\datastore\Service\ResourceLocalizer;
+use FileFetcher\FileFetcher;
+use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
+use Drupal\metastore\ResourceMapper;
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\datastore\Service\Import as ImportService;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 
 /**
  *
@@ -434,21 +441,24 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   * Testing Get Data Dictionary Fields.
+   * Testing Get Data Dictionary Fields. rada
    */
   public function testGetDatastoreService() {
+    $resource = new DataResource('http://example.org', 'text/csv');
+    $chain = $this->getContainerChainForService('dkan.datastore.service')
+      ->add(ResourceLocalizer::class, 'get', $resource)
+      ->add(ResourceLocalizer::class, 'getResult', Result::class)
+      ->add(FileFetcher::class, 'run', Result::class)
+      ->add(ResourceMapper::class, 'get', $resource)
+      ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
+      ->add(ImportService::class, "import", NULL)
+      ->add(ImportService::class, "getResult", new Result())
+      ->add(QueueFactory::class, "get", NULL)
+      ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
 
-     $options = (new Options())
-      ->add("dkan.datastore.service", Service::class)
-      ->index(0);
+    $service = Service::create($chain->getMock());
+    $result = $service->getDatastoreService;
 
-    $chain = (new Chain($this))
-      ->add(Container::class, "get", $options)
-      ->add(Service::class, 'getDatastoreService', NULL);
-
-    $service =new Service;
-    //$service = Service::create($chain->getMock());
-    $result = $service->getDatastoreService();
     $this->assertTrue($result instanceof Service);
 
   }
