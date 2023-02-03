@@ -465,6 +465,25 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
+   * Testing Get Data Dictionary Fields.
+   */
+  public function testGetDatastoreService() {
+
+     $options = (new Options())
+      ->add("dkan.datastore.service", Service::class)
+      ->index(0);
+
+    $chain = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(Service::class, 'getDatastoreService', NULL);
+
+    $service = Service::create($chain->getMock());
+    $result = $service->getDatastoreService();
+    $this->assertTrue($result instanceof Service);
+
+  }
+
+  /**
    * We just test POST requests; logic for other methods is tested elsewhere.
    *
    * @param string $data

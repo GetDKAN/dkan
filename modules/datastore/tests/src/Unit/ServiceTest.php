@@ -81,8 +81,7 @@ class ServiceTest extends TestCase {
    */
   public function testGetDataDictionaryFields() {
     $chain = $this->getCommonChain()
-      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
-    \Drupal::setContainer($chain->getMock());
+      ->add(DictionaryEnforcer::class, 'getDatastoreService', ['data' => ['fields' => []]]);
 
     $service = Service::create($chain->getMock());
     $result = $service->getDataDictionaryFields();
