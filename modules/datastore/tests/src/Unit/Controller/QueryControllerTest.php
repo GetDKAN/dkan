@@ -459,9 +459,9 @@ class QueryControllerTest extends TestCase {
       ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
 
     $service = Service::create($chain->getMock());
-    $result = $service->getDatastoreService();
+    //$result = $service->getDatastoreService();
 
-    $this->assertTrue($result instanceof Service);
+    $this->assertTrue($service->getDatastoreService() instanceof Service);
 
   }
 
