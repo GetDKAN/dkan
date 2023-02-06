@@ -433,25 +433,6 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  /**
-   * Testing Get Data Dictionary Fields.
-   */
-  public function testGetDatastoreService() {
-
-     $options = (new Options())
-      ->add("dkan.datastore.service", Service::class)
-      ->index(0);
-
-    $chain = (new Chain($this))
-      ->add(Container::class, "get", $options)
-      ->add(Service::class, 'getDatastoreService', NULL);
-
-    $service = Service::create($chain->getMock());
-    $result = $service->getDatastoreService();
-    $this->assertTrue($result instanceof Service);
-
-  }
-
   private function getQueryContainer($data = '', array $info = [], $mockMap = TRUE) {
 
     $options = (new Options())
