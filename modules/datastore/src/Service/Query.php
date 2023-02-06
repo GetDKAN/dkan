@@ -159,7 +159,7 @@ class Query implements ContainerInjectionInterface {
    * @return \Drupal\datastore\Service
    *   Datastore Service.
    */
-  protected function getDatastoreService() {
+  private function getDatastoreService() {
     return $this->datastore;
   }
 
