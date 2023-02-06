@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- *
+ * @coversDefaultClass Drupal\frontend\Controller\Page
  */
 class ControllerPageTest extends TestCase {
 
@@ -17,7 +17,12 @@ class ControllerPageTest extends TestCase {
    *
    * @var int
    */
-  private $cacheMaxAge = 0;
+  private $cacheMaxAge;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->cacheMaxAge = 0;
+  }
 
   /**
    * Getter.
@@ -25,7 +30,7 @@ class ControllerPageTest extends TestCase {
   public function getContainer() {
 
     $container = $this->getMockBuilder(ContainerInterface::class)
-      ->setMethods(['get', 'has'])
+      ->onlyMethods(['get', 'has'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -53,22 +58,22 @@ class ControllerPageTest extends TestCase {
       case 'frontend.page':
         $pageBuilder = $this->getMockBuilder(Page::class)
           ->disableOriginalConstructor()
-          ->setMethods(['build'])
+          ->onlyMethods(['build'])
           ->getMock();
         $pageBuilder->method('build')->willReturn("<h1>Hello World!!!</h1>\n");
         return $pageBuilder;
 
-      break;
+        break;
       case 'config.factory':
         $immutableConfig = $this->getMockBuilder(ImmutableConfig::class)
           ->disableOriginalConstructor()
-          ->setMethods(["get"])
+          ->onlyMethods(["get"])
           ->getMock();
         $immutableConfig->method('get')->willReturn($this->cacheMaxAge);
 
         $configFactory = $this->getMockBuilder(ConfigFactory::class)
           ->disableOriginalConstructor()
-          ->setMethods(["get"])
+          ->onlyMethods(["get"])
           ->getMock();
         $configFactory->method('get')->willReturn($immutableConfig);
         return $configFactory;

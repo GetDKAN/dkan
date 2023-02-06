@@ -45,6 +45,11 @@ class QueryDownloadControllerTest extends TestCase {
     \Drupal::setContainer($chain->getMock());
   }
 
+  protected function tearDown(): void {
+    parent::tearDown();
+    $this->buffer = NULL;
+  }
+
   /**
    * Helper function to compare output of streaming vs normal query controller.
    */

@@ -4,6 +4,7 @@ namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\StatementInterface;
 
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\IncompatibleTypeException;
@@ -12,6 +13,17 @@ use Drupal\datastore\DataDictionary\IncompatibleTypeException;
  * MySQL table alter query.
  */
 class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface {
+
+  /**
+   * Date time specific types.
+   *
+   * @var string[]
+   */
+  protected const DATE_TIME_TYPES = [
+    'DATE',
+    'TIME',
+    'DATETIME',
+  ];
 
   /**
    * Default type to use for fields if no data-dictionary type is specified.
@@ -57,10 +69,41 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   ];
 
   /**
+   * Mapping between frictionless types and SQL types.
+   *
+   * Frictionless type is key, SQL is value.
+   *
+   * @var string[]
+   */
+  protected static $frictionlessTypes = [
+    'string' => 'TEXT',
+    'number' => 'DECIMAL',
+    'integer' => 'INT',
+    'date' => 'DATE',
+    'time' => 'TIME',
+    'datetime' => 'DATETIME',
+    'year' => 'YEAR',
+    'yearmonth' => 'TINYTEXT',
+    'boolean' => 'BOOL',
+    'object' => 'TEXT',
+    'geopoint' => 'TEXT',
+    'geojson' => 'TEXT',
+    'array' => 'TEXT',
+    'duration' => 'TINYTEXT',
+  ];
+
+  /**
    * {@inheritdoc}
    */
   public function doExecute(): void {
+    // Sanitize field names to match database field names.
+    $this->fields = $this->sanitizeFields($this->fields);
+    // Filter out fields which are not present in the database table.
     $this->fields = $this->mergeFields($this->fields, $this->table);
+
+    // Sanitize index field names to match database field names.
+    $this->indexes = $this->sanitizeIndexes($this->indexes);
+    // Filter out indexes with fields which are not present in the table.
     $this->indexes = $this->mergeIndexes($this->indexes, $this->table);
 
     // Build and execute SQL commands to prepare for table alter.
@@ -70,6 +113,54 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
     $command = $this->buildAlterCommand($this->table, $this->fields, $this->indexes);
     // Execute alter command.
     $command->execute();
+  }
+
+  /**
+   * Sanitize field names.
+   *
+   * @param array $fields
+   *   Query fields.
+   *
+   * @return array
+   *   Query fields list with sanitized field names.
+   */
+  protected function sanitizeFields(array $fields): array {
+    // Iterate through field list...
+    foreach (array_keys($fields) as $key) {
+      // Create reference to index field name.
+      $field_name = &$fields[$key]['name'];
+      // Sanitize field name.
+      $field_name = ImportJob::sanitizeHeader($field_name);
+    }
+
+    return $fields;
+  }
+
+  /**
+   * Sanitize index field names.
+   *
+   * @param array $indexes
+   *   Query indexes.
+   *
+   * @return array
+   *   Query indexes list with sanitized index field names.
+   */
+  protected function sanitizeIndexes(array $indexes): array {
+    // Iterate through index list...
+    foreach (array_keys($indexes) as $index_key) {
+      // Create reference to index field list.
+      $index_fields = &$indexes[$index_key]['fields'];
+
+      // Iterate through index field list...
+      foreach (array_keys($index_fields) as $field_key) {
+        // Create reference to index field name.
+        $field_name = &$index_fields[$field_key]['name'];
+        // Sanitize field name.
+        $field_name = ImportJob::sanitizeHeader($field_name);
+      }
+    }
+
+    return $indexes;
   }
 
   /**
@@ -137,7 +228,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   }
 
   /**
-   * Get MySQL equivalent of the given Frictionless "Table Schema" type.
+   * Build full MySQL equivalent of the given Frictionless "Table Schema" type.
    *
    * @param string $frictionless_type
    *   Frictionless "Table Schema" data type.
@@ -147,59 +238,64 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   MySQL table to get type for.
    *
    * @return string
-   *   MySQL data type.
+   *   Full MySQL data type.
    */
   protected function getFieldType(string $frictionless_type, string $column, string $table): string {
+    // Determine MySQL base type.
+    $base_mysql_type = $this->getBaseType($frictionless_type);
     // Build the MySQL type argument list.
-    $args = $this->buildTypeArgs($frictionless_type, $column, $table);
+    $args = $this->buildTypeArgs($base_mysql_type, $column, $table);
+    $args_str = !empty($args) ? '(' . implode(', ', $args) . ')' : '';
 
     // Build full MySQL type.
-    return ([
-      'string'    => (fn () => 'TEXT'),
-      'number'    => (fn ($args) => "DECIMAL({$args['size']}, {$args['decimal']})"),
-      'integer'   => (fn () => 'INT'),
-      'date'      => (fn () => 'DATE'),
-      'time'      => (fn () => 'TIME'),
-      'datetime'  => (fn () => 'DATETIME'),
-      'year'      => (fn () => 'YEAR'),
-      'yearmonth' => (fn () => 'TINYTEXT'),
-      'boolean'   => (fn () => 'BOOL'),
-      'object'    => (fn () => 'TEXT'),
-      'geopoint'  => (fn () => 'TEXT'),
-      'geojson'   => (fn () => 'TEXT'),
-      'array'     => (fn () => 'TEXT'),
-      'duration'  => (fn () => 'TINYTEXT'),
-    ])[$frictionless_type]($args);
+    return $base_mysql_type . $args_str;
   }
 
   /**
-   * Build MySQL type arg list for the given Frictionless "Table Schema" type.
+   * Get base MySQL equivalent of the given Frictionless "Table Schema" type.
+   *
+   * @param string $frictionless_type
+   *   Frictionless "Table Schema" data type.
+   *
+   * @return string
+   *   Base MySQL data type.
+   */
+  protected function getBaseType(string $frictionless_type): string {
+    if ($sql_type = static::$frictionlessTypes[$frictionless_type] ?? FALSE) {
+      return $sql_type;
+    }
+    throw new \InvalidArgumentException($frictionless_type . ' is not a valid frictionless type.');
+  }
+
+  /**
+   * Build MySQL type arg list for MySQL type.
    *
    * @param string $type
-   *   Frictionless "Table Schema" data type.
+   *   MySQL data type.
    * @param string $column
    *   Column name.
    * @param string $table
    *   Table name.
    *
+   * @return array
+   *   MySQL type arguments.
+   *
    * @throws Drupal\datastore\DataDictionary\IncompatibleTypeException
    *   When incompatible data is found in the table for the specified type.
    */
   protected function buildTypeArgs(string $type, string $column, string $table): array {
-    $args = [];
-
-    // If this field is a number field, build decimal and size arguments for
-    // MySQL type.
-    if ($type === 'number') {
+    // If this field is a DECIMAL field, build decimal and size arguments.
+    if ($type === 'DECIMAL') {
       $non_decimals = $this->connection->query("SELECT MAX(LENGTH(TRIM(LEADING '-' FROM SUBSTRING_INDEX({$column}, '.', 1)))) FROM {{$table}};")->fetchField();
-      $args['decimal'] = $this->connection->query("SELECT MAX(LENGTH(SUBSTRING_INDEX({$column}, '.', -1))) FROM {{$table}};")->fetchField();
-      $args['size'] = $non_decimals + $args['decimal'];
-      if ($args['size'] > self::DECIMAL_MAX_SIZE || $args['decimal'] > self::DECIMAL_MAX_DECIMAL) {
+      $decimal = $this->connection->query("SELECT MAX(LENGTH(SUBSTRING_INDEX({$column}, '.', -1))) FROM {{$table}};")->fetchField();
+      $size = $non_decimals + $decimal;
+      if ($size > self::DECIMAL_MAX_SIZE || $decimal > self::DECIMAL_MAX_DECIMAL) {
         throw new IncompatibleTypeException("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
       }
+      return [$size, $decimal];
     }
 
-    return $args;
+    return [];
   }
 
   /**
@@ -218,20 +314,78 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
     // Build pre-alter commands for each query field.
     foreach ($query_fields as ['name' => $col, 'type' => $type, 'format' => $format]) {
-      // If this field is a date field, and a valid format is provided; update
-      // the format of the date fields to ISO-8601 before importing into MySQL.
-      if ($type === 'date' && !empty($format) && $format !== 'default') {
-        $mysql_date_format = $this->dateFormatConverter->convert($format);
-        // Replace empty date strings with NULL to prevent STR_TO_DATE errors.
+      // Determine base MySQL type for Frictionless column type.
+      $base_type = $this->getBaseType($type);
+
+      // Replace empty strings with NULL for non-text columns to prevent
+      // misc. errors (i.e. STR_TO_DATE function related and "Incorrect
+      // `type` value" errors).
+      if (!in_array($base_type, self::STRING_FIELD_TYPES, TRUE)) {
         $pre_alter_cmds[] = $this->connection->update($table)->condition($col, '')->expression($col, 'NULL');
-        // Convert date formats for date column.
-        $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
-          ':date_format' => $mysql_date_format,
-        ]);
+      }
+
+      // Build pre-alter commands for date fields.
+      if (in_array($base_type, self::DATE_TIME_TYPES, TRUE)) {
+        $pre_alter_cmds = array_merge($pre_alter_cmds, $this->buildDatePreAlterCommands($table, $col, $format));
+      }
+
+      // Build pre-alter commands for boolean fields.
+      if ($base_type === 'BOOL') {
+        $pre_alter_cmds = array_merge($pre_alter_cmds, $this->buildBoolPreAlterCommands($table, $col));
       }
     }
 
     return $pre_alter_cmds;
+  }
+
+  /**
+   * Build pre-alter commands for date fields.
+   *
+   * Update format of the date fields to ISO-8601 before importing into MySQL.
+   *
+   * @param string $table
+   *   Table name.
+   * @param string $column
+   *   Table column.
+   * @param string $format
+   *   Field frictionless date format.
+   *
+   * @return \Drupal\Core\Database\Query\Update[]
+   *   Pre-alter update DB queries.
+   */
+  protected function buildDatePreAlterCommands(string $table, string $column, string $format): array {
+    $pre_alter_cmds = [];
+
+    // If a valid format is provided...
+    if (!empty($format) && $format !== 'default') {
+      $mysql_date_format = $this->dateFormatConverter->convert($format);
+      // Convert date formats for date column.
+      $pre_alter_cmds[] = $this->connection->update($table)->expression($column, "STR_TO_DATE({$column}, :date_format)", [
+        ':date_format' => $mysql_date_format,
+      ]);
+    }
+
+    return $pre_alter_cmds;
+  }
+
+  /**
+   * Build pre-alter commands for boolean fields.
+   *
+   * Convert strings 'true' and 'false' to '1' and '0' for boolean fields.
+   *
+   * @param string $table
+   *   Table name.
+   * @param string $column
+   *   Table column.
+   *
+   * @return \Drupal\Core\Database\Query\Update[]
+   *   Pre-alter update DB queries.
+   */
+  protected function buildBoolPreAlterCommands(string $table, string $column): array {
+    return [
+      $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'FALSE'])->expression($column, '0'),
+      $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'TRUE'])->expression($column, '1'),
+    ];
   }
 
   /**
@@ -379,7 +533,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Formatted index field option string.
    */
   protected function buildIndexFieldOption(string $name, ?int $length, string $table, string $type): string {
-    // Extract base type from full MySQL type.
+    // Extract base type from full MySQL type ("DECIMAL(12, 3)" -> "DECIMAL").
     $base_type = strtok($type, '(');
     // If this field is a string type, determine what it's length should be...
     if (in_array($base_type, self::STRING_FIELD_TYPES)) {

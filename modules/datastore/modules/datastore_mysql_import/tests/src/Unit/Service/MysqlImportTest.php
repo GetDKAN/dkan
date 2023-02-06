@@ -126,6 +126,7 @@ class MysqlImportTest extends TestCase {
 
   protected function getMysqlImporter() {
     $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
+    $delimiter = ',';
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
 
     return new class($resource, $databaseTableFactory->getInstance('test')) extends MysqlImport {
@@ -150,8 +151,8 @@ class MysqlImportTest extends TestCase {
         };
       }
 
-      protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count): string {
-        $this->sqlStatement = parent::getSqlStatement($file_path, $tablename, $headers, $eol, $header_line_count);
+      protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count, string $delimiter): string {
+        $this->sqlStatement = parent::getSqlStatement($file_path, $tablename, $headers, $eol, $header_line_count, $delimiter);
         return $this->sqlStatement;
       }
 
