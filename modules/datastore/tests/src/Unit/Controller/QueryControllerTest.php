@@ -24,15 +24,6 @@ use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\datastore\Service\ResourceLocalizer;
-use FileFetcher\FileFetcher;
-use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
-use Drupal\metastore\ResourceMapper;
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\Service\Import as ImportService;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\common\DataResource;
-use Drupal\Core\Serialization\Yaml;
 
 /**
  *
@@ -443,138 +434,24 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   * Testing Get Data Dictionary Fields. rada
+   * Testing Get Data Dictionary Fields.
    */
   public function testGetDatastoreService() {
-    $resource = new DataResource('http://example.org', 'text/csv');
-    $chain = $this->getContainerChainForService('dkan.datastore.service')
-      ->add(ResourceLocalizer::class, 'get', $resource)
-      ->add(ResourceLocalizer::class, 'getResult', Result::class)
-      ->add(FileFetcher::class, 'run', Result::class)
-      ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
-      ->add(ImportService::class, "import", NULL)
-      ->add(ImportService::class, "getResult", new Result())
-      ->add(QueueFactory::class, "get", NULL)
-      ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
+
+     $options = (new Options())
+      ->add("dkan.datastore.service", Service::class)
+      ->index(0);
+
+    $chain = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(Service::class, 'getDatastoreService', NULL);
 
     $service = Service::create($chain->getMock());
-    //$result = $service->getDatastoreService();
-
-    $this->assertTrue($service->getDatastoreService() instanceof Service);
+    $result = $service->getDatastoreService();
+    $this->assertTrue($result instanceof Service);
 
   }
 
-  /**
-   * Private.
-   */
-  private function getContainerChainForService($serviceName): Chain {
-    $options = $this->getContainerOptionsForService($serviceName);
-    return (new Chain($this))->add(Container::class, 'get', $options);
-  }
-
-  /**
-   * Private.
-   */
-  private function getContainerOptionsForService($serviceName): Options {
-    $options = (new Options())->index(0);
-    $service = $this->checkService($serviceName);
-    // Extract services from service arguments.
-    $arguments = array_filter($service['arguments'], function ($arg) {
-      return preg_match('/^@[^@]/', $arg, $matches) === 1;
-    });
-    foreach ($arguments as $arg) {
-      // Extract service name from argument.
-      $arg = str_replace("@", '', $arg);
-      $argService = $this->checkService($arg);
-      $class = $argService['class'];
-      if ($class[0] == '\\') {
-        $class = substr($class, 1);
-      }
-      $options->add($arg, $class);
-    }
-    return $options;
-  }
-
-  /**
-   * Private.
-   */
-  private function checkService($serviceName) {
-    $dkanModules = [
-      'common',
-      'datastore',
-      'frontend',
-      'harvest',
-      'metastore',
-    ];
-    $files = [];
-
-    foreach ($dkanModules as $dkanModule) {
-      $files[] = $this->getRelativeDkanModulePath($dkanModule) . "/{$dkanModule}.services.yml";
-    }
-    $files[] = $this->getRelativeDrupalPath() . "/core/core.services.yml";
-
-    foreach ($files as $file) {
-      $content = Yaml::decode(file_get_contents($file));
-      $services = array_keys($content['services']);
-      if (in_array($serviceName, $services)) {
-        $this->assertTrue(TRUE, "{$serviceName} exists in {$file}");
-        return $content['services'][$serviceName];
-      }
-    }
-    $this->assertFalse(TRUE, "{$serviceName} does not exist in DKAN or Drupal core.");
-  }
-
-  /**
-   * Private.
-   */
-  private function getRelativeDkanModulePath($moduleName, $path = NULL) {
-    if (!$path) {
-      $path = $this->getRelativeDkanPath();
-    }
-
-    foreach (new \DirectoryIterator($path) as $fileInfo) {
-      if ($fileInfo->isDir() && !$fileInfo->isDot()) {
-        if ($fileInfo->getFilename() == $moduleName) {
-          return $fileInfo->getPathname();
-        }
-        elseif ($fileInfo->getFilename() == "modules") {
-          return $this->getRelativeDkanModulePath($moduleName, $fileInfo->getPathname());
-        }
-      }
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function getRelativeDkanPath() {
-    $path = __DIR__;
-
-    while (TRUE) {
-      $content = glob($path . "/*");
-      $content = array_map(function ($item) use ($path) {
-        return str_replace($path, "", $item);
-      }, $content);
-
-      if (in_array("/dkan.info.yml", $content)) {
-        return $path;
-      }
-
-      $path .= "/..";
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function getRelativeDrupalPath() {
-    return getenv('DRUPAL_ROOT');
-  }
-
-  /**
-   * Private.
-   */
   private function getQueryContainer($data = '', array $info = [], $mockMap = TRUE) {
 
     $options = (new Options())
