@@ -32,6 +32,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\Import as ImportService;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\common\DataResource;
+use Drupal\Core\Serialization\Yaml;
 
 /**
  *
