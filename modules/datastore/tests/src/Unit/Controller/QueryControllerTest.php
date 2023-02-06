@@ -467,6 +467,14 @@ class QueryControllerTest extends TestCase {
   /**
    * Private.
    */
+  private function getContainerChainForService($serviceName): Chain {
+    $options = $this->getContainerOptionsForService($serviceName);
+    return (new Chain($this))->add(Container::class, 'get', $options);
+  }
+
+  /**
+   * Private.
+   */
   private function getContainerOptionsForService($serviceName): Options {
     $options = (new Options())->index(0);
     $service = $this->checkService($serviceName);
