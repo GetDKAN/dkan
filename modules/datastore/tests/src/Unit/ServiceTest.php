@@ -81,7 +81,7 @@ class ServiceTest extends TestCase {
    */
   public function testGetDataDictionaryFields() {
     $chain = $this->getCommonChain()
-      ->add(DictionaryEnforcer::class, 'getDatastoreService', ['data' => ['fields' => []]]);
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
 
     $service = Service::create($chain->getMock());
     $result = $service->getDataDictionaryFields();
