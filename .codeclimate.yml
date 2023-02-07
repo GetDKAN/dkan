@@ -8,6 +8,8 @@ plugins:
     checks:
       Drupal Commenting InlineComment DocBlock:
         enabled: false
+      Drupal Commenting ClassComment Missing:
+        enabled: false
 exclude_patterns:
  - "cypress/"
  - "config/"
