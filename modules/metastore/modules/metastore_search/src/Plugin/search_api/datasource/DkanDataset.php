@@ -75,7 +75,7 @@ class DkanDataset extends DatasourcePluginBase {
 
     foreach (array_combine($ids, $ids) as $id) {
       try {
-        // We only want published revisions to be indexed.
+        // Only index published revisions.
         $items[$id] = new Dataset($dataStorage->retrieve($id, TRUE));
       }
       // This is thrown if there is no published revision.
