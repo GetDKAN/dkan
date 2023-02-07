@@ -222,6 +222,7 @@ class DataResource implements \JsonSerializable {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return $this->serialize();
   }

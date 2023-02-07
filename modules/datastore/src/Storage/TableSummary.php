@@ -58,6 +58,7 @@ class TableSummary implements \JsonSerializable {
    *
    * {@inheritdoc}
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return array_filter([
       'numOfColumns' => $this->numOfColumns,
