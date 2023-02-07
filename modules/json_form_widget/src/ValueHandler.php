@@ -71,17 +71,17 @@ class ValueHandler {
     }
 
     $properties = array_keys((array) $schema->properties);
-    $data = FALSE;
+    $data = [];
     foreach ($properties as $sub_property) {
       $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
       if ($value) {
-        if (!is_array($data)) {
-          $data = [];
-        }
         $data[$sub_property] = $value;
       }
     }
-    return $data;
+    if (!empty($data)) {
+      return $data;
+    }
+    return FALSE;
   }
 
   /**
