@@ -12,6 +12,8 @@ use Drupal\Core\Url;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\Service;
 use Drupal\metastore\Service as MetastoreService;
+use Drupal\datastore\Service\PostImportResult;
+use Drupal\search_api\Plugin\search_api\processor\Resources\Pc;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -58,6 +60,20 @@ class DashboardForm extends FormBase {
   protected $itemsPerPage;
 
   /**
+   * Date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatter
+   */
+  protected $dateFormatter;
+
+  /**
+   * The PostImportResult service.
+   *
+   * @var \Drupal\datastore\Service\PostImportResult
+   */
+  protected $postImportResult;
+
+  /**
    * DashboardController constructor.
    *
    * @param \Drupal\harvest\Service $harvestService
@@ -70,19 +86,23 @@ class DashboardForm extends FormBase {
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
+   * @param \Drupal\datastore\Service\PostImportResult $post_import_result
+   *   The post import result service.
    */
   public function __construct(
     Service $harvestService,
     DatasetInfo $datasetInfo,
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
-    DateFormatter $dateFormatter
+    DateFormatter $dateFormatter,
+    PostImportResult $post_import_result
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
     $this->dateFormatter = $dateFormatter;
+    $this->postImportResult = $post_import_result;
     $this->itemsPerPage = 10;
   }
 
@@ -95,7 +115,8 @@ class DashboardForm extends FormBase {
       $container->get('dkan.common.dataset_info'),
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('dkan.datastore.service.post_import_result'),
     );
   }
 
@@ -277,7 +298,7 @@ class DashboardForm extends FormBase {
     $harvestLoad = iterator_to_array($this->getHarvestLoadStatuses());
 
     $rows = [];
-    // Build dataset rows fore each of the supplied dataset UUIDs.
+    // Build dataset rows for each of the supplied dataset UUIDs.
     foreach ($datasets as $datasetId) {
       // Gather dataset information.
       $datasetInfo = $this->datasetInfo->gather($datasetId);
@@ -335,6 +356,7 @@ class DashboardForm extends FormBase {
       $this->t('Resource'),
       $this->t('Fetch'),
       $this->t('Store'),
+      $this->t('Post Import'),
     ];
   }
 
@@ -425,6 +447,13 @@ class DashboardForm extends FormBase {
    */
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
+
+      $postImportInfo = $this->postImportResult->retrieveJobStatus($dist['resource_id']);
+
+      $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
+      $percentDone = $postImportInfo ? $postImportInfo['post_import_percent_done'] : 0;
+      $error = $postImportInfo ? $postImportInfo['post_import_error'] : null;
+
       return [
         [
           'data' => [
@@ -436,9 +465,10 @@ class DashboardForm extends FormBase {
         ],
         $this->buildStatusCell($dist['fetcher_status'], $dist['fetcher_percent_done']),
         $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
+        $this->buildStatusCell($status, $percentDone, $error),
       ];
     }
-    return ['', '', ''];
+    return ['', '', '', ''];
   }
 
   /**
