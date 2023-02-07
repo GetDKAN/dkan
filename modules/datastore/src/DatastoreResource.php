@@ -58,10 +58,10 @@ class DatastoreResource implements \JsonSerializable {
     return $this->mimeType;
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * {@inheritdoc}
    */
-  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return (object) [
       'filePath' => $this->filePath,

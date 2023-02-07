@@ -53,12 +53,12 @@ class TableSummary implements \JsonSerializable {
     $this->numOfRows = $numOfRows;
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * {@inheritdoc}
    */
-  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return array_filter([
       'numOfColumns' => $this->numOfColumns,

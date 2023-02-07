@@ -217,12 +217,12 @@ class DataResource implements \JsonSerializable {
     return 'datastore_' . md5($this->getUniqueIdentifier());
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return $this->serialize();
   }

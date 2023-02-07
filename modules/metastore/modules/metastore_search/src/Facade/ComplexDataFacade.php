@@ -48,82 +48,82 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
     // @todo Implement getProperties() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function toArray() {
     // @todo Implement toArray() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function isEmpty() {
     // @todo Implement isEmpty() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function current() {
     // @todo Implement current() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function next() {
     // @todo Implement next() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function key() {
     // @todo Implement key() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function valid() {
     // @todo Implement valid() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function rewind() {
     // @todo Implement rewind() method.
   }
 
+  #[\ReturnTypeWillChange]
   /**
    * Inherited.
    *
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
   public function onChange($name) {
     // @todo Implement onChange() method.
   }
