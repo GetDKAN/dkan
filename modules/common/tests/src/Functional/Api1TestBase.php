@@ -13,7 +13,7 @@ abstract class Api1TestBase extends ExistingSiteBase {
   use CleanUp;
 
   protected $http;
-  protected $baseUrl;
+  protected string $baseUrl;
   protected $spec;
   protected $auth;
   protected $endpoint;
