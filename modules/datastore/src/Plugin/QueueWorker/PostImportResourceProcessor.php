@@ -11,6 +11,7 @@ use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\ResourceMapper;
+use Drupal\datastore\Service\PostImportResult;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -50,6 +51,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   protected ResourceProcessorCollector $resourceProcessorCollector;
 
   /**
+   * The PostImportResult service.
+   *
+   * @var \Drupal\datastore\Service\PostImportResult
+   */
+  protected PostImportResult $postImportResult;
+
+  /**
    * Build queue worker.
    *
    * @param array $configuration
@@ -66,6 +74,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The metastore resource mapper service.
    * @param \Drupal\datastore\Service\ResourceProcessorCollector $processor_collector
    *   The resource processor collector service.
+   * @param \Drupal\datastore\Service\PostImportResult $post_import_result
+   *   The post import result service.
    */
   public function __construct(
     array $configuration,
@@ -74,12 +84,14 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     AlterTableQueryBuilderInterface $alter_table_query_builder,
     LoggerChannelFactoryInterface $logger_factory,
     ResourceMapper $resource_mapper,
-    ResourceProcessorCollector $processor_collector
+    ResourceProcessorCollector $processor_collector,
+    PostImportResult $post_import_result
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger_factory->get('datastore');
     $this->resourceMapper = $resource_mapper;
     $this->resourceProcessorCollector = $processor_collector;
+    $this->postImportResult = $post_import_result;
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
@@ -99,6 +111,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $container->get('logger.factory'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.datastore.service.resource_processor_collector'),
+      $container->get('dkan.datastore.service.post_import_result'),
     );
   }
 
@@ -108,12 +121,21 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   public function processItem($data) {
     // Catch and log any exceptions thrown when processing the queue item to
     // prevent the item from being requeued.
+    $status = "error";
+    $percent_done = 0;
+    $message = NULL;
+
     try {
       $this->doProcessItem($data);
+      $status = "done";
+      $percent_done = 100;
     }
     catch (\Exception $e) {
+      $message = $e->getMessage();
       $this->logger->error($e->getMessage());
     }
+
+    $this->postImportResult->storeJobStatus($data->getIdentifier(), $status, $percent_done, $message);
   }
 
   /**
