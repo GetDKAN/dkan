@@ -316,6 +316,9 @@ class DataResource implements \JsonSerializable {
     $storage = $factory->getInstance('distribution');
 
     $distroJson = $storage->retrieve($identifier);
+    if (is_null($distroJson)) {
+      $distroJson = '';
+    }
     return json_decode($distroJson);
   }
 
