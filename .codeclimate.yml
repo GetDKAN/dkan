@@ -5,6 +5,9 @@ plugins:
     channel: beta
     config:
       standard: "Drupal,DrupalPractice"
+    checks:
+      Drupal Commenting InlineComment DocBlock:
+        enabled: false
 exclude_patterns:
  - "cypress/"
  - "config/"
