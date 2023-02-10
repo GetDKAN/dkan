@@ -91,7 +91,10 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    *   Json string with the identifier.
    */
   private function addIdentifier(string $schema_id, string $json_string): string {
-    $json_data = json_decode($json_string);
+    // If $json_string is empty, json_decode() will return NULL. We coerce to
+    // an object, because it might already be an object, or it could be an
+    // array. NULL always coerces to an empty object.
+    $json_data = (object) json_decode($json_string);
     $uuid5 = new Uuid5();
     $json_data->identifier = $uuid5->generate($schema_id, $json_string);
     return json_encode($json_data);
