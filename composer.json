@@ -24,7 +24,7 @@
         "getdkan/procrastinator": "^4.0.0",
         "getdkan/rooted-json-data": "^0.0.2",
         "getdkan/sql-parser": "^2.0.0",
-        "guzzlehttp/guzzle" : "^6.5.8 || ^7.5.0",
+        "guzzlehttp/guzzle" : "^6.5.8 || ^7.4.5",
         "ilbee/csv-response": "^1.0",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
         "neitanod/forceutf8": "~2.0",
