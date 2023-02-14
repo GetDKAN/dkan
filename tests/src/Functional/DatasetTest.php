@@ -45,7 +45,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
     $this->removeHarvests();
     $this->removeAllNodes();

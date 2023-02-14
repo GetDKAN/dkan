@@ -25,7 +25,7 @@ class OrphanCheckerTest extends ExistingSiteBase {
    */
   protected $validMetadataFactory;
 
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
     $this->removeHarvests();
     $this->removeAllNodes();
