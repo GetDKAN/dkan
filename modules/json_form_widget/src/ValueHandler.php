@@ -78,10 +78,7 @@ class ValueHandler {
         $data[$sub_property] = $value;
       }
     }
-    if (!empty($data)) {
-      return $data;
-    }
-    return FALSE;
+    return $data ?: FALSE;
   }
 
   /**
