@@ -32,7 +32,7 @@ class QueryDownloadControllerTest extends TestCase {
 
   private $buffer;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Set cache services
     $options = (new Options)

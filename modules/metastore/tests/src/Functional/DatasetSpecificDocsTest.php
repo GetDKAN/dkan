@@ -57,7 +57,7 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
   /**
    *
    */
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();

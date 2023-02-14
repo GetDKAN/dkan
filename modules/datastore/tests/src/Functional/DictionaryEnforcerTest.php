@@ -119,7 +119,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
       ->getExternalUrl();
   }
 
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
     $this->removeAllMappedFiles();
   }

@@ -77,4 +77,11 @@ class Connection extends CoreConnection {
     return 0;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public static function open(array &$connection_options = []) {
+    return new \stdClass();
+  }
+
 }

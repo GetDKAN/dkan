@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
@@ -19,6 +20,7 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 
 use GuzzleHttp\Exception\RequestException;
@@ -64,23 +66,23 @@ class ReferencerTest extends TestCase {
 
   private function mockReferencer($existing = TRUE) {
     if ($existing) {
-      $node = new class {
-        public function uuid() {
-          return '0398f054-d712-4e20-ad1e-a03193d6ab33';
-        }
-        public function set() {}
-        public function save() {}
-      };
+      $node = (new Chain($this))
+        ->add(Node::class, 'get', FieldItemListInterface::class)
+          ->addd('uuid', '0398f054-d712-4e20-ad1e-a03193d6ab33')
+        ->add(FieldItemListInterface::class, 'getString', 'orphaned')
+        ->add(Node::class, 'set')
+        ->add(Node::class, 'save')
+        ->getMock();
     }
     else {
-      $node = new class {
-        public function uuid() {
-          return NULL;
-        }
-        public function set() {}
-        public function save() {}
-        public function setRevisionLogMessage() {}
-      };
+      $node = (new Chain($this))
+        ->add(Node::class, 'get', FieldItemListInterface::class)
+          ->addd('uuid', null)
+        ->add(FieldItemListInterface::class, 'getString', 'orphaned')
+        ->add(Node::class, 'set')
+        ->add(Node::class, 'save')
+        ->add(Node::class, 'setRevisionLogMessage')
+        ->getMock();
     }
 
     $storageFactory = (new Chain($this))
@@ -387,13 +389,13 @@ class ReferencerTest extends TestCase {
    */
   public function testMimeTypeDetection(): void {
     // Initialize mock node class.
-    $node = new class {
-      public function uuid() {
-        return '0398f054-d712-4e20-ad1e-a03193d6ab33';
-      }
-      public function set() {}
-      public function save() {}
-    };
+    $node = (new Chain($this))
+      ->add(Node::class, 'get', FieldItemListInterface::class)
+      ->addd('uuid', '0398f054-d712-4e20-ad1e-a03193d6ab33')
+      ->add(FieldItemListInterface::class, 'getString', 'orphaned')
+      ->add(Node::class, 'set')
+      ->add(Node::class, 'save')
+      ->getMock();
 
     // Create a mock file storage class.
     $storage = new class {

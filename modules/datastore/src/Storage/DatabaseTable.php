@@ -65,6 +65,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * {@inheritdoc}
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return (object) ['resource' => $this->resource];
   }
