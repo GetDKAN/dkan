@@ -1,3 +1,3 @@
-@page dkansamplecontentcreate dkan:sample-content:create
+# dkan:sample-content:create {#dkansamplecontentcreate}
 
 Create sample content.

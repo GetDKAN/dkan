@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Storage;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\Core\Database\Connection;
 use MockChain\Chain;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -34,7 +34,7 @@ class DatabaseTableFactoryTest extends TestCase {
 
     $factory->method("getDatabaseTable")->willReturn($databaseTable);
 
-    $resource = new Resource("blah", "", "text/csv");
+    $resource = new DatastoreResource("blah", "", "text/csv");
     $object = $factory->getInstance($resource->getId(), ['resource' => $resource]);
     $this->assertTrue($object instanceof DatabaseTable);
   }
@@ -65,7 +65,7 @@ class DatabaseTableFactoryTest extends TestCase {
     $indexer = $indexerClass->getMock();
     $factory->setIndexManager($indexer);
 
-    $resource = new Resource("blah", "", "text/csv");
+    $resource = new DatastoreResource("blah", "", "text/csv");
     $object = $factory->getInstance($resource->getId(), ['resource' => $resource]);
     $this->assertTrue($object instanceof DatabaseTable);
   }

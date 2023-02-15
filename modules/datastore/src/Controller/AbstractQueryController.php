@@ -4,12 +4,12 @@ namespace Drupal\datastore\Controller;
 
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
+use Drupal\datastore\Service\Query as QueryService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use RootedData\RootedJsonData;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\datastore\Service;
 use Drupal\metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -24,25 +24,32 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
   /**
-   * Datastore Service.
+   * Datastore query service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\Service\Query
    */
-  protected $datastoreService;
+  protected QueryService $queryService;
 
   /**
    * DatasetInfo Service.
    *
    * @var \Drupal\common\DatasetInfo
    */
-  protected $datasetInfo;
+  protected DatasetInfo $datasetInfo;
 
   /**
    * ConfigFactory object.
    *
-   * @var Drupal\Core\Config\ConfigFactoryInterface
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
-  private $configFactory;
+  protected ConfigFactoryInterface $configFactory;
+
+  /**
+   * Metastore API response.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  protected MetastoreApiResponse $metastoreApiResponse;
 
   /**
    * Default API rows limit.
@@ -55,12 +62,12 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * Api constructor.
    */
   public function __construct(
-    Service $datastoreService,
+    QueryService $queryService,
     DatasetInfo $datasetInfo,
     MetastoreApiResponse $metastoreApiResponse,
     ConfigFactoryInterface $configFactory
   ) {
-    $this->datastoreService = $datastoreService;
+    $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->configFactory = $configFactory;
@@ -71,7 +78,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.datastore.service'),
+      $container->get('dkan.datastore.query'),
       $container->get('dkan.common.dataset_info'),
       $container->get('dkan.metastore.api_response'),
       $container->get('config.factory')
@@ -95,7 +102,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 400);
     }
     try {
-      $result = $this->datastoreService->runQuery($datastoreQuery);
+      $result = $this->queryService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
       $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
@@ -125,7 +132,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 400);
     }
     try {
-      $result = $this->datastoreService->runQuery($datastoreQuery);
+      $result = $this->queryService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
       $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
@@ -278,7 +285,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   /**
    * Get the JSON string from a request, with type coercion applied.
    *
-   * @param Symfony\Component\HttpFoundation\Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $request
    *   The HTTP request.
    * @param string|null $schema
    *   Optional JSON schema string, used to cast data types.

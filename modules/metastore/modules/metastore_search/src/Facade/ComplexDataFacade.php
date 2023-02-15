@@ -53,6 +53,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function toArray() {
     // @todo Implement toArray() method.
   }
@@ -62,6 +63,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function isEmpty() {
     // @todo Implement isEmpty() method.
   }
@@ -71,6 +73,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function current() {
     // @todo Implement current() method.
   }
@@ -80,6 +83,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function next() {
     // @todo Implement next() method.
   }
@@ -89,6 +93,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function key() {
     // @todo Implement key() method.
   }
@@ -98,6 +103,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function valid() {
     // @todo Implement valid() method.
   }
@@ -107,6 +113,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function rewind() {
     // @todo Implement rewind() method.
   }
@@ -116,6 +123,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function onChange($name) {
     // @todo Implement onChange() method.
   }

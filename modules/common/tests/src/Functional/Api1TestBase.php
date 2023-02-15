@@ -13,7 +13,6 @@ abstract class Api1TestBase extends ExistingSiteBase {
   use CleanUp;
 
   protected $http;
-  protected $baseUrl;
   protected $spec;
   protected $auth;
   protected $endpoint;
@@ -62,7 +61,7 @@ abstract class Api1TestBase extends ExistingSiteBase {
   }
 
   protected function getSampleDataset(int $n = 0) {
-    $sampleJson = file_get_contents('/var/www/docroot/modules/contrib/dkan/modules/sample_content/sample_content.json');
+    $sampleJson = file_get_contents(dirname(__DIR__, 4). '/sample_content/sample_content.json');
     $sampleDatasets = json_decode($sampleJson);
     return $sampleDatasets->dataset[$n];
   }

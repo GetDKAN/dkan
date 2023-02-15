@@ -2,25 +2,34 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\Core\Database\Database;
+use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
+use Drupal\common\Storage\DatabaseConnectionFactory as DatabaseConnectionFactoryBase;
 
 /**
- * Create second datastore endpoint at runtime with unbuffered queries.
+ * Create separate datastore connection at runtime with unbuffered queries.
  *
  * @return \Drupal\Core\Database\Connection
  *   New datastore connection object.
  */
-class DatabaseConnectionFactory {
+class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements DatabaseConnectionFactoryInterface {
 
   /**
-   * Gets the connection object for the specified database key and target.
+   * {@inheritdoc}
    */
-  public static function getConnection() {
-    $info = Database::getConnectionInfo();
-    $datastoreInfo = $info['default'];
-    $datastoreInfo['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
-    Database::addConnectionInfo('datastore', 'default', $datastoreInfo);
-    return Database::getConnection('default', 'datastore');
+  protected string $target = 'default';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected string $key = 'datastore';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function buildConnectionInfo(): array {
+    $connection_info = parent::buildConnectionInfo();
+    $connection_info['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
+    return $connection_info;
   }
 
 }

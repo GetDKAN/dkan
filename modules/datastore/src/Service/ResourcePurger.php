@@ -6,7 +6,8 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 
 use Drupal\common\LoggerTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
+use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\datastore\Service;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
@@ -207,7 +208,7 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
       // $idAndVersion is a json encoded array with resource's id and version.
-      list($id, $version) = json_decode($idAndVersion);
+      [$id, $version] = json_decode($idAndVersion);
       $this->delete($id, $version);
     }
   }
@@ -230,7 +231,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $purge = [];
 
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
-      list($published, $resource) = $this->getRevisionData($vid);
+      [$published, $resource] = $this->getRevisionData($vid);
       $purge = array_merge($purge, $resource);
       $publishedCount = $published ? $publishedCount + 1 : $publishedCount;
       if (!$prior && $publishedCount >= 2) {
@@ -253,7 +254,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function resourceNotShared(string $resource_details): bool {
     // Extract the identifier and version from the supplied resource details.
-    $identifier = Resource::buildUniqueIdentifier(...json_decode($resource_details));
+    $identifier = DataResource::buildUniqueIdentifier(...json_decode($resource_details));
     // Determine the number of distributions making use of the current
     // resource.
     $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
@@ -315,8 +316,12 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function getRevisionData(string $vid) : array {
     $revision = $this->storage->getEntityStorage()->loadRevision($vid);
+    $published = FALSE;
+    if ($revision instanceof EntityPublishedInterface) {
+      $published = $revision->isPublished();
+    }
     return [
-      $revision->status->value ?? FALSE,
+      $published,
       $this->getResources($revision),
     ];
   }

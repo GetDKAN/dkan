@@ -42,7 +42,6 @@ function getMetastoreSearchEndpoint () {
 export function verifyFileImportedSuccessfully (file_name) {
   cy.request(getDatastoreImportsEndpoint()).then(response => {
     expect(response.status).eql(200)
-    console.log(response.body)
     expect(response.body).to.satisfy(body => Object.values(body).find(item => item.fileName === file_name && item.importerStatus === 'done'))
   })
 }
@@ -210,6 +209,7 @@ export function generateDataDictionary(uuid) {
 export function createDatasetWithModerationState(dataset_title, moderation_state) {
   // Create a dataset.
   cy.visit('/node/add/data')
+  cy.wait(2000)
   cy.get('#edit-field-json-metadata-0-value-title')
     .type(dataset_title, { force:true } )
   cy.get('#edit-field-json-metadata-0-value-description')
@@ -235,7 +235,7 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
     .click({ force: true })
   cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]')
     .type('open data{enter}')
-  cy.get('#edit-moderation-state-0-state')
+  cy.get('#edit-moderation-state-0-state', {timeout: 2000})
     .select(moderation_state, { force:true } )
   // End filling up keyword.
   cy.get('#edit-submit')

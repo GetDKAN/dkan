@@ -1,4 +1,7 @@
 services:
+  dkan.common.database_connection_factory:
+    class: \Drupal\common\Storage\DatabaseConnectionFactory
+
   dkan.common.docs_generator:
     class: \Drupal\common\DkanApiDocsGenerator
     arguments:

@@ -194,8 +194,22 @@
                  "operator": {
                      "type": "string",
                      "description": "Condition operator",
-                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "like", "between", "in", "not in" ],
-                     "default": "="
+                     "enum": [
+                        "=",
+                        "<>",
+                        "<",
+                        "<=",
+                        ">",
+                        ">=",
+                        "like",
+                        "between",
+                        "in",
+                        "not in",
+                        "contains",
+                        "starts with",
+                        "match"
+                    ],
+                    "default": "="
                  }
             },
             "required": [ "property", "value" ]

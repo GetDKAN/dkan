@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
+use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
@@ -29,7 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class QueryControllerTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Set cache services
     $options = (new Options)
@@ -437,6 +438,7 @@ class QueryControllerTest extends TestCase {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", Service::class)
+      ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
@@ -456,7 +458,7 @@ class QueryControllerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', 500);
 
     if ($mockMap) {
-      $chain->add(Service::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
+      $chain->add(Query::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
     }
 
     return $chain;
@@ -496,7 +498,7 @@ class QueryControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new Resource("2", "data.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable($connection, new DatastoreResource("2", "data.csv", "text/csv"));
     $storage->setSchema([
       'fields' => [
         'record_number' => ['type' => 'int', 'not null' => TRUE],

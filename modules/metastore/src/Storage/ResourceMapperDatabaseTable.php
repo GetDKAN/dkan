@@ -18,7 +18,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
    *
    * @var array
    */
-  private $schema;
+  protected $schema;
 
   /**
    * Constructor.

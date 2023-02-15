@@ -5,7 +5,8 @@ namespace Drupal\Tests\datastore\Unit;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
+use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
@@ -18,8 +19,10 @@ use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
+use TypeError;
 
 /**
  *
@@ -31,7 +34,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testImport() {
-    $resource = new Resource('http://example.org', 'text/csv');
+    $resource = new DataResource('http://example.org', 'text/csv');
     $chain = $this->getContainerChainForService('dkan.datastore.service')
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceLocalizer::class, 'getResult', Result::class)
@@ -50,19 +53,26 @@ class ServiceTest extends TestCase {
   }
 
   public function testDrop() {
-    $resource = new Resource('http://example.org', 'text/csv');
+    $resource = new DataResource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'destruct')
-      ->add(ResourceLocalizer::class, 'remove');
+      ->add(ResourceLocalizer::class, 'remove')
+      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(JobStore::class, 'remove', TRUE);
 
     $service = Service::create($mockChain->getMock());
+    // Ensure variations on drop return nothing.
     $actual = $service->drop('foo');
-
-    // Function returns nothing.
     $this->assertNull($actual);
+    $actual = $service->drop('foo', '123152');
+    $this->assertNull($actual);
+    $actual = $service->drop('foo', NULL, FALSE);
+    $this->assertNull($actual);
+    $this->expectException(TypeError::class);
+    $actual = $service->drop('foo', NULL, NULL);
   }
 
   private function getCommonChain() {

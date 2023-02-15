@@ -1,4 +1,4 @@
-@page dkanharvestrevert dkan:harvest:revert
+# dkan:harvest:revert {#dkanharvestrevert}
 
 Revert a harvest, i.e. remove harvested entities and unpublish orhpaned keywords, themes, and distributions.
 

@@ -32,17 +32,21 @@ body {
   right: 35px;
 }
 h1,h2,h3,h4 {
-  font-family: 'Varela Round', 'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif;
-  color: #0071bc;
+  /* font-family: 'Varela Round', 'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif; */
+  color: #003366;
+}
+h1 {
+  font-size: 21px;
 }
 h2 {
-  margin-top: 2em;
+  font-size: 18px;
 }
 h2:first-of-type {
   margin-top: 1em;
 }
 h3 {
-  margin-top: 1.5em;
+  font-size: 16;
+  margin-top: 1.15em;
 }
 .PageDoc > .contents {
   margin: 20px;
@@ -144,10 +148,10 @@ a {
   border: none;
 }
 a:hover {
-  color: #205493;
+  color: #0097c9;
 }
 .contents a:visited {
-  color: #205493;
+  color: #0071bc;
 }
 #nav-tree .selected {
   background-image: none;
