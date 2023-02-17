@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class QueryControllerTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Set cache services
     $options = (new Options)
