@@ -12,6 +12,7 @@ use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\Service\PostImportResult;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -58,6 +59,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   protected PostImportResult $postImportResult;
 
   /**
+   * Data dictionary discovery service.
+   *
+   * @var \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface
+   */
+  protected $dataDictionaryDiscovery;
+
+  /**
    * Build queue worker.
    *
    * @param array $configuration
@@ -76,6 +84,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The resource processor collector service.
    * @param \Drupal\datastore\Service\PostImportResult $post_import_result
    *   The post import result service.
+   * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
+   *   The data-dictionary discovery service.
    */
   public function __construct(
     array $configuration,
@@ -85,13 +95,15 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     LoggerChannelFactoryInterface $logger_factory,
     ResourceMapper $resource_mapper,
     ResourceProcessorCollector $processor_collector,
-    PostImportResult $post_import_result
+    PostImportResult $post_import_result,
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger_factory->get('datastore');
     $this->resourceMapper = $resource_mapper;
     $this->resourceProcessorCollector = $processor_collector;
     $this->postImportResult = $post_import_result;
+    $this->dataDictionaryDiscovery = $data_dictionary_discovery;
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
@@ -112,6 +124,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.datastore.service.resource_processor_collector'),
       $container->get('dkan.datastore.service.post_import_result'),
+      $container->get('dkan.metastore.data_dictionary_discovery'),
     );
   }
 
@@ -127,15 +140,22 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
 
     try {
       $this->doProcessItem($data);
-      $status = "done";
-      $percent_done = 100;
+
+      if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
+        $status = "waiting";
+        $percent_done = 0;
+        $message = "Data-Dictionary Disabled";
+      } else {
+        $status = "done";
+        $percent_done = 100;
+      }
     }
     catch (\Exception $e) {
       $message = $e->getMessage();
       $this->logger->error($e->getMessage());
     }
 
-    $this->postImportResult->storeJobStatus($data->getIdentifier(), $status, $percent_done, $message);
+    $this->postImportResult->storeJobStatus($data->getIdentifier(), $data->getVersion(), $status, $percent_done, $message);
   }
 
   /**

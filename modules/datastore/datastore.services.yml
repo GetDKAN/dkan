@@ -11,7 +11,9 @@ services:
 
   dkan.datastore.service.post_import_result:
     class: \Drupal\datastore\Service\PostImportResult
-    arguments: ['@database']
+    arguments: 
+     - '@database'
+     - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.query:
     class: \Drupal\datastore\Service\Query
