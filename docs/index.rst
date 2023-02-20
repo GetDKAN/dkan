@@ -1,5 +1,5 @@
-DKAN Open Data Portal
-=====================
+DKAN Open Data Portal for Drupal 7
+==================================
 
 This is the central site for technical/developer documentation of DKAN. DKAN is a Drupal-based open data portal and catalog. Development sponsored by `CivicActions <https://civicactions.com/dkan/>`_ .
 
