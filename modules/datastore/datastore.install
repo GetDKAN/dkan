@@ -27,13 +27,18 @@ function datastore_update_8001(&$sandbox) {
 /**
  * Create new "dkan_post_import_job_status" table.
  */
-function datastore_update_9006(&$sandbox) {
+function datastore_update_9001(&$sandbox) {
 
   $table_name = 'dkan_post_import_job_status';
 
   $spec = [
     'fields' => [
       'resource_identifier' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'resource_version' => [
         'type' => 'varchar',
         'length' => 128,
         'not null' => TRUE,
@@ -52,7 +57,7 @@ function datastore_update_9006(&$sandbox) {
         'not null' => FALSE,
       ],
     ],
-    'primary key' => ['resource_identifier'],
+    'primary key' => ['resource_identifier', 'resource_version'],
   ];
 
   $schema = Database::getConnection()->schema();
@@ -71,6 +76,11 @@ function datastore_schema() {
         'length' => 128,
         'not null' => TRUE,
       ],
+      'resource_version' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
       'post_import_status' => [
         'type' => 'text',
         'length' => 10,
@@ -85,7 +95,7 @@ function datastore_schema() {
         'not null' => FALSE,
       ],
     ],
-    'primary key' => ['resource_identifier'],
+    'primary key' => ['resource_identifier', 'resource_version'],
   ];
 
   return $schema;

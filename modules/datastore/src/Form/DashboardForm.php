@@ -448,8 +448,7 @@ class DashboardForm extends FormBase {
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
 
-      $postImportInfo = $this->postImportResult->retrieveJobStatus($dist['resource_id']);
-
+      $postImportInfo = $this->postImportResult->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
       $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
       $percentDone = $postImportInfo ? $postImportInfo['post_import_percent_done'] : 0;
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : null;
