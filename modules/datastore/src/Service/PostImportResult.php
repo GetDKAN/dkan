@@ -3,6 +3,7 @@
 namespace Drupal\datastore\Service;
 
 use Drupal\Core\Database\Connection;
+use Drupal\metastore\ResourceMapper;
 
 class PostImportResult {
 
@@ -14,13 +15,26 @@ class PostImportResult {
   protected $connection;
 
   /**
+   * The metastore resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected ResourceMapper $resourceMapper;
+
+  /**
    * Constructs a new PostImport object.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
+   * @param \Drupal\metastore\ResourceMapper $resource_mapper
+   *   The metastore resource mapper service.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(
+    Connection $connection,
+    ResourceMapper $resource_mapper
+    ) {
     $this->connection = $connection;
+    $this->resourceMapper = $resource_mapper;
   }
 
   /**
@@ -35,10 +49,11 @@ class PostImportResult {
    * @param string $post_import_error
    *   The error message if any.
    */
-  public function storeJobStatus($identifier, $post_import_status, $post_import_percent_done, $post_import_error) {
+  public function storeJobStatus($identifier, $version, $post_import_status, $post_import_percent_done, $post_import_error) {
     $this->connection->insert('dkan_post_import_job_status')
       ->fields([
         'resource_identifier' => $identifier,
+        'resource_version' => $version,
         'post_import_status' => $post_import_status,
         'post_import_percent_done' => $post_import_percent_done,
         'post_import_error' => $post_import_error,
@@ -52,16 +67,33 @@ class PostImportResult {
    * @param string $identifier
    *   The resource identifier of the distribution to retrieve post import result.
    */
-  public function retrieveJobStatus($identifier) {
+  public function retrieveJobStatus($identifier, $version) {
     return $this->connection->select('dkan_post_import_job_status')
       ->condition('resource_identifier', $identifier, '=')
+      ->condition('resource_version', $version, '=')
       ->fields('dkan_post_import_job_status', [
+        'resource_version',
         'post_import_status',
         'post_import_percent_done',
         'post_import_error',
       ])
       ->execute()
       ->fetchAssoc();
-    }
+  }
+
+  /**
+   * Remove post import job status row.
+   *
+   * @param string $identifier
+   *   The resource identifier of the distribution to retrieve post import result.
+   */
+  public function removeJobStatus($identifier) {
+    $latest_resource = $this->resourceMapper->get($identifier);
+    $latest_version = $latest_resource->getVersion();
+    $this->connection->delete('dkan_post_import_job_status')
+      ->condition('resource_identifier', $identifier, '=')
+      ->condition('resource_version', $latest_version, '=')
+      ->execute();
+  }
 
 }

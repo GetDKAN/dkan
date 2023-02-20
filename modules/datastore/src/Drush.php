@@ -7,6 +7,7 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\Service as Metastore;
+use Drupal\datastore\Service\PostImportResult;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -30,15 +31,31 @@ class Drush extends DrushCommands {
   protected $datastoreService;
 
   /**
+   * The PostImportResult service.
+   *
+   * @var \Drupal\datastore\Service\PostImportResult
+   */
+  protected PostImportResult $postImportResult;
+
+  /**
+   * The datastore resource localizer.
+   *
+   * @var \Drupal\datastore\Service\ResourceLocalizer
+   */
+  protected ResourceLocalizer $resourceLocalizer;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
     Metastore $metastoreService,
     Datastore $datastoreService,
+    PostImportResult $postImportResult,
     ResourceLocalizer $resourceLocalizer
   ) {
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
+    $this->postImportResult = $postImportResult;
     $this->resourceLocalizer = $resourceLocalizer;
   }
 
@@ -170,6 +187,8 @@ class Drush extends DrushCommands {
     $local_resource = $options['keep-local'] ? FALSE : TRUE;
     $this->datastoreService->drop($identifier, NULL, $local_resource);
     $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
+    $this->postImportResult->removeJobStatus($identifier);
+    $this->logger->notice("Successfully removed the post import job status for resource {$identifier}");
   }
 
   /**
