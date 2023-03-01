@@ -357,13 +357,11 @@ class QueryDownloadControllerTest extends TestCase {
       'record_number' => ['type' => 'int', 'not null' => TRUE],
       'state' => ['type' => 'text'],
       'year' => ['type' => 'int'],
-      'date' => ['type' => 'date', 'format '=>'%m/%d/%Y'],
     ];
     $schema3 = [
       'record_number' => ['type' => 'int', 'not null' => TRUE],
       'year' => ['type' => 'int'],
       'color' => ['type' => 'text'],
-      'date' => ['type' => 'date', 'format '=>'%m/%d/%Y'],
     ];
 
     $storage2 = $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2);
@@ -388,7 +386,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
       ->add(Query::class, 'getDatastoreService',  Service::class)
-      ->add(Service::class, 'getDataDictionaryFields', $schema2)
+      ->add(Service::class, 'getDataDictionaryFields', null)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
