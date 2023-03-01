@@ -28,18 +28,18 @@ class SelectFactoryTest extends TestCase {
    * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
    */
   public function testQuery(Query $query, string $sql, string $message, array $values = []) {
-    $dataDictionaryFields = ['name','type','date'];
-    $dataDictionaryFields['name'] = 'date';
-    $dataDictionaryFieldss['type'] = 'date';
-    $dataDictionaryFields['format'] = '%m/%d/%Y';
-
-    $query->dataDictionaryFields = $dataDictionaryFields;
+    $dataDictionaryFields = [
+      'name' => 'date',
+      'type' => 'date',
+      'format '=>'%m/%d/%Y'
+    ];
     if ($message) {
       $this->expectExceptionMessage($message);
       $this->selectFactory->create($query);
     }
     else {
       $db_query = $this->selectFactory->create($query);
+      $db_query->dataDictionaryFields = $dataDictionaryFields;
       $this->assertStringContainsString($sql, $this->selectToString($db_query));
 
       if (!empty($values)) {
