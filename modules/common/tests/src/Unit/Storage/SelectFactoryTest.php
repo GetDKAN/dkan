@@ -28,7 +28,7 @@ class SelectFactoryTest extends TestCase {
    * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
    */
   public function testQuery(Query $query, string $sql, string $message, array $values = []) {
-    $dataDictionaryFields = [];
+    $dataDictionaryFields = ['name','type','date'];
     $dataDictionaryFields->name = 'date';
     $dataDictionaryFields->type = 'date';
     $dataDictionaryFields->format = '%m/%d/%Y';
