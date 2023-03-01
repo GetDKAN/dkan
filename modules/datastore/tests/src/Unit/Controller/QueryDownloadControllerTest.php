@@ -55,14 +55,12 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompare($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $dataDictionaryFields = ['date' => ['type' => 'date', 'format '=>'%m/%d/%Y']];
 
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $csv = $response->getContent();
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    $dController->dataDictionaryFields = $dataDictionaryFields;
     ob_start(['self', 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
@@ -82,7 +80,6 @@ class QueryDownloadControllerTest extends TestCase {
         [
           "id" => "2",
           "alias" => "t",
-          "date" => "2022/06/21",
         ],
       ],
       "format" => "csv",
@@ -386,7 +383,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
       ->add(Query::class, 'getDatastoreService',  Service::class)
-      ->add(Service::class, 'getDataDictionaryFields', null)
+      ->add(Service::class, 'getDataDictionaryFields', NULL)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
