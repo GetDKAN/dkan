@@ -1,11 +1,12 @@
-# API Examples
+# API Examples {#guide_api_examples}
 
-Each dataset page displays live examples for basic queries you can use for that dataset.
-This page will show additional examples for the trickier usage.
+Each dataset page displays live examples for basic API calls for that dataset.
+This guide will show additional options for more advanced usage.
 
-## How to set the workflow state through the API.
+## How to set the moderation state through the API.
+The available moderation states are: draft, published, hidden, orphaned, and archived. Learn more about the [moderation states here](md_docs_assets_pages_5_0_glossary.html#moderation_state)
 
-1. Get the current workflow state and confirm there is at least one revision.
+1. Get the current moderation state and confirm there is at least one revision.
 
 
     GET https://[site-domain]/api/1/metastore/schemas/dataset/items/[identifier]/revisions
