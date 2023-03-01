@@ -55,7 +55,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompare($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-
+    $dataDictionaryFields = [
+      'name' => 'date',
+      'type' => 'date',
+      'format '=>'%m/%d/%Y'
+    ];
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $csv = $response->getContent();
@@ -63,6 +67,7 @@ class QueryDownloadControllerTest extends TestCase {
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
     ob_start(['self', 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
+    $streamResponse->dataDictionaryFields = $dataDictionaryFields;
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;
     ob_get_clean();
@@ -80,6 +85,7 @@ class QueryDownloadControllerTest extends TestCase {
         [
           "id" => "2",
           "alias" => "t",
+          "date" => "06/21/2022",
         ],
       ],
       "format" => "csv",
