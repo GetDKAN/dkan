@@ -29,9 +29,9 @@ class SelectFactoryTest extends TestCase {
    */
   public function testQuery(Query $query, string $sql, string $message, array $values = []) {
     $dataDictionaryFields = ['name','type','date'];
-    $dataDictionaryFields->name = 'date';
-    $dataDictionaryFields->type = 'date';
-    $dataDictionaryFields->format = '%m/%d/%Y';
+    $dataDictionaryFields['name'] = 'date';
+    $dataDictionaryFieldss['type'] = 'date';
+    $dataDictionaryFields['format'] = '%m/%d/%Y';
 
     $query->dataDictionaryFields = $dataDictionaryFields;
     if ($message) {
