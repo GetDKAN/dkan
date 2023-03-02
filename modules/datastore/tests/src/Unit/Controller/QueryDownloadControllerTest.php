@@ -25,6 +25,7 @@ use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\common\Storage\SelectFactory;
+use Drupal\Core\Database\Query\Select;
 
 /**
  *
