@@ -24,6 +24,7 @@ use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Drupal\common\Storage\SelectFactory;
 
 /**
  *
@@ -43,6 +44,8 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
+    $this->selectFactory = $this->getSelectFactory();
+
   }
 
   protected function tearDown(): void {
@@ -85,13 +88,59 @@ class QueryDownloadControllerTest extends TestCase {
         [
           "id" => "2",
           "alias" => "t",
-          "date" => "06/21/2022",
         ],
       ],
       "format" => "csv",
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
+  }
+
+  /**
+   * Test streaming of a CSV file from database.
+   */
+  public function testAddDateExpressions() {
+    $data = [
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+          "date" => "06/21/2022",
+        ],
+      ],
+      "format" => "csv",
+    ];
+    // Need 2 json responses which get combined on output.
+    $this->queryResultReformatted($data);
+  }
+
+  public function queryResultReformatted($data){
+    $request = $this->mockRequest($data);
+    $dataDictionaryFields = [
+      'name' => 'date',
+      'type' => 'date',
+      'format '=>'%m/%d/%Y'
+    ];
+    $qController = QueryController::create($this->getQueryContainer(500));
+    $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
+    $csv = $response->getContent();
+
+    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    ob_start(['self', 'getBuffer']);
+    $streamResponse = $dController->query($request);
+    $streamResponse->dataDictionaryFields = $dataDictionaryFields;
+    //$streamResponse->sendContent();
+    $this->selectFactory->create($streamResponse);
+
+    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
+    $this->assertEquals($csv, $streamedCsv);
+  }
+
+  /**
+   *
+   */
+  private function getSelectFactory() {
+    return new SelectFactory($this->getConnection());
   }
 
   /**
