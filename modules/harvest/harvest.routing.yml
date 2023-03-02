@@ -95,6 +95,6 @@ dkan.harvest.dashboard:
     _controller: '\Drupal\harvest\DashboardController::harvests'
     _title: Harvests
   requirements:
-    _permission: 'dkan.haverst.dashboard'
+    _permission: 'dkan.harvest.dashboard'
   options:
     _auth: ['basic_auth', 'cookie']
