@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\common\Storage\SelectFactory;
 use Drupal\Core\Database\Query\Select;
+use Drupal\Tests\common\Unit\Connection;
 
 /**
  *
