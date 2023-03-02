@@ -124,7 +124,7 @@ class QueryDownloadControllerTest extends TestCase {
       'format '=>'%m/%d/%Y'
     ];
     $qController = QueryController::create($this->getQueryContainer(500));
-    $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
+    $response = $qController->query($request);
     $csv = $response->getContent();
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
