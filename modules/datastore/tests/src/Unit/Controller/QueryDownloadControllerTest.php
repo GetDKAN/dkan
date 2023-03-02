@@ -144,6 +144,19 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   *
+   */
+  private function getConnection() {
+    return (new Chain($this))
+      ->add(
+        Connection::class,
+        "select",
+        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
+      )
+      ->getMock();
+  }
+
+  /**
    * Test streaming of a CSV file from database.
    */
   public function testStreamedResourceQueryCsv() {
