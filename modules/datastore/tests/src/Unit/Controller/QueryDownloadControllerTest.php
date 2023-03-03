@@ -98,24 +98,6 @@ class QueryDownloadControllerTest extends TestCase {
     $this->queryResultCompare($data);
   }
 
-  /**
-   * Test streaming of a CSV file from database.
-   */
-  public function testAddDateExpressions() {
-    $data = [
-      "resources" => [
-        [
-          "id" => "2",
-          "alias" => "t",
-          "date" => "06/21/2022",
-        ],
-      ],
-      "format" => "csv",
-    ];
-    // Need 2 json responses which get combined on output.
-    $this->queryResultReformatted($data);
-  }
-
   public function queryResultReformatted($data){
     $request = $this->mockRequest($data);
     $dataDictionaryFields = [

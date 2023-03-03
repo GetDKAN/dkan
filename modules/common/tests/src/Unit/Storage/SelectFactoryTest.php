@@ -28,18 +28,12 @@ class SelectFactoryTest extends TestCase {
    * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
    */
   public function testQuery(Query $query, string $sql, string $message, array $values = []) {
-    $dataDictionaryFields = [
-      'name' => 'date',
-      'type' => 'date',
-      'format '=>'%m/%d/%Y'
-    ];
     if ($message) {
       $this->expectExceptionMessage($message);
       $this->selectFactory->create($query);
     }
     else {
       $db_query = $this->selectFactory->create($query);
-      $db_query->dataDictionaryFields = $dataDictionaryFields;
       $this->assertStringContainsString($sql, $this->selectToString($db_query));
 
       if (!empty($values)) {
@@ -53,6 +47,7 @@ class SelectFactoryTest extends TestCase {
    */
   public function testConditionByIsEqualTo() {
     $query = new Query();
+    $query->properties = ["field1", "field2"];
     $query->conditionByIsEqualTo('prop1', 'value1');
     $db_query = $this->selectFactory->create($query);
     $this->assertStringContainsString('t.prop1 LIKE :db_condition_placeholder_0', $this->selectToString($db_query));
@@ -63,6 +58,23 @@ class SelectFactoryTest extends TestCase {
     $query->conditionByIsEqualTo('prop1', 'value1', TRUE);
     $db_query = $this->selectFactory->create($query);
     $this->assertStringContainsString('t.prop1 LIKE BINARY :db_condition_placeholder_0', $this->selectToString($db_query));
+  }
+
+  /**
+   * Test two variations of Query::testConditionByIsEqualTo()
+   */
+  public function testAddDateExpressions() {
+    $query = new Query();
+    $query->dataDictionaryFields = [
+      [
+        'name' => 'date',
+        'type' => 'date',
+        'format'=>'%m/%d/%Y',
+      ]
+    ];
+    $query->properties = ["date", "field2"];
+    $db_query = $this->selectFactory->create($query);
+    $this->assertStringContainsString("DATE_FORMAT(date, '%m/%d/%Y') AS date", $this->selectToString($db_query));
   }
 
   /**
