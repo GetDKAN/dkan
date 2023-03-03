@@ -1,5 +1,5 @@
 # DKAN
-[DKAN](https://getdkan.com) - An Open Data Catalog built on [Drupal 8](https://www.drupal.org/documentation)
+[DKAN](https://getdkan.com) - An Open Data Catalog built on [Drupal 9](https://www.drupal.org/documentation)
 
 [![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/2.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/2.x)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a02bf3362b94749579a1/maintainability)](https://codeclimate.com/github/GetDKAN/dkan/maintainability)
@@ -28,7 +28,7 @@ DKAN_VERSION=`git rev-parse --abbrev-ref HEAD` doxygen
 - Dataset metadata and resources
 - Web service API endpoints that allow third party applications to work with the datasets
 - Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-frontend)
-- A datastore to store CSV files and make them queryable through an SQL endpoint.
+- A datastore to store CSV files and make them queryable through an SQL endpoint
 
 ---
 

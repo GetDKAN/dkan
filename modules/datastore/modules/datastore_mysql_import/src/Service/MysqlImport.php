@@ -89,15 +89,9 @@ class MysqlImport extends ImportJob {
    */
   protected function getColsFromFile(string $file_path, string $delimiter): array {
 
-    // Ensure the "auto_detect_line_endings" ini setting is enabled before
-    // openning the file to ensure Mac style EOL characters are detected.
-    $old_ini = ini_set('auto_detect_line_endings', '1');
     // Open the CSV file.
     $f = fopen($file_path, 'r');
-    // Revert ini setting once the file has been opened.
-    if ($old_ini !== FALSE) {
-      ini_set('auto_detect_line_endings', $old_ini);
-    }
+
     // Ensure the file could be successfully opened.
     if (!isset($f) || $f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
