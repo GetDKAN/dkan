@@ -2,6 +2,8 @@
 
 Indexes can be defined within the data dictionary form, or via the API. You must first define any column you want to index under Dictionary Fields. Then under Dictionary Indexes, you will list the field, a length (default is 50), the index type (index, or fulltext), and a description for reference.
 
+Any time the datastore is updated, the data dictionary definitions will be reapplied when the post_import queue runs.
+
 In the example below we are defining two fields, and adding a standard index for the first field and a fulltext index for the second.
 
 ```http

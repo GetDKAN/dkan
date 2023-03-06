@@ -25,11 +25,15 @@ The available moderation states are: draft, published, hidden, orphaned, and arc
     }
 
 
-3. Run the GET again to confirm the state is now "hidden". The dataset is publically available if you know the URL but it will not be included in the site's search results.
+3. Run the GET again to confirm the state is now "hidden".
 
 
 ## How to run a query against multiple tables with a JOIN.
-Define the tables you want to query and give each an alias under "resouces". List the properties you want returned, if common data is using different headings in the table, set up an alias to collect the values to a single property in the results. Add any conditions you like to filter the data. Then add the join, defining the property and value to match.
+This query will require the resource_id. You can get this id by viewing the dataset API docs or running this drush command, passing in the dataset ID:
+
+    drush dkan:dataset-info [datasetID]
+
+Define the tables you want to query and give each an alias under "resources". List the properties you want returned, if the properties you want returned are using different column headings (in this example "postal_code" and "zip"), set up an alias to collect the values to a single property in the results. Add any conditions you like to filter the data. Then add the join, defining the property and value to match.
 
     POST https://[site-domain]/api/1/datastore/query/[identifier]/0 HTTP/1.1
     Authorization: Basic user:password
