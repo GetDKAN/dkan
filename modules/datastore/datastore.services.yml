@@ -74,8 +74,6 @@ services:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
     arguments:
       - '@dkan.datastore.database'
-    calls:
-      - [setIndexManager, ['@?indexer.indexmanager']]
 
   dkan.datastore.sql_endpoint.service:
     class: \Drupal\datastore\SqlEndpoint\Service

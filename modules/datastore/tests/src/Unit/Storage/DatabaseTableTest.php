@@ -86,52 +86,6 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   * Ensure indexer service is used during create table code flow.
-   */
-  public function testIndexerService() {
-    // Stub event dispatcher service.
-    $eventDispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-    $container = new ContainerBuilder();
-    $container->set('event_dispatcher', $eventDispatcher);
-    \Drupal::setContainer($container);
-
-    $schema = [
-      "fields" => [
-        "record_number" => [
-          "type" => "serial",
-          "unsigned" => TRUE,
-          "not null" => TRUE,
-        ],
-      ],
-    ];
-
-    $connection = $this->getConnectionChain()
-      ->add(Schema::class, "tableExists", FALSE)
-      ->add(Schema::class, "createTable", FALSE)
-      ->add(Connection::class, 'select', Select::class, 'select_1')
-      ->add(Select::class, 'fields', Select::class)
-      ->add(Select::class, 'countQuery', Select::class)
-      ->add(Select::class, 'execute', StatementInterface::class)
-      ->add(StatementInterface::class, 'fetchField', 1)
-      ->getMock();
-
-    $databaseTable = new DatabaseTable(
-      $connection,
-      $this->getResource()
-    );
-
-    $indexerClass = $this->getMockBuilder(IndexManager::class);
-    $indexer = $indexerClass
-      ->onlyMethods(["modifySchema"])
-      ->getMock();
-    $indexer->expects($this->once())
-      ->method('modifySchema');
-    $databaseTable->setIndexManager($indexer);
-    $databaseTable->setSchema($schema);
-    $databaseTable->count();
-  }
-
-  /**
    *
    */
   public function testRetrieveAll() {
