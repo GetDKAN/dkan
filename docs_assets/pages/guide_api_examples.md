@@ -29,7 +29,7 @@ The available moderation states are: draft, published, hidden, orphaned, and arc
 
 
 ## How to run a query against multiple tables with a JOIN.
-This query will require the resource_id. You can get this id by viewing the dataset API docs or running this drush command, passing in the dataset ID:
+This query will require the distribution_uuid. You can get this id by viewing the dataset metadata API _(/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids)_ or running this drush command, passing in the dataset ID:
 
     drush dkan:dataset-info [datasetID]
 
