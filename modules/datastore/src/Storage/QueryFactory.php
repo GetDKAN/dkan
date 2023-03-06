@@ -45,7 +45,7 @@ class QueryFactory {
    * @param array $storageMap
    *   Storage map array.
    *
-   * @return Drupal\common\Storage\Query
+   * @return \Drupal\common\Storage\Query
    *   DKAN query object.
    */
   public static function create(DatastoreQuery $datastoreQuery, array $storageMap): Query {

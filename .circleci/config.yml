@@ -7,6 +7,7 @@ commands:
           name: Install DDev
           command: |
             set -e
+            sudo rm -rf /etc/apt/sources.list.d/heroku.list
             sudo apt-get update
             sudo apt-get install ca-certificates
             curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -

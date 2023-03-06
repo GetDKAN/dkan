@@ -7,6 +7,7 @@ services:
       - '@queue'
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info_list'
+      - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
 
   dkan.datastore.query:
     class: \Drupal\datastore\Service\Query

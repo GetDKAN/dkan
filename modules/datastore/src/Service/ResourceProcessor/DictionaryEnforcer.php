@@ -119,4 +119,20 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
       ->execute();
   }
 
+  /**
+   * Returning data dictionary fields from schema.
+   *
+   *  {@inheritdoc}
+   */
+  public function returnDataDictionaryFields() {
+    // Get DD is mode.
+    $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
+    // Get data dictionary info.
+    if ($dd_mode == "sitewide") {
+      $dict_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
+      $metaData = $this->metastore->get('data-dictionary', $dict_id)->{"$.data.fields"};
+      return $metaData;
+    }
+  }
+
 }

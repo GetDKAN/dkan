@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
+use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use TypeError;
 
 /**
@@ -75,6 +76,19 @@ class ServiceTest extends TestCase {
     $actual = $service->drop('foo', NULL, NULL);
   }
 
+  /**
+   * Testing Get Data Dictionary Fields.
+   */
+  public function testGetDataDictionaryFields() {
+    $chain = $this->getCommonChain()
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
+
+    $service = Service::create($chain->getMock());
+    $result = $service->getDataDictionaryFields();
+
+    $this->assertTrue(is_array($result));
+  }
+
   private function getCommonChain() {
     $options = (new Options())
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
@@ -82,6 +96,7 @@ class ServiceTest extends TestCase {
       ->add('queue', QueueFactory::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
+      ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->index(0);
 
     return (new Chain($this))

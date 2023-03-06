@@ -13,6 +13,7 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use FileFetcher\FileFetcher;
+use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 
 /**
  * Main services for the datastore.
@@ -48,6 +49,13 @@ class Service implements ContainerInjectionInterface {
   private $jobStoreFactory;
 
   /**
+   * Datastore Query object for conversion.
+   *
+   * @var Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+   */
+  private $dictionaryEnforcer;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -57,6 +65,7 @@ class Service implements ContainerInjectionInterface {
       $container->get('queue'),
       $container->get('dkan.common.job_store'),
       $container->get('dkan.datastore.import_info_list'),
+      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
     );
   }
 
@@ -73,19 +82,23 @@ class Service implements ContainerInjectionInterface {
    *   Jobstore factory service.
    * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
    *   Import info list service.
+   * @param Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
+   *   Dictionary Enforcer object.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
     ImportFactoryInterface $importServiceFactory,
     QueueFactory $queue,
     JobStoreFactory $jobStoreFactory,
-    ImportInfoList $importInfoList
+    ImportInfoList $importInfoList,
+    DictionaryEnforcer $dictionaryEnforcer
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
     $this->importInfoList = $importInfoList;
+    $this->dictionaryEnforcer = $dictionaryEnforcer;
   }
 
   /**
@@ -178,6 +191,13 @@ class Service implements ContainerInjectionInterface {
    */
   public function getImportService(DataResource $resource) {
     return $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(), ['resource' => $resource]);
+  }
+
+  /**
+   * Returns the Data Dictionary fields.
+   */
+  public function getDataDictionaryFields() {
+    return $this->dictionaryEnforcer->returnDataDictionaryFields();
   }
 
   /**

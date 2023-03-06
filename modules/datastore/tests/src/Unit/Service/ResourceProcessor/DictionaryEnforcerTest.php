@@ -144,6 +144,37 @@ class DictionaryEnforcerTest extends TestCase {
   }
 
   /**
+   * Test getting data dictionary fields.
+   */
+  public function testReturnDataDictionaryFields() {
+    $resource = new DataResource('test.csv', 'text/csv');
+
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryInterface::class, 'execute')
+      ->getMock();
+    $metastore_service = (new Chain($this))
+      ->add(MetastoreService::class, 'get', new RootedJsonData(json_encode(['data' => ['fields' => []]])))
+      ->getMock();
+    $dictionary_discovery_service = (new Chain($this))
+      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'dictionary-id')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
+      ->add(DataDictionaryDiscoveryInterface::class, 'getSitewideDictionaryId','2')
+      ->getMock();
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
+
+    $container_chain = $this->getContainerChain($resource->getVersion())
+      ->add(AlterTableQueryInterface::class, 'execute')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
+    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
+
+    $result = $dictionary_enforcer->returnDataDictionaryFields();
+    $this->assertIsArray($result);
+  }
+
+  /**
    * Get container chain.
    */
   protected function getContainerChain(int $resource_version) {
@@ -157,6 +188,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
+      ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
@@ -169,6 +201,8 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryBuilderInterface::class, 'setConnectionTimeout', AlterTableQueryBuilderInterface::class)
       ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getSitewideDictionaryId')
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
       ->add(ResourceMapper::class, 'get', DataResource::class)
