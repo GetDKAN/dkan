@@ -23,7 +23,7 @@
         "getdkan/json-schema-provider": "^0.1.2",
         "getdkan/locker": "^1.1.0",
         "getdkan/procrastinator": "^4.0.0",
-        "getdkan/rooted-json-data": "^0.0.2",
+        "getdkan/rooted-json-data": "^0.1",
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.5.8 || ^7.4.5",
         "ilbee/csv-response": "^1.0",
