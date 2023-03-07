@@ -28,7 +28,7 @@ DKAN_VERSION=`git rev-parse --abbrev-ref HEAD` doxygen
 - Dataset metadata and resources
 - Web service API endpoints that allow third party applications to work with the datasets
 - Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-frontend)
-- A datastore to store CSV files and make them queryable through an SQL endpoint
+- A datastore to store CSV files and make them queryable through an SQL endpoint.
 
 ---
 
