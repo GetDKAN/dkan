@@ -16,3 +16,4 @@ tagfile
 /tests/reports
 /web
 .phpunit.result.cache
+*.http
