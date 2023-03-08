@@ -133,31 +133,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    * {@inheritdoc}
    */
   public function processItem($data) {
-    // Catch and log any exceptions thrown when processing the queue item to
-    // prevent the item from being requeued.
-    $status = "error";
-    $percent_done = 0;
-    $message = NULL;
-
     try {
-      $this->doProcessItem($data);
-
-      if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
-        $status = "waiting";
-        $percent_done = 0;
-        $message = "Data-Dictionary Disabled";
-      } else {
-        $status = "done";
-        $percent_done = 100;
-      }
+      $postImportResource = $this->runPostImport($data);
     }
     catch (\Exception $e) {
       $message = $e->getMessage();
       $this->logger->error($e->getMessage());
     }
-
-    // Set the properties of the object
-    $postImportResource = new PostImportResource($data->getIdentifier(), $data->getVersion(), $status, $message);
 
     // Store the object properties into the dkan_post_import_job_status table.
     $this->postImportResult->storeJobStatus($postImportResource);
@@ -169,7 +151,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
    */
-  public function doProcessItem(DataResource $resource): void {
+  public function runPostImport(DataResource $resource): PostImportResource {
+    // Catch and log any exceptions thrown when processing the queue item to
+    // prevent the item from being requeued.
+    $status = "error";
+    $percent_done = 0;
+    $message = NULL;
+
     $identifier = $resource->getIdentifier();
     $version = $resource->getVersion();
 
@@ -187,6 +175,14 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     // Run all tagged resource processors.
     $processors = $this->resourceProcessorCollector->getResourceProcessors();
     array_map(fn ($processor) => $processor->process($resource), $processors);
+
+    if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
+      $status = "waiting";
+      $message = "Data-Dictionary Disabled";
+    } else {
+      $status = "done";
+    }
+    return new PostImportResource($resource->getIdentifier(), $resource->getVersion(), $status, $message);
   }
 
 }
