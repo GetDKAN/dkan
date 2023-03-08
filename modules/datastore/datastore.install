@@ -27,7 +27,7 @@ function datastore_update_8001(&$sandbox) {
 /**
  * Create new "dkan_post_import_job_status" table.
  */
-function datastore_update_9001(&$sandbox) {
+function datastore_update_9055(&$sandbox) {
 
   $table_name = 'dkan_post_import_job_status';
 
@@ -46,10 +46,6 @@ function datastore_update_9001(&$sandbox) {
       'post_import_status' => [
         'type' => 'text',
         'length' => 10,
-        'not null' => TRUE,
-      ],
-      'post_import_percent_done' => [
-        'type' => 'int',
         'not null' => TRUE,
       ],
       'post_import_error' => [
@@ -84,10 +80,6 @@ function datastore_schema() {
       'post_import_status' => [
         'type' => 'text',
         'length' => 10,
-        'not null' => TRUE,
-      ],
-      'post_import_percent_done' => [
-        'type' => 'int',
         'not null' => TRUE,
       ],
       'post_import_error' => [
