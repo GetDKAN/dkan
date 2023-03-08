@@ -11,6 +11,7 @@ use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\ResourceMapper;
+use Drupal\datastore\PostImportResource;
 use Drupal\datastore\Service\PostImportResult;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
@@ -155,7 +156,11 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $this->logger->error($e->getMessage());
     }
 
-    $this->postImportResult->storeJobStatus($data->getIdentifier(), $data->getVersion(), $status, $percent_done, $message);
+    // Set the properties of the object
+    $postImportResource = new PostImportResource($data->getIdentifier(), $data->getVersion(), $status, $message);
+
+    // Store the object properties into the dkan_post_import_job_status table.
+    $this->postImportResult->storeJobStatus($postImportResource);
   }
 
   /**
