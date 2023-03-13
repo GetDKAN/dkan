@@ -25,7 +25,7 @@
         "getdkan/rooted-json-data": "^0.1",
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.5.8 || ^7.4.5",
-        "ilbee/csv-response": "^1.0",
+        "ilbee/csv-response": "^1.1.1",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
         "neitanod/forceutf8": "~2.0",
         "npm-asset/select2": "^4.0",
