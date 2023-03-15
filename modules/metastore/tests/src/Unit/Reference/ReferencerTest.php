@@ -23,7 +23,7 @@ use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -452,7 +452,7 @@ class ReferencerTest extends TestCase {
     $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
     // Test Mime Type detection on a invalid remote file path.
     $data = $this->getData('http://invalid');
-    $this->expectException(RequestException::class);
+    $this->expectException(ConnectException::class);
     $referencer->reference($data);
   }
 
