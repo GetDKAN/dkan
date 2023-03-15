@@ -76,7 +76,7 @@ class QueryDownloadController extends AbstractQueryController {
         $this->sendRow($handle, $this->getHeaderRow($result));
 
         // Get the result pointer and send each row to the stream one by one.
-        $result = $this->datastoreService->runResultsQuery($datastoreQuery, FALSE);
+        $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE, TRUE);
         while ($row = $result->fetchAssoc()) {
           $this->sendRow($handle, array_values($row));
         }

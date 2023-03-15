@@ -1,5 +1,5 @@
 # DKAN
-[DKAN](https://getdkan.com) - An Open Data Catalog built on [Drupal 8](https://www.drupal.org/documentation)
+[DKAN](https://getdkan.com) - An Open Data Catalog built on [Drupal 9](https://www.drupal.org/documentation)
 
 [![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/2.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/2.x)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a02bf3362b94749579a1/maintainability)](https://codeclimate.com/github/GetDKAN/dkan/maintainability)
@@ -39,3 +39,4 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 ---
 
 > Looking for the Drupal 7 version of DKAN? See the 7.x-1.x branch on [DKAN's Github Repository](https://github.com/GetDKAN/dkan/tree/7.x-1.x).
+

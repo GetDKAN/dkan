@@ -13,7 +13,6 @@ class Referencer implements ReferencerInterface {
    * @var string
    */
   protected const DEFAULT_MIME_TYPE = 'text/plain';
-
   /**
    * The reference information by property.
    *
@@ -48,7 +47,7 @@ class Referencer implements ReferencerInterface {
       if (is_array($value)) {
         $metadata->{$propertyName} = $this->referenceArray($reference, $value);
       }
-      else { 
+      else {
         $metadata->{$propertyName} = $reference->reference($value);
       }
     }

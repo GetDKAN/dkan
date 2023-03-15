@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Storage;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
@@ -39,8 +39,10 @@ class DatabaseTableTest extends TestCase {
    *
    */
   public function testGetSchema() {
+    $connectionChain = $this->getConnectionChain();
+
     $databaseTable = new DatabaseTable(
-      $this->getConnectionChain()->getMock(),
+      $connectionChain->getMock(),
       $this->getResource()
     );
 
@@ -67,55 +69,20 @@ class DatabaseTableTest extends TestCase {
           "mysql_type" => "text",
         ],
       ],
-    ];
-
-    $this->assertEquals($expectedSchema['fields'], $schema['fields']);
-  }
-
-  /**
-   * Ensure indexer service is used during create table code flow.
-   */
-  public function testIndexerService() {
-    // Stub event dispatcher service.
-    $eventDispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-    $container = new ContainerBuilder();
-    $container->set('event_dispatcher', $eventDispatcher);
-    \Drupal::setContainer($container);
-
-    $schema = [
-      "fields" => [
-        "record_number" => [
-          "type" => "serial",
-          "unsigned" => TRUE,
-          "not null" => TRUE,
+      "indexes" => [
+        "idx1" => [
+          "first_name",
+        ],
+      ],
+      "fulltext indexes" => [
+        "ftx1" => [
+          "first_name",
+          "last_name",
         ],
       ],
     ];
 
-    $connection = $this->getConnectionChain()
-      ->add(Schema::class, "tableExists", FALSE)
-      ->add(Schema::class, "createTable", FALSE)
-      ->add(Connection::class, 'select', Select::class, 'select_1')
-      ->add(Select::class, 'fields', Select::class)
-      ->add(Select::class, 'countQuery', Select::class)
-      ->add(Select::class, 'execute', StatementInterface::class)
-      ->add(StatementInterface::class, 'fetchField', 1)
-      ->getMock();
-
-    $databaseTable = new DatabaseTable(
-      $connection,
-      $this->getResource()
-    );
-
-    $indexerClass = $this->getMockBuilder(IndexManager::class);
-    $indexer = $indexerClass
-      ->onlyMethods(["modifySchema"])
-      ->getMock();
-    $indexer->expects($this->once())
-      ->method('modifySchema');
-    $databaseTable->setIndexManager($indexer);
-    $databaseTable->setSchema($schema);
-    $databaseTable->count();
+    $this->assertEquals($expectedSchema['fields'], $schema['fields']);
   }
 
   /**
@@ -415,6 +382,27 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
+   *
+   */
+  public function testNoFulltextIndexFound() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("SQLSTATE[HY000]: General error: 1191 Can't find FULLTEXT index matching the column list..."));
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+
+    $this->expectExceptionMessage("You have attempted a fulltext match against a column that is not indexed for fulltext searching");
+    $databaseTable->query($query);
+  }
+
+  /**
    * Private.
    */
   private function getConnectionChain() {
@@ -435,11 +423,32 @@ class DatabaseTableTest extends TestCase {
       ]
     ];
 
+    $indexInfo = [
+      (object) [
+        'Key_name' => "idx1",
+        'Column_name' => 'first_name',
+        'Index_type' => 'FOO',
+      ],
+      (object) [
+        'Key_name' => "ftx1",
+        'Column_name' => 'first_name',
+        'Index_type' => 'FULLTEXT',
+      ],
+      (object) [
+        'Key_name' => "ftx2",
+        'Column_name' => 'first_name',
+        'Index_type' => 'FULLTEXT',
+      ],
+    ];
+
     $chain = (new Chain($this))
       // Construction.
       ->add(Connection::class, "schema", Schema::class)
       ->add(Connection::class, 'query', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetchAll', $fieldInfo)
+      ->add(Connection::class, 'getConnectionOptions', ['driver' => 'mysql'])
+      ->add(StatementWrapper::class, 'fetchAll',
+        (new Sequence())->add($fieldInfo)->add($indexInfo)
+      )
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Schema::class, 'getComment',
         (new Sequence())->add(NULL)->add('First Name')->add('lAST nAME')
@@ -453,7 +462,7 @@ class DatabaseTableTest extends TestCase {
    * Private.
    */
   private function getResource() {
-    return new Resource("people", "", "text/csv");
+    return new DatastoreResource("people", "", "text/csv");
   }
 
 }

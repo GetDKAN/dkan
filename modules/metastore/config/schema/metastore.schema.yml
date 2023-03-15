@@ -1,0 +1,16 @@
+metastore.settings:
+  type: config_object
+  label: 'Metastore Settings'
+  mapping:
+    data_dictionary_mode:
+      type: string
+      label: 'Dictionary Mode'
+    data_dictionary_sitewide:
+      type: string
+      label: 'Sitewide Dictionary ID'
+    property_list:
+      type: sequence
+      label: 'Property List'
+      sequence:
+        type: string
+        label: 'Property'

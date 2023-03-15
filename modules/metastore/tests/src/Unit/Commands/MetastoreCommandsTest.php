@@ -6,6 +6,7 @@ use Drupal\Core\Logger\LoggerChannel;
 use Drupal\metastore\Commands\MetastoreCommands;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
+use Drush\Log\DrushLoggerManager;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -19,13 +20,18 @@ class MetastoreCommandsTest extends TestCase {
    *
    */
   public function testPublish() {
+    // Set up for the difference between Drush 10 and Drush 11.
+    $loggerClass = LoggerInterface::class;
+    if (class_exists(DrushLoggerManager::class)) {
+      $loggerClass = DrushLoggerManager::class;
+    }
     $dataFactory = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', Data::class)
       ->add(Data::class, 'publish', TRUE)
       ->getMock();
 
     $loggerChain = (new Chain($this))
-      ->add(LoggerInterface::class, 'info', NULL, 'success');
+      ->add($loggerClass, 'info', NULL, 'success');
 
     $logger = $loggerChain->getMock();
 
@@ -40,13 +46,18 @@ class MetastoreCommandsTest extends TestCase {
    *
    */
   public function testPublishException() {
+    // Set up for the difference between Drush 10 and Drush 11.
+    $loggerClass = LoggerInterface::class;
+    if (class_exists(DrushLoggerManager::class)) {
+      $loggerClass = DrushLoggerManager::class;
+    }
     $dataFactory = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', Data::class)
       ->add(Data::class, 'publish', new \Exception("Some error."))
       ->getMock();
 
     $loggerChain = (new Chain($this))
-      ->add(LoggerChannel::class, 'error', NULL, 'error');
+      ->add($loggerClass, 'error', NULL, 'error');
 
     $logger = $loggerChain->getMock();
 

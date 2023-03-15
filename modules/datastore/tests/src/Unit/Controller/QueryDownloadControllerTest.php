@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\common\DatasetInfo;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryDownloadController;
+use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
@@ -23,6 +24,9 @@ use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Drupal\common\Storage\SelectFactory;
+use Drupal\Core\Database\Query\Select;
+use Drupal\Tests\common\Unit\Connection;
 
 /**
  *
@@ -31,7 +35,7 @@ class QueryDownloadControllerTest extends TestCase {
 
   private $buffer;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Set cache services
     $options = (new Options)
@@ -42,6 +46,13 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
+    $this->selectFactory = $this->getSelectFactory();
+
+  }
+
+  protected function tearDown(): void {
+    parent::tearDown();
+    $this->buffer = NULL;
   }
 
   /**
@@ -49,7 +60,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompare($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-
+    $dataDictionaryFields = [
+      'name' => 'date',
+      'type' => 'date',
+      'format '=>'%m/%d/%Y'
+    ];
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $csv = $response->getContent();
@@ -57,6 +72,7 @@ class QueryDownloadControllerTest extends TestCase {
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
     ob_start(['self', 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
+    $streamResponse->dataDictionaryFields = $dataDictionaryFields;
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;
     ob_get_clean();
@@ -80,6 +96,48 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
+  }
+
+  public function queryResultReformatted($data){
+    $request = $this->mockRequest($data);
+    $dataDictionaryFields = [
+      'name' => 'date',
+      'type' => 'date',
+      'format '=>'%m/%d/%Y'
+    ];
+    $qController = QueryController::create($this->getQueryContainer(500));
+    $response = $qController->query($request);
+    $csv = $response->getContent();
+
+    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    ob_start(['self', 'getBuffer']);
+    $streamResponse = $dController->query($request);
+    $streamResponse->dataDictionaryFields = $dataDictionaryFields;
+    //$streamResponse->sendContent();
+    $this->selectFactory->create($streamResponse);
+
+    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
+    $this->assertEquals($csv, $streamedCsv);
+  }
+
+  /**
+   *
+   */
+  private function getSelectFactory() {
+    return new SelectFactory($this->getConnection());
+  }
+
+  /**
+   *
+   */
+  private function getConnection() {
+    return (new Chain($this))
+      ->add(
+        Connection::class,
+        "select",
+        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
+      )
+      ->getMock();
   }
 
   /**
@@ -335,6 +393,7 @@ class QueryDownloadControllerTest extends TestCase {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", Service::class)
+      ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
@@ -374,7 +433,9 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(Service::class, "getQueryStorageMap", $storageMap)
+      ->add(Query::class, "getQueryStorageMap", $storageMap)
+      ->add(Query::class, 'getDatastoreService',  Service::class)
+      ->add(Service::class, 'getDataDictionaryFields', NULL)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
@@ -430,7 +491,7 @@ class QueryDownloadControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_$id` VALUES ($valuesStr);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new Resource($id, "data-$id.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable($connection, new DatastoreResource($id, "data-$id.csv", "text/csv"));
     $storage->setSchema([
       'fields' => $fields,
     ]);

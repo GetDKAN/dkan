@@ -2,9 +2,7 @@
 
 namespace Drupal\common\Storage;
 
-use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
-use Drupal\indexer\IndexManager;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
 
@@ -12,10 +10,16 @@ use Drupal\common\EventDispatcherTrait;
  * Base class for database storage methods.
  */
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
-  use SqlStorageTrait;
   use EventDispatcherTrait;
 
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
+
+  /**
+   * A schema. Should be a drupal schema array.
+   *
+   * @var array
+   */
+  protected $schema;
 
   /**
    * Drupal DB connection object.
@@ -23,13 +27,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @var \Drupal\Core\Database\Connection
    */
   protected $connection;
-
-  /**
-   * Optional index manager service.
-   *
-   * @var null|\Drupal\indexer\IndexManager
-   */
-  protected $indexManager;
 
   /**
    * Get the full name of datastore db table.
@@ -66,16 +63,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
     }
-  }
-
-  /**
-   * Set an optional index manager service.
-   *
-   * @param \Drupal\indexer\IndexManager $indexManager
-   *   Index manager.
-   */
-  public function setIndexManager(IndexManager $indexManager) {
-    $this->indexManager = $indexManager;
   }
 
   /**
@@ -256,6 +243,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       // Portion of the message => User friendly message.
       'Column not found' => 'Column not found',
       'Mixing of GROUP columns' => 'You may not mix simple properties and aggregation expressions in a single query. If one of your properties includes an expression with a sum, count, avg, min or max operator, remove other properties from your query and try again',
+      'Can\'t find FULLTEXT index matching the column list' => 'You have attempted a fulltext match against a column that is not indexed for fulltext searching',
     ];
     foreach ($messages as $portion => $message) {
       if (strpos($unsanitizedMessage, $portion) !== FALSE) {
@@ -266,9 +254,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Private.
+   * Create the table in the db if it does not yet exist.
    */
-  private function setTable() {
+  protected function setTable() {
     if (!$this->tableExist($this->getTableName())) {
       if ($this->schema) {
         $this->tableCreate($this->getTableName(), $this->schema);
@@ -304,10 +292,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   private function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
-    // Add indexes if we have an index manager.
-    if (method_exists($this->indexManager, 'modifySchema')) {
-      $schema = $this->indexManager->modifySchema($table_name, $schema);
-    }
+
     $this->connection->schema()->createTable($table_name, $schema);
   }
 
@@ -346,6 +331,70 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       ];
     }
     return $schema;
+  }
+
+  /**
+   * Clean up and set the schema for SQL storage.
+   */
+  private function cleanSchema(): void {
+    $cleanSchema = $this->schema;
+    $cleanSchema['fields'] = [];
+    foreach ($this->schema['fields'] as $field => $info) {
+      $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
+      $new = trim($new);
+      $new = strtolower($new);
+      $new = str_replace(" ", "_", $new);
+
+      $mysqlMaxColLength = 64;
+      if (strlen($new) > $mysqlMaxColLength) {
+        $strings = str_split($new, $mysqlMaxColLength - 5);
+        $token = $this->generateToken($field);
+        $new = $strings[0] . "_{$token}";
+      }
+
+      if ($field != $new) {
+        $info['description'] = $field;
+      }
+
+      $cleanSchema['fields'][$new] = $info;
+    }
+
+    $this->schema = $cleanSchema;
+  }
+
+  /**
+   * Define a schema for the table.
+   *
+   * @param array $schema
+   *   A schema. Should be a drupal schema array.
+   */
+  public function setSchema(array $schema): void {
+    $this->schema = $schema;
+    $this->cleanSchema();
+  }
+
+  /**
+   * Get the schema for this table.
+   *
+   * @return array
+   *   A schema array.
+   */
+  public function getSchema(): array {
+    return $this->schema;
+  }
+
+  /**
+   * Generate a short 4-character token for a field, to help truncate.
+   *
+   * @param string $field
+   *   A field name from the schema.
+   *
+   * @return string|false
+   *   The four-character token, or false if failed.
+   */
+  public function generateToken(string $field) {
+    $md5 = md5($field);
+    return substr($md5, 0, 4);
   }
 
 }

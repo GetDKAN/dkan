@@ -3,14 +3,14 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
 
 /**
  * Database storage object.
  *
- * @see \Dkan\Datastore\Storage\StorageInterface
+ * @see \Drupal\common\Storage\DatabaseTableInterface
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
@@ -19,7 +19,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Datastore resource object.
    *
-   * @var \Dkan\Datastore\Resource
+   * @var \Drupal\datastore\DatastoreResource
    */
   private $resource;
 
@@ -28,10 +28,10 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
-   * @param \Dkan\Datastore\Resource $resource
+   * @param \Drupal\datastore\DatastoreResource $resource
    *   A resource.
    */
-  public function __construct(Connection $connection, Resource $resource) {
+  public function __construct(Connection $connection, DatastoreResource $resource) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
@@ -46,10 +46,18 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * Get summary.
    */
   public function getSummary() {
-    $columns = $this->getSchema()['fields'];
+    $schema = $this->getSchema();
+    $columns = $schema['fields'];
+    $indexes = $schema['indexes'] ?? NULL;
+    $fulltext_indexes = $schema['fulltext indexes'] ?? NULL;
     $numOfColumns = count($columns);
     $numOfRows = $this->count();
-    return new TableSummary($numOfColumns, $columns, $numOfRows);
+    return new TableSummary(
+      $numOfColumns,
+      $columns,
+      $indexes,
+      $fulltext_indexes,
+      $numOfRows);
   }
 
   /**
@@ -57,6 +65,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * {@inheritdoc}
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return (object) ['resource' => $this->resource];
   }
@@ -66,7 +75,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public static function hydrate(string $json) {
     $data = json_decode($json);
-    $resource = Resource::hydrate(json_encode($data->resource));
+    $resource = DatastoreResource::hydrate(json_encode($data->resource));
 
     return new DatabaseTable(\Drupal::service('database'), $resource);
   }
@@ -141,7 +150,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * {@inheritdoc}
    */
-  public function setSchema($schema) {
+  public function setSchema($schema): void {
     $fields = $schema['fields'];
     $new_field = [
       $this->primaryKey() =>
@@ -159,12 +168,22 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Get table schema.
+   * Get the table schema in Drupal Schema API format.
    *
-   * @todo Note that this will break on PostgresSQL
+   * NOTE: This will likely fail on any db driver other than mysql.
+   *
+   * @param string $tableName
+   *   The table name.
+   * @param array $fieldsInfo
+   *   Array of fields info from DESCRIBE query.
+   *
+   * @return array
+   *   Full Drupal Schema API array.
    */
-  protected function buildTableSchema($tableName, $fieldsInfo) {
+  protected function buildTableSchema(string $tableName, array $fieldsInfo) {
+    // Add descriptions to schema from column comments.
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
+    $schema = ['fields' => []];
     foreach ($fieldsInfo as $info) {
       $name = $info->Field;
       $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
@@ -173,7 +192,34 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       ];
       $schema['fields'][$name] = array_filter($schema['fields'][$name]);
     }
-    return $schema ?? ['fields' => []];
+    // Add index information to schema if available.
+    $this->addIndexInfo($schema);
+
+    return $schema;
+  }
+
+  /**
+   * Add index information to table schema.
+   *
+   * @param array $schema
+   *   Drupal Schema API array.
+   */
+  protected function addIndexInfo(array &$schema): void {
+    if ($this->connection->getConnectionOptions()['driver'] != 'mysql') {
+      return;
+    }
+
+    $indexInfo = $this->connection->query("SHOW INDEXES FROM  `{$this->getTableName()}`")->fetchAll();
+    foreach ($indexInfo as $info) {
+      // Primary key is handled elsewhere.
+      if ($info->Key_name == 'PRIMARY') {
+        continue;
+      }
+      // Deviating slightly from Drupal Schema API to specify fulltext indexes.
+      $indexes_key = $info->Index_type == 'FULLTEXT' ? 'fulltext indexes' : 'indexes';
+      $name = $info->Key_name;
+      $schema[$indexes_key][$name][] = $info->Column_name;
+    }
   }
 
   /**

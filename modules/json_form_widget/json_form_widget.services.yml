@@ -4,12 +4,14 @@ services:
     arguments: ['@dkan.metastore.schema_retriever','@json_form.router', '@json_form.schema_ui_handler', '@logger.factory']
   json_form.router:
     class: \Drupal\json_form_widget\FieldTypeRouter
-    arguments: ['@json_form.string_helper','@json_form.object_helper', '@json_form.array_helper']
+    arguments: ['@json_form.string_helper','@json_form.object_helper', '@json_form.array_helper', '@json_form.integer_helper']
   json_form.value_handler:
     class: \Drupal\json_form_widget\ValueHandler
   json_form.string_helper:
     class: \Drupal\json_form_widget\StringHelper
     arguments: ['@email.validator']
+  json_form.integer_helper:
+    class: \Drupal\json_form_widget\IntegerHelper
   json_form.object_helper:
     class: \Drupal\json_form_widget\ObjectHelper
   json_form.array_helper:

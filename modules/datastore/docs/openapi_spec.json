@@ -319,7 +319,7 @@
                 }
             },
             "get": {
-                "operationId": "datastore-datasetindex-query-get",
+                "operationId": "datastore-resource-query-get",
                 "summary": "Query a single datastore resource with get",
                 "description": "Simple GET equivalent of a POST query. Note that parameters containing arrays or objects are not yet supported by SwaggerUI. For conditions, sorts, and other complex parameters, write your query in JSON and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
                 "tags": ["Datastore: query"],
@@ -363,7 +363,7 @@
                 }
             },
             "get": {
-                "operationId": "datastore-resource-query-get",
+                "operationId": "datastore-datasetindex-query-get",
                 "summary": "Query a single datastore resource with get",
                 "description": "Simple GET equivalent of a POST query -- see the POST endpoint documentation for full query schema. A few basic parameters are provided here as examples. For more reliable queries, write your query in JSON and then convert to a query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
                 "tags": ["Datastore: query"],

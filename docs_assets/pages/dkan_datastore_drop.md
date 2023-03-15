@@ -1,4 +1,4 @@
-@page dkandatastoredrop dkan:datastore:drop
+# dkan:datastore:drop {#dkandatastoredrop}
 
 Drop a datastore.
 
