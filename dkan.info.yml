@@ -11,3 +11,12 @@ dependencies:
   - harvest
   - config
   - json_form_widget
+  - datetime
+  - field_ui
+  - file
+  - link
+  - menu_ui
+  - options
+  - path
+  - text
+  - toolbar
