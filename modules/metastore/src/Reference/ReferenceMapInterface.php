@@ -19,9 +19,15 @@ interface ReferenceMapInterface {
   public function getAllReferences(string $schemaId): array;
 
   /**
-   * Load a full reference object for a schema and property name.
+   * Get the reference for a single property.
+   *
+   * @param string $schemaId
+   *   The schema ID/name (e.g. "dataset")
+   * @param string $propertyName
+   *   The property of the schema.
    *
    * @return null|\Drupal\metastore\Reference\ReferenceTypeInterface
+   *   The reference object for the property.
    */
   public function getReference(string $schemaId, string $propertyName): ?ReferenceTypeInterface;
 

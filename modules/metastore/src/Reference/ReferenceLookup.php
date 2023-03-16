@@ -7,6 +7,7 @@ use Drupal\metastore\ReferenceLookupInterface;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheTagsInvalidator;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use RootedData\RootedJsonData;
@@ -29,6 +30,20 @@ class ReferenceLookup implements ReferenceLookupInterface {
    * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
    */
   protected $metastoreItemFactory;
+
+  /**
+   * Cache tag invalidator service.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidator
+   */
+  protected CacheTagsInvalidator $invalidator;
+
+  /**
+   * Module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected ModuleHandlerInterface $moduleHandler;
 
   /**
    * Module Handler service.
@@ -104,7 +119,7 @@ class ReferenceLookup implements ReferenceLookupInterface {
     // Decode the supplied JSON metadata string.
     $metadata = json_decode($json);
     // Determine the path to the legacy metadata schema file.
-    $module_path = $this->moduleHandler->getModule(get_module_name())->getPath();
+    $module_path = $this->moduleHandler->getModule('metastore')->getPath();
     $legacy_schema_path = $module_path . '/docs/legacy_metadata.json';
     // Fetch the legacy metadata schema.
     $legacy_schema = file_get_contents($legacy_schema_path);

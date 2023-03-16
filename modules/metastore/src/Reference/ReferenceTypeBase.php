@@ -2,8 +2,10 @@
 
 namespace Drupal\metastore\Reference;
 
+use Contracts\FactoryInterface;
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 
 /**
  * Simple container for reference information.
@@ -13,9 +15,17 @@ abstract class ReferenceTypeBase extends PluginBase implements ReferenceTypeInte
   /**
    * DKAN schema ID.
    *
-   * @var string|null
+   * @var string
    */
-  protected $schemaId;
+  protected string $schemaId;
+
+
+  /**
+   * Schema property.
+   *
+   * @var string
+   */
+  protected string $property;
 
   /**
    * Metadata context (the current metadata object).
@@ -23,6 +33,20 @@ abstract class ReferenceTypeBase extends PluginBase implements ReferenceTypeInte
    * @var mixed
    */
   protected $context;
+
+  /**
+   * The metastore logger.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  protected LoggerChannelInterface $logger;
+
+  /**
+   * Metastore storage factory.
+   *
+   * @var \Contracts\FactoryInterface
+   */
+  protected FactoryInterface $storageFactory;
 
   /**
    * Constructs a ReferenceType object.

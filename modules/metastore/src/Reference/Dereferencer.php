@@ -8,11 +8,11 @@ namespace Drupal\metastore\Reference;
 class Dereferencer implements DereferencerInterface {
 
   /**
-   * Storage factory interface service.
+   * Reference map service.
    *
-   * @var \Contracts\FactoryInterface
+   * @var \Drupal\metastore\Reference\ReferenceMapInterface
    */
-  private $storageFactory;
+  private ReferenceMapInterface $referenceMap;
 
   /**
    * Constructor.
@@ -56,6 +56,8 @@ class Dereferencer implements DereferencerInterface {
    *   The reference information.
    * @param string|string[] $value
    *   The value to dereference.
+   * @param bool $showId
+   *   Wrap the value in an object with identifier/data properties?
    */
   private function dereferenceProperty(ReferenceTypeInterface $reference, $value, bool $showId = FALSE) {
     if (!is_array($value)) {

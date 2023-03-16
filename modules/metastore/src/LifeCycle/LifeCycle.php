@@ -3,8 +3,6 @@
 namespace Drupal\metastore\LifeCycle;
 
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\DataResource;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\MetastoreItemInterface;
@@ -183,54 +181,6 @@ class LifeCycle {
         $version,
       ]);
     }
-  }
-
-  /**
-   * Get a download URL.
-   *
-   * @param string $resourceIdentifier
-   *   Identifier for resource.
-   *
-   * @return array
-   *   Array of reference and original.
-   */
-  private function retrieveDownloadUrlFromResourceMapper(string $resourceIdentifier) {
-    $reference = [];
-    $original = NULL;
-
-    $info = DataResource::parseUniqueIdentifier($resourceIdentifier);
-
-    // Load resource object.
-    $sourceResource = $this->resourceMapper->get($info['identifier'], DataResource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
-
-    if (!$sourceResource) {
-      return [$reference, $original];
-    }
-
-    $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = \resource_mapper_display();
-    $resource = $sourceResource;
-
-    if (
-      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
-    ) {
-      $resource = $new;
-      $reference[] = $this->createResourceReference($resource);
-    }
-    $original = $resource->getFilePath();
-
-    return [$reference, $original];
-  }
-
-  /**
-   * Private.
-   */
-  private function createResourceReference(DataResource $resource): object {
-    return (object) [
-      "identifier" => $resource->getUniqueIdentifier(),
-      "data" => $resource,
-    ];
   }
 
   /**

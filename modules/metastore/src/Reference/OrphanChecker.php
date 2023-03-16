@@ -18,6 +18,13 @@ class OrphanChecker {
   protected $queueService;
 
   /**
+   * The config service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private ConfigFactoryInterface $configService;
+
+  /**
    * Constructor.
    */
   public function __construct(ConfigFactoryInterface $configService, QueueFactory $queueService) {

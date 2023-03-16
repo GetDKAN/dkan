@@ -2,11 +2,12 @@
 
 namespace Drupal\metastore\Plugin\MetastoreReferenceType;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\file\Entity\File;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\ReferenceTypeBase;
 use Drupal\metastore\ResourceMapper;
@@ -35,7 +36,21 @@ class ResourceReference extends ReferenceTypeBase {
    *
    * @var \Drupal\metastore\ResourceMapper
    */
-  protected $resourceMapper;
+  protected ResourceMapper $resourceMapper;
+
+  /**
+   * Drupal file system.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected FileSystemInterface $fileSystem;
+
+  /**
+   * Drupal entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Constructs a ReferenceType object.
@@ -131,14 +146,14 @@ class ResourceReference extends ReferenceTypeBase {
   /**
    * Build object with identifier/data structure for reference.
    *
-   * @param Drupal\common\Resource $resource
+   * @param Drupal\common\DataResource $resource
    *   A DKAN resource object.
    *
    * @return object
    *   The same resource object, wrapped in a stdClass object with an identifier
    *   property.
    */
-  private function createResourceReference(Resource $resource): object {
+  private function createResourceReference(DataResource $resource): object {
     return (object) [
       "identifier" => $resource->getUniqueIdentifier(),
       "data" => $resource,
@@ -159,7 +174,7 @@ class ResourceReference extends ReferenceTypeBase {
   protected function registerWithResourceMapper(string $downloadUrl, string $mimeType): string {
     try {
       // Create a new resource using the supplied resource details.
-      $resource = new Resource($downloadUrl, $mimeType);
+      $resource = new DataResource($downloadUrl, $mimeType);
 
       // Attempt to register the url with the resource file mapper.
       if ($this->resourceMapper->register($resource)) {
@@ -175,7 +190,7 @@ class ResourceReference extends ReferenceTypeBase {
       // being registered, generate a new version of the resource and update the
       // download URL with the new version ID.
       if (isset($info[0]->identifier)) {
-        $stored = $this->resourceMapper->get($info[0]->identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE);
+        $stored = $this->resourceMapper->get($info[0]->identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
         $downloadUrl = $this->handleExistingResource($info, $stored, $mimeType);
       }
     }
@@ -187,7 +202,7 @@ class ResourceReference extends ReferenceTypeBase {
    * Private.
    */
   protected function handleExistingResource($info, $stored, $mimeType) {
-    if ($info[0]->perspective == Resource::DEFAULT_SOURCE_PERSPECTIVE &&
+    if ($info[0]->perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
       // Update the MIME type, since this may be updated by the user.
@@ -286,7 +301,7 @@ class ResourceReference extends ReferenceTypeBase {
 
     // If a valid file was found for the given file name, extract the file's
     // mime type.
-    if ($file !== FALSE) {
+    if ($file instanceof File) {
       $mime_type = $file->getMimeType();
     }
     // Otherwise, log an error notifying the user that a file was not found.
@@ -375,12 +390,12 @@ class ResourceReference extends ReferenceTypeBase {
    *   URL value or null if none found.
    */
   protected function resourceLookup(string $resourceIdentifier) {
-    $info = Resource::parseUniqueIdentifier($resourceIdentifier);
+    $info = DataResource::parseUniqueIdentifier($resourceIdentifier);
 
     // Load resource object.
     $resource = $this->resourceMapper->get(
       $info['identifier'],
-      Resource::DEFAULT_SOURCE_PERSPECTIVE,
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE,
       $info['version']
     );
 
@@ -391,7 +406,7 @@ class ResourceReference extends ReferenceTypeBase {
     $perspective = resource_mapper_display();
 
     if (
-      $perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE &&
+      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
     ) {
       $resource = $new;

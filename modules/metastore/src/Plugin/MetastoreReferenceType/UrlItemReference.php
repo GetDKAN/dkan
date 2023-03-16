@@ -77,7 +77,7 @@ class UrlItemReference extends ItemReference {
    * @param string|object $value
    *   The property's value used to find an existing reference.
    *
-   * @return string|FALSE
+   * @return string|false
    *   The existing reference's uuid, or FALSE if not found.
    */
   protected function checkExistingReference($value) {

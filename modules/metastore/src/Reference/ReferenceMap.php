@@ -4,6 +4,11 @@ namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 
+/**
+ * Refernce map service.
+ *
+ * Maps reference types to schema properties.
+ */
 class ReferenceMap implements ReferenceMapInterface {
 
   /**
@@ -14,10 +19,28 @@ class ReferenceMap implements ReferenceMapInterface {
   private $referenceTypeManager;
 
   /**
+   * The config service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private ConfigFactoryInterface $configService;
+
+  /**
+   * An array of arrays of references keyed by schema then property name.
+   *
+   * @var array
+   */
+  private array $map;
+
+  /**
    * Constructor.
    *
+   * @param \Drupal\metastore\Reference\ReferenceTypeManager $referenceTypeManager
+   *   Reference type manager service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
-   *   The Drupal config service.
+   *   Drupal config service.
+   *
+   * @return void
    */
   public function __construct(ReferenceTypeManager $referenceTypeManager, ConfigFactoryInterface $configService) {
     $this->referenceTypeManager = $referenceTypeManager;
@@ -75,7 +98,20 @@ class ReferenceMap implements ReferenceMapInterface {
     return $refs;
   }
 
-  protected function createReference($type, $propertyName, $schemaId = NULL) {
+  /**
+   * Build a reference object.
+   *
+   * @param string $type
+   *   Refernce type - ID of a plugin that implements ReferenceTypeInterface.
+   * @param string $propertyName
+   *   The property of the schema to build the reference for.
+   * @param string $schemaId
+   *   ID of the schema to pull the property from.
+   *
+   * @return \Drupal\metastore\Reference\ReferenceTypeInterface
+   *   An instantiated ReferenceType object.
+   */
+  protected function createReference(string $type, string $propertyName, string $schemaId): ReferenceTypeInterface {
     $config = [
       'property' => $propertyName,
       'schemaId' => $schemaId,
