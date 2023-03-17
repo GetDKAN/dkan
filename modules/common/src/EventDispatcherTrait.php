@@ -3,6 +3,7 @@
 namespace Drupal\common;
 
 use Drupal\common\Events\Event;
+use Symfony\Contracts\EventDispatcher\Event as SymfonyEvent;
 
 /**
  * Event dispatcher trait.
@@ -57,7 +58,7 @@ trait EventDispatcherTrait {
    *   True if the newer Symfony event system is available.
    */
   private function useLegacyDispatcher() {
-    return !class_exists('\Symfony\Contracts\EventDispatcher\Event');
+    return !class_exists(SymfonyEvent::class);
   }
 
   /**
