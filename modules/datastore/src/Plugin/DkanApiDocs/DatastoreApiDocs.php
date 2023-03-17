@@ -291,11 +291,11 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    * @todo Page through results in case 20 isn't enough.
    */
   private function getExampleIdentifiers() {
-    $all = $this->metastore->getAll("dataset", 0, 20);
+    $all = $this->metastore->getAll("dataset", 0, 20) ?? [];
     $i = 0;
     $datastore = FALSE;
     $identifiers = [];
-    while ($datastore == FALSE && $i < count($all)) {
+    while ($datastore == FALSE && $i < (is_countable($all) ? count($all) : 0)) {
       $item = $all[$i];
       $i++;
       $datastore = (bool) ($identifiers = $this->getDatastoreIds($item));

@@ -47,10 +47,10 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public function getSummary() {
     $schema = $this->getSchema();
-    $columns = $schema['fields'];
+    $columns = $schema['fields'] ?? [];
     $indexes = $schema['indexes'] ?? NULL;
     $fulltext_indexes = $schema['fulltext indexes'] ?? NULL;
-    $numOfColumns = count($columns);
+    $numOfColumns = is_countable($columns) ? count($columns) : 0;
     $numOfRows = $this->count();
     return new TableSummary(
       $numOfColumns,
@@ -127,7 +127,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Protected.
    */
-  protected function getNonSerialFields() {
+  protected function getNonSerialFields(): array {
     $fields = parent::getNonSerialFields();
     $index = array_search($this->primaryKey(), $fields);
     if ($index !== FALSE) {

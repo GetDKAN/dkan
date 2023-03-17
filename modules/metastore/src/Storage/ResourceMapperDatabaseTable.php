@@ -121,7 +121,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   /**
    * Protected.
    */
-  protected function getNonSerialFields() {
+  protected function getNonSerialFields(): array {
     $fields = parent::getNonSerialFields();
     $index = array_search($this->primaryKey(), $fields);
     if ($index !== FALSE) {

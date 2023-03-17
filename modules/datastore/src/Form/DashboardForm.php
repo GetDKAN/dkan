@@ -360,7 +360,7 @@ class DashboardForm extends FormBase {
       $distributions = $rev['distributions'];
       // For first distribution, combine with revision information.
       $rows[] = array_merge(
-        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+        $this->buildRevisionRow($rev, is_countable($distributions) ? count($distributions) : 0, $harvestStatus),
         $this->buildResourcesRow(array_shift($distributions))
       );
       // If there are more distributions, add additional rows for them.

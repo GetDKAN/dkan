@@ -161,11 +161,11 @@ class LifeCycle {
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
       $resourceIdentifier = $downloadUrl;
-      $ref = NULL;
-      $original = NULL;
-      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
+      $downloadInfo = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
+      $ref = (array) $downloadInfo[0] ?? [];
+      $original = $downloadInfo[1] ?? '';
 
-      $downloadUrl = isset($original) ? $original : "";
+      $downloadUrl = isset($original) ? $original : '';
 
       $refProperty = "%Ref:downloadURL";
       $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
