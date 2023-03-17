@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ImportJobTest extends TestCase {
 
-  private $database;
+  private ?TestMemStorage $database = null;
 
   /**
    * This method is called before each test.

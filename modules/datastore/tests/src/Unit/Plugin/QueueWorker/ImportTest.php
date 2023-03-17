@@ -25,7 +25,7 @@ use Procrastinator\Result;
  */
 class ImportTest extends TestCase {
 
-  private $data = [
+  private array $data = [
     'data' => [
       'identifier' => '12345',
       'version' => '23456',
