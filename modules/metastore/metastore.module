@@ -62,6 +62,8 @@ function resource_mapper_display() {
 
 /**
  * Helper method to retrieve the static value for a resource's revisioning.
+ *
+ * We use a static variable because it's set in an event subscriber.
  */
 function resource_mapper_new_revision() {
   return drupal_static('metastore_resource_mapper_new_revision', 0);

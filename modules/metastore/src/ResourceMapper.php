@@ -43,13 +43,23 @@ class ResourceMapper {
   }
 
   /**
-   * Helper method to retrieve the static value for a resource's display.
+   * Helper method to retrieve the static value for a resource's revisioning.
    *
    * @return string
    *   A resource perspective.
    */
   public function newRevision() {
     return \drupal_static('metastore_resource_mapper_new_revision', 0);
+  }
+
+  /**
+   * Helper method to retrieve the static value for a resource's display.
+   *
+   * @return string
+   *   A resource perspective.
+   */
+  public function display() {
+    return \drupal_static('metastore_resource_mapper_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE);
   }
 
   /**
