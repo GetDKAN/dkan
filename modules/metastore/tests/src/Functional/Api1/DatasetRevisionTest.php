@@ -28,7 +28,7 @@ class DatasetRevisionTest extends Api1TestBase {
     ]);
     $responseBody = json_decode($response->getBody());
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals(2, count($responseBody));
+    $this->assertCount(2, $responseBody);
     $this->assertTrue($responseBody[0]->identifier > $responseBody[1]->identifier);
     $this->assertTrue($responseBody[0]->published);
 
@@ -146,7 +146,7 @@ class DatasetRevisionTest extends Api1TestBase {
         RequestOptions::AUTH => $this->auth,
       ]);
       $responseBody = json_decode($response->getBody());
-      $this->assertEquals($count, count($responseBody));
+      $this->assertEquals($count, is_countable($responseBody) ? count($responseBody) : 0);
 
       // Confirm dataset visibility matches expected.
       $expectedCode = $public ? 200 : 404;
@@ -166,7 +166,7 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
     ]);
     $responseBody = json_decode($response->getBody());
-    $this->assertEquals($count, count($responseBody));
+    $this->assertEquals($count, is_countable($responseBody) ? count($responseBody) : 0);
 
     // Test a bad dataset ID.
     $newRevision = (object) [
@@ -185,7 +185,7 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
     ]);
     $responseBody = json_decode($response->getBody());
-    $this->assertEquals($count, count($responseBody));
+    $this->assertEquals($count, is_countable($responseBody) ? count($responseBody) : 0);
 
 }
 

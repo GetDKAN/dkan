@@ -19,7 +19,7 @@ class DatasetItemTest extends Api1TestBase {
       ->get->responses->{"200"}->content->{"application/json"}->schema;
     $response = $this->http->request('GET', $this->endpoint);
     $responseBody = json_decode($response->getBody());
-    $this->assertEquals(2, count($responseBody));
+    $this->assertCount(2, $responseBody);
     $this->assertTrue(is_object($responseBody[1]));
     $this->assertJsonIsValid($responseSchema, $responseBody);
   }

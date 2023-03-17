@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 class SchemaRetrieverTest extends TestCase {
   use ServiceCheckTrait;
 
-  const APP_ROOT = __DIR__ . '/../files';
+  public const APP_ROOT = __DIR__ . '/../files';
 
   /**
    * Protected.

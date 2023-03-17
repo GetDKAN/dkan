@@ -9,8 +9,8 @@ use Drupal\common\Storage\Query;
  *
  */
 class DatabaseTableMock implements DatabaseTableInterface {
-  private $id = 0;
-  private $store = [];
+  private int $id = 0;
+  private array $store = [];
 
   public function primaryKey() {
     return 'id';

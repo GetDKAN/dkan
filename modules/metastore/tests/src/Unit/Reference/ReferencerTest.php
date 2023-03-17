@@ -38,23 +38,23 @@ class ReferencerTest extends TestCase {
    *
    * @var string
    */
-  const FILE_PATH = 'tmp/mycsv.csv';
+  public const FILE_PATH = 'tmp/mycsv.csv';
 
   /**
    * HTTP host protocol and domain for testing download URL.
    *
    * @var string
    */
-  const HOST = 'http://example.com';
+  public const HOST = 'http://example.com';
 
-  const MIME_TYPE = 'text/csv';
+  public const MIME_TYPE = 'text/csv';
 
   /**
    * List referenceable dataset properties.
    *
    * @var string[]
    */
-  const REFERENCEABLE_PROPERTY_LIST = [
+  public const REFERENCEABLE_PROPERTY_LIST = [
     'keyword' => 0,
     'distribution' => 'distribution',
     'title' => 0,

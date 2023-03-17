@@ -34,7 +34,7 @@ class MetastoreSubscriberTest extends TestCase {
    *
    * @var string
    */
-  const HOST = 'http://h-o.st';
+  public const HOST = 'http://h-o.st';
 
   /**
    * The ValidMetadataFactory class used for testing.
