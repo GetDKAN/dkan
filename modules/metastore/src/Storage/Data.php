@@ -328,10 +328,10 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @param object $data
    *   JSON data.
    *
-   * @return string|null
-   *   The content entity UUID, or null if failed.
+   * @return string
+   *   The content entity UUID.
    */
-  private function updateExistingEntity(ContentEntityInterface $entity, $data): ?string {
+  private function updateExistingEntity(ContentEntityInterface $entity, $data): string {
     $entity->{$this->schemaIdField} = $this->schemaId;
     $new_data = json_encode($data);
     $entity->{$this->metadataField} = $new_data;
@@ -365,7 +365,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   private function createNewEntity(string $uuid, $data) {
     $title = '';
     if ($this->schemaId === 'dataset') {
-      $title = isset($data->title) ? $data->title : $data->name;
+      $title = $data->title ?? $data->name;
     }
     else {
       $title = Service::metadataHash($data->data);

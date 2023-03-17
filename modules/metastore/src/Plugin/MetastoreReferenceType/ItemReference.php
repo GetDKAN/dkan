@@ -22,6 +22,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ItemReference extends ReferenceTypeBase {
 
   /**
+   * Resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected ResourceMapper $resourceMapper;
+
+  /**
    * Constructs a ReferenceType object.
    *
    * @param array $config
@@ -35,16 +42,20 @@ class ItemReference extends ReferenceTypeBase {
    *   Logger factory service.
    * @param \Contracts\FactoryInterface $storageFactory
    *   Metastore storage factory.
+   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   *   Resource mapper service.
    */
   public function __construct(
     array $config,
     $pluginId,
     $pluginDefinition,
     LoggerChannelFactoryInterface $loggerFactory,
-    FactoryInterface $storageFactory
+    FactoryInterface $storageFactory,
+    ResourceMapper $resourceMapper
   ) {
-    $this->storageFactory = $storageFactory;
     parent::__construct($config, $pluginDefinition, $pluginId, $loggerFactory);
+    $this->storage = $storageFactory->getInstance($this->schemaId());
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -69,7 +80,8 @@ class ItemReference extends ReferenceTypeBase {
   ) {
     $loggerFactory = $container->get('logger.factory');
     $storageFactory = $container->get('dkan.metastore.storage');
-    return new static($config, $pluginId, $pluginDefinition, $loggerFactory, $storageFactory);
+    $resourceMapper = $container->get('dkan.metastore.resource_mapper');
+    return new static($config, $pluginId, $pluginDefinition, $loggerFactory, $storageFactory, $resourceMapper);
   }
 
   /**
@@ -83,17 +95,7 @@ class ItemReference extends ReferenceTypeBase {
       $identifier = $this->createPropertyReference($value);
     }
 
-    if ($identifier) {
-      return $identifier;
-    }
-    $this->logger->error(
-      'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
-      [
-        '@property_id' => $this->property(),
-        '@value' => var_export($value, TRUE),
-      ]
-    );
-    return NULL;
+    return $identifier;
   }
 
   /**
@@ -105,7 +107,7 @@ class ItemReference extends ReferenceTypeBase {
    * @todo Refactor; this logic should be absracted and not distribution/resource-specific.
    */
   protected function newRevision() {
-    if ($this->property() == 'distribution' && ResourceMapper::newRevision()) {
+    if ($this->property() == 'distribution' && $this->resourceMapper->newRevision()) {
       return TRUE;
     }
     return FALSE;
@@ -115,9 +117,8 @@ class ItemReference extends ReferenceTypeBase {
    * {@inheritdoc}
    */
   public function dereference(string $identifier, bool $showId = FALSE) {
-    $storage = $this->storageFactory->getInstance($this->schemaId());
     try {
-      $value = $storage->retrieve($identifier);
+      $value = $this->storage->retrieve($identifier);
     }
     catch (MissingObjectException $exception) {
       $value = FALSE;
@@ -155,10 +156,9 @@ class ItemReference extends ReferenceTypeBase {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function checkExistingReference($value) {
-    $storage = $this->storageFactory->getInstance($this->schemaId());
-    $identifier = $storage->retrieveByHash(Service::metadataHash($value)) ?? NULL;
-    if ($identifier && !$storage->isPublished($identifier)) {
-      $storage->publish($identifier);
+    $identifier = $this->storage->retrieveByHash(Service::metadataHash($value)) ?? NULL;
+    if ($identifier && !$this->storage->isPublished($identifier)) {
+      $this->storage->publish($identifier);
     }
 
     return $identifier;
@@ -170,12 +170,12 @@ class ItemReference extends ReferenceTypeBase {
    * @param string|object $value
    *   The property's value.
    *
-   * @return string|null
+   * @return string
    *   The new reference's uuid, or NULL.
    *
    * @todo Replace identifier/data structure.
    */
-  protected function createPropertyReference($value) {
+  protected function createPropertyReference($value): string {
     // Create json metadata for the reference.
     $data = new \stdClass();
     $data->identifier = (new Uuid5())->generate($this->schemaId, $value);
@@ -183,8 +183,7 @@ class ItemReference extends ReferenceTypeBase {
     $json = json_encode($data);
 
     // Create node to store this reference.
-    $storage = $this->storageFactory->getInstance($this->schemaId());
-    $identifier = $storage->store($json, $data->identifier);
+    $identifier = $this->storage->store($json, $data->identifier);
     return $identifier;
   }
 
