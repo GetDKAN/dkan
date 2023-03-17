@@ -16,16 +16,13 @@ class CommonCommandsTest extends TestCase {
    *
    */
   public function testDatasetInfo() {
+    $data = ['uuid' => 'foo'];
+    $this->expectOutputString(json_encode($data, JSON_PRETTY_PRINT));
 
     $datasetInfo = (new Chain($this))
-      ->add(DatasetInfo::class, 'gather', ['uuid' => 'foo']);
-
+      ->add(DatasetInfo::class, 'gather', $data);
     $drush = new CommonCommands($datasetInfo->getMock());
-    $result = $drush->datasetInfo('foo');
-
-    $expected = json_encode(['uuid' => 'foo'], JSON_PRETTY_PRINT);
-
-    $this->expectOutputString($expected, $result);
+    $drush->datasetInfo('foo');
   }
 
 }

@@ -36,7 +36,7 @@ class DkanDocsTest extends ExistingSiteBase {
     $controller = $this->getController();
     $response = $controller->getComplete('yaml');
     $this->assertEquals(200, $response->getStatusCode());
-    $data = Yaml::decode($response->getContent(), TRUE);
+    $data = Yaml::decode($response->getContent());
 
     // Basic auth is included.
     $this->assertTrue(isset($data["components"]["securitySchemes"]["basic_auth"]));

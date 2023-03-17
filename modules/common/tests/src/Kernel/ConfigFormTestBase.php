@@ -52,6 +52,7 @@ abstract class ConfigFormTestBase extends KernelTestBase {
    * @dataProvider provideFormData
    */
   public function testConfigForm(array $form_values) {
+    $values = [];
     // Programmatically submit the given values.
     foreach ($form_values as $form_key => $data) {
       $values[$form_key] = $data['#value'];

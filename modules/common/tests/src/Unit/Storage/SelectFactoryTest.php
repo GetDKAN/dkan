@@ -13,7 +13,7 @@ use Drupal\Tests\common\Unit\Connection;
  *
  */
 class SelectFactoryTest extends TestCase {
-  private $query;
+  private Query $query;
 
   /**
    * SelectFactory object.

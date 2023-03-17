@@ -60,7 +60,7 @@ class JobStoreTest extends TestCase {
       ->add(StatementWrapper::class, 'fetchAll', $fieldInfo);
 
     $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
-    $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcher::class));
+    $this->assertEquals($job_data, $jobStore->retrieve("1"));
   }
 
   /**
@@ -153,7 +153,7 @@ class JobStoreTest extends TestCase {
 
     $jobStore = new JobStore(FileFetcher::class, $connection);
 
-    $this->assertEquals("", $jobStore->remove("1", FileFetcher::class));
+    $this->assertEquals("", $jobStore->remove("1"));
   }
 
   /**
