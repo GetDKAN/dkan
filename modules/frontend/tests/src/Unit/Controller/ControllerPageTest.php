@@ -14,10 +14,8 @@ class ControllerPageTest extends TestCase {
 
   /**
    * Cache max age config value.
-   *
-   * @var int
    */
-  private $cacheMaxAge;
+  private int $cacheMaxAge;
 
   protected function setUp(): void {
     parent::setUp();
