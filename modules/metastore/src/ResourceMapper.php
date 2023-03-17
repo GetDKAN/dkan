@@ -48,7 +48,7 @@ class ResourceMapper {
    * @return string
    *   A resource perspective.
    */
-  public static function newRevision() {
+  public function newRevision() {
     return \drupal_static('metastore_resource_mapper_new_revision', 0);
   }
 
