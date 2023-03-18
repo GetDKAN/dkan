@@ -34,6 +34,7 @@ commands:
           command: |
             which ddev
             ddev --version
+            ddev restart
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
             ddev restart
@@ -155,42 +156,6 @@ jobs:
                   exit $TEST_RESULT
       - store_test_results:
           path: test_results
-
-  cypress:
-    machine:
-      image: ubuntu-2004:current
-    parallelism: 4
-    parameters:
-      upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
-        default: false
-        type: boolean
-      needs_cypress:
-        description: "If true, will add Cypress to the DDev environment"
-        default: false
-        type: boolean
-    steps:
-      - prepare_build:
-          upgrade: << parameters.upgrade >>
-      - prepare_site:
-          upgrade: << parameters.upgrade >>
-          needs_cypress: << parameters.needs_cypress >>
-      - run:
-          name: Run Cypress tests
-          command: |
-            mkdir dkan/cypress/tmp && mkdir dkan/cypress/results
-            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
-            rm dkan/cypress/integration/* && mv dkan/cypress/tmp/* dkan/cypress/integration
-            ddev dkan-module-test-cypress \
-              --headless \
-              --reporter junit \
-              --reporter-options "mochaFile=cypress/results/cypress-results-[hash].xml"
-      - store_artifacts:
-          path: dkan/cypress/screenshots
-      - store_artifacts:
-          path: dkan/cypress/videos
-      - store_test_results:
-          path: dkan/cypress/results
 
 workflows:
   version: 2
