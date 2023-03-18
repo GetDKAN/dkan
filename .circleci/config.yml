@@ -95,8 +95,8 @@ commands:
 
 jobs:
   phpunit:
-    machine:
-      image: ubuntu-2004:current
+    docker:
+      - image: cimg/base:2021.04
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -150,8 +150,8 @@ jobs:
           path: test_results
 
   cypress:
-    machine:
-      image: ubuntu-2004:current
+    docker:
+      - image: cimg/base:2021.04
     parallelism: 4
     parameters:
       upgrade:
