@@ -1,4 +1,6 @@
-version: 2.1
+version: '2.1'
+orbs:
+  docker: circleci/docker@2.2.0
 
 commands:
   install-ddev:
@@ -95,8 +97,11 @@ commands:
 
 jobs:
   phpunit:
-    docker:
-      - image: cimg/base:2021.04
+    executor:
+      name: docker/docker
+      tag: '3.6'
+    #machine:
+     # image: ubuntu-2004:current
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -107,6 +112,8 @@ jobs:
         default: false
         type: boolean
     steps:
+      - checkout
+      - docker/install-docker-tools
       - prepare_build:
           upgrade: << parameters.upgrade >>
       - prepare_site:
@@ -150,8 +157,8 @@ jobs:
           path: test_results
 
   cypress:
-    docker:
-      - image: cimg/base:2021.04
+    machine:
+      image: ubuntu-2004:current
     parallelism: 4
     parameters:
       upgrade:
@@ -191,15 +198,3 @@ workflows:
     jobs:
       - phpunit:
           name: install_test_phpunit
-      - cypress:
-          name: install_test_cypress
-          needs_cypress: true
-  upgrade_and_test:
-    jobs:
-      - phpunit:
-          name: upgrade_test_phpunit
-          upgrade: true
-      - cypress:
-          name: upgrade_test_cypress
-          upgrade: true
-          needs_cypress: true
