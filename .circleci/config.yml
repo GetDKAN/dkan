@@ -98,11 +98,8 @@ commands:
 
 jobs:
   phpunit:
-    executor:
-      name: docker/docker
-      tag: '3.6'
-    #machine:
-     # image: ubuntu-2004:current
+    machine:
+      image: ubuntu-2004:current
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -113,8 +110,6 @@ jobs:
         default: false
         type: boolean
     steps:
-      - checkout
-      - docker/install-docker-tools
       - prepare_build:
           upgrade: << parameters.upgrade >>
       - prepare_site:
