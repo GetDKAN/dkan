@@ -34,7 +34,6 @@ commands:
           command: |
             which ddev
             ddev --version
-            ddev restart
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
             ddev restart
