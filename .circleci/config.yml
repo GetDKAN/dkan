@@ -186,4 +186,7 @@ workflows:
   install_and_test:
     jobs:
       - phpunit:
-          name: install_test_phpunit
+          name: Install and test with PHPUnit
+          matrix:
+            parameters:
+              drupal_core_constraint: ["~9.5.0", "~9.4.0"]
