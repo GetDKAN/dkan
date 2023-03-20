@@ -145,10 +145,6 @@ jobs:
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: << parameters.needs_cypress >>
-      - run:
-          # A place to store results XML.
-          command: |
-            mkdir -p ~/phpunit
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -156,7 +152,7 @@ jobs:
                 name: Run PHPUnit tests
                 command: |
                   ddev dkan-test-phpunit \
-                    --log-junit ~/phpunit/junit.xml
+                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit.xml
       - unless:
           # Only collect coverage info for non-upgrade PHPUnit tests.
           condition: << parameters.upgrade >>
@@ -170,7 +166,7 @@ jobs:
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-test-phpunit \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
-                    --log-junit ~/phpunit/junit.xml
+                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit.xml
                   TEST_RESULT=$?
                   if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
                     echo "Coverage file: docroot/modules/contrib/dkan/clover.xml"
@@ -184,7 +180,7 @@ jobs:
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
       - store_test_results:
-          path: ~/phpunit/
+          path: /var/www/html/docroot/modules/contrib/dkan/junit.xml
 
 workflows:
   version: 2
