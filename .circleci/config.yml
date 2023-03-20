@@ -103,8 +103,6 @@ commands:
 jobs:
   phpunit:
     executor: docker/machine
-    machine:
-      dlc: true
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
