@@ -178,6 +178,11 @@ jobs:
                   else
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
                   fi
+                  if [ -f docroot/modules/contrib/dkan/junit/junit.xml ]; then
+                    echo "Coverage file: docroot/modules/contrib/dkan/junit/junit.xml"
+                  else
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/junit/junit.xml"
+                  fi
                   cd docroot/modules/contrib/dkan
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
                     --coverage-input-type clover \
