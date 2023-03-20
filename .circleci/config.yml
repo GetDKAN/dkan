@@ -145,6 +145,11 @@ jobs:
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: << parameters.needs_cypress >>
+      - run:
+          name: Make test result locations
+          command: |
+            mkdir -p clover
+            mkdir -p junit
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -166,7 +171,7 @@ jobs:
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-test-phpunit \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
-                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit.xml
+                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
                   TEST_RESULT=$?
                   if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
                     echo "Coverage file: docroot/modules/contrib/dkan/clover.xml"
@@ -180,7 +185,7 @@ jobs:
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
       - store_test_results:
-          path: /var/www/html/docroot/modules/contrib/dkan/junit.xml
+          path: junit
 
 workflows:
   version: 2
