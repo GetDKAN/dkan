@@ -184,7 +184,7 @@ jobs:
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
       - store_test_results:
-          path: test_results
+          path: ~/phpunit/
 
 workflows:
   version: 2
