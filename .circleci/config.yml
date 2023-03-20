@@ -55,12 +55,12 @@ commands:
       - run:
           name: Use Drupal core version
           command: |
-            ddev composer show drupal/core*
+            ddev composer show "drupal/core*" --no-ansi
             ddev composer require drupal/core-composer-scaffold:<< parameters.drupal_core_constraint >> --no-update
             ddev composer require drupal/core-project-message:<< parameters.drupal_core_constraint >> --no-update
             ddev composer require drupal/core-recommended:<< parameters.drupal_core_constraint >> --no-update
             ddev composer require --dev drupal/core-dev:<< parameters.drupal_core_constraint >> --no-update
-            ddev composer update -W
+            ddev composer update -W --no-audit
 
   prepare_site:
     parameters:
@@ -186,7 +186,6 @@ workflows:
   install_and_test:
     jobs:
       - phpunit:
-          name: Install and test with PHPUnit
           matrix:
             parameters:
               drupal_core_constraint: ["~9.5.0", "~9.4.0"]
