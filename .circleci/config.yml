@@ -1,3 +1,8 @@
+# Circle CI script to run a matrix of tests in DDev.
+#
+# Limitations:
+#   - We must use a machine executor and not docker.
+
 version: '2.1'
 orbs:
   docker: circleci/docker@2.2.0
@@ -109,6 +114,8 @@ jobs:
         default: false
         type: boolean
     steps:
+      - checkout
+      - docker/install-docker-tools
       - prepare_build:
           upgrade: << parameters.upgrade >>
       - prepare_site:
