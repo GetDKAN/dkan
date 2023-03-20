@@ -1,7 +1,4 @@
 # Circle CI script to run a matrix of tests in DDev.
-#
-# Limitations:
-#   - We must use a machine executor and not docker.
 
 version: '2.1'
 orbs:
@@ -47,6 +44,23 @@ commands:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             mkdir -p test_results
+
+  prepare_drupal_core:
+    parameters:
+      drupal_core_constraint:
+        description: "Drupal core version to use as a Composer constraint."
+        default: '~9.5.0'
+        type: string
+    steps:
+      - run:
+          name: Use Drupal core version
+          command: |
+            ddev composer show drupal/core*
+            ddev composer require 'drupal/core-composer-scaffold:<<parameters:drupal_core_constraint>>' --no-update
+            ddev composer require 'drupal/core-project-message:<<parameters:drupal_core_constraint>>' --no-update
+            ddev composer require 'drupal/core-recommended:<<parameters:drupal_core_constraint>>' --no-update
+            ddev composer require --dev 'drupal/core-dev:<<parameters:drupal_core_constraint>>' --no-update
+            ddev composer update -W
 
   prepare_site:
     parameters:
@@ -104,6 +118,14 @@ jobs:
   phpunit:
     executor: docker/machine
     parameters:
+      php_version:
+        description: "PHP major.minor for DDev to use."
+        default: '8.0'
+        type: string
+      drupal_core_constraint:
+        description: "Drupal core version to use as a Composer constraint."
+        default: '~9.5.0'
+        type: string
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
@@ -117,6 +139,8 @@ jobs:
       - docker/install-docker-tools
       - prepare_build:
           upgrade: << parameters.upgrade >>
+      - prepare_drupal_core:
+          drupal_core_constraint: << parameters.drupal_core_constraint >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: << parameters.needs_cypress >>
