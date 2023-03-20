@@ -56,10 +56,10 @@ commands:
           name: Use Drupal core version
           command: |
             ddev composer show drupal/core*
-            ddev composer require 'drupal/core-composer-scaffold:<<parameters:drupal_core_constraint>>' --no-update
-            ddev composer require 'drupal/core-project-message:<<parameters:drupal_core_constraint>>' --no-update
-            ddev composer require 'drupal/core-recommended:<<parameters:drupal_core_constraint>>' --no-update
-            ddev composer require --dev 'drupal/core-dev:<<parameters:drupal_core_constraint>>' --no-update
+            ddev composer require drupal/core-composer-scaffold:<< parameters.drupal_core_constraint >> --no-update
+            ddev composer require drupal/core-project-message:<< parameters.drupal_core_constraint >> --no-update
+            ddev composer require drupal/core-recommended:<< parameters.drupal_core_constraint >> --no-update
+            ddev composer require --dev drupal/core-dev:<< parameters.drupal_core_constraint >> --no-update
             ddev composer update -W
 
   prepare_site:
