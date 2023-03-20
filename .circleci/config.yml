@@ -179,9 +179,9 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
                   fi
                   if [ -f docroot/modules/contrib/dkan/junit/junit.xml ]; then
-                    echo "Coverage file: docroot/modules/contrib/dkan/junit/junit.xml"
+                    echo "Results file: docroot/modules/contrib/dkan/junit/junit.xml"
                   else
-                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/junit/junit.xml"
+                    echo "Results file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/junit/junit.xml"
                   fi
                   cd docroot/modules/contrib/dkan
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
@@ -190,7 +190,7 @@ jobs:
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
       - store_test_results:
-          path: junit
+          path: junit/junit.xml
 
 workflows:
   version: 2
