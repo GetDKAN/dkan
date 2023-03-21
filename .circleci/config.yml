@@ -42,7 +42,7 @@ commands:
             # Modify config to use our PHP version.
             if [ -f .ddev/config.dkan.yaml ]; then
               echo "Let's try."
-              sed -i '' 's/^php_version.*$/php_version: "7.4"/' .ddev/config.dkan.yaml
+              sed -i 's/^php_version.*$/php_version: "7.4"/' .ddev/config.dkan.yaml
             else
               echo "No config file: $CIRCLE_WORKING_DIRECTORY/.ddev/config.dkan.yaml"
             fi
