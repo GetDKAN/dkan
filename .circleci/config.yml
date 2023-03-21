@@ -194,5 +194,5 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              php_version: ["7.4", "8.0"]
-              drupal_core_constraint: ["~9.5.0", "~9.4.0"]
+              php_version: ["7.4", "8.0", "8.1"]
+              drupal_core_constraint: ["~10.0.0", "~9.5.0", "~9.4.0"]
