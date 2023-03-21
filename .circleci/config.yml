@@ -19,15 +19,10 @@ commands:
             sudo apt update && sudo apt install -y ddev
 
   prepare_build:
-    # TODO: Figure out the best way to share this build between the various jobs.
     parameters:
-      upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
-        default: false
-        type: boolean
       php_version:
-        description: "PHP version to run inside of DDev"
-        default: "7.4"
+        description: "PHP major.minor for DDev to use."
+        default: '7.4'
         type: string
     steps:
       - run:
@@ -132,7 +127,7 @@ jobs:
     parameters:
       php_version:
         description: "PHP major.minor for DDev to use."
-        default: '8.0'
+        default: '7.4'
         type: string
       drupal_core_constraint:
         description: "Drupal core version to use as a Composer constraint."
@@ -150,7 +145,7 @@ jobs:
       - checkout
       - docker/install-docker-tools
       - prepare_build:
-          upgrade: << parameters.upgrade >>
+          php_version: << parameters.php_version >>
       - prepare_drupal_core:
           drupal_core_constraint: << parameters.drupal_core_constraint >>
       - prepare_site:
@@ -198,4 +193,5 @@ workflows:
       - phpunit:
           matrix:
             parameters:
+              php_version: ["7.4", "8.0"]
               drupal_core_constraint: ["~9.5.0", "~9.4.0"]
