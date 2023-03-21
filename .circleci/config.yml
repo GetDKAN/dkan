@@ -25,6 +25,10 @@ commands:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+      php_version:
+        description: "PHP version to run inside of DDev"
+        default: "7.4"
+        type: string
     steps:
       - run:
           name: Set up composer config
@@ -40,16 +44,11 @@ commands:
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
             # Modify config to use our PHP version.
-            if [ -f .ddev/config.dkan.yaml ]; then
-              echo "Let's try."
-              sed -i 's/^php_version.*$/php_version: "7.4"/' .ddev/config.dkan.yaml
-            else
-              echo "No config file: $CIRCLE_WORKING_DIRECTORY/.ddev/config.dkan.yaml"
-            fi
+            sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
             # Clear out omit_containers.
-            #sed -i '' '/omit_containers/d' .ddev/config.dkan.yaml
+            sed -i '/omit_containers/d' .ddev/config.dkan.yaml
             # Don't load the DBA container.
-            #echo "omit_containers: [dba]" >> .ddev/config.dkan.yaml
+            echo "omit_containers: [dba]" >> .ddev/config.dkan.yaml
             ddev restart
             ddev status
             ddev dkan-init --force
