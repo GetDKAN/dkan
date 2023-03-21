@@ -17,6 +17,7 @@ commands:
             curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
             echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
             sudo apt update && sudo apt install -y ddev
+
   prepare_build:
     # TODO: Figure out the best way to share this build between the various jobs.
     parameters:
@@ -38,6 +39,11 @@ commands:
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
+            # Modify config to use our PHP version.
+            sed -i '' 's/^php_version.*$/php_version: "7.4"/' .ddev/config.dkan.yaml
+            # Don't load the DBA container.
+            sed -i '' '/omit_containers/d' .ddev/config.dkan.yaml
+            echo "omit_containers: [dba]" >> .ddev/config.dkan.yaml
             ddev restart
             ddev status
             ddev dkan-init --force
