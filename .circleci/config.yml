@@ -247,16 +247,16 @@ workflows:
       - cypress:
           name: install_test_cypress
       - phpunit:
-          name: "Core 9.4"
+          name: "Drupal 9.4"
           matrix:
             parameters:
               drupal_core_constraint: ['~9.4.0']
               php_version: ['7.4']
       - phpunit:
-          name: "Core 9.5"
+          name: "Drupal 9.5"
+          drupal_core_constraint: '~9.5.0'
           matrix:
             parameters:
-              drupal_core_constraint: ['~9.5.0']
               php_version: ['7.4', '8.1']
       - phpunit:
           name: install_test_phpunit
@@ -266,7 +266,7 @@ workflows:
               drupal_core_constraint: ['~9.5.0']
               php_version: ['8.0']
       - phpunit:
-          name: "Core 10.0"
+          name: "Drupal 10.0"
           matrix:
             parameters:
               drupal_core_constraint: ['~10.0.0']
