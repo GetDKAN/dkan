@@ -150,7 +150,6 @@ jobs:
         default: false
         type: boolean
     steps:
-      - checkout
       - docker/install-docker-tools
       - prepare_build:
           php_version: << parameters.php_version >>
@@ -194,7 +193,8 @@ jobs:
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit.xml
 
   cypress:
-    executor: docker/machine
+    machine:
+      image: ubuntu-2004:current
     parallelism: 4
     parameters:
       php_version:
