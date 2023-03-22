@@ -25,7 +25,7 @@ commands:
     # change this around so we can just tell ddev to change the PHP version.
     parameters:
       php_version:
-        description: "PHP major.minor for DDev to use."
+        description: 'PHP major.minor for DDev to use.'
         default: '7.4'
         type: string
     steps:
@@ -59,7 +59,7 @@ commands:
     # TODO: Hopefully getdkan/recommended-project will have tagged releases at some point.
     parameters:
       drupal_core_constraint:
-        description: "Drupal core version to use as a Composer constraint."
+        description: 'Drupal core version to use as a Composer constraint.'
         default: '~9.5.0'
         type: string
     steps:
@@ -80,11 +80,11 @@ commands:
   prepare_site:
     parameters:
       upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
+        description: 'If true, will install the latest stable version and test upgrade'
         default: false
         type: boolean
       needs_cypress:
-        description: "If true, will add Cypress to the DDev environment"
+        description: 'If true, will add Cypress to the DDev environment'
         default: false
         type: boolean
     steps:
@@ -134,19 +134,19 @@ jobs:
     executor: docker/machine
     parameters:
       php_version:
-        description: "PHP major.minor for DDev to use."
+        description: 'PHP major.minor for DDev to use.'
         default: '7.4'
         type: string
       drupal_core_constraint:
-        description: "Drupal core version to use as a Composer constraint."
+        description: 'Drupal core version to use as a Composer constraint.'
         default: '~9.5.0'
         type: string
       report_coverage:
-        description: "Report test results and coverage to CodeClimate"
+        description: 'Report test results and coverage to CodeClimate'
         default: false
         type: boolean
       upgrade:
-        description: "If true, will install the latest stable DKAN version and test upgrade"
+        description: 'If true, will install the latest stable DKAN version and test upgrade'
         default: false
         type: boolean
     steps:
@@ -200,29 +200,29 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~9.4.0"]
-              php_version: ["7.4"]
+              drupal_core_constraint: ['~9.4.0']
+              php_version: ['7.4']
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~9.5.0"]
-              php_version: ["7.4", "8.1"]
+              drupal_core_constraint: ['~9.5.0']
+              php_version: ['7.4', '8.1']
       - phpunit:
           report_coverage: true
           matrix:
             parameters:
-              drupal_core_constraint: ["~9.5.0"]
-              php_version: ["8.0"]
+              drupal_core_constraint: ['~9.5.0']
+              php_version: ['8.0']
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~10.0.0"]
-              php_version: ["8.1"]
+              drupal_core_constraint: ['~10.0.0']
+              php_version: ['8.1']
   upgrade_and_test:
     jobs:
       - phpunit:
           upgrade: true
           matrix:
             parameters:
-              drupal_core_constraint: [ "~9.5.0" ]
-              php_version: [ "8.0" ]
+              drupal_core_constraint: [ '~9.5.0' ]
+              php_version: [ '8.0' ]
