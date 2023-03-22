@@ -193,9 +193,8 @@ workflows:
   install_and_test:
     jobs:
       - phpunit:
-          parameters:
-            drupal_core_constraint: "~9.4.0"
-            php_version: "7.4"
+          drupal_core_constraint: "~9.4.0"
+          php_version: "7.4"
       - phpunit:
           matrix:
             parameters:
