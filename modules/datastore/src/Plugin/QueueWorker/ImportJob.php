@@ -6,7 +6,6 @@ use Contracts\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
-use ForceUTF8\Encoding;
 
 /**
  * Procrastinator job for importing to the datastore.
@@ -296,7 +295,19 @@ class ImportJob extends AbstractPersistentJob {
         $this->parser->finish();
         break;
       }
-      $chunk = Encoding::toUTF8($chunk);
+      // Ensure string is UTF-8 and encode it if necessary.
+      $encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE);
+      if ($encoding !== 'UTF-8') {
+        $chunk = mb_convert_encoding($chunk, 'UTF-8', mb_list_encodings());
+        if (!$chunk) {
+          throw new \Exception('Could not convert from ' . $encoding . ' to UTF-8 in ' . $filename);
+        }
+      }
+      // Remove BOM if present in first chunk.
+      if ($chunksProcessed == 0 &&
+        substr($chunk, 0, 3) === pack('CCC', 0xef, 0xbb, 0xbf)) {
+        $chunk = substr($chunk, 3);
+      }
       $this->parser->feed($chunk);
       $chunksProcessed++;
 
