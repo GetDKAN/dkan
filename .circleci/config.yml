@@ -28,6 +28,10 @@ commands:
         description: 'PHP major.minor for DDev to use.'
         default: '7.4'
         type: string
+      addon_branch:
+        description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
+        default: 'main'
+        type: string
     steps:
       - run:
           name: Set up composer config
@@ -41,7 +45,7 @@ commands:
             which ddev
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
-            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
+            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
             # Modify config to use our PHP version.
             sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
             # Clear out omit_containers.
@@ -153,6 +157,7 @@ jobs:
       - docker/install-docker-tools
       - prepare_build:
           php_version: << parameters.php_version >>
+          addon_branch: php81
       - prepare_drupal_core:
           drupal_core_constraint: << parameters.drupal_core_constraint >>
       - prepare_site:
