@@ -142,7 +142,7 @@ jobs:
         default: '~9.5.0'
         type: string
       report_coverage:
-        description: 'Report test results and coverage to CodeClimate'
+        description: 'Generate coverage report and send it to CodeClimate'
         default: false
         type: boolean
       upgrade:
@@ -170,6 +170,7 @@ jobs:
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-test-phpunit \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
+                    --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
                   TEST_RESULT=$?
                   if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
@@ -183,6 +184,8 @@ jobs:
                     --prefix /var/www/html/dkan \
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
+            - store_artifacts:
+                path: docroot/modules/contrib/dkan/coverage-html
       - unless:
           condition: << parameters.report_coverage >>
           steps:
