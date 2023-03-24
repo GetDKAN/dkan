@@ -290,13 +290,13 @@ class ImportJob extends AbstractPersistentJob {
     $chunksProcessed = $this->getStateProperty('chunksProcessed', 0);
     while (time() < $maximumExecutionTime) {
       $chunk = fread($h, self::BYTES_PER_CHUNK);
-
-      if (!$chunk) {
+      // Fread() can return an empty string or FALSE if we're done.
+      if (empty($chunk)) {
         $this->getResult()->setStatus(Result::DONE);
         $this->parser->finish();
         break;
       }
-      $chunk = Encoding::toUTF8($chunk);
+      $chunk = Encoding::fixUTF8($chunk);
       $this->parser->feed($chunk);
       $chunksProcessed++;
 
