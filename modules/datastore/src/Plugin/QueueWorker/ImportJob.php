@@ -4,6 +4,7 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Contracts\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\Component\Utility\Unicode;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 
@@ -281,10 +282,15 @@ class ImportJob extends AbstractPersistentJob {
    *   The file name including path.
    * @param mixed $maximumExecutionTime
    *   Maximum time to parse for before exiting.
+   * @throws \Exception
    */
   protected function parseAndStore($filename, $maximumExecutionTime) {
     $h = fopen($filename, 'r');
     fseek($h, $this->getBytesProcessed());
+
+    // Try to get encoding from BOM.
+    $file_start = file_get_contents($filename, FALSE, NULL, 0, 10);
+    $bom_encoding = Unicode::encodingFromBOM($file_start);
 
     $chunksProcessed = $this->getStateProperty('chunksProcessed', 0);
     while (time() < $maximumExecutionTime) {
@@ -295,19 +301,7 @@ class ImportJob extends AbstractPersistentJob {
         $this->parser->finish();
         break;
       }
-      // Ensure string is UTF-8 and encode it if necessary.
-      $encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE);
-      if ($encoding !== 'UTF-8') {
-        $chunk = mb_convert_encoding($chunk, 'UTF-8', mb_list_encodings());
-        if (!$chunk) {
-          throw new \Exception('Could not convert from ' . $encoding . ' to UTF-8 in ' . $filename);
-        }
-      }
-      // Remove BOM if present in first chunk.
-      if ($chunksProcessed == 0 &&
-        substr($chunk, 0, 3) === pack('CCC', 0xef, 0xbb, 0xbf)) {
-        $chunk = substr($chunk, 3);
-      }
+      $chunk = $this->toUtf8($chunk, $filename, $chunksProcessed, $bom_encoding ? $bom_encoding : '');
       $this->parser->feed($chunk);
       $chunksProcessed++;
 
@@ -315,6 +309,47 @@ class ImportJob extends AbstractPersistentJob {
       $this->setStateProperty('chunksProcessed', $chunksProcessed);
     }
     fclose($h);
+  }
+
+  /**
+   * Ensure string is UTF-8 and encode it if necessary.
+   * Strip BOM if present.
+   *
+   * @param string $chunk
+   *   Chunk of file being parsed.
+   * @param string $filename
+   *   Filename of the parsed file.
+   * @param int $chunksProcessed
+   *   The index of the chunk being parsed.
+   * @param string $bom_encoding
+   *   File encoding from BOM if available.
+   * @return string $chunk
+   *
+   * @throws \Exception
+   */
+  public static function toUtf8(string $chunk, string $filename, int $chunksProcessed, string $bom_encoding = ''): string {
+    // We have an encoding from a BOM; use it.
+    if (!empty($bom_encoding)) {
+      if ($bom_encoding !== 'UTF-8') {
+        $chunk = Unicode::convertToUtf8($chunk, $bom_encoding);
+      }
+      // Strip BOM from first chunk.
+      if ($chunksProcessed == 0) {
+        $chunk = mb_substr($chunk, 1);
+      }
+    }
+    else {
+      // Fallback to detect encoding.
+      $encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE);
+      if ($encoding !== 'UTF-8') {
+        $chunk = mb_convert_encoding($chunk, 'UTF-8', mb_list_encodings());
+        if (!$chunk) {
+          throw new \Exception('Could not convert from ' . $encoding . ' to UTF-8 in ' . $filename);
+        }
+      }
+    }
+
+    return $chunk;
   }
 
   /**
