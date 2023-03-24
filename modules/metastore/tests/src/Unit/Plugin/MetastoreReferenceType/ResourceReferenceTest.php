@@ -279,8 +279,8 @@ class ResourceReferenceTest extends TestCase {
 
   public function testReferenceCsvFormat() {
     $resourceReference = ResourceReference::create($this->getContainer(), $this->config, 'resource', $this->definition);
-    $resourceReference->setContext(self::distribution($this->existing_url, ['format' => 'csv']));
-    $this->assertEquals($this->existing_identifier, $resourceReference->reference($this->existing_url));    
+    $resourceReference->setContext(self::distribution($this->new_url, ['format' => 'csv']));
+    $this->assertEquals($this->new_identifier, $resourceReference->reference($this->new_url));    
   }
 
   public function testReferenceTsvFormat() {
