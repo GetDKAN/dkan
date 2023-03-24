@@ -111,15 +111,21 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Use Drupal datetime service to make this mockable in tests.
+   * Use Drupal datetime service if container available,to make this mockable.
    *
    * @return int
    *   Current timestamp.
    *
-   * @throws \Drupal\Core\DependencyInjection\ContainerNotInitializedException
+   * @todo Remove try/catch?
    */
   protected function getCurrentTime(): int {
-    return (int) \Drupal::service('datetime.time')->getCurrentTime();
+    try {
+      return (int) \Drupal::service('datetime.time')->getCurrentTime();
+    }
+    catch (\Exception $e) {
+      // Fall back to php time().
+      return time();
+    }
   }
 
   /**

@@ -15,9 +15,9 @@ abstract class ReferenceTypeBase extends PluginBase implements ReferenceTypeInte
   /**
    * DKAN schema ID.
    *
-   * @var string
+   * @var string|null
    */
-  protected string $schemaId;
+  protected ?string $schemaId;
 
 
   /**

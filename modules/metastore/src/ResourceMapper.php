@@ -65,12 +65,17 @@ class ResourceMapper {
   /**
    * Register a new url for mapping.
    *
-   * @todo the Resource class currently lives in datastore, we should move it
-   * to a more neutral place.
+   * @param \Drupal\common\DataResource $resource
+   *   Data resource object to register.
+   *
+   * @return true
+   *   True if successful.
+   *
+   * @throws \Drupal\metastore\Exception\AlreadyRegistered
    */
-  public function register(DataResource $resource) : bool {
+  public function register(DataResource $resource): bool {
     $this->filePathExists($resource->getFilePath());
-    $this->store->store(json_encode($resource));
+    $this->getStore()->store(json_encode($resource));
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
 
     return TRUE;
@@ -176,12 +181,17 @@ class ResourceMapper {
   }
 
   /**
-   * Private.
+   * Get the latest revision of a resource from the mapper table.
    *
-   * @return mixed
-   *   object || False
+   * @param string $identifier
+   *   The resource identifier.
+   * @param string $perspective
+   *   Resource perspective.
+   *
+   * @return object|false
+   *   Resource mapper table row, or false if no revision.
    */
-  private function getLatestRevision($identifier, $perspective) {
+  protected function getLatestRevision(string $identifier, string $perspective) {
     $query = $this->getCommonQuery($identifier, $perspective);
     $query->sortByDescending('version');
     $items = $this->store->query($query);
@@ -194,7 +204,7 @@ class ResourceMapper {
    * @return mixed
    *   object || False
    */
-  private function getRevision($identifier, $perspective, $version) {
+  protected function getRevision($identifier, $perspective, $version) {
     $query = $this->getCommonQuery($identifier, $perspective);
     $query->conditionByIsEqualTo('version', $version);
     $items = $this->store->query($query);
@@ -235,7 +245,7 @@ class ResourceMapper {
    *
    * @todo Refactor this so it's not an exception.
    */
-  public function filePathExists($filePath) {
+  public function filePathExists(string $filePath): bool {
     $query = new Query();
     $query->conditionByIsEqualTo('filePath', $filePath, TRUE);
     $results = $this->getStore()->query($query);

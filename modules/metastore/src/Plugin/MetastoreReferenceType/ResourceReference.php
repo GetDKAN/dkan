@@ -122,7 +122,7 @@ class ResourceReference extends ReferenceTypeBase {
    */
   public function reference($value): string {
     return $this->registerWithResourceMapper(
-      $this->hostify($value),
+      static::hostify($value),
       $this->getMimeType($this->context)
     );
   }
@@ -203,7 +203,7 @@ class ResourceReference extends ReferenceTypeBase {
    */
   protected function handleExistingResource($info, $stored, $mimeType) {
     if ($info[0]->perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
+      ($this->resourceMapper->newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
       // Update the MIME type, since this may be updated by the user.
       $new->changeMimeType($mimeType);
@@ -386,7 +386,7 @@ class ResourceReference extends ReferenceTypeBase {
    * @param string $resourceIdentifier
    *   Identifier for resource.
    *
-   * @return \Drupal\common\Resource|null
+   * @return \Drupal\common\DataResource|null
    *   URL value or null if none found.
    */
   protected function resourceLookup(string $resourceIdentifier) {
@@ -403,7 +403,7 @@ class ResourceReference extends ReferenceTypeBase {
       return NULL;
     }
 
-    $perspective = resource_mapper_display();
+    $perspective = $this->resourceMapper->display();
 
     if (
       $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
