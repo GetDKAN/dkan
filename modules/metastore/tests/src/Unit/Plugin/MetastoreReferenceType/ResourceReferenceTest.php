@@ -49,6 +49,8 @@ class ResourceReferenceTest extends TestCase {
   private string $local_identifier;
   private string $existing_url;
   private string $existing_identifier;
+  private string $tsv_url;
+  private string $tsv_identifier;
   private string $bad_url;
   private string $bad_identifier;
 
@@ -74,6 +76,10 @@ class ResourceReferenceTest extends TestCase {
     $this->local_url = 'http://mysite.com/local.csv';
     $this->local_resolved_url = 'http://h-o.st/local.csv';
     $this->local_identifier = self::genId($this->local_resolved_url);
+
+    // Existing resource in system that doesn't trigger revision.
+    $this->tsv_url = 'http://sample.com/data.tsv';
+    $this->tsv_identifier = self::genId($this->tsv_url);
     
     $this->bad_url = 'http://sample.com/bad.csv';
     $this->bad_identifier = self::genId($this->bad_url);
@@ -117,7 +123,9 @@ class ResourceReferenceTest extends TestCase {
           "identifier" => $this->existing_identifier,
           "perspective" => 'source',
         ],
-      ])));
+      ])))
+        // TSV file, let's say its a new one.
+      ->add($this->tsv_url, FALSE);
 
     $latestRevision = (new Options())
       // For an existing URL, we simulate a record in the mapper table.
@@ -140,6 +148,11 @@ class ResourceReferenceTest extends TestCase {
       ->add(
         (new DataResource($this->existing_url, 'text/csv', DataResource::DEFAULT_SOURCE_PERSPECTIVE))->createNewVersion(),
         $this->local_identifier
+      )
+      // TSV file is new.
+      ->add(
+        (new DataResource($this->tsv_url, 'text/tab-separated-values', DataResource::DEFAULT_SOURCE_PERSPECTIVE)),
+        $this->tsv_identifier
       )
       ->index(0);
 
@@ -228,11 +241,8 @@ class ResourceReferenceTest extends TestCase {
   /**
    * Wrap a value and an identifier in the current object structure.
    */
-  private static function distribution(string $url, string $mimetype = 'text/csv'): object {
-    return (object) [
-      'downloadURL' => $url,
-      'mediaType' => $mimetype,
-    ];
+  private static function distribution(string $url, array $properties = ['mediaType' => 'text/csv']): object {
+    return (object) (['downloadURL' => $url] + $properties);
   }
 
   public function testReference() {
@@ -265,6 +275,27 @@ class ResourceReferenceTest extends TestCase {
     $resourceReference = ResourceReference::create($this->getContainer(1), $this->config, 'resource', $this->definition);
     $resourceReference->setContext(self::distribution($this->existing_url));
     $this->assertEquals($existing_new_revision, $resourceReference->reference($this->existing_url));    
+  }
+
+  public function testReferenceCsvFormat() {
+    $resourceReference = ResourceReference::create($this->getContainer(), $this->config, 'resource', $this->definition);
+    $resourceReference->setContext(self::distribution($this->existing_url, ['format' => 'csv']));
+    $this->assertEquals($this->existing_identifier, $resourceReference->reference($this->existing_url));    
+  }
+
+  public function testReferenceTsvFormat() {
+    $resourceReference = ResourceReference::create($this->getContainer(), $this->config, 'resource', $this->definition);
+    $resourceReference->setContext(self::distribution($this->tsv_url, ['format' => 'tsv']));
+    $this->assertEquals($this->tsv_identifier, $resourceReference->reference($this->tsv_url));
+
+    // New let's try conflicting formats.
+    $resourceReference->setContext(self::distribution($this->tsv_url, [
+      'format' => 'csv',
+      'mediaType' => 'text/tab-separated-values',
+    ]));
+    // (If mimetype is parsed wrong, this would fail to match the option in the
+    // DatabaseTable::store() mock.)
+    $this->assertEquals($this->tsv_identifier, $resourceReference->reference($this->tsv_url));
   }
 
   public function testDereference() {
