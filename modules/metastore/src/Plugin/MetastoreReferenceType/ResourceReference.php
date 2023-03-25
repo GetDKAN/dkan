@@ -12,6 +12,7 @@ use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\ReferenceTypeBase;
 use Drupal\metastore\ResourceMapper;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -53,6 +54,13 @@ class ResourceReference extends ReferenceTypeBase {
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * Guzzle HTTP Client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  protected Client $client;
+
+  /**
    * Constructs a ReferenceType object.
    *
    * @param array $config
@@ -70,6 +78,8 @@ class ResourceReference extends ReferenceTypeBase {
    *   Core filesystem service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager service.
+   * @param \GuzzleHttp\Client $client
+   *   Guzzle HTTP client.
    */
   public function __construct(
     array $config,
@@ -78,11 +88,13 @@ class ResourceReference extends ReferenceTypeBase {
     LoggerChannelFactoryInterface $loggerFactory,
     ResourceMapper $resourceMapper,
     FileSystemInterface $fileSystem,
-    EntityTypeManagerInterface $entityTypeManager
+    EntityTypeManagerInterface $entityTypeManager,
+    Client $client
   ) {
     $this->resourceMapper = $resourceMapper;
     $this->fileSystem = $fileSystem;
     $this->entityTypeManager = $entityTypeManager;
+    $this->client = $client;
     parent::__construct($config, $pluginDefinition, $pluginId, $loggerFactory);
   }
 
@@ -113,7 +125,8 @@ class ResourceReference extends ReferenceTypeBase {
       $container->get('logger.factory'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('file_system'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('http_client')
     );
   }
 
@@ -140,7 +153,7 @@ class ResourceReference extends ReferenceTypeBase {
     if ($showId) {
       return [$this->createResourceReference($resource)];
     }
-    return UrlHostTokenResolver::resolve($resource->getFilePath());
+    return $resource ? UrlHostTokenResolver::resolve($resource->getFilePath()) : $identifier;
   }
 
   /**
@@ -329,8 +342,7 @@ class ResourceReference extends ReferenceTypeBase {
 
     // Perform HTTP Head request against the supplied URL in order to determine
     // the content type of the remote resource.
-    $client = new Client();
-    $response = $client->head($downloadUrl);
+    $response = $this->client->head($downloadUrl);
     // Extract the full value of the content type header.
     $content_type = $response->getHeader('Content-Type');
     // Attempt to extract the mime type from the content type header.

@@ -12,11 +12,14 @@ use Drupal\Core\Http\RequestStack;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\file\Entity\File;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Plugin\MetastoreReferenceType\ResourceReference;
 use Drupal\metastore\ResourceMapper;
+use GuzzleHttp\Psr7\Response;
 use MockChain\Chain;
 use MockChain\Options;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,10 +52,12 @@ class ResourceReferenceTest extends TestCase {
   private string $local_identifier;
   private string $existing_url;
   private string $existing_identifier;
+  private string $existing_local_perspective_identifier;
   private string $tsv_url;
   private string $tsv_identifier;
-  private string $bad_url;
-  private string $bad_identifier;
+  private string $local_bad_url;
+  private string $local_bad_resolved_url;
+  private string $local_bad_identifier;
 
   protected function setUp(): void {
     parent::setUp();
@@ -71,6 +76,12 @@ class ResourceReferenceTest extends TestCase {
     // Existing resource in system that doesn't trigger revision.
     $this->existing_url = 'http://sample.com/existing.csv';
     $this->existing_identifier = self::genId($this->existing_url);
+    // ID for local perspective of same resource.
+    $this->existing_local_perspective_identifier = implode('__', [
+      self::extract($this->existing_identifier, 'identifier'),
+      'local_file',
+      self::extract($this->existing_identifier, 'version'),
+    ]);
 
     // File already located on webserver.
     $this->local_url = 'http://mysite.com/local.csv';
@@ -80,9 +91,10 @@ class ResourceReferenceTest extends TestCase {
     // Existing resource in system that doesn't trigger revision.
     $this->tsv_url = 'http://sample.com/data.tsv';
     $this->tsv_identifier = self::genId($this->tsv_url);
-    
-    $this->bad_url = 'http://sample.com/bad.csv';
-    $this->bad_identifier = self::genId($this->bad_url);
+
+    $this->local_bad_url = 'http://mysite.com/bad.csv';
+    $this->local_bad_resolved_url = 'http://h-o.st/bad.csv';
+    $this->local_bad_identifier = self::genId($this->local_bad_resolved_url);
 
     // We still have a static method calling \Drupal::service()
     $this->setContainer();
@@ -110,13 +122,14 @@ class ResourceReferenceTest extends TestCase {
   /**
    * Setup a container with a reactive metastore storage.
    */
-  private function getContainer($new_revision = 0) {
+  private function getContainer($new_revision = 0, $display = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
 
     $filePathExists = (new Options())
       // For the new URL, a filePath does not yet exist.
       ->add($this->new_url, FALSE)
-      // We are also making the local URL a new resource.
+      // We are also making the local URLs new resources.
       ->add($this->local_resolved_url, FALSE)
+      ->add($this->local_bad_resolved_url, FALSE)
       // For the existing one, it does, so we'll expect an exception.
       ->add($this->existing_url, new AlreadyRegistered(json_encode([
         (object) [
@@ -154,6 +167,11 @@ class ResourceReferenceTest extends TestCase {
         (new DataResource($this->tsv_url, 'text/tab-separated-values', DataResource::DEFAULT_SOURCE_PERSPECTIVE)),
         $this->tsv_identifier
       )
+      // "Bad" file fails mimetype detection, so returns text/plain.
+      ->add(
+        (new DataResource($this->local_bad_resolved_url, 'text/plain', DataResource::DEFAULT_SOURCE_PERSPECTIVE)),
+        $this->local_bad_identifier
+      )
       ->index(0);
 
     $revision = (new Options())
@@ -162,7 +180,17 @@ class ResourceReferenceTest extends TestCase {
         self::extract($this->existing_identifier, 'identifier'),
         self::extract($this->existing_identifier, 'perspective'),
         self::extract($this->existing_identifier, 'version'),
-      ], self::mapperTableRow($this->existing_url, $this->existing_identifier));
+      ], self::mapperTableRow($this->existing_url, $this->existing_identifier))
+      ->add([
+        self::extract($this->existing_identifier, 'identifier'),
+        'local_file',
+        self::extract($this->existing_identifier, 'version'),
+      ], self::mapperTableRow($this->existing_url, $this->existing_local_perspective_identifier))
+      ->add([
+        self::extract($this->local_bad_identifier, 'identifier'),
+        self::extract($this->local_bad_identifier, 'perspective'),
+        self::extract($this->local_bad_identifier, 'version'),
+      ], FALSE);
 
     // Set up returns for the service container.
     $services = (new Options())
@@ -170,18 +198,31 @@ class ResourceReferenceTest extends TestCase {
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('file_system', FileSystemInterface::class)
       ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('http_client', MockClient::class)
       ->index(0);
+
+    // Stub of file object to return.
+    $file = $this->createStub(File::class);
+    $file->method('getMimeType')->willReturn('text/csv');
+    // In the local mimeType test, loadByProperties loads stub then none.
+    $loadByProperties = (new Sequence())
+      ->add([$file])
+      ->add([]);
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $services)
       ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'loadByProperties', $loadByProperties)
       ->add(ResourceMapper::class, 'filePathExists', $filePathExists)
       ->add(ResourceMapper::class, 'getStore', DatabaseTableInterface::class)
       ->add(ResourceMapper::class, 'dispatchEvent', [])
       ->add(ResourceMapper::class, 'getLatestRevision', $latestRevision)
       ->add(ResourceMapper::class, 'getRevision', $revision)
       ->add(ResourceMapper::class, 'newRevision', $new_revision)
+      ->add(ResourceMapper::class, 'display', $display)
       ->add(ResourceMapper::class, 'validateNewVersion', TRUE)
+      ->add(MockClient::class, 'head', Response::class)
+      ->add(Response::class, 'getHeader', ['text/csv'])
       ->add(DatabaseTableInterface::class, 'store', $store);
 
     return $container_chain->getMock();
@@ -298,6 +339,24 @@ class ResourceReferenceTest extends TestCase {
     $this->assertEquals($this->tsv_identifier, $resourceReference->reference($this->tsv_url));
   }
 
+  public function testRemoteNoFormatOrMimetype() {
+    // Remote URL detect mimetype.
+    $resourceReference = ResourceReference::create($this->getContainer(), $this->config, 'resource', $this->definition);
+    $resourceReference->setContext(self::distribution($this->new_url, []));
+    $this->assertEquals($this->new_identifier, $resourceReference->reference($this->new_url));    
+  }
+
+  public function testLocalNoFormatOrMimetype() {
+    // Remote URL detect mimetype.
+    $resourceReference = ResourceReference::create($this->getContainer(), $this->config, 'resource', $this->definition);
+    $resourceReference->setContext(self::distribution($this->local_url, []));
+    $this->assertEquals($this->local_identifier, $resourceReference->reference($this->local_url)); 
+    // For some reason, this URL fails to create local file entity.
+    // It should get a text/plain mimetype, see building of $store
+    // return in getContainer().
+    $this->assertEquals($this->local_bad_identifier, $resourceReference->reference($this->local_bad_url)); 
+  }
+
   public function testDereference() {
     $definition = [
       'id' => 'item',
@@ -318,14 +377,23 @@ class ResourceReferenceTest extends TestCase {
 
     // Test URL stored instead of identifier
     $this->assertEquals($this->existing_url, $itemReference->dereference($this->existing_url));
-    
-    // Test for value w/showId.
-    // $showIdResult = self::wrap($this->existing_identifier, $this->existing_value);
-    // $this->assertEquals($showIdResult, $itemReference->dereference($this->existing_identifier, TRUE));
 
-    // // Test for bad reference.
-    // $this->assertNull($itemReference->dereference($this->bad_identifier));
+    // If a reference cannot be resolved, it's left as-is.
+    $this->assertEquals($this->local_bad_identifier, $itemReference->dereference($this->local_bad_identifier));
   }
 
+  // If static 'metastore_resource_mapper_display' is set, we retrieve a
+  // different perspective.
+  public function testDereferenceWithDisplay() {
+    $definition = [
+      'id' => 'item',
+      'class' => ResourceReference::class,
+    ];
+    $config = ['property' => 'downloadURL'];
+
+    $itemReference = ResourceReference::create($this->getContainer(0, 'local_file'), $config, 'resource', $definition);
+    // Make sure an existing remote URL comes back correctly.
+    $this->assertEquals($this->existing_url, $itemReference->dereference($this->existing_identifier));
+  }
 
 }
