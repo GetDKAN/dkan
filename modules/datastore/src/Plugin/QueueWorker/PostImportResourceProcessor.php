@@ -166,7 +166,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
 
       if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
         return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "waiting", "Data-Dictionary Disabled", $this->resourceMapper, $this->postImport);
-      } 
+      }
       else {
         array_map(fn ($processor) => $processor->process($resource), $processors);
         return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "done", NULL, $this->resourceMapper, $this->postImport);

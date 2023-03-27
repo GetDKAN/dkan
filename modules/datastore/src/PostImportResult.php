@@ -8,7 +8,7 @@ use Drupal\datastore\Service\PostImport;
 
 /**
  * PostImportResult class to create PostImportResult objects.
- * 
+ *
  * Contains the results of the PostImportResourceProcessor.
  */
 class PostImportResult {
