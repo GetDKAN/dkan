@@ -275,7 +275,8 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $storedResource = DataResource::hydrate($container_chain->getStoredInput('resource')[0]);
+    // @todo: Where does this stored input come from?
+    $storedResource = DataResource::createFromRecord(json_decode($container_chain->getStoredInput('resource')[0]));
     // A new resource should have been stored, with the mimetype set to text/csv
     $this->assertEquals('text/csv', $storedResource->getMimeType());
   }

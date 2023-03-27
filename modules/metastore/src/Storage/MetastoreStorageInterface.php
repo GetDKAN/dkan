@@ -26,7 +26,7 @@ interface MetastoreStorageInterface {
    * @param bool $published
    *   Whether to retrieve the published revision of the metadata.
    *
-   * @return string|HydratableInterface
+   * @return string|null
    *   The data or null if no data could be retrieved.
    *
    * @throws \Drupal\metastore\Exception\MissingObjectException

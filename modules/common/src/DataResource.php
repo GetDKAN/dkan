@@ -3,7 +3,6 @@
 namespace Drupal\common;
 
 use Drupal\datastore\DatastoreResource;
-use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;
 
 /**
@@ -28,7 +27,7 @@ use Procrastinator\JsonSerializeTrait;
  * @todo Refactor as service.
  */
 class DataResource implements \JsonSerializable {
-  use HydratableTrait, JsonSerializeTrait;
+  use JsonSerializeTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
@@ -78,6 +77,13 @@ class DataResource implements \JsonSerializable {
 
   /**
    * Constructor.
+   *
+   * @param string $file_path
+   *   Path to the file.
+   * @param string $mimeType
+   *   File mime type.
+   * @param string $perspective
+   *   Can be one of "local_file", "local_url", or "source".
    */
   public function __construct($file_path, $mimeType, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
     // @todo generate UUID instead.
@@ -88,6 +94,27 @@ class DataResource implements \JsonSerializable {
     // @todo Create a timestamp property and generate uuid for version.
     $this->version = time();
     $this->checksum = NULL;
+  }
+
+  /**
+   * Create a DataResource object from a database record.
+   *
+   * @param object $record
+   *   Data resource record from the database. Must contain these properties:
+   *   - filePath
+   *   - mimeType
+   *   - perspective
+   *   - version
+   *
+   * @return \Drupal\common\DataResource
+   */
+  public static function createFromRecord(object $record): DataResource {
+    $resource = new static($record->filePath, $record->mimeType, $record->perspective);
+    // MD5 of record's file path can differ from the MD5 generated in the
+    // constructor, so we have to explicitly set the identifier.
+    $resource->identifier = $record->identifier;
+    $resource->version = $record->version;
+    return $resource;
   }
 
   /**

@@ -224,9 +224,6 @@ class ImportJobTest extends TestCase {
       "storage" => new TestMemStorageBad(),
       "parser" => Csv::getParser(),
     ]);
-
-    $json = json_encode($importer);
-    ImportJob::hydrate($json);
   }
 
   /**
