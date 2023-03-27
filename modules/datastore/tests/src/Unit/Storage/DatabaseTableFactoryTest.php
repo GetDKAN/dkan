@@ -39,35 +39,4 @@ class DatabaseTableFactoryTest extends TestCase {
     $this->assertTrue($object instanceof DatabaseTable);
   }
 
-  /**
-   * Test we can add an indexer service.
-   */
-  public function testIndexer() {
-    $connection = (new Chain($this))
-      ->add(Connection::class, "__destruct", NULL)
-      ->getMock();
-
-    $databaseTable = (new Chain($this))
-      ->add(DatabaseTable::class, "retrieveAll", [])
-      ->addd("setIndexManager")
-      ->getMock();
-    $databaseTable->expects($this->once())
-      ->method('setIndexManager');
-
-    $builder = $this->getMockBuilder(DatabaseTableFactory::class);
-    $factory = $builder->setConstructorArgs([$connection])
-      ->setMethods(["getDatabaseTable"])
-      ->getMock();
-
-    $factory->method("getDatabaseTable")->willReturn($databaseTable);
-
-    $indexerClass = $this->getMockBuilder(IndexManager::class);
-    $indexer = $indexerClass->getMock();
-    $factory->setIndexManager($indexer);
-
-    $resource = new DatastoreResource("blah", "", "text/csv");
-    $object = $factory->getInstance($resource->getId(), ['resource' => $resource]);
-    $this->assertTrue($object instanceof DatabaseTable);
-  }
-
 }

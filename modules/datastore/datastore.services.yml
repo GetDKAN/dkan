@@ -7,6 +7,7 @@ services:
       - '@queue'
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info_list'
+      - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
 
   dkan.datastore.query:
     class: \Drupal\datastore\Service\Query
@@ -29,7 +30,7 @@ services:
   dkan.datastore.service.resource_processor.dictionary_enforcer:
     class: \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
     arguments:
-      - '@dkan.datastore.data_dictionary.alter_table_query_factory.mysql'
+      - '@dkan.datastore.data_dictionary.alter_table_query_builder.mysql'
       - '@dkan.metastore.service'
       - '@dkan.metastore.data_dictionary_discovery'
     tags:
@@ -58,12 +59,12 @@ services:
   dkan.datastore.database_connection_factory:
     class: \Drupal\datastore\Storage\DatabaseConnectionFactory
 
-  dkan.datastore.data_dictionary.alter_table_query_factory.mysql:
-    class: \Drupal\datastore\DataDictionary\AlterTableQuery\Factory
+  dkan.datastore.data_dictionary.alter_table_query_builder.mysql:
+    class: \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder
     arguments:
       - '@dkan.datastore.database_connection_factory'
       - '@pdlt.converter.strptime_to_mysql'
-      - '\Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery'
+      - '@uuid'
 
   dkan.datastore.database:
     class: \Drupal\Core\Database\Connection
@@ -73,8 +74,6 @@ services:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
     arguments:
       - '@dkan.datastore.database'
-    calls:
-      - [setIndexManager, ['@?indexer.indexmanager']]
 
   dkan.datastore.sql_endpoint.service:
     class: \Drupal\datastore\SqlEndpoint\Service

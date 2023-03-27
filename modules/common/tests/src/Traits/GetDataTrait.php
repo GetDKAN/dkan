@@ -54,6 +54,8 @@ trait GetDataTrait {
    *
    * @param array[] $fields
    *   Data-Dictionary fields.
+   * @param array[] $indexes
+   *   Data-Dictionary indexes.
    * @param string $identifier
    *   Data-Dictionary identifier.
    * @param string|null $title
@@ -62,23 +64,35 @@ trait GetDataTrait {
    * Input fields format:
    * ```php
    * [
-   *   'name' => 'string',
-   *   'title' => 'string',
-   *   'type' => 'string',
-   *   'format' => 'string'
+   *   'name' => string,
+   *   'title' => string,
+   *   'type' => string,
+   *   'format' => string,
    * ]
    * ```
    *
+   * Input indexes format:
+   * ```php
+   * [
+   *   'fields' => [
+   *     'name' => string,
+   *     'length' => integer,
+   *   ]
+   *   'type' => enum('index', 'fulltext'),
+   *   'description' => string,
+   * ]
+   * ```
    *
    * @return string|false
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getDataDictionary(array $fields, string $identifier, string $title = 'Test DataDict') {
+  private function getDataDictionary(array $fields, array $indexes, string $identifier, string $title = 'Test DataDict') {
     return json_encode([
       'identifier' => $identifier,
       'title' => $title,
       'data' => [
         'fields' => $fields,
+        'indexes' => $indexes,
       ],
     ], JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
   }

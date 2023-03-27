@@ -24,6 +24,7 @@ use Drupal\datastore\Storage\QueryFactory;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
+use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 
 /**
  * @group dkan
@@ -195,6 +196,7 @@ class DatastoreQueryTest extends TestCase {
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
+      ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->index(0);
 
     $resource_metadata = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';

@@ -42,8 +42,20 @@ class DatasetTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState();
     $this->changeDatasetsResourceOutputPerspective();
-
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+  }
+
+  public function tearDown(): void {
+    parent::tearDown();
+    $this->removeHarvests();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
+    $this->setDefaultModerationState();
+    $this->changeDatasetsResourceOutputPerspective();
   }
 
   public function testChangingDatasetResourcePerspectiveOnOutput() {
@@ -66,10 +78,11 @@ class DatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'published'.
    */
   public function testResourcePurgePublished() {
+    $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post then update a dataset with multiple, changing resources.
-    $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
-    $this->storeDatasetRunQueues(111, '1.2', ['2.csv', '4.csv'], 'put');
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues($id_1, '1.2', ['2.csv', '4.csv'], 'put');
 
     // Verify only the 2 most recent resources remain.
     $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
@@ -80,16 +93,20 @@ class DatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'draft'.
    */
   public function testResourcePurgeDraft() {
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $id_2 = uniqid(__FUNCTION__ . '2');
+    $id_3 = uniqid(__FUNCTION__ . '3');
+
     $this->setDefaultModerationState('draft');
 
     // Post, update and publish a dataset with multiple, changing resources.
-    $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
-    $this->storeDatasetRunQueues(111, '1.2', ['3.csv', '1.csv'], 'put');
-    $this->getMetastore()->publish('dataset', 111);
-    $this->storeDatasetRunQueues(111, '1.3', ['1.csv', '5.csv'], 'put');
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
+    $this->getMetastore()->publish('dataset', $id_1);
+    $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
     $datasetInfo = \Drupal::service('dkan.common.dataset_info');
-    $info = $datasetInfo->gather('111');
+    $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
     $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
     $this->assertStringEndsWith('3.csv', $info['published_revision']['distributions'][0]['file_path']);
@@ -101,20 +118,20 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals(3, $this->countTables());
 
     // Add more datasets, only publishing some.
-    $this->storeDatasetRunQueues(222, '2.1', []);
-    $this->storeDatasetRunQueues(333, '3.1', []);
-    $this->getMetastore()->publish('dataset', 222);
+    $this->storeDatasetRunQueues($id_2, '2.1', []);
+    $this->storeDatasetRunQueues($id_3, '3.1', []);
+    $this->getMetastore()->publish('dataset', $id_2);
     // Reindex.
     $index = Index::load('dkan');
     $index->clear();
     $index->indexItems();
-    // Verify search results contain the '1.2' version of 111, 222 but not 333.
+    // Verify search results contain the '1.2' version of $id_1, $id_2 but not $id_3.
     $searchResults = $this->getMetastoreSearch()->search();
     $this->assertEquals(2, $searchResults->total);
-    $this->assertArrayHasKey('dkan_dataset/111', $searchResults->results);
-    $this->assertEquals('1.2', $searchResults->results['dkan_dataset/111']->title);
-    $this->assertArrayHasKey('dkan_dataset/222', $searchResults->results);
-    $this->assertArrayNotHasKey('dkan_dataset/333', $searchResults->results);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_1, $searchResults->results);
+    $this->assertEquals('1.2', $searchResults->results['dkan_dataset/' . $id_1]->title);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_2, $searchResults->results);
+    $this->assertArrayNotHasKey('dkan_dataset/' . $id_3, $searchResults->results);
   }
 
 
@@ -181,12 +198,13 @@ class DatasetTest extends ExistingSiteBase {
    * Test resource removal on distribution deleting.
    */
   public function testDeleteDistribution() {
+    $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post a dataset with a single distribution.
-    $this->storeDatasetRunQueues(111, '1.1', ['1.csv']);
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv']);
 
     // Get distribution id.
-    $dataset = $this->getMetastore()->get('dataset', 111);
+    $dataset = $this->getMetastore()->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
     $distributionId = $datasetMetadata["%Ref:distribution"][0]["identifier"];
 
@@ -207,6 +225,9 @@ class DatasetTest extends ExistingSiteBase {
    * Test local resource removal on datastore import.
    */
   public function testDatastoreImportDeleteLocalResource() {
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $id_2 = uniqid(__FUNCTION__ . '2');
+
     // Get the original config value.
     $datastoreSettings = \Drupal::service('config.factory')->getEditable('datastore.settings');
     $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
@@ -215,10 +236,10 @@ class DatasetTest extends ExistingSiteBase {
     $datastoreSettings->set('delete_local_resource', 1)->save();
 
     // Post dataset 1 and run the 'datastore_import' queue.
-    $this->storeDatasetRunQueues(111, '1', ['1.csv']);
+    $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
 
     // Get local resource folder name.
-    $dataset = $this->getMetastore()->get('dataset', 111);
+    $dataset = $this->getMetastore()->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
     $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
@@ -231,10 +252,10 @@ class DatasetTest extends ExistingSiteBase {
     $datastoreSettings->set('delete_local_resource', 0)->save();
 
     // Post dataset 2 and run the 'datastore_import' queue.
-    $this->storeDatasetRunQueues(222, '2', ['2.csv']);
+    $this->storeDatasetRunQueues($id_2, '2', ['2.csv']);
 
     // Get local resource folder name.
-    $dataset = $this->getMetastore()->get('dataset', 222);
+    $dataset = $this->getMetastore()->get('dataset', $id_2);
     $datasetMetadata = $dataset->{'$'};
     $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];

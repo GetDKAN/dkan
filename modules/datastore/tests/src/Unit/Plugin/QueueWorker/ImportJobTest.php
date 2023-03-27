@@ -26,6 +26,11 @@ class ImportJobTest extends TestCase {
     $this->assertTrue($this->database instanceof DatabaseTableInterface);
   }
 
+  protected function tearDown(): void {
+    parent::tearDown();
+    $this->database = NULL;
+  }
+
   /**
    *
    */
@@ -236,6 +241,57 @@ class ImportJobTest extends TestCase {
       },
       "parser" => Csv::getParser(),
     ]);
+  }
+
+  public function sanitizeDescriptionProvider() {
+    return [
+      'multiline' => ["Multi\nLine", 'Multi Line'],
+    ];
+  }
+
+  /**
+   * @dataProvider sanitizeDescriptionProvider
+   * @covers \Drupal\datastore\Plugin\QueueWorker\ImportJob::sanitizeDescription
+   */
+  public function testSanitizeDescription($column, $expected) {
+    $this->assertEquals($expected, ImportJob::sanitizeDescription($column));
+  }
+
+  public function sanitizeHeaderProvider() {
+    return [
+      'reserved_word' => ['accessible', '_accessible'],
+      'numeric' => [1, '_1'],
+    ];
+  }
+
+  /**
+   * @dataProvider sanitizeHeaderProvider
+   * @covers \Drupal\datastore\Plugin\QueueWorker\ImportJob::sanitizeHeader
+   */
+  public function testSanitizeHeader($column, $expected) {
+    $this->assertEquals($expected, ImportJob::sanitizeHeader($column));
+  }
+
+  public function truncateHeaderProvider() {
+    $max_length = 64;
+    return [
+      'max_length' => [
+        str_repeat('a', $max_length),
+        $max_length,
+      ],
+      'longer_length' => [
+        str_repeat('b', $max_length + 1),
+        $max_length,
+      ],
+    ];
+  }
+
+  /**
+   * @dataProvider truncateHeaderProvider
+   * @covers \Drupal\datastore\Plugin\QueueWorker\ImportJob::truncateHeader
+   */
+  public function testTruncateHeader($column, $expected) {
+    $this->assertEquals($expected, strlen(ImportJob::truncateHeader($column)));
   }
 
 }

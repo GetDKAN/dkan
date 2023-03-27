@@ -359,7 +359,15 @@ class MetastoreController implements ContainerInjectionInterface {
   }
 
   /**
-   * Checks identifier.
+   * Check that the given identifier is the same that in the JSON data.
+   *
+   * @param string $data
+   *   JSON data to decode and check.
+   * @param mixed $identifier
+   *   Identifier.
+   *
+   * @throws \Drupal\metastore\Exception\CannotChangeUuidException
+   *   Thrown when the identifiers are different.
    */
   private function checkIdentifier(string $data, $identifier = NULL) {
     $obj = json_decode($data);

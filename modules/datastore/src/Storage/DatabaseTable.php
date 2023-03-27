@@ -6,7 +6,6 @@ use Drupal\Core\Database\Connection;
 use Drupal\datastore\DatastoreResource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Drupal\Core\Database\Driver\mysql\Connection as MysqlConnection;
 
 /**
  * Database storage object.
@@ -47,10 +46,18 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * Get summary.
    */
   public function getSummary() {
-    $columns = $this->getSchema()['fields'];
+    $schema = $this->getSchema();
+    $columns = $schema['fields'];
+    $indexes = $schema['indexes'] ?? NULL;
+    $fulltext_indexes = $schema['fulltext indexes'] ?? NULL;
     $numOfColumns = count($columns);
     $numOfRows = $this->count();
-    return new TableSummary($numOfColumns, $columns, $numOfRows);
+    return new TableSummary(
+      $numOfColumns,
+      $columns,
+      $indexes,
+      $fulltext_indexes,
+      $numOfRows);
   }
 
   /**
@@ -58,6 +65,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * {@inheritdoc}
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return (object) ['resource' => $this->resource];
   }
@@ -157,20 +165,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $schema['fields'] = $fields;
     $schema['primary key'] = [$this->primaryKey()];
     parent::setSchema($schema);
-  }
-
-  /**
-   * Disable/enable InnoDB strict mode for the given database connection.
-   *
-   * @param bool $on
-   *   Whether strict mode should be "ON" or "OFF".
-   */
-  public function innodbStrictMode(bool $on) {
-    $value = $on ? "ON" : "OFF";
-    // Only if we're using MySQL.
-    if ($this->connection instanceof MysqlConnection) {
-      $this->connection->query("SET SESSION innodb_strict_mode=:value", [':value' => $value]);
-    }
   }
 
   /**

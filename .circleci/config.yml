@@ -1,83 +1,97 @@
 version: 2.1
 
 commands:
-  dktl:
+  install-ddev:
     steps:
       - run:
-          name: Install/configure DKAN Tools (dktl)
+          name: Install DDev
           command: |
-            if [ ! -d ~/dkan-tools ]; then git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools; fi
-            export PATH=~/dkan-tools/bin:$PATH
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            set -e
+            sudo rm -rf /etc/apt/sources.list.d/heroku.list
+            sudo apt-get update
+            sudo apt-get install ca-certificates
+            curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
+            echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
+            sudo apt update && sudo apt install -y ddev
   prepare_build:
+    # TODO: Figure out the best way to share this build between the various jobs.
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
     steps:
-      - checkout:
-          path: dkan
       - run:
           name: Set up composer config
           command: |
             mkdir ~/.composer
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
-      - dktl
-      - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize with latest stable tag to upgrade from
-                command: |
-                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
-                  echo "Testing upgrade from tag: ${TAG}"
-                  git --git-dir=dkan/.git --work-tree=dkan checkout "${TAG}"
-                  dktl init --dkan-local
-                  # Switch expected composer dependency to the same release
-                  dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
-      - unless:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize Project
-                command: dktl init --dkan-local
+      - install-ddev
       - run:
-          name: Make DKAN
-          command: dktl make
+          name: Build site codebase
+          command: |
+            which ddev
+            ddev --version
+            ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
+            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
+            ddev restart
+            ddev status
+            ddev dkan-init --force
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            mkdir -p test_results
 
   prepare_site:
     parameters:
       upgrade:
-        description: "If true, will upgrade a stable instance to the target commit"
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
         default: false
         type: boolean
     steps:
-      - run:
-          name: Install Drupal
-          command: |
-            dktl dc up -d
-            sleep 10 && dktl install
+      - checkout:
+          path: dkan
+      - when:
+          condition: << parameters.needs_cypress >>
+          steps:
+            - run:
+                # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
+                name: Cypressify ddev
+                command: |
+                  mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
+                  ddev restart
       - when:
           condition: << parameters.upgrade >>
           steps:
             - run:
-                name: Switch to target commit and run DKAN upgrade
+                name: Install site and update to dev dkan
                 command: |
-                  git --git-dir=dkan/.git --work-tree=dkan checkout "${CIRCLE_SHA1}"
-                  dktl exec:composer -- require --no-interaction --ansi --no-update "getdkan/dkan:dev-${CIRCLE_SHA1}"
-                  rm -rf docroot/modules/contrib/select_or_other
-                  rm -rf vendor/
-                  dktl exec:composer -- update --no-interaction --ansi
-                  dktl drush cache:rebuild
-                  dktl drush updatedb -y
+                  ddev composer show getdkan/dkan
+                  # Install dkan release specified by getdkan/recommended-project.
+                  ddev dkan-site-install
+                  # Switch over to using the repo code for dkan and update.
+                  ddev composer config repositories.dkan path dkan
+                  ddev composer require getdkan/dkan:@dev --no-install -W
+                  ddev composer update getdkan/dkan -W
+                  ddev composer show getdkan/dkan
+                  ddev drush updb -y
+                  ddev drush rq
       - unless:
           condition: << parameters.upgrade >>
           steps:
             - run:
-                name: Just in case, run a composer update
+                name: Install site
                 command: |
-                  dktl exec:composer -- update --no-interaction --ansi
+                  ddev composer config repositories.dkan path dkan
+                  ddev composer require getdkan/dkan:@dev --no-install -W
+                  ddev composer update getdkan/dkan -W
+                  ddev composer show getdkan/dkan
+                  ddev dkan-site-install
+                  ddev drush updb -y
+                  ddev drush rq
 
 jobs:
   phpunit:
@@ -88,59 +102,82 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-    environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.11"
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
-      - attach_workspace:
-          at: ~/
-      - dktl
       - prepare_site:
           upgrade: << parameters.upgrade >>
+          needs_cypress: << parameters.needs_cypress >>
       - when:
           condition: << parameters.upgrade >>
           steps:
             - run:
-                name: Run phpUnit tests
-                command: dktl dkan:test-phpunit --testsuite="DKAN Test Suite"
+                name: Run PHPUnit tests
+                command: |
+                  ddev dkan-test-phpunit \
+                    --log-junit ../test_results/phpunit_results.xml
       - unless:
+          # Only collect coverage info for non-upgrade PHPUnit tests.
           condition: << parameters.upgrade >>
           steps:
             - run:
-                name: Run phpUnit tests
+                name: Run PHPUnit tests with coverage report
+                environment:
+                  XDEBUG_MODE: coverage
                 command: |
-                  dktl xdebug:start
-                  sed -i "/=debug/s/=.*/=coverage/" src/docker/etc/php/xdebug.ini
-                  dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
+                  ddev xdebug on
+                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
+                  ddev dkan-test-phpunit \
+                    --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
+                    --log-junit ../test_results/phpunit_results.xml
+                  TEST_RESULT=$?
+                  if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
+                    echo "Coverage file: docroot/modules/contrib/dkan/clover.xml"
+                  else
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
+                  fi
+                  cd docroot/modules/contrib/dkan
+                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
+                    --coverage-input-type clover \
+                    --prefix /var/www/html/dkan \
+                    --exit-code $TEST_RESULT
+                  exit $TEST_RESULT
+      - store_test_results:
+          path: test_results
+
   cypress:
     machine:
       image: ubuntu-2004:current
+    parallelism: 4
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-    parallelism: 4
-    environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.11"
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
-      - attach_workspace:
-          at: ~/
-      - dktl
       - prepare_site:
           upgrade: << parameters.upgrade >>
+          needs_cypress: << parameters.needs_cypress >>
       - run:
-          name: Run DKAN cypress tests
+          name: Run Cypress tests
           command: |
             mkdir dkan/cypress/tmp && mkdir dkan/cypress/results
             mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
             rm dkan/cypress/integration/* && mv dkan/cypress/tmp/* dkan/cypress/integration
-            dktl dkan:test-cypress --headless --browser=chromium --reporter=junit --reporter-options "mochaFile=cypress/results/output.xml"
+            ddev dkan-module-test-cypress \
+              --headless \
+              --reporter junit \
+              --reporter-options "mochaFile=cypress/results/cypress-results-[hash].xml"
       - store_artifacts:
           path: dkan/cypress/screenshots
       - store_artifacts:
@@ -156,6 +193,7 @@ workflows:
           name: install_test_phpunit
       - cypress:
           name: install_test_cypress
+          needs_cypress: true
   upgrade_and_test:
     jobs:
       - phpunit:
@@ -164,3 +202,4 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
+          needs_cypress: true

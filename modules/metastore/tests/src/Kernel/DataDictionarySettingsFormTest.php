@@ -54,7 +54,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->form = new DataDictionarySettingsForm($this->container->get('config.factory'));

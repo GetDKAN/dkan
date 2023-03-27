@@ -73,6 +73,7 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         return count($this->storage);
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return (object) ['storage' => $this->storage];

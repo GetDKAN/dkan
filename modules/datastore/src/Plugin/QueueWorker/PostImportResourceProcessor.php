@@ -8,7 +8,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 
 use Drupal\common\DataResource;
-use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
+use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\ResourceMapper;
 
@@ -58,7 +58,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface $alter_table_query_factory
+   * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   A logger channel factory instance.
@@ -71,7 +71,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     array $configuration,
     $plugin_id,
     $plugin_definition,
-    AlterTableQueryFactoryInterface $alter_table_query_factory,
+    AlterTableQueryBuilderInterface $alter_table_query_builder,
     LoggerChannelFactoryInterface $logger_factory,
     ResourceMapper $resource_mapper,
     ResourceProcessorCollector $processor_collector
@@ -84,7 +84,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
-    $alter_table_query_factory->setConnectionTimeout($timeout);
+    $alter_table_query_builder->setConnectionTimeout($timeout);
   }
 
   /**
@@ -95,7 +95,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('dkan.datastore.data_dictionary.alter_table_query_factory.mysql'),
+      $container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql'),
       $container->get('logger.factory'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.datastore.service.resource_processor_collector'),
