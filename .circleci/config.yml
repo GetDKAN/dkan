@@ -264,6 +264,7 @@ workflows:
               drupal_core_constraint: [ '~9.5.0' ]
               php_version: [ '7.4', '8.1' ]
       - phpunit:
+          name: 'Install target (Drupal 9.5, PHP 8.0)'
           report_coverage: true
           matrix:
             parameters:
@@ -280,6 +281,7 @@ workflows:
           name: upgrade_test_cypress
           upgrade: true
       - phpunit:
+          name: 'Upgrade target (Drupal 9.5, PHP 8.0)'
           upgrade: true
           matrix:
             parameters:
