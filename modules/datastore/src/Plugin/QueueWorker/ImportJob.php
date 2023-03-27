@@ -282,6 +282,7 @@ class ImportJob extends AbstractPersistentJob {
    *   The file name including path.
    * @param mixed $maximumExecutionTime
    *   Maximum time to parse for before exiting.
+   *
    * @throws \Exception
    */
   protected function parseAndStore($filename, $maximumExecutionTime) {
@@ -312,8 +313,7 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
-   * Ensure string is UTF-8 and encode it if necessary.
-   * Strip BOM if present.
+   * Ensure string is UTF-8 and encode it if necessary. Strip BOM if present.
    *
    * @param string $chunk
    *   Chunk of file being parsed.
@@ -323,7 +323,9 @@ class ImportJob extends AbstractPersistentJob {
    *   The index of the chunk being parsed.
    * @param string $bom_encoding
    *   File encoding from BOM if available.
+   *
    * @return string $chunk
+   *   Updated file chunk.
    *
    * @throws \Exception
    */
