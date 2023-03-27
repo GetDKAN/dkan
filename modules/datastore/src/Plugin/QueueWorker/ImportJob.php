@@ -297,7 +297,8 @@ class ImportJob extends AbstractPersistentJob {
     while (time() < $maximumExecutionTime) {
       $chunk = fread($h, self::BYTES_PER_CHUNK);
 
-      if (!$chunk) {
+      // Fread() can return an empty string or FALSE if we're done.
+      if (empty($chunk)) {
         $this->getResult()->setStatus(Result::DONE);
         $this->parser->finish();
         break;
