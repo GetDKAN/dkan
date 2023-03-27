@@ -7,7 +7,7 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\Service as Metastore;
-use Drupal\datastore\Service\PostImportResult;
+use Drupal\datastore\Service\PostImport;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -31,11 +31,11 @@ class Drush extends DrushCommands {
   protected $datastoreService;
 
   /**
-   * The PostImportResult service.
+   * The PostImport service.
    *
-   * @var \Drupal\datastore\Service\PostImportResult
+   * @var \Drupal\datastore\Service\PostImport
    */
-  protected PostImportResult $postImportResult;
+  protected PostImport $postImport;
 
   /**
    * The datastore resource localizer.
@@ -50,12 +50,12 @@ class Drush extends DrushCommands {
   public function __construct(
     Metastore $metastoreService,
     Datastore $datastoreService,
-    PostImportResult $postImportResult,
+    PostImport $postImport,
     ResourceLocalizer $resourceLocalizer
   ) {
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
-    $this->postImportResult = $postImportResult;
+    $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
   }
 
@@ -163,13 +163,13 @@ class Drush extends DrushCommands {
    * Drop a resource from the datastore.
    *
    * If you pass a simple resource identifier, both the database table and the
-   * localized resource file (if the file is remote) will be deleted. If you
-   * would like to just drop the datastore table but keep the localized
-   * resource (this may be useful if a large file was successfully localized
+   * localized resource file (if the file is remote) will be deleted. 
+   * The post import job status' for the latest version of a resource will also be removed.
+   * If you would like to just drop the datastore table but keep 
+   * the localize resource (this may be useful if a large file was successfully localized
    * but the database import failed and you want to redo it) pass the
    * --keep-local argument. In both cases, the appropriate jobstore results
-   * (where the status of the import or file-fetch jobs are stored) will be
-   * deleted.
+   * (where the status of the import or file-fetch jobs are stored) will be deleted.
    *
    * Note that if you have "Delete local resource" checked in
    * /admin/dkan/resources, the file may already be deleted and therefore
@@ -187,7 +187,7 @@ class Drush extends DrushCommands {
     $local_resource = $options['keep-local'] ? FALSE : TRUE;
     $this->datastoreService->drop($identifier, NULL, $local_resource);
     $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
-    $this->postImportResult->removeJobStatus($identifier);
+    $this->postImport->removeJobStatus($identifier);
     $this->logger->notice("Successfully removed the post import job status for resource {$identifier}");
   }
 
@@ -229,6 +229,5 @@ class Drush extends DrushCommands {
       $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}.", $e->getMessage());
     }
   }
-
 
 }
