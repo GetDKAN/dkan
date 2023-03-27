@@ -105,6 +105,8 @@ class DatasetTest extends ExistingSiteBase {
     $this->getMetastore()->publish('dataset', $id_1);
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
+    sleep(10);
+
     $datasetInfo = \Drupal::service('dkan.common.dataset_info');
     $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
