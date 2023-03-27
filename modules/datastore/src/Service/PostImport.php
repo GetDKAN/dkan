@@ -5,6 +5,10 @@ namespace Drupal\datastore\Service;
 use Drupal\Core\Database\Connection;
 use Drupal\metastore\ResourceMapper;
 
+/**
+ * PostImport service used to add,retrieve,remove post import
+ * status rows in the dkan_post_import_job_status table.
+ */
 class PostImport {
 
   /**
