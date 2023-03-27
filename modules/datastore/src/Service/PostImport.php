@@ -52,13 +52,13 @@ class PostImport {
   public function storeJobStatus($resourceIdentifier, $resourceVersion, $status, $message): bool {
     try {
       $this->connection->insert('dkan_post_import_job_status')
-      ->fields([
-        'resource_identifier' => $resourceIdentifier,
-        'resource_version' => $resourceVersion,
-        'post_import_status' => $status,
-        'post_import_error' => $message,
-      ])
-      ->execute();
+        ->fields([
+          'resource_identifier' => $resourceIdentifier,
+          'resource_version' => $resourceVersion,
+          'post_import_status' => $status,
+          'post_import_error' => $message,
+        ])
+        ->execute();
 
       return TRUE;
     }
@@ -78,15 +78,15 @@ class PostImport {
   public function retrieveJobStatus($resourceIdentifier, $resourceVersion) {
     try {
       return $this->connection->select('dkan_post_import_job_status')
-      ->condition('resource_identifier', $resourceIdentifier, '=')
-      ->condition('resource_version', $resourceVersion, '=')
-      ->fields('dkan_post_import_job_status', [
-        'resource_version',
-        'post_import_status',
-        'post_import_error',
-      ])
-      ->execute()
-      ->fetchAssoc();
+        ->condition('resource_identifier', $resourceIdentifier, '=')
+        ->condition('resource_version', $resourceVersion, '=')
+        ->fields('dkan_post_import_job_status', [
+          'resource_version',
+          'post_import_status',
+          'post_import_error',
+        ])
+        ->execute()
+        ->fetchAssoc();
     }
     catch (\Exception $e) {
       return FALSE;
@@ -95,11 +95,11 @@ class PostImport {
 
   /**
    * Remove row.
-   * 
+   *
    * @param string $resourceIdentifier
    *   The resource identifier of the distribution.
    */
-  public function removeJobStatus($resourceIdentifier): bool{
+  public function removeJobStatus($resourceIdentifier): bool {
     try {
       $latest_resource = $this->resourceMapper->get($resourceIdentifier);
       $latest_version = $latest_resource->getVersion();
