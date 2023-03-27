@@ -12,7 +12,7 @@ use Drupal\Core\Url;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\Service;
 use Drupal\metastore\Service as MetastoreService;
-use Drupal\datastore\Service\PostImportResult;
+use Drupal\datastore\Service\PostImport;
 use Drupal\search_api\Plugin\search_api\processor\Resources\Pc;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -67,11 +67,11 @@ class DashboardForm extends FormBase {
   protected $dateFormatter;
 
   /**
-   * The PostImportResult service.
+   * The PostImport service.
    *
-   * @var \Drupal\datastore\Service\PostImportResult
+   * @var \Drupal\datastore\Service\PostImport
    */
-  protected $postImportResult;
+  protected $postImport;
 
   /**
    * DashboardController constructor.
@@ -86,8 +86,8 @@ class DashboardForm extends FormBase {
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
-   * @param \Drupal\datastore\Service\PostImportResult $post_import_result
-   *   The post import result service.
+   * @param \Drupal\datastore\Service\PostImport $post_import
+   *   The post import service.
    */
   public function __construct(
     Service $harvestService,
@@ -95,14 +95,14 @@ class DashboardForm extends FormBase {
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
     DateFormatter $dateFormatter,
-    PostImportResult $post_import_result
+    PostImport $post_import
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
     $this->dateFormatter = $dateFormatter;
-    $this->postImportResult = $post_import_result;
+    $this->postImport = $post_import;
     $this->itemsPerPage = 10;
   }
 
@@ -116,7 +116,7 @@ class DashboardForm extends FormBase {
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
       $container->get('date.formatter'),
-      $container->get('dkan.datastore.service.post_import_result'),
+      $container->get('dkan.datastore.service.post_import'),
     );
   }
 
@@ -448,9 +448,8 @@ class DashboardForm extends FormBase {
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
 
-      $postImportInfo = $this->postImportResult->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
+      $postImportInfo = $this->postImport->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
       $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
-      $percentDone = $postImportInfo ? $postImportInfo['post_import_percent_done'] : 0;
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : null;
 
       return [
@@ -464,7 +463,7 @@ class DashboardForm extends FormBase {
         ],
         $this->buildStatusCell($dist['fetcher_status'], $dist['fetcher_percent_done']),
         $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
-        $this->buildStatusCell($status, $percentDone, $error),
+        $this->buildPostImportStatusCell($status, $error),
       ];
     }
     return ['', '', '', ''];
@@ -489,6 +488,28 @@ class DashboardForm extends FormBase {
         '#theme' => 'datastore_dashboard_status_cell',
         '#status' => $status,
         '#percent' => $percentDone,
+        '#error' => $error,
+      ],
+      'class' => str_replace('_', '-', $status),
+    ];
+  }
+
+  /**
+   * Create a cell for a post import job status.
+   *
+   * @param string $status
+   *   Current job status.
+   * @param null|string $error
+   *   An error message, if any.
+   *
+   * @return array
+   *   Renderable array.
+   */
+  protected function buildPostImportStatusCell(string $status, ?string $error = NULL) {
+    return [
+      'data' => [
+        '#theme' => 'datastore_dashboard_post_import_status_cell',
+        '#status' => $status,
         '#error' => $error,
       ],
       'class' => str_replace('_', '-', $status),

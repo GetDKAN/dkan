@@ -11,8 +11,8 @@ use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\ResourceMapper;
-use Drupal\datastore\PostImportResource;
-use Drupal\datastore\Service\PostImportResult;
+use Drupal\datastore\PostImportResult;
+use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -53,11 +53,11 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   protected ResourceProcessorCollector $resourceProcessorCollector;
 
   /**
-   * The PostImportResult service.
+   * The PostImport service.
    *
-   * @var \Drupal\datastore\Service\PostImportResult
+   * @var \Drupal\datastore\Service\PostImport
    */
-  protected PostImportResult $postImportResult;
+  protected PostImport $postImport;
 
   /**
    * Data dictionary discovery service.
@@ -83,8 +83,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The metastore resource mapper service.
    * @param \Drupal\datastore\Service\ResourceProcessorCollector $processor_collector
    *   The resource processor collector service.
-   * @param \Drupal\datastore\Service\PostImportResult $post_import_result
-   *   The post import result service.
+   * @param \Drupal\datastore\Service\PostImport $post_import
+   *   The post import service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
    */
@@ -96,14 +96,14 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     LoggerChannelFactoryInterface $logger_factory,
     ResourceMapper $resource_mapper,
     ResourceProcessorCollector $processor_collector,
-    PostImportResult $post_import_result,
+    PostImport $post_import,
     DataDictionaryDiscoveryInterface $data_dictionary_discovery
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger_factory->get('datastore');
     $this->resourceMapper = $resource_mapper;
     $this->resourceProcessorCollector = $processor_collector;
-    $this->postImportResult = $post_import_result;
+    $this->postImport = $post_import;
     $this->dataDictionaryDiscovery = $data_dictionary_discovery;
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
@@ -124,7 +124,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $container->get('logger.factory'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.datastore.service.resource_processor_collector'),
-      $container->get('dkan.datastore.service.post_import_result'),
+      $container->get('dkan.datastore.service.post_import'),
       $container->get('dkan.metastore.data_dictionary_discovery'),
     );
   }
@@ -133,34 +133,9 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    * {@inheritdoc}
    */
   public function processItem($data) {
-    // Catch and log any exceptions thrown when processing the queue item to
-    // prevent the item from being requeued.
-    $status = "error";
-    $percent_done = 0;
-    $message = NULL;
-
-    try {
-      $this->doProcessItem($data);
-
-      if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
-        $status = "waiting";
-        $percent_done = 0;
-        $message = "Data-Dictionary Disabled";
-      } else {
-        $status = "done";
-        $percent_done = 100;
-      }
-    }
-    catch (\Exception $e) {
-      $message = $e->getMessage();
-      $this->logger->error($e->getMessage());
-    }
-
-    // Set the properties of the object
-    $postImportResource = new PostImportResource($data->getIdentifier(), $data->getVersion(), $status, $message);
-
-    // Store the object properties into the dkan_post_import_job_status table.
-    $this->postImportResult->storeJobStatus($postImportResource);
+    $postImportResult = $this->postImportProcessItem($data);
+    // Store the results of the PostImportResult object.
+    $postImportResult->storeResult();
   }
 
   /**
@@ -169,24 +144,41 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
    */
-  public function doProcessItem(DataResource $resource): void {
+  public function postImportProcessItem(DataResource $resource): PostImportResult {
     $identifier = $resource->getIdentifier();
     $version = $resource->getVersion();
-
     $latest_resource = $this->resourceMapper->get($identifier);
+
     // Stop if resource no longer exists.
     if (!isset($latest_resource)) {
       $this->logger->notice('Cancelling resource processing; resource no longer exists.');
-      return;
+      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource no longer exists.', $this->resourceMapper, $this->postImport);
     }
     // Stop if resource has changed.
     if ($version !== $latest_resource->getVersion()) {
       $this->logger->notice('Cancelling resource processing; resource has changed.');
-      return;
+      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource has changed.', $this->resourceMapper, $this->postImport);
     }
+
+    try {
     // Run all tagged resource processors.
-    $processors = $this->resourceProcessorCollector->getResourceProcessors();
-    array_map(fn ($processor) => $processor->process($resource), $processors);
+      $processors = $this->resourceProcessorCollector->getResourceProcessors();
+
+      if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
+        $status = "waiting";
+        $message = "Data-Dictionary Disabled";
+      } else {
+        array_map(fn ($processor) => $processor->process($resource), $processors);
+        $status = "done";
+        $message = NULL;
+      }
+      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), $status, $message, $this->resourceMapper, $this->postImport);
+    }
+    catch (\Exception $e) {
+      $this->logger->error($e->getMessage());
+      $status = "error";
+      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), $status, $e->getMessage(), $this->resourceMapper, $this->postImport);
+    }
   }
 
 }
