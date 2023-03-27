@@ -164,12 +164,12 @@ class Drush extends DrushCommands {
    *
    * If you pass a simple resource identifier, both the database table and the
    * localized resource file (if the file is remote) will be deleted.
-   * The post import job status' for the latest version of a resource will 
+   * The post import job status' for the latest version of a resource will
    * also be removed. If you would like to drop the datastore table but keep
    * the localize resource (this may be useful if a large file was successfully
    * localized but the database import failed and you want to redo it) pass the
    * --keep-local argument. In both cases, the appropriate jobstore
-   * results (where the status of the import or file-fetch 
+   * results (where the status of the import or file-fetch
    * jobs are stored) will be deleted.
    *
    * Note that if you have "Delete local resource" checked in

@@ -149,15 +149,17 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     $version = $resource->getVersion();
     $latest_resource = $this->resourceMapper->get($identifier);
 
+    $PostImportResult = new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "done", NULL, $this->resourceMapper, $this->postImport);
+
     // Stop if resource no longer exists.
     if (!isset($latest_resource)) {
       $this->logger->notice('Cancelling resource processing; resource no longer exists.');
-      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource no longer exists.', $this->resourceMapper, $this->postImport);
+      $PostImportResult = new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource no longer exists.', $this->resourceMapper, $this->postImport);
     }
     // Stop if resource has changed.
     if ($version !== $latest_resource->getVersion()) {
       $this->logger->notice('Cancelling resource processing; resource has changed.');
-      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource has changed.', $this->resourceMapper, $this->postImport);
+      $PostImportResult = new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource has changed.', $this->resourceMapper, $this->postImport);
     }
 
     try {
@@ -165,17 +167,18 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $processors = $this->resourceProcessorCollector->getResourceProcessors();
 
       if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
-        return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "waiting", "Data-Dictionary Disabled", $this->resourceMapper, $this->postImport);
+        $PostImportResult = new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "waiting", "Data-Dictionary Disabled", $this->resourceMapper, $this->postImport);
       }
       else {
         array_map(fn ($processor) => $processor->process($resource), $processors);
-        return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "done", NULL, $this->resourceMapper, $this->postImport);
       }
     }
     catch (\Exception $e) {
       $this->logger->error($e->getMessage());
-      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", $e->getMessage(), $this->resourceMapper, $this->postImport);
+      $PostImportResult = new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", $e->getMessage(), $this->resourceMapper, $this->postImport);
     }
+
+    return $PostImportResult;
   }
 
 }
