@@ -5,6 +5,9 @@ namespace Drupal\datastore\Service;
 use Drupal\Core\Database\Connection;
 use Drupal\metastore\ResourceMapper;
 
+/**
+ * PostImport status storage service.
+ */
 class PostImport {
 
   /**

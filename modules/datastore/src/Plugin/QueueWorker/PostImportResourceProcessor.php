@@ -145,40 +145,56 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   DKAN Resource.
    */
   public function postImportProcessItem(DataResource $resource): PostImportResult {
-    $identifier = $resource->getIdentifier();
-    $version = $resource->getVersion();
-    $latest_resource = $this->resourceMapper->get($identifier);
+    $latest_resource = $this->resourceMapper->get($resource->getIdentifier());
 
     // Stop if resource no longer exists.
     if (!isset($latest_resource)) {
       $this->logger->notice('Cancelling resource processing; resource no longer exists.');
-      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource no longer exists.', $this->resourceMapper, $this->postImport);
+      return $this->createPostImportResult('error', 'Cancelling resource processing; resource no longer exists.', $resource);
     }
     // Stop if resource has changed.
-    if ($version !== $latest_resource->getVersion()) {
+    if ($resource->getVersion() !== $latest_resource->getVersion()) {
       $this->logger->notice('Cancelling resource processing; resource has changed.');
-      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), "error", 'Cancelling resource processing; resource has changed.', $this->resourceMapper, $this->postImport);
+      return $this->createPostImportResult('error', 'Cancelling resource processing; resource has changed.', $resource);
     }
 
     try {
-    // Run all tagged resource processors.
+      // Run all tagged resource processors.
       $processors = $this->resourceProcessorCollector->getResourceProcessors();
 
       if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
-        $status = "waiting";
-        $message = "Data-Dictionary Disabled";
-      } else {
-        array_map(fn ($processor) => $processor->process($resource), $processors);
-        $status = "done";
-        $message = NULL;
+        $postImportResult = $this->createPostImportResult('waiting', 'Data-Dictionary Disabled', $resource);
       }
-      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), $status, $message, $this->resourceMapper, $this->postImport);
+      else {
+        array_map(fn ($processor) => $processor->process($resource), $processors);
+        $postImportResult = $this->createPostImportResult('done', NULL, $resource);
+      }
     }
     catch (\Exception $e) {
       $this->logger->error($e->getMessage());
-      $status = "error";
-      return new PostImportResult($resource->getIdentifier(), $resource->getVersion(), $status, $e->getMessage(), $this->resourceMapper, $this->postImport);
+      $postImportResult = $this->createPostImportResult('error', $e->getMessage(), $resource);
     }
+
+    return $postImportResult;
+  }
+
+  /**
+   * Create the PostImportResult object.
+   *
+   * @param string $status
+   *   Status of the post import process.
+   * @param string $message
+   *   Error messages retrieved during the post import process.
+   * @param \Drupal\common\DataResource $resource
+   *   The DKAN resource being imported.
+   */
+  private function createPostImportResult($status, $message, DataResource $resource): PostImportResult {
+    return new PostImportResult([
+      'resource_identifier' => $resource->getIdentifier(),
+      'resourceVersion' => $resource->getVersion(),
+      'postImportStatus' => $status,
+      'postImportMessage' => $message,
+    ], $this->resourceMapper, $this->postImport);
   }
 
 }

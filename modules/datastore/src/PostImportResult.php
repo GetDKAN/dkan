@@ -6,6 +6,11 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\Core\Database\Connection;
 use Drupal\datastore\Service\PostImport;
 
+/**
+ * PostImportResult class to create PostImportResult objects.
+ *
+ * Contains the results of the PostImportResourceProcessor.
+ */
 class PostImportResult {
 
   /**
@@ -58,35 +63,30 @@ class PostImportResult {
   protected PostImport $postImport;
 
   /**
+   * The PostImportResult.
+   *
+   * @var array
+   */
+  protected array $postImportResult;
+
+  /**
    * PostImportResource constructor.
    */
   public function __construct(
-    $resource_identifier,
-    $resource_version,
-    $post_import_status,
-    $post_import_message,
+    $postImportResult,
     ResourceMapper $resourceMapper,
     PostImport $postImport
     ) {
-    $this->resourceIdentifier = $resource_identifier;
-    $this->resourceVersion = $resource_version;
-    $this->postImportStatus = $post_import_status;
-    $this->postImportMessage = $post_import_message;
+    $this->resourceIdentifier = $postImportResult['resource_identifier'];
+    $this->resourceVersion = $postImportResult['resourceVersion'];
+    $this->postImportStatus = $postImportResult['postImportStatus'];
+    $this->postImportMessage = $postImportResult['postImportMessage'];
     $this->resourceMapper = $resourceMapper;
     $this->postImport = $postImport;
   }
 
   /**
    * Calls PostImport service to execute database insert transaction.
-   *
-   * @param string $resourceIdentifier
-   *   The resource identifier of the distribution.
-   * @param string $resourceVersion
-   *   The resource version of the distribution.
-   * @param string $postImportStatus
-   *   The status of the post_import_result_process.
-   * @param string $postImportMessage
-   *   The message of the post_import_result_process.
    */
   public function storeResult() {
     return $this->postImport->storeJobStatus($this->resourceIdentifier, $this->resourceVersion, $this->postImportStatus, $this->postImportMessage);
