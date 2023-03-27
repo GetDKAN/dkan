@@ -7,8 +7,9 @@ use Drupal\Core\Database\Connection;
 use Drupal\datastore\Service\PostImport;
 
 /**
- * PostImportResult class to create PostImportResult objects
- * containing the results of the PostImportResourceProcessor.
+ * PostImportResult class to create PostImportResult objects.
+ * 
+ * Contains the results of the PostImportResourceProcessor.
  */
 class PostImportResult {
 
@@ -82,15 +83,6 @@ class PostImportResult {
 
   /**
    * Calls PostImport service to execute database insert transaction.
-   *
-   * @param string $resource_identifier
-   *   The resource identifier of the distribution.
-   * @param string $resource_version
-   *   The resource version of the distribution.
-   * @param string $post_import_status
-   *   The post import processor status.
-   * @param string $post_import_message
-   *   The post import processor error message.
    */
   public function storeResult() {
     return $this->postImport->storeJobStatus($this->resourceIdentifier, $this->resourceVersion, $this->postImportStatus, $this->postImportMessage);

@@ -163,9 +163,9 @@ class Drush extends DrushCommands {
    * Drop a resource from the datastore.
    *
    * If you pass a simple resource identifier, both the database table and the
-   * localized resource file (if the file is remote) will be deleted. 
-   * The post import job status' for the latest version of a resource will also be removed.
-   * If you would like to just drop the datastore table but keep 
+   * localized resource file (if the file is remote) will be deleted.
+   * The post import job status' for the latest version of a resource will 
+   * also be removed. If you would like to drop the datastore table but keep
    * the localize resource (this may be useful if a large file was successfully localized
    * but the database import failed and you want to redo it) pass the
    * --keep-local argument. In both cases, the appropriate jobstore results

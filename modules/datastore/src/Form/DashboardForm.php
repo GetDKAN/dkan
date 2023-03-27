@@ -13,7 +13,6 @@ use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\Service;
 use Drupal\metastore\Service as MetastoreService;
 use Drupal\datastore\Service\PostImport;
-use Drupal\search_api\Plugin\search_api\processor\Resources\Pc;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -450,7 +449,7 @@ class DashboardForm extends FormBase {
 
       $postImportInfo = $this->postImport->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
       $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
-      $error = $postImportInfo ? $postImportInfo['post_import_error'] : null;
+      $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
 
       return [
         [
