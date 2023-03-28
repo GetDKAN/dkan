@@ -63,20 +63,22 @@ class PostImportResult {
   protected PostImport $postImport;
 
   /**
+   * The PostImportResult.
+   */
+  protected array $postImportResult;
+
+  /**
    * PostImportResource constructor.
    */
   public function __construct(
-    $resource_identifier,
-    $resource_version,
-    $post_import_status,
-    $post_import_message,
+    $postImportResult,
     ResourceMapper $resourceMapper,
     PostImport $postImport
     ) {
-    $this->resourceIdentifier = $resource_identifier;
-    $this->resourceVersion = $resource_version;
-    $this->postImportStatus = $post_import_status;
-    $this->postImportMessage = $post_import_message;
+    $this->resourceIdentifier = $postImportResult['resource_identifier'];
+    $this->resourceVersion = $postImportResult['resourceVersion'];
+    $this->postImportStatus = $postImportResult['postImportStatus'];
+    $this->postImportMessage = $postImportResult['postImportMessage'];
     $this->resourceMapper = $resourceMapper;
     $this->postImport = $postImport;
   }
