@@ -11,4 +11,4 @@ User Guide
   guide_datastore_settings
   guide_metastore_properties
   guide_harvest
-
+  guide_queues
