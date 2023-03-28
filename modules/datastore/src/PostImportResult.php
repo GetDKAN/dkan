@@ -64,6 +64,8 @@ class PostImportResult {
 
   /**
    * The PostImportResult.
+   *
+   * @var array
    */
   protected array $postImportResult;
 
