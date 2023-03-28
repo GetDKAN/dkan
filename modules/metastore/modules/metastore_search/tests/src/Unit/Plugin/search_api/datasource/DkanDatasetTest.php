@@ -6,6 +6,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
@@ -19,8 +20,11 @@ use Drupal\metastore_search\ComplexData\Dataset;
 /**
  * Class DkanDatasetTest.
  *
+ * @coversDefaultClass \Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset
+ *
  * @package Drupal\Tests\metastore_search\Unit\Plugin\search_api\datasource
  * @group metastore_search
+ * @group dkan-core
  */
 class DkanDatasetTest extends TestCase {
 
@@ -60,6 +64,25 @@ class DkanDatasetTest extends TestCase {
 
     $items = $plugin->loadMultiple($ids);
     $this->assertEquals(Dataset::class, get_class($items['xyz']));
+  }
+
+  /**
+   * @covers ::getItemId
+   */
+  public function testGetItemId() {
+    $dkan_dataset = $this->getMockBuilder(DkanDataset::class)
+      ->onlyMethods([])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $item = $this->getMockBuilder(ComplexDataInterface::class)
+      ->onlyMethods(['get'])
+      ->getMockForAbstractClass();
+    $item->method('get')
+      ->with('identifier')
+      ->willReturn('test_identifier');
+
+    $this->assertEquals('test_identifier', $dkan_dataset->getItemId($item));
   }
 
 }
