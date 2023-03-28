@@ -181,11 +181,11 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   /**
    * Create the PostImportResult object.
    *
-   * @param $status
+   * @param string $status
    *   Status of the post import process.
-   * @param $message
+   * @param string $message
    *   Error messages retrieved during the post import process.
-   * @param \Drupal\common\DataResource $resource
+   * @param DataResource $resource
    *   DKAN Resource.
    */
   private function createPostImportResult($status, $message, $resource) {
