@@ -46,14 +46,7 @@ class DkanDataset extends DatasourcePluginBase {
   protected DataFactory $metastoreStorageService;
 
   /**
-   * Factory method.
-   *
-   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-   * @param array $configuration
-   * @param $plugin_id
-   * @param $plugin_definition
-   *
-   * @return \Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset|\Drupal\search_api\Plugin\ConfigurablePluginBase
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $dkan_dataset = parent::create($container, $configuration, $plugin_id, $plugin_definition);
