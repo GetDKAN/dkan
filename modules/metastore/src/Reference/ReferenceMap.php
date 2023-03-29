@@ -76,7 +76,7 @@ class ReferenceMap implements ReferenceMapInterface {
       ],
       "distribution" => [
         'downloadURL' => $this->createReference('resource', 'downloadURL'),
-        'describedBy' => $this->createReference('url', 'describedBy', 'data-dictionary'),
+        // 'describedBy' => $this->createReference('url', 'describedBy', 'data-dictionary'),
       ],
       'dataset' => $this->getDatasetReferences(),
     ];
@@ -105,13 +105,13 @@ class ReferenceMap implements ReferenceMapInterface {
    *   Refernce type - ID of a plugin that implements ReferenceTypeInterface.
    * @param string $propertyName
    *   The property of the schema to build the reference for.
-   * @param string $schemaId
+   * @param string|null $schemaId
    *   ID of the schema to pull the property from.
    *
    * @return \Drupal\metastore\Reference\ReferenceTypeInterface
    *   An instantiated ReferenceType object.
    */
-  protected function createReference(string $type, string $propertyName, string $schemaId): ReferenceTypeInterface {
+  protected function createReference(string $type, string $propertyName, ?string $schemaId = NULL): ReferenceTypeInterface {
     $config = [
       'property' => $propertyName,
       'schemaId' => $schemaId,

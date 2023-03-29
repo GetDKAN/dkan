@@ -122,7 +122,7 @@ class DataResource implements \JsonSerializable {
     try {
       return (int) \Drupal::service('datetime.time')->getCurrentTime();
     }
-    catch (\Exception $e) {
+    catch (\Throwable $e) {
       // Fall back to php time().
       return time();
     }
