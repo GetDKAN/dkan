@@ -32,15 +32,29 @@ class DkanDataset extends DatasourcePluginBase {
   protected const PAGE_SIZE = 250;
 
   /**
+   * Node query service.
+   *
    * @var \Drupal\Core\Entity\Query\QueryInterface
    */
   protected QueryInterface $nodeQueryService;
 
   /**
+   * Metastore storage service.
+   *
    * @var \Drupal\metastore\Storage\DataFactory
    */
   protected DataFactory $metastoreStorageService;
 
+  /**
+   * Factory method.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @param array $configuration
+   * @param $plugin_id
+   * @param $plugin_definition
+   *
+   * @return \Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset|\Drupal\search_api\Plugin\ConfigurablePluginBase
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $dkan_dataset = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $dkan_dataset->nodeQueryService = $container->get('entity_type.manager')
@@ -96,8 +110,9 @@ class DkanDataset extends DatasourcePluginBase {
       try {
         // Only index published revisions.
         $items[$id] = new Dataset($dataStorage->retrieve($id, TRUE));
-      } // This is thrown if there is no published revision.
+      }
       catch (MissingObjectException $missingObjectException) {
+        // This is thrown if there is no published revision.
         continue;
       }
     }
