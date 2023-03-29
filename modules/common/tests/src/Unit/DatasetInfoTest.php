@@ -109,7 +109,8 @@ class DatasetInfoTest extends TestCase {
           ->getMock()
       );
 
-    // Make a mock DatasetInfo. We mock this so we can bypass the constructor.
+    // Make a mock DatasetInfo. Stub getRevisionInfo() to return NULL so it
+    // doesn't need dependencies.
     $dataset_info = $this->getMockBuilder(DatasetInfo::class)
       ->disableOriginalConstructor()
       ->onlyMethods(['getRevisionInfo'])
