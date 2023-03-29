@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @group datastore
  */
 class PostImportTest extends TestCase {
+
   /**
    * The resource mapper mock.
    *
@@ -76,5 +77,14 @@ class PostImportTest extends TestCase {
   
       // Assert that the method returned the expected result.
       $this->assertTrue($result);
-    }
   }
+
+  public function testRetrieveJobStatus() {
+    $this->markTestSkipped( 'PHPUnit will skip this test method' );
+  }
+
+  public function testRemoveJobStatus() {
+    $this->markTestSkipped( 'PHPUnit will skip this test method' );
+  }
+
+}
