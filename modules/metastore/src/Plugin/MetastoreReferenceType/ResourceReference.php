@@ -150,7 +150,7 @@ class ResourceReference extends ReferenceTypeBase {
     }
 
     $resource = $this->resourceLookup($identifier);
-    if ($showId) {
+    if ($resource && $showId) {
       return [$this->createResourceReference($resource)];
     }
     return $resource ? UrlHostTokenResolver::resolve($resource->getFilePath()) : $identifier;
