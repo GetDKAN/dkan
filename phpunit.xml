@@ -26,18 +26,14 @@
       <directory>.</directory>
     </testsuite>
     <testsuite name="DkanUnitTests">
-      <directory>tests/src/Unit</directory>
       <directory>modules/common/tests/src/Unit</directory>
       <directory>modules/metastore/tests/src/Unit</directory>
-      <directory>modules/metastore/modules/metastore/tests/src/Unit</directory>
       <directory>modules/metastore/modules/metastore_search/tests/src/Unit</directory>
-      <directory>modules/metastore/modules/metastore_admin/tests/src/Unit</directory>
       <directory>modules/datastore/tests/src/Unit</directory>
       <directory>modules/datastore/modules/datastore_mysql_import/tests/src/Unit</directory>
       <directory>modules/frontend/tests/src/Unit</directory>
       <directory>modules/dkan_js_frontend/tests/src</directory>
       <directory>modules/harvest/tests/src/Unit</directory>
-      <directory>modules/harvest/modules/harvest_dashboard/tests/src/Unit</directory>
       <directory>modules/json_form_widget/tests/src/Unit</directory>
     </testsuite>
     <testsuite name="DkanFunctionalTests">
