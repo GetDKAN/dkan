@@ -73,18 +73,10 @@ class PostImportTest extends TestCase {
   
       $postImport = new PostImport($connectionMock, $resourceMapperMock);
   
-      $result = $postImport->storeJobStatus('test_identifier', 'test_version', 'test_status', 'test_error');
+      $result_store = $postImport->storeJobStatus('test_identifier', 'test_version', 'test_status', 'test_error');
   
       // Assert that the method returned the expected result.
-      $this->assertTrue($result);
-  }
-
-  public function testRetrieveJobStatus() {
-    $this->markTestSkipped( 'PHPUnit will skip this test method' );
-  }
-
-  public function testRemoveJobStatus() {
-    $this->markTestSkipped( 'PHPUnit will skip this test method' );
+      $this->assertTrue($result_store);
   }
 
 }
