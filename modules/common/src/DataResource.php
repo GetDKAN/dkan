@@ -101,12 +101,10 @@ class DataResource implements \JsonSerializable {
    *
    * @param object $record
    *   Data resource record from the database. Must contain these properties:
-   *   - filePath
-   *   - mimeType
-   *   - perspective
-   *   - version
+   *   'filePath', 'mimeType', 'perspective', 'version'.
    *
    * @return \Drupal\common\DataResource
+   *   DataResource object.
    */
   public static function createFromRecord(object $record): DataResource {
     $resource = new static($record->filePath, $record->mimeType, $record->perspective);
@@ -232,6 +230,8 @@ class DataResource implements \JsonSerializable {
 
   /**
    * Getter.
+   *
+   * @return string
    */
   public function getUniqueIdentifier() {
     return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
