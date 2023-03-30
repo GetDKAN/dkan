@@ -4,17 +4,9 @@ namespace Drupal\Tests\metastore\Unit\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-
-use Drupal\common\UrlHostTokenResolver;
-use Drupal\common\DataResource;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\metastore\Plugin\MetastoreReferenceType\ItemReference;
@@ -25,11 +17,7 @@ use Drupal\metastore\Reference\ReferenceTypeManager;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
-use Drupal\node\Entity\Node;
-use Drupal\node\NodeStorage;
 use Drupal\Tests\metastore\Unit\Plugin\MetastoreReferenceType\MockClient;
-use GuzzleHttp\Exception\RequestException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -141,6 +129,7 @@ class ReferencerTest extends TestCase {
       ->add(NodeData::class, 'isPublished', TRUE)
       ->add(ResourceMapper::class, 'register', TRUE)
       ->add(ResourceMapper::class, 'filePathExists', TRUE)
+      ->add(ResourceMapper::class, 'newRevision', FALSE)
       ->getMock();
   }
 
