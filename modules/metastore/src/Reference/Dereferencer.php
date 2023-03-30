@@ -68,7 +68,7 @@ class Dereferencer implements DereferencerInterface {
     foreach ($value as $identifier) {
       $dereferenced[] = $reference->dereference($identifier, $showId);
     }
-    return $dereferenced;
+    return empty($dereferenced) ? NULL : $dereferenced;
   }
 
 }
