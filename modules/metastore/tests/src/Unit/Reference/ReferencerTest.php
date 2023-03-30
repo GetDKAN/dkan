@@ -23,7 +23,7 @@ use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 
-use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -38,23 +38,23 @@ class ReferencerTest extends TestCase {
    *
    * @var string
    */
-  public const FILE_PATH = 'tmp/mycsv.csv';
+  const FILE_PATH = 'tmp/mycsv.csv';
 
   /**
    * HTTP host protocol and domain for testing download URL.
    *
    * @var string
    */
-  public const HOST = 'http://example.com';
+  const HOST = 'http://example.com';
 
-  public const MIME_TYPE = 'text/csv';
+  const MIME_TYPE = 'text/csv';
 
   /**
    * List referenceable dataset properties.
    *
    * @var string[]
    */
-  public const REFERENCEABLE_PROPERTY_LIST = [
+  const REFERENCEABLE_PROPERTY_LIST = [
     'keyword' => 0,
     'distribution' => 'distribution',
     'title' => 0,
@@ -452,7 +452,7 @@ class ReferencerTest extends TestCase {
     $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
     // Test Mime Type detection on a invalid remote file path.
     $data = $this->getData('http://invalid');
-    $this->expectException(ConnectException::class);
+    $this->expectException(RequestException::class);
     $referencer->reference($data);
   }
 

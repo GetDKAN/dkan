@@ -358,7 +358,6 @@ class QueryControllerTest extends TestCase {
    *
    */
   public function testDistributionIndexWrongIndex() {
-    $info = [];
     $data = json_encode([
       "results" => TRUE,
     ]);
@@ -374,7 +373,6 @@ class QueryControllerTest extends TestCase {
    *
    */
   public function testDistributionIndex() {
-    $info = [];
     $data = json_encode([
       "results" => TRUE,
     ]);

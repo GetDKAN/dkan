@@ -99,7 +99,6 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   public function queryResultReformatted($data){
-    $streamedCsv = null;
     $request = $this->mockRequest($data);
     $dataDictionaryFields = [
       'name' => 'date',
@@ -470,7 +469,6 @@ class QueryDownloadControllerTest extends TestCase {
    *   A database table storage class useable for datastore queries.
    */
   public function mockDatastoreTable($connection, $id, $csvFile, $fields) {
-    $createFields = [];
     foreach ($fields as $name => $field) {
       $types[] = $field['type'];
       $notNull = $field['not null'] ?? FALSE;

@@ -103,9 +103,9 @@ class DataTest extends TestCase {
 
     for ($i = 0; $i < 5; $i ++) {
       $nodes[$i] = new class {
-        private ?string $uuid = null;
+        private $uuid;
         public function uuid() {
-          return $this->uuid ?? ($this->uuid = uniqid());
+          return isset($this->uuid) ? $this->uuid : $this->uuid = uniqid();
         }
       };
       $uuids[$i] = $nodes[$i]->uuid();

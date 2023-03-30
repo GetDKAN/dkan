@@ -50,16 +50,16 @@ class NodeDataTest extends ExistingSiteBase {
     $allPublished = $datasetStorage->retrieveAll();
     $datasetData = json_decode($allPublished[0]);
     $this->assertEquals("123", $datasetData->identifier);
-    $this->assertCount(1, $allPublished);
+    $this->assertEquals(1, count($allPublished));
 
     $all = $datasetStorage->retrieveAll(NULL, NULL, TRUE);
-    $this->assertCount(2, $all);
+    $this->assertEquals(2, count($all));
 
     $rangeUnpublished = $datasetStorage->retrieveAll(0, 1, TRUE);
-    $this->assertCount(1, $rangeUnpublished);
+    $this->assertEquals(1, count($rangeUnpublished));
 
     $allIds = $datasetStorage->retrieveIds(NULL, NULL, TRUE);
-    $this->assertCount(2, $allIds);
+    $this->assertEquals(2, count($allIds));
     $this->assertEquals("456", $allIds[1]);
 
     $this->expectException(MissingObjectException::class);

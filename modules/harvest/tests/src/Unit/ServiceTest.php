@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ServiceTest extends TestCase {
   use ServiceCheckTrait;
 
-  private ?FactoryInterface $storageFactory = null;
+  private $storageFactory;
 
   /**
    *
@@ -73,7 +73,7 @@ class ServiceTest extends TestCase {
     $result = $service->runHarvest('test_plan');
 
     $this->assertEquals("SUCCESS", $result['status']['extract']);
-    $this->assertCount(2, $result['status']['extracted_items_ids']);
+    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
     $this->assertEquals(json_encode(["NEW", "NEW"]), json_encode(array_values($result['status']['load'])));
 
     $storedObject = $this->getStorageFactory()->getInstance('harvest_test_plan_items')->retrieve("cedcd327-4e5d-43f9-8eb1-c11850fa7c55");
@@ -85,7 +85,7 @@ class ServiceTest extends TestCase {
     $result = $service->runHarvest('test_plan');
 
     $this->assertEquals("SUCCESS", $result['status']['extract']);
-    $this->assertCount(2, $result['status']['extracted_items_ids']);
+    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
     $this->assertEquals(json_encode(["UNCHANGED", "UNCHANGED"]), json_encode(array_values($result['status']['load'])));
 
     // Run harvest with changes.
@@ -95,7 +95,7 @@ class ServiceTest extends TestCase {
     $result = $service->runHarvest('test_plan');
 
     $this->assertEquals("SUCCESS", $result['status']['extract']);
-    $this->assertCount(2, $result['status']['extracted_items_ids']);
+    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
     $this->assertEquals(json_encode(["UPDATED", "UNCHANGED"]), json_encode(array_values($result['status']['load'])));
 
     $storedObject = $this->getStorageFactory()->getInstance('harvest_test_plan_items')->retrieve("cedcd327-4e5d-43f9-8eb1-c11850fa7c55");
@@ -112,12 +112,12 @@ class ServiceTest extends TestCase {
       'harvest_test_plan_runs',
     ];
     foreach ($storageTypes as $storageId) {
-      $this->assertCount(0, $this->getStorageFactory()->getInstance($storageId)->retrieveAll());
+      $this->assertEquals(0, count($this->getStorageFactory()->getInstance($storageId)->retrieveAll()));
     }
 
     // Deregister harvest.
     $service->deregisterHarvest('test_plan');
-    $this->assertCount(0, $this->getStorageFactory()->getInstance('harvest_plans')->retrieveAll());
+    $this->assertEquals(0, count($this->getStorageFactory()->getInstance('harvest_plans')->retrieveAll()));
   }
 
   /**
@@ -166,16 +166,25 @@ class ServiceTest extends TestCase {
   private function getStorageFactory() {
     if (!isset($this->storageFactory)) {
       $this->storageFactory = new class() implements FactoryInterface {
-        private array $stores = [];
+        private $stores = [];
 
+        /**
+         * Getter.
+         */
         public function getInstance(string $identifier, array $config = []) {
           if (!isset($this->stores[$identifier])) {
             $this->stores[$identifier] = new class() extends Memory {
 
+              /**
+               *
+               */
               public function retrieveAll(): array {
                 return array_keys(parent::retrieveAll());
               }
 
+              /**
+               *
+               */
               public function destruct() {
                 $this->storage = [];
               }

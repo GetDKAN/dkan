@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @file
+ */
+
 declare(strict_types=1);
 
 /**
@@ -8,8 +12,6 @@ declare(strict_types=1);
  */
 
 use DrupalFinder\DrupalFinder;
-use DrupalRector\Set\Drupal8SetList;
-use DrupalRector\Set\Drupal9SetList;
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
@@ -29,8 +31,6 @@ return static function (RectorConfig $rectorConfig): void {
     ReturnTypeWillChangeRector::class,
     [new ClassMethodReference('JsonSerializable', 'jsonSerialize')]
   );
-
-//  $rectorConfig->rule(\Rector\Php71\Rector\FuncCall\CountOnNullRector::class);
 
   $parameters = $rectorConfig->parameters();
 

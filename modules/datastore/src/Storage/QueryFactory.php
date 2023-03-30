@@ -298,11 +298,11 @@ class QueryFactory {
    *   DKAN query object we're building.
    */
   private function populateQueryJoins(Query $query) {
-    if (empty($this->datastoreQuery->{"$.joins"}) && count($this->datastoreQuery->{"$.resources"} ?? []) <= 1) {
+    if (empty($this->datastoreQuery->{"$.joins"}) && count($this->datastoreQuery->{"$.resources"}) <= 1) {
       return;
     }
-    if (count($this->datastoreQuery->{"$.resources"} ?? []) > 1
-      && (is_countable($this->datastoreQuery->{"$.joins"}) ? count($this->datastoreQuery->{"$.joins"}) : 0) < ((is_countable($this->datastoreQuery->{"$.resources"}) ? count($this->datastoreQuery->{"$.resources"}) : 0) - 1)) {
+    if (count($this->datastoreQuery->{"$.resources"}) > 1
+      && count($this->datastoreQuery->{"$.joins"}) < (count($this->datastoreQuery->{"$.resources"}) - 1)) {
       throw new \Exception("Too many resources specified.");
     }
     foreach ($this->datastoreQuery->{"$.joins"} as $join) {

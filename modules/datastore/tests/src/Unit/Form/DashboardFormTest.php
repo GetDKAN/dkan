@@ -113,7 +113,7 @@ class DashboardFormTest extends TestCase {
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
 
-    $this->assertCount(1, $form['table']['#rows']);
+    $this->assertEquals(1, count($form['table']['#rows']));
     $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']['#uuid']);
     $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
@@ -148,7 +148,7 @@ class DashboardFormTest extends TestCase {
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
 
-    $this->assertCount(1, $form['table']['#rows']);
+    $this->assertEquals(1, count($form['table']['#rows']));
     $this->assertEquals('test', $form['table']['#rows'][0][0]['data']['#uuid']);
     $this->assertEquals('Title', $form['table']['#rows'][0][0]['data']['#title']);
     $this->assertEquals('N/A', $form['table']['#rows'][0][2]['data']);
@@ -215,7 +215,7 @@ class DashboardFormTest extends TestCase {
     $form = DashboardForm::create($container->getMock())->buildForm([], new FormState());
 
     // Assert that there are both datasets: harvested and non-harvested.
-    $this->assertCount(2, $form['table']['#rows']);
+    $this->assertEquals(2, count($form['table']['#rows']));
 
     $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']['#uuid']);
     $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
@@ -296,12 +296,12 @@ class DashboardFormTest extends TestCase {
     \Drupal::setContainer($container);
 
     $form = DashboardForm::create($container)->buildForm([], new FormState());
-    $this->assertCount(2, $form['table']['#rows']);
+    $this->assertEquals(2, count($form['table']['#rows']));
     // First row has six columns and rowspan on first two
-    $this->assertCount(6, $form['table']['#rows'][0]);
+    $this->assertEquals(6, count($form['table']['#rows'][0]));
     $this->assertEquals(2, $form['table']['#rows'][0][1]['rowspan']);
     // The second row has only three columns.
-    $this->assertCount(3, $form['table']['#rows'][1]);
+    $this->assertEquals(3, count($form['table']['#rows'][1]));
 
     $this->assertEquals('dist-1', $form['table']['#rows'][0][3]['data']['#uuid']);
     $this->assertEquals('dist-2', $form['table']['#rows'][1][0]['data']['#uuid']);

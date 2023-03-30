@@ -173,7 +173,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Private.
    */
-  protected function getNonSerialFields(): array {
+  protected function getNonSerialFields() {
     $fields = [];
     foreach ($this->schema['fields'] as $field => $info) {
       if ($info['type'] != 'serial') {

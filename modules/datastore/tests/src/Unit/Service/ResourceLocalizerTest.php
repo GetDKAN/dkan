@@ -29,7 +29,7 @@ class ResourceLocalizerTest extends TestCase {
    *
    * @var string
    */
-  public const HOST = 'http://example.com';
+  const HOST = 'http://example.com';
 
   /**
    *

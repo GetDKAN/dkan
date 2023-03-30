@@ -16,10 +16,10 @@ use Drupal\common\Storage\Query;
  */
 class QueryDataProvider {
 
-  public const QUERY_OBJECT = 1;
-  public const SQL = 2;
-  public const EXCEPTION = 3;
-  public const VALUES = 4;
+  const QUERY_OBJECT = 1;
+  const SQL = 2;
+  const EXCEPTION = 3;
+  const VALUES = 4;
 
   /**
    *

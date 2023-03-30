@@ -11,7 +11,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 class OnPreReferenceTest extends ExistingSiteBase {
   use CleanUp;
 
-  private string $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
 
   /**
    *

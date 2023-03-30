@@ -20,7 +20,6 @@ class StringHelperTest extends TestCase {
    * Test.
    */
   public function testEmailValidate() {
-    $element = [];
     $options = (new Options())
       ->add('string_translation', TranslationManager::class)
       ->add('email.validator', EmailValidator::class)

@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\datastore\Unit\Mock;
 
-use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Database\Schema;
@@ -24,11 +23,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Container {
 
-  private TestCase $testCase;
+  private $testCase;
 
-  private \stdClass $jobStoreData;
+  private $jobStoreData;
   private $tableName;
-  private bool $noNode = FALSE;
+  private $noNode = FALSE;
 
   /**
    *
@@ -105,7 +104,7 @@ class Container {
    * Private.
    */
   private function getQueueMock() {
-    $mock = $this->testCase->getMockBuilder('\\' . QueueInterface::class)
+    $mock = $this->testCase->getMockBuilder("\Drupal\Core\Queue\QueueInterface")
       ->disableOriginalConstructor()
       ->setMethods(['createItem'])
       ->getMockForAbstractClass();
