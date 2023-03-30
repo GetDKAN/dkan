@@ -44,7 +44,7 @@ class Drush extends DrushCommands {
    * Protected.
    */
   protected function getHarvestPlan() {
-    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content');
+    $module_path = DRUPAL_ROOT . "/" . \Drupal::service('extension.list.module')->getPath('sample_content');
 
     $plan_path = $module_path . "/harvest_plan.json";
     $json = file_get_contents($plan_path);
@@ -59,17 +59,18 @@ class Drush extends DrushCommands {
    * Private.
    */
   private function createJson() {
-    $sample_content_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content') . "/sample_content.template.json";
+    $sample_content_path = \Drupal::service('extension.list.module')->getPath('sample_content');
+    $sample_content_template = DRUPAL_ROOT . "/" . $sample_content_path . "/sample_content.template.json";
     $content = file_get_contents($sample_content_template);
     $new = $this->detokenize($content);
-    file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content') . "/sample_content.json", $new);
+    file_put_contents(DRUPAL_ROOT . "/" . $sample_content_path . "/sample_content.json", $new);
   }
 
   /**
    * Private.
    */
   private function detokenize($content) {
-    $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content') . "/files";
+    $absolute_module_path = DRUPAL_ROOT . "/" . \Drupal::service('extension.list.module')->getPath('sample_content') . "/files";
     return str_replace("<!*path*!>", $absolute_module_path, $content);
   }
 
