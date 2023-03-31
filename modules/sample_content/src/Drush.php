@@ -14,12 +14,16 @@ class Drush extends DrushCommands {
   use Helper;
 
   /**
-   * @var Drupal\Core\Extension\ModuleExtensionList
+   * The core extension module list service.
+   *
+   * @var \Drupal\Core\Extension\ModuleExtensionList
    */
   protected $extensionListModule;
 
   /**
-   * @param ModuleExtensionList $extension_list_module
+   * Constructor for the Sample Content commands.
+   *
+   * @param \Drupal\Core\Extension\ModuleExtensionList $extension_list_module
    */
   public function __construct(ModuleExtensionList $extension_list_module) {
     $this->extensionListModule = $extension_list_module;
