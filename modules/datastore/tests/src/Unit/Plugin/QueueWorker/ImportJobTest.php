@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Importer class.
+ *
+ * @group datastore
+ * @group dkan-core
  */
 class ImportJobTest extends TestCase {
 
@@ -34,7 +37,7 @@ class ImportJobTest extends TestCase {
   /**
    *
    */
-  private function getDatastore(DatastoreResource $resource) {
+  private function getDatastore(DatastoreResource $resource): ImportJob {
     $storage = new Memory();
     $config = [
       "resource" => $resource,
@@ -145,7 +148,11 @@ class ImportJobTest extends TestCase {
   }
 
   /**
+   * Test JSON/hydrate round-trip.
    *
+   * This pattern is deprecated.
+   *
+   * @group legacy
    */
   public function testSerialization() {
     $timeLimit = 40;
