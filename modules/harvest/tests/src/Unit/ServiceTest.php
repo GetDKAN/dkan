@@ -151,7 +151,7 @@ class ServiceTest extends TestCase {
 
     $service = $this->getMockBuilder(HarvestService::class)
       ->setConstructorArgs([$storeFactory, $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain()])
-      ->setMethods(['getDkanHarvesterInstance'])
+      ->onlyMethods(['getDkanHarvesterInstance'])
       ->getMock();
 
     $service->method('getDkanHarvesterInstance')->willReturn($dkanHarvester);

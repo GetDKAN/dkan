@@ -59,7 +59,7 @@ class Container {
    */
   public function get() {
     $container = $this->testCase->getMockBuilder(ContainerInterface::class)
-      ->setMethods(['get'])
+      ->onlyMethods(['get'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
     $container->method('get')
@@ -91,7 +91,7 @@ class Container {
   private function getQueueFactoryMock() {
     $mock = $this->testCase->getMockBuilder(QueueFactory::class)
       ->disableOriginalConstructor()
-      ->setMethods(['get'])
+      ->onlyMethods(['get'])
       ->getMockForAbstractClass();
 
     $mock->method('get')->willReturn($this->getQueueMock());
@@ -106,7 +106,7 @@ class Container {
   private function getQueueMock() {
     $mock = $this->testCase->getMockBuilder("\Drupal\Core\Queue\QueueInterface")
       ->disableOriginalConstructor()
-      ->setMethods(['createItem'])
+      ->onlyMethods(['createItem'])
       ->getMockForAbstractClass();
 
     $mock->method('createItem')->willReturn("1");
@@ -120,7 +120,7 @@ class Container {
   private function getFileSystemMock() {
     $mock = $this->testCase->getMockBuilder(FileSystem::class)
       ->disableOriginalConstructor()
-      ->setMethods(['prepareDir'])
+      ->onlyMethods(['prepareDir'])
       ->getMockForAbstractClass();
 
     $mock->method('prepareDir')->willReturn(TRUE);
@@ -134,7 +134,7 @@ class Container {
   private function getConnectionMock() {
     $mock = $this->testCase->getMockBuilder(Connection::class)
       ->disableOriginalConstructor()
-      ->setMethods(['schema', 'query', 'select', 'insert', 'delete', 'update'])
+      ->onlyMethods(['schema', 'query', 'select', 'insert', 'delete', 'update'])
       ->getMockForAbstractClass();
 
     $mock->method('schema')->willReturn($this->getSchemaMock());
@@ -156,7 +156,7 @@ class Container {
   private function getQueryMock() {
     $mock = $this->testCase->getMockBuilder(SelectInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods(['fields', 'countQuery', 'condition', 'values', 'execute'])
+      ->onlyMethods(['fields', 'countQuery', 'condition', 'values', 'execute'])
       ->getMockForAbstractClass();
 
     $mock->method('fields')->willReturn($mock);
@@ -174,7 +174,7 @@ class Container {
   private function getStatementMock() {
     $mock = $this->testCase->getMockBuilder(StatementInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods(['fetchAll', 'fetchField'])
+      ->onlytMethods(['fetchAll', 'fetchField'])
       ->getMockForAbstractClass();
     $mock->method('fetch')->willReturnCallback(function () {
       if ($this->tableName == 'jobstore_filefetcher_filefetcher') {
@@ -199,7 +199,7 @@ class Container {
   private function getSchemaMock() {
     $mock = $this->testCase->getMockBuilder(Schema::class)
       ->disableOriginalConstructor()
-      ->setMethods(['tableExists'])
+      ->onlyMethods(['tableExists'])
       ->getMockForAbstractClass();
 
     $mock->method('tableExists')->willReturn(TRUE);
@@ -212,7 +212,7 @@ class Container {
    */
   private function getEntityRepositoryMock() {
     $mock = $this->testCase->getMockBuilder(EntityRepository::class)
-      ->setMethods(['loadEntityByUuid'])
+      ->onlyMethods(['loadEntityByUuid'])
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -234,7 +234,7 @@ class Container {
    */
   private function mockNodeInterface() {
     $mock = $this->testCase->getMockBuilder(NodeInterface::class)
-      ->setMethods(['get'])
+      ->onlyMethods(['get'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -251,7 +251,7 @@ class Container {
    */
   private function mockFieldItemListInterface() {
     $mock = $this->testCase->getMockBuilder(FieldItemListInterface::class)
-      ->setMethods(['get'])
+      ->onlyMethods(['get'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -268,7 +268,7 @@ class Container {
    */
   private function mockTypedDataInterface() {
     $mock = $this->testCase->getMockBuilder(TypedDataInterface::class)
-      ->setMethods(['getValue'])
+      ->onlyMethods(['getValue'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
