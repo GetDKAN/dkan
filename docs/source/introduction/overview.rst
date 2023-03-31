@@ -68,7 +68,7 @@ Usability
 
 Data in files isn't naturally searchable, but the :doc:`../components/dkan_datastore` module
 parses and stores data in a more explorable format. DKAN can then use the datastore to provide
-direct access to the data, through tools like the :func:`Drupal::datastore::SqlEndpoint::Service` SQL Endpoint
+direct access to the data, through tools like the DatastoreQuery Endpoint.
 
 ----
 

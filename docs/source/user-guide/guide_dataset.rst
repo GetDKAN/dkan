@@ -1,7 +1,7 @@
 How to add a Dataset
 ====================
 
-.. _guide_dataset::
+.. _guide_dataset:
 
 There are several methods for adding datasets to your site.
 
@@ -12,7 +12,7 @@ You will need to authenticate with a user account possessing the 'api user' role
 Run a POST command to ``/api/1/metastore/schemas/dataset/items`` with a json formatted request body, the minimal elements are:
 
 
-.. code-block:: json
+.. code-block::
 
     POST http://dkan.ddev.site/api/1/metastore/schemas/dataset/items HTTP/1.1
     content-type: application/json
@@ -35,7 +35,7 @@ GUI
 1. Log in to the site.
 2. Navigate to Admin > DKAN > Datasets.
 3. Click the "+ Add new dataset" button.
-4. Use the Distribution _Download URL_ field to enter a url to your file or upload a local file.
+4. Use the Distribution *Download URL* field to enter a url to your file or upload a local file.
 5. Fill in the form with as much descriptive information as you can to make it discoverable.
 6. Click "submit".
 7. Run cron to start the import.
