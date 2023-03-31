@@ -151,8 +151,26 @@ class MySQLQueryTest extends TestCase {
     // Mock an object so we don't have to set up dependencies.
     $mysql_query = $this->getMockBuilder(MySQLQuery::class)
       ->disableOriginalConstructor()
-      // Don't mock the method we're testing.
-      ->setMethodsExcept(['getBaseType'])
+      // Don't mock the method we're testing: getBaseType.
+      ->onlyMethods([
+        'buildBoolPreAlterCommands',
+        'sanitizeFields',
+        'sanitizeIndexes',
+        'mergeFields',
+        'mergeIndexes',
+        'getTableColsAndComments',
+        'getFieldType',
+        'buildTypeArgs',
+        'buildDatePreAlterCommands',
+        'buildAlterCommand',
+        'buildDatabaseTypeMap',
+        'buildModifyColumnOptions',
+        'buildAddIndexOptions',
+        'getIndexType',
+        'buildIndexFieldOption',
+        'getMaxColumnLength',
+        'buildPreAlterCommands',
+      ])
       ->getMock();
 
     // getBaseType() is protected.
@@ -190,10 +208,27 @@ class MySQLQueryTest extends TestCase {
     $mysql_query = $this->getMockBuilder(MySQLQuery::class)
       ->disableOriginalConstructor()
       // Mock buildBoolPreAlterCommands() so we can set expectations on it.
-      ->onlyMethods(['buildBoolPreAlterCommands'])
+      ->onlyMethods([
+        'buildBoolPreAlterCommands',
+        'sanitizeFields',
+        'sanitizeIndexes',
+        'mergeFields',
+        'mergeIndexes',
+        'getTableColsAndComments',
+        'getFieldType',
+        'buildTypeArgs',
+        'buildDatePreAlterCommands',
+        'buildAlterCommand',
+        'buildDatabaseTypeMap',
+        'buildModifyColumnOptions',
+        'buildAddIndexOptions',
+        'getIndexType',
+        'buildIndexFieldOption',
+        'getMaxColumnLength',
+      ])
       // Don't mock these methods because they're called from
       // buildPreAlterCommands()
-      ->setMethodsExcept(['buildPreAlterCommands', 'getBaseType'])
+      // buildPreAlterCommands, getBaseType
       ->getMock();
     $mysql_query->expects($this->once())
       ->method('buildBoolPreAlterCommands')
