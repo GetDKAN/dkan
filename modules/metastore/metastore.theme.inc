@@ -33,7 +33,10 @@ function metastore_preprocess_node__data(&$variables) {
     ];
     $formatted_contact_point = metastore_format_contactpoint($metadata->contactPoint);
     $rows = [
-      ["contactPoint", \Drupal::service('renderer')->render($formatted_contact_point)],
+      [
+        "contactPoint",
+        \Drupal::service('renderer')->render($formatted_contact_point),
+      ],
     ];
   }
 
