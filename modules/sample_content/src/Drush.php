@@ -23,7 +23,8 @@ class Drush extends DrushCommands {
   /**
    * Constructor for the Sample Content commands.
    *
-   * @param \Drupal\Core\Extension\ModuleExtensionList $extension_list_module extension list
+   * @param \Drupal\Core\Extension\ModuleExtensionList $extension_list_module
+   *   Extension list.
    */
   public function __construct(ModuleExtensionList $extension_list_module) {
     $this->extensionListModule = $extension_list_module;
