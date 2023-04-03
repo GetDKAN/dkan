@@ -225,6 +225,10 @@ jobs:
         description: 'Drupal core version to use as a Composer constraint.'
         default: '~9.5.0'
         type: string
+      dkan_recommended_branch:
+        description: 'Branch of getdkan/recommended-project to use.'
+        default: '9.5.x-dev'
+        type: string
       upgrade:
         description: 'If true, will install the latest stable DKAN version and test upgrade'
         default: false
@@ -232,7 +236,10 @@ jobs:
     steps:
       - docker/install-docker-tools
       - prepare_build:
+          # TODO: Remove this addon constraint when that branch is merged.
+          addon_branch: '13837-multiple-core'
           php_version: << parameters.php_version >>
+          dkan_recommended_branch: << parameters.dkan_recommended_branch >>
       - prepare_drupal_core:
           drupal_core_constraint: << parameters.drupal_core_constraint >>
       - prepare_site:
@@ -264,6 +271,7 @@ workflows:
     jobs:
       - cypress:
           name: install_test_cypress
+          dkan_recommended_branch: [ '9.5.x-dev']
       - phpunit:
           matrix:
             parameters:
@@ -295,6 +303,7 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
+          dkan_recommended_branch: [ '9.5.x-dev']
       - phpunit:
           name: 'Upgrade target (Drupal 9.5, PHP 8.0)'
           upgrade: true
