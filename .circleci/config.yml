@@ -271,7 +271,7 @@ workflows:
     jobs:
       - cypress:
           name: install_test_cypress
-          dkan_recommended_branch: [ '9.5.x-dev']
+          dkan_recommended_branch: '9.5.x-dev'
       - phpunit:
           matrix:
             parameters:
@@ -303,7 +303,7 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          dkan_recommended_branch: [ '9.5.x-dev']
+          dkan_recommended_branch: '9.5.x-dev'
       - phpunit:
           name: 'Upgrade target (Drupal 9.5, PHP 8.0)'
           upgrade: true
