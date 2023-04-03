@@ -30,7 +30,7 @@ commands:
         type: string
       addon_branch:
         description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
-        default: 'main'
+        default: 'remove-bartik'
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
@@ -49,7 +49,7 @@ commands:
             which ddev
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
-            ddev get https://github.com/GetDKAN/dkan-ddev-addon/tarball/remove-bartik
+            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
             # Modify config to use our PHP version.
             sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
             # Clear out omit_containers.
