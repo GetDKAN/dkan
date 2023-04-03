@@ -63,28 +63,6 @@ commands:
             chmod +x ./cc-test-reporter
             mkdir -p test_results
 
-  prepare_drupal_core:
-    # TODO: Hopefully getdkan/recommended-project will have tagged releases at some point.
-    parameters:
-      drupal_core_constraint:
-        description: 'Drupal core version to use as a Composer constraint.'
-        default: '~9.5.0'
-        type: string
-    steps:
-      - run:
-          name: Use Drupal core version
-          command: |
-            ddev composer show "drupal/core*" --no-ansi
-            # Remove drupal/core-recommended and swap for drupal/core so that
-            # we can install core 9.5 using PHP 8.1. (Guzzle would block otherwise.)
-            ddev composer remove drupal/core-recommended --no-update
-            ddev composer require drupal/core-composer-scaffold:<< parameters.drupal_core_constraint >> --no-update
-            ddev composer require drupal/core-project-message:<< parameters.drupal_core_constraint >> --no-update
-            ddev composer require drupal/core:<< parameters.drupal_core_constraint >> --no-update
-            ddev composer require --dev drupal/core-dev:<< parameters.drupal_core_constraint >> --no-update
-            ddev composer update --no-audit
-            ddev composer show "drupal/core*" --no-ansi
-
   prepare_site:
     parameters:
       upgrade:
@@ -149,10 +127,6 @@ jobs:
         description: 'Branch of getdkan/recommended-project to use.'
         default: '9.5.x-dev'
         type: string
-      drupal_core_constraint:
-        description: 'Drupal core version to use as a Composer constraint.'
-        default: '~9.5.0'
-        type: string
       report_coverage:
         description: 'Generate coverage report and send it to CodeClimate'
         default: false
@@ -168,8 +142,6 @@ jobs:
           addon_branch: '13837-multiple-core'
           php_version: << parameters.php_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
-      - prepare_drupal_core:
-          drupal_core_constraint: << parameters.drupal_core_constraint >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: false
@@ -221,10 +193,6 @@ jobs:
         description: 'PHP major.minor for DDev to use.'
         default: '8.0'
         type: string
-      drupal_core_constraint:
-        description: 'Drupal core version to use as a Composer constraint.'
-        default: '~9.5.0'
-        type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
         default: '9.5.x-dev'
@@ -240,8 +208,6 @@ jobs:
           addon_branch: '13837-multiple-core'
           php_version: << parameters.php_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
-      - prepare_drupal_core:
-          drupal_core_constraint: << parameters.drupal_core_constraint >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: true
@@ -275,13 +241,11 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: [ '~9.4.0' ]
               dkan_recommended_branch: [ '9.4.x-dev']
               php_version: [ '7.4' ]
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: [ '~9.5.0' ]
               dkan_recommended_branch: [ '9.5.x-dev']
               php_version: [ '7.4', '8.1' ]
       - phpunit:
@@ -289,13 +253,11 @@ workflows:
           report_coverage: true
           matrix:
             parameters:
-              drupal_core_constraint: [ '~9.5.0' ]
               dkan_recommended_branch: [ '9.5.x-dev']
               php_version: [ '8.0' ]
 #      - phpunit:
 #          matrix:
 #            parameters:
-#              drupal_core_constraint: [ '~10.0.0' ]
 #              dkan_recommended_branch: [ '10.0.x-dev']
 #              php_version: [ '8.1' ]
   upgrade_and_test:
@@ -309,6 +271,5 @@ workflows:
           upgrade: true
           matrix:
             parameters:
-              drupal_core_constraint: [ '~9.5.0' ]
               dkan_recommended_branch: [ '9.5.x-dev']
               php_version: [ '8.0' ]
