@@ -157,7 +157,7 @@ class DashboardFormTest extends TestCase {
 
     $postImportInfo = [
       'resource_version' => '1679508885',
-      'post_import_status' => 'waiting',
+      'post_import_status' => 'N/A',
       'post_import_error' => 'Data-Dictionary Disabled',
     ];
 
@@ -175,7 +175,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('N/A', $form['table']['#rows'][0][2]['data']);
 
     // Assert that the post import failed because the data dictionary mode is disabled.
-    $this->assertEquals('waiting', $form['table']['#rows'][0][6]['data']['#status']);
+    $this->assertEquals('N/A', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals($postImportInfo['post_import_error'], $form['table']['#rows'][0][6]['data']['#error']);
   }
 
