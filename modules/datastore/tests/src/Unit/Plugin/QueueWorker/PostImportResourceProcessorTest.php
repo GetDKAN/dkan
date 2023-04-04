@@ -114,7 +114,7 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEquals($dataDictionaryDiscovery->getDataDictionaryMode(), DataDictionaryDiscoveryInterface::MODE_NONE);
     $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
     $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
-    $this->assertEquals('waiting', $postImportResult->getPostImportStatus());
+    $this->assertEquals('N/A', $postImportResult->getPostImportStatus());
     $this->assertEquals('Data-Dictionary Disabled', $postImportResult->getPostImportMessage());
   }
 
