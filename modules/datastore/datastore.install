@@ -27,7 +27,7 @@ function datastore_update_8001(&$sandbox) {
 /**
  * Create new "dkan_post_import_job_status" table.
  */
-function datastore_update_9055(&$sandbox) {
+function datastore_update_9001(&$sandbox) {
 
   $table_name = 'dkan_post_import_job_status';
 
