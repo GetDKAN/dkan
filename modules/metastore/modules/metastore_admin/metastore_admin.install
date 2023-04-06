@@ -115,7 +115,7 @@ function metastore_admin_update_8011() {
 }
 
 /**
- * Disable admin_toolbar and config_update for move to recommended-project.
+ * Uninstall admin_toolbar and config_update for move to recommended-project.
  */
 function metastore_admin_update_8012() {
   \Drupal::service('module_installer')->uninstall(['admin_toolbar','config_update']);
