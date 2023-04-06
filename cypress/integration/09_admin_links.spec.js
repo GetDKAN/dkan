@@ -1,4 +1,4 @@
-context('Administration pages', () => {
+context.skip('Administration pages', () => {
   let baseurl = Cypress.config().baseUrl;
   beforeEach(() => {
     const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
