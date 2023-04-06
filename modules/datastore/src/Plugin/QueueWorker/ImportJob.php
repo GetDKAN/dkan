@@ -344,7 +344,7 @@ class ImportJob extends AbstractPersistentJob {
     else {
       // Fallback to detect encoding.
       $encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE);
-      if ($encoding !== 'UTF-8') {
+      if (!in_array($encoding, ['UTF-8', 'ASCII'])) {
         $chunk = mb_convert_encoding($chunk, 'UTF-8', mb_list_encodings());
         if (!$chunk) {
           throw new \Exception('Could not convert from ' . $encoding . ' to UTF-8 in ' . $filename);
