@@ -8,7 +8,6 @@ use Contracts\Mock\Storage\Memory;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\DatabaseTableInterface;
-use org\bovigo\vfs\vfsStream;
 use Procrastinator\Result;
 use PHPUnit\Framework\TestCase;
 
@@ -297,86 +296,19 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, strlen(ImportJob::truncateHeader($column)));
   }
 
-  public function provideParseAndStore() {
-    return [
-      ['foo,bar', 'foo,bar'],
-      [
-        "Fédération Camerounaise de Football\n",
-        "Fédération Camerounaise de Football\n",
-      ],
-      [
-        "Fédération Camerounaise de Football\n",
-        "FÃÂ©dération Camerounaise de Football\n",
-      ],
-      [
-        "Fédération Camerounaise de Football\n",
-        "FÃ©dÃ©ration Camerounaise de Football\n",
-      ],
-      [
-        "Fédération Camerounaise de Football\n",
-        "FÃÂ©dÃÂ©ration Camerounaise de Football\n",
-      ],
-      [
-        "Fédération Camerounaise de Football\n",
-        "FÃÂÂÂÂ©dÃÂÂÂÂ©ration Camerounaise de Football\n",
-      ],
-    ];
-  }
-
   /**
-   * @covers ::parseAndStore
-   * @dataProvider provideParseAndStore
+   *
    */
-  public function testParseAndStore($expected, $file_contents) {
-    // This method requires heavy mocking since everything is locked behind
-    // protected status.
+  public function testFileWithBOM() {
+    $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/utf8-bom.csv", "text/csv");
+    $datastore = $this->getDatastore($resource);
+    $datastore->run();
 
-    vfsStream::setup('parseandstore', NULL, [
-      'my.csv' => $file_contents,
-    ]);
+    $schema = $datastore->getStorage()->getSchema();
+    $fields = array_keys($schema['fields']);
+    $first_column = 'measure_name';
 
-    $result = $this->getMockBuilder(Result::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['setStatus'])
-      ->getMock();
-
-    $parser = $this->getMockBuilder(ParserInterface::class)
-      ->onlyMethods(['feed', 'finish'])
-      ->getMockForAbstractClass();
-
-    // This method mock is the important expectation.
-    $parser->expects($this->once())
-      ->method('feed')
-      ->with($this->equalTo($expected));
-
-    $import_job = $this->getMockBuilder(ImportJob::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods([
-        'getBytesProcessed',
-        'getResult',
-        'getStateProperty',
-        'setStateProperty',
-        'store',
-      ])
-      ->getMock();
-
-    $import_job->method('getBytesProcessed')
-      ->willReturn(0);
-    $import_job->method('getStateProperty')
-      ->willReturn(0);
-    $import_job->method('getResult')
-      ->willReturn($result);
-
-    $parser_property = new \ReflectionProperty($import_job, 'parser');
-    $parser_property->setAccessible(TRUE);
-    $parser_property->setValue($import_job, $parser);
-
-    $parse_and_store = new \ReflectionMethod($import_job, 'parseAndStore');
-    $parse_and_store->setAccessible(TRUE);
-    $parse_and_store->invokeArgs($import_job, [
-      vfsStream::url('parseandstore/my.csv'),
-      time() + 10,
-    ]);
+    $this->assertEquals($first_column, $fields[0]);
   }
 
 }
