@@ -59,7 +59,7 @@
         "dkan-frontend": {
             "type": "vcs",
             "url": "https://github.com/GetDKAN/data-catalog-app",
-            "ref": "1.1.0"
+            "ref": "1.2.0"
         },
         "installer-types": [
             "bower-asset",

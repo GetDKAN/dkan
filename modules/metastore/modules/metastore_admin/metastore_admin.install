@@ -113,10 +113,3 @@ function metastore_admin_update_8011() {
 
   drupal_flush_all_caches();
 }
-
-/**
- * Uninstall admin_toolbar and config_update for move to recommended-project.
- */
-function metastore_admin_update_8012() {
-  \Drupal::service('module_installer')->uninstall(['admin_toolbar','config_update']);
-}
