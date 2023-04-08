@@ -209,7 +209,8 @@ class ImportJob extends AbstractPersistentJob {
     try {
       $this->assertTextFile($filename);
       $this->parseAndStore($filename, static::getEncodingFromBom($filename), $this->getTimeLimit() ? (time() + $this->getTimeLimit()) : PHP_INT_MAX);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->setResultError($e->getMessage());
     }
 
