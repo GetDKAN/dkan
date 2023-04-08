@@ -311,4 +311,21 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($first_column, $fields[0]);
   }
 
+  public function providerToUtf8() {
+    return [
+      'plain_vanilla' => [ 'abc', 'abc', ''],
+      'malformed_bom' => [ 'abc', "\xEF\xBB\xBFabc", 'UTF-8'],
+      'weird chinese stuff' => [ '뽡扣', "\xEF\xBB\xBFabc", 'UTF-16BE'],
+      'weird chinese stuff no bom' => [ 'abc', '뽡扣', ''],
+    ];
+  }
+
+  /**
+   * @dataProvider providerToUtf8
+   * @covers ::toUtf8
+   */
+  public function testToUtf8($expect, $chunk, $bom_encoding) {
+    $this->assertSame($expect, ImportJob::toUtf8($chunk, 'filename', 0, $bom_encoding));
+  }
+
 }

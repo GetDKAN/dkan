@@ -210,7 +210,13 @@ class ImportJob extends AbstractPersistentJob {
 
     try {
       $this->assertTextFile($filename);
-      $this->parseAndStore($filename, $maximum_execution_time);
+
+      // Try to get encoding from BOM.
+      $file_encoding = Unicode::encodingFromBOM(
+        file_get_contents($filename, FALSE, NULL, 0, 10) ?? ''
+      ) ?? '';
+
+      $this->parseAndStore($filename, $file_encoding, $maximum_execution_time);
     }
     catch (\Exception $e) {
       return $this->setResultError($e->getMessage());
@@ -280,18 +286,16 @@ class ImportJob extends AbstractPersistentJob {
    *
    * @param string $filename
    *   The file name including path.
+   * @param string $file_encoding
+   *   Encoding of the file. Empty string means not discovered.
    * @param mixed $maximumExecutionTime
    *   Maximum time to parse for before exiting.
    *
    * @throws \Exception
    */
-  protected function parseAndStore($filename, $maximumExecutionTime) {
+  protected function parseAndStore(string $filename, string $file_encoding, $maximumExecutionTime) {
     $h = fopen($filename, 'r');
     fseek($h, $this->getBytesProcessed());
-
-    // Try to get encoding from BOM.
-    $file_start = file_get_contents($filename, FALSE, NULL, 0, 10);
-    $bom_encoding = Unicode::encodingFromBOM($file_start);
 
     $chunksProcessed = $this->getStateProperty('chunksProcessed', 0);
     while (time() < $maximumExecutionTime) {
@@ -303,7 +307,13 @@ class ImportJob extends AbstractPersistentJob {
         $this->parser->finish();
         break;
       }
-      $chunk = $this->toUtf8($chunk, $filename, $chunksProcessed, $bom_encoding ? $bom_encoding : '');
+      $chunk = $this->toUtf8($chunk, $filename, $file_encoding);
+
+      // Strip the BOM from the first chunk.
+      if ($chunksProcessed === 0) {
+        $chunk = mb_substr($chunk, 1);
+      }
+
       $this->parser->feed($chunk);
       $chunksProcessed++;
 
@@ -314,31 +324,25 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
-   * Ensure string is UTF-8 and encode it if necessary. Strip BOM if present.
+   * Ensure string is UTF-8 and encode it if necessary.
    *
    * @param string $chunk
    *   Chunk of file being parsed.
    * @param string $filename
    *   Filename of the parsed file.
-   * @param int $chunksProcessed
-   *   The index of the chunk being parsed.
-   * @param string $bom_encoding
-   *   File encoding from BOM if available.
+   * @param string $from_encoding
+   *   File encoding if available.
    *
    * @return string $chunk
    *   Updated file chunk.
    *
    * @throws \Exception
    */
-  public static function toUtf8(string $chunk, string $filename, int $chunksProcessed, string $bom_encoding = ''): string {
+  public static function toUtf8(string $chunk, string $filename, string $from_encoding = ''): string {
     // We have an encoding from a BOM; use it.
-    if (!empty($bom_encoding)) {
-      if ($bom_encoding !== 'UTF-8') {
-        $chunk = Unicode::convertToUtf8($chunk, $bom_encoding);
-      }
-      // Strip BOM from first chunk.
-      if ($chunksProcessed == 0) {
-        $chunk = mb_substr($chunk, 1);
+    if (!empty($from_encoding)) {
+      if ($from_encoding !== 'UTF-8') {
+        $chunk = Unicode::convertToUtf8($chunk, $from_encoding);
       }
     }
     else {
