@@ -308,8 +308,8 @@ class ImportJob extends AbstractPersistentJob {
       }
       $chunk = $this->toUtf8($chunk, $filename, $file_encoding);
 
-      // Strip the BOM from the first chunk.
-      if ($chunksProcessed === 0) {
+      // Strip the BOM from the first chunk, if it has one.
+      if ($chunksProcessed === 0 && Unicode::encodingFromBOM($chunk)) {
         $chunk = mb_substr($chunk, 1);
       }
 
@@ -330,20 +330,20 @@ class ImportJob extends AbstractPersistentJob {
    * @param string $filename
    *   Filename of the parsed file.
    * @param string $from_encoding
-   *   File encoding if available.
+   *   String encoding if available. Pass empty string to guess.
    *
-   * @return string $chunk
+   * @return string
    *   Updated file chunk.
    *
    * @throws \Exception
    */
   public static function toUtf8(string $chunk, string $filename, string $from_encoding = ''): string {
-    // Do we have an encoding?
+    // Do we have an encoding? Guess one if not.
     if (empty($from_encoding)) {
       $from_encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE) ?? '';
     }
     // Is it already UTF-8?
-    if (strtolower($from_encoding) == 'utf-8') {
+    if (strtolower($from_encoding) === 'utf-8') {
       return $chunk;
     }
     // Convert.

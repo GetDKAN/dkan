@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
   bootstrap="/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
   colors="true"
   stopOnFailure="false"
@@ -26,31 +26,23 @@
       <directory>.</directory>
     </testsuite>
     <testsuite name="DkanUnitTests">
-      <directory>tests/src/Unit</directory>
       <directory>modules/common/tests/src/Unit</directory>
       <directory>modules/metastore/tests/src/Unit</directory>
-      <directory>modules/metastore/modules/metastore/tests/src/Unit</directory>
       <directory>modules/metastore/modules/metastore_search/tests/src/Unit</directory>
-      <directory>modules/metastore/modules/metastore_admin/tests/src/Unit</directory>
       <directory>modules/datastore/tests/src/Unit</directory>
       <directory>modules/datastore/modules/datastore_mysql_import/tests/src/Unit</directory>
       <directory>modules/frontend/tests/src/Unit</directory>
       <directory>modules/dkan_js_frontend/tests/src</directory>
       <directory>modules/harvest/tests/src/Unit</directory>
-      <directory>modules/harvest/modules/harvest_dashboard/tests/src/Unit</directory>
       <directory>modules/json_form_widget/tests/src/Unit</directory>
     </testsuite>
     <testsuite name="DkanFunctionalTests">
       <directory>modules/common/tests/src/Functional</directory>
       <directory>modules/metastore/tests/src/Functional</directory>
-      <directory>modules/metastore/modules/metastore/tests/src/Functional</directory>
       <directory>modules/metastore/modules/metastore_search/tests/src/Functional</directory>
       <directory>modules/metastore/modules/metastore_admin/tests/src/Functional</directory>
       <directory>modules/datastore/tests/src/Functional</directory>
-      <directory>modules/frontend/tests/src/Functional</directory>
       <directory>modules/dkan_js_frontend/tests/src</directory>
-      <directory>modules/harvest/tests/src/Functional</directory>
-      <directory>modules/harvest/modules/harvest_dashboard/tests/src/Functional</directory>
       <directory>tests/src/Functional</directory>
     </testsuite>
   </testsuites>
