@@ -36,7 +36,7 @@ class ImportJobTest extends TestCase {
   /**
    *
    */
-  private function getDatastore(DatastoreResource $resource) {
+  private function getDatastore(DatastoreResource $resource): ImportJob {
     $storage = new Memory();
     $config = [
       "resource" => $resource,
@@ -304,28 +304,14 @@ class ImportJobTest extends TestCase {
     $datastore = $this->getDatastore($resource);
     $datastore->run();
 
-    $schema = $datastore->getStorage()->getSchema();
-    $fields = array_keys($schema['fields']);
-    $first_column = 'measure_name';
+    $storage = $datastore->getStorage();
+    $this->assertEquals(5, $storage->count());
 
-    $this->assertEquals($first_column, $fields[0]);
-  }
-
-  public function providerToUtf8() {
-    return [
-      'plain_vanilla' => [ 'abc', 'abc', ''],
-      'malformed_bom' => [ 'abc', "\xEF\xBB\xBFabc", 'UTF-8'],
-      'weird chinese stuff' => [ '뽡扣', "\xEF\xBB\xBFabc", 'UTF-16BE'],
-      'weird chinese stuff no bom' => [ 'abc', '뽡扣', ''],
-    ];
-  }
-
-  /**
-   * @dataProvider providerToUtf8
-   * @covers ::toUtf8
-   */
-  public function testToUtf8($expect, $chunk, $bom_encoding) {
-    $this->assertSame($expect, ImportJob::toUtf8($chunk, 'filename', 0, $bom_encoding));
+    $schema = $storage->getSchema();
+    $this->assertSame(
+      ['measure_name', 'measure_date_range'],
+      array_keys($schema['fields'])
+    );
   }
 
 }

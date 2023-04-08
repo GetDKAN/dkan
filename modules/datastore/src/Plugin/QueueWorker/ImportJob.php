@@ -208,14 +208,13 @@ class ImportJob extends AbstractPersistentJob {
 
     $maximum_execution_time = $this->getTimeLimit() ? (time() + $this->getTimeLimit()) : PHP_INT_MAX;
 
+    // Try to get encoding from BOM.
+    $file_encoding = Unicode::encodingFromBOM(
+      file_get_contents($filename, FALSE, NULL, 0, 10) ?? ''
+    ) ?? '';
+
     try {
       $this->assertTextFile($filename);
-
-      // Try to get encoding from BOM.
-      $file_encoding = Unicode::encodingFromBOM(
-        file_get_contents($filename, FALSE, NULL, 0, 10) ?? ''
-      ) ?? '';
-
       $this->parseAndStore($filename, $file_encoding, $maximum_execution_time);
     }
     catch (\Exception $e) {
@@ -339,23 +338,19 @@ class ImportJob extends AbstractPersistentJob {
    * @throws \Exception
    */
   public static function toUtf8(string $chunk, string $filename, string $from_encoding = ''): string {
-    // We have an encoding from a BOM; use it.
-    if (!empty($from_encoding)) {
-      if ($from_encoding !== 'UTF-8') {
-        $chunk = Unicode::convertToUtf8($chunk, $from_encoding);
-      }
+    // Do we have an encoding?
+    if (empty($from_encoding)) {
+      $from_encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE) ?? '';
     }
-    else {
-      // Fallback to detect encoding.
-      $encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE);
-      if (!in_array($encoding, ['UTF-8', 'ASCII'])) {
-        $chunk = mb_convert_encoding($chunk, 'UTF-8', mb_list_encodings());
-        if (!$chunk) {
-          throw new \Exception('Could not convert from ' . $encoding . ' to UTF-8 in ' . $filename);
-        }
-      }
+    // Is it already UTF-8?
+    if (strtolower($from_encoding) == 'utf-8') {
+      return $chunk;
     }
-
+    // Convert.
+    if (($chunk = Unicode::convertToUtf8($chunk, $from_encoding)) === FALSE) {
+      // Shout if the conversion didn't work.
+      throw new \Exception('Could not convert from ' . $from_encoding . ' to UTF-8 in ' . $filename);
+    }
     return $chunk;
   }
 
