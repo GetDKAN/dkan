@@ -208,13 +208,8 @@ class ImportJob extends AbstractPersistentJob {
 
     try {
       $this->assertTextFile($filename);
-      $this->parseAndStore(
-        $filename,
-        static::getEncodingFromBom($filename),
-        $this->getTimeLimit() ? (time() + $this->getTimeLimit()) : PHP_INT_MAX
-      );
-    }
-    catch (\Exception $e) {
+      $this->parseAndStore($filename, static::getEncodingFromBom($filename), $this->getTimeLimit() ? (time() + $this->getTimeLimit()) : PHP_INT_MAX);
+    } catch (\Exception $e) {
       return $this->setResultError($e->getMessage());
     }
 
@@ -303,20 +298,33 @@ class ImportJob extends AbstractPersistentJob {
         $this->parser->finish();
         break;
       }
-      $chunk = $this->toUtf8($chunk, $filename, $file_encoding);
-
-      // Strip the BOM from the first chunk, if it has one.
-      if ($chunksProcessed === 0 && Unicode::encodingFromBOM($chunk)) {
-        $chunk = mb_substr($chunk, 1);
-      }
-
-      $this->parser->feed($chunk);
+      $this->parser->feed(
+        static::stripBom(
+          static::toUtf8($chunk, $filename, $file_encoding)
+        )
+      );
       $chunksProcessed++;
 
       $this->store();
       $this->setStateProperty('chunksProcessed', $chunksProcessed);
     }
     fclose($h);
+  }
+
+  /**
+   * Strip the BOM from the string, if present.
+   *
+   * @param string $chunk
+   *   The chunk that might have a BOM.
+   *
+   * @return string
+   *   The chunk without the BOM.
+   */
+  protected static function stripBom(string $chunk): string {
+    if (Unicode::encodingFromBOM($chunk)) {
+      return mb_substr($chunk, 1);
+    }
+    return $chunk;
   }
 
   /**
