@@ -206,16 +206,13 @@ class ImportJob extends AbstractPersistentJob {
       return $this->getResult();
     }
 
-    $maximum_execution_time = $this->getTimeLimit() ? (time() + $this->getTimeLimit()) : PHP_INT_MAX;
-
-    // Try to get encoding from BOM.
-    $file_encoding = Unicode::encodingFromBOM(
-      file_get_contents($filename, FALSE, NULL, 0, 10) ?? ''
-    ) ?? '';
-
     try {
       $this->assertTextFile($filename);
-      $this->parseAndStore($filename, $file_encoding, $maximum_execution_time);
+      $this->parseAndStore(
+        $filename,
+        static::getEncodingFromBom($filename),
+        $this->getTimeLimit() ? (time() + $this->getTimeLimit()) : PHP_INT_MAX
+      );
     }
     catch (\Exception $e) {
       return $this->setResultError($e->getMessage());
@@ -320,6 +317,22 @@ class ImportJob extends AbstractPersistentJob {
       $this->setStateProperty('chunksProcessed', $chunksProcessed);
     }
     fclose($h);
+  }
+
+  /**
+   * Try to get encoding from BOM.
+   *
+   * @param string $filename
+   *   File name.
+   *
+   * @return string
+   *   String representing encoding, or empty string if none could be
+   *   determined.
+   */
+  protected static function getEncodingFromBom(string $filename) {
+    return Unicode::encodingFromBOM(
+      file_get_contents($filename, FALSE, NULL, 0, 10) ?? ''
+    ) ?? '';
   }
 
   /**
