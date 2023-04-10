@@ -4,6 +4,7 @@ services:
     arguments:
       - '@dkan.metastore.service'
       - '@dkan.datastore.service'
+      - '@dkan.datastore.service.post_import'
       - '@dkan.datastore.service.resource_localizer'
     tags:
       - { name: drush.command }

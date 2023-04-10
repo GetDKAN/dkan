@@ -17,6 +17,7 @@ use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\ResourceMapper;
+use Drupal\datastore\service\PostImport;
 use Drupal\metastore\Service as MetastoreService;
 
 use MockChain\Chain;
@@ -37,10 +38,18 @@ class PostImportResourceProcessorTest extends TestCase {
   protected const HOST = 'http://example.com';
 
   /**
-   * Test processItem() succeeds.
+   * Test postImportProcessItem() succeeds.
    */
-  public function testProcessItem() {
+  public function testPostImportProcessItem() {
     $resource = new DataResource('test.csv', 'text/csv');
+
+    $dataDictionaryDiscovery = $this->getMockBuilder(DataDictionaryDiscovery::class)
+    ->onlyMethods(['getDataDictionaryMode'])
+    ->disableOriginalConstructor()
+    ->getMock();
+
+    $dataDictionaryDiscovery->method('getDataDictionaryMode')
+    ->willReturn("sitewide");
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -54,7 +63,14 @@ class PostImportResourceProcessorTest extends TestCase {
     $dictionaryEnforcer = PostImportResourceProcessor::create(
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
-    $dictionaryEnforcer->processItem($resource);
+
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($dataDictionaryDiscovery->getDataDictionaryMode(), DataDictionaryDiscoveryInterface::MODE_SITEWIDE);
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('done', $postImportResult->getPostImportStatus());
+    $this->assertEquals(NULL, $postImportResult->getPostImportMessage());
 
     // Ensure resources were processed.
     $notices = $container_chain->getStoredInput('notice');
@@ -65,9 +81,47 @@ class PostImportResourceProcessorTest extends TestCase {
   }
 
   /**
-   * Test processItem() halts and logs a message if a resource no longer exists.
+   * Test postImportProcessItem() DataDictionary disabled.
    */
-  public function testProcessItemResourceNoLongerExists() {
+  public function testPostImportProcessItemDataDictionaryDisabled() {
+    $resource = new DataResource('test.csv', 'text/csv');
+
+    $dataDictionaryDiscovery = $this->getMockBuilder(DataDictionaryDiscovery::class)
+    ->onlyMethods(['getDataDictionaryMode'])
+    ->disableOriginalConstructor()
+    ->getMock();
+
+    $dataDictionaryDiscovery->method('getDataDictionaryMode')
+    ->willReturn("none");
+
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process')
+      ->getMock();
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource)
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', 'none')
+      ->add(DataDictionaryDiscovery::class, 'getDataDictionaryMode', 'none');
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($dataDictionaryDiscovery->getDataDictionaryMode(), DataDictionaryDiscoveryInterface::MODE_NONE);
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('waiting', $postImportResult->getPostImportStatus());
+    $this->assertEquals('Data-Dictionary Disabled', $postImportResult->getPostImportMessage());
+  }
+
+  /**
+   * Test postImportProcessItem() halts and logs a message if a resource no longer exists.
+   */
+  public function testPostImportProcessItemResourceNoLongerExists() {
     $resource = new DataResource('test.csv', 'text/csv');
 
     $resource_processor = (new Chain($this))
@@ -82,7 +136,13 @@ class PostImportResourceProcessorTest extends TestCase {
     $dictionaryEnforcer = PostImportResourceProcessor::create(
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
-    $dictionaryEnforcer->processItem($resource);
+
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('error', $postImportResult->getPostImportStatus());
+    $this->assertEquals('Cancelling resource processing; resource no longer exists.', $postImportResult->getPostImportMessage());
 
     // Ensure notice was logged and resource processing was halted.
     $notices = $container_chain->getStoredInput('notice');
@@ -92,11 +152,12 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  /**
-   * Test processItem() halts and logs a message if a resource has changed.
-   */
-  public function testProcessItemResourceChanged() {
+  // /**
+  //  * Test postImportProcessItem() halts and logs a message if a resource has changed.
+  //  */
+  public function testPostImportProcessItemResourceChanged() {
     $resource_a = new DataResource('test.csv', 'text/csv');
+
     $resource_b = (new DataResource('test2.csv', 'text/csv'))->createNewVersion();
 
     $resource_processor = (new Chain($this))
@@ -111,7 +172,13 @@ class PostImportResourceProcessorTest extends TestCase {
     $dictionaryEnforcer = PostImportResourceProcessor::create(
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
-    $dictionaryEnforcer->processItem($resource_b);
+
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource_b);
+
+    $this->assertEquals($resource_b->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource_b->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('error', $postImportResult->getPostImportStatus());
+    $this->assertEquals('Cancelling resource processing; resource has changed.', $postImportResult->getPostImportMessage());
 
     // Ensure notice was logged and resource processing was halted.
     $notices = $container_chain->getStoredInput('notice');
@@ -121,10 +188,10 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  /**
-   * Test processItem() logs errors encountered in processors.
-   */
-  public function testProcessItemProcessorError() {
+  // /**
+  //  * Test postImportProcessItem() logs errors encountered in processors.
+  //  */
+  public function testPostImportProcessItemProcessorError() {
     $resource = new DataResource('test.csv', 'text/csv');
 
     $resource_processor = (new Chain($this))
@@ -139,7 +206,13 @@ class PostImportResourceProcessorTest extends TestCase {
     $dictionaryEnforcer = PostImportResourceProcessor::create(
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
-    $dictionaryEnforcer->processItem($resource);
+
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('error', $postImportResult->getPostImportStatus());
+    $this->assertEquals('Test Error', $postImportResult->getPostImportMessage());
 
     // Ensure resources were processed.
     $notices = $container_chain->getStoredInput('notice');
@@ -163,6 +236,7 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
+      ->add('dkan.datastore.service.post_import', PostImport::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';

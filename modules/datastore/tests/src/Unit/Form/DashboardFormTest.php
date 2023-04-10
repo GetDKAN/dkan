@@ -16,6 +16,7 @@ use Drupal\datastore\Form\DashboardForm;
 use Drupal\harvest\Service as Harvest;
 use Drupal\metastore\Service as MetastoreService;
 use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\datastore\service\PostImport;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -98,6 +99,8 @@ class DashboardFormTest extends TestCase {
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
+      'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535f',
+      'resource_version' => '1679508886',
       'fetcher_status' => 'done',
       'fetcher_percent_done' => 100,
       'importer_status' => 'done',
@@ -106,9 +109,16 @@ class DashboardFormTest extends TestCase {
       'source_path' => 'http://example.com/file.csv',
     ];
 
+    $postImportInfo = [
+      'resource_version' => '1679508885',
+      'post_import_status' => 'done',
+      'post_import_error' => NULL,
+    ];
+
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['harvest_id' => 'dataset-1']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
+      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -117,6 +127,8 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']['#uuid']);
     $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
+    $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
+    $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
   }
 
   /**
@@ -133,6 +145,8 @@ class DashboardFormTest extends TestCase {
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
+      'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535f',
+      'resource_version' => '1679508886',
       'fetcher_status' => 'done',
       'fetcher_percent_done' => 100,
       'importer_status' => 'done',
@@ -141,9 +155,16 @@ class DashboardFormTest extends TestCase {
       'source_path' => 'http://example.com/file.csv',
     ];
 
+    $postImportInfo = [
+      'resource_version' => '1679508885',
+      'post_import_status' => 'waiting',
+      'post_import_error' => 'Data-Dictionary Disabled',
+    ];
+
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
+      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -152,6 +173,10 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('test', $form['table']['#rows'][0][0]['data']['#uuid']);
     $this->assertEquals('Title', $form['table']['#rows'][0][0]['data']['#title']);
     $this->assertEquals('N/A', $form['table']['#rows'][0][2]['data']);
+
+    // Assert that the post import failed because the data dictionary mode is disabled.
+    $this->assertEquals('waiting', $form['table']['#rows'][0][6]['data']['#status']);
+    $this->assertEquals($postImportInfo['post_import_error'], $form['table']['#rows'][0][6]['data']['#error']);
   }
 
   /**
@@ -169,6 +194,8 @@ class DashboardFormTest extends TestCase {
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
+            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535f',
+            'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
             'fetcher_percent_done' => 0,
             'importer_status' => 'waiting',
@@ -191,6 +218,8 @@ class DashboardFormTest extends TestCase {
         'distributions' => [
           [
             'distribution_uuid' => 'dist-2',
+            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535e',
+            'resource_version' => '1679508885',
             'fetcher_status' => 'done',
             'fetcher_percent_done' => 100,
             'importer_status' => 'done',
@@ -202,6 +231,12 @@ class DashboardFormTest extends TestCase {
       ],
     ];
 
+    $postImportInfo = [
+      'resource_version' => '1679508885',
+      'post_import_status' => 'error',
+      'post_import_error' => "SQLSTATE[HY000]: General error: 1411 Incorrect datetime value: '09/07/2017 12:00:00 AM' for function str_to_date: UPDATE 'datastore_7c3d88c04bb011fa80d6b4612978c9b1' SET 'reactivation_date'=STR_TO_DATE(reactivation_date, :date_format); Array ( [:date_format] => %m/%d/%Y %H:%i:%s %p )",
+    ];
+
     $datasetInfoOptions = (new Options())
       ->add('dataset-1', $datasetInfo)
       ->add('non-harvest-dataset', $nonHarvestDatasetInfo);
@@ -209,7 +244,8 @@ class DashboardFormTest extends TestCase {
     $container = $this->buildContainerChain()
       ->add(MetastoreService::class, 'count', 2)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid'], $nonHarvestDatasetInfo['latest_revision']['uuid']])
-      ->add(DatasetInfo::class, 'gather', $datasetInfoOptions);
+      ->add(DatasetInfo::class, 'gather', $datasetInfoOptions)
+      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo);
 
     \Drupal::setContainer($container->getMock());
     $form = DashboardForm::create($container->getMock())->buildForm([], new FormState());
@@ -220,6 +256,10 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']['#uuid']);
     $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
+
+    // Assert that the post import process failed with an error
+    $this->assertEquals('error', $form['table']['#rows'][0][6]['data']['#status']);
+    $this->assertEquals($postImportInfo['post_import_error'], $form['table']['#rows'][0][6]['data']['#error']);
 
     $this->assertEquals('non-harvest-dataset', $form['table']['#rows'][1][0]['data']['#uuid']);
     $this->assertEquals('Non-Harvest Dataset', $form['table']['#rows'][1][0]['data']['#title']);
@@ -268,6 +308,8 @@ class DashboardFormTest extends TestCase {
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
+            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
             'fetcher_percent_done' => 0,
             'importer_status' => 'waiting',
@@ -277,6 +319,8 @@ class DashboardFormTest extends TestCase {
           ],
           [
             'distribution_uuid' => 'dist-2',
+            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_version' => '1679508886',
             'fetcher_status' => 'done',
             'fetcher_percent_done' => 100,
             'importer_status' => 'done',
@@ -288,23 +332,32 @@ class DashboardFormTest extends TestCase {
       ],
     ];
 
+    $postImportInfo = [
+      'resource_version' => '1679508885',
+      'post_import_status' => 'done',
+      'post_import_error' => NULL,
+    ];
+
     $container = $this->buildContainerChain()
       ->add(MetastoreService::class, 'count', 1)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfo)
+      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo)
       ->getMock();
     \Drupal::setContainer($container);
 
     $form = DashboardForm::create($container)->buildForm([], new FormState());
     $this->assertEquals(2, count($form['table']['#rows']));
     // First row has six columns and rowspan on first two
-    $this->assertEquals(6, count($form['table']['#rows'][0]));
+    $this->assertEquals(7, count($form['table']['#rows'][0]));
     $this->assertEquals(2, $form['table']['#rows'][0][1]['rowspan']);
     // The second row has only three columns.
-    $this->assertEquals(3, count($form['table']['#rows'][1]));
+    $this->assertEquals(4, count($form['table']['#rows'][1]));
 
     $this->assertEquals('dist-1', $form['table']['#rows'][0][3]['data']['#uuid']);
     $this->assertEquals('dist-2', $form['table']['#rows'][1][0]['data']['#uuid']);
+    $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
+    $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
   }
 
   /**
@@ -321,6 +374,7 @@ class DashboardFormTest extends TestCase {
       ->add('date.formatter', DateFormatter::class)
       ->add('path.validator', PathValidator::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('dkan.datastore.service.post_import', PostImport::class)
       ->index(0);
 
     $runInfo = (new Options())

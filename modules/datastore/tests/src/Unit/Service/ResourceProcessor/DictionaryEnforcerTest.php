@@ -16,6 +16,7 @@ use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\datastore\service\PostImport;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service as MetastoreService;
 
@@ -64,7 +65,7 @@ class DictionaryEnforcerTest extends TestCase {
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
 
-    $dictionaryEnforcer->processItem($resource);
+    $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
@@ -99,7 +100,7 @@ class DictionaryEnforcerTest extends TestCase {
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-    $dictionaryEnforcer->processItem($resource);
+     $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
@@ -136,7 +137,7 @@ class DictionaryEnforcerTest extends TestCase {
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-    $dictionaryEnforcer->processItem($resource);
+     $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
@@ -189,6 +190,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
+      ->add('dkan.datastore.service.post_import', PostImport::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
