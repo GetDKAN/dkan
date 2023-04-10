@@ -365,11 +365,13 @@ class ImportJob extends AbstractPersistentJob {
       $from_encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE) ?? '';
     }
     // Is it already UTF-8?
-    if (strtolower($from_encoding) === 'utf-8') {
+    if (!in_array($from_encoding, ['UTF-8', 'ASCII'])) {
       return $chunk;
     }
-    // Convert.
-    if (($chunk = Unicode::convertToUtf8($chunk, $from_encoding)) === FALSE) {
+    // Convert. Iconv does not work for some files.
+    $chunk = mb_convert_encoding($chunk, 'UTF-8', mb_list_encodings());
+
+    if ($chunk === FALSE) {
       // Shout if the conversion didn't work.
       throw new \Exception('Could not convert from ' . $from_encoding . ' to UTF-8 in ' . $filename);
     }
