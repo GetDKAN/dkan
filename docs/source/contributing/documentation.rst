@@ -97,7 +97,7 @@ Install the dependencies for this project. Make sure you are in the `/docs` dire
   .. code-block::
 
     cd docs
-    sudo pip install -r requirements.txt
+    pip install -r requirements.txt
 
 Now you should be able to build the Sphinx site by typing
 
