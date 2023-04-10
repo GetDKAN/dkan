@@ -36,7 +36,7 @@ dkan:datastore:import
 
     1. Use the `API <https://demo.getdkan.org/api/1/metastore/schemas/dataset/items?show-reference-ids>`_ to get the identifier of the file you want to import.
        The identifier will be at ``distribution.0.data.%Ref:downloadURL.0.data.identifier``
-    2. Use :ref:`dkan:dataset-info`
+    2. Use ``dkan:dataset-info``
 
     **Arguments**
 
@@ -80,28 +80,6 @@ dkan:harvest:deregister
 
 ~~~~~~
 
-dkan:harvest:info
------------------
-
-    Give information about a previous harvest run.
-
-    **Arguments**
-
-    - **harvestId** The harvest id.
-    - **runId** The run's id.
-
-~~~~~~
-
-dkan:harvest:deregister
------------------------
-
-    Deregister a harvest.
-
-    **Arguments**
-
-    - **harvestId** The harvest id.
-
-~~~~~~
 
 dkan:harvest:info
 -----------------
@@ -223,12 +201,6 @@ dkan:metastore-search:rebuild-tracker
 
 ~~~~~~
 
-dkan:metastore-search:rebuild-tracker
---------------------------------------
-
-    Rebuild the search api tracker for the dkan index.
-
-~~~~~~
 
 dkan:metastore:publish
 ----------------------

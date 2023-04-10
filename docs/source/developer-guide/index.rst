@@ -7,5 +7,3 @@ Developer Guide
   decoupled_frontend
   dev_metastore
   dev_search
-  documentation
-

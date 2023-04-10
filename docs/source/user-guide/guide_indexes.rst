@@ -1,6 +1,6 @@
 How to add indexes to your datastore tables
 ============================================
-.. _guide_indexes::
+.. _guide_indexes:
 
 To improve the performance of datastore queries, you should add indexes.
 
@@ -16,7 +16,7 @@ API
 
 In the example below we are defining two fields, and adding a standard index for the first field and a fulltext index for the second.
 
-.. code-block:: http
+.. code-block::
 
     POST http://mydomain.com/api/1/metastore/schemas/data-dictionary/items
     Authorization: Basic username:password

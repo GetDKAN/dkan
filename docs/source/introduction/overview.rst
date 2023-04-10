@@ -9,7 +9,7 @@ and built on top of the very popular `Drupal <https://drupal.org>`_ CMS (Content
 Structure
 ---------
 
-DKAN is a Drupal module that adds data publishing functionality.
+DKAN is a Drupal module that adds data management functionality.
 
 Within DKAN there are additional modules to organize internal subsystems. Information about the
 subsystems/components in DKAN can be found in the :doc:`../components/index` page.

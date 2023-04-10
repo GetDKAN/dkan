@@ -14,7 +14,7 @@ Run a POST command to ``/api/1/metastore/schemas/dataset/items`` with a json for
 
 .. code-block::
 
-    POST http://dkan.ddev.site/api/1/metastore/schemas/dataset/items HTTP/1.1
+    POST http://dkan.ddev.site/api/1/metastore/schemas/dataset/items?format_json HTTP/1.1
     content-type: application/json
     Authorization: Basic admin:admin
 

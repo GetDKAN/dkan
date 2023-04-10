@@ -1,7 +1,7 @@
 Data Dictionaries
 =================
 
-.. _guide_data_dictionaries::
+.. _guide_data_dictionaries:
 
 What is the purpose of data dictionaries?
 -----------------------------------------
