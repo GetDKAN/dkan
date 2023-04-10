@@ -314,4 +314,19 @@ class ImportJobTest extends TestCase {
     );
   }
 
+  public function providerToUtf8() {
+    return [
+      'plain, no bom' => ['abc', 'abc', ''],
+      'plain, with bom' => ['abc', 'abc', 'UTF-8'],
+      'non utf-8 with bom' => ['abc', '뽡扣', 'UTF-16BE']
+    ];
+  }
+
+  /**
+   * @dataProvider providerToUtf8
+   * @covers ::toUtf8
+   */
+  public function testToUtf8($expected, $chunk, $from_encoding) {
+    $this->assertSame($expected, ImportJob::toUtf8($chunk, 'filename', $from_encoding));
+  }
 }

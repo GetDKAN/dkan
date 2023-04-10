@@ -365,7 +365,7 @@ class ImportJob extends AbstractPersistentJob {
       $from_encoding = mb_detect_encoding($chunk, mb_detect_order(), TRUE) ?? '';
     }
     // Is it already UTF-8?
-    if (!in_array($from_encoding, ['UTF-8', 'ASCII'])) {
+    if (strtolower($from_encoding) === 'utf-8') {
       return $chunk;
     }
     // Convert. Iconv does not work for some files.
