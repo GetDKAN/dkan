@@ -4,7 +4,6 @@ type: module
 core_version_requirement: ^9.1
 dependencies:
   - metastore
-  - admin_toolbar
   - breakpoint
   - system
   - toolbar
