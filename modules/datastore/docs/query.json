@@ -205,6 +205,8 @@
                         "between",
                         "in",
                         "not in",
+                        "is_empty",
+                        "not_empty",
                         "contains",
                         "starts with",
                         "match"

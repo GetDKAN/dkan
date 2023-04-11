@@ -65,5 +65,27 @@
             }
         }
     },
-    "paths": {}
+    "paths": {
+        "/api/1": {
+            "get": {
+                "operationId": "docs-get-complete",
+                "summary": "Complete json documentation",
+                "tags": [
+                    "Documentation"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -50,6 +50,7 @@ class DkanApiDocsGenerator {
    */
   public function buildSpec(array $plugins = []) {
     $docPluginDefinitions = $this->docManager->getDefinitions();
+    uasort($docPluginDefinitions, 'Drupal\Component\Utility\SortArray::sortByWeightElement');
     $spec = [];
     if (!empty($plugins)) {
       $this->filterPluginDefinitions($docPluginDefinitions, $plugins);

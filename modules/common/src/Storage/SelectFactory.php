@@ -333,6 +333,14 @@ class SelectFactory {
       $condition->operator = 'like';
       $condition->value = "{$condition->value}%";
     }
+    elseif ($condition->operator == 'is_empty') {
+      $condition->operator = '=';
+      $condition->value = '';
+    }
+    elseif ($condition->operator == 'not_empty') {
+      $condition->operator = '<>';
+      $condition->value = '';
+    }
   }
 
   /**

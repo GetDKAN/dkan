@@ -94,7 +94,7 @@
                 "operationId": "datastore-list",
                 "summary": "List datastores",
                 "description": "Returns a list of all stored importers, with data about their file fetcher and status.\n",
-                "tags": ["Datastore: import"],
+                "tags": ["Datastore"],
                 "security": [
                     {
                         "basic_auth": []
@@ -120,7 +120,7 @@
                 "operationId": "datastore-import",
                 "summary": "Datastore import",
                 "description": "Immediately starts the import process for a datastore.\n",
-                "tags": ["Datastore: import"],
+                "tags": ["Datastore"],
                 "security": [
                     {
                         "basic_auth": []
@@ -164,7 +164,7 @@
                 "operationId": "datastore-get",
                 "summary": "Datastore statistics",
                 "description": "Returns the numbers of rows and columns, and a list of columns headers from the datastore.\n",
-                "tags": ["Datastore: import"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreUuid"
@@ -201,7 +201,7 @@
                 "operationId": "datastore-delete",
                 "summary": "Delete a datastore",
                 "description": "Delete one or more datastores. If the uuid parameter is that of a resource, delete that resource. If the uuid parameter is that of a dataset, delete all resources of that dataset.\n",
-                "tags": ["Datastore: import"],
+                "tags": ["Datastore"],
                 "security": [
                     {
                         "basic_auth": []
@@ -236,7 +236,7 @@
             "post": {
                 "operationId": "datastore-query-post",
                 "summary": "Query one or more datastore resources",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -254,7 +254,7 @@
                 "operationId": "datastore-query-get",
                 "summary": "Query one or more datastore resources",
                 "description": "Simple GET equivalent of a POST query. Note that parameters containing arrays or objects are not yet supported by SwaggerUI. For conditions, sorts, and other complex parameters, write your query in JSON and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [],
                 "responses": {
                     "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
@@ -266,7 +266,7 @@
             "post": {
                 "operationId": "datastore-query-download-post",
                 "summary": "Query one or more datastore resources for file download",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -285,7 +285,7 @@
                 "operationId": "datastore-query-download-get",
                 "summary": "Query one or more datastore resources for file download with get",
                 "description": "Simple GET equivalent of a POST query. Note that parameters containing arrays or objects are not yet supported by SwaggerUI. For conditions, sorts, and other complex parameters, write your query in JSON and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [],
                 "responses": {
                     "200": { "$ref": "#/components/responses/200DatastoreCsvOk" },
@@ -298,7 +298,7 @@
             "post": {
                 "operationId": "datastore-resource-query-post",
                 "summary": "Query a single datastore resource",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDistributionUuid"
@@ -322,7 +322,7 @@
                 "operationId": "datastore-resource-query-get",
                 "summary": "Query a single datastore resource with get",
                 "description": "Simple GET equivalent of a POST query. Note that parameters containing arrays or objects are not yet supported by SwaggerUI. For conditions, sorts, and other complex parameters, write your query in JSON and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDistributionUuid"
@@ -339,7 +339,7 @@
             "post": {
                 "operationId": "datastore-datasetindex-query-post",
                 "summary": "Query a single datastore resource",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDatasetUuid"
@@ -366,7 +366,7 @@
                 "operationId": "datastore-datasetindex-query-get",
                 "summary": "Query a single datastore resource with get",
                 "description": "Simple GET equivalent of a POST query -- see the POST endpoint documentation for full query schema. A few basic parameters are provided here as examples. For more reliable queries, write your query in JSON and then convert to a query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDatasetUuid"
@@ -387,7 +387,7 @@
                 "operationId": "datastore-resource-query-download-get",
                 "summary": "Query a single datastore resource for file download",
                 "description": "Like the other datastore query GET endpoints, additional parameters may be added by serializing a query JSON object (documented in the POST endpoints) into a query string.",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDistributionUuid"
@@ -416,7 +416,7 @@
                 "operationId": "datastore-datasetindex-query-download-get",
                 "summary": "Query a single datastore resource for file download",
                 "description": "Like the other datastore query GET endpoints, additional parameters may be added by serializing a query JSON object (documented in the POST endpoints) into a query string.",
-                "tags": ["Datastore: query"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDatasetUuid"
@@ -448,7 +448,7 @@
                 "operationId": "datastore-sql",
                 "summary": "Query resources in datastore",
                 "description": "Interact with resources in the datastore using an SQL-like syntax.\n",
-                "tags": ["Datastore: SQL Query"],
+                "tags": ["Datastore"],
                 "parameters": [
                     {
                         "name": "query",

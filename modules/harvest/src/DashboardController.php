@@ -68,7 +68,13 @@ class DashboardController {
    * Private.
    */
   private function buildHarvestRow(string $harvestId, string $runId, $info) {
-    $url = Url::fromRoute('datastore.datasets_import_status_dashboard', ['harvest_id' => $harvestId]);
+    // PDC-specific change: make harvest dashboard accessible without authentication.
+    // $url = Url::fromRoute('datastore.datasets_import_status_dashboard', ['harvest_id' => $harvestId]);
+    $queryParams = [
+      'harvest_id' => $harvestId,
+    ];
+    $url = Url::fromUri('base:provider-data/dashboard/datastore', ['query' => $queryParams]);
+    // End PDC-specific change
 
     return [
       'harvest_link' => Link::fromTextAndUrl($harvestId, $url),

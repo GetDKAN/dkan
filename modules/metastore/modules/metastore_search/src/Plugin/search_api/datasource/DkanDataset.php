@@ -69,6 +69,7 @@ class DkanDataset extends DatasourcePluginBase {
    */
   public function getItemIds($page = NULL) {
     $ids_query = $this->nodeQueryService
+      ->addTag('search_api_datasource_dkan')
       ->accessCheck(FALSE)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset');

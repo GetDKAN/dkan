@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @DkanApiDocs(
  *  id = "metastore_api_docs",
+ *  weight = 2,
  *  description = "Metastore docs"
  * )
  */
@@ -107,7 +108,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
 
       $tSchema = [':schemaId' => $schemaId];
       $spec['tags'][] = [
-        'name' => $this->t("Metastore: :schemaId", $tSchema),
+        'name' => $this->t("Metastore"),
         'description' => $this->t(
           'CRUD operations for :schemaId metastore items. Substitute any other schema name for ":schemaId" to modify other items.',
           $tSchema
@@ -282,7 +283,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return [
       "operationId" => "$schemaId-post",
       "summary" => $this->t("Create a new :schemaId.", $tSchema),
-      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
+      "tags" => [$this->t("Metastore")],
       "security" => [['basic_auth' => []]],
       "requestBody" => [
         "required" => TRUE,
@@ -319,7 +320,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return [
       "operationId" => "$schemaId-get-item",
       "summary" => $this->t("Get a single :schemaId.", $tSchema),
-      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
+      "tags" => [$this->t("Metastore")],
       "parameters" => [
         ['$ref' => "#/components/parameters/{$schemaId}Uuid"],
         ['$ref' => "#/components/parameters/showReferenceIds"],
@@ -353,7 +354,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       "operationId" => "$schemaId-put",
       "summary" => $this->t("Replace a :schemaId", $tSchema),
       "description" => $this->t("Object will be completely replaced; optional properties not included in the request will be deleted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, and pasting to test.", $tSchema),
-      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
+      "tags" => [$this->t("Metastore")],
       "security" => [
         ['basic_auth' => []],
       ],
@@ -392,7 +393,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       "operationId" => "$schemaId-patch",
       "summary" => $this->t("Modify an existing :schemaId", $tSchema),
       "description" => $this->t("Values provided will replace existing values, but required values may be omitted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, removing unchanged properties, and pasting to test.", $tSchema),
-      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
+      "tags" => [$this->t("Metastore")],
       "security" => [
         ['basic_auth' => []],
       ],
