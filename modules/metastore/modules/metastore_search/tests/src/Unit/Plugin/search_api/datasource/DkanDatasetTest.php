@@ -51,6 +51,7 @@ class DkanDatasetTest extends TestCase {
       ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
       ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(EntityStorageInterface::class, 'loadMultiple', [$nodeMock, $nodeMock])
+      ->add(QueryInterface::class, 'addTag', QueryInterface::class)
       ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'count', QueryInterface::class)
