@@ -15,7 +15,8 @@ table.dashboard-datasets td.done
 table.dashboard-datasets td.draft,
 table.dashboard-datasets td.in-progress,
 table.dashboard-datasets td.stopped,
-table.dashboard-datasets td.waiting
+table.dashboard-datasets td.waiting,
+table.dashboard-datasets td.N\/A
 {
   color: #734c00;
   background-color: #fdf8ed;

@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Database\Database;
+
 /**
  * @file
  */
@@ -20,4 +22,73 @@ function datastore_update_8001(&$sandbox) {
 
     $schema->addField($table, 'checksum', $spec);
   }
+}
+
+/**
+ * Create new "dkan_post_import_job_status" table.
+ */
+function datastore_update_9001(&$sandbox) {
+
+  $table_name = 'dkan_post_import_job_status';
+
+  $spec = [
+    'fields' => [
+      'resource_identifier' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'resource_version' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'post_import_status' => [
+        'type' => 'text',
+        'length' => 10,
+        'not null' => TRUE,
+      ],
+      'post_import_error' => [
+        'mysql_type' => 'mediumtext',
+        'not null' => FALSE,
+      ],
+    ],
+    'primary key' => ['resource_identifier', 'resource_version'],
+  ];
+
+  $schema = Database::getConnection()->schema();
+  $schema->createTable($table_name, $spec);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function datastore_schema() {
+  $schema['dkan_post_import_job_status'] = [
+    'description' => "Stores the status of the datastore post_import job.",
+    'fields' => [
+      'resource_identifier' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'resource_version' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'post_import_status' => [
+        'type' => 'text',
+        'length' => 10,
+        'not null' => TRUE,
+      ],
+      'post_import_error' => [
+        'mysql_type' => 'mediumtext',
+        'not null' => FALSE,
+      ],
+    ],
+    'primary key' => ['resource_identifier', 'resource_version'],
+  ];
+
+  return $schema;
 }
