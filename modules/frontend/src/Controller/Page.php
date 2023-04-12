@@ -45,7 +45,7 @@ class Page implements ContainerInjectionInterface {
     if (empty($pageContent)) {
       $pageContent = $this->pageBuilder->build("404");
     }
-    $response = Response::create($pageContent);
+    $response = new Response($pageContent);
     return $this->addCacheHeaders($response);
   }
 
