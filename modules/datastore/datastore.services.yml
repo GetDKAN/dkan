@@ -9,6 +9,12 @@ services:
       - '@dkan.datastore.import_info_list'
       - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
 
+  dkan.datastore.service.post_import:
+    class: \Drupal\datastore\Service\PostImport
+    arguments: 
+     - '@database'
+     - '@dkan.metastore.resource_mapper'
+
   dkan.datastore.query:
     class: \Drupal\datastore\Service\Query
     arguments:

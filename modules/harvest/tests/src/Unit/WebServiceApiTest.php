@@ -35,7 +35,7 @@ class WebServiceApiTest extends TestCase {
     parent::setUp();
 
     $container = $this->getMockBuilder(ContainerInterface::class)
-      ->setMethods(['get'])
+      ->onlyMethods(['get'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -64,7 +64,7 @@ class WebServiceApiTest extends TestCase {
       case 'request_stack':
         $stack = $this->getMockBuilder(RequestStack::class)
           ->disableOriginalConstructor()
-          ->setMethods(['getCurrentRequest'])
+          ->onlyMethods(['getCurrentRequest'])
           ->getMock();
 
         $stack->method("getCurrentRequest")->willReturn($this->request);
@@ -101,7 +101,7 @@ class WebServiceApiTest extends TestCase {
    */
   public function testRegisterAndIndex() {
     $request = $this->getMockBuilder(Request::class)
-      ->setMethods(['getContent'])
+      ->onlyMethods(['getContent'])
       ->disableOriginalConstructor()
       ->getMock();
 

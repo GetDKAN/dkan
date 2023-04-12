@@ -8,7 +8,7 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Database\Driver\sqlite\Connection as SqliteConnection;
+use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 use Drupal\datastore\Controller\QueryController;
 use MockChain\Options;
 use Drupal\datastore\Service;

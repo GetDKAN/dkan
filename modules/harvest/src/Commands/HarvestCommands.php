@@ -26,13 +26,6 @@ class HarvestCommands extends DrushCommands {
   protected $harvestService;
 
   /**
-   * Logger.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $logger;
-
-  /**
    * Constructor.
    */
   public function __construct(Service $service, LoggerChannelInterface $logger) {
