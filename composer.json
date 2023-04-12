@@ -5,7 +5,6 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
-        "drupal/admin_toolbar": "^3",
         "drupal/moderated_content_bulk_publish": "~2.0.20",
         "drupal/search_api": "^1.15",
         "drupal/select_or_other": "dev-4.x#ae0585ff8c",
