@@ -1,6 +1,6 @@
 import * as dkan from '../support/helpers/dkan'
 
-context.skip('Admin content and dataset views', () => {
+context('Admin content and dataset views', () => {
     let baseurl = Cypress.config().baseUrl;
 
     beforeEach(() => {
