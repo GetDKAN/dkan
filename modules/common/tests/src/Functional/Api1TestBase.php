@@ -7,10 +7,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
+use weitzman\DrupalTestTraits\Entity\UserCreationTrait;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 abstract class Api1TestBase extends ExistingSiteBase {
   use CleanUp;
+  use UserCreationTrait;
 
   protected $http;
   protected $spec;
@@ -27,9 +29,12 @@ abstract class Api1TestBase extends ExistingSiteBase {
     $this->removeFiles();
     $this->removeDatastoreTables();
     $this->setDefaultModerationState($state = 'published');
+
+    $user = $this->createUser([], "testapiuser", FALSE, ['roles' => ['api_user'], 'mail' => 'testapiuser@test.com']);
+
     $this->baseUrl = getenv('SIMPLETEST_BASE_URL');
     $this->http = new Client(['base_uri' => $this->baseUrl]);
-    $this->auth = ['testapiuser', 'testapiuser'];
+    $this->auth = ['testapiuser', $user->pass_raw];
     $this->endpoint = $this->getEndpoint();
 
     // Load the API spec for use by tests.
@@ -38,7 +43,7 @@ abstract class Api1TestBase extends ExistingSiteBase {
   }
 
   public function tearDown(): void {
-    parent::setUp();
+    parent::tearDown();
     $this->http = NULL;
   }
 
