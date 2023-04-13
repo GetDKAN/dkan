@@ -136,7 +136,6 @@ jobs:
         default: false
         type: boolean
     steps:
-      - docker/install-docker-tools
       - prepare_build:
           php_version: << parameters.php_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
@@ -200,7 +199,6 @@ jobs:
         default: false
         type: boolean
     steps:
-      - docker/install-docker-tools
       - prepare_build:
           php_version: << parameters.php_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
