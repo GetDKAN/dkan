@@ -122,9 +122,9 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $response = $client->request('GET', 'api/1/datastore/query/111/0');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    // The import endpoints shouldn't be there at all anymore.
+    // The resource ID import endpoints shouldn't be there at all anymore.
     $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
-    $this->assertEquals(404, $response->getStatusCode());
+    $this->assertEquals(202, $response->getStatusCode());
     $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
     $this->assertEquals(404, $response->getStatusCode());
   }
