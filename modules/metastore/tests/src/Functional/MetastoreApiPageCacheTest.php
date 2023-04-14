@@ -124,7 +124,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
     // The resource ID import endpoints shouldn't be there at all anymore.
     $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
-    $this->assertEquals(202, $response->getStatusCode());
+    $this->assertEquals(200, $response->getStatusCode());
     $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
     $this->assertEquals(404, $response->getStatusCode());
   }
