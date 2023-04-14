@@ -86,7 +86,7 @@ class DataResource implements \JsonSerializable {
     $this->mimeType = $mimeType;
     $this->perspective = $perspective;
     // @todo Create a timestamp property and generate uuid for version.
-    $this->version = time();
+    $this->version = $this->getCurrentTime();
     $this->checksum = NULL;
   }
 
@@ -102,12 +102,30 @@ class DataResource implements \JsonSerializable {
    * system to create new versions of resources when they deem it necessary.
    */
   public function createNewVersion() {
-    $newVersion = time();
+    $newVersion = $this->getCurrentTime();
     if ($newVersion == $this->version) {
       $newVersion++;
     }
 
     return $this->createCommon('version', $newVersion);
+  }
+
+  /**
+   * Use Drupal datetime service if container available,to make this mockable.
+   *
+   * @return int
+   *   Current timestamp.
+   *
+   * @todo Remove try/catch?
+   */
+  protected function getCurrentTime(): int {
+    try {
+      return (int) \Drupal::service('datetime.time')->getCurrentTime();
+    }
+    catch (\Throwable $e) {
+      // Fall back to php time().
+      return time();
+    }
   }
 
   /**

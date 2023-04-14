@@ -3,8 +3,6 @@
 namespace Drupal\metastore\LifeCycle;
 
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\DataResource;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\MetastoreItemInterface;
@@ -132,7 +130,7 @@ class LifeCycle {
     $metadata = $data->getMetaData();
 
     // Dereference dataset properties.
-    $metadata = $this->dereferencer->dereference($metadata);
+    $metadata = $this->dereferencer->dereference($metadata, "dataset");
     $metadata = $this->addDatasetModifiedDate($metadata, $data->getModifiedDate());
 
     $data->setMetadata($metadata);
@@ -157,26 +155,7 @@ class LifeCycle {
       return;
     }
 
-    $downloadUrl = $metadata->data->downloadURL;
-
-    if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
-      $resourceIdentifier = $downloadUrl;
-      $ref = NULL;
-      $original = NULL;
-      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
-
-      $downloadUrl = isset($original) ? $original : "";
-
-      $refProperty = "%Ref:downloadURL";
-      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
-    }
-
-    if (is_string($downloadUrl)) {
-      $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
-    }
-
-    $metadata->data->downloadURL = $downloadUrl;
-
+    $metadata->data = $this->dereferencer->dereference($metadata->data, "distribution");
     $data->setMetadata($metadata);
   }
 
@@ -202,54 +181,6 @@ class LifeCycle {
         $version,
       ]);
     }
-  }
-
-  /**
-   * Get a download URL.
-   *
-   * @param string $resourceIdentifier
-   *   Identifier for resource.
-   *
-   * @return array
-   *   Array of reference and original.
-   */
-  private function retrieveDownloadUrlFromResourceMapper(string $resourceIdentifier) {
-    $reference = [];
-    $original = NULL;
-
-    $info = DataResource::parseUniqueIdentifier($resourceIdentifier);
-
-    // Load resource object.
-    $sourceResource = $this->resourceMapper->get($info['identifier'], DataResource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
-
-    if (!$sourceResource) {
-      return [$reference, $original];
-    }
-
-    $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = \resource_mapper_display();
-    $resource = $sourceResource;
-
-    if (
-      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
-    ) {
-      $resource = $new;
-      $reference[] = $this->createResourceReference($resource);
-    }
-    $original = $resource->getFilePath();
-
-    return [$reference, $original];
-  }
-
-  /**
-   * Private.
-   */
-  private function createResourceReference(DataResource $resource): object {
-    return (object) [
-      "identifier" => $resource->getUniqueIdentifier(),
-      "data" => $resource,
-    ];
   }
 
   /**
@@ -287,7 +218,7 @@ class LifeCycle {
       return $data instanceof MetastoreItemInterface;
     });
 
-    $metadata = $this->referencer->reference($metadata);
+    $metadata = $this->referencer->reference($metadata, "dataset");
 
     $data->setMetadata($metadata);
 
@@ -313,6 +244,7 @@ class LifeCycle {
    */
   protected function distributionPresave(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
+    $metadata->data = $this->referencer->reference($metadata->data, "distribution");
     $data->setMetadata($metadata);
   }
 

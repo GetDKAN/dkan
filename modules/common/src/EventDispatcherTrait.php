@@ -30,7 +30,7 @@ trait EventDispatcherTrait {
    * @throws \Exception
    *   If any of the subscribers registered and Exception it is thrown.
    */
-  private function dispatchEvent($eventName, $data, $validator = NULL) {
+  protected function dispatchEvent($eventName, $data, $validator = NULL) {
     if ($this->useLegacyDispatcher()) {
       $data = $this->legacyDispatchEvent($eventName, $data, $validator);
       return $data;

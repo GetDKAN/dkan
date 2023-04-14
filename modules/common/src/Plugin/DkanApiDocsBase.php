@@ -10,9 +10,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Base class for API Docs plugins.
- *
- * @see \Drupal\plugin_type_example\Annotation\Sandwich
- * @see \Drupal\plugin_type_example\SandwichInterface
  */
 abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterface {
 

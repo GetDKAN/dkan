@@ -133,12 +133,10 @@ interface MetastoreStorageInterface {
    *
    * @param string $hash
    *   The hash for the data.
-   * @param string $schemaId
-   *   The schema ID.
    *
    * @return string|null
    *   The uuid of the item with that hash.
    */
-  public function retrieveByHash($hash, $schemaId);
+  public function retrieveByHash($hash);
 
 }

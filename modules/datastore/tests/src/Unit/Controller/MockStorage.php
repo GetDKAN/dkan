@@ -14,7 +14,7 @@ class MockStorage extends Data {
     return [];
   }
 
-  public function retrieveByHash($hash, $schemaId) {
+  public function retrieveByHash($hash) {
     return [];
   }
 

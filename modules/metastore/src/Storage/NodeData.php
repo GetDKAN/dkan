@@ -43,8 +43,6 @@ class NodeData extends Data {
    *
    * @param string $hash
    *   The hash for the data.
-   * @param string $schema_id
-   *   The schema ID.
    *
    * @return string|null
    *   The uuid of the item with that hash.
@@ -52,10 +50,10 @@ class NodeData extends Data {
    * @todo This method is not consistent with others in this class, and
    * may not be needed at all. Fix or remove.
    */
-  public function retrieveByHash($hash, $schema_id) {
+  public function retrieveByHash($hash) {
     $nodes = $this->getEntityStorage()->loadByProperties([
       $this->labelKey => $hash,
-      $this->schemaIdField => $schema_id,
+      $this->schemaIdField => $this->schemaId,
     ]);
     if ($node = reset($nodes)) {
       return $node->uuid();

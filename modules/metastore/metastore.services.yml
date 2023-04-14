@@ -36,18 +36,18 @@ services:
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
-      - '@config.factory'
-      - '@dkan.metastore.storage'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
+      - '@dkan.metastore.reference_map'
 
   dkan.metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
+      - '@dkan.metastore.reference_map'
+
+  dkan.metastore.reference_map:
+    class: \Drupal\metastore\Reference\ReferenceMap
+    arguments:
+      - '@plugin.manager.dkan_reference_type'
       - '@config.factory'
-      - '@dkan.metastore.storage'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
 
   dkan.metastore.orphan_checker:
     class: \Drupal\metastore\Reference\OrphanChecker
@@ -109,3 +109,7 @@ services:
     class: \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
     arguments:
       - '@config.factory'
+
+  plugin.manager.dkan_reference_type:
+    class: \Drupal\metastore\Reference\ReferenceTypeManager
+    parent: default_plugin_manager
