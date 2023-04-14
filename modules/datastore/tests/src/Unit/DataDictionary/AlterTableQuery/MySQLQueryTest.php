@@ -151,8 +151,7 @@ class MySQLQueryTest extends TestCase {
     // Mock an object so we don't have to set up dependencies.
     $mysql_query = $this->getMockBuilder(MySQLQuery::class)
       ->disableOriginalConstructor()
-      // Don't mock the method we're testing.
-      ->setMethodsExcept(['getBaseType'])
+      ->onlyMethods([])
       ->getMock();
 
     // getBaseType() is protected.
@@ -191,9 +190,6 @@ class MySQLQueryTest extends TestCase {
       ->disableOriginalConstructor()
       // Mock buildBoolPreAlterCommands() so we can set expectations on it.
       ->onlyMethods(['buildBoolPreAlterCommands'])
-      // Don't mock these methods because they're called from
-      // buildPreAlterCommands()
-      ->setMethodsExcept(['buildPreAlterCommands', 'getBaseType'])
       ->getMock();
     $mysql_query->expects($this->once())
       ->method('buildBoolPreAlterCommands')
