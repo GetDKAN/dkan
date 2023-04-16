@@ -8,7 +8,6 @@ use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
-use Drupal\metastore\NodeWrapper\Data;
 
 /**
  * Map resource URLs to local files.

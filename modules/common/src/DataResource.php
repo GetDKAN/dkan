@@ -116,7 +116,7 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Create a new version.
+   * Clone the current resource with a new version identifier.
    *
    * Versions are, simply, a unique "string" used to represent changes in a
    * resource. For example, when new data is added to a file/resource a new
@@ -126,17 +126,18 @@ class DataResource implements \JsonSerializable {
    * resources, it simply models the behavior to allow other parts of the
    * system to create new versions of resources when they deem it necessary.
    */
-  public function createNewVersion() {
+  public function createNewVersion(): DataResource {
     $newVersion = time();
     if ($newVersion == $this->version) {
       $newVersion++;
     }
-
-    return $this->createCommon('version', $newVersion);
+    $clone = clone $this;
+    $clone->version = $newVersion;
+    return $clone;
   }
 
   /**
-   * Create a new perspective.
+   * Clone the current resource with a new perspective.
    *
    * Perspectives are useful to represent clusters of connected resources.
    *
@@ -146,11 +147,11 @@ class DataResource implements \JsonSerializable {
    * aware of the new resource, the API endpoint, and maintain the relatioship
    * between the 2 resources.
    */
-  public function createNewPerspective($perspective, $uri) {
-    $new = $this->createCommon('perspective', $perspective);
-    $new->changeFilePath($uri);
-
-    return $new;
+  public function createNewPerspective($perspective, $uri): DataResource {
+    $clone = clone $this;
+    $clone->perspective = $perspective;
+    $clone->changeFilePath($uri);
+    return $clone;
   }
 
   /**
@@ -165,18 +166,6 @@ class DataResource implements \JsonSerializable {
    */
   public function changeMimeType($newMimeType) {
     $this->mimeType = $newMimeType;
-  }
-
-  /**
-   * Private.
-   */
-  private function createCommon($property, $value) {
-    $current = $this->{$property};
-    $new = $value;
-    $this->{$property} = $new;
-    $newResource = clone $this;
-    $this->{$property} = $current;
-    return $newResource;
   }
 
   /**
@@ -232,6 +221,7 @@ class DataResource implements \JsonSerializable {
    * Getter.
    *
    * @return string
+   *   The unique identifier.
    */
   public function getUniqueIdentifier() {
     return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
