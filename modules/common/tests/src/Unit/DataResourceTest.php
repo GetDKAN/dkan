@@ -99,9 +99,8 @@ class DataResourceTest extends TestCase {
     // Not the same object.
     $this->assertNotSame($data_resource, $clone_data_resource);
     // Clone contains 'local_url' perspective.
-    $ref_perspective = new \ReflectionProperty($clone_data_resource, 'perspective');
-    $ref_perspective->setAccessible(TRUE);
-    $this->assertEquals('local_url', $ref_perspective->getValue($clone_data_resource));
+    $this->assertEquals('local_url', $clone_data_resource->getPerspective());
+    $this->assertEquals('uri://foo/bar', $clone_data_resource->getFilePath());
   }
 
   /**
@@ -119,11 +118,9 @@ class DataResourceTest extends TestCase {
     // Not the same object.
     $this->assertNotSame($data_resource, $clone_data_resource);
     // Clone contains new version.
-    $ref_version = new \ReflectionProperty(DataResource::class, 'version');
-    $ref_version->setAccessible(TRUE);
     $this->assertNotEquals(
-      $ref_version->getValue($data_resource),
-      $ref_version->getValue($clone_data_resource)
+      $data_resource->getVersion(),
+      $clone_data_resource->getVersion()
     );
   }
 
