@@ -12,8 +12,10 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Drupal\common\Resource.
+ *
+ * @coversDefaultClass \Drupal\common\DataResource
  */
-class ResourceTest extends TestCase {
+class DataResourceTest extends TestCase {
 
   /**
    * Test getTableName().
@@ -80,6 +82,46 @@ class ResourceTest extends TestCase {
 
     $this->expectExceptionMessage($expectedMessage);
     $result = DataResource::getIdentifierAndVersion($id);
+  }
+
+  /**
+   * @covers ::createNewPerspective
+   */
+  public function testCreateNewPerspective() {
+    $data_resource = new DataResource(
+      '/foo/bar',
+      'txt',
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE
+    );
+
+    $clone_data_resource = $data_resource->createNewPerspective('local_url', 'uri://foo/bar');
+
+    // Not the same object.
+    $this->assertNotSame($data_resource, $clone_data_resource);
+    // Clone contains 'local_url' perspective.
+    $this->assertEquals('local_url', $clone_data_resource->getPerspective());
+    $this->assertEquals('uri://foo/bar', $clone_data_resource->getFilePath());
+  }
+
+  /**
+   * @covers ::createNewVersion
+   */
+  public function testCreateNewVersion() {
+    $data_resource = new DataResource(
+      '/foo/bar',
+      'txt',
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE
+    );
+
+    $clone_data_resource = $data_resource->createNewVersion();
+
+    // Not the same object.
+    $this->assertNotSame($data_resource, $clone_data_resource);
+    // Clone contains new version.
+    $this->assertNotEquals(
+      $data_resource->getVersion(),
+      $clone_data_resource->getVersion()
+    );
   }
 
 }

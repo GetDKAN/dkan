@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Importer class.
+ *
+ * @group datastore
+ * @group dkan-core
  */
 class ImportJobTest extends TestCase {
 
@@ -34,7 +37,7 @@ class ImportJobTest extends TestCase {
   /**
    *
    */
-  private function getDatastore(DatastoreResource $resource) {
+  private function getDatastore(DatastoreResource $resource): ImportJob {
     $storage = new Memory();
     $config = [
       "resource" => $resource,
@@ -49,7 +52,7 @@ class ImportJobTest extends TestCase {
    */
   public function testBasics() {
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csv", "text/csv");
-    $this->assertEquals($resource->getID(), 1);
+    $this->assertEquals(1, $resource->getID());
 
     $datastore = $this->getDatastore($resource);
 
@@ -145,12 +148,16 @@ class ImportJobTest extends TestCase {
   }
 
   /**
+   * Test JSON/hydrate round-trip.
    *
+   * This pattern is deprecated.
+   *
+   * @group legacy
    */
   public function testSerialization() {
     $timeLimit = 40;
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csv", "text/csv");
-    $this->assertEquals($resource->getID(), 1);
+    $this->assertEquals(1, $resource->getID());
 
     $datastore = $this->getDatastore($resource);
     $datastore->setTimeLimit($timeLimit);
@@ -216,17 +223,14 @@ class ImportJobTest extends TestCase {
    */
   public function testBadStorage() {
     $storageInterfaceClass = DatabaseTableInterface::class;
-    $this->expectExceptionMessage("Storage must be an instance of {$storageInterfaceClass}");
+    $this->expectExceptionMessage("Storage must be an instance of $storageInterfaceClass");
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csZv", "text/csv");
 
-    $importer = ImportJob::get("1", new Memory(), [
+    ImportJob::get("1", new Memory(), [
       "resource" => $resource,
       "storage" => new TestMemStorageBad(),
       "parser" => Csv::getParser(),
     ]);
-
-    $json = json_encode($importer);
-    ImportJob::hydrate($json);
   }
 
   /**
@@ -235,7 +239,7 @@ class ImportJobTest extends TestCase {
   public function testNonStorage() {
     $this->expectExceptionMessage("Storage must be an instance of Drupal\common\Storage\DatabaseTableInterface");
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csv", "text/csv");
-    $importer = ImportJob::get("1", new Memory(), [
+    ImportJob::get("1", new Memory(), [
       "resource" => $resource,
       "storage" => new class {
       },
@@ -243,7 +247,7 @@ class ImportJobTest extends TestCase {
     ]);
   }
 
-  public function sanitizeDescriptionProvider() {
+  public function sanitizeDescriptionProvider(): array {
     return [
       'multiline' => ["Multi\nLine", 'Multi Line'],
     ];
@@ -272,7 +276,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, ImportJob::sanitizeHeader($column));
   }
 
-  public function truncateHeaderProvider() {
+  public function truncateHeaderProvider(): array {
     $max_length = 64;
     return [
       'max_length' => [

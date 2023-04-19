@@ -212,9 +212,19 @@ class Referencer {
   }
 
   /**
-   * Private.
+   * Get download URL for existing resource.
+   *
+   * @param array $info
+   *   Info.
+   * @param \Drupal\common\DataResource $stored
+   *   Stored data resource object.
+   * @param string $mimeType
+   *   MIME type.
+   *
+   * @return string
+   *   The download URL.
    */
-  private function handleExistingResource($info, $stored, $mimeType) {
+  private function handleExistingResource(array $info, DataResource $stored, string $mimeType): string {
     if ($info[0]->perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
