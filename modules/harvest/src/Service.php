@@ -339,8 +339,6 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Protected.
-   *
-   * @codeCoverageIgnore
    */
   protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
     return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));

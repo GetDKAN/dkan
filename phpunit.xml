@@ -12,6 +12,7 @@
       <directory>.</directory>
     </include>
     <exclude>
+      <file>rector.php</file>
       <directory>modules/common/tests</directory>
       <directory>modules/datastore/tests</directory>
       <directory>modules/dkan_js_frontend/tests</directory>

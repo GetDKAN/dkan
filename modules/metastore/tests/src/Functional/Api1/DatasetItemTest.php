@@ -5,6 +5,9 @@ namespace Drupal\Tests\metastore\Functional\Api1;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
+/**
+ * @coversNothing
+ */
 class DatasetItemTest extends Api1TestBase {
 
   public function getEndpoint():string {

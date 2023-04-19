@@ -22,6 +22,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
+ * @coversNothing
  */
 class DatasetTest extends ExistingSiteBase {
   use CleanUp;
@@ -65,7 +66,7 @@ class DatasetTest extends ExistingSiteBase {
 
     $this->changeDatasetsResourceOutputPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE);
 
-    $metadata = $this->getMetastore()->get('dataset', 123);
+    $metadata = \Drupal::service('dkan.metastore.service')->get('dataset', 123);
     $dataset = json_decode($metadata);
 
     $this->assertNotEquals(
@@ -93,7 +94,11 @@ class DatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'draft'.
    */
   public function testResourcePurgeDraft() {
-    $this->markTestSkipped('Flaky test fails inconsistently, typically line 119.');
+    /** @var \Drupal\metastore\Service $metastore_service */
+    $metastore_service = \Drupal::service('dkan.metastore.service');
+    /** @var \Drupal\metastore_search\Search $metastore_search_service */
+    $metastore_search_service = \Drupal::service('dkan.metastore_search.service');
+
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
     $id_3 = uniqid(__FUNCTION__ . '3');
@@ -103,7 +108,7 @@ class DatasetTest extends ExistingSiteBase {
     // Post, update and publish a dataset with multiple, changing resources.
     $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
     $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
-    $this->getMetastore()->publish('dataset', $id_1);
+    $metastore_service->publish('dataset', $id_1);
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
     /** @var \Drupal\common\DatasetInfo $datasetInfo */
@@ -122,13 +127,13 @@ class DatasetTest extends ExistingSiteBase {
     // Add more datasets, only publishing some.
     $this->storeDatasetRunQueues($id_2, '2.1', []);
     $this->storeDatasetRunQueues($id_3, '3.1', []);
-    $this->getMetastore()->publish('dataset', $id_2);
+    $metastore_service->publish('dataset', $id_2);
     // Reindex.
     $index = Index::load('dkan');
     $index->clear();
     $index->indexItems();
     // Verify search results contain the '1.2' version of $id_1, $id_2 but not $id_3.
-    $searchResults = $this->getMetastoreSearch()->search();
+    $searchResults = $metastore_search_service->search();
     $this->assertEquals(2, $searchResults->total);
     $this->assertArrayHasKey('dkan_dataset/' . $id_1, $searchResults->results);
     $this->assertEquals('1.2', $searchResults->results['dkan_dataset/' . $id_1]->title);
@@ -206,7 +211,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv']);
 
     // Get distribution id.
-    $dataset = $this->getMetastore()->get('dataset', $id_1);
+    $dataset = \Drupal::service('dkan.metastore.service')->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
     $distributionId = $datasetMetadata["%Ref:distribution"][0]["identifier"];
 
@@ -227,6 +232,9 @@ class DatasetTest extends ExistingSiteBase {
    * Test local resource removal on datastore import.
    */
   public function testDatastoreImportDeleteLocalResource() {
+    /** @var \Drupal\metastore\Service $metastore_service */
+    $metastore_service = \Drupal::service('dkan.metastore.service');
+
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
 
@@ -241,7 +249,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
 
     // Get local resource folder name.
-    $dataset = $this->getMetastore()->get('dataset', $id_1);
+    $dataset = $metastore_service->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
     $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
@@ -257,7 +265,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->storeDatasetRunQueues($id_2, '2', ['2.csv']);
 
     // Get local resource folder name.
-    $dataset = $this->getMetastore()->get('dataset', $id_2);
+    $dataset = $metastore_service->get('dataset', $id_2);
     $datasetMetadata = $dataset->{'$'};
     $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
@@ -270,17 +278,20 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function datasetPostAndRetrieve(): object {
+    /** @var \Drupal\metastore\Service $metastore_service */
+    $metastore_service = \Drupal::service('dkan.metastore.service');
+
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);
 
-    $uuid = $this->getMetastore()->post('dataset', $datasetRootedJsonData);
+    $uuid = $metastore_service->post('dataset', $datasetRootedJsonData);
 
     $this->assertEquals(
       $dataset->identifier,
       $uuid
     );
 
-    $datasetRootedJsonData = $this->getMetastore()->get('dataset', $uuid);
+    $datasetRootedJsonData = $metastore_service->get('dataset', $uuid);
     $this->assertIsString("$datasetRootedJsonData");
 
     $retrievedDataset = json_decode($datasetRootedJsonData);
@@ -461,14 +472,16 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
+    /** @var \Drupal\metastore\Service $metastore_service */
+    $metastore_service = \Drupal::service('dkan.metastore.service');
 
     if ($method == 'post') {
-      $identifier = $this->getMetastore()->post('dataset', $json);
+      $identifier = $metastore_service->post('dataset', $json);
     }
     // PUT for now, refactor later if more verbs are needed.
     else {
       $id = $dataset->identifier;
-      $info = $this->getMetastore()->put('dataset', $id, $json);
+      $info = $metastore_service->put('dataset', $id, $json);
       $identifier = $info['identifier'];
     }
 
@@ -493,20 +506,6 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getNodeStorage(): NodeStorage {
     return \Drupal::service('entity_type.manager')->getStorage('node');
-  }
-
-  /**
-   * @return \Drupal\metastore_search\Search
-   */
-  private function getMetastoreSearch() : Search {
-    return \Drupal::service('dkan.metastore_search.service');
-  }
-
-  /**
-   * @return \Drupal\metastore\Service
-   */
-  private function getMetastore(): Metastore {
-    return \Drupal::service('dkan.metastore.service');
   }
 
 }

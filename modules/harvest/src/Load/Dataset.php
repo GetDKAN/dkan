@@ -11,44 +11,36 @@ use Harvest\ETL\Load\Load;
  */
 class Dataset extends Load {
 
+  protected Service $metastoreService;
+
+  public function __construct($harvest_plan, $hash_storage, $item_storage) {
+    $this->metastoreService = \Drupal::service('dkan.metastore.service');
+    parent::__construct($harvest_plan, $hash_storage, $item_storage);
+  }
+
   /**
    * Public.
    */
   public function removeItem($id) {
-    $service = $this->getMetastoreService();
-    $service->delete("dataset", "{$id}");
+    $this->metastoreService->delete("dataset", "{$id}");
   }
 
   /**
    * Private.
    */
   protected function saveItem($item) {
-    $service = $this->getMetastoreService();
     if (!is_string($item)) {
       $item = json_encode($item);
     }
 
     $schema_id = 'dataset';
-    $item = $service->getValidMetadataFactory()->get($item, $schema_id);
+    $item = $this->metastoreService->getValidMetadataFactory()->get($item, $schema_id);
     try {
-      $service->post($schema_id, $item);
+      $this->metastoreService->post($schema_id, $item);
     }
     catch (ExistingObjectException $e) {
-      $service->put($schema_id, $item->{"$.identifier"}, $item);
+      $this->metastoreService->put($schema_id, $item->{"$.identifier"}, $item);
     }
-  }
-
-  /**
-   * Get the metastore service.
-   *
-   * @return \Drupal\metastore\Service
-   *   Metastore service.
-   *
-   * @codeCoverageIgnore
-   */
-  protected function getMetastoreService(): Service {
-    $service = \Drupal::service('dkan.metastore.service');
-    return $service;
   }
 
 }

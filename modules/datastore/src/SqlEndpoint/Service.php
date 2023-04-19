@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * SQL endpoint service.
  */
-class Service implements ContainerInjectionInterface {
+class Service {
   /**
    * ConfigFactory object.
    *
@@ -31,16 +31,6 @@ class Service implements ContainerInjectionInterface {
    * @var Drupal\datastore\Service
    */
   private $datastoreService;
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('dkan.datastore.service'),
-      $container->get('config.factory')
-    );
-  }
 
   /**
    * Constructor, sets the datastoreService and configFactory properties.
