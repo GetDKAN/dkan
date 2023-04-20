@@ -22,7 +22,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
  */
-class DatasetTest extends ExistingSiteBase {
+class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
@@ -57,170 +57,53 @@ class DatasetTest extends ExistingSiteBase {
     $this->changeDatasetsResourceOutputPerspective();
   }
 
-  public function testChangingDatasetResourcePerspectiveOnOutput() {
-    $this->datastoreImportAndQuery();
-
-    drupal_flush_all_caches();
-
-    $this->changeDatasetsResourceOutputPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE);
-
-    $metadata = \Drupal::service('dkan.metastore.service')->get('dataset', 123);
-    $dataset = json_decode($metadata);
-
-    $this->assertNotEquals(
-      $dataset->distribution[0]->downloadURL,
-      $this->getDownloadUrl('district_centerpoints_small.csv')
-    );
-  }
-
   /**
-   * Test the resource purger when the default moderation state is 'published'.
+   * Test the resource purger when the default moderation state is 'draft'.
    */
-  public function testResourcePurgePublished() {
-    $id_1 = uniqid(__FUNCTION__ . '1');
-
-    // Post then update a dataset with multiple, changing resources.
-    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
-    $this->storeDatasetRunQueues($id_1, '1.2', ['2.csv', '4.csv'], 'put');
-
-    // Verify only the 2 most recent resources remain.
-    $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
-    $this->assertEquals(2, $this->countTables());
-  }
-
-  /**
-   * Test archiving of datasets after a harvest
-   */
-  public function testHarvestArchive() {
-
-    $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
-    $harvester = $this->getHarvester();
-    $harvester->registerHarvest($plan);
-
-    // First harvest.
-    $harvester->runHarvest('testHarvestArchive');
-
-    // Ensure different harvest run identifiers, since based on timestamp.
-    sleep(1);
-
-    // Confirm we have some published datasets.
-    $this->assertEquals('published', $this->getModerationState('1'));
-    $this->assertEquals('published', $this->getModerationState('2'));
-
-    // Run archive command, confirm datasets are archived.
-    $harvester->archive('testHarvestArchive');
-    $this->assertEquals('archived', $this->getModerationState('1'));
-    $this->assertEquals('archived', $this->getModerationState('2'));
-  }
-
-  /**
-   * Test removal of datasets by a subsequent harvest.
-   */
-  public function testHarvestOrphan() {
-
-    $plan = $this->getPlan('test5', 'catalog-step-1.json');
-    $harvester = $this->getHarvester();
-    $harvester->registerHarvest($plan);
-
-    // First harvest.
-    $harvester->runHarvest('test5');
-
-    // Ensure different harvest run identifiers, since based on timestamp.
-    sleep(1);
-
-    // Second harvest, re-register with different catalog to simulate change.
-    $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-2.json';
-    $harvester->registerHarvest($plan);
-    $result = $harvester->runHarvest('test5');
-
-    // Test unchanged, updated and new datasets.
-    $expected = [
-      '1' => 'UNCHANGED',
-      '2' => 'UPDATED',
-      '4' => 'NEW',
-    ];
-    $this->assertEquals($expected, $result['status']['load']);
-
-    $this->assertEquals('published', $this->getModerationState('1'));
-    $this->assertEquals('published', $this->getModerationState('2'));
-    $this->assertEquals('orphaned', $this->getModerationState('3'));
-    $this->assertEquals('published', $this->getModerationState('4'));
-  }
-
-  /**
-   * Test resource removal on distribution deleting.
-   */
-  public function testDeleteDistribution() {
-    $id_1 = uniqid(__FUNCTION__ . '1');
-
-    // Post a dataset with a single distribution.
-    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv']);
-
-    // Get distribution id.
-    $dataset = \Drupal::service('dkan.metastore.service')->get('dataset', $id_1);
-    $datasetMetadata = $dataset->{'$'};
-    $distributionId = $datasetMetadata["%Ref:distribution"][0]["identifier"];
-
-    // Load distribution node.
-    $distributionNode = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $distributionId]);
-    $distributionNode = reset($distributionNode);
-
-    // Delete distribution node.
-    $distributionNode->delete();
-    $this->runQueues(['orphan_resource_remover']);
-
-    // Verify that the resources are deleted.
-    $this->assertEquals([], $this->checkFiles());
-    $this->assertEquals(0, $this->countTables());
-  }
-
-  /**
-   * Test local resource removal on datastore import.
-   */
-  public function testDatastoreImportDeleteLocalResource() {
+  public function testResourcePurgeDraft() {
     /** @var \Drupal\metastore\Service $metastore_service */
     $metastore_service = \Drupal::service('dkan.metastore.service');
+    /** @var \Drupal\metastore_search\Search $metastore_search_service */
+    $metastore_search_service = \Drupal::service('dkan.metastore_search.service');
 
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
+    $id_3 = uniqid(__FUNCTION__ . '3');
 
-    // Get the original config value.
-    $datastoreSettings = \Drupal::service('config.factory')->getEditable('datastore.settings');
-    $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
+    $this->setDefaultModerationState('draft');
 
-    // delete_local_resource is on.
-    $datastoreSettings->set('delete_local_resource', 1)->save();
+    // Post, update and publish a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
+    $metastore_service->publish('dataset', $id_1);
+    $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
-    // Post dataset 1 and run the 'datastore_import' queue.
-    $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
+    $info = \Drupal::service('dkan.common.dataset_info')->gather($id_1);
+    $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
+    $this->assertStringEndsWith('3.csv', $info['published_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('1.csv', $info['published_revision']['distributions'][1]['file_path']);
 
-    // Get local resource folder name.
-    $dataset = $metastore_service->get('dataset', $id_1);
-    $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
-    $refUuid = $resourceId[0] . '_' . $resourceId[1];
+    // Verify that only the resources associated with the published and the
+    // latest revision.
+    $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
+    $this->assertEquals(3, $this->countTables());
 
-    // Assert the local resource folder doesn't exist.
-    $this->assertDirectoryExists('public://resources/');
-    $this->assertDirectoryDoesNotExist('public://resources/' . $refUuid);
-
-    // delete_local_resource is off.
-    $datastoreSettings->set('delete_local_resource', 0)->save();
-
-    // Post dataset 2 and run the 'datastore_import' queue.
-    $this->storeDatasetRunQueues($id_2, '2', ['2.csv']);
-
-    // Get local resource folder name.
-    $dataset = $metastore_service->get('dataset', $id_2);
-    $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
-    $refUuid = $resourceId[0] . '_' . $resourceId[1];
-
-    // Assert the local resource folder exists.
-    $this->assertDirectoryExists('public://resources/' . $refUuid);
-
-    // Restore the original config value.
-    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
+    // Add more datasets, only publishing some.
+    $this->storeDatasetRunQueues($id_2, '2.1', []);
+    $this->storeDatasetRunQueues($id_3, '3.1', []);
+    $metastore_service->publish('dataset', $id_2);
+    // Reindex.
+    $index = Index::load('dkan');
+    $index->clear();
+    $index->indexItems();
+    // Verify search results contain the '1.2' version of $id_1, $id_2 but not $id_3.
+    $searchResults = $metastore_search_service->search();
+    $this->assertEquals(2, $searchResults->total);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_1, $searchResults->results);
+    $this->assertEquals('1.2', $searchResults->results['dkan_dataset/' . $id_1]->title);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_2, $searchResults->results);
+    $this->assertArrayNotHasKey('dkan_dataset/' . $id_3, $searchResults->results);
   }
 
   private function datasetPostAndRetrieve(): object {
