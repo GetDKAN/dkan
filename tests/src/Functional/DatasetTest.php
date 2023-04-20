@@ -7,8 +7,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service as Harvester;
-use Drupal\metastore\Service as Metastore;
-use Drupal\metastore_search\Search;
+use Drupal\metastore\ValidMetadataFactory;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
@@ -29,7 +28,7 @@ class DatasetTest extends ExistingSiteBase {
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
-  private $validMetadataFactory;
+  private ValidMetadataFactory $validMetadataFactory;
 
   public function setUp(): void {
     parent::setUp();
@@ -321,7 +320,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function getResourceDatastoreTable(object $resource) {
-    return "{$resource->identifier}__{$resource->version}";
+    return "{$resource->identifier}__$resource->version";
   }
 
   private function getResourceFromDataset(object $dataset) {
@@ -372,7 +371,7 @@ class DatasetTest extends ExistingSiteBase {
 
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();
-      $distribution->title = "Distribution #{$key} for {$identifier}";
+      $distribution->title = "Distribution #$key for $identifier";
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
       $distribution->mediaType = "text/csv";
 
