@@ -11,8 +11,16 @@ use Harvest\ETL\Load\Load;
  */
 class Dataset extends Load {
 
+  /**
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\Service
+   */
   protected Service $metastoreService;
 
+  /**
+   * {@inheritDoc}
+   */
   public function __construct($harvest_plan, $hash_storage, $item_storage) {
     $this->metastoreService = \Drupal::service('dkan.metastore.service');
     parent::__construct($harvest_plan, $hash_storage, $item_storage);
