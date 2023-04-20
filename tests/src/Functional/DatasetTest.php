@@ -109,9 +109,7 @@ class DatasetTest extends ExistingSiteBase {
     $metastore_service->publish('dataset', $id_1);
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
-    /** @var \Drupal\common\DatasetInfo $datasetInfo */
-    $datasetInfo = \Drupal::service('dkan.common.dataset_info');
-    $info = $datasetInfo->gather($id_1);
+    $info = \Drupal::service('dkan.common.dataset_info')->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
     $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
     $this->assertStringEndsWith('3.csv', $info['published_revision']['distributions'][0]['file_path']);
@@ -445,11 +443,14 @@ class DatasetTest extends ExistingSiteBase {
     return count($tables);
   }
 
+  /**
+   * @return array
+   *   File names.
+   */
   private function checkFiles() {
     /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
     $fileSystem = \Drupal::service('file_system');
-
-    $dir = DRUPAL_ROOT . "/sites/default/files/resources";
+    $dir = $fileSystem->realpath('public://resources');
     // Nothing to check if the resource folder does not exist.
     if (!is_dir($dir)) {
       return [];
