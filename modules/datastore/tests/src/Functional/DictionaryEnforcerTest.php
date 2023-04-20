@@ -18,8 +18,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
- * @coversNothing
- */
+  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
 
   use GetDataTrait, CleanUp;
