@@ -16,7 +16,7 @@ use Drupal\Core\Language\LanguageManager;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\json_form_widget\WidgetRouter;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use MockChain\Options;
 
 /**
@@ -910,13 +910,13 @@ class SchemaUiHandlerTest extends TestCase {
     $options = (new Options())
       ->add('json_form.string_helper', $string_helper)
       ->add('uuid', Php::class)
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'getAll', $metastoreResults);
+      ->add(MetastoreService::class, 'getAll', $metastoreResults);
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);

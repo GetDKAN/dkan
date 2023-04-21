@@ -5,7 +5,7 @@ namespace Drupal\json_form_widget;
 use Drupal\Component\Uuid\Php;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -30,7 +30,7 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Metastore Service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
@@ -57,7 +57,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @param Drupal\metastore\Service $metastore
    *   Metastore service.
    */
-  public function __construct(Php $uuid, StringHelper $string_helper, Service $metastore) {
+  public function __construct(Php $uuid, StringHelper $string_helper, MetastoreService $metastore) {
     $this->uuidService = $uuid;
     $this->stringHelper = $string_helper;
     $this->metastore = $metastore;

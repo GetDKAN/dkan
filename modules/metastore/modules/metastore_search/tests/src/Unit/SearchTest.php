@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore_search\Search;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Item;
 use Drupal\search_api\Query\ConditionGroup;
@@ -120,7 +120,7 @@ class SearchTest extends TestCase {
     $out = [
       (object) ['name' => 'Chris', 'total' => 3],
       (object) ['name' => 'Dana', 'total' => 3],
-      (object) ['name' => 'Ed', 'total' => 3],      
+      (object) ['name' => 'Ed', 'total' => 3],
       (object) ['name' => 'Bob', 'total' => 2],
       (object) ['name' => 'Ana', 'total' => 1],
     ];

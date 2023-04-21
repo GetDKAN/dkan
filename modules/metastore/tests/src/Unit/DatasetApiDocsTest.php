@@ -8,7 +8,7 @@ use Drupal\common\Plugin\DkanApiDocsBase;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\ValidMetadataFactory;
 use MockChain\Chain;
@@ -167,7 +167,7 @@ class DatasetApiDocsTest extends TestCase {
     }';
 
     return (new Chain($this))
-      ->add(Service::class, 'swapReferences', new RootedJsonData($dataset))
+      ->add(MetastoreService::class, 'swapReferences', new RootedJsonData($dataset))
         ->addd('get', new RootedJsonData($dataset))
       ->add(SchemaRetriever::class)
       ->add(DataFactory::class, 'swapReferences', new RootedJsonData($dataset))

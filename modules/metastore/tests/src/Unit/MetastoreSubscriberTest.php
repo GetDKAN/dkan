@@ -11,7 +11,7 @@ use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
 use Drupal\common\Storage\JobStore;
 use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 
@@ -123,14 +123,14 @@ class MetastoreSubscriberTest extends TestCase {
     // Construct new MetastoreSubscriber dependency chain.
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('database', Connection::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'get', $distribution)
-      ->add(Service::class, 'getAll', [$distribution])
+      ->add(MetastoreService::class, 'get', $distribution)
+      ->add(MetastoreService::class, 'getAll', [$distribution])
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \Exception($removal_message))
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
@@ -171,15 +171,15 @@ class MetastoreSubscriberTest extends TestCase {
     // Intialize container for constructing `MetastoreSubscriber` service.
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('database', Connection::class)
       ->index(0);
 
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'get', $distribution_1)
-      ->add(Service::class, 'getAll', [$distribution_1, $distribution_2])
+      ->add(MetastoreService::class, 'get', $distribution_1)
+      ->add(MetastoreService::class, 'getAll', [$distribution_1, $distribution_2])
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \LogicException('Erroneous attempt to remove resource which is in use elsewhere'))
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)

@@ -10,9 +10,9 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\harvest\Service as HarvestService;
+use Drupal\harvest\HarvestService as HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\node\NodeStorage;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @coversDefaultClass \Drupal\harvest\Service
+ * @coversDefaultClass \Drupal\harvest\HarvestService
  * @group harvest
  */
 class ServiceTest extends TestCase {

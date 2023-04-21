@@ -3,7 +3,7 @@
 namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Options;
 use Drupal\Component\DependencyInjection\Container;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Contracts\Mock\Storage\MemoryFactory;
-use Drupal\harvest\Service;
+use Drupal\harvest\HarvestService;
 use PHPUnit\Framework\TestCase;
 use Drupal\harvest\WebServiceApi;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -58,7 +58,7 @@ class WebServiceApiTest extends TestCase {
   public function containerGet($input) {
     switch ($input) {
       case 'dkan.harvest.service':
-        return new Service(new MemoryFactory(), $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
+        return new HarvestService(new MemoryFactory(), $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
 
       break;
       case 'request_stack':
@@ -130,7 +130,7 @@ class WebServiceApiTest extends TestCase {
   public function testRun() {
     $options = (new Options())
       ->add("request_stack", RequestStack::class)
-      ->add("dkan.harvest.service", Service::class)
+      ->add("dkan.harvest.service", HarvestService::class)
       ->index(0);
 
     $this->checkService('dkan.harvest.service', 'harvest');
@@ -142,7 +142,7 @@ class WebServiceApiTest extends TestCase {
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', json_encode((object) ['plan_id' => 'test']))
-      ->add(Service::class, "runHarvest", Result::class)
+      ->add(HarvestService::class, "runHarvest", Result::class)
       ->getMock();
 
     $controller = WebServiceApi::create($container);

@@ -9,7 +9,7 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
@@ -43,7 +43,7 @@ class ServiceTest extends TestCase {
    */
   public function testIsPublished() {
     $service = (new Chain($this))
-      ->add(Service::class, 'getStorage', MetastoreStorageInterface::class)
+      ->add(MetastoreService::class, 'getStorage', MetastoreStorageInterface::class)
       ->add(MetastoreStorageInterface::class, 'isPublished', TRUE)
       ->getMock();
 
@@ -62,7 +62,7 @@ class ServiceTest extends TestCase {
 
     \Drupal::setContainer($container->getMock());
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
   }
@@ -74,7 +74,7 @@ class ServiceTest extends TestCase {
     $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "getAllIds", ["1"]);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $this->assertEquals(json_encode(["1" => ['foo' => 'bar']]), json_encode($service->getSchemas()));
   }
 
@@ -84,7 +84,7 @@ class ServiceTest extends TestCase {
   public function testGetSchema() {
     $container = self::getCommonMockChain($this);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $this->assertEquals(json_encode(['foo' => 'bar']), json_encode($service->getSchema("1")));
   }
 
@@ -100,7 +100,7 @@ class ServiceTest extends TestCase {
 
     \Drupal::setContainer($container->getMock());
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->assertEquals([$expected], $service->getAll("dataset"));
   }
@@ -125,7 +125,7 @@ class ServiceTest extends TestCase {
 
     \Drupal::setContainer($container->getMock());
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->assertEquals(
       json_encode([$data]),
@@ -140,7 +140,7 @@ class ServiceTest extends TestCase {
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, 'store', '1');
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
     $this->assertEquals("1", $service->post("dataset", $data));
@@ -153,7 +153,7 @@ class ServiceTest extends TestCase {
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", "1");
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->expectException(ExistingObjectException::class);
 
@@ -174,7 +174,7 @@ class ServiceTest extends TestCase {
       ->add(NodeData::class, "store", "1")
       ->add(ValidMetadataFactory::class, 'get', $data_existing);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $data_updating = $this->validMetadataFactory->get($updating, 'dataset');
     $info = $service->put("dataset", "1", $data_updating);
@@ -192,7 +192,7 @@ class ServiceTest extends TestCase {
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", $existing);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->expectExceptionMessage("Identifier cannot be modified");
 
@@ -208,7 +208,7 @@ class ServiceTest extends TestCase {
       ->add(NodeData::class, "retrieve", new \Exception())
       ->add(NodeData::class, "store", "3");
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $data = $this->validMetadataFactory->get('{"identifier":"3","title":"FooBar"}', 'dataset');
     $info = $service->put("dataset", "3", $data);
@@ -226,7 +226,7 @@ class ServiceTest extends TestCase {
       ->add(Data::class, "retrieve", $existing)
       ->add(ValidMetadataFactory::class, 'get', $data);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
     $service->put("dataset", "1", $data);
@@ -249,7 +249,7 @@ EOF;
       ->add(Data::class, "retrieve", $existing)
       ->add(ValidMetadataFactory::class, 'get', $data_existing);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
     $data_updating = $this->validMetadataFactory->get($updating, 'dataset');
@@ -265,7 +265,7 @@ EOF;
       ->add(NodeData::class, "store", "1")
       ->add(ValidMetadataFactory::class, 'get', new RootedJsonData('{"id":"1"}'));
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->assertEquals("1", $service->patch("dataset", "1", json_encode("blah")));
   }
@@ -279,7 +279,7 @@ EOF;
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, "retrieve", new \Exception());
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $this->expectException(MissingObjectException::class);
     $service->patch("dataset", "1", $data);
   }
@@ -292,7 +292,7 @@ EOF;
       ->add(NodeData::class, "retrieve", "1")
       ->add(NodeData::class, "publish", TRUE);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $result = $service->publish('dataset', 1);
     $this->assertTrue($result);
   }
@@ -305,7 +305,7 @@ EOF;
       ->add(NodeData::class, "retrieve", "1")
       ->add(NodeData::class, "archive", TRUE);
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $result = $service->archive('dataset', 1);
     $this->assertTrue($result);
   }
@@ -317,7 +317,7 @@ EOF;
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, "retrieve", new \Exception());
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->expectException(MissingObjectException::class);
     $service->publish('dataset', "foobar");
@@ -335,7 +335,7 @@ EOF;
       ->add(NodeData::class, 'count', $count);
 
     // Create metastore service object.
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     // Ensure count matches return value.
     $this->assertEquals($count, $service->count('test'));
   }
@@ -352,7 +352,7 @@ EOF;
       ->add(NodeData::class, 'retrieveIds', $uuids);
 
     // Create metastore service object.
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     // Ensure count matches return value.
     $this->assertEquals($uuids, $service->getIdentifiers('test', 1, 5));
   }
@@ -365,7 +365,7 @@ EOF;
       ->add(NodeData::class, "retrieve", "1")
       ->add(NodeData::class, "remove", "1");
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
 
     $this->assertEquals("1", $service->delete("dataset", "1"));
   }
@@ -388,7 +388,7 @@ EOF;
 
     \Drupal::setContainer($container->getMock());
 
-    $service = Service::create($container->getMock());
+    $service = MetastoreService::create($container->getMock());
     $catalog->dataset = [
       (object) $dataset->{'$'},
       (object) $dataset->{'$'},

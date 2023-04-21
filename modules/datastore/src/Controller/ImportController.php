@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use Drupal\Component\Uuid\Uuid;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Reference\ReferenceLookup;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,7 @@ class ImportController implements ContainerInjectionInterface {
   /**
    * Datastore Service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   protected $datastoreService;
 
@@ -33,9 +33,9 @@ class ImportController implements ContainerInjectionInterface {
    * Api constructor.
    */
   public function __construct(
-    Service $datastoreService,
+    DatastoreService     $datastoreService,
     MetastoreApiResponse $metastoreApiResponse,
-    ReferenceLookup $referenceLookup
+    ReferenceLookup      $referenceLookup
   ) {
     $this->datastoreService = $datastoreService;
     $this->metastoreApiResponse = $metastoreApiResponse;

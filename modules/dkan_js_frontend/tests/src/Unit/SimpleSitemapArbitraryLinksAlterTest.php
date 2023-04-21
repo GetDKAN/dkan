@@ -12,7 +12,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
 
 use Drupal\dkan_js_frontend\Routing\RouteProvider;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -44,7 +44,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', ['home,/home', 'about,/about'])
       ->getMock();
     $containerOptions = (new Options())
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan_js_frontend.route_provider', new RouteProvider($configFactory))
       ->add('entity_type.repository', EntityTypeRepository::class)
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
@@ -80,18 +80,18 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', ['dataset,/dataset/{id}'])
       ->getMock();
     $containerOptions = (new Options())
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan_js_frontend.route_provider', new RouteProvider($configFactory))
       ->add('entity_type.repository', EntityTypeRepository::class)
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('request_stack', RequestStack::class)
       ->add('simple_sitemap.settings', SimpleSitemapSettingsInterface::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
-      ->add(Service::class, 'getIdentifiers', [1, 2])
+      ->add(MetastoreService::class, 'getIdentifiers', [1, 2])
       ->add(SimpleSitemapSettingsInterface::class, 'get', NULL)
       ->getMock();
     \Drupal::setContainer($container);
@@ -117,12 +117,12 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', [])
       ->getMock();
     $containerOptions = (new Options())
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan_js_frontend.route_provider', new RouteProvider($configFactory))
       ->add('entity_type.repository', EntityTypeRepository::class)
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
       ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('request_stack', RequestStack::class)
       ->add('simple_sitemap.settings', SimpleSitemapSettingsInterface::class)
       ->index(0);

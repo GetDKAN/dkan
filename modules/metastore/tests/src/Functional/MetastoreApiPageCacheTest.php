@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 use GuzzleHttp\Client;

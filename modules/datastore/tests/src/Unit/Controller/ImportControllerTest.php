@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\Controller;
 
 use MockChain\Options;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
@@ -39,7 +39,7 @@ class ImportControllerTest extends TestCase {
    */
   private function getContainer() {
     $options = (new Options())
-      ->add("dkan.datastore.service", Service::class)
+      ->add("dkan.datastore.service", DatastoreService::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
@@ -47,8 +47,8 @@ class ImportControllerTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(Service::class, "drop", NULL)
-      ->add(Service::class, "import", [])
+      ->add(DatastoreService::class, "drop", NULL)
+      ->add(DatastoreService::class, "import", [])
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', json_encode((object) ['resource_ids' => ["1", "2"]]))
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)

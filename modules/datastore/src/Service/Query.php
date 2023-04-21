@@ -6,7 +6,7 @@ use Drupal\common\DataResource;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Storage\QueryFactory;
 
 /**
@@ -17,7 +17,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   private $datastore;
 
@@ -33,10 +33,10 @@ class Query implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\datastore\Service $datastore
+   * @param \Drupal\datastore\DatastoreService $datastore
    *   Main datastore service.
    */
-  public function __construct(Service $datastore) {
+  public function __construct(DatastoreService $datastore) {
     $this->datastore = $datastore;
   }
 
@@ -156,7 +156,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Return the datastore service.
    *
-   * @return \Drupal\datastore\Service
+   * @return \Drupal\datastore\DatastoreService
    *   Datastore Service.
    */
   protected function getDatastoreService() {

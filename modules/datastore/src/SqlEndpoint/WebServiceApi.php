@@ -56,10 +56,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Constructor.
    */
   public function __construct(
-    Service $service,
-    Connection $database,
-    RequestStack $requestStack,
-    MetastoreApiResponse $metastoreApiResponse
+    DatastoreSqlEndpointService $service,
+    Connection                  $database,
+    RequestStack                $requestStack,
+    MetastoreApiResponse        $metastoreApiResponse
   ) {
     $this->service = $service;
     $this->database = $database;

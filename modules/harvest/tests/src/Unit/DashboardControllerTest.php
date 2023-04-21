@@ -6,7 +6,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\harvest\DashboardController;
-use Drupal\harvest\Service as Harvest;
+use Drupal\harvest\HarvestService as Harvest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

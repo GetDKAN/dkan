@@ -61,7 +61,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 

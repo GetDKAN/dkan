@@ -5,7 +5,7 @@ namespace Drupal\metastore\Plugin\DkanApiDocs;
 use Drupal\common\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -40,7 +40,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
    *   The module handler service.
-   * @param \Drupal\metastore\Service $metastore
+   * @param \Drupal\metastore\MetastoreService $metastore
    *   The metastore service.
    */
   public function __construct(
@@ -49,7 +49,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
-    Service $metastore
+    MetastoreService $metastore
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
     $this->metastore = $metastore;

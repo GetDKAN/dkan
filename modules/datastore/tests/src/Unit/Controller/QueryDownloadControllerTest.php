@@ -11,7 +11,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 use Drupal\datastore\Controller\QueryController;
 use MockChain\Options;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
@@ -392,7 +392,7 @@ class QueryDownloadControllerTest extends TestCase {
   private function getQueryContainer(int $rowLimit) {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
-      ->add("dkan.datastore.service", Service::class)
+      ->add("dkan.datastore.service", DatastoreService::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
@@ -434,8 +434,8 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
-      ->add(Query::class, 'getDatastoreService',  Service::class)
-      ->add(Service::class, 'getDataDictionaryFields', NULL)
+      ->add(Query::class, 'getDatastoreService',  DatastoreService::class)
+      ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();

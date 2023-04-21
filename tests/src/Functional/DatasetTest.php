@@ -6,8 +6,8 @@ use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\Service as Harvester;
-use Drupal\metastore\Service as Metastore;
+use Drupal\harvest\HarvestService as Harvester;
+use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
@@ -454,7 +454,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function queryResource(object $resource, string $queryString) {
-    /** @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\Service */
+    /** @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));
@@ -503,7 +503,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   /**
-   * @return \Drupal\metastore\Service
+   * @return \Drupal\metastore\MetastoreService
    */
   private function getMetastore(): Metastore {
     return \Drupal::service('dkan.metastore.service');

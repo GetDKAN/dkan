@@ -9,7 +9,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Storage\Data;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Controller\MetastoreController;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
@@ -61,8 +61,8 @@ class MetastoreControllerTest extends TestCase {
     $dataWithRefs = ["name" => "hello", '%Ref:name' => ["identifier" => "123", "data" => "hello"]];
     $objectWithRefs = $this->validMetadataFactory->get(json_encode($dataWithRefs), 'blah');
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
-    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(MetastoreService::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
+    $mockChain->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getAll('dataset', new Request());
@@ -75,8 +75,8 @@ class MetastoreControllerTest extends TestCase {
     $objectWithRefs = $this->validMetadataFactory->get(json_encode($dataWithRefs), 'blah');
 
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
-    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(MetastoreService::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
+    $mockChain->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
@@ -98,7 +98,7 @@ class MetastoreControllerTest extends TestCase {
     $json = '{"name":"hello"}';
     $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
+      ->add(MetastoreService::class, 'get', new RootedJsonData($jsonWithRefs));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get($schema_id, $identifier, new Request());
@@ -113,7 +113,7 @@ class MetastoreControllerTest extends TestCase {
       ->getMock();
     $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock);
     $container = $this->getCommonMockChain()
-      ->add(Service::class, 'getStorage', $nodeDataMock)
+      ->add(MetastoreService::class, 'getStorage', $nodeDataMock)
       ->getMock();
     $controller = MetastoreController::create($container);
     $response = $controller->get($schema_id, $identifier, new Request());
@@ -140,7 +140,7 @@ class MetastoreControllerTest extends TestCase {
     $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
     $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
+    $mockChain->add(MetastoreService::class, 'get', new RootedJsonData($jsonWithRefs));
 
     // Try with show ref ids.
     $controller = MetastoreController::create($mockChain->getMock());
@@ -154,7 +154,7 @@ class MetastoreControllerTest extends TestCase {
   public function testGetReferences() {
     $json = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', new RootedJsonData($json));
+    $mockChain->add(MetastoreService::class, 'get', new RootedJsonData($json));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get('dataset', 1, new Request(['show-reference-ids' => TRUE]));
@@ -167,7 +167,7 @@ class MetastoreControllerTest extends TestCase {
    */
   public function testGetException() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', new \Exception("bad"));
+    $mockChain->add(MetastoreService::class, 'get', new \Exception("bad"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset', new Request());
@@ -179,9 +179,9 @@ class MetastoreControllerTest extends TestCase {
    */
   public function testPost() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class);
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
-    $mockChain->add(Service::class, 'post', "1");
+    $mockChain->add(MetastoreService::class, 'post', "1");
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset', $this->request('POST', '{"identifier": "1"}'));
@@ -193,9 +193,9 @@ class MetastoreControllerTest extends TestCase {
    */
   public function testPostNoIdentifier() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class);
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
-    $mockChain->add(Service::class, 'post', "1");
+    $mockChain->add(MetastoreService::class, 'post', "1");
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset', $this->request('POST', '{ }'));
@@ -207,9 +207,9 @@ class MetastoreControllerTest extends TestCase {
    */
   public function testPostNoIdentifierException() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class);
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
-    $mockChain->add(Service::class, 'post', new \Exception("bad"));
+    $mockChain->add(MetastoreService::class, 'post', new \Exception("bad"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset', $this->request('POST', '{ }'));
@@ -221,9 +221,9 @@ class MetastoreControllerTest extends TestCase {
    */
   public function testPostExistingObjectException() {
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class)
       ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
-      ->add(Service::class, 'post', new ExistingObjectException("Already exists"));
+      ->add(MetastoreService::class, 'post', new ExistingObjectException("Already exists"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset', $this->request('POST', '{"identifier": "1"}'));
@@ -235,9 +235,9 @@ class MetastoreControllerTest extends TestCase {
    */
   public function testPut() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class);
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
-    $mockChain->add(Service::class, "put", ["identifier" => "1", "new" => FALSE]);
+    $mockChain->add(MetastoreService::class, "put", ["identifier" => "1", "new" => FALSE]);
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1, $this->request('PUT', '{ }'));
@@ -278,9 +278,9 @@ class MetastoreControllerTest extends TestCase {
 EOF;
 
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class)
       ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
-      ->add(Service::class, "put", new UnmodifiedObjectException("No changes"));
+      ->add(MetastoreService::class, "put", new UnmodifiedObjectException("No changes"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1, $this->request('PUT', $updating));
@@ -293,7 +293,7 @@ EOF;
   public function testPutExceptionOtherThanMetastore() {
     $mockChain = $this->getCommonMockChain()
       ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
-      ->add(Service::class, 'put', new \Exception("Unknown error"));
+      ->add(MetastoreService::class, 'put', new \Exception("Unknown error"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1, $this->request());
@@ -307,9 +307,9 @@ EOF;
     $collection = (object) [];
 
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class);
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
-    $mockChain->add(Service::class, "patch", "1");
+    $mockChain->add(MetastoreService::class, "patch", "1");
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1, $this->request('PATCH', json_encode($collection)));
@@ -323,7 +323,7 @@ EOF;
     $collection = ['identifier' => 1];
 
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "patch", "1");
+    $mockChain->add(MetastoreService::class, "patch", "1");
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset', $this->request('PATCH', json_encode($collection)));
@@ -348,9 +348,9 @@ EOF;
    */
   public function testPatchObjectNotFound() {
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class)
       ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
-      ->add(Service::class, "patch", new MissingObjectException("Not found"));
+      ->add(MetastoreService::class, "patch", new MissingObjectException("Not found"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1, $this->request('PATCH', '{"identifier":"1","title":"foo"}'));
@@ -362,7 +362,7 @@ EOF;
    */
   public function testPatchExceptionOtherThanMetastore() {
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, 'patch', new \Exception("Unknown error"));
+      ->add(MetastoreService::class, 'patch', new \Exception("Unknown error"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1, $this->request('PATCH', '{}'));
@@ -374,7 +374,7 @@ EOF;
    */
   public function testDelete() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'delete', "1");
+    $mockChain->add(MetastoreService::class, 'delete', "1");
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->delete('dataset', "1");
@@ -386,7 +386,7 @@ EOF;
    */
   public function testDeleteExceptionOtherThanMetastore() {
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, 'delete', new \Exception("Unknown error"));
+      ->add(MetastoreService::class, 'delete', new \Exception("Unknown error"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->delete('dataset', 1);
@@ -398,7 +398,7 @@ EOF;
    */
   public function testPublishExceptionNotFound() {
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, 'publish', new MissingObjectException("Not found"));
+      ->add(MetastoreService::class, 'publish', new MissingObjectException("Not found"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1, $this->request());
@@ -410,7 +410,7 @@ EOF;
    */
   public function testPublishExceptionOtherThanMetastore() {
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, 'publish', new \Exception("Unknown error"));
+      ->add(MetastoreService::class, 'publish', new \Exception("Unknown error"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1, $this->request());
@@ -422,7 +422,7 @@ EOF;
    */
   public function testPublish() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "publish", true);
+    $mockChain->add(MetastoreService::class, "publish", true);
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', "1", $this->request('PUT', '{}'));
@@ -436,7 +436,7 @@ EOF;
     $catalog = (object) ["foo" => "bar"];
 
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'getCatalog', $catalog);
+    $mockChain->add(MetastoreService::class, 'getCatalog', $catalog);
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getCatalog();
@@ -463,7 +463,7 @@ EOF;
    */
   public function testGetCatalogException() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'getCatalog', new \Exception("bad"));
+    $mockChain->add(MetastoreService::class, 'getCatalog', new \Exception("bad"));
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getCatalog();
@@ -476,17 +476,17 @@ EOF;
   private function getCommonMockChain() {
     $options = (new Options)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.dataset_api_docs', DatasetApiDocs::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->index(0);
 
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
-      ->add(Service::class, 'getSchemas', ['dataset'])
-      ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
-      ->add(Service::class, 'getValidMetadataFactory', ValidMetadataFactory::class)
-      ->add(Service::class, 'isPublished', TRUE)
+      ->add(MetastoreService::class, 'getSchemas', ['dataset'])
+      ->add(MetastoreService::class, 'getSchema', (object) ["id" => "http://schema"])
+      ->add(MetastoreService::class, 'getValidMetadataFactory', ValidMetadataFactory::class)
+      ->add(MetastoreService::class, 'isPublished', TRUE)
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', NodeWrapperData::class)

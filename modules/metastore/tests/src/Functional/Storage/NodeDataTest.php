@@ -3,8 +3,8 @@
 namespace Drupal\Tests\metastore\Functional\Storage;
 
 use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Service as Metastore;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 use RootedData\RootedJsonData;
@@ -89,7 +89,7 @@ class NodeDataTest extends ExistingSiteBase {
     $keywordStorage = $this->getStorage('keyword');
 
     $keyword = 'some keyword';
-    $hash = Service::metadataHash($keyword);
+    $hash = MetastoreService::metadataHash($keyword);
     $keywordId = $keywordStorage->retrieveByHash($hash, 'keyword');
     $keywordMetadata = json_decode($keywordStorage->retrieve($keywordId));
     $this->assertEquals($keyword, $keywordMetadata->data);

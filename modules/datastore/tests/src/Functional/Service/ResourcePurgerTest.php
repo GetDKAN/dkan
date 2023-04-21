@@ -28,14 +28,14 @@ class ResourcePurgerTest extends ExistingSiteBase {
   /**
    * DKAN datastore service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   protected $datastore;
 
   /**
    * DKAN metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
