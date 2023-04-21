@@ -1,9 +1,10 @@
-version: "2"
+version: 2
 plugins:
   phpcodesniffer:
     enabled: true
+    channel: beta
     config:
-      standard: "./phpcs.xml"
+      standard: "Drupal,DrupalPractice"
 exclude_patterns:
   - "cypress/"
   - "config/"
