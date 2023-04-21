@@ -3,7 +3,7 @@ plugins:
   phpcodesniffer:
     enabled: true
     config:
-      standard: "phpcs.xml"
+      standard: "./phpcs.xml"
 exclude_patterns:
   - "cypress/"
   - "config/"
