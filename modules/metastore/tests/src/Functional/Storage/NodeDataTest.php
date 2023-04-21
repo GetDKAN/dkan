@@ -6,7 +6,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -32,7 +32,7 @@ class NodeDataTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState("draft");
 
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**

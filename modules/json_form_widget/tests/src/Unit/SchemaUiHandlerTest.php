@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
@@ -33,7 +33,7 @@ class SchemaUiHandlerTest extends TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**

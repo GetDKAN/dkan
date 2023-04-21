@@ -22,9 +22,9 @@ use MockChain\Options;
 use RootedData\RootedJsonData;
 
 /**
- * @coversDefaultClass Drupal\metastore\Service
+ * @coversDefaultClass Drupal\metastore\MetastoreService
  */
-class ServiceTest extends TestCase {
+class MetastoreServiceTest extends TestCase {
 
   /**
    * The ValidMetadataFactory class used for testing.

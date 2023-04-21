@@ -15,7 +15,7 @@ use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\datastore\Form\DashboardForm;
 use Drupal\harvest\HarvestService as Harvest;
 use Drupal\metastore\MetastoreService as MetastoreService;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\datastore\service\PostImport;
 use MockChain\Chain;
 use MockChain\Options;
@@ -35,7 +35,7 @@ class DashboardFormTest extends TestCase {
 
   public function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**

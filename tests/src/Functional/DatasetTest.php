@@ -12,7 +12,7 @@ use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -42,7 +42,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState();
     $this->changeDatasetsResourceOutputPerspective();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   public function tearDown(): void {

@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use GuzzleHttp\Client;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -35,7 +35,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     \drupal_flush_all_caches();
 
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
     $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
     $datastore_settings = $config_factory->getEditable('datastore.settings');

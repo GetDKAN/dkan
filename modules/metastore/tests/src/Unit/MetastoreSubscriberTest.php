@@ -13,7 +13,7 @@ use Drupal\common\Storage\JobStore;
 use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -49,7 +49,7 @@ class MetastoreSubscriberTest extends TestCase {
   protected function setUp(): void {
     parent::setUp();
     $this->initializeContainerWithRequestStack();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**

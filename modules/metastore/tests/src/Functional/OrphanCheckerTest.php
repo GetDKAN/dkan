@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
@@ -34,7 +34,7 @@ class OrphanCheckerTest extends ExistingSiteBase {
     $this->flushQueues();
     $this->removeFiles();
     $this->removeDatastoreTables();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   public function test() {

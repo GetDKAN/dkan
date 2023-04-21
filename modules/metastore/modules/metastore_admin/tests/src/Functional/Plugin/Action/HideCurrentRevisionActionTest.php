@@ -7,7 +7,7 @@ use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\user\Entity\User;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\Entity\UserCreationTrait;
@@ -43,7 +43,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     $this->testUser = $this->createUser([], "testadmin", TRUE, ['mail' => 'testadmin@test.com']);
     $this->testApiUser = $this->createUser([], "testapiuser", FALSE, ['roles' => ['api_user'], 'mail' => 'testapiuser@test.com']);
 
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**

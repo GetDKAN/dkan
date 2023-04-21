@@ -41,7 +41,7 @@ class MetastoreControllerTest extends TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
 
     // Set cache services
     $options = (new Options)

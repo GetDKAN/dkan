@@ -8,7 +8,7 @@ use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\MetastoreService;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +28,7 @@ class DatasetTest extends TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**

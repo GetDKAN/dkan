@@ -15,7 +15,7 @@ use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -217,10 +217,10 @@ class SearchTest extends TestCase {
     $getAllOptions = (new Options())
       ->add('keyword', [])
       ->add('theme', [])
-      ->add('publisher', [ServiceTest::getValidMetadataFactory($case)->get(json_encode($facet), 'publisher')])
+      ->add('publisher', [MetastoreServiceTest::getValidMetadataFactory($case)->get(json_encode($facet), 'publisher')])
       ->index(0);
 
-    $getData = ServiceTest::getValidMetadataFactory($case)->get(json_encode($collection), 'dummy_schema_id');
+    $getData = MetastoreServiceTest::getValidMetadataFactory($case)->get(json_encode($collection), 'dummy_schema_id');
 
     return (new Chain($case))
       ->add(Container::class, 'get', $services)
