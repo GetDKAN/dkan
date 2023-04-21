@@ -133,7 +133,7 @@ class DatastoreService implements ContainerInjectionInterface {
 
     $resource = NULL;
     $result = NULL;
-    list($resource, $result) = $this->getResource($identifier, $version);
+    [$resource, $result] = $this->getResource($identifier, $version);
 
     if (!$resource) {
       return $result;

@@ -5,7 +5,6 @@ namespace Drupal\datastore;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\datastore\DatastoreService;
 use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\datastore\Service\PostImport;
 use Drush\Commands\DrushCommands;

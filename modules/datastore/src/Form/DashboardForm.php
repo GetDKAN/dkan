@@ -89,12 +89,12 @@ class DashboardForm extends FormBase {
    *   The post import service.
    */
   public function __construct(
-    HarvestService        $harvestService,
-    DatasetInfo           $datasetInfo,
-    MetastoreService      $metastoreService,
+    HarvestService $harvestService,
+    DatasetInfo $datasetInfo,
+    MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
-    DateFormatter         $dateFormatter,
-    PostImport            $post_import
+    DateFormatter $dateFormatter,
+    PostImport $post_import
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;

@@ -33,9 +33,9 @@ class ImportController implements ContainerInjectionInterface {
    * Api constructor.
    */
   public function __construct(
-    DatastoreService     $datastoreService,
+    DatastoreService $datastoreService,
     MetastoreApiResponse $metastoreApiResponse,
-    ReferenceLookup      $referenceLookup
+    ReferenceLookup $referenceLookup
   ) {
     $this->datastoreService = $datastoreService;
     $this->metastoreApiResponse = $metastoreApiResponse;

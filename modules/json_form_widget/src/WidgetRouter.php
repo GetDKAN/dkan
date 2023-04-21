@@ -50,11 +50,11 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param Drupal\Component\Uuid\Php $uuid
+   * @param \Drupal\Component\Uuid\Php $uuid
    *   Uuid service.
-   * @param StringHelper $string_helper
+   * @param \Drupal\json_form_widget\StringHelper $string_helper
    *   String Helper service.
-   * @param Drupal\metastore\Service $metastore
+   * @param \Drupal\metastore\MetastoreService $metastore
    *   Metastore service.
    */
   public function __construct(Php $uuid, StringHelper $string_helper, MetastoreService $metastore) {

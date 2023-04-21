@@ -4,7 +4,7 @@ namespace Drupal\metastore_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -67,7 +67,7 @@ class Search implements ContainerInjectionInterface {
    *   Query helper.
    */
   public function __construct(
-    Metastore $metastoreService,
+    MetastoreService $metastoreService,
     EntityTypeManager $entityTypeManager,
     QueryHelperInterface $queryHelper
   ) {

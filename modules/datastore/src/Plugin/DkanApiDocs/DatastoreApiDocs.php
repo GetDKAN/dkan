@@ -46,13 +46,13 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   Import info datastoer service.
    */
   public function __construct(
-    array                  $configuration,
+    array $configuration,
                            $pluginId,
                            $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
-    TranslationInterface   $stringTranslation,
-    MetastoreService       $metastore,
-    ImportInfo             $importInfo
+    TranslationInterface $stringTranslation,
+    MetastoreService $metastore,
+    ImportInfo $importInfo
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
     $this->metastore = $metastore;
