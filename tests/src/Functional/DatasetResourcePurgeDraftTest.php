@@ -32,15 +32,6 @@ class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
 
   public function setUp(): void {
     parent::setUp();
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-    $this->setDefaultModerationState();
-    $this->changeDatasetsResourceOutputPerspective();
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
@@ -246,10 +237,11 @@ class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
    */
   private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
     $datasetRootedJsonData = $this->getData($identifier, $title, $filenames);
-    $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
+    $identifier = $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Simulate a cron on queues relevant to this scenario.
     $this->runQueues(['datastore_import', 'resource_purger']);
+    return $identifier;
   }
 
   /**
@@ -258,9 +250,11 @@ class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
   private function runQueues(array $relevantQueues = []) {
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
     $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    /** @var \Drupal\Core\Queue\QueueFactory $queue_factory */
+    $queue_factory = \Drupal::service('queue');
     foreach ($relevantQueues as $queueName) {
       $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $this->getQueueService()->get($queueName);
+      $queue = $queue_factory->get($queueName);
       while ($item = $queue->claimItem()) {
         $worker->processItem($item->data);
         $queue->deleteItem($item);
@@ -303,7 +297,7 @@ class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
     $this->assertGreaterThan(0, count($results));
   }
 
-  private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
+  private function httpVerbHandler(string $method, RootedJsonData $json, $dataset): string {
     /** @var \Drupal\metastore\Service $metastore_service */
     $metastore_service = \Drupal::service('dkan.metastore.service');
 
