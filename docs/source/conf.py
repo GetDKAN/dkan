@@ -71,6 +71,6 @@ lexers["php-annotations"] = PhpLexer(startinline=True, linenos=1)
 
 # The suffix of source filenames.
 source_suffix = ['.rst', '.md']
-source_parsers = {'.md': 'myst_parser.sphinx_'}
+#source_parsers = {'.md': 'myst_parser.sphinx_'}
 
 autosectionlabel_prefix_document = True
