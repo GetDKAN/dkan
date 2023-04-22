@@ -15,6 +15,8 @@ import sys
 sys.path.insert(0, os.path.abspath('../../modules/'))
 
 
+from myst_parser import __version__
+
 # -- Project information -----------------------------------------------------
 
 project = 'DKAN Documentation'
