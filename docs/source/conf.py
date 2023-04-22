@@ -24,7 +24,7 @@ copyright = '2023, CivicActions'
 author = 'CivicActions'
 
 # The full version, including alpha/beta/rc tags
-release = '2.14.3'
+release = '2.15.1'
 version = '2.x'
 
 # -- General configuration ---------------------------------------------------
@@ -70,7 +70,10 @@ lexers["php"] = PhpLexer(startinline=True, linenos=1)
 lexers["php-annotations"] = PhpLexer(startinline=True, linenos=1)
 
 # The suffix of source filenames.
-source_suffix = ['.rst', '.md']
-#source_parsers = {'.md': 'myst_parser.sphinx_'}
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
+source_parsers = {'.md': 'myst_parser.sphinx_'}
 
 autosectionlabel_prefix_document = True
