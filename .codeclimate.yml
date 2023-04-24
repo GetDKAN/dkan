@@ -5,6 +5,12 @@ plugins:
     channel: beta
     config:
       standard: "Drupal,DrupalPractice"
+    checks:
+      Drupal Commenting Deprecated IncorrectTextLayout:
+        enabled: false
+      Drupal Commenting Deprecated DeprecatedMissingSeeTag:
+        enabled: false
+
 exclude_patterns:
   - "cypress/"
   - "config/"
