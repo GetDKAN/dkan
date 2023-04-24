@@ -8,6 +8,7 @@ use Drupal\metastore\Storage\DataFactory;
  * The metastore service.
  *
  * @deprecated
+ * @see \Drupal\metastore\MetastoreService
  */
 class Service extends MetastoreService {
 

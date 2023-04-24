@@ -13,6 +13,7 @@ use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
  * Main services for the datastore.
  *
  * @deprecated
+ * @see \Drupal\datastore\DatastoreService
  */
 class Service extends DatastoreService {
 

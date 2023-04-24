@@ -8,7 +8,7 @@ use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -61,7 +61,7 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, Metastore $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
     $this->entityTypeManager = $entityTypeManager;

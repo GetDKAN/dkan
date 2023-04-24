@@ -9,6 +9,7 @@ use Drupal\datastore\DatastoreService;
  * SQL endpoint service.
  *
  * @deprecated
+ * @see \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
  */
 class Service extends DatastoreSqlEndpointService {
 
