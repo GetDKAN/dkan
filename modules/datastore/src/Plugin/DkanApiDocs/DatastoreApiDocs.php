@@ -47,8 +47,8 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    */
   public function __construct(
     array $configuration,
-                           $pluginId,
-                           $pluginDefinition,
+    $pluginId,
+    $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
     MetastoreService $metastore,

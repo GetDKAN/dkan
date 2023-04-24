@@ -6,8 +6,8 @@ use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\HarvestService as Harvester;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\harvest\HarvestService;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
@@ -487,7 +487,7 @@ class DatasetTest extends ExistingSiteBase {
     return \Drupal::service('queue');
   }
 
-  private function getHarvester() : Harvester {
+  private function getHarvester() : HarvestService {
     return \Drupal::service('dkan.harvest.service');
   }
 
@@ -505,7 +505,7 @@ class DatasetTest extends ExistingSiteBase {
   /**
    * @return \Drupal\metastore\MetastoreService
    */
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

@@ -3,7 +3,6 @@
 namespace Drupal\Tests\metastore\Functional\Storage;
 
 use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreService as Metastore;
 use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
@@ -157,7 +156,7 @@ class NodeDataTest extends ExistingSiteBase {
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
   }
 
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

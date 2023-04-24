@@ -10,9 +10,9 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\harvest\HarvestService as HarvestService;
+use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
@@ -205,7 +205,7 @@ class ServiceTest extends TestCase {
    */
   private function getMetastoreMockChain() {
     return (new Chain($this))
-      ->add(Metastore::class, 'publish', '1')
+      ->add(MetastoreService::class, 'publish', '1')
       ->getMock();
   }
 
@@ -254,7 +254,7 @@ class ServiceTest extends TestCase {
 
     $container = $this->getCommonMockChain()
       ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
-      ->add(Metastore::class, 'publish', $metastorePublicationResults);
+      ->add(MetastoreService::class, 'publish', $metastorePublicationResults);
 
     $service = HarvestService::create($container->getMock());
     $service->setLoggerFactory($logger->getMock());
@@ -302,7 +302,7 @@ class ServiceTest extends TestCase {
 
     $container = $this->getCommonMockChain()
       ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
-      ->add(Metastore::class, 'archive', $metastoreArchiveResults);
+      ->add(MetastoreService::class, 'archive', $metastoreArchiveResults);
 
     $service = HarvestService::create($container->getMock());
     $service->setLoggerFactory($logger->getMock());
@@ -357,7 +357,7 @@ class ServiceTest extends TestCase {
 
     $options = (new Options())
       ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
-      ->add('dkan.metastore.service', Metastore::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
       ->index(0);
 
@@ -367,7 +367,7 @@ class ServiceTest extends TestCase {
       ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
       ->add(DatabaseTable::class, "retrieveAll", ['100', '102', '101'])
       // Metastore.
-      ->add(Metastore::class, 'publish', '1');
+      ->add(MetastoreService::class, 'publish', '1');
   }
 
 }

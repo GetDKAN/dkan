@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use GuzzleHttp\Client;
@@ -200,7 +200,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     return $identifier;
   }
 
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

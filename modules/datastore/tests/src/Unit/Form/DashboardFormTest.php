@@ -13,8 +13,8 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\datastore\Form\DashboardForm;
-use Drupal\harvest\HarvestService as Harvest;
-use Drupal\metastore\MetastoreService as MetastoreService;
+use Drupal\harvest\HarvestService;
+use Drupal\metastore\MetastoreService;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\datastore\service\PostImport;
 use MockChain\Chain;
@@ -365,7 +365,7 @@ class DashboardFormTest extends TestCase {
    */
   private function buildContainerChain(): Chain {
     $options = (new Options())
-      ->add('dkan.harvest.service', Harvest::class)
+      ->add('dkan.harvest.service', HarvestService::class)
       ->add('dkan.common.dataset_info', DatasetInfo::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('pager.manager', PagerManagerInterface::class)
@@ -391,9 +391,9 @@ class DashboardFormTest extends TestCase {
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(DatasetInfo::class, 'gather', ['notice' => 'Not found'])
-      ->add(Harvest::class, 'getAllHarvestIds', ['test', 'dataset-1'])
-      ->add(Harvest::class,'getAllHarvestRunInfo', ['test'])
-      ->add(Harvest::class,'getHarvestRunInfo', $runInfo)
+      ->add(HarvestService::class, 'getAllHarvestIds', ['test', 'dataset-1'])
+      ->add(HarvestService::class,'getAllHarvestRunInfo', ['test'])
+      ->add(HarvestService::class,'getHarvestRunInfo', $runInfo)
       ->add(MetastoreService::class, 'count', 0)
       ->add(MetastoreService::class, 'getIdentifiers', [])
       ->add(PagerManagerInterface::class,'createPager', Pager::class)

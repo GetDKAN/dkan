@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore_search\Search;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Item;
 use Drupal\search_api\Query\ConditionGroup;
@@ -72,7 +72,7 @@ class SearchTest extends TestCase {
 
   public function testSearchParameterWithComma() {
     $options = (new Options())
-      ->add('dkan.metastore.service', Metastore::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('search_api.query_helper', QueryHelperInterface::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
@@ -185,7 +185,7 @@ class SearchTest extends TestCase {
     }
 
     $myServices = [
-      'dkan.metastore.service' => Metastore::class,
+      'dkan.metastore.service' => MetastoreService::class,
       'entity_type.manager' => EntityTypeManager::class,
       'search_api.query_helper' => QueryHelperInterface::class,
       'event_dispatcher' => ContainerAwareEventDispatcher::class,
@@ -233,8 +233,8 @@ class SearchTest extends TestCase {
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
       ->add(ResultSet::class, 'getResultCount', 1)
       ->add(ResultSet::class, 'getResultItems', [$item])
-      ->add(Metastore::class, 'get', $getData)
-      ->add(Metastore::class, 'getAll', $getAllOptions);
+      ->add(MetastoreService::class, 'get', $getData)
+      ->add(MetastoreService::class, 'getAll', $getAllOptions);
   }
 
 }

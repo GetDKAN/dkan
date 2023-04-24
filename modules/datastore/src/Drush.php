@@ -5,7 +5,7 @@ namespace Drupal\datastore;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
 use Drush\Commands\DrushCommands;
 
@@ -47,7 +47,7 @@ class Drush extends DrushCommands {
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
-    Metastore $metastoreService,
+    MetastoreService $metastoreService,
     DatastoreService $datastoreService,
     PostImport $postImport,
     ResourceLocalizer $resourceLocalizer

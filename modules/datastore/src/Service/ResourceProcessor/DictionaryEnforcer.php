@@ -5,7 +5,7 @@ namespace Drupal\datastore\Service\ResourceProcessor;
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
-use Drupal\metastore\MetastoreService as MetastoreService;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use RootedData\RootedJsonData;

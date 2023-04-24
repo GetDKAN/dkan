@@ -18,7 +18,7 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\service\PostImport;
-use Drupal\metastore\MetastoreService as MetastoreService;
+use Drupal\metastore\MetastoreService;
 
 use MockChain\Chain;
 use MockChain\Options;

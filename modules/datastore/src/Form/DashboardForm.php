@@ -11,7 +11,7 @@ use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Url;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\HarvestService;
-use Drupal\metastore\MetastoreService as MetastoreService;
+use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Options;
 use Drupal\Component\DependencyInjection\Container;
@@ -155,7 +155,7 @@ class WebServiceApiTest extends TestCase {
    */
   private function getMetastoreMockChain() {
     return (new Chain($this))
-      ->add(Metastore::class, 'publish', '1')
+      ->add(MetastoreService::class, 'publish', '1')
       ->getMock();
   }
 

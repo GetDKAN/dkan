@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore_admin\Functional\Plugin\Action;
 
 use Drupal\Core\Session\AccountProxy;
-use Drupal\metastore\MetastoreService as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\common\Traits\CleanUp;
@@ -150,7 +150,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
   }
 
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 
