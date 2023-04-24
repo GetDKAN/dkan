@@ -29,7 +29,7 @@ class Service extends DatastoreService {
    *   Jobstore factory service.
    * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
    *   Import info list service.
-   * @param Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
+   * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */
   public function __construct(ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory, ImportInfoList $importInfoList, DictionaryEnforcer $dictionaryEnforcer) {
