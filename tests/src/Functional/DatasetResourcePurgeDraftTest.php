@@ -21,6 +21,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
+ * @group dataset
  */
 class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
   use CleanUp;
@@ -97,45 +98,6 @@ class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
     $this->assertArrayNotHasKey('dkan_dataset/' . $id_3, $searchResults->results);
   }
 
-  private function datasetPostAndRetrieve(): object {
-    /** @var \Drupal\metastore\Service $metastore_service */
-    $metastore_service = \Drupal::service('dkan.metastore.service');
-
-    $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
-    $dataset = json_decode($datasetRootedJsonData);
-
-    $uuid = $metastore_service->post('dataset', $datasetRootedJsonData);
-
-    $this->assertEquals(
-      $dataset->identifier,
-      $uuid
-    );
-
-    $datasetRootedJsonData = $metastore_service->get('dataset', $uuid);
-    $this->assertIsString("$datasetRootedJsonData");
-
-    $retrievedDataset = json_decode($datasetRootedJsonData);
-
-    $this->assertEquals(
-      $retrievedDataset->identifier,
-      $uuid
-    );
-
-    return $retrievedDataset;
-  }
-
-  private function datastoreImportAndQuery() {
-    $dataset = $this->datasetPostAndRetrieve();
-    $resource = $this->getResourceFromDataset($dataset);
-
-    $this->runQueues(['datastore_import']);
-
-    $queryString = "[SELECT * FROM {$this->getResourceDatastoreTable($resource)}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
-    $this->queryResource($resource, $queryString);
-
-    /**/
-  }
-
   private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
     $display = &drupal_static('metastore_resource_mapper_display');
     $display = $perspective;
@@ -201,35 +163,6 @@ class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
     }
 
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
-  }
-
-  /**
-   * Generate a harvest plan object.
-   */
-  private function getPlan(string $identifier, string $testFilename) : \stdClass {
-    return (object) [
-      'identifier' => $identifier,
-      'extract' => (object) [
-        'type' => DataJson::class,
-        'uri' => 'file://' . __DIR__ . '/../../files/' . $testFilename,
-      ],
-      'transforms' => [],
-      'load' => (object) [
-        'type' => Dataset::class,
-      ],
-    ];
-  }
-
-  /**
-   * Get a dataset's moderation state.
-   */
-  private function getModerationState(string $uuid) : string {
-    $nodeStorage = $this->getNodeStorage();
-    $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
-    if (FALSE !== ($dataset = reset($datasets))) {
-      return $dataset->get('moderation_state')->getString();
-    }
-    return '';
   }
 
   /**
@@ -320,14 +253,6 @@ class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
     $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
     $defaultModerationState->set('type_settings.default_moderation_state', $state);
     $defaultModerationState->save();
-  }
-
-  private function getQueueService() : QueueFactory {
-    return \Drupal::service('queue');
-  }
-
-  private function getHarvester() : Harvester {
-    return \Drupal::service('dkan.harvest.service');
   }
 
   private function getNodeStorage(): NodeStorage {

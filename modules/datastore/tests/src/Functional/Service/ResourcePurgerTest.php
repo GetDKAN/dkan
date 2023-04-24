@@ -13,6 +13,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
+ * @group dataset
  */
 class ResourcePurgerTest extends ExistingSiteBase {
   use GetDataTrait;
@@ -70,16 +71,6 @@ class ResourcePurgerTest extends ExistingSiteBase {
 
   public function setUp(): void {
     parent::setUp();
-
-    // Prepare environment.
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-
     // Initialize services.
     $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
     $this->datastore = \Drupal::service('dkan.datastore.service');
@@ -88,6 +79,17 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $this->queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
     $this->resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+  }
+
+  protected function tearDown(): void {
+    parent::tearDown();
+    $this->removeHarvests();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
   }
 
   /**
