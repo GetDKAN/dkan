@@ -124,7 +124,7 @@ trait FacetsFromContentTrait {
     $facets = [];
     foreach ($facetsTypes as $type) {
 
-      list($schema, $field) = $this->getSchemaAndField($type);
+      [$schema, $field] = $this->getSchemaAndField($type);
 
       $allFacets = $this->metastoreService->getAll($schema);
 
