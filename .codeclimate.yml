@@ -10,6 +10,10 @@ plugins:
         enabled: false
       Drupal Commenting Deprecated DeprecatedMissingSeeTag:
         enabled: false
+      Drupal Semantics FunctionTriggerError TriggerErrorTextLayoutRelaxed:
+        enabled: false
+      Drupal Commenting Deprecated DeprecatedWrongSeeUrlFormat:
+        enabled: false
 
 exclude_patterns:
   - "cypress/"
