@@ -5,7 +5,7 @@ namespace Drupal\Tests\common\Functional;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * @group _dataset
+ * @group functional
  */
 class DkanStreamWrapperTest extends ExistingSiteBase {
   public function testPublicScheme() {

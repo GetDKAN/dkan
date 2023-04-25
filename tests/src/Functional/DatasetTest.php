@@ -21,7 +21,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group dataset
+ * @group functional
  */
 class DatasetTest extends ExistingSiteBase {
   use CleanUp;
@@ -80,6 +80,55 @@ class DatasetTest extends ExistingSiteBase {
     // Verify only the 2 most recent resources remain.
     $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
     $this->assertEquals(2, $this->countTables());
+  }
+
+  /**
+   * Test the resource purger when the default moderation state is 'draft'.
+   */
+  public function testResourcePurgeDraft() {
+    /** @var \Drupal\metastore\Service $metastore_service */
+    $metastore_service = \Drupal::service('dkan.metastore.service');
+    /** @var \Drupal\metastore_search\Search $metastore_search_service */
+    $metastore_search_service = \Drupal::service('dkan.metastore_search.service');
+
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $id_2 = uniqid(__FUNCTION__ . '2');
+    $id_3 = uniqid(__FUNCTION__ . '3');
+
+    $this->setDefaultModerationState('draft');
+
+    // Post, update and publish a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
+    $metastore_service->publish('dataset', $id_1);
+    $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
+
+    $info = \Drupal::service('dkan.common.dataset_info')->gather($id_1);
+    $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
+    $this->assertStringEndsWith('3.csv', $info['published_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('1.csv', $info['published_revision']['distributions'][1]['file_path']);
+
+    // Verify that only the resources associated with the published and the
+    // latest revision.
+    $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
+    $this->assertEquals(3, $this->countTables());
+
+    // Add more datasets, only publishing some.
+    $this->storeDatasetRunQueues($id_2, '2.1', []);
+    $this->storeDatasetRunQueues($id_3, '3.1', []);
+    $metastore_service->publish('dataset', $id_2);
+    // Reindex.
+    $index = Index::load('dkan');
+    $index->clear();
+    $index->indexItems();
+    // Verify search results contain the '1.2' version of $id_1, $id_2 but not $id_3.
+    $searchResults = $metastore_search_service->search();
+    $this->assertEquals(2, $searchResults->total);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_1, $searchResults->results);
+    $this->assertEquals('1.2', $searchResults->results['dkan_dataset/' . $id_1]->title);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_2, $searchResults->results);
+    $this->assertArrayNotHasKey('dkan_dataset/' . $id_3, $searchResults->results);
   }
 
   /**

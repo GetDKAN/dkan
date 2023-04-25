@@ -6,7 +6,7 @@ use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * @group dataset
+ * @group functional
  */
 class OnPreReferenceTest extends ExistingSiteBase {
   use CleanUp;

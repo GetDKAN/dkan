@@ -13,7 +13,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
- * @group _dataset
+ * @group functional
  */
 class ResourcePurgerTest extends ExistingSiteBase {
   use GetDataTrait;

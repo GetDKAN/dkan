@@ -6,7 +6,7 @@ use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
 /**
- * @group dataset
+ * @group functional
  */
 class DatasetItemTest extends Api1TestBase {
 

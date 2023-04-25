@@ -7,7 +7,7 @@ use Drupal\Core\Serialization\Yaml;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * @group dataset
+ * @group functional
  */
 class DkanDocsTest extends ExistingSiteBase {
 

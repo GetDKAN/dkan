@@ -174,7 +174,6 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testMultiplePasses() {
-    $this->markTestSkipped('foo');
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/Bike_Lane.csv", "text/csv");
 
     $storage = new Memory();

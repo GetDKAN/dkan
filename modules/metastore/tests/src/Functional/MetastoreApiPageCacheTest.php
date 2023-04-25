@@ -15,7 +15,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group dataset
+ * @group functional
  */
 class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
