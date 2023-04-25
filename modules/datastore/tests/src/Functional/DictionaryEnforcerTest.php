@@ -20,7 +20,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @group datastore
  * @group dataset
  */
-class DictionaryEnforcerTe_st extends ExistingSiteBase {
+class DictionaryEnforcerTest extends ExistingSiteBase {
 
   use GetDataTrait, CleanUp;
 

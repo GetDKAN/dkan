@@ -6,7 +6,7 @@ use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- *
+ * @group dataset
  */
 class OnPreReferenceTest extends ExistingSiteBase {
   use CleanUp;
@@ -16,12 +16,12 @@ class OnPreReferenceTest extends ExistingSiteBase {
   /**
    *
    */
-  private function getData($downloadUrl) {
+  private function getData($downloadUrl, $id) {
     return '
     {
       "title": "Test #1",
       "description": "Yep",
-      "identifier": "123",
+      "identifier": "' . $id . '",
       "accessLevel": "public",
       "modified": "06-04-2020",
       "keyword": ["hello"],
@@ -47,7 +47,8 @@ class OnPreReferenceTest extends ExistingSiteBase {
     $datastore_settings->save();
 
     // Test posting a dataset to the metastore.
-    $data = $this->getData($this->downloadUrl);
+    $id = uniqid();
+    $data = $this->getData($this->downloadUrl, $id);
     /** @var \Drupal\metastore\Service $metastore */
     $metastore = \Drupal::service('dkan.metastore.service');
     $dataset = $metastore->getValidMetadataFactory()->get($data, 'dataset');
@@ -58,16 +59,13 @@ class OnPreReferenceTest extends ExistingSiteBase {
     $edited = json_encode($decoded);
 
     $dataset = $metastore->getValidMetadataFactory()->get($edited, 'dataset');
-    $metastore->patch('dataset', '123', $dataset);
+    $metastore->patch('dataset', $id, $dataset);
 
     $rev = drupal_static('metastore_resource_mapper_new_revision');
     $this->assertEquals(1, $rev);
   }
 
-  /**
-   *
-   */
-  public function tearDown(): void {
+  protected function tearDown(): void {
     parent::tearDown();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();

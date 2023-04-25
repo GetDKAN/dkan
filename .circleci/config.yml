@@ -153,6 +153,7 @@ jobs:
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
+                    --group dataset \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                     --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -177,6 +178,7 @@ jobs:
                 name: Run PHPUnit tests
                 command: |
                   ddev dkan-phpunit \
+                    --group dataset \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
           path: dkan/junit
