@@ -21,9 +21,9 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group _dataset
+ * @group dataset
  */
-class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
+class DatasetResourcePurgeDraftTe_st extends ExistingSiteBase {
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
