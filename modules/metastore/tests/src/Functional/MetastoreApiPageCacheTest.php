@@ -16,6 +16,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
  * @group functional
+ * @group special_test
  */
 class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
@@ -49,7 +50,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
     // Post dataset.
     $datasetRootedJsonData = $this->getData($dataset_id, '1', ['1.csv']);
-    $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
+    $post_id = $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     $client = new Client([
       'base_uri' => \Drupal::request()->getSchemeAndHttpHost(),
@@ -126,6 +127,10 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $this->assertEquals(404, $response->getStatusCode());
     $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
     $this->assertEquals(404, $response->getStatusCode());
+
+    // Clean up after ourselves.
+    $this->getMetastore()->delete('dataset', $post_id);
+    $this->runQueues($queues);
   }
 
   /**
@@ -180,7 +185,8 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     }
 
     // Retrieve node search plugin for updating node page indexes.
-    $node_search_plugin = $this->container->get('plugin.manager.search')
+    $node_search_plugin = $this->container
+      ->get('plugin.manager.search')
       ->createInstance('node_search');
     $node_search_plugin->updateIndex();
   }

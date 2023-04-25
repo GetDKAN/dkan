@@ -4,6 +4,7 @@ namespace Drupal\datastore\SqlEndpoint;
 
 use Drupal\common\DataResource;
 use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\Storage\Query;
 use Drupal\datastore\Service as DatastoreService;
 use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
@@ -11,11 +12,12 @@ use Drupal\datastore\Storage\DatabaseTable;
 use Maquina\StateMachine\Machine;
 use Maquina\StateMachine\MachineOfMachines;
 use SqlParser\SqlParser;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * SQL endpoint service.
  */
-class Service {
+class Service implements ContainerInjectionInterface {
   /**
    * ConfigFactory object.
    *
@@ -29,6 +31,16 @@ class Service {
    * @var Drupal\datastore\Service
    */
   private $datastoreService;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.datastore.service'),
+      $container->get('config.factory')
+    );
+  }
 
   /**
    * Constructor, sets the datastoreService and configFactory properties.

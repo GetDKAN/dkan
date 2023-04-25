@@ -22,6 +22,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
  * @group functional
+ * @group special_test
  */
 class DatasetTest extends ExistingSiteBase {
   use CleanUp;

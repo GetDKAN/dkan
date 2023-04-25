@@ -81,7 +81,7 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
-  protected function tearDown(): void {
+  public function tearDown(): void {
     parent::tearDown();
     $this->removeHarvests();
     $this->removeAllNodes();
