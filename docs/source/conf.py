@@ -13,6 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../modules/'))
+#sys.path.append(os.path.abspath('..'))
 
 
 from myst_parser import __version__
