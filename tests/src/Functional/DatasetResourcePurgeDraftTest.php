@@ -23,7 +23,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @group dkan
  * @group dataset
  */
-class DatasetResourcePurgeDraftTe_st extends ExistingSiteBase {
+class DatasetResourcePurgeDraftTest extends ExistingSiteBase {
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';

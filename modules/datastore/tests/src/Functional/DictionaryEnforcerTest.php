@@ -18,7 +18,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
- * @group dataset
+ * @group _dataset
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
 

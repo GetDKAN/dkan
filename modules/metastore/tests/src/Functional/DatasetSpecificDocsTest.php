@@ -6,7 +6,7 @@ use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- *
+ * @group dataset
  */
 class DatasetSpecificDocsTest extends ExistingSiteBase {
   use CleanUp;
@@ -16,12 +16,12 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
   /**
    *
    */
-  private function getData($downloadUrl) {
+  private function getData(string $downloadUrl, string $id) {
     return '
     {
       "title": "Test #1",
       "description": "Yep",
-      "identifier": "123",
+      "identifier": "' . $id . '",
       "accessLevel": "public",
       "modified": "06-04-2020",
       "keyword": ["hello"],
@@ -39,9 +39,10 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
    *
    */
   public function test() {
+    $id = uniqid();
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData($this->downloadUrl, $id);
 
     /** @var \Drupal\metastore\Service $metastore */
     $metastore = \Drupal::service('dkan.metastore.service');
@@ -49,9 +50,9 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     $metastore->post('dataset', $dataset);
 
     $docService = \Drupal::service('dkan.metastore.dataset_api_docs');
-    $spec = $docService->getDatasetSpecific('123');
+    $spec = $docService->getDatasetSpecific($id);
     $this->assertTrue(is_array($spec));
-    $this->assertEquals("123", $spec['components']['parameters']['datasetUuid']['example']);
+    $this->assertEquals($id, $spec['components']['parameters']['datasetUuid']['example']);
   }
 
   /**

@@ -39,6 +39,7 @@ class OnPreReferenceTest extends ExistingSiteBase {
    *
    */
   public function test() {
+    $this->markTestIncomplete('Needs to clean up its CSV file.');
     /** @var \Drupal\Core\Config\ConfigFactory $config */
     $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
@@ -67,6 +68,7 @@ class OnPreReferenceTest extends ExistingSiteBase {
 
   protected function tearDown(): void {
     parent::tearDown();
+    $this->removeHarvests();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();
     $this->removeAllFileFetchingJobs();
