@@ -15,7 +15,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group functional
+ * @group _functional
  * @group special_test
  */
 class MetastoreApiPageCacheTest extends ExistingSiteBase {
@@ -44,7 +44,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
    * Test dataset page caching
    */
   public function testDatasetApiPageCache() {
-    $this->markTestIncomplete('Needs to clean up its CSV file.');
+//    $this->markTestIncomplete('Needs to clean up its CSV file.');
 
     $dataset_id = uniqid();
 

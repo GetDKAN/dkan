@@ -87,6 +87,7 @@ class DatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'draft'.
    */
   public function testResourcePurgeDraft() {
+//    $this->markTestIncomplete('fails.');
     /** @var \Drupal\metastore\Service $metastore_service */
     $metastore_service = \Drupal::service('dkan.metastore.service');
     /** @var \Drupal\metastore_search\Search $metastore_search_service */

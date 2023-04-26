@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \Drupal\common\Storage\JobStore
  * @group datastore
+ *
+ * note: not really functional :-)
+ * @group functional
  */
 class JobStoreTest extends TestCase {
 

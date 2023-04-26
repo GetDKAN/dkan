@@ -13,7 +13,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
- * @group functional
+ * @group _functional
  */
 class ResourcePurgerTest extends ExistingSiteBase {
   use GetDataTrait;
@@ -152,13 +152,6 @@ class ResourcePurgerTest extends ExistingSiteBase {
    *   A list of queues to process.
    */
   protected function runQueues(array $relevant_queues = []): void {
-    foreach ($relevant_queues as $queue_name) {
-      $worker = $this->queueWorkerManager->createInstance($queue_name);
-      $queue = $this->queue->get($queue_name);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
+    $this->processQueues($relevant_queues);
   }
 }

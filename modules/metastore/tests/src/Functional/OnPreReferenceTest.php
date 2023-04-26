@@ -41,7 +41,7 @@ class OnPreReferenceTest extends ExistingSiteBase {
    *
    */
   public function testTriggerDatastoreUpdate() {
-    $this->markTestIncomplete('Needs to clean up its CSV file.');
+//    $this->markTestIncomplete('Needs to clean up its CSV file.');
     /** @var \Drupal\Core\Config\ConfigFactory $config */
     $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
