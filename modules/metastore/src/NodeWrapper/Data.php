@@ -76,14 +76,9 @@ class Data implements MetastoreItemInterface {
    */
   public function getModifiedDate() {
     $this->fix();
-    // The latest revision date does not match the changed value
-    // when there are multiple drafts.
-    if (!$this->node->isPublished()) {
-      return $this->node->getRevisionCreationTime();
-    }
-    else {
-      return $this->node->getChangedTime();
-    }
+    // Use revision date because the latest revision date does not
+    // match the node changed value when there are multiple drafts.
+    return $this->node->getRevisionCreationTime();
   }
 
   /**
