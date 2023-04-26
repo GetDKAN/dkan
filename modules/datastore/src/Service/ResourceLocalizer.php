@@ -10,7 +10,6 @@ use Drupal\common\Util\DrupalFiles;
 use Contracts\FactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\AlreadyRegistered;
-use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
