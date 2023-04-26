@@ -71,7 +71,7 @@ class OnPreReferenceTest extends ExistingSiteBase {
     $this->assertEquals($id, $metastore->delete('dataset', $id));
   }
 
-  protected function tearDown(): void {
+  public function tearDown(): void {
     parent::tearDown();
     $this->removeHarvests();
     $this->removeAllNodes();
