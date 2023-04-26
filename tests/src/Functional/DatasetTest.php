@@ -91,9 +91,10 @@ class DatasetTest extends ExistingSiteBase {
 
   /**
    * Test the resource purger when the default moderation state is 'draft'.
+   *
+   * @runInSeparateProcess
    */
   public function testResourcePurgeDraft() {
-//    $this->markTestSkipped('Flaky test fails inconsistently, typically line 119.');
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
     $id_3 = uniqid(__FUNCTION__ . '3');
