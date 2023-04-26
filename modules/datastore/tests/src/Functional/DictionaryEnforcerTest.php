@@ -18,7 +18,6 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
- * @group _functional
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
 
@@ -122,25 +121,13 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
 
   public function tearDown(): void {
     parent::tearDown();
-    // Clean up our CSV upload.
-    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-    $file_system = \Drupal::service('file_system');
-    $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
-    $file_system->delete($upload_path . '/' . self::RESOURCE_FILE);
-    $this->removeHarvests();
-    $this->removeAllNodes();
     $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
   }
 
   /**
    * Test dictionary enforcement.
    */
   public function testDictionaryEnforcement(): void {
-//    $this->markTestIncomplete('wot?');
     // Build data-dictionary.
     $dict_id = $this->uuid->generate();
     $fields = [
@@ -202,11 +189,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
 
     // Build dataset.
     $dataset_id = $this->uuid->generate();
-    $dataset = $this->validMetadataFactory->get(
-      $this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE),
-      'dataset'
-    );
-
+    $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
     // Create dataset.
     $this->metastore->post('dataset', $dataset);
     $this->metastore->publish('dataset', $dataset_id);

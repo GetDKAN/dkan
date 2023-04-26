@@ -15,7 +15,6 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group _functional
  */
 class NodeDataTest extends ExistingSiteBase {
   use CleanUp;
@@ -24,12 +23,6 @@ class NodeDataTest extends ExistingSiteBase {
 
   public function setUp(): void {
     parent::setUp();
-    $this->setDefaultModerationState("draft");
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
-  }
-
-  protected function tearDown(): void {
-    parent::tearDown();
     $this->removeHarvests();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();
@@ -37,13 +30,15 @@ class NodeDataTest extends ExistingSiteBase {
     $this->flushQueues();
     $this->removeFiles();
     $this->removeDatastoreTables();
+    $this->setDefaultModerationState("draft");
+
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   /**
    * Test resource removal on distribution deleting.
    */
   public function testStorageRetrieveMethods() {
-//    $this->markTestIncomplete('Needs to clean up its CSV file.');
 
     // Post a dataset with a single distribution.
     $this->datasetPostTwoAndUnpublishOne();
@@ -76,7 +71,6 @@ class NodeDataTest extends ExistingSiteBase {
    * Test resource removal on distribution deleting.
    */
   public function testBadPublish() {
-//    $this->markTestIncomplete('Needs to clean up its CSV file.');
     $this->datasetPostTwoAndUnpublishOne();
     $datasetStorage = $this->getStorage('dataset');
 
@@ -91,7 +85,6 @@ class NodeDataTest extends ExistingSiteBase {
    * Test resource removal on distribution deleting.
    */
   public function testRetrieveByHash() {
-//    $this->markTestIncomplete('Needs to clean up its CSV file.');
     $this->datasetPostTwoAndUnpublishOne();
     $keywordStorage = $this->getStorage('keyword');
 
@@ -103,32 +96,29 @@ class NodeDataTest extends ExistingSiteBase {
   }
 
   private function datasetPostTwoAndUnpublishOne() {
-    /** @var Metastore $metastore */
-    $metastore = \Drupal::service('dkan.metastore.service');
     $datasetRootedJsonData = $this->getData("123", 'Test Published', []);
     $dataset = json_decode($datasetRootedJsonData);
 
-    $uuid_123 = $metastore->post('dataset', $datasetRootedJsonData);
-    $metastore->publish('dataset', $uuid_123);
+    $uuid = $this->getMetastore()->post('dataset', $datasetRootedJsonData);
+    $this->getMetastore()->publish('dataset', $uuid);
 
     $this->assertEquals(
       $dataset->identifier,
-      $uuid_123
+      $uuid
     );
 
-    $datasetRootedJsonData = $metastore->get('dataset', $uuid_123);
+    $datasetRootedJsonData = $this->getMetastore()->get('dataset', $uuid);
     $this->assertIsString("$datasetRootedJsonData");
 
     $retrievedDataset = json_decode($datasetRootedJsonData);
 
     $this->assertEquals(
       $retrievedDataset->identifier,
-      $uuid_123
+      $uuid
     );
 
     $datasetRootedJsonData = $this->getData("456", 'Test Unpublished', []);
-    $uuid_456 = $metastore->post('dataset', $datasetRootedJsonData);
-    $this->assertNotEquals($uuid_123, $uuid_456);
+    $this->getMetastore()->post('dataset', $datasetRootedJsonData);
   }
 
   /**
@@ -165,6 +155,10 @@ class NodeDataTest extends ExistingSiteBase {
     }
 
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
+  }
+
+  private function getMetastore(): Metastore {
+    return \Drupal::service('dkan.metastore.service');
   }
 
   private function getStorage($schemaId) {

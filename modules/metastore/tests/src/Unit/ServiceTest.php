@@ -397,9 +397,9 @@ EOF;
   }
 
   /**
-   * @return \MockChain\Chain
+   * @return \Drupal\common\Tests\Mock\Chain
    */
-  public static function getCommonMockChain(TestCase $case, Options $services = null): Chain {
+  public static function getCommonMockChain(TestCase $case, Options $services = null) {
 
     $options = (new Options)
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
@@ -416,7 +416,7 @@ EOF;
       ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
   }
 
-  public static function getValidMetadataFactory(TestCase $case): ValidMetadataFactory {
+  public static function getValidMetadataFactory(TestCase $case) {
     $options = (new Options())
       ->add('metastore.schema_retriever', SchemaRetriever::class)
       ->index(0);

@@ -15,21 +15,24 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group _functional
- * @group special_test
  */
 class MetastoreApiPageCacheTest extends ExistingSiteBase {
-
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
   private $validMetadataFactory;
 
   public function setUp(): void {
     parent::setUp();
+    $this->removeHarvests();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
     \drupal_flush_all_caches();
 
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
@@ -44,17 +47,14 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
    * Test dataset page caching
    */
   public function testDatasetApiPageCache() {
-//    $this->markTestIncomplete('Needs to clean up its CSV file.');
-
-    $dataset_id = uniqid();
 
     // Post dataset.
-    $datasetRootedJsonData = $this->getData($dataset_id, '1', ['1.csv']);
-    $post_id = $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
+    $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
+    $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     $client = new Client([
       'base_uri' => \Drupal::request()->getSchemeAndHttpHost(),
-      'timeout' => 10,
+      'timeout'  => 10,
       'http_errors' => FALSE,
       'connect_timeout' => 10,
     ]);
@@ -67,25 +67,25 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     ];
 
     // Request once, should not return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id . '/docs');
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Request again, should return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id . '/docs');
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
 
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Get the variants of the import endpoint
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id . '?show-reference-ids');
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111?show-reference-ids');
     $dataset = json_decode($response->getBody()->getContents());
     $distributionId = $dataset->distribution[0]->identifier;
     $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier;
@@ -94,13 +94,13 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    $response = $client->request('GET', 'api/1/datastore/query/' . $dataset_id . '/0');
+    $response = $client->request('GET', 'api/1/datastore/query/111/0');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Request again, should return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/query/' . $dataset_id . '/0');
+    $response = $client->request('GET', 'api/1/datastore/query/111/0');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
@@ -115,11 +115,11 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
 
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/' . $dataset_id . '/docs');
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/query/' . $dataset_id . '/0');
+    $response = $client->request('GET', 'api/1/datastore/query/111/0');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // The import endpoints shouldn't be there at all anymore.
@@ -127,10 +127,6 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $this->assertEquals(404, $response->getStatusCode());
     $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
     $this->assertEquals(404, $response->getStatusCode());
-
-    // Clean up after ourselves.
-    $this->getMetastore()->delete('dataset', $post_id);
-    $this->runQueues($queues);
   }
 
   /**
@@ -185,9 +181,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     }
 
     // Retrieve node search plugin for updating node page indexes.
-    $node_search_plugin = $this->container
-      ->get('plugin.manager.search')
-      ->createInstance('node_search');
+    $node_search_plugin = $this->container->get('plugin.manager.search')->createInstance('node_search');
     $node_search_plugin->updateIndex();
   }
 
@@ -214,7 +208,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     return self::S3_PREFIX . '/' . $filename;
   }
 
-  private function getQueueService(): QueueFactory {
+  private function getQueueService() : QueueFactory {
     return \Drupal::service('queue');
   }
 

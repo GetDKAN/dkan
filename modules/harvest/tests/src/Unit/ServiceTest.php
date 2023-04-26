@@ -24,7 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @coversDefaultClass \Drupal\harvest\Service
- * @covers \Drupal\harvest\Service
  * @group harvest
  */
 class ServiceTest extends TestCase {

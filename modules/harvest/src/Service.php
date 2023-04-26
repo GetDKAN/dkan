@@ -3,11 +3,11 @@
 namespace Drupal\harvest;
 
 use Contracts\BulkRetrieverInterface;
+use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
-use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\Service as Metastore;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
@@ -27,9 +27,9 @@ class Service implements ContainerInjectionInterface {
   /**
    * Service to instantiate storage objects for Harvest plan storage.
    *
-   * @var \Drupal\harvest\Storage\DatabaseTableFactory
+   * @var \Contracts\FactoryInterface
    */
-  private DatabaseTableFactory $storeFactory;
+  private $storeFactory;
 
   /**
    * DKAN metastore service.
@@ -61,7 +61,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(DatabaseTableFactory $storeFactory, Metastore $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(FactoryInterface $storeFactory, Metastore $metastore, EntityTypeManager $entityTypeManager) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
     $this->entityTypeManager = $entityTypeManager;
@@ -339,6 +339,8 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Protected.
+   *
+   * @codeCoverageIgnore
    */
   protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
     return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));

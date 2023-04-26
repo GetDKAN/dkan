@@ -35,10 +35,10 @@ trait CleanUp {
    *
    */
   private function removeAllMappedFiles() {
-    /** @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable $file_mapper_table */
-    $file_mapper_table = \Drupal::service('dkan.metastore.resource_mapper_database_table');
-    foreach ($file_mapper_table->retrieveAll() as $id) {
-      $file_mapper_table->remove($id);
+    /** @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable $filemappertable */
+    $filemappertable = \Drupal::service('dkan.metastore.resource_mapper_database_table');
+    foreach ($filemappertable->retrieveAll() as $id) {
+      $filemappertable->remove($id);
     }
   }
 
@@ -61,31 +61,11 @@ trait CleanUp {
    */
   private function flushQueues() {
     $dkanQueues = ['orphan_reference_processor', 'datastore_import', 'resource_purger'];
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = \Drupal::service('queue');
     foreach ($dkanQueues as $queueName) {
+      /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
+      $queueFactory = \Drupal::service('queue');
       $queue = $queueFactory->get($queueName);
       $queue->deleteQueue();
-    }
-  }
-
-  /**
-   * Process the supplied queue list.
-   *
-   * @param string[] $relevant_queues
-   *   A list of queues to process. Defaults to reasonable DKAN list.
-   */
-  protected function processQueues(array $relevant_queues = ['orphan_reference_processor', 'datastore_import', 'resource_purger']): void {
-    /** @var \Drupal\Core\Queue\QueueFactory $queue_factory */
-    $queue_factory = \Drupal::service('queue');
-    $queue_worker_manager = \Drupal::service('plugin.manager.queue_worker');
-    foreach ($relevant_queues as $queue_name) {
-      $worker = $queue_worker_manager->createInstance($queue_name);
-      $queue = $queue_factory->get($queue_name);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
     }
   }
 

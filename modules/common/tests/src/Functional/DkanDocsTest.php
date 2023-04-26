@@ -6,9 +6,6 @@ use Drupal\common\Controller\OpenApiController;
 use Drupal\Core\Serialization\Yaml;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
-/**
- * @group functional
- */
 class DkanDocsTest extends ExistingSiteBase {
 
   public function testGetVersions() {
@@ -70,7 +67,7 @@ class DkanDocsTest extends ExistingSiteBase {
 
   private function getController(array $params = []) {
     $requestStack = \Drupal::service('request_stack');
-
+   
     if (!empty($params)) {
       $request = $requestStack->pop()->duplicate($params);
       $requestStack->push($request);

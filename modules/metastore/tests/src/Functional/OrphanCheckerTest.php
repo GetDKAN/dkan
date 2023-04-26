@@ -13,7 +13,6 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\metastore\Functional
  * @group metastore
- * @group _functional
  */
 class OrphanCheckerTest extends ExistingSiteBase {
   use GetDataTrait;
@@ -28,11 +27,6 @@ class OrphanCheckerTest extends ExistingSiteBase {
 
   public function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
-  }
-
-  protected function tearDown(): void {
-    parent::tearDown();
     $this->removeHarvests();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();
@@ -40,32 +34,28 @@ class OrphanCheckerTest extends ExistingSiteBase {
     $this->flushQueues();
     $this->removeFiles();
     $this->removeDatastoreTables();
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   public function test() {
-    $id_1 = uniqid();
-    $id_2 = uniqid();
     /** @var $service \Drupal\metastore\Service */
     $service = \Drupal::service('dkan.metastore.service');
-    $dataset = $this->validMetadataFactory->get($this->getDataset($id_1, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
-    $this->assertNotEmpty(
-      $service->post('dataset', $dataset)
-    );
-    $dataset2 = $this->validMetadataFactory->get($this->getDataset($id_2, 'Test #2', ['district_centerpoints_small.csv']), 'dataset');
+    $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
+    $service->post('dataset', $dataset);
+    $dataset2 = $this->validMetadataFactory->get($this->getDataset(456, 'Test #2', ['district_centerpoints_small.csv']), 'dataset');
     $service->post('dataset', $dataset2);
     $this->runQueues(['datastore_import']);
-    $service->delete('dataset', $id_1);
-    $this->runQueues(['orphan_reference_processor']);
+    $service->delete('dataset', 123);
+    $success = $this->runQueues(['orphan_reference_processor']);
+    $this->assertNull($success);
   }
 
   private function runQueues(array $relevantQueues = []) {
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
     $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    /** @var QueueFactory $queue_factory */
-    $queue_factory = \Drupal::service('queue');
     foreach ($relevantQueues as $queueName) {
       $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queue_factory->get($queueName);
+      $queue = $this->getQueueService()->get($queueName);
       while ($item = $queue->claimItem()) {
         $worker->processItem($item->data);
         $queue->deleteItem($item);
@@ -73,4 +63,7 @@ class OrphanCheckerTest extends ExistingSiteBase {
     }
   }
 
+  private function getQueueService() : QueueFactory {
+    return \Drupal::service('queue');
+  }
 }

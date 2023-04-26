@@ -45,13 +45,6 @@ abstract class Api1TestBase extends ExistingSiteBase {
   public function tearDown(): void {
     parent::tearDown();
     $this->http = NULL;
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
   }
 
   protected function assertJsonIsValid($schema, $json) {

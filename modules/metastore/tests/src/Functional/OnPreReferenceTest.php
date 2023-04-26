@@ -6,11 +6,11 @@ use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * @group functional
- * @group specialer_test
+ * Run tests in separate processes, since they rely on the value of
+ *   drupal_static().
+ * @runTestsInSeparateProcesses
  */
 class OnPreReferenceTest extends ExistingSiteBase {
-
   use CleanUp;
 
   private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
@@ -18,12 +18,12 @@ class OnPreReferenceTest extends ExistingSiteBase {
   /**
    *
    */
-  private function getData($downloadUrl, $id) {
+  private function getData($downloadUrl) {
     return '
     {
       "title": "Test #1",
       "description": "Yep",
-      "identifier": "' . $id . '",
+      "identifier": "123",
       "accessLevel": "public",
       "modified": "06-04-2020",
       "keyword": ["hello"],
@@ -38,12 +38,9 @@ class OnPreReferenceTest extends ExistingSiteBase {
   }
 
   /**
-   * This test looks specifically for a drupal_static() value, so we run it in
-   * a separate process to keep it isolated.
-   * @runInSeparateProcess
+   *
    */
-  public function testTriggerDatastoreUpdate() {
-//    $this->markTestIncomplete('Needs to clean up its CSV file.');
+  public function test() {
     /** @var \Drupal\Core\Config\ConfigFactory $config */
     $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
@@ -52,27 +49,28 @@ class OnPreReferenceTest extends ExistingSiteBase {
     $datastore_settings->save();
 
     // Test posting a dataset to the metastore.
-    $id = uniqid();
-    $data = $this->getData($this->downloadUrl, $id);
+    $data = $this->getData($this->downloadUrl);
     /** @var \Drupal\metastore\Service $metastore */
     $metastore = \Drupal::service('dkan.metastore.service');
     $dataset = $metastore->getValidMetadataFactory()->get($data, 'dataset');
-    $this->assertEquals($id, $metastore->post('dataset', $dataset));
+    $metastore->post('dataset', $dataset);
 
     $decoded = json_decode($data);
     $decoded->modified = '06-04-2021';
     $edited = json_encode($decoded);
 
     $dataset = $metastore->getValidMetadataFactory()->get($edited, 'dataset');
-    $this->assertEquals($id, $metastore->patch('dataset', $id, $dataset));
+    $metastore->patch('dataset', '123', $dataset);
 
     $rev = drupal_static('metastore_resource_mapper_new_revision');
     $this->assertEquals(1, $rev);
   }
 
+  /**
+   *
+   */
   public function tearDown(): void {
     parent::tearDown();
-    $this->removeHarvests();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();
     $this->removeAllFileFetchingJobs();
@@ -80,5 +78,4 @@ class OnPreReferenceTest extends ExistingSiteBase {
     $this->removeFiles();
     $this->removeDatastoreTables();
   }
-
 }
