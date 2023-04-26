@@ -7,7 +7,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
  * @group functional
- * @group special_test
+ * @group specialer_test
  */
 class OnPreReferenceTest extends ExistingSiteBase {
 
@@ -38,7 +38,9 @@ class OnPreReferenceTest extends ExistingSiteBase {
   }
 
   /**
-   *
+   * This test looks specifically for a drupal_static() value, so we run it in
+   * a separate process to keep it isolated.
+   * @runInSeparateProcess
    */
   public function testTriggerDatastoreUpdate() {
 //    $this->markTestIncomplete('Needs to clean up its CSV file.');
@@ -66,9 +68,6 @@ class OnPreReferenceTest extends ExistingSiteBase {
 
     $rev = drupal_static('metastore_resource_mapper_new_revision');
     $this->assertEquals(1, $rev);
-
-    // Clean up after ourselves.
-    $this->assertEquals($id, $metastore->delete('dataset', $id));
   }
 
   public function tearDown(): void {
