@@ -21,11 +21,17 @@ class Service extends MetastoreService {
     @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
     @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
     return parent::removeReferences($object, $prefix);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public static function metadataHash($data) {
     @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
     return parent::metadataHash($data);
