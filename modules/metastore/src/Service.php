@@ -3,6 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\metastore\Storage\DataFactory;
+use RootedData\RootedJsonData;
 
 /**
  * The metastore service.
@@ -18,6 +19,16 @@ class Service extends MetastoreService {
   public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, ValidMetadataFactory $validMetadataFactory) {
     parent::__construct($schemaRetriever, $factory, $validMetadataFactory);
     @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
+  }
+
+  public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
+    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
+    return parent::removeReferences($object, $prefix);
+  }
+
+  public static function metadataHash($data) {
+    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
+    return parent::metadataHash($data);
   }
 
 }

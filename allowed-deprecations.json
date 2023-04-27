@@ -1,0 +1,72 @@
+[
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Drupal\\Core\\ProxyClass\\File\\MimeType\\MimeTypeGuesser\" class implements \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\MimeTypeGuesserInterface\" that is deprecated since Symfony 4.3, use {@link MimeTypesInterface} instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Drupal\\Core\\ProxyClass\\File\\MimeType\\ExtensionMimeTypeGuesser\" class implements \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\MimeTypeGuesserInterface\" that is deprecated since Symfony 4.3, use {@link MimeTypesInterface} instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Twig\\Environment::getTemplateClass()\" method is considered internal. It may change without further notice. You should not extend it from \"Drupal\\Core\\Template\\TwigEnvironment\".",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Drupal\\Core\\File\\MimeType\\ExtensionMimeTypeGuesser\" class implements \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\MimeTypeGuesserInterface\" that is deprecated since Symfony 4.3, use {@link MimeTypesInterface} instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Drupal\\Component\\EventDispatcher\\Event\" class extends \"Symfony\\Component\\EventDispatcher\\Event\" that is deprecated since Symfony 4.3, use \"Symfony\\Contracts\\EventDispatcher\\Event\" instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Drupal\\Core\\File\\MimeType\\MimeTypeGuesser\" class implements \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\MimeTypeGuesserInterface\" that is deprecated since Symfony 4.3, use {@link MimeTypesInterface} instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\MimeTypeGuesser\" class is deprecated since Symfony 4.3, use \"Symfony\\Component\\Mime\\MimeTypes\" instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\FileBinaryMimeTypeGuesser\" class is deprecated since Symfony 4.3, use \"Symfony\\Component\\Mime\\FileBinaryMimeTypeGuesser\" instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::setUp",
+        "message": "The \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\FileinfoMimeTypeGuesser\" class is deprecated since Symfony 4.3, use \"Symfony\\Component\\Mime\\FileinfoMimeTypeGuesser\" instead.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::testGetVersions",
+        "message": "The \"Drupal\\Component\\EventDispatcher\\ContainerAwareEventDispatcher::dispatch()\" method will require a new \"string|null $eventName\" argument in the next major version of its interface \"Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface\", not defining it is deprecated.",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\common\\Functional\\DkanDocsTest::testGetVersions",
+        "message": "The \"PHPUnit\\Framework\\TestCase::addWarning()\" method is considered internal This method is not covered by the backward compatibility promise for PHPUnit. It may change without further notice. You should not extend it from \"Drupal\\KernelTests\\KernelTestBase\".",
+        "count": 1
+    },
+    {
+        "location": "Drupal\\Tests\\metastore\\Kernel\\DataDictionarySettingsFormTest::testConfigForm",
+        "message": "The \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\MimeTypeGuesser\" class is deprecated since Symfony 4.3, use \"Symfony\\Component\\Mime\\MimeTypes\" instead.",
+        "count": 2
+    },
+    {
+        "location": "Drupal\\Tests\\metastore\\Kernel\\DataDictionarySettingsFormTest::testConfigForm",
+        "message": "The \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\FileBinaryMimeTypeGuesser\" class is deprecated since Symfony 4.3, use \"Symfony\\Component\\Mime\\FileBinaryMimeTypeGuesser\" instead.",
+        "count": 2
+    },
+    {
+        "location": "Drupal\\Tests\\metastore\\Kernel\\DataDictionarySettingsFormTest::testConfigForm",
+        "message": "The \"Symfony\\Component\\HttpFoundation\\File\\MimeType\\FileinfoMimeTypeGuesser\" class is deprecated since Symfony 4.3, use \"Symfony\\Component\\Mime\\FileinfoMimeTypeGuesser\" instead.",
+        "count": 2
+    }
+]
