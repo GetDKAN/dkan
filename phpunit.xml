@@ -61,6 +61,6 @@
     <env name="DTT_BASE_URL" value="http://web"/>
     <env name="SIMPLETEST_BASE_URL" value="http://web"/>
     <env name="SIMPLETEST_DB" value="mysql://drupal:123@db/drupal"/>
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="baselineFile=./modules/contrib/dkan/allowed-deprecations.json"/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
   </php>
 </phpunit>
