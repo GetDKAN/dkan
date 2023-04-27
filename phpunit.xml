@@ -7,9 +7,6 @@
   stopOnFailure="false"
   stopOnError="false"
   verbose="true">
-  <listeners>
-    <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
-  </listeners>
   <coverage>
     <include>
       <directory>.</directory>
