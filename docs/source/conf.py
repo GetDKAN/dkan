@@ -16,8 +16,6 @@ import sys
 sys.path.append(os.path.abspath('..'))
 
 
-from myst_parser import __version__
-
 # -- Project information -----------------------------------------------------
 
 project = 'DKAN Documentation'
@@ -25,7 +23,7 @@ copyright = '2023, CivicActions'
 author = 'CivicActions'
 
 # The full version, including alpha/beta/rc tags
-release = '2.15.1'
+release = '2.15.2'
 version = '2.x'
 
 # -- General configuration ---------------------------------------------------
