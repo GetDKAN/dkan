@@ -17,7 +17,7 @@ will iterate over the file, if it does not finish, the job will be returned to t
 have cron running on a regular basis so that large file imports will complete. You can view the status
 of datastore imports at `/admin/dkan/datastore/status`.
 
-If you enable the  module, the file will be imported in
+If you enable the :ref:`Datastore Mysql Import <mysql_import>` module, the file will be imported in
 a single step using MySQL's native LOAD DATA function.
 
 .. attention::
@@ -27,7 +27,10 @@ a single step using MySQL's native LOAD DATA function.
 If there is a change to the *distribution: downloadURL* property, the existing datastore will be dropped
 and a new import will be triggered.
 
+.. _mysql_import:
 
+.. include:: ../../../modules/datastore/modules/datastore_mysql_import/README.md
+   :parser: myst_parser.sphinx_
 
 Datastore Settings
 ------------------
