@@ -7,13 +7,17 @@ Installation
   uses for our own implementations and deployments.
 
 For either working on a project locally or working on the core DKAN software and libraries, using a standardized, `docker <https://www.docker.com/>`_-based local environment is recommended.
-`DDEV <https://ddev.readthedocs.io/en/stable/>`_ with the `DKAN DDev Addon <https://getdkan.github.io/dkan-ddev-addon/>`_ command-line utility will work on Mac or Linux to create containers for the various services needed by DKAN.
+
+- [Installing Docker](https://ddev.readthedocs.io/en/latest/users/install/docker-installation/)
+- [Installing DDEV](https://ddev.readthedocs.io/en/latest/users/install/ddev-installation/)
+
+Using `DDEV <https://ddev.readthedocs.io/en/stable/>`_ with the `DKAN DDev Addon <https://getdkan.github.io/dkan-ddev-addon/>`_ command-line utility will work on Mac, Linux, or Windows to create containers for the various services needed by DKAN.
 This will ensure you have the same setup as DKAN's core developers, and that your environment is very close to that of our continuous integration tools.
 
 Requirements
 ------------
 
-DKAN is based on Drupal software and -- generally -- runs anywhere Drupal is supported. For the most common setup, we reccomend:
+DKAN is based on `Drupal software <https://www.drupal.org/>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we reccomend:
 
 -  MySQL: minimum version 5.7.8+ with PDO
 -  PHP: minimum version 7.4.x or 8.0
