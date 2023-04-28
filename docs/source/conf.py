@@ -35,7 +35,8 @@ version = '2.x'
 extensions = [
   'myst_parser',
   'sphinx.ext.autosectionlabel',
-  'sphinxcontrib.httpdomain'
+  'sphinxcontrib.httpdomain',
+  'sphinx_rtd_theme'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
