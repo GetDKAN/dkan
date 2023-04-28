@@ -4,8 +4,6 @@ context('Administration pages', () => {
     const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
     cy.drupalLogin(user_credentials.user, user_credentials.pass)
     cy.visit(baseurl + "/admin/dkan")
-    cy.viewport('macbook-15')
-    cy.wait(200)
   })
 
   it('I should see a link for the dataset properties configuration', () => {
