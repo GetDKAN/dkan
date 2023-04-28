@@ -2,4 +2,4 @@ DKAN Metastore
 ==================
 
 .. include:: ../../../modules/metastore/README.md
-   :parser: myst_parser.sphinx_
+    :parser: myst_parser.docutils_
