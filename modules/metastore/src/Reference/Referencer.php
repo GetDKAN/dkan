@@ -248,60 +248,6 @@ class Referencer {
   }
 
   /**
-   * Substitute the host for local URLs with a custom localhost token.
-   *
-   * @param string $resourceUrl
-   *   The URL of the resource being substituted.
-   *
-   * @return string
-   *   The resource URL with the custom localhost token.
-   */
-  public static function hostify(string $resourceUrl): string {
-    // Get HTTP server public files URL and extract the host.
-    $serverPublicFilesUrl = UrlHostTokenResolver::getServerPublicFilesUrl();
-    $serverPublicFilesUrl = isset($serverPublicFilesUrl) ? parse_url($serverPublicFilesUrl) : NULL;
-    $serverHost = $serverPublicFilesUrl['host'] ?? \Drupal::request()->getHost();
-    // Determine whether the resource URL has the same host as this server.
-    $resourceParsedUrl = parse_url($resourceUrl);
-    if (isset($resourceParsedUrl['host']) && $resourceParsedUrl['host'] == $serverHost) {
-      // Swap out the host portion of the resource URL with the localhost token.
-      $resourceParsedUrl['host'] = UrlHostTokenResolver::TOKEN;
-      $resourceUrl = self::unparseUrl($resourceParsedUrl);
-    }
-    return $resourceUrl;
-  }
-
-  /**
-   * Private.
-   */
-  private static function unparseUrl($parsedUrl) {
-    $url = '';
-    $urlParts = [
-      'scheme',
-      'host',
-      'port',
-      'user',
-      'pass',
-      'path',
-      'query',
-      'fragment',
-    ];
-
-    foreach ($urlParts as $part) {
-      if (!isset($parsedUrl[$part])) {
-        continue;
-      }
-      $url .= ($part == "port") ? ':' : '';
-      $url .= ($part == "query") ? '?' : '';
-      $url .= ($part == "fragment") ? '#' : '';
-      $url .= $parsedUrl[$part];
-      $url .= ($part == "scheme") ? '://' : '';
-    }
-
-    return $url;
-  }
-
-  /**
    * Determine the mime type of the supplied local file.
    *
    * @param string $downloadUrl
@@ -394,7 +340,7 @@ class Referencer {
     elseif (isset($distribution->downloadURL)) {
       // Determine whether the supplied distribution has a local or remote
       // resource.
-      $is_local = $distribution->downloadURL !== $this->hostify($distribution->downloadURL);
+      $is_local = $distribution->downloadURL !== UrlHostTokenResolver::hostify($distribution->downloadURL);
       $mimeType = $is_local ?
         $this->getLocalMimeType($distribution->downloadURL) :
         $this->getRemoteMimeType($distribution->downloadURL);

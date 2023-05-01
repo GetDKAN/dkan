@@ -366,25 +366,6 @@ class ReferencerTest extends TestCase {
   }
 
   /**
-   * Test the `Referencer::hostify()` method.
-   */
-  public function testHostify(): void {
-    // Initialize `\Drupal::container`.
-    $options = (new Options())
-      ->add('stream_wrapper_manager', StreamWrapperManager::class)
-      ->index(0);
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
-      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class);
-    \Drupal::setContainer($container_chain->getMock());
-    // Ensure the hostify method is properly resolving the supplied URL.
-    $this->assertEquals(
-      'http://' . UrlHostTokenResolver::TOKEN . '/' . self::FILE_PATH,
-      Referencer::hostify(self::HOST . '/' . self::FILE_PATH));
-  }
-
-  /**
    * Test the remote/local file mime type detection logic.
    */
   public function testMimeTypeDetection(): void {
