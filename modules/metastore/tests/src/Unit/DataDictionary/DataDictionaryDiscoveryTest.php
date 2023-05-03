@@ -41,36 +41,4 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $discovery->dictionaryIdFromResource('resource1');
   }
 
-  // If mode is set to "collection", at the moment we should throw an exception
-  // because this is not yet supported.
-  public function testModeCollection() {
-    $configFactoryMock = $this->getConfigFactoryMock(Discovery::MODE_COLLECTION, 'abc-123');
-    $discovery = new Discovery($configFactoryMock);
-
-    $this->expectException(\OutOfRangeException::class);
-    $discovery->dictionaryIdFromResource('resource1');
-  }
-
-  // If mode is set to "generate", at the moment we should throw an exception
-  // because this is not yet supported.
-  public function testModeGenerate() {
-    $configFactoryMock = $this->getConfigFactoryMock(Discovery::MODE_GENERATE, 'abc-123');
-    $discovery = new Discovery($configFactoryMock);
-
-    $this->expectException(\OutOfRangeException::class);
-    $discovery->dictionaryIdFromResource('resource1');
-  }
-
-  // Build mock config service, based on arguments for mode and sitewide ID.
-  private function getConfigFactoryMock($mode, $sitewideId) {
-    $options = (new Options())
-      ->add('data_dictionary_mode', $mode)
-      ->add('data_dictionary_sitewide', $sitewideId)
-      ->index(0);
-
-    return (new Chain($this))
-      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', $options)
-      ->getMock();
-  }
 }

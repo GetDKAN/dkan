@@ -26,6 +26,13 @@ class UrlHostTokenResolverTest extends TestCase {
   public const HOST = 'http://example.com';
 
   /**
+   * HTTP file path for testing download URL.
+   *
+   * @var string
+   */
+  public const FILE_PATH = 'tmp/mycsv.csv';
+
+  /**
    *
    */
   public function test() {

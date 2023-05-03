@@ -12,7 +12,10 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\MetastoreService;
 
 use Contracts\FactoryInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\StreamWrapper;
 
 /**
  * Metastore referencer service.
@@ -36,12 +39,24 @@ class Referencer {
   private $storageFactory;
 
   /**
+   * Metastore URL Generator service.
+   *
+   * @var \Drupal\metastore\Reference\MetastoreUrlGenerator
+   */
+  public MetastoreUrlGenerator $metastoreUrlGenerator;
+
+  /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
+  public function __construct(
+    ConfigFactoryInterface $configService,
+    FactoryInterface $storageFactory,
+    MetastoreUrlGenerator $metastoreUrlGenerator
+  ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
+    $this->metastoreUrlGenerator = $metastoreUrlGenerator;
   }
 
   /**
@@ -158,18 +173,38 @@ class Referencer {
    * @return object
    *   The supplied distribution with an updated resource download URL.
    */
-  private function distributionHandling($distribution): object {
+  public function distributionHandling($distribution): object {
     // Ensure the supplied distribution has a valid resource before attempting
     // to register it with the resource mapper.
-    if (is_object($distribution) && isset($distribution->downloadURL)) {
+    if (isset($distribution->downloadURL)) {
       // Register this distribution's resource with the resource mapper and
       // replace the download URL with a unique ID registered in the resource
       // mapper.
       $distribution->downloadURL = $this->registerWithResourceMapper(
-        $this->hostify($distribution->downloadURL), $this->getMimeType($distribution));
+        UrlHostTokenResolver::hostify($distribution->downloadURL), $this->getMimeType($distribution));
+    }
+
+    $config = $this->configService->get('metastore.settings');
+    if (($distribution->describedBy ?? FALSE) && $config->get('data_dictionary_mode') == DataDictionaryDiscovery::MODE_REFERENCE) {
+      // Register this distribution's resource with the resource mapper and
+      // replace the download URL with a unique ID registered in the resource
+      // mapper.
+      $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);
     }
 
     return $distribution;
+  }
+
+  protected function normalizeDictionaryValue(string $value): string {
+    $incoming_scheme = StreamWrapperManager::getScheme($value);
+    $uri = in_array($incoming_scheme, ['http', 'https']) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
+    if (StreamWrapperManager::getScheme($uri) != MetastoreUrlGenerator::DKAN_SCHEME) {
+      throw new \DomainException("The value in describedBy was not a valid data dictionary URL: $value");
+    }
+    if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
+      throw new \DomainException("The value $uri, derived from $value, is not a valid data-dictionary URI.");
+    }
+    return $uri;
   }
 
   /**

@@ -9,8 +9,7 @@ interface DataDictionaryDiscoveryInterface {
 
   public const MODE_NONE = 'none';
   public const MODE_SITEWIDE = 'sitewide';
-  public const MODE_COLLECTION = 'collection';
-  public const MODE_GENERATE = 'generate';
+  public const MODE_REFERENCE = 'reference';
 
   /**
    * Return the item ID for the appropriate data dictionary for a resource.
