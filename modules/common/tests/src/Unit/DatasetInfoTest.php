@@ -5,7 +5,7 @@ namespace Drupal\Tests\common\Unit;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\datastore\Service as Datastore;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
@@ -98,7 +98,7 @@ class DatasetInfoTest extends TestCase {
   public function testGetStorage() {
     // Make some dependencies.
     // Initially, we'll make the datastore service return the table object.
-    $datastore_service = $this->getMockBuilder(Datastore::class)
+    $datastore_service = $this->getMockBuilder(DatastoreService::class)
       ->disableOriginalConstructor()
       ->onlyMethods(['getStorage'])
       ->getMockForAbstractClass();
@@ -180,7 +180,7 @@ class DatasetInfoTest extends TestCase {
       ->add(DataFactory::class, 'getInstance', NodeData::class)
       ->add(NodeData::class, 'getEntityLatestRevision', NULL);
     $mockDatastore = (new Chain($this))
-      ->add(Datastore::class);
+      ->add(DatastoreService::class);
     $mockResourceMapper = (new Chain($this))
       ->add(ResourceMapper::class);
 

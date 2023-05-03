@@ -9,7 +9,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\datastore\Service as DatastoreService;
+use Drupal\datastore\DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
 
 use Procrastinator\Result;
@@ -40,7 +40,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   /**
    * DKAN datastore service instance.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   protected $datastore;
 
@@ -76,7 +76,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The plugin implementation definition.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   A config factory instance.
-   * @param \Drupal\datastore\Service $datastore
+   * @param \Drupal\datastore\DatastoreService $datastore
    *   A DKAN datastore service instance.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
    *   A logger channel factory instance.

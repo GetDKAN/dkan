@@ -33,8 +33,8 @@ trait QueryBuilderTrait {
   private function getQuery(array $params, IndexInterface $index, QueryHelperInterface $queryHelper): array {
     $query = $queryHelper->createQuery($index);
 
-    list($query, $activeFullText) = $this->setFullText($query, $params, $index);
-    list($query, $activeCondition) = $this->setFieldConditions($query, $params, $index);
+    [$query, $activeFullText] = $this->setFullText($query, $params, $index);
+    [$query, $activeCondition] = $this->setFieldConditions($query, $params, $index);
     $query = $this->setSort($query, $params, $index);
     $query = $this->setRange($query, $params, $index);
 

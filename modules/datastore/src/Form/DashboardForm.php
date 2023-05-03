@@ -10,8 +10,8 @@ use Drupal\common\DatasetInfo;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Url;
 use Drupal\common\UrlHostTokenResolver;
-use Drupal\harvest\Service;
-use Drupal\metastore\Service as MetastoreService;
+use Drupal\harvest\HarvestService;
+use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -26,7 +26,7 @@ class DashboardForm extends FormBase {
   /**
    * Harvest service.
    *
-   * @var \Drupal\harvest\Service
+   * @var \Drupal\harvest\HarvestService
    */
   protected $harvest;
 
@@ -40,7 +40,7 @@ class DashboardForm extends FormBase {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
@@ -75,11 +75,11 @@ class DashboardForm extends FormBase {
   /**
    * DashboardController constructor.
    *
-   * @param \Drupal\harvest\Service $harvestService
+   * @param \Drupal\harvest\HarvestService $harvestService
    *   Harvest service.
    * @param \Drupal\common\DatasetInfo $datasetInfo
    *   Dataset information service.
-   * @param \Drupal\metastore\Service $metastoreService
+   * @param \Drupal\metastore\MetastoreService $metastoreService
    *   Metastore service.
    * @param \Drupal\Core\Pager\PagerManagerInterface $pagerManager
    *   Pager manager service.
@@ -89,7 +89,7 @@ class DashboardForm extends FormBase {
    *   The post import service.
    */
   public function __construct(
-    Service $harvestService,
+    HarvestService $harvestService,
     DatasetInfo $datasetInfo,
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,

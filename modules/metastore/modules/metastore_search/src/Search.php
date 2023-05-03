@@ -4,7 +4,7 @@ namespace Drupal\metastore_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -38,7 +38,7 @@ class Search implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   private $metastoreService;
 
@@ -59,7 +59,7 @@ class Search implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\metastore\Service $metastoreService
+   * @param \Drupal\metastore\MetastoreService $metastoreService
    *   Metastore service.
    * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
    *   Entity type manager.
@@ -67,7 +67,7 @@ class Search implements ContainerInjectionInterface {
    *   Query helper.
    */
   public function __construct(
-    Metastore $metastoreService,
+    MetastoreService $metastoreService,
     EntityTypeManager $entityTypeManager,
     QueryHelperInterface $queryHelper
   ) {
@@ -129,7 +129,7 @@ class Search implements ContainerInjectionInterface {
     $params['page-size'] = PHP_INT_MAX;
     $params['page'] = 1;
 
-    list($query, $activeConditions) = $this->getQuery($params, $this->index, $this->queryHelper);
+    [$query, $activeConditions] = $this->getQuery($params, $this->index, $this->queryHelper);
 
     if ($activeConditions) {
       $facets = $this->getFacetsFromContent($params, $query);

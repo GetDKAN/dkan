@@ -9,7 +9,7 @@ use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 
 use Contracts\FactoryInterface;
 use GuzzleHttp\Client as GuzzleClient;
@@ -421,7 +421,7 @@ class Referencer {
     $storage = $this->storageFactory->getInstance($property_id);
     $nodes = $storage->getEntityStorage()->loadByProperties([
       'field_data_type' => $property_id,
-      'title' => Service::metadataHash($data),
+      'title' => MetastoreService::metadataHash($data),
     ]);
 
     if ($node = reset($nodes)) {

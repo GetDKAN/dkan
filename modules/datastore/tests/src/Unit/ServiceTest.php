@@ -8,7 +8,7 @@ use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
 use Drupal\datastore\Service\Import as ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
@@ -47,7 +47,7 @@ class ServiceTest extends TestCase {
       ->add(QueueFactory::class, "get", NULL)
       ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
 
-    $service = Service::create($chain->getMock());
+    $service = DatastoreService::create($chain->getMock());
     $result = $service->import("1");
 
     $this->assertTrue(is_array($result));
@@ -64,7 +64,7 @@ class ServiceTest extends TestCase {
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', TRUE);
 
-    $service = Service::create($mockChain->getMock());
+    $service = DatastoreService::create($mockChain->getMock());
     // Ensure variations on drop return nothing.
     $actual = $service->drop('foo');
     $this->assertNull($actual);
@@ -83,7 +83,7 @@ class ServiceTest extends TestCase {
     $chain = $this->getCommonChain()
       ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
 
-    $service = Service::create($chain->getMock());
+    $service = DatastoreService::create($chain->getMock());
     $result = $service->getDataDictionaryFields();
 
     $this->assertTrue(is_array($result));

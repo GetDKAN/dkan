@@ -9,7 +9,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 use MockChain\Options;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
@@ -437,7 +437,7 @@ class QueryControllerTest extends TestCase {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
-      ->add("dkan.datastore.service", Service::class)
+      ->add("dkan.datastore.service", DatastoreService::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)

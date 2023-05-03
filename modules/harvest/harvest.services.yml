@@ -1,6 +1,6 @@
 services:
   dkan.harvest.service:
-    class: Drupal\harvest\Service
+    class: Drupal\harvest\HarvestService
     arguments:
       - '@dkan.harvest.storage.database_table'
       - '@dkan.metastore.service'

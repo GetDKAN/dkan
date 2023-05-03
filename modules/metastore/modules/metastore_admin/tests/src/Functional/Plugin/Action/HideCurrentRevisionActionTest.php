@@ -3,11 +3,11 @@
 namespace Drupal\Tests\metastore_admin\Functional\Plugin\Action;
 
 use Drupal\Core\Session\AccountProxy;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\user\Entity\User;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\Entity\UserCreationTrait;
@@ -43,7 +43,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     $this->testUser = $this->createUser([], "testadmin", TRUE, ['mail' => 'testadmin@test.com']);
     $this->testApiUser = $this->createUser([], "testapiuser", FALSE, ['roles' => ['api_user'], 'mail' => 'testapiuser@test.com']);
 
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**
@@ -150,7 +150,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
   }
 
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

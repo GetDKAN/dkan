@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 
 /**
@@ -127,7 +127,7 @@ function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     // TODO: use an actual schema id.
     $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
-    $object = \Drupal\metastore\Service::removeReferences($object);
+    $object = \Drupal\metastore\MetastoreService::removeReferences($object);
     $form[$fieldName]['widget'][0]['value']['#default_value'] = json_encode($object);
   }
 }
@@ -145,7 +145,7 @@ function metastore_entity_view_alter(array &$build, EntityInterface $entity, Ent
     }
 
     $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
-    $object = Service::removeReferences($object);
+    $object = MetastoreService::removeReferences($object);
     $build[$fieldName][0]['#context']['value'] = (string) $object;
   }
 }

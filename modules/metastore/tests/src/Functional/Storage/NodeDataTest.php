@@ -3,10 +3,9 @@
 namespace Drupal\Tests\metastore\Functional\Storage;
 
 use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Service as Metastore;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -32,7 +31,7 @@ class NodeDataTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState("draft");
 
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**
@@ -89,7 +88,7 @@ class NodeDataTest extends ExistingSiteBase {
     $keywordStorage = $this->getStorage('keyword');
 
     $keyword = 'some keyword';
-    $hash = Service::metadataHash($keyword);
+    $hash = MetastoreService::metadataHash($keyword);
     $keywordId = $keywordStorage->retrieveByHash($hash, 'keyword');
     $keywordMetadata = json_decode($keywordStorage->retrieve($keywordId));
     $this->assertEquals($keyword, $keywordMetadata->data);
@@ -157,7 +156,7 @@ class NodeDataTest extends ExistingSiteBase {
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
   }
 
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

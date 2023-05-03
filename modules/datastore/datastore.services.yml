@@ -1,6 +1,6 @@
 services:
   dkan.datastore.service:
-    class: \Drupal\datastore\Service
+    class: \Drupal\datastore\DatastoreService
     arguments:
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
@@ -11,7 +11,7 @@ services:
 
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport
-    arguments: 
+    arguments:
      - '@database'
      - '@dkan.metastore.resource_mapper'
 
@@ -82,7 +82,7 @@ services:
       - '@dkan.datastore.database'
 
   dkan.datastore.sql_endpoint.service:
-    class: \Drupal\datastore\SqlEndpoint\Service
+    class: \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
     arguments:
       - '@dkan.datastore.service'
       - '@config.factory'

@@ -1,6 +1,6 @@
 services:
   dkan.metastore.service:
-    class: \Drupal\metastore\Service
+    class: \Drupal\metastore\MetastoreService
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'

@@ -10,7 +10,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\common\Events\Event;
@@ -56,7 +56,7 @@ class DatastoreSubscriberTest extends TestCase {
     $event = new Event($resource);
 
     $chain = $this->getContainerChain();
-    $chain->add(Service::class, 'import', new \Exception());
+    $chain->add(DatastoreService::class, 'import', new \Exception());
 
     // When the conditions of a new "datastoreable" resource are met, add
     // an import operation to the queue.
@@ -100,7 +100,7 @@ class DatastoreSubscriberTest extends TestCase {
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('dkan.datastore.service', Service::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add("database", Connection::class)
@@ -108,7 +108,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'drop')
+      ->add(DatastoreService::class, 'drop')
       ->add(DatabaseTable::class, 'drop')
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
@@ -135,7 +135,7 @@ class DatastoreSubscriberTest extends TestCase {
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('dkan.datastore.service', Service::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add("database", Connection::class)
@@ -143,7 +143,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'drop', new \Exception('error'))
+      ->add(DatastoreService::class, 'drop', new \Exception('error'))
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
@@ -168,7 +168,7 @@ class DatastoreSubscriberTest extends TestCase {
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('dkan.datastore.service', Service::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add("database", Connection::class)
@@ -176,7 +176,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'drop')
+      ->add(DatastoreService::class, 'drop')
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
@@ -197,14 +197,14 @@ class DatastoreSubscriberTest extends TestCase {
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('dkan.datastore.service', Service::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'import', [], 'import')
+      ->add(DatastoreService::class, 'import', [], 'import')
       ->add(ResourcePurger::class, 'schedule');
   }
 
