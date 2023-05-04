@@ -25,41 +25,66 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- *
+ * @covers \Drupal\datastore_mysql_import\Service\MysqlImport
+ * @coversDefaultClass  \Drupal\datastore_mysql_import\Service\MysqlImport
  */
 class MysqlImportTest extends TestCase {
 
   protected const HOST = 'http://example.org';
+
   protected const TABLE_NAME = 'example_table';
 
+  public function providerGenerateTableSpec() {
+    return [
+      [
+        [
+          'two_lines' => [
+            'type' => 'text',
+            'description' => 'two lines',
+          ],
+          'two__lines__with_spaces' => [
+            'type' => 'text',
+            'description' => 'two lines with spaces',
+          ],
+          'oneline' => [
+            'type' => 'text',
+            'description' => 'oneline',
+          ],
+        ],
+        [
+          "two\nlines",
+          "two\n lines \nwith spaces\n",
+          "oneline",
+        ],
+      ],
+      'duplicate_columns' => [
+        [
+          'duplicate' => [
+            'type' => 'text',
+            'description' => 'duplicate',
+          ],
+          'duplicate_2' => [
+            'type' => 'text',
+            'description' => 'duplicate',
+          ],
+        ],
+        [
+          'duplicate',
+          'duplicate',
+        ],
+      ],
+    ];
+  }
+
   /**
-   * Test spec generation.
+   * @covers ::generateTableSpec
+   * @dataProvider providerGenerateTableSpec
    */
-  public function testGenerateTableSpec() {
-    $mysqlImporter = $this->getMysqlImporter();
-    $columns = [
-      "two\nlines",
-      "two\n lines \nwith spaces\n",
-      "oneline",
-    ];
-
-    $expectedSpec = [
-      'two_lines' => [
-        'type' => 'text',
-        'description' => 'two lines',
-      ],
-      'two__lines__with_spaces' => [
-        'type' => 'text',
-        'description' => 'two lines with spaces',
-      ],
-      'oneline' => [
-        'type' => 'text',
-        'description' => 'oneline',
-      ],
-    ];
-    $spec = $mysqlImporter->generateTableSpec($columns);
-
-    $this->assertEquals($expectedSpec, $spec);
+  public function testGenerateTableSpec($expectedSpec, $columns) {
+    $this->assertEquals(
+      $expectedSpec,
+      $this->getMysqlImporter()->generateTableSpec($columns)
+    );
   }
 
   /**
@@ -134,8 +159,8 @@ class MysqlImportTest extends TestCase {
       public $sqlStatement = '';
 
       public function __construct($resource, $dataStorage) {
-          $this->resource = $resource;
-          $this->dataStorage = $dataStorage;
+        $this->resource = $resource;
+        $this->dataStorage = $dataStorage;
       }
 
       public function run(): Result {
@@ -145,9 +170,11 @@ class MysqlImportTest extends TestCase {
 
       protected function getDatabaseConnectionCapableOfDataLoad() {
         return new class {
+
           public function query() {
             return NULL;
           }
+
         };
       }
 
@@ -180,5 +207,6 @@ class MysqlImportTest extends TestCase {
       ->add(JobStoreFactory::class, 'getInstance', $jobStore)
       ->getMock();
   }
+
 
 }

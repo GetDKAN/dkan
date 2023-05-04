@@ -11,6 +11,7 @@
         "drupal/select2": "^1.13",
         "drupal/views_bulk_operations": "^4.0",
         "ext-json": "*",
+        "ext-pdo": "*",
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.1",
         "getdkan/contracts": "^1.0.0",
