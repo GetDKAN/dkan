@@ -10,6 +10,16 @@ namespace Drupal\datastore_mysql_import\Service;
  */
 class MysqlImport extends MySqlImportJob {
 
+  /**
+   * Constructor method.
+   *
+   * @param string $identifier
+   *   Job identifier.
+   * @param mixed $storage
+   *   Storage class.
+   * @param array|null $config
+   *   Configuration options.
+   */
   protected function __construct(string $identifier, $storage, array $config = NULL) {
     parent::__construct($identifier, $storage, $config);
     @trigger_error(__NAMESPACE__ . '\MysqlImport is deprecated. Use \Drupal\datastore_mysql_import\Service\MySqlImportJob instead.', E_USER_DEPRECATED);
