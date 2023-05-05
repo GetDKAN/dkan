@@ -14,7 +14,7 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\datastore\Service\Import as Service;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore_mysql_import\Service\MysqlImport;
+use Drupal\datastore_mysql_import\Service\MySqlImportJob;
 
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use MockChain\Chain;
@@ -25,10 +25,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @covers \Drupal\datastore_mysql_import\Service\MysqlImport
- * @coversDefaultClass  \Drupal\datastore_mysql_import\Service\MysqlImport
+ * @covers \Drupal\datastore_mysql_import\Service\MySqlImportJob
+ * @coversDefaultClass  \Drupal\datastore_mysql_import\Service\MySqlImportJob
+ *
+ * @group dkan
+ * @group datastore
+ * @group datastore_mysql_import
  */
-class MysqlImportTest extends TestCase {
+class MySqlImportJobTest extends TestCase {
 
   protected const HOST = 'http://example.org';
 
@@ -112,7 +116,7 @@ class MysqlImportTest extends TestCase {
     $jobStoreFactory = $this->getJobstoreFactoryMock();
 
     $service = new Service($resource, $jobStoreFactory, $databaseTableFactory);
-    $service->setImporterClass(MysqlImport::class);
+    $service->setImporterClass(MySqlImportJob::class);
     $service->import();
 
     $result = $service->getResult();
@@ -154,7 +158,7 @@ class MysqlImportTest extends TestCase {
     $delimiter = ',';
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
 
-    return new class($resource, $databaseTableFactory->getInstance('test')) extends MysqlImport {
+    return new class($resource, $databaseTableFactory->getInstance('test')) extends MySqlImportJob {
 
       public $sqlStatement = '';
 

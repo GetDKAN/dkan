@@ -3,4 +3,9 @@ services:
     class: \Drupal\datastore_mysql_import\Factory\MysqlImportFactory
     arguments:
       - '@dkan.common.job_store'
-      - '@dkan.datastore.database_table_factory'
+      - '@dkan.datastore_mysql_import.mysql_import_table_factory'
+
+  dkan.datastore_mysql_import.mysql_import_table_factory:
+    class: \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+    arguments:
+      - '@dkan.datastore.database'
