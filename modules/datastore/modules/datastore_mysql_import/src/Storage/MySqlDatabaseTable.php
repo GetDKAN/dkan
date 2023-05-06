@@ -11,11 +11,10 @@ class MySqlDatabaseTable extends DatabaseTable {
 
   /**
    * {@inheritDoc}
-   *
-   * If the table exists already, we want to throw an exception. This allows us
-   * to account for timed-out CSV imports.
    */
   protected function setTable() {
+    // If the table exists already, we want to throw an exception. This allows
+    // us to account for timed-out CSV imports.
     $table_name = $this->getTableName();
     if ($this->tableExist($table_name)) {
       throw new MySqlDatabaseTableExistsException('Table already exists: ' . $table_name);

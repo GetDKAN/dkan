@@ -31,12 +31,6 @@ class MySqlDatabaseTableTest extends TestCase {
     $this->expectException(MySqlDatabaseTableExistsException::class);
     $this->expectExceptionMessage('Table already exists: datastore_people');
 
-    // Create the table.
-    $database_table = new MySqlDatabaseTable(
-      $this->getConnectionChain()->getMock(),
-      $this->getResource()
-    );
-
     $expected_fields = [
       'record_number' => [
         'type' => 'serial',
@@ -57,6 +51,12 @@ class MySqlDatabaseTableTest extends TestCase {
         'mysql_type' => 'text',
       ],
     ];
+
+    // Create the table.
+    $database_table = new MySqlDatabaseTable(
+      $this->getConnectionChain()->getMock(),
+      $this->getResource()
+    );
     $this->assertEquals($expected_fields, $database_table->getSchema()['fields']);
 
     // Create a new table object.

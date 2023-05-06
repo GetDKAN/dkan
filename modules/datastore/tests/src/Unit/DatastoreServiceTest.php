@@ -19,16 +19,15 @@ use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
-use TypeError;
 
 /**
- *
+ * @covers \Drupal\datastore\DatastoreService
+ * @coversDefaultClass \Drupal\datastore\DatastoreService
  */
-class ServiceTest extends TestCase {
+class DatastoreServiceTest extends TestCase {
   use ServiceCheckTrait;
 
   /**
@@ -41,14 +40,14 @@ class ServiceTest extends TestCase {
       ->add(ResourceLocalizer::class, 'getResult', Result::class)
       ->add(FileFetcher::class, 'run', Result::class)
       ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
-      ->add(ImportService::class, "import", NULL)
-      ->add(ImportService::class, "getResult", new Result())
-      ->add(QueueFactory::class, "get", NULL)
-      ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
+      ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
+      ->add(ImportService::class, 'import', NULL)
+      ->add(ImportService::class, 'getResult', new Result())
+      ->add(QueueFactory::class, 'get', NULL)
+      ->add(ContainerAwareEventDispatcher::class, 'dispatch', NULL);
 
     $service = DatastoreService::create($chain->getMock());
-    $result = $service->import("1");
+    $result = $service->import('1');
 
     $this->assertTrue(is_array($result));
   }
@@ -66,14 +65,11 @@ class ServiceTest extends TestCase {
 
     $service = DatastoreService::create($mockChain->getMock());
     // Ensure variations on drop return nothing.
-    $actual = $service->drop('foo');
-    $this->assertNull($actual);
-    $actual = $service->drop('foo', '123152');
-    $this->assertNull($actual);
-    $actual = $service->drop('foo', NULL, FALSE);
-    $this->assertNull($actual);
-    $this->expectException(TypeError::class);
-    $actual = $service->drop('foo', NULL, NULL);
+    $this->assertNull($service->drop('foo'));
+    $this->assertNull($service->drop('foo', '123152'));
+    $this->assertNull($service->drop('foo', NULL, FALSE));
+    $this->expectException(\TypeError::class);
+    $service->drop('foo', NULL, NULL);
   }
 
   /**
@@ -86,7 +82,7 @@ class ServiceTest extends TestCase {
     $service = DatastoreService::create($chain->getMock());
     $result = $service->getDataDictionaryFields();
 
-    $this->assertTrue(is_array($result));
+    $this->assertIsArray($result);
   }
 
   private function getCommonChain() {
