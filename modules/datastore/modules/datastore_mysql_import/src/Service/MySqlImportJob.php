@@ -31,16 +31,13 @@ class MySqlImportJob extends ImportJob {
    */
   protected function runIt(): Result {
     // Attempt to resolve resource file name from file path.
-    $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
-    if ($file_path === FALSE) {
+    if (!($file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath()))) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
-    $delimiter = ($this->resource->getMimeType() == 'text/tab-separated-values') ? "\t" : ',';
-
     // Read the columns and EOL character sequence from the CSV file.
     try {
-      [$columns, $column_lines] = $this->getColsFromFile($file_path, $delimiter);
+      [$columns, $column_lines] = $this->resource->getColsFromFile();
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
@@ -69,55 +66,19 @@ class MySqlImportJob extends ImportJob {
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->getStorage()->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter)
+      $this->getSqlStatement(
+        $file_path,
+        $this->getStorage()->getTableName(),
+        array_keys($spec),
+        $eol,
+        $header_line_count,
+        $this->resource->getDelimiter()
+      )
     );
 
     Database::setActiveConnection('default');
     $this->getResult()->setStatus(Result::DONE);
     return $this->getResult();
-  }
-
-  /**
-   * Attempt to read the columns and detect the EOL chars of the given CSV file.
-   *
-   * @param string $file_path
-   *   File path.
-   * @param string $delimiter
-   *   File delimiter.
-   *
-   * @return array
-   *   An array containing only two elements; the CSV columns and the column
-   *   lines.
-   *
-   * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
-   *   On failure to open the file;
-   *   on failure to read the first line from the file.
-   */
-  protected function getColsFromFile(string $file_path, string $delimiter): array {
-
-    // Open the CSV file.
-    $f = fopen($file_path, 'r');
-
-    // Ensure the file could be successfully opened.
-    if (!isset($f) || $f === FALSE) {
-      throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
-    }
-
-    // Attempt to retrieve the columns from the resource file.
-    $columns = fgetcsv($f, 0, $delimiter);
-    // Attempt to read the column lines from the resource file.
-    $end_pointer = ftell($f);
-    rewind($f);
-    $column_lines = fread($f, $end_pointer);
-
-    // Close the resource file, since it is no longer needed.
-    fclose($f);
-    // Ensure the columns of the resource file were successfully read.
-    if (!isset($columns) || $columns === FALSE) {
-      throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
-    }
-
-    return [$columns, $column_lines];
   }
 
   /**
@@ -148,11 +109,11 @@ class MySqlImportJob extends ImportJob {
   /**
    * Private.
    */
-  protected function getDatabaseConnectionCapableOfDataLoad() {
+  protected function getDatabaseConnectionCapableOfDataLoad($key = 'extra') {
     $options = \Drupal::database()->getConnectionOptions();
     $options['pdo'][\PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;
-    Database::addConnectionInfo('extra', 'default', $options);
-    Database::setActiveConnection('extra');
+    Database::addConnectionInfo($key, 'default', $options);
+    Database::setActiveConnection($key);
 
     return Database::getConnection();
   }
@@ -199,7 +160,7 @@ class MySqlImportJob extends ImportJob {
    *
    * @param string $file_path
    *   File path to the CSV file being imported.
-   * @param string $tablename
+   * @param string $table_name
    *   Name of the datastore table the file is being imported into.
    * @param string[] $headers
    *   List of CSV headers.
@@ -213,10 +174,10 @@ class MySqlImportJob extends ImportJob {
    * @return string
    *   Generated SQL file import statement.
    */
-  protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count, string $delimiter): string {
+  protected function getSqlStatement(string $file_path, string $table_name, array $headers, string $eol, int $header_line_count, string $delimiter): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
-      'INTO TABLE ' . $tablename,
+      'INTO TABLE ' . $table_name,
       'FIELDS TERMINATED BY \'' . $delimiter . '\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',
