@@ -58,7 +58,7 @@ class MySqlImportJobTest extends TestCase {
         [
           "two\nlines",
           "two\n lines \nwith spaces\n",
-          "oneline",
+          'oneline',
         ],
       ],
       'duplicate_columns' => [
@@ -153,6 +153,30 @@ class MySqlImportJobTest extends TestCase {
     ]));
   }
 
+  public function provideGetEol() {
+    return [
+      [NULL, 'no_line_ending'],
+      ['\r\n', "ending\r\n"],
+      ['\r', "ending\r"],
+      ['\n', "ending\n"],
+    ];
+  }
+
+  /**
+   * @covers ::getEol
+   * @dataProvider provideGetEol
+   */
+  public function testGetEol($expected, $string) {
+    $job = $this->getMockBuilder(MySqlImportJob::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $ref_get_eol = new \ReflectionMethod($job, 'getEol');
+    $ref_get_eol->setAccessible(TRUE);
+
+    $this->assertSame($expected, $ref_get_eol->invokeArgs($job, [$string]));
+  }
+
   protected function getMysqlImporter() {
     $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
     $delimiter = ',';
@@ -211,6 +235,5 @@ class MySqlImportJobTest extends TestCase {
       ->add(JobStoreFactory::class, 'getInstance', $jobStore)
       ->getMock();
   }
-
 
 }
