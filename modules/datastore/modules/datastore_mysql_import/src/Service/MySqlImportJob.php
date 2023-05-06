@@ -36,9 +36,7 @@ class MySqlImportJob extends ImportJob {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
-    $mimeType = $this->resource->getMimeType();
-    $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ',';
-    $data_store = $this->getStorage();
+    $delimiter = ($this->resource->getMimeType() == 'text/tab-separated-values') ? "\t" : ',';
 
     // Read the columns and EOL character sequence from the CSV file.
     try {
@@ -56,26 +54,26 @@ class MySqlImportJob extends ImportJob {
     // Generate sanitized table headers from column names.
     // Use headers to set the storage schema.
     $spec = $this->generateTableSpec($columns);
-    $data_store->setSchema(['fields' => $spec]);
+
+    $this->getStorage()->setSchema(['fields' => $spec]);
     try {
       // The count() method has a side effect of creating the table, via
       // setTable().
-      $data_store->count();
+      $this->getStorage()->count();
     }
     catch (MySqlDatabaseTableExistsException $e) {
       // Error out if the table already existed.
       $this->setResultError($e->getMessage());
+      return $this->getResult();
     }
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $data_store->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter)
+      $this->getSqlStatement($file_path, $this->getStorage()->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter)
     );
 
-    Database::setActiveConnection();
-
+    Database::setActiveConnection('default');
     $this->getResult()->setStatus(Result::DONE);
-
     return $this->getResult();
   }
 
