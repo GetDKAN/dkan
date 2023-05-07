@@ -23,6 +23,8 @@ class DatastoreResource implements \JsonSerializable {
   ];
 
   /**
+   * EOL token, stored so we don't need to recompute.
+   *
    * @var string
    */
   private $eolToken;
@@ -52,6 +54,7 @@ class DatastoreResource implements \JsonSerializable {
    * CSV columns.
    *
    * @var string[]
+   *   Array of strings representing the column names.
    */
   private $columns;
 
@@ -59,6 +62,7 @@ class DatastoreResource implements \JsonSerializable {
    * CSV column lines.
    *
    * @var string
+   *   All the column names in a string.
    */
   private $columnLines;
 
@@ -132,6 +136,7 @@ class DatastoreResource implements \JsonSerializable {
    * Get EOL literal.
    *
    * @return string
+   *   EOL string literal.
    */
   public function getEol() {
     return self::EOL_TABLE[$this->getEolToken() ?? '\n'];
