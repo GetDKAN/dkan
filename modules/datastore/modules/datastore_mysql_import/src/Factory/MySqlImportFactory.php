@@ -2,66 +2,21 @@
 
 namespace Drupal\datastore_mysql_import\Factory;
 
-use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Import as Instance;
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\datastore\Service\Factory\Import;
 use Drupal\datastore_mysql_import\Service\MySqlImportJob;
 
 /**
  * Importer factory.
  */
-class MySqlImportFactory implements ImportFactoryInterface {
+class MySqlImportFactory extends Import {
 
   /**
-   * The JobStore Factory service.
-   *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   */
-  private $jobStoreFactory;
-
-  /**
-   * Database table factory service.
-   *
-   * @var \Drupal\datastore\Storage\DatabaseTableFactory
-   */
-  private $databaseTableFactory;
-
-  /**
-   * Services array. Not really needed, following FactoryInterface.
-   *
-   * @var array
-   */
-  private $services = [];
-
-  /**
-   * Constructor.
-   */
-  public function __construct(JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
-    $this->databaseTableFactory = $databaseTableFactory;
-  }
-
-  /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
-
-    if (!isset($config['resource'])) {
-      throw new \Exception("config['resource'] is required");
-    }
-
-    $resource = $config['resource'];
-
-    if (!isset($this->services[$identifier])) {
-      $this->services[$identifier] = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
-    }
-
-    $this->services[$identifier]->setImporterClass(MySqlImportJob::class);
-
-    return $this->services[$identifier];
+    $instance = parent::getInstance($identifier, $config);
+    $instance->setImporterClass(MySqlImportJob::class);
+    return $instance;
   }
 
 }

@@ -105,7 +105,7 @@ class DatastoreResource implements \JsonSerializable {
    */
   public function getEolToken(): ?string {
     if (empty($this->eolToken)) {
-      [$columns, $line] = $this->getColsFromFile();
+      $line = $this->getColsFromFile()[1];
       $this->eolToken = NULL;
 
       if (preg_match('/\r\n$/', $line)) {
@@ -126,7 +126,7 @@ class DatastoreResource implements \JsonSerializable {
    * @return string
    */
   public function getEol() {
-    return self::EOL_TABLE[$this->getEolToken()];
+    return self::EOL_TABLE[$this->getEolToken() ?? '\n'];
   }
 
   /**
@@ -155,7 +155,11 @@ class DatastoreResource implements \JsonSerializable {
       $file_path = $this->realPath();
 
       // Open the CSV file.
-      if (empty($f = fopen($file_path, 'r'))) {
+      try {
+        if (empty($f = fopen($file_path, 'r'))) {
+          throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
+        }
+      } catch(\Throwable $e) {
         throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
       }
 

@@ -30,7 +30,7 @@ class Import implements ImportFactoryInterface {
    *
    * @var \Drupal\datastore\Service\Import[]
    */
-  private $services = [];
+  protected $services = [];
 
   /**
    * Constructor.
@@ -41,9 +41,7 @@ class Import implements ImportFactoryInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
 
