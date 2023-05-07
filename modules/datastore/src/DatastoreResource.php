@@ -22,6 +22,9 @@ class DatastoreResource implements \JsonSerializable {
     '\n' => "\n",
   ];
 
+  /**
+   * @var string
+   */
   private $eolToken;
 
   /**
@@ -45,7 +48,14 @@ class DatastoreResource implements \JsonSerializable {
    */
   private $mimeType;
 
+  /**
+   * @var string[]
+   */
   private $columns;
+
+  /**
+   * @var string[]
+   */
   private $columnLines;
 
   /**
@@ -71,6 +81,11 @@ class DatastoreResource implements \JsonSerializable {
     return $this->filePath;
   }
 
+  /**
+   * Real path to the resource.
+   *
+   * @return string
+   */
   public function realPath(): string {
     return \Drupal::service('file_system')->realpath($this->getFilePath());
   }
@@ -107,6 +122,9 @@ class DatastoreResource implements \JsonSerializable {
     return $this->eolToken;
   }
 
+  /**
+   * @return string
+   */
   public function getEol() {
     return self::EOL_TABLE[$this->getEolToken()];
   }
@@ -135,18 +153,14 @@ class DatastoreResource implements \JsonSerializable {
   public function getColsFromFile(): array {
     if (empty($this->columns) && empty($this->columnLines)) {
       $file_path = $this->realPath();
-      $delimiter = $this->getDelimiter();
 
       // Open the CSV file.
-      $f = fopen($file_path, 'r');
-
-      // Ensure the file could be successfully opened.
-      if (!isset($f) || $f === FALSE) {
+      if (empty($f = fopen($file_path, 'r'))) {
         throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
       }
 
       // Attempt to retrieve the columns from the resource file.
-      $this->columns = fgetcsv($f, 0, $delimiter);
+      $this->columns = fgetcsv($f, 0, $this->getDelimiter());
       // Attempt to read the column lines from the resource file.
       $end_pointer = ftell($f);
       rewind($f);

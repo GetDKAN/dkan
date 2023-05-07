@@ -7,7 +7,6 @@ use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableExistsException;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableInterface;
 use Procrastinator\Result;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * MySQL LOAD DATA importer.
@@ -26,8 +25,6 @@ class MySqlImportJob extends ImportJob {
   }
 
   /**
-   * Override.
-   *
    * {@inheritdoc}
    */
   protected function runIt(): Result {
@@ -40,8 +37,7 @@ class MySqlImportJob extends ImportJob {
     try {
       [$columns, $column_lines] = $this->resource->getColsFromFile();
       $eol = $this->resource->getEol() ?? "\n";
-    }
-    catch (\Throwable $e) {
+    } catch (\Throwable $e) {
       return $this->setResultError($e->getMessage());
     }
     // Count the number of EOL characters in the header row to determine how
@@ -56,22 +52,14 @@ class MySqlImportJob extends ImportJob {
       // The count() method has a side effect of creating the table, via
       // setTable().
       $this->getStorage()->count();
-    }
-    catch (MySqlDatabaseTableExistsException $e) {
+    } catch (MySqlDatabaseTableExistsException $e) {
       // Error out if the table already existed.
       return $this->setResultError($e->getMessage());
     }
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement(
-        $file_path,
-        $this->getStorage()->getTableName(),
-        array_keys($spec),
-        $eol,
-        $header_line_count,
-        $this->resource->getDelimiter()
-      )
+      $this->getSqlStatement($file_path, $this->getStorage()->getTableName(), array_keys($spec), $eol, $header_line_count, $this->resource->getDelimiter())
     );
 
     Database::setActiveConnection('default');
@@ -80,7 +68,7 @@ class MySqlImportJob extends ImportJob {
   }
 
   /**
-   * Private.
+   * Set up an alternate DB connection which can read a CSV file.
    */
   protected function getDatabaseConnectionCapableOfDataLoad($key = 'extra') {
     $options = \Drupal::database()->getConnectionOptions();

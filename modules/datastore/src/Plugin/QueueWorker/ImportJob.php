@@ -194,7 +194,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * {@inheritdoc}
    */
-  protected function runIt() {
+  protected function runIt(): Result {
     $filename = $this->resource->getFilePath();
     $size = @filesize($filename);
     if (!$size) {
