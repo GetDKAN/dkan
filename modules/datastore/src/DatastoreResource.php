@@ -49,12 +49,16 @@ class DatastoreResource implements \JsonSerializable {
   private $mimeType;
 
   /**
+   * CSV columns.
+   *
    * @var string[]
    */
   private $columns;
 
   /**
-   * @var string[]
+   * CSV column lines.
+   *
+   * @var string
    */
   private $columnLines;
 
@@ -92,13 +96,15 @@ class DatastoreResource implements \JsonSerializable {
 
   /**
    * Get the mimeType.
+   *
+   * @return string
    */
   public function getMimeType(): string {
     return $this->mimeType;
   }
 
   /**
-   * Attempt to detect the EOL character.
+   * Get the EOL token.
    *
    * @return string|null
    *   The EOL character for the given line, or NULL on failure.
@@ -123,6 +129,8 @@ class DatastoreResource implements \JsonSerializable {
   }
 
   /**
+   * Get EOL literal.
+   *
    * @return string
    */
   public function getEol() {
@@ -151,31 +159,35 @@ class DatastoreResource implements \JsonSerializable {
    *   on failure to read the first line from the file.
    */
   public function getColsFromFile(): array {
-    if (empty($this->columns) && empty($this->columnLines)) {
-      $file_path = $this->realPath();
+    if (!empty($this->columns) && !empty($this->columnLines)) {
+      return [$this->columns, $this->columnLines];
+    }
 
-      // Open the CSV file.
-      try {
-        if (empty($f = fopen($file_path, 'r'))) {
-          throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
-        }
-      } catch(\Throwable $e) {
-        throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
+    $file_path = $this->realPath();
+
+    // Open the CSV file.
+    try {
+      if (empty($f = fopen($file_path, 'r'))) {
+        throw new \Exception();
       }
+    }
+    catch (\Throwable $e) {
+      // The fopen() function can also throw errors, so we catch \Throwable.
+      throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
+    }
 
-      // Attempt to retrieve the columns from the resource file.
-      $this->columns = fgetcsv($f, 0, $this->getDelimiter());
-      // Attempt to read the column lines from the resource file.
-      $end_pointer = ftell($f);
-      rewind($f);
-      $this->columnLines = fread($f, $end_pointer);
+    // Attempt to retrieve the columns from the resource file.
+    $this->columns = fgetcsv($f, 0, $this->getDelimiter());
+    // Attempt to read the column lines from the resource file.
+    $end_pointer = ftell($f);
+    rewind($f);
+    $this->columnLines = fread($f, $end_pointer);
 
-      // Close the resource file, since it is no longer needed.
-      fclose($f);
-      // Ensure the columns of the resource file were successfully read.
-      if (!isset($this->columns) || $this->columns === FALSE) {
-        throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
-      }
+    // Close the resource file, since it is no longer needed.
+    fclose($f);
+    // Ensure the columns of the resource file were successfully read.
+    if (!isset($this->columns) || $this->columns === FALSE) {
+      throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
     }
 
     return [$this->columns, $this->columnLines];
