@@ -187,7 +187,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Get the storage object.
    */
-  public function getStorage() {
+  public function getStorage(): DatabaseTableInterface {
     return $this->dataStorage;
   }
 
@@ -309,9 +309,9 @@ class ImportJob extends AbstractPersistentJob {
    * Drop all import jobs.
    */
   public function drop() {
-    $results = $this->dataStorage->retrieveAll();
+    $results = $this->getStorage()->retrieveAll();
     foreach ($results as $id => $data) {
-      $this->dataStorage->remove($id);
+      $this->getStorage()->remove($id);
     }
     $this->getResult()->setStatus(Result::STOPPED);
   }
@@ -334,7 +334,7 @@ class ImportJob extends AbstractPersistentJob {
       $recordNumber++;
     }
     if (!empty($records)) {
-      $this->dataStorage->storeMultiple($records);
+      $this->getStorage()->storeMultiple($records);
     }
     $this->setStateProperty('recordNumber', $recordNumber);
   }
@@ -353,7 +353,7 @@ class ImportJob extends AbstractPersistentJob {
         'type' => "text",
       ];
     }
-    $this->dataStorage->setSchema($schema);
+    $this->getStorage()->setSchema($schema);
   }
 
   /**

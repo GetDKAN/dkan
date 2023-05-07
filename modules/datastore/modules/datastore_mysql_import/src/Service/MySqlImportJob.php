@@ -5,6 +5,7 @@ namespace Drupal\datastore_mysql_import\Service;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableExistsException;
+use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableInterface;
 use Procrastinator\Result;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -14,15 +15,15 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class MySqlImportJob extends ImportJob {
 
   /**
-   * End Of Line character sequence escape to literal map.
-   *
-   * @var string[]
+   * {@inheritDoc}
    */
-  protected const EOL_TABLE = [
-    '\r\n' => "\r\n",
-    '\r' => "\r",
-    '\n' => "\n",
-  ];
+  protected function __construct(string $identifier, $storage, array $config = NULL) {
+    $this->dataStorage = $config['storage'];
+    if (!($this->dataStorage instanceof MySqlDatabaseTableInterface)) {
+      throw new \Exception('Storage must be an instance of ' . MySqlDatabaseTableInterface::class);
+    }
+    parent::__construct($identifier, $storage, $config);
+  }
 
   /**
    * Override.
@@ -31,23 +32,21 @@ class MySqlImportJob extends ImportJob {
    */
   protected function runIt(): Result {
     // Attempt to resolve resource file name from file path.
-    if (!($file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath()))) {
+    if (!($file_path = $this->resource->realPath())) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
     // Read the columns and EOL character sequence from the CSV file.
     try {
       [$columns, $column_lines] = $this->resource->getColsFromFile();
+      $eol = $this->resource->getEol() ?? "\n";
     }
-    catch (FileException $e) {
+    catch (\Throwable $e) {
       return $this->setResultError($e->getMessage());
     }
-    // Attempt to detect the EOL character sequence for this file; default to
-    // '\n' on failure.
-    $eol = $this->getEol($column_lines) ?? '\n';
     // Count the number of EOL characters in the header row to determine how
     // many lines the headers are occupying.
-    $header_line_count = substr_count(trim($column_lines), self::EOL_TABLE[$eol]) + 1;
+    $header_line_count = substr_count(trim($column_lines), $eol) + 1;
     // Generate sanitized table headers from column names.
     // Use headers to set the storage schema.
     $spec = $this->generateTableSpec($columns);
@@ -60,8 +59,7 @@ class MySqlImportJob extends ImportJob {
     }
     catch (MySqlDatabaseTableExistsException $e) {
       // Error out if the table already existed.
-      $this->setResultError($e->getMessage());
-      return $this->getResult();
+      return $this->setResultError($e->getMessage());
     }
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
@@ -79,31 +77,6 @@ class MySqlImportJob extends ImportJob {
     Database::setActiveConnection('default');
     $this->getResult()->setStatus(Result::DONE);
     return $this->getResult();
-  }
-
-  /**
-   * Attempt to detect the EOL character for the given line.
-   *
-   * @param string $line
-   *   Line being analyzed.
-   *
-   * @return string|null
-   *   The EOL character for the given line, or NULL on failure.
-   */
-  protected function getEol(string $line): ?string {
-    $eol = NULL;
-
-    if (preg_match('/\r\n$/', $line)) {
-      $eol = '\r\n';
-    }
-    elseif (preg_match('/\r$/', $line)) {
-      $eol = '\r';
-    }
-    elseif (preg_match('/\n$/', $line)) {
-      $eol = '\n';
-    }
-
-    return $eol;
   }
 
   /**

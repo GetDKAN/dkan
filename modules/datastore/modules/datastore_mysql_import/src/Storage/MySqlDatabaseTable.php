@@ -7,7 +7,7 @@ use Drupal\datastore\Storage\DatabaseTable;
 /**
  * Database storage object for MySQL imports.
  */
-class MySqlDatabaseTable extends DatabaseTable {
+class MySqlDatabaseTable extends DatabaseTable implements MySqlDatabaseTableInterface {
 
   /**
    * {@inheritDoc}
