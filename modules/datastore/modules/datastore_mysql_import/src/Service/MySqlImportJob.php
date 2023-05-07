@@ -37,7 +37,8 @@ class MySqlImportJob extends ImportJob {
     try {
       [$columns, $column_lines] = $this->resource->getColsFromFile();
       $eol = $this->resource->getEol() ?? "\n";
-    } catch (\Throwable $e) {
+    }
+    catch (\Throwable $e) {
       return $this->setResultError($e->getMessage());
     }
     // Count the number of EOL characters in the header row to determine how
@@ -52,7 +53,8 @@ class MySqlImportJob extends ImportJob {
       // The count() method has a side effect of creating the table, via
       // setTable().
       $this->getStorage()->count();
-    } catch (MySqlDatabaseTableExistsException $e) {
+    }
+    catch (MySqlDatabaseTableExistsException $e) {
       // Error out if the table already existed.
       return $this->setResultError($e->getMessage());
     }
