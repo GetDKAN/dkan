@@ -4,16 +4,9 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Queue\QueueWorkerBase;
-
-use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
-
-use Procrastinator\Result;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Processes resource import.
@@ -56,25 +49,8 @@ class Import extends ImportQueueWorker {
     DatabaseConnectionFactoryInterface $defaultConnectionFactory,
     DatabaseConnectionFactoryInterface $datastoreConnectionFactory
   ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $configFactory, $datastore, $loggerFactory, $referenceLookup, $defaultConnectionFactory, $datastoreConnectionFactory);
     @trigger_error(__NAMESPACE__ . '\Import is deprecated. Use \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker instead.', E_USER_DEPRECATED);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('config.factory'),
-      $container->get('dkan.datastore.service'),
-      $container->get('logger.factory'),
-      $container->get('dkan.metastore.reference_lookup'),
-      $container->get('dkan.common.database_connection_factory'),
-      $container->get('dkan.datastore.database_connection_factory')
-    );
   }
 
 }
