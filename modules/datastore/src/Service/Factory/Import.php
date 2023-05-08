@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Service\Factory;
 
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore\Service\Import as Instance;
+use Drupal\datastore\Service\ImportService as Instance;
 use Drupal\common\Storage\JobStoreFactory;
 
 /**
@@ -28,7 +28,7 @@ class Import implements ImportFactoryInterface {
   /**
    * Import services.
    *
-   * @var \Drupal\datastore\Service\Import[]
+   * @var \Drupal\datastore\Service\ImportService[]
    */
   private $services = [];
 

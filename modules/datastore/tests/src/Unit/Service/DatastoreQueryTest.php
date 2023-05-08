@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Service\Import as ServiceImport;
+use Drupal\datastore\Service\ImportService as ServiceImport;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\DatabaseTable;

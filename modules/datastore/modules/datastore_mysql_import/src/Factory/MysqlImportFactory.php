@@ -4,7 +4,7 @@ namespace Drupal\datastore_mysql_import\Factory;
 
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Import as Instance;
+use Drupal\datastore\Service\ImportService as Instance;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 

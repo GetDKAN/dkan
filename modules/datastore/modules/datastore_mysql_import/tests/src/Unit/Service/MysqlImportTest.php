@@ -11,7 +11,7 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\datastore\Service\Import as Service;
+use Drupal\datastore\Service\ImportService as Service;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
