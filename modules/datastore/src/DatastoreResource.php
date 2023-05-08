@@ -93,6 +93,7 @@ class DatastoreResource implements \JsonSerializable {
    * Real path to the resource.
    *
    * @return string
+   *   Real path to the resource.
    */
   public function realPath(): string {
     return \Drupal::service('file_system')->realpath($this->getFilePath());
@@ -102,6 +103,7 @@ class DatastoreResource implements \JsonSerializable {
    * Get the mimeType.
    *
    * @return string
+   *  MIME type.
    */
   public function getMimeType(): string {
     return $this->mimeType;
