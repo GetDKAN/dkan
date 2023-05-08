@@ -10,7 +10,7 @@ use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Factory\Import;
+use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -190,7 +190,7 @@ class DatastoreQueryTest extends TestCase {
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.datastore.service", DatastoreService::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
-      ->add("dkan.datastore.service.factory.import", Import::class)
+      ->add("dkan.datastore.service.factory.import", ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
@@ -210,7 +210,7 @@ class DatastoreQueryTest extends TestCase {
       ->add(Data::class, "retrieve", $resource_metadata)
       ->add(QueueFactory::class, "get", [])
       ->add(ResourceLocalizer::class, "get", $resource)
-      ->add(Import::class, "getInstance", ImportService::class)
+      ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "query", $queryResult, 'DatabaseTableQuery')
       ->add(DatabaseTable::class, "getSchema", ["fields" => ["a" => "a", "b" => "b"]])

@@ -53,7 +53,7 @@ services:
       - [setLoggerFactory, ['@logger.factory']]
 
   dkan.datastore.service.factory.import:
-    class: \Drupal\datastore\Service\Factory\Import
+    class: \Drupal\datastore\Service\Factory\ImportServiceFactory
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.database_table_factory'
