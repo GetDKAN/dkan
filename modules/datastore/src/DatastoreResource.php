@@ -103,7 +103,7 @@ class DatastoreResource implements \JsonSerializable {
    * Get the mimeType.
    *
    * @return string
-   *  MIME type.
+   *   MIME type.
    */
   public function getMimeType(): string {
     return $this->mimeType;
@@ -166,20 +166,15 @@ class DatastoreResource implements \JsonSerializable {
    *   on failure to read the first line from the file.
    */
   public function getColsFromFile(): array {
-    if (!empty($this->columns) && !empty($this->columnLines)) {
+    // If we already did this, send back the info.
+    if (isset($this->columns) && $this->columnLines) {
       return [$this->columns, $this->columnLines];
     }
 
     $file_path = $this->realPath();
 
-    // Open the CSV file.
-    try {
-      if (empty($f = fopen($file_path, 'r'))) {
-        throw new \Exception();
-      }
-    }
-    catch (\Throwable $e) {
-      // The fopen() function can also throw errors, so we catch \Throwable.
+    // Open the CSV file. Silence errors so we don't have to catch E_WARNING.
+    if (($f = @fopen($file_path, 'r')) === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
 
@@ -189,11 +184,12 @@ class DatastoreResource implements \JsonSerializable {
     $end_pointer = ftell($f);
     rewind($f);
     $this->columnLines = fread($f, $end_pointer);
-
     // Close the resource file, since it is no longer needed.
     fclose($f);
-    // Ensure the columns of the resource file were successfully read.
-    if (!isset($this->columns) || $this->columns === FALSE) {
+
+    // Ensure the columns of the resource file were successfully read. Fgetcsv()
+    // can return NULL or FALSE on error, but an empty array is valid.
+    if ($this->columns === NULL || $this->columns === FALSE) {
       throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
     }
 
