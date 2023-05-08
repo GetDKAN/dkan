@@ -190,7 +190,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();
-    $this->connection->delete($tableName)
+    return $this->connection->delete($tableName)
       ->condition($this->primaryKey(), $id)
       ->execute();
   }
