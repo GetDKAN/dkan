@@ -2,15 +2,9 @@
 
 namespace Drupal\datastore\Service;
 
-use CsvParser\Parser\Csv;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\EventDispatcherTrait;
-use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Procrastinator\Result;
 
 /**
  * Datastore import service.

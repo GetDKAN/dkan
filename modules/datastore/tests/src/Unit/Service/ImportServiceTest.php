@@ -15,7 +15,7 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\datastore\Service\ImportService as Service;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 
@@ -24,11 +24,12 @@ use MockChain\Options;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- *
+ * @coversDefaultClass \Drupal\datastore\Service\ImportService
  */
-class ImportTest extends TestCase {
+class ImportServiceTest extends TestCase {
 
   /**
    * Host protocol and domain for testing file path and download URL.
@@ -77,7 +78,7 @@ class ImportTest extends TestCase {
       ->add(JobStoreFactory::class, "getInstance", $jobStore)
       ->getMock();
 
-    $service = new Service($resource, $jobStoreFactory, $databaseTableFactory);
+    $service = new ImportService($resource, $jobStoreFactory, $databaseTableFactory);
     $service->import();
 
     $result = $service->getResult();
@@ -108,12 +109,12 @@ class ImportTest extends TestCase {
     \Drupal::setContainer($container);
 
     $importService = (new Chain($this))
-      ->add(Service::class, 'getResource', DataResource::class)
-      ->add(Service::class, 'getImporter', ImportJob::class)
-      ->add(Service::class, 'getStorage', DatabaseTable::class)
-      ->add(Service::class, 'getResource',  $resource)
+      ->add(ImportService::class, 'getResource', DataResource::class)
+      ->add(ImportService::class, 'getImporter', ImportJob::class)
+      ->add(ImportService::class, 'getStorage', DatabaseTable::class)
+      ->add(ImportService::class, 'getResource',  $resource)
       ->add(ImportJob::class, 'run', Result::class)
-      ->add(Service::class, 'getResult', Result::class)
+      ->add(ImportService::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE)
       ->add(DatabaseTable::class, 'getTableName', $datastore_table)
       ->getMock();
@@ -128,10 +129,10 @@ class ImportTest extends TestCase {
    */
   public function testLogImportError() {
     $importMock = (new Chain($this))
-      ->add(Service::class, 'getResource', new DataResource('abc.txt', 'text/csv'))
-      ->add(Service::class, 'getImporter', ImportJob::class)
+      ->add(ImportService::class, 'getResource', new DataResource('abc.txt', 'text/csv'))
+      ->add(ImportService::class, 'getImporter', ImportJob::class)
       ->add(ImportJob::class, 'run', Result::class)
-      ->add(Service::class, 'getResult', Result::class)
+      ->add(ImportService::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::ERROR)
       ->getMock();
 

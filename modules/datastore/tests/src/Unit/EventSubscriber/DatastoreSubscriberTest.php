@@ -19,7 +19,7 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
-use Drupal\datastore\Service\ImportService as ImportService;
+use Drupal\datastore\Service\ImportService;
 use Drupal\common\Storage\JobStore;
 use Drupal\metastore\MetastoreItemInterface;
 

@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Service\ImportService as ServiceImport;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -210,8 +210,8 @@ class DatastoreQueryTest extends TestCase {
       ->add(Data::class, "retrieve", $resource_metadata)
       ->add(QueueFactory::class, "get", [])
       ->add(ResourceLocalizer::class, "get", $resource)
-      ->add(Import::class, "getInstance", ServiceImport::class)
-      ->add(ServiceImport::class, "getStorage", DatabaseTable::class)
+      ->add(Import::class, "getInstance", ImportService::class)
+      ->add(ImportService::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "query", $queryResult, 'DatabaseTableQuery')
       ->add(DatabaseTable::class, "getSchema", ["fields" => ["a" => "a", "b" => "b"]])
       ->add(DatabaseTable::class, "getTableName", "table2")

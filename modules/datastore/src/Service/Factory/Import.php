@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Service\Factory;
 
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore\Service\ImportService as Instance;
+use Drupal\datastore\Service\ImportService;
 use Drupal\common\Storage\JobStoreFactory;
 
 /**
@@ -54,7 +54,7 @@ class Import implements ImportFactoryInterface {
     $resource = $config['resource'];
 
     if (!isset($this->services[$identifier])) {
-      $this->services[$identifier] = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
+      $this->services[$identifier] = new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
     }
 
     return $this->services[$identifier];

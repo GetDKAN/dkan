@@ -10,7 +10,7 @@ use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
-use Drupal\datastore\Service\ImportService as ImportService;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Storage\DatabaseTable;
