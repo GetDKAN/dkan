@@ -104,7 +104,7 @@ trait Helper {
       $table->setHeaders(["item_id", "extract", "transform", "load"]);
 
       foreach ($run['status']['extracted_items_ids'] as $item_id) {
-        $row = $this->generateItemStatusRow($item_id, $run['status'], $run['errors']);
+        $row = $this->generateItemStatusRow($item_id, $run['status'], $run['errors'] ?? []);
         $table->addRow($row);
       }
 
