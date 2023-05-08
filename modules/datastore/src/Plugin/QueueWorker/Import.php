@@ -18,52 +18,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Processes resource import.
  *
- * @QueueWorker(
- *   id = "datastore_import",
- *   title = @Translation("Queue to process datastore import"),
- *   cron = {
- *     "time" = 180,
- *     "lease_time" = 10800
- *   }
- * )
+ * @deprecated
+ * @see \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker
  */
-class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-  use LoggerTrait;
-
-  /**
-   * This queue worker's corresponding database queue instance.
-   *
-   * @var \Drupal\Core\Queue\DatabaseQueue
-   */
-  protected $databaseQueue;
-
-  /**
-   * DKAN datastore service instance.
-   *
-   * @var \Drupal\datastore\DatastoreService
-   */
-  protected $datastore;
-
-  /**
-   * Reference lookup service.
-   *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
-   */
-  protected $referenceLookup;
-
-  /**
-   * Datastore config settings.
-   *
-   * @var \Drupal\Core\Config\Config
-   */
-  protected $datastoreConfig;
-
-  /**
-   * File system service.
-   *
-   * @var \Drupal\Core\File\FileSystemInterface
-   */
-  protected $fileSystem;
+class Import extends ImportQueueWorker {
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -99,18 +57,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     DatabaseConnectionFactoryInterface $datastoreConnectionFactory
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->datastore = $datastore;
-    $this->referenceLookup = $referenceLookup;
-    $this->datastoreConfig = $configFactory->get('datastore.settings');
-    $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
-    $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
-    $this->setLoggerFactory($loggerFactory, 'datastore');
-    // Set the timeout for database connections to the queue lease time.
-    // This ensures that database connections will remain open for the
-    // duration of the time the queue is being processed.
-    $timeout = (int) $plugin_definition['cron']['lease_time'];
-    $defaultConnectionFactory->setConnectionTimeout($timeout);
-    $datastoreConnectionFactory->setConnectionTimeout($timeout);
+    @trigger_error(__NAMESPACE__ . '\Import is deprecated. Use \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker instead.', E_USER_DEPRECATED);
   }
 
   /**
@@ -128,110 +75,6 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $container->get('dkan.common.database_connection_factory'),
       $container->get('dkan.datastore.database_connection_factory')
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function processItem($data) {
-    if (is_object($data) && isset($data->data)) {
-      $data = $data->data;
-    }
-
-    try {
-      $this->importData($data);
-    }
-    catch (\Exception $e) {
-      $this->error("Import for {$data['identifier']} returned an error: {$e->getMessage()}");
-    }
-  }
-
-  /**
-   * Perform the actual data import.
-   *
-   * @param array $data
-   *   Resource identifier information.
-   */
-  protected function importData(array $data) {
-    $identifier = $data['identifier'];
-    $version = $data['version'];
-    $results = $this->datastore->import($identifier, FALSE, $version);
-
-    $queued = FALSE;
-    foreach ($results as $label => $result) {
-      $queued = isset($result) ? $this->processResult($result, $data, $queued, $label) : FALSE;
-    }
-
-    // Delete local resource file if enabled in datastore settings config.
-    if ($this->datastoreConfig->get('delete_local_resource')) {
-      $this->fileSystem->deleteRecursive("public://resources/{$identifier}_{$version}");
-    }
-  }
-
-  /**
-   * Process the result of the import operation.
-   *
-   * @param \Procrastinator\Result $result
-   *   The result object.
-   * @param mixed $data
-   *   The resource data for import.
-   * @param bool $queued
-   *   Whether the import job is currently queued.
-   * @param string $label
-   *   A label to distinguish types of jobs in status messages.
-   *
-   * @return bool
-   *   The updated value for $queued.
-   */
-  protected function processResult(Result $result, $data, bool $queued = FALSE, string $label = 'Import') {
-    $uid = "{$data['identifier']}__{$data['version']}";
-    $status = $result->getStatus();
-    switch ($status) {
-      case Result::STOPPED:
-        if (!$queued) {
-          $newQueueItemId = $this->requeue($data);
-          $this->notice("$label for {$uid} is requeueing. (ID:{$newQueueItemId}).");
-          $queued = TRUE;
-        }
-        break;
-
-      case Result::IN_PROGRESS:
-      case Result::ERROR:
-        $this->error("$label for {$uid} returned an error: {$result->getError()}");
-        break;
-
-      case Result::DONE:
-        $this->notice("$label for {$uid} completed.");
-        $this->invalidateCacheTags("{$uid}__source");
-        break;
-    }
-
-    return $queued;
-  }
-
-  /**
-   * Invalidate all appropriate cache tags for this resource.
-   *
-   * @param mixed $resourceId
-   *   A resource ID.
-   */
-  protected function invalidateCacheTags($resourceId) {
-    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
-  }
-
-  /**
-   * Requeues the job with extra state information.
-   *
-   * @param array $data
-   *   Queue data.
-   *
-   * @return mixed
-   *   Queue ID or false if unsuccessful.
-   *
-   * @todo Clarify return value. Documentation suggests it should return ID.
-   */
-  protected function requeue(array $data) {
-    return $this->databaseQueue->createItem($data);
   }
 
 }
