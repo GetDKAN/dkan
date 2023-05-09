@@ -9,26 +9,25 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Factory\ImportServiceFactory as ImportServiceFactory;
+use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
-use TypeError;
 
 /**
- *
+ * @coversDefaultClass \Drupal\datastore\DatastoreService
  */
-class ServiceTest extends TestCase {
+class DatastoreServiceTest extends TestCase {
+
   use ServiceCheckTrait;
 
   /**
@@ -72,7 +71,7 @@ class ServiceTest extends TestCase {
     $this->assertNull($actual);
     $actual = $service->drop('foo', NULL, FALSE);
     $this->assertNull($actual);
-    $this->expectException(TypeError::class);
+    $this->expectException(\TypeError::class);
     $actual = $service->drop('foo', NULL, NULL);
   }
 
