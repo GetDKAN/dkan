@@ -22,7 +22,7 @@ interface DataDictionaryDiscoveryInterface {
    * @return string|null
    *   The data dictionary identifier or NULL if none exists.
    */
-  public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string;
+  public function getReferenceDictionaryId(string $resourceId, ?int $resourceIdVersion = NULL): ?string;
 
   /**
    * Get the current data dictionary "mode" from DKAN config.
@@ -40,9 +40,9 @@ interface DataDictionaryDiscoveryInterface {
   /**
    * If a single sitewide data dictionary has been defined, return its ID.
    *
-   * @return string
+   * @return string|null
    *   Data dictionary identifier.
    */
-  public function getSitewideDictionaryId(): string;
+  public function getSitewideDictionaryId(): ?string;
 
 }

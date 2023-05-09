@@ -6,16 +6,13 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\UrlHostTokenResolver;
-
+use Drupal\Core\StreamWrapper\PublicStream;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- *
- */
 class UrlHostTokenResolverTest extends TestCase {
 
   /**

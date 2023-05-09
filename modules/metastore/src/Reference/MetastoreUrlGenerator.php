@@ -44,6 +44,8 @@ class MetastoreUrlGenerator {
    *
    * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
    *   The stream wrapper manager.
+   * @param \Drupal\metastore\Service $metastore
+   *   Metastore service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
    */
@@ -57,6 +59,12 @@ class MetastoreUrlGenerator {
     $this->requestStack = $request_stack;
   }
 
+  /**
+   * Retrieve the metastore service.
+   *
+   * @return \Drupal\metastore\Service
+   *   Metastore service.
+   */
   protected function metastore(): Service {
     return $this->metastore;
   }
@@ -78,6 +86,8 @@ class MetastoreUrlGenerator {
   /**
    * If possible, convert public URL to dkan:// uri.
    *
+   * If already a dkan:// uri, returns $url untouched.
+   *
    * @param string $url
    *   Public URL.
    *
@@ -87,9 +97,14 @@ class MetastoreUrlGenerator {
    * @throws \DomainException
    */
   public function uriFromUrl(string $url): string {
+    $allowed = ['dkan', 'http', 'https'];
     $parts = parse_url($url);
-    if (!isset($parts['scheme']) || !in_array($parts['scheme'], ['http', 'https'])) {
+    if (!isset($parts['scheme']) || !in_array($parts['scheme'], $allowed)) {
       throw new \DomainException("Invalid URL $url");
+    }
+
+    if ($parts['scheme'] == 'dkan') {
+      return $url;
     }
 
     $request = $this->requestStack->getCurrentRequest();
@@ -127,7 +142,7 @@ class MetastoreUrlGenerator {
       return FALSE;
     }
 
-    $path = substr($uri, strlen(self::DKAN_SCHEME) + 3, );
+    $path = substr($uri, strlen(self::DKAN_SCHEME) + 3);
     $parts = explode('/', $path);
     if ($parts[0] != 'metastore' || $parts[1] != 'schemas' || $parts[3] != 'items') {
       return FALSE;
@@ -145,6 +160,26 @@ class MetastoreUrlGenerator {
       return FALSE;
     }
 
+  }
+
+  /**
+   * Extract an item ID from a DKAN URI.
+   *
+   * @param string $uri
+   *   DKAN URI, e.g. dkan://metastore/schemas/dataset/items/444.
+   * @param null|string $schema
+   *   Restrict to specific metastore schema, optional.
+   *
+   * @return string
+   *   The identifier string.
+   */
+  public function extractItemId(string $uri, ?string $schema = NULL): string {
+    if ($this->validateUri($uri, $schema)) {
+      $path = substr($uri, strlen(self::DKAN_SCHEME) + 3);
+      $parts = explode('/', $path);
+      return $parts[4];
+    }
+    throw new \DomainException("Invalid metastore URI: $uri");
   }
 
 }
