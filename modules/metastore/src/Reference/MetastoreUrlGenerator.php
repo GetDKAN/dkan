@@ -79,8 +79,9 @@ class MetastoreUrlGenerator {
     if (StreamWrapperManager::getScheme($uri) != self::DKAN_SCHEME) {
       throw new \DomainException("Only dkan:// urls accepted.");
     }
+    $parts = parse_url($uri);
     // Retrieve the URL path for the public stream.
-    return $this->dkanStream->getExternalUrl();
+    return $this->dkanStream->getExternalUrl() . $parts['path'];
   }
 
   /**
