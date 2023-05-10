@@ -21,9 +21,9 @@ class MetastoreUrlGenerator {
   /**
    * DKAN Stream Wrapper.
    *
-   * @var \Drupal\common\StreamWrapper\DkanStreamWrapper
+   * @var \Drupal\Core\StreamWrapper\StreamWrapperManager
    */
-  protected DkanStreamWrapper $dkanStream;
+  protected StreamWrapperManager $streamWrapperManager;
 
   /**
    * Metastore service.
@@ -54,7 +54,7 @@ class MetastoreUrlGenerator {
     Service $metastore,
     RequestStack $request_stack
   ) {
-    $this->dkanStream = $stream_wrapper_manager->getViaScheme(self::DKAN_SCHEME);
+    $this->streamWrapperManager = $stream_wrapper_manager;
     $this->metastore = $metastore;
     $this->requestStack = $request_stack;
   }
@@ -79,9 +79,9 @@ class MetastoreUrlGenerator {
     if (StreamWrapperManager::getScheme($uri) != self::DKAN_SCHEME) {
       throw new \DomainException("Only dkan:// urls accepted.");
     }
-    $parts = parse_url($uri);
     // Retrieve the URL path for the public stream.
-    return $this->dkanStream->getExternalUrl() . $parts['path'];
+    $parts = parse_url($uri);
+    return $this->streamWrapperManager->getViaScheme(self::DKAN_SCHEME)->getExternalUrl() . "/$parts[host]$parts[path]";
   }
 
   /**

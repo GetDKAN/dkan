@@ -42,7 +42,8 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
    */
   public function getExternalUrl() {
     $url = Url::fromUserInput(self::DKAN_API_URL_BASE . $this->getTarget(), ['absolute' => TRUE]);
-    return $url->toString();
+    $return = $url->toString(TRUE);
+    return $return->getGeneratedUrl();
   }
 
   /**

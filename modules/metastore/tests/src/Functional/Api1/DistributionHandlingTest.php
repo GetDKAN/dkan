@@ -27,7 +27,7 @@ class DistributionHandlingTest extends Api1TestBase {
     $datasetMetadata = $this->getSampleDataset(0);
     $uri = "dkan://metastore/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335";
     $url = \Drupal::service('dkan.metastore.url_generator')->generateAbsoluteString($uri);
-    $this->assertEquals("http://web/api/1/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335", $url);
+    $this->assertEquals("http://web/api/1/metastore/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335", $url);
     $datasetMetadata->distribution[0]->describedBy = $url;
     $datasetMetadata->distribution[0]->describedByType = 'application/vnd.tableschema+json';
 
