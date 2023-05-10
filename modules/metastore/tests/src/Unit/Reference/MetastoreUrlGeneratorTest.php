@@ -99,6 +99,9 @@ class MetastoreUrlGeneratorTest extends TestCase {
     $this->assertFalse($generator->validateUri("http://web/api/1/metastore/data-dictionary/items/111"));
   }
 
+  /**
+   * 
+   */
   public function testExtractItemId() {
     $generator = $this->getGenerator();
     $this->assertEquals("111", $generator->extractItemId("dkan://metastore/schemas/data-dictionary/items/111"));
