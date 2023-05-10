@@ -1,5 +1,5 @@
 services:
-  dkan.datastore.service.factory.import:
+  dkan.datastore_mysql_import.service.factory.import:
     class: \Drupal\datastore_mysql_import\Factory\MysqlImportFactory
     arguments:
       - '@dkan.common.job_store'

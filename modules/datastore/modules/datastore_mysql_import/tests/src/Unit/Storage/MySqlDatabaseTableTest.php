@@ -28,9 +28,6 @@ class MySqlDatabaseTableTest extends TestCase {
    * @see \Drupal\Tests\datastore\Unit\Storage\DatabaseTableTest::testGetSchema
    */
   public function testTableExistsException() {
-    $this->expectException(MySqlDatabaseTableExistsException::class);
-    $this->expectExceptionMessage('Table already exists: datastore_people');
-
     $expected_fields = [
       'record_number' => [
         'type' => 'serial',
@@ -66,6 +63,8 @@ class MySqlDatabaseTableTest extends TestCase {
     );
     // Calling count() should trigger setTable() which should find an existing
     // table in the DB.
+    $this->expectException(MySqlDatabaseTableExistsException::class);
+    $this->expectExceptionMessage('Table already exists: datastore_people');
     $second_table->count();
   }
 

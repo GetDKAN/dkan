@@ -13,6 +13,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Import as Service;
+use Drupal\datastore_mysql_import\Factory\MySqlImportFactory;
 use Drupal\datastore_mysql_import\Service\MySqlImportJob;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
@@ -208,6 +209,34 @@ class MySqlImportJobTest extends TestCase {
     return (new Chain($this))
       ->add(JobStoreFactory::class, 'getInstance', $jobStore)
       ->getMock();
+  }
+
+  public function testExistingTable() {
+    $this->markTestIncomplete('Test error state of mysql import job if table already exists.');
+
+    $identifier = 'identifier';
+
+    $factory = new MySqlImportFactory(
+      $this->getJobstoreFactoryMock(),
+      $this->getDatabaseTableFactoryMock()
+    );
+    $import_service = $factory->getInstance(
+      $identifier,
+      [
+        'resource' => new DataResource('file_path.csv', 'text/csv'),
+      ]
+    );
+    /** @var Result $result */
+    $result = $import_service->getImporter()->run();
+    // Result should be happy.
+    $this->assertEquals(Result::DONE, $result->getStatus());
+
+    // Do it again.
+    $import_service = $factory->getInstance($identifier);
+    /** @var Result $result */
+    $result = $import_service->getImporter()->run();
+    $this->assertEquals(Result::ERROR, $result->getStatus());
+    $this->assertEquals('table already exists, dude.', $result->getError());
   }
 
 }
