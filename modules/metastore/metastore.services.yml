@@ -118,3 +118,6 @@ services:
     class: \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
     arguments:
       - '@config.factory'
+      - '@dkan.metastore.service'
+      - '@dkan.metastore.reference_lookup'
+      - '@dkan.metastore.url_generator'

@@ -22,6 +22,19 @@ interface DataDictionaryDiscoveryInterface {
    * @return string|null
    *   The data dictionary identifier or NULL if none exists.
    */
+  public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string;
+
+  /**
+   * Look for a data dictionary from a metastore reference.
+   *
+   * @param string $resourceId
+   *   DKAN datastore resource identifier.
+   * @param int|null $resourceIdVersion
+   *   DKAN datastore resource version ID.
+   *
+   * @return string|null
+   *   The data dictionary identifier or NULL if none exists.
+   */
   public function getReferenceDictionaryId(string $resourceId, ?int $resourceIdVersion = NULL): ?string;
 
   /**
