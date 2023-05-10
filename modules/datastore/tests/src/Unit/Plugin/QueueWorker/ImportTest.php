@@ -11,7 +11,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\datastore\Plugin\QueueWorker\Import;
+use Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Reference\ReferenceLookup;
@@ -47,7 +47,7 @@ class ImportTest extends TestCase {
       ->add(LoggerChannel::class, 'log', NULL, 'log');
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
+    $queueWorker = ImportQueueWorker::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     // @todo Don't do this.
@@ -65,7 +65,7 @@ class ImportTest extends TestCase {
     $containerChain = $this->getContainerChain($result);
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
+    $queueWorker = ImportQueueWorker::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     $input = $containerChain->getStoredInput('create_item');

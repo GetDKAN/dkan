@@ -2,13 +2,13 @@
 
 namespace Drupal\datastore_mysql_import\Factory;
 
-use Drupal\datastore\Service\Factory\Import;
+use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore_mysql_import\Service\MySqlImportJob;
 
 /**
  * Importer factory.
  */
-class MySqlImportFactory extends Import {
+class MySqlImportFactory extends ImportServiceFactory {
 
   /**
    * {@inheritDoc}

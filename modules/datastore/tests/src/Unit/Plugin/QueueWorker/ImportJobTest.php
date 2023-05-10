@@ -211,7 +211,7 @@ class ImportJobTest extends TestCase {
   }
 
   /**
-   * This is the same as testLargeImport but different expectations.
+   * This is the same as testLargeImport but expects more than one pass.
    */
   public function testMultiplePasses() {
     $this->markTestIncomplete('This does not always use more than one pass.');
@@ -226,6 +226,7 @@ class ImportJobTest extends TestCase {
     ];
 
     $results = [];
+    $passes = 0;
     do {
       $import_job = ImportJob::get('1', $storage, $config);
       $import_job->setTimeLimit(1);
@@ -235,7 +236,11 @@ class ImportJobTest extends TestCase {
         $import_job->getResult()->getStatus()
       );
       $results += $import_job->getStorage()->retrieveAll();
+      ++$passes;
     } while ($import_job->getResult()->getStatus() != Result::DONE);
+
+    // How many passses did it take?
+    $this->assertGreaterThan(1, $passes);
 
     $a = '["1","11110000","L","1","DESIGNATED","16.814","16.846","51.484"]';
     $this->assertEquals($a, $results[0]);

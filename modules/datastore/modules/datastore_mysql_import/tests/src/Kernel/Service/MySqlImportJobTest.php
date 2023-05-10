@@ -49,7 +49,7 @@ class MySqlImportJobKernelTest extends KernelTestBase {
   }
 
   public function testExistingTable() {
-    //    $this->markTestIncomplete('Test error state of mysql import job if table already exists.');
+    $this->markTestIncomplete('Test error state of mysql import job if table already exists.');
 
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
     $identifier = 'identifier';
@@ -78,11 +78,11 @@ class MySqlImportJobKernelTest extends KernelTestBase {
     $this->assertEquals(Result::DONE, $result->getStatus(), 'Error message: ' . $result->getError());
 
     // Do it again.
-//    $import_job = $factory->getInstance($identifier);
+    //    $import_job = $factory->getInstance($identifier);
     /** @var Result $result */
-//    $result = $import_job->getImporter()->run();
-//    $this->assertEquals(Result::ERROR, $result->getStatus());
-//    $this->assertEquals('table already exists, dude.', $result->getError());
+    //    $result = $import_job->getImporter()->run();
+    //    $this->assertEquals(Result::ERROR, $result->getStatus());
+    //    $this->assertEquals('table already exists, dude.', $result->getError());
   }
 
 }

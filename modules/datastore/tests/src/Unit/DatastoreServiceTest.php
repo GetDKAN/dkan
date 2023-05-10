@@ -9,10 +9,11 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
-use Drupal\datastore\Service\Import as ImportService;
+use Drupal\datastore\Service\Factory\ImportServiceFactory;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
@@ -21,13 +22,13 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 
 /**
  * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
  */
 class DatastoreServiceTest extends TestCase {
+
   use ServiceCheckTrait;
 
   /**
