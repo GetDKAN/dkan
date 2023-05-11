@@ -7,7 +7,7 @@ use Drupal\Core\Http\RequestStack;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 
 /**
  * Convert between local file paths and public file URLs.
@@ -28,9 +28,9 @@ class MetastoreUrlGenerator {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService;
    */
-  protected Service $metastore;
+  protected MetastoreService $metastore;
 
   /**
    * The request stack.
@@ -51,7 +51,7 @@ class MetastoreUrlGenerator {
    */
   public function __construct(
     StreamWrapperManagerInterface $stream_wrapper_manager,
-    Service $metastore,
+    MetastoreService $metastore,
     RequestStack $request_stack
   ) {
     $this->streamWrapperManager = $stream_wrapper_manager;
