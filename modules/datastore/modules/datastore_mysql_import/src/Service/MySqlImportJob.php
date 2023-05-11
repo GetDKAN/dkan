@@ -48,11 +48,13 @@ class MySqlImportJob extends ImportJob {
     // Use headers to set the storage schema.
     $spec = $this->generateTableSpec($columns);
 
-    $this->getStorage()->setSchema(['fields' => $spec]);
+    $storage = $this->getStorage();
+
+    $storage->setSchema(['fields' => $spec]);
     try {
       // The count() method has a side effect of creating the table, via
       // setTable().
-      $this->getStorage()->count();
+      $storage->count();
     }
     catch (MySqlDatabaseTableExistsException $e) {
       // Error out if the table already existed.
@@ -61,9 +63,10 @@ class MySqlImportJob extends ImportJob {
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->getStorage()->getTableName(), array_keys($spec), $eol, $header_line_count, $this->resource->getDelimiter())
+      $this->getSqlStatement($file_path, $storage->getTableName(), array_keys($spec), $eol, $header_line_count, $this->resource->getDelimiter())
     );
 
+    // Set the active connection back to default.
     Database::setActiveConnection('default');
     $this->getResult()->setStatus(Result::DONE);
     return $this->getResult();

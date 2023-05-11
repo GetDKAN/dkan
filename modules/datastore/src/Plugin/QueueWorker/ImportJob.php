@@ -185,7 +185,7 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
-   * Get the storage object.
+   * Get the database storage object.
    */
   public function getStorage(): DatabaseTableInterface {
     return $this->dataStorage;

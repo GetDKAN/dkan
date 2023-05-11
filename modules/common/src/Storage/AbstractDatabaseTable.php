@@ -257,9 +257,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Create the table in the db if it does not yet exist.
    */
   protected function setTable() {
-    if (!$this->tableExist($this->getTableName())) {
+    $table_name = $this->getTableName();
+    if (!$this->tableExist($table_name)) {
       if ($this->schema) {
-        $this->tableCreate($this->getTableName(), $this->schema);
+        $this->tableCreate($table_name, $this->schema);
       }
       else {
         throw new \Exception("Could not instantiate the table due to a lack of schema.");

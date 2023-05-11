@@ -49,7 +49,7 @@ class MySqlImportJobKernelTest extends KernelTestBase {
   }
 
   public function testExistingTable() {
-    $this->markTestIncomplete('Test error state of mysql import job if table already exists.');
+//    $this->markTestIncomplete('Test error state of mysql import job if table already exists.');
 
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
     $identifier = 'identifier';
@@ -65,15 +65,16 @@ class MySqlImportJobKernelTest extends KernelTestBase {
       ]
     )->getImporter();
 
-    $this->assertEquals(MySqlImportJob::class, get_class($import_job));
+    $this->assertInstanceOf(MySqlImportJob::class, $import_job);
+    $this->assertEquals(Result::STOPPED, $import_job->getResult()->getStatus());
 
-    $this->assertEquals(
-      Result::STOPPED,
-      $import_job->getResult()->getStatus()
-    );
+    $storage = $import_job->getStorage();
+//    $storage->setSchema(['fields' => ['a','b','c']]);
+    $storage->count();
 
     /** @var Result $result */
     $result = $import_job->run();
+//        $this->assertEquals('foo', print_r($import_job->getStorage()->getSchema(), true));
     // Result should be happy.
     $this->assertEquals(Result::DONE, $result->getStatus(), 'Error message: ' . $result->getError());
 
