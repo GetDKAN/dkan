@@ -3,6 +3,7 @@
 version: '2.1'
 orbs:
   docker: circleci/docker@2.2.0
+  sonarcloud: sonarsource/sonarcloud@1.0.3
 
 commands:
   install-ddev:
@@ -166,6 +167,7 @@ jobs:
                   exit $TEST_RESULT
             - store_artifacts:
                 path: docroot/modules/contrib/dkan/coverage-html
+            - sonarcloud/scan
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -239,6 +241,7 @@ workflows:
               dkan_recommended_branch: [ '9.5.x-dev']
               php_version: [ '7.4', '8.1' ]
       - phpunit:
+          context: SonarCloud
           name: 'Install target (Drupal 9.5, PHP 8.0)'
           report_coverage: true
           matrix:
