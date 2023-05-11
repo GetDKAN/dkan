@@ -3,7 +3,7 @@
 version: '2.1'
 orbs:
   docker: circleci/docker@2.2.0
-  sonarcloud: sonarsource/sonarcloud@1.3.0
+  sonarcloud: sonarsource/sonarcloud@1.1.1
 
 commands:
   install-ddev:
