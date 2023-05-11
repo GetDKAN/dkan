@@ -167,7 +167,8 @@ jobs:
                   exit $TEST_RESULT
             - store_artifacts:
                 path: docroot/modules/contrib/dkan/coverage-html
-            - sonarcloud/scan
+            - sonarcloud/scan:
+                project_root: dkan
       - unless:
           condition: << parameters.report_coverage >>
           steps:
