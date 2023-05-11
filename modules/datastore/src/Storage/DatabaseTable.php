@@ -72,16 +72,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Hydrate.
-   */
-  public static function hydrate(string $json) {
-    $data = json_decode($json);
-    $resource = DatastoreResource::hydrate(json_encode($data->resource));
-
-    return new DatabaseTable(\Drupal::service('database'), $resource);
-  }
-
-  /**
    * Get the full name of datastore db table.
    *
    * @return string

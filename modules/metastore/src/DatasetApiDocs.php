@@ -61,7 +61,7 @@ class DatasetApiDocs {
   /**
    * OpenAPI spec for dataset-related endpoints.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   private $metastore;
 
@@ -77,12 +77,12 @@ class DatasetApiDocs {
    *
    * @param \Drupal\common\DkanApiDocsGenerator $docsGenerator
    *   Serves openapi spec.
-   * @param \Drupal\metastore\Service $metastore
+   * @param \Drupal\metastore\MetastoreService $metastore
    *   The metastore service.
    * @param \Drupal\Core\Site\Settings $settings
    *   The Drupal settings service.
    */
-  public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore, Settings $settings) {
+  public function __construct(DkanApiDocsGenerator $docsGenerator, MetastoreService $metastore, Settings $settings) {
     $this->docsGenerator = $docsGenerator;
     $this->metastore = $metastore;
     $this->dkanApiBase = $settings->get('dkan_api_base') ?? '';

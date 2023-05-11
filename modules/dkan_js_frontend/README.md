@@ -1,4 +1,4 @@
-# DKAN JS Frontend Module {#dev_frontend}
+# DKAN JS Frontend Module
 
 This is an integration module that provides a way to access a decoupled JavaScript frontend at defined paths.
 
@@ -20,5 +20,4 @@ This is a React app that will use the [Data Catalog Components](https://github.c
 ## Tips
 If you are setting the JS frontend as the main frontend for your site, like on the demo DKAN site, you will want to do the following:
 
-* Turn off Bartik and enable Stark as your frontend theme. This will remove any issues of the Bartik CSS mixing with the JS frontend CSS.
 * Set the `404` and `home` paths for the site to `/home`. This will make it so whenever Drupal returns a page not found it will load the JS frontend and visiting the root url the JS site will be loaded instead of a default Drupal node.

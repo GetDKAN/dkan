@@ -4,7 +4,7 @@ namespace Drupal\datastore_mysql_import\Factory;
 
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Import as Instance;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 
@@ -58,7 +58,7 @@ class MysqlImportFactory implements ImportFactoryInterface {
     $resource = $config['resource'];
 
     if (!isset($this->services[$identifier])) {
-      $this->services[$identifier] = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
+      $this->services[$identifier] = new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
     }
 
     $this->services[$identifier]->setImporterClass(MysqlImport::class);

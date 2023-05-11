@@ -11,8 +11,8 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\datastore\Plugin\QueueWorker\Import;
-use Drupal\datastore\Service;
+use Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Reference\ReferenceLookup;
 use MockChain\Chain;
@@ -47,7 +47,7 @@ class ImportTest extends TestCase {
       ->add(LoggerChannel::class, 'log', NULL, 'log');
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
+    $queueWorker = ImportQueueWorker::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     // @todo Don't do this.
@@ -65,7 +65,7 @@ class ImportTest extends TestCase {
     $containerChain = $this->getContainerChain($result);
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
+    $queueWorker = ImportQueueWorker::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     $input = $containerChain->getStoredInput('create_item');
@@ -83,7 +83,7 @@ class ImportTest extends TestCase {
 
     $options = (new Options())
       ->add('config.factory', $config_factory)
-      ->add('dkan.datastore.service', Service::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('file_system', FileSystem::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
@@ -94,9 +94,9 @@ class ImportTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Service::class, 'import', [$result])
-      ->add(Service::class, 'getQueueFactory', QueueFactory::class)
-      ->add(Service::class, 'getResourceLocalizer', ResourceLocalizer::class)
+      ->add(DatastoreService::class, 'import', [$result])
+      ->add(DatastoreService::class, 'getQueueFactory', QueueFactory::class)
+      ->add(DatastoreService::class, 'getResourceLocalizer', ResourceLocalizer::class)
       ->add(ResourceLocalizer::class, 'getFileSystem', FileSystem::class)
       ->add(QueueFactory::class, 'get', QueueInterface::class)
       ->add(QueueInterface::class, 'createItem', NULL, 'create_item');

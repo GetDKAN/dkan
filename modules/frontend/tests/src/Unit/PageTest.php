@@ -39,7 +39,7 @@ class PageTest extends TestCase {
   private function getNodeStorageMock() {
     $nodeStorage = $this->getMockBuilder(NodeStorageInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods(['loadByProperties'])
+      ->onlyMethods(['loadByProperties'])
       ->getMockForAbstractClass();
 
     $nodeStorage->method('loadByProperties')
@@ -54,7 +54,7 @@ class PageTest extends TestCase {
   private function getNodeMock() {
     $node = $this->getMockBuilder(NodeInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods(['uuid'])
+      ->onlyMethods(['uuid'])
       ->getMockForAbstractClass();
 
     $node->method('uuid')

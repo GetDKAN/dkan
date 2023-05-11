@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 
 /**
  * Class Api.
@@ -33,7 +33,7 @@ class MetastoreController implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   private $service;
 
@@ -60,7 +60,7 @@ class MetastoreController implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(MetastoreApiResponse $apiResponse, Service $service, DatasetApiDocs $docs) {
+  public function __construct(MetastoreApiResponse $apiResponse, MetastoreService $service, DatasetApiDocs $docs) {
     $this->apiResponse = $apiResponse;
     $this->service = $service;
     $this->docs = $docs;
@@ -133,7 +133,7 @@ class MetastoreController implements ContainerInjectionInterface {
         $object = $this->service->swapReferences($object);
       }
       else {
-        $object = Service::removeReferences($object);
+        $object = MetastoreService::removeReferences($object);
       }
       $object = (object) $object->get('$');
       return $this->apiResponse->cachedJsonResponse($object, 200, [$schema_id => [$identifier]], $request->query);

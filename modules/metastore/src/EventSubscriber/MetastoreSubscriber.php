@@ -7,7 +7,7 @@ use Drupal\common\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\metastore\Reference\Referencer;
@@ -42,12 +42,12 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
    *   LoggerChannelFactory service.
-   * @param \Drupal\metastore\Service $service
+   * @param \Drupal\metastore\MetastoreService $service
    *   The dkan.metastore.service service.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   The dkan.metastore.resource_mapper.
    */
-  public function __construct(LoggerChannelFactory $logger_factory, Service $service, ResourceMapper $resourceMapper) {
+  public function __construct(LoggerChannelFactory $logger_factory, MetastoreService $service, ResourceMapper $resourceMapper) {
     $this->loggerFactory = $logger_factory;
     $this->service = $service;
     $this->resourceMapper = $resourceMapper;

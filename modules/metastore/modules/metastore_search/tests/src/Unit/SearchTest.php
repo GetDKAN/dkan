@@ -8,14 +8,14 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore_search\Search;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Item;
 use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -72,7 +72,7 @@ class SearchTest extends TestCase {
 
   public function testSearchParameterWithComma() {
     $options = (new Options())
-      ->add('dkan.metastore.service', Metastore::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('search_api.query_helper', QueryHelperInterface::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
@@ -120,7 +120,7 @@ class SearchTest extends TestCase {
     $out = [
       (object) ['name' => 'Chris', 'total' => 3],
       (object) ['name' => 'Dana', 'total' => 3],
-      (object) ['name' => 'Ed', 'total' => 3],      
+      (object) ['name' => 'Ed', 'total' => 3],
       (object) ['name' => 'Bob', 'total' => 2],
       (object) ['name' => 'Ana', 'total' => 1],
     ];
@@ -185,7 +185,7 @@ class SearchTest extends TestCase {
     }
 
     $myServices = [
-      'dkan.metastore.service' => Metastore::class,
+      'dkan.metastore.service' => MetastoreService::class,
       'entity_type.manager' => EntityTypeManager::class,
       'search_api.query_helper' => QueryHelperInterface::class,
       'event_dispatcher' => ContainerAwareEventDispatcher::class,
@@ -217,10 +217,10 @@ class SearchTest extends TestCase {
     $getAllOptions = (new Options())
       ->add('keyword', [])
       ->add('theme', [])
-      ->add('publisher', [ServiceTest::getValidMetadataFactory($case)->get(json_encode($facet), 'publisher')])
+      ->add('publisher', [MetastoreServiceTest::getValidMetadataFactory($case)->get(json_encode($facet), 'publisher')])
       ->index(0);
 
-    $getData = ServiceTest::getValidMetadataFactory($case)->get(json_encode($collection), 'dummy_schema_id');
+    $getData = MetastoreServiceTest::getValidMetadataFactory($case)->get(json_encode($collection), 'dummy_schema_id');
 
     return (new Chain($case))
       ->add(Container::class, 'get', $services)
@@ -233,8 +233,8 @@ class SearchTest extends TestCase {
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
       ->add(ResultSet::class, 'getResultCount', 1)
       ->add(ResultSet::class, 'getResultItems', [$item])
-      ->add(Metastore::class, 'get', $getData)
-      ->add(Metastore::class, 'getAll', $getAllOptions);
+      ->add(MetastoreService::class, 'get', $getData)
+      ->add(MetastoreService::class, 'getAll', $getAllOptions);
   }
 
 }

@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
@@ -34,11 +34,11 @@ class OrphanCheckerTest extends ExistingSiteBase {
     $this->flushQueues();
     $this->removeFiles();
     $this->removeDatastoreTables();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   public function test() {
-    /** @var $service \Drupal\metastore\Service */
+    /** @var $service \Drupal\metastore\MetastoreService */
     $service = \Drupal::service('dkan.metastore.service');
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
     $service->post('dataset', $dataset);

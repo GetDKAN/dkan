@@ -79,18 +79,6 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         return (object) ['storage' => $this->storage];
     }
 
-    public static function hydrate(string $json)
-    {
-        $class = new \ReflectionClass(self::class);
-        $instance = $class->newInstanceWithoutConstructor();
-
-        $property = $class->getParentClass()->getProperty('storage');
-        $property->setAccessible(true);
-        $property->setValue($instance, (array) (json_decode($json))->storage);
-
-        return $instance;
-    }
-
     /**
      * Clean up and set the schema for SQL storage.
      *

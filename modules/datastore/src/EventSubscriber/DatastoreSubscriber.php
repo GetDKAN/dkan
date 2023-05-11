@@ -8,7 +8,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\common\Events\Event;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
@@ -59,14 +59,14 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   A ConfigFactory service instance.
    * @param \Drupal\Core\Logger\LoggerChannelFactory $logger_factory
    *   LoggerChannelFactory service.
-   * @param \Drupal\datastore\Service $service
+   * @param \Drupal\datastore\DatastoreService $service
    *   The dkan.datastore.service service.
    * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_purger service.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   The dkan.common.job_store service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, LoggerChannelFactory $logger_factory, Service $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
+  public function __construct(ConfigFactoryInterface $config_factory, LoggerChannelFactory $logger_factory, DatastoreService $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
     $this->configFactory = $config_factory;
     $this->loggerFactory = $logger_factory;
     $this->service = $service;

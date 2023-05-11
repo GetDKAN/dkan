@@ -14,7 +14,7 @@ trait CleanUp {
    *
    */
   private function removeHarvests() {
-    /** @var \Drupal\harvest\Service $service */
+    /** @var \Drupal\harvest\HarvestService $service */
     $service = \Drupal::service('dkan.harvest.service');
     foreach ($service->getAllHarvestIds() as $id) {
       $service->deregisterHarvest($id);

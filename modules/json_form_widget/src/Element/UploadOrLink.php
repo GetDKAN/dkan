@@ -249,7 +249,7 @@ class UploadOrLink extends ManagedFile {
     foreach ($fids as $fid) {
       if ($file = File::load($fid)) {
         $uri = $file->getFileUri();
-        return file_create_url($uri);
+        return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
       }
     }
     return $element['#uri'];

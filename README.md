@@ -1,5 +1,5 @@
 # DKAN
-[DKAN](https://getdkan.com) - An Open Data Catalog built on [Drupal 9](https://www.drupal.org/documentation)
+[DKAN](https://dkan.readthedocs.io/en/latest) - An Open Data Catalog built on [Drupal 9](https://www.drupal.org/documentation)
 
 [![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/2.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/2.x)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a02bf3362b94749579a1/maintainability)](https://codeclimate.com/github/GetDKAN/dkan/maintainability)
@@ -9,16 +9,8 @@
 ---
 
 ## Documentation
-DKAN's documentation lives at [docs.getdkan.com](https://docs.getdkan.com/)
+DKAN's documentation can be found at https://dkan.readthedocs.io/en/latest
 
-To generate the docs with a specfic version number, run:
-```
-DKAN_VERSION='v2.1.0' doxygen
-```
-To supply the current branch, run:
-```
-DKAN_VERSION=`git rev-parse --abbrev-ref HEAD` doxygen
-```
 
 ---
 
@@ -26,9 +18,9 @@ DKAN_VERSION=`git rev-parse --abbrev-ref HEAD` doxygen
 
 - Harvesting of data from external catalogs that provide a data.json
 - Dataset metadata and resources
-- Web service API endpoints that allow third party applications to work with the datasets
-- Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-frontend)
-- A datastore to store CSV files and make them queryable through an SQL endpoint
+- Web service API endpoints that provide remote/automated management of datasets
+- Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-app)
+- A datastore to store CSV data files and make them queryable by third party applications.
 
 ---
 

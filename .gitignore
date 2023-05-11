@@ -6,7 +6,6 @@
 composer.lock
 package-lock.json
 tagfile
-/docs
 /core
 /cypress/videos
 /cypress/screenshots
@@ -17,3 +16,4 @@ tagfile
 /web
 .phpunit.result.cache
 *.http
+docs/build

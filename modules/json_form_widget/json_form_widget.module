@@ -153,11 +153,11 @@ function _json_form_widget_update_file(string $url, FormStateInterface $form_sta
  * unnecessary.
  */
 function _json_form_widget_get_file_uri($url) {
-  $path = urldecode(file_url_transform_relative($url));
+  $path = urldecode(\Drupal::service('file_url_generator')->transformRelative($url));
   // We're loading scheme from config, but this will probably break if not
   // "public".
   $scheme = \Drupal::config('system.file')->get('default_scheme') . "://";
-  $scheme_path = file_url_transform_relative(file_create_url($scheme));
+  $scheme_path = \Drupal::service('file_url_generator')->generateString($scheme);
   $uri = str_replace($scheme_path, $scheme, $path, $count);
 
   return $count ? $uri : $path;

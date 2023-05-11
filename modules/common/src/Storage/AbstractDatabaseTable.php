@@ -3,7 +3,6 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\indexer\IndexManager;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
 
@@ -28,13 +27,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @var \Drupal\Core\Database\Connection
    */
   protected $connection;
-
-  /**
-   * Optional index manager service.
-   *
-   * @var null|\Drupal\indexer\IndexManager
-   */
-  protected $indexManager;
 
   /**
    * Get the full name of datastore db table.
@@ -71,16 +63,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
     }
-  }
-
-  /**
-   * Set an optional index manager service.
-   *
-   * @param \Drupal\indexer\IndexManager $indexManager
-   *   Index manager.
-   */
-  public function setIndexManager(IndexManager $indexManager) {
-    $this->indexManager = $indexManager;
   }
 
   /**
@@ -310,10 +292,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
-    // Add indexes if we have an index manager.
-    if (isset($this->indexManager) && method_exists($this->indexManager, 'modifySchema')) {
-      $schema = $this->indexManager->modifySchema($table_name, $schema);
-    }
+
     $this->connection->schema()->createTable($table_name, $schema);
   }
 
