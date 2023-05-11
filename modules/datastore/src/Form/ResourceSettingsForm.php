@@ -56,7 +56,8 @@ class ResourceSettingsForm extends ConfigFormBase {
     $form['resource_perspective_display'] = [
       '#type' => 'select',
       '#title' => $this->t('Resource download url display'),
-      '#description' => $this->t('Choose to display either the source or local path to a resource file in the metadata.'),
+      '#description' => $this->t('Choose to display either the source or local path to a resource file in the 
+        metadata. Note that "Local URL" display only makes sense if "Delete local resource" is unchecked.'),
       '#options' => [
         DataResource::DEFAULT_SOURCE_PERSPECTIVE => $this->t('Source'),
         'local_url' => $this->t('Local URL'),
