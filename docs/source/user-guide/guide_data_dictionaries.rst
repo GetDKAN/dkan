@@ -188,5 +188,5 @@ Creating a data dictionary via the UI
 
 Adding indexes
 ^^^^^^^^^^^^^^
-The same process is used for adding indexes to the datastores.
+Data dictionaries can be used to describe indexes that should be applied when importing to a database.
 Learn more about this on :doc:`guide_indexes`
