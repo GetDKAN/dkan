@@ -16,6 +16,7 @@ services:
       - '@date.formatter'
       - '@dkan.metastore.storage'
       - '@queue'
+      - '@config.factory'
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
