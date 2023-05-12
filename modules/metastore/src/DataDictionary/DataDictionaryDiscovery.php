@@ -6,7 +6,7 @@ use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\ReferenceLookupInterface;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 
 /**
  * Data dictionary service.
@@ -25,9 +25,9 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
-  protected Service $metastore;
+  protected MetastoreService $metastore;
 
   /**
    * Reference lookup service.
@@ -48,7 +48,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
    */
   public function __construct(
     ConfigFactoryInterface $configFactory,
-    Service $metastore,
+    MetastoreService $metastore,
     ReferenceLookupInterface $lookup,
     MetastoreUrlGenerator $urlGenerator
   ) {
