@@ -25,7 +25,7 @@ class ResourceSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['datastore.settings'];
+    return ['datastore.settings', 'metastore.settings'];
   }
 
   /**
