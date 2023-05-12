@@ -5,6 +5,7 @@ namespace Drupal\common\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Core\Database\SchemaObjectExistsException;
 
 /**
  * Base class for database storage methods.
@@ -299,7 +300,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Set the schema using the existing database table.
    */
   protected function setSchemaFromTable() {
-    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
+    $fields_info = $this->connection->query('DESCRIBE {' . $this->getTableName() . '}')->fetchAll();
     if (empty($fields_info)) {
       return;
     }

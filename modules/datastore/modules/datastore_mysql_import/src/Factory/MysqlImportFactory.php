@@ -26,7 +26,7 @@ class MysqlImportFactory implements ImportFactoryInterface {
   /**
    * Database table factory service.
    *
-   * @var \Drupal\datastore\Storage\DatabaseTableFactory
+   * @var \Drupal\datastore\Storage\MySqlDatabaseTableFactory
    */
   private $databaseTableFactory;
 
@@ -40,7 +40,7 @@ class MysqlImportFactory implements ImportFactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(JobStoreFactory $jobStoreFactory, MySqlDatabaseTableFactory $databaseTableFactory) {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }

@@ -151,8 +151,8 @@ class MysqlImportTest extends TestCase {
         };
       }
 
-      protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count, string $delimiter): string {
-        $this->sqlStatement = parent::getSqlStatement($file_path, $tablename, $headers, $eol, $header_line_count, $delimiter);
+      protected function getSqlStatement(string $file_path, string $table_name, array $headers, string $eol, int $header_line_count, string $delimiter): string {
+        $this->sqlStatement = parent::getSqlStatement($file_path, $table_name, $headers, $eol, $header_line_count, $delimiter);
         return $this->sqlStatement;
       }
 

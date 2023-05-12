@@ -131,7 +131,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   protected function setSchemaFromTable() {
     $tableName = $this->getTableName();
-    $fieldsInfo = $this->connection->query('DESCRIBE `{' . $tableName . '}`')->fetchAll();
+    $fieldsInfo = $this->connection->query('DESCRIBE {' . $tableName . '}')->fetchAll();
 
     $schema = $this->buildTableSchema($tableName, $fieldsInfo);
     $this->setSchema($schema);
@@ -199,7 +199,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       return;
     }
 
-    $indexInfo = $this->connection->query("SHOW INDEXES FROM  `{$this->getTableName()}`")->fetchAll();
+    $indexInfo = $this->connection->query('SHOW INDEXES FROM  {' . $this->getTableName() . '}')->fetchAll();
     foreach ($indexInfo as $info) {
       // Primary key is handled elsewhere.
       if ($info->Key_name == 'PRIMARY') {
