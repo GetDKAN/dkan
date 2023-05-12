@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore\Unit\Reference;
 
-use DomainException;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -20,7 +19,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
@@ -469,8 +468,8 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', (new Options())
         ->add('http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
       )
-      ->add(MetastoreUrlGenerator::class, 'metastore', Service::class)
-      ->add(Service::class, 'get', (new Options())
+      ->add(MetastoreUrlGenerator::class, 'metastore', MetastoreService::class)
+      ->add(MetastoreService::class, 'get', (new Options())
         ->add('111', RootedJsonData::class)
         ->add('222', new MissingObjectException())
       ->index(1)
@@ -499,11 +498,11 @@ class ReferencerTest extends TestCase {
       ],
       [
         (object) ["describedBy" => "s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],
-        new DomainException("The value in describedBy was not a valid data dictionary URL"),
+        new \DomainException("The value in describedBy was not a valid data dictionary URL"),
       ],
       [
         (object) ["describedBy" => "dkan://metastore/schemas/data-dictionary/items/222"],
-        new DomainException("is not a valid data-dictionary URI"),
+        new \DomainException("is not a valid data-dictionary URI"),
       ],
     ];
   }

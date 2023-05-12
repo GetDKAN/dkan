@@ -62,10 +62,10 @@ class MetastoreUrlGenerator {
   /**
    * Retrieve the metastore service.
    *
-   * @return \Drupal\metastore\Service
+   * @return \Drupal\metastore\MetastoreService
    *   Metastore service.
    */
-  protected function metastore(): Service {
+  protected function metastore(): MetastoreService {
     return $this->metastore;
   }
 

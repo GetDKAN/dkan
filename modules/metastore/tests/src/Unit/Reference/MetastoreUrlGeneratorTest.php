@@ -12,7 +12,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\Utility\UnroutedUrlAssembler;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -135,7 +135,7 @@ class MetastoreUrlGeneratorTest extends TestCase {
 
     // Create mock metastore serivce.
     $metastore = (new Chain($this))
-      ->add(Service::class, 'get', (new Options())
+      ->add(MetastoreService::class, 'get', (new Options())
         ->add('111', new RootedJsonData("{}", "{}"))
         ->add('222', new MissingObjectException("222 not found"))
         ->index(1)
