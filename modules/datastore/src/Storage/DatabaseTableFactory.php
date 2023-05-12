@@ -15,7 +15,7 @@ class DatabaseTableFactory implements FactoryInterface {
    *
    * @var \Drupal\Core\Database\Connection
    */
-  private $connection;
+  protected $connection;
 
   /**
    * Constructor.

@@ -18,6 +18,11 @@ class JobStore extends AbstractDatabaseTable {
   private $jobClass;
 
   /**
+   * @var string
+   */
+  private $tableName;
+
+  /**
    * Constructor.
    */
   public function __construct(string $jobClass, Connection $connection) {
@@ -44,8 +49,16 @@ class JobStore extends AbstractDatabaseTable {
    * Protected.
    */
   protected function getTableName() {
-    $safeClassName = strtolower(preg_replace('/\\\\/', '_', $this->jobClass));
-    return 'jobstore_' . $safeClassName;
+    if (empty($this->tableName)) {
+      // Avoid table-name-too-long errors by hashing the FQN of the class.
+      $exploded_class = explode("\\", $this->jobClass);
+      $this->tableName = strtolower(implode('_', [
+        'jobstore',
+        crc32($this->jobClass),
+        array_pop($exploded_class),
+      ]));
+    }
+    return $this->tableName;
   }
 
   /**

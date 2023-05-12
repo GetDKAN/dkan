@@ -78,7 +78,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public function getTableName() {
     if ($this->resource) {
-      return "datastore_{$this->resource->getId()}";
+      return 'datastore_' . $this->resource->getId();
     }
     return "datastore_does_not_exist";
   }
@@ -131,7 +131,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   protected function setSchemaFromTable() {
     $tableName = $this->getTableName();
-    $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
+    $fieldsInfo = $this->connection->query('DESCRIBE `{' . $tableName . '}`')->fetchAll();
 
     $schema = $this->buildTableSchema($tableName, $fieldsInfo);
     $this->setSchema($schema);

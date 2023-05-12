@@ -282,14 +282,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Check for existence of a table name.
    */
   protected function tableExist($table_name) {
-    $exists = $this->connection->schema()->tableExists($table_name);
-    return $exists;
+    return $this->connection->schema()->tableExists($table_name);
   }
 
   /**
    * Create a table given a name and schema.
    */
-  private function tableCreate($table_name, $schema) {
+  protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
 
