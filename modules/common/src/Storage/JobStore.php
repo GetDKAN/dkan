@@ -54,7 +54,7 @@ class JobStore extends AbstractDatabaseTable {
       $exploded_class = explode("\\", $this->jobClass);
       $this->tableName = strtolower(implode('_', [
         'jobstore',
-        md5($this->jobClass),
+        crc32($this->jobClass),
         array_pop($exploded_class),
       ]));
     }

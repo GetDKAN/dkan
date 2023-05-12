@@ -141,18 +141,14 @@ class ImportService {
    */
   public function getImporter(): ImportJob {
     $datastore_resource = $this->getResource()->getDatastoreResource();
-
-    $delimiter = ",";
-    if ($datastore_resource->getMimeType() == 'text/tab-separated-values') {
-      $delimiter = "\t";
-    }
+//    throw new \Exception($this->importerClass);
 
     $importer = call_user_func([$this->importerClass, 'get'],
       $datastore_resource->getId(),
-      $this->jobStoreFactory->getInstance(ImportJob::class),
+      $this->jobStoreFactory->getInstance($this->importerClass),
       [
         "storage" => $this->getStorage(),
-        "parser" => $this->getNonRecordingParser($delimiter),
+        "parser" => $this->getNonRecordingParser($datastore_resource->getDelimiter()),
         "resource" => $datastore_resource,
       ]
     );

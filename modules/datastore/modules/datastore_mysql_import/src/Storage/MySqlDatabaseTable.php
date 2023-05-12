@@ -2,7 +2,9 @@
 
 namespace Drupal\datastore_mysql_import\Storage;
 
+use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\Core\Database\Connection;
 
 /**
  * Database storage object for MySQL imports.
@@ -13,13 +15,17 @@ class MySqlDatabaseTable extends DatabaseTable implements MySqlDatabaseTableInte
    * {@inheritDoc}
    */
   protected function setTable() {
-    // If the table exists already, we want to throw an exception. This allows
-    // us to account for timed-out CSV imports.
-    $table_name = $this->getTableName();
-    if ($this->tableExist($table_name)) {
-      throw new MySqlDatabaseTableExistsException('Table already exists: ' . $table_name);
+    if ($schema = $this->getSchema()) {
+      try {
+        $this->tableCreate($this->getTableName(), $schema);
+      }
+      catch (SchemaObjectExistsException $e) {
+        throw new MySqlDatabaseTableExistsException($e->getMessage());
+      }
     }
-    parent::setTable();
+    else {
+      throw new \Exception("Could not instantiate the table due to a lack of schema.");
+    }
   }
 
 }

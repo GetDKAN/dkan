@@ -5,6 +5,9 @@ namespace Drupal\common\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Core\Database\SchemaObjectExistsException;
+use Drupal\datastore_mysql_import\Service\MySqlImportJob;
+use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 
 /**
  * Base class for database storage methods.
@@ -290,11 +293,17 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Create a table given a name and schema.
    */
-  private function tableCreate($table_name, $schema) {
+  protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
-
+    //      throw new \Exception(print_r($schema, TRUE));
+    //    }
     $this->connection->schema()->createTable($table_name, $schema);
+//    if ($this->connection->schema()->tableExists($table_name)) {
+//      if (get_class($this) === MySqlDatabaseTable::class) {
+//        throw new \Exception($table_name . ' exists! ' . $this->connection->getFullQualifiedTableName($table_name));
+//      }
+//    }
   }
 
   /**
@@ -381,7 +390,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   A schema array.
    */
   public function getSchema(): array {
-    return $this->schema;
+    return $this->schema ?? [];
   }
 
   /**

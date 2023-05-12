@@ -2,7 +2,9 @@
 
 namespace Drupal\Tests\datastore_mysql_import\Kernel\Service;
 
+use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\datastore_mysql_import\Service\MySqlImportJob;
+use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 use Drupal\common\DataResource;
@@ -49,19 +51,20 @@ class MySqlImportJobKernelTest extends KernelTestBase {
   }
 
   public function testExistingTable() {
-//    $this->markTestIncomplete('Test error state of mysql import job if table already exists.');
+//    $this->markTestIncomplete('Kernel test error state of mysql import job if table already exists.');
 
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
     $identifier = 'identifier';
+    $data_resource = new DataResource($file_path, 'text/csv');
 
-    /** @var \Drupal\datastore_mysql_import\Factory\MySqlImportFactory $factory */
-    $factory = $this->container->get('dkan.datastore_mysql_import.service.factory.import');
-    $this->assertEquals(MySqlImportFactory::class, get_class($factory));
+    /** @var \Drupal\datastore_mysql_import\Factory\MySqlImportFactory $import_factory */
+    $import_factory = $this->container->get('dkan.datastore_mysql_import.service.factory.import');
+    $this->assertInstanceOf(MySqlImportFactory::class, $import_factory);
 
-    $import_job = $factory->getInstance(
+    $import_job = $import_factory->getInstance(
       $identifier,
       [
-        'resource' => new DataResource($file_path, 'text/csv'),
+        'resource' => $data_resource,
       ]
     )->getImporter();
 
@@ -69,21 +72,38 @@ class MySqlImportJobKernelTest extends KernelTestBase {
     $this->assertEquals(Result::STOPPED, $import_job->getResult()->getStatus());
 
     $storage = $import_job->getStorage();
-//    $storage->setSchema(['fields' => ['a','b','c']]);
-//    $storage->count();
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $storage);
 
     /** @var Result $result */
     $result = $import_job->run();
-//        $this->assertEquals('foo', print_r($import_job->getStorage()->getSchema(), true));
+
+    $this->assertTrue(
+      $storage->getConnection()
+        ->schema()
+        ->tableExists($storage->getTableName())
+    );
+
     // Result should be happy.
     $this->assertEquals(Result::DONE, $result->getStatus(), 'Error message: ' . $result->getError());
 
-    // Do it again.
-    //    $import_job = $factory->getInstance($identifier);
+    // Do it again..................
+    $this->assertInstanceOf(MySqlImportFactory::class, $import_factory);
+
+    $second_import_job = $import_factory->getInstance(
+      $identifier,
+      [
+        'resource' => $data_resource,
+      ]
+    )->getImporter();
+
+    $this->assertInstanceOf(MySqlImportJob::class, $second_import_job);
+    $this->assertEquals(Result::STOPPED, $second_import_job->getResult()
+      ->getStatus());
+
     /** @var Result $result */
-    //    $result = $import_job->getImporter()->run();
-    //    $this->assertEquals(Result::ERROR, $result->getStatus());
-    //    $this->assertEquals('table already exists, dude.', $result->getError());
+    $result = $second_import_job->run();
+    $this->assertEquals(Result::ERROR, $result->getStatus());
+    $this->assertEquals('table already exists, dude.', $result->getError());
   }
 
 }
