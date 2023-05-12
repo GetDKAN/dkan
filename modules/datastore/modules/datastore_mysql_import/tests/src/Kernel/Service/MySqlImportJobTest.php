@@ -70,7 +70,7 @@ class MySqlImportJobKernelTest extends KernelTestBase {
 
     $storage = $import_job->getStorage();
 //    $storage->setSchema(['fields' => ['a','b','c']]);
-    $storage->count();
+//    $storage->count();
 
     /** @var Result $result */
     $result = $import_job->run();
