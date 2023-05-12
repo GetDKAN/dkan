@@ -210,7 +210,7 @@ class MysqlImport extends ImportJob {
   protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count, string $delimiter): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
-      'INTO TABLE ' . $tablename,
+      'INTO TABLE {' . $tablename . '}',
       'FIELDS TERMINATED BY \'' . $delimiter . '\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',

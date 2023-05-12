@@ -113,7 +113,7 @@ class MysqlImportTest extends TestCase {
 
     $this->assertEquals($mysqlImporter->sqlStatement, implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
-      'INTO TABLE ' . self::TABLE_NAME,
+      'INTO TABLE {' . self::TABLE_NAME . '}',
       'FIELDS TERMINATED BY \',\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',
