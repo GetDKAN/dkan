@@ -4,12 +4,9 @@ namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
 
 use Drupal\common\DataResource;
 use Drupal\Core\Database\SchemaObjectExistsException;
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore_mysql_import\Factory\MysqlImportFactory;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
 
 /**
@@ -17,8 +14,9 @@ use Procrastinator\Result;
  * @coversDefaultClass \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable
  *
  * @group datastore_mysql_import
+ * @group kernel
  */
-class MySqlDatabaseTableKernelTest extends KernelTestBase {
+class MySqlDatabaseTableTest extends KernelTestBase {
 
   /**
    * {@inheritdoc}
@@ -57,7 +55,10 @@ class MySqlDatabaseTableKernelTest extends KernelTestBase {
     /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
-    $this->assertInstanceOf(MySqlDatabaseTable::class, $db_table = $import_job->getStorage());
+    $this->assertInstanceOf(
+      MySqlDatabaseTable::class,
+      $db_table = $import_job->getStorage()
+    );
 
     // Store the table.
     $result = $import_job->run();
@@ -69,8 +70,27 @@ class MySqlDatabaseTableKernelTest extends KernelTestBase {
     $db_table->count();
   }
 
-  public function testTableDuplicateExceptionNewImporter() {
-    $this->markTestIncomplete('add the same test as above to test handling by import job.');
+  public function testTableNoSchema() {
+    $identifier = 'my_id';
+    $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
+    $data_resource = new DataResource($file_path, 'text/csv');
+
+    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
+    $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
+
+    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+    $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
+      ->getImporter();
+    $this->assertInstanceOf(
+      MySqlDatabaseTable::class,
+      $db_table = $import_job->getStorage()
+    );
+
+    // Count() will trigger setTable(), which will throw an exception because
+    // the table object does not have a schema set up yet.
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Could not instantiate the table due to a lack of schema.');
+    $db_table->count();
   }
 
 }

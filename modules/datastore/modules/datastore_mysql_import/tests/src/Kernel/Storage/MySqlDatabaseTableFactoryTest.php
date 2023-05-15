@@ -12,7 +12,7 @@ use Drupal\KernelTests\KernelTestBase;
  *
  * @group datastore_mysql_import
  */
-class MySqlDatabaseTableFactoryKernelTest extends KernelTestBase {
+class MySqlDatabaseTableFactoryTest extends KernelTestBase {
 
   /**
    * {@inheritdoc}

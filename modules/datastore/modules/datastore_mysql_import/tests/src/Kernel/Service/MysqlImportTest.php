@@ -14,7 +14,7 @@ use Procrastinator\Result;
  *
  * @group datastore_mysql_import
  */
-class MysqlImportKernelTest extends KernelTestBase {
+class MysqlImportTest extends KernelTestBase {
 
   /**
    * {@inheritdoc}
@@ -35,9 +35,11 @@ class MysqlImportKernelTest extends KernelTestBase {
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
     /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
-    $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
-      ->getImporter();
-    $this->assertInstanceOf(MySqlDatabaseTable::class, $db_table = $import_job->getStorage());
+    $import_job = $import_factory->getInstance(
+      $identifier,
+      ['resource' => $data_resource]
+    )->getImporter();
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $import_job->getStorage());
 
     // Store the table.
     $result = $import_job->run();
