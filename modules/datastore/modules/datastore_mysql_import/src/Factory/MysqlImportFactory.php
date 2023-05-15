@@ -5,7 +5,6 @@ namespace Drupal\datastore_mysql_import\Factory;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
 
@@ -26,7 +25,7 @@ class MysqlImportFactory implements ImportFactoryInterface {
   /**
    * Database table factory service.
    *
-   * @var \Drupal\datastore\Storage\MySqlDatabaseTableFactory
+   * @var \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
    */
   private $databaseTableFactory;
 

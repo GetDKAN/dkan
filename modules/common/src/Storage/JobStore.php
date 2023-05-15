@@ -18,6 +18,8 @@ class JobStore extends AbstractDatabaseTable {
   private $jobClass;
 
   /**
+   * Store the name of the table so we do not have to recompute.
+   *
    * @var string
    */
   private $tableName;

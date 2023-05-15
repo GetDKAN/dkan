@@ -9,6 +9,9 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
  */
 class MySqlDatabaseTableFactory extends DatabaseTableFactory {
 
+  /**
+   * {@inheritDoc}
+   */
   protected function getDatabaseTable($resource) {
     return new MySqlDatabaseTable($this->connection, $resource);
   }

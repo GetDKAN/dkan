@@ -5,7 +5,6 @@ namespace Drupal\common\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\Core\Database\SchemaObjectExistsException;
 
 /**
  * Base class for database storage methods.
