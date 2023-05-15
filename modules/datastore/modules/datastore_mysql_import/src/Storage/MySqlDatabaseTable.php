@@ -11,6 +11,11 @@ class MySqlDatabaseTable extends DatabaseTable {
 
   /**
    * Create the table in the db if it does not yet exist.
+   *
+   * @throws \Exception
+   *   Can throw any DB-related exception. Notably, can throw
+   *   \Drupal\Core\Database\SchemaObjectExistsException if the table already
+   *   exists when we try to create it.
    */
   protected function setTable() {
     // Never check for pre-existing table, never catch exceptions.
