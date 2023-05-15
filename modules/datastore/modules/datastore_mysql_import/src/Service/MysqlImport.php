@@ -34,7 +34,8 @@ class MysqlImport extends ImportJob {
    *   result data, so it returns void.
    *
    * @throws \Exception
-   *   Any exception thrown will be turned into an error in the Result object.
+   *   Any exception thrown will be turned into an error in the Result object
+   *   in the run() method.
    */
   protected function runIt() {
     // Attempt to resolve resource file name from file path.
@@ -65,13 +66,10 @@ class MysqlImport extends ImportJob {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
-    try {
-      $this->dataStorage->count();
-    }
-    catch (SchemaObjectExistsException $e) {
-      $this->setError($e->getMessage());
-      throw $e;
-    }
+    // Count() will attempt to create the database table by side-effect of
+    // calling setTable().
+    $this->dataStorage->count();
+
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(

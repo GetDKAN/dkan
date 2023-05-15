@@ -53,6 +53,7 @@ class MysqlImportTest extends KernelTestBase {
     // The import job aggressively keeps track of what's already done, so we
     // have to reset that.
     $import_job->getResult()->setStatus(Result::IN_PROGRESS);
+    // Try to import again.
     $result = $import_job->run();
     $this->assertEquals(Result::ERROR, $result->getStatus(), $result->getError());
     $this->assertStringContainsString('already exists', $result->getError());
