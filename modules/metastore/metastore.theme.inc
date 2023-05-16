@@ -97,13 +97,11 @@ function metastore_preprocess_node__data(&$variables) {
           ];
         }
       }
+      // Fallback to display file path for link title.
+      if ($rows['downloadURL'] && !property_exists($d, 'title')) {
+        $rows['title'] = $rows['downloadURL'];
+      }
       $variables['dataset']['distributions'][] = $rows;
-      $variables['dataset']['distributions_tables'][] = [
-        '#type' => 'table',
-        '#caption' => $d->title,
-        '#header' => [t("Key"), t("Value")],
-        '#rows' => $rows,
-      ];
     }
   }
 }

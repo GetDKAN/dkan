@@ -69,7 +69,7 @@ class UploadOrLink extends ManagedFile {
     $element = static::unsetFilesWhenRemoving($form_state->getTriggeringElement(), $element);
 
     $file_url_remote = isset($element['#value']['file_url_remote']) ? $element['#value']['file_url_remote'] : $element['#uri'];
-    $file_url_remote_is_valid = UrlHelper::isValid($file_url_remote, TRUE);
+    $file_url_remote_is_valid = isset($file_url_remote) && UrlHelper::isValid($file_url_remote, TRUE);
     $is_remote = $file_url_remote_is_valid && $file_url_type == static::TYPE_REMOTE;
     if ($is_remote) {
       $element = static::loadRemoteFile($element, $file_url_remote);

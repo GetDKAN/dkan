@@ -1,38 +1,34 @@
 <?php
 
-namespace Drupal\datastore_mysql_import\Factory;
+namespace Drupal\datastore\Service\Factory;
 
-use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore_mysql_import\Service\MysqlImport;
+use Drupal\datastore\Service\ImportService;
+use Drupal\common\Storage\JobStoreFactory;
 
 /**
- * Importer factory.
- *
- * @codeCoverageIgnore
+ * Create an importer object for a given resource.
  */
-class MysqlImportFactory implements ImportFactoryInterface {
+class ImportServiceFactory implements ImportFactoryInterface {
 
   /**
-   * The JobStore Factory service.
+   * Job store factory.
    *
    * @var \Drupal\common\Storage\JobStoreFactory
    */
   private $jobStoreFactory;
 
   /**
-   * Database table factory service.
+   * Database table factory.
    *
    * @var \Drupal\datastore\Storage\DatabaseTableFactory
    */
   private $databaseTableFactory;
 
   /**
-   * Services array. Not really needed, following FactoryInterface.
+   * Import services.
    *
-   * @var array
+   * @var \Drupal\datastore\Service\ImportService[]
    */
   private $services = [];
 
@@ -60,8 +56,6 @@ class MysqlImportFactory implements ImportFactoryInterface {
     if (!isset($this->services[$identifier])) {
       $this->services[$identifier] = new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
     }
-
-    $this->services[$identifier]->setImporterClass(MysqlImport::class);
 
     return $this->services[$identifier];
   }
