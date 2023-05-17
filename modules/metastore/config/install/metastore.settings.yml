@@ -19,3 +19,4 @@ property_list:
   'spatial': 0
   'temporal': 0
   'isPartOf': 0
+resource_perspective_display: source

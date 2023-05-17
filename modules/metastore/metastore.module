@@ -4,7 +4,6 @@
  * @file
  */
 
-use Drupal\common\DataResource;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -51,13 +50,6 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
     }
   }
-}
-
-/**
- * Helper method to retrieve the static value for a resource's display.
- */
-function resource_mapper_display() {
-  return drupal_static('metastore_resource_mapper_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE);
 }
 
 /**
