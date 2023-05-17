@@ -21,7 +21,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @var \Drupal\datastore\DatastoreResource
    */
-  private $resource;
+  protected DatastoreResource $resource;
 
   /**
    * Constructor method.

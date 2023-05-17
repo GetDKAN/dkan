@@ -64,9 +64,8 @@ class MysqlImport extends ImportJob {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
-    // Count() will attempt to create the database table by side-effect of
-    // calling setTable().
-    $this->dataStorage->count();
+    // Create the table.
+    $this->dataStorage->setTable();
 
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.

@@ -196,12 +196,45 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Count rows in table.
+   * Count the number of rows in the table.
+   *
+   * @param bool $always_create_table
+   *   Create the table before counting it. This argument exists for historical
+   *   reasons.
+   *
+   * @return int
+   *   The number of rows in the table. If the table does not exist and
+   *   $always_create_table is FALSE, will return 0.
+   *
+   * @throws \Exception
    */
-  public function count(): int {
-    $this->setTable();
-    $query = $this->connection->select($this->getTableName());
-    return $query->countQuery()->execute()->fetchField();
+  public function count($always_create_table = TRUE): int {
+    if ($always_create_table) {
+      $this->setTable();
+    }
+    if ($this->tableExist($this->getTableName())) {
+      $query = $this->connection->select($this->getTableName());
+      return $query->countQuery()->execute()->fetchField();
+    }
+    return 0;
+  }
+
+  /**
+   * Validate the table against the CSV it was imported from.
+   *
+   * This can mean different things in different contexts, for different
+   * importers. Override this method to provide meaningful business logic.
+   *
+   * Defaults to FALSE because this method is primarily used to determine if
+   * an error in import was rectified. Since not every type of db table import
+   * can be rectified, import errors should remain by default.
+   *
+   * @return bool
+   *   TRUE if the table validates against the CSV, FALSE otherwise. Default:
+   *   FALSE.
+   */
+  public function validate(): bool {
+    return FALSE;
   }
 
   /**
@@ -254,9 +287,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Create the table in the db if it does not yet exist.
+   * {@inheritDoc}
    */
-  protected function setTable() {
+  public function setTable(): void {
     if (!$this->tableExist($this->getTableName())) {
       if ($this->schema) {
         $this->tableCreate($this->getTableName(), $this->schema);

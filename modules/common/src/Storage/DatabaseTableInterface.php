@@ -41,6 +41,16 @@ interface DatabaseTableInterface extends StorerInterface, RetrieverInterface, Re
   public function setSchema(array $schema): void;
 
   /**
+   * Create the table in the db if it does not yet exist.
+   *
+   * @throws \Exception
+   *   Can throw any DB-related exception. Notably, can throw
+   *   \Drupal\Core\Database\SchemaObjectExistsException if the table already
+   *   exists when we try to create it.
+   */
+  public function setTable(): void;
+
+  /**
    * Get the schema array for this table.
    *
    * @return array

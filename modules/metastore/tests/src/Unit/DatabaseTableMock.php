@@ -36,13 +36,17 @@ class DatabaseTableMock implements DatabaseTableInterface {
     // TODO: Implement count() method.
   }
 
+  public function setTable(): void {
+    // TODO: Implement setTable() method.
+  }
+
   /**
    *
    */
   public function destruct() {
     // TODO: Implement destruct() method.
   }
-  
+
   /**
    *
    */

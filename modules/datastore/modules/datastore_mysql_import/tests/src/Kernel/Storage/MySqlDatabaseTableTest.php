@@ -93,4 +93,28 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     $db_table->count();
   }
 
+  public function testValidate() {
+    $identifier = 'my_id';
+    $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
+    $data_resource = new DataResource($file_path, 'text/csv');
+
+    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
+    $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
+
+    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+    $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
+      ->getImporter();
+    $this->assertInstanceOf(
+      MySqlDatabaseTable::class,
+      $db_table = $import_job->getStorage()
+    );
+
+    // Store the table.
+    $result = $import_job->run();
+    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
+
+    // Valid should be true since the table exists and has been imported.
+    $this->assertTrue($db_table->validate());
+  }
+
 }
