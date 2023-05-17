@@ -5,6 +5,7 @@ namespace Drupal\metastore\LifeCycle;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\MetastoreItemInterface;
@@ -73,6 +74,13 @@ class LifeCycle {
   protected $queueFactory;
 
   /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactory
+   */
+  protected $configFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -82,7 +90,8 @@ class LifeCycle {
     ResourceMapper $resourceMapper,
     DateFormatter $dateFormatter,
     DataFactory $dataFactory,
-    QueueFactory $queueFactory
+    QueueFactory $queueFactory,
+    ConfigFactory $configFactory
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
@@ -91,6 +100,7 @@ class LifeCycle {
     $this->dateFormatter = $dateFormatter;
     $this->dataFactory = $dataFactory;
     $this->queueFactory = $queueFactory;
+    $this->configFactory = $configFactory;
   }
 
   /**
@@ -227,7 +237,8 @@ class LifeCycle {
     }
 
     $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = \resource_mapper_display();
+    $perspective = $this->configFactory->get('metastore.settings')->get('resource_perspective_display')
+      ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE;
     $resource = $sourceResource;
 
     if (

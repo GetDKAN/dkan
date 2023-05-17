@@ -307,8 +307,10 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-    $display = &drupal_static('metastore_resource_mapper_display');
-    $display = $perspective;
+    $configFactory = \Drupal::service('config.factory');
+    $config = $configFactory->getEditable('metastore.settings');
+    $config->set('resource_perspective_display', $perspective);
+    $config->save();
   }
 
   private function getResourceDatastoreTable(object $resource) {
