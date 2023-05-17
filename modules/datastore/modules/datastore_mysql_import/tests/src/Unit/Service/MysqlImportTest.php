@@ -11,8 +11,10 @@ use Drupal\datastore_mysql_import\Service\MysqlImport;
 
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use MockChain\Chain;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  *
@@ -109,6 +111,87 @@ class MysqlImportTest extends TestCase {
     return (new Chain($this))
       ->add(JobStoreFactory::class, 'getInstance', $jobStore)
       ->getMock();
+  }
+
+  public function provideGetEol() {
+    return [
+      [NULL, "\n", 'no_line_ending'],
+      ['\r\n', "\r\n", "ending\r\n"],
+      ['\r', "\r", "ending\r"],
+      ['\n', "\n", "ending\n"],
+    ];
+  }
+
+  /**
+   * @covers ::getEol
+   * @dataProvider provideGetEol
+   */
+  public function testGetEol($expected_token, $expected_eol, $line) {
+    $importer = $this->getMockBuilder(MysqlImport::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $ref_get_eol = new \ReflectionMethod(MysqlImport::class, 'getEol');
+    $ref_eol_table = new \ReflectionClassConstant(MysqlImport::class, 'EOL_TABLE');
+
+    $this->assertSame($expected_token, $token = $ref_get_eol->invokeArgs($importer, [$line]));
+    if ($line === 'no_line_ending') {
+      $this->assertNull($token);
+    }
+    else {
+      $this->assertSame($expected_eol, $ref_eol_table->getValue()[$token]);
+    }
+  }
+
+  public function testGetColsFromFileBadFile() {
+    // Create an unreadable file in memory.
+    $root = vfsStream::setup('root');
+    vfsStream::newFile('file.csv', 0000)
+      ->at($root)
+      ->setContent('yes,no,maybe');
+
+    $importer = $this->getMockBuilder(MysqlImport::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $ref_get_cols_from_file = new \ReflectionMethod(MysqlImport::class, 'getColsFromFile');
+
+    $this->expectException(FileException::class);
+    $this->expectExceptionMessage('Failed to open resource file "vfs://root/file.csv"');
+    $ref_get_cols_from_file->invokeArgs($importer, [
+      vfsStream::url('root/file.csv'),
+      ',',
+    ]);
+  }
+
+  public function provideGetColsFromFile() {
+    return [
+      [['foo', 'bar'], 'foo,bar', 'foo,bar'],
+      [['foo', 'bar'], "foo,bar\n", "foo,bar\n"],
+    ];
+  }
+
+  /**
+   * @covers ::getColsFromFile
+   * @dataProvider provideGetColsFromFile
+   */
+  public function testGetColsFromFile($expected_columns, $expected_column_lines, $file_contents) {
+    // Create a file in memory.
+    $root = vfsStream::setup('root');
+    vfsStream::newFile('file.csv')
+      ->at($root)
+      ->setContent($file_contents);
+
+    $importer = $this->getMockBuilder(MysqlImport::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $ref_get_cols_from_file = new \ReflectionMethod(MysqlImport::class, 'getColsFromFile');
+
+    [$columns, $column_lines] = $ref_get_cols_from_file->invokeArgs($importer, [
+      vfsStream::url('root/file.csv'),
+      ',',
+    ]);
+    $this->assertEquals($expected_columns, $columns);
+    $this->assertEquals($expected_column_lines, $column_lines);
   }
 
 }

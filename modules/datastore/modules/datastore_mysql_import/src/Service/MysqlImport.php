@@ -96,11 +96,8 @@ class MysqlImport extends ImportJob {
    */
   protected function getColsFromFile(string $file_path, string $delimiter): array {
 
-    // Open the CSV file.
-    $f = fopen($file_path, 'r');
-
-    // Ensure the file could be successfully opened.
-    if (!isset($f) || $f === FALSE) {
+    // Open the CSV file. Silence errors so we don't have to catch E_WARNING.
+    if (($f = @fopen($file_path, 'r')) === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
 
