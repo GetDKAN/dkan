@@ -14,6 +14,8 @@ plugins:
         enabled: false
       Drupal Commenting Deprecated DeprecatedWrongSeeUrlFormat:
         enabled: false
+      Drupal Commenting TodoComment TodoFormat:
+        enabled: false
 
 exclude_patterns:
   - "cypress/"
