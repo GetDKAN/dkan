@@ -109,6 +109,9 @@ class MySqlDatabaseTableTest extends KernelTestBase {
       $db_table = $import_job->getStorage()
     );
 
+    // Import has not occurred, so validate() should be false.
+    $this->assertFalse($db_table->validate());
+
     // Store the table.
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());

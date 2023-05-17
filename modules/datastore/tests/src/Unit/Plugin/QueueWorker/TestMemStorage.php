@@ -69,9 +69,6 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable {
     return count($this->storage);
   }
 
-  public function setTable(): void {
-  }
-
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return (object) ['storage' => $this->storage];
@@ -118,6 +115,9 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable {
   public function generateToken($field) {
     $md5 = md5($field);
     return substr($md5, 0, 4);
+  }
+
+  public function setTable(): void {
   }
 
 }
