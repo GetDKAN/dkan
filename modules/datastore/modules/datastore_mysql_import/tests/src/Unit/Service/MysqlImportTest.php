@@ -132,6 +132,7 @@ class MysqlImportTest extends TestCase {
       ->getMock();
 
     $ref_get_eol = new \ReflectionMethod(MysqlImport::class, 'getEol');
+    $ref_get_eol->setAccessible(TRUE);
     $ref_eol_table = new \ReflectionClassConstant(MysqlImport::class, 'EOL_TABLE');
 
     $this->assertSame($expected_token, $token = $ref_get_eol->invokeArgs($importer, [$line]));
@@ -154,6 +155,7 @@ class MysqlImportTest extends TestCase {
       ->disableOriginalConstructor()
       ->getMock();
     $ref_get_cols_from_file = new \ReflectionMethod(MysqlImport::class, 'getColsFromFile');
+    $ref_get_cols_from_file->setAccessible(TRUE);
 
     $this->expectException(FileException::class);
     $this->expectExceptionMessage('Failed to open resource file "vfs://root/file.csv"');
@@ -185,6 +187,7 @@ class MysqlImportTest extends TestCase {
       ->disableOriginalConstructor()
       ->getMock();
     $ref_get_cols_from_file = new \ReflectionMethod(MysqlImport::class, 'getColsFromFile');
+    $ref_get_cols_from_file->setAccessible(TRUE);
 
     [$columns, $column_lines] = $ref_get_cols_from_file->invokeArgs($importer, [
       vfsStream::url('root/file.csv'),
