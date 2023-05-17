@@ -58,4 +58,19 @@ interface DatabaseTableInterface extends StorerInterface, RetrieverInterface, Re
    */
   public function getSchema(): array;
 
+  /**
+   * Validate the table against the CSV it was imported from.
+   *
+   * This can mean different things in different contexts, for different
+   * importers. Override this method to provide meaningful business logic.
+   *
+   * Defaults to FALSE because this method is primarily used to determine if
+   * an error in import was rectified. Since not every type of db table import
+   * can be rectified, import errors should remain by default.
+   *
+   * @return bool
+   *   TRUE if the table validates against the CSV, FALSE otherwise.
+   */
+  public function validate(): bool;
+
 }

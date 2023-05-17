@@ -120,4 +120,8 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable {
   public function setTable(): void {
   }
 
+  public function validate(): bool {
+    return FALSE;
+  }
+
 }

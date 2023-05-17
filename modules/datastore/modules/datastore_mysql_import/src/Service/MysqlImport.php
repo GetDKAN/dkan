@@ -3,9 +3,9 @@
 namespace Drupal\datastore_mysql_import\Service;
 
 use Drupal\Core\Database\Database;
+use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
-
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
@@ -65,7 +65,17 @@ class MysqlImport extends ImportJob {
     $this->dataStorage->setSchema(['fields' => $spec]);
 
     // Create the table.
-    $this->dataStorage->setTable();
+    try {
+      $this->dataStorage->setTable();
+    }
+    catch (SchemaObjectExistsException $e) {
+      // If the table exists, is it valid?
+      if ($this->dataStorage->validate()) {
+        $this->getResult()->setStatus(Result::DONE);
+        return NULL;
+      }
+      throw $e;
+    }
 
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.

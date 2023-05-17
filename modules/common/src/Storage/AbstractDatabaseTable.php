@@ -220,10 +220,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Validate the table against the CSV it was imported from.
-   *
-   * This can mean different things in different contexts, for different
-   * importers. Override this method to provide meaningful business logic.
+   * {@inheritDoc}
    *
    * Defaults to FALSE because this method is primarily used to determine if
    * an error in import was rectified. Since not every type of db table import
