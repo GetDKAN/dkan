@@ -19,7 +19,7 @@ class ValueHandler {
       case 'string':
         $data = $this->handleStringValues($formValues, $property);
         if ($property === 'hasEmail') {
-          $data = 'mailto:' . ltrim($data, 'mailto:');
+          $data = 'mailto:' . ltrim($data ?? '', 'mailto:');
         }
         break;
 
