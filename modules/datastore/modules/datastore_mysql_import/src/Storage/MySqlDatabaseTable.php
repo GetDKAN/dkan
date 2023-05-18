@@ -26,7 +26,7 @@ class MySqlDatabaseTable extends DatabaseTable {
       $this->tableCreate($this->getTableName(), $this->schema);
     }
     else {
-      throw new \Exception("Could not instantiate the table due to a lack of schema.");
+      throw new \Exception('Could not instantiate the table due to a lack of schema.');
     }
   }
 
@@ -54,7 +54,8 @@ class MySqlDatabaseTable extends DatabaseTable {
 
     try {
       $result = $db_query->execute();
-    } catch (DatabaseExceptionWrapper $e) {
+    }
+    catch (DatabaseExceptionWrapper $e) {
       throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
     }
 
