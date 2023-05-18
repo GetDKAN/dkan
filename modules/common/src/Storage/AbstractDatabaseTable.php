@@ -237,7 +237,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Create a minimal error message that does not leak database information.
    */
-  private function sanitizedErrorMessage(string $unsanitizedMessage) {
+  protected function sanitizedErrorMessage(string $unsanitizedMessage) {
     // Insert portions of exception messages you want caught here.
     $messages = [
       // Portion of the message => User friendly message.
