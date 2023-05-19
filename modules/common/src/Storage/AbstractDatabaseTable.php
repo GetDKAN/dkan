@@ -3,7 +3,6 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\indexer\IndexManager;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
 
@@ -28,13 +27,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @var \Drupal\Core\Database\Connection
    */
   protected $connection;
-
-  /**
-   * Optional index manager service.
-   *
-   * @var null|\Drupal\indexer\IndexManager
-   */
-  protected $indexManager;
 
   /**
    * Get the full name of datastore db table.
@@ -71,16 +63,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
     }
-  }
-
-  /**
-   * Set an optional index manager service.
-   *
-   * @param \Drupal\indexer\IndexManager $indexManager
-   *   Index manager.
-   */
-  public function setIndexManager(IndexManager $indexManager) {
-    $this->indexManager = $indexManager;
   }
 
   /**
@@ -208,7 +190,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();
-    $this->connection->delete($tableName)
+    return $this->connection->delete($tableName)
       ->condition($this->primaryKey(), $id)
       ->execute();
   }
@@ -255,7 +237,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Create a minimal error message that does not leak database information.
    */
-  private function sanitizedErrorMessage(string $unsanitizedMessage) {
+  protected function sanitizedErrorMessage(string $unsanitizedMessage) {
     // Insert portions of exception messages you want caught here.
     $messages = [
       // Portion of the message => User friendly message.
@@ -300,20 +282,16 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Check for existence of a table name.
    */
   protected function tableExist($table_name) {
-    $exists = $this->connection->schema()->tableExists($table_name);
-    return $exists;
+    return $this->connection->schema()->tableExists($table_name);
   }
 
   /**
    * Create a table given a name and schema.
    */
-  private function tableCreate($table_name, $schema) {
+  protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
-    // Add indexes if we have an index manager.
-    if (isset($this->indexManager) && method_exists($this->indexManager, 'modifySchema')) {
-      $schema = $this->indexManager->modifySchema($table_name, $schema);
-    }
+
     $this->connection->schema()->createTable($table_name, $schema);
   }
 
@@ -321,7 +299,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Set the schema using the existing database table.
    */
   protected function setSchemaFromTable() {
-    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
+    $fields_info = $this->connection->query('DESCRIBE {' . $this->getTableName() . '}')->fetchAll();
     if (empty($fields_info)) {
       return;
     }

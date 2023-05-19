@@ -11,7 +11,7 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\datastore\Service\Import as Service;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
@@ -86,7 +86,7 @@ class MysqlImportTest extends TestCase {
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
     $jobStoreFactory = $this->getJobstoreFactoryMock();
 
-    $service = new Service($resource, $jobStoreFactory, $databaseTableFactory);
+    $service = new ImportService($resource, $jobStoreFactory, $databaseTableFactory);
     $service->setImporterClass(MysqlImport::class);
     $service->import();
 
@@ -113,7 +113,7 @@ class MysqlImportTest extends TestCase {
 
     $this->assertEquals($mysqlImporter->sqlStatement, implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
-      'INTO TABLE ' . self::TABLE_NAME,
+      'INTO TABLE {' . self::TABLE_NAME . '}',
       'FIELDS TERMINATED BY \',\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',
@@ -151,8 +151,8 @@ class MysqlImportTest extends TestCase {
         };
       }
 
-      protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count, string $delimiter): string {
-        $this->sqlStatement = parent::getSqlStatement($file_path, $tablename, $headers, $eol, $header_line_count, $delimiter);
+      protected function getSqlStatement(string $file_path, string $table_name, array $headers, string $eol, int $header_line_count, string $delimiter): string {
+        $this->sqlStatement = parent::getSqlStatement($file_path, $table_name, $headers, $eol, $header_line_count, $delimiter);
         return $this->sqlStatement;
       }
 

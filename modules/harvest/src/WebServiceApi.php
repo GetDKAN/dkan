@@ -26,7 +26,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Harvest.
    *
-   * @var \Drupal\harvest\Service
+   * @var \Drupal\harvest\HarvestService
    */
   private $harvester;
 
@@ -42,7 +42,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Api constructor.
    */
-  public function __construct(RequestStack $requestStack, Service $service) {
+  public function __construct(RequestStack $requestStack, HarvestService $service) {
     $this->requestStack = $requestStack;
     $this->harvester = $service;
   }

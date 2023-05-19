@@ -49,7 +49,7 @@ class MetastoreApiResponse {
     ?ParameterBag $params = NULL
   ): CacheableJsonResponse {
 
-    $response = CacheableJsonResponse::create($data, $code, []);
+    $response = new CacheableJsonResponse($data, $code, []);
     if ($cacheMetadata = $this->getCacheMetadata($dependencies, $params)) {
       $response->addCacheableDependency($cacheMetadata);
     }

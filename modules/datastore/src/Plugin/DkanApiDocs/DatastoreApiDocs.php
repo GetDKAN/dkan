@@ -6,7 +6,7 @@ use Drupal\common\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\datastore\Service\Info\ImportInfo;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -40,7 +40,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
    *   The module handler service.
-   * @param \Drupal\metastore\Service $metastore
+   * @param \Drupal\metastore\MetastoreService $metastore
    *   The module handler service.
    * @param Drupal\datastore\Service\Info\ImportInfo $importInfo
    *   Import info datastoer service.
@@ -51,7 +51,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
-    Service $metastore,
+    MetastoreService $metastore,
     ImportInfo $importInfo
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);

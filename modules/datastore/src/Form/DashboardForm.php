@@ -10,8 +10,9 @@ use Drupal\common\DatasetInfo;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Url;
 use Drupal\common\UrlHostTokenResolver;
-use Drupal\harvest\Service;
-use Drupal\metastore\Service as MetastoreService;
+use Drupal\harvest\HarvestService;
+use Drupal\metastore\MetastoreService;
+use Drupal\datastore\Service\PostImport;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -25,7 +26,7 @@ class DashboardForm extends FormBase {
   /**
    * Harvest service.
    *
-   * @var \Drupal\harvest\Service
+   * @var \Drupal\harvest\HarvestService
    */
   protected $harvest;
 
@@ -39,7 +40,7 @@ class DashboardForm extends FormBase {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
@@ -58,31 +59,49 @@ class DashboardForm extends FormBase {
   protected $itemsPerPage;
 
   /**
+   * Date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatter
+   */
+  protected $dateFormatter;
+
+  /**
+   * The PostImport service.
+   *
+   * @var \Drupal\datastore\Service\PostImport
+   */
+  protected $postImport;
+
+  /**
    * DashboardController constructor.
    *
-   * @param \Drupal\harvest\Service $harvestService
+   * @param \Drupal\harvest\HarvestService $harvestService
    *   Harvest service.
    * @param \Drupal\common\DatasetInfo $datasetInfo
    *   Dataset information service.
-   * @param \Drupal\metastore\Service $metastoreService
+   * @param \Drupal\metastore\MetastoreService $metastoreService
    *   Metastore service.
    * @param \Drupal\Core\Pager\PagerManagerInterface $pagerManager
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
+   * @param \Drupal\datastore\Service\PostImport $post_import
+   *   The post import service.
    */
   public function __construct(
-    Service $harvestService,
+    HarvestService $harvestService,
     DatasetInfo $datasetInfo,
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
-    DateFormatter $dateFormatter
+    DateFormatter $dateFormatter,
+    PostImport $post_import
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
     $this->dateFormatter = $dateFormatter;
+    $this->postImport = $post_import;
     $this->itemsPerPage = 10;
   }
 
@@ -95,7 +114,8 @@ class DashboardForm extends FormBase {
       $container->get('dkan.common.dataset_info'),
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('dkan.datastore.service.post_import'),
     );
   }
 
@@ -277,7 +297,7 @@ class DashboardForm extends FormBase {
     $harvestLoad = iterator_to_array($this->getHarvestLoadStatuses());
 
     $rows = [];
-    // Build dataset rows fore each of the supplied dataset UUIDs.
+    // Build dataset rows for each of the supplied dataset UUIDs.
     foreach ($datasets as $datasetId) {
       // Gather dataset information.
       $datasetInfo = $this->datasetInfo->gather($datasetId);
@@ -335,6 +355,7 @@ class DashboardForm extends FormBase {
       $this->t('Resource'),
       $this->t('Fetch'),
       $this->t('Store'),
+      $this->t('Post Import'),
     ];
   }
 
@@ -425,6 +446,11 @@ class DashboardForm extends FormBase {
    */
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
+
+      $postImportInfo = $this->postImport->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
+      $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
+      $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
+
       return [
         [
           'data' => [
@@ -436,9 +462,10 @@ class DashboardForm extends FormBase {
         ],
         $this->buildStatusCell($dist['fetcher_status'], $dist['fetcher_percent_done']),
         $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
+        $this->buildPostImportStatusCell($status, $error),
       ];
     }
-    return ['', '', ''];
+    return ['', '', '', ''];
   }
 
   /**
@@ -460,6 +487,28 @@ class DashboardForm extends FormBase {
         '#theme' => 'datastore_dashboard_status_cell',
         '#status' => $status,
         '#percent' => $percentDone,
+        '#error' => $error,
+      ],
+      'class' => str_replace('_', '-', $status),
+    ];
+  }
+
+  /**
+   * Create a cell for a post import job status.
+   *
+   * @param string $status
+   *   Current job status.
+   * @param null|string $error
+   *   An error message, if any.
+   *
+   * @return array
+   *   Renderable array.
+   */
+  protected function buildPostImportStatusCell(string $status, ?string $error = NULL) {
+    return [
+      'data' => [
+        '#theme' => 'datastore_dashboard_post_import_status_cell',
+        '#status' => $status,
         '#error' => $error,
       ],
       'class' => str_replace('_', '-', $status),

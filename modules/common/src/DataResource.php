@@ -3,7 +3,6 @@
 namespace Drupal\common;
 
 use Drupal\datastore\DatastoreResource;
-use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;
 
 /**
@@ -28,7 +27,7 @@ use Procrastinator\JsonSerializeTrait;
  * @todo Refactor as service.
  */
 class DataResource implements \JsonSerializable {
-  use HydratableTrait, JsonSerializeTrait;
+  use JsonSerializeTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
@@ -78,6 +77,13 @@ class DataResource implements \JsonSerializable {
 
   /**
    * Constructor.
+   *
+   * @param string $file_path
+   *   Path to the file.
+   * @param string $mimeType
+   *   File mime type.
+   * @param string $perspective
+   *   Can be one of "local_file", "local_url", or "source".
    */
   public function __construct($file_path, $mimeType, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
     // @todo generate UUID instead.
@@ -91,7 +97,26 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Create a new version.
+   * Create a DataResource object from a database record.
+   *
+   * @param object $record
+   *   Data resource record from the database. Must contain these properties:
+   *   'filePath', 'mimeType', 'perspective', 'version'.
+   *
+   * @return \Drupal\common\DataResource
+   *   DataResource object.
+   */
+  public static function createFromRecord(object $record): DataResource {
+    $resource = new static($record->filePath, $record->mimeType, $record->perspective);
+    // MD5 of record's file path can differ from the MD5 generated in the
+    // constructor, so we have to explicitly set the identifier.
+    $resource->identifier = $record->identifier;
+    $resource->version = $record->version;
+    return $resource;
+  }
+
+  /**
+   * Clone the current resource with a new version identifier.
    *
    * Versions are, simply, a unique "string" used to represent changes in a
    * resource. For example, when new data is added to a file/resource a new
@@ -101,17 +126,18 @@ class DataResource implements \JsonSerializable {
    * resources, it simply models the behavior to allow other parts of the
    * system to create new versions of resources when they deem it necessary.
    */
-  public function createNewVersion() {
+  public function createNewVersion(): DataResource {
     $newVersion = time();
     if ($newVersion == $this->version) {
       $newVersion++;
     }
-
-    return $this->createCommon('version', $newVersion);
+    $clone = clone $this;
+    $clone->version = $newVersion;
+    return $clone;
   }
 
   /**
-   * Create a new perspective.
+   * Clone the current resource with a new perspective.
    *
    * Perspectives are useful to represent clusters of connected resources.
    *
@@ -121,11 +147,11 @@ class DataResource implements \JsonSerializable {
    * aware of the new resource, the API endpoint, and maintain the relatioship
    * between the 2 resources.
    */
-  public function createNewPerspective($perspective, $uri) {
-    $new = $this->createCommon('perspective', $perspective);
-    $new->changeFilePath($uri);
-
-    return $new;
+  public function createNewPerspective($perspective, $uri): DataResource {
+    $clone = clone $this;
+    $clone->perspective = $perspective;
+    $clone->changeFilePath($uri);
+    return $clone;
   }
 
   /**
@@ -140,18 +166,6 @@ class DataResource implements \JsonSerializable {
    */
   public function changeMimeType($newMimeType) {
     $this->mimeType = $newMimeType;
-  }
-
-  /**
-   * Private.
-   */
-  private function createCommon($property, $value) {
-    $current = $this->{$property};
-    $new = $value;
-    $this->{$property} = $new;
-    $newResource = clone $this;
-    $this->{$property} = $current;
-    return $newResource;
   }
 
   /**
@@ -205,6 +219,9 @@ class DataResource implements \JsonSerializable {
 
   /**
    * Getter.
+   *
+   * @return string
+   *   The unique identifier.
    */
   public function getUniqueIdentifier() {
     return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
@@ -222,6 +239,7 @@ class DataResource implements \JsonSerializable {
    *
    * @inheritdoc
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return $this->serialize();
   }
@@ -316,6 +334,9 @@ class DataResource implements \JsonSerializable {
     $storage = $factory->getInstance('distribution');
 
     $distroJson = $storage->retrieve($identifier);
+    if (is_null($distroJson)) {
+      $distroJson = '';
+    }
     return json_decode($distroJson);
   }
 

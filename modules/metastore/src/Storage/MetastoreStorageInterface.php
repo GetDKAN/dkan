@@ -26,7 +26,7 @@ interface MetastoreStorageInterface {
    * @param bool $published
    *   Whether to retrieve the published revision of the metadata.
    *
-   * @return string|HydratableInterface
+   * @return string|null
    *   The data or null if no data could be retrieved.
    *
    * @throws \Drupal\metastore\Exception\MissingObjectException
@@ -114,7 +114,7 @@ interface MetastoreStorageInterface {
   /**
    * Store.
    *
-   * @param string|HydratableInterface $data
+   * @param string $data
    *   The data to be stored.
    * @param string $id
    *   The identifier for the data. If the act of storing generates the
@@ -126,7 +126,7 @@ interface MetastoreStorageInterface {
    * @throws \Exception
    *   Issues storing the data.
    */
-  public function store($data, string $id = NULL): string;
+  public function store(string $data, string $id = NULL): string;
 
   /**
    * Retrieve by hash.

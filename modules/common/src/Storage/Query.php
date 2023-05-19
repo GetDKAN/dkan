@@ -19,6 +19,14 @@ class Query implements
   /**
    * The collection of records (usually, a database table) to query against.
    *
+   * @var array
+   */
+  public $dataDictionaryFields;
+
+
+  /**
+   * The collection of records (usually, a database table) to query against.
+   *
    * @var string
    */
   public $collection;

@@ -4,7 +4,7 @@ namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\Service;
+use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
 use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
@@ -21,21 +21,14 @@ class HarvestCommands extends DrushCommands {
   /**
    * Harvest.
    *
-   * @var \Drupal\harvest\Service
+   * @var \Drupal\harvest\HarvestService
    */
   protected $harvestService;
 
   /**
-   * Logger.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $logger;
-
-  /**
    * Constructor.
    */
-  public function __construct(Service $service, LoggerChannelInterface $logger) {
+  public function __construct(HarvestService $service, LoggerChannelInterface $logger) {
     parent::__construct();
     // @todo passing via arguments doesn't seem play well with drush.services.yml
     $this->harvestService = $service;
@@ -136,6 +129,9 @@ class HarvestCommands extends DrushCommands {
     try {
       if ($this->harvestService->deregisterHarvest($id)) {
         $message = "Successfully deregistered the {$id} harvest.";
+      }
+      else {
+        $message = "No harvest {$id} deregistered. Check if it exists.";
       }
     }
     catch (\Exception $e) {

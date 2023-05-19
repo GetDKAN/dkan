@@ -23,7 +23,7 @@ use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -38,23 +38,23 @@ class ReferencerTest extends TestCase {
    *
    * @var string
    */
-  const FILE_PATH = 'tmp/mycsv.csv';
+  public const FILE_PATH = 'tmp/mycsv.csv';
 
   /**
    * HTTP host protocol and domain for testing download URL.
    *
    * @var string
    */
-  const HOST = 'http://example.com';
+  public const HOST = 'http://example.com';
 
-  const MIME_TYPE = 'text/csv';
+  public const MIME_TYPE = 'text/csv';
 
   /**
    * List referenceable dataset properties.
    *
    * @var string[]
    */
-  const REFERENCEABLE_PROPERTY_LIST = [
+  public const REFERENCEABLE_PROPERTY_LIST = [
     'keyword' => 0,
     'distribution' => 'distribution',
     'title' => 0,
@@ -275,7 +275,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $storedResource = DataResource::hydrate($container_chain->getStoredInput('resource')[0]);
+    $storedResource = DataResource::createFromRecord(json_decode($container_chain->getStoredInput('resource')[0]));
     // A new resource should have been stored, with the mimetype set to text/csv
     $this->assertEquals('text/csv', $storedResource->getMimeType());
   }
@@ -452,7 +452,7 @@ class ReferencerTest extends TestCase {
     $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
     // Test Mime Type detection on a invalid remote file path.
     $data = $this->getData('http://invalid');
-    $this->expectException(RequestException::class);
+    $this->expectException(ConnectException::class);
     $referencer->reference($data);
   }
 

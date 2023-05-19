@@ -6,13 +6,13 @@ use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\Service as Harvester;
-use Drupal\metastore\Service as Metastore;
+use Drupal\harvest\HarvestService;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -42,10 +42,10 @@ class DatasetTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState();
     $this->changeDatasetsResourceOutputPerspective();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
     $this->removeHarvests();
     $this->removeAllNodes();
@@ -91,6 +91,8 @@ class DatasetTest extends ExistingSiteBase {
 
   /**
    * Test the resource purger when the default moderation state is 'draft'.
+   *
+   * @runInSeparateProcess
    */
   public function testResourcePurgeDraft() {
     $id_1 = uniqid(__FUNCTION__ . '1');
@@ -105,6 +107,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->getMetastore()->publish('dataset', $id_1);
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
+    /** @var \Drupal\common\DatasetInfo $datasetInfo */
     $datasetInfo = \Drupal::service('dkan.common.dataset_info');
     $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
@@ -304,8 +307,10 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-    $display = &drupal_static('metastore_resource_mapper_display');
-    $display = $perspective;
+    $configFactory = \Drupal::service('config.factory');
+    $config = $configFactory->getEditable('metastore.settings');
+    $config->set('resource_perspective_display', $perspective);
+    $config->save();
   }
 
   private function getResourceDatastoreTable(object $resource) {
@@ -452,7 +457,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function queryResource(object $resource, string $queryString) {
-    /** @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\Service */
+    /** @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));
@@ -485,7 +490,7 @@ class DatasetTest extends ExistingSiteBase {
     return \Drupal::service('queue');
   }
 
-  private function getHarvester() : Harvester {
+  private function getHarvester() : HarvestService {
     return \Drupal::service('dkan.harvest.service');
   }
 
@@ -501,9 +506,9 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   /**
-   * @return \Drupal\metastore\Service
+   * @return \Drupal\metastore\MetastoreService
    */
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

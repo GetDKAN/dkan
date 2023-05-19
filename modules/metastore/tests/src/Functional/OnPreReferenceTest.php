@@ -6,7 +6,9 @@ use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- *
+ * Run tests in separate processes, since they rely on the value of
+ *   drupal_static().
+ * @runTestsInSeparateProcesses
  */
 class OnPreReferenceTest extends ExistingSiteBase {
   use CleanUp;
@@ -48,7 +50,7 @@ class OnPreReferenceTest extends ExistingSiteBase {
 
     // Test posting a dataset to the metastore.
     $data = $this->getData($this->downloadUrl);
-    /** @var \Drupal\metastore\Service $metastore */
+    /** @var \Drupal\metastore\MetastoreService $metastore */
     $metastore = \Drupal::service('dkan.metastore.service');
     $dataset = $metastore->getValidMetadataFactory()->get($data, 'dataset');
     $metastore->post('dataset', $dataset);
@@ -67,7 +69,7 @@ class OnPreReferenceTest extends ExistingSiteBase {
   /**
    *
    */
-  public function tearDown() {
+  public function tearDown(): void {
     parent::tearDown();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();

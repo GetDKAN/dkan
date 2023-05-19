@@ -1,12 +1,19 @@
 services:
   dkan.datastore.service:
-    class: \Drupal\datastore\Service
+    class: \Drupal\datastore\DatastoreService
     arguments:
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
       - '@queue'
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info_list'
+      - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
+
+  dkan.datastore.service.post_import:
+    class: \Drupal\datastore\Service\PostImport
+    arguments:
+     - '@database'
+     - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.query:
     class: \Drupal\datastore\Service\Query
@@ -46,7 +53,7 @@ services:
       - [setLoggerFactory, ['@logger.factory']]
 
   dkan.datastore.service.factory.import:
-    class: \Drupal\datastore\Service\Factory\Import
+    class: \Drupal\datastore\Service\Factory\ImportServiceFactory
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.database_table_factory'
@@ -73,11 +80,9 @@ services:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
     arguments:
       - '@dkan.datastore.database'
-    calls:
-      - [setIndexManager, ['@?indexer.indexmanager']]
 
   dkan.datastore.sql_endpoint.service:
-    class: \Drupal\datastore\SqlEndpoint\Service
+    class: \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
     arguments:
       - '@dkan.datastore.service'
       - '@config.factory'

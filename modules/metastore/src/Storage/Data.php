@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
 
 /**
@@ -368,7 +368,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
       $title = isset($data->title) ? $data->title : $data->name;
     }
     else {
-      $title = Service::metadataHash($data->data);
+      $title = MetastoreService::metadataHash($data->data);
     }
     $entity = $this->getEntityStorage()->create(
       [

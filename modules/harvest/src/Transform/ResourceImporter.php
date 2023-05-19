@@ -135,7 +135,7 @@ class ResourceImporter extends Transform {
     }
 
     if (is_object($path)) {
-      return file_create_url($path->uri->value);
+      return \Drupal::service('file_url_generator')->generateAbsoluteString($path->uri->value);
     }
     else {
       return $this->drupalFiles->fileCreateUrl($path);

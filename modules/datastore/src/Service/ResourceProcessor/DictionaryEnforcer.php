@@ -5,7 +5,7 @@ namespace Drupal\datastore\Service\ResourceProcessor;
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
-use Drupal\metastore\Service as MetastoreService;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use RootedData\RootedJsonData;
@@ -32,7 +32,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * The metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
@@ -48,7 +48,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
-   * @param \Drupal\metastore\Service $metastore
+   * @param \Drupal\metastore\MetastoreService $metastore
    *   The metastore service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
@@ -117,6 +117,22 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
       ->addDataDictionary($dictionary)
       ->getQuery()
       ->execute();
+  }
+
+  /**
+   * Returning data dictionary fields from schema.
+   *
+   *  {@inheritdoc}
+   */
+  public function returnDataDictionaryFields() {
+    // Get DD is mode.
+    $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
+    // Get data dictionary info.
+    if ($dd_mode == "sitewide") {
+      $dict_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
+      $metaData = $this->metastore->get('data-dictionary', $dict_id)->{"$.data.fields"};
+      return $metaData;
+    }
   }
 
 }

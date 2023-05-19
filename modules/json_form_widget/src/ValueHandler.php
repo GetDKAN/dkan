@@ -18,6 +18,9 @@ class ValueHandler {
     switch ($schema->type) {
       case 'string':
         $data = $this->handleStringValues($formValues, $property);
+        if ($property === 'hasEmail') {
+          $data = 'mailto:' . ltrim($data ?? '', 'mailto:');
+        }
         break;
 
       case 'object':
@@ -48,7 +51,7 @@ class ValueHandler {
     if (isset($formValues[$property]['select'])) {
       return isset($formValues[$property][0]) ? $formValues[$property][0] : NULL;
     }
-    return !empty($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
+    return !empty($formValues[$property]) && is_string($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
   }
 
   /**
@@ -71,14 +74,14 @@ class ValueHandler {
     }
 
     $properties = array_keys((array) $schema->properties);
-    $data = FALSE;
+    $data = [];
     foreach ($properties as $sub_property) {
       $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
       if ($value) {
         $data[$sub_property] = $value;
       }
     }
-    return $data;
+    return $data ?: FALSE;
   }
 
   /**

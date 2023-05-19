@@ -1,4 +1,8 @@
-version: 2.1
+# Circle CI script to run a matrix of tests in DDev.
+
+version: '2.1'
+orbs:
+  docker: circleci/docker@2.2.0
 
 commands:
   install-ddev:
@@ -7,18 +11,31 @@ commands:
           name: Install DDev
           command: |
             set -e
+            sudo rm -rf /etc/apt/sources.list.d/heroku.list
             sudo apt-get update
             sudo apt-get install ca-certificates
             curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
             echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
             sudo apt update && sudo apt install -y ddev
+
   prepare_build:
-    # TODO: Figure out the best way to share this build between the various jobs.
+    # TODO: Currently the DKAN ddev addon adds an extra config file called
+    # config.dkan.yml. This prevents us from just calling
+    # `ddev config --php-version` to change PHP version. In the future,
+    # change this around so we can just tell ddev to change the PHP version.
     parameters:
-      upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
-        default: false
-        type: boolean
+      php_version:
+        description: 'PHP major.minor for DDev to use.'
+        default: '7.4'
+        type: string
+      addon_branch:
+        description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
+        default: 'main'
+        type: string
+      dkan_recommended_branch:
+        description: 'Branch of getdkan/recommended-project to use.'
+        default: '9.5.x-dev'
+        type: string
     steps:
       - run:
           name: Set up composer config
@@ -32,10 +49,16 @@ commands:
             which ddev
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
-            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
+            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            # Modify config to use our PHP version.
+            sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
+            # Clear out omit_containers.
+            sed -i '/omit_containers/d' .ddev/config.dkan.yaml
+            # Don't load the DBA container.
+            echo "omit_containers: [dba]" >> .ddev/config.dkan.yaml
             ddev restart
             ddev status
-            ddev dkan-init --force
+            ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             mkdir -p test_results
@@ -43,11 +66,11 @@ commands:
   prepare_site:
     parameters:
       upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
+        description: 'If true, will install the latest stable version and test upgrade'
         default: false
         type: boolean
       needs_cypress:
-        description: "If true, will add Cypress to the DDev environment"
+        description: 'If true, will add Cypress to the DDev environment'
         default: false
         type: boolean
     steps:
@@ -94,34 +117,33 @@ commands:
 
 jobs:
   phpunit:
-    machine:
-      image: ubuntu-2004:current
+    executor: docker/machine
     parameters:
-      upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
+      php_version:
+        description: 'PHP major.minor for DDev to use.'
+        default: '8.0'
+        type: string
+      dkan_recommended_branch:
+        description: 'Branch of getdkan/recommended-project to use.'
+        default: '9.5.x-dev'
+        type: string
+      report_coverage:
+        description: 'Generate coverage report and send it to CodeClimate'
         default: false
         type: boolean
-      needs_cypress:
-        description: "If true, will add Cypress to the DDev environment"
+      upgrade:
+        description: 'If true, will install the latest stable DKAN version and test upgrade'
         default: false
         type: boolean
     steps:
       - prepare_build:
-          upgrade: << parameters.upgrade >>
+          php_version: << parameters.php_version >>
+          dkan_recommended_branch: << parameters.dkan_recommended_branch >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
-          needs_cypress: << parameters.needs_cypress >>
+          needs_cypress: false
       - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Run PHPUnit tests
-                command: |
-                  ddev dkan-test-phpunit \
-                    --log-junit ../test_results/phpunit_results.xml
-      - unless:
-          # Only collect coverage info for non-upgrade PHPUnit tests.
-          condition: << parameters.upgrade >>
+          condition: << parameters.report_coverage >>
           steps:
             - run:
                 name: Run PHPUnit tests with coverage report
@@ -130,9 +152,10 @@ jobs:
                 command: |
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
-                  ddev dkan-test-phpunit \
+                  ddev dkan-phpunit \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
-                    --log-junit ../test_results/phpunit_results.xml
+                    --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
+                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
                   TEST_RESULT=$?
                   if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
                     echo "Coverage file: docroot/modules/contrib/dkan/clover.xml"
@@ -145,34 +168,51 @@ jobs:
                     --prefix /var/www/html/dkan \
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
+            - store_artifacts:
+                path: docroot/modules/contrib/dkan/coverage-html
+      - unless:
+          condition: << parameters.report_coverage >>
+          steps:
+            - run:
+                name: Run PHPUnit tests
+                command: |
+                  ddev dkan-phpunit \
+                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
-          path: test_results
+          path: dkan/junit
 
   cypress:
     machine:
       image: ubuntu-2004:current
     parallelism: 4
     parameters:
+      php_version:
+        description: 'PHP major.minor for DDev to use.'
+        default: '8.0'
+        type: string
+      dkan_recommended_branch:
+        description: 'Branch of getdkan/recommended-project to use.'
+        default: '9.5.x-dev'
+        type: string
       upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
-        default: false
-        type: boolean
-      needs_cypress:
-        description: "If true, will add Cypress to the DDev environment"
+        description: 'If true, will install the latest stable DKAN version and test upgrade'
         default: false
         type: boolean
     steps:
       - prepare_build:
-          upgrade: << parameters.upgrade >>
+          php_version: << parameters.php_version >>
+          dkan_recommended_branch: << parameters.dkan_recommended_branch >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
-          needs_cypress: << parameters.needs_cypress >>
+          needs_cypress: true
       - run:
           name: Run Cypress tests
           command: |
-            mkdir dkan/cypress/tmp && mkdir dkan/cypress/results
+            mkdir dkan/cypress/tmp
+            mkdir dkan/cypress/results
             mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
-            rm dkan/cypress/integration/* && mv dkan/cypress/tmp/* dkan/cypress/integration
+            rm dkan/cypress/integration/*
+            mv dkan/cypress/tmp/* dkan/cypress/integration
             ddev dkan-module-test-cypress \
               --headless \
               --reporter junit \
@@ -187,18 +227,43 @@ jobs:
 workflows:
   version: 2
   install_and_test:
+    # We use matrix for these parameters so that we can tell them apart in report screens.
     jobs:
-      - phpunit:
-          name: install_test_phpunit
       - cypress:
           name: install_test_cypress
-          needs_cypress: true
+          dkan_recommended_branch: '9.5.x-dev'
+      - phpunit:
+          matrix:
+            parameters:
+              dkan_recommended_branch: [ '9.4.x-dev']
+              php_version: [ '7.4' ]
+      - phpunit:
+          matrix:
+            parameters:
+              dkan_recommended_branch: [ '9.5.x-dev']
+              php_version: [ '7.4', '8.1' ]
+      - phpunit:
+          name: 'Install target (Drupal 9.5, PHP 8.0)'
+          report_coverage: true
+          matrix:
+            parameters:
+              dkan_recommended_branch: [ '9.5.x-dev']
+              php_version: [ '8.0' ]
+      - phpunit:
+         matrix:
+           parameters:
+             dkan_recommended_branch: [ '10.0.x-dev']
+             php_version: [ '8.1' ]
   upgrade_and_test:
     jobs:
-      - phpunit:
-          name: upgrade_test_phpunit
-          upgrade: true
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          needs_cypress: true
+          dkan_recommended_branch: '9.5.x-dev'
+      - phpunit:
+          name: 'Upgrade target (Drupal 9.5, PHP 8.0)'
+          upgrade: true
+          matrix:
+            parameters:
+              dkan_recommended_branch: [ '9.5.x-dev']
+              php_version: [ '8.0' ]
