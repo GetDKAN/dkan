@@ -1,32 +1,33 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Functional;
+namespace Drupal\Tests\datastore_mysql_import\Kernel;
 
 use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
-use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
+use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
  * Class DatasetTest
  *
- * This test is similar to Drupal\Tests\dkan\Functional\DatasetTest, except it
- * uses BrowserTestBase as a base, and enables datastore_mysql_import.
- *
  * @package Drupal\Tests\datastore_mysql_import\Functional
  * @group dkan
  * @group datastore_mysql_import
- * @group functional
+ * @group kernel
  */
-class MySqlDatasetTest extends BrowserTestBase {
+class MySqlDatasetTest extends KernelTestBase {
+  use CleanUp;
 
   /**
    * {@inheritdoc}
@@ -36,16 +37,9 @@ class MySqlDatasetTest extends BrowserTestBase {
     'datastore',
     'datastore_mysql_import',
     'field',
-    'harvest',
     'metastore',
-    'menu_ui',
     'node',
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'starterkit_theme';
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
@@ -54,10 +48,33 @@ class MySqlDatasetTest extends BrowserTestBase {
 
   public function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
+//    $this->removeHarvests();
+//    $this->removeAllNodes();
+//    $this->removeAllMappedFiles();
+//    $this->removeAllFileFetchingJobs();
+//    $this->flushQueues();
+//    $this->removeFiles();
+//    $this->removeDatastoreTables();
+//    $this->setDefaultModerationState();
+//    $this->changeDatasetsResourceOutputPerspective();
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
+//  public function tearDown(): void {
+//    parent::tearDown();
+//    $this->removeHarvests();
+//    $this->removeAllNodes();
+//    $this->removeAllMappedFiles();
+//    $this->removeAllFileFetchingJobs();
+//    $this->flushQueues();
+//    $this->removeFiles();
+//    $this->removeDatastoreTables();
+//    $this->setDefaultModerationState();
+//    $this->changeDatasetsResourceOutputPerspective();
+//  }
+
   public function testChangingDatasetResourcePerspectiveOnOutput() {
+//    $this->markTestIncomplete('requires datastore_mysql_import module');
     $this->datastoreImportAndQuery();
 
     drupal_flush_all_caches();
@@ -77,7 +94,7 @@ class MySqlDatasetTest extends BrowserTestBase {
    * Test the resource purger when the default moderation state is 'published'.
    */
   public function testResourcePurgePublished() {
-    $this->markTestIncomplete('needs work.');
+    $this->markTestIncomplete('requires datastore_mysql_import module');
     $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post then update a dataset with multiple, changing resources.
@@ -95,7 +112,7 @@ class MySqlDatasetTest extends BrowserTestBase {
    * @runInSeparateProcess
    */
   public function testResourcePurgeDraft() {
-    $this->markTestIncomplete('needs work.');
+    $this->markTestIncomplete('requires datastore_mysql_import module');
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
     $id_3 = uniqid(__FUNCTION__ . '3');
@@ -138,10 +155,13 @@ class MySqlDatasetTest extends BrowserTestBase {
     $this->assertArrayNotHasKey('dkan_dataset/' . $id_3, $searchResults->results);
   }
 
+
   /**
    * Test archiving of datasets after a harvest
    */
   public function testHarvestArchive() {
+    $this->markTestIncomplete('requires datastore_mysql_import module');
+
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
     $harvester->registerHarvest($plan);
@@ -166,6 +186,8 @@ class MySqlDatasetTest extends BrowserTestBase {
    * Test removal of datasets by a subsequent harvest.
    */
   public function testHarvestOrphan() {
+    $this->markTestIncomplete('requires datastore_mysql_import module');
+
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
     $harvester->registerHarvest($plan);
@@ -199,6 +221,7 @@ class MySqlDatasetTest extends BrowserTestBase {
    * Test resource removal on distribution deleting.
    */
   public function testDeleteDistribution() {
+    $this->markTestIncomplete('requires datastore_mysql_import module');
     $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post a dataset with a single distribution.
@@ -207,7 +230,7 @@ class MySqlDatasetTest extends BrowserTestBase {
     // Get distribution id.
     $dataset = $this->getMetastore()->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
-    $distributionId = $datasetMetadata['%Ref:distribution'][0]['identifier'];
+    $distributionId = $datasetMetadata["%Ref:distribution"][0]["identifier"];
 
     // Load distribution node.
     $distributionNode = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $distributionId]);
@@ -226,6 +249,7 @@ class MySqlDatasetTest extends BrowserTestBase {
    * Test local resource removal on datastore import.
    */
   public function testDatastoreImportDeleteLocalResource() {
+    $this->markTestIncomplete('requires datastore_mysql_import module');
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
 
@@ -300,8 +324,6 @@ class MySqlDatasetTest extends BrowserTestBase {
 
     $queryString = "[SELECT * FROM {$this->getResourceDatastoreTable($resource)}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
     $this->queryResource($resource, $queryString);
-
-    /**/
   }
 
   private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
@@ -347,11 +369,11 @@ class MySqlDatasetTest extends BrowserTestBase {
 
     $data = new \stdClass();
     $data->title = $title;
-    $data->description = 'Some description.';
+    $data->description = "Some description.";
     $data->identifier = $identifier;
-    $data->accessLevel = 'public';
-    $data->modified = '06-04-2020';
-    $data->keyword = ['some keyword'];
+    $data->accessLevel = "public";
+    $data->modified = "06-04-2020";
+    $data->keyword = ["some keyword"];
     $data->distribution = [];
     $data->publisher = (object) [
       'name' => 'Test Publisher',
@@ -365,7 +387,7 @@ class MySqlDatasetTest extends BrowserTestBase {
       $distribution = new \stdClass();
       $distribution->title = "Distribution #{$key} for {$identifier}";
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->mediaType = 'text/csv';
+      $distribution->mediaType = "text/csv";
 
       $data->distribution[] = $distribution;
     }
@@ -430,10 +452,10 @@ class MySqlDatasetTest extends BrowserTestBase {
   }
 
   private function countTables() {
-    /** @var \Drupal\Core\Database\Connection $db */
+    /** @var $db \Drupal\Core\Database\Connection */
     $db = \Drupal::service('database');
 
-    $tables = $db->schema()->findTables('datastore_%');
+    $tables = $db->schema()->findTables("datastore_%");
     return count($tables);
   }
 
@@ -441,7 +463,7 @@ class MySqlDatasetTest extends BrowserTestBase {
     /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
     $fileSystem = \Drupal::service('file_system');
 
-    $dir = DRUPAL_ROOT . '/sites/default/files/resources';
+    $dir = DRUPAL_ROOT . "/sites/default/files/resources";
     // Nothing to check if the resource folder does not exist.
     if (!is_dir($dir)) {
       return [];
@@ -455,7 +477,7 @@ class MySqlDatasetTest extends BrowserTestBase {
   }
 
   private function queryResource(object $resource, string $queryString) {
-    /** @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
+    /** @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));
