@@ -65,7 +65,6 @@ class DatasetTest extends BrowserTestBase {
    * Test the resource purger when the default moderation state is 'published'.
    */
   public function testResourcePurgePublished() {
-    $this->markTestIncomplete('Fails checkFiles().');
     $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post then update a dataset with multiple, changing resources.
@@ -81,7 +80,7 @@ class DatasetTest extends BrowserTestBase {
    * Test the resource purger when the default moderation state is 'draft'.
    */
   public function testResourcePurgeDraft() {
-    $this->markTestIncomplete('Fails checkFiles(), search_api index does not exist.');
+    $this->markTestIncomplete('search_api index does not exist.');
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
     $id_3 = uniqid(__FUNCTION__ . '3');
@@ -436,7 +435,7 @@ class DatasetTest extends BrowserTestBase {
     /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
     $fileSystem = $this->container->get('file_system');
 
-    $dir = DRUPAL_ROOT . '/sites/default/files/resources';
+    $dir = $fileSystem->dirname('public://resources');
     // Nothing to check if the resource folder does not exist.
     if (!is_dir($dir)) {
       return [];
