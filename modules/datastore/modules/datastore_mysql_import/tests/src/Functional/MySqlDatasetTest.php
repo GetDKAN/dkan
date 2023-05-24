@@ -23,12 +23,14 @@ class MySqlDatasetTest extends DatasetTest {
     'common',
     'datastore',
     'datastore_mysql_import',
+    'dkan',
     'field',
+    'file',
     'harvest',
     'metastore',
+    'metastore_search',
     'menu_ui',
     'node',
-    'search_api',
   ];
 
 }

@@ -29,12 +29,14 @@ class DatasetTest extends BrowserTestBase {
   protected static $modules = [
     'common',
     'datastore',
+    'dkan',
     'field',
+    'file',
     'harvest',
     'metastore',
+    'metastore_search',
     'menu_ui',
     'node',
-    'search_api',
   ];
 
   /**
@@ -80,7 +82,7 @@ class DatasetTest extends BrowserTestBase {
    * Test the resource purger when the default moderation state is 'draft'.
    */
   public function testResourcePurgeDraft() {
-    $this->markTestIncomplete('search_api index does not exist.');
+    $this->markTestIncomplete('moderated_content_bulk_publish.settings:disable_toolbar_language_switcher missing schema');
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
     $id_3 = uniqid(__FUNCTION__ . '3');
