@@ -4,7 +4,9 @@ namespace Drupal\datastore_mysql_import\Storage;
 
 use Drupal\common\Storage\Query;
 use Drupal\common\Storage\SelectFactory;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
+use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\datastore\Storage\DatabaseTable;
 
 /**
@@ -27,6 +29,39 @@ class MySqlDatabaseTable extends DatabaseTable {
     }
     else {
       throw new \Exception('Could not instantiate the table due to a lack of schema.');
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * Our subclass rearranges the DB config and creates a new session with
+   * innodb_strict_mode turned OFF, so that we can handle arbitrarily wide
+   * table schema.
+   */
+  protected function tableCreate($table_name, $schema) {
+    // Store the DB stuff...
+    $active_db = Database::setActiveConnection();
+    $active_connection = $this->connection;
+
+    // Swap out for our reconfigured DB.
+    $options = Database::getConnectionInfo($active_db);
+    $options['default']['init_commands']['wide_tables'] = 'SET SESSION innodb_strict_mode=OFF';
+
+    Database::addConnectionInfo('dkan_wide_tables', 'default', $options['default']);
+    Database::setActiveConnection('dkan_wide_tables');
+
+    $this->connection = Database::getConnection();
+    try {
+      parent::tableCreate($table_name, $schema);
+    }
+    catch (\Throwable $e) {
+      throw $e;
+    }
+    finally {
+      // Always reset the connection, even if there was an exception.
+      Database::setActiveConnection($active_db);
+      $this->connection = $active_connection;
     }
   }
 

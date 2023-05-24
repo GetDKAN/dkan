@@ -30,7 +30,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
 
   public function testTable() {
     $identifier = 'id';
-    $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
+    $file_path = dirname(__FILE__, 4) . '/data/wide_table.csv';
 
     $data_resource = new DataResource($file_path, 'text/csv');
 
@@ -40,8 +40,12 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $import_job->getStorage());
+
+
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
+    $this->assertEquals(4, $import_job->getStorage()->count(), 'There are 4 rows in the CSV.');
   }
 
   public function testTableDuplicateException() {

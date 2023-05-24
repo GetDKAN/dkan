@@ -3,8 +3,10 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Core\Database\SchemaObjectExistsException;
 
 /**
  * Base class for database storage methods.
@@ -199,7 +201,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Count rows in table.
    */
   public function count(): int {
-    $this->setTable();
+    try {
+      $this->setTable();
+    }
+    catch (SchemaObjectExistsException $e) {
+      // The table already exists, but we don't care.
+    }
     $query = $this->connection->select($this->getTableName());
     return $query->countQuery()->execute()->fetchField();
   }
