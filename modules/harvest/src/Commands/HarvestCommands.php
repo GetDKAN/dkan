@@ -89,7 +89,7 @@ class HarvestCommands extends DrushCommands {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);
-      $this->logger->notice("Successfully registered the {$identifier} harvest.");
+      $this->logger->notice('Successfully registered the ' . $identifier . ' harvest.');
     }
     catch (\Exception $e) {
       $this->logger->error($e->getMessage());
@@ -136,9 +136,8 @@ class HarvestCommands extends DrushCommands {
       $message = $e->getMessage();
     }
 
-    $this->logger->notice('Successfully registered the ' . $message. ' harvest.');
+    $this->logger->notice($message);
   }
-
 
   /**
    * Run a harvest.
@@ -332,11 +331,11 @@ class HarvestCommands extends DrushCommands {
     try {
       $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
       $this->harvestService->processOrphanIds($orphans);
-      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(", ", $orphans));
+      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(', ', $orphans));
       return DrushCommands::EXIT_SUCCESS;
     }
     catch (\Exception $e) {
-      $this->logger()->error("Error in orphaning datasets of harvest %harvest: %error", [
+      $this->logger()->error('Error in orphaning datasets of harvest %harvest: %error', [
         '%harvest' => $harvestId,
         '%error' => $e->getMessage(),
       ]);
