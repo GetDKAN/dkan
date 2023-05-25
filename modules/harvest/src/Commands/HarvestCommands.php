@@ -136,7 +136,7 @@ class HarvestCommands extends DrushCommands {
       $message = $e->getMessage();
     }
 
-    $this->io()->writeln($message);
+    $this->logger->notice('Successfully registered the ' . $message. ' harvest.');
   }
 
 
