@@ -126,20 +126,19 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:deregister
    */
   public function deregister($id) {
+    $message = 'Could not deregister the ' . $id . ' harvest.';
     try {
       if ($this->harvestService->deregisterHarvest($id)) {
-        $message = "Successfully deregistered the {$id} harvest.";
-      }
-      else {
-        $message = "No harvest {$id} deregistered. Check if it exists.";
+        $message = 'Successfully deregistered the ' . $id . ' harvest.';
       }
     }
     catch (\Exception $e) {
       $message = $e->getMessage();
     }
 
-    (new ConsoleOutput())->write($message . PHP_EOL);
+    $this->io()->writeln($message);
   }
+
 
   /**
    * Run a harvest.
