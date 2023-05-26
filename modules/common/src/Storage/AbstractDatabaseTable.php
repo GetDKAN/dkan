@@ -3,7 +3,6 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Database;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\Core\Database\SchemaObjectExistsException;
@@ -294,6 +293,11 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
   /**
    * Create a table given a name and schema.
+   *
+   * Always tries to create the table.
+   *
+   * @throws \Drupal\Core\Database\SchemaObjectExistsException
+   *   If the specified table already exists.
    */
   protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.

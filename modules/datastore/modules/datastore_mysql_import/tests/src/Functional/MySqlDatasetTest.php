@@ -60,7 +60,7 @@ class MySqlDatasetTest extends ExistingSiteBase {
   }
 
   public function testChangingDatasetResourcePerspectiveOnOutput() {
-    $this->markTestIncomplete('requires datastore_mysql_import module');
+    $this->markTestIncomplete('See fix-mysql-import-datasettest branch');
     $this->datastoreImportAndQuery();
 
     drupal_flush_all_caches();
@@ -80,7 +80,7 @@ class MySqlDatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'published'.
    */
   public function testResourcePurgePublished() {
-    $this->markTestIncomplete('requires datastore_mysql_import module');
+    $this->markTestIncomplete('See fix-mysql-import-datasettest branch');
     $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post then update a dataset with multiple, changing resources.
@@ -98,7 +98,7 @@ class MySqlDatasetTest extends ExistingSiteBase {
    * @runInSeparateProcess
    */
   public function testResourcePurgeDraft() {
-    $this->markTestIncomplete('requires datastore_mysql_import module');
+    $this->markTestIncomplete('See fix-mysql-import-datasettest branch');
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
     $id_3 = uniqid(__FUNCTION__ . '3');
@@ -146,7 +146,7 @@ class MySqlDatasetTest extends ExistingSiteBase {
    * Test archiving of datasets after a harvest
    */
   public function testHarvestArchive() {
-    $this->markTestIncomplete('requires datastore_mysql_import module');
+    $this->markTestIncomplete('See fix-mysql-import-datasettest branch');
 
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
@@ -172,7 +172,7 @@ class MySqlDatasetTest extends ExistingSiteBase {
    * Test removal of datasets by a subsequent harvest.
    */
   public function testHarvestOrphan() {
-    $this->markTestIncomplete('requires datastore_mysql_import module');
+    $this->markTestIncomplete('See fix-mysql-import-datasettest branch');
 
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
@@ -207,7 +207,7 @@ class MySqlDatasetTest extends ExistingSiteBase {
    * Test resource removal on distribution deleting.
    */
   public function testDeleteDistribution() {
-    $this->markTestIncomplete('requires datastore_mysql_import module');
+    $this->markTestIncomplete('See fix-mysql-import-datasettest branch');
     $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post a dataset with a single distribution.
@@ -235,7 +235,7 @@ class MySqlDatasetTest extends ExistingSiteBase {
    * Test local resource removal on datastore import.
    */
   public function testDatastoreImportDeleteLocalResource() {
-    $this->markTestIncomplete('requires datastore_mysql_import module');
+    $this->markTestIncomplete('See fix-mysql-import-datasettest branch');
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
 

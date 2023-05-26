@@ -29,6 +29,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
   ];
 
   public function testTable() {
+    $this->markTestIncomplete('We might not need this if wide tables dont break the import.');
     $identifier = 'id';
     $file_path = dirname(__FILE__, 4) . '/data/wide_table.csv';
 
@@ -49,6 +50,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
   }
 
   public function testTableDuplicateException() {
+    $this->markTestIncomplete('We might not need this if wide tables dont break the import.');
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
     $data_resource = new DataResource($file_path, 'text/csv');

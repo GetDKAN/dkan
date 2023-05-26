@@ -6,7 +6,6 @@ use Drupal\common\Storage\Query;
 use Drupal\common\Storage\SelectFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
-use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\datastore\Storage\DatabaseTable;
 
 /**
@@ -46,6 +45,8 @@ class MySqlDatabaseTable extends DatabaseTable {
 
     // Swap out for our reconfigured DB.
     $options = Database::getConnectionInfo($active_db);
+    // When Drupal opens the connection, it will set up the session with this
+    // command to turn off innodb_strict_mode.
     $options['default']['init_commands']['wide_tables'] = 'SET SESSION innodb_strict_mode=OFF';
 
     Database::addConnectionInfo('dkan_wide_tables', 'default', $options['default']);
