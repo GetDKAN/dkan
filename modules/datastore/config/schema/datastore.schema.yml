@@ -1,0 +1,16 @@
+datastore.settings:
+  type: config_object
+  label: 'Datastore Settings'
+  mapping:
+    rows_limit:
+      type: integer
+    purge_file:
+      type: integer
+    purge_table:
+      type: integer
+    triggering_properties:
+      type: sequence
+      sequence:
+        type: string
+    delete_local_resource:
+      type: boolean
