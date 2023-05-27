@@ -211,7 +211,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Run a query on the database table.
+   * Run a SELECT query on the database table.
    *
    * @param \Drupal\common\Storage\Query $query
    *   Query object.
