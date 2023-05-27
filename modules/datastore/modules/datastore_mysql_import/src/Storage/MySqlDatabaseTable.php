@@ -10,6 +10,12 @@ use Drupal\datastore\Storage\DatabaseTable;
 
 /**
  * MySQL import database table.
+ *
+ * This table implementation turns innodb_strict_mode off when creating tables.
+ * This allows us to have arbitrarily wide tables. Default is 32k without strict
+ * mode, while 8k is allowed if strict mode is on.
+ *
+ * @see https://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_strict_mode
  */
 class MySqlDatabaseTable extends DatabaseTable {
 

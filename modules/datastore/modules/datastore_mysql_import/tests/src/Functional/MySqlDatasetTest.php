@@ -23,6 +23,8 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @package Drupal\Tests\datastore_mysql_import\Functional
  * @group dkan
  * @group datastore_mysql_import
+ *
+ * @todo Replace this test in https://github.com/GetDKAN/dkan/pull/3973
  */
 class MySqlDatasetTest extends ExistingSiteBase {
   use CleanUp;

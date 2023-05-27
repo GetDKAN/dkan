@@ -28,8 +28,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     'metastore',
   ];
 
-  public function testTable() {
-    $this->markTestIncomplete('We might not need this if wide tables dont break the import.');
+  public function testWideTable() {
     $identifier = 'id';
     $file_path = dirname(__FILE__, 4) . '/data/wide_table.csv';
 
