@@ -190,7 +190,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();
-    $this->connection->delete($tableName)
+    return $this->connection->delete($tableName)
       ->condition($this->primaryKey(), $id)
       ->execute();
   }
@@ -237,7 +237,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Create a minimal error message that does not leak database information.
    */
-  private function sanitizedErrorMessage(string $unsanitizedMessage) {
+  protected function sanitizedErrorMessage(string $unsanitizedMessage) {
     // Insert portions of exception messages you want caught here.
     $messages = [
       // Portion of the message => User friendly message.
@@ -282,8 +282,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Check for existence of a table name.
    */
   protected function tableExist($table_name) {
-    $exists = $this->connection->schema()->tableExists($table_name);
-    return $exists;
+    return $this->connection->schema()->tableExists($table_name);
   }
 
   /**
@@ -300,7 +299,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Set the schema using the existing database table.
    */
   protected function setSchemaFromTable() {
-    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
+    $fields_info = $this->connection->query('DESCRIBE {' . $this->getTableName() . '}')->fetchAll();
     if (empty($fields_info)) {
       return;
     }

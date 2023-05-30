@@ -114,7 +114,9 @@ class JsonFormWidget extends WidgetBase {
     $default_data = [];
     // Get default data.
     foreach ($items as $item) {
-      $default_data = json_decode($item->value);
+      if ($item->value) {
+        $default_data = json_decode($item->value);
+      }
     }
     $type = $this->getSchemaId($form_state);
     // Copy the item type to the entity.

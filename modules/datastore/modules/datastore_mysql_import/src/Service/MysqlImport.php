@@ -9,7 +9,7 @@ use Procrastinator\Result;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
- * Expiremental MySQL LOAD DATA importer.
+ * MySQL LOAD DATA importer.
  */
 class MysqlImport extends ImportJob {
 
@@ -25,16 +25,22 @@ class MysqlImport extends ImportJob {
   ];
 
   /**
-   * Override.
+   * Perform the import job.
    *
-   * {@inheritdoc}
+   * @return mixed
+   *   The data to be placed in the Result object. This class does not use the
+   *   result data, so it returns void.
+   *
+   * @throws \Exception
+   *   Any exception thrown will be turned into an error in the Result object
+   *   in the run() method.
    */
   protected function runIt() {
     // Attempt to resolve resource file name from file path.
     $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
 
     $mimeType = $this->resource->getMimeType();
-    $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ",";
+    $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ',';
 
     if ($file_path === FALSE) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
@@ -58,7 +64,10 @@ class MysqlImport extends ImportJob {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
+    // Count() will attempt to create the database table by side-effect of
+    // calling setTable().
     $this->dataStorage->count();
+
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
@@ -67,8 +76,7 @@ class MysqlImport extends ImportJob {
     Database::setActiveConnection();
 
     $this->getResult()->setStatus(Result::DONE);
-
-    return $this->getResult();
+    return NULL;
   }
 
   /**
@@ -83,7 +91,7 @@ class MysqlImport extends ImportJob {
    *   An array containing only two elements; the CSV columns and the column
    *   lines.
    *
-   * @throws Symfony\Component\HttpFoundation\File\Exception\FileException
+   * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
    *   On failure to open the file;
    *   on failure to read the first line from the file.
    */
@@ -180,7 +188,7 @@ class MysqlImport extends ImportJob {
       }
 
       $spec[$name] = [
-        'type' => "text",
+        'type' => 'text',
         'description' => ImportJob::sanitizeDescription($column ?? ''),
       ];
     }
@@ -193,7 +201,7 @@ class MysqlImport extends ImportJob {
    *
    * @param string $file_path
    *   File path to the CSV file being imported.
-   * @param string $tablename
+   * @param string $table_name
    *   Name of the datastore table the file is being imported into.
    * @param string[] $headers
    *   List of CSV headers.
@@ -207,10 +215,10 @@ class MysqlImport extends ImportJob {
    * @return string
    *   Generated SQL file import statement.
    */
-  protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count, string $delimiter): string {
+  protected function getSqlStatement(string $file_path, string $table_name, array $headers, string $eol, int $header_line_count, string $delimiter): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
-      'INTO TABLE ' . $tablename,
+      'INTO TABLE {' . $table_name . '}',
       'FIELDS TERMINATED BY \'' . $delimiter . '\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',

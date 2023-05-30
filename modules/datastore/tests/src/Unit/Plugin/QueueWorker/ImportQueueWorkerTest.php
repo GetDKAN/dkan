@@ -21,9 +21,9 @@ use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 
 /**
- * Test.
+ * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker
  */
-class ImportTest extends TestCase {
+class ImportQueueWorkerTest extends TestCase {
 
   private $data = [
     'data' => [

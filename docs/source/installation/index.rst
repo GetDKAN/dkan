@@ -8,6 +8,7 @@ Installation
 
 For either working on a project locally or working on the core DKAN software and libraries, using a standardized, `docker <https://www.docker.com/>`_-based local environment is recommended.
 
+- [Installing Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 - [Installing Docker](https://ddev.readthedocs.io/en/latest/users/install/docker-installation/)
 - [Installing DDEV](https://ddev.readthedocs.io/en/latest/users/install/ddev-installation/)
 
@@ -17,13 +18,13 @@ This will ensure you have the same setup as DKAN's core developers, and that you
 Requirements
 ------------
 
-DKAN is based on `Drupal software <https://www.drupal.org/>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we reccomend:
+DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/system-requirements>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we reccomend:
 
 -  MySQL: minimum version 5.7.8+ with PDO
--  PHP: minimum version 7.4.x or 8.0
+-  PHP: minimum version 8.0 or 8.1
 -  Apache: minimum version 2.4.7
--  Drush: minimum version 9.x.
--  Node: minimum version 10 (if using the decoupled frontend)
+-  Drush: minimum version 10.x.
+-  Node: minimum version 16 (if using the decoupled frontend)
 
 Starting a new DKAN project
 ---------------------------
