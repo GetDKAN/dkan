@@ -58,7 +58,7 @@ class DatasetTest extends ExistingSiteBase {
    *
    * @runInSeparateProcess
    *
-   * @todo Move this test to \Drupal\Tests\dkan\Functional\DatasetTest.
+   * @todo Move this test to \Drupal\Tests\dkan\Functional\DatasetBTBTest.
    */
   public function testResourcePurgeDraft() {
     $id_1 = uniqid(__FUNCTION__ . '1');
