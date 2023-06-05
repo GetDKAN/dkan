@@ -180,9 +180,21 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
       }
     }
 
-    // Retrieve node search plugin for updating node page indexes.
-    $node_search_plugin = $this->container->get('plugin.manager.search')->createInstance('node_search');
-    $node_search_plugin->updateIndex();
+    // Render all the dataset nodes to address cache.
+    $renderer = \Drupal::service('renderer');
+    $entityTypeManager = \Drupal::service('entity_type.manager');
+
+    $database_service = \Drupal::service('database');
+    $query = $database_service->select('node', 'n');
+    $query->addField('n', 'nid');
+    $nids = $query->execute()->fetchCol();
+
+    $node_storage = $entityTypeManager->getStorage('node');
+    $node_render = $entityTypeManager->getViewBuilder('node');
+    foreach ($node_storage->loadMultiple($nids) as $node) {
+      $build = $node_render->view($node);
+      $text = $renderer->renderPlain($build);
+    }
   }
 
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {

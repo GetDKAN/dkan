@@ -7,8 +7,8 @@ use Drupal\Tests\dkan\Functional\DatasetBTBTest;
 /**
  * Class DatasetTest
  *
- * This test is identical to Drupal\Tests\dkan\Functional\DatasetTest, except it
- * enables datastore_mysql_import.
+ * This test is a subclass of \Drupal\Tests\dkan\Functional\DatasetBTBTest, so
+ * we get the same tests, except with datastore_mysql_import enabled.
  *
  * @group dkan
  * @group datastore_mysql_import
