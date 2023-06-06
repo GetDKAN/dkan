@@ -92,11 +92,13 @@ class MySqlDatabaseTableTest extends KernelTestBase {
       $db_table = $import_job->getStorage()
     );
 
-    // Count() will trigger setTable(), which will throw an exception because
-    // the table object does not have a schema set up yet.
+    // This table does not have a schema yet.
+    $this->assertSame([], $db_table->getSchema(), 'Does not have a schema yet.');
     $this->expectException(\Exception::class);
-    $this->expectExceptionMessage('Could not instantiate the table due to a lack of schema.');
-    $db_table->count();
+    $this->expectExceptionMessage('due to a lack of schema');
+    // Count() will trigger setTable(), which will throw an exception about not
+    // have a schema.
+    $this->assertEquals(0, $db_table->count());
   }
 
   public function testValidate() {

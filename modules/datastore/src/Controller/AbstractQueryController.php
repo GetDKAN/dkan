@@ -91,7 +91,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request object.
    *
-   * @return Ilbee\CSVResponse\CSVResponse|Symfony\Component\HttpFoundation\JsonResponse
+   * @return \Ilbee\CSVResponse\CSVResponse|\Symfony\Component\HttpFoundation\JsonResponse
    *   The json or CSV response.
    */
   public function query(Request $request) {
@@ -105,7 +105,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $result = $this->queryService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      $code = (strpos($e->getMessage(), 'Error retrieving') !== FALSE) ? 404 : 400;
       return $this->getResponseFromException($e, $code);
     }
 
@@ -135,7 +135,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $result = $this->queryService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      $code = (strpos($e->getMessage(), 'Error retrieving') !== FALSE) ? 404 : 400;
       return $this->getResponseFromException($e, $code);
     }
 
@@ -225,7 +225,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     $data = json_decode($json);
     $this->additionalPayloadValidation($data, $identifier);
     if ($identifier) {
-      $resource = (object) ["id" => $identifier, "alias" => "t"];
+      $resource = (object) ['id' => $identifier, 'alias' => 't'];
       $data->resources = [$resource];
     }
     return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
@@ -294,7 +294,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   Normalized and type-casted JSON string.
    */
   public static function getPayloadJson(Request $request, $schema = NULL) {
-    $schema = $schema ?? file_get_contents(__DIR__ . "/../../docs/query.json");
+    $schema = $schema ?? file_get_contents(__DIR__ . '/../../docs/query.json');
     $payloadJson = static::getJson($request);
     $payloadJson = static::fixTypes($payloadJson, $schema);
     return $payloadJson;
@@ -315,16 +315,16 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public static function getJson(Request $request) {
     $method = $request->getRealMethod();
     switch ($method) {
-      case "POST":
-      case "PUT":
-      case "PATCH":
+      case 'POST':
+      case 'PUT':
+      case 'PATCH':
         return $request->getContent();
 
-      case "GET":
+      case 'GET':
         return json_encode((object) $request->query->all());
 
       default:
-        throw new \UnexpectedValueException("Only POST, PUT, PATCH and GET requests can be normalized.");
+        throw new \UnexpectedValueException('Only POST, PUT, PATCH and GET requests can be normalized.');
     }
   }
 

@@ -19,12 +19,8 @@ class MySqlDatabaseTable extends DatabaseTable {
 
   /**
    * {@inheritDoc}
-   *
-   * Our subclass rearranges the DB config and creates a new session with
-   * innodb_strict_mode turned OFF, so that we can handle arbitrarily wide
-   * table schema.
    */
-  protected function tableCreate($table_name, $schema) {
+  protected function tableCreate(string $table_name, array $schema): void {
     // Keep track of DB configuration.
     $active_db = Database::setActiveConnection();
     $active_connection = $this->connection;

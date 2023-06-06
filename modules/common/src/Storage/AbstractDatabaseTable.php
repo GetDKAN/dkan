@@ -285,7 +285,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Create the table in the database if it does not already exist.
    *
    * @throws \Throwable
-   *   Errors and exceptions from the DB system. We only catch
+   *   Throws an \Exception if the schema has not been set before trying to set
+   *   the table. Also throws \Throwable from the DB system. We only catch
    *   SchemaObjectExistsException so that there is no exception when the table
    *   already exists.
    */
@@ -324,9 +325,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Create a table given a name and schema.
+   * {@inheritDoc}
    */
-  protected function tableCreate($table_name, $schema) {
+  protected function tableCreate(string $table_name, array $schema): void {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
 
@@ -417,7 +418,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   A schema array.
    */
   public function getSchema(): array {
-    return $this->schema;
+    return $this->schema ?? [];
   }
 
   /**

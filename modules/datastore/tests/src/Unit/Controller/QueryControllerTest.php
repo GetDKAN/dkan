@@ -4,6 +4,7 @@ namespace Drupal\Tests\datastore\Unit\Controller;
 
 use Drupal\datastore\DatastoreResource;
 use Drupal\common\DatasetInfo;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
@@ -26,7 +27,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- *
+ * @group datastore
+ * @group functional
  */
 class QueryControllerTest extends TestCase {
 
@@ -44,10 +46,10 @@ class QueryControllerTest extends TestCase {
 
   public function testQueryJson() {
     $data = json_encode([
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
     ]);
@@ -55,7 +57,7 @@ class QueryControllerTest extends TestCase {
     $result = $this->getQueryResult($data);
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(200, $result->getStatusCode());
+    $this->assertEquals(200, $result->getStatusCode(), $result->getContent());
   }
 
   /**
@@ -63,20 +65,20 @@ class QueryControllerTest extends TestCase {
    */
   public function testQueryWrongIdentifier() {
     $data = json_encode([
-      "results" => TRUE,
-      "resources" => [
+      'results' => TRUE,
+      'resources' => [
         [
-          "id" => "9",
-          "alias" => "t",
+          'id' => '9',
+          'alias' => 't',
         ],
       ],
     ]);
 
     $options = (new Options())
-      ->add("dkan.metastore.storage", DataFactory::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
       ->index(0);
     $container = (new Chain($this))
-      ->add(Container::class, "get", $options)
+      ->add(Container::class, 'get', $options)
       ->add(DataFactory::class, 'getInstance', MockStorage::class)
       ->getMock();
     \Drupal::setContainer($container);
@@ -93,36 +95,36 @@ class QueryControllerTest extends TestCase {
 
   public function testQueryRowIdProperty() {
     // Try simple string properties:
-    $data = json_encode(["properties" => ["record_number", "state"]]);
+    $data = json_encode(['properties' => ['record_number', 'state']]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
 
     // Now try with rowIds plus an arbitrary property:
-    $data = json_encode(["properties" => ["state"], "rowIds" => TRUE]);
+    $data = json_encode(['properties' => ['state'], 'rowIds' => TRUE]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The rowIds property cannot be set to true', $result->getContent());
 
     // Now try with resource properties:
     $data = json_encode([
-      "properties" => [
+      'properties' => [
         [
-          "resource" => "t",
-          "property" => "state",
+          'resource' => 't',
+          'property' => 'state',
         ],
         [
-          "resource" => "t",
-          "property" => "record_number",
+          'resource' => 't',
+          'property' => 'record_number',
         ],
       ],
     ]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
@@ -130,33 +132,35 @@ class QueryControllerTest extends TestCase {
 
   public function testQueryRowIdSort() {
     $data = json_encode([
-      "sorts" => [
+      'sorts' => [
         [
-          "resource" => "t",
-          "property" => "state",
-          "order" => "desc",
+          'resource' => 't',
+          'property' => 'state',
+          'order' => 'desc',
         ],
         [
-          "resource" => "t",
-          "property" => "record_number",
-          "order" => "asc",
+          'resource' => 't',
+          'property' => 'record_number',
+          'order' => 'asc',
         ],
       ],
     ]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(200, $result->getStatusCode());
+    $this->assertEquals(200, $result->getStatusCode(), $result->getContent());
   }
 
-  // Make sure nothing fails with no resources.
+  /**
+   * Make sure nothing fails with no resources.
+   */
   public function testQueryJsonNoResources() {
     $data = json_encode([
-      "properties" => [
+      'properties' => [
         [
-          "resource" => "t",
-          "property" => "field",
+          'resource' => 't',
+          'property' => 'field',
         ],
       ],
     ]);
@@ -169,7 +173,7 @@ class QueryControllerTest extends TestCase {
 
   public function testQueryInvalid() {
     $data = json_encode([
-      "resources" => "nope",
+      'resources' => 'nope',
     ]);
 
     $result = $this->getQueryResult($data);
@@ -178,9 +182,8 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
-
   public function testResourceQueryInvalidJson() {
-    $data = "{[";
+    $data = '{[';
 
     $result = $this->getQueryResult($data);
 
@@ -190,9 +193,9 @@ class QueryControllerTest extends TestCase {
 
   public function testResourceQueryInvalidQuery() {
     $data = json_encode([
-      "conditions" => "nope",
+      'conditions' => 'nope',
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -200,12 +203,12 @@ class QueryControllerTest extends TestCase {
 
   public function testResourceQueryWithJoin() {
     $data = json_encode([
-      "joins" => [
-        "resource" => "t",
-        "condition" => "t.field1 = s.field1",
+      'joins' => [
+        'resource' => 't',
+        'condition' => 't.field1 = s.field1',
       ],
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -216,9 +219,9 @@ class QueryControllerTest extends TestCase {
    */
   public function testResourceQueryJson() {
     $data = json_encode([
-      "results" => TRUE,
+      'results' => TRUE,
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -229,14 +232,14 @@ class QueryControllerTest extends TestCase {
    */
   public function testResourceQueryWrongIdentifier() {
     $data = json_encode([
-      "results" => TRUE,
+      'results' => TRUE,
     ]);
 
     $options = (new Options())
-      ->add("dkan.metastore.storage", DataFactory::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
       ->index(0);
     $container = (new Chain($this))
-      ->add(Container::class, "get", $options)
+      ->add(Container::class, 'get', $options)
       ->add(DataFactory::class, 'getInstance', MockStorage::class)
       ->getMock();
     \Drupal::setContainer($container);
@@ -244,7 +247,7 @@ class QueryControllerTest extends TestCase {
     $chain = $this->getQueryContainer($data, [], FALSE);
     $webServiceApi = QueryController::create($chain->getMock());
     $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryResource("9", $request);
+    $result = $webServiceApi->queryResource('9', $request);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(404, $result->getStatusCode());
@@ -256,22 +259,22 @@ class QueryControllerTest extends TestCase {
    */
   public function testResourceQueryJoins() {
     $data = json_encode([
-      "results" => TRUE,
-      "joins" => [
+      'results' => TRUE,
+      'joins' => [
         [
-          "resource" => "t",
-          "condition" => [
-            "resource" => "t",
-            "property" => "record_number",
-            "value" => [
-              "resource" => "t",
-              "property" => "record_number",
-            ]
-          ]
+          'resource' => 't',
+          'condition' => [
+            'resource' => 't',
+            'property' => 'record_number',
+            'value' => [
+              'resource' => 't',
+              'property' => 'record_number',
+            ],
+          ],
         ],
       ],
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, '2');
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -283,13 +286,13 @@ class QueryControllerTest extends TestCase {
    */
   public function testQueryCsv() {
     $data = json_encode([
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
+      'format' => 'csv',
     ]);
 
     $result = $this->getQueryResult($data);
@@ -305,15 +308,15 @@ class QueryControllerTest extends TestCase {
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
     $container = $this->getQueryContainer($data, $info)->getMock();
-    $webServiceApi = QueryController::create($container);
+    $queryController = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
-      return $webServiceApi->query($request);
+      return $queryController->query($request);
     }
     if ($index === NULL) {
-      return $webServiceApi->queryResource($id, $request);
+      return $queryController->queryResource($id, $request);
     }
-    return $webServiceApi->queryDatasetResource($id, $index, $request);
+    return $queryController->queryDatasetResource($id, $index, $request);
   }
 
   /**
@@ -321,13 +324,13 @@ class QueryControllerTest extends TestCase {
    */
   public function testResourceQueryCsv() {
     $data = json_encode([
-      "results" => TRUE,
-      "format" => "csv",
+      'results' => TRUE,
+      'format' => 'csv',
     ]);
     $result = $this->getQueryResult($data);
 
-    $this->assertTrue($result instanceof CsvResponse);
-    $this->assertEquals(200, $result->getStatusCode());
+    $this->assertTrue($result instanceof CsvResponse, $result->getContent());
+    $this->assertEquals(200, $result->getStatusCode(), $result->getContent());
   }
 
   public function testQuerySchema() {
@@ -337,7 +340,7 @@ class QueryControllerTest extends TestCase {
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
-    $this->assertStringContainsString("json-schema.org", $result->getContent());
+    $this->assertStringContainsString('json-schema.org', $result->getContent());
   }
 
   /**
@@ -345,13 +348,13 @@ class QueryControllerTest extends TestCase {
    */
   public function testDistributionIndexWrongIdentifier() {
     $data = json_encode([
-      "results" => TRUE,
+      'results' => TRUE,
     ]);
 
-    $result = $this->getQueryResult($data, "2", 0);
+    $result = $this->getQueryResult($data, '2', 0);
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(404, $result->getStatusCode());
+    $this->assertEquals(404, $result->getStatusCode(), $result->getContent());
   }
 
   /**
@@ -359,14 +362,14 @@ class QueryControllerTest extends TestCase {
    */
   public function testDistributionIndexWrongIndex() {
     $data = json_encode([
-      "results" => TRUE,
+      'results' => TRUE,
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $result = $this->getQueryResult($data, "2", 1, $info);
+    $result = $this->getQueryResult($data, '2', 1, $info);
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(404, $result->getStatusCode());
+    $this->assertEquals(404, $result->getStatusCode(), $result->getContent());
   }
 
   /**
@@ -374,14 +377,14 @@ class QueryControllerTest extends TestCase {
    */
   public function testDistributionIndex() {
     $data = json_encode([
-      "results" => TRUE,
+      'results' => TRUE,
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $result = $this->getQueryResult($data, "2", 0, $info);
+    $result = $this->getQueryResult($data, '2', 0, $info);
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(200, $result->getStatusCode());
+    $this->assertEquals(200, $result->getStatusCode(), $result->getContent());
   }
 
   /**
@@ -389,13 +392,13 @@ class QueryControllerTest extends TestCase {
    */
   public function testQueryCsvCacheHeaders() {
     $data = json_encode([
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
+      'format' => 'csv',
     ]);
 
     // Create a container with caching turned on.
@@ -436,18 +439,19 @@ class QueryControllerTest extends TestCase {
   private function getQueryContainer($data = '', array $info = [], $mockMap = TRUE) {
 
     $options = (new Options())
-      ->add("dkan.metastore.storage", DataFactory::class)
-      ->add("dkan.datastore.service", DatastoreService::class)
-      ->add("dkan.datastore.query", Query::class)
-      ->add("dkan.common.dataset_info", DatasetInfo::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
+      ->add('dkan.datastore.query', Query::class)
+      ->add('dkan.common.dataset_info', DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->index(0);
 
     $chain = (new Chain($this))
-      ->add(Container::class, "get", $options)
-      ->add(DatasetInfo::class, "gather", $info)
+      ->add(Container::class, 'get', $options)
+      ->add(DatasetInfo::class, 'gather', $info)
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
@@ -458,7 +462,7 @@ class QueryControllerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', 500);
 
     if ($mockMap) {
-      $chain->add(Query::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
+      $chain->add(Query::class, 'getQueryStorageMap', ['t' => $this->mockDatastoreTable()]);
     }
 
     return $chain;
@@ -471,7 +475,7 @@ class QueryControllerTest extends TestCase {
    *   Request body.
    */
   public function mockRequest($data = '') {
-    return Request::create("http://example.com", 'POST', [], [], [], [], $data);
+    return Request::create('http://example.com', 'POST', [], [], [], [], $data);
   }
 
   /**
@@ -498,7 +502,7 @@ class QueryControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new DatastoreResource("2", "data.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable($connection, new DatastoreResource('2', 'data.csv', 'text/csv'));
     $storage->setSchema([
       'fields' => [
         'record_number' => ['type' => 'int', 'not null' => TRUE],

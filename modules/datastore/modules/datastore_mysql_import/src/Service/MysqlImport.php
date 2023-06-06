@@ -64,9 +64,9 @@ class MysqlImport extends ImportJob {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
-    // Create the table.
+    // Create the table as a side-effect of calling count().
     try {
-      $this->dataStorage->setTable();
+      $this->dataStorage->count();
     }
     catch (SchemaObjectExistsException $e) {
       // If the table exists, is it valid?
