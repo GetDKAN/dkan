@@ -44,6 +44,9 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
   }
 
+  /**
+   * @see \Drupal\Tests\datastore_mysql_import\Kernel\Service\MysqlImportTest::testTableDuplicateException()
+   */
   public function testTableDuplicateException() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
@@ -67,7 +70,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     // Count() will trigger setTable() again, leading to an exception.
     $this->expectException(SchemaObjectExistsException::class);
     $this->expectExceptionMessageMatches('/already exists/');
-    $db_table->count();
+    $db_table->setTable();
   }
 
   public function testTableNoSchema() {

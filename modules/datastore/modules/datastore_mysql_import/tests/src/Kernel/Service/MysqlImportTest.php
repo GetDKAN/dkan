@@ -7,9 +7,7 @@ use Drupal\datastore_mysql_import\Factory\MysqlImportFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
-use org\bovigo\vfs\vfsStream;
 use Procrastinator\Result;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * @covers \Drupal\datastore_mysql_import\Service\MysqlImport
@@ -30,6 +28,9 @@ class MysqlImportTest extends KernelTestBase {
     'metastore',
   ];
 
+  /**
+   * @see \Drupal\Tests\datastore_mysql_import\Kernel\Storage\MySqlDatabaseTableTest::testTableDuplicateException()
+   */
   public function testTableDuplicateException() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
@@ -57,10 +58,11 @@ class MysqlImportTest extends KernelTestBase {
     // The import job aggressively keeps track of what's already done, so we
     // have to reset that.
     $import_job->getResult()->setStatus(Result::IN_PROGRESS);
-    // Try to import again.
+    // Try to import again. The importer will catch SchemaObjectExistsException
+    // and validate the table and set the result to be DONE.
     $result = $import_job->run();
-    $this->assertEquals(Result::ERROR, $result->getStatus(), $result->getError());
-    $this->assertStringContainsString('already exists', $result->getError());
+    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
+    $this->assertEquals('', $result->getError());
   }
 
   /**

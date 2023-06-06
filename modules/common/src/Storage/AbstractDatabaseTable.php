@@ -5,6 +5,7 @@ namespace Drupal\common\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Core\Database\SchemaObjectExistsException;
 
 /**
  * Base class for database storage methods.
@@ -249,7 +250,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   Select::execute() (prepared Statement object or null).
    */
   public function query(Query $query, string $alias = 't', $fetch = TRUE) {
-    $this->setTable();
+    try {
+      $this->setTable();
+    }
+    catch (SchemaObjectExistsException $e) {
+      // Table exists, which is OK.
+    }
     $query->collection = $this->getTableName();
     $selectFactory = new SelectFactory($this->connection, $alias);
     $db_query = $selectFactory->create($query);

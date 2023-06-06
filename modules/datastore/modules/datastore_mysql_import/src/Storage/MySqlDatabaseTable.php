@@ -65,7 +65,7 @@ class MySqlDatabaseTable extends DatabaseTable {
    *   Array of results if $fetch is true, otherwise result of
    *   Select::execute() (prepared Statement object or null).
    */
-  public function query(Query $query, string $alias = 't', $fetch = TRUE) {
+  public function _query(Query $query, string $alias = 't', $fetch = TRUE) {
     if (!$this->tableExist($this->getTableName())) {
       throw new \Exception('Could not instantiate the table due to a lack of schema.');
     }
