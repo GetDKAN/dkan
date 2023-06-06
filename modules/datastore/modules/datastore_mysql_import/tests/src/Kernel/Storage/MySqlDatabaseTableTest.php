@@ -49,7 +49,6 @@ class MySqlDatabaseTableTest extends KernelTestBase {
   }
 
   public function testTableDuplicateException() {
-    $this->markTestIncomplete('We might not need this if wide tables dont break the import.');
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
     $data_resource = new DataResource($file_path, 'text/csv');
@@ -69,10 +68,9 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
 
-    // Count() will trigger setTable() again, leading to an exception.
-    $this->expectException(SchemaObjectExistsException::class);
-    $this->expectExceptionMessageMatches('/already exists/');
-    $db_table->count();
+    // Count() will trigger setTable() again, without leading to an exception.
+    // @todo Call setTable() in PR #3969.
+    $this->assertEquals(2, $db_table->count());
   }
 
   public function testTableNoSchema() {

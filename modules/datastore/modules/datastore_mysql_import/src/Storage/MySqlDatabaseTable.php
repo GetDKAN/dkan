@@ -2,40 +2,19 @@
 
 namespace Drupal\datastore_mysql_import\Storage;
 
-use Drupal\common\Storage\Query;
-use Drupal\common\Storage\SelectFactory;
 use Drupal\Core\Database\Database;
-use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\datastore\Storage\DatabaseTable;
 
 /**
  * MySQL import database table.
  *
  * This table implementation turns innodb_strict_mode off when creating tables.
- * This allows us to have arbitrarily wide tables. Default is 32k without strict
- * mode, while 8k is allowed if strict mode is on.
+ * Turning off strict mode turns errors into warnings, allowing us to bend the
+ * rules on number of columns per table, and column name width.
  *
  * @see https://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_strict_mode
  */
 class MySqlDatabaseTable extends DatabaseTable {
-
-  /**
-   * Create the table in the db if it does not yet exist.
-   *
-   * @throws \Exception
-   *   Can throw any DB-related exception. Notably, can throw
-   *   \Drupal\Core\Database\SchemaObjectExistsException if the table already
-   *   exists when we try to create it.
-   */
-  protected function setTable() {
-    // Never check for pre-existing table, never catch exceptions.
-    if ($this->schema) {
-      $this->tableCreate($this->getTableName(), $this->schema);
-    }
-    else {
-      throw new \Exception('Could not instantiate the table due to a lack of schema.');
-    }
-  }
 
   /**
    * {@inheritDoc}
@@ -45,20 +24,22 @@ class MySqlDatabaseTable extends DatabaseTable {
    * table schema.
    */
   protected function tableCreate($table_name, $schema) {
-    // Store the DB stuff...
+    // Keep track of DB configuration.
     $active_db = Database::setActiveConnection();
     $active_connection = $this->connection;
 
-    // Swap out for our reconfigured DB.
+    // Get the config so we can modify it.
     $options = Database::getConnectionInfo($active_db);
-    // When Drupal opens the connection, it will set up the session with this
-    // command to turn off innodb_strict_mode.
+    // When Drupal opens the connection, it will run init_commands and set up
+    // the session to turn off innodb_strict_mode.
     $options['default']['init_commands']['wide_tables'] = 'SET SESSION innodb_strict_mode=OFF';
 
-    Database::addConnectionInfo('dkan_wide_tables', 'default', $options['default']);
-    Database::setActiveConnection('dkan_wide_tables');
-
+    // Activate our bespoke session so we can call parent::tableCreate().
+    Database::addConnectionInfo('dkan_strict_off', 'default', $options['default']);
+    Database::setActiveConnection('dkan_strict_off');
     $this->connection = Database::getConnection();
+
+    // Special config active, let's create the table.
     try {
       parent::tableCreate($table_name, $schema);
     }
@@ -66,42 +47,10 @@ class MySqlDatabaseTable extends DatabaseTable {
       throw $e;
     }
     finally {
-      // Always reset the connection, even if there was an exception.
+      // Always try to reset the connection, even if there was an exception.
       Database::setActiveConnection($active_db);
       $this->connection = $active_connection;
     }
-  }
-
-  /**
-   * Run a query on the database table.
-   *
-   * @param \Drupal\common\Storage\Query $query
-   *   Query object.
-   * @param string $alias
-   *   (Optional) alias for primary table.
-   * @param bool $fetch
-   *   Fetch the rows if true, just return the result statement if not.
-   *
-   * @return array|\Drupal\Core\Database\StatementInterface
-   *   Array of results if $fetch is true, otherwise result of
-   *   Select::execute() (prepared Statement object or null).
-   */
-  public function query(Query $query, string $alias = 't', $fetch = TRUE) {
-    if (!$this->tableExist($this->getTableName())) {
-      throw new \Exception('Could not instantiate the table due to a lack of schema.');
-    }
-    $query->collection = $this->getTableName();
-    $selectFactory = new SelectFactory($this->connection, $alias);
-    $db_query = $selectFactory->create($query);
-
-    try {
-      $result = $db_query->execute();
-    }
-    catch (DatabaseExceptionWrapper $e) {
-      throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
-    }
-
-    return $fetch ? $result->fetchAll() : $result;
   }
 
 }
