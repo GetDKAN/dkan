@@ -124,8 +124,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
       if (count($fields) != count($data)) {
         throw new \Exception(
-          "The number of fields and data given do not match: fields - "
-            . json_encode($fields) . " data - " . json_encode($data)
+          'The number of fields and data given do not match: fields - '
+            . json_encode($fields) . ' data - ' . json_encode($data)
         );
       }
 
@@ -163,8 +163,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     foreach ($data as $datum) {
       $datum = $this->prepareData($datum);
       if (count($fields) != count($datum)) {
-        throw new \Exception("The number of fields and data given do not match: fields - " .
-          json_encode($fields) . " data - " . json_encode($datum));
+        throw new \Exception('The number of fields and data given do not match: fields - ' .
+          json_encode($fields) . ' data - ' . json_encode($datum));
       }
       $q->values($datum);
     }
@@ -199,20 +199,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Count the number of rows in the table.
    *
-   * @param bool $always_create_table
-   *   Create the table before counting it. This argument exists for historical
-   *   reasons.
-   *
    * @return int
-   *   The number of rows in the table. If the table does not exist and
-   *   $always_create_table is FALSE, will return 0.
-   *
-   * @throws \Exception
+   *   The number of rows in the table. If the table does not exist, will
+   *   return 0.
    */
-  public function count($always_create_table = TRUE): int {
-    if ($always_create_table) {
-      $this->setTable();
-    }
+  public function count(): int {
+    $this->setTable();
     if ($this->tableExist($this->getTableName())) {
       $query = $this->connection->select($this->getTableName());
       return $query->countQuery()->execute()->fetchField();
@@ -283,23 +275,33 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     ];
     foreach ($messages as $portion => $message) {
       if (strpos($unsanitizedMessage, $portion) !== FALSE) {
-        return $message . ".";
+        return $message . '.';
       }
     }
-    return "Database internal error.";
+    return 'Database internal error.';
   }
 
   /**
-   * {@inheritDoc}
+   * Create the table in the database if it does not already exist.
+   *
+   * @throws \Throwable
+   *   Errors and exceptions from the DB system. We only catch
+   *   SchemaObjectExistsException so that there is no exception when the table
+   *   already exists.
    */
-  public function setTable(): void {
-    if (!$this->tableExist($this->getTableName())) {
-      if ($this->schema) {
-        $this->tableCreate($this->getTableName(), $this->schema);
+  protected function setTable(): void {
+    $table_name = $this->getTableName();
+    if ($this->schema) {
+      try {
+        $this->tableCreate($table_name, $this->schema);
       }
-      else {
-        throw new \Exception("Could not instantiate the table due to a lack of schema.");
+      catch (SchemaObjectExistsException $e) {
+        // Table already exists, and we're OK with that. All other exceptions
+        // pass through.
       }
+    }
+    else {
+      throw new \Exception('Could not instantiate table ' . $table_name . ' due to a lack of schema.');
     }
   }
 
@@ -362,7 +364,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $header = $fields;
     foreach ($header as $field) {
       $schema['fields'][$field] = [
-        'type' => "text",
+        'type' => 'text',
       ];
     }
     return $schema;
@@ -375,10 +377,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $cleanSchema = $this->schema;
     $cleanSchema['fields'] = [];
     foreach ($this->schema['fields'] as $field => $info) {
-      $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
+      $new = preg_replace('/[^A-Za-z0-9_ ]/', '', $field);
       $new = trim($new);
       $new = strtolower($new);
-      $new = str_replace(" ", "_", $new);
+      $new = str_replace(' ', '_', $new);
 
       $mysqlMaxColLength = 64;
       if (strlen($new) > $mysqlMaxColLength) {
