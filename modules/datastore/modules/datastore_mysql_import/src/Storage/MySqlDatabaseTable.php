@@ -2,64 +2,55 @@
 
 namespace Drupal\datastore_mysql_import\Storage;
 
-use Drupal\common\Storage\Query;
-use Drupal\common\Storage\SelectFactory;
-use Drupal\Core\Database\DatabaseExceptionWrapper;
+use Drupal\Core\Database\Database;
 use Drupal\datastore\Storage\DatabaseTable;
 
 /**
  * MySQL import database table.
+ *
+ * This table implementation turns innodb_strict_mode off when creating tables.
+ * Turning off strict mode turns errors into warnings, allowing us to bend the
+ * rules on number of columns per table, and column name width.
+ *
+ * @see https://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_strict_mode
  */
 class MySqlDatabaseTable extends DatabaseTable {
 
   /**
-   * Create the table in the db if it does not yet exist.
+   * {@inheritDoc}
    *
-   * @throws \Exception
-   *   Can throw any DB-related exception. Notably, can throw
-   *   \Drupal\Core\Database\SchemaObjectExistsException if the table already
-   *   exists when we try to create it.
+   * Our subclass rearranges the DB config and creates a new session with
+   * innodb_strict_mode turned OFF, so that we can handle arbitrarily wide
+   * table schema.
    */
-  protected function setTable() {
-    // Never check for pre-existing table, never catch exceptions.
-    if ($this->schema) {
-      $this->tableCreate($this->getTableName(), $this->schema);
-    }
-    else {
-      throw new \Exception('Could not instantiate the table due to a lack of schema.');
-    }
-  }
+  protected function tableCreate($table_name, $schema) {
+    // Keep track of DB configuration.
+    $active_db = Database::setActiveConnection();
+    $active_connection = $this->connection;
 
-  /**
-   * Run a query on the database table.
-   *
-   * @param \Drupal\common\Storage\Query $query
-   *   Query object.
-   * @param string $alias
-   *   (Optional) alias for primary table.
-   * @param bool $fetch
-   *   Fetch the rows if true, just return the result statement if not.
-   *
-   * @return array|\Drupal\Core\Database\StatementInterface
-   *   Array of results if $fetch is true, otherwise result of
-   *   Select::execute() (prepared Statement object or null).
-   */
-  public function query(Query $query, string $alias = 't', $fetch = TRUE) {
-    if (!$this->tableExist($this->getTableName())) {
-      throw new \Exception('Could not instantiate the table due to a lack of schema.');
-    }
-    $query->collection = $this->getTableName();
-    $selectFactory = new SelectFactory($this->connection, $alias);
-    $db_query = $selectFactory->create($query);
+    // Get the config so we can modify it.
+    $options = Database::getConnectionInfo($active_db);
+    // When Drupal opens the connection, it will run init_commands and set up
+    // the session to turn off innodb_strict_mode.
+    $options['default']['init_commands']['wide_tables'] = 'SET SESSION innodb_strict_mode=OFF';
 
+    // Activate our bespoke session so we can call parent::tableCreate().
+    Database::addConnectionInfo('dkan_strict_off', 'default', $options['default']);
+    Database::setActiveConnection('dkan_strict_off');
+    $this->connection = Database::getConnection();
+
+    // Special config active, let's create the table.
     try {
-      $result = $db_query->execute();
+      parent::tableCreate($table_name, $schema);
     }
-    catch (DatabaseExceptionWrapper $e) {
-      throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
+    catch (\Throwable $e) {
+      throw $e;
     }
-
-    return $fetch ? $result->fetchAll() : $result;
+    finally {
+      // Always try to reset the connection, even if there was an exception.
+      Database::setActiveConnection($active_db);
+      $this->connection = $active_connection;
+    }
   }
 
 }
