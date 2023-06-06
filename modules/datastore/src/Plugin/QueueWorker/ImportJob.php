@@ -4,6 +4,7 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Contracts\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\common\Storage\ImportedDatabaseTableInterface;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use ForceUTF8\Encoding;
@@ -75,9 +76,9 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Storage class.
    *
-   * @var \Drupal\common\Storage\DatabaseTableInterface
+   * @var \Drupal\common\Storage\ImportedDatabaseTableInterface
    */
-  protected $dataStorage;
+  protected ImportedDatabaseTableInterface $dataStorage;
 
   /**
    * Parser object.
@@ -110,9 +111,8 @@ class ImportJob extends AbstractPersistentJob {
 
     $this->dataStorage = $config['storage'];
 
-    if (!($this->dataStorage instanceof DatabaseTableInterface)) {
-      $storageInterfaceClass = DatabaseTableInterface::class;
-      throw new \Exception("Storage must be an instance of {$storageInterfaceClass}");
+    if (!($this->dataStorage instanceof ImportedDatabaseTableInterface)) {
+      throw new \Exception('Storage must be an instance of ' . ImportedDatabaseTableInterface::class);
     }
 
     $this->parser = $config['parser'];
