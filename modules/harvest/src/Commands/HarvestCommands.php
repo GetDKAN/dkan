@@ -89,7 +89,7 @@ class HarvestCommands extends DrushCommands {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);
-      $this->logger->notice("Successfully registered the {$identifier} harvest.");
+      $this->logger->notice('Successfully registered the ' . $identifier . ' harvest.');
     }
     catch (\Exception $e) {
       $this->logger->error($e->getMessage());
@@ -126,19 +126,17 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:deregister
    */
   public function deregister($id) {
+    $message = 'Could not deregister the ' . $id . ' harvest.';
     try {
       if ($this->harvestService->deregisterHarvest($id)) {
-        $message = "Successfully deregistered the {$id} harvest.";
-      }
-      else {
-        $message = "No harvest {$id} deregistered. Check if it exists.";
+        $message = 'Successfully deregistered the ' . $id . ' harvest.';
       }
     }
     catch (\Exception $e) {
       $message = $e->getMessage();
     }
 
-    (new ConsoleOutput())->write($message . PHP_EOL);
+    $this->logger->notice($message);
   }
 
   /**
@@ -333,11 +331,11 @@ class HarvestCommands extends DrushCommands {
     try {
       $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
       $this->harvestService->processOrphanIds($orphans);
-      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(", ", $orphans));
+      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(', ', $orphans));
       return DrushCommands::EXIT_SUCCESS;
     }
     catch (\Exception $e) {
-      $this->logger()->error("Error in orphaning datasets of harvest %harvest: %error", [
+      $this->logger()->error('Error in orphaning datasets of harvest %harvest: %error', [
         '%harvest' => $harvestId,
         '%error' => $e->getMessage(),
       ]);
