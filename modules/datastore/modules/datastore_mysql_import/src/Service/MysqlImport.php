@@ -76,10 +76,7 @@ class MysqlImport extends ImportJob {
 
     // Read the columns and EOL character sequence from the CSV file.
     try {
-      [
-        $columns,
-        $column_lines,
-      ] = $this->getColsFromFile($file_path, $delimiter);
+      [$columns, $column_lines] = $this->getColsFromFile($file_path, $delimiter);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
@@ -102,12 +99,7 @@ class MysqlImport extends ImportJob {
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement(
-        $file_path,
-        $this->dataStorage->getTableName(),
-        array_keys($spec),
-        $eol, $header_line_count, $delimiter
-      )
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter)
     );
 
     Database::setActiveConnection();
