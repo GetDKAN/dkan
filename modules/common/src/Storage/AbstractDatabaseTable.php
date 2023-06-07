@@ -261,10 +261,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   Throws an exception if the schema was not already set.
    */
   protected function setTable() {
-    if (!$this->tableExist($this->getTableName())) {
-      if ($this->schema) {
+    if (!$this->tableExist($table_name = $this->getTableName())) {
+      if ($schema = $this->schema) {
         try {
-          $this->tableCreate($this->getTableName(), $this->schema);
+          $this->tableCreate($table_name, $schema);
         }
         catch (SchemaObjectExistsException $e) {
           // Table already exists, which is totally OK. Other throwables find
