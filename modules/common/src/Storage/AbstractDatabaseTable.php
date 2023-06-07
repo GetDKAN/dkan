@@ -262,7 +262,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   protected function setTable() {
     if (!$this->tableExist($table_name = $this->getTableName())) {
-      if ($schema = $this->schema) {
+      if ($schema = $this->getSchema()) {
         try {
           $this->tableCreate($table_name, $schema);
         }

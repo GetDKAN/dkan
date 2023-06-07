@@ -61,6 +61,7 @@ class MysqlImport extends ImportJob {
     // can stop here.
     if ($this->dataStorage->hasBeenImported()) {
       $this->getResult()->setStatus(Result::DONE);
+      return NULL;
     }
 
     // Attempt to resolve resource file name from file path.
