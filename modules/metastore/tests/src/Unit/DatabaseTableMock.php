@@ -20,7 +20,6 @@ class DatabaseTableMock implements DatabaseTableInterface {
    *
    */
   public function retrieveAll(): array {
-    return [];
   }
 
   /**
@@ -34,11 +33,7 @@ class DatabaseTableMock implements DatabaseTableInterface {
    *
    */
   public function count(): int {
-    return 0;
-  }
-
-  public function setTable(): void {
-    // TODO: Implement setTable() method.
+    // TODO: Implement count() method.
   }
 
   /**
@@ -47,7 +42,7 @@ class DatabaseTableMock implements DatabaseTableInterface {
   public function destruct() {
     // TODO: Implement destruct() method.
   }
-
+  
   /**
    *
    */
@@ -109,10 +104,6 @@ class DatabaseTableMock implements DatabaseTableInterface {
     $this->id++;
     $this->store[$this->id] = json_decode($data);
     return $this->id;
-  }
-
-  public function validate(): bool {
-    return FALSE;
   }
 
 }

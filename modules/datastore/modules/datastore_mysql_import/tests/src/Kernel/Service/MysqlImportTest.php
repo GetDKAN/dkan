@@ -13,7 +13,6 @@ use Procrastinator\Result;
  * @coversDefaultClass \Drupal\datastore_mysql_import\Service\MysqlImport
  *
  * @group datastore_mysql_import
- * @group kernel
  */
 class MysqlImportTest extends KernelTestBase {
 
@@ -27,9 +26,6 @@ class MysqlImportTest extends KernelTestBase {
     'metastore',
   ];
 
-  /**
-   * @see \Drupal\Tests\datastore_mysql_import\Kernel\Storage\MySqlDatabaseTableTest::testTableDuplicateException()
-   */
   public function testTableDuplicateException() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
@@ -49,7 +45,7 @@ class MysqlImportTest extends KernelTestBase {
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
 
-    // Set up to it again...
+    // Do it again...
     $import_job = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]

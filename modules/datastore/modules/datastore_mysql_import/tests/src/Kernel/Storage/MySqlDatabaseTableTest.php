@@ -48,9 +48,6 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     $this->assertEquals(4, $import_job->getStorage()->count(), 'There are 4 rows in the CSV.');
   }
 
-  /**
-   * @see \Drupal\Tests\datastore_mysql_import\Kernel\Service\MysqlImportTest::testTableDuplicateException()
-   */
   public function testTableDuplicateException() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
@@ -92,40 +89,11 @@ class MySqlDatabaseTableTest extends KernelTestBase {
       $db_table = $import_job->getStorage()
     );
 
-    // This table does not have a schema yet.
-    $this->assertSame([], $db_table->getSchema(), 'Does not have a schema yet.');
+    // Count() will trigger setTable(), which will throw an exception because
+    // the table object does not have a schema set up yet.
     $this->expectException(\Exception::class);
-    $this->expectExceptionMessage('due to a lack of schema');
-    // Count() will trigger setTable(), which will throw an exception about not
-    // have a schema.
-    $this->assertEquals(0, $db_table->count());
-  }
-
-  public function testValidate() {
-    $identifier = 'my_id';
-    $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
-    $data_resource = new DataResource($file_path, 'text/csv');
-
-    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
-    $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
-
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
-    $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
-      ->getImporter();
-    $this->assertInstanceOf(
-      MySqlDatabaseTable::class,
-      $db_table = $import_job->getStorage()
-    );
-
-    // Import has not occurred, so validate() should be false.
-    $this->assertFalse($db_table->validate());
-
-    // Store the table.
-    $result = $import_job->run();
-    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
-
-    // Valid should be true since the table exists and has been imported.
-    $this->assertTrue($db_table->validate());
+    $this->expectExceptionMessage('Could not instantiate the table due to a lack of schema.');
+    $db_table->count();
   }
 
 }

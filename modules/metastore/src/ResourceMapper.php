@@ -115,7 +115,7 @@ class ResourceMapper {
    */
   protected function validateNewVersion(DataResource $resource) {
     if ($resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-      throw new \Exception('Only versions of source resources are allowed.');
+      throw new \Exception("Only versions of source resources are allowed.");
     }
 
     $identifier = $resource->getIdentifier();

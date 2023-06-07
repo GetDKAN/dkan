@@ -197,34 +197,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Count the number of rows in the table.
-   *
-   * @return int
-   *   The number of rows in the table. If the table does not exist, will
-   *   return 0.
+   * Count rows in table.
    */
   public function count(): int {
     $this->setTable();
-    if ($this->tableExist($this->getTableName())) {
-      $query = $this->connection->select($this->getTableName());
-      return $query->countQuery()->execute()->fetchField();
-    }
-    return 0;
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * Defaults to FALSE because this method is primarily used to determine if
-   * an error in import was rectified. Since not every type of db table import
-   * can be rectified, import errors should remain by default.
-   *
-   * @return bool
-   *   TRUE if the table validates against the CSV, FALSE otherwise. Default:
-   *   FALSE.
-   */
-  public function validate(): bool {
-    return FALSE;
+    $query = $this->connection->select($this->getTableName());
+    return $query->countQuery()->execute()->fetchField();
   }
 
   /**
@@ -242,12 +220,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   Select::execute() (prepared Statement object or null).
    */
   public function query(Query $query, string $alias = 't', $fetch = TRUE) {
-    try {
-      $this->setTable();
-    }
-    catch (SchemaObjectExistsException $e) {
-      // Table exists, which is OK.
-    }
+    $this->setTable();
     $query->collection = $this->getTableName();
     $selectFactory = new SelectFactory($this->connection, $alias);
     $db_query = $selectFactory->create($query);
@@ -282,27 +255,25 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Create the table in the database if it does not already exist.
+   * Create the table in the db if it does not yet exist.
    *
-   * @throws \Throwable
-   *   Throws an \Exception if the schema has not been set before trying to set
-   *   the table. Also throws \Throwable from the DB system. We only catch
-   *   SchemaObjectExistsException so that there is no exception when the table
-   *   already exists.
+   * @throws \Exception
+   *   Throws an exception if the schema was not already set.
    */
-  protected function setTable(): void {
-    $table_name = $this->getTableName();
-    if ($this->schema) {
-      try {
-        $this->tableCreate($table_name, $this->schema);
+  protected function setTable() {
+    if (!$this->tableExist($this->getTableName())) {
+      if ($this->schema) {
+        try {
+          $this->tableCreate($this->getTableName(), $this->schema);
+        }
+        catch (SchemaObjectExistsException $e) {
+          // Table already exists, which is totally OK. Other throwables find
+          // their way out to the caller.
+        }
       }
-      catch (SchemaObjectExistsException $e) {
-        // Table already exists, and we're OK with that. All other exceptions
-        // pass through.
+      else {
+        throw new \Exception('Could not instantiate the table due to a lack of schema.');
       }
-    }
-    else {
-      throw new \Exception('Could not instantiate table ' . $table_name . ' due to a lack of schema.');
     }
   }
 
@@ -320,14 +291,16 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Check for existence of a table name.
    */
-  protected function tableExist($table_name) {
+  protected function tableExist($table_name): bool {
     return $this->connection->schema()->tableExists($table_name);
   }
 
   /**
-   * {@inheritDoc}
+   * Create a table given a name and schema.
+   *
+   * @throws \Throwable
    */
-  protected function tableCreate(string $table_name, array $schema): void {
+  protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
 
@@ -418,7 +391,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   A schema array.
    */
   public function getSchema(): array {
-    return $this->schema ?? [];
+    return $this->schema;
   }
 
   /**

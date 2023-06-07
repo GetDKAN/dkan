@@ -3,9 +3,9 @@
 namespace Drupal\datastore_mysql_import\Service;
 
 use Drupal\Core\Database\Database;
-use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
+
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
@@ -36,8 +36,15 @@ class MysqlImport extends ImportJob {
    *   in the run() method.
    */
   protected function runIt() {
+    // If the storage table already exists, we already performed an import and
+    // can stop here.
+    if ($this->dataStorage->hasBeenImported()) {
+      $this->getResult()->setStatus(Result::DONE);
+    }
+
     // Attempt to resolve resource file name from file path.
-    $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
+    $file_path = \Drupal::service('file_system')
+      ->realpath($this->resource->getFilePath());
 
     $mimeType = $this->resource->getMimeType();
     $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ',';
@@ -48,7 +55,10 @@ class MysqlImport extends ImportJob {
 
     // Read the columns and EOL character sequence from the CSV file.
     try {
-      [$columns, $column_lines] = $this->getColsFromFile($file_path, $delimiter);
+      [
+        $columns,
+        $column_lines,
+      ] = $this->getColsFromFile($file_path, $delimiter);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
@@ -64,23 +74,20 @@ class MysqlImport extends ImportJob {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
-    // Create the table as a side-effect of calling count().
-    try {
-      $this->dataStorage->count();
-    }
-    catch (SchemaObjectExistsException $e) {
-      // If the table exists, is it valid?
-      if ($this->dataStorage->validate()) {
-        $this->getResult()->setStatus(Result::DONE);
-        return NULL;
-      }
-      throw $e;
-    }
+    // Count() will attempt to create the database table by side-effect of
+    // calling setTable().
+    $this->dataStorage->count();
 
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter));
+      $this->getSqlStatement(
+        $file_path,
+        $this->dataStorage->getTableName(),
+        array_keys($spec),
+        $eol, $header_line_count, $delimiter
+      )
+    );
 
     Database::setActiveConnection();
 
@@ -106,8 +113,11 @@ class MysqlImport extends ImportJob {
    */
   protected function getColsFromFile(string $file_path, string $delimiter): array {
 
-    // Open the CSV file. Silence errors so we don't have to catch E_WARNING.
-    if (($f = @fopen($file_path, 'r')) === FALSE) {
+    // Open the CSV file.
+    $f = fopen($file_path, 'r');
+
+    // Ensure the file could be successfully opened.
+    if (!isset($f) || $f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
 

@@ -106,7 +106,7 @@ class ImportInfo {
    * @return array
    *   Array with a filefetcher and importer object.
    */
-  protected function getFileFetcherAndImporter($identifier, $version): array {
+  protected function getFileFetcherAndImporter($identifier, $version) {
     try {
       $resource = $this->resourceLocalizer->get($identifier, $version);
 

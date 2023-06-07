@@ -3,7 +3,6 @@
 namespace Drupal\datastore_mysql_import\Storage;
 
 use Drupal\Core\Database\Database;
-use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\datastore\Storage\DatabaseTable;
 
 /**
@@ -19,8 +18,12 @@ class MySqlDatabaseTable extends DatabaseTable {
 
   /**
    * {@inheritDoc}
+   *
+   * Our subclass rearranges the DB config and creates a new session with
+   * innodb_strict_mode turned OFF, so that we can handle arbitrarily wide
+   * table schema.
    */
-  protected function tableCreate(string $table_name, array $schema): void {
+  protected function tableCreate($table_name, $schema) {
     // Keep track of DB configuration.
     $active_db = Database::setActiveConnection();
     $active_connection = $this->connection;
@@ -48,26 +51,6 @@ class MySqlDatabaseTable extends DatabaseTable {
       Database::setActiveConnection($active_db);
       $this->connection = $active_connection;
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * For MySqlDatabaseTable, the table is valid if it exists in the DB and has
-   * any rows at all. We assume that the LOAD DATA LOCAL INFILE style of import
-   * is all-or-nothing: MySQL will either succeed and add the table, or will not
-   * add the table if there is any error.
-   */
-  public function validate(): bool {
-    if ($this->tableExist($this->getTableName())) {
-      try {
-        return $this->count(FALSE) > 0;
-      }
-      catch (SchemaObjectExistsException $e) {
-        // No op.
-      }
-    }
-    return FALSE;
   }
 
 }

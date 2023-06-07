@@ -18,6 +18,8 @@ use Drupal\common\EventDispatcherTrait;
 
 /**
  * Resource localizer.
+ *
+ * @todo Update fileMapper to resourceMapper.
  */
 class ResourceLocalizer {
   use LoggerTrait;
@@ -42,7 +44,7 @@ class ResourceLocalizer {
    *
    * @var \Drupal\metastore\ResourceMapper
    */
-  private $resourceMapper;
+  private $fileMapper;
 
   /**
    * DKAN resource file fetcher factory.
@@ -68,8 +70,8 @@ class ResourceLocalizer {
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $resourceMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
-    $this->resourceMapper = $resourceMapper;
+  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
+    $this->fileMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
@@ -161,7 +163,7 @@ class ResourceLocalizer {
         \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
       }
       $this->removeJob($uuid);
-      $this->resourceMapper->remove($resource);
+      $this->fileMapper->remove($resource);
     }
   }
 
@@ -169,7 +171,7 @@ class ResourceLocalizer {
    * Remove the local_url perspective.
    */
   private function removeLocalUrl(DataResource $resource) {
-    return $this->resourceMapper->remove($resource);
+    return $this->fileMapper->remove($resource);
   }
 
   /**
@@ -192,21 +194,21 @@ class ResourceLocalizer {
    * Get FileFetcher.
    */
   public function getFileFetcher(DataResource $resource): FileFetcher {
-    $identifier = $resource->getIdentifier() . '_' . $resource->getVersion();
-    $directory = 'public://resources/' . $identifier;
+    $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
+    $directory = "public://resources/{$uuid}";
     $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
     $config = [
       'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
-    return $this->fileFetcherFactory->getInstance($identifier, $config);
+    return $this->fileFetcherFactory->getInstance($uuid, $config);
   }
 
   /**
    * Private.
    */
   private function getFileMapper(): ResourceMapper {
-    return $this->resourceMapper;
+    return $this->fileMapper;
   }
 
   /**
