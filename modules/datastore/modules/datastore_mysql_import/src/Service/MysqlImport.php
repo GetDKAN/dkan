@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore_mysql_import\Service;
 
+use Drupal\common\Storage\ImportedDatabaseTableInterface;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
@@ -23,6 +24,26 @@ class MysqlImport extends ImportJob {
     '\r' => "\r",
     '\n' => "\n",
   ];
+
+  /**
+   * Constructor method.
+   *
+   * Identical to parent, but requires an ImportedDatabaseTableInterface
+   * storage object.
+   *
+   * @param string $identifier
+   *   Job identifier.
+   * @param mixed $storage
+   *   Storage class.
+   * @param array|null $config
+   *   Configuration options.
+   */
+  protected function __construct(string $identifier, $storage, array $config = NULL) {
+    if (!($config['storage'] instanceof ImportedDatabaseTableInterface)) {
+      throw new \Exception('Storage must be an instance of ' . ImportedDatabaseTableInterface::class);
+    }
+    parent::__construct($identifier, $storage, $config);
+  }
 
   /**
    * Perform the import job.
