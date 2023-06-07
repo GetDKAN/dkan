@@ -31,4 +31,3 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 ---
 
 > Looking for the Drupal 7 version of DKAN? See the 7.x-1.x branch on [DKAN's Github Repository](https://github.com/GetDKAN/dkan/tree/7.x-1.x).
-
