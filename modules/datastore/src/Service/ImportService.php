@@ -100,7 +100,6 @@ class ImportService {
    * Import.
    */
   public function import() {
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $importer */
     $importer = $this->getImporter();
     $importer->run();
 
@@ -134,7 +133,7 @@ class ImportService {
   /**
    * Build an Importer.
    *
-   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
+   * @return \Drupal\datastore\Import
    *   Importer.
    *
    * @throws \Exception

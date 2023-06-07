@@ -64,8 +64,7 @@ class MysqlImport extends ImportJob {
     }
 
     // Attempt to resolve resource file name from file path.
-    $file_path = \Drupal::service('file_system')
-      ->realpath($this->resource->getFilePath());
+    $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
 
     $mimeType = $this->resource->getMimeType();
     $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ',';
@@ -99,8 +98,7 @@ class MysqlImport extends ImportJob {
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter)
-    );
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter));
 
     Database::setActiveConnection();
 
