@@ -46,8 +46,6 @@ class MysqlImportFactory implements ImportFactoryInterface {
 
   /**
    * Inherited.
-   *
-   * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
 

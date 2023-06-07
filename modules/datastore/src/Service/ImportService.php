@@ -133,7 +133,7 @@ class ImportService {
   /**
    * Build an Importer.
    *
-   * @return \Drupal\datastore\Import
+   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
    *   Importer.
    *
    * @throws \Exception

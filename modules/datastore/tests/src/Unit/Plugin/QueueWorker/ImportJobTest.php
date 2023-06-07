@@ -270,7 +270,7 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testNonStorage() {
-    $this->expectExceptionMessage('Storage must be an instance of Drupal\common\Storage\DatabaseTableInterface');
+    $this->expectExceptionMessage('Storage must be an instance of ' . DatabaseTableInterface::class);
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/countries.csv', 'text/csv');
     ImportJob::get('1', new Memory(), [
       'resource' => $resource,

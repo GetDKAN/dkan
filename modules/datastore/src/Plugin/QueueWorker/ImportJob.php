@@ -76,9 +76,9 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Storage class.
    *
-   * @var \Drupal\common\Storage\ImportedDatabaseTableInterface
+   * @var \Drupal\common\Storage\DatabaseTableInterface
    */
-  protected ImportedDatabaseTableInterface $dataStorage;
+  protected $dataStorage;
 
   /**
    * Parser object.
@@ -111,8 +111,8 @@ class ImportJob extends AbstractPersistentJob {
 
     $this->dataStorage = $config['storage'];
 
-    if (!($this->dataStorage instanceof ImportedDatabaseTableInterface)) {
-      throw new \Exception('Storage must be an instance of ' . ImportedDatabaseTableInterface::class);
+    if (!($this->dataStorage instanceof DatabaseTableInterface)) {
+      throw new \Exception('Storage must be an instance of ' . DatabaseTableInterface::class);
     }
 
     $this->parser = $config['parser'];
