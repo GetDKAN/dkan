@@ -4,7 +4,6 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Contracts\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Storage\ImportedDatabaseTableInterface;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
 use ForceUTF8\Encoding;
