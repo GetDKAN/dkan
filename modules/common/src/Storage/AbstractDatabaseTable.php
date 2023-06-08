@@ -262,7 +262,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   protected function setTable() {
     if (!$this->tableExist($table_name = $this->getTableName())) {
-      if ($schema = $this->getSchema()) {
+      if ($schema = $this->schema) {
         try {
           $this->tableCreate($table_name, $schema);
         }
@@ -391,7 +391,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   A schema array.
    */
   public function getSchema(): array {
-    return $this->schema ?? [];
+    return $this->schema;
   }
 
   /**
