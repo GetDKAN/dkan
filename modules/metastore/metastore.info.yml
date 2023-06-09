@@ -6,4 +6,4 @@ package: DKAN
 dependencies:
   - common
   - basic_auth
-  - content_moderation
+  - drupal:content_moderation

@@ -9,8 +9,10 @@ dependencies:
   - metastore_search
   - datastore
   - harvest
-  - config
   - json_form_widget
-  - file
-  - link
-  - options
+  - drupal:config
+  - drupal:field
+  - drupal:file
+  - drupal:link
+  - drupal:options
+  - drupal:path
