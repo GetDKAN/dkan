@@ -103,10 +103,7 @@ class MysqlImport extends ImportJob {
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
       $this->getSqlStatement(
-        $file_path,
-        $this->dataStorage->getTableName(),
-        array_keys($spec),
-        $eol, $header_line_count, $delimiter
+        $file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter
       )
     );
 
