@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore_mysql_import\Service;
 
+use Drupal\common\Storage\ImportedDatabaseTableInterface;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
@@ -10,6 +11,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * MySQL LOAD DATA importer.
+ *
+ * @todo Figure out how to inject the file_system service into this class.
  */
 class MysqlImport extends ImportJob {
 
@@ -25,6 +28,26 @@ class MysqlImport extends ImportJob {
   ];
 
   /**
+   * Constructor method.
+   *
+   * Identical to parent, but requires an ImportedDatabaseTableInterface
+   * storage object.
+   *
+   * @param string $identifier
+   *   Job identifier.
+   * @param mixed $storage
+   *   Storage class.
+   * @param array|null $config
+   *   Configuration options.
+   */
+  protected function __construct(string $identifier, $storage, array $config = NULL) {
+    if (!($config['storage'] instanceof ImportedDatabaseTableInterface)) {
+      throw new \Exception('Storage must be an instance of ' . ImportedDatabaseTableInterface::class);
+    }
+    parent::__construct($identifier, $storage, $config);
+  }
+
+  /**
    * Perform the import job.
    *
    * @return mixed
@@ -36,17 +59,20 @@ class MysqlImport extends ImportJob {
    *   in the run() method.
    */
   protected function runIt() {
+    // If the storage table already exists, we already performed an import and
+    // can stop here.
+    if ($this->dataStorage->hasBeenImported()) {
+      $this->getResult()->setStatus(Result::DONE);
+      return NULL;
+    }
+
     // Attempt to resolve resource file name from file path.
-    $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
-
-    $mimeType = $this->resource->getMimeType();
-    $delimiter = $mimeType == 'text/tab-separated-values' ? "\t" : ',';
-
-    if ($file_path === FALSE) {
+    if (($file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath())) === FALSE) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
     // Read the columns and EOL character sequence from the CSV file.
+    $delimiter = $this->resource->getMimeType() == 'text/tab-separated-values' ? "\t" : ',';
     try {
       [$columns, $column_lines] = $this->getColsFromFile($file_path, $delimiter);
     }
