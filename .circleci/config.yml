@@ -30,7 +30,7 @@ commands:
         type: string
       addon_branch:
         description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
-        default: 'prep-for-minimal'
+        default: 'main'
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
