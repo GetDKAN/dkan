@@ -5,5 +5,5 @@ core_version_requirement: ^9.4 || ^10
 package: DKAN
 dependencies:
   - common
-  - basic_auth
+  - drupal:basic_auth
   - drupal:content_moderation
