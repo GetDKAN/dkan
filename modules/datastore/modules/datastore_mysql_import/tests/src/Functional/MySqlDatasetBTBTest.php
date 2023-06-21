@@ -25,7 +25,6 @@ class MySqlDatasetBTBTest extends DatasetBTBTest {
     'field',
     'harvest',
     'metastore',
-    'menu_ui',
     'node',
   ];
 

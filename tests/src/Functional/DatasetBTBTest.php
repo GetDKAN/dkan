@@ -30,7 +30,6 @@ class DatasetBTBTest extends BrowserTestBase {
     'field',
     'harvest',
     'metastore',
-    'menu_ui',
     'node',
   ];
 
