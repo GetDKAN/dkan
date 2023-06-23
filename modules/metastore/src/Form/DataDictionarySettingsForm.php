@@ -121,14 +121,16 @@ class DataDictionarySettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    try {
-      // Search for existing data-dictionary id.
-      if (!$this->metastore->get('data-dictionary', $form_state->getValue('sitewide_dictionary_id'))) {
-        throw new \Exception('Data not found.');
+    if ($form_state->getValue('dictionary_mode') === 'sitewide') {
+      try {
+        // Search for existing data-dictionary id.
+        if (!$this->metastore->get('data-dictionary', $form_state->getValue('sitewide_dictionary_id'))) {
+          throw new \Exception('Data not found.');
+        }
       }
-    }
-    catch (\Exception $e) {
-      $form_state->setErrorByName('sitewide_dictionary_id', $e->getMessage());
+      catch (\Exception $e) {
+        $form_state->setErrorByName('sitewide_dictionary_id', $e->getMessage());
+      }
     }
 
     parent::validateForm($form, $form_state);
