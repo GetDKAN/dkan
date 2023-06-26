@@ -21,7 +21,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
    *
    * @var string[]
    */
-  public static $modules = ['system', 'node', 'user', 'field', 'field_ui', 'filter', 'text', 'metastore', 'common', 'datastore', 'dkan', 'menu_ui', 'menu_link_content', 'basic_auth', 'content_moderation', 'workflows'];
+  public static $modules = ['system', 'node', 'user', 'field', 'field_ui', 'filter', 'text', 'metastore', 'common', 'datastore', 'dkan', 'menu_link_content', 'basic_auth', 'content_moderation', 'workflows'];
 
   /**
    * Metastore service.
@@ -153,7 +153,6 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     $this->installConfig('node');
     $this->installConfig('metastore');
     $this->installConfig('common');
-    $this->installConfig('menu_ui');
     $this->installConfig('basic_auth');
     $this->installConfig('content_moderation');
     $this->installConfig('workflows');
