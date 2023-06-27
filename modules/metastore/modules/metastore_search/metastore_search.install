@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Import config from metastore_admin view page.
+ */
+function metastore_search_update_8002() {
+  $config_path = \Drupal::service('extension.list.module')->getPath('metastore_search') . '/config/install/views.view.metastore_search.yml';
+  $container = \Drupal::getContainer();
+  $drush_import = $container->get('config.import.commands');
+  $options = [
+    'source' => $config_path,
+    'partial' => true
+  ];
+  $result = $drush_import->import(NULL, $options);
+}
