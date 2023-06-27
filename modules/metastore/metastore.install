@@ -8,7 +8,7 @@
  * Import config from metastore to use JSON Form Widget.
  */
 function metastore_update_8002() {
-  $config_path = drupal_get_path('module', 'metastore') . '/config/optional';
+  $config_path = \Drupal::service('extension.list.module')->getPath('metastore') . '/config/optional';
   $container = \Drupal::getContainer();
   $drush_import = $container->get('config.import.commands');
   $options = [

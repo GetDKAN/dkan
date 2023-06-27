@@ -8,7 +8,7 @@ use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 use Symfony\Component\HttpFoundation\Request;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -61,7 +61,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
@@ -103,7 +103,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->cron = \Drupal::service('cron');
     $this->metastore = \Drupal::service('dkan.metastore.service');
     $this->uuid = \Drupal::service('uuid');
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
     $this->webServiceApi = ImportController::create(\Drupal::getContainer());
     $this->datasetStorage = \Drupal::service('dkan.metastore.storage')
       ->getInstance('dataset');

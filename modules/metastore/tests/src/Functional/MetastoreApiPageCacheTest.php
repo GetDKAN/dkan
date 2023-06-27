@@ -3,9 +3,9 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use GuzzleHttp\Client;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -35,7 +35,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     \drupal_flush_all_caches();
 
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
     $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
     $datastore_settings = $config_factory->getEditable('datastore.settings');
@@ -180,9 +180,21 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
       }
     }
 
-    // Retrieve node search plugin for updating node page indexes.
-    $node_search_plugin = $this->container->get('plugin.manager.search')->createInstance('node_search');
-    $node_search_plugin->updateIndex();
+    // Render all the dataset nodes to address cache.
+    $renderer = \Drupal::service('renderer');
+    $entityTypeManager = \Drupal::service('entity_type.manager');
+
+    $database_service = \Drupal::service('database');
+    $query = $database_service->select('node', 'n');
+    $query->addField('n', 'nid');
+    $nids = $query->execute()->fetchCol();
+
+    $node_storage = $entityTypeManager->getStorage('node');
+    $node_render = $entityTypeManager->getViewBuilder('node');
+    foreach ($node_storage->loadMultiple($nids) as $node) {
+      $build = $node_render->view($node);
+      $text = $renderer->renderPlain($build);
+    }
   }
 
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
@@ -200,7 +212,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     return $identifier;
   }
 
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

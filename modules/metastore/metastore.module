@@ -4,12 +4,11 @@
  * @file
  */
 
-use Drupal\common\DataResource;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 
 /**
@@ -51,13 +50,6 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
     }
   }
-}
-
-/**
- * Helper method to retrieve the static value for a resource's display.
- */
-function resource_mapper_display() {
-  return drupal_static('metastore_resource_mapper_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE);
 }
 
 /**
@@ -127,7 +119,7 @@ function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     // TODO: use an actual schema id.
     $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
-    $object = \Drupal\metastore\Service::removeReferences($object);
+    $object = \Drupal\metastore\MetastoreService::removeReferences($object);
     $form[$fieldName]['widget'][0]['value']['#default_value'] = json_encode($object);
   }
 }
@@ -145,7 +137,7 @@ function metastore_entity_view_alter(array &$build, EntityInterface $entity, Ent
     }
 
     $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
-    $object = Service::removeReferences($object);
+    $object = MetastoreService::removeReferences($object);
     $build[$fieldName][0]['#context']['value'] = (string) $object;
   }
 }

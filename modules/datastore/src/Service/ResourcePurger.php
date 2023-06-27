@@ -8,7 +8,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
 use Drupal\Core\Entity\EntityPublishedInterface;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
@@ -38,7 +38,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   private $datastore;
 
@@ -58,10 +58,10 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The dkan.metastore.reference_lookup service.
    * @param \Drupal\metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.storage service.
-   * @param \Drupal\datastore\Service $datastore
+   * @param \Drupal\datastore\DatastoreService $datastore
    *   The dkan.datastore.service service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, ReferenceLookupInterface $referenceLookup, DataFactory $dataFactory, Service $datastore) {
+  public function __construct(ConfigFactoryInterface $configFactory, ReferenceLookupInterface $referenceLookup, DataFactory $dataFactory, DatastoreService $datastore) {
     $this->config = $configFactory->get('datastore.settings');
     $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');

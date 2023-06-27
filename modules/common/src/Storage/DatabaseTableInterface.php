@@ -15,12 +15,12 @@ use Contracts\CountableInterface;
 interface DatabaseTableInterface extends StorerInterface, RetrieverInterface, RemoverInterface, BulkStorerInterface, CountableInterface, BulkRetrieverInterface {
 
   /**
-   * Destroy.
+   * Remove the table from the database.
    */
   public function destruct();
 
   /**
-   * Query.
+   * Perform a SELECT query against the table.
    */
   public function query(Query $query);
 

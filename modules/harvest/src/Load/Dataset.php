@@ -3,7 +3,7 @@
 namespace Drupal\harvest\Load;
 
 use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Load\Load;
 
 /**
@@ -41,12 +41,12 @@ class Dataset extends Load {
   /**
    * Get the metastore service.
    *
-   * @return \Drupal\metastore\Service
+   * @return \Drupal\metastore\MetastoreService
    *   Metastore service.
    *
    * @codeCoverageIgnore
    */
-  protected function getMetastoreService(): Service {
+  protected function getMetastoreService(): MetastoreService {
     $service = \Drupal::service('dkan.metastore.service');
     return $service;
   }

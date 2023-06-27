@@ -2,17 +2,18 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\Core\Database\Connection;
-use Drupal\datastore\DatastoreResource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\common\Storage\ImportedDatabaseTableInterface;
+use Drupal\Core\Database\Connection;
+use Drupal\datastore\DatastoreResource;
 
 /**
  * Database storage object.
  *
  * @see \Drupal\common\Storage\DatabaseTableInterface
  */
-class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
+class DatabaseTable extends AbstractDatabaseTable implements ImportedDatabaseTableInterface, \JsonSerializable {
 
   use LoggerTrait;
 
@@ -71,16 +72,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Hydrate.
-   */
-  public static function hydrate(string $json) {
-    $data = json_decode($json);
-    $resource = DatastoreResource::hydrate(json_encode($data->resource));
-
-    return new DatabaseTable(\Drupal::service('database'), $resource);
-  }
-
-  /**
    * Get the full name of datastore db table.
    *
    * @return string
@@ -88,9 +79,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public function getTableName() {
     if ($this->resource) {
-      return "datastore_{$this->resource->getId()}";
+      return 'datastore_' . $this->resource->getId();
     }
-    return "datastore_does_not_exist";
+    return 'datastore_does_not_exist';
   }
 
   /**
@@ -101,18 +92,18 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     if ($decoded === NULL) {
       $this->log(
         'datastore_import',
-        "Error decoding id:@id, data: @data.",
+        'Error decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
       );
-      throw new \Exception("Import for {$id} error when decoding {$data}");
+      throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_array($decoded)) {
       $this->log(
         'datastore_import',
-        "Array expected while decoding id:@id, data: @data.",
+        'Array expected while decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
       );
-      throw new \Exception("Import for {$id} returned an error when preparing table header: {$data}");
+      throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return $decoded;
   }
@@ -121,7 +112,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * Protected.
    */
   public function primaryKey() {
-    return "record_number";
+    return 'record_number';
   }
 
   /**
@@ -141,7 +132,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   protected function setSchemaFromTable() {
     $tableName = $this->getTableName();
-    $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
+    $fieldsInfo = $this->connection->query('DESCRIBE {' . $tableName . '}')->fetchAll();
 
     $schema = $this->buildTableSchema($tableName, $fieldsInfo);
     $this->setSchema($schema);
@@ -209,7 +200,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       return;
     }
 
-    $indexInfo = $this->connection->query("SHOW INDEXES FROM  `{$this->getTableName()}`")->fetchAll();
+    $indexInfo = $this->connection->query('SHOW INDEXES FROM  {' . $this->getTableName() . '}')->fetchAll();
     foreach ($indexInfo as $info) {
       // Primary key is handled elsewhere.
       if ($info->Key_name == 'PRIMARY') {
@@ -260,8 +251,21 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       'size' => $size,
       'unsigned' => $unsigned,
       'not null' => $notNull,
-      "{$driver}_type" => $db_type,
+      $driver . '_type' => $db_type,
     ];
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * For datastore (and datastore_mysql_import by inheritance), at this point
+   * we only check if the table exists in the database and has more than 0 rows.
+   */
+  public function hasBeenImported(): bool {
+    if ($this->tableExist($this->getTableName())) {
+      return $this->count() > 0;
+    }
+    return FALSE;
   }
 
 }

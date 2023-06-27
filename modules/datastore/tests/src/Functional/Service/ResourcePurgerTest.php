@@ -4,7 +4,7 @@ namespace Drupal\Tests\datastore\Functional\Service;
 
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -28,14 +28,14 @@ class ResourcePurgerTest extends ExistingSiteBase {
   /**
    * DKAN datastore service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   protected $datastore;
 
   /**
    * DKAN metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
@@ -87,7 +87,7 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $this->queue = \Drupal::service('queue');
     $this->queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
     $this->resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**

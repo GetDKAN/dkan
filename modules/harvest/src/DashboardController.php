@@ -23,7 +23,7 @@ class DashboardController {
   /**
    * Harvest service.
    *
-   * @var \Drupal\harvest\Service
+   * @var \Drupal\harvest\HarvestService
    */
   protected $harvest;
 

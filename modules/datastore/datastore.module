@@ -38,5 +38,11 @@ function datastore_theme($existing, $type, $theme, $path) {
         'error' => NULL,
       ],
     ],
+    'datastore_dashboard_post_import_status_cell' => [
+      'variables' => [
+        'status' => NULL,
+        'error' => NULL,
+      ],
+    ],
   ];
 }

@@ -9,7 +9,7 @@ use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\Data;
@@ -47,7 +47,7 @@ class ResourcePurgerTest extends TestCase {
   public function testQueueing() {
 
     $chain = $this->getCommonChain()
-      ->add(Service::class, 'getQueueFactory', QueueFactory::class)
+      ->add(DatastoreService::class, 'getQueueFactory', QueueFactory::class)
       ->add(QueueFactory::class, 'get', QueueInterface::class)
       ->add(QueueInterface::class, 'createItem', 1);
 
@@ -100,7 +100,7 @@ class ResourcePurgerTest extends TestCase {
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
       ->add('dkan.metastore.storage', DataFactory::class)
-      ->add('dkan.datastore.service', Service::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->index(0);
 
     return (new Chain($this))

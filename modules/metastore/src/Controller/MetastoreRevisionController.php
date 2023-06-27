@@ -30,7 +30,7 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   private $service;
 

@@ -9,14 +9,14 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\datastore\Service;
-use Drupal\datastore\Service\Factory\Import;
+use Drupal\datastore\DatastoreService;
+use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Service\Import as ServiceImport;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -40,7 +40,7 @@ class DatastoreQueryTest extends TestCase {
   public function testQueryCompare($testName) {
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson($testName);
     $storageMap = $queryService->getQueryStorageMap($datastoreQuery);
     $dkanQuery = QueryFactory::create($datastoreQuery, $storageMap);
@@ -61,7 +61,7 @@ class DatastoreQueryTest extends TestCase {
   public function testResultsQuery() {
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson("propertiesQuery");
     $response = $queryService->runQuery($datastoreQuery);
     $this->assertIsArray($response->{"$.results[0]"});
@@ -76,7 +76,7 @@ class DatastoreQueryTest extends TestCase {
   public function testNoKeysQuery() {
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson("propertiesQuery");
     $datastoreQuery->{"$.keys"} = FALSE;
     $response = $queryService->runQuery($datastoreQuery);
@@ -87,7 +87,7 @@ class DatastoreQueryTest extends TestCase {
     $this->expectExceptionMessage("Invalid condition");
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson("badConditionQuery");
     $queryService->runQuery($datastoreQuery);
   }
@@ -96,7 +96,7 @@ class DatastoreQueryTest extends TestCase {
     $this->expectExceptionMessage("JSON Schema validation failed.");
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson("badPropertyQuery");
     $queryService->runQuery($datastoreQuery);
   }
@@ -105,7 +105,7 @@ class DatastoreQueryTest extends TestCase {
     $this->expectExceptionMessage("Too many resources specified.");
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson("tooManyResourcesQuery");
     $queryService->runQuery($datastoreQuery);
   }
@@ -114,7 +114,7 @@ class DatastoreQueryTest extends TestCase {
     $this->expectExceptionMessage("JSON Schema validation failed");
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson("invalidQuerySchema");
     $queryService->runQuery($datastoreQuery);
   }
@@ -126,7 +126,7 @@ class DatastoreQueryTest extends TestCase {
     $this->expectExceptionMessage('Un-grouped properties found in aggregate query: prop2');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson('ungroupedGroupByQuery');
     $queryService->runQuery($datastoreQuery);
   }
@@ -143,7 +143,7 @@ class DatastoreQueryTest extends TestCase {
       ]);
 
     \Drupal::setContainer($container->getMock());
-    $queryService = new Query(Service::create($container->getMock()));
+    $queryService = new Query(DatastoreService::create($container->getMock()));
 
     $datastoreQuery = $this->getDatastoreQueryFromJson('rowIdsQuery');
     $result = $queryService->runQuery($datastoreQuery);
@@ -188,9 +188,9 @@ class DatastoreQueryTest extends TestCase {
 
     $options = (new Options())
       ->add("dkan.datastore.query", Query::class)
-      ->add("dkan.datastore.service", Service::class)
+      ->add("dkan.datastore.service", DatastoreService::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
-      ->add("dkan.datastore.service.factory.import", Import::class)
+      ->add("dkan.datastore.service.factory.import", ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
@@ -210,8 +210,8 @@ class DatastoreQueryTest extends TestCase {
       ->add(Data::class, "retrieve", $resource_metadata)
       ->add(QueueFactory::class, "get", [])
       ->add(ResourceLocalizer::class, "get", $resource)
-      ->add(Import::class, "getInstance", ServiceImport::class)
-      ->add(ServiceImport::class, "getStorage", DatabaseTable::class)
+      ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
+      ->add(ImportService::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "query", $queryResult, 'DatabaseTableQuery')
       ->add(DatabaseTable::class, "getSchema", ["fields" => ["a" => "a", "b" => "b"]])
       ->add(DatabaseTable::class, "getTableName", "table2")

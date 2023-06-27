@@ -33,7 +33,10 @@ function metastore_preprocess_node__data(&$variables) {
     ];
     $formatted_contact_point = metastore_format_contactpoint($metadata->contactPoint);
     $rows = [
-      ["contactPoint", render($formatted_contact_point)],
+      [
+        "contactPoint",
+        \Drupal::service('renderer')->render($formatted_contact_point),
+      ],
     ];
   }
 
@@ -94,13 +97,11 @@ function metastore_preprocess_node__data(&$variables) {
           ];
         }
       }
+      // Fallback to display file path for link title.
+      if ($rows['downloadURL'] && !property_exists($d, 'title')) {
+        $rows['title'] = $rows['downloadURL'];
+      }
       $variables['dataset']['distributions'][] = $rows;
-      $variables['dataset']['distributions_tables'][] = [
-        '#type' => 'table',
-        '#caption' => $d->title,
-        '#header' => [t("Key"), t("Value")],
-        '#rows' => $rows,
-      ];
     }
   }
 }

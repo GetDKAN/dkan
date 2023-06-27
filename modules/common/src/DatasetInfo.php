@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\common;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\Service as Datastore;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
@@ -29,7 +29,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Datastore.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   protected $datastore;
 
@@ -60,10 +60,10 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Set datastore.
    *
-   * @param \Drupal\datastore\Service $datastore
+   * @param \Drupal\datastore\DatastoreService $datastore
    *   Datastore service.
    */
-  public function setDatastore(Datastore $datastore) {
+  public function setDatastore(DatastoreService $datastore) {
     $this->datastore = $datastore;
   }
 

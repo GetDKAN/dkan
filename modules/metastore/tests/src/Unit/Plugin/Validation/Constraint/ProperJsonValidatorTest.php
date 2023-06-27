@@ -48,17 +48,17 @@ class ProperJsonValidatorTest extends TestCase {
     parent::setUp();
     $this->schemaRetriever = $this->getMockBuilder(SchemaRetriever::class)
       ->disableOriginalConstructor()
-      ->setMethods(["retrieve"])
+      ->onlyMethods(["retrieve"])
       ->getMock();
 
     $this->validMetadataFactory = $this->getMockBuilder(ValidMetadataFactory::class)
       ->disableOriginalConstructor()
-      ->setMethods(["getSchemaRetriever"])
+      ->onlyMethods(["getSchemaRetriever"])
       ->getMock();
     $this->validMetadataFactory->method('getSchemaRetriever')->willReturn($this->schemaRetriever);
 
     $this->container = $this->getMockBuilder(ContainerInterface::class)
-      ->setMethods(['get'])
+      ->onlyMethods(['get'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -67,7 +67,7 @@ class ProperJsonValidatorTest extends TestCase {
       ->willReturn($this->validMetadataFactory);
 
     $this->context = $this->getMockBuilder(ExecutionContext::class)
-      ->setMethods(["addViolation"])
+      ->onlyMethods(["addViolation"])
       ->disableOriginalConstructor()
       ->getMock();
   }

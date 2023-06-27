@@ -6,7 +6,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\harvest\DashboardController;
-use Drupal\harvest\Service as Harvest;
+use Drupal\harvest\HarvestService;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class DashboardControllerTest extends TestCase {
 
   public function testNoHarvests() {
     $container = $this->getCommonMockChain()
-      ->add(Harvest::class, 'getAllHarvestIds', [])
+      ->add(HarvestService::class, 'getAllHarvestIds', [])
       ->getMock();
 
     \Drupal::setContainer($container);
@@ -33,7 +33,7 @@ class DashboardControllerTest extends TestCase {
 
   public function testRegisteredHarvest() {
     $container = $this->getCommonMockChain()
-      ->add(Harvest::class, 'getAllHarvestRunInfo', [])
+      ->add(HarvestService::class, 'getAllHarvestRunInfo', [])
       ->getMock();
 
     \Drupal::setContainer($container);
@@ -53,7 +53,7 @@ class DashboardControllerTest extends TestCase {
     $time = time();
 
     $container = $this->getCommonMockChain()
-      ->add(Harvest::class, 'getAllHarvestRunInfo', [$time])
+      ->add(HarvestService::class, 'getAllHarvestRunInfo', [$time])
       ->getMock();
 
     \Drupal::setContainer($container);
@@ -76,7 +76,7 @@ class DashboardControllerTest extends TestCase {
 
   private function getCommonMockChain() : Chain {
     $options = (new Options())
-      ->add('dkan.harvest.service', Harvest::class)
+      ->add('dkan.harvest.service', HarvestService::class)
       ->add('dkan.common.dataset_info', DatasetInfo::class)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
@@ -92,8 +92,8 @@ class DashboardControllerTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(Harvest::class, 'getAllHarvestIds', ['test'])
-      ->add(Harvest::class,'getHarvestRunInfo', json_encode($runInfo));
+      ->add(HarvestService::class, 'getAllHarvestIds', ['test'])
+      ->add(HarvestService::class,'getHarvestRunInfo', json_encode($runInfo));
   }
 
 }

@@ -1,0 +1,28 @@
+{
+  "dataset": [
+    {
+      "accessLevel": "public",
+      "description": "Description #1",
+      "identifier": "1",
+      "modified": "2019-12-31",
+      "title": "One",
+      "keyword": ["keyword"]
+    },
+    {
+      "accessLevel": "public",
+      "description": "Description #2",
+      "identifier": "2",
+      "modified": "2019-12-31",
+      "title": "Two updated",
+      "keyword": ["keyword"]
+    },
+    {
+      "accessLevel": "public",
+      "description": "Description #4",
+      "identifier": "4",
+      "modified": "2019-12-31",
+      "title": "Four",
+      "keyword": ["keyword"]
+    }
+  ]
+}
