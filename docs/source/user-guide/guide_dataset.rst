@@ -96,9 +96,9 @@ Create a harvest based on the file above:
 
 .. code-block::
 
-      dktl drush dkan:harvest:register --identifier=data --extract-uri=http://dkan.ddev.site/sites/default/files/h1.json
-      dktl drush dkan:harvest:run data
-      dktl drush cron
+      drush dkan:harvest:register --identifier=data --extract-uri=http://dkan.ddev.site/sites/default/files/h1.json
+      drush dkan:harvest:run data
+      drush cron
 
 Add demo site content
 ---------------------
@@ -110,8 +110,8 @@ Remove the datasets with the remove command.
 
 .. code-block::
 
-      dktl drush en sample_content -y
-      dktl drush dkan:sample-content:create
-      dktl drush cron
-      dktl drush dkan:sample:content:remove
+      drush en sample_content -y
+      drush dkan:sample-content:create
+      drush cron
+      drush dkan:sample:content:remove
 
