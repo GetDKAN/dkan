@@ -16,7 +16,14 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 
 /**
- * Data.
+ * Abstraction of logic used in entity hooks.
+ *
+ * The LifeCycle class contains the logic that is used our entity hooks, to make
+ * changes to the metadata at the time of save or load. To prepare for a
+ * move to a custom entity, we abstract out any code that is specific to a
+ * certain entity type, bundle or field name, and replacing these references
+ * with methods that are defined in an interface to be shared with future
+ * storage systems.
  */
 class LifeCycle {
   use EventDispatcherTrait;
@@ -108,7 +115,7 @@ class LifeCycle {
    *
    * @param string $stage
    *   Stage or hook name for execution.
-   * @param Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item object.
    */
   public function go($stage, MetastoreItemInterface $data) {
@@ -116,7 +123,7 @@ class LifeCycle {
     $schema_id = str_replace('-', '', $data->getSchemaId());
     $stage = ucwords($stage);
     // Build method name from schema ID and stage.
-    $method = "{$schema_id}{$stage}";
+    $method = $schema_id . $stage;
     // Ensure a method exists for this life cycle stage.
     if (method_exists($this, $method)) {
       // Call life cycle method on metastore item.
@@ -175,9 +182,9 @@ class LifeCycle {
       $original = NULL;
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
 
-      $downloadUrl = isset($original) ? $original : "";
+      $downloadUrl = isset($original) ? $original : '';
 
-      $refProperty = "%Ref:downloadURL";
+      $refProperty = '%Ref:downloadURL';
       $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 
@@ -258,8 +265,8 @@ class LifeCycle {
    */
   private function createResourceReference(DataResource $resource): object {
     return (object) [
-      "identifier" => $resource->getUniqueIdentifier(),
-      "data" => $resource,
+      'identifier' => $resource->getUniqueIdentifier(),
+      'data' => $resource,
     ];
   }
 
@@ -276,35 +283,35 @@ class LifeCycle {
   /**
    * Sanitize and reference metadata.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\metastore\MetastoreItemInterface $metastoreItem
    *   Metastore item.
    */
-  protected function referenceMetadata(MetastoreItemInterface $data): void {
-    $metadata = $data->getMetaData();
+  protected function referenceMetadata(MetastoreItemInterface $metastoreItem): void {
+    $metadata = $metastoreItem->getMetaData();
 
     $title = $metadata->title ?? $metadata->name;
-    $data->setTitle($title);
+    $metastoreItem->setTitle($title);
 
     // If there is no uuid add one.
     if (!isset($metadata->identifier)) {
-      $metadata->identifier = $data->getIdentifier();
+      $metadata->identifier = $metastoreItem->getIdentifier();
     }
     // If one exists in the uuid it should be the same in the table.
     else {
-      $data->setIdentifier($metadata->identifier);
+      $metastoreItem->setIdentifier($metadata->identifier);
     }
 
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
-      return $data instanceof MetastoreItemInterface;
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $metastoreItem, function ($item) {
+      return $item instanceof MetastoreItemInterface;
     });
 
     $metadata = $this->referencer->reference($metadata);
 
-    $data->setMetadata($metadata);
+    $metastoreItem->setMetadata($metadata);
 
     // Check for possible orphan property references when updating a dataset.
-    if (!$data->isNew()) {
-      $raw = $data->getRawMetadata();
+    if (!$metastoreItem->isNew()) {
+      $raw = $metastoreItem->getRawMetadata();
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
   }
