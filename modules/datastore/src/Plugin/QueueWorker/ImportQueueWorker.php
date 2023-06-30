@@ -9,6 +9,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
+use Drupal\common\Storage\ImportedDatabaseTableInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
 
@@ -138,12 +139,43 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
       $data = $data->data;
     }
 
+    // Can we short-circuit this task?
+//    if ($this->alreadyImported($data)) {
+//      return;
+//    }
+
     try {
       $this->importData($data);
     }
     catch (\Exception $e) {
-      $this->error("Import for {$data['identifier']} returned an error: {$e->getMessage()}");
+      $this->error('Import for ' . $data['identifier'] . ' returned an error: ' . $e->getMessage());
     }
+  }
+
+  /**
+   * Determine whether the import has already occurred.
+   *
+   * This situation occurs when long processes have successfully occurred, but
+   * databases or file transfers have timed out. In this case no more effort is
+   * required, so the queue item can exit.
+   *
+   * @param $data
+   *   Data provided by queue system.
+   *
+   * @return bool
+   *   TRUE if no more effort is required. FALSE otherwise.
+   *
+   * @todo Add more status logic as needed.
+   */
+  protected function alreadyImported($data) {
+    $storage = $this->datastore->getStorage(
+      $data['identifier'] ?? FALSE,
+      $data['version'] ?? FALSE
+    );
+    if ($storage instanceof ImportedDatabaseTableInterface) {
+      return $storage->hasBeenImported();
+    }
+    return FALSE;
   }
 
   /**
@@ -164,7 +196,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
     // Delete local resource file if enabled in datastore settings config.
     if ($this->datastoreConfig->get('delete_local_resource')) {
-      $this->fileSystem->deleteRecursive("public://resources/{$identifier}_{$version}");
+      $this->fileSystem->deleteRecursive('public://resources/' . $identifier . '_' . $version);
     }
   }
 
@@ -184,25 +216,25 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *   The updated value for $queued.
    */
   protected function processResult(Result $result, $data, bool $queued = FALSE, string $label = 'Import') {
-    $uid = "{$data['identifier']}__{$data['version']}";
+    $uid = $data['identifier'] . '__' . $data['version'];
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:
         if (!$queued) {
           $newQueueItemId = $this->requeue($data);
-          $this->notice("$label for {$uid} is requeueing. (ID:{$newQueueItemId}).");
+          $this->notice($label . ' for ' . $uid . ' is requeueing. (ID:' . $newQueueItemId . ').');
           $queued = TRUE;
         }
         break;
 
       case Result::IN_PROGRESS:
       case Result::ERROR:
-        $this->error("$label for {$uid} returned an error: {$result->getError()}");
+        $this->error($label . ' for ' . $uid . ' returned an error: ' . $result->getError());
         break;
 
       case Result::DONE:
-        $this->notice("$label for {$uid} completed.");
-        $this->invalidateCacheTags("{$uid}__source");
+        $this->notice($label . ' for ' . $uid . ' completed.');
+        $this->invalidateCacheTags($uid . '__source');
         break;
     }
 

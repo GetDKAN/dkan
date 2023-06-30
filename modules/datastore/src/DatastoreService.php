@@ -51,7 +51,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Datastore Query object for conversion.
    *
-   * @var Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+   * @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
    */
   private $dictionaryEnforcer;
 
@@ -82,7 +82,7 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Jobstore factory service.
    * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
    *   Import info list service.
-   * @param Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
+   * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */
   public function __construct(
@@ -157,7 +157,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * Private.
    */
   private function getLabelFromObject($object) {
-    return substr(strrchr(get_class($object), "\\"), 1);
+    return substr(strrchr(get_class($object), '\\'), 1);
   }
 
   /**
@@ -252,7 +252,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $data = $storage->getSummary();
       return $data;
     }
-    throw new \Exception("no storage");
+    throw new \Exception('no storage');
   }
 
   /**
