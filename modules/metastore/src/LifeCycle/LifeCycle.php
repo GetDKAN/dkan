@@ -21,8 +21,8 @@ use Drupal\metastore\Storage\DataFactory;
  * The LifeCycle class contains the logic that is used our entity hooks, to make
  * changes to the metadata at the time of save or load. To prepare for a
  * move to a custom entity, we abstract out any code that is specific to a
- * certain entity type, bundle or field name, and replacing these references
- * with methods that are defined in an interface to be shared with future
+ * certain entity type, bundle or field name, and replace these references with
+ * methods that are defined in an interface to be shared with future
  * storage systems.
  */
 class LifeCycle {

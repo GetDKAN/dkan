@@ -140,9 +140,9 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
     }
 
     // Can we short-circuit this task?
-//    if ($this->alreadyImported($data)) {
-//      return;
-//    }
+    if ($this->alreadyImported($data)) {
+      return;
+    }
 
     try {
       $this->importData($data);
@@ -168,12 +168,17 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * @todo Add more status logic as needed.
    */
   protected function alreadyImported($data) {
-    $storage = $this->datastore->getStorage(
-      $data['identifier'] ?? FALSE,
-      $data['version'] ?? FALSE
-    );
-    if ($storage instanceof ImportedDatabaseTableInterface) {
-      return $storage->hasBeenImported();
+    try {
+      $storage = $this->datastore->getStorage(
+        $data['identifier'] ?? FALSE,
+        $data['version'] ?? FALSE
+      );
+      if ($storage instanceof ImportedDatabaseTableInterface) {
+        return $storage->hasBeenImported();
+      }
+    }
+    catch (\InvalidArgumentException $e) {
+      // Caught.
     }
     return FALSE;
   }
