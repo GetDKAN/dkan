@@ -266,7 +266,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * @return \Drupal\datastore\Storage\DatabaseTable
    *   Storage object.
    *
-   * @throws \Exception
+   * @throws \InvalidArgumentException
    */
   public function getStorage(string $identifier, $version = NULL) {
     $resource = $this->resourceLocalizer->get($identifier, $version);

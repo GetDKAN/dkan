@@ -4,10 +4,10 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 
-use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\common\Storage\ImportedDatabaseTableInterface;
 use Drupal\datastore\DatastoreService;
@@ -29,7 +29,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-  use LoggerTrait;
 
   /**
    * This queue worker's corresponding database queue instance.
@@ -65,6 +64,8 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * @var \Drupal\Core\File\FileSystemInterface
    */
   protected $fileSystem;
+
+  protected LoggerChannelInterface $logger;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -105,7 +106,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
     $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
     $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
-    $this->setLoggerFactory($loggerFactory, 'datastore');
+    $this->logger = $loggerFactory->get('datastore');
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
@@ -148,7 +149,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
       $this->importData($data);
     }
     catch (\Exception $e) {
-      $this->error('Import for ' . $data['identifier'] . ' returned an error: ' . $e->getMessage());
+      $this->logger->error('Import for ' . $data['identifier'] . ' returned an error: ' . $e->getMessage());
     }
   }
 
@@ -157,7 +158,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *
    * This situation occurs when long processes have successfully occurred, but
    * databases or file transfers have timed out. In this case no more effort is
-   * required, so the queue item can exit.
+   * required, so the queue item should exit.
    *
    * @param $data
    *   Data provided by queue system.
@@ -167,7 +168,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *
    * @todo Add more status logic as needed.
    */
-  protected function alreadyImported($data) {
+  protected function alreadyImported($data): bool {
     try {
       $storage = $this->datastore->getStorage(
         $data['identifier'] ?? FALSE,
@@ -227,18 +228,18 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
       case Result::STOPPED:
         if (!$queued) {
           $newQueueItemId = $this->requeue($data);
-          $this->notice($label . ' for ' . $uid . ' is requeueing. (ID:' . $newQueueItemId . ').');
+          $this->logger->notice($label . ' for ' . $uid . ' is requeueing. (ID:' . $newQueueItemId . ').');
           $queued = TRUE;
         }
         break;
 
       case Result::IN_PROGRESS:
       case Result::ERROR:
-        $this->error($label . ' for ' . $uid . ' returned an error: ' . $result->getError());
+        $this->logger->error($label . ' for ' . $uid . ' returned an error: ' . $result->getError());
         break;
 
       case Result::DONE:
-        $this->notice($label . ' for ' . $uid . ' completed.');
+        $this->logger->notice($label . ' for ' . $uid . ' completed.');
         $this->invalidateCacheTags($uid . '__source');
         break;
     }
