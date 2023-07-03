@@ -180,10 +180,12 @@ class ValueHandler {
    */
   private function getObjectInArrayData($formValues, $property, $schema) {
     $data = [];
-    foreach ($formValues[$property][$property] as $key => $item) {
-      $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema);
-      if ($value) {
-        $data[$key] = $value;
+    if (isset($formValues[$property][$property])) {
+      foreach ($formValues[$property][$property] as $key => $item) {
+        $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema);
+        if ($value) {
+          $data[$key] = $value;
+        }
       }
     }
     return $data;
