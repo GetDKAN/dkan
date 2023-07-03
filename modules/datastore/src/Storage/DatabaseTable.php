@@ -4,7 +4,7 @@ namespace Drupal\datastore\Storage;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Drupal\common\Storage\ImportedDatabaseTableInterface;
+use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\datastore\DatastoreResource;
 
@@ -13,7 +13,7 @@ use Drupal\datastore\DatastoreResource;
  *
  * @see \Drupal\common\Storage\DatabaseTableInterface
  */
-class DatabaseTable extends AbstractDatabaseTable implements ImportedDatabaseTableInterface, \JsonSerializable {
+class DatabaseTable extends AbstractDatabaseTable implements ImportedItemInterface, \JsonSerializable {
 
   use LoggerTrait;
 

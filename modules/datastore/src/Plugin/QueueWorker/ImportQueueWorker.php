@@ -9,7 +9,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\common\Storage\ImportedDatabaseTableInterface;
+use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
 
@@ -174,7 +174,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
         $data['identifier'] ?? FALSE,
         $data['version'] ?? FALSE
       );
-      if ($storage instanceof ImportedDatabaseTableInterface) {
+      if ($storage instanceof ImportedItemInterface) {
         return $storage->hasBeenImported();
       }
     }

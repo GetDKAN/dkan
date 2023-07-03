@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
 
-use Drupal\common\Storage\ImportedDatabaseTableInterface;
+use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\DatastoreService;
@@ -212,7 +212,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
    */
   public function testAlreadyImported() {
     // Storage of the type that can know whether the import has happened already.
-    $storage = $this->getMockBuilder(ImportedDatabaseTableInterface::class)
+    $storage = $this->getMockBuilder(ImportedItemInterface::class)
       ->onlyMethods(['hasBeenImported'])
       ->getMockForAbstractClass();
     // Say the import has happened already.
