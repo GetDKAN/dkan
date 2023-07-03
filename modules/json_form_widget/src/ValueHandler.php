@@ -18,8 +18,8 @@ class ValueHandler {
     switch ($schema->type) {
       case 'string':
         $data = $this->handleStringValues($formValues, $property);
-        if ($property === 'hasEmail' && !(empty($data))) {
-          $data = 'mailto:' . ltrim($data ?? '', 'mailto:');
+        if ($property === 'hasEmail' && is_string($data)) {
+          $data = 'mailto:' . ltrim($data, 'mailto:');
         }
         break;
 
