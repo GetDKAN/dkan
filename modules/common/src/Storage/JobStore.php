@@ -83,6 +83,12 @@ class JobStore extends AbstractDatabaseTable {
     return $this->tableName;
   }
 
+  /**
+   * Get the deprecated table name.
+   *
+   * @return string
+   *   Deprecated table name.
+   */
   protected function getDeprecatedTableName(): string {
     $safeClassName = strtolower(preg_replace(
       '/\\\\/', '_',
