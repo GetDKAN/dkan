@@ -18,7 +18,7 @@ class JobStore extends AbstractDatabaseTable {
   private $jobClass;
 
   /**
-   * Store the name of the table so we do not have to recompute.
+   * Store the name of the table so that we do not have to recompute.
    *
    * @var string
    */
@@ -29,7 +29,7 @@ class JobStore extends AbstractDatabaseTable {
    */
   public function __construct(string $jobClass, Connection $connection) {
     if (!$this->validateJobClass($jobClass)) {
-      throw new \Exception("Invalid jobType provided: $jobClass");
+      throw new \Exception('Invalid jobType provided: ' . $jobClass);
     }
     $this->jobClass = $jobClass;
     $this->setOurSchema();
@@ -48,19 +48,38 @@ class JobStore extends AbstractDatabaseTable {
   }
 
   /**
-   * Protected.
+   * Get the table name, preferring the deprecated one if it exists.
+   *
+   * Since we have two table names (one deprecated), we should try to find out
+   * if the deprecated one exists. If it does, we use its name. Otherwise, we
+   * use the new table name.
+   *
+   * @todo Phase out the use of the deprecated table name.
    */
   protected function getTableName() {
     if (empty($this->tableName)) {
-      // Avoid table-name-too-long errors by hashing the FQN of the class.
-      $exploded_class = explode("\\", $this->jobClass);
-      $this->tableName = strtolower(implode('_', [
-        'jobstore',
-        crc32($this->jobClass),
-        array_pop($exploded_class),
-      ]));
+      if ($this->tableExist($table = $this->getDeprecatedTableName())) {
+        $this->tableName = $table;
+      }
+      else {
+        // Avoid table-name-too-long errors by hashing the FQN of the class.
+        $exploded_class = explode('\\', $this->jobClass);
+        $this->tableName = strtolower(implode('_', [
+          'jobstore',
+          crc32($this->jobClass),
+          array_pop($exploded_class),
+        ]));
+      }
     }
     return $this->tableName;
+  }
+
+  protected function getDeprecatedTableName() {
+    $safeClassName = strtolower(preg_replace(
+      '/\\\\/', '_',
+      $this->jobClass
+    ));
+    return 'jobstore_' . $safeClassName;
   }
 
   /**
@@ -110,6 +129,16 @@ class JobStore extends AbstractDatabaseTable {
    */
   public function primaryKey() {
     return 'ref_uuid';
+  }
+
+  /**
+   * Drop the table if it exists.
+   *
+   * Will also drop the deprecated table if it exists.
+   */
+  public function destruct() {
+    parent::destruct();
+    $this->connection->schema()->dropTable($this->getDeprecatedTableName());
   }
 
 }
