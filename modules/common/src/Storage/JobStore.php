@@ -15,17 +15,26 @@ class JobStore extends AbstractDatabaseTable {
    *
    * @var string
    */
-  private $jobClass;
+  private string $jobClass;
 
   /**
    * Store the name of the table so that we do not have to recompute.
    *
    * @var string
    */
-  private $tableName;
+  private string $tableName;
 
   /**
    * Constructor.
+   *
+   * @param string $jobClass
+   *   Class name of the job object which is using this storage table. Must be
+   *   a subclass of \Procrastinator\Job\Job.
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection.
+   *
+   * @throws \Exception
+   *   Thrown if the job class is not valid.
    */
   public function __construct(string $jobClass, Connection $connection) {
     if (!$this->validateJobClass($jobClass)) {
@@ -74,7 +83,7 @@ class JobStore extends AbstractDatabaseTable {
     return $this->tableName;
   }
 
-  protected function getDeprecatedTableName() {
+  protected function getDeprecatedTableName(): string {
     $safeClassName = strtolower(preg_replace(
       '/\\\\/', '_',
       $this->jobClass
