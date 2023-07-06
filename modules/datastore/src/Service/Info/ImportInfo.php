@@ -17,7 +17,7 @@ class ImportInfo {
   /**
    * A JobStore object.
    *
-   * @var \Drupal\common\Storage\JobStore
+   * @var \Drupal\common\Storage\JobStoreFactory
    */
   private $jobStoreFactory;
 

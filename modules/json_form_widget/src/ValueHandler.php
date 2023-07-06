@@ -18,8 +18,8 @@ class ValueHandler {
     switch ($schema->type) {
       case 'string':
         $data = $this->handleStringValues($formValues, $property);
-        if ($property === 'hasEmail') {
-          $data = 'mailto:' . ltrim($data ?? '', 'mailto:');
+        if ($property === 'hasEmail' && is_string($data)) {
+          $data = 'mailto:' . ltrim($data, 'mailto:');
         }
         break;
 
@@ -180,10 +180,12 @@ class ValueHandler {
    */
   private function getObjectInArrayData($formValues, $property, $schema) {
     $data = [];
-    foreach ($formValues[$property][$property] as $key => $item) {
-      $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema);
-      if ($value) {
-        $data[$key] = $value;
+    if (isset($formValues[$property][$property])) {
+      foreach ($formValues[$property][$property] as $key => $item) {
+        $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema);
+        if ($value) {
+          $data[$key] = $value;
+        }
       }
     }
     return $data;
