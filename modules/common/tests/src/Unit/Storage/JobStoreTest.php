@@ -17,8 +17,9 @@ use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @covers \Drupal\common\Storage\JobStore
  * @coversDefaultClass \Drupal\common\Storage\JobStore
- * @group datastore
+ * @group common
  */
 class JobStoreTest extends TestCase {
 
