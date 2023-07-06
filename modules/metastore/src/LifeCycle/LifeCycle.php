@@ -18,8 +18,8 @@ use Drupal\metastore\Storage\DataFactory;
 /**
  * Abstraction of logic used in entity hooks.
  *
- * The LifeCycle class contains the logic that is used our entity hooks, to make
- * changes to the metadata at the time of save or load. To prepare for a
+ * The LifeCycle class contains the logic that is used by our entity hooks, to
+ * make changes to the metadata at the time of save or load. To prepare for a
  * move to a custom entity, we abstract out any code that is specific to a
  * certain entity type, bundle or field name, and replace these references with
  * methods that are defined in an interface to be shared with future
@@ -123,7 +123,7 @@ class LifeCycle {
     $schema_id = str_replace('-', '', $data->getSchemaId());
     $stage = ucwords($stage);
     // Build method name from schema ID and stage.
-    $method = $schema_id . $stage;
+    $method = "{$schema_id}{$stage}";
     // Ensure a method exists for this life cycle stage.
     if (method_exists($this, $method)) {
       // Call life cycle method on metastore item.
@@ -182,9 +182,9 @@ class LifeCycle {
       $original = NULL;
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
 
-      $downloadUrl = isset($original) ? $original : '';
+      $downloadUrl = isset($original) ? $original : "";
 
-      $refProperty = '%Ref:downloadURL';
+      $refProperty = "%Ref:downloadURL";
       $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 
@@ -265,8 +265,8 @@ class LifeCycle {
    */
   private function createResourceReference(DataResource $resource): object {
     return (object) [
-      'identifier' => $resource->getUniqueIdentifier(),
-      'data' => $resource,
+      "identifier" => $resource->getUniqueIdentifier(),
+      "data" => $resource,
     ];
   }
 
@@ -283,35 +283,35 @@ class LifeCycle {
   /**
    * Sanitize and reference metadata.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $metastoreItem
+   * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item.
    */
-  protected function referenceMetadata(MetastoreItemInterface $metastoreItem): void {
-    $metadata = $metastoreItem->getMetaData();
+  protected function referenceMetadata(MetastoreItemInterface $data): void {
+    $metadata = $data->getMetaData();
 
     $title = $metadata->title ?? $metadata->name;
-    $metastoreItem->setTitle($title);
+    $data->setTitle($title);
 
     // If there is no uuid add one.
     if (!isset($metadata->identifier)) {
-      $metadata->identifier = $metastoreItem->getIdentifier();
+      $metadata->identifier = $data->getIdentifier();
     }
     // If one exists in the uuid it should be the same in the table.
     else {
-      $metastoreItem->setIdentifier($metadata->identifier);
+      $data->setIdentifier($metadata->identifier);
     }
 
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $metastoreItem, function ($item) {
-      return $item instanceof MetastoreItemInterface;
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
+      return $data instanceof MetastoreItemInterface;
     });
 
     $metadata = $this->referencer->reference($metadata);
 
-    $metastoreItem->setMetadata($metadata);
+    $data->setMetadata($metadata);
 
     // Check for possible orphan property references when updating a dataset.
-    if (!$metastoreItem->isNew()) {
-      $raw = $metastoreItem->getRawMetadata();
+    if (!$data->isNew()) {
+      $raw = $data->getRawMetadata();
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
   }
