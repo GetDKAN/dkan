@@ -65,6 +65,11 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    */
   protected $fileSystem;
 
+  /**
+   * Logger service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
   protected LoggerChannelInterface $logger;
 
   /**
@@ -160,7 +165,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * databases or file transfers have timed out. In this case no more effort is
    * required, so the queue item should exit.
    *
-   * @param $data
+   * @param mixed $data
    *   Data provided by queue system.
    *
    * @return bool
@@ -179,7 +184,9 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
       }
     }
     catch (\InvalidArgumentException $e) {
-      // Caught.
+      // DatastoreService->getStorage() throws \InvalidArgumentException if no
+      // storage could be found. That helpfully answers our question of whether
+      // the storage has already been imported.
     }
     return FALSE;
   }
