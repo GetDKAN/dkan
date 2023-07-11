@@ -131,6 +131,50 @@ class MysqlImportTest extends KernelTestBase {
     ]), $mysql_import->sqlStatement);
   }
 
+  /**
+   * Tests that the import job can detect when the dataset already exists in the db.
+   */
+  public function testHasBeenImported() {
+    $identifier = 'my_id';
+    $file_path = dirname(__FILE__, 7) . '/tests/data/countries.csv';
+    $data_resource = new DataResource($file_path, 'text/csv');
+
+    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
+    $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
+
+    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    $mysql_import = $import_factory->getInstance(
+      $identifier,
+      ['resource' => $data_resource]
+    )->getImporter();
+    $this->assertInstanceOf(MysqlImport::class, $mysql_import);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $mysql_import->getStorage());
+
+    // Store the table.
+    $result = $mysql_import->run();
+    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
+
+    // Set up to run the import again, getting a fresh factory and a fresh
+    // importer object.
+    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
+    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    $mysql_import = $import_factory->getInstance(
+      $identifier,
+      ['resource' => $data_resource]
+    )->getImporter();
+
+    // Ensure the table already exists.
+    $this->assertTrue($mysql_import->getStorage()->hasBeenImported());
+    // Set the status so it's not 'done,' and we can make sure it was changed to
+    // 'done' later.
+    $mysql_import->getResult()->setStatus(Result::IN_PROGRESS);
+    $this->assertEquals(Result::IN_PROGRESS, $mysql_import->getResult()->getStatus());
+
+    // Re-run the import.
+    $result = $mysql_import->run();
+    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
+  }
+
 }
 
 class MockQueryVisibilityImport extends MysqlImport {

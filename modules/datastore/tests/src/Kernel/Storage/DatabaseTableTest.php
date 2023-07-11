@@ -47,6 +47,7 @@ class DatabaseTableTest extends KernelTestBase {
     // Has not been imported yet.
     $this->assertFalse($table->hasBeenImported());
 
+    // Perform the import.
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
     $this->assertEquals(2, $import_job->getStorage()->count());
