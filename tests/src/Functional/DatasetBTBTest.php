@@ -130,6 +130,47 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Test cleanup of orphaned draft distributions.
+   */
+  public function testOrphanDraftDistributionCleanup() {
+    // Get the original settings for local resources and default moderation state.
+    $config = \Drupal::service('config.factory');
+    $datastoreSettings = $config->getEditable('datastore.settings');
+    $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
+    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
+    $defaultModerationStateOriginal = $defaultModerationState->get('type_settings.default_moderation_state');
+
+    // Do not delete local resource files.
+    $datastoreSettings->set('delete_local_resource', 0)->save();
+
+    // Set draft as the default moderation state.
+    $defaultModerationState->set('workflows.workflow.dkan_publishing', 'draft')->save();
+
+    // Post dataset 1 and run the 'datastore_import' queue.
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
+
+    // Get distribution local file + table
+    $dataset = $this->getMetastore()->get('dataset', $id_1);
+    $datasetMetadata = $dataset->{'$'};
+    $resourceId = explode('__', $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $refUuid = $resourceId[0] . '_' . $resourceId[1];
+
+    // Confirm local directory exists.
+    $this->assertDirectoryExists('public://resources/' . $refUuid);
+
+    // Update the modified date and run the 'datastore_import' queue again, same dataset.
+    $this->storeDatasetRunQueues($id_1, '1', ['1.csv'], 'put', '06-05-2020');
+
+    // Confirm original distribution local directory removed.
+    $this->assertDirectoryDoesNotExist('public://resources/' . $refUuid);
+
+    // Restore the original config values.
+    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
+    $defaultModerationState->set('workflows.workflow.dkan_publishing', $defaultModerationStateOriginal)->save();
+  }
+
+  /**
    * Test resource removal on distribution deleting.
    */
   public function testDeleteDistribution() {
@@ -273,11 +314,13 @@ class DatasetBTBTest extends BrowserTestBase {
    *   Dataset title.
    * @param array $downloadUrls
    *   Array of resource files URLs for this dataset.
+   * @param string $modified
+   *   Optional modified date
    *
    * @return \RootedData\RootedJsonData
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
+  private function getData(string $identifier, string $title, array $downloadUrls, string $modified = '06-04-2020'): RootedJsonData {
     /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
     $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
@@ -286,7 +329,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $data->description = 'Some description.';
     $data->identifier = $identifier;
     $data->accessLevel = 'public';
-    $data->modified = '06-04-2020';
+    $data->modified = $modified;
     $data->keyword = ['some keyword'];
     $data->distribution = [];
     $data->publisher = (object) [
@@ -348,8 +391,8 @@ class DatasetBTBTest extends BrowserTestBase {
   /**
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
-  private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
-    $datasetRootedJsonData = $this->getData($identifier, $title, $filenames);
+  private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post', string $modified = '06-04-2020') {
+    $datasetRootedJsonData = $this->getData($identifier, $title, $filenames, $modified);
     $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Simulate a cron on queues relevant to this scenario.
