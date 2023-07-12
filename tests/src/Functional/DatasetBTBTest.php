@@ -4,11 +4,11 @@ namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\Tests\BrowserTestBase;
 use Harvest\ETL\Extract\DataJson;
@@ -156,7 +156,8 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Get the associated distribution's table.
     $distribution = $this->getResourceFromDataset($dataset);
-    $distributionTable = $this->getResourceDatastoreTable($distribution);
+    $distributionStorage = $this->getDatastore()->getStorage($distribution->identifier, $distribution->version);
+    $distributionTable = $distributionStorage->getTableName();
 
     // Confirm distribution table exists.
     $databaseSchema = $this->container->get('database')->schema();
@@ -164,11 +165,10 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertTrue($distributionTableExists, $distributionTable . ' exists.');
 
     // Get the associated distribution's resource directory
-    $resourceId = explode('__', $distribution->identifier);
-    $refUuid = $resourceId[0] . '_' . $resourceId[1];
+    $resourceDirectory = $distribution->identifier . '_' . $distribution->version;
 
     // Confirm distribution local directory exists.
-    $this->assertDirectoryExists('public://resources/' . $refUuid);
+    $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
 
     // Update the modified date for the dataset.
     $updatedJson = $this->getData($id_1, '1', ['1.csv'], '06-05-2020');
@@ -182,7 +182,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertFalse($distributionTableExists, $distributionTable . ' removed.');
 
     // Confirm original distribution local directory removed.
-    $this->assertDirectoryDoesNotExist('public://resources/' . $refUuid);
+    $this->assertDirectoryDoesNotExist('public://resources/' . $resourceDirectory);
 
     // Restore the original config values.
     $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
@@ -498,6 +498,13 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
+  }
+
+  /**
+   * @return \Drupal\datastore\DatastoreService
+   */
+  private function getDatastore(): DatastoreService {
+    return \Drupal::service('dkan.datastore.service');
   }
 
 }
