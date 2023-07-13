@@ -102,11 +102,11 @@
     <div{{ content_attributes }}>
         {% if not page %}
         <p>Last updated: {{ dataset.modified|date("m/d/Y") }}</p>
-        {{ dataset.description | raw }}
+        {{ dataset.description | drupal_escape }}
         {% endif %}
         {% if page %}
         <p>Last updated: {{ dataset.modified|date("m/d/Y") }}</p>
-        {{ dataset.description | raw }}
+        {{ dataset.description | drupal_escape }}
         {% if dataset.themes|length > 1 %}
             <h2>Themes</h2>
         {% elseif dataset.themes|length == 1 %}
