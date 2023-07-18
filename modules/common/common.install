@@ -2,10 +2,11 @@
 
 use Drupal\common\Util\JobStoreUtil;
 
-function common_requirements($phase): ?array {
+function common_requirements($phase): array {
   $requirements = [];
   if ($phase == 'runtime') {
-    // Talk about JobStore subclasses:
+    // Talk about JobStore subclasses.
+    // @todo We might not actually need this.
     if ($children = JobStoreUtil::getJobStoreSubclasses()) {
       $message = t('Your site has the following subclasses of JobStore: @subclasses',
         ['@subclasses' => implode(', ', $children)]
