@@ -1,0 +1,39 @@
+<?php
+
+use Drupal\common\Util\JobStoreUtil;
+
+function common_requirements($phase): ?array {
+  $requirements = [];
+  if ($phase == 'runtime') {
+    // Talk about JobStore subclasses:
+    if ($children = JobStoreUtil::getJobStoreSubclasses()) {
+      $message = t('Your site has the following subclasses of JobStore: @subclasses',
+        ['@subclasses' => implode(', ', $children)]
+      );
+      $requirements['dkan jobstore subclasses'] = [
+        'title' => t('DKAN Jobstore Subclasses'),
+        'value' => $message,
+        'severity' => REQUIREMENT_INFO,
+      ];
+    }
+
+    // List all the jobstore tables.
+    if ($connection = \Drupal::database()) {
+      if ($tables = JobStoreUtil::getAllJobstoreTables($connection)) {
+        $message = t(
+          'Your site has @count jobstore tables: @list',
+          [
+            '@count' => count($tables),
+            '@list' => implode(', ', array_values($tables)),
+          ]
+        );
+        $requirements['dkan tables'] = [
+          'title' => t('DKAN Common'),
+          'value' => $message,
+          'severity' => REQUIREMENT_INFO,
+        ];
+      }
+    }
+  }
+  return $requirements;
+}
