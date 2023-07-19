@@ -4,7 +4,7 @@
  * We must manage namespaces so that we don't end up with a too-long table name.
  */
 
-namespace Drupal\Tests\common\Kernel\Storage {
+namespace Drupal\Tests\common\Kernel\Util {
 
   use Drupal\common\Util\JobStoreUtil;
   use Drupal\KernelTests\KernelTestBase;
@@ -23,7 +23,10 @@ namespace Drupal\Tests\common\Kernel\Storage {
       'common',
     ];
 
-    public function testTables() {
+    /**
+     * @covers ::getAllJobstoreTables
+     */
+    public function getGetAllJobstoreTables() {
       /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
       $job_store_factory = $this->container->get('dkan.common.job_store');
       // Two jobstore objects.
@@ -36,12 +39,24 @@ namespace Drupal\Tests\common\Kernel\Storage {
       $this->assertEquals(0, $job_store_2->count());
       // Ask util if it found the table.
       $util = new JobStoreUtil($this->container->get('database'));
+
       $this->assertEquals(
         [
-          'jobstore_1885897830_dkantestutiljobsubclass',
-          'jobstore_3195278052_dkantestutiljobsubclass2',
+          'jobstore_1885897830_dkantestutiljobsubclass' => 'jobstore_1885897830_dkantestutiljobsubclass',
+          'jobstore_3195278052_dkantestutiljobsubclass2' => 'jobstore_3195278052_dkantestutiljobsubclass2',
         ],
         $util->getAllJobstoreTables()
+      );
+    }
+
+    /**
+     * @covers ::getAllTableNamesForClassname
+     */
+    public function testGetAllTableNamesForClassname() {
+      $util = new JobStoreUtil($this->container->get('database'));
+      $this->assertEquals(
+        ['jobstore_433685385_thingie', 'jobstore__drupal_common_thingie'],
+        $util->getAllTableNamesForClassname('\Drupal\common\Thingie')
       );
     }
 

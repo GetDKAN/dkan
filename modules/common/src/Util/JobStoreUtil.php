@@ -13,7 +13,7 @@ class JobStoreUtil {
   /**
    * @var \Drupal\Core\Database\Connection
    */
-  protected $connection;
+  protected Connection $connection;
 
   public function __construct(Connection $connection) {
     $this->connection = $connection;
@@ -36,13 +36,17 @@ class JobStoreUtil {
     return [];
   }
 
-  public function getExistingJobstoreTablesForClassname(string $className): array {
-    $tables = [];
+  public function getAllTableNamesForClassname(string $className): array {
     $job_store = new JobStoreAccessor($className, $this->connection);
-    $potential_tables = [
+    return [
       $job_store->accessTableName(),
       $job_store->accessDeprecatedTableName()
     ];
+  }
+
+  public function getExistingJobstoreTablesForClassname(string $className): array {
+    $tables = [];
+    $potential_tables = $this->getAllTableNamesForClassname($className);
     foreach ($potential_tables as $potential_table) {
       if ($this->connection->schema()->tableExists($potential_table)) {
         $tables[$potential_table] = $potential_table;
