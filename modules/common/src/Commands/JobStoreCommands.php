@@ -34,8 +34,6 @@ class JobStoreCommands extends DrushCommands {
   /**
    * Rename jobstore tables to use non-deprecated table names.
    *
-   * This
-   *
    * @usage dkan:common:fix-deprecated-jobstore
    *
    * @command dkan:common:fix-deprecated-jobstore

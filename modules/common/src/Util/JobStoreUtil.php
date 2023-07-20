@@ -80,13 +80,13 @@ class JobStoreUtil {
   public function renameDeprecatedJobstoreTables(): array {
     if ($deprecated_table_names = $this->getAllDeprecatedJobstoreTableNames()) {
       $renamed = [];
-      // throw new \Exception(print_r($deprecated_table_names, TRUE));
       foreach ($deprecated_table_names as $class_name => $deprecated_table_name) {
         $job_store = new JobStoreAccessor($class_name, $this->connection);
-        $renamed[$deprecated_table_name] = $job_store->accessTableName();
+        $table_name = $job_store->accessTableName();
+        $renamed[$deprecated_table_name] = $table_name;
         $this->connection->schema()->renameTable(
           $deprecated_table_name,
-          $job_store->accessTableName()
+          $table_name
         );
       }
       return $renamed;
