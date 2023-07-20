@@ -13,13 +13,16 @@ class JobStoreUtil {
   /**
    * Various class names which might have generated jobstore tables.
    *
+   * We use string literals here (rather than ::class) because some of these
+   * classes don't exist any more in the codebase.
+   *
    * @var string[]
    */
   public array $classNames = [
-    'dkan\datastore\importer',
-    'drupal\datastore\plugin\queueworker\filefetcherjob',
-    'drupal\datastore\plugin\queueworker\importjob',
-    'filefetcher\filefetcher',
+    'Dkan\datastore\Importer',
+    'Drupal\datastore\Plugin\QueueWorker\FileFetcherJob',
+    'Drupal\datastore\Plugin\QueueWorker\ImportJob',
+    'FileFetcher\FileFetcher',
   ];
 
   /**
@@ -45,6 +48,48 @@ class JobStoreUtil {
     if ($jobstore_tables = $this->connection->schema()
       ->findTables('%jobstore%')) {
       return $jobstore_tables;
+    }
+    return [];
+  }
+
+  /**
+   * A list of deprecated tables currently in use.
+   *
+   * @return string[]
+   *   All the deprecated table names currently in use, keyed by their class
+   *   name.
+   */
+  public function getAllDeprecatedJobstoreTableNames(): array {
+    $deprecated_table_names = [];
+    foreach ($this->classNames as $classname) {
+      if ($this->tableIsDeprecatedNameForClassname($classname)) {
+        $deprecated = $this->getDeprecatedTableNameForClassname($classname);
+        $deprecated_table_names[$classname] = $deprecated;
+      }
+    }
+    return $deprecated_table_names;
+  }
+
+  /**
+   * Rename all deprecated tables to use new table names.
+   *
+   * @return array
+   *   Array of renamed tables, where key is the old name and value is the new
+   *   name.
+   */
+  public function renameDeprecatedJobstoreTables(): array {
+    if ($deprecated_table_names = $this->getAllDeprecatedJobstoreTableNames()) {
+      $renamed = [];
+      // throw new \Exception(print_r($deprecated_table_names, TRUE));
+      foreach ($deprecated_table_names as $class_name => $deprecated_table_name) {
+        $job_store = new JobStoreAccessor($class_name, $this->connection);
+        $renamed[$deprecated_table_name] = $job_store->accessTableName();
+        $this->connection->schema()->renameTable(
+          $deprecated_table_name,
+          $job_store->accessTableName()
+        );
+      }
+      return $renamed;
     }
     return [];
   }
@@ -96,10 +141,9 @@ class JobStoreUtil {
   public function tableIsDeprecatedNameForClassname(string $className): bool {
     $job_store = new JobStoreAccessor($className, $this->connection);
     return $this->connection->schema()
-      // &&
-      ->tableExists($job_store->accessDeprecatedTableName());
-    // (!$this->connection->schema()
-    //        ->tableExists($job_store->accessTableName()));
+      ->tableExists($job_store->accessDeprecatedTableName()) &&
+      !$this->connection->schema()
+        ->tableExists($job_store->accessTableName());
   }
 
   public function getDeprecatedTableNameForClassname(string $className): string {

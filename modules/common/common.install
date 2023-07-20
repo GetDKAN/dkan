@@ -5,61 +5,41 @@ use Drupal\common\Util\JobStoreUtil;
 function common_requirements($phase): array {
   $requirements = [];
   if ($phase == 'runtime') {
-    // Talk about JobStore subclasses.
-    // @todo We might not actually need this.
-    if ($children = JobStoreUtil::getJobStoreSubclasses()) {
-      $message = t('Your site has the following subclasses of JobStore: @subclasses',
-        ['@subclasses' => implode(', ', $children)]
-      );
-      $requirements['dkan jobstore subclasses'] = [
-        'title' => t('DKAN Jobstore Subclasses'),
-        'value' => $message,
-        'severity' => REQUIREMENT_INFO,
-      ];
-    }
-
     // List all the jobstore tables.
     if ($connection = \Drupal::database()) {
       $job_store_util = new JobStoreUtil($connection);
       if ($tables = $job_store_util->getAllJobstoreTables($connection)) {
-        $message = t(
-          'Your site has @count jobstore tables: @list',
-          [
-            '@count' => count($tables),
-            '@list' => implode(', ', array_values($tables)),
-          ]
-        );
-        $requirements['dkan tables'] = [
-          'title' => t('DKAN Common'),
-          'value' => $message,
+        $requirements['dkan jobstore tables'] = [
+          'title' => t('DKAN Jobstore'),
+          'value' => t(
+            'Your site has the following jobstore tables: @list',
+            ['@list' => implode(', ', array_values($tables))]
+          ),
           'severity' => REQUIREMENT_INFO,
         ];
       }
 
       // Check for duplicate deprecated/non-deprecated tables.
+      // @todo They're not really 'duplicates' so we shouldn't call them that.
       if ($duplicates = $job_store_util->getDuplicateJobstoreTables()) {
+        $duplicates_message = [];
+        foreach ($duplicates as $legacy => $hashed) {
+          $duplicates_message[] = $legacy . ' > ' . $hashed;
+        }
         $requirements['dkan duplicate deprecated tables'] = [
           'title' => t('DKAN duplicate deprecated tables'),
           'value' => t('These tables are duplicates: @duplicates',
-            ['@duplicates' => print_r($duplicates, TRUE)]
+            ['@duplicates' => implode(', ', $duplicates_message)]
           ),
           'severity' => REQUIREMENT_ERROR,
         ];
       }
 
-
       // Is this site using deprecated table names?
-      $legacy_table_names = [];
-      foreach ($job_store_util->classNames as $classname) {
-        if ($job_store_util->tableIsDeprecatedNameForClassname($classname)) {
-          $deprecated = $job_store_util->getDeprecatedTableNameForClassname($classname);
-          $legacy_table_names[$deprecated] = $deprecated;
-        }
-      }
-      if ($legacy_table_names) {
-        $requirements['dkan legacy jobstore tables'] = [
-          'title' => t('DKAN Legacy Jobstore Tables'),
-          'value' => t('Legacy jobstore tables: @tables', ['@tables' => implode(', ', $legacy_table_names)]),
+      if ($deprecated_table_names = $job_store_util->getAllDeprecatedJobstoreTableNames()) {
+        $requirements['dkan deprecated jobstore tables'] = [
+          'title' => t('DKAN Deprecated Tables'),
+          'value' => t('Deprecated jobstore tables currently in use: @tables', ['@tables' => implode(', ', $deprecated_table_names)]),
           'severity' => REQUIREMENT_WARNING,
         ];
       }
