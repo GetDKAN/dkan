@@ -66,16 +66,27 @@ class JobStore extends AbstractDatabaseTable {
         $this->tableName = $table;
       }
       else {
-        // Avoid table-name-too-long errors by hashing the FQN of the class.
-        $exploded_class = explode('\\', $this->jobClass);
-        $this->tableName = strtolower(implode('_', [
-          'jobstore',
-          crc32($this->jobClass),
-          array_pop($exploded_class),
-        ]));
+        $this->tableName = $this->getHashedTableName();
       }
     }
     return $this->tableName;
+  }
+
+  /**
+   * Hash the class name identifier to generate a table name.
+   *
+   * @return string
+   *   The hashed table name.
+   */
+  protected function getHashedTableName(): string {
+    // Avoid table-name-too-long errors by hashing the FQN of the class.
+    $exploded_class = explode('\\', $this->jobClass);
+    $table_name = strtolower(implode('_', [
+      'jobstore',
+      crc32($this->jobClass),
+      array_pop($exploded_class),
+    ]));
+    return $table_name;
   }
 
   /**
@@ -101,7 +112,11 @@ class JobStore extends AbstractDatabaseTable {
   private function setOurSchema() {
     $schema = [
       'fields' => [
-        'ref_uuid' => ['type' => 'varchar', 'length' => 128, 'not null' => TRUE],
+        'ref_uuid' => [
+          'type' => 'varchar',
+          'length' => 128,
+          'not null' => TRUE,
+        ],
         'job_data' => ['type' => 'text', 'length' => 65535],
       ],
       'indexes' => [

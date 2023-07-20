@@ -12,7 +12,7 @@ use Drupal\common\Storage\JobStore;
 class JobStoreAccessor extends JobStore {
 
   public function accessTableName() {
-    return $this->getTableName();
+    return $this->getHashedTableName();
   }
 
   public function accessDeprecatedTableName() {

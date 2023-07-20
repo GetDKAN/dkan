@@ -20,7 +20,8 @@ function common_requirements($phase): array {
 
     // List all the jobstore tables.
     if ($connection = \Drupal::database()) {
-      if ($tables = JobStoreUtil::getAllJobstoreTables($connection)) {
+      $job_store_util = new JobStoreUtil($connection);
+      if ($tables = $job_store_util->getAllJobstoreTables($connection)) {
         $message = t(
           'Your site has @count jobstore tables: @list',
           [
@@ -32,6 +33,34 @@ function common_requirements($phase): array {
           'title' => t('DKAN Common'),
           'value' => $message,
           'severity' => REQUIREMENT_INFO,
+        ];
+      }
+
+      // Check for duplicate deprecated/non-deprecated tables.
+      if ($duplicates = $job_store_util->getDuplicateJobstoreTables()) {
+        $requirements['dkan duplicate deprecated tables'] = [
+          'title' => t('DKAN duplicate deprecated tables'),
+          'value' => t('These tables are duplicates: @duplicates',
+            ['@duplicates' => print_r($duplicates, TRUE)]
+          ),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+
+
+      // Is this site using deprecated table names?
+      $legacy_table_names = [];
+      foreach ($job_store_util->classNames as $classname) {
+        if ($job_store_util->tableIsDeprecatedNameForClassname($classname)) {
+          $deprecated = $job_store_util->getDeprecatedTableNameForClassname($classname);
+          $legacy_table_names[$deprecated] = $deprecated;
+        }
+      }
+      if ($legacy_table_names) {
+        $requirements['dkan legacy jobstore tables'] = [
+          'title' => t('DKAN Legacy Jobstore Tables'),
+          'value' => t('Legacy jobstore tables: @tables', ['@tables' => implode(', ', $legacy_table_names)]),
+          'severity' => REQUIREMENT_WARNING,
         ];
       }
     }
