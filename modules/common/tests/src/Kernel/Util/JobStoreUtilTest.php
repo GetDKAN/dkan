@@ -25,8 +25,13 @@ namespace Drupal\Tests\common\Kernel\Util {
       'common',
     ];
 
+    /**
+     * Create a deprecated jobstore table for the given class name identifier.
+     *
+     * Defaults to FileFetcher/FileFetcher because that class name is short
+     * enough as a deprecated table name to work with test's db prefix.
+     */
     protected function deprecatedJobStoreSetup(string $class_name = FileFetcher::class): void {
-      // Create both deprecated and non-deprecated table for a jobstore.
       /** @var \Drupal\Core\Database\Connection $db */
       $db = $this->container->get('database');
       /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */

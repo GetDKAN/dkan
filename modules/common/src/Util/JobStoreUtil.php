@@ -2,7 +2,6 @@
 
 namespace Drupal\common\Util;
 
-use Drupal\common\Storage\JobStore;
 use Drupal\Core\Database\Connection;
 
 /**
@@ -14,7 +13,7 @@ class JobStoreUtil {
    * Various class names which might have generated jobstore tables.
    *
    * We use string literals here (rather than ::class) because some of these
-   * classes don't exist any more in the codebase.
+   * classes no longer exist in the codebase.
    *
    * @var string[]
    */
@@ -34,19 +33,10 @@ class JobStoreUtil {
     $this->connection = $connection;
   }
 
-  public static function getJobStoreSubclasses(): array {
-    $subclasses = [];
-    foreach (get_declared_classes() as $class) {
-      if (is_subclass_of($class, JobStore::class)) {
-        $subclasses[] = $class;
-      }
-    }
-    return $subclasses;
-  }
-
   public function getAllJobstoreTables(): array {
     if ($jobstore_tables = $this->connection->schema()
-      ->findTables('%jobstore%')) {
+      ->findTables('%jobstore%')
+    ) {
       return $jobstore_tables;
     }
     return [];
@@ -54,6 +44,8 @@ class JobStoreUtil {
 
   /**
    * A list of deprecated tables currently in use.
+   *
+   * Based on a list of known classes.
    *
    * @return string[]
    *   All the deprecated table names currently in use, keyed by their class
@@ -113,7 +105,8 @@ class JobStoreUtil {
     $duplicates = [];
     foreach ($this->classNames as $class_name) {
       if ($this->duplicateJobstoreTablesForClass($class_name)) {
-        $duplicates[$this->getDeprecatedTableNameForClassname($class_name)] = $this->getTableNameForClassname($class_name);
+        $duplicates[$this->getDeprecatedTableNameForClassname($class_name)] =
+          $this->getTableNameForClassname($class_name);
       }
     }
     return $duplicates;
@@ -154,29 +147,6 @@ class JobStoreUtil {
   public function getTableNameForClassname(string $className): string {
     $job_store = new JobStoreAccessor($className, $this->connection);
     return $job_store->accessTableName();
-  }
-
-  public function deprecatedTableExistsForClassname(string $className): bool {
-    $job_store = new JobStoreAccessor($className, $this->connection);
-    return $this->connection->schema()
-      ->tableExists($job_store->accessDeprecatedTableName());
-  }
-
-  public function tableExistsForClassname(string $className): bool {
-    $job_store = new JobStoreAccessor($className, $this->connection);
-    return $this->connection->schema()
-      ->tableExists($job_store->accessTableName());
-  }
-
-  public function getExistingJobstoreTablesForClassname(string $className): array {
-    $tables = [];
-    $potential_tables = $this->getAllTableNamesForClassname($className);
-    foreach ($potential_tables as $potential_table) {
-      if ($this->connection->schema()->tableExists($potential_table)) {
-        $tables[$potential_table] = $potential_table;
-      }
-    }
-    return $tables;
   }
 
 }

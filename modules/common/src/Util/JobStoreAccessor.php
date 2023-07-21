@@ -11,16 +11,33 @@ use Drupal\common\Storage\JobStore;
  */
 class JobStoreAccessor extends JobStore {
 
-  public function accessTableName() {
+  /**
+   * Get the non-deprecated table name.
+   *
+   * @return string
+   */
+  public function accessTableName(): string {
     return $this->getHashedTableName();
   }
 
-  public function accessDeprecatedTableName() {
+  /**
+   * Get the deprecated table name.
+   *
+   * @return string
+   */
+  public function accessDeprecatedTableName(): string {
     return $this->getDeprecatedTableName();
   }
 
-  public function setTableName(string $identifier) {
-    return $this->tableName;
+  /**
+   * Set the table name to use for this job store.
+   *
+   * @param string $identifier
+   *
+   * @return void
+   */
+  public function setTableName(string $identifier): void {
+    $this->tableName = $identifier;
   }
 
 }

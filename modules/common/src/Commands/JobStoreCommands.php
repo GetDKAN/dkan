@@ -7,24 +7,21 @@ use Drupal\Core\Database\Connection;
 use Drush\Commands\DrushCommands;
 
 /**
- * Drush commands providing utility common to DKAN's sub-modules.
+ * JobStore-related commands.
  */
 class JobStoreCommands extends DrushCommands {
 
   /**
-   * Dataset information service.
+   * Database connection.
    *
-   * @var \Drupal\common\DatasetInfo
+   * @var \Drupal\Core\Database\Connection
    */
-  protected $datasetInfo;
-
   protected Connection $connection;
 
   /**
-   * CommonCommands constructor.
+   * JobStoreCommands constructor.
    *
-   * @param \Drupal\common\DatasetInfo $datasetInfo
-   *   Dataset information service.
+   * @param \Drupal\Core\Database\Connection $connection
    */
   public function __construct(Connection $connection) {
     parent::__construct();
