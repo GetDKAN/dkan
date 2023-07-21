@@ -4,7 +4,6 @@ namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
@@ -133,31 +132,37 @@ class DatasetBTBTest extends BrowserTestBase {
    * Test cleanup of orphaned draft distributions.
    */
   public function testOrphanDraftDistributionCleanup() {
-    // Get the original settings for local resources and default moderation state.
+    // Get the original configuration settings.
     $config = \Drupal::service('config.factory');
     $datastoreSettings = $config->getEditable('datastore.settings');
     $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
+    $triggeringOriginal = $datastoreSettings->get('triggering_properties');
     $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
     $defaultModerationStateOriginal = $defaultModerationState->get('type_settings.default_moderation_state');
 
     // Set delete local resource files = false.
     $datastoreSettings->set('delete_local_resource', 0)->save();
 
+    // Set modified as a triggering property.
+    $datastoreSettings->set('triggering_properties', ['modified']);
+
     // Set default moderation state = draft.
     $defaultModerationState->set('type_settings.default_moderation_state', 'draft')->save();
 
-    // Post dataset 1 and run the 'datastore_import' queue.
-    $id_1 = uniqid(__FUNCTION__ . '1');
-    $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
+    // Register harvest
+    $plan = $this->getPlan('test_orphan_cleanup', 'catalog-cleanup-1.json');
+    $harvester = $this->getHarvester();
+    $harvester->registerHarvest($plan);
 
-    // Get dataset.
-    $datasetRootedJsonData = $this->getMetastore()->get('dataset', $id_1, FALSE);
-    $dataset = json_decode($datasetRootedJsonData);
+    // Initial harvest.
+    $harvester->runHarvest('test_orphan_cleanup');
 
-    // Get the associated distribution's table.
-    $distribution = $this->getResourceFromDataset($dataset);
-    $distributionStorage = $this->getDatastore()->getStorage($distribution->identifier, $distribution->version);
-    $distributionTable = $distributionStorage->getTableName();
+    // Simulate datastore_import
+    $this->runQueues(['datastore_import']);
+
+    // Get the dataset info.
+    $metadata =  \Drupal::service('dkan.common.dataset_info')->gather('testOrphanDraftDistributionCleanup1');
+    $distributionTable = $metadata['latest_revision']['distributions'][0]['table_name'];
 
     // Confirm distribution table exists.
     $databaseSchema = $this->container->get('database')->schema();
@@ -165,17 +170,27 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertTrue($distributionTableExists, $distributionTable . ' exists.');
 
     // Get the associated distribution's resource directory
-    $resourceDirectory = $distribution->identifier . '_' . $distribution->version;
+    $resourceId = $metadata['latest_revision']['distributions'][0]['resource_id'];
+    $resourceVersion = $metadata['latest_revision']['distributions'][0]['resource_version'];
+    $resourceDirectory = $resourceId . '_' . $resourceVersion;
 
     // Confirm distribution local directory exists.
     $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
 
-    // Update the modified date for the dataset.
-    $updatedJson = $this->getData($id_1, '1', ['1.csv'], '06-05-2020');
-    $this->getMetastore()->put('dataset', $id_1, $updatedJson);
+    // Ensure different harvest run identifiers, since based on timestamp.
+    sleep(1);
+
+    // Second harvest, re-register with updated modified date.
+    $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-cleanup-2.json';
+    $harvester->registerHarvest($plan);
+    $result = $harvester->runHarvest('test_orphan_cleanup');
 
     // Simulate datastore_import and cleanup queues post update.
     $this->runQueues(['datastore_import', 'orphan_reference_processor']);
+
+    // Confirm dataset status = updated.
+    $expected = ['testOrphanDraftDistributionCleanup1' => 'UPDATED'];
+    $this->assertEquals($expected, $result['status']['load']);
 
     // Confirm original distribution table removed.
     $distributionTableExists = $databaseSchema->tableExists($distributionTable);
@@ -185,7 +200,9 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertDirectoryDoesNotExist('public://resources/' . $resourceDirectory);
 
     // Restore the original config values.
-    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
+    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal);
+    $datastoreSettings->set('triggering_properties', $triggeringOriginal);
+    $datastoreSettings->save();
     $defaultModerationState->set('type_settings.default_moderation_state', $defaultModerationStateOriginal)->save();
   }
 
@@ -498,13 +515,6 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
-  }
-
-  /**
-   * @return \Drupal\datastore\DatastoreService
-   */
-  private function getDatastore(): DatastoreService {
-    return \Drupal::service('dkan.datastore.service');
   }
 
 }
