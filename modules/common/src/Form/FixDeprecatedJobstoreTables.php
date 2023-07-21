@@ -61,7 +61,7 @@ class FixDeprecatedJobstoreTables extends ConfirmFormBase {
       $job_store_util->getAllDeprecatedJobstoreTableNames()
     );
     $display_tables = [];
-    foreach ($deprecated_tables as $table => $dep) {
+    foreach ($deprecated_tables as $dep => $table) {
       $display_tables[] = $dep . ' => ' . $table;
     }
     return $this->t(

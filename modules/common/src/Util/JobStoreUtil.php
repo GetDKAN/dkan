@@ -62,10 +62,18 @@ class JobStoreUtil {
     return $deprecated_table_names;
   }
 
+  /**
+   * Get a list of which deprecated table names will be changed, with new name.
+   *
+   * @param array $all_deprecated
+   *   The output of getAllDeprecatedJobstoreTableNames().
+   *
+   * @return array
+   */
   public function getAllTableNameChanges(array $all_deprecated) {
     $changes = [];
     foreach ($all_deprecated as $class => $deprecated) {
-      $changes[$this->getTableNameForClassname($class)] = $deprecated;
+      $changes[$deprecated] = $this->getTableNameForClassname($class);
     }
     return $changes;
   }
