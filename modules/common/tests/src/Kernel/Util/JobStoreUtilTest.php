@@ -175,17 +175,6 @@ namespace Drupal\Tests\common\Kernel\Util {
       );
     }
 
-    /**
-     * @covers ::getAllTableNamesForClassname
-     */
-    public function testGetAllTableNamesForClassname() {
-      $util = new JobStoreUtil($this->container->get('database'));
-      $this->assertEquals(
-        ['jobstore_433685385_thingie', 'jobstore__drupal_common_thingie'],
-        $util->getAllTableNamesForClassname('\Drupal\common\Thingie')
-      );
-    }
-
   }
 }
 

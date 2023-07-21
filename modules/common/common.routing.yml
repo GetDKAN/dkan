@@ -6,6 +6,13 @@ system.admin_dkan:
   requirements:
     _permission: 'access administration pages'
 
+dkan.common.fix_deprecated_jobstore_tables:
+  path: '/admin/reports/status/fix-deprecated-jobstore-tables'
+  defaults:
+    _form: '\Drupal\common\Form\FixDeprecatedJobstoreTables'
+  requirements:
+    _permission: 'access administration pages'
+
 dkan.common.api:
   path: '/api'
   methods: [GET]

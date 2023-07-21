@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\common\Util\JobStoreUtil;
+use Drupal\Core\Url;
 
 function common_requirements($phase): array {
   $requirements = [];
@@ -10,9 +11,9 @@ function common_requirements($phase): array {
       $job_store_util = new JobStoreUtil($connection);
       if ($tables = $job_store_util->getAllJobstoreTables($connection)) {
         $requirements['dkan jobstore tables'] = [
-          'title' => t('DKAN Jobstore'),
+          'title' => t('DKAN Jobstore Tables'),
           'value' => t(
-            'Your site has the following jobstore tables: @list',
+            'This site has the following jobstore tables: @list',
             ['@list' => implode(', ', array_values($tables))]
           ),
           'severity' => REQUIREMENT_INFO,
@@ -39,8 +40,14 @@ function common_requirements($phase): array {
       if ($deprecated_table_names = $job_store_util->getAllDeprecatedJobstoreTableNames()) {
         $requirements['dkan deprecated jobstore tables'] = [
           'title' => t('DKAN Deprecated Tables'),
-          'value' => t('Deprecated jobstore tables currently in use: @tables', ['@tables' => implode(', ', $deprecated_table_names)]),
           'severity' => REQUIREMENT_WARNING,
+          'description' => t('Deprecated jobstore tables currently in use: @tables. <a href=":rename">Rename them to be current</a>.',
+            [
+              '@tables' => implode(', ', $deprecated_table_names),
+              ':rename' => Url::fromRoute('dkan.common.fix_deprecated_jobstore_tables')
+                ->toString(),
+            ]
+          ),
         ];
       }
     }

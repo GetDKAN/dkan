@@ -62,6 +62,14 @@ class JobStoreUtil {
     return $deprecated_table_names;
   }
 
+  public function getAllTableNameChanges(array $all_deprecated) {
+    $changes = [];
+    foreach ($all_deprecated as $class => $deprecated) {
+      $changes[$this->getTableNameForClassname($class)] = $deprecated;
+    }
+    return $changes;
+  }
+
   /**
    * Rename all deprecated tables to use new table names.
    *
@@ -86,16 +94,8 @@ class JobStoreUtil {
     return [];
   }
 
-  public function getAllTableNamesForClassname(string $className): array {
-    $job_store = new JobStoreAccessor($className, $this->connection);
-    return [
-      $job_store->accessTableName(),
-      $job_store->accessDeprecatedTableName(),
-    ];
-  }
-
   /**
-   * Class names for which there are deprecated and non-deprecated tables.
+   * Get a list of tables which have both deprecated and non-deprecated names.
    *
    * @return string[]
    *   Array of table names for values, with the deprecated table name as the
