@@ -56,7 +56,6 @@ the property and value to match.
     .. code-block::
 
       POST https://[site-domain]/api/1/datastore/query/[identifier]/0 HTTP/1.1
-       Authorization: Basic user:password
 
        {
            "resources": [

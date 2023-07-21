@@ -20,11 +20,33 @@ Run a POST command to ``/api/1/metastore/schemas/dataset/items`` with a json for
 
         {
           "title": "My new dataset",
-          "description": "Description for my new dataset.",
+          "description": "Detailed description for my new dataset.",
           "accessLevel": "public",
-          "modified": "2020-02-02",
-          "keyword": [
-            "test"
+          "accrualPeriodicity": "R/P1Y",
+          "publisher": {
+            "name": "Publisher Name"
+          },
+          "contactPoint": {
+            "fn": "Test Contact",
+            "hasEmail": "test@example.com"
+          },
+          "issued": "2013-02-10",
+          "modified": "2022-06-01",
+          "keyword": ["tag1","tag2"],
+          "license": "http://opendefinition.org/licenses/odc-pddl/",
+          "spatial": "London, England",
+          "temporal": "2013-02-10/2022-06-01"
+          "theme": [
+            "Category"
+          ],
+          "distribution": [
+              {
+                  "downloadURL": "http://demo.getdkan.org/sites/default/files/distribution/5dc1cfcf-8028-476c-a020-f58ec6dd621c/data.csv",
+                  "mediaType": "text/csv",
+                  "format": "csv",
+                  "description": "The data we want to share.",
+                  "title": "Resource Example"
+              }
           ]
         }
 
