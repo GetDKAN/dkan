@@ -24,6 +24,7 @@ class JobStoreCommands extends DrushCommands {
    * JobStoreCommands constructor.
    *
    * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection.
    */
   public function __construct(Connection $connection) {
     parent::__construct();

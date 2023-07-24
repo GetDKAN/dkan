@@ -15,6 +15,7 @@ class JobStoreAccessor extends JobStore {
    * Get the non-deprecated table name.
    *
    * @return string
+   *   The non-deprecated table name.
    */
   public function accessTableName(): string {
     return $this->getHashedTableName();
@@ -24,6 +25,7 @@ class JobStoreAccessor extends JobStore {
    * Get the deprecated table name.
    *
    * @return string
+   *   The deprecated table name.
    */
   public function accessDeprecatedTableName(): string {
     return $this->getDeprecatedTableName();

@@ -16,8 +16,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class FixDuplicateJobstoreTables extends ConfirmFormBase {
 
+  /**
+   * Database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
   protected Connection $connection;
 
+  /**
+   * Creation with container injection.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   Container.
+   *
+   * @return \Drupal\common\Form\FixDeprecatedJobstoreTables
+   *   The form.
+   */
   public static function create(ContainerInterface $container) {
     $form = parent::create($container);
     $form->connection = $container->get('database');

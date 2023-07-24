@@ -25,14 +25,28 @@ class JobStoreUtil {
   ];
 
   /**
+   * Database connection.
+   *
    * @var \Drupal\Core\Database\Connection
    */
   protected Connection $connection;
 
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection service.
+   */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
   }
 
+  /**
+   * Get all the jobstore tables.
+   *
+   * @return array
+   *   A list of all the tables that start with 'jobstore_'.
+   */
   public function getAllJobstoreTables(): array {
     if ($jobstore_tables = $this->connection->schema()
       ->findTables('%jobstore%')
@@ -69,8 +83,9 @@ class JobStoreUtil {
    *   The output of getAllDeprecatedJobstoreTableNames().
    *
    * @return array
+   *   List of tables.
    */
-  public function getAllTableNameChanges(array $all_deprecated) {
+  public function getAllTableNameChanges(array $all_deprecated): array {
     $changes = [];
     foreach ($all_deprecated as $class => $deprecated) {
       $changes[$deprecated] = $this->getTableNameForClassname($class);
@@ -120,6 +135,15 @@ class JobStoreUtil {
     return $duplicates;
   }
 
+  /**
+   * Does the class map to more than one table?
+   *
+   * @param string $class_name
+   *   Class name.
+   *
+   * @return bool
+   *   TRUE if both deprecated and non-deprecated tables exist. FALSE otherwise.
+   */
   public function duplicateJobstoreTablesForClass(string $class_name): bool {
     $table_name = $this->getTableNameForClassname($class_name);
     $deprecated_table_name = $this->getDeprecatedTableNameForClassname($class_name);
@@ -147,11 +171,29 @@ class JobStoreUtil {
         ->tableExists($job_store->accessTableName());
   }
 
+  /**
+   * Get the deprecated table name for this class.
+   *
+   * @param string $className
+   *   The class name.
+   *
+   * @return string
+   *   The deprecated table name.
+   */
   public function getDeprecatedTableNameForClassname(string $className): string {
     $job_store = new JobStoreAccessor($className, $this->connection);
     return $job_store->accessDeprecatedTableName();
   }
 
+  /**
+   * Get the non-deprecated table name for this class.
+   *
+   * @param string $className
+   *   The class name.
+   *
+   * @return string
+   *   The non-deprecated table name.
+   */
   public function getTableNameForClassname(string $className): string {
     $job_store = new JobStoreAccessor($className, $this->connection);
     return $job_store->accessTableName();
