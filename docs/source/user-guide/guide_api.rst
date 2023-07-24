@@ -24,7 +24,7 @@ Learn more about :term:`Moderation State` here.
 
        POST https://[site-domain]/api/1/metastore/schemas/dataset/items/[identifier]/revisions HTTP/1.1
 
-       Authorization: Basic user:password
+       Authorization: Basic [base64 encoded 'user:password' string]
 
        {
            "state": "hidden",
