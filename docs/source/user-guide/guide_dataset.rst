@@ -14,6 +14,7 @@ Note that the username:password string submitted as the Authorization must be ba
 You can obtain the base 64 encoded string from the command line by running the following (replace admin:admin with username:password):
 
 .. code-block::
+
     echo -n 'admin:admin' | base64
     // Result
     YWRtaW46YWRtaW4=
