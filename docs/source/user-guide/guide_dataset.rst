@@ -11,9 +11,10 @@ You will need to authenticate with a user account possessing the 'api user' role
 
 Note that the username:password string submitted as the Authorization must be base 64 encoded.
 
-You can obtain the base 64 encoded string from the command line by running the following (replace admin:admin with username:password):
+You can obtain the base 64 encoded string from the command line by running the following at the command line (replace admin:admin with username:password):
 
 .. code-block::
+
     echo -n 'admin:admin' | base64
     // Result
     YWRtaW46YWRtaW4=
