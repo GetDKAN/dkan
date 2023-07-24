@@ -8,6 +8,8 @@ use Drush\Commands\DrushCommands;
 
 /**
  * JobStore-related commands.
+ *
+ * @codeCoverageIgnore
  */
 class JobStoreCommands extends DrushCommands {
 
@@ -35,7 +37,7 @@ class JobStoreCommands extends DrushCommands {
    *
    * @command dkan:common:fix-deprecated-jobstore
    */
-  public function renameDeprecatedJobstoreTables() {
+  public function fixDeprecatedJobstoreTables() {
     $job_store_util = new JobStoreUtil($this->connection);
     if ($renamed = $job_store_util->renameDeprecatedJobstoreTables()) {
       $this->writeln('Renamed the following JobStore tables:');
