@@ -51,6 +51,11 @@ class JobStoreUtil {
     return [];
   }
 
+  /**
+   * Get a list of jobstore tables that we don't know how to fix.
+   *
+   * @return array
+   */
   public function getUnknownJobstoreTables(): array {
     $known = [];
     foreach ($this->fixableClassNames as $class_name) {
@@ -104,6 +109,11 @@ class JobStoreUtil {
     return [];
   }
 
+  /**
+   * Merge all the duplicate jobstore tables we know how to fix.
+   *
+   * @return array
+   */
   public function reconcileDuplicateJobstoreTables(): array {
     $results = [];
     $class_names = $this->getClassesForDuplicateJobstoreTables();
@@ -115,6 +125,12 @@ class JobStoreUtil {
     return $results;
   }
 
+  /**
+   * Merge a deprecated jobstore table into its non-deprecated one.
+   *
+   * @param string $class_name
+   *   Class name identifier for the jobstore table to merge.
+   */
   public function reconcileDuplicateJobstoreTable(string $class_name) {
     $job_store_accessor = new JobStoreAccessor($class_name, $this->connection);
     $deprecated_table_name = $job_store_accessor->accessDeprecatedTableName();
@@ -144,7 +160,7 @@ class JobStoreUtil {
     $this->connection->schema()->dropTable($deprecated_table_name);
 
     // Release the transaction.
-    unset ($transaction);
+    unset($transaction);
   }
 
   /**
@@ -212,7 +228,7 @@ class JobStoreUtil {
   public function tableIsDeprecatedNameForClassname(string $className): bool {
     $job_store = new JobStoreAccessor($className, $this->connection);
     return $this->connection->schema()
-        ->tableExists($job_store->accessDeprecatedTableName()) &&
+      ->tableExists($job_store->accessDeprecatedTableName()) &&
       !$this->connection->schema()
         ->tableExists($job_store->accessTableName());
   }

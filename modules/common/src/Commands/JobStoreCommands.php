@@ -37,6 +37,11 @@ class JobStoreCommands extends DrushCommands {
    * @command dkan:jobstore-fixer
    */
   public function jobstoreFixer() {
+    $this->renameDeprecatedTables();
+    $this->mergeDuplicateTables();
+  }
+
+  protected function renameDeprecatedTables() {
     $job_store_util = new JobStoreUtil($this->connection);
     // Rename deprecated tables.
     if ($renamed = $job_store_util->renameDeprecatedJobstoreTables()) {
@@ -50,6 +55,10 @@ class JobStoreCommands extends DrushCommands {
     else {
       $this->writeln('No tables renamed.');
     }
+  }
+
+  protected function mergeDuplicateTables() {
+    $job_store_util = new JobStoreUtil($this->connection);
     // Merge duplicate deprecated tables.
     if ($result = $job_store_util->reconcileDuplicateJobstoreTables()) {
       $this->writeln('MERGED the following JobStore tables:');
@@ -62,7 +71,6 @@ class JobStoreCommands extends DrushCommands {
     else {
       $this->writeln('No tables merged.');
     }
-
   }
 
 }
