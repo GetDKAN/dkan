@@ -35,8 +35,7 @@ class JobStoreAccessor extends JobStore {
    * Set the table name to use for this job store.
    *
    * @param string $identifier
-   *
-   * @return void
+   *   New identifier.
    */
   public function setTableName(string $identifier): void {
     $this->tableName = $identifier;

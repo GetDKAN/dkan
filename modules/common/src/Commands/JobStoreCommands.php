@@ -53,4 +53,30 @@ class JobStoreCommands extends DrushCommands {
     }
   }
 
+  /**
+   * Rename jobstore tables to use non-deprecated table names.
+   *
+   * @usage dkan:common:reconcile-jobstore
+   *
+   * @command dkan:common:reconcile-jobstore
+   */
+  public function reconcileDuplicateJobstoreTables() {
+    $class_name = 'FileFetcher\FileFetcher';
+    $job_store_util = new JobStoreUtil($this->connection);
+
+    $result = $job_store_util->reconcileDuplicateJobstoreTable($class_name);
+
+
+//    if ($duplicate = $job_store_util->getDuplicateJobstoreTables()) {
+//      $display = [];
+//      foreach ($duplicate as $deprecated => $current) {
+//        $display[] = [$deprecated, $current];
+//      }
+//      $this->io()->table(['Deprecated', 'Current'], $display);
+//    }
+//    else {
+//      $this->writeln('No tables changed.');
+//    }
+  }
+
 }

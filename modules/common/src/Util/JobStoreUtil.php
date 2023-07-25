@@ -25,6 +25,16 @@ class JobStoreUtil {
   ];
 
   /**
+   * Class names we know how to fix as duplicates.
+   *
+   * @var array|string[]
+   */
+  public array $fixableClassNames = [
+    'Drupal\datastore\Plugin\QueueWorker\ImportJob',
+    'FileFetcher\FileFetcher',
+  ];
+
+  /**
    * Database connection.
    *
    * @var \Drupal\Core\Database\Connection
@@ -67,7 +77,7 @@ class JobStoreUtil {
    */
   public function getAllDeprecatedJobstoreTableNames(): array {
     $deprecated_table_names = [];
-    foreach ($this->classNames as $classname) {
+    foreach ($this->fixableClassNames as $classname) {
       if ($this->tableIsDeprecatedNameForClassname($classname)) {
         $deprecated = $this->getDeprecatedTableNameForClassname($classname);
         $deprecated_table_names[$classname] = $deprecated;
@@ -117,6 +127,30 @@ class JobStoreUtil {
     return [];
   }
 
+  public function reconcileDuplicateJobstoreTables() {
+    // If a table has no overlapping ref_uuids, merge the deprecated one into the
+    // new one.
+    // If there are overlapping ref_uuids, merge the non-overlapping ones and
+    // report to the user about the overlapping ones.
+    foreach ($this->fixableClassNames as $class_name) {
+      $this->reconcileDuplicateJobstoreTable($class_name);
+    }
+  }
+
+  public function reconcileDuplicateJobstoreTable(string $class_name) {
+    $job_store_accessor = new JobStoreAccessor($class_name, $this->connection);
+    $deprecated_table_name = $job_store_accessor->accessDeprecatedTableName();
+    $table_name = $job_store_accessor->accessTableName();
+    // Are there overlapping ref_uuids?
+    $query = $this->connection->select($deprecated_table_name, 'd');
+    $query->leftJoin(
+      $table_name,
+      'n',
+      'd.ref_uuid = n.ref_uuid'
+    );
+    throw new \Exception(print_r($query->execute()->fetchAll(), true));
+  }
+
   /**
    * Get a list of tables which have both deprecated and non-deprecated names.
    *
@@ -126,7 +160,7 @@ class JobStoreUtil {
    */
   public function getDuplicateJobstoreTables(): array {
     $duplicates = [];
-    foreach ($this->classNames as $class_name) {
+    foreach ($this->fixableClassNames as $class_name) {
       if ($this->duplicateJobstoreTablesForClass($class_name)) {
         $duplicates[$this->getDeprecatedTableNameForClassname($class_name)] =
           $this->getTableNameForClassname($class_name);
