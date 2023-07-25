@@ -8,7 +8,6 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\Tests\BrowserTestBase;
 use Harvest\ETL\Extract\DataJson;
@@ -130,6 +129,59 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Test cleanup of orphaned draft distributions.
+   */
+  public function testOrphanDraftDistributionCleanup() {
+    // Get the original configuration settings.
+    $config = $this->container->get('config.factory');
+    $datastoreSettings = $config->getEditable('datastore.settings');
+    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
+
+    // Set delete local resource files = false.
+    $datastoreSettings->set('delete_local_resource', 0);
+
+    // Set modified as a triggering property.
+    $datastoreSettings->set('triggering_properties', ['modified'])->save();
+
+    // Set default moderation state = draft.
+    $defaultModerationState->set('type_settings.default_moderation_state', 'draft')->save();
+
+    // Post dataset 1 and run the 'datastore_import' queue.
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
+
+    // Get the dataset info.
+    $metadata =  \Drupal::service('dkan.common.dataset_info')->gather($id_1);
+    $distributionTable = $metadata['latest_revision']['distributions'][0]['table_name'];
+
+    // Confirm distribution table exists.
+    $databaseSchema = $this->container->get('database')->schema();
+    $distributionTableExists = $databaseSchema->tableExists($distributionTable);
+    $this->assertTrue($distributionTableExists, $distributionTable . ' exists.');
+
+    // Get the associated distribution's resource directory
+    $resourceId = $metadata['latest_revision']['distributions'][0]['resource_id'];
+    $resourceVersion = $metadata['latest_revision']['distributions'][0]['resource_version'];
+    $resourceDirectory = $resourceId . '_' . $resourceVersion;
+
+    // Confirm distribution local directory exists.
+    $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
+
+    // Update the modified date for the dataset.
+    $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2020']));
+
+    // Simulate datastore_import and cleanup queues post update.
+    $this->runQueues(['datastore_import', 'orphan_reference_processor']);
+
+    // Confirm original distribution table removed.
+    $distributionTableExists = $databaseSchema->tableExists($distributionTable);
+    $this->assertFalse($distributionTableExists, $distributionTable . ' removed.');
+
+    // Confirm original distribution local directory removed.
+    $this->assertDirectoryDoesNotExist('public://resources/' . $resourceDirectory);
+  }
+
+  /**
    * Test resource removal on distribution deleting.
    */
   public function testDeleteDistribution() {
@@ -163,9 +215,8 @@ class DatasetBTBTest extends BrowserTestBase {
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
 
-    // Get the original config value.
-    $datastoreSettings = \Drupal::service('config.factory')->getEditable('datastore.settings');
-    $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
+    // Get the datastore configuration.
+    $datastoreSettings = $this->container->get('config.factory')->getEditable('datastore.settings');
 
     // delete_local_resource is on.
     $datastoreSettings->set('delete_local_resource', 1)->save();
@@ -197,9 +248,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Assert the local resource folder exists.
     $this->assertDirectoryExists('public://resources/' . $refUuid);
-
-    // Restore the original config value.
-    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
   }
 
   private function datasetPostAndRetrieve(): object {
@@ -239,7 +287,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-    $configFactory = \Drupal::service('config.factory');
+    $configFactory = $this->container->get('config.factory');
     $config = $configFactory->getEditable('metastore.settings');
     $config->set('resource_perspective_display', $perspective);
     $config->save();
@@ -419,14 +467,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $identifier;
   }
 
-  private function setDefaultModerationState($state = 'published') {
-    /** @var \Drupal\Core\Config\ConfigFactory $config */
-    $config = \Drupal::service('config.factory');
-    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
-    $defaultModerationState->set('type_settings.default_moderation_state', $state);
-    $defaultModerationState->save();
-  }
-
   private function getQueueService() : QueueFactory {
     return \Drupal::service('queue');
   }
@@ -437,13 +477,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   private function getNodeStorage(): NodeStorage {
     return \Drupal::service('entity_type.manager')->getStorage('node');
-  }
-
-  /**
-   * @return \Drupal\metastore_search\Search
-   */
-  private function getMetastoreSearch() : Search {
-    return \Drupal::service('dkan.metastore_search.service');
   }
 
   /**
