@@ -334,13 +334,11 @@ class DatasetBTBTest extends BrowserTestBase {
    *   Dataset title.
    * @param array $downloadUrls
    *   Array of resource files URLs for this dataset.
-   * @param string $modified
-   *   Optional modified date
    *
    * @return \RootedData\RootedJsonData
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getData(string $identifier, string $title, array $downloadUrls, string $modified = '06-04-2020'): RootedJsonData {
+  private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
     /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
     $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
@@ -349,7 +347,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $data->description = 'Some description.';
     $data->identifier = $identifier;
     $data->accessLevel = 'public';
-    $data->modified = $modified;
+    $data->modified = '06-04-2020';
     $data->keyword = ['some keyword'];
     $data->distribution = [];
     $data->publisher = (object) [
