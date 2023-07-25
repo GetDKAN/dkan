@@ -141,14 +141,32 @@ class JobStoreUtil {
     $job_store_accessor = new JobStoreAccessor($class_name, $this->connection);
     $deprecated_table_name = $job_store_accessor->accessDeprecatedTableName();
     $table_name = $job_store_accessor->accessTableName();
+
+    // Hold all this in a transaction so that we don't lose anything.
+    $transaction = $this->connection->startTransaction();
+
     // Are there overlapping ref_uuids?
-    $query = $this->connection->select($deprecated_table_name, 'd');
-    $query->leftJoin(
-      $table_name,
-      'n',
-      'd.ref_uuid = n.ref_uuid'
-    );
-    throw new \Exception(print_r($query->execute()->fetchAll(), true));
+    $query = $this->connection->select($deprecated_table_name, 'd')
+      ->fields('d', ['ref_uuid']);
+    $query->join($table_name, 'n', 'd.ref_uuid = n.ref_uuid');
+    $overlap_uuids = array_keys($query->execute()
+      ->fetchAllAssoc('ref_uuid'));
+
+    // Select everything in the deprecated table, except the overlaps.
+    $query = $this->connection->select($deprecated_table_name, 'd')
+      ->fields('d', ['ref_uuid', 'job_data'])
+      ->condition('d.ref_uuid', $overlap_uuids, 'NOT IN');
+
+    // Insert that select into the new table.
+    $this->connection->insert($table_name)
+      ->from($query)
+      ->execute();
+
+    // Remove the deprecated table.
+    $this->connection->schema()->dropTable($deprecated_table_name);
+
+    // Release the transaction.
+    unset ($transaction);
   }
 
   /**
