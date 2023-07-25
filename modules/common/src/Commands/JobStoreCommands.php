@@ -32,16 +32,15 @@ class JobStoreCommands extends DrushCommands {
   }
 
   /**
-   * Rename jobstore tables to use non-deprecated table names.
+   * Perform all the tasks to bring a jobstore table into the present.
    *
-   * @usage dkan:common:fix-deprecated-jobstore
-   *
-   * @command dkan:common:fix-deprecated-jobstore
+   * @command dkan:jobstore-fixer
    */
-  public function fixDeprecatedJobstoreTables() {
+  public function jobstoreFixer() {
     $job_store_util = new JobStoreUtil($this->connection);
+    // Rename deprecated tables.
     if ($renamed = $job_store_util->renameDeprecatedJobstoreTables()) {
-      $this->writeln('Renamed the following JobStore tables:');
+      $this->writeln('RENAMED the following JobStore tables:');
       $display = [];
       foreach ($renamed as $deprecated => $current) {
         $display[] = [$deprecated, $current];
@@ -49,35 +48,21 @@ class JobStoreCommands extends DrushCommands {
       $this->io()->table(['Deprecated', 'Current'], $display);
     }
     else {
-      $this->writeln('No tables changed.');
+      $this->writeln('No tables renamed.');
     }
-  }
+    // Merge duplicate deprecated tables.
+    if ($result = $job_store_util->reconcileDuplicateJobstoreTables()) {
+      $this->writeln('MERGED the following JobStore tables:');
+      $display = [];
+      foreach ($result as $deprecated => $current) {
+        $display[] = [$deprecated, $current];
+      }
+      $this->io()->table(['Deprecated', 'Merged Into'], $display);
+    }
+    else {
+      $this->writeln('No tables merged.');
+    }
 
-  /**
-   * Reconcile duplicate tables.
-   *
-   * @usage dkan:common:reconcile-jobstore
-   *
-   * @command dkan:common:reconcile-jobstore
-   */
-  public function reconcileDuplicateJobstoreTables() {
-//    $class_name = 'FileFetcher\FileFetcher';
-    $class_name = 'Drupal\datastore\Plugin\QueueWorker\ImportJob';
-    $job_store_util = new JobStoreUtil($this->connection);
-
-    $result = $job_store_util->reconcileDuplicateJobstoreTable($class_name);
-
-
-//    if ($duplicate = $job_store_util->getDuplicateJobstoreTables()) {
-//      $display = [];
-//      foreach ($duplicate as $deprecated => $current) {
-//        $display[] = [$deprecated, $current];
-//      }
-//      $this->io()->table(['Deprecated', 'Current'], $display);
-//    }
-//    else {
-//      $this->writeln('No tables changed.');
-//    }
   }
 
 }

@@ -1,7 +1,6 @@
 <?php
 
 use Drupal\common\Util\JobStoreUtil;
-use Drupal\Core\Url;
 
 function common_requirements($phase): array {
   $requirements = [];
@@ -9,27 +8,26 @@ function common_requirements($phase): array {
     // List all the jobstore tables.
     if ($connection = \Drupal::database()) {
       $job_store_util = new JobStoreUtil($connection);
-      if ($tables = $job_store_util->getAllJobstoreTables($connection)) {
+      if ($tables = $job_store_util->getUnknownJobstoreTables()) {
         $requirements['dkan jobstore tables'] = [
           'title' => t('DKAN Jobstore Tables'),
-          'value' => t(
-            'This site has the following jobstore tables: @list',
+          'description' => t(
+            'This site\'s database has the following unknown jobstore tables, which are probably not needed: @list',
             ['@list' => implode(', ', array_values($tables))]
           ),
-          'severity' => REQUIREMENT_INFO,
+          'severity' => REQUIREMENT_WARNING,
         ];
       }
 
       // Check for duplicate deprecated/non-deprecated tables.
-      // @todo They're not really 'duplicates' so we shouldn't call them that.
       if ($duplicates = $job_store_util->getDuplicateJobstoreTables()) {
         $duplicates_message = [];
         foreach ($duplicates as $legacy => $hashed) {
           $duplicates_message[] = $legacy . ' > ' . $hashed;
         }
         $requirements['dkan duplicate deprecated tables'] = [
-          'title' => t('DKAN duplicate deprecated tables'),
-          'value' => t('These tables are duplicates: @duplicates',
+          'title' => t('DKAN Duplicate Jobstore Tables'),
+          'description' => t('These jobstore tables are duplicates: @duplicates.  Use drush dkan:jobstore-fixer',
             ['@duplicates' => implode(', ', $duplicates_message)]
           ),
           'severity' => REQUIREMENT_ERROR,
@@ -41,11 +39,9 @@ function common_requirements($phase): array {
         $requirements['dkan deprecated jobstore tables'] = [
           'title' => t('DKAN Deprecated Tables'),
           'severity' => REQUIREMENT_WARNING,
-          'description' => t('Deprecated jobstore tables currently in use: @tables. <a href=":rename">Rename them to be current</a>.',
+          'description' => t('Deprecated jobstore tables currently in use: @tables. Use drush dkan:jobstore-fixer',
             [
               '@tables' => implode(', ', $deprecated_table_names),
-              ':rename' => Url::fromRoute('dkan.common.fix_deprecated_jobstore_tables')
-                ->toString(),
             ]
           ),
         ];

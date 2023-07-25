@@ -10,21 +10,6 @@ use Drupal\Core\Database\Connection;
 class JobStoreUtil {
 
   /**
-   * Various class names which might have generated jobstore tables.
-   *
-   * We use string literals here (rather than ::class) because some of these
-   * classes no longer exist in the codebase.
-   *
-   * @var string[]
-   */
-  public array $classNames = [
-    'Dkan\datastore\Importer',
-    'Drupal\datastore\Plugin\QueueWorker\FileFetcherJob',
-    'Drupal\datastore\Plugin\QueueWorker\ImportJob',
-    'FileFetcher\FileFetcher',
-  ];
-
-  /**
    * Class names we know how to fix as duplicates.
    *
    * @var array|string[]
@@ -66,6 +51,15 @@ class JobStoreUtil {
     return [];
   }
 
+  public function getUnknownJobstoreTables(): array {
+    $known = [];
+    foreach ($this->fixableClassNames as $class_name) {
+      $known[] = $this->getTableNameForClassname($class_name);
+      $known[] = $this->getDeprecatedTableNameForClassname($class_name);
+    }
+    return array_diff($this->getAllJobstoreTables(), $known);
+  }
+
   /**
    * A list of deprecated tables currently in use.
    *
@@ -84,23 +78,6 @@ class JobStoreUtil {
       }
     }
     return $deprecated_table_names;
-  }
-
-  /**
-   * Get a list of which deprecated table names will be changed, with new name.
-   *
-   * @param array $all_deprecated
-   *   The output of getAllDeprecatedJobstoreTableNames().
-   *
-   * @return array
-   *   List of tables.
-   */
-  public function getAllTableNameChanges(array $all_deprecated): array {
-    $changes = [];
-    foreach ($all_deprecated as $class => $deprecated) {
-      $changes[$deprecated] = $this->getTableNameForClassname($class);
-    }
-    return $changes;
   }
 
   /**
@@ -127,14 +104,15 @@ class JobStoreUtil {
     return [];
   }
 
-  public function reconcileDuplicateJobstoreTables() {
-    // If a table has no overlapping ref_uuids, merge the deprecated one into the
-    // new one.
-    // If there are overlapping ref_uuids, merge the non-overlapping ones and
-    // report to the user about the overlapping ones.
-    foreach ($this->fixableClassNames as $class_name) {
+  public function reconcileDuplicateJobstoreTables(): array {
+    $results = [];
+    $class_names = $this->getClassesForDuplicateJobstoreTables();
+    foreach ($class_names as $class_name) {
+      $results[$this->getDeprecatedTableNameForClassname($class_name)] =
+        $this->getTableNameForClassname($class_name);
       $this->reconcileDuplicateJobstoreTable($class_name);
     }
+    return $results;
   }
 
   public function reconcileDuplicateJobstoreTable(string $class_name) {
@@ -167,6 +145,22 @@ class JobStoreUtil {
 
     // Release the transaction.
     unset ($transaction);
+  }
+
+  /**
+   * Get a list of classes which have both deprecated and non-deprecated tables.
+   *
+   * @return string[]
+   *   Array of class names.
+   */
+  public function getClassesForDuplicateJobstoreTables(): array {
+    $duplicates = [];
+    foreach ($this->fixableClassNames as $class_name) {
+      if ($this->duplicateJobstoreTablesForClass($class_name)) {
+        $duplicates[$class_name] = $class_name;
+      }
+    }
+    return $duplicates;
   }
 
   /**
@@ -218,7 +212,7 @@ class JobStoreUtil {
   public function tableIsDeprecatedNameForClassname(string $className): bool {
     $job_store = new JobStoreAccessor($className, $this->connection);
     return $this->connection->schema()
-      ->tableExists($job_store->accessDeprecatedTableName()) &&
+        ->tableExists($job_store->accessDeprecatedTableName()) &&
       !$this->connection->schema()
         ->tableExists($job_store->accessTableName());
   }
