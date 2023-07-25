@@ -133,12 +133,9 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   public function testOrphanDraftDistributionCleanup() {
     // Get the original configuration settings.
-    $config = \Drupal::service('config.factory');
+    $config = $this->container->get('config.factory');
     $datastoreSettings = $config->getEditable('datastore.settings');
-    $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
-    $triggeringOriginal = $datastoreSettings->get('triggering_properties');
     $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
-    $defaultModerationStateOriginal = $defaultModerationState->get('type_settings.default_moderation_state');
 
     // Set delete local resource files = false.
     $datastoreSettings->set('delete_local_resource', 0);
@@ -182,12 +179,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Confirm original distribution local directory removed.
     $this->assertDirectoryDoesNotExist('public://resources/' . $resourceDirectory);
-
-    // Restore the original config values.
-    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal);
-    $datastoreSettings->set('triggering_properties', $triggeringOriginal);
-    $datastoreSettings->save();
-    $defaultModerationState->set('type_settings.default_moderation_state', $defaultModerationStateOriginal)->save();
   }
 
   /**
@@ -224,9 +215,8 @@ class DatasetBTBTest extends BrowserTestBase {
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
 
-    // Get the original config value.
-    $datastoreSettings = \Drupal::service('config.factory')->getEditable('datastore.settings');
-    $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
+    // Get the datastore configuration.
+    $datastoreSettings = $this->container->get('config.factory')->getEditable('datastore.settings');
 
     // delete_local_resource is on.
     $datastoreSettings->set('delete_local_resource', 1)->save();
@@ -258,9 +248,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Assert the local resource folder exists.
     $this->assertDirectoryExists('public://resources/' . $refUuid);
-
-    // Restore the original config value.
-    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
   }
 
   private function datasetPostAndRetrieve(): object {
@@ -300,7 +287,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-    $configFactory = \Drupal::service('config.factory');
+    $configFactory = $this->container->get('config.factory');
     $config = $configFactory->getEditable('metastore.settings');
     $config->set('resource_perspective_display', $perspective);
     $config->save();
