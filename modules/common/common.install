@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\common\Util\JobStoreUtil;
+use Drupal\Core\Database\Database;
 
 function common_requirements($phase): array {
   $requirements = [];
@@ -15,7 +16,7 @@ function common_requirements($phase): array {
             'This site\'s database has the following unknown jobstore tables, which are probably not needed: @list',
             ['@list' => implode(', ', array_values($tables))]
           ),
-          'severity' => REQUIREMENT_WARNING,
+          'severity' => REQUIREMENT_INFO,
         ];
       }
 
@@ -49,4 +50,13 @@ function common_requirements($phase): array {
     }
   }
   return $requirements;
+}
+
+/**
+ * Migrate jobstore tables to new naming conventions.
+ */
+function common_update_90201() {
+  $job_store_util = new JobStoreUtil(Database::getConnection());
+  $job_store_util->renameDeprecatedJobstoreTables();
+  $job_store_util->reconcileDuplicateJobstoreTables();
 }
