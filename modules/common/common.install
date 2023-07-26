@@ -10,11 +10,11 @@ function common_requirements($phase): array {
     if ($connection = \Drupal::database()) {
       $job_store_util = new JobStoreUtil($connection);
       if ($tables = $job_store_util->getUnknownJobstoreTables()) {
-        $requirements['dkan jobstore tables'] = [
-          'title' => t('DKAN Jobstore Tables'),
+        $requirements['dkan unknown jobstore tables'] = [
+          'title' => t('DKAN Unknown Jobstore Tables'),
+          'value' => implode(', ', array_values($tables)),
           'description' => t(
-            'This site\'s database has the following unknown jobstore tables, which are probably not needed: @list',
-            ['@list' => implode(', ', array_values($tables))]
+            'This site\'s database has these unknown jobstore tables, which are probably not needed.'
           ),
           'severity' => REQUIREMENT_INFO,
         ];
@@ -28,9 +28,8 @@ function common_requirements($phase): array {
         }
         $requirements['dkan duplicate deprecated tables'] = [
           'title' => t('DKAN Duplicate Jobstore Tables'),
-          'description' => t('These jobstore tables are duplicates: @duplicates.  Use drush dkan:jobstore-fixer',
-            ['@duplicates' => implode(', ', $duplicates_message)]
-          ),
+          'value' => implode(', ', $duplicates_message),
+          'description' => t('These jobstore tables are duplicates.  Use drush dkan:jobstore-fixer to reconcile them.'),
           'severity' => REQUIREMENT_ERROR,
         ];
       }
@@ -38,13 +37,10 @@ function common_requirements($phase): array {
       // Is this site using deprecated table names?
       if ($deprecated_table_names = $job_store_util->getAllDeprecatedJobstoreTableNames()) {
         $requirements['dkan deprecated jobstore tables'] = [
-          'title' => t('DKAN Deprecated Tables'),
+          'title' => t('DKAN Deprecated Jobstore Tables'),
+          'value' => implode(', ', $deprecated_table_names),
+          'description' => t('Deprecated jobstore tables currently in use. Use drush dkan:jobstore-fixer to rename them.'),
           'severity' => REQUIREMENT_WARNING,
-          'description' => t('Deprecated jobstore tables currently in use: @tables. Use drush dkan:jobstore-fixer',
-            [
-              '@tables' => implode(', ', $deprecated_table_names),
-            ]
-          ),
         ];
       }
     }

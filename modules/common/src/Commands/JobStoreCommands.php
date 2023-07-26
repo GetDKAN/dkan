@@ -5,6 +5,7 @@ namespace Drupal\common\Commands;
 use Drupal\common\Util\JobStoreUtil;
 use Drupal\Core\Database\Connection;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * JobStore-related commands.
@@ -51,11 +52,7 @@ class JobStoreCommands extends DrushCommands {
     // Rename deprecated tables.
     if ($renamed = $job_store_util->renameDeprecatedJobstoreTables()) {
       $this->writeln('RENAMED the following JobStore tables:');
-      $display = [];
-      foreach ($renamed as $deprecated => $current) {
-        $display[] = [$deprecated, $current];
-      }
-      $this->io()->table(['Deprecated', 'Current'], $display);
+      $this->convertToTable($this->io(), ['Deprecated', 'Current'], $renamed);
     }
     else {
       $this->writeln('No tables renamed.');
@@ -72,15 +69,29 @@ class JobStoreCommands extends DrushCommands {
     // Merge duplicate deprecated tables.
     if ($result = $job_store_util->reconcileDuplicateJobstoreTables()) {
       $this->writeln('MERGED the following JobStore tables:');
-      $display = [];
-      foreach ($result as $deprecated => $current) {
-        $display[] = [$deprecated, $current];
-      }
-      $this->io()->table(['Deprecated', 'Merged Into'], $display);
+      $this->convertToTable($this->io(), ['Deprecated', 'Merged Into'], $result);
     }
     else {
       $this->writeln('No tables merged.');
     }
+  }
+
+  /**
+   * Given key=>data array, display as table.
+   *
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $io
+   *   Style object.
+   * @param $headers
+   *   Headers, two values needed, first for key, second for value.
+   * @param $data
+   *   Key=>value array.
+   */
+  protected function convertToTable(SymfonyStyle $io, $headers, $data) {
+    $display = [];
+    foreach ($data as $key => $value) {
+      $display[] = [$key, $value];
+    }
+    $io->table($headers, $display);
   }
 
 }
