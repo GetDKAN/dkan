@@ -296,6 +296,8 @@ class JobStoreUtil {
    *
    * @param array $keyed
    *   Key=>value array.
+   * @param string $decorator
+   *   String to insert between key and value.
    *
    * @return array
    *   Input array, rearranged so that each item is ['key decorator value'].
