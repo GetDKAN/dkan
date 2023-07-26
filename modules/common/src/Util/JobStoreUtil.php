@@ -291,6 +291,15 @@ class JobStoreUtil {
     return $list;
   }
 
+  /**
+   * Given a keyed array, create an array of decorated strings.
+   *
+   * @param array $keyed
+   *   Key=>value array.
+   *
+   * @return array
+   *   Input array, rearranged so that each item is ['key decorator value'].
+   */
   public function keyedToListDecorator(array $keyed, string $decorator): array {
     $decorated = [];
     foreach ($this->keyedToList($keyed) as $items) {

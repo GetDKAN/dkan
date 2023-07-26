@@ -248,6 +248,10 @@ namespace Drupal\Tests\common\Kernel\Util {
         [['a', 'b']],
         $job_store_util->keyedToList(['a' => 'b'])
       );
+      $this->assertSame(
+        [],
+        $job_store_util->keyedToList([])
+      );
     }
 
     /**
@@ -258,6 +262,10 @@ namespace Drupal\Tests\common\Kernel\Util {
       $this->assertEquals(
         ['a > b'],
         $job_store_util->keyedToListDecorator(['a' => 'b'], ' > ')
+      );
+      $this->assertSame(
+        [],
+        $job_store_util->keyedToListDecorator([], ' > ')
       );
     }
 
