@@ -48,11 +48,32 @@ function common_requirements($phase): array {
   return $requirements;
 }
 
+
 /**
  * Migrate jobstore tables to new naming conventions.
  */
 function common_update_90201() {
+  $messages = [];
   $job_store_util = new JobStoreUtil(Database::getConnection());
-  $job_store_util->renameDeprecatedJobstoreTables();
-  $job_store_util->reconcileDuplicateJobstoreTables();
+  if ($renamed = $job_store_util->keyedToListDecorator(
+    $job_store_util->renameDeprecatedJobstoreTables(), ' to '
+  )) {
+    $messages[] = t('These deprecated jobstore tables were renamed: @renamed', [
+      '@renamed' => implode(', ', $renamed),
+    ]);
+  }
+  else {
+    $messages[] = t('No deprecated jobstore tables were renamed.');
+  }
+  if ($reconciled = $job_store_util->keyedToListDecorator(
+    $job_store_util->reconcileDuplicateJobstoreTables(), ' to '
+  )) {
+    $messages[] = t('These deprecated jobstore tables were merged: @merged', [
+      '@merged' => implode(', ', $reconciled),
+    ]);
+  }
+  else {
+    $messages[] = t('No deprecated jobstore tables were merged.');
+  }
+  return implode(' ', $messages);
 }

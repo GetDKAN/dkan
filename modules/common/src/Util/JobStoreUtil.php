@@ -274,4 +274,29 @@ class JobStoreUtil {
     return $job_store->accessTableName();
   }
 
+  /**
+   * Given a keyed array, create a list array.
+   *
+   * @param array $keyed
+   *   Key=>value array.
+   *
+   * @return array
+   *   Input array, rearranged so that each item is [key, value].
+   */
+  public function keyedToList(array $keyed): array {
+    $list = [];
+    foreach ($keyed as $key => $value) {
+      $list[] = [$key, $value];
+    }
+    return $list;
+  }
+
+  public function keyedToListDecorator(array $keyed, string $decorator): array {
+    $decorated = [];
+    foreach ($this->keyedToList($keyed) as $items) {
+      $decorated[] = implode($decorator, $items);
+    }
+    return $decorated;
+  }
+
 }

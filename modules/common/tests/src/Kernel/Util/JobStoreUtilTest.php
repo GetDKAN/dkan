@@ -239,6 +239,28 @@ namespace Drupal\Tests\common\Kernel\Util {
       $this->assertEquals('"old b"', $job_store_accessor->retrieve('b'));
     }
 
+    /**
+     * @covers ::keyedToList
+     */
+    public function testKeyedToList() {
+      $job_store_util = new JobStoreUtil($this->container->get('database'));
+      $this->assertEquals(
+        [['a', 'b']],
+        $job_store_util->keyedToList(['a' => 'b'])
+      );
+    }
+
+    /**
+     * @covers ::keyedToListDecorator
+     */
+    public function testKeyedToListDecorator() {
+      $job_store_util = new JobStoreUtil($this->container->get('database'));
+      $this->assertEquals(
+        ['a > b'],
+        $job_store_util->keyedToListDecorator(['a' => 'b'], ' > ')
+      );
+    }
+
   }
 }
 
