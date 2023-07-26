@@ -155,6 +155,7 @@ class JobStoreUtil {
     $query = $this->connection->select($deprecated_table_name, 'd')
       ->fields('d', ['ref_uuid']);
     $query->join($table_name, 'n', 'd.ref_uuid = n.ref_uuid');
+    // @todo Is there a better way to get only the ref_uuid values?
     $overlap_uuids = array_keys($query->execute()
       ->fetchAllAssoc('ref_uuid'));
 
