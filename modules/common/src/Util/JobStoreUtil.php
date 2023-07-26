@@ -55,6 +55,8 @@ class JobStoreUtil {
    * Get a list of jobstore tables that we don't know how to fix.
    *
    * @return array
+   *   List of table names starting with 'jobstore_' for which we don't have a
+   *   known update path.
    */
   public function getUnknownJobstoreTables(): array {
     $known = [];
@@ -113,6 +115,10 @@ class JobStoreUtil {
    * Merge all the duplicate jobstore tables we know how to fix.
    *
    * @return array
+   *   List of tables we merged. Deprecated table name is key, new table name is
+   *   value.
+   *
+   * @see \Drupal\common\Util\JobStoreUtil::reconcileDuplicateJobstoreTable()
    */
   public function reconcileDuplicateJobstoreTables(): array {
     $results = [];
@@ -126,7 +132,13 @@ class JobStoreUtil {
   }
 
   /**
-   * Merge a deprecated jobstore table into its non-deprecated one.
+   * Merge duplicate jobstore tables for a given job class.
+   *
+   * 'Merge' means taking all the entries in the deprecated table and moving
+   * them to the non-deprecated table, except for entries with common ref_uuid
+   * values. Entries in the deprecated table with common ref_uuid values are
+   * discarded, in favor of the ones in the non-deprecated table. Finally, the
+   * deprecated table is dropped.
    *
    * @param string $class_name
    *   Class name identifier for the jobstore table to merge.

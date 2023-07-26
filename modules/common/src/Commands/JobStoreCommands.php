@@ -41,6 +41,11 @@ class JobStoreCommands extends DrushCommands {
     $this->mergeDuplicateTables();
   }
 
+  /**
+   * Rename deprecated jobstore tables to have non-deprecated names.
+   *
+   * @see \Drupal\common\Util\JobStoreUtil::renameDeprecatedJobstoreTables()
+   */
   protected function renameDeprecatedTables() {
     $job_store_util = new JobStoreUtil($this->connection);
     // Rename deprecated tables.
@@ -57,6 +62,11 @@ class JobStoreCommands extends DrushCommands {
     }
   }
 
+  /**
+   * Merge deprecated jobstore tables into non-deprecated ones.
+   *
+   * @see \Drupal\common\Util\JobStoreUtil::reconcileDuplicateJobstoreTable()
+   */
   protected function mergeDuplicateTables() {
     $job_store_util = new JobStoreUtil($this->connection);
     // Merge duplicate deprecated tables.
