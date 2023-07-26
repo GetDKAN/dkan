@@ -184,7 +184,7 @@ class JobStoreUtil {
   public function getClassesForDuplicateJobstoreTables(): array {
     $duplicates = [];
     foreach ($this->fixableClassNames as $class_name) {
-      if ($this->duplicateJobstoreTablesForClass($class_name)) {
+      if ($this->duplicateJobstoreTablesForClassname($class_name)) {
         $duplicates[$class_name] = $class_name;
       }
     }
@@ -201,7 +201,7 @@ class JobStoreUtil {
   public function getDuplicateJobstoreTables(): array {
     $duplicates = [];
     foreach ($this->fixableClassNames as $class_name) {
-      if ($this->duplicateJobstoreTablesForClass($class_name)) {
+      if ($this->duplicateJobstoreTablesForClassname($class_name)) {
         $duplicates[$this->getDeprecatedTableNameForClassname($class_name)] =
           $this->getTableNameForClassname($class_name);
       }
@@ -218,7 +218,7 @@ class JobStoreUtil {
    * @return bool
    *   TRUE if both deprecated and non-deprecated tables exist. FALSE otherwise.
    */
-  public function duplicateJobstoreTablesForClass(string $class_name): bool {
+  public function duplicateJobstoreTablesForClassname(string $class_name): bool {
     $table_name = $this->getTableNameForClassname($class_name);
     $deprecated_table_name = $this->getDeprecatedTableNameForClassname($class_name);
     return $this->connection->schema()->tableExists($table_name) &&

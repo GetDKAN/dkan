@@ -6,7 +6,6 @@
 
 namespace Drupal\Tests\common\Kernel\Util {
 
-  use Drupal\common\Storage\JobStore;
   use Drupal\common\Util\JobStoreUtil;
   use Drupal\KernelTests\KernelTestBase;
   use FileFetcher\FileFetcher;
@@ -37,7 +36,7 @@ namespace Drupal\Tests\common\Kernel\Util {
       /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
       $job_store_factory = $this->container->get('dkan.common.job_store');
       // FileFetcher is one of the classes we check for in JobStoreUtil.
-      $job_store = $job_store_factory->getInstance(FileFetcher::class);
+      $job_store = $job_store_factory->getInstance($class_name);
 
       // First, get the non-deprecated table name.
       $ref_get_table_name = new \ReflectionMethod($job_store, 'getHashedTableName');
@@ -84,8 +83,11 @@ namespace Drupal\Tests\common\Kernel\Util {
      * @covers ::renameDeprecatedJobstoreTables
      */
     public function testRenameDeprecatedJobstoreTables() {
-      $this->deprecatedJobStoreSetup();
       $job_store_util = new JobStoreUtil($this->container->get('database'));
+      // Before we set anything up, renaming should result in an empty array.
+      $this->assertSame([], $job_store_util->renameDeprecatedJobstoreTables());
+      // Set up the tables...
+      $this->deprecatedJobStoreSetup();
       // Should get a list with the deprecated changed to new.
       $this->assertEquals(
         ['jobstore_filefetcher_filefetcher' => 'jobstore_524493904_filefetcher'],
@@ -94,7 +96,7 @@ namespace Drupal\Tests\common\Kernel\Util {
     }
 
     /**
-     * @covers ::duplicateJobstoreTablesForClass
+     * @covers ::duplicateJobstoreTablesForClassname
      */
     public function testDuplicateJobstoreTablesForClass() {
       // Create both deprecated and non-deprecated table for a jobstore.
@@ -146,14 +148,15 @@ namespace Drupal\Tests\common\Kernel\Util {
         $job_store_util->getTableNameForClassname(\DkanTestUtilJobSubclass::class)
       );
       $this->assertTrue(
-        $job_store_util->duplicateJobstoreTablesForClass(\DkanTestUtilJobSubclass::class)
+        $job_store_util->duplicateJobstoreTablesForClassname(\DkanTestUtilJobSubclass::class)
       );
     }
 
     /**
      * @covers ::getAllJobstoreTables
+     * @covers ::getUnknownJobstoreTables
      */
-    public function testGetGetAllJobstoreTables() {
+    public function testGetAllAndUnknownJobstoreTables() {
       /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
       $job_store_factory = $this->container->get('dkan.common.job_store');
       // Two jobstore objects.
@@ -166,13 +169,20 @@ namespace Drupal\Tests\common\Kernel\Util {
       $this->assertEquals(0, $job_store_2->count());
       // Ask util if it found the tables.
       $util = new JobStoreUtil($this->container->get('database'));
-      $this->assertEquals(
-        [
-          'jobstore_1885897830_dkantestutiljobsubclass' => 'jobstore_1885897830_dkantestutiljobsubclass',
-          'jobstore_3195278052_dkantestutiljobsubclass2' => 'jobstore_3195278052_dkantestutiljobsubclass2',
-        ],
-        $util->getAllJobstoreTables()
-      );
+      $tables = [
+        'jobstore_1885897830_dkantestutiljobsubclass' => 'jobstore_1885897830_dkantestutiljobsubclass',
+        'jobstore_3195278052_dkantestutiljobsubclass2' => 'jobstore_3195278052_dkantestutiljobsubclass2',
+      ];
+      $this->assertEquals($tables, $util->getAllJobstoreTables());
+      // In this circumstance, we get the same value from
+      // getUnknownJobstoreTables(), since our job subclasses are not in the
+      // fixable list.
+      $this->assertEquals($tables, $util->getUnknownJobstoreTables());
+      // Drop the tables...
+      $job_store->destruct();
+      $job_store_2->destruct();
+      // Now there should be no job store tables.
+      $this->assertSame([], $util->getAllJobstoreTables());
     }
 
   }
