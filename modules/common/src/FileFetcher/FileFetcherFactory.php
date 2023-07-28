@@ -9,21 +9,21 @@ use FileFetcher\FileFetcher;
 /**
  * File fetcher Factory.
  */
-class Factory implements FactoryInterface {
+class FileFetcherFactory implements FactoryInterface {
 
   /**
    * Job store factory service.
    *
    * @var \Drupal\common\Storage\JobStoreFactory
    */
-  private $factory;
+  private JobStoreFactory $jobStoreFactory;
 
   /**
    * Default file fetcher config.
    *
    * @var array
    */
-  private $configDefault = [
+  private array $configDefault = [
     'keep_original_filename' => TRUE,
   ];
 
@@ -31,26 +31,19 @@ class Factory implements FactoryInterface {
    * Constructor.
    */
   public function __construct(JobStoreFactory $factory) {
-    $this->factory = $factory;
+    $this->jobStoreFactory = $factory;
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     $config = array_merge($this->configDefault, $config);
-    return FileFetcher::get($identifier, $this->getFileFetcherJobStore(), $config);
-  }
-
-  /**
-   * Private.
-   */
-  private function getFileFetcherJobStore() {
-    /** @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
-    $jobStoreFactory = $this->factory;
-    return $jobStoreFactory->getInstance(FileFetcher::class);
+    return FileFetcher::get(
+      $identifier,
+      $this->jobStoreFactory->getInstance(FileFetcher::class),
+      $config
+    );
   }
 
 }

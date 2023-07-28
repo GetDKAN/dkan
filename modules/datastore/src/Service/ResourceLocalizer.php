@@ -2,12 +2,12 @@
 
 namespace Drupal\datastore\Service;
 
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
-use Contracts\FactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
@@ -18,8 +18,6 @@ use Drupal\common\EventDispatcherTrait;
 
 /**
  * Resource localizer.
- *
- * @todo Update fileMapper to resourceMapper.
  */
 class ResourceLocalizer {
   use LoggerTrait;
@@ -44,41 +42,46 @@ class ResourceLocalizer {
    *
    * @var \Drupal\metastore\ResourceMapper
    */
-  private $fileMapper;
+  private ResourceMapper $resourceMapper;
 
   /**
    * DKAN resource file fetcher factory.
    *
    * @var \Contracts\FactoryInterface
    */
-  private $fileFetcherFactory;
+  private FileFetcherFactory $fileFetcherFactory;
 
   /**
    * Drupal files utility service.
    *
    * @var \Drupal\common\Util\DrupalFiles
    */
-  private $drupalFiles;
+  private DrupalFiles $drupalFiles;
 
   /**
    * Job store factory.
    *
    * @var \Drupal\common\Storage\JobStoreFactory
    */
-  private $jobStoreFactory;
+  private JobStoreFactory $jobStoreFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
-    $this->fileMapper = $fileMapper;
+  public function __construct(
+    ResourceMapper $fileMapper,
+    FileFetcherFactory $fileFetcherFactory,
+    DrupalFiles $drupalFiles,
+    JobStoreFactory $jobStoreFactory
+  ) {
+    $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
   }
 
   /**
-   * Retriever the file and create a local copy of it.
+   * Retrieve the file and create a local copy of it.
    */
   public function localize($identifier, $version = NULL) {
     $resource = $this->getResourceSource($identifier, $version);
@@ -117,8 +120,8 @@ class ResourceLocalizer {
   private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
-    $dir = "file://" . $this->drupalFiles->getPublicFilesDirectory();
-    $localFileDrupalUri = str_replace($dir, "public://", $localFilePath);
+    $dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
+    $localFileDrupalUri = str_replace($dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
     $localUrl = Referencer::hostify($localUrl);
 
@@ -163,7 +166,7 @@ class ResourceLocalizer {
         \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
       }
       $this->removeJob($uuid);
-      $this->fileMapper->remove($resource);
+      $this->resourceMapper->remove($resource);
     }
   }
 
@@ -171,7 +174,7 @@ class ResourceLocalizer {
    * Remove the local_url perspective.
    */
   private function removeLocalUrl(DataResource $resource) {
-    return $this->fileMapper->remove($resource);
+    return $this->resourceMapper->remove($resource);
   }
 
   /**
@@ -194,8 +197,8 @@ class ResourceLocalizer {
    * Get FileFetcher.
    */
   public function getFileFetcher(DataResource $resource): FileFetcher {
-    $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
-    $directory = "public://resources/{$uuid}";
+    $uuid = $resource->getIdentifier() . '_' . $resource->getVersion();
+    $directory = 'public://resources/' . $uuid;
     $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
     $config = [
       'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
@@ -208,7 +211,7 @@ class ResourceLocalizer {
    * Private.
    */
   private function getFileMapper(): ResourceMapper {
-    return $this->fileMapper;
+    return $this->resourceMapper;
   }
 
   /**
