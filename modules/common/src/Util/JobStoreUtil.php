@@ -161,8 +161,12 @@ class JobStoreUtil {
 
     // Select everything in the deprecated table, except the overlaps.
     $query = $this->connection->select($deprecated_table_name, 'd')
-      ->fields('d', ['ref_uuid', 'job_data'])
-      ->condition('d.ref_uuid', $overlap_uuids, 'NOT IN');
+      ->fields('d', ['ref_uuid', 'job_data']);
+    // Conditionalize on the existence of the overlapping UUIDs, because the
+    // query will be an error otherwise.
+    if (!empty($overlap_uuids)) {
+      $query = $query->condition('d.ref_uuid', $overlap_uuids, 'NOT IN');
+    }
 
     // Insert that select into the new table.
     $this->connection->insert($table_name)

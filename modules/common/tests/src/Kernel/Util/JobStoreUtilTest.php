@@ -240,6 +240,60 @@ namespace Drupal\Tests\common\Kernel\Util {
     }
 
     /**
+     * @covers ::getDuplicateJobstoreTables
+     * @covers ::reconcileDuplicateJobstoreTables
+     * @covers ::reconcileDuplicateJobstoreTable
+     */
+    public function testReconcileDuplicateJobstoreTableNoOverlap() {
+      /** @var \Drupal\Core\Database\Connection $connection */
+      $connection = $this->container->get('database');
+      $job_class = FileFetcher::class;
+      // Key is identifier, value is value.
+      $deprecated_data = [
+        'a' => '"old a"',
+        'b' => '"old b"',
+      ];
+      $non_deprecated_data = [
+        'c' => '"new c"',
+      ];
+      // Create the deprecated table.
+      $job_store_accessor = new JobStoreAccessor($job_class, $connection);
+      $job_store_accessor->setTableName($job_store_accessor->accessDeprecatedTableName());
+      foreach ($deprecated_data as $key => $value) {
+        $job_store_accessor->store($value, $key);
+      }
+      // Create the non-deprecated table.
+      $job_store_accessor->setTableName($job_store_accessor->accessTableName());
+      foreach ($non_deprecated_data as $key => $value) {
+        $job_store_accessor->store($value, $key);
+      }
+      // Assert both tables.
+      $this->assertTrue($connection->schema()
+        ->tableExists($job_store_accessor->accessDeprecatedTableName()));
+      $this->assertTrue($connection->schema()
+        ->tableExists($job_store_accessor->accessTableName()));
+      // Job store utility.
+      $job_store_util = new JobStoreUtil($connection);
+      // getDuplicateJobstoreTables() should find this becasue FileFetcher is
+      // one of our fixable classes.
+      $this->assertEquals(
+        ['jobstore_filefetcher_filefetcher' => 'jobstore_524493904_filefetcher'],
+        $job_store_util->getDuplicateJobstoreTables()
+      );
+      // Perform the reconciliation.
+      $job_store_util->reconcileDuplicateJobstoreTables();
+      // Assert only the non-deprecated table exists.
+      $this->assertFalse($connection->schema()
+        ->tableExists($job_store_accessor->accessDeprecatedTableName()));
+      $this->assertTrue($connection->schema()
+        ->tableExists($job_store_accessor->accessTableName()));
+      // Assert the contents.
+      $this->assertEquals('"old a"', $job_store_accessor->retrieve('a'));
+      $this->assertEquals('"old b"', $job_store_accessor->retrieve('b'));
+      $this->assertEquals('"new c"', $job_store_accessor->retrieve('c'));
+    }
+
+    /**
      * @covers ::keyedToList
      */
     public function testKeyedToList() {
