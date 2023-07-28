@@ -97,7 +97,6 @@ class ResourceLocalizer {
    * Get the localized resource.
    */
   public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?DataResource {
-    /** @var \Drupal\common\DataResource $resource */
     $resource = $this->getResourceSource($identifier, $version);
 
     if (!$resource) {

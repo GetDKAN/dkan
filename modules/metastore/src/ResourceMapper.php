@@ -6,6 +6,7 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
@@ -29,14 +30,14 @@ class ResourceMapper {
    *
    * @var \Drupal\common\Storage\DatabaseTableInterface
    */
-  private $store;
+  private DatabaseTableInterface $store;
 
   /**
    * Event dispatcher service.
    *
    * @var \Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher
    */
-  private $eventDispatcher;
+  private ContainerAwareEventDispatcher $eventDispatcher;
 
   /**
    * Constructor.
@@ -80,13 +81,13 @@ class ResourceMapper {
     $version = $resource->getVersion();
     // Ensure a source perspective already exists for the resource.
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
-      throw new \Exception("A resource with identifier {$identifier} was not found.");
+      throw new \Exception('A resource with identifier ' . $identifier . ' was not found.');
     }
 
     $perspective = $resource->getPerspective();
     // Ensure the current perspective does not already exist for the resource.
     if ($this->exists($identifier, $perspective, $version)) {
-      throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
+      throw new AlreadyRegistered('A resource with identifier ' . $identifier . ' and perspective ' . $perspective . ' already exists.');
     }
 
     // If the given resource has a local file, generate a checksum for the
@@ -115,19 +116,19 @@ class ResourceMapper {
    */
   protected function validateNewVersion(DataResource $resource) {
     if ($resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-      throw new \Exception("Only versions of source resources are allowed.");
+      throw new \Exception('Only versions of source resources are allowed.');
     }
 
     $identifier = $resource->getIdentifier();
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE)) {
       throw new \Exception(
-        "A resource with identifier {$identifier} was not found.");
+        'A resource with identifier ' . $identifier . ' was not found.');
     }
 
     $version = $resource->getVersion();
     if ($this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new AlreadyRegistered(
-        "A resource with identifier {$identifier} and version {$version} already exists.");
+        'A resource with identifier ' . $identifier . ' and version ' . $version . ' already exists.');
     }
   }
 
