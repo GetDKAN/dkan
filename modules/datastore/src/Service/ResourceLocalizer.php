@@ -20,6 +20,7 @@ use Drupal\common\EventDispatcherTrait;
  * Resource localizer.
  */
 class ResourceLocalizer {
+
   use LoggerTrait;
   use EventDispatcherTrait;
 
@@ -83,12 +84,13 @@ class ResourceLocalizer {
   /**
    * Retrieve the file and create a local copy of it.
    */
-  public function localize($identifier, $version = NULL) {
+  public function localize($identifier, $version = NULL): ?Result {
     $resource = $this->getResourceSource($identifier, $version);
     if ($resource) {
       $ff = $this->getFileFetcher($resource);
       return $ff->run();
     }
+    return NULL;
   }
 
   /**
@@ -111,7 +113,7 @@ class ResourceLocalizer {
 
     $this->registerNewPerspectives($resource, $ff);
 
-    return $this->getFileMapper()->get($resource->getIdentifier(), $perpective, $resource->getVersion());
+    return $this->resourceMapper->get($resource->getIdentifier(), $perpective, $resource->getVersion());
   }
 
   /**
@@ -128,7 +130,7 @@ class ResourceLocalizer {
     $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
     try {
-      $this->getFileMapper()->registerNewPerspective($new);
+      $this->resourceMapper->registerNewPerspective($new);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -136,7 +138,7 @@ class ResourceLocalizer {
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
 
     try {
-      $this->getFileMapper()->registerNewPerspective($localUrlPerspective);
+      $this->resourceMapper->registerNewPerspective($localUrlPerspective);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -154,16 +156,16 @@ class ResourceLocalizer {
    * Remove local file.
    */
   public function remove($identifier, $version = NULL) {
-    /** @var \Drupal\common\DataResource $resource */
     $resource = $this->get($identifier, $version);
     $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
     if ($resource2) {
-      $this->removeLocalUrl($resource2);
+      $this->resourceMapper->remove($resource2);
     }
     if ($resource) {
-      $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
+      $uuid = $this->getUniqueIdentifierForDataResource($resource);
       if (file_exists($resource->getFilePath())) {
-        \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
+        $this->drupalFiles->getFilesystem()
+          ->deleteRecursive('public://resources/' . $uuid);
       }
       $this->removeJob($uuid);
       $this->resourceMapper->remove($resource);
@@ -171,18 +173,11 @@ class ResourceLocalizer {
   }
 
   /**
-   * Remove the local_url perspective.
-   */
-  private function removeLocalUrl(DataResource $resource) {
-    return $this->resourceMapper->remove($resource);
-  }
-
-  /**
    * Remove the filefetcher job record.
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
+      $this->jobStoreFactory->getInstance(FileFetcher::class)->remove($uuid);
     }
   }
 
@@ -190,35 +185,22 @@ class ResourceLocalizer {
    * Private.
    */
   private function getResourceSource($identifier, $version = NULL): ?DataResource {
-    return $this->getFileMapper()->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
+    return $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
   }
 
   /**
    * Get FileFetcher.
    */
   public function getFileFetcher(DataResource $resource): FileFetcher {
-    $uuid = $resource->getIdentifier() . '_' . $resource->getVersion();
+    $uuid = $this->getUniqueIdentifierForDataResource($resource);
     $directory = 'public://resources/' . $uuid;
-    $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
+    $this->getFilesystem()
+      ->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
     $config = [
       'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
     return $this->fileFetcherFactory->getInstance($uuid, $config);
-  }
-
-  /**
-   * Private.
-   */
-  private function getFileMapper(): ResourceMapper {
-    return $this->resourceMapper;
-  }
-
-  /**
-   * Private.
-   */
-  private function getJobStoreFactory() {
-    return $this->jobStoreFactory;
   }
 
   /**
@@ -229,6 +211,10 @@ class ResourceLocalizer {
    */
   public function getFileSystem(): FileSystemInterface {
     return $this->drupalFiles->getFileSystem();
+  }
+
+  protected function getUniqueIdentifierForDataResource(DataResource $dataResource): string {
+    return $dataResource->getIdentifier() . '_' . $dataResource->getVersion();
   }
 
 }
