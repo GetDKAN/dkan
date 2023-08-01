@@ -160,6 +160,17 @@ class DatastoreService implements ContainerInjectionInterface {
     return substr(strrchr(get_class($object), '\\'), 1);
   }
 
+  /**
+   * Get a resource and the result of localizing it.
+   *
+   * @param $identifier
+   *   Resource identifier.
+   * @param $version
+   *   Resource version.
+   *
+   * @return array
+   *   The resource object and a result object in an array.
+   */
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
     $dataResource = $this->resourceLocalizer->get($identifier, $version);
