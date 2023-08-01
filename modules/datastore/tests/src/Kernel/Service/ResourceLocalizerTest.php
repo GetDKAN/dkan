@@ -55,6 +55,10 @@ class ResourceLocalizerTest extends KernelTestBase {
       DataResource::class,
       $source_resource = $mapper->get($source_resource->getIdentifier())
     );
+    // Our localized perspective does not yet exist.
+    $this->assertNull(
+      $mapper->get($source_resource->getIdentifier(), ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
+    );
 
     // OK, let's localize it.
     /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
@@ -79,7 +83,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     $this->assertNotEmpty(file_get_contents($local_resource->getFilePath()));
   }
 
-  public function testLocalizeAlreadyExists() {
+  public function testLocalizeOverwriteExistingLocalFile() {
     $source_resource = new DataResource(
       self::SOURCE_URL,
       'text/csv',
@@ -104,13 +108,9 @@ class ResourceLocalizerTest extends KernelTestBase {
     $fs->prepareDirectory($existing_path_uri, FileSystemInterface::CREATE_DIRECTORY);
     $existing_file_uri = $fs->createFilename($existing_filename, $existing_path_uri);
     file_put_contents($existing_file_uri, $existing_file_content);
-    $local_resource = $source_resource->createNewPerspective(
-      ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
-      $existing_file_uri
-    );
-    $mapper->registerNewPerspective($local_resource);
 
-    // OK, let's localize it.
+    // OK, let's localize it, without registering the local perspective in the
+    // mapper.
     /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
     $localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     // Try to localize.
@@ -130,7 +130,11 @@ class ResourceLocalizerTest extends KernelTestBase {
       )
     );
     $this->assertFileExists($localized_resource->getFilePath());
-    $this->assertEquals($existing_file_content, file_get_contents($localized_resource->getFilePath()));
+    // This proves that the pre-existing file was replaced by the localizer.
+    $this->assertNotEquals(
+      $existing_file_content,
+      file_get_contents($localized_resource->getFilePath())
+    );
   }
 
 }
