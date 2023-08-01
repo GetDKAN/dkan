@@ -30,7 +30,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
 
     foreach ($this->getHeader() as $field) {
       $schema['fields'][$field] = [
-        'type' => "text",
+        'type' => 'text',
       ];
     }
 
@@ -76,7 +76,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
    *   Table name.
    */
   protected function getTableName() {
-    return "dkan_metastore_resource_mapper";
+    return 'dkan_metastore_resource_mapper';
   }
 
   /**
@@ -93,20 +93,20 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
     if ($decoded === NULL) {
       $this->log(
         'dkan_metastore_filemapper',
-        "Error decoding id:@id, data: @data.",
+        'Error decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data],
         LogLevel::ERROR
       );
-      throw new \Exception("Import for {$id} error when decoding {$data}");
+      throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_object($decoded)) {
       $this->log(
         'dkan_metastore_filemapper',
-        "Object expected while decoding id:@id, data: @data.",
+        'Object expected while decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data],
         LogLevel::ERROR
       );
-      throw new \Exception("Import for {$id} returned an error when preparing table header: {$data}");
+      throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return (array) $decoded;
   }
@@ -115,7 +115,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
    * Protected.
    */
   public function primaryKey() {
-    return "id";
+    return 'id';
   }
 
   /**

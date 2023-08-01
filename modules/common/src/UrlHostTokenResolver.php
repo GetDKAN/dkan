@@ -8,7 +8,7 @@ namespace Drupal\common;
  * @todo Convert to service with Dependency Injection.
  */
 class UrlHostTokenResolver {
-  const TOKEN = "h-o.st";
+  const TOKEN = 'h-o.st';
   const PUBLIC_SCHEME = 'public://';
 
   /**
@@ -19,10 +19,10 @@ class UrlHostTokenResolver {
    */
   public static function getServerPublicFilesUrl(): ?string {
     // Get public file stream.
-    $public_stream = \Drupal::service('stream_wrapper_manager')
+    $wrapper = \Drupal::service('stream_wrapper_manager')
       ->getViaUri(self::PUBLIC_SCHEME);
     // Retrieve the URL path for the public stream.
-    return $public_stream ? $public_stream->getExternalUrl() : NULL;
+    return $wrapper ? $wrapper->getExternalUrl() : NULL;
   }
 
   /**

@@ -25,14 +25,14 @@ class ResourceLocalizer {
   use EventDispatcherTrait;
 
   /**
-   * Local file perspective key.
+   * Perspective representing the local file with public:// URI scheme.
    *
    * @var string
    */
   const LOCAL_FILE_PERSPECTIVE = 'local_file';
 
   /**
-   * Local URL perspective key.
+   * Perspective representing local file with http:// scheme and bogus domain.
    *
    * @var string
    */
@@ -48,7 +48,7 @@ class ResourceLocalizer {
   /**
    * DKAN resource file fetcher factory.
    *
-   * @var \Contracts\FactoryInterface
+   * @var \Drupal\common\FileFetcher\FileFetcherFactory
    */
   private FileFetcherFactory $fileFetcherFactory;
 
@@ -82,9 +82,23 @@ class ResourceLocalizer {
   }
 
   /**
-   * Retrieve the file and create a local copy of it.
+   * Copy the source file to the local file system.
    */
   public function localize($identifier, $version = NULL): ?Result {
+    // Do we already have a localized file?
+    $localized_resource = $this->resourceMapper->get($identifier, self::LOCAL_FILE_PERSPECTIVE, $version);
+    if ($localized_resource) {
+      // The mapper db table found the local file perspective, so does the file
+      // itself exist?
+      // @todo Formally inject file_system service.
+      $abs_path = $this->drupalFiles->getFilesystem()->realpath($localized_resource->getFilePath());
+      if (file_exists($abs_path)) {
+        $result = new Result();
+        $result->setStatus(Result::DONE);
+        return $result;
+      }
+    }
+
     $resource = $this->getResourceSource($identifier, $version);
     if ($resource) {
       $ff = $this->getFileFetcher($resource);
@@ -94,7 +108,7 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get the localized resource.
+   * Get the localized DataResource.
    */
   public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?DataResource {
     $resource = $this->getResourceSource($identifier, $version);
@@ -121,8 +135,9 @@ class ResourceLocalizer {
   private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
-    $dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
-    $localFileDrupalUri = str_replace($dir, 'public://', $localFilePath);
+    throw new \Exception(print_r($fileFetcher->getState(), true));
+    $public_dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
+    $localFileDrupalUri = str_replace($public_dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
     $localUrl = Referencer::hostify($localUrl);
 
@@ -164,7 +179,7 @@ class ResourceLocalizer {
       $uuid = $this->getUniqueIdentifierForDataResource($resource);
       if (file_exists($resource->getFilePath())) {
         $this->drupalFiles->getFilesystem()
-          ->deleteRecursive('public://resources/' . $uuid);
+          ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
       }
       $this->removeJob($uuid);
       $this->resourceMapper->remove($resource);
@@ -188,18 +203,43 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get FileFetcher.
+   * Get a FileFetcher object to copy the file from source to local.
+   *
+   * @param \Drupal\common\DataResource $dataResource
+   *   Data resource object we want to process.
+   *
+   * @return \FileFetcher\FileFetcher
+   *   FileFetcher object which is ready to transfer the file.
    */
-  public function getFileFetcher(DataResource $resource): FileFetcher {
-    $uuid = $this->getUniqueIdentifierForDataResource($resource);
-    $directory = 'public://resources/' . $uuid;
+  public function getFileFetcher(DataResource $dataResource): FileFetcher {
+    return $this->fileFetcherFactory->getInstance(
+      $this->getUniqueIdentifierForDataResource($dataResource),
+      [
+        'filePath' => UrlHostTokenResolver::resolveFilePath($dataResource->getFilePath()),
+        'temporaryDirectory' => $this->getPublicLocalizedDirectory($dataResource),
+      ]
+    );
+  }
+
+  /**
+   * Get the prepared directory path to the localized destination.
+   *
+   * Will attempt to create the path.
+   *
+   * @param \Drupal\common\DataResource $dataResource
+   *   DataResource object to represent.
+   * @param string $public_path
+   *   Path within the public:// scheme where this resource will eventually be
+   *   created. Defaults to 'resource/'.
+   *
+   * @return string
+   *   Public scheme URI to the directory.
+   */
+  protected function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources/'): string {
+    $uri = 'public://' . $public_path . $this->getUniqueIdentifierForDataResource($dataResource);
     $this->getFilesystem()
-      ->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
-    $config = [
-      'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
-      'temporaryDirectory' => $directory,
-    ];
-    return $this->fileFetcherFactory->getInstance($uuid, $config);
+      ->prepareDirectory($uri, FileSystemInterface::CREATE_DIRECTORY);
+    return $uri;
   }
 
   /**
@@ -212,6 +252,18 @@ class ResourceLocalizer {
     return $this->drupalFiles->getFileSystem();
   }
 
+  /**
+   * Get a unique identifier for the given DataResource.
+   *
+   * @param \Drupal\common\DataResource $dataResource
+   *   DataResource object to uniquely identify.
+   *
+   * @return string
+   *   The unique identifier.
+   *
+   * @todo This should really live on DataResource, but it already has a
+   *   getUniqueIdentifier(), which uses *two* underscores for some reason.
+   */
   protected function getUniqueIdentifierForDataResource(DataResource $dataResource): string {
     return $dataResource->getIdentifier() . '_' . $dataResource->getVersion();
   }

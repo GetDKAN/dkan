@@ -30,8 +30,8 @@ class FileFetcherFactory implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $factory) {
-    $this->jobStoreFactory = $factory;
+  public function __construct(JobStoreFactory $jobStoreFactory) {
+    $this->jobStoreFactory = $jobStoreFactory;
   }
 
   /**

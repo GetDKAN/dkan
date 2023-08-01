@@ -27,8 +27,12 @@ use Procrastinator\JsonSerializeTrait;
  * @todo Refactor as service.
  */
 class DataResource implements \JsonSerializable {
+
   use JsonSerializeTrait;
 
+  /**
+   * Perspective representing the external source file.
+   */
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
   /**
@@ -274,7 +278,7 @@ class DataResource implements \JsonSerializable {
    *   When string does not contain the 3 pieces of a unique identifier.
    */
   public static function parseUniqueIdentifier(string $uid): array {
-    $pieces = explode("__", $uid);
+    $pieces = explode('__', $uid);
     if (count($pieces) != 3) {
       throw new \Exception("Badly constructed unique identifier {$uid}");
     }
@@ -303,7 +307,7 @@ class DataResource implements \JsonSerializable {
 
     // Partial identifier.
     if (substr_count($string, '__') > 0) {
-      $parts = explode("__", $string);
+      $parts = explode('__', $string);
       if (count($parts) == 2) {
         return $parts;
       }
@@ -312,8 +316,8 @@ class DataResource implements \JsonSerializable {
     $distribution = self::getDistribution($string);
 
     // Are we dealing with a distribution id?
-    if (isset($distribution->data->{"%Ref:downloadURL"})) {
-      $resource = $distribution->data->{"%Ref:downloadURL"}[0]->data;
+    if (isset($distribution->data->{'%Ref:downloadURL'})) {
+      $resource = $distribution->data->{'%Ref:downloadURL'}[0]->data;
       return [$resource->identifier, $resource->version];
     }
 

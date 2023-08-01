@@ -123,11 +123,11 @@ class DatastoreService implements ContainerInjectionInterface {
         ->createItem(['identifier' => $identifier, 'version' => $version]);
 
       if ($queueId === FALSE) {
-        throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
+        throw new \RuntimeException('Failed to create file fetcher queue for ' . $identifier . ':' . $version);
       }
 
       return [
-        'message' => "Resource {$identifier}:{$version} has been queued to be imported.",
+        'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
       ];
     }
 
@@ -160,30 +160,28 @@ class DatastoreService implements ContainerInjectionInterface {
     return substr(strrchr(get_class($object), '\\'), 1);
   }
 
-  /**
-   * Private.
-   */
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
-    $resource = $this->resourceLocalizer->get($identifier, $version);
+    $dataResource = $this->resourceLocalizer->get($identifier, $version);
 
-    if ($resource) {
+    if ($dataResource) {
       $result = [
         $label => $this->resourceLocalizer->getResult($identifier, $version),
       ];
-      return [$resource, $result];
+      return [$dataResource, $result];
     }
 
     // @todo we should not do this, we need a filefetcher queue worker.
+    // @todo Add a alreadyDone() type method to ResourceLocalizer.
     $result = [
       $label => $this->resourceLocalizer->localize($identifier, $version),
     ];
 
     if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
+      $dataResource = $this->resourceLocalizer->get($identifier, $version);
     }
 
-    return [$resource, $result];
+    return [$dataResource, $result];
   }
 
   /**
