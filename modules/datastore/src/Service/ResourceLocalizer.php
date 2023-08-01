@@ -85,20 +85,6 @@ class ResourceLocalizer {
    * Copy the source file to the local file system.
    */
   public function localize($identifier, $version = NULL): ?Result {
-    // Do we already have a localized file?
-    $localized_resource = $this->resourceMapper->get($identifier, self::LOCAL_FILE_PERSPECTIVE, $version);
-    if ($localized_resource) {
-      // The mapper db table found the local file perspective, so does the file
-      // itself exist?
-      // @todo Formally inject file_system service.
-      $abs_path = $this->drupalFiles->getFilesystem()->realpath($localized_resource->getFilePath());
-      if (file_exists($abs_path)) {
-        $result = new Result();
-        $result->setStatus(Result::DONE);
-        return $result;
-      }
-    }
-
     $resource = $this->getResourceSource($identifier, $version);
     if ($resource) {
       $ff = $this->getFileFetcher($resource);
@@ -118,9 +104,8 @@ class ResourceLocalizer {
     }
 
     $ff = $this->getFileFetcher($resource);
-    $status = $ff->getResult()->getStatus();
 
-    if ($status != Result::DONE) {
+    if ($ff->getResult()->getStatus() != Result::DONE) {
       return NULL;
     }
 
@@ -135,7 +120,6 @@ class ResourceLocalizer {
   private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
-    throw new \Exception(print_r($fileFetcher->getState(), true));
     $public_dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
     $localFileDrupalUri = str_replace($public_dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
