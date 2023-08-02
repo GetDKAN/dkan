@@ -12,6 +12,7 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Storage\Data;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
 use Drupal\common\EventDispatcherTrait;
@@ -85,9 +86,16 @@ class ResourceLocalizer {
    * Copy the source file to the local file system.
    */
   public function localize($identifier, $version = NULL): ?Result {
-    $resource = $this->getResourceSource($identifier, $version);
-    if ($resource) {
+    if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
+
+      // Does the file already exist?
+      $file_path = $ff->getStateProperty('file_path');
+      if (file_exists($file_path)) {
+        // The file exists so we can mark it done.
+        throw new \Exception('ITS DONE');
+        // $ff->getResult()->setStatus(Result::DONE);
+      }
       return $ff->run();
     }
     return NULL;
@@ -160,7 +168,7 @@ class ResourceLocalizer {
       $this->resourceMapper->remove($resource2);
     }
     if ($resource) {
-      $uuid = $this->getUniqueIdentifierForDataResource($resource);
+      $uuid = $resource->getUniqueIdentifierNoPerspective();
       if (file_exists($resource->getFilePath())) {
         $this->drupalFiles->getFilesystem()
           ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
@@ -197,7 +205,7 @@ class ResourceLocalizer {
    */
   public function getFileFetcher(DataResource $dataResource): FileFetcher {
     return $this->fileFetcherFactory->getInstance(
-      $this->getUniqueIdentifierForDataResource($dataResource),
+      $dataResource->getUniqueIdentifierNoPerspective(),
       [
         'filePath' => UrlHostTokenResolver::resolveFilePath($dataResource->getFilePath()),
         'temporaryDirectory' => $this->getPublicLocalizedDirectory($dataResource),
@@ -220,7 +228,7 @@ class ResourceLocalizer {
    *   Public scheme URI to the directory.
    */
   protected function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources/'): string {
-    $uri = 'public://' . $public_path . $this->getUniqueIdentifierForDataResource($dataResource);
+    $uri = 'public://' . $public_path . $dataResource->getUniqueIdentifierNoPerspective();
     $this->getFilesystem()
       ->prepareDirectory($uri, FileSystemInterface::CREATE_DIRECTORY);
     return $uri;
@@ -234,22 +242,6 @@ class ResourceLocalizer {
    */
   public function getFileSystem(): FileSystemInterface {
     return $this->drupalFiles->getFileSystem();
-  }
-
-  /**
-   * Get a unique identifier for the given DataResource.
-   *
-   * @param \Drupal\common\DataResource $dataResource
-   *   DataResource object to uniquely identify.
-   *
-   * @return string
-   *   The unique identifier.
-   *
-   * @todo This should really live on DataResource, but it already has a
-   *   getUniqueIdentifier(), which uses *two* underscores for some reason.
-   */
-  protected function getUniqueIdentifierForDataResource(DataResource $dataResource): string {
-    return $dataResource->getIdentifier() . '_' . $dataResource->getVersion();
   }
 
 }

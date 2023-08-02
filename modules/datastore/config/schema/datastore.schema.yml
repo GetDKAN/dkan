@@ -14,3 +14,6 @@ datastore.settings:
         type: string
     delete_local_resource:
       type: boolean
+    always_use_existing_local_perspective:
+      label: 'If a local file is unexpectedly in place, use it.'
+      type: boolean

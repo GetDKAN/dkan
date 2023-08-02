@@ -19,6 +19,11 @@ class ResourceMapper {
 
   const EVENT_REGISTRATION = 'dkan_metastore_resource_mapper_registration';
 
+  /**
+   * Triggered when a DataResource object is updated in the mapper.
+   */
+  const EVENT_RESOURCE_MAPPER_UPDATE = 'dkan_metastore_resource_mapper_update';
+
   const EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE = 'dkan_metastore_pre_remove_source';
 
   const DEREFERENCE_NO = 0;
@@ -59,8 +64,9 @@ class ResourceMapper {
   /**
    * Register a new url for mapping.
    *
-   * @todo the Resource class currently lives in datastore, we should move it
-   * to a more neutral place.
+   * @throws \Drupal\metastore\Exception\AlreadyRegistered
+   *   An exception is thrown if the file path already exists within the mapping
+   *   table.
    */
   public function register(DataResource $resource): bool {
     $this->filePathExists($resource->getFilePath());
@@ -68,6 +74,19 @@ class ResourceMapper {
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
 
     return TRUE;
+  }
+
+  /**
+   * Update or add a mapping entry.
+   *
+   * Does not check for the existence of paths or files.
+   *
+   * @param \Drupal\common\DataResource $resource
+   *   The DataResource object to update.
+   */
+  public function update(DataResource $resource) {
+    $this->store->store(json_encode($resource));
+    $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_UPDATE, $resource);
   }
 
   /**

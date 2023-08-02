@@ -183,7 +183,6 @@ class DatastoreService implements ContainerInjectionInterface {
     }
 
     // @todo we should not do this, we need a filefetcher queue worker.
-    // @todo Add a alreadyDone() type method to ResourceLocalizer.
     $result = [
       $label => $this->resourceLocalizer->localize($identifier, $version),
     ];

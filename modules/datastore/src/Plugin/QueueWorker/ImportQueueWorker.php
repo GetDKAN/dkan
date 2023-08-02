@@ -209,7 +209,6 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
     // Delete local resource file if enabled in datastore settings config.
     if ($this->datastoreConfig->get('delete_local_resource')) {
-      // @todo Add resourcelocalizer->getPublicFilePath() or equiv.
       $this->fileSystem->deleteRecursive('public://resources/' . $identifier . '_' . $version);
     }
   }
