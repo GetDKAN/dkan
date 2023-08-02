@@ -89,7 +89,7 @@ class ResourceLocalizerTest extends KernelTestBase {
       'text/csv',
       DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
-    // Add our data resource to the mapper.
+    // Add our source data resource to the mapper.
     /** @var \Drupal\metastore\ResourceMapper $mapper */
     $mapper = $this->container->get('dkan.metastore.resource_mapper');
     $mapper->register($source_resource);
@@ -99,7 +99,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     );
 
     // Set up a pre-existing localized file.
-    $existing_path_uri = 'public://resources/test/';
+    $existing_path_uri = 'public://resources/' . $source_resource->getUniqueIdentifierNoPerspective() . '/';
     $existing_filename = 'district_centerpoints_small.csv';
     $existing_file_content = 'i,am,not,district,centerpoints,content';
 
@@ -129,6 +129,7 @@ class ResourceLocalizerTest extends KernelTestBase {
         ResourceLocalizer::LOCAL_FILE_PERSPECTIVE
       )
     );
+    $this->assertEquals($existing_file_uri, $localized_resource->getFilePath());
     $this->assertFileExists($localized_resource->getFilePath());
     // This proves that the pre-existing file was replaced by the localizer.
     $this->assertNotEquals(
