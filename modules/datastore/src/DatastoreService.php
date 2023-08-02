@@ -163,9 +163,9 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Get a resource and the result of localizing it.
    *
-   * @param $identifier
+   * @param string $identifier
    *   Resource identifier.
-   * @param $version
+   * @param string $version
    *   Resource version.
    *
    * @return array

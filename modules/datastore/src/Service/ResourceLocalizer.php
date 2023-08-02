@@ -12,7 +12,6 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\Data;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
 use Drupal\common\EventDispatcherTrait;

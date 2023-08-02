@@ -83,7 +83,23 @@ class ResourceLocalizerTest extends KernelTestBase {
     $this->assertNotEmpty(file_get_contents($local_resource->getFilePath()));
   }
 
-  public function testLocalizeOverwriteExistingLocalFile() {
+  public function provideUseExisting() {
+    return [
+      'Use existing localized file' => [TRUE],
+      'Do not use existing localized file' => [FALSE],
+    ];
+  }
+
+  /**
+   * @dataProvider provideUseExisting
+   */
+  public function testLocalizeOverwriteExistingLocalFile($use_existing) {
+    // Config for overwrite.
+    $this->installConfig(['datastore']);
+    $config = $this->config('datastore.settings');
+    $config->set('always_use_existing_local_perspective', $use_existing);
+    $config->save();
+
     $source_resource = new DataResource(
       self::SOURCE_URL,
       'text/csv',
@@ -131,11 +147,20 @@ class ResourceLocalizerTest extends KernelTestBase {
     );
     $this->assertEquals($existing_file_uri, $localized_resource->getFilePath());
     $this->assertFileExists($localized_resource->getFilePath());
-    // This proves that the pre-existing file was replaced by the localizer.
-    $this->assertNotEquals(
-      $existing_file_content,
-      file_get_contents($localized_resource->getFilePath())
-    );
+    if ($use_existing) {
+      // This proves that the pre-existing file was NOT replaced by the localizer.
+      $this->assertEquals(
+        $existing_file_content,
+        file_get_contents($localized_resource->getFilePath())
+      );
+    }
+    else {
+      // This proves that the pre-existing file WAS replaced by the localizer.
+      $this->assertNotEquals(
+        $existing_file_content,
+        file_get_contents($localized_resource->getFilePath())
+      );
+    }
   }
 
 }
