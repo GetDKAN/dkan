@@ -83,25 +83,22 @@ class ResourceLocalizer {
 
   /**
    * Copy the source file to the local file system.
+   *
+   * Do not (yet) update the file map database with this information.
    */
   public function localize($identifier, $version = NULL): ?Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
-
-      // Does the file already exist?
-      $file_path = $ff->getStateProperty('file_path');
-      if (file_exists($file_path)) {
-        // The file exists so we can mark it done.
-        throw new \Exception('ITS DONE');
-        // $ff->getResult()->setStatus(Result::DONE);
-      }
       return $ff->run();
     }
     return NULL;
   }
 
   /**
-   * Get the localized DataResource.
+   * Create local file and URL perspectives and get the perspective requested.
+   *
+   * @return \Drupal\common\DataResource|null
+   *   Return the perspective, or NULL if the source perspective did not exist.
    */
   public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?DataResource {
     $resource = $this->getResourceSource($identifier, $version);
@@ -160,19 +157,17 @@ class ResourceLocalizer {
   /**
    * Remove local file.
    */
-  public function remove($identifier, $version = NULL) {
-    $resource = $this->get($identifier, $version);
-    $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
-    if ($resource2) {
-      $this->resourceMapper->remove($resource2);
+  public function remove($identifier, $version = NULL): void {
+    if ($local_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
+      $this->resourceMapper->remove($local_resource);
     }
-    if ($resource) {
-      $uuid = $resource->getUniqueIdentifierNoPerspective();
+    if ($resource = $this->get($identifier, $version)) {
+      $resource_id = $resource->getUniqueIdentifierNoPerspective();
       if (file_exists($resource->getFilePath())) {
         $this->drupalFiles->getFilesystem()
           ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
       }
-      $this->removeJob($uuid);
+      $this->removeJob($resource_id);
       $this->resourceMapper->remove($resource);
     }
   }
