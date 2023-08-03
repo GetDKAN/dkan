@@ -95,7 +95,7 @@ class ResourceLocalizer {
   }
 
   /**
-   * Create local file and URL perspectives and get the perspective requested.
+   * Create local file and URL perspectives in the mapper, get a perspective.
    *
    * @return \Drupal\common\DataResource|null
    *   Return the perspective, or NULL if the source perspective did not exist.
@@ -119,7 +119,7 @@ class ResourceLocalizer {
   }
 
   /**
-   * Private.
+   * Add local file and local URL perspectives to the resource mapper.
    */
   private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
@@ -147,7 +147,7 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get Result.
+   * Get a file fetcher result.
    */
   public function getResult($identifier, $version = NULL) {
     $ff = $this->getFileFetcher($this->getResourceSource($identifier, $version));
@@ -215,14 +215,14 @@ class ResourceLocalizer {
    * @param \Drupal\common\DataResource $dataResource
    *   DataResource object to represent.
    * @param string $public_path
-   *   Path within the public:// scheme where this resource will eventually be
-   *   created. Defaults to 'resource/'.
+   *   Path within the public:// filesystem where this resource will eventually
+   *   be created. Defaults to 'resource'.
    *
    * @return string
    *   Public scheme URI to the directory.
    */
-  protected function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources/'): string {
-    $uri = 'public://' . $public_path . $dataResource->getUniqueIdentifierNoPerspective();
+  protected function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources'): string {
+    $uri = 'public://' . $public_path . '/' . $dataResource->getUniqueIdentifierNoPerspective();
     $this->getFilesystem()
       ->prepareDirectory($uri, FileSystemInterface::CREATE_DIRECTORY);
     return $uri;
