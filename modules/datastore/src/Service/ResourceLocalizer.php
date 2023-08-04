@@ -97,6 +97,8 @@ class ResourceLocalizer {
   /**
    * Create local file and URL perspectives in the mapper, get a perspective.
    *
+   * Requires the localized file to exist so it can be checksummed.
+   *
    * @return \Drupal\common\DataResource|null
    *   Return the perspective, or NULL if the source perspective did not exist.
    */
@@ -189,20 +191,21 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get a FileFetcher object to copy the file from source to local.
+   * Get a FileFetcher object for a source data resource, to copy to local.
    *
-   * @param \Drupal\common\DataResource $dataResource
-   *   Data resource object we want to process.
+   * @param \Drupal\common\DataResource $sourceDataResource
+   *   Data resource object we want to process. Assumed to be a source
+   *   perspective.
    *
    * @return \FileFetcher\FileFetcher
    *   FileFetcher object which is ready to transfer the file.
    */
-  public function getFileFetcher(DataResource $dataResource): FileFetcher {
+  public function getFileFetcher(DataResource $sourceDataResource): FileFetcher {
     return $this->fileFetcherFactory->getInstance(
-      $dataResource->getUniqueIdentifierNoPerspective(),
+      $sourceDataResource->getUniqueIdentifierNoPerspective(),
       [
-        'filePath' => UrlHostTokenResolver::resolveFilePath($dataResource->getFilePath()),
-        'temporaryDirectory' => $this->getPublicLocalizedDirectory($dataResource),
+        'filePath' => UrlHostTokenResolver::resolveFilePath($sourceDataResource->getFilePath()),
+        'temporaryDirectory' => $this->getPublicLocalizedDirectory($sourceDataResource),
       ]
     );
   }
@@ -220,6 +223,8 @@ class ResourceLocalizer {
    *
    * @return string
    *   Public scheme URI to the directory.
+   *
+   * @todo Create a config for $public_path.
    */
   protected function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources'): string {
     $uri = 'public://' . $public_path . '/' . $dataResource->getUniqueIdentifierNoPerspective();
@@ -233,6 +238,8 @@ class ResourceLocalizer {
    *
    * @return \Drupal\Core\File\FileSystemInterface
    *   Drupal filesystem.
+   *
+   * @todo Properly inject this service.
    */
   public function getFileSystem(): FileSystemInterface {
     return $this->drupalFiles->getFileSystem();

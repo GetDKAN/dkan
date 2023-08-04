@@ -4,6 +4,8 @@ namespace Drupal\common\FileFetcher;
 
 use Contracts\FactoryInterface;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use FileFetcher\FileFetcher;
 
 /**
@@ -19,6 +21,13 @@ class FileFetcherFactory implements FactoryInterface {
   private JobStoreFactory $jobStoreFactory;
 
   /**
+   * The common.settings config.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  private ImmutableConfig $dkanConfig;
+
+  /**
    * Default file fetcher config.
    *
    * @var array
@@ -30,8 +39,9 @@ class FileFetcherFactory implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory) {
+  public function __construct(JobStoreFactory $jobStoreFactory, ConfigFactoryInterface $configFactory) {
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->dkanConfig = $configFactory->get('common.settings');
   }
 
   /**
@@ -39,6 +49,11 @@ class FileFetcherFactory implements FactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []) {
     $config = array_merge($this->configDefault, $config);
+    // Use our bespoke file fetcher class that keeps the old file if we're
+    // configured to do so.
+    if ($this->dkanConfig->get('always_use_existing_local_perspective') ?? FALSE) {
+      $config['processors'] = [FileFetcherRemoteUseExisting::class];
+    }
     return FileFetcher::get(
       $identifier,
       $this->jobStoreFactory->getInstance(FileFetcher::class),

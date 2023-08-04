@@ -92,11 +92,13 @@ class ResourceLocalizerTest extends KernelTestBase {
 
   /**
    * @dataProvider provideUseExisting
+   *
+   * @see \Drupal\Tests\common\Kernel\FileFetcher\FileFetcherFactoryTest::testOurRemote()
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.
-    $this->installConfig(['datastore']);
-    $config = $this->config('datastore.settings');
+    $this->installConfig(['common']);
+    $config = $this->config('common.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
 

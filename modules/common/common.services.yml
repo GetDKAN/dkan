@@ -28,6 +28,7 @@ services:
     class: \Drupal\common\FileFetcher\FileFetcherFactory
     arguments:
       - '@dkan.common.job_store'
+      - '@config.factory'
 
   dkan.common.dataset_info:
     class: \Drupal\common\DatasetInfo

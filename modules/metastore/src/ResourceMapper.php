@@ -182,8 +182,7 @@ class ResourceMapper {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
       $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
       if ($resource->getPerspective() == 'source') {
-        // Dispatch event to initiate removal of
-        // the the datastore and local file.
+        // Dispatch event to initiate removal of datastore and local file.
         $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE, $resource);
       }
       // Remove the resource mapper perspective.
@@ -243,7 +242,7 @@ class ResourceMapper {
    *   The path to check.
    *
    * @return bool
-   *   FALSE of the path does not exist.
+   *   FALSE if the path does not exist.
    *
    * @throws \Drupal\metastore\Exception\AlreadyRegistered
    *   An exception is thrown if the file exists with json info about the

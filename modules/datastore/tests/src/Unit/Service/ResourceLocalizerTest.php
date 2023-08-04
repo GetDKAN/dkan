@@ -35,7 +35,7 @@ class ResourceLocalizerTest extends TestCase {
    * Test removal of a local resource file.
    */
   public function testResourceLocalizerRemove(): void {
-    $this->markTestIncomplete('Change this to a kernel test.');
+    $this->markTestIncomplete('Convert this to a kernel test.');
     $this->callWithTmpFile([$this, 'doTestResourceLocalizerRemove']);
   }
 

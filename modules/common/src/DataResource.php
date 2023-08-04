@@ -3,6 +3,7 @@
 namespace Drupal\common;
 
 use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Procrastinator\JsonSerializeTrait;
 
 /**
@@ -157,7 +158,7 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Clone the current resource with a new perspective.
+   * Clone the current resource with a new perspective and URI.
    *
    * Perspectives are useful to represent clusters of connected resources.
    *
@@ -393,7 +394,9 @@ class DataResource implements \JsonSerializable {
    * Generates MD5 checksum for a file.
    */
   public function generateChecksum() {
-    $this->checksum = md5_file($this->filePath);
+    if ($this->getPerspective() === ResourceLocalizer::LOCAL_FILE_PERSPECTIVE) {
+      $this->checksum = md5_file($this->filePath);
+    }
   }
 
 }
