@@ -16,6 +16,9 @@ use Procrastinator\Result;
  */
 class FileFetcherRemoteUseExisting extends Remote {
 
+  /**
+   * {@inheritDoc}
+   */
   public function copy(array $state, Result $result, int $timeLimit = PHP_INT_MAX): array {
     // Always short-circuit if the file already exists.
     if (file_exists($state['destination'])) {

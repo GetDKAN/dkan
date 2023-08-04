@@ -142,7 +142,7 @@ class ImportService {
   public function getImporter(): ImportJob {
     $datastore_resource = $this->getResource()->getDatastoreResource();
 
-    $delimiter = ',';
+    $delimiter = ",";
     if ($datastore_resource->getMimeType() == 'text/tab-separated-values') {
       $delimiter = "\t";
     }
@@ -151,9 +151,9 @@ class ImportService {
       $datastore_resource->getId(),
       $this->jobStoreFactory->getInstance(ImportJob::class),
       [
-        'storage' => $this->getStorage(),
-        'parser' => $this->getNonRecordingParser($delimiter),
-        'resource' => $datastore_resource,
+        "storage" => $this->getStorage(),
+        "parser" => $this->getNonRecordingParser($delimiter),
+        "resource" => $datastore_resource,
       ]
     );
 

@@ -129,7 +129,7 @@ class ImportJob extends AbstractPersistentJob {
    */
   public static function sanitizeDescription(string $column) {
     $trimmed = array_filter(array_map('trim', explode("\n", $column)));
-    return implode(' ', $trimmed);
+    return implode(" ", $trimmed);
   }
 
   /**
@@ -350,7 +350,7 @@ class ImportJob extends AbstractPersistentJob {
     $this->assertUniqueHeaders($header);
     foreach ($header as $field) {
       $schema['fields'][$field] = [
-        'type' => 'text',
+        'type' => "text",
       ];
     }
     $this->dataStorage->setSchema($schema);
@@ -369,7 +369,7 @@ class ImportJob extends AbstractPersistentJob {
       $duplicates = array_keys(array_filter(array_count_values($header), function ($i) {
           return $i > 1;
       }));
-      throw new \Exception('Duplicate headers error: ' . implode(', ', $duplicates));
+      throw new \Exception("Duplicate headers error: " . implode(', ', $duplicates));
     }
   }
 
@@ -388,8 +388,8 @@ class ImportJob extends AbstractPersistentJob {
    */
   protected function serializeIgnoreProperties(): array {
     $ignore = parent::serializeIgnoreProperties();
-    $ignore[] = 'dataStorage';
-    $ignore[] = 'resource';
+    $ignore[] = "dataStorage";
+    $ignore[] = "resource";
     return $ignore;
   }
 

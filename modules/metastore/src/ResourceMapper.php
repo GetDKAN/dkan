@@ -6,7 +6,6 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
@@ -19,11 +18,6 @@ class ResourceMapper {
 
   const EVENT_REGISTRATION = 'dkan_metastore_resource_mapper_registration';
 
-  /**
-   * Triggered when a DataResource object is updated in the mapper.
-   */
-  const EVENT_RESOURCE_MAPPER_UPDATE = 'dkan_metastore_resource_mapper_update';
-
   const EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE = 'dkan_metastore_pre_remove_source';
 
   const DEREFERENCE_NO = 0;
@@ -35,14 +29,14 @@ class ResourceMapper {
    *
    * @var \Drupal\common\Storage\DatabaseTableInterface
    */
-  private DatabaseTableInterface $store;
+  private $store;
 
   /**
    * Event dispatcher service.
    *
    * @var \Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher
    */
-  private ContainerAwareEventDispatcher $eventDispatcher;
+  private $eventDispatcher;
 
   /**
    * Constructor.
@@ -64,9 +58,8 @@ class ResourceMapper {
   /**
    * Register a new url for mapping.
    *
-   * @throws \Drupal\metastore\Exception\AlreadyRegistered
-   *   An exception is thrown if the file path already exists within the mapping
-   *   table.
+   * @todo the Resource class currently lives in datastore, we should move it
+   * to a more neutral place.
    */
   public function register(DataResource $resource): bool {
     $this->filePathExists($resource->getFilePath());
@@ -74,19 +67,6 @@ class ResourceMapper {
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
 
     return TRUE;
-  }
-
-  /**
-   * Update or add a mapping entry.
-   *
-   * Does not check for the existence of paths or files.
-   *
-   * @param \Drupal\common\DataResource $resource
-   *   The DataResource object to update.
-   */
-  public function update(DataResource $resource) {
-    $this->store->store(json_encode($resource));
-    $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_UPDATE, $resource);
   }
 
   /**
@@ -100,13 +80,13 @@ class ResourceMapper {
     $version = $resource->getVersion();
     // Ensure a source perspective already exists for the resource.
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
-      throw new \Exception('A resource with identifier ' . $identifier . ' was not found.');
+      throw new \Exception("A resource with identifier {$identifier} was not found.");
     }
 
     $perspective = $resource->getPerspective();
     // Ensure the current perspective does not already exist for the resource.
     if ($this->exists($identifier, $perspective, $version)) {
-      throw new AlreadyRegistered('A resource with identifier ' . $identifier . ' and perspective ' . $perspective . ' already exists.');
+      throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
     }
 
     // If the given resource has a local file, generate a checksum for the
@@ -135,19 +115,19 @@ class ResourceMapper {
    */
   protected function validateNewVersion(DataResource $resource) {
     if ($resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-      throw new \Exception('Only versions of source resources are allowed.');
+      throw new \Exception("Only versions of source resources are allowed.");
     }
 
     $identifier = $resource->getIdentifier();
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE)) {
       throw new \Exception(
-        'A resource with identifier ' . $identifier . ' was not found.');
+        "A resource with identifier {$identifier} was not found.");
     }
 
     $version = $resource->getVersion();
     if ($this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new AlreadyRegistered(
-        'A resource with identifier ' . $identifier . ' and version ' . $version . ' already exists.');
+        "A resource with identifier {$identifier} and version {$version} already exists.");
     }
   }
 
@@ -182,7 +162,8 @@ class ResourceMapper {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
       $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
       if ($resource->getPerspective() == 'source') {
-        // Dispatch event to initiate removal of datastore and local file.
+        // Dispatch event to initiate removal of
+        // the the datastore and local file.
         $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE, $resource);
       }
       // Remove the resource mapper perspective.
@@ -242,7 +223,7 @@ class ResourceMapper {
    *   The path to check.
    *
    * @return bool
-   *   FALSE if the path does not exist.
+   *   FALSE of the path does not exist.
    *
    * @throws \Drupal\metastore\Exception\AlreadyRegistered
    *   An exception is thrown if the file exists with json info about the
