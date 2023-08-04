@@ -127,6 +127,11 @@ class ResourceLocalizerTest extends KernelTestBase {
     $existing_file_uri = $fs->createFilename($existing_filename, $existing_path_uri);
     file_put_contents($existing_file_uri, $existing_file_content);
 
+    // Make sure it's not in the mapper as a localized resource yet...
+    $this->assertNull(
+      $mapper->get($source_resource->getIdentifier(), ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
+    );
+
     // OK, let's localize it, without registering the local perspective in the
     // mapper.
     /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
@@ -163,6 +168,15 @@ class ResourceLocalizerTest extends KernelTestBase {
         file_get_contents($localized_resource->getFilePath())
       );
     }
+    // Is it in the mapper?
+    $this->assertInstanceOf(
+      DataResource::class,
+      $localized_resource = $mapper->get($source_resource->getIdentifier(), ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
+    );
+    $this->assertEquals(
+      ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
+      $localized_resource->getPerspective()
+    );
   }
 
 }
