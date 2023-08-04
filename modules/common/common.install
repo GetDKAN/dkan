@@ -1,0 +1,79 @@
+<?php
+
+use Drupal\common\Util\JobStoreUtil;
+use Drupal\Core\Database\Database;
+
+function common_requirements($phase): array {
+  $requirements = [];
+  if ($phase == 'runtime') {
+    // List all the jobstore tables.
+    if ($connection = \Drupal::database()) {
+      $job_store_util = new JobStoreUtil($connection);
+      if ($tables = $job_store_util->getUnknownJobstoreTables()) {
+        $requirements['dkan unknown jobstore tables'] = [
+          'title' => t('DKAN Unknown Jobstore Tables'),
+          'value' => implode(', ', array_values($tables)),
+          'description' => t(
+            'This site\'s database has these unknown jobstore tables, which are probably not needed.'
+          ),
+          'severity' => REQUIREMENT_INFO,
+        ];
+      }
+
+      // Check for duplicate deprecated/non-deprecated tables.
+      if ($duplicates = $job_store_util->getDuplicateJobstoreTables()) {
+        $duplicates_message = [];
+        foreach ($duplicates as $legacy => $hashed) {
+          $duplicates_message[] = $legacy . ' > ' . $hashed;
+        }
+        $requirements['dkan duplicate deprecated tables'] = [
+          'title' => t('DKAN Duplicate Jobstore Tables'),
+          'value' => implode(', ', $duplicates_message),
+          'description' => t('These jobstore tables are duplicates.  Use drush dkan:jobstore-fixer to reconcile them.'),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+
+      // Is this site using deprecated table names?
+      if ($deprecated_table_names = $job_store_util->getAllDeprecatedJobstoreTableNames()) {
+        $requirements['dkan deprecated jobstore tables'] = [
+          'title' => t('DKAN Deprecated Jobstore Tables'),
+          'value' => implode(', ', $deprecated_table_names),
+          'description' => t('Deprecated jobstore tables currently in use. Use drush dkan:jobstore-fixer to rename them.'),
+          'severity' => REQUIREMENT_WARNING,
+        ];
+      }
+    }
+  }
+  return $requirements;
+}
+
+
+/**
+ * Migrate jobstore tables to new naming conventions.
+ */
+function common_update_90201() {
+  $messages = [];
+  $job_store_util = new JobStoreUtil(Database::getConnection());
+  if ($renamed = $job_store_util->keyedToListDecorator(
+    $job_store_util->renameDeprecatedJobstoreTables(), ' to '
+  )) {
+    $messages[] = t('These deprecated jobstore tables were renamed: @renamed', [
+      '@renamed' => implode(', ', $renamed),
+    ]);
+  }
+  else {
+    $messages[] = t('No deprecated jobstore tables were renamed.');
+  }
+  if ($reconciled = $job_store_util->keyedToListDecorator(
+    $job_store_util->reconcileDuplicateJobstoreTables(), ' to '
+  )) {
+    $messages[] = t('These deprecated jobstore tables were merged: @merged', [
+      '@merged' => implode(', ', $reconciled),
+    ]);
+  }
+  else {
+    $messages[] = t('No deprecated jobstore tables were merged.');
+  }
+  return implode(' ', $messages);
+}
