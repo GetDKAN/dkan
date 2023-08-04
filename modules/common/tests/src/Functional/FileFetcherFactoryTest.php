@@ -48,28 +48,34 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $factory = $this->container->get('dkan.common.file_fetcher');
     $this->assertInstanceOf(FileFetcherFactory::class, $factory);
 
+    // Set up an existing file.
     $tmp = sys_get_temp_dir();
     $dest_file_path = $tmp . '/' . basename(self::DATA_FILE_URL);
     $dest_file_contents = 'not,the,source,contents';
 
+    // Put some known contents in the existing file.
     file_put_contents($dest_file_path, $dest_file_contents);
 
+    // Get a FileFetcher instance using our config.
     $config = [
       'filePath' => self::DATA_FILE_URL,
       'temporaryDirectory' => $tmp,
     ];
+    $ff = $factory->getInstance('identifier', $config);
+    $this->assertInstanceOf(FileFetcher::class, $ff);
 
-    $instance = $factory->getInstance('identifier', $config);
-    $this->assertInstanceOf(FileFetcher::class, $instance);
+    // Make sure we have the correct processor class that corresponds to our
+    // config.
+    $this->assertEquals($remote_class, $ff->getState()['processor']);
 
-    $this->assertEquals($remote_class, $instance->getState()['processor']);
-
-    $result = $instance->run();
+    // Did it work?
+    $result = $ff->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
 
-    // Same file path?
-    $this->assertEquals($dest_file_path, $instance->getStateProperty('destination'));
+    // Same file path, even if it's not the same contents?
+    $this->assertEquals($dest_file_path, $ff->getStateProperty('destination'));
 
+    // Depending on the config, the contents should or should not match.
     if ($use_existing) {
       // Same contents?
       $this->assertEquals($dest_file_contents, file_get_contents($dest_file_path));
