@@ -32,9 +32,7 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->storage[$identifier])) {
@@ -46,7 +44,7 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Protected.
    */
-  protected function getDatabaseTable($identifier) {
+  protected function getDatabaseTable($identifier): DatabaseTable {
     return new DatabaseTable($this->connection, $identifier);
   }
 

@@ -14,6 +14,7 @@ class HarvestLocalizer {
   }
 
   public function localize($harvest_id) {
+    throw new \Exception(print_r($this->harvestService->getAllHarvestRunInfo($harvest_id), true));
 
   }
 

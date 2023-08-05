@@ -8,6 +8,7 @@ use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
+use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
@@ -52,7 +53,7 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new self(
-      $container->get("dkan.harvest.storage.database_table"),
+      $container->get('dkan.harvest.storage.database_table'),
       $container->get('dkan.metastore.service'),
       $container->get('entity_type.manager')
     );
@@ -74,7 +75,7 @@ class HarvestService implements ContainerInjectionInterface {
    *   All ids.
    */
   public function getAllHarvestIds() {
-    $store = $this->storeFactory->getInstance("harvest_plans");
+    $store = $this->storeFactory->getInstance('harvest_plans');
 
     if ($store instanceof BulkRetrieverInterface) {
       return $store->retrieveAll();
@@ -94,7 +95,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @throws \Exception
    */
   public function getHarvestPlan($plan_id) {
-    $store = $this->storeFactory->getInstance("harvest_plans");
+    $store = $this->storeFactory->getInstance('harvest_plans');
 
     if ($store instanceof BulkRetrieverInterface) {
       return $store->retrieve($plan_id);
@@ -118,7 +119,7 @@ class HarvestService implements ContainerInjectionInterface {
 
     $this->validateHarvestPlan($plan);
 
-    $store = $this->storeFactory->getInstance("harvest_plans");
+    $store = $this->storeFactory->getInstance('harvest_plans');
 
     if ($store instanceof StorerInterface) {
       return $store->store(json_encode($plan), $plan->identifier);
@@ -142,7 +143,7 @@ class HarvestService implements ContainerInjectionInterface {
     catch (\Exception $e) {
     }
 
-    $plan_store = $this->storeFactory->getInstance("harvest_plans");
+    $plan_store = $this->storeFactory->getInstance('harvest_plans');
 
     return $plan_store->remove($id);
   }
@@ -154,8 +155,8 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function revertHarvest($id) {
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    if (!method_exists($run_store, "destruct")) {
-      throw new \Exception("Storage of class " . get_class($run_store) . " does not implement destruct method.");
+    if (!method_exists($run_store, 'destruct')) {
+      throw new \Exception('Storage of class ' . get_class($run_store) . ' does not implement destruct method.');
     }
     $run_store->destruct();
     $harvester = $this->getHarvester($id);
@@ -169,8 +170,8 @@ class HarvestService implements ContainerInjectionInterface {
     $harvester = $this->getHarvester($id);
 
     $result = $harvester->harvest();
-    if (is_null($result['status']['extracted_items_ids'])) {
-      throw new \Exception("No items found to extract, review your harvest plan.");
+    if ($result['status']['extracted_items_ids'] ?? FALSE) {
+      throw new \Exception('No items found to extract, review your harvest plan.');
     }
     $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($id, $result['status']['extracted_items_ids']);
     $this->processOrphanIds($result['status']['orphan_ids']);
@@ -330,7 +331,7 @@ class HarvestService implements ContainerInjectionInterface {
    *   Harvester object.
    */
   private function getHarvester(string $id) {
-    $plan_store = $this->storeFactory->getInstance("harvest_plans");
+    $plan_store = $this->storeFactory->getInstance('harvest_plans');
     $harvestPlan = json_decode($plan_store->retrieve($id));
     $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
     $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");

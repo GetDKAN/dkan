@@ -61,14 +61,15 @@ class Drush extends DrushCommands {
   /**
    * Import a datastore resource.
    *
-   * Passing simply a resource identifier will immediately run an import for that
-   * resource. However, if both the FileFetcher and Import jobs are already recorded
-   * as "done" in the jobstore, nothing will happen. To re-import an existing
-   * resource, first use the dkan:datastore:drop command then use import. If you
-   * want to re-import the file to the datastore without repeating the FileFetcher,
-   * make sure to run the drop command with --keep-local. The local file and the
-   * FileFetcher status will be preserved, so the import will see them as "done"
-   * and go straight to the actual DB import job.
+   * Passing simply a resource identifier will immediately run an import for
+   * that resource. However, if both the FileFetcher and Import jobs are
+   * already recorded as "done" in the jobstore, nothing will happen. To
+   * re-import an existing resource, first use the dkan:datastore:drop command
+   * then use import. If you want to re-import the file to the datastore
+   * without repeating the FileFetcher, make sure to run the drop command with
+   * --keep-local. The local file and the FileFetcher status will be preserved,
+   * so the import will see them as "done" and go straight to the actual DB
+   * import job.
    *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
@@ -76,7 +77,8 @@ class Drush extends DrushCommands {
    * @option deferred
    *   Add the import to the datastore_import queue, rather than importing now.
    *
-   * @todo pass configurable options for csv delimiter, quite, and escape characters.
+   * @todo pass configurable options for csv delimiter, quote, and escape
+   *   characters.
    * @command dkan:datastore:import
    */
   public function import(string $identifier, array $options = ['deferred' => FALSE]) {
@@ -84,9 +86,16 @@ class Drush extends DrushCommands {
 
     try {
       $result = $this->datastoreService->import($identifier, $deferred);
-      $status = $result['Import'] ? $result['Import']->getStatus() : 'failed, resource not found';
-      $message = $deferred ? "Queued import for {$identifier}" : "Ran import for {$identifier}; status: $status";
-      $this->logger->notice($message);
+      if ($deferred) {
+        $this->logger->notice('Queued import for ' . $identifier);
+      }
+      else {
+        $this->logger->notice('Ran import for ' . $identifier);
+        foreach ($result as $jobname => $result_object) {
+          /** @var \Procrastinator\Result $result_object */
+          $this->logger->notice('[' . $jobname . '] ' . $result_object->getStatus());
+        }
+      }
     }
     catch (\Exception $e) {
       $this->logger->error("No resource found to import with identifier {$identifier}");
