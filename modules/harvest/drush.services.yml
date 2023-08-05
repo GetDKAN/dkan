@@ -4,5 +4,6 @@ services:
     arguments:
       - '@dkan.harvest.service'
       - '@dkan.harvest.logger_channel'
+      - '@dkan.harvest.localizer'
     tags:
       - { name: drush.command }

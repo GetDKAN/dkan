@@ -3,6 +3,7 @@
 namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\HarvestLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
@@ -16,6 +17,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  * @codeCoverageIgnore
  */
 class HarvestCommands extends DrushCommands {
+
   use Helper;
 
   /**
@@ -25,14 +27,21 @@ class HarvestCommands extends DrushCommands {
    */
   protected $harvestService;
 
+  protected HarvestLocalizer $harvestLocalizer;
+
   /**
    * Constructor.
    */
-  public function __construct(HarvestService $service, LoggerChannelInterface $logger) {
+  public function __construct(
+    HarvestService $service,
+    LoggerChannelInterface $logger,
+    HarvestLocalizer $harvestLocalizer
+  ) {
     parent::__construct();
     // @todo passing via arguments doesn't seem play well with drush.services.yml
     $this->harvestService = $service;
     $this->logger = $logger;
+    $this->harvestLocalizer = $harvestLocalizer;
   }
 
   /**
@@ -50,8 +59,10 @@ class HarvestCommands extends DrushCommands {
         return [$id];
       },
       $this->harvestService->getAllHarvestIds()
-      );
-    (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
+    );
+    (new Table(new ConsoleOutput()))->setHeaders(['plan id'])
+      ->setRows($rows)
+      ->render();
   }
 
   /**
@@ -65,19 +76,22 @@ class HarvestCommands extends DrushCommands {
    * https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
    *
    * @param string $plan_json
-   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
+   *   Harvest plan configuration as JSON string. Example:
+   *   '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
    * @param array $opts
    *   Options array.
    *
    * @option identifier Identifier
    * @option extract-type Extract type
    * @option extract-uri Extract URI
-   * @option transform A transform class to apply. You may pass multiple transforms.
+   * @option transform A transform class to apply. You may pass multiple
+   *   transforms.
    * @option load-type Load class
    *
    * @command dkan:harvest:register
    *
-   * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
+   * @usage dkan:harvest:register --identifier=myHarvestId
+   *   --extract-uri=http://example.com/data.json
    */
   public function register(string $plan_json = '', array $opts = [
     'identifier' => '',
@@ -325,20 +339,22 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:orphan-datasets
    * @alias dkan:harvest:orphan
    */
-  public function orphanDatasets(string $harvestId) : int {
+  public function orphanDatasets(string $harvestId): int {
     $this->validateHarvestId($harvestId);
 
     try {
       $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
       $this->harvestService->processOrphanIds($orphans);
-      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(', ', $orphans));
+      $this->logger()
+        ->notice("Orphaned ids from harvest {$harvestId}: " . implode(', ', $orphans));
       return DrushCommands::EXIT_SUCCESS;
     }
     catch (\Exception $e) {
-      $this->logger()->error('Error in orphaning datasets of harvest %harvest: %error', [
-        '%harvest' => $harvestId,
-        '%error' => $e->getMessage(),
-      ]);
+      $this->logger()
+        ->error('Error in orphaning datasets of harvest %harvest: %error', [
+          '%harvest' => $harvestId,
+          '%error' => $e->getMessage(),
+        ]);
       return DrushCommands::EXIT_FAILURE;
     }
   }
@@ -351,9 +367,27 @@ class HarvestCommands extends DrushCommands {
    */
   private function validateHarvestId($harvestId) {
     if (!in_array($harvestId, $this->harvestService->getAllHarvestIds())) {
-      $this->logger()->error("Harvest id {$harvestId} not found.");
+      $this->logger()->error('Harvest id ' . $harvestId . ' not found.');
       return DrushCommands::EXIT_FAILURE;
     }
+  }
+
+  /**
+   * Fetch local copies ('localize') of dataset source files in a harvest.
+   *
+   * @param string $harvest_id
+   *   Harvest identifier.
+   *
+   * @return int
+   *   Exit code.
+   *
+   * @command dkan:harvest:localize-files
+   */
+  public function localizeFiles(string $harvest_id): int {
+//    $this->validateHarvestId($harvestId);
+
+    $this->harvestLocalizer->localize($harvest_id);
+    return DrushCommands::EXIT_FAILURE;
   }
 
 }
