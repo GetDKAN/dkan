@@ -5,8 +5,10 @@ namespace Drupal\datastore;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
+use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -15,6 +17,7 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
+
   /**
    * The metastore service.
    *
@@ -44,18 +47,27 @@ class Drush extends DrushCommands {
   protected ResourceLocalizer $resourceLocalizer;
 
   /**
+   * Resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected ResourceMapper $resourceMapper;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
     MetastoreService $metastoreService,
     DatastoreService $datastoreService,
     PostImport $postImport,
-    ResourceLocalizer $resourceLocalizer
+    ResourceLocalizer $resourceLocalizer,
+    ResourceMapper $resourceMapper
   ) {
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
     $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -207,7 +219,7 @@ class Drush extends DrushCommands {
    */
   public function dropAll() {
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
+      $uuid = $distribution->data->{'%Ref:downloadURL'}[0]->data->identifier;
       $this->drop($uuid);
     }
   }
@@ -219,24 +231,82 @@ class Drush extends DrushCommands {
 
     $jobs = [
       [
-        "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
-        "table" => "jobstore_filefetcher_filefetcher",
+        'id' => substr(str_replace('__', '_', $ref_uuid), 0, -11),
+        'table' => 'jobstore_filefetcher_filefetcher',
       ],
       [
-        "id" => md5($ref_uuid),
-        "table" => "jobstore_dkan_datastore_importer",
+        'id' => md5($ref_uuid),
+        'table' => 'jobstore_dkan_datastore_importer',
       ],
     ];
 
     try {
       foreach ($jobs as $job) {
-        \Drupal::database()->delete($job['table'])->condition('ref_uuid', $job['id'])->execute();
-        $this->logger('datastore')->notice("Successfully removed the {$job['table']} record for ref_uuid {$job['id']}.");
+        \Drupal::database()
+          ->delete($job['table'])
+          ->condition('ref_uuid', $job['id'])
+          ->execute();
+        $this->logger('datastore')
+          ->notice("Successfully removed the {$job['table']} record for ref_uuid {$job['id']}.");
       }
     }
     catch (\Exception $e) {
-      $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}.", $e->getMessage());
+      $this->logger('datastore')
+        ->error("Failed to delete the jobstore record for ref_uuid {$job['id']}.", $e->getMessage());
     }
+  }
+
+  /**
+   * Prepare the local perspective for a resource.
+   *
+   * Will do the following:
+   * - Prepare the directory in the file system.
+   * - Add the local_url perspective to the resource mapper. Note this is
+   *   missing the file checksum.
+   * - Display the info necessary to perform an external file fetch.
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @command dkan:datastore:prepare-localized
+   *
+   * @todo Move all this to the ResourceLocalizer so we're responsible for test
+   *   coverage.
+   */
+  public function prepareLocalized(string $identifier) {
+    if ($resource = $this->resourceMapper->get($identifier)) {
+      // ResourceLocalizer will create the public directory when we get it.
+      $public_dir = $this->resourceLocalizer->getPublicLocalizedDirectory($resource);
+      $localized_filepath = $this->resourceLocalizer->localizeFilePath($resource);
+
+      $localized_resource = $resource->createNewPerspective(
+        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
+        $localized_filepath
+      );
+      try {
+        $this->resourceMapper->registerNewPerspective($localized_resource);
+      }
+      catch (AlreadyRegistered $e) {
+        // Catch the already-registered exception so we can continue to show
+        // the file info to the user.
+        $this->logger()->warning($e->getMessage());
+      }
+      // @todo inject file system service.
+      $file_system = $this->resourceLocalizer->getFileSystem();
+      $info = [
+        'source' => $resource->getFilePath(),
+        'path_uri' => $public_dir,
+        'path' => $file_system->realpath($public_dir),
+        'file_uri' => $localized_filepath,
+        'file' => $file_system->realpath($localized_filepath),
+      ];
+
+      $this->output()->writeln(json_encode($info, JSON_PRETTY_PRINT));
+
+      return DrushCommands::EXIT_SUCCESS;
+    }
+    $this->output()->writeln('No resource for identifier: ' . $identifier);
+    return DrushCommands::EXIT_FAILURE;
   }
 
 }

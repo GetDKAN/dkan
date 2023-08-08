@@ -49,7 +49,7 @@ class FileFetcherFactory implements FactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []) {
     $config = array_merge($this->configDefault, $config);
-    // Use our bespoke file fetcher class that keeps the old file if we're
+    // Use our bespoke file fetcher class that uses the existing file if we're
     // configured to do so.
     if ($this->dkanConfig->get('always_use_existing_local_perspective') ?? FALSE) {
       $config['processors'] = [FileFetcherRemoteUseExisting::class];

@@ -211,6 +211,29 @@ class ResourceLocalizer {
   }
 
   /**
+   * Resolve the source to the localized file path as a public URI.
+   *
+   * Note: The file fetcher also does this during the fetch.
+   *
+   * @param \Drupal\common\DataResource $source_resource
+   *   Source DataResource.
+   *
+   * @return string
+   *   Public URI for the temp localized file.
+   *
+   * @see \FileFetcher\Processor\ProcessorBase::getTemporaryFilePath()
+   *
+   * @todo Remove this from FileFetcher so concerns can be separated properly.
+   */
+  public function localizeFilePath(DataResource $source_resource): string {
+    if ($source_resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
+      throw new \InvalidArgumentException('DataResource must be source perspective.');
+    }
+    $public = $this->getPublicLocalizedDirectory($source_resource);
+    return $public . '/' . basename($source_resource->getFilePath());
+  }
+
+  /**
    * Get the prepared directory path to the localized destination.
    *
    * Will attempt to create the path.
@@ -226,7 +249,7 @@ class ResourceLocalizer {
    *
    * @todo Create a config for $public_path.
    */
-  protected function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources'): string {
+  public function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources'): string {
     $uri = 'public://' . $public_path . '/' . $dataResource->getUniqueIdentifierNoPerspective();
     $this->getFilesystem()
       ->prepareDirectory($uri, FileSystemInterface::CREATE_DIRECTORY);
