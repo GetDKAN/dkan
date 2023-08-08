@@ -14,10 +14,6 @@ services:
   dkan.harvest.logger_channel:
       parent: logger.channel_base
       arguments: ['harvest']
-  dkan.harvest.localizer:
-    class: Drupal\harvest\HarvestLocalizer
-    arguments:
-      - '@dkan.harvest.service'
 
   # @deprecated
   harvest.service:
