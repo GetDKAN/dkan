@@ -26,6 +26,11 @@ class HarvestCommands extends DrushCommands {
    */
   protected $harvestService;
 
+  /**
+   * Harvest localizer service.
+   *
+   * @var \Drupal\harvest\HarvestLocalizer
+   */
   protected HarvestLocalizer $harvestLocalizer;
 
   /**
@@ -232,7 +237,8 @@ class HarvestCommands extends DrushCommands {
   public function revert($harvestId) {
     $this->validateHarvestId($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
-    $this->output()->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
+    $this->output()
+      ->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
   }
 
   /**
@@ -250,10 +256,12 @@ class HarvestCommands extends DrushCommands {
     $this->validateHarvestId($harvestId);
     $result = $this->harvestService->archive($harvestId);
     if (empty($result)) {
-      $this->output()->write("No items available to archive for the '{$harvestId}' harvest plan." . PHP_EOL);
+      $this->output()
+        ->write("No items available to archive for the '{$harvestId}' harvest plan." . PHP_EOL);
     }
     foreach ($result as $id) {
-      $this->output()->write("Archived dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+      $this->output()
+        ->write("Archived dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
     }
   }
 
@@ -272,10 +280,12 @@ class HarvestCommands extends DrushCommands {
     $this->validateHarvestId($harvestId);
     $result = $this->harvestService->publish($harvestId);
     if (empty($result)) {
-      $this->output()->write("No items available to publish for the '{$harvestId}' harvest plan." . PHP_EOL);
+      $this->output()
+        ->write("No items available to publish for the '{$harvestId}' harvest plan." . PHP_EOL);
     }
     foreach ($result as $id) {
-      $this->output()->write("Published dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+      $this->output()
+        ->write("Published dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
     }
   }
 
@@ -293,7 +303,7 @@ class HarvestCommands extends DrushCommands {
    * @usage dkan:harvest:status
    *   test 1599157120
    */
-  public function status($harvestId, $runId = NULL) {
+  public function status($harvestId, $runId = NULL): int {
     $this->validateHarvestId($harvestId);
 
     // No run_id provided, get the latest run_id.
@@ -301,7 +311,8 @@ class HarvestCommands extends DrushCommands {
     $allRunIds = $this->harvestService->getAllHarvestRunInfo($harvestId);
 
     if (empty($allRunIds)) {
-      $this->output()->writeln("<error>No Run IDs found for harvest id $harvestId</error>");
+      $this->output()
+        ->writeln("<error>No Run IDs found for harvest id $harvestId</error>");
       return DrushCommands::EXIT_FAILURE;
     }
 
@@ -312,18 +323,21 @@ class HarvestCommands extends DrushCommands {
     }
 
     if (array_search($runId, $allRunIds) === FALSE) {
-      $this->output()->writeln("<error>Run ID $runId not found for harvest id $harvestId</error>");
+      $this->output()
+        ->writeln("<error>Run ID $runId not found for harvest id $harvestId</error>");
       return DrushCommands::EXIT_FAILURE;
     }
 
     $run = $this->harvestService->getHarvestRunInfo($harvestId, $runId);
 
     if (empty($run)) {
-      $this->output()->writeln("<error>No status found for harvest id $harvestId and run id $runId</error>");
+      $this->output()
+        ->writeln("<error>No status found for harvest id $harvestId and run id $runId</error>");
       return DrushCommands::EXIT_FAILURE;
     }
 
     $this->renderStatusTable($harvestId, $runId, json_decode($run, TRUE));
+    return DrushCommands::EXIT_SUCCESS;
   }
 
   /**
@@ -383,7 +397,7 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:localize-files
    */
   public function localizeFiles(string $harvest_id): int {
-//    $this->validateHarvestId($harvestId);
+    // $this->validateHarvestId($harvestId);
 
     $this->harvestLocalizer->localize($harvest_id);
     return DrushCommands::EXIT_FAILURE;

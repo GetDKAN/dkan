@@ -139,11 +139,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    */
   public function drop(Event $event) {
     $resource = $event->getData();
-    $id = md5(str_replace(
-      DataResource::DEFAULT_SOURCE_PERSPECTIVE,
-      ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
-      $resource->getUniqueIdentifier()
-    ));
+    $id = md5(str_replace(DataResource::DEFAULT_SOURCE_PERSPECTIVE, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource->getUniqueIdentifier()));
     try {
       $this->service->drop($resource->getIdentifier(), $resource->getVersion());
       $this->loggerFactory->get('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);

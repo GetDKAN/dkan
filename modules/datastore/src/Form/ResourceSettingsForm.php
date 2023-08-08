@@ -63,8 +63,7 @@ class ResourceSettingsForm extends ConfigFormBase {
         DataResource::DEFAULT_SOURCE_PERSPECTIVE => $this->t('Source'),
         ResourceLocalizer::LOCAL_URL_PERSPECTIVE => $this->t('Local URL'),
       ],
-      '#default_value' => $this->config('metastore.settings')->get('resource_perspective_display')
-        ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+      '#default_value' => $this->config('metastore.settings')->get('resource_perspective_display') ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE,
     ];
     return parent::buildForm($form, $form_state);
   }
