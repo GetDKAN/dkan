@@ -40,9 +40,7 @@ class CommonCommands extends DrushCommands {
    * @command dkan:dataset-info
    */
   public function datasetInfo(string $uuid) {
-    $this->output()->writeln(
-      print_r(json_encode($this->datasetInfo->gather($uuid), JSON_PRETTY_PRINT), TRUE)
-    );
+    print_r(json_encode($this->datasetInfo->gather($uuid), JSON_PRETTY_PRINT));
   }
 
 }
