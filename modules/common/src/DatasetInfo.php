@@ -9,7 +9,6 @@ use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
