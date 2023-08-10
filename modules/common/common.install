@@ -44,6 +44,19 @@ function common_requirements($phase): array {
         ];
       }
     }
+    // Alert the user if they have always_use_existing_local_perspective on.
+    if ($config = \Drupal::config('common.settings')) {
+      if ($config->get('always_use_existing_local_perspective') ?? FALSE) {
+        $requirements['dkan using local files'] = [
+          'title' => t('DKAN Using Local Files'),
+          'value' => 'always_use_existing_local_perspective: true',
+          'description' => t(
+            'DKAN is configured to use localized files rather than download them during import.'
+          ),
+          'severity' => REQUIREMENT_WARNING,
+        ];
+      }
+    }
   }
   return $requirements;
 }
