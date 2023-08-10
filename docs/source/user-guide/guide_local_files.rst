@@ -69,7 +69,7 @@ We can pipe this to jq as well:
     % drush dkan:datastore:prepare-localized ff6cb8d64923ff814a101f5e159c4d0e | jq -r .path
     /var/www/html/docroot/sites/default/files/resources/ff6cb8d64923ff814a101f5e159c4d0e_1691603349
 
-This Drush command, dkan:datastore:prepare-localized, will add this file path information to the dataset as well, which we can check by re-running our dataset info:
+This Drush command, dkan:datastore:prepare-localized, will add this file path information to the dataset map as well, which we can check by re-running our dataset info:
 
 .. code-block::
 
