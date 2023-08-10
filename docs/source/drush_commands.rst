@@ -64,6 +64,7 @@ dkan:datastore:prepare-localized
     Prepare the local perspective for a resource.
 
     Will do the following:
+
     - Prepare the directory in the file system.
     - Add the local_url perspective to the resource mapper. Note this is missing the file checksum.
     - Display the info necessary to perform an external file fetch.
