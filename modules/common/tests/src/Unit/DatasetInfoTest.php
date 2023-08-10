@@ -210,8 +210,6 @@ class DatasetInfoTest extends TestCase {
       ->method('getItem')
       ->willReturn((object) [
         'fileFetcherStatus' => 'status',
-        'fileFetcherPercentDone' => 99,
-        'importerPercentDone' => 99,
         'importerStatus' => 'importer_status',
         'importerError' => 'importer_error',
       ]);
@@ -273,10 +271,8 @@ class DatasetInfoTest extends TestCase {
       'resource_id',
       'resource_version',
       'fetcher_status',
-      'fetcher_percent_done',
       'file_path',
       'source_path',
-      'importer_percent_done',
       'importer_status',
       'importer_error',
       'table_name',

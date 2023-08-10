@@ -101,9 +101,7 @@ class Drush extends DrushCommands {
    *   uuid: Resource UUID
    *   fileName: File Name
    *   fileFetcherStatus: FileFetcher
-   *   fileFetcherBytes: Processed
    *   importerStatus: Importer
-   *   importerBytes: Processed
    *
    * @options format The format of the data.
    * @options status Show imports of the given status.
@@ -152,9 +150,7 @@ class Drush extends DrushCommands {
       'uuid' => $uuid,
       'fileName' => $item->fileName,
       'fileFetcherStatus' => $item->fileFetcherStatus,
-      'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
       'importerStatus' => $item->importerStatus,
-      'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
     ];
   }
 

@@ -460,8 +460,8 @@ class DashboardForm extends FormBase {
             '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
           ],
         ],
-        $this->buildStatusCell($dist['fetcher_status'], $dist['fetcher_percent_done']),
-        $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
+        $this->buildStatusCell($dist['fetcher_status']),
+        $this->buildStatusCell($dist['importer_status'], $this->cleanUpError($dist['importer_error'])),
         $this->buildPostImportStatusCell($status, $error),
       ];
     }
@@ -473,20 +473,17 @@ class DashboardForm extends FormBase {
    *
    * @param string $status
    *   Current job status.
-   * @param int $percentDone
-   *   Percent done, 0-100.
    * @param null|string $error
    *   An error message, if any.
    *
    * @return array
    *   Renderable array.
    */
-  protected function buildStatusCell(string $status, int $percentDone, ?string $error = NULL) {
+  protected function buildStatusCell(string $status, ?string $error = NULL) {
     return [
       'data' => [
         '#theme' => 'datastore_dashboard_status_cell',
         '#status' => $status,
-        '#percent' => $percentDone,
         '#error' => $error,
       ],
       'class' => str_replace('_', '-', $status),

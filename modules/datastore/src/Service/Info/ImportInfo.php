@@ -69,10 +69,8 @@ class ImportInfo {
       'fileName' => '',
       'fileFetcherStatus' => 'waiting',
       'fileFetcherBytes' => 0,
-      'fileFetcherPercentDone' => 0,
       'importerStatus' => 'waiting',
       'importerBytes' => 0,
-      'importerPercentDone' => 0,
       'importerError' => NULL,
     ];
 
@@ -81,7 +79,6 @@ class ImportInfo {
       $item->fileName = $this->getFileName($ff);
       $item->fileFetcherStatus = $ff->getResult()->getStatus();
       $item->fileFetcherBytes = $this->getBytesProcessed($ff);
-      $item->fileFetcherPercentDone = $this->getPercentDone($ff);
     }
 
     /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $imp */
@@ -89,7 +86,6 @@ class ImportInfo {
       $item->importerStatus = $imp->getResult()->getStatus();
       $item->importerError = $imp->getResult()->getError();
       $item->importerBytes = $this->getBytesProcessed($imp);
-      $item->importerPercentDone = $this->getPercentDone($imp);
     }
 
     return (object) $item;
@@ -131,21 +127,6 @@ class ImportInfo {
     $fileLocation = $fileFetcher->getStateProperty('source');
     $locationParts = explode('/', $fileLocation);
     return end($locationParts);
-  }
-
-  /**
-   * Get a percentage of the total file procesed for either job type.
-   *
-   * @param \Procrastinator\Job\Job $job
-   *   Either a FileFetcher or Importer object.
-   *
-   * @return float
-   *   Percentage.
-   */
-  private function getPercentDone(Job $job): float {
-    $bytes = $this->getBytesProcessed($job);
-    $filesize = $this->getFileSize();
-    return ($filesize > 0) ? round($bytes / $filesize * 100) : 0;
   }
 
   /**

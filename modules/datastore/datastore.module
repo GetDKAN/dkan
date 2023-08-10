@@ -34,7 +34,6 @@ function datastore_theme($existing, $type, $theme, $path) {
     'datastore_dashboard_status_cell' => [
       'variables' => [
         'status' => NULL,
-        'percent' => "0",
         'error' => NULL,
       ],
     ],
