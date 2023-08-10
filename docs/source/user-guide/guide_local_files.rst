@@ -12,6 +12,8 @@ Prepare The Local Perspective
 
 You can use Drush to discover more information about the dataset, given its UUID:
 
+.. code-block::
+
     % drush dkan:dataset-info 0f0115ea-b6ab-49a1-a120-2c5e6aad04ee
     {
         "latest_revision": {
@@ -42,10 +44,14 @@ You can use Drush to discover more information about the dataset, given its UUID
 
 We want the resource_id of the distribution. Here’s an example of extracting it using jq:
 
+.. code-block::
+
     % drush dkan:dataset-info 0f0115ea-b6ab-49a1-a120-2c5e6aad04ee | jq -r '.latest_revision.distributions[].resource_id'
     ff6cb8d64923ff814a101f5e159c4d0e
 
 Now that we have the resource ID, we can tell DKAN to prepare for some other script or process to download the file. We use Drush to do this:
+
+.. code-block::
 
     % drush dkan:datastore:prepare-localized ff6cb8d64923ff814a101f5e159c4d0e
     {
@@ -58,10 +64,14 @@ Now that we have the resource ID, we can tell DKAN to prepare for some other scr
 
 We can pipe this to jq as well:
 
+.. code-block::
+
     % drush dkan:datastore:prepare-localized ff6cb8d64923ff814a101f5e159c4d0e | jq -r .path
     /var/www/html/docroot/sites/default/files/resources/ff6cb8d64923ff814a101f5e159c4d0e_1691603349
 
 This Drush command, dkan:datastore:prepare-localized, will add this file path information to the dataset as well, which we can check by re-running our dataset info:
+
+.. code-block::
 
     % drush dkan:dataset-info 0f0115ea-b6ab-49a1-a120-2c5e6aad04ee | jq -r '.latest_revision.distributions[].file_path'
     public://resources/ff6cb8d64923ff814a101f5e159c4d0e_1691603349/OP_DTL_OWNRSHP_PGYR2016_P06302023.csv
@@ -75,9 +85,13 @@ From the output of dkan:datastore:prepare-localized we get the path. In our case
 
 We’ll need to change into this directory… This may differ on your system.
 
+.. code-block::
+
     % cd sites/default/files/resources/ff6cb8d64923ff814a101f5e159c4d0e_1691603349
 
 Now we can use a file transfer tool to put the file where it belongs. The file is the source field from dkan:datastore:prepare-localized.
+
+.. code-block::
 
     % wget https://download.cms.gov/openpayments/PGYR16_P063023/OP_DTL_OWNRSHP_PGYR2016_P06302023.csv
 
@@ -88,9 +102,13 @@ In order to perform this style of import, we have to set a configuration to use 
 
 This configuration can only be set via Drush:
 
+.. code-block::
+
     % drush config:set common.settings always_use_existing_local_perspective 1
 
 We can verify that this configuration was set:
+
+.. code-block::
 
     % drush config:get common.settings always_use_existing_local_perspective
     'common.settings:always_use_existing_local_perspective': true
@@ -99,10 +117,14 @@ Now our import will use the local file.
 
 If we used harvest to set up the datasets, they are probably already queued to import. If not, we can set up our dataset to import:
 
+.. code-block::
+
     % ddev drush dkan:datastore:import --deferred ff6cb8d64923ff814a101f5e159c4d0e
      [notice] Queued import for 5c10426922cb88f20d3f5a2ae45d2f11
 
 Now we run cron, or we can run the specific queue:
+
+.. code-block::
 
     % ddev drush queue:run datastore_import
      [notice] ResourceLocalizer for 5c10426922cb88f20d3f5a2ae45d2f11__ completed.
@@ -110,6 +132,8 @@ Now we run cron, or we can run the specific queue:
      [success] Processed 1 items from the datastore_import queue in 12.12 sec.
 
 And now we look at the dataset again and verify that it has imported:
+
+.. code-block::
 
     % ddev drush dkan:dataset-info 0f0115ea-b6ab-49a1-a120-2c5e6aad04ee
     {
