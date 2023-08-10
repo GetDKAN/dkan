@@ -243,13 +243,11 @@ class Drush extends DrushCommands {
    */
   public function prepareLocalized(string $identifier) {
     if ($resource = $this->resourceMapper->get($identifier)) {
-      // ResourceLocalizer will create the public directory when we get it.
+      // ResourceLocalizer will create the public directory here.
       $public_dir = $this->resourceLocalizer->getPublicLocalizedDirectory($resource);
       $localized_filepath = $this->resourceLocalizer->localizeFilePath($resource);
-
       $localized_resource = $resource->createNewPerspective(
-        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
-        $localized_filepath
+        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $localized_filepath
       );
       try {
         $this->resourceMapper->registerNewPerspective($localized_resource);
@@ -268,9 +266,7 @@ class Drush extends DrushCommands {
         'file_uri' => $localized_filepath,
         'file' => $file_system->realpath($localized_filepath),
       ];
-
       $this->output()->writeln(json_encode($info, JSON_PRETTY_PRINT));
-
       return DrushCommands::EXIT_SUCCESS;
     }
     $this->output()->writeln('No resource for identifier: ' . $identifier);
