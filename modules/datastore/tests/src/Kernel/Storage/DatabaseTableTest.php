@@ -31,10 +31,13 @@ class DatabaseTableTest extends KernelTestBase {
   /**
    * Ensure that non-mysql-import tables do not implement hasBeenImported().
    *
+   * We don't want DatabaseTable to be able to report that the table has already
+   * been imported.
+   *
    * We exercise the whole import service factory pattern here to make sure we
    * get the DatabaseTable object we expect.
    */
-  public function testNoHasBeenImported() {
+  public function testIsNotImportedItemInterface() {
     // Do an import.
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
