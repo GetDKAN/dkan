@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore_mysql_import\Storage;
 
+use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Storage\DatabaseTable;
 
@@ -14,7 +15,7 @@ use Drupal\datastore\Storage\DatabaseTable;
  *
  * @see https://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_strict_mode
  */
-class MySqlDatabaseTable extends DatabaseTable {
+class MySqlDatabaseTable extends DatabaseTable implements ImportedItemInterface {
 
   /**
    * {@inheritDoc}
@@ -51,6 +52,22 @@ class MySqlDatabaseTable extends DatabaseTable {
       Database::setActiveConnection($active_db);
       $this->connection = $active_connection;
     }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * For datastore_mysql_import, at this point we only check if the table exists
+   * in the database and has more than 0 rows. This is because the importer is
+   * assumed to have used LOAD DATA LOCAL INFILE to import the data in one step.
+   *
+   * @see \Drupal\datastore_mysql_import\Service\MysqlImport::getSqlStatement
+   */
+  public function hasBeenImported(): bool {
+    if ($this->tableExist($this->getTableName())) {
+      return $this->count() > 0;
+    }
+    return FALSE;
   }
 
 }
