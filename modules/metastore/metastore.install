@@ -106,3 +106,11 @@ function metastore_update_8006() {
   $index_settings->set('processor_settings.dkan_dataset_filter_unpublished', []);
   $index_settings->save();
 }
+
+/**
+ * Restore the preveiw button on data form.
+ */
+function metastore_update_8007() {
+  $config = \Drupal::service('config.factory')->getEditable('node.type.data');
+  $config->set('preview_mode', 1)->save();
+}
