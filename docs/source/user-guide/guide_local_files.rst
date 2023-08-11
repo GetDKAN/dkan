@@ -12,11 +12,11 @@ TL;DR
 
 Abbreviated instructions. Read further for more details.
 
-- Use `drush dkan:datastore:prepare-localized [id]` to set up the local file directory.
+- Use :code:`drush dkan:datastore:prepare-localized [id]` to set up the local file directory.
 - Transfer the file in some way other than a DKAN import.
-- Tell DKAN to use local files with this configuration: `drush config:set common.settings always_use_existing_local_perspective 1`
-- Perform the import: `drush dkan:datastore:import --deferred [id] && drush queue:run datastore_import`
-- Turn off the local file preference with configuration: `drush config:set common.settings always_use_existing_local_perspective 0`
+- Tell DKAN to use local files with this configuration: :code:`drush config:set common.settings always_use_existing_local_perspective 1`
+- Perform the import: :code:`drush dkan:datastore:import --deferred [id] && drush queue:run datastore_import`
+- Turn off the local file preference with configuration: :code:`drush config:set common.settings always_use_existing_local_perspective 0`
 
 Prepare The Local Perspective
 =============================
@@ -80,7 +80,7 @@ We can pipe this to jq as well:
     % drush dkan:datastore:prepare-localized 1fecf29222b12fc1ce2678abbc8f870f | jq -r .path
     /var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866
 
-This Drush command, `dkan:datastore:prepare-localized`, will add this file path information to the dataset map as well, which we can check by re-running our dataset info:
+This Drush command, :code:`dkan:datastore:prepare-localized`, will add this file path information to the dataset map as well, which we can check by re-running our dataset info:
 
 .. code-block::
 
@@ -92,7 +92,7 @@ Transfer The File
 
 In this example we’ll just use wget to copy the file at the command line. At the moment, automating this process is left as an exercise for the reader, but a combination of bash and jq should be able to accomplish this.
 
-From the output of `dkan:datastore:prepare-localized` we get the path. In our case this is `/var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866`
+From the output of :code:`dkan:datastore:prepare-localized` we get the path. In our case this is :code:`/var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866`
 
 We’ll need to change into this directory… This may differ on your system.
 
@@ -100,7 +100,7 @@ We’ll need to change into this directory… This may differ on your system.
 
     % cd sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866
 
-Now we can use a file transfer tool to put the file where it belongs. The file is the source field from `dkan:datastore:prepare-localized`.
+Now we can use a file transfer tool to put the file where it belongs. The file is the source field from :code:`dkan:datastore:prepare-localized`.
 
 .. code-block::
 
