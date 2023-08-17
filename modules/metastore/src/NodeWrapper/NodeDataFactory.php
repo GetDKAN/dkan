@@ -21,7 +21,7 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
   private $entityRepository;
 
   /**
-   * Entity Type Manager
+   * Entity Type Manager.
    *
    * @var Drupal\Core\Entity\EntityTypeManager
    */

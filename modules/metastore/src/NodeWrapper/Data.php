@@ -30,7 +30,7 @@ class Data implements MetastoreItemInterface {
   protected $rawMetadata;
 
   /**
-   * Entity Type Manager
+   * Entity Type Manager.
    *
    * @var Drupal\Core\Entity\EntityTypeManager
    */
@@ -207,7 +207,7 @@ class Data implements MetastoreItemInterface {
     if (!$this->isNew()) {
       // See https://www.drupal.org/project/drupal/issues/3201209
       // node->original is set to the published revision, not the latest.
-      // We want to compare to the version of the node directly prior to this one.
+      // Compare to the latest revision of the node instead.
       $node_storage = $this->entityTypeManager->getStorage('node');
       $latest_revision_id = $node_storage->getLatestRevisionId($this->node->id());
       $original = $node_storage->loadRevision($latest_revision_id);
