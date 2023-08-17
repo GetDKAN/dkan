@@ -5,6 +5,8 @@ namespace Drupal\Tests\metastore\Unit\NodeWrapper;
 use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
@@ -23,15 +25,24 @@ class DataTest extends TestCase
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
       ->addd('__get', Node::class)
+      ->addd('isNew', false)
+      ->addd('id', 123)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->add(RevisionableStorageInterface::class, 'getLatestRevisionId', 123)
+      ->addd('loadRevision', Node::class)
       ->getMock();
 
     $container = (new Chain($this))
       ->add(Container::class)
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
       ->getMock();
 
     \Drupal::setContainer($container);
 
-    $wrapper = new Data($node);
+    $wrapper = new Data($node, $entityTypeManager);
     $this->assertTrue(
       $wrapper->getOriginal() instanceof Data
     );
@@ -40,7 +51,13 @@ class DataTest extends TestCase
   public function testGetOriginalGiveUsNull() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
-      ->addd('__isset', false)
+      ->addd('__isset', true)
+      ->addd('__get', Node::class)
+      ->addd('isNew', true)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
       ->getMock();
 
     $container = (new Chain($this))
@@ -49,7 +66,7 @@ class DataTest extends TestCase
 
     \Drupal::setContainer($container);
 
-    $wrapper = new Data($node);
+    $wrapper = new Data($node, $entityTypeManager);
     $this->assertNull(
       $wrapper->getOriginal()
     );
@@ -65,7 +82,11 @@ class DataTest extends TestCase
       ->add(EntityRepository::class, 'loadEntityByUuid', EntityInterface::class)
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $factory->getInstance("123");
   }
 
@@ -80,7 +101,11 @@ class DataTest extends TestCase
       ->add(Node::class, 'bundle', 'blah')
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $factory->getInstance("123");
   }
 
@@ -107,7 +132,11 @@ class DataTest extends TestCase
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $data = $factory->wrap($entity);
     $this->assertEquals('123', $data->getIdentifier());
   }
@@ -117,7 +146,11 @@ class DataTest extends TestCase
       ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $this->assertEquals('node', $factory->getEntityType());
     $this->assertEquals(['data'], $factory->getBundles());
     $this->assertEquals('field_json_metadata', $factory->getMetadataField());

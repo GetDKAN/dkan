@@ -5,6 +5,7 @@ namespace Drupal\metastore\NodeWrapper;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
@@ -29,16 +30,26 @@ class Data implements MetastoreItemInterface {
   protected $rawMetadata;
 
   /**
+   * Entity Type Manager
+   *
+   * @var Drupal\Core\Entity\EntityTypeManager
+   */
+  private $entityTypeManager;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   A Drupal entity.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   Entity Type Manager service.
    *
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    */
-  public function __construct(EntityInterface $entity) {
+  public function __construct(EntityInterface $entity, EntityTypeManager $entityTypeManager) {
     $this->validate($entity);
     $this->node = $entity;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -193,8 +204,14 @@ class Data implements MetastoreItemInterface {
    * Getter.
    */
   public function getOriginal() {
-    if (isset($this->node->original)) {
-      return new Data($this->node->original);
+    if (!$this->isNew()) {
+      // See https://www.drupal.org/project/drupal/issues/3201209
+      // node->original is set to the published revision, not the latest.
+      // We want to compare to the version of the node directly prior to this one.
+      $node_storage = $this->entityTypeManager->getStorage('node');
+      $latest_revision_id = $node_storage->getLatestRevisionId($this->node->id());
+      $original = $node_storage->loadRevision($latest_revision_id);
+      return new Data($original, $this->entityTypeManager);
     }
   }
 
