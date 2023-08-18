@@ -4,10 +4,13 @@ namespace Drupal\datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
+use Drupal\common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
+use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
+use Procrastinator\Result;
 
 /**
  * Drush commands for controlling the datastore.
@@ -42,6 +45,8 @@ class Drush extends DrushCommands {
    * @var \Drupal\datastore\Service\ResourceLocalizer
    */
   protected ResourceLocalizer $resourceLocalizer;
+
+  protected ResourceMapper $resourceMapper;
 
   /**
    * Constructor for DkanDatastoreCommands.
@@ -198,7 +203,7 @@ class Drush extends DrushCommands {
    */
   public function dropAll() {
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
+      $uuid = $distribution->data->{'%Ref:downloadURL'}[0]->data->identifier;
       $this->drop($uuid);
     }
   }
@@ -210,12 +215,12 @@ class Drush extends DrushCommands {
 
     $jobs = [
       [
-        "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
-        "table" => "jobstore_filefetcher_filefetcher",
+        'id' => substr(str_replace('__', '_', $ref_uuid), 0, -11),
+        'table' => 'jobstore_filefetcher_filefetcher',
       ],
       [
-        "id" => md5($ref_uuid),
-        "table" => "jobstore_dkan_datastore_importer",
+        'id' => md5($ref_uuid),
+        'table' => 'jobstore_dkan_datastore_importer',
       ],
     ];
 
@@ -228,6 +233,39 @@ class Drush extends DrushCommands {
     catch (\Exception $e) {
       $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}.", $e->getMessage());
     }
+  }
+
+  /**
+   * Localize a resource (copy from source to the local file system).
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   * @param string $version
+   *   (Optional) The version to localize. If not supplied, will use the latest
+   *   version.
+   *
+   * @command dkan:datastore:localize
+   *
+   * @option deferred
+   *   Add the import to the  queue, rather than importing now.
+   *
+   * @todo Add a --deferred flag to queue, when we can queue this.
+   */
+  public function localize(string $identifier, $version = NULL, array $options = ['deferred' => FALSE]) {
+    $deferred = $options['deferred'] ? TRUE : FALSE;
+
+    if ($this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version) !== NULL) {
+      $result = $this->resourceLocalizer->localizeTask($identifier, $version, $deferred);
+
+      if ($result->getStatus() === Result::DONE) {
+        $this->output()->writeln($result->getError());
+        return DrushCommands::EXIT_SUCCESS;
+      }
+      $this->output()->writeln($result->getData());
+      return DrushCommands::EXIT_FAILURE;
+    }
+    $this->output()->writeln('No resource for identifier: ' . $identifier);
+    return DrushCommands::EXIT_FAILURE;
   }
 
 }

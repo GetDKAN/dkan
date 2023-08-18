@@ -9,6 +9,7 @@ use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Contracts\FactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
@@ -68,6 +69,13 @@ class ResourceLocalizer {
   private $jobStoreFactory;
 
   /**
+   * Drupal queue.
+   *
+   * @var \Drupal\Core\Queue\QueueFactory
+   */
+  private QueueFactory $queueFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
@@ -86,6 +94,47 @@ class ResourceLocalizer {
       $ff = $this->getFileFetcher($resource);
       return $ff->run();
     }
+  }
+
+  /**
+   * Either localize or queue a localization.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string|null $version
+   *   (Optional) Resource version. If not provided, will use latest revision.
+   * @param bool $deferred
+   *   (Optional) If TRUE, queue a localization task, otherwise perform the
+   *   localization. Defaults to FALSE.
+   *
+   * @return \Procrastinator\Result
+   *   Result of the process.
+   */
+  public function localizeTask(string $identifier, ?string $version = NULL, bool $deferred = FALSE): Result {
+    $result = new Result();
+    if (!$deferred) {
+      $localize_result = $this->localize($identifier, $version);
+      if ($localize_result === NULL) {
+        // For some reason localize() can return NULL, so help it out.
+        $result->setStatus(Result::ERROR);
+        $result->setError('Failed to create file fetcher queue for ' . $identifier . ':' . $version);
+        return $result;
+      }
+      return $localize_result;
+    }
+    if (
+          $this->queueFactory->get('localize_import')->createItem([
+            'identifier' => $identifier,
+            'version' => $version,
+          ]) !== FALSE
+        ) {
+      $result->setStatus(Result::DONE);
+      $result->setError('Queued file fetcher for ' . $identifier . ':' . $version);
+      return $result;
+    }
+    $result->setStatus(Result::ERROR);
+    $result->setError('Failed to create file fetcher queue for ' . $identifier . ':' . $version);
+    return $result;
   }
 
   /**
@@ -117,8 +166,8 @@ class ResourceLocalizer {
   private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
-    $dir = "file://" . $this->drupalFiles->getPublicFilesDirectory();
-    $localFileDrupalUri = str_replace($dir, "public://", $localFilePath);
+    $dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
+    $localFileDrupalUri = str_replace($dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
     $localUrl = Referencer::hostify($localUrl);
 
