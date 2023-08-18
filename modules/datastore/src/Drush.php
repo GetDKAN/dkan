@@ -55,12 +55,14 @@ class Drush extends DrushCommands {
     MetastoreService $metastoreService,
     DatastoreService $datastoreService,
     PostImport $postImport,
-    ResourceLocalizer $resourceLocalizer
+    ResourceLocalizer $resourceLocalizer,
+    ResourceMapper $resourceMapper
   ) {
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
     $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -243,13 +245,13 @@ class Drush extends DrushCommands {
    * @param string $version
    *   (Optional) The version to localize. If not supplied, will use the latest
    *   version.
+   * @param array $options
+   *   Command options.
    *
    * @command dkan:datastore:localize
    *
    * @option deferred
    *   Add the import to the  queue, rather than importing now.
-   *
-   * @todo Add a --deferred flag to queue, when we can queue this.
    */
   public function localize(string $identifier, $version = NULL, array $options = ['deferred' => FALSE]) {
     $deferred = $options['deferred'] ? TRUE : FALSE;
