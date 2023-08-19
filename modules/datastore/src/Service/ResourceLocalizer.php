@@ -41,6 +41,13 @@ class ResourceLocalizer {
   const LOCAL_URL_PERSPECTIVE = 'local_url';
 
   /**
+   * Event sent when a resource is successfully localized.
+   *
+   * @var string
+   */
+  const EVENT_RESOURCE_LOCALIZED = 'event_resource_localized';
+
+  /**
    * DKAN resource file mapper service.
    *
    * @var \Drupal\metastore\ResourceMapper
@@ -88,12 +95,12 @@ class ResourceLocalizer {
   /**
    * Retriever the file and create a local copy of it.
    */
-  public function localize($identifier, $version = NULL) {
-    $resource = $this->getResourceSource($identifier, $version);
-    if ($resource) {
+  public function localize($identifier, $version = NULL): ?Result {
+    if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
       return $ff->run();
     }
+    return NULL;
   }
 
   /**
@@ -108,7 +115,8 @@ class ResourceLocalizer {
    *   localization. Defaults to FALSE.
    *
    * @return \Procrastinator\Result
-   *   Result of the process.
+   *   Result of the process. If deferred, will be the result of creating a
+   *   queue item. Otherwise, will be the result of localizing.
    */
   public function localizeTask(string $identifier, ?string $version = NULL, bool $deferred = FALSE): Result {
     $result = new Result();
@@ -122,12 +130,10 @@ class ResourceLocalizer {
       }
       return $localize_result;
     }
-    if (
-          $this->queueFactory->get('localize_import')->createItem([
-            'identifier' => $identifier,
-            'version' => $version,
-          ]) !== FALSE
-        ) {
+    if ($this->queueFactory->get('localize_import')->createItem([
+      'identifier' => $identifier,
+      'version' => $version,
+    ]) !== FALSE) {
       $result->setStatus(Result::DONE);
       $result->setError('Queued file fetcher for ' . $identifier . ':' . $version);
       return $result;
