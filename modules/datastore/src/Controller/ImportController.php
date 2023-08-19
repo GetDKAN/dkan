@@ -16,8 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Class Api.
  *
  * @package Drupal\datastore
- *
- * @codeCoverageIgnore
  */
 class ImportController implements ContainerInjectionInterface {
   use JsonResponseTrait;
@@ -117,7 +115,7 @@ class ImportController implements ContainerInjectionInterface {
     }
 
     if (!isset($payload->resource_id)) {
-      return $this->getResponseFromException(new \Exception("Invalid payload."));
+      return $this->getResponseFromException(new \Exception('Invalid payload.'));
     }
 
     try {
@@ -163,8 +161,8 @@ class ImportController implements ContainerInjectionInterface {
       $this->datastoreService->drop($identifier);
       return $this->getResponse(
         [
-          "identifier" => $identifier,
-          "message" => "The datastore for resource {$identifier} was successfully dropped.",
+          'identifier' => $identifier,
+          'message' => "The datastore for resource {$identifier} was successfully dropped.",
         ]
       );
     }
@@ -187,7 +185,7 @@ class ImportController implements ContainerInjectionInterface {
     $payload = json_decode($payloadJson);
 
     if (!isset($payload->resource_ids)) {
-      return $this->getResponseFromException(new \Exception("Invalid payload."));
+      return $this->getResponseFromException(new \Exception('Invalid payload.'));
     }
 
     $identifiers = $payload->resource_ids;

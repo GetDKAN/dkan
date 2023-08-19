@@ -83,7 +83,6 @@ class Drush extends DrushCommands {
    * @option deferred
    *   Add the import to the datastore_import queue, rather than importing now.
    *
-   * @todo pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan:datastore:import
    */
   public function import(string $identifier, array $options = ['deferred' => FALSE]) {

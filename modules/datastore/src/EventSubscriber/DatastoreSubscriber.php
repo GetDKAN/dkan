@@ -90,13 +90,14 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Inherited.
+   * The resource mapper has registered a resource.
    *
-   * @inheritdoc
+   * @param \Drupal\common\Events\Event $event
+   *   Event.
+   *
+   * @see ResourceMapper::EVENT_REGISTRATION
    */
   public function onRegistration(Event $event) {
-
-    /** @var \Drupal\common\Events\Event $event */
     $resource = $event->getData();
 
     if ($resource->getPerspective() == 'source' && $this->isDataStorable($resource)) {
