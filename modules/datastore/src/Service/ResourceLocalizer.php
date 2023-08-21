@@ -41,13 +41,6 @@ class ResourceLocalizer {
   const LOCAL_URL_PERSPECTIVE = 'local_url';
 
   /**
-   * Event sent when a resource is successfully localized.
-   *
-   * @var string
-   */
-  const EVENT_RESOURCE_LOCALIZED = 'event_resource_localized';
-
-  /**
    * DKAN resource file mapper service.
    *
    * @var \Drupal\metastore\ResourceMapper
@@ -93,14 +86,17 @@ class ResourceLocalizer {
   }
 
   /**
-   * Retriever the file and create a local copy of it.
+   * Retrieve the file and create a local copy of it.
    */
-  public function localize($identifier, $version = NULL): ?Result {
+  protected function localize($identifier, $version = NULL): Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
       return $ff->run();
     }
-    return NULL;
+    $result = new Result();
+    $result->setStatus(Result::ERROR);
+    $result->setError('Unable to find resource to localize: ' . $identifier . ':' . $version);
+    return $result;
   }
 
   /**
@@ -116,20 +112,14 @@ class ResourceLocalizer {
    *
    * @return \Procrastinator\Result
    *   Result of the process. If deferred, will be the result of creating a
-   *   queue item. Otherwise, will be the result of localizing.
+   *   queue item. Otherwise, will be the result of localizing. Result will be
+   *   DONE if the localization had already occurred.
    */
   public function localizeTask(string $identifier, ?string $version = NULL, bool $deferred = FALSE): Result {
-    $result = new Result();
     if (!$deferred) {
-      $localize_result = $this->localize($identifier, $version);
-      if ($localize_result === NULL) {
-        // For some reason localize() can return NULL, so help it out.
-        $result->setStatus(Result::ERROR);
-        $result->setError('Failed to create file fetcher queue for ' . $identifier . ':' . $version);
-        return $result;
-      }
-      return $localize_result;
+      return $this->localize($identifier, $version);
     }
+    $result = new Result();
     if ($this->queueFactory->get('localize_import')->createItem([
       'identifier' => $identifier,
       'version' => $version,

@@ -4,17 +4,16 @@ namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
-
-use Drupal\common\Events\Event;
 use Drupal\common\DataResource;
+use Drupal\common\Events\Event;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\ResourceMapper;
-
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -36,6 +35,21 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * @var \Drupal\Core\Logger\LoggerChannelFactory
    */
   protected $loggerFactory;
+
+  /**
+   * @var \Drupal\datastore\DatastoreService
+   */
+  private DatastoreService $datastoreService;
+
+  /**
+   * @var \Drupal\datastore\Service\ResourcePurger
+   */
+  private ResourcePurger $resourcePurger;
+
+  /**
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
+  private JobStoreFactory $jobStoreFactory;
 
   /**
    * Inherited.
@@ -69,7 +83,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   public function __construct(ConfigFactoryInterface $config_factory, LoggerChannelFactory $logger_factory, DatastoreService $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
     $this->configFactory = $config_factory;
     $this->loggerFactory = $logger_factory;
-    $this->service = $service;
+    $this->datastoreService = $service;
     $this->resourcePurger = $resourcePurger;
     $this->jobStoreFactory = $jobStoreFactory;
   }
@@ -86,6 +100,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
     $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
     $events[LifeCycle::EVENT_PRE_REFERENCE][] = ['onPreReference'];
+    $events[LocalizeQueueWorker::EVENT_RESOURCE_LOCALIZED][] = ['onLocalizeComplete'];
     return $events;
   }
 
@@ -102,7 +117,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
 
     if ($resource->getPerspective() == 'source' && $this->isDataStorable($resource)) {
       try {
-        $this->service->import($resource->getIdentifier(), TRUE, $resource->getVersion());
+        $this->datastoreService->import($resource->getIdentifier(), TRUE, $resource->getVersion());
       }
       catch (\Exception $e) {
         $this->loggerFactory->get('datastore')->error($e->getMessage());
@@ -143,7 +158,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $ref_uuid = $resource->getUniqueIdentifier();
     $id = md5(str_replace('source', 'local_file', $ref_uuid));
     try {
-      $this->service->drop($resource->getIdentifier(), $resource->getVersion());
+      $this->datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
       $this->loggerFactory->get('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);
     }
     catch (\Exception $e) {
@@ -189,6 +204,27 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       $rev = &drupal_static('metastore_resource_mapper_new_revision');
       $rev = 1;
     }
+  }
+
+  /**
+   * React to files being localized.
+   *
+   * This happens when the source CSV has been downloaded to the local file
+   * system. When that happens successfully, we create queue items for importing
+   * the file into the database.
+   *
+   * @param \Drupal\common\Events\Event $event
+   *   The Event.
+   *
+   * @see \Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker::EVENT_RESOURCE_LOCALIZED
+   */
+  public function onLocalizeComplete(Event $event) {
+    $data = $event->getData();
+    $this->datastoreService->import(
+      $data['identifier'] ?? NULL,
+      TRUE,
+      $data['version'] ?? NULL
+    );
   }
 
   /**
