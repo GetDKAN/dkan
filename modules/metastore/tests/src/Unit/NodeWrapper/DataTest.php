@@ -12,14 +12,14 @@ use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Testing the NodeWrapper.
  */
-class DataTest extends TestCase
-{
+class DataTest extends TestCase {
   public function testGetOriginalGetUsAWrapper() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
@@ -31,12 +31,16 @@ class DataTest extends TestCase
 
     $entityTypeManager = (new Chain($this))
       ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->add(EntityTypeManager::class, 'findDefinitions', ['node'])
       ->add(RevisionableStorageInterface::class, 'getLatestRevisionId', 123)
-      ->addd('loadRevision', Node::class)
+      ->addd('loadRevision', $node)
       ->getMock();
 
     $container = (new Chain($this))
-      ->add(Container::class)
+      ->add(Container::class, 'get', (new Options())
+        ->add('entity_type.manager', $entityTypeManager)
+        ->index(0)
+      )
       ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
       ->getMock();
 
