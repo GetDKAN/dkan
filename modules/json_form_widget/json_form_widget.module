@@ -128,8 +128,9 @@ function json_form_widget_file_submit(array $form, FormStateInterface $form_stat
 function _json_form_widget_update_file(string $url, FormStateInterface $form_state) {
   $fo = $form_state->getFormObject();
   $storage = \Drupal::entityTypeManager()->getStorage('file');
-  $props = ['uri' => _json_form_widget_get_file_uri($url)];
-  $file = reset($storage->loadByProperties($props));
+  $uri = ['uri' => _json_form_widget_get_file_uri($url)];
+  $props = $storage->loadByProperties($uri);
+  $file = reset($props);
 
   if ($file instanceof FileInterface) {
     $file->setPermanent();
