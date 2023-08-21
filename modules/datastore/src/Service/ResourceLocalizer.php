@@ -78,11 +78,12 @@ class ResourceLocalizer {
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
+  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory, QueueFactory $queueFactory) {
     $this->fileMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->queueFactory = $queueFactory;
   }
 
   /**
@@ -91,7 +92,11 @@ class ResourceLocalizer {
   protected function localize($identifier, $version = NULL): Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
-      return $ff->run();
+      $result = $ff->run();
+      if ($result->getStatus() === Result::DONE) {
+        $this->registerNewPerspectives($resource, $ff);
+      }
+      return $result;
     }
     $result = new Result();
     $result->setStatus(Result::ERROR);
@@ -125,11 +130,11 @@ class ResourceLocalizer {
       'version' => $version,
     ]) !== FALSE) {
       $result->setStatus(Result::DONE);
-      $result->setError('Queued file fetcher for ' . $identifier . ':' . $version);
+      $result->setError('Queued localize_import for ' . $identifier . ':' . $version);
       return $result;
     }
     $result->setStatus(Result::ERROR);
-    $result->setError('Failed to create file fetcher queue for ' . $identifier . ':' . $version);
+    $result->setError('Failed to create localize_import queue for ' . $identifier . ':' . $version);
     return $result;
   }
 
