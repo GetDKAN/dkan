@@ -5,7 +5,7 @@ namespace Drupal\Tests\datastore_mysql_import\Functional;
 use Drupal\Tests\dkan\Functional\DatasetBTBTest;
 
 /**
- * Class DatasetTest
+ * Dataset tests with the datastore_mysql_import module enabled.
  *
  * This test is a subclass of \Drupal\Tests\dkan\Functional\DatasetBTBTest, so
  * we get the same tests, except with datastore_mysql_import enabled.

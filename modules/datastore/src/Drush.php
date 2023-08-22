@@ -46,6 +46,11 @@ class Drush extends DrushCommands {
    */
   protected ResourceLocalizer $resourceLocalizer;
 
+  /**
+   * Resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
   protected ResourceMapper $resourceMapper;
 
   /**
@@ -79,6 +84,8 @@ class Drush extends DrushCommands {
    *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   * @param array $options
+   *   Command line options.
    *
    * @option deferred
    *   Add the import to the datastore_import queue, rather than importing now.
@@ -86,7 +93,7 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:import
    */
   public function import(string $identifier, array $options = ['deferred' => FALSE]) {
-    $deferred = $options['deferred'] ? TRUE : FALSE;
+    $deferred = (bool) $options['deferred'];
 
     try {
       $result = $this->datastoreService->import($identifier, $deferred);

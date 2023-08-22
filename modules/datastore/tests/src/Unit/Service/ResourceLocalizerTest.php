@@ -8,6 +8,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -42,7 +43,8 @@ class ResourceLocalizerTest extends TestCase {
       $this->getFileMapperChain()->getMock(),
       $this->getFileFetcherFactoryChain()->getMock(),
       $this->getDrupalFilesChain()->getMock(),
-      $this->getJobStoreFactoryChain()->getMock()
+      $this->getJobStoreFactoryChain()->getMock(),
+      $this->createMock(QueueFactory::class)
     );
     $this->assertNull($service->get($resource->getIdentifier(), $resource->getVersion()));
   }
@@ -76,7 +78,8 @@ class ResourceLocalizerTest extends TestCase {
       $fileMapper,
       $fileFetcher,
       $this->getDrupalFilesChain()->getMock(),
-      $this->getJobStoreFactoryChain()->getMock()
+      $this->getJobStoreFactoryChain()->getMock(),
+      $this->createMock(QueueFactory::class)
     );
 
     \Drupal::setContainer($this->getContainer()->getMock());

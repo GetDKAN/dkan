@@ -14,7 +14,7 @@ use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
 /**
- * Class DatasetTest
+ * Dataset tests.
  *
  * @group dkan
  * @group functional
@@ -72,7 +72,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Test archiving of datasets after a harvest
+   * Test archiving of datasets after a harvest.
    */
   public function testHarvestArchive() {
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
@@ -151,7 +151,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
 
     // Get the dataset info.
-    $metadata =  \Drupal::service('dkan.common.dataset_info')->gather($id_1);
+    $metadata = \Drupal::service('dkan.common.dataset_info')->gather($id_1);
     $distributionTable = $metadata['latest_revision']['distributions'][0]['table_name'];
 
     // Confirm distribution table exists.
@@ -278,12 +278,10 @@ class DatasetBTBTest extends BrowserTestBase {
     $dataset = $this->datasetPostAndRetrieve();
     $resource = $this->getResourceFromDataset($dataset);
 
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
 
     $queryString = "[SELECT * FROM {$this->getResourceDatastoreTable($resource)}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
     $this->queryResource($resource, $queryString);
-
-    /**/
   }
 
   private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
@@ -401,7 +399,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Simulate a cron on queues relevant to this scenario.
-    $this->runQueues(['datastore_import', 'resource_purger']);
+    $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
   }
 
   /**

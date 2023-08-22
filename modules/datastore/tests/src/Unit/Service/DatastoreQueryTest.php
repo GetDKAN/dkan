@@ -6,6 +6,7 @@ use Drupal\common\DataResource;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\metastore\ResourceMapper;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
@@ -187,6 +188,7 @@ class DatastoreQueryTest extends TestCase {
   public function getCommonMockChain() {
 
     $options = (new Options())
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.datastore.service", DatastoreService::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)

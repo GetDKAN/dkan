@@ -3,7 +3,6 @@
 namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\common\Events\Event;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -86,7 +85,7 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
     $plugin_definition,
     ResourceLocalizer $resourceLocalizer,
     LoggerChannelFactoryInterface $loggerFactory,
-    ContainerAwareEventDispatcher $eventDispatcher,
+    EventDispatcherInterface $eventDispatcher,
     ResourceMapper $resourceMapper
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);

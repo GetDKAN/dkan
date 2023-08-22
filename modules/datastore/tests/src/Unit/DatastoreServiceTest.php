@@ -90,6 +90,7 @@ class DatastoreServiceTest extends TestCase {
 
   private function getCommonChain() {
     $options = (new Options())
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)

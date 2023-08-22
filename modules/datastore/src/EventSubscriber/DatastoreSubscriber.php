@@ -37,16 +37,22 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   protected $loggerFactory;
 
   /**
+   * Datastore service.
+   *
    * @var \Drupal\datastore\DatastoreService
    */
   private DatastoreService $datastoreService;
 
   /**
+   * Resource purger service.
+   *
    * @var \Drupal\datastore\Service\ResourcePurger
    */
   private ResourcePurger $resourcePurger;
 
   /**
+   * Jobstore factory service.
+   *
    * @var \Drupal\common\Storage\JobStoreFactory
    */
   private JobStoreFactory $jobStoreFactory;
