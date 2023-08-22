@@ -53,7 +53,7 @@ You can use Drush to discover more information about the dataset, given its ID:
         }
     }
 
-We want the resource_id of the distribution. Here’s an example of extracting it using jq:
+We want the resource ID from the distribution. You can just select and copy it from the JSON output, or extract it using `jq <https://jqlang.github.io/jq/>`_:
 
 .. code-block::
 
