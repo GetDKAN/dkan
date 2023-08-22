@@ -90,6 +90,8 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Import info list service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
+   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   *   Resource mapper service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
@@ -152,7 +154,7 @@ class DatastoreService implements ContainerInjectionInterface {
 
     // Now work on the database. If we passed $deferred, add to the queue for
     // later.
-    if ($deferred == TRUE) {
+    if ($deferred) {
       // Perform the db import as a queue item.
       $queueId = $this->queue->get('datastore_import')->createItem([
         'identifier' => $identifier,

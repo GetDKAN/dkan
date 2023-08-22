@@ -52,10 +52,6 @@ commands:
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
             # Modify config to use our PHP version.
             sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
-            # Clear out omit_containers.
-            sed -i '/omit_containers/d' .ddev/config.dkan.yaml
-            # Don't load the DBA container.
-            echo "omit_containers: [dba]" >> .ddev/config.dkan.yaml
             ddev restart
             ddev status
             ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
