@@ -112,7 +112,7 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
-   * Start import process for a resource, provided by UUID.
+   * Start the import process for a resource.
    *
    * This is the entry point for both the file localization step and the
    * database import step. This method knows how to do both.
@@ -124,11 +124,15 @@ class DatastoreService implements ContainerInjectionInterface {
    * progress.
    *
    * @param string $identifier
-   *   A resource identifier.
+   *   The resource identifier.
    * @param bool $deferred
-   *   Send to the queue for later? Will import immediately if FALSE..
+   *   (Optional) Whether to create queue workers for the import process. If
+   *   TRUE, will create a localize_import queue worker for the resource, which
+   *   will in turn create a datastore_import worker when its successful. If
+   *   FALSE, will perform file localization and then data import.
    * @param string|null $version
-   *   A resource's version.
+   *   (Optional) The resource version. If NULL, the most recent version will
+   *   be used.
    *
    * @return array
    *   Array of response messages from the various import-related services we
@@ -138,7 +142,6 @@ class DatastoreService implements ContainerInjectionInterface {
     $results = [];
     // @todo Determine if we have already done all this for the whole dataset
     //   before continuing.
-
     // Have we localized yet?
     if (
       $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version) === NULL
