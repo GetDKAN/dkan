@@ -55,7 +55,7 @@ class DatastoreServiceTest extends TestCase {
   public function testDrop() {
     $resource = new DataResource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
-      ->add(ResourceLocalizer::class, 'get', $resource)
+      ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'destruct')

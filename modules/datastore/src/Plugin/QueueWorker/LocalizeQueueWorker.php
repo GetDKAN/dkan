@@ -56,6 +56,8 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
   protected EventDispatcherInterface $eventDispatcher;
 
   /**
+   * Resource mapper service.
+   *
    * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;

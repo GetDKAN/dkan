@@ -198,32 +198,6 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
-   */
-  // private function getResource($identifier, $version) {
-  //    $label = $this->getLabelFromObject($this->resourceLocalizer);
-  //    $resource = $this->resourceLocalizer->get($identifier, $version);
-  //
-  //    if ($resource) {
-  //      $result = [
-  //        $label => $this->resourceLocalizer->getResult($identifier, $version),
-  //      ];
-  //      return [$resource, $result];
-  //    }
-  //
-  //    // @todo we should not do this, we need a filefetcher queue worker.
-  //    $result = [
-  //      $label => $this->resourceLocalizer->localizeTask($identifier, $version, FALSE),
-  //    ];
-  //
-  //    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
-  //      $resource = $this->resourceLocalizer->get($identifier, $version);
-  //    }
-  //
-  //    return [$resource, $result];
-  //  }
-
-  /**
    * Getter.
    */
   public function getImportService(DataResource $resource) {
@@ -306,7 +280,11 @@ class DatastoreService implements ContainerInjectionInterface {
    * @throws \InvalidArgumentException
    */
   public function getStorage(string $identifier, $version = NULL) {
-    $resource = $this->resourceLocalizer->get($identifier, $version);
+    $resource = $this->resourceMapper->get(
+      $identifier,
+      ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
+      $version
+    );
     if ($resource) {
       $importService = $this->getImportService($resource);
       return $importService->getStorage();
