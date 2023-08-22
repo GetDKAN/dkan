@@ -4,16 +4,16 @@ namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
-use Procrastinator\Result;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\Info\ImportInfoList;
-use FileFetcher\FileFetcher;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\metastore\ResourceMapper;
+use FileFetcher\FileFetcher;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Main services for the datastore.
@@ -56,6 +56,11 @@ class DatastoreService implements ContainerInjectionInterface {
   private $dictionaryEnforcer;
 
   /**
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  private ResourceMapper $resourceMapper;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -65,7 +70,8 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('queue'),
       $container->get('dkan.common.job_store'),
       $container->get('dkan.datastore.import_info_list'),
-      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
+      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
+      $container->get('dkan.metastore.resource_mapper')
     );
   }
 
@@ -91,7 +97,8 @@ class DatastoreService implements ContainerInjectionInterface {
     QueueFactory $queue,
     JobStoreFactory $jobStoreFactory,
     ImportInfoList $importInfoList,
-    DictionaryEnforcer $dictionaryEnforcer
+    DictionaryEnforcer $dictionaryEnforcer,
+    ResourceMapper $resourceMapper
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
@@ -99,10 +106,20 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->importInfoList = $importInfoList;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
    * Start import process for a resource, provided by UUID.
+   *
+   * This is the entry point for both the file localization step and the
+   * database import step. This method knows how to do both.
+   *
+   * This method will also try to short-circuit import steps if they are already
+   * complete.
+   *
+   * This method should also not re-trigger processes that are already in
+   * progress.
    *
    * @param string $identifier
    *   A resource identifier.
@@ -112,36 +129,54 @@ class DatastoreService implements ContainerInjectionInterface {
    *   A resource's version.
    *
    * @return array
-   *   Response.
+   *   Array of response messages from the various import-related services we
+   *   call. Key is the name of the class, value is the message.
    */
   public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
+    $results = [];
+    // @todo Determine if we have already done all this for the whole dataset
+    //   before continuing.
 
-    // If we passed $deferred, immediately add to the queue for later.
+    // Have we localized yet?
+    if (
+      $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version) === NULL
+    ) {
+      $result = $this->resourceLocalizer->localizeTask($identifier, $version, $deferred);
+      $results[$this->getLabelFromObject($this->resourceLocalizer)] = $result->getError();
+      // If the localize task is deferred, then it will send events to
+      // re-trigger the database import later, so we should stop here.
+      if ($deferred) {
+        return $results;
+      }
+    }
+
+    // Now work on the database. If we passed $deferred, add to the queue for
+    // later.
     if ($deferred == TRUE) {
-      // Attempt to fetch the file in a queue so as to not block user.
-      $queueId = $this->queue->get('datastore_import')
-        ->createItem(['identifier' => $identifier, 'version' => $version]);
+      // Perform the db import as a queue item.
+      $queueId = $this->queue->get('datastore_import')->createItem([
+        'identifier' => $identifier,
+        'version' => $version,
+      ]);
 
       if ($queueId === FALSE) {
-        throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
+        throw new \RuntimeException('Failed to create datastore_import queue for ' . $identifier . ':' . $version);
       }
-
       return [
-        'message' => "Resource {$identifier}:{$version} has been queued to be imported.",
+        'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
       ];
     }
 
-    $resource = NULL;
-    $result = NULL;
-    [$resource, $result] = $this->getResource($identifier, $version);
-
+    // Get the resource object.
+    $resource = $this->resourceLocalizer->get($identifier, $version);
     if (!$resource) {
-      return $result;
+      return $results;
     }
-
-    $result2 = $this->doImport($resource);
-
-    return array_merge($result, $result2);
+    // Do the database import.
+    return array_merge(
+      $results,
+      $this->doImport($resource)
+    );
   }
 
   /**
@@ -163,28 +198,28 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getResource($identifier, $version) {
-    $label = $this->getLabelFromObject($this->resourceLocalizer);
-    $resource = $this->resourceLocalizer->get($identifier, $version);
-
-    if ($resource) {
-      $result = [
-        $label => $this->resourceLocalizer->getResult($identifier, $version),
-      ];
-      return [$resource, $result];
-    }
-
-    // @todo we should not do this, we need a filefetcher queue worker.
-    $result = [
-      $label => $this->resourceLocalizer->localizeTask($identifier, $version, FALSE),
-    ];
-
-    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
-    }
-
-    return [$resource, $result];
-  }
+  // private function getResource($identifier, $version) {
+  //    $label = $this->getLabelFromObject($this->resourceLocalizer);
+  //    $resource = $this->resourceLocalizer->get($identifier, $version);
+  //
+  //    if ($resource) {
+  //      $result = [
+  //        $label => $this->resourceLocalizer->getResult($identifier, $version),
+  //      ];
+  //      return [$resource, $result];
+  //    }
+  //
+  //    // @todo we should not do this, we need a filefetcher queue worker.
+  //    $result = [
+  //      $label => $this->resourceLocalizer->localizeTask($identifier, $version, FALSE),
+  //    ];
+  //
+  //    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
+  //      $resource = $this->resourceLocalizer->get($identifier, $version);
+  //    }
+  //
+  //    return [$resource, $result];
+  //  }
 
   /**
    * Getter.
