@@ -14,7 +14,7 @@ Below are some abbreviated instructions. Read past this section for details.
 
 - Use :code:`drush dkan:datastore:prepare-localized [resource_id]` to set up the local file directory.
 - Transfer the file to that directory on the server using the command line or your file transfer program of choice.
-- Tell DKAN to use local files with this configuration: :code:`drush config:set common.settings always_use_existing_local_perspective 1`
+- Set DKAN to use existing local files for imports: :code:`drush config:set common.settings always_use_existing_local_perspective 1`
 - Perform the import: :code:`drush dkan:datastore:import --deferred [id] && drush queue:run datastore_import`
 - Turn off the local file preference with configuration: :code:`drush config:set common.settings always_use_existing_local_perspective 0`
 
