@@ -92,7 +92,7 @@ Transfer The File
 
 In this example we’ll just use wget to copy the file at the command line. At the moment, automating this process is left as an exercise for the reader, but a combination of bash and jq should be able to accomplish this.
 
-From the output of :code:`dkan:datastore:prepare-localized` we get the path. In our case this is :code:`/var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866`
+From the output of :code:`dkan:datastore:prepare-localized` we get the path. In our case this is */var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866*
 
 We’ll need to change into this directory… This may differ on your system.
 
