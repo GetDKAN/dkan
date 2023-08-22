@@ -73,7 +73,7 @@ Now that we have the resource ID, we can tell DKAN expect some other process to 
         "file": "\/var\/www\/html\/docroot\/sites\/default\/files\/resources\/1fecf29222b12fc1ce2678abbc8f870f_1691778866\/Bike_Lane.csv"
     }
 
-We can pipe this to jq as well:
+We can pipe this to jq as well, to extract the specific path where DKAN expects the file:
 
 .. code-block::
 
