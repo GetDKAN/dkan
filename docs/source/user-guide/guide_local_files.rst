@@ -60,7 +60,7 @@ We want the resource ID from the distribution. You can just select and copy it f
     % drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44 | jq -r '.latest_revision.distributions[].resource_id'
     1fecf29222b12fc1ce2678abbc8f870f
 
-Now that we have the resource ID, we can tell DKAN to prepare for some other script or process to download the file. We use Drush to do this:
+Now that we have the resource ID, we can tell DKAN expect some other process to download the file. We use :code:`drush dkan:datastore:prepare-localized` to do this:
 
 .. code-block::
 
