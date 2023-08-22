@@ -10,7 +10,7 @@ These instructions assume you’ve already created a dataset (through the the UI
 TL;DR
 =====
 
-Abbreviated instructions. Read further for more details.
+Below are some abbreviated instructions. Read past this section for details.
 
 - Use :code:`drush dkan:datastore:prepare-localized [id]` to set up the local file directory.
 - Transfer the file in some way other than a DKAN import.
