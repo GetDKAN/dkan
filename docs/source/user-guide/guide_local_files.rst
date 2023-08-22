@@ -5,7 +5,7 @@ Sometimes datasets are very large. They are represented by large files and creat
 
 It can help to download the files as a separate step from the import process, outside of the DKAN queue process. Then we can instruct DKAN to use those existing files for processing into the database.
 
-These instructions assume you’ve already set up a dataset, either through the UI or by running a harvest or through the dataset API. We’ll need the ID of the existing dataset.
+These instructions assume you’ve already created a dataset (through the the UI, a harvest or the API) that contains a distribution pointing to a remote CSV file, and that this CSV file has not yet been imported to the datastore. We’ll need the ID of the existing dataset.
 
 TL;DR
 =====
