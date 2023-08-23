@@ -78,11 +78,13 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    // Importing the datastore should invalidate the cache.
+    // Importing the datastore should invalidate the cache. Run twice so that
+    // localize_import can trigger the datastore_import queue.
+    $this->runQueues($queues);
     $this->runQueues($queues);
 
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody());
 
     // Get the variants of the import endpoint
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111?show-reference-ids');
