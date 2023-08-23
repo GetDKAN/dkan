@@ -45,7 +45,7 @@ class ResourceLocalizer {
    *
    * @var \Drupal\metastore\ResourceMapper
    */
-  private $fileMapper;
+  private $resourceMapper;
 
   /**
    * DKAN resource file fetcher factory.
@@ -79,7 +79,7 @@ class ResourceLocalizer {
    * Constructor.
    */
   public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory, QueueFactory $queueFactory) {
-    $this->fileMapper = $fileMapper;
+    $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
@@ -158,7 +158,7 @@ class ResourceLocalizer {
 
     $this->registerNewPerspectives($resource, $ff);
 
-    return $this->fileMapper->get($resource->getIdentifier(), $perpective, $resource->getVersion());
+    return $this->getFileMapper()->get($resource->getIdentifier(), $perpective, $resource->getVersion());
   }
 
   /**
@@ -175,7 +175,7 @@ class ResourceLocalizer {
     $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
     try {
-      $this->fileMapper->registerNewPerspective($new);
+      $this->getFileMapper()->registerNewPerspective($new);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -183,7 +183,7 @@ class ResourceLocalizer {
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
 
     try {
-      $this->fileMapper->registerNewPerspective($localUrlPerspective);
+      $this->getFileMapper()->registerNewPerspective($localUrlPerspective);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -213,7 +213,7 @@ class ResourceLocalizer {
         \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
       }
       $this->removeJob($uuid);
-      $this->fileMapper->remove($resource);
+      $this->getFileMapper()->remove($resource);
     }
   }
 
@@ -221,7 +221,7 @@ class ResourceLocalizer {
    * Remove the local_url perspective.
    */
   private function removeLocalUrl(DataResource $resource) {
-    return $this->fileMapper->remove($resource);
+    return $this->getFileMapper()->remove($resource);
   }
 
   /**
@@ -237,7 +237,7 @@ class ResourceLocalizer {
    * Private.
    */
   private function getResourceSource($identifier, $version = NULL): ?DataResource {
-    return $this->fileMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
+    return $this->getFileMapper()->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
   }
 
   /**
@@ -257,8 +257,8 @@ class ResourceLocalizer {
   /**
    * Private.
    */
-  private function getFileMapper(): ResourceMapper {
-    return $this->fileMapper;
+  protected function getFileMapper(): ResourceMapper {
+    return $this->resourceMapper;
   }
 
   /**
