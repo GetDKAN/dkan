@@ -61,7 +61,9 @@ class DatastoreServiceTest extends TestCase {
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'destruct')
       ->add(ResourceLocalizer::class, 'remove')
+      ->add(ResourceLocalizer::class, 'getFileFetcher', FileFetcher::class)
       ->add(ResourceLocalizer::class, 'getFileMapper', ResourceMapper::class)
+      ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', TRUE);
