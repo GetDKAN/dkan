@@ -158,7 +158,7 @@ class ResourceLocalizer {
 
     $this->registerNewPerspectives($resource, $ff);
 
-    return $this->getFileMapper()->get($resource->getIdentifier(), $perpective, $resource->getVersion());
+    return $this->fileMapper->get($resource->getIdentifier(), $perpective, $resource->getVersion());
   }
 
   /**
@@ -175,7 +175,7 @@ class ResourceLocalizer {
     $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
     try {
-      $this->getFileMapper()->registerNewPerspective($new);
+      $this->fileMapper->registerNewPerspective($new);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -183,7 +183,7 @@ class ResourceLocalizer {
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
 
     try {
-      $this->getFileMapper()->registerNewPerspective($localUrlPerspective);
+      $this->fileMapper->registerNewPerspective($localUrlPerspective);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -237,7 +237,7 @@ class ResourceLocalizer {
    * Private.
    */
   private function getResourceSource($identifier, $version = NULL): ?DataResource {
-    return $this->getFileMapper()->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
+    return $this->fileMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
   }
 
   /**

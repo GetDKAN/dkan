@@ -24,6 +24,7 @@ use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
+ * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
  */
 class DatastoreServiceTest extends TestCase {
@@ -53,6 +54,7 @@ class DatastoreServiceTest extends TestCase {
   }
 
   public function testDrop() {
+//    $this->markTestIncomplete('TypeError: Drupal\datastore\Service\ResourceLocalizer::getFileMapper(): Return value must be of type Drupal\metastore\ResourceMapper, null returned');
     $resource = new DataResource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
       ->add(ResourceMapper::class, 'get', $resource)
@@ -65,14 +67,11 @@ class DatastoreServiceTest extends TestCase {
 
     $service = DatastoreService::create($mockChain->getMock());
     // Ensure variations on drop return nothing.
-    $actual = $service->drop('foo');
-    $this->assertNull($actual);
-    $actual = $service->drop('foo', '123152');
-    $this->assertNull($actual);
-    $actual = $service->drop('foo', NULL, FALSE);
-    $this->assertNull($actual);
+    $this->assertNull($service->drop('foo'));
+    $this->assertNull($service->drop('foo', '123152'));
+    $this->assertNull($service->drop('foo', NULL, FALSE));
     $this->expectException(\TypeError::class);
-    $actual = $service->drop('foo', NULL, NULL);
+    $service->drop('foo', NULL, NULL);
   }
 
   /**
