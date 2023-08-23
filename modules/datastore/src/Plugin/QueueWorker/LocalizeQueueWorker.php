@@ -8,6 +8,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\metastore\ResourceMapper;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -63,6 +64,11 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
   private ResourceMapper $resourceMapper;
 
   /**
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  private ReferenceLookup $referenceLookup;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -88,13 +94,15 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
     ResourceLocalizer $resourceLocalizer,
     LoggerChannelFactoryInterface $loggerFactory,
     EventDispatcherInterface $eventDispatcher,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
+    ReferenceLookup $referenceLookup
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->resourceLocalizer = $resourceLocalizer;
     $this->logger = $loggerFactory->get('datastore');
     $this->eventDispatcher = $eventDispatcher;
     $this->resourceMapper = $resourceMapper;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -108,7 +116,8 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       $container->get('dkan.datastore.service.resource_localizer'),
       $container->get('logger.factory'),
       $container->get('event_dispatcher'),
-      $container->get('dkan.metastore.resource_mapper')
+      $container->get('dkan.metastore.resource_mapper'),
+      $container->get('dkan.metastore.reference_lookup')
     );
   }
 
@@ -141,6 +150,19 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       'version' => $data_resource->getVersion(),
     ]);
     $this->eventDispatcher->dispatch($event, static::EVENT_RESOURCE_LOCALIZED);
+
+    $uid = $data_resource->getIdentifier() . '__' . $data_resource->getVersion();
+    $this->invalidateCacheTags($uid . '__source');
+  }
+
+  /**
+   * Invalidate all appropriate cache tags for this resource.
+   *
+   * @param mixed $resourceId
+   *   A resource ID.
+   */
+  protected function invalidateCacheTags($resourceId) {
+    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
 }

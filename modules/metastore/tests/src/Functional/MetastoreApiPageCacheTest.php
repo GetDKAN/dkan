@@ -47,8 +47,6 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
    * Test dataset page caching
    */
   public function testDatasetApiPageCache() {
-    $this->markTestIncomplete('Exception: Localization of resource f526555b5146476f30fdd4c43b1a672f: Unable to find resource to localize: f526555b5146476f30fdd4c43b1a672f:');
-
     // Post dataset.
     $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
     $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));

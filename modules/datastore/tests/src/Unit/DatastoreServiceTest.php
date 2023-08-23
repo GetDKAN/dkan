@@ -54,15 +54,12 @@ class DatastoreServiceTest extends TestCase {
   }
 
   public function testDrop() {
-//    $this->markTestIncomplete('TypeError: Drupal\datastore\Service\ResourceLocalizer::getFileMapper(): Return value must be of type Drupal\metastore\ResourceMapper, null returned');
     $resource = new DataResource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'destruct')
       ->add(ResourceLocalizer::class, 'remove')
-      ->add(ResourceLocalizer::class, 'getFileFetcher', FileFetcher::class)
-      ->add(ResourceLocalizer::class, 'getFileMapper', ResourceMapper::class)
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)

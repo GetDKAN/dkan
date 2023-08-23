@@ -39,7 +39,6 @@ class DatastoreQueryTest extends TestCase {
    * @dataProvider queryCompareProvider()
    */
   public function testQueryCompare($testName) {
-    $this->markTestIncomplete('Error: Call to a member function query() on null');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
     $queryService = new Query(DatastoreService::create($container->getMock()));
@@ -48,7 +47,6 @@ class DatastoreQueryTest extends TestCase {
     $dkanQuery = QueryFactory::create($datastoreQuery, $storageMap);
     $dkanQueryCompare = QueryData::$testName(QueryData::QUERY_OBJECT);
     $dkanQueryCompare->showDbColumns = TRUE;
-    // $this->assertEquals(serialize($dkanQuery), serialize($dkanQueryCompare));
     $this->assertEquals(json_encode($dkanQuery, JSON_PRETTY_PRINT), json_encode($dkanQueryCompare, JSON_PRETTY_PRINT));
     $result = $queryService->runQuery($datastoreQuery);
     $this->assertIsArray($result->{'$.results'});
@@ -61,7 +59,6 @@ class DatastoreQueryTest extends TestCase {
    * Test a basic datastore query and response for expected properties.
    */
   public function testResultsQuery() {
-    $this->markTestIncomplete('Error: Call to a member function query() on null');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
     $queryService = new Query(DatastoreService::create($container->getMock()));
@@ -77,7 +74,6 @@ class DatastoreQueryTest extends TestCase {
    * Test no keys behavior (array instead of keyed object).
    */
   public function testNoKeysQuery() {
-    $this->markTestIncomplete('Error: Call to a member function query() on null');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
     $queryService = new Query(DatastoreService::create($container->getMock()));
@@ -88,7 +84,6 @@ class DatastoreQueryTest extends TestCase {
   }
 
   public function testBadCondition() {
-    $this->markTestIncomplete("Failed asserting that exception message 'Call to a member function query() on null' contains 'Invalid condition'.");
     $this->expectExceptionMessage('Invalid condition');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
@@ -107,7 +102,6 @@ class DatastoreQueryTest extends TestCase {
   }
 
   public function testTooManyResourcesQuery() {
-    $this->markTestIncomplete("Failed asserting that exception message 'Call to a member function query() on null' contains 'Too many resources specified.'.");
     $this->expectExceptionMessage('Too many resources specified.');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
@@ -129,7 +123,6 @@ class DatastoreQueryTest extends TestCase {
    * Ensure if an ungrouped property is specified, the query fails.
    */
   public function testUngroupedPropertyInGroupByQueryFails(): void {
-    $this->markTestIncomplete("Failed asserting that exception message 'Call to a member function query() on null' contains 'Un-grouped properties found in aggregate query: prop2'.");
     $this->expectExceptionMessage('Un-grouped properties found in aggregate query: prop2');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
@@ -139,7 +132,6 @@ class DatastoreQueryTest extends TestCase {
   }
 
   public function testRowIdsQuery() {
-    $this->markTestIncomplete('Error: Call to a member function query() on null');
     $container = $this->getCommonMockChain()
       ->add(DatabaseTable::class, 'getSchema', [
         'fields' => [
@@ -219,6 +211,7 @@ class DatastoreQueryTest extends TestCase {
       ->add(Data::class, 'retrieve', $resource_metadata)
       ->add(QueueFactory::class, 'get', [])
       ->add(ResourceLocalizer::class, 'get', $resource)
+      ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'query', $queryResult, 'DatabaseTableQuery')
