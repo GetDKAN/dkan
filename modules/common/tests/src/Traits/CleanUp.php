@@ -61,8 +61,8 @@ trait CleanUp {
    */
   private function flushQueues() {
     $dkanQueues = [
-      'datastore_import',
       'localizer_import',
+      'datastore_import',
       'orphan_reference_processor',
       'resource_purger',
     ];
