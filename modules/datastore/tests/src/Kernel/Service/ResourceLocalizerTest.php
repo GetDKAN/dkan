@@ -66,7 +66,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     // Try to localize.
     $this->assertInstanceOf(
       Result::class,
-      $result = $localizer->localize($source_resource->getIdentifier())
+      $result = $localizer->localizeTask($source_resource->getIdentifier())
     );
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getData());
 
@@ -139,7 +139,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     // Try to localize.
     $this->assertInstanceOf(
       Result::class,
-      $result = $localizer->localize($source_resource->getIdentifier())
+      $result = $localizer->localizeTask($source_resource->getIdentifier())
     );
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getData());
 

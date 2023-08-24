@@ -147,7 +147,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version) === NULL
     ) {
       $result = $this->resourceLocalizer->localizeTask($identifier, $version, $deferred);
-      $results[$this->getLabelFromObject($this->resourceLocalizer)] = $result->getError();
+      $results[$this->getLabelFromObject($this->resourceLocalizer)] = $result;
       // If the localize task is deferred, then it will send events to
       // re-trigger the database import later, so we should stop here.
       if ($deferred) {
@@ -224,7 +224,7 @@ class DatastoreService implements ContainerInjectionInterface {
 
     // @todo we should not do this, we need a filefetcher queue worker.
     $result = [
-      $label => $this->resourceLocalizer->localize($identifier, $version),
+      $label => $this->resourceLocalizer->localizeTask($identifier, $version),
     ];
 
     if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
