@@ -64,6 +64,8 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
   private ResourceMapper $resourceMapper;
 
   /**
+   * Reference lookup service.
+   *
    * @var \Drupal\metastore\Reference\ReferenceLookup
    */
   private ReferenceLookup $referenceLookup;
@@ -86,6 +88,8 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
    *   Event dispatcher service.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   Reference lookup service.
    */
   public function __construct(
     array $configuration,

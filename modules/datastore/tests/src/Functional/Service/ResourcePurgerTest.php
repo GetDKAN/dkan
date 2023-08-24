@@ -2,21 +2,27 @@
 
 namespace Drupal\Tests\datastore\Functional\Service;
 
-use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
  * Test ResourcePurger service.
  *
- * @package Drupal\Tests\datastore\Functional
  * @group datastore
+ * @group dkan
+ * @group btb
  */
-class ResourcePurgerTest extends ExistingSiteBase {
+class ResourcePurgerTest extends BrowserTestBase {
   use GetDataTrait;
-  use CleanUp;
+
+  protected $defaultTheme = 'stark';
+
+  protected static $modules = [
+    'common',
+    'datastore',
+    'metastore',
+    'node',
+  ];
 
   /**
    * DKAN dataset storage service.
@@ -71,35 +77,25 @@ class ResourcePurgerTest extends ExistingSiteBase {
   public function setUp(): void {
     parent::setUp();
 
-    // Prepare environment.
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-
     // Initialize services.
-    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
-    $this->datastore = \Drupal::service('dkan.datastore.service');
-    $this->metastore = \Drupal::service('dkan.metastore.service');
-    $this->queue = \Drupal::service('queue');
-    $this->queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    $this->resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    $this->datasetStorage = $this->container->get('dkan.metastore.storage')->getInstance('dataset');
+    $this->datastore = $this->container->get('dkan.datastore.service');
+    $this->metastore = $this->container->get('dkan.metastore.service');
+    $this->queue = $this->container->get('queue');
+    $this->queueWorkerManager = $this->container->get('plugin.manager.queue_worker');
+    $this->resourcePurger = $this->container->get('dkan.datastore.service.resource_purger');
+    $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
   }
 
   /**
    * Test deleting a dataset doesn't delete other datasets sharing a resource.
    */
   public function testDatasetsWithSharedResourcesAreNotDeletedPrematurely(): void {
-    $this->markTestIncomplete('big shrug');
     // Create 2 datasets with the same resource, and change the resource of one.
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
     $this->metastore->post('dataset', $dataset);
     $this->assertNotEmpty($this->datasetStorage->retrieve(123));
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['retirements_0.csv']), 'dataset');
     $this->metastore->patch('dataset', 123, $dataset);
     $this->assertNotEmpty($this->datasetStorage->retrieve(123));
@@ -107,7 +103,7 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $dataset2 = $this->validMetadataFactory->get($this->getDataset(456, 'Test #2', ['district_centerpoints_small.csv']), 'dataset');
     $this->metastore->post('dataset', $dataset2);
     $this->assertNotEmpty($this->datasetStorage->retrieve(456));
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
 
     // Ensure calling the resource purger on the updated dataset does not delete
     // the previously shared resource.
@@ -160,4 +156,5 @@ class ResourcePurgerTest extends ExistingSiteBase {
       }
     }
   }
+
 }

@@ -69,7 +69,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->setDefaultModerationState('draft');
 
     // Post, update and publish a dataset with multiple, changing resources.
-    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv'], 'post');
     $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
     $this->getMetastore()->publish('dataset', $id_1);
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
@@ -161,11 +161,12 @@ class DatasetTest extends ExistingSiteBase {
   /**
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
-  private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
+  private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method) {
     $datasetRootedJsonData = $this->getData($identifier, $title, $filenames);
     $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Simulate a cron on queues relevant to this scenario.
+    $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
     $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
   }
 

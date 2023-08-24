@@ -56,6 +56,8 @@ class DatastoreService implements ContainerInjectionInterface {
   private $dictionaryEnforcer;
 
   /**
+   * Resource mapper service.
+   *
    * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
@@ -198,40 +200,6 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   private function getLabelFromObject($object) {
     return substr(strrchr(get_class($object), '\\'), 1);
-  }
-
-  /**
-   * Get a resource and the result of localizing it.
-   *
-   * @param string $identifier
-   *   Resource identifier.
-   * @param string $version
-   *   Resource version.
-   *
-   * @return array
-   *   The resource object and a result object in an array.
-   */
-  private function getResource($identifier, $version) {
-    $label = $this->getLabelFromObject($this->resourceLocalizer);
-    $resource = $this->resourceLocalizer->get($identifier, $version);
-
-    if ($resource) {
-      $result = [
-        $label => $this->resourceLocalizer->getResult($identifier, $version),
-      ];
-      return [$resource, $result];
-    }
-
-    // @todo we should not do this, we need a filefetcher queue worker.
-    $result = [
-      $label => $this->resourceLocalizer->localizeTask($identifier, $version),
-    ];
-
-    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
-    }
-
-    return [$resource, $result];
   }
 
   /**

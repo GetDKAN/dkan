@@ -3,6 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\common\DataResource;
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
@@ -36,7 +37,6 @@ class ResourceLocalizerTest extends TestCase {
    * Test removal of a local resource file.
    */
   public function testResourceLocalizerRemove(): void {
-    $this->markTestIncomplete('Convert this to a kernel test.');
     $this->callWithTmpFile([$this, 'doTestResourceLocalizerRemove']);
   }
 
@@ -115,7 +115,7 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getFileFetcherFactoryChain() {
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', FileFetcher::class)
+      ->add(FileFetcherFactory::class, 'getInstance', FileFetcher::class)
       ->add(FileFetcher::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE);
   }
