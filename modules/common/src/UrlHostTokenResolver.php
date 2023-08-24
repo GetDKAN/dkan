@@ -5,11 +5,13 @@ namespace Drupal\common;
 /**
  * Convert between local file paths and public file URLs.
  *
- * @todo Convert to service with Dependency Injection.
+ * @todo Stop using tokenized host names altogether.
  */
 class UrlHostTokenResolver {
-  const TOKEN = "h-o.st";
-  const PUBLIC_SCHEME = 'public://';
+
+  const TOKEN = 'h-o.st';
+
+  const PUBLIC_URI = 'public://';
 
   /**
    * Get the HTTP server public files URL.
@@ -19,27 +21,28 @@ class UrlHostTokenResolver {
    */
   public static function getServerPublicFilesUrl(): ?string {
     // Get public file stream.
-    $public_stream = \Drupal::service('stream_wrapper_manager')
-      ->getViaUri(self::PUBLIC_SCHEME);
+    /** @var \Drupal\Core\StreamWrapper\StreamWrapperInterface $wrapper */
+    $wrapper = \Drupal::service('stream_wrapper_manager')
+      ->getViaUri(self::PUBLIC_URI);
     // Retrieve the URL path for the public stream.
-    return $public_stream ? $public_stream->getExternalUrl() : NULL;
+    return $wrapper ? $wrapper->getExternalUrl() : NULL;
   }
 
   /**
-   * Resolve hostified resource URL to actual domain URL.
+   * Resolve a 'hostified' resource HTTP URL to use the site domain.
    *
    * @param string $resourceUrl
    *   Hostified resource URL.
    *
    * @return string
-   *   Resolved resource URL (with actual domain).
+   *   Resolved resource URL (with site domain).
    */
   public static function resolve(string $resourceUrl): string {
     // Get HTTP server public files URL and extract the host.
     $serverPublicFilesUrl = self::getServerPublicFilesUrl();
     $serverPublicFilesUrl = isset($serverPublicFilesUrl) ? parse_url($serverPublicFilesUrl) : NULL;
     $serverHost = $serverPublicFilesUrl['host'] ?? \Drupal::request()->getHost();
-    // Determine whether the localhost token is present in the resource URL, and
+    // Determine whether the hostified token is present in the resource URL, and
     // replace the token if necessary.
     if (substr_count($resourceUrl, self::TOKEN) > 0) {
       $resourceUrl = str_replace(self::TOKEN, $serverHost, $resourceUrl);
@@ -48,7 +51,7 @@ class UrlHostTokenResolver {
   }
 
   /**
-   * Resolve host token string to public file path.
+   * Resolve an HTTP URL into a public URI.
    *
    * @param string $resourceUrl
    *   Full temporary token URL.
@@ -57,8 +60,10 @@ class UrlHostTokenResolver {
    *   Resolved public file path.
    */
   public static function resolveFilePath(string $resourceUrl): string {
-    return urldecode(preg_replace('/^' . preg_quote(self::getServerPublicFilesUrl(), '/') . '/',
-      self::PUBLIC_SCHEME, self::resolve($resourceUrl)));
+    return urldecode(preg_replace(
+      '/^' . preg_quote(self::getServerPublicFilesUrl(), '/') . '/',
+      self::PUBLIC_URI, self::resolve($resourceUrl)
+    ));
   }
 
 }

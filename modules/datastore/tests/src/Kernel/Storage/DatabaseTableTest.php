@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
+namespace Drupal\Tests\datastore\Kernel\Storage;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\ImportedItemInterface;

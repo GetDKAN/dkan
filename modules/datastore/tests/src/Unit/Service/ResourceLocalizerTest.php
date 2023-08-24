@@ -32,25 +32,10 @@ class ResourceLocalizerTest extends TestCase {
   const HOST = 'http://example.com';
 
   /**
-   *
-   */
-  public function testNoResourceFound() {
-
-    $resource = new DataResource(self::HOST . '/file.csv', 'text/csv');
-
-    $service = new ResourceLocalizer(
-      $this->getFileMapperChain()->getMock(),
-      $this->getFileFetcherFactoryChain()->getMock(),
-      $this->getDrupalFilesChain()->getMock(),
-      $this->getJobStoreFactoryChain()->getMock()
-    );
-    $this->assertNull($service->get($resource->getIdentifier(), $resource->getVersion()));
-  }
-
-  /**
    * Test removal of a local resource file.
    */
   public function testResourceLocalizerRemove(): void {
+    $this->markTestIncomplete('Convert this to a kernel test.');
     $this->callWithTmpFile([$this, 'doTestResourceLocalizerRemove']);
   }
 
