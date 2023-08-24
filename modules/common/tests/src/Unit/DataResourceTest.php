@@ -4,6 +4,7 @@ namespace Drupal\Tests\common\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\common\DataResource;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
 use MockChain\Chain;
@@ -94,12 +95,12 @@ class DataResourceTest extends TestCase {
       DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
 
-    $clone_data_resource = $data_resource->createNewPerspective('local_url', 'uri://foo/bar');
+    $clone_data_resource = $data_resource->createNewPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, 'uri://foo/bar');
 
     // Not the same object.
     $this->assertNotSame($data_resource, $clone_data_resource);
     // Clone contains 'local_url' perspective.
-    $this->assertEquals('local_url', $clone_data_resource->getPerspective());
+    $this->assertEquals(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $clone_data_resource->getPerspective());
     $this->assertEquals('uri://foo/bar', $clone_data_resource->getFilePath());
   }
 

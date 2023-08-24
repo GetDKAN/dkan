@@ -201,6 +201,40 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
+   * Get a resource and the result of localizing it.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   *
+   * @return array
+   *   The resource object and a result object in an array.
+   */
+  private function getResource($identifier, $version) {
+    $label = $this->getLabelFromObject($this->resourceLocalizer);
+    $resource = $this->resourceLocalizer->get($identifier, $version);
+
+    if ($resource) {
+      $result = [
+        $label => $this->resourceLocalizer->getResult($identifier, $version),
+      ];
+      return [$resource, $result];
+    }
+
+    // @todo we should not do this, we need a filefetcher queue worker.
+    $result = [
+      $label => $this->resourceLocalizer->localize($identifier, $version),
+    ];
+
+    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
+      $resource = $this->resourceLocalizer->get($identifier, $version);
+    }
+
+    return [$resource, $result];
+  }
+
+  /**
    * Getter.
    */
   public function getImportService(DataResource $resource) {
@@ -226,20 +260,20 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   public function drop(string $identifier, ?string $version = NULL, bool $local_resource = TRUE) {
     $storage = $this->getStorage($identifier, $version);
-    $resource_id = $this->resourceLocalizer->get($identifier, $version)->getUniqueIdentifier();
+    $resource = $this->resourceLocalizer->get($identifier, $version);
 
     if ($storage) {
       $storage->destruct();
       $this->jobStoreFactory
         ->getInstance(ImportJob::class)
-        ->remove(md5($resource_id));
+        ->remove(md5($resource->getUniqueIdentifier()));
     }
 
     if ($local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
       $this->jobStoreFactory
         ->getInstance(FileFetcher::class)
-        ->remove(substr(str_replace('__', '_', $resource_id), 0, -11));
+        ->remove($resource->getUniqueIdentifierNoPerspective());
     }
   }
 

@@ -3,10 +3,27 @@
 namespace Drupal\common;
 
 use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Procrastinator\JsonSerializeTrait;
 
 /**
- * Resource.
+ * Data resource value object.
+ *
+ * Data resources have an identifier. There can be multiple 'perspectives' on
+ * the same resource, in which case two DataResource objects will have the same
+ * identifier, but different perspectives. There can also be multiple versions
+ * of the same resource with multiple perspectives.
+ *
+ * Currently, the allowable perspectives are:
+ * - 'source' which represents a CSV file somewhere on the internet. In this
+ *   case the file path will be an http:// URL.
+ * - 'local_path' which represents the same CSV file as a source file, but
+ *   stored locally in the file system. The file path will be a local URI,
+ *   probably in the public:// scheme.
+ * - 'local_url' which also can exist.
+ *
+ * Feed these various permutations of the DataResource object to the
+ * ResourceMapper, and it will store these differences in a database table.
  *
  * A resource models a means to get data. URLs to data/files, API endpoints,
  * paths to files stored locally in the server, are all possible
@@ -22,13 +39,14 @@ use Procrastinator\JsonSerializeTrait;
  * For more details refer to the methods governing these behaviors:
  * 1. Resource::createNewVersion()
  * 2. Resource::createNewPerspective()
- *
- * @todo Rename filePath to uri or url.
- * @todo Refactor as service.
  */
 class DataResource implements \JsonSerializable {
+
   use JsonSerializeTrait;
 
+  /**
+   * Perspective representing the external source file.
+   */
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
   /**
@@ -118,12 +136,15 @@ class DataResource implements \JsonSerializable {
   /**
    * Clone the current resource with a new version identifier.
    *
-   * Versions are, simply, a unique "string" used to represent changes in a
-   * resource. For example, when new data is added to a file/resource a new
-   * version of the resource should be created.
+   * Version identifiers are the result of calling time() when a new version is
+   * desired, and casting to a string.
+   *
+   * Versions are a unique "string" used to represent changes in a resource. For
+   * example, when new data is added to a file/resource a new version of the
+   * resource should be created.
    *
    * This class does not have any functionality that keeps track of changes in
-   * resources, it simply models the behavior to allow other parts of the
+   * resources, it only models the behavior to allow other parts of the
    * system to create new versions of resources when they deem it necessary.
    */
   public function createNewVersion(): DataResource {
@@ -137,9 +158,14 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Clone the current resource with a new perspective.
+   * Clone the current resource with a new perspective and URI.
    *
    * Perspectives are useful to represent clusters of connected resources.
+   *
+   * Multiple DataResource objects can represent different 'perspectives,' such
+   * as a local file versus a source file. As long as the identifier is the
+   * same, both DataResource objects represent the same resource in different
+   * ways.
    *
    * For example, a CSV file might also have an API endpoint that makes the
    * data available. In this circumstance we could create the API endpoint
@@ -218,13 +244,34 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Getter.
+   * Get a unique identifier for this data resource.
    *
    * @return string
    *   The unique identifier.
+   *
+   * @see self::getUniqueIdentifierNoPerspective()
    */
-  public function getUniqueIdentifier() {
+  public function getUniqueIdentifier(): string {
     return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
+  }
+
+  /**
+   * Get a unique identifier for this data resource, for some systems.
+   *
+   * Note that this method exists because, historically, some subsystems do not
+   * need a unique identifier which accounts for the perspective while others
+   * do.
+   *
+   * A non-inclusive list of these systems would be:
+   * - ResourceLocalizer
+   *
+   * @return string
+   *   The unique identifier, not accounting for the perspective.
+   *
+   * @see self::getUniqueIdentifier()
+   */
+  public function getUniqueIdentifierNoPerspective(): string {
+    return $this->getIdentifier() . '_' . $this->getVersion();
   }
 
   /**
@@ -272,9 +319,11 @@ class DataResource implements \JsonSerializable {
    *
    * @throws \Exception
    *   When string does not contain the 3 pieces of a unique identifier.
+   *
+   * @see self::getUniqueIdentifier()
    */
   public static function parseUniqueIdentifier(string $uid): array {
-    $pieces = explode("__", $uid);
+    $pieces = explode('__', $uid);
     if (count($pieces) != 3) {
       throw new \Exception("Badly constructed unique identifier {$uid}");
     }
@@ -303,7 +352,7 @@ class DataResource implements \JsonSerializable {
 
     // Partial identifier.
     if (substr_count($string, '__') > 0) {
-      $parts = explode("__", $string);
+      $parts = explode('__', $string);
       if (count($parts) == 2) {
         return $parts;
       }
@@ -312,8 +361,8 @@ class DataResource implements \JsonSerializable {
     $distribution = self::getDistribution($string);
 
     // Are we dealing with a distribution id?
-    if (isset($distribution->data->{"%Ref:downloadURL"})) {
-      $resource = $distribution->data->{"%Ref:downloadURL"}[0]->data;
+    if (isset($distribution->data->{'%Ref:downloadURL'})) {
+      $resource = $distribution->data->{'%Ref:downloadURL'}[0]->data;
       return [$resource->identifier, $resource->version];
     }
 
@@ -330,6 +379,7 @@ class DataResource implements \JsonSerializable {
    *   JSON-decoded object.
    */
   private static function getDistribution($identifier) {
+    /** @var \Drupal\metastore\Storage\DataFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
     $storage = $factory->getInstance('distribution');
 
@@ -344,7 +394,20 @@ class DataResource implements \JsonSerializable {
    * Generates MD5 checksum for a file.
    */
   public function generateChecksum() {
-    $this->checksum = md5_file($this->filePath);
+    try {
+      $this->checksum = md5_file($this->filePath);
+    }
+    catch (\Throwable $throwable) {
+      // Re-throw the throwable if we're not in the perspective of a local file
+      // that doesn't exist. It's valid for a local file to not exist in some
+      // circumstances.
+      if (
+        $this->getPerspective() !== ResourceLocalizer::LOCAL_FILE_PERSPECTIVE ||
+        !file_exists($this->filePath)
+      ) {
+        throw $throwable;
+      }
+    }
   }
 
 }

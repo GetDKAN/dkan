@@ -169,7 +169,7 @@ class HarvestService implements ContainerInjectionInterface {
     $harvester = $this->getHarvester($id);
 
     $result = $harvester->harvest();
-    if (is_null($result['status']['extracted_items_ids'])) {
+    if (is_null($result['status']['extracted_items_ids'] ?? NULL)) {
       throw new \Exception("No items found to extract, review your harvest plan.");
     }
     $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($id, $result['status']['extracted_items_ids']);

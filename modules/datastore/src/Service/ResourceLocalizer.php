@@ -2,12 +2,12 @@
 
 namespace Drupal\datastore\Service;
 
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
-use Contracts\FactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\Exception\AlreadyRegistered;
@@ -19,22 +19,21 @@ use Drupal\common\EventDispatcherTrait;
 
 /**
  * Resource localizer.
- *
- * @todo Update fileMapper to resourceMapper.
  */
 class ResourceLocalizer {
+
   use LoggerTrait;
   use EventDispatcherTrait;
 
   /**
-   * Local file perspective key.
+   * Perspective representing the local file with public:// URI scheme.
    *
    * @var string
    */
   const LOCAL_FILE_PERSPECTIVE = 'local_file';
 
   /**
-   * Local URL perspective key.
+   * Perspective representing local file with http:// scheme and bogus domain.
    *
    * @var string
    */
@@ -45,28 +44,28 @@ class ResourceLocalizer {
    *
    * @var \Drupal\metastore\ResourceMapper
    */
-  private $resourceMapper;
+  private ResourceMapper $resourceMapper;
 
   /**
    * DKAN resource file fetcher factory.
    *
-   * @var \Contracts\FactoryInterface
+   * @var \Drupal\common\FileFetcher\FileFetcherFactory
    */
-  private $fileFetcherFactory;
+  private FileFetcherFactory $fileFetcherFactory;
 
   /**
    * Drupal files utility service.
    *
    * @var \Drupal\common\Util\DrupalFiles
    */
-  private $drupalFiles;
+  private DrupalFiles $drupalFiles;
 
   /**
    * Job store factory.
    *
    * @var \Drupal\common\Storage\JobStoreFactory
    */
-  private $jobStoreFactory;
+  private JobStoreFactory $jobStoreFactory;
 
   /**
    * Drupal queue.
@@ -78,7 +77,13 @@ class ResourceLocalizer {
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory, QueueFactory $queueFactory) {
+  public function __construct(
+    ResourceMapper $fileMapper,
+    FileFetcherFactory $fileFetcherFactory,
+    DrupalFiles $drupalFiles,
+    JobStoreFactory $jobStoreFactory,
+    QueueFactory $queueFactory
+  ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
@@ -87,7 +92,9 @@ class ResourceLocalizer {
   }
 
   /**
-   * Retrieve the file and create a local copy of it.
+   * Copy the source file to the local file system.
+   *
+   * Do not (yet) update the file map database with this information.
    */
   protected function localize($identifier, $version = NULL): Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
@@ -139,10 +146,14 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get the localized resource.
+   * Create local file and URL perspectives in the mapper, get a perspective.
+   *
+   * Requires the localized file to exist so it can be checksummed.
+   *
+   * @return \Drupal\common\DataResource|null
+   *   Return the perspective, or NULL if the source perspective did not exist.
    */
   public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?DataResource {
-    /** @var \Drupal\common\DataResource $resource */
     $resource = $this->getResourceSource($identifier, $version);
 
     if (!$resource) {
@@ -150,32 +161,31 @@ class ResourceLocalizer {
     }
 
     $ff = $this->getFileFetcher($resource);
-    $status = $ff->getResult()->getStatus();
 
-    if ($status != Result::DONE) {
+    if ($ff->getResult()->getStatus() != Result::DONE) {
       return NULL;
     }
 
     $this->registerNewPerspectives($resource, $ff);
 
-    return $this->getFileMapper()->get($resource->getIdentifier(), $perpective, $resource->getVersion());
+    return $this->resourceMapper->get($resource->getIdentifier(), $perpective, $resource->getVersion());
   }
 
   /**
-   * Private.
+   * Add local file and local URL perspectives to the resource mapper.
    */
   private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
-    $dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
-    $localFileDrupalUri = str_replace($dir, 'public://', $localFilePath);
+    $public_dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
+    $localFileDrupalUri = str_replace($public_dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
     $localUrl = Referencer::hostify($localUrl);
 
     $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
     try {
-      $this->getFileMapper()->registerNewPerspective($new);
+      $this->resourceMapper->registerNewPerspective($new);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -183,14 +193,14 @@ class ResourceLocalizer {
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
 
     try {
-      $this->getFileMapper()->registerNewPerspective($localUrlPerspective);
+      $this->resourceMapper->registerNewPerspective($localUrlPerspective);
     }
     catch (AlreadyRegistered $e) {
     }
   }
 
   /**
-   * Get Result.
+   * Get a file fetcher result.
    */
   public function getResult($identifier, $version = NULL) {
     $ff = $this->getFileFetcher($this->getResourceSource($identifier, $version));
@@ -200,28 +210,19 @@ class ResourceLocalizer {
   /**
    * Remove local file.
    */
-  public function remove($identifier, $version = NULL) {
-    /** @var \Drupal\common\DataResource $resource */
-    $resource = $this->get($identifier, $version);
-    $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
-    if ($resource2) {
-      $this->removeLocalUrl($resource2);
+  public function remove($identifier, $version = NULL): void {
+    if ($local_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
+      $this->resourceMapper->remove($local_resource);
     }
-    if ($resource) {
-      $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
+    if ($resource = $this->get($identifier, $version)) {
+      $resource_id = $resource->getUniqueIdentifierNoPerspective();
       if (file_exists($resource->getFilePath())) {
-        \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
+        $this->drupalFiles->getFilesystem()
+          ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
       }
-      $this->removeJob($uuid);
-      $this->getFileMapper()->remove($resource);
+      $this->removeJob($resource_id);
+      $this->resourceMapper->remove($resource);
     }
-  }
-
-  /**
-   * Remove the local_url perspective.
-   */
-  private function removeLocalUrl(DataResource $resource) {
-    return $this->getFileMapper()->remove($resource);
   }
 
   /**
@@ -229,7 +230,7 @@ class ResourceLocalizer {
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
+      $this->jobStoreFactory->getInstance(FileFetcher::class)->remove($uuid);
     }
   }
 
@@ -237,35 +238,73 @@ class ResourceLocalizer {
    * Private.
    */
   private function getResourceSource($identifier, $version = NULL): ?DataResource {
-    return $this->getFileMapper()->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
+    return $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
   }
 
   /**
-   * Get FileFetcher.
+   * Get a FileFetcher object for a source data resource, to copy to local.
+   *
+   * @param \Drupal\common\DataResource $sourceDataResource
+   *   Data resource object we want to process. Assumed to be a source
+   *   perspective.
+   *
+   * @return \FileFetcher\FileFetcher
+   *   FileFetcher object which is ready to transfer the file.
    */
-  public function getFileFetcher(DataResource $resource): FileFetcher {
-    $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
-    $directory = "public://resources/{$uuid}";
-    $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
-    $config = [
-      'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
-      'temporaryDirectory' => $directory,
-    ];
-    return $this->fileFetcherFactory->getInstance($uuid, $config);
+  public function getFileFetcher(DataResource $sourceDataResource): FileFetcher {
+    return $this->fileFetcherFactory->getInstance(
+      $sourceDataResource->getUniqueIdentifierNoPerspective(),
+      [
+        'filePath' => UrlHostTokenResolver::resolveFilePath($sourceDataResource->getFilePath()),
+        'temporaryDirectory' => $this->getPublicLocalizedDirectory($sourceDataResource),
+      ]
+    );
   }
 
   /**
-   * Private.
+   * Resolve the source to the localized file path as a public URI.
+   *
+   * Note: The file fetcher also does this during the fetch.
+   *
+   * @param \Drupal\common\DataResource $source_resource
+   *   Source DataResource.
+   *
+   * @return string
+   *   Public URI for the temp localized file.
+   *
+   * @see \FileFetcher\Processor\ProcessorBase::getTemporaryFilePath()
+   *
+   * @todo Remove this from FileFetcher so concerns can be separated properly.
    */
-  protected function getFileMapper(): ResourceMapper {
-    return $this->resourceMapper;
+  public function localizeFilePath(DataResource $source_resource): string {
+    if ($source_resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
+      throw new \InvalidArgumentException('DataResource must be source perspective.');
+    }
+    $public = $this->getPublicLocalizedDirectory($source_resource);
+    return $public . '/' . basename($source_resource->getFilePath());
   }
 
   /**
-   * Private.
+   * Get the prepared directory path to the localized destination.
+   *
+   * Will attempt to create the path.
+   *
+   * @param \Drupal\common\DataResource $dataResource
+   *   DataResource object to represent.
+   * @param string $public_path
+   *   Path within the public:// filesystem where this resource will eventually
+   *   be created. Defaults to 'resource'.
+   *
+   * @return string
+   *   Public scheme URI to the directory.
+   *
+   * @todo Create a config for $public_path.
    */
-  private function getJobStoreFactory() {
-    return $this->jobStoreFactory;
+  public function getPublicLocalizedDirectory(DataResource $dataResource, string $public_path = 'resources'): string {
+    $uri = 'public://' . $public_path . '/' . $dataResource->getUniqueIdentifierNoPerspective();
+    $this->getFilesystem()
+      ->prepareDirectory($uri, FileSystemInterface::CREATE_DIRECTORY);
+    return $uri;
   }
 
   /**
@@ -273,6 +312,8 @@ class ResourceLocalizer {
    *
    * @return \Drupal\Core\File\FileSystemInterface
    *   Drupal filesystem.
+   *
+   * @todo Properly inject this service.
    */
   public function getFileSystem(): FileSystemInterface {
     return $this->drupalFiles->getFileSystem();
