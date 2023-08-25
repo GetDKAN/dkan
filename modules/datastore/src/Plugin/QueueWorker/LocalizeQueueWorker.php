@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Processes resource import.
+ * Processes making a local copy of a source resource.
  *
  * @QueueWorker(
  *   id = "localize_import",
@@ -61,14 +61,14 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
    *
    * @var \Drupal\metastore\ResourceMapper
    */
-  private ResourceMapper $resourceMapper;
+  protected ResourceMapper $resourceMapper;
 
   /**
    * Reference lookup service.
    *
    * @var \Drupal\metastore\Reference\ReferenceLookup
    */
-  private ReferenceLookup $referenceLookup;
+  protected ReferenceLookup $referenceLookup;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -135,8 +135,7 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
     $identifier = $data['identifier'] ?? NULL;
     $version = $data['data'] ?? NULL;
 
-    // Do it. LocalizeTask() must return DONE if the resource is already
-    // localized.
+    // LocalizeTask() must return DONE if the resource is already localized.
     $result = $this->resourceLocalizer->localizeTask($identifier, $version, FALSE);
 
     // @todo Make result handling more sophisticated.
@@ -147,12 +146,13 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       throw new \Exception($message);
     }
 
-    // Localization is done. First invalidate the cache tags.
+    // Localization is done. Invalidate the cache tags.
     $data_resource = $this->resourceMapper->get(
       $identifier,
       ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
       $version
     );
+    // @todo So many variations on uid... Address this in DataResource.
     $uid = $data_resource->getIdentifier() . '__' . $data_resource->getVersion();
     $this->invalidateCacheTags($uid . '__source');
 
@@ -169,6 +169,9 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
    *
    * @param mixed $resourceId
    *   A resource ID.
+   *
+   * @todo This is copied from ImportQueueWorker::invalidateCacheTags(). Is it
+   *   right? Should it be a subclass or trait?
    */
   protected function invalidateCacheTags($resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
