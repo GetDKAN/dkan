@@ -128,7 +128,6 @@ metastore.1.metastore.schemas.id.items.id.revisions.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
-
 metastore.1.metastore.schemas.dataset.items.id.docs:
   path: '/api/1/metastore/schemas/dataset/items/{identifier}/docs'
   methods: [GET]
@@ -166,6 +165,22 @@ metastore.data_dictionary:
     _title: 'Data-Dictionary'
   requirements:
     _permission: 'create data content'
+
+metastore.data_dictionary_add:
+  path: '/admin/dkan/data-dictionary/{type}'
+  defaults:
+    _title: 'Data-Dictionary Configuration'
+    _form: '\Drupal\metastore\Form\DataDictionaryConfigForm'
+  requirements:
+    _permission: 'administer site configuration'
+
+metastore.data_dictionary_edit:
+  path: '/node/{nid}/edit/{type}'
+  defaults:
+    _title: 'Data-Dictionary Configuration'
+    _form: '\Drupal\metastore\Form\DataDictionaryConfigForm'
+  requirements:
+    _permission: 'administer site configuration'
 
 metastore.data_dictionary.settings:
   path: '/admin/dkan/data-dictionary/settings'

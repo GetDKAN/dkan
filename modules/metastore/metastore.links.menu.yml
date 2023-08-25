@@ -22,6 +22,16 @@ metastore.data_dictionary.create:
     schema: data-dictionary
   weight: 1
 
+metastore.data_dictionary_config.add:
+  title: Add new Data-Dictionary
+  description: Create Data-Dictionary
+  parent: metastore.data_dictionary
+  route_name: metastore.data_dictionary_add
+  route_parameters:
+    type: data-dictionary
+    destination: /admin/dkan/datasets?title=&data-type=data-dictionary&status=All&moderation_state=All
+  weight: 1
+
 metastore.data_dictionary.settings_form:
   title: Settings
   description: Data-Dictionary Settings
