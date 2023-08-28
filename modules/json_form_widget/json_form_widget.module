@@ -70,11 +70,11 @@ function _json_form_widget_build_count_property(array $button_element): array {
 }
 
 /**
- * Implements hook_field_widget_multivalue_form_alter().
+ * Implements hook_field_widget_complete_form_alter().
  *
  * Set json_form_widget flag for later.
  */
-function json_form_widget_field_widget_multivalue_form_alter(array $elements, FormStateInterface $form_state, array $context) {
+function json_form_widget_field_widget_complete_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
   if ($context['widget'] instanceof JsonFormWidget) {
     $form_state->has_json_form_widget = TRUE;
   }
