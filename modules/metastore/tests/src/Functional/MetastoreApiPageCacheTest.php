@@ -2,16 +2,13 @@
 
 namespace Drupal\Tests\metastore\Functional;
 
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use GuzzleHttp\Client;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * Class DatasetTest
+ * Class DatasetTest.
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
@@ -38,19 +35,18 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     \drupal_flush_all_caches();
 
     $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
-//    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
-    $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
-    $datastore_settings = $config_factory->getEditable('datastore.settings');
-    $datastore_settings->set('triggering_properties', ['modified']);
-    $datastore_settings->save();
+    /** @var \Drupal\Core\Config\ConfigFactory $config_factory */
+    $config_factory = $this->container->get('config.factory');
+    $config_factory->getEditable('datastore.settings')
+      ->set('triggering_properties', ['modified'])
+      ->save();
   }
 
   /**
-   * Test dataset page caching
+   * Test dataset page caching.
    */
   public function testDatasetApiPageCache() {
-    $this->markTestIncomplete('Exception: Localization of resource 0d776daba811f737caa54eae787d144d: Unable to find resource to localize: 0d776daba811f737caa54eae787d144d:');
     // Post dataset.
     $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
     $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
@@ -177,9 +173,11 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
   private function runQueues(array $relevantQueues = []) {
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
     $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
+    $queueFactory = $this->container->get('queue');
     foreach ($relevantQueues as $queueName) {
       $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $this->getQueueService()->get($queueName);
+      $queue = $queueFactory->get($queueName);
       while ($item = $queue->claimItem()) {
         $worker->processItem($item->data);
         $queue->deleteItem($item);
@@ -204,28 +202,19 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
   }
 
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
-
+    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    $metastore_service = $this->container->get('dkan.metastore.service');
     if ($method == 'post') {
-      $identifier = $this->getMetastore()->post('dataset', $json);
+      $identifier = $metastore_service->post('dataset', $json);
     }
     // PUT for now, refactor later if more verbs are needed.
     else {
       $id = $dataset->identifier;
-      $info = $this->getMetastore()->put('dataset', $id, $json);
+      $info = $metastore_service->put('dataset', $id, $json);
       $identifier = $info['identifier'];
     }
 
     return $identifier;
-  }
-
-  private function getMetastore(): MetastoreService {
-    return $this->container->get('dkan.metastore.service');
-//    return \Drupal::service('dkan.metastore.service');
-  }
-
-  private function getQueueService() : QueueFactory {
-    return $this->container->get('queue');
-//    return \Drupal::service('queue');
   }
 
 }
