@@ -152,9 +152,6 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
       $version
     );
-    // @todo So many variations on uid... Address this in DataResource.
-    $uid = $data_resource->getIdentifier() . '__' . $data_resource->getVersion();
-    $this->invalidateCacheTags($uid . '__source');
 
     // Send the event.
     $event = new Event([
@@ -162,19 +159,6 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       'version' => $data_resource->getVersion(),
     ]);
     $this->eventDispatcher->dispatch($event, static::EVENT_RESOURCE_LOCALIZED);
-  }
-
-  /**
-   * Invalidate all appropriate cache tags for this resource.
-   *
-   * @param mixed $resourceId
-   *   A resource ID.
-   *
-   * @todo This is copied from ImportQueueWorker::invalidateCacheTags(). Is it
-   *   right? Should it be a subclass or trait?
-   */
-  protected function invalidateCacheTags($resourceId) {
-    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
 }

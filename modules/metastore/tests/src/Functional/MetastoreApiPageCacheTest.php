@@ -2,18 +2,19 @@
 
 namespace Drupal\Tests\metastore\Functional;
 
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use GuzzleHttp\Client;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * Class DatasetTest.
+ * Class DatasetTest
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group metastore
- * @group dtt
  */
 class MetastoreApiPageCacheTest extends ExistingSiteBase {
   use CleanUp;
@@ -34,19 +35,19 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     \drupal_flush_all_caches();
 
-    $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
-    /** @var \Drupal\Core\Config\ConfigFactory $config_factory */
-    $config_factory = $this->container->get('config.factory');
-    $config_factory->getEditable('datastore.settings')
-      ->set('triggering_properties', ['modified'])
-      ->save();
+    $datastore_settings = $config_factory->getEditable('datastore.settings');
+    $datastore_settings->set('triggering_properties', ['modified']);
+    $datastore_settings->save();
   }
 
   /**
-   * Test dataset page caching.
+   * Test dataset page caching
    */
   public function testDatasetApiPageCache() {
+
     // Post dataset.
     $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
     $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
@@ -59,7 +60,6 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     ]);
 
     $queues = [
-      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
@@ -78,13 +78,11 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    // Importing the datastore should invalidate the cache. Run twice so that
-    // localize_import can trigger the datastore_import queue.
-    $this->runQueues($queues);
+    // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
 
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody());
+    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Get the variants of the import endpoint
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111?show-reference-ids');
@@ -158,7 +156,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();
       $distribution->title = "Distribution #{$key} for {$identifier}";
-      $distribution->downloadURL = self::S3_PREFIX . '/' . $downloadUrl;
+      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
       $distribution->mediaType = "text/csv";
 
       $data->distribution[] = $distribution;
@@ -173,11 +171,9 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
   private function runQueues(array $relevantQueues = []) {
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
     $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = $this->container->get('queue');
     foreach ($relevantQueues as $queueName) {
       $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queueFactory->get($queueName);
+      $queue = $this->getQueueService()->get($queueName);
       while ($item = $queue->claimItem()) {
         $worker->processItem($item->data);
         $queue->deleteItem($item);
@@ -197,24 +193,35 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $node_render = $entityTypeManager->getViewBuilder('node');
     foreach ($node_storage->loadMultiple($nids) as $node) {
       $build = $node_render->view($node);
-      $renderer->renderPlain($build);
+      $text = $renderer->renderPlain($build);
     }
   }
 
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
-    $metastore_service = $this->container->get('dkan.metastore.service');
+
     if ($method == 'post') {
-      $identifier = $metastore_service->post('dataset', $json);
+      $identifier = $this->getMetastore()->post('dataset', $json);
     }
     // PUT for now, refactor later if more verbs are needed.
     else {
       $id = $dataset->identifier;
-      $info = $metastore_service->put('dataset', $id, $json);
+      $info = $this->getMetastore()->put('dataset', $id, $json);
       $identifier = $info['identifier'];
     }
 
     return $identifier;
+  }
+
+  private function getMetastore(): MetastoreService {
+    return \Drupal::service('dkan.metastore.service');
+  }
+
+  private function getDownloadUrl(string $filename) {
+    return self::S3_PREFIX . '/' . $filename;
+  }
+
+  private function getQueueService() : QueueFactory {
+    return \Drupal::service('queue');
   }
 
 }

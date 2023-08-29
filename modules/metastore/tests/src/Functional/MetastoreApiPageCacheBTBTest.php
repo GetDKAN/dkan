@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use GuzzleHttp\Client;
+use Psr\Http\Message\ResponseInterface;
 use RootedData\RootedJsonData;
 
 /**
@@ -19,12 +19,20 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
   protected static $modules = [
     'common',
     'datastore',
+    'dynamic_page_cache',
     'harvest',
     'metastore',
     'node',
   ];
 
   protected $defaultTheme = 'stark';
+
+  /**
+   * The HTTP client.
+   *
+   * @var \GuzzleHttp\ClientInterface
+   */
+  protected $httpClient;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
@@ -42,80 +50,98 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
     $this->config('datastore.settings')
       ->set('triggering_properties', ['modified'])
       ->save();
+
+    $this->httpClient = $this->container->get('http_client_factory')
+      ->fromOptions([
+        'base_uri' => $this->baseUrl,
+        'http_errors' => FALSE,
+      ]);
   }
 
-  protected function tearDown() : void {
-    \drupal_flush_all_caches();
-    parent::tearDown();
+  /**
+   * Make an API request, using method and path.
+   */
+  protected function apiRequest(string $method, string $path): ResponseInterface {
+    return $this->httpClient->request($method, $this->buildUrl($path));
   }
 
   /**
    * Test dataset page caching.
    */
   public function testDatasetApiPageCache() {
-//    $this->markTestIncomplete('legitimately not complete.');
+    $identifier = '111';
+
+    // Before we've done anything, GET should be 404.
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
+
+    $datasetRootedJsonData = $this->getData($identifier, '1', ['1.csv']);
+
     // Post dataset.
-    $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
-    $this->assertNotEmpty(
+    $this->assertEquals(
+      $identifier,
       $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData))
     );
+    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    // $metastore_service = $this->container->get('dkan.metastore.service');
+    //    $this->assertEquals('foo', print_r($metastore_service->get('dataset', $identifier), true));
 
-    $client = new Client([
-      'base_uri' => \Drupal::request()->getSchemeAndHttpHost(),
-      'timeout'  => 10,
-      'http_errors' => FALSE,
-      'connect_timeout' => 10,
-    ]);
+    // Request once, should not return cached version.
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
 
+    // Request again, should return cached version.
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+
+    // Importing the datastore should invalidate the cache. Run twice so that
+    // localize_import can trigger the datastore_import queue.
     $queues = [
-//      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
       'orphan_resource_remover',
     ];
-
-    // Request once, should not return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
-
-    // Request again, should return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
-    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
-
-    // Importing the datastore should invalidate the cache. Run twice so that
-    // localize_import can trigger the datastore_import queue.
     $this->runQueues(['localize_import']);
     $this->runQueues($queues);
 
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
+    // Cache is a miss because we performed an import.
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody());
 
     // Get the variants of the import endpoint
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111?show-reference-ids');
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '?show-reference-ids');
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $dataset = json_decode($response->getBody()->getContents());
-    $distributionId = $dataset->distribution[0]->identifier;
-    $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier;
-    $response = $client->request('GET', 'api/1/datastore/imports/' . $distributionId);
+    $distributionId = $dataset->distribution[0]->identifier ?? '';
+    $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier ?? '';
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/imports/' . $resourceId);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    $response = $client->request('GET', 'api/1/datastore/query/111/0');
+    $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Request again, should return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/query/111/0');
+    $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/imports/' . $distributionId);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/imports/' . $resourceId);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Editing the dataset should invalidate the cache.
@@ -126,17 +152,17 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
 
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/query/111/0');
+    $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // The import endpoints shouldn't be there at all anymore.
-    $response = $client->request('GET', 'api/1/datastore/imports/' . $distributionId);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
     $this->assertEquals(404, $response->getStatusCode());
-    $response = $client->request('GET', 'api/1/datastore/imports/' . $resourceId);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals(404, $response->getStatusCode());
   }
 
