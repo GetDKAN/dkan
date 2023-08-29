@@ -53,7 +53,7 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
    * Test dataset page caching.
    */
   public function testDatasetApiPageCache() {
-    $this->markTestIncomplete('legitimately not complete.');
+//    $this->markTestIncomplete('legitimately not complete.');
     // Post dataset.
     $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
     $this->assertNotEmpty(
@@ -77,7 +77,7 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
 
     // Request once, should not return cached version.
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', print_r($response->getHeaders(), TRUE));
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
 
@@ -89,7 +89,7 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
 
     // Importing the datastore should invalidate the cache. Run twice so that
     // localize_import can trigger the datastore_import queue.
-    $this->runQueues(['localize']);
+    $this->runQueues(['localize_import']);
     $this->runQueues($queues);
 
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
