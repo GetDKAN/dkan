@@ -3,6 +3,7 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 use RootedData\RootedJsonData;
 
@@ -40,17 +41,12 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
   public function setUp(): void {
     parent::setUp();
 
-    \drupal_flush_all_caches();
-    \Drupal::cache('default')->invalidateAll();
-    \Drupal::cache('default')->deleteAll();
-    \Drupal::cache('page')->invalidateAll();
-    \Drupal::cache('page')->deleteAll();
-
     // Ensure the proper triggering properties are set for datastore comparison.
     $this->config('datastore.settings')
       ->set('triggering_properties', ['modified'])
       ->save();
 
+    // Set up a Guzzle client using our service.
     $this->httpClient = $this->container->get('http_client_factory')
       ->fromOptions([
         'base_uri' => $this->baseUrl,
@@ -59,10 +55,24 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Make an API request, using method and path.
+   * Make an API request, using method, path, and query.
+   *
+   * @param string $method
+   *   HTTP method.
+   * @param string $path
+   *   Request path.
+   * @param array $query
+   *   Request query as an array. Example: '?foo' would be ['foo' => TRUE].
+   *
+   * @return \Psr\Http\Message\ResponseInterface
+   *   Response object from Guzzle.
    */
-  protected function apiRequest(string $method, string $path): ResponseInterface {
-    return $this->httpClient->request($method, $this->buildUrl($path));
+  protected function apiRequest(string $method, string $path, array $query = []): ResponseInterface {
+    return $this->httpClient->request(
+      $method,
+      $this->buildUrl($path),
+      [RequestOptions::QUERY => $query]
+    );
   }
 
   /**
@@ -71,7 +81,7 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
   public function testDatasetApiPageCache() {
     $identifier = '111';
 
-    // Before we've done anything, GET should be 404.
+    // Before we've done anything, GET should yield a 404.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
 
@@ -82,9 +92,14 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
       $identifier,
       $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData))
     );
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
-    // $metastore_service = $this->container->get('dkan.metastore.service');
-    //    $this->assertEquals('foo', print_r($metastore_service->get('dataset', $identifier), true));
+
+    $queues = [
+      'localize_import',
+      'datastore_import',
+      'resource_purger',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+    ];
 
     // Request once, should not return cached version.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
@@ -102,16 +117,10 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    // Importing the datastore should invalidate the cache. Run twice so that
-    // localize_import can trigger the datastore_import queue.
-    $queues = [
-      'datastore_import',
-      'resource_purger',
-      'orphan_reference_processor',
-      'orphan_resource_remover',
-    ];
-    $this->runQueues(['localize_import']);
+    // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
+    // Re-render the dataset nodes using the render service.
+    $this->renderDatasetNodesForCache();
 
     // Cache is a miss because we performed an import.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
@@ -119,8 +128,7 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody());
 
     // Get the variants of the import endpoint
-    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '?show-reference-ids');
-    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier, ['show-reference-ids' => TRUE]);
     $dataset = json_decode($response->getBody()->getContents());
     $distributionId = $dataset->distribution[0]->identifier ?? '';
     $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier ?? '';
@@ -151,13 +159,15 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
 
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
+    // Re-render the dataset nodes using the render service.
+    $this->renderDatasetNodesForCache();
 
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody()->getContents());
 
     // The import endpoints shouldn't be there at all anymore.
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
@@ -223,10 +233,10 @@ class MetastoreApiPageCacheBTBTest extends BrowserTestBase {
 
   private function renderDatasetNodesForCache() {
     // Render all the dataset nodes to address cache.
-    $renderer = \Drupal::service('renderer');
-    $entityTypeManager = \Drupal::service('entity_type.manager');
+    $renderer = $this->container->get('renderer');
+    $entityTypeManager = $this->container->get('entity_type.manager');
+    $database_service = $this->container->get('database');
 
-    $database_service = \Drupal::service('database');
     $query = $database_service->select('node', 'n');
     $query->addField('n', 'nid');
     $nids = $query->execute()->fetchCol();

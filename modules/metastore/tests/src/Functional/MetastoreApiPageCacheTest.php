@@ -47,6 +47,7 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
    * Test dataset page caching
    */
   public function testDatasetApiPageCache() {
+    $this->markTestIncomplete('incomplete in favor of MetastoreApiPageCacheBTBTest');
 
     // Post dataset.
     $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
