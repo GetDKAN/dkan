@@ -19,6 +19,9 @@ use RootedData\RootedJsonData;
  *
  * @group dkan
  * @group functional
+ *
+ * @todo Factor out some of the support methods to a trait or subclass to share
+ *   with MetastoreApiPageCacheTest.
  */
 class DatasetTest extends BrowserTestBase {
 

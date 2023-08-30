@@ -2,63 +2,99 @@
 
 namespace Drupal\Tests\metastore\Functional;
 
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\MetastoreService;
-use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-use GuzzleHttp\Client;
+use Drupal\Tests\BrowserTestBase;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\ResponseInterface;
 use RootedData\RootedJsonData;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * Class DatasetTest
+ * Metastore service API caching.
  *
- * @package Drupal\Tests\dkan\Functional
  * @group dkan
+ * @group metastore
+ * @group functional
+ * @group btb
+ *
+ *  @todo Factor out some of the support methods to a trait or subclass to share
+ *    with DatasetTest.
  */
-class MetastoreApiPageCacheTest extends ExistingSiteBase {
-  use CleanUp;
+class MetastoreApiPageCacheTest extends BrowserTestBase {
+
+  protected static $modules = [
+    'common',
+    'datastore',
+    'dynamic_page_cache',
+    'harvest',
+    'metastore',
+    'node',
+  ];
+
+  protected $defaultTheme = 'stark';
+
+  /**
+   * The HTTP client.
+   *
+   * @var \GuzzleHttp\ClientInterface
+   */
+  protected $httpClient;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
-  private $validMetadataFactory;
-
   public function setUp(): void {
     parent::setUp();
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-    \drupal_flush_all_caches();
 
-    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
-    $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
-    $datastore_settings = $config_factory->getEditable('datastore.settings');
-    $datastore_settings->set('triggering_properties', ['modified']);
-    $datastore_settings->save();
+    $this->config('datastore.settings')
+      ->set('triggering_properties', ['modified'])
+      ->save();
+
+    // Set up a Guzzle client using our service.
+    $this->httpClient = $this->container->get('http_client_factory')
+      ->fromOptions([
+        'base_uri' => $this->baseUrl,
+        'http_errors' => FALSE,
+      ]);
   }
 
   /**
-   * Test dataset page caching
+   * Make an API request, using method, path, and query.
+   *
+   * @param string $method
+   *   HTTP method.
+   * @param string $path
+   *   Request path.
+   * @param array $query
+   *   Request query as an array. Example: '?foo' would be ['foo' => TRUE].
+   *
+   * @return \Psr\Http\Message\ResponseInterface
+   *   Response object from Guzzle.
+   */
+  protected function apiRequest(string $method, string $path, array $query = []): ResponseInterface {
+    return $this->httpClient->request(
+      $method,
+      $this->buildUrl($path),
+      [RequestOptions::QUERY => $query]
+    );
+  }
+
+  /**
+   * Test dataset page caching.
    */
   public function testDatasetApiPageCache() {
-    $this->markTestIncomplete('incomplete in favor of MetastoreApiPageCacheBTBTest');
+    $identifier = '111';
+
+    // Before we've done anything, GET should yield a 404.
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
+
+    $datasetRootedJsonData = $this->getData($identifier, '1', ['1.csv']);
 
     // Post dataset.
-    $datasetRootedJsonData = $this->getData(111, '1', ['1.csv']);
-    $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
-
-    $client = new Client([
-      'base_uri' => \Drupal::request()->getSchemeAndHttpHost(),
-      'timeout'  => 10,
-      'http_errors' => FALSE,
-      'connect_timeout' => 10,
-    ]);
+    $this->assertEquals(
+      $identifier,
+      $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData))
+    );
 
     $queues = [
       'datastore_import',
@@ -68,65 +104,79 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     ];
 
     // Request once, should not return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
 
     // Request again, should return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
-    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Importing the datastore should invalidate the cache.
+    $this->runQueues(['localize_import']);
     $this->runQueues($queues);
+    // Re-render the dataset nodes using the render service.
+    $this->renderDatasetNodesForCache();
 
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    // Cache is a miss because we performed an import.
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody());
 
     // Get the variants of the import endpoint
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111?show-reference-ids');
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier, ['show-reference-ids' => TRUE]);
     $dataset = json_decode($response->getBody()->getContents());
-    $distributionId = $dataset->distribution[0]->identifier;
-    $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier;
-    $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $distributionId = $dataset->distribution[0]->identifier ?? '';
+    $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier ?? '';
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    $response = $client->request('GET', 'api/1/datastore/query/111/0');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Request again, should return cached version.
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/query/111/0');
-    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
-    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
-    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
+    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Editing the dataset should invalidate the cache.
-    $datasetRootedJsonData->{'$.description'} = "Add a description.";
-    $datasetRootedJsonData->{'$.modified'} = "2021-05-07";
+    $datasetRootedJsonData->{'$.description'} = 'Add a description.';
+    $datasetRootedJsonData->{'$.modified'} = '2021-05-07';
     $this->httpVerbHandler('put', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Importing the datastore should invalidate the cache.
+    $this->runQueues(['localize_import']);
     $this->runQueues($queues);
+    // Re-render the dataset nodes using the render service.
+    $this->renderDatasetNodesForCache();
 
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $client->request('GET', 'api/1/datastore/query/111/0');
-    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody()->getContents());
 
     // The import endpoints shouldn't be there at all anymore.
-    $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
     $this->assertEquals(404, $response->getStatusCode());
-    $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
+    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals(404, $response->getStatusCode());
   }
 
@@ -147,23 +197,24 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
     $data = new \stdClass();
     $data->title = $title;
-    $data->description = "Some description.";
+    $data->description = 'Some description.';
     $data->identifier = $identifier;
-    $data->accessLevel = "public";
-    $data->modified = "06-04-2020";
-    $data->keyword = ["some keyword"];
+    $data->accessLevel = 'public';
+    $data->modified = '06-04-2020';
+    $data->keyword = ['some keyword'];
     $data->distribution = [];
 
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();
-      $distribution->title = "Distribution #{$key} for {$identifier}";
-      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->mediaType = "text/csv";
+      $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
+      $distribution->downloadURL = self::S3_PREFIX . '/' . $downloadUrl;
+      $distribution->mediaType = 'text/csv';
 
       $data->distribution[] = $distribution;
     }
 
-    return $this->validMetadataFactory->get(json_encode($data), 'dataset');
+    $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
+    return $valid_metadata_factory->get(json_encode($data), 'dataset');
   }
 
   /**
@@ -172,20 +223,24 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
   private function runQueues(array $relevantQueues = []) {
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
     $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
+    $queueFactory = $this->container->get('queue');
     foreach ($relevantQueues as $queueName) {
       $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $this->getQueueService()->get($queueName);
+      $queue = $queueFactory->get($queueName);
       while ($item = $queue->claimItem()) {
         $worker->processItem($item->data);
         $queue->deleteItem($item);
       }
     }
+  }
 
+  private function renderDatasetNodesForCache() {
     // Render all the dataset nodes to address cache.
-    $renderer = \Drupal::service('renderer');
-    $entityTypeManager = \Drupal::service('entity_type.manager');
+    $renderer = $this->container->get('renderer');
+    $entityTypeManager = $this->container->get('entity_type.manager');
+    $database_service = $this->container->get('database');
 
-    $database_service = \Drupal::service('database');
     $query = $database_service->select('node', 'n');
     $query->addField('n', 'nid');
     $nids = $query->execute()->fetchCol();
@@ -194,35 +249,24 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $node_render = $entityTypeManager->getViewBuilder('node');
     foreach ($node_storage->loadMultiple($nids) as $node) {
       $build = $node_render->view($node);
-      $text = $renderer->renderPlain($build);
+      $renderer->renderPlain($build);
     }
   }
 
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
+    $metastore_service = $this->container->get('dkan.metastore.service');
 
     if ($method == 'post') {
-      $identifier = $this->getMetastore()->post('dataset', $json);
+      $identifier = $metastore_service->post('dataset', $json);
     }
     // PUT for now, refactor later if more verbs are needed.
     else {
       $id = $dataset->identifier;
-      $info = $this->getMetastore()->put('dataset', $id, $json);
+      $info = $metastore_service->put('dataset', $id, $json);
       $identifier = $info['identifier'];
     }
 
     return $identifier;
-  }
-
-  private function getMetastore(): MetastoreService {
-    return \Drupal::service('dkan.metastore.service');
-  }
-
-  private function getDownloadUrl(string $filename) {
-    return self::S3_PREFIX . '/' . $filename;
-  }
-
-  private function getQueueService() : QueueFactory {
-    return \Drupal::service('queue');
   }
 
 }
