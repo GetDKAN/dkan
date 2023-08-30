@@ -146,14 +146,10 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       throw new \Exception($message);
     }
 
-    // Localization is done. Invalidate the cache tags.
+    // Localization is done. Send the event.
     $data_resource = $this->resourceMapper->get(
-      $identifier,
-      ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
-      $version
+      $identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version
     );
-
-    // Send the event.
     $event = new Event([
       'identifier' => $data_resource->getIdentifier(),
       'version' => $data_resource->getVersion(),
