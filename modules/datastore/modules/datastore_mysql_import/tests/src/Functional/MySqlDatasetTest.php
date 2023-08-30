@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore_mysql_import\Functional;
 
-use Drupal\Tests\dkan\Functional\DatasetBTBTest;
+use Drupal\Tests\dkan\Functional\DatasetTest;
 
 /**
  * Dataset tests with the datastore_mysql_import module enabled.
@@ -14,7 +14,7 @@ use Drupal\Tests\dkan\Functional\DatasetBTBTest;
  * @group datastore_mysql_import
  * @group functional
  */
-class MySqlDatasetBTBTest extends DatasetBTBTest {
+class MySqlDatasetTest extends DatasetTest {
 
   /**
    * {@inheritdoc}
