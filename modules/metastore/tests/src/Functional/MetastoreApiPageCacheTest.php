@@ -93,6 +93,13 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
       $this->httpVerbHandler('post', $datasetRootedJsonData, json_decode($datasetRootedJsonData))
     );
 
+    $queues = [
+      'datastore_import',
+      'resource_purger',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+    ];
+
     // Request once, should not return cached version.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
@@ -109,12 +116,6 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
 
-    $queues = [
-      'datastore_import',
-      'resource_purger',
-      'orphan_reference_processor',
-      'orphan_resource_remover',
-    ];
     $this->runQueues($queues);
     // Re-render the dataset nodes using the render service.
     $this->renderDatasetNodesForCache();
