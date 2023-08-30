@@ -17,9 +17,9 @@ class QueryController extends AbstractQueryController {
   /**
    * Return correct JSON or CSV response.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
-   * @param \RootedData\RootedJsonData $result
+   * @param RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
    *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
