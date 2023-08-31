@@ -290,34 +290,22 @@ class LifeCycle {
    *   Dataset metastore item.
    */
   protected function datasetPresave(MetastoreItemInterface $data): void {
+    $this->setNodeValuesFromMetadata($data);
     $this->referenceMetadata($data);
   }
 
   /**
-   * Sanitize and reference metadata.
+   * Reference metadata and trigger datastore_import/orphan_reference_processor.
    *
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item.
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
-    $metadata = $data->getMetaData();
-
-    $title = $metadata->title ?? $metadata->name;
-    $data->setTitle($title);
-
-    // If there is no uuid add one.
-    if (!isset($metadata->identifier)) {
-      $metadata->identifier = $data->getIdentifier();
-    }
-    // If one exists in the uuid it should be the same in the table.
-    else {
-      $data->setIdentifier($metadata->identifier);
-    }
-
     $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
       return $data instanceof MetastoreItemInterface;
     });
 
+    $metadata = $data->getMetaData();
     $metadata = $this->referencer->reference($metadata);
 
     $data->setMetadata($metadata);
@@ -330,13 +318,34 @@ class LifeCycle {
   }
 
   /**
+   * Set required node values based on metadata.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Data-Dictionary metastore item.
+   */
+  protected function setNodeValuesFromMetadata(MetastoreItemInterface $data): void {
+    $metadata = $data->getMetaData();
+    $title = $metadata->title ?? $metadata->name;
+    $data->setTitle($title);
+
+    // If there is no uuid add one.
+    if (!isset($metadata->identifier)) {
+      $metadata->identifier = $data->getIdentifier();
+    }
+    // If one exists in the uuid it should be the same in the table.
+    else {
+      $data->setIdentifier($metadata->identifier);
+    }
+  }
+
+  /**
    * Data-Dictionary pre-save life cycle method.
    *
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Data-Dictionary metastore item.
    */
   protected function datadictionaryPresave(MetastoreItemInterface $data): void {
-    $this->referenceMetadata($data);
+    $this->setNodeValuesFromMetadata($data);
   }
 
   /**
