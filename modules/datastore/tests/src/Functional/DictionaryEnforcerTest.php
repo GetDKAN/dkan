@@ -2,16 +2,16 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
+use Drupal\Component\Uuid\Php;
 use Drupal\Core\File\FileSystemInterface;
-
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
-use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\metastore\MetastoreService;
+use Drupal\metastore\Storage\NodeData;
+use Drupal\metastore\ValidMetadataFactory;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-
 use Symfony\Component\HttpFoundation\Request;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
  * DictionaryEnforcer QueueWorker test.
@@ -19,9 +19,17 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
  */
-class DictionaryEnforcerTest extends ExistingSiteBase {
+class DictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait, CleanUp;
+  use GetDataTrait;
+
+  protected static $modules = [
+    'datastore',
+    'metastore',
+    'node',
+  ];
+
+  protected $defaultTheme = 'stark';
 
   /**
    * Uploaded resource file destination.
@@ -56,42 +64,42 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
    *
    * @var \Drupal\metastore\Storage\NodeData
    */
-  protected $datasetStorage;
+  protected NodeData $datasetStorage;
 
   /**
    * Metastore service.
    *
    * @var \Drupal\metastore\MetastoreService
    */
-  protected $metastore;
+  protected MetastoreService $metastore;
 
   /**
    * Uuid service.
    *
    * @var \Drupal\Component\Uuid\Php
    */
-  protected $uuid;
+  protected Php $uuid;
 
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\ValidMetadataFactory
    */
-  protected $validMetadataFactory;
+  protected ValidMetadataFactory $validMetadataFactory;
 
   /**
    * Import controller.
    *
    * @var \Drupal\datastore\Controller\ImportController
    */
-  protected $webServiceApi;
+  protected ImportController $webServiceApi;
 
   /**
    * External URL for the fixture CSV file.
    *
    * @var string
    */
-  protected $resourceUrl;
+  protected string $resourceUrl;
 
   /**
    * {@inheritdoc}
@@ -100,28 +108,23 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     parent::setUp();
 
     // Initialize services.
-    $this->cron = \Drupal::service('cron');
-    $this->metastore = \Drupal::service('dkan.metastore.service');
-    $this->uuid = \Drupal::service('uuid');
-    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
-    $this->webServiceApi = ImportController::create(\Drupal::getContainer());
-    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')
+    $this->cron = $this->container->get('cron');
+    $this->metastore = $this->container->get('dkan.metastore.service');
+    $this->uuid = $this->container->get('uuid');
+    $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
+    $this->webServiceApi = ImportController::create($this->container);
+    $this->datasetStorage = $this->container->get('dkan.metastore.storage')
       ->getInstance('dataset');
     // Copy resource file to uploads directory.
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-    $file_system = \Drupal::service('file_system');
+    $file_system = $this->container->get('file_system');
     $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
     $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
     $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path, FileSystemInterface::EXISTS_REPLACE);
     // Create resource URL.
-    $this->resourceUrl = \Drupal::service('stream_wrapper_manager')
+    $this->resourceUrl = $this->container->get('stream_wrapper_manager')
       ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
       ->getExternalUrl();
-  }
-
-  public function tearDown(): void {
-    parent::tearDown();
-    $this->removeAllMappedFiles();
   }
 
   /**
@@ -180,12 +183,11 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->metastore->post('data-dictionary', $data_dict);
     $this->metastore->publish('data-dictionary', $dict_id);
 
-    // Set global data-dictinary in metastore config.
-    $metastore_config = \Drupal::configFactory()
-      ->getEditable('metastore.settings');
-    $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE);
-    $metastore_config->set('data_dictionary_sitewide', $dict_id);
-    $metastore_config->save();
+    // Set global data-dictionary in metastore config.
+    $this->config('metastore.settings')
+      ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
+      ->set('data_dictionary_sitewide', $dict_id)
+      ->save();
 
     // Build dataset.
     $dataset_id = $this->uuid->generate();
