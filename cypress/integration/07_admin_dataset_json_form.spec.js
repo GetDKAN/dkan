@@ -82,8 +82,7 @@ context('Admin dataset json form', () => {
         cy.wait(2000)
         cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
         cy.get('#edit-node-bulk-form-0').check({ force:true })
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('.button').contains('Yes').click({ force:true });
+        cy.get('#edit-submit').click({ force:true })
         cy.get('input[value="Delete"]').click({ force:true })
         cy.get('.messages__content').should('contain','Deleted 1 content item.')
     })
