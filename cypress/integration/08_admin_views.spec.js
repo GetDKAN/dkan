@@ -58,33 +58,33 @@ context('Admin content and dataset views', () => {
         cy.wait(2000)
         cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
         cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published')
+
         // Change the state of the first dataset from published to published hidden.
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Hide current revision',{ force: true }).should('have.value', 'hide_current')
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('.button').contains('Yes').click({ force:true })
+        cy.get('#edit-submit').click({ force:true })
         cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
         cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published (hidden)')
+
          // Change the state of the first dataset from hidden to archived.
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('.button').contains('Yes').click({ force:true });
+        cy.get('#edit-submit').click({ force:true })
         cy.get('tbody > :nth-child(1) > .views-field-status', {timeout: 2000}).should('contain', 'Unpublished')
         cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Archived')
+
          // Change the state of the first dataset from archived to published.
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('.button').contains('Yes').click({ force:true })
+        cy.get('#edit-submit').click({ force:true })
         cy.get('tbody > :nth-child(1) > .views-field-status', {timeout: 2000}).should('contain', 'Published')
         cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published')
+
          // Delete the dataset.
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('.button').contains('Yes').click({ force:true })
         cy.get('#edit-submit').click({ force:true })
+        cy.get('.button').contains('Delete').click({ force:true })
         cy.get('.messages--status').should('contain','Deleted 1 content item.')
     })
 
