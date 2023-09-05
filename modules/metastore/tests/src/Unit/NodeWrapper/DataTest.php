@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Container;
  * Testing the NodeWrapper.
  */
 class DataTest extends TestCase {
-  public function testGetOriginalGetUsAWrapper() {
+  public function testGetLatestRevisionGetUsAWrapper() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
@@ -48,11 +48,11 @@ class DataTest extends TestCase {
 
     $wrapper = new Data($node, $entityTypeManager);
     $this->assertTrue(
-      $wrapper->getOriginal() instanceof Data
+      $wrapper->getLatestRevision() instanceof Data
     );
   }
 
-  public function testGetOriginalGiveUsNull() {
+  public function testGetLatestRevisionGiveUsNull() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
@@ -72,7 +72,7 @@ class DataTest extends TestCase {
 
     $wrapper = new Data($node, $entityTypeManager);
     $this->assertNull(
-      $wrapper->getOriginal()
+      $wrapper->getLatestRevision()
     );
   }
 
