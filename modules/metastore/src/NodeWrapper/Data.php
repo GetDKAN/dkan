@@ -201,9 +201,14 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Getter.
+   * Get latest revision.
+   *
+   * @return Data|void
+   * @throws DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function getOriginal() {
+  public function getLatestRevision() {
     if (!$this->isNew()) {
       // See https://www.drupal.org/project/drupal/issues/3201209
       // node->original is set to the published revision, not the latest.

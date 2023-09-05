@@ -312,6 +312,7 @@ class LifeCycle {
 
     // Check for possible orphan property references when updating a dataset.
     if (!$data->isNew()) {
+      // Compare with the latest revision (saved as raw metadata).
       $raw = $data->getRawMetadata();
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }

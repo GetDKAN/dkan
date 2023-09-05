@@ -171,7 +171,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   public function onPreReference(Event $event) {
     // Attempt to retrieve new and original revisions of metadata object.
     $data = $event->getData();
-    $original = $data->getOriginal();
+    $original = $data->getLatestRevision();
     // Retrieve a list of metadata properties which, when changed, should
     // trigger a new metadata resource revision.
     $datastore_settings = $this->configFactory->get('datastore.settings');
@@ -182,7 +182,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     // If a change was found in one of the triggering elements, change the
     // "new revision" flag to true in order to trigger a datastore update.
     if (!empty($triggers) && $original instanceof MetastoreItemInterface &&
-        $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers)) {
+      $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers)) {
       // Assign value to static variable.
       $rev = &drupal_static('metastore_resource_mapper_new_revision');
       $rev = 1;
