@@ -201,6 +201,24 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
+   * Get the latest revision ID.
+   *
+   * @return int|string|null
+   */
+  public function getLoadedRevisionId() {
+    return $this->node->getLoadedRevisionId();
+  }
+
+  /**
+   * Get the current revision ID.
+   *
+   * @return int|mixed|string|null
+   */
+  public function getRevisionId() {
+    return $this->node->getRevisionId();
+  }
+
+  /**
    * Get latest revision.
    *
    * @return Data|void
@@ -213,11 +231,38 @@ class Data implements MetastoreItemInterface {
       // See https://www.drupal.org/project/drupal/issues/3201209
       // node->original is set to the published revision, not the latest.
       // Compare to the latest revision of the node instead.
+      $latest_revision_id = $this->getLoadedRevisionId();
       $node_storage = $this->entityTypeManager->getStorage('node');
-      $latest_revision_id = $node_storage->getLatestRevisionId($this->node->id());
       $original = $node_storage->loadRevision($latest_revision_id);
       return new Data($original, $this->entityTypeManager);
     }
+  }
+
+  /**
+   * Get published revision.
+   *
+   * @return Data|void
+   * @throws DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function getPublishedRevision() {
+    if (!$this->isNew()) {
+      $node_storage = $this->entityTypeManager->getStorage('node');
+      $node = $node_storage->load($this->node->id());
+      if ($node->isPublished()) {
+        return new Data($node, $this->entityTypeManager);
+      }
+    }
+  }
+
+  /**
+   * Get moderation state.
+   *
+   * @return string
+   */
+  public function getModerationState() {
+    return $this->node->get('moderation_state')->getString();
   }
 
 }

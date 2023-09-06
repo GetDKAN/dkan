@@ -27,6 +27,7 @@ class DataTest extends TestCase {
       ->addd('__get', Node::class)
       ->addd('isNew', false)
       ->addd('id', 123)
+      ->addd('getLoadedRevisionId', 111)
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
@@ -73,6 +74,62 @@ class DataTest extends TestCase {
     $wrapper = new Data($node, $entityTypeManager);
     $this->assertNull(
       $wrapper->getLatestRevision()
+    );
+  }
+
+  public function testGetPublishedRevisionGetUsAWrapper() {
+    $node = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->addd('__isset', true)
+      ->addd('__get', Node::class)
+      ->addd('isNew', false)
+      ->addd('id', 123)
+      ->addd('isPublished', true)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->add(EntityTypeManager::class, 'findDefinitions', ['node'])
+      ->add(RevisionableStorageInterface::class, 'load', $node)
+      ->getMock();
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', (new Options())
+        ->add('entity_type.manager', $entityTypeManager)
+        ->index(0)
+      )
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    \Drupal::setContainer($container);
+
+    $wrapper = new Data($node, $entityTypeManager);
+    $this->assertTrue(
+      $wrapper->getPublishedRevision() instanceof Data
+    );
+  }
+
+  public function testGetPublishedRevisionGiveUsNull() {
+    $node = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->addd('__isset', true)
+      ->addd('__get', Node::class)
+      ->addd('isNew', true)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $container = (new Chain($this))
+      ->add(Container::class)
+      ->getMock();
+
+    \Drupal::setContainer($container);
+
+    $wrapper = new Data($node, $entityTypeManager);
+    $this->assertNull(
+      $wrapper->getPublishedRevision()
     );
   }
 
