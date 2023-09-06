@@ -126,7 +126,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * progress.
    *
    * @param string $identifier
-   *   The resource identifier.
+   *   The data resource identifier.
    * @param bool $deferred
    *   (Optional) Whether to create queue workers for the import process. If
    *   TRUE, will create a localize_import queue worker for the resource, which
@@ -139,6 +139,9 @@ class DatastoreService implements ContainerInjectionInterface {
    * @return array
    *   Array of response messages from the various import-related services we
    *   call. Key is the name of the class, value is the message.
+   *
+   * @todo Callers should use importDeferred() for the case of making queue
+   *   items.
    */
   public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
     $results = [];
@@ -160,18 +163,7 @@ class DatastoreService implements ContainerInjectionInterface {
     // Now work on the database. If we passed $deferred, add to the queue for
     // later.
     if ($deferred) {
-      // Perform the db import as a queue item.
-      $queueId = $this->queue->get('datastore_import')->createItem([
-        'identifier' => $identifier,
-        'version' => $version,
-      ]);
-
-      if ($queueId === FALSE) {
-        throw new \RuntimeException('Failed to create datastore_import queue for ' . $identifier . ':' . $version);
-      }
-      return [
-        'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
-      ];
+      return $this->importDeferred($identifier, $version);
     }
 
     // Get the resource object.
@@ -184,6 +176,35 @@ class DatastoreService implements ContainerInjectionInterface {
       $results,
       $this->doImport($resource)
     );
+  }
+
+  /**
+   * Perform the database import as a queue item.
+   *
+   * @param string $identifier
+   *   The data resource identifier.
+   * @param string|null $version
+   *   (Optional) The resource version. If NULL, the most recent version will
+   *   be used.
+   *
+   * @return array
+   *   Array of response messages from the various import-related services we
+   *   call. Key is the name of the class, value is the message.
+   */
+  public function importDeferred(string $identifier, $version = NULL): array {
+    // Perform the db import as a queue item.
+
+    $queueId = $this->queue->get('datastore_import')->createItem([
+      'identifier' => $identifier,
+      'version' => $version,
+    ]);
+
+    if ($queueId === FALSE) {
+      throw new \RuntimeException('Failed to create datastore_import queue for ' . $identifier . ':' . $version);
+    }
+    return [
+      'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
+    ];
   }
 
   /**
@@ -294,7 +315,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $importService = $this->getImportService($resource);
       return $importService->getStorage();
     }
-    throw new \InvalidArgumentException("No datastore storage found for {$identifier}:{$version}.");
+    throw new \InvalidArgumentException('No datastore storage found for ' . $identifier . ':' . $version . '.');
   }
 
   /**
