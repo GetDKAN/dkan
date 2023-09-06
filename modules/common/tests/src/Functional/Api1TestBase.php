@@ -2,49 +2,56 @@
 
 namespace Drupal\Tests\common\Functional;
 
-use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\user\Traits\UserCreationTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
-use weitzman\DrupalTestTraits\Entity\UserCreationTrait;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
-abstract class Api1TestBase extends ExistingSiteBase {
-  use CleanUp;
+abstract class Api1TestBase extends BrowserTestBase {
   use UserCreationTrait;
 
-  protected $http;
+  /**
+   * HTTP Client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  protected Client $httpClient;
+
   protected $spec;
   protected $auth;
   protected $endpoint;
 
+  protected $defaultTheme = 'stark';
+
+  protected static $modules = [
+    'common',
+    'datastore',
+    'dynamic_page_cache',
+    'harvest',
+    'metastore',
+    'node',
+  ];
+
   public function setUp(): void {
     parent::setUp();
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-    $this->setDefaultModerationState($state = 'published');
+    $user = $this->createUser([], "testapiuser", FALSE, [
+      'roles' => ['api_user'],
+      'permissions' => ["post put delete datasets through the api"],
+      'mail' => 'testapiuser@test.com',
+    ]);
 
-    $user = $this->createUser([], "testapiuser", FALSE, ['roles' => ['api_user'], 'mail' => 'testapiuser@test.com']);
-
-    $this->baseUrl = getenv('SIMPLETEST_BASE_URL');
-    $this->http = new Client(['base_uri' => $this->baseUrl]);
+    $this->httpClient = $this->container->get('http_client_factory')
+      ->fromOptions([
+        'base_uri' => $this->baseUrl,
+      ]);
     $this->auth = ['testapiuser', $user->pass_raw];
     $this->endpoint = $this->getEndpoint();
 
     // Load the API spec for use by tests.
-    $response = $this->http->request('GET', 'api/1');
+    $response = $this->httpClient->request('GET', 'api/1');
     $this->spec = json_decode($response->getBody());
-  }
-
-  public function tearDown(): void {
-    parent::tearDown();
-    $this->http = NULL;
   }
 
   protected function assertJsonIsValid($schema, $json) {
@@ -58,10 +65,11 @@ abstract class Api1TestBase extends ExistingSiteBase {
   abstract public function getEndpoint(): string;
 
   protected function post($data, $httpErrors = TRUE) {
-    return $this->http->post($this->endpoint, [
+    return $this->httpClient->post($this->endpoint, [
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => $httpErrors,
+      RequestOptions::TIMEOUT => 10000,
     ]);
   }
 
