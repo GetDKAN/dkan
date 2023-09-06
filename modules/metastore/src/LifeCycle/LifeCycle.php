@@ -291,6 +291,7 @@ class LifeCycle {
    *
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Dataset metastore item.
+   *
    * @throws \Exception
    */
   protected function datasetPresave(MetastoreItemInterface $data): void {
@@ -301,7 +302,7 @@ class LifeCycle {
       try {
         $this->triggerOrphanReferences($data);
       }
-      catch (InvalidPluginDefinitionException|PluginNotFoundException|DataNodeLifeCycleEntityValidationException $e) {
+      catch (InvalidPluginDefinitionException | PluginNotFoundException | DataNodeLifeCycleEntityValidationException $e) {
         throw new \Exception($e->getMessage());
       }
     }
@@ -312,6 +313,7 @@ class LifeCycle {
    *
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item.
+   *
    * @throws \Exception
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
@@ -327,15 +329,16 @@ class LifeCycle {
     // Create new reference entities if they do not exist.
     $metadata = $this->referencer->reference($metadata);
 
-    // Re-add metadata to data object with uuids
+    // Re-add metadata to data object with uuids.
     $data->setMetadata($metadata);
   }
 
   /**
    * Orphan removed references if applicable.
    *
-   * @param MetastoreItemInterface $data
-   * @return void
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Metastore item.
+   *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
@@ -351,7 +354,8 @@ class LifeCycle {
     // Are we publishing this new revision?
     $state = $data->getModerationState();
 
-    // If publishing a previous draft, check for orphans from last published version.
+    // If publishing a previous draft, check for orphans
+    // from last published version.
     if ($state == 'published') {
       // Get last published version.
       $published = $data->getPublishedRevision();

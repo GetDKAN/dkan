@@ -204,6 +204,7 @@ class Data implements MetastoreItemInterface {
    * Get the latest revision ID.
    *
    * @return int|string|null
+   *   Latest revision ID or null
    */
   public function getLoadedRevisionId() {
     return $this->node->getLoadedRevisionId();
@@ -213,6 +214,7 @@ class Data implements MetastoreItemInterface {
    * Get the current revision ID.
    *
    * @return int|mixed|string|null
+   *   Revision ID or null
    */
   public function getRevisionId() {
     return $this->node->getRevisionId();
@@ -222,7 +224,9 @@ class Data implements MetastoreItemInterface {
    * Get latest revision.
    *
    * @return Data|void
-   * @throws DataNodeLifeCycleEntityValidationException
+   *  Data object containing the latest revision or null
+   *
+   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
@@ -260,6 +264,7 @@ class Data implements MetastoreItemInterface {
    * Get moderation state.
    *
    * @return string
+   *   Node moderation state
    */
   public function getModerationState() {
     return $this->node->get('moderation_state')->getString();
