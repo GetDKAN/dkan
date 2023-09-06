@@ -192,8 +192,6 @@ class DatastoreService implements ContainerInjectionInterface {
    *   call. Key is the name of the class, value is the message.
    */
   public function importDeferred(string $identifier, $version = NULL): array {
-    // Perform the db import as a queue item.
-
     $queueId = $this->queue->get('datastore_import')->createItem([
       'identifier' => $identifier,
       'version' => $version,
