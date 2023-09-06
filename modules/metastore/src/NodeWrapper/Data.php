@@ -246,7 +246,7 @@ class Data implements MetastoreItemInterface {
    * Get published revision.
    *
    * @return Data|void
-   *    Data object containing the latest revision or null
+   *   Data object containing the latest revision or null
    *
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
