@@ -1,8 +1,42 @@
 API Examples
 =============
 
-Each dataset page displays live examples for basic API calls for that dataset.
+When visiting a dataset page, you will see dataset specific API examples
+for that dataset that do not require authentication.
+
 This guide will show additional options for more advanced usage.
+
+Authentication
+--------------
+
+Drupal uses Basic Authentication, this is a method for an HTTP user agent (e.g., a web browser)
+to provide a username and password when making a request.
+
+When employing Basic Authentication, users include an encoded string in the Authorization
+header of each request they make. The string is used by the request's recipient to verify
+users' identity and rights to access a resource.
+
+  -  Key = Authorization
+  -  Value = Basic + base 64 encoding of a user ID and password separated by a colon
+
+Identifiers
+-----------
+
+Every dataset has an identifier, a.k.a. UUID. The dataset identifier is used in the dataset URL (/dataset/datasetID),
+and does not change when edits are made to the dataset. So if you are creating an automated
+script it is better to use APIs that utilize the dataset ID and the index of the distribution.
+The index for the first distribution is 0, the index for the second distribution is 1, etc.
+
+Distributions also have their own identifiers. The distribution identifier will
+change each time there is a change to the distribution resource or any change to
+:doc:`triggering properties <guide_datastore_settings>`. You can get the distribution identifier by viewing
+the dataset metadata API ``/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids``
+or by running this drush command, passing in the dataset ID:
+
+    .. code-block::
+
+      drush dkan:dataset-info [datasetID]
+
 
 How to set the moderation state through the API.
 ------------------------------------------------
@@ -15,14 +49,14 @@ Learn more about :term:`Moderation State` here.
 
     .. code-block::
 
-      GET https://[site-domain]/api/1/metastore/schemas/dataset/items/[identifier]/revisions
+      GET https://[site-domain]/api/1/metastore/schemas/dataset/items/[datasetID]/revisions
 
 
 2. Let's say the returned result says the revision is published "true" and state "published", here is how we change the state to hidden.
 
     .. code-block::
 
-       POST https://[site-domain]/api/1/metastore/schemas/dataset/items/[identifier]/revisions HTTP/1.1
+       POST https://[site-domain]/api/1/metastore/schemas/dataset/items/[datasetID]/revisions HTTP/1.1
 
        Authorization: Basic [base64 encoded 'user:password' string]
 
@@ -38,13 +72,8 @@ Learn more about :term:`Moderation State` here.
 How to run a query against multiple tables with JOIN.
 -------------------------------------------------------
 
-This query will require the distribution_uuid. You can get this id by viewing
-the dataset metadata API ``/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids``
-or running this drush command, passing in the dataset ID:
-
-    .. code-block::
-
-      drush dkan:dataset-info [datasetID]
+This query will require the distribution identifier (uuid) to define the resource ids
+in your query. See the Identifiers section above.
 
 Define the tables you want to query and give each an alias under "resources".
 List the properties you want returned, if the properties you want returned are
@@ -55,7 +84,7 @@ the property and value to match.
 
     .. code-block::
 
-      POST https://[site-domain]/api/1/datastore/query/[identifier]/0 HTTP/1.1
+      POST https://[site-domain]/api/1/datastore/query/[datasetID]/0 HTTP/1.1
 
        {
            "resources": [
