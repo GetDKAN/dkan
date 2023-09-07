@@ -16,8 +16,10 @@ use Drupal\metastore\NodeWrapper\Data;
  */
 function _metastore_search_is_dataset(EntityInterface $entity): bool {
   try {
-    // Attempt to check this entity's data type.
-    return (new Data($entity, \Drupal::entityTypeManager()))->getDataType() === 'dataset';
+    $data = new Data($entity, \Drupal::entityTypeManager());
+
+    // Is this a published dataset?
+    return ($data->getDataType() === 'dataset' && $data->getModerationState() === 'published');
   }
   catch (DataNodeLifeCycleEntityValidationException $e) {
     // If the data object fails validation, the given entity is not a dataset.
