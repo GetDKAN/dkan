@@ -4,6 +4,7 @@ namespace Drupal\Tests\common\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
+use Drupal\user\Entity\Role;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Opis\JsonSchema\Schema;
@@ -32,13 +33,26 @@ abstract class Api1TestBase extends BrowserTestBase {
     'harvest',
     'metastore',
     'node',
+    'user',
   ];
 
+  /**
+   * Set up test client, role and user, initialize spec.
+   */
   public function setUp(): void {
     parent::setUp();
+
+    $role = Role::create([
+      'id' => 'api_user',
+      'label' => "API User",
+    ]);
+    if ($role->save() === SAVED_NEW) {
+      $permissions = ["post put delete datasets through the api"];
+      $this->grantPermissions($role, $permissions);
+    }
+
     $user = $this->createUser([], "testapiuser", FALSE, [
       'roles' => ['api_user'],
-      'permissions' => ["post put delete datasets through the api"],
       'mail' => 'testapiuser@test.com',
     ]);
 
