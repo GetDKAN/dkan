@@ -4,7 +4,6 @@ namespace Drupal\Tests\common\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
-use Drupal\user\Entity\Role;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Opis\JsonSchema\Schema;
@@ -25,15 +24,13 @@ abstract class Api1TestBase extends BrowserTestBase {
   protected $endpoint;
 
   protected $defaultTheme = 'stark';
+  protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
     'common',
     'datastore',
-    'dynamic_page_cache',
-    'harvest',
     'metastore',
     'node',
-    'user',
   ];
 
   /**
@@ -41,21 +38,7 @@ abstract class Api1TestBase extends BrowserTestBase {
    */
   public function setUp(): void {
     parent::setUp();
-
-    $role = Role::create([
-      'id' => 'api_user',
-      'label' => "API User",
-    ]);
-    if ($role->save() === SAVED_NEW) {
-      $permissions = ["post put delete datasets through the api"];
-      $this->grantPermissions($role, $permissions);
-    }
-
-    $user = $this->createUser([], "testapiuser", FALSE, [
-      'roles' => ['api_user'],
-      'mail' => 'testapiuser@test.com',
-    ]);
-
+    $user = $this->createUser(["post put delete datasets through the api"], "testapiuser", FALSE);
     $this->httpClient = $this->container->get('http_client_factory')
       ->fromOptions([
         'base_uri' => $this->baseUrl,
