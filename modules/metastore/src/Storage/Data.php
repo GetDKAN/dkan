@@ -303,7 +303,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   public function store($data, string $uuid = NULL): string {
     $data = json_decode($data);
 
-    $data = $this->filterHtml($data);
+    $data = $this->filterHtml($data, $this->schemaId);
 
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
@@ -393,20 +393,30 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * @param mixed $input
    *   Unfiltered input.
+   * @param string $parent
+   *   The parent schema of a given property.
    *
    * @return mixed
    *   Filtered output.
    */
-  private function filterHtml($input) {
-    // @todo find out if we still need it.
+  private function filterHtml($input, string $parent = 'dataset') {
+    // Temporarily hard code allowed properties.
+    $html_allowed = ['dataset.description', 'distribution.description'];
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);
 
       case "array":
       case "object":
-        foreach ($input as &$value) {
-          $value = $this->filterHtml($value);
+        foreach ($input as $name => &$value) {
+          // Only apply filtering to properties that allow HTML.
+          if (in_array($parent . '.' . $name, $html_allowed)) {
+            $value = $this->filterHtml($value, $name);
+          }
+          // Nested properties; check using parent.
+          elseif ($name == 'data' && gettype($value) == 'object') {
+            $value = $this->filterHtml($value, $parent);
+          }
         }
         return $input;
 
