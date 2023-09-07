@@ -18,8 +18,15 @@ function _metastore_search_is_dataset(EntityInterface $entity): bool {
   try {
     $data = new Data($entity, \Drupal::entityTypeManager());
 
-    // Is this a published dataset?
-    return ($data->getDataType() === 'dataset' && $data->getModerationState() === 'published');
+    $config = \Drupal::configFactory();
+    $processors = $config->get('search_api.index.dkan')->get('processor_settings');
+    if (isset($processors['dkan_dataset_filter_unpublished'])) {
+      // Only index published datasets.
+      return ($data->getDataType() === 'dataset' && $data->getModerationState() === 'published');
+    }
+    else {
+      return $data->getDataType() === 'dataset';
+    }
   }
   catch (DataNodeLifeCycleEntityValidationException $e) {
     // If the data object fails validation, the given entity is not a dataset.
