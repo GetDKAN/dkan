@@ -84,77 +84,76 @@ the property and value to match.
 
     .. code-block::
 
-      POST https://[site-domain]/api/1/datastore/query/[datasetID]/0 HTTP/1.1
+      POST https://[site-domain]/api/1/datastore/query HTTP/1.1
 
-       {
-           "resources": [
-               {
-                   "id": "07eaa697-694d-5aa9-a105-1dad5509fc47",
-                   "alias": "a"
-               },
-               {
-                   "id": "2fde366a-7026-54bc-bda5-63b5435afbd0",
-                   "alias": "b"
-               }
-           ],
-           "properties": [
-               {
-                 "resource": "a",
-                 "property": "first_name"
-               },
-               {
+      {
+        "resources": [
+          {
+            "id": "07eaa697-694d-5aa9-a105-1dad5509fc47",
+            "alias": "a"
+          },
+          {
+            "id": "2fde366a-7026-54bc-bda5-63b5435afbd0",
+            "alias": "b"
+          }
+        ],
+        "properties": [
+          {
+            "resource": "a",
+            "property": "first_name"
+          },
+          {
+            "resource": "a",
+            "property": "last_name"
+          },
+          {
+            "resource": "b",
+            "property": "state"
+          },
+          {
+            "resource": "b",
+            "property": "county"
+          },
+          {
+            "alias": "postal_code",
+            "expression": {
+              "operator": "*",
+              "operands": [
+                {
                    "resource": "a",
-                   "property": "last_name"
-               },
-               {
-                   "resource": "b",
-                   "property": "state"
-               },
-               {
-                     "resource": "b",
-                     "property": "county"
-               },
-               {
-                 "alias": "postal_code",
-                 "expression": {
-                   "operator": "*",
-                   "operands": [
-                       {
-                           "resource": "a",
-                           "property": "postal_code"
-                       },
-                       {
-                           "resource": "b",
-                           "property": "zip"
-                       }
-                   ]
-                 }
-               }
-           ],
-           "conditions": [
-             {
-               "resource": "a",
-               "property": "carrier",
-               "value": "75573",
-               "operator": "="
-             }
-           ],
-           "joins": [
-               {
-                   "resource": "b",
-                   "on": [
-                     {
-                       "resource": "a",
-                       "property": "id"
-                     },
-                     {
-                       "resource": "b",
-                       "property": "id"
-                     }
-                   ]
-               }
-           ]
-       }
+                   "property": "postal_code"
+                },
+                {
+                  "resource": "b",
+                  "property": "zip"
+                }
+              ]
+            }
+          }
+        ],
+        "conditions": [
+           {
+             "resource": "a",
+             "property": "carrier",
+             "value": "75573",
+             "operator": "="
+           }
+        ],
+        "joins": [
+          {
+            "resource": "b",
+            "condition": {
+              "resource": "a",
+              "property": "mid",
+              "operator": "=",
+              "value": {
+                "resource": "b",
+                "property": "mid"
+              }
+            }
+          }
+        ]
+      }
 
 How to run a fulltext query on multiple columns.
 ------------------------------------------------
