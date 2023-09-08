@@ -80,20 +80,30 @@ class DkanDataSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('metastore.settings');
-    $options = $this->schemaHelper->retrieveSchemaProperties('dataset');
-    $default_values = $config->get('property_list');
+
     $form['description'] = [
       '#markup' => $this->t(
-        'Select properties from the dataset schema to be available as individual objects.
-        Each property will be assigned a unique identifier in addition to its original schema value.'
+        'Configure the metastore settings.'
       ),
     ];
+
+    $form['html_allowed_properties'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Properties that allow HTML'),
+      '#description' => $this->t('Metadata properties that may contain HTML elements.'),
+      '#options' => $this->schemaHelper->retrieveStringSchemaProperties(),
+      '#default_value' => $config->get('html_allowed_properties') ?: ['dataset.description', 'distribution.description'],
+    ];
+
     $form['property_list'] = [
       '#type' => 'checkboxes',
-      '#title' => $this->t('Dataset properties'),
-      '#options' => $options,
-      '#default_value' => $default_values,
+      '#title' => $this->t('Dataset properties to be stored as separate entities; use caution'),
+      '#description' => $this->t('Select properties from the dataset schema to be available as individual objects.
+        Each property will be assigned a unique identifier in addition to its original schema value.'),
+      '#options' => $this->schemaHelper->retrieveSchemaProperties(),
+      '#default_value' => $config->get('property_list'),
     ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -107,6 +117,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
 
     $this->config('metastore.settings')
       ->set('property_list', $form_state->getValue('property_list'))
+      ->set('html_allowed_properties', $form_state->getValue('html_allowed_properties'))
       ->save();
 
     // Rebuild routes, without clearing all caches.

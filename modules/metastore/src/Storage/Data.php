@@ -3,6 +3,7 @@
 namespace Drupal\metastore\Storage;
 
 use Drupal\common\LoggerTrait;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -85,12 +86,20 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $schemaIdField;
 
   /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   */
+  protected $configFactory;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->schemaId = $schemaId;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -400,8 +409,8 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   Filtered output.
    */
   private function filterHtml($input, string $parent = 'dataset') {
-    // Temporarily hard code allowed properties.
-    $html_allowed = ['dataset.description', 'distribution.description'];
+    $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
+      ?: ['dataset.description', 'distribution.description'];
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);

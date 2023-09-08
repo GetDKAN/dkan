@@ -19,4 +19,7 @@ property_list:
   'spatial': '0'
   'temporal': '0'
   'isPartOf': '0'
+html_allowed_properties:
+  'dataset.description': 'dataset.description'
+  'distribution.description': 'distribution.description'
 resource_perspective_display: source
