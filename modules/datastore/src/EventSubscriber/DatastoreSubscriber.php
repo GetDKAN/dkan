@@ -9,7 +9,6 @@ use Drupal\common\Events\Event;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\LifeCycle\LifeCycle;
@@ -107,7 +106,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
     $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
     $events[LifeCycle::EVENT_PRE_REFERENCE][] = ['onPreReference'];
-    $events[LocalizeQueueWorker::EVENT_RESOURCE_LOCALIZED][] = ['onLocalizeComplete'];
+    $events[ResourceLocalizer::EVENT_RESOURCE_LOCALIZED][] = ['onLocalizeComplete'];
     return $events;
   }
 

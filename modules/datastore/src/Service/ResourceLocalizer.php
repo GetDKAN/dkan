@@ -26,6 +26,13 @@ class ResourceLocalizer {
   use EventDispatcherTrait;
 
   /**
+   * Event sent when a resource is successfully localized.
+   *
+   * @var string
+   */
+  const EVENT_RESOURCE_LOCALIZED = 'event_resource_localized';
+
+  /**
    * Perspective representing the local file with public:// URI scheme.
    *
    * @var string
@@ -94,14 +101,22 @@ class ResourceLocalizer {
   /**
    * Copy the source file to the local file system.
    *
-   * Do not (yet) update the file map database with this information.
+   * As a side effect, register new perspectives to the mapper DB.
    */
   protected function localize($identifier, $version = NULL): Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
       $result = $ff->run();
+      // The result object should report DONE, even if the file has previously
+      // been localized.
       if ($result->getStatus() === Result::DONE) {
+        // Localization is done. Register the perspectives.
         $this->registerNewPerspectives($resource, $ff);
+        // Send the event.
+        $this->dispatchEvent(static::EVENT_RESOURCE_LOCALIZED, [
+          'identifier' => $resource->getIdentifier(),
+          'version' => $resource->getVersion(),
+        ]);
       }
       return $result;
     }
