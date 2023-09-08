@@ -10,6 +10,7 @@ use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\datastore\DatastoreResource;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
@@ -224,18 +225,25 @@ class ResourceLocalizer {
 
   /**
    * Remove local file.
+   *
+   * Also remove local perspectives from mapping DB.
    */
   public function remove($identifier, $version = NULL): void {
-    if ($local_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
-      $this->resourceMapper->remove($local_resource);
+    // Remove the LOCAL_URL_PERSPECTIVE if it exists.
+    if ($local_url_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
+      $this->resourceMapper->remove($local_url_resource);
     }
-    if ($resource = $this->get($identifier, $version)) {
+    // Remove the LOCAL_FILE_PERSPECTIVE if it exists.
+    if ($resource = $this->get($identifier, $version, self::LOCAL_FILE_PERSPECTIVE)) {
+      // Remove the file.
       $resource_id = $resource->getUniqueIdentifierNoPerspective();
       if (file_exists($resource->getFilePath())) {
         $this->drupalFiles->getFilesystem()
           ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
       }
+      // Remove the fetcher job.
       $this->removeJob($resource_id);
+      // Remove the LOCAL_FILE_PERSPECTIVE.
       $this->resourceMapper->remove($resource);
     }
   }

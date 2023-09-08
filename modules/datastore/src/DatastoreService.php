@@ -242,10 +242,11 @@ class DatastoreService implements ContainerInjectionInterface {
    *   A resource's identifier.
    * @param string|null $version
    *   A resource's version.
-   * @param bool $local_resource
-   *   Whether to remove the local resource. If false, just drop the db table.
+   * @param bool $remove_local_resource
+   *   (optional) Whether to remove the local resource. If FALSE, keep the
+   *   localized files for this resource. Defaults to TRUE.
    */
-  public function drop(string $identifier, ?string $version = NULL, bool $local_resource = TRUE) {
+  public function drop(string $identifier, ?string $version = NULL, bool $remove_local_resource = TRUE) {
     $storage = $this->getStorage($identifier, $version);
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
@@ -256,7 +257,7 @@ class DatastoreService implements ContainerInjectionInterface {
         ->remove(md5($resource->getUniqueIdentifier()));
     }
 
-    if ($local_resource) {
+    if ($remove_local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
       $this->jobStoreFactory
         ->getInstance(FileFetcher::class)

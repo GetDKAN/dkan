@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
-use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
@@ -107,7 +106,9 @@ class DatasetTest extends BrowserTestBase {
 
     drupal_flush_all_caches();
 
-    $this->changeDatasetsResourceOutputPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE);
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
+      ->save();
 
     $metadata = $this->getMetastore()->get('dataset', 123);
     $dataset = json_decode($metadata);
@@ -213,7 +214,7 @@ class DatasetTest extends BrowserTestBase {
     $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
 
     // Get the dataset info.
-    $metadata = \Drupal::service('dkan.common.dataset_info')->gather($id_1);
+    $metadata = $this->container->get('dkan.common.dataset_info')->gather($id_1);
     $distributionTable = $metadata['latest_revision']['distributions'][0]['table_name'];
 
     // Confirm distribution table exists.
@@ -230,14 +231,22 @@ class DatasetTest extends BrowserTestBase {
     $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
 
     // Update the modified date for the dataset.
-    $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2020']));
+    $this->getMetastore()->patch('dataset', $id_1, json_encode([
+      'modified' => '06-05-2222',
+    ]));
 
     // Simulate datastore_import and cleanup queues post update.
-    $this->runQueues(['datastore_import', 'orphan_reference_processor']);
+    $this->runQueues([
+      'datastore_import',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+    ]);
 
     // Confirm original distribution table removed.
-    $distributionTableExists = $databaseSchema->tableExists($distributionTable);
-    $this->assertFalse($distributionTableExists, $distributionTable . ' removed.');
+    $this->assertFalse(
+      $databaseSchema->tableExists($distributionTable),
+      'Distribution table exists: ' . $distributionTable
+    );
 
     // Confirm original distribution local directory removed.
     $this->assertDirectoryDoesNotExist('public://resources/' . $resourceDirectory);
@@ -344,13 +353,6 @@ class DatasetTest extends BrowserTestBase {
 
     $queryString = "[SELECT * FROM {$this->getResourceDatastoreTable($resource)}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
     $this->queryResource($resource, $queryString);
-  }
-
-  private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-    $configFactory = $this->container->get('config.factory');
-    $config = $configFactory->getEditable('metastore.settings');
-    $config->set('resource_perspective_display', $perspective);
-    $config->save();
   }
 
   private function getResourceDatastoreTable(object $resource) {
