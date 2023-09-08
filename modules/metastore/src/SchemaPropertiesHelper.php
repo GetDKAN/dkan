@@ -82,7 +82,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
    * @param mixed $input
    *   Object we're parsing.
    * @param string $parent
-   *   Schema for this object
+   *   Parent object.
    * @param array $property_list
    *   Array we're building of schema properties.
    *
@@ -95,8 +95,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
       if (substr($id, 0, 1) == '@' || gettype($object) != 'object' || !isset($object->type)) {
         continue;
       }
-      $type = $object->type;
-      if ($type == 'string') {
+      if ($object->type == 'string') {
         if (isset($object->title)) {
           $property_list[$parent . '.' . $id] = ucfirst($parent) . ': ' . "{$object->title} ({$id})";
         }
@@ -105,13 +104,11 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
         }
       }
       // Find nested properties.
-      elseif (in_array($type, ['array', 'object'])) {
-        if (isset($object->properties) && gettype($object->properties == 'object')) {
-          $property_list = $this->buildPropertyList($object->properties, $id, $property_list);
-        }
-        elseif (isset($object->items) && gettype($object->items) == 'object' && isset($object->items->properties)) {
-          $property_list = $this->buildPropertyList($object->items->properties, $id, $property_list);
-        }
+      elseif (isset($object->properties) && gettype($object->properties == 'object')) {
+        $property_list = $this->buildPropertyList($object->properties, $id, $property_list);
+      }
+      elseif (isset($object->items) && gettype($object->items) == 'object' && isset($object->items->properties)) {
+        $property_list = $this->buildPropertyList($object->items->properties, $id, $property_list);
       }
     }
 
