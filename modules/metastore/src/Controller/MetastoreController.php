@@ -153,8 +153,12 @@ class MetastoreController implements ContainerInjectionInterface {
    *   True if we want references.
    */
   private function wantObjectWithReferences(Request $request) {
-    return $request->get('show-reference-ids', FALSE) ||
-      $request->get('show_reference_ids', FALSE);
+    $param = $request->get('show-reference-ids', FALSE);
+    $param2 = $request->get('show_reference_ids', FALSE);
+    if ($param === FALSE && $param2 === FALSE) {
+      return FALSE;
+    }
+    return TRUE;
   }
 
   /**
