@@ -130,8 +130,9 @@ class DatastoreService implements ContainerInjectionInterface {
    * @param bool $deferred
    *   (Optional) Whether to create queue workers for the import process. If
    *   TRUE, will create a localize_import queue worker for the resource, which
-   *   will in turn create a datastore_import worker when its successful. If
-   *   FALSE, will perform file localization and then data import.
+   *   will in turn create a datastore_import worker when successful. If FALSE,
+   *   will perform file localization and then data import without queueing
+   *   jobs. Defaults to FALSE.
    * @param string|null $version
    *   (Optional) The resource version. If NULL, the most recent version will
    *   be used.
@@ -139,9 +140,6 @@ class DatastoreService implements ContainerInjectionInterface {
    * @return array
    *   Array of response messages from the various import-related services we
    *   call. Key is the name of the class, value is the message.
-   *
-   * @todo Callers should use importDeferred() for the case of making queue
-   *   items.
    */
   public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
     $results = [];
@@ -179,7 +177,7 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
-   * Perform the database import as a queue item.
+   * Create a queue item for the import.
    *
    * @param string $identifier
    *   The data resource identifier.

@@ -66,10 +66,11 @@ class DatastoreServiceTest extends TestCase {
       ->add(JobStore::class, 'remove', TRUE);
 
     $service = DatastoreService::create($mockChain->getMock());
-    // Ensure variations on drop return nothing.
+    // These are all valid ways to call drop().
     $this->assertNull($service->drop('foo'));
     $this->assertNull($service->drop('foo', '123152'));
     $this->assertNull($service->drop('foo', NULL, FALSE));
+    // Should throw a TypeError on the NULL third argument.
     $this->expectException(\TypeError::class);
     $service->drop('foo', NULL, NULL);
   }

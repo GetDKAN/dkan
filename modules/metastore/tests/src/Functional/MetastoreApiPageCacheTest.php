@@ -14,9 +14,6 @@ use RootedData\RootedJsonData;
  * @group metastore
  * @group functional
  * @group btb
- *
- *  @todo Factor out some of the support methods to a trait or subclass to share
- *    with DatasetTest.
  */
 class MetastoreApiPageCacheTest extends BrowserTestBase {
 
@@ -97,6 +94,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     );
 
     $queues = [
+      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
@@ -120,7 +118,6 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Importing the datastore should invalidate the cache.
-    $this->runQueues(['localize_import']);
     $this->runQueues($queues);
     // Re-render the dataset nodes using the render service.
     $this->renderDatasetNodesForCache();
@@ -161,7 +158,6 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     $this->httpVerbHandler('put', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Importing the datastore should invalidate the cache.
-    $this->runQueues(['localize_import']);
     $this->runQueues($queues);
     // Re-render the dataset nodes using the render service.
     $this->renderDatasetNodesForCache();

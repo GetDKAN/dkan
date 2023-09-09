@@ -220,7 +220,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * @param \Drupal\common\Events\Event $event
    *   The Event.
    *
-   * @see \Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker::EVENT_RESOURCE_LOCALIZED
+   * @see \Drupal\datastore\Service\ResourceLocalizer::EVENT_RESOURCE_LOCALIZED
    */
   public function onLocalizeComplete(Event $event) {
     $data = $event->getData();

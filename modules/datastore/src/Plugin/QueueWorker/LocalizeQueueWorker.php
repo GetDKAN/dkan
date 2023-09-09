@@ -7,8 +7,6 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\Reference\ReferenceLookup;
-use Drupal\metastore\ResourceMapper;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -41,20 +39,6 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
   protected LoggerChannelInterface $logger;
 
   /**
-   * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
-   */
-  protected ResourceMapper $resourceMapper;
-
-  /**
-   * Reference lookup service.
-   *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
-   */
-  protected ReferenceLookup $referenceLookup;
-
-  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -68,25 +52,17 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
    *   Resource localizer service.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
    *   A logger channel factory instance.
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
-   *   Resource mapper service.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
-   *   Reference lookup service.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     ResourceLocalizer $resourceLocalizer,
-    LoggerChannelFactoryInterface $loggerFactory,
-    ResourceMapper $resourceMapper,
-    ReferenceLookup $referenceLookup
+    LoggerChannelFactoryInterface $loggerFactory
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->resourceLocalizer = $resourceLocalizer;
     $this->logger = $loggerFactory->get('datastore');
-    $this->resourceMapper = $resourceMapper;
-    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -98,16 +74,13 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       $plugin_id,
       $plugin_definition,
       $container->get('dkan.datastore.service.resource_localizer'),
-      $container->get('logger.factory'),
-      $container->get('dkan.metastore.resource_mapper'),
-      $container->get('dkan.metastore.reference_lookup')
+      $container->get('logger.factory')
     );
   }
 
   /**
    * {@inheritdoc}
    *
-   * @see ResourceLocalizer::localizeTask()
    * @see \Drupal\Core\Cron::processQueues()
    */
   public function processItem($data) {

@@ -10,7 +10,6 @@ use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\DatastoreResource;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
