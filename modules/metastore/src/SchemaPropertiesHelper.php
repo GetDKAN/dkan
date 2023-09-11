@@ -95,22 +95,39 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
       if (substr($id, 0, 1) == '@' || gettype($object) != 'object' || !isset($object->type)) {
         continue;
       }
-      if ($object->type == 'string' && isset($object->title)) {
+      $type = $object->type;
+      if ($type == 'string' && isset($object->title)) {
         $property_list[$parent . '_' . $id] = ucfirst($parent) . ': ' . "{$object->title} ({$id})";
       }
-      elseif ($object->type == 'string') {
+      elseif($type == 'string') {
         $property_list[$parent . '_' . $id] = ucfirst($parent) . ': ' . ucfirst($id);
       }
       // Find nested properties.
-      elseif (isset($object->properties) && gettype($object->properties == 'object')) {
-        $property_list = $this->buildPropertyList($object->properties, $id, $property_list);
-      }
-      elseif (isset($object->items) && gettype($object->items) == 'object' && isset($object->items->properties)) {
-        $property_list = $this->buildPropertyList($object->items->properties, $id, $property_list);
+      else {
+        $this->parseNestedProperties($id, $object, $property_list);
       }
     }
 
     return $property_list;
+  }
+
+  /**
+   * Parse nested string schema properties.
+   *
+   * @param string $id
+   *   Property ID.
+   * @param object $object
+   *   Object we're parsing.
+   * @param array $property_list
+   *   Array we're building of schema properties.
+   */
+  private function parseNestedProperties(string $id, $object, array &$property_list = []) {
+    if (isset($object->properties) && gettype($object->properties == 'object')) {
+      $property_list = $this->buildPropertyList($object->properties, $id, $property_list);
+    }
+    elseif (isset($object->items) && gettype($object->items) == 'object' && isset($object->items->properties)) {
+      $property_list = $this->buildPropertyList($object->items->properties, $id, $property_list);
+    }
   }
 
 }
