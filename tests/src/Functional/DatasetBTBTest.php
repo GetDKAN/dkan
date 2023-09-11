@@ -2,19 +2,19 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
-use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
+use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
 use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
 /**
- * Class DatasetTest
+ * Dataset tests.
  *
  * @group dkan
  * @group functional
@@ -29,23 +29,86 @@ class DatasetBTBTest extends BrowserTestBase {
     'field',
     'harvest',
     'metastore',
+    'metastore_search',
     'node',
+    'search_api',
   ];
 
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   *
+   * Set strictConfigSchema to FALSE, so that we don't end up checking the
+   * config schema of contrib dependencies.
+   */
+  protected $strictConfigSchema = FALSE;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
+
+  /**
+   * Test the resource purger when the default moderation state is 'draft'.
+   */
+  public function testResourcePurgeDraft() {
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $id_2 = uniqid(__FUNCTION__ . '2');
+    $id_3 = uniqid(__FUNCTION__ . '3');
+
+    // Set default moderation state to draft.
+    $this->config('workflows.workflow.dkan_publishing')
+      ->set('type_settings.default_moderation_state', 'draft')
+      ->save();
+
+    // Post, update and publish a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv'], 'post');
+    $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
+    $this->getMetastore()->publish('dataset', $id_1);
+    $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
+
+    /** @var \Drupal\common\DatasetInfo $datasetInfo */
+    $datasetInfo = $this->container->get('dkan.common.dataset_info');
+    $info = $datasetInfo->gather($id_1);
+    $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
+    $this->assertStringEndsWith('3.csv', $info['published_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('1.csv', $info['published_revision']['distributions'][1]['file_path']);
+
+    // Verify that only the resources associated with the published and the
+    // latest revision.
+    $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
+    $this->assertEquals(3, $this->countTables());
+
+    // Add more datasets, only publishing some.
+    $this->storeDatasetRunQueues($id_2, '2.1', ['2.csv'], 'post');
+    $this->storeDatasetRunQueues($id_3, '3.1', ['3.csv'], 'post');
+    $this->getMetastore()->publish('dataset', $id_2);
+    // Reindex.
+    $index = Index::load('dkan');
+    $index->clear();
+    $index->indexItems();
+
+    // Verify search results contain the '1.2' version of $id_1, $id_2 but not $id_3.
+    $searchResults = $this->container->get('dkan.metastore_search.service')
+      ->search();
+    $this->assertEquals(2, $searchResults->total);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_1, $searchResults->results);
+    $this->assertEquals('1.2', $searchResults->results['dkan_dataset/' . $id_1]->title);
+    $this->assertArrayHasKey('dkan_dataset/' . $id_2, $searchResults->results);
+    $this->assertArrayNotHasKey('dkan_dataset/' . $id_3, $searchResults->results);
+  }
 
   public function testChangingDatasetResourcePerspectiveOnOutput() {
     $this->datastoreImportAndQuery();
 
     drupal_flush_all_caches();
 
-    $this->changeDatasetsResourceOutputPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE);
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
+      ->save();
 
     $metadata = $this->getMetastore()->get('dataset', 123);
     $dataset = json_decode($metadata);
@@ -72,7 +135,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Test archiving of datasets after a harvest
+   * Test archiving of datasets after a harvest.
    */
   public function testHarvestArchive() {
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
@@ -151,7 +214,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
 
     // Get the dataset info.
-    $metadata =  \Drupal::service('dkan.common.dataset_info')->gather($id_1);
+    $metadata = $this->container->get('dkan.common.dataset_info')->gather($id_1);
     $distributionTable = $metadata['latest_revision']['distributions'][0]['table_name'];
 
     // Confirm distribution table exists.
@@ -168,14 +231,20 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
 
     // Update the modified date for the dataset.
-    $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2020']));
+    $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
 
     // Simulate datastore_import and cleanup queues post update.
-    $this->runQueues(['datastore_import', 'orphan_reference_processor']);
+    $this->runQueues([
+      'datastore_import',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+    ]);
 
     // Confirm original distribution table removed.
-    $distributionTableExists = $databaseSchema->tableExists($distributionTable);
-    $this->assertFalse($distributionTableExists, $distributionTable . ' removed.');
+    $this->assertFalse(
+      $databaseSchema->tableExists($distributionTable),
+      'Distribution table exists: ' . $distributionTable
+    );
 
     // Confirm original distribution local directory removed.
     $this->assertDirectoryDoesNotExist('public://resources/' . $resourceDirectory);
@@ -262,9 +331,9 @@ class DatasetBTBTest extends BrowserTestBase {
     );
 
     $datasetRootedJsonData = $this->getMetastore()->get('dataset', $uuid);
-    $this->assertIsString("$datasetRootedJsonData");
-
-    $retrievedDataset = json_decode($datasetRootedJsonData);
+    $this->assertInstanceOf(RootedJsonData::class, $datasetRootedJsonData);
+    // Ensure round-trip for data.
+    $retrievedDataset = json_decode((string) $datasetRootedJsonData);
 
     $this->assertEquals(
       $retrievedDataset->identifier,
@@ -280,21 +349,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->runQueues(['datastore_import']);
 
-    $queryString = "[SELECT * FROM {$this->getResourceDatastoreTable($resource)}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
+    $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
     $this->queryResource($resource, $queryString);
-
-    /**/
-  }
-
-  private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-    $configFactory = $this->container->get('config.factory');
-    $config = $configFactory->getEditable('metastore.settings');
-    $config->set('resource_perspective_display', $perspective);
-    $config->save();
   }
 
   private function getResourceDatastoreTable(object $resource) {
-    return "{$resource->identifier}__{$resource->version}";
+    return $resource->identifier . '__' . $resource->version;
   }
 
   private function getResourceFromDataset(object $dataset) {
@@ -360,7 +420,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'JSON Schema requires one or more distributions.'
     );
     // @todo: Figure out how to assert against $factory->getResult()->getError()
-    //   so we can have a useful test fail message.
+    // so we can have a useful test fail message.
     return $valid_metadata_factory->get(json_encode($data), 'dataset');
   }
 
