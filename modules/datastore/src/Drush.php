@@ -291,7 +291,7 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:localize
    *
    * @option deferred
-   *   Add the import to the  queue, rather than importing now.
+   *   Add the localization to the  queue, rather than localizing now.
    */
   public function localize(string $identifier, $version = NULL, array $options = ['deferred' => FALSE]) {
     $deferred = $options['deferred'] ? TRUE : FALSE;

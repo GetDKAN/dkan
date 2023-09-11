@@ -38,7 +38,6 @@ class DatastoreServiceTest extends TestCase {
     $resource = new DataResource('http://example.org', 'text/csv');
     $chain = $this->getContainerChainForService('dkan.datastore.service')
       ->add(ResourceLocalizer::class, 'get', $resource)
-      ->add(ResourceLocalizer::class, 'getResult', Result::class)
       ->add(FileFetcher::class, 'run', Result::class)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)

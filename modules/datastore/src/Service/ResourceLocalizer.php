@@ -215,14 +215,6 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get a file fetcher result.
-   */
-  public function getResult($identifier, $version = NULL) {
-    $ff = $this->getFileFetcher($this->getResourceSource($identifier, $version));
-    return $ff->getResult();
-  }
-
-  /**
    * Remove local file.
    *
    * Also remove local perspectives from mapping DB.
