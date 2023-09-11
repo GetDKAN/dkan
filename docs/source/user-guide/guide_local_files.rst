@@ -7,6 +7,8 @@ Because DKAN will make a local copy of a remote file in order to import it, it c
 
 These instructions assume you’ve already created a dataset (through the the UI, a harvest or the API) that contains a distribution pointing to a remote CSV file, and that this CSV file has not yet been imported to the datastore. We’ll need the ID of the existing dataset.
 
+Note that for the most part, DKAN will not have trouble performing dataset imports. These instructions, and the features which support them, are for those times when the datasets are large enough to cause errors during normal imports.
+
 TL;DR
 =====
 
