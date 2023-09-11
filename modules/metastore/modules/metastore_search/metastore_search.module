@@ -10,23 +10,14 @@ use Drupal\metastore\NodeWrapper\Data;
  *
  * @param \Drupal\Core\Entity\EntityInterface $entity
  *   The entity in question.
- * @param string $op
- *   The operation calling this function.
  *
  * @return bool
  *   Whether the entity is a dataset.
  */
-function _metastore_search_is_dataset(EntityInterface $entity, string $op = 'update'): bool {
+function _metastore_search_is_dataset(EntityInterface $entity): bool {
   try {
-    $data = new Data($entity, \Drupal::entityTypeManager());
-
-    $config = \Drupal::configFactory();
-    $processors = $config->get('search_api.index.dkan')->get('processor_settings');
-    if ($op == 'update' && isset($processors['dkan_dataset_filter_unpublished'])) {
-      // Only index published datasets.
-      return ($data->getDataType() === 'dataset' && $data->getModerationState() === 'published');
-    }
-    return $data->getDataType() === 'dataset';
+    // Attempt to check this entity's data type.
+    return (new Data($entity, \Drupal::entityTypeManager()))->getDataType() === 'dataset';
   }
   catch (DataNodeLifeCycleEntityValidationException $e) {
     // If the data object fails validation, the given entity is not a dataset.
@@ -40,8 +31,8 @@ function _metastore_search_is_dataset(EntityInterface $entity, string $op = 'upd
  * Track created datasets in the DKAN search api index.
  */
 function metastore_search_entity_insert(EntityInterface $entity): void {
-  // Ensure the entity in question is a dataset and is not hidden or
-  // unpublished.
+  // Ensure the entity in question is a dataset.
+  // @todo Ensure it is not hidden or unpublished.
   if (!_metastore_search_is_dataset($entity)) {
     return;
   }
@@ -74,7 +65,7 @@ function metastore_search_entity_update(EntityInterface $entity): void {
  */
 function metastore_search_entity_delete(EntityInterface $entity): void {
   // Ensure the entity in question is a dataset.
-  if (!_metastore_search_is_dataset($entity, 'delete')) {
+  if (!_metastore_search_is_dataset($entity)) {
     return;
   }
 
