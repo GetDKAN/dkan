@@ -79,7 +79,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
   /**
    * Build a list of schema properties.
    *
-   * @param mixed $input
+   * @param object $input
    *   Object we're parsing.
    * @param string $parent
    *   Parent object.
@@ -89,7 +89,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
    * @return array
    *   List of schema properties' title and description.
    */
-  private function buildPropertyList(mixed $input, string $parent = 'dataset', array &$property_list = []): array {
+  private function buildPropertyList($input, string $parent = 'dataset', array &$property_list = []): array {
     foreach ($input as $id => $object) {
       // Exclude properties starting with @.
       if (substr($id, 0, 1) == '@' || gettype($object) != 'object' || !isset($object->type)) {
