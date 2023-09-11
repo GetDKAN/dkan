@@ -93,10 +93,10 @@ class SchemaPropertiesHelperTest extends TestCase {
       }
     }';
     $expected = [
-      'dataset.title' => 'Dataset: Title (title)',
-      'dataset.test' => 'Dataset: Test',
-      'contactPoint.fn' => 'ContactPoint: Contact Name (fn)',
-      'distribution.title' => 'Distribution: Title (title)'
+      'dataset_title' => 'Dataset: Title (title)',
+      'dataset_test' => 'Dataset: Test',
+      'contactPoint_fn' => 'ContactPoint: Contact Name (fn)',
+      'distribution_title' => 'Distribution: Title (title)'
     ];
 
     $chain = (new Chain($this))

@@ -47,10 +47,10 @@ class MetastoreControllerTest extends TestCase {
    * @var string[]
    */
   public const HTML_ALLOWED_PROPERTIES = [
-    'dataset.description' => 'dataset.description',
-    'distribution.description' => 'distribution.description',
-    'dataset.title' => 0,
-    'dataset.identifier' => 0,
+    'dataset_description' => 'dataset_description',
+    'distribution_description' => 'distribution_description',
+    'dataset_title' => 0,
+    'dataset_identifier' => 0,
   ];
 
   protected function setUp(): void {

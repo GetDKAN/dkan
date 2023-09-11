@@ -410,7 +410,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    */
   private function filterHtml($input, string $parent = 'dataset') {
     $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
-      ?: ['dataset.description', 'distribution.description'];
+      ?: ['dataset_description', 'distribution_description'];
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);
@@ -419,7 +419,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
       case "object":
         foreach ($input as $name => &$value) {
           // Only apply filtering to properties that allow HTML.
-          if (in_array($parent . '.' . $name, $html_allowed)) {
+          if (in_array($parent . '_' . $name, $html_allowed)) {
             $value = $this->filterHtml($value, $name);
           }
           // Nested properties; check using parent.
