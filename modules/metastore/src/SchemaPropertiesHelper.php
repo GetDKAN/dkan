@@ -95,12 +95,10 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
       if (substr($id, 0, 1) == '@' || gettype($object) != 'object' || !isset($object->type)) {
         continue;
       }
-      $type = $object->type;
-      if ($type == 'string' && isset($object->title)) {
-        $property_list[$parent . '_' . $id] = ucfirst($parent) . ': ' . "{$object->title} ({$id})";
-      }
-      elseif($type == 'string') {
-        $property_list[$parent . '_' . $id] = ucfirst($parent) . ': ' . ucfirst($id);
+
+      if ($object->type == 'string') {
+        $title = $object->title ? $object->title . ' (' . $id . ')' : ucfirst($id);
+        $property_list[$parent . '_' . $id] = ucfirst($parent) . ': ' . $title;
       }
       // Find nested properties.
       else {
