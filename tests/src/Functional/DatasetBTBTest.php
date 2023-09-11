@@ -18,9 +18,6 @@ use RootedData\RootedJsonData;
  *
  * @group dkan
  * @group functional
- *
- * @todo Factor out some of the support methods to a trait or subclass to share
- *   with MetastoreApiPageCacheTest.
  */
 class DatasetBTBTest extends BrowserTestBase {
 
@@ -40,10 +37,13 @@ class DatasetBTBTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
+   *
+   * Set strictConfigSchema to FALSE, so that we don't end up checking the
+   * config schema of contrib dependencies.
    */
   protected $strictConfigSchema = FALSE;
 
@@ -70,7 +70,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
     /** @var \Drupal\common\DatasetInfo $datasetInfo */
-    $datasetInfo = \Drupal::service('dkan.common.dataset_info');
+    $datasetInfo = $this->container->get('dkan.common.dataset_info');
     $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
     $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
@@ -231,9 +231,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
 
     // Update the modified date for the dataset.
-    $this->getMetastore()->patch('dataset', $id_1, json_encode([
-      'modified' => '06-05-2222',
-    ]));
+    $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
 
     // Simulate datastore_import and cleanup queues post update.
     $this->runQueues([
@@ -333,9 +331,9 @@ class DatasetBTBTest extends BrowserTestBase {
     );
 
     $datasetRootedJsonData = $this->getMetastore()->get('dataset', $uuid);
-    $this->assertIsString("$datasetRootedJsonData");
-
-    $retrievedDataset = json_decode($datasetRootedJsonData);
+    $this->assertInstanceOf(RootedJsonData::class, $datasetRootedJsonData);
+    // Ensure round-trip for data.
+    $retrievedDataset = json_decode((string) $datasetRootedJsonData);
 
     $this->assertEquals(
       $retrievedDataset->identifier,
@@ -351,12 +349,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->runQueues(['localize_import', 'datastore_import']);
 
-    $queryString = "[SELECT * FROM {$this->getResourceDatastoreTable($resource)}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
+    $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
     $this->queryResource($resource, $queryString);
   }
 
   private function getResourceDatastoreTable(object $resource) {
-    return "{$resource->identifier}__{$resource->version}";
+    return $resource->identifier . '__' . $resource->version;
   }
 
   private function getResourceFromDataset(object $dataset) {
@@ -422,7 +420,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'JSON Schema requires one or more distributions.'
     );
     // @todo: Figure out how to assert against $factory->getResult()->getError()
-    //   so we can have a useful test fail message.
+    // so we can have a useful test fail message.
     return $valid_metadata_factory->get(json_encode($data), 'dataset');
   }
 
