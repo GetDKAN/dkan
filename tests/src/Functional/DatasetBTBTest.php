@@ -41,6 +41,9 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * Set strictConfigSchema to FALSE, so that we don't end up checking the
+   * config schema of contrib dependencies.
    */
   protected $strictConfigSchema = FALSE;
 
@@ -67,7 +70,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
     /** @var \Drupal\common\DatasetInfo $datasetInfo */
-    $datasetInfo = \Drupal::service('dkan.common.dataset_info');
+    $datasetInfo = $this->container->get('dkan.common.dataset_info');
     $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
     $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
