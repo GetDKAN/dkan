@@ -97,7 +97,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
       }
 
       if ($object->type == 'string') {
-        $title = $object->title ? $object->title . ' (' . $id . ')' : ucfirst($id);
+        $title = isset($object->title) ? $object->title . ' (' . $id . ')' : ucfirst($id);
         $property_list[$parent . '_' . $id] = ucfirst($parent) . ': ' . $title;
       }
       // Find nested properties.
