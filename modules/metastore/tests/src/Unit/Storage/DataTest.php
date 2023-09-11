@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\metastore\Unit\Storage;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -18,9 +20,27 @@ use PHPUnit\Framework\TestCase;
  */
 class DataTest extends TestCase {
 
-  public function testGetStorageNode() {
+  /**
+   * List html allowed schema properties properties.
+   *
+   * @var string[]
+   */
+  public const HTML_ALLOWED_PROPERTIES = [
+    'dataset.description' => 'dataset.description',
+    'distribution.description' => 'distribution.description',
+    'dataset.title' => 0,
+    'dataset.identifier' => 0,
+  ];
 
-    $data = new NodeData('dataset', $this->getEtmChain()->getMock());
+  public function testGetStorageNode() {
+    $immutableConfig = (new Chain($this))
+      ->add(ImmutableConfig::class, 'get', self::HTML_ALLOWED_PROPERTIES)
+      ->getMock();
+    $configFactoryMock = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->getMock();
+
+    $data = new NodeData('dataset', $this->getEtmChain()->getMock(), $configFactoryMock);
     $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
   }
 
@@ -29,9 +49,15 @@ class DataTest extends TestCase {
     $etmMock = $this->getEtmChain()
       ->add(QueryInterface::class, 'execute', [])
       ->getMock();
+    $immutableConfig = (new Chain($this))
+      ->add(ImmutableConfig::class, 'get', self::HTML_ALLOWED_PROPERTIES)
+      ->getMock();
+    $configFactoryMock = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->getMock();
 
     $this->expectExceptionMessage('Error: 1 not found.');
-    $nodeData = new NodeData('dataset', $etmMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
     $nodeData->publish('1');
   }
 
@@ -43,8 +69,14 @@ class DataTest extends TestCase {
       ->add(Node::class, 'set')
       ->add(Node::class, 'save')
       ->getMock();
+    $immutableConfig = (new Chain($this))
+      ->add(ImmutableConfig::class, 'get', self::HTML_ALLOWED_PROPERTIES)
+      ->getMock();
+    $configFactoryMock = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->getMock();
 
-    $nodeData = new NodeData('dataset', $etmMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
     $result = $nodeData->publish('1');
     $this->assertEquals(TRUE, $result);
   }
@@ -55,8 +87,14 @@ class DataTest extends TestCase {
       ->add(Node::class, 'get', FieldItemListInterface::class)
       ->add(FieldItemListInterface::class, 'getString', 'published')
       ->getMock();
+    $immutableConfig = (new Chain($this))
+      ->add(ImmutableConfig::class, 'get', self::HTML_ALLOWED_PROPERTIES)
+      ->getMock();
+    $configFactoryMock = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->getMock();
 
-    $nodeData = new NodeData('dataset', $etmMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
     $result = $nodeData->publish('1');
     $this->assertEquals(FALSE, $result);
   }
@@ -86,9 +124,15 @@ class DataTest extends TestCase {
     $etmMock = $this->getEtmChain()
       ->add(QueryInterface::class, 'execute', $count)
       ->getMock();
+    $immutableConfig = (new Chain($this))
+      ->add(ImmutableConfig::class, 'get', self::HTML_ALLOWED_PROPERTIES)
+      ->getMock();
+    $configFactoryMock = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->getMock();
 
     // Create Data object.
-    $nodeData = new NodeData('dataset', $etmMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
     // Ensure count matches return value.
     $this->assertEquals($count, $nodeData->count());
   }
@@ -115,9 +159,15 @@ class DataTest extends TestCase {
     $etmMock = $this->getEtmChain()
       ->add(NodeStorage::class, 'loadMultiple', $nodes)
       ->getMock();
+    $immutableConfig = (new Chain($this))
+      ->add(ImmutableConfig::class, 'get', self::HTML_ALLOWED_PROPERTIES)
+      ->getMock();
+    $configFactoryMock = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->getMock();
 
     // Create Data object.
-    $nodeData = new NodeData('dataset', $etmMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
     // Ensure the returned uuids match those belonging to the generated nodes.
     $this->assertEquals($uuids, $nodeData->retrieveIds(1, 5));
   }
