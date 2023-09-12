@@ -8,7 +8,7 @@ use \Drupal\Core\Entity\Display\EntityFormDisplayInterface;
  * Dynamically set the widget type for the field_json_metadata field.
  */
 function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
-  if (__data_dictionary_data_type_checker($context) === 'data-dictionary') {
+  if (_data_dictionary_data_type_checker($context) === 'data-dictionary') {
     $form_display->setComponent('field_json_metadata', [
       'type' => 'data_dictionary_widget',
     ]);
@@ -16,7 +16,7 @@ function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInter
 }
 
 /**
- * Find recently-uploaded file entity, set to permanent and add usage.
+ * Find entity field_data_type or schema based on the context.
  *
  * @param array $context
  *   An associative array containing entity_type, bundle and form_mode.
@@ -24,10 +24,9 @@ function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInter
  * @return string
  *   Schema/field_data_type value depending on form_mode.
  */
-function __data_dictionary_data_type_checker($context) {
+function _data_dictionary_data_type_checker($context) {
   if ($context['form_mode'] === "edit") {
     $node = \Drupal::routeMatch()->getParameter('node');
-
     if (\Drupal::routeMatch()->getParameter('node') instanceof \Drupal\node\NodeInterface && $node->hasField('field_data_type')) {
       return $node->get('field_data_type')->value;
     }
