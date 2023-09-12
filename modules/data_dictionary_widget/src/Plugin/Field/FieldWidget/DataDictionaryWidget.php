@@ -29,13 +29,13 @@ class DataDictionaryWidget extends WidgetBase {
     $element['identifier'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Identifier'),
-      '#default_value' => isset($field_json_metadata->identifier) ? $field_json_metadata->identifier : '',
+      '#default_value' => $field_json_metadata->identifier ?? '',
     ];
 
     $element['title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Title'),
-      '#default_value' => isset($field_json_metadata->title) ? $field_json_metadata->title : '',
+      '#default_value' => $field_json_metadata->title ?? '',
     ];
 
     // Set the item type to the entity.
@@ -46,16 +46,16 @@ class DataDictionaryWidget extends WidgetBase {
 
     return $element;
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
-      $json_data = [
-        'identifier' => $values[0]['identifier'],
-        'title' => $values[0]['title'],
-      ];
-      $values = json_encode($json_data);
+    $json_data = [
+      'identifier' => $values[0]['identifier'],
+      'title' => $values[0]['title'],
+    ];
+    $values = json_encode($json_data);
 
     return $values;
   }
