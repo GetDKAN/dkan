@@ -1,0 +1,25 @@
+<?php
+
+use \Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+
+function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
+  if (__data_dictionary_data_type_checker($context) === 'data-dictionary') {
+    $form_display->setComponent('field_json_metadata', [
+      'type' => 'data_dictionary_widget',
+    ]);
+  }
+}
+
+function __data_dictionary_data_type_checker($context) {
+  if ($context['form_mode'] === "edit") {
+    $node = \Drupal::routeMatch()->getParameter('node');
+
+    if (\Drupal::routeMatch()->getParameter('node') instanceof \Drupal\node\NodeInterface && $node->hasField('field_data_type')) {
+      return $node->get('field_data_type')->value;
+    }
+  }
+
+  if ($context['form_mode'] === "default") {
+    return \Drupal::request()->query->get('schema');
+  }
+}

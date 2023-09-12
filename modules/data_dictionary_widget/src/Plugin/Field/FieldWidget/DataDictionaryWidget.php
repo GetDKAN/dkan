@@ -46,7 +46,7 @@ class DataDictionaryWidget extends WidgetBase {
 
     return $element;
   }
-
+  
   /**
    * {@inheritdoc}
    */
@@ -58,33 +58,6 @@ class DataDictionaryWidget extends WidgetBase {
       $values = json_encode($json_data);
 
     return $values;
-  }
-
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function defaultSettings() {
-    return [
-      // Create the custom setting 'size', and
-      // assign a default value of 60
-      'size' => 60,
-    ] + parent::defaultSettings();
-  }
-
-  /**
-  * {@inheritdoc}
-  */
-  public function settingsForm(array $form, FormStateInterface $form_state) {
-    $element['size'] = [
-      '#type' => 'number',
-      '#title' => $this->t('Size of textfield'),
-      '#default_value' => $this->getSetting('size'),
-      '#required' => TRUE,
-      '#min' => 1,
-    ];
-
-    return $element;
   }
 
 }
