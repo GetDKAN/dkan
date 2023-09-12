@@ -115,7 +115,7 @@ class DashboardForm extends FormBase {
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
       $container->get('date.formatter'),
-      $container->get('dkan.datastore.service.post_import')
+      $container->get('dkan.datastore.service.post_import'),
     );
   }
 
