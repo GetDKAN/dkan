@@ -12,7 +12,10 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\MetastoreService;
 
 use Contracts\FactoryInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\StreamWrapper;
 
 /**
  * Metastore referencer service.
@@ -36,12 +39,24 @@ class Referencer {
   private $storageFactory;
 
   /**
+   * Metastore URL Generator service.
+   *
+   * @var \Drupal\metastore\Reference\MetastoreUrlGenerator
+   */
+  public MetastoreUrlGenerator $metastoreUrlGenerator;
+
+  /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
+  public function __construct(
+    ConfigFactoryInterface $configService,
+    FactoryInterface $storageFactory,
+    MetastoreUrlGenerator $metastoreUrlGenerator
+  ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
+    $this->metastoreUrlGenerator = $metastoreUrlGenerator;
   }
 
   /**
@@ -158,18 +173,38 @@ class Referencer {
    * @return object
    *   The supplied distribution with an updated resource download URL.
    */
-  private function distributionHandling($distribution): object {
+  public function distributionHandling($distribution): object {
     // Ensure the supplied distribution has a valid resource before attempting
     // to register it with the resource mapper.
-    if (is_object($distribution) && isset($distribution->downloadURL)) {
+    if (isset($distribution->downloadURL)) {
       // Register this distribution's resource with the resource mapper and
       // replace the download URL with a unique ID registered in the resource
       // mapper.
       $distribution->downloadURL = $this->registerWithResourceMapper(
-        $this->hostify($distribution->downloadURL), $this->getMimeType($distribution));
+        UrlHostTokenResolver::hostify($distribution->downloadURL), $this->getMimeType($distribution));
+    }
+
+    $config = $this->configService->get('metastore.settings');
+    if (($distribution->describedBy ?? FALSE) && $config->get('data_dictionary_mode') == DataDictionaryDiscovery::MODE_REFERENCE) {
+      // Register this distribution's resource with the resource mapper and
+      // replace the download URL with a unique ID registered in the resource
+      // mapper.
+      $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);
     }
 
     return $distribution;
+  }
+
+  protected function normalizeDictionaryValue(string $value): string {
+    $incoming_scheme = StreamWrapperManager::getScheme($value);
+    $uri = in_array($incoming_scheme, ['http', 'https']) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
+    if (StreamWrapperManager::getScheme($uri) != MetastoreUrlGenerator::DKAN_SCHEME) {
+      throw new \DomainException("The value in describedBy was not a valid data dictionary URL: $value");
+    }
+    if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
+      throw new \DomainException("The value $uri, derived from $value, is not a valid data-dictionary URI.");
+    }
+    return $this->metastoreUrlGenerator->extractItemId($uri);
   }
 
   /**
@@ -245,60 +280,6 @@ class Referencer {
    */
   private function getFileMapper(): ResourceMapper {
     return \Drupal::service('dkan.metastore.resource_mapper');
-  }
-
-  /**
-   * Substitute the host for local URLs with a custom localhost token.
-   *
-   * @param string $resourceUrl
-   *   The URL of the resource being substituted.
-   *
-   * @return string
-   *   The resource URL with the custom localhost token.
-   */
-  public static function hostify(string $resourceUrl): string {
-    // Get HTTP server public files URL and extract the host.
-    $serverPublicFilesUrl = UrlHostTokenResolver::getServerPublicFilesUrl();
-    $serverPublicFilesUrl = isset($serverPublicFilesUrl) ? parse_url($serverPublicFilesUrl) : NULL;
-    $serverHost = $serverPublicFilesUrl['host'] ?? \Drupal::request()->getHost();
-    // Determine whether the resource URL has the same host as this server.
-    $resourceParsedUrl = parse_url($resourceUrl);
-    if (isset($resourceParsedUrl['host']) && $resourceParsedUrl['host'] == $serverHost) {
-      // Swap out the host portion of the resource URL with the localhost token.
-      $resourceParsedUrl['host'] = UrlHostTokenResolver::TOKEN;
-      $resourceUrl = self::unparseUrl($resourceParsedUrl);
-    }
-    return $resourceUrl;
-  }
-
-  /**
-   * Private.
-   */
-  private static function unparseUrl($parsedUrl) {
-    $url = '';
-    $urlParts = [
-      'scheme',
-      'host',
-      'port',
-      'user',
-      'pass',
-      'path',
-      'query',
-      'fragment',
-    ];
-
-    foreach ($urlParts as $part) {
-      if (!isset($parsedUrl[$part])) {
-        continue;
-      }
-      $url .= ($part == "port") ? ':' : '';
-      $url .= ($part == "query") ? '?' : '';
-      $url .= ($part == "fragment") ? '#' : '';
-      $url .= $parsedUrl[$part];
-      $url .= ($part == "scheme") ? '://' : '';
-    }
-
-    return $url;
   }
 
   /**
@@ -394,7 +375,7 @@ class Referencer {
     elseif (isset($distribution->downloadURL)) {
       // Determine whether the supplied distribution has a local or remote
       // resource.
-      $is_local = $distribution->downloadURL !== $this->hostify($distribution->downloadURL);
+      $is_local = $distribution->downloadURL !== UrlHostTokenResolver::hostify($distribution->downloadURL);
       $mimeType = $is_local ?
         $this->getLocalMimeType($distribution->downloadURL) :
         $this->getRemoteMimeType($distribution->downloadURL);
