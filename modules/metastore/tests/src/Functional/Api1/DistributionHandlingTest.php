@@ -27,29 +27,33 @@ class DistributionHandlingTest extends Api1TestBase {
     $datasetMetadata = $this->getSampleDataset(0);
     $uri = "dkan://metastore/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335";
     $url = \Drupal::service('dkan.metastore.url_generator')->generateAbsoluteString($uri);
-    $this->assertEquals("http://web/api/1/metastore/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335", $url);
+    $this->assertEquals("{$this->baseUrl}/api/1/metastore/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335", $url);
     $datasetMetadata->distribution[0]->describedBy = $url;
     $datasetMetadata->distribution[0]->describedByType = 'application/vnd.tableschema+json';
 
+    // Post dataset with absolute URL in distribution's describedBy field.
     $response = $this->post($datasetMetadata, FALSE);
     $responseBody = json_decode($response->getBody());
     $datasetId = $responseBody->identifier;
 
     $dataset_endpoint = $this->getEndpoint();
-    $response = $this->http->get("$dataset_endpoint/$datasetId");
+    $response = $this->httpClient->get("$dataset_endpoint/$datasetId");
     $responseBody = json_decode($response->getBody());
+    // URL is still unchanged on GET.
     $this->assertEquals($url, $responseBody->distribution[0]->describedBy);
 
-    // Now try with URI.
+    // Now try with dkan:// URI.
     $patch = (object) ["distribution" => [clone $responseBody->distribution[0]]];
     $patch->distribution[0]->describedBy = $uri;
-    $response = $this->http->patch("$dataset_endpoint/$datasetId", [
+    $response = $this->httpClient->patch("$dataset_endpoint/$datasetId", [
       RequestOptions::JSON => $patch,
       RequestOptions::AUTH => $this->auth,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
 
-    $response = $this->http->get("$dataset_endpoint/$datasetId");
+    $response = $this->httpClient->get("$dataset_endpoint/$datasetId");
+    // When we GET the dataset, describedBy should still be expressed as
+    // absolute URL.
     $this->assertEquals($url, $responseBody->distribution[0]->describedBy);
   }
 
@@ -127,7 +131,7 @@ class DistributionHandlingTest extends Api1TestBase {
       ],
     ];
 
-    $response = $this->http->post('api/1/metastore/schemas/data-dictionary/items', [
+    $response = $this->httpClient->post('api/1/metastore/schemas/data-dictionary/items', [
       RequestOptions::JSON => $dictionary,
       RequestOptions::AUTH => $this->auth,
     ]);

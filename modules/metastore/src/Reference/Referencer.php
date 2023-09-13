@@ -204,7 +204,7 @@ class Referencer {
     if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
       throw new \DomainException("The value $uri, derived from $value, is not a valid data-dictionary URI.");
     }
-    return $uri;
+    return $this->metastoreUrlGenerator->extractItemId($uri);
   }
 
   /**
