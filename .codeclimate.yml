@@ -23,6 +23,7 @@ exclude_patterns:
   - "docs/"
   - "documentation/"
   - "features/"
+  - "src/CsvParser/"
   - "**/node_modules/"
   - "script/"
   - "**/spec/"
