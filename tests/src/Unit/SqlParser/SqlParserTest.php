@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan\Unit;
+namespace Drupal\Tests\dkan\Unit\SqlParser;
 
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan\SqlParser\SqlParser;

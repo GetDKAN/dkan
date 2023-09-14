@@ -12,6 +12,11 @@ use Maquina\StateMachine\IStateMachine;
  */
 class SqlParser {
 
+  /**
+   * State machine.
+   *
+   * @var \Maquina\StateMachine\IStateMachine|null
+   */
   private ?IStateMachine $stateMachine = NULL;
 
   public const ALPHANUM = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
