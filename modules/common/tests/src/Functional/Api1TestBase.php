@@ -66,7 +66,6 @@ abstract class Api1TestBase extends BrowserTestBase {
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => $httpErrors,
-      RequestOptions::TIMEOUT => 10000,
     ]);
   }
 
