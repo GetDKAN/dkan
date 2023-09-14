@@ -11,7 +11,7 @@ use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
 use Drupal\datastore\Storage\DatabaseTable;
 use Maquina\StateMachine\Machine;
 use Maquina\StateMachine\MachineOfMachines;
-use SqlParser\SqlParser;
+use Drupal\dkan\SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
