@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
-use CsvParser\Parser\Csv;
+use Drupal\dkan\CsvParser\Parser\Csv;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
@@ -172,7 +172,7 @@ class ImportService {
    * @param string $delimiter
    *   Delimiter character.
    *
-   * @return \CsvParser\Parser\Csv
+   * @return \Drupal\dkan\CsvParser\Parser\Csv
    *   A parser which does not keep track of every execution steps.
    */
   private function getNonRecordingParser(string $delimiter) : Csv {
