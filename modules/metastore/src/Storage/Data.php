@@ -374,7 +374,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   private function createNewEntity(string $uuid, $data) {
     $title = '';
     if ($this->schemaId === 'dataset') {
-      $title = isset($data->title) ? $data->title : $data->name;
+      $title = $data->title ?? $data->name;
     }
     else {
       $title = MetastoreService::metadataHash($data->data);

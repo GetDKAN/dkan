@@ -77,7 +77,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Build a list of schema properties.
+   * Build a list of JSON schema properties.
    *
    * @param object $input
    *   Object we're parsing.
@@ -88,29 +88,47 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
    *
    * @return array
    *   List of schema properties' title and description.
+   *
+   * @see https://json-schema.org/understanding-json-schema/reference/object.html#properties
    */
   private function buildPropertyList($input, string $parent = 'dataset', array &$property_list = []): array {
-    foreach ($input as $id => $object) {
-      // Exclude properties starting with @.
-      if (substr($id, 0, 1) == '@' || gettype($object) != 'object' || !isset($object->type)) {
-        continue;
-      }
-
-      if ($object->type == 'string') {
-        $title = isset($object->title) ? $object->title . ' (' . $id . ')' : ucfirst($id);
-        $property_list[$parent . '_' . $id] = ucfirst($parent) . ': ' . $title;
-      }
-      // Find nested properties.
-      else {
-        $this->parseNestedProperties($id, $object, $property_list);
-      }
+    foreach ($input as $name => $property) {
+      $this->parseProperty($name, $property, $parent, $property_list);
     }
-
     return $property_list;
   }
 
   /**
-   * Parse nested string schema properties.
+   * Parse a single property from a JSON schema
+   *
+   * @param string $name
+   *   Property name.
+   * @param mixed $property
+   *   JSON schema property object.
+   * @param string $parent
+   *   The parent propety of the current property.
+   * @param array $property_list
+   *   Array we're building of schema properties.
+   */
+  private function parseProperty(string $name, $property, string $parent, array &$property_list) {
+    // Exclude properties starting with @ or that are not proper objects.
+    if (substr($name, 0, 1) == '@' || gettype($property) != 'object' || !isset($property->type)) {
+      return;
+    }
+
+    // Strings can be added directly to the list.
+    if ($property->type == 'string') {
+      $title = isset($property->title) ? $property->title . ' (' . $name . ')' : ucfirst($name);
+      $property_list[$parent . '_' . $name] = ucfirst($parent) . ': ' . $title;
+    }
+    // Non-strings (arrays and objects) can be parsed for nested properties.
+    else {
+      $this->parseNestedProperties($name, $property, $property_list);
+    }    
+  }
+
+  /**
+   * Parse nested schema properties.
    *
    * @param string $id
    *   Property ID.
@@ -119,12 +137,12 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
    * @param array $property_list
    *   Array we're building of schema properties.
    */
-  private function parseNestedProperties(string $id, $object, array &$property_list = []) {
-    if (isset($object->properties) && gettype($object->properties == 'object')) {
-      $property_list = $this->buildPropertyList($object->properties, $id, $property_list);
+  private function parseNestedProperties(string $name, $property, array &$property_list = []) {
+    if (isset($property->properties) && gettype($property->properties == 'object')) {
+      $property_list = $this->buildPropertyList($property->properties, $name, $property_list);
     }
-    elseif (isset($object->items) && gettype($object->items) == 'object' && isset($object->items->properties)) {
-      $property_list = $this->buildPropertyList($object->items->properties, $id, $property_list);
+    elseif (isset($property->items) && gettype($property->items) == 'object' && isset($property->items->properties)) {
+      $property_list = $this->buildPropertyList($property->items->properties, $name, $property_list);
     }
   }
 
