@@ -48,9 +48,9 @@ class ResourceLocalizer {
   /**
    * DKAN resource file fetcher factory.
    *
-   * @see \Drupal\common\FileFetcher\FileFetcherFactory
-   *
    * @var \Contracts\FactoryInterface
+   *
+   * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
   private FactoryInterface $fileFetcherFactory;
 
