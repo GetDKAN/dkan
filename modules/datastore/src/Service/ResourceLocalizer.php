@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
-use Drupal\common\FileFetcher\FileFetcherFactory;
+use Contracts\FactoryInterface;
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
@@ -56,9 +56,11 @@ class ResourceLocalizer {
   /**
    * DKAN resource file fetcher factory.
    *
-   * @var \Drupal\common\FileFetcher\FileFetcherFactory
+   * @var \Contracts\FactoryInterface
+   *
+   * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
-  private FileFetcherFactory $fileFetcherFactory;
+  private FactoryInterface $fileFetcherFactory;
 
   /**
    * Drupal files utility service.
@@ -86,7 +88,7 @@ class ResourceLocalizer {
    */
   public function __construct(
     ResourceMapper $fileMapper,
-    FileFetcherFactory $fileFetcherFactory,
+    FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
     JobStoreFactory $jobStoreFactory,
     QueueFactory $queueFactory
