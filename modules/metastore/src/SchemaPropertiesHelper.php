@@ -80,7 +80,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
    * Build a list of JSON schema properties.
    *
    * @param object $input
-   *   Object we're parsing.
+   *   JSON Schema object we're parsing.
    * @param string $parent
    *   Parent object.
    * @param array $property_list
@@ -99,14 +99,14 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Parse a single property from a JSON schema
+   * Parse a single property from a JSON schema.
    *
    * @param string $name
    *   Property name.
    * @param mixed $property
-   *   JSON schema property object.
+   *   JSON schema "property" object.
    * @param string $parent
-   *   The parent propety of the current property.
+   *   The parent JSON Schema propety of the current property.
    * @param array $property_list
    *   Array we're building of schema properties.
    */
@@ -124,16 +124,16 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
     // Non-strings (arrays and objects) can be parsed for nested properties.
     else {
       $this->parseNestedProperties($name, $property, $property_list);
-    }    
+    }
   }
 
   /**
    * Parse nested schema properties.
    *
-   * @param string $id
+   * @param string $name
    *   Property ID.
-   * @param object $object
-   *   Object we're parsing.
+   * @param object $property
+   *   JSON Schema "property" object we're parsing.
    * @param array $property_list
    *   Array we're building of schema properties.
    */
