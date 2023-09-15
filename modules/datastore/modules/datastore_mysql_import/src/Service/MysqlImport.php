@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore_mysql_import\Service;
 
+use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
@@ -9,9 +10,9 @@ use Procrastinator\Result;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
- * Expiremental MySQL LOAD DATA importer.
+ * MySQL LOAD DATA importer.
  *
- * @codeCoverageIgnore
+ * @todo Figure out how to inject the file_system service into this class.
  */
 class MysqlImport extends ImportJob {
 
@@ -27,79 +28,53 @@ class MysqlImport extends ImportJob {
   ];
 
   /**
-   * The maximum length of a MySQL table column name.
+   * Constructor method.
    *
-   * @var int
+   * Identical to parent, but requires an ImportedDatabaseTableInterface
+   * storage object.
+   *
+   * @param string $identifier
+   *   Job identifier.
+   * @param mixed $storage
+   *   Storage class.
+   * @param array|null $config
+   *   Configuration options.
    */
-  protected const MAX_COLUMN_LENGTH = 64;
+  protected function __construct(string $identifier, $storage, array $config = NULL) {
+    if (!($config['storage'] instanceof ImportedItemInterface)) {
+      throw new \Exception('Storage must be an instance of ' . ImportedItemInterface::class);
+    }
+    parent::__construct($identifier, $storage, $config);
+  }
 
   /**
-   * List of reserved words in MySQL 5.6-8 and MariaDB.
+   * Perform the import job.
    *
-   * @var string[]
-   */
-  protected const RESERVED_WORDS = ['accessible', 'add', 'all', 'alter', 'analyze',
-    'and', 'as', 'asc', 'asensitive', 'before', 'between', 'bigint', 'binary',
-    'blob', 'both', 'by', 'call', 'cascade', 'case', 'change', 'char',
-    'character', 'check', 'collate', 'column', 'condition', 'constraint',
-    'continue', 'convert', 'create', 'cross', 'cube', 'cume_dist',
-    'current_date', 'current_role', 'current_time', 'current_timestamp',
-    'current_user', 'cursor', 'database', 'databases', 'day_hour',
-    'day_microsecond', 'day_minute', 'day_second', 'dec', 'decimal', 'declare',
-    'default', 'delayed', 'delete', 'dense_rank', 'desc', 'describe',
-    'deterministic', 'distinct', 'distinctrow', 'div', 'do_domain_ids',
-    'double', 'drop', 'dual', 'each', 'else', 'elseif', 'empty', 'enclosed',
-    'escaped', 'except', 'exists', 'exit', 'explain', 'false', 'fetch',
-    'first_value', 'float', 'float4', 'float8', 'for', 'force', 'foreign',
-    'from', 'fulltext', 'function', 'general', 'generated', 'get', 'grant',
-    'group', 'grouping', 'groups', 'having', 'high_priority', 'hour_microsecond',
-    'hour_minute', 'hour_second', 'if', 'ignore', 'ignore_domain_ids',
-    'ignore_server_ids', 'in', 'index', 'infile', 'inner', 'inout',
-    'insensitive', 'insert', 'int', 'int1', 'int2', 'int3', 'int4', 'int8',
-    'integer', 'intersect', 'interval', 'into', 'io_after_gtids',
-    'io_before_gtids', 'is', 'iterate', 'join', 'json_table', 'key', 'keys',
-    'kill', 'lag', 'last_value', 'lateral', 'lead', 'leading', 'leave', 'left',
-    'like', 'limit', 'linear', 'lines', 'load', 'localtime', 'localtimestamp',
-    'lock', 'long', 'longblob', 'longtext', 'loop', 'low_priority',
-    'master_bind', 'master_heartbeat_period', 'master_ssl_verify_server_cert',
-    'match', 'maxvalue', 'mediumblob', 'mediumint', 'mediumtext', 'middleint',
-    'minute_microsecond', 'minute_second', 'mod', 'modifies', 'natural', 'not',
-    'no_write_to_binlog', 'nth_value', 'ntile', 'null', 'numeric', 'of',
-    'offset', 'on', 'optimize', 'optimizer_costs', 'option', 'optionally',
-    'or', 'order', 'out', 'outer', 'outfile', 'over', 'page_checksum',
-    'parse_vcol_expr', 'partition', 'percent_rank', 'position', 'precision',
-    'primary', 'procedure', 'purge', 'range', 'rank', 'read', 'reads',
-    'read_write', 'real', 'recursive', 'references', 'ref_system_id', 'regexp',
-    'release', 'rename', 'repeat', 'replace', 'require', 'resignal',
-    'restrict', 'return', 'returning', 'revoke', 'right', 'rlike', 'row',
-    'row_number', 'rows', 'schema', 'schemas', 'second_microsecond', 'select',
-    'sensitive', 'separator', 'set', 'show', 'signal', 'slow', 'smallint',
-    'spatial', 'specific', 'sql', 'sql_big_result', 'sql_calc_found_rows',
-    'sqlexception', 'sql_small_result', 'sqlstate', 'sqlwarning', 'ssl',
-    'starting', 'stats_auto_recalc', 'stats_persistent', 'stats_sample_pages',
-    'stored', 'straight_join', 'system', 'table', 'terminated', 'then',
-    'tinyblob', 'tinyint', 'tinytext', 'to', 'trailing', 'trigger', 'true',
-    'undo', 'union', 'unique', 'unlock', 'unsigned', 'update', 'usage', 'use',
-    'using', 'utc_date', 'utc_time', 'utc_timestamp', 'values', 'varbinary',
-    'varchar', 'varcharacter', 'varying', 'virtual', 'when', 'where', 'while',
-    'window', 'with', 'write', 'xor', 'year_month', 'zerofill',
-  ];
-
-  /**
-   * Override.
+   * @return mixed
+   *   The data to be placed in the Result object. This class does not use the
+   *   result data, so it returns void.
    *
-   * {@inheritdoc}
+   * @throws \Exception
+   *   Any exception thrown will be turned into an error in the Result object
+   *   in the run() method.
    */
   protected function runIt() {
+    // If the storage table already exists, we already performed an import and
+    // can stop here.
+    if ($this->dataStorage->hasBeenImported()) {
+      $this->getResult()->setStatus(Result::DONE);
+      return NULL;
+    }
+
     // Attempt to resolve resource file name from file path.
-    $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
-    if ($file_path === FALSE) {
+    if (($file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath())) === FALSE) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
     // Read the columns and EOL character sequence from the CSV file.
+    $delimiter = $this->resource->getMimeType() == 'text/tab-separated-values' ? "\t" : ',';
     try {
-      [$columns, $column_lines] = $this->getColsFromFile($file_path);
+      [$columns, $column_lines] = $this->getColsFromFile($file_path, $delimiter);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
@@ -115,20 +90,19 @@ class MysqlImport extends ImportJob {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
-    // @todo Find a better way to ensure creation of datastore tables.
-    $this->dataStorage->innodbStrictMode(FALSE);
+    // Count() will attempt to create the database table by side-effect of
+    // calling setTable().
     $this->dataStorage->count();
-    $this->dataStorage->innodbStrictMode(TRUE);
+
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count));
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter));
 
     Database::setActiveConnection();
 
     $this->getResult()->setStatus(Result::DONE);
-
-    return $this->getResult();
+    return NULL;
   }
 
   /**
@@ -136,32 +110,29 @@ class MysqlImport extends ImportJob {
    *
    * @param string $file_path
    *   File path.
+   * @param string $delimiter
+   *   File delimiter.
    *
    * @return array
    *   An array containing only two elements; the CSV columns and the column
    *   lines.
    *
-   * @throws Symfony\Component\HttpFoundation\File\Exception\FileException
+   * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
    *   On failure to open the file;
    *   on failure to read the first line from the file.
    */
-  protected function getColsFromFile(string $file_path): array {
-    // Ensure the "auto_detect_line_endings" ini setting is enabled before
-    // openning the file to ensure Mac style EOL characters are detected.
-    $old_ini = ini_set('auto_detect_line_endings', '1');
+  protected function getColsFromFile(string $file_path, string $delimiter): array {
+
     // Open the CSV file.
     $f = fopen($file_path, 'r');
-    // Revert ini setting once the file has been opened.
-    if ($old_ini !== FALSE) {
-      ini_set('auto_detect_line_endings', $old_ini);
-    }
+
     // Ensure the file could be successfully opened.
     if (!isset($f) || $f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
 
     // Attempt to retrieve the columns from the resource file.
-    $columns = fgetcsv($f);
+    $columns = fgetcsv($f, 0, $delimiter);
     // Attempt to read the column lines from the resource file.
     $end_pointer = ftell($f);
     rewind($f);
@@ -229,22 +200,22 @@ class MysqlImport extends ImportJob {
     foreach ($columns as $column) {
       // Sanitize the supplied table header to generate a unique column name;
       // null-coalesce potentially NULL column names to empty strings.
-      $name = $this->sanitizeHeader($column ?? '');
+      $name = ImportJob::sanitizeHeader($column ?? '');
 
       // Truncate the generated table column name, if necessary, to fit the max
       // column length.
-      $name = $this->truncateHeader($name);
+      $name = ImportJob::truncateHeader($name);
 
       // Generate unique numeric suffix for the header if a header already
       // exists with the same name.
       for ($i = 2; isset($spec[$name]); $i++) {
         $suffix = '_' . $i;
-        $name = substr($name, 0, self::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
+        $name = substr($name, 0, ImportJob::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
       }
 
       $spec[$name] = [
-        'type' => "text",
-        'description' => $this->sanitizeDescription($column ?? ''),
+        'type' => 'text',
+        'description' => ImportJob::sanitizeDescription($column ?? ''),
       ];
     }
 
@@ -252,77 +223,11 @@ class MysqlImport extends ImportJob {
   }
 
   /**
-   * Transform possible multiline string to single line for description.
-   *
-   * @param string $column
-   *   Column name.
-   *
-   * @return string
-   *   Column name on single line.
-   */
-  public function sanitizeDescription(string $column) {
-    $trimmed = array_filter(array_map('trim', explode("\n", $column)));
-    return implode(" ", $trimmed);
-  }
-
-  /**
-   * Sanitize table column name according to the MySQL supported characters.
-   *
-   * @param string $column
-   *   The column name being sanitized.
-   *
-   * @returns string
-   *   Sanitized column name.
-   */
-  protected function sanitizeHeader(string $column): string {
-    // Replace all spaces and newline characters with underscores since they are
-    // not supported.
-    $column = preg_replace('/(?: |\r\n|\r|\n)/', '_', $column);
-    // Strip unsupported characters from the header.
-    $column = preg_replace('/[^A-Za-z0-9_]/', '', $column);
-    // Trim underscores from the beginning and end of the column name.
-    $column = trim($column, '_');
-    // Convert the column name to lowercase.
-    $column = strtolower($column);
-
-    if (is_numeric($column) || in_array($column, self::RESERVED_WORDS)) {
-      // Prepend "_" to column name that are not allowed in MySQL
-      // This can be dropped after move to Drupal 9.
-      // @see https://github.com/GetDKAN/dkan/issues/3606
-      $column = '_' . $column;
-    }
-
-    return $column;
-  }
-
-  /**
-   * Truncate column name if longer than the max column length for the database.
-   *
-   * @param string $column
-   *   The column name being truncated.
-   *
-   * @returns string
-   *   Truncated column name.
-   */
-  protected function truncateHeader(string $column): string {
-    // If the supplied table column name is longer than the max column length,
-    // truncate the column name to 5 characters under the max length and
-    // substitute the truncated characters with a unique hash.
-    if (strlen($column) > self::MAX_COLUMN_LENGTH) {
-      $field = substr($column, 0, self::MAX_COLUMN_LENGTH - 5);
-      $hash = substr(md5($column), 0, 4);
-      $column = $field . '_' . $hash;
-    }
-
-    return $column;
-  }
-
-  /**
    * Construct a SQL file import statement using the given file information.
    *
    * @param string $file_path
    *   File path to the CSV file being imported.
-   * @param string $tablename
+   * @param string $table_name
    *   Name of the datastore table the file is being imported into.
    * @param string[] $headers
    *   List of CSV headers.
@@ -330,15 +235,17 @@ class MysqlImport extends ImportJob {
    *   End Of Line character for file importation.
    * @param int $header_line_count
    *   Number of lines occupied by the csv header row.
+   * @param string $delimiter
+   *   File delimiter.
    *
    * @return string
    *   Generated SQL file import statement.
    */
-  protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count): string {
+  protected function getSqlStatement(string $file_path, string $table_name, array $headers, string $eol, int $header_line_count, string $delimiter): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
-      'INTO TABLE ' . $tablename,
-      'FIELDS TERMINATED BY \',\'',
+      'INTO TABLE {' . $table_name . '}',
+      'FIELDS TERMINATED BY \'' . $delimiter . '\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',
       'LINES TERMINATED BY \'' . $eol . '\'',

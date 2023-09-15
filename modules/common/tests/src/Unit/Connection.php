@@ -3,7 +3,6 @@
 namespace Drupal\Tests\common\Unit;
 
 use Drupal\Core\Database\Connection as CoreConnection;
-use Drupal\Core\Database\StatementEmpty;
 
 /**
  * A fake Connection class for testing purposes.
@@ -32,7 +31,7 @@ class Connection extends CoreConnection {
    * {@inheritdoc}
    */
   public function queryRange($query, $from, $count, array $args = [], array $options = []) {
-    return new StatementEmpty();
+    return NULL;
   }
 
   /**
@@ -75,6 +74,13 @@ class Connection extends CoreConnection {
    */
   public function nextId($existing_id = 0) {
     return 0;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function open(array &$connection_options = []) {
+    return new \stdClass();
   }
 
 }

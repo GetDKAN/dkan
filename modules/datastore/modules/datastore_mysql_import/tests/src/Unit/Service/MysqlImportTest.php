@@ -2,30 +2,22 @@
 
 namespace Drupal\Tests\dastastore_mysql_import\Unit\Service;
 
-use Drupal\Core\Database\Connection;
-use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\File\FileSystem;
-use Drupal\Core\StreamWrapper\StreamWrapperManager;
-
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\datastore\Service\Import as Service;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use MockChain\Chain;
-use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
+ * @covers \Drupal\datastore_mysql_import\Service\MysqlImport
  *
+ * @group datastore_mysql_import
  */
 class MysqlImportTest extends TestCase {
 
@@ -62,70 +54,9 @@ class MysqlImportTest extends TestCase {
     $this->assertEquals($expectedSpec, $spec);
   }
 
-  /**
-   * Test MysqlImport importer.
-   */
-  public function testMysqlImporter() {
-    $file_path = 'file://' . __DIR__ . '/../../../../../../tests/data/countries.csv';
-    $options = (new Options())
-      ->add('database', Connection::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
-      ->add('file_system', FileSystem::class)
-      ->add('request_stack', RequestStack::class)
-      ->add('stream_wrapper_manager', StreamWrapperManager::class)
-      ->index(0);
-    $container = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(FileSystem::class, 'realpath', $file_path)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getHost', self::HOST)
-      ->getMock();
-    \Drupal::setContainer($container);
-
-    $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
-    $databaseTableFactory = $this->getDatabaseTableFactoryMock();
-    $jobStoreFactory = $this->getJobstoreFactoryMock();
-
-    $service = new Service($resource, $jobStoreFactory, $databaseTableFactory);
-    $service->setImporterClass(MysqlImport::class);
-    $service->import();
-
-    $result = $service->getResult();
-    $this->assertTrue($result instanceof Result);
-  }
-
-  /**
-   * Test MysqlImport importer with a CSV file with new lines in it's headers.
-   */
-  public function testMysqlImporterWithCSVFileWithNewLinesInHeaders() {
-    $file_path = 'file://' . __DIR__ . '/../../../../../../tests/data/newlines_in_headers.csv';
-    $options = (new Options())
-      ->add('file_system', FileSystem::class)
-      ->index(0);
-    $container = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(FileSystem::class, 'realpath', $file_path)
-      ->getMock();
-    \Drupal::setContainer($container);
-
-    $mysqlImporter = $this->getMysqlImporter();
-    $mysqlImporter->run();
-
-    $this->assertEquals($mysqlImporter->sqlStatement, implode(' ', [
-      'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
-      'INTO TABLE ' . self::TABLE_NAME,
-      'FIELDS TERMINATED BY \',\'',
-      'OPTIONALLY ENCLOSED BY \'"\'',
-      'ESCAPED BY \'\'',
-      'LINES TERMINATED BY \'\n\'',
-      'IGNORE 2 LINES',
-      '(a_b,c)',
-      'SET record_number = NULL;',
-    ]));
-  }
-
   protected function getMysqlImporter() {
     $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
+    $delimiter = ',';
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
 
     return new class($resource, $databaseTableFactory->getInstance('test')) extends MysqlImport {
@@ -150,8 +81,8 @@ class MysqlImportTest extends TestCase {
         };
       }
 
-      protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count): string {
-        $this->sqlStatement = parent::getSqlStatement($file_path, $tablename, $headers, $eol, $header_line_count);
+      protected function getSqlStatement(string $file_path, string $table_name, array $headers, string $eol, int $header_line_count, string $delimiter): string {
+        $this->sqlStatement = parent::getSqlStatement($file_path, $table_name, $headers, $eol, $header_line_count, $delimiter);
         return $this->sqlStatement;
       }
 

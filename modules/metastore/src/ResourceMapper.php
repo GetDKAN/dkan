@@ -13,12 +13,15 @@ use Drupal\metastore\Exception\AlreadyRegistered;
  * Map resource URLs to local files.
  */
 class ResourceMapper {
+
   use EventDispatcherTrait;
 
   const EVENT_REGISTRATION = 'dkan_metastore_resource_mapper_registration';
+
   const EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE = 'dkan_metastore_pre_remove_source';
 
   const DEREFERENCE_NO = 0;
+
   const DEREFERENCE_YES = 1;
 
   /**
@@ -58,7 +61,7 @@ class ResourceMapper {
    * @todo the Resource class currently lives in datastore, we should move it
    * to a more neutral place.
    */
-  public function register(DataResource $resource) : bool {
+  public function register(DataResource $resource): bool {
     $this->filePathExists($resource->getFilePath());
     $this->store->store(json_encode($resource));
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
@@ -133,7 +136,10 @@ class ResourceMapper {
    */
   public function get(string $identifier, $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version = NULL): ?DataResource {
     $data = $this->getFull($identifier, $perspective, $version);
-    return ($data != FALSE) ? DataResource::hydrate(json_encode($data)) : NULL;
+    if ($data !== FALSE) {
+      return DataResource::createFromRecord($data);
+    }
+    return NULL;
   }
 
   /**
@@ -238,7 +244,7 @@ class ResourceMapper {
   /**
    * Private.
    */
-  private function exists($identifier, $perspective, $version = NULL) : bool {
+  private function exists($identifier, $perspective, $version = NULL): bool {
     $item = $this->get($identifier, $perspective, $version);
     return isset($item);
   }

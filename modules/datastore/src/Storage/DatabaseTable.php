@@ -2,11 +2,10 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\Core\Database\Connection;
-use Drupal\datastore\DatastoreResource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Drupal\Core\Database\Driver\mysql\Connection as MysqlConnection;
+use Drupal\Core\Database\Connection;
+use Drupal\datastore\DatastoreResource;
 
 /**
  * Database storage object.
@@ -47,10 +46,18 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * Get summary.
    */
   public function getSummary() {
-    $columns = $this->getSchema()['fields'];
+    $schema = $this->getSchema();
+    $columns = $schema['fields'];
+    $indexes = $schema['indexes'] ?? NULL;
+    $fulltext_indexes = $schema['fulltext indexes'] ?? NULL;
     $numOfColumns = count($columns);
     $numOfRows = $this->count();
-    return new TableSummary($numOfColumns, $columns, $numOfRows);
+    return new TableSummary(
+      $numOfColumns,
+      $columns,
+      $indexes,
+      $fulltext_indexes,
+      $numOfRows);
   }
 
   /**
@@ -58,18 +65,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * {@inheritdoc}
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return (object) ['resource' => $this->resource];
-  }
-
-  /**
-   * Hydrate.
-   */
-  public static function hydrate(string $json) {
-    $data = json_decode($json);
-    $resource = DatastoreResource::hydrate(json_encode($data->resource));
-
-    return new DatabaseTable(\Drupal::service('database'), $resource);
   }
 
   /**
@@ -80,9 +78,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public function getTableName() {
     if ($this->resource) {
-      return "datastore_{$this->resource->getId()}";
+      return 'datastore_' . $this->resource->getId();
     }
-    return "datastore_does_not_exist";
+    return 'datastore_does_not_exist';
   }
 
   /**
@@ -93,18 +91,18 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     if ($decoded === NULL) {
       $this->log(
         'datastore_import',
-        "Error decoding id:@id, data: @data.",
+        'Error decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
       );
-      throw new \Exception("Import for {$id} error when decoding {$data}");
+      throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_array($decoded)) {
       $this->log(
         'datastore_import',
-        "Array expected while decoding id:@id, data: @data.",
+        'Array expected while decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
       );
-      throw new \Exception("Import for {$id} returned an error when preparing table header: {$data}");
+      throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return $decoded;
   }
@@ -113,7 +111,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * Protected.
    */
   public function primaryKey() {
-    return "record_number";
+    return 'record_number';
   }
 
   /**
@@ -133,7 +131,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   protected function setSchemaFromTable() {
     $tableName = $this->getTableName();
-    $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
+    $fieldsInfo = $this->connection->query('DESCRIBE {' . $tableName . '}')->fetchAll();
 
     $schema = $this->buildTableSchema($tableName, $fieldsInfo);
     $this->setSchema($schema);
@@ -157,20 +155,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $schema['fields'] = $fields;
     $schema['primary key'] = [$this->primaryKey()];
     parent::setSchema($schema);
-  }
-
-  /**
-   * Disable/enable InnoDB strict mode for the given database connection.
-   *
-   * @param bool $on
-   *   Whether strict mode should be "ON" or "OFF".
-   */
-  public function innodbStrictMode(bool $on) {
-    $value = $on ? "ON" : "OFF";
-    // Only if we're using MySQL.
-    if ($this->connection instanceof MysqlConnection) {
-      $this->connection->query("SET SESSION innodb_strict_mode=:value", [':value' => $value]);
-    }
   }
 
   /**
@@ -215,7 +199,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       return;
     }
 
-    $indexInfo = $this->connection->query("SHOW INDEXES FROM  `{$this->getTableName()}`")->fetchAll();
+    $indexInfo = $this->connection->query('SHOW INDEXES FROM  {' . $this->getTableName() . '}')->fetchAll();
     foreach ($indexInfo as $info) {
       // Primary key is handled elsewhere.
       if ($info->Key_name == 'PRIMARY') {
@@ -266,7 +250,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       'size' => $size,
       'unsigned' => $unsigned,
       'not null' => $notNull,
-      "{$driver}_type" => $db_type,
+      $driver . '_type' => $db_type,
     ];
   }
 

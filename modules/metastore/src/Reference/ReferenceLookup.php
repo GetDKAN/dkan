@@ -13,7 +13,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use RootedData\RootedJsonData;
 
 /**
- * {@inheritdoc}
+ * Service to find metastore items referencing an identifier.
  */
 class ReferenceLookup implements ReferenceLookupInterface {
   use HelperTrait;

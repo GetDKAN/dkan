@@ -9,15 +9,16 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\DataResource;
-use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
+use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\datastore\service\PostImport;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Service as MetastoreService;
+use Drupal\metastore\MetastoreService;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -42,9 +43,9 @@ class DictionaryEnforcerTest extends TestCase {
   public function testProcess() {
     $resource = new DataResource('test.csv', 'text/csv');
 
-    $alter_table_query_factory = (new Chain($this))
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
-      ->add(AlterTableQueryInterface::class, 'applyDataTypes')
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryInterface::class, 'execute')
       ->getMock();
     $metastore_service = (new Chain($this))
       ->add(MetastoreService::class, 'get', new RootedJsonData(json_encode(['data' => ['fields' => []]])))
@@ -52,10 +53,10 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'dictionary-id')
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_factory, $metastore_service, $dictionary_discovery_service);
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
 
     $container_chain = $this->getContainerChain($resource->getVersion())
-      ->add(AlterTableQueryInterface::class, 'applyDataTypes')
+      ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
@@ -64,7 +65,7 @@ class DictionaryEnforcerTest extends TestCase {
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
 
-    $dictionaryEnforcer->processItem($resource);
+    $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
@@ -77,9 +78,9 @@ class DictionaryEnforcerTest extends TestCase {
   public function testNoDictionaryIdFoundForResourceException() {
     $resource = new DataResource('test.csv', 'text/csv');
 
-    $alter_table_query_factory = (new Chain($this))
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
-      ->add(AlterTableQueryInterface::class, 'applyDataTypes')
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryInterface::class, 'execute')
       ->getMock();
     $metastore_service = (new Chain($this))
       ->add(MetastoreService::class, 'get', new RootedJsonData(json_encode(['data' => ['fields' => []]])))
@@ -87,10 +88,10 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', NULL)
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_factory, $metastore_service, $dictionary_discovery_service);
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
 
     $container_chain = $this->getContainerChain($resource->getVersion())
-      ->add(AlterTableQueryInterface::class, 'applyDataTypes')
+      ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
@@ -99,7 +100,7 @@ class DictionaryEnforcerTest extends TestCase {
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-    $dictionaryEnforcer->processItem($resource);
+     $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
@@ -107,14 +108,16 @@ class DictionaryEnforcerTest extends TestCase {
   }
 
   /**
-   * Test exception thrown in applyDataTypes() is caught and logged.
+   * Test exception thrown in execute() is caught and logged.
    */
-  public function testProcessItemApplyDataTypesException() {
+  public function testProcessItemExecuteException() {
     $resource = new DataResource('test.csv', 'text/csv');
 
-    $alter_table_query_factory = (new Chain($this))
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
-      ->add(AlterTableQueryInterface::class, 'applyDataTypes', new \Exception('Test Error'))
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'setTable', AlterTableQueryBuilderInterface::class)
+      ->add(AlterTableQueryBuilderInterface::class, 'addDataDictionary', AlterTableQueryBuilderInterface::class)
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryInterface::class, 'execute', new \Exception('Test Error'))
       ->getMock();
     $metastore_service = (new Chain($this))
       ->add(MetastoreService::class, 'get', new RootedJsonData(json_encode(['data' => ['fields' => []]])))
@@ -122,10 +125,10 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'data-dictionary')
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_factory, $metastore_service, $dictionary_discovery_service);
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
 
     $container_chain = $this->getContainerChain($resource->getVersion())
-      ->add(AlterTableQueryInterface::class, 'applyDataTypes')
+      ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
@@ -134,11 +137,42 @@ class DictionaryEnforcerTest extends TestCase {
        $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-    $dictionaryEnforcer->processItem($resource);
+     $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
     $this->assertEquals($errors[0], 'Test Error');
+  }
+
+  /**
+   * Test getting data dictionary fields.
+   */
+  public function testReturnDataDictionaryFields() {
+    $resource = new DataResource('test.csv', 'text/csv');
+
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryInterface::class, 'execute')
+      ->getMock();
+    $metastore_service = (new Chain($this))
+      ->add(MetastoreService::class, 'get', new RootedJsonData(json_encode(['data' => ['fields' => []]])))
+      ->getMock();
+    $dictionary_discovery_service = (new Chain($this))
+      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'dictionary-id')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
+      ->add(DataDictionaryDiscoveryInterface::class, 'getSitewideDictionaryId','2')
+      ->getMock();
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
+
+    $container_chain = $this->getContainerChain($resource->getVersion())
+      ->add(AlterTableQueryInterface::class, 'execute')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
+    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
+
+    $result = $dictionary_enforcer->returnDataDictionaryFields();
+    $this->assertIsArray($result);
   }
 
   /**
@@ -147,7 +181,7 @@ class DictionaryEnforcerTest extends TestCase {
   protected function getContainerChain(int $resource_version) {
 
     $options = (new Options())
-      ->add('dkan.datastore.data_dictionary.alter_table_query_factory.mysql', AlterTableQueryFactoryInterface::class)
+      ->add('dkan.datastore.data_dictionary.alter_table_query_builder.mysql', AlterTableQueryBuilderInterface::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
       ->add('logger.factory', LoggerChannelFactoryInterface::class)
       ->add('dkan.metastore.service', MetastoreService::class)
@@ -155,6 +189,8 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
+      ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
+      ->add('dkan.datastore.service.post_import', PostImport::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
@@ -164,9 +200,11 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(LoggerChannelFactoryInterface::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
       ->add(MetastoreService::class, 'get', new RootedJsonData($json))
-      ->add(AlterTableQueryFactoryInterface::class, 'setConnectionTimeout', AlterTableQueryFactoryInterface::class)
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryBuilderInterface::class, 'setConnectionTimeout', AlterTableQueryBuilderInterface::class)
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getSitewideDictionaryId')
+      ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
       ->add(ResourceMapper::class, 'get', DataResource::class)

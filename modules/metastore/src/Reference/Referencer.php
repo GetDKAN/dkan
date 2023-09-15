@@ -9,7 +9,7 @@ use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 
 use Contracts\FactoryInterface;
 use GuzzleHttp\Client as GuzzleClient;
@@ -212,9 +212,19 @@ class Referencer {
   }
 
   /**
-   * Private.
+   * Get download URL for existing resource.
+   *
+   * @param array $info
+   *   Info.
+   * @param \Drupal\common\DataResource $stored
+   *   Stored data resource object.
+   * @param string $mimeType
+   *   MIME type.
+   *
+   * @return string
+   *   The download URL.
    */
-  private function handleExistingResource($info, $stored, $mimeType) {
+  private function handleExistingResource(array $info, DataResource $stored, string $mimeType): string {
     if ($info[0]->perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
@@ -411,16 +421,16 @@ class Referencer {
     $storage = $this->storageFactory->getInstance($property_id);
     $nodes = $storage->getEntityStorage()->loadByProperties([
       'field_data_type' => $property_id,
-      'title' => Service::metadataHash($data),
+      'title' => MetastoreService::metadataHash($data),
     ]);
 
     if ($node = reset($nodes)) {
-      // If an existing but orphaned data node is found,
-      // change the state back to published.
-      // @todo if the referencing node is in a draft state, do not publish the
-      // referenced node.
-      $node->set('moderation_state', 'published');
-      $node->save();
+      // @todo if referencing node in draft state, don't publish referenced node
+      // If an existing referenced node is found but unpublished, publish it.
+      if ($node->get('moderation_state')->value !== "published") {
+        $node->set('moderation_state', 'published');
+        $node->save();
+      }
       return $node->uuid();
     }
     return NULL;

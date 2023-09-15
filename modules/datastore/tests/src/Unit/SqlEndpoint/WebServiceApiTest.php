@@ -12,7 +12,7 @@ use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\datastore\SqlEndpoint\WebServiceApi;
-use Drupal\datastore\SqlEndpoint\Service;
+use Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class WebServiceApiTest extends TestCase {
   use TestHelperTrait;
 
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     // Set cache services
     $options = (new Options)
@@ -94,7 +94,7 @@ class WebServiceApiTest extends TestCase {
   public function getCommonMockChain($query = "[SELECT * FROM 123__456][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];") {
 
     $options = (new Options())
-      ->add('dkan.datastore.sql_endpoint.service', Service::class)
+      ->add('dkan.datastore.sql_endpoint.service', DatastoreSqlEndpointService::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->add("database", Connection::class)
@@ -114,8 +114,8 @@ class WebServiceApiTest extends TestCase {
       ->add(Request::class, 'getContent', $body)
       ->add(ConfigFactory::class, 'get', Config::class)
       ->add(Config::class, 'get', 1000)
-      ->add(Service::class, 'runQuery', [$row])
-      ->add(Service::class, 'getTableNameFromSelect', '465s')
+      ->add(DatastoreSqlEndpointService::class, 'runQuery', [$row])
+      ->add(DatastoreSqlEndpointService::class, 'getTableNameFromSelect', '465s')
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE)

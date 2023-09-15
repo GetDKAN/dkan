@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Enable core path and config modules if they are not already.
+ */
+function dkan_update_9001() {
+  $modules = ['path', 'config'];
+  \Drupal::service('module_installer')->install($modules);
+}

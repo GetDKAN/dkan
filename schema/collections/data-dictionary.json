@@ -27,7 +27,7 @@
           "title": "Dictionary Fields",
           "type": "array",
           "items": {
-            "title": "Dictionary Field",
+            "title": "Field",
             "type": "object",
             "required": [
               "name",
@@ -76,6 +76,52 @@
               }
             }
           }
+        },
+        "indexes": {
+          "title": "Dictionary Indexes",
+          "type": "array",
+          "items": {
+            "title": "Index",
+            "type": "object",
+            "required": [
+              "fields",
+              "type"
+            ],
+            "properties": {
+              "fields": {
+                "title": "Fields",
+                "type": "array",
+                "items": {
+                  "title": "Field",
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "title": "Name",
+                      "type": "string"
+                    },
+                    "length": {
+                      "title": "Length",
+                      "type": "integer"
+                    }
+                  }
+                },
+                "description": "One or more fields included in index. Must be keys from the fields object."
+              },
+              "type": {
+                "title": "Type",
+                "description": "Index type.",
+                "type": "string",
+                "enum": ["index", "fulltext"],
+                "default": "index"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string",
+                "description": "Description of index purpose or functionality."
+              }
+            }
+          },
+          "minItems": 0
         }
       }
     }

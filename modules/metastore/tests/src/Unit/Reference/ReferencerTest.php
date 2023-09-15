@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
@@ -19,9 +20,10 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -36,23 +38,23 @@ class ReferencerTest extends TestCase {
    *
    * @var string
    */
-  const FILE_PATH = 'tmp/mycsv.csv';
+  public const FILE_PATH = 'tmp/mycsv.csv';
 
   /**
    * HTTP host protocol and domain for testing download URL.
    *
    * @var string
    */
-  const HOST = 'http://example.com';
+  public const HOST = 'http://example.com';
 
-  const MIME_TYPE = 'text/csv';
+  public const MIME_TYPE = 'text/csv';
 
   /**
    * List referenceable dataset properties.
    *
    * @var string[]
    */
-  const REFERENCEABLE_PROPERTY_LIST = [
+  public const REFERENCEABLE_PROPERTY_LIST = [
     'keyword' => 0,
     'distribution' => 'distribution',
     'title' => 0,
@@ -64,23 +66,23 @@ class ReferencerTest extends TestCase {
 
   private function mockReferencer($existing = TRUE) {
     if ($existing) {
-      $node = new class {
-        public function uuid() {
-          return '0398f054-d712-4e20-ad1e-a03193d6ab33';
-        }
-        public function set() {}
-        public function save() {}
-      };
+      $node = (new Chain($this))
+        ->add(Node::class, 'get', FieldItemListInterface::class)
+          ->addd('uuid', '0398f054-d712-4e20-ad1e-a03193d6ab33')
+        ->add(FieldItemListInterface::class, 'getString', 'orphaned')
+        ->add(Node::class, 'set')
+        ->add(Node::class, 'save')
+        ->getMock();
     }
     else {
-      $node = new class {
-        public function uuid() {
-          return NULL;
-        }
-        public function set() {}
-        public function save() {}
-        public function setRevisionLogMessage() {}
-      };
+      $node = (new Chain($this))
+        ->add(Node::class, 'get', FieldItemListInterface::class)
+          ->addd('uuid', null)
+        ->add(FieldItemListInterface::class, 'getString', 'orphaned')
+        ->add(Node::class, 'set')
+        ->add(Node::class, 'save')
+        ->add(Node::class, 'setRevisionLogMessage')
+        ->getMock();
     }
 
     $storageFactory = (new Chain($this))
@@ -273,7 +275,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $storedResource = DataResource::hydrate($container_chain->getStoredInput('resource')[0]);
+    $storedResource = DataResource::createFromRecord(json_decode($container_chain->getStoredInput('resource')[0]));
     // A new resource should have been stored, with the mimetype set to text/csv
     $this->assertEquals('text/csv', $storedResource->getMimeType());
   }
@@ -387,13 +389,13 @@ class ReferencerTest extends TestCase {
    */
   public function testMimeTypeDetection(): void {
     // Initialize mock node class.
-    $node = new class {
-      public function uuid() {
-        return '0398f054-d712-4e20-ad1e-a03193d6ab33';
-      }
-      public function set() {}
-      public function save() {}
-    };
+    $node = (new Chain($this))
+      ->add(Node::class, 'get', FieldItemListInterface::class)
+      ->addd('uuid', '0398f054-d712-4e20-ad1e-a03193d6ab33')
+      ->add(FieldItemListInterface::class, 'getString', 'orphaned')
+      ->add(Node::class, 'set')
+      ->add(Node::class, 'save')
+      ->getMock();
 
     // Create a mock file storage class.
     $storage = new class {
@@ -450,7 +452,7 @@ class ReferencerTest extends TestCase {
     $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
     // Test Mime Type detection on a invalid remote file path.
     $data = $this->getData('http://invalid');
-    $this->expectException(RequestException::class);
+    $this->expectException(ConnectException::class);
     $referencer->reference($data);
   }
 

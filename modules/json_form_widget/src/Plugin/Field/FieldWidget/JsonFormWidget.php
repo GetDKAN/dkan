@@ -9,7 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\FormBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Http\RequestStack;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\json_form_widget\ValueHandler;
 
 /**
@@ -71,7 +71,7 @@ class JsonFormWidget extends WidgetBase {
    *   The JsonFormBuilder service.
    * @param \Drupal\json_form_widget\ValueHandler $value_handler
    *   The JsonFormValueHandler service.
-   * @param \Drupal\Core\Http\RequestStack $request_stack
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   Drupal request context service.
    */
   public function __construct(
@@ -114,7 +114,9 @@ class JsonFormWidget extends WidgetBase {
     $default_data = [];
     // Get default data.
     foreach ($items as $item) {
-      $default_data = json_decode($item->value);
+      if ($item->value) {
+        $default_data = json_decode($item->value);
+      }
     }
     $type = $this->getSchemaId($form_state);
     // Copy the item type to the entity.

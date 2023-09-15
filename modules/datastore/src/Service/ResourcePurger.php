@@ -7,7 +7,8 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
-use Drupal\datastore\Service;
+use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\datastore\DatastoreService;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
@@ -37,7 +38,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   private $datastore;
 
@@ -57,10 +58,10 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The dkan.metastore.reference_lookup service.
    * @param \Drupal\metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.storage service.
-   * @param \Drupal\datastore\Service $datastore
+   * @param \Drupal\datastore\DatastoreService $datastore
    *   The dkan.datastore.service service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, ReferenceLookupInterface $referenceLookup, DataFactory $dataFactory, Service $datastore) {
+  public function __construct(ConfigFactoryInterface $configFactory, ReferenceLookupInterface $referenceLookup, DataFactory $dataFactory, DatastoreService $datastore) {
     $this->config = $configFactory->get('datastore.settings');
     $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');
@@ -207,7 +208,7 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
       // $idAndVersion is a json encoded array with resource's id and version.
-      list($id, $version) = json_decode($idAndVersion);
+      [$id, $version] = json_decode($idAndVersion);
       $this->delete($id, $version);
     }
   }
@@ -230,7 +231,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $purge = [];
 
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
-      list($published, $resource) = $this->getRevisionData($vid);
+      [$published, $resource] = $this->getRevisionData($vid);
       $purge = array_merge($purge, $resource);
       $publishedCount = $published ? $publishedCount + 1 : $publishedCount;
       if (!$prior && $publishedCount >= 2) {
@@ -315,8 +316,12 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function getRevisionData(string $vid) : array {
     $revision = $this->storage->getEntityStorage()->loadRevision($vid);
+    $published = FALSE;
+    if ($revision instanceof EntityPublishedInterface) {
+      $published = $revision->isPublished();
+    }
     return [
-      $revision->status->value ?? FALSE,
+      $published,
       $this->getResources($revision),
     ];
   }

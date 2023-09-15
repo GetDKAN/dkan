@@ -1,5 +1,5 @@
 # DKAN
-[DKAN](https://getdkan.com) - An Open Data Catalog built on [Drupal 8](https://www.drupal.org/documentation)
+[DKAN](https://dkan.readthedocs.io/en/latest) - An Open Data Catalog built on [Drupal 9/10](https://www.drupal.org/documentation)
 
 [![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/2.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/2.x)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a02bf3362b94749579a1/maintainability)](https://codeclimate.com/github/GetDKAN/dkan/maintainability)
@@ -9,16 +9,8 @@
 ---
 
 ## Documentation
-DKAN's documentation lives at [docs.getdkan.com](https://docs.getdkan.com/)
+DKAN's documentation can be found at https://dkan.readthedocs.io/en/latest
 
-To generate the docs with a specfic version number, run:
-```
-DKAN_VERSION='v2.1.0' doxygen
-```
-To supply the current branch, run:
-```
-DKAN_VERSION=`git rev-parse --abbrev-ref HEAD` doxygen
-```
 
 ---
 
@@ -26,9 +18,9 @@ DKAN_VERSION=`git rev-parse --abbrev-ref HEAD` doxygen
 
 - Harvesting of data from external catalogs that provide a data.json
 - Dataset metadata and resources
-- Web service API endpoints that allow third party applications to work with the datasets
-- Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-frontend)
-- A datastore to store CSV files and make them queryable through an SQL endpoint.
+- Web service API endpoints that provide remote/automated management of datasets
+- Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-app)
+- A datastore to store CSV data files and make them queryable by third party applications.
 
 ---
 
@@ -38,4 +30,8 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 
 ---
 
-> Looking for the Drupal 7 version of DKAN? See the 7.x-1.x branch on [DKAN's Github Repository](https://github.com/GetDKAN/dkan/tree/7.x-1.x).
+## History
+
+- DKAN’s initial v1.0 release was in 2014 (this code is still available on the [7.x-1.x branch](https://github.com/GetDKAN/dkan/tree/7.x-1.x), although no longer supported).
+- In the fall of 2017, CivicActions took over sponsorship and maintenance of DKAN.
+- In May 2020 CivicActions released a completely rewritten version of DKAN to support Drupal 8, then 9 and 10. This new version (v2) was a complete ground up rebuild of the platform, integrating architectural insight from DKAN v1 and many new capabilities.

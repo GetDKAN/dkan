@@ -6,7 +6,7 @@ use Drupal\common\DataResource;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\Service;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Storage\QueryFactory;
 
 /**
@@ -17,7 +17,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\DatastoreService
    */
   private $datastore;
 
@@ -26,17 +26,17 @@ class Query implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.datastore.service')
+      $container->get('dkan.datastore.service'),
     );
   }
 
   /**
    * Constructor.
    *
-   * @param \Drupal\datastore\Service $datastore
+   * @param \Drupal\datastore\DatastoreService $datastore
    *   Main datastore service.
    */
-  public function __construct(Service $datastore) {
+  public function __construct(DatastoreService $datastore) {
     $this->datastore = $datastore;
   }
 
@@ -119,16 +119,17 @@ class Query implements ContainerInjectionInterface {
    *   DatastoreQuery object.
    * @param bool $fetch
    *   Perform fetchAll and return array if true, else just statement (cursor).
+   * @param bool $csv
+   *   Flag for csv downloads.
    *
    * @return array|\Drupal\Core\Database\StatementInterface
    *   Array of result objects or result statement of $fetch is false.
    */
-  public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE) {
+  public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE, $csv = FALSE) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return [];
     }
-
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
     $storage = $storageMap[$primaryAlias];
@@ -137,8 +138,11 @@ class Query implements ContainerInjectionInterface {
       $schema = $this->filterSchemaFields($storage->getSchema(), $storage->primaryKey());
       $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
-
     $query = QueryFactory::create($datastoreQuery, $storageMap);
+    // Get data dictionary fields.
+    $meta_data = $csv != FALSE ? $this->getDatastoreService()->getDataDictionaryFields() : NULL;
+    // Pass the data dictionary metadata to the query.
+    $query->dataDictionaryFields = $csv && $meta_data ? $meta_data : NULL;
 
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias, $fetch);
 
@@ -147,6 +151,16 @@ class Query implements ContainerInjectionInterface {
     }
     return $result;
 
+  }
+
+  /**
+   * Return the datastore service.
+   *
+   * @return \Drupal\datastore\DatastoreService
+   *   Datastore Service.
+   */
+  protected function getDatastoreService() {
+    return $this->datastore;
   }
 
   /**

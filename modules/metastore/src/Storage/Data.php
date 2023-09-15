@@ -4,11 +4,12 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
 
 /**
@@ -243,12 +244,10 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
 
     $entity = $this->entityStorage->load($entity_id);
-    $published = $entity->status->value ?? FALSE;
-    if (!$published) {
-      return NULL;
+    if ($entity instanceof EntityPublishedInterface) {
+      return $entity->isPublished() ? $entity : NULL;
     }
-
-    return $entity;
+    return NULL;
   }
 
   /**
@@ -369,7 +368,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
       $title = isset($data->title) ? $data->title : $data->name;
     }
     else {
-      $title = Service::metadataHash($data->data);
+      $title = MetastoreService::metadataHash($data->data);
     }
     $entity = $this->getEntityStorage()->create(
       [

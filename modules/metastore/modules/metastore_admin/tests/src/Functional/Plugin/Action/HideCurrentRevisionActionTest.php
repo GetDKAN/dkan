@@ -3,11 +3,14 @@
 namespace Drupal\Tests\metastore_admin\Functional\Plugin\Action;
 
 use Drupal\Core\Session\AccountProxy;
-use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\MetastoreService;
+use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\user\Entity\User;
 use RootedData\RootedJsonData;
+use weitzman\DrupalTestTraits\Entity\UserCreationTrait;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
@@ -18,6 +21,11 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  */
 class HideCurrentRevisionActionTest extends ExistingSiteBase {
   use CleanUp;
+  use UserCreationTrait;
+
+  protected ValidMetadataFactory $validMetadataFactory;
+  protected User $testUser;
+  protected User $testApiUser;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
 
@@ -32,7 +40,10 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState("published");
 
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->testUser = $this->createUser([], "testadmin", TRUE, ['mail' => 'testadmin@test.com']);
+    $this->testApiUser = $this->createUser([], "testapiuser", FALSE, ['roles' => ['api_user'], 'mail' => 'testapiuser@test.com']);
+
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**
@@ -45,20 +56,8 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     $node = current($result);
     $container = \Drupal::getContainer();
 
-    $users = \Drupal::entityTypeManager()
-      ->getStorage('user')
-      ->loadByProperties(['name' => 'testadmin']
-    );
-    $testUser = reset($users);
-
-    $users = \Drupal::entityTypeManager()
-      ->getStorage('user')
-      ->loadByProperties(['name' => 'testapiuser']
-    );
-    $testapiuser = reset($users);
-
     $accountProxy = new AccountProxy($container->get('event_dispatcher'));
-    $accountProxy->setAccount($testUser);
+    $accountProxy->setAccount($this->testUser);
     $container->set('current_user', $accountProxy);
 
     $hideCurrentRevisionAction = HideCurrentRevisionAction::create(
@@ -95,7 +94,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     $node = current($result);
 
     $accountProxy = new AccountProxy($container->get('event_dispatcher'));
-    $accountProxy->setAccount($testapiuser);
+    $accountProxy->setAccount($this->testApiUser);
     $container->set('current_user', $accountProxy);
     $hideCurrentRevisionAction = HideCurrentRevisionAction::create(
       $container,
@@ -151,7 +150,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
   }
 
-  private function getMetastore(): Metastore {
+  private function getMetastore(): MetastoreService {
     return \Drupal::service('dkan.metastore.service');
   }
 

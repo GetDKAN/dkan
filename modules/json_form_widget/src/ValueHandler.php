@@ -18,6 +18,9 @@ class ValueHandler {
     switch ($schema->type) {
       case 'string':
         $data = $this->handleStringValues($formValues, $property);
+        if ($property === 'hasEmail' && is_string($data)) {
+          $data = 'mailto:' . ltrim($data, 'mailto:');
+        }
         break;
 
       case 'object':
@@ -27,6 +30,9 @@ class ValueHandler {
       case 'array':
         $data = $this->handleArrayValues($formValues, $property, $schema);
         break;
+
+      case 'integer':
+        $data = $this->handleIntegerValues($formValues, $property);
     }
     return $data;
   }
@@ -45,7 +51,14 @@ class ValueHandler {
     if (isset($formValues[$property]['select'])) {
       return isset($formValues[$property][0]) ? $formValues[$property][0] : NULL;
     }
-    return !empty($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
+    return !empty($formValues[$property]) && is_string($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
+  }
+
+  /**
+   * Extract integer values from form submission.
+   */
+  public function handleIntegerValues($formValues, $property) {
+    return isset($formValues[$property]) ? intval($formValues[$property]) : NULL;
   }
 
   /**
@@ -61,14 +74,14 @@ class ValueHandler {
     }
 
     $properties = array_keys((array) $schema->properties);
-    $data = FALSE;
+    $data = [];
     foreach ($properties as $sub_property) {
       $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
       if ($value) {
         $data[$sub_property] = $value;
       }
     }
-    return $data;
+    return $data ?: FALSE;
   }
 
   /**
@@ -122,9 +135,10 @@ class ValueHandler {
     if ($subschema->type === "object") {
       return $this->getObjectInArrayData($formValues, $property, $subschema);
     }
-
-    foreach ($formValues[$property][$property] as $value) {
-      $data = array_merge($data, $this->flattenArraysInArrays($value));
+    if (isset($formValues[$property][$property])) {
+      foreach ($formValues[$property][$property] as $value) {
+        $data = array_merge($data, $this->flattenArraysInArrays($value));
+      }
     }
     return !empty($data) ? $data : FALSE;
   }
@@ -166,10 +180,12 @@ class ValueHandler {
    */
   private function getObjectInArrayData($formValues, $property, $schema) {
     $data = [];
-    foreach ($formValues[$property][$property] as $key => $item) {
-      $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema);
-      if ($value) {
-        $data[$key] = $value;
+    if (isset($formValues[$property][$property])) {
+      foreach ($formValues[$property][$property] as $key => $item) {
+        $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema);
+        if ($value) {
+          $data[$key] = $value;
+        }
       }
     }
     return $data;

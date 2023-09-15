@@ -57,7 +57,7 @@ trait LoggerTrait {
   /**
    * Private.
    */
-  private function log($loggerName, $message, $variables = [], $level = LogLevel::ERROR) {
+  protected function log($loggerName, $message, $variables = [], $level = LogLevel::ERROR) {
     if ($this->loggerService) {
       $this->loggerService->get($loggerName)->log($level, $message, $variables);
     }
@@ -66,7 +66,7 @@ trait LoggerTrait {
   /**
    * Private.
    */
-  private function error(string $message, array $context = []) {
+  protected function error(string $message, array $context = []) {
 
     if ($this->loggerService) {
       $this->loggerService->get($this->loggerName)->error($message, $context);
@@ -76,7 +76,7 @@ trait LoggerTrait {
   /**
    * Private.
    */
-  private function warning(string $message, array $context = []) {
+  protected function warning(string $message, array $context = []) {
 
     if ($this->loggerService) {
       $this->loggerService->get($this->loggerName)->warning($message, $context);
@@ -86,7 +86,7 @@ trait LoggerTrait {
   /**
    * Private.
    */
-  private function notice(string $message, array $context = []) {
+  protected function notice(string $message, array $context = []) {
 
     if ($this->loggerService) {
       $this->loggerService->get($this->loggerName)->notice($message, $context);

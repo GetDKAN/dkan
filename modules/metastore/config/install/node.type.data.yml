@@ -1,14 +1,8 @@
 uuid: 5e3e17e3-629b-483e-85f4-c45753147094
 langcode: en
 status: true
-dependencies:
-  module:
-    - menu_ui
-third_party_settings:
-  menu_ui:
-    available_menus:
-      - main
-    parent: 'main:'
+dependencies: {  }
+third_party_settings: {  }
 _core:
   default_config_hash: U8Z67MeLSdixetl11p515p0nC6ByJVMsjuXO2q46-VQ
 name: Data
@@ -16,5 +10,5 @@ type: data
 description: ''
 help: ''
 new_revision: true
-preview_mode: 0
+preview_mode: 1
 display_submitted: true

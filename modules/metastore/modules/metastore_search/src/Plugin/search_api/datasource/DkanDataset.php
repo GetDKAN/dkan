@@ -2,10 +2,14 @@
 
 namespace Drupal\metastore_search\Plugin\search_api\datasource;
 
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\TypedData\ComplexDataInterface;
+use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore_search\ComplexData\Dataset;
 use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Represents a datasource which exposes DKAN data.
@@ -28,21 +32,43 @@ class DkanDataset extends DatasourcePluginBase {
   protected const PAGE_SIZE = 250;
 
   /**
-   * Inherited.
+   * Node query service.
    *
-   * @inheritdoc
+   * @var \Drupal\Core\Entity\Query\QueryInterface
+   */
+  protected QueryInterface $nodeQueryService;
+
+  /**
+   * Metastore storage service.
+   *
+   * @var \Drupal\metastore\Storage\DataFactory
+   */
+  protected DataFactory $metastoreStorageService;
+
+  /**
+   * {@inheritDoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $dkan_dataset = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    $dkan_dataset->nodeQueryService = $container->get('entity_type.manager')
+      ->getStorage('node')
+      ->getQuery('AND');
+    $dkan_dataset->metastoreStorageService = $container->get('dkan.metastore.storage');
+    return $dkan_dataset;
+  }
+
+  /**
+   * {@inheritDoc}
    */
   public function getPropertyDefinitions() {
     return Dataset::definition();
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getItemIds($page = NULL) {
-    $ids_query = \Drupal::entityQuery('node')
+    $ids_query = $this->nodeQueryService
       ->accessCheck(FALSE)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset');
@@ -59,28 +85,30 @@ class DkanDataset extends DatasourcePluginBase {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function loadMultiple(array $ids) {
-    /** @var   \Drupal\metastore\Storage\DataFactory $dataStorageFactory */
-    $dataStorageFactory = \Drupal::service("dkan.metastore.storage");
-
     /** @var \Drupal\metastore\Storage\Data $dataStorage */
-    $dataStorage = $dataStorageFactory->getInstance('dataset');
+    $dataStorage = $this->metastoreStorageService->getInstance('dataset');
 
-    $items = array_map(function ($id) use ($dataStorage) {
-      return new Dataset($dataStorage->retrieve($id));
-    }, array_combine($ids, $ids));
+    $items = [];
+
+    foreach (array_combine($ids, $ids) as $id) {
+      try {
+        // Only index published revisions.
+        $items[$id] = new Dataset($dataStorage->retrieve($id, TRUE));
+      }
+      catch (MissingObjectException $missingObjectException) {
+        // This is thrown if there is no published revision.
+        continue;
+      }
+    }
 
     return $items;
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getItemId(ComplexDataInterface $item) {
     return $item->get('identifier');

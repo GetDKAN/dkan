@@ -2,10 +2,13 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
+use Drupal\Core\File\FileSystemInterface;
+
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 use Symfony\Component\HttpFoundation\Request;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -17,7 +20,8 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @group datastore
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
-  use GetDataTrait;
+
+  use GetDataTrait, CleanUp;
 
   /**
    * Uploaded resource file destination.
@@ -57,7 +61,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\Service
+   * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
 
@@ -83,6 +87,13 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
   protected $webServiceApi;
 
   /**
+   * External URL for the fixture CSV file.
+   *
+   * @var string
+   */
+  protected $resourceUrl;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
@@ -92,14 +103,25 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->cron = \Drupal::service('cron');
     $this->metastore = \Drupal::service('dkan.metastore.service');
     $this->uuid = \Drupal::service('uuid');
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
     $this->webServiceApi = ImportController::create(\Drupal::getContainer());
-    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
+    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')
+      ->getInstance('dataset');
     // Copy resource file to uploads directory.
-    $upload_path = \Drupal::service('file_system')->realpath(self::UPLOAD_LOCATION);
-    \Drupal::service('file_system')->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path);
+    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+    $file_system = \Drupal::service('file_system');
+    $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
+    $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
+    $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path, FileSystemInterface::EXISTS_REPLACE);
     // Create resource URL.
-    $this->resourceUrl = \Drupal::service('stream_wrapper_manager')->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)->getExternalUrl();
+    $this->resourceUrl = \Drupal::service('stream_wrapper_manager')
+      ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
+      ->getExternalUrl();
+  }
+
+  public function tearDown(): void {
+    parent::tearDown();
+    $this->removeAllMappedFiles();
   }
 
   /**
@@ -111,7 +133,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $fields = [
       [
         'name' => 'a',
-        'title' => 'A',
         'type' => 'integer',
         'format' => 'default',
       ],
@@ -125,16 +146,43 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'name' => 'c',
         'title' => 'C',
         'type' => 'number',
-        'format' => 'default',
+      ],
+      [
+        'name' => 'd',
+        'title' => 'D',
+        'type' => 'string',
+      ],
+      [
+        'name' => 'e',
+        'title' => 'E',
+        'type' => 'boolean',
       ],
     ];
-    $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $dict_id), 'data-dictionary');
+    $indexes = [
+      [
+        'name' => 'index_a',
+        'fields' => [
+          ['name' => 'a'],
+          ['name' => 'd', 'length' => 6],
+        ],
+        'type' => 'index',
+      ],
+      [
+        'name' => 'fulltext_index_a',
+        'fields' => [
+          ['name' => 'd', 'length' => 3],
+        ],
+        'type' => 'fulltext',
+      ],
+    ];
+    $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $indexes, $dict_id), 'data-dictionary');
     // Create data-dictionary.
     $this->metastore->post('data-dictionary', $data_dict);
     $this->metastore->publish('data-dictionary', $dict_id);
 
     // Set global data-dictinary in metastore config.
-    $metastore_config = \Drupal::configFactory()->getEditable('metastore.settings');
+    $metastore_config = \Drupal::configFactory()
+      ->getEditable('metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE);
     $metastore_config->set('data_dictionary_sitewide', $dict_id);
     $metastore_config->save();
@@ -142,7 +190,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     // Build dataset.
     $dataset_id = $this->uuid->generate();
     $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
-    // Create datset.
+    // Create dataset.
     $this->metastore->post('dataset', $dataset);
     $this->metastore->publish('dataset', $dataset_id);
 
@@ -158,38 +206,63 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $request = Request::create('http://blah/api');
     // Retrieve schema for dataset resource.
     $response = $this->webServiceApi->summary($dist_id, $request);
-    $result = json_decode($response->getContent(), true);
+    $result = json_decode($response->getContent(), TRUE);
+
+    // Clean up after ourselves, before performing the assertion.
+    $this->metastore->delete('dataset', $dataset_id);
 
     // Validate schema.
     $this->assertEquals([
-      'numOfColumns' => 4, 
+      'numOfColumns' => 6,
       'columns' => [
         'record_number' => [
-          'type' => 'serial', 
-          'length' => 10, 
-          'unsigned' => true, 
-          'not null' => true, 
-          'mysql_type' => 'int' 
-        ], 
+          'type' => 'serial',
+          'length' => 10,
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'mysql_type' => 'int',
+        ],
         'a' => [
-            'type' => 'int', 
-            'length' => 11, 
-            'mysql_type' => 'int', 
-            'description' => 'A',
-          ], 
+          'type' => 'int',
+          'length' => 11,
+          'mysql_type' => 'int',
+        ],
         'b' => [
-          'type' => 'varchar', 
-          'mysql_type' => 'date', 
+          'type' => 'varchar',
+          'mysql_type' => 'date',
           'description' => 'B',
-        ], 
+        ],
         'c' => [
-          'type' => 'numeric', 
-          'length' => 3, 
-          'mysql_type' => 'decimal', 
+          'type' => 'numeric',
+          'length' => 3,
+          'mysql_type' => 'decimal',
           'description' => 'C',
         ],
-      ], 
-      'numOfRows' => 2
+        'd' => [
+          'type' => 'text',
+          'mysql_type' => 'text',
+          'description' => 'D',
+        ],
+        'e' => [
+          'type' => 'int',
+          'mysql_type' => 'tinyint',
+          'description' => 'E',
+          'length' => 1,
+          'size' => 'tiny',
+        ],
+      ],
+      'indexes' => [
+        'index_a' => [
+          'a',
+          'd',
+        ],
+      ],
+      'fulltextIndexes' => [
+        'fulltext_index_a' => [
+          'd',
+        ],
+      ],
+      'numOfRows' => 3,
     ], $result);
   }
 

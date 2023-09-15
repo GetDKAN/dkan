@@ -58,15 +58,19 @@ class SelectFactory {
    *   DKAN Query object.
    */
   public function create(Query $query): Select {
-    $this->dbQuery = $this->connection->select($query->collection, $this->alias);
 
+    $this->dbQuery = $this->connection->select($query->collection, $this->alias);
     $this->setQueryProperties($query);
     $this->setQueryConditions($query);
     $this->setQueryGroupBy($query);
     $this->setQueryOrderBy($query);
     $this->setQueryLimitAndOffset($query);
     $this->setQueryJoins($query);
-
+    if (!empty($query->dataDictionaryFields)) {
+      $meta_data = $query->dataDictionaryFields;
+      $fields = $this->dbQuery->getFields();
+      $this->addDateExpressions($this->dbQuery, $fields, $meta_data);
+    }
     // $string = $this->dbQuery->__toString();
     if ($query->count) {
       $this->dbQuery = $this->dbQuery->countQuery();
@@ -84,11 +88,25 @@ class SelectFactory {
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
       $this->dbQuery->fields($this->alias);
+
       return;
     }
-
     foreach ($query->properties as $p) {
       $this->setQueryProperty($p);
+    }
+  }
+
+  /**
+   * Reformatting date fields.
+   *
+   *  {@inheritdoc}
+   */
+  private function addDateExpressions($db_query, $fields, $meta_data) {
+    foreach ($meta_data as $definition) {
+      // Confirm definition name is in the fields list.
+      if ($fields[$definition['name']]['field'] && $definition['type'] == 'date') {
+        $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
+      }
     }
   }
 
@@ -99,6 +117,7 @@ class SelectFactory {
    *   One property from a query properties array.
    */
   private function setQueryProperty($property) {
+
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);
       $this->dbQuery->addExpression($expressionStr, $property->alias);

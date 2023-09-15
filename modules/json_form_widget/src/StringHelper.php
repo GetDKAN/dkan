@@ -71,7 +71,7 @@ class StringHelper implements ContainerInjectionInterface {
     $element['#default_value'] = $this->getDefaultValue($data, $property);
 
     // Check if the field is required.
-    $element_schema = $object_schema ? $object_schema : $this->builder->schema;
+    $element_schema = $object_schema ? $object_schema : $this->builder->getSchema();
     $element['#required'] = $this->checkIfRequired($field_name, $element_schema);
 
     // Add options if element type is select.
@@ -82,6 +82,7 @@ class StringHelper implements ContainerInjectionInterface {
     // Add extra validate if element type is email.
     if ($element['#type'] === 'email') {
       $element['#element_validate'][] = [$this, 'validateEmail'];
+      $element['#default_value'] = ltrim($element['#default_value'] ?? '', 'mailto:');
     }
 
     return $element;

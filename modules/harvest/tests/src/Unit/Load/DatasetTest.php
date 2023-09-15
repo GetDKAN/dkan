@@ -7,8 +7,8 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\ValidMetadataFactory;
-use Drupal\metastore\Service;
-use Drupal\Tests\metastore\Unit\ServiceTest;
+use Drupal\metastore\MetastoreService;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +28,7 @@ class DatasetTest extends TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
 
   /**
@@ -36,7 +36,7 @@ class DatasetTest extends TestCase {
    */
   public function testNew() {
     $containerOptions = (new Options())
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
@@ -44,9 +44,9 @@ class DatasetTest extends TestCase {
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
-      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class)
       ->add(ValidMetadataFactory::class, "get", $expected)
-      ->add(Service::class, "post", "1", 'post');
+      ->add(MetastoreService::class, "post", "1", 'post');
 
     $container = $containerChain->getMock();
 
@@ -70,7 +70,7 @@ class DatasetTest extends TestCase {
    */
   public function testUpdate() {
     $containerOptions = (new Options())
-      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
@@ -78,10 +78,10 @@ class DatasetTest extends TestCase {
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
-      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(MetastoreService::class, "getValidMetadataFactory", ValidMetadataFactory::class)
       ->add(ValidMetadataFactory::class, "get", $expected)
-      ->add(Service::class, 'post', new ExistingObjectException())
-      ->add(Service::class, "put", [], 'put');
+      ->add(MetastoreService::class, 'post', new ExistingObjectException())
+      ->add(MetastoreService::class, "put", [], 'put');
 
     $container = $containerChain->getMock();
 

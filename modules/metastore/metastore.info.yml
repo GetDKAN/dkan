@@ -1,9 +1,9 @@
 name: Metastore
 description: Provides integration with the metastore library and creates the "Data" content type for storing metadata.
 type: module
-core_version_requirement: ^9.1
+core_version_requirement: ^9.4 || ^10
 package: DKAN
 dependencies:
   - common
-  - basic_auth
-  - content_moderation
+  - drupal:basic_auth
+  - drupal:content_moderation

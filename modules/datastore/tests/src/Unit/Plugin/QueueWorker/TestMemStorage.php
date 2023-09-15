@@ -11,6 +11,8 @@ use Drupal\common\Storage\Query;
 class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
 {
 
+    protected $schema = [];
+
     protected $storage = [];
 
     public function destruct() { }
@@ -71,21 +73,10 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         return count($this->storage);
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return (object) ['storage' => $this->storage];
-    }
-
-    public static function hydrate(string $json)
-    {
-        $class = new \ReflectionClass(self::class);
-        $instance = $class->newInstanceWithoutConstructor();
-
-        $property = $class->getParentClass()->getProperty('storage');
-        $property->setAccessible(true);
-        $property->setValue($instance, (array) (json_decode($json))->storage);
-
-        return $instance;
     }
 
     /**
