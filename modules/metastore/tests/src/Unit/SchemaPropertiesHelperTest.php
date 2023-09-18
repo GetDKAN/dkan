@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class SchemaPropertiesHelperTest extends TestCase {
 
   /**
-   * Test.
+   * Test to retrieve dataset schema properties.
    */
   public function test() {
     $schema = '{
@@ -43,4 +43,67 @@ class SchemaPropertiesHelperTest extends TestCase {
     $this->assertEquals($expected, $schemaPropertiesHelper->retrieveSchemaProperties());
   }
 
+  /**
+   * Test to retrieve string schema properties.
+   */
+  public function testRetrieveStringSchemaProperties() {
+    $schema = '{
+      "type":"object",
+      "properties":{
+        "@type":{
+          "type":"string",
+          "title":"Metadata Context"
+        },
+        "title":{
+          "type":"string",
+          "title":"Title"
+        },
+        "test":{
+          "type":"string"
+        },
+        "theme": {
+          "type":"array",
+          "items": {
+            "type": "string",
+            "title": "Category"
+          }
+        },
+        "contactPoint":{
+          "type":"object",
+          "properties": {
+            "fn":{
+              "type":"string",
+              "title":"Contact Name"
+            }
+          }
+        },
+        "distribution": {
+          "type":"array",
+          "items": {
+            "type": "object",
+            "title": "Data File",
+            "properties": {
+              "title":{
+                "type":"string",
+                "title":"Title"
+              }
+            }
+          }
+        }
+      }
+    }';
+    $expected = [
+      'dataset_title' => 'Dataset: Title (title)',
+      'dataset_test' => 'Dataset: Test',
+      'contactPoint_fn' => 'ContactPoint: Contact Name (fn)',
+      'distribution_title' => 'Distribution: Title (title)'
+    ];
+
+    $chain = (new Chain($this))
+      ->add(Container::class, 'get', SchemaRetriever::class)
+      ->add(SchemaRetriever::class, 'retrieve', $schema);
+
+    $schemaPropertiesHelper = SchemaPropertiesHelper::create($chain->getMock());
+    $this->assertEquals($expected, $schemaPropertiesHelper->retrieveStringSchemaProperties());
+  }
 }
