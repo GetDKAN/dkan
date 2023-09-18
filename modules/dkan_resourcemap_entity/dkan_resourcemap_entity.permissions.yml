@@ -1,0 +1,3 @@
+administer resourcemap:
+  title: 'Administer resourcemap settings'
+  restrict access: true

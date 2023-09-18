@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Default theme implementation to present a resourcemap entity.
+ *
+ * This template is used when viewing a canonical resourcemap page,
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ *   print a subset such as 'content.label'.
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_resourcemap()
+ */
+#}
+<article{{ attributes }}>
+  {% if view_mode != 'full' %}
+    {{ title_prefix }}
+    {{ title_suffix }}
+  {% endif %}
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</article>

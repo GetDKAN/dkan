@@ -20,7 +20,7 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Database table data objects.
    *
-   * @var \Drupal\harvest\Storage\DatabaseTable
+   * @var \Drupal\harvest\Storage\HarvestDatabaseTable
    */
   private $storage = [];
 
@@ -47,7 +47,7 @@ class DatabaseTableFactory implements FactoryInterface {
    * Protected.
    */
   protected function getDatabaseTable($identifier) {
-    return new DatabaseTable($this->connection, $identifier);
+    return new HarvestDatabaseTable($this->connection, $identifier);
   }
 
 }

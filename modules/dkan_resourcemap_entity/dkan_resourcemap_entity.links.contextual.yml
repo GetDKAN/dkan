@@ -1,0 +1,10 @@
+entity.resourcemap.edit_form:
+  route_name: entity.resourcemap.edit_form
+  group: resourcemap
+  title: Edit
+
+entity.resourcemap.delete_form:
+  route_name: entity.resourcemap.delete_form
+  group: resourcemap
+  title: Delete
+  weight: 10

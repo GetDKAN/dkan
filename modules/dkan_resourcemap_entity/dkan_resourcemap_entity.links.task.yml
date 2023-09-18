@@ -1,0 +1,18 @@
+entity.resourcemap.view:
+  title: 'View'
+  route_name: entity.resourcemap.canonical
+  base_route: entity.resourcemap.canonical
+entity.resourcemap.edit_form:
+  title: 'Edit'
+  route_name: entity.resourcemap.edit_form
+  base_route: entity.resourcemap.canonical
+entity.resourcemap.delete_form:
+  title: 'Delete'
+  route_name: entity.resourcemap.delete_form
+  base_route: entity.resourcemap.canonical
+  weight: 10
+entity.resourcemap.collection:
+  title: 'ResourceMaps'
+  route_name: entity.resourcemap.collection
+  base_route: system.admin_content
+  weight: 10

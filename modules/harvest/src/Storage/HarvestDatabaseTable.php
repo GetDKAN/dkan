@@ -8,7 +8,7 @@ use Drupal\common\Storage\AbstractDatabaseTable;
 /**
  * Harvest database table storage.
  */
-class DatabaseTable extends AbstractDatabaseTable {
+class HarvestDatabaseTable extends AbstractDatabaseTable {
 
   /**
    * Database table identifier.
