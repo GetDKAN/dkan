@@ -8,10 +8,10 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\Storage\Query;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
+use Drupal\datastore\SqlParser\SqlParser;
 use Drupal\datastore\Storage\DatabaseTable;
 use Maquina\StateMachine\Machine;
 use Maquina\StateMachine\MachineOfMachines;
-use Drupal\dkan\SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

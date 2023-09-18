@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan\SqlParser;
+namespace Drupal\datastore\SqlParser;
 
 use Maquina\StateMachine\MachineOfMachines;
 use Maquina\Builder as mb;
