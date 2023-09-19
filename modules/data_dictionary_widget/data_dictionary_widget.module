@@ -27,7 +27,7 @@ function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInter
 function _data_dictionary_data_type_checker($context) {
   if ($context['form_mode'] === "edit") {
     $node = \Drupal::routeMatch()->getParameter('node');
-    if (\Drupal::routeMatch()->getParameter('node') instanceof \Drupal\node\NodeInterface && $node->hasField('field_data_type')) {
+    if ($node instanceof \Drupal\node\NodeInterface && $node->hasField('field_data_type')) {
       return $node->get('field_data_type')->value;
     }
   }
