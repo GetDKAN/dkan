@@ -319,6 +319,37 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertDirectoryExists('public://resources/' . $refUuid);
   }
 
+  /**
+   * Test sanitization of dataset properties.
+   */
+  public function testSanitizeDatasetProperties() {
+    $config = $this->container->get('config.factory');
+    $metastoreSettings = $config->getEditable('metastore.settings');
+
+    // Set HTML allowed on dataset description.
+    $metastoreSettings->set('html_allowed_properties', ['dataset_description'])->save();
+
+    // Title with HTML and an ampersand.
+    $datasetRootedJsonData = $this->getData(123, 'This & That <a onauxclick=prompt(document.domain)>Right click me</a>', ['1.csv']);
+
+    $uuid = $this->getMetastore()->post('dataset', $datasetRootedJsonData);
+
+    $datasetRootedJsonData = $this->getMetastore()->get('dataset', $uuid);
+    $retrievedDataset = json_decode((string) $datasetRootedJsonData);
+
+    $this->assertEquals(
+      $retrievedDataset->title,
+      'This & That <a onauxclick=prompt(document.domain)>Right click me</a>'
+    );
+    $this->assertEquals(
+      $retrievedDataset->description,
+      'This &amp; that description. <a>Right click me</a>.'
+    );
+  }
+
+  /**
+   * Test sanitization of dataset properties.
+   */
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);
@@ -391,7 +422,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $data = new \stdClass();
     $data->title = $title;
-    $data->description = 'Some description.';
+    $data->description = 'This & that description. <a onauxclick=prompt(document.domain)>Right click me</a>.';
     $data->identifier = $identifier;
     $data->accessLevel = 'public';
     $data->modified = '06-04-2020';

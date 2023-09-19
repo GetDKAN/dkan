@@ -33,6 +33,7 @@ services:
     class: \Drupal\metastore\Storage\DataFactory
     arguments:
       - '@entity_type.manager'
+      - '@config.factory'
 
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
