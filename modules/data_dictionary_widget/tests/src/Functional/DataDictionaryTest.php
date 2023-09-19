@@ -7,7 +7,8 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Data_Dictionary_Widget test.
  * 
- * @covers \Drupal\data_dictionary_widget\Plugin\Field\FieldWidget
+ * @covers \Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget
+ * @coversDefaultClass \Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget
  * 
  * @group dkan
  * @group functional
