@@ -24,18 +24,20 @@ class DataDictionaryWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $field_json_metadata = json_decode($items[0]->value);
+    if (!empty($items[0]->value)) {
+      $field_json_metadata = json_decode($items[0]->value);
+    }
 
     $element['identifier'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Identifier'),
-      '#default_value' => $field_json_metadata->identifier ?? '',
+      '#default_value' => isset($field_json_metadata->identifier) ? $field_json_metadata->identifier : '',
     ];
 
     $element['title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Title'),
-      '#default_value' => $field_json_metadata->title ?? '',
+      '#default_value' => isset($field_json_metadata->title) ? $field_json_metadata->title : '',
     ];
 
     // Set the item type to the entity.
