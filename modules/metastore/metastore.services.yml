@@ -112,3 +112,7 @@ services:
     class: \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
     arguments:
       - '@config.factory'
+
+  dkan.metastore.mapping.repository:
+    class: \Drupal\metastore\Entity\ResourceMappingRepository
+    arguments: [ '@entity_type.manager', '@language_manager', '@context.repository' ]
