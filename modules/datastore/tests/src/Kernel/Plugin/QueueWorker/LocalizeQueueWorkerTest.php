@@ -2,9 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
 
-use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
