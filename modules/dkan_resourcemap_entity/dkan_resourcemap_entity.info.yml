@@ -1,5 +1,0 @@
-name: Resourcemap entity
-description: Entiteez
-type: module
-core_version_requirement: ^9.4 || ^10
-package: DKAN

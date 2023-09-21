@@ -1,5 +1,0 @@
-resourcemap.add_form:
-  title: 'Add resourcemap'
-  route_name: entity.resourcemap.add_form
-  appears_on:
-    - entity.resourcemap.collection

@@ -1,54 +1,37 @@
 <?php
 
-namespace Drupal\dkan_resourcemap_entity\Entity;
+namespace Drupal\metastore\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\dkan_resourcemap_entity\ResourcemapInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\metastore\ResourceMappingInterface;
 
 /**
- * Defines the resourcemap entity class.
+ * Defines the resource mapping entity class.
  *
  * @ContentEntityType(
- *   id = "resourcemap",
- *   label = @Translation("ResourceMap"),
- *   label_collection = @Translation("ResourceMaps"),
- *   label_singular = @Translation("resourcemap"),
- *   label_plural = @Translation("resourcemaps"),
+ *   id = "resource_mapping",
+ *   label = @Translation("Resource mapping"),
+ *   label_collection = @Translation("Resource mappings"),
+ *   label_singular = @Translation("resource mapping"),
+ *   label_plural = @Translation("resource mappings"),
  *   label_count = @PluralTranslation(
- *     singular = "@count resourcemaps",
- *     plural = "@count resourcemaps",
+ *     singular = "@count resource mapping",
+ *     plural = "@count resource mappings",
  *   ),
  *   handlers = {
- *     "list_builder" = "Drupal\dkan_resourcemap_entity\ResourcemapListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
- *     "form" = {
- *       "add" = "Drupal\dkan_resourcemap_entity\Form\ResourcemapForm",
- *       "edit" = "Drupal\dkan_resourcemap_entity\Form\ResourcemapForm",
- *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
- *     },
- *     "route_provider" = {
- *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
- *     }
  *   },
  *   base_table = "dkan_metastore_resource_mapper",
- *   admin_permission = "administer resourcemap",
+ *   admin_permission = "administer resource mapping",
  *   entity_keys = {
  *     "id" = "id",
- *     "label" = "id",
- *   },
- *   links = {
- *     "collection" = "/admin/content/resourcemap",
- *     "add-form" = "/resourcemap/add",
- *     "canonical" = "/resourcemap/{resourcemap}",
- *     "edit-form" = "/resourcemap/{resourcemap}/edit",
- *     "delete-form" = "/resourcemap/{resourcemap}/delete",
  *   },
  * )
  */
-class Resourcemap extends ContentEntityBase implements ResourcemapInterface {
+class ResourceMapping extends ContentEntityBase implements ResourceMappingInterface {
 
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $base_fields = parent::baseFieldDefinitions($entity_type);
