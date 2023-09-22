@@ -9,6 +9,7 @@ use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
+ * @covers \Drupal\common\FileFetcher\FileFetcherFactory
  * @covers \Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker
  * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker
  *
