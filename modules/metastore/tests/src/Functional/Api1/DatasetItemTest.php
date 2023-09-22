@@ -11,8 +11,12 @@ class DatasetItemTest extends Api1TestBase {
     return 'api/1/metastore/schemas/dataset/items';
   }
 
-  public function testList() {
-    $response = $this->post($this->getSampleDataset(0), FALSE);
+  public function testGet() {
+    $dataset = $this->getSampleDataset();
+
+    $response = $this->post($dataset, FALSE);
+    $this->assertDatasetGet($dataset);
+
     $this->post($this->getSampleDataset(1));
 
     $responseSchema = $this->spec->paths->{'/api/1/metastore/schemas/{schema_id}/items'}
@@ -22,12 +26,7 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(2, count($responseBody));
     $this->assertTrue(is_object($responseBody[1]));
     $this->assertJsonIsValid($responseSchema, $responseBody);
-  }
 
-  public function testGetItem() {
-    $dataset = $this->getSampleDataset();
-    $this->post($dataset);
-    $this->assertDatasetGet($dataset);
     $datasetId = 'abc-123';
     $response = $this->httpClient->get("$this->endpoint/$datasetId", [
       RequestOptions::HTTP_ERRORS => FALSE,
