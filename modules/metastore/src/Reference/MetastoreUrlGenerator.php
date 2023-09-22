@@ -139,14 +139,10 @@ class MetastoreUrlGenerator {
    */
   public function validateUri(string $uri, ?string $schema = NULL): bool {
     $uri_scheme = StreamWrapperManager::getScheme($uri);
-    $path = substr($uri, strlen(self::DKAN_SCHEME) + 3);
-    $parts = explode('/', $path);
 
     if (
       ($uri_scheme != self::DKAN_SCHEME)
-      || ($uri_scheme != self::DKAN_SCHEME) 
-      || ($parts[0] != 'metastore' || $parts[1] != 'schemas' || $parts[3] != 'items')
-      || ($schema && ($parts[2] != $schema))
+      || $this->validateUriPath($uri)
     ) {
       return FALSE;
     }
@@ -159,6 +155,28 @@ class MetastoreUrlGenerator {
       return FALSE;
     }
 
+  }
+
+  /**
+   * Validate path section of URI to ensure it is a valid path.
+   *
+   * @param string $uri
+   *   URI to validate.
+   * @param null|string $schema
+   *   Optional, schema to look for in the path.
+   *
+   * @return bool
+   *   True if valid.
+   */
+  private function validateUriPath(string $uri, ?string $schema = NULL):bool {
+    $path = substr($uri, strlen(self::DKAN_SCHEME) + 3);
+    $parts = explode('/', $path);
+    if (($parts[0] != 'metastore' || $parts[1] != 'schemas' || $parts[3] != 'items')
+      || ($schema && ($parts[2] != $schema))
+    ) {
+      return FALSE;
+    }
+    return TRUE;
   }
 
   /**
