@@ -490,11 +490,11 @@ class ReferencerTest extends TestCase {
     return [
       [
         (object) ["describedBy" => "http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],
-        "dkan://metastore/schemas/data-dictionary/items/111",
+        "111",
       ],
       [
         (object) ["describedBy" => "dkan://metastore/schemas/data-dictionary/items/111"],
-        "dkan://metastore/schemas/data-dictionary/items/111",
+        "111",
       ],
       [
         (object) ["describedBy" => "s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],
