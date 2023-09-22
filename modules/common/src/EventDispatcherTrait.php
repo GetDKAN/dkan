@@ -7,8 +7,6 @@ use Drupal\common\Events\Event;
 /**
  * Event dispatcher trait.
  *
- * @todo Refactor as service.
- *
  * @codeCoverageIgnore
  */
 trait EventDispatcherTrait {

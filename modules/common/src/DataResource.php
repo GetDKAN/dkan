@@ -244,6 +244,13 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
+   * @return string|null
+   */
+  public function getChecksum(): ?string {
+    return $this->checksum;
+  }
+
+  /**
    * Get a unique identifier for this data resource.
    *
    * @return string

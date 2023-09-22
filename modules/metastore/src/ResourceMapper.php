@@ -6,6 +6,8 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
@@ -32,17 +34,26 @@ class ResourceMapper {
   private $store;
 
   /**
-   * Event dispatcher service.
-   *
-   * @var \Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  private $eventDispatcher;
+  private EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  private EntityStorageInterface $entityStorage;
 
   /**
    * Constructor.
    */
-  public function __construct(DatabaseTableInterface $store) {
+  public function __construct(
+    DatabaseTableInterface $store,
+    EntityTypeManagerInterface $entityTypeManager
+  ) {
     $this->store = $store;
+    $this->entityTypeManager = $entityTypeManager;
+    $this->entityStorage = $this->entityTypeManager
+      ->getStorage('resource_mapping');
   }
 
   /**
@@ -57,13 +68,12 @@ class ResourceMapper {
 
   /**
    * Register a new url for mapping.
-   *
-   * @todo the Resource class currently lives in datastore, we should move it
-   * to a more neutral place.
    */
   public function register(DataResource $resource): bool {
+    // Call filePathExists() so it throws an exception if the path is a
+    // duplicate.
     $this->filePathExists($resource->getFilePath());
-    $this->store->store(json_encode($resource));
+    $this->storeResourceToMapping($resource);
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
 
     return TRUE;
@@ -80,13 +90,13 @@ class ResourceMapper {
     $version = $resource->getVersion();
     // Ensure a source perspective already exists for the resource.
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
-      throw new \Exception("A resource with identifier {$identifier} was not found.");
+      throw new \Exception('A resource with identifier ' . $identifier . ' was not found.');
     }
 
     $perspective = $resource->getPerspective();
     // Ensure the current perspective does not already exist for the resource.
     if ($this->exists($identifier, $perspective, $version)) {
-      throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
+      throw new AlreadyRegistered('A resource with identifier ' . $identifier . ' and perspective ' . $perspective . ' already exists.');
     }
 
     // If the given resource has a local file, generate a checksum for the
@@ -97,7 +107,7 @@ class ResourceMapper {
 
     // Record resource in mapper table and dispatch an event for the
     // resource's registration.
-    $this->store->store(json_encode($resource));
+    $this->storeResourceToMapping($resource);
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
   }
 
@@ -106,8 +116,32 @@ class ResourceMapper {
    */
   public function registerNewVersion(DataResource $resource) {
     $this->validateNewVersion($resource);
-    $this->getStore()->store(json_encode($resource));
+    $this->storeResourceToMapping($resource);
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
+  }
+
+  /**
+   * Store the DataResource to a mapping entity.
+   *
+   * @param \Drupal\common\DataResource $resource
+   *   The data resource.
+   *
+   * @return int
+   *   Either SAVED_NEW or SAVED_UPDATED, depending on the operation performed.
+   *
+   * @todo This illustrates why DataResource should really be the entity.
+   *   Fix this in 3.x.
+   */
+  protected function storeResourceToMapping(DataResource $resource): int {
+    $map = $this->entityStorage->create([
+      'identifier' => $resource->getIdentifier(),
+      'version' => $resource->getVersion(),
+      'filePath' => $resource->getFilePath(),
+      'perspective' => $resource->getPerspective(),
+      'mimeType' => $resource->getMimeType(),
+      'checksum' => $resource->getChecksum(),
+    ]);
+    return $map->save();
   }
 
   /**
@@ -115,19 +149,19 @@ class ResourceMapper {
    */
   protected function validateNewVersion(DataResource $resource) {
     if ($resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-      throw new \Exception("Only versions of source resources are allowed.");
+      throw new \Exception('Only versions of source resources are allowed.');
     }
 
     $identifier = $resource->getIdentifier();
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE)) {
       throw new \Exception(
-        "A resource with identifier {$identifier} was not found.");
+        'A resource with identifier ' . $identifier . ' was not found.');
     }
 
     $version = $resource->getVersion();
     if ($this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new AlreadyRegistered(
-        "A resource with identifier {$identifier} and version {$version} already exists.");
+        'A resource with identifier ' . $identifier . ' and version ' . $version . ' already exists.');
     }
   }
 
@@ -160,14 +194,13 @@ class ResourceMapper {
    */
   public function remove(DataResource $resource) {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
-      $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
-      if ($resource->getPerspective() == 'source') {
-        // Dispatch event to initiate removal of
-        // the the datastore and local file.
+      $mapping = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
+      if ($resource->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
+        // Dispatch event to initiate removal of the datastore and local file.
         $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE, $resource);
       }
       // Remove the resource mapper perspective.
-      $this->store->remove($object->id);
+      $this->entityStorage->delete([$mapping]);
     }
   }
 
@@ -178,10 +211,15 @@ class ResourceMapper {
    *   object || False
    */
   private function getLatestRevision($identifier, $perspective) {
-    $query = $this->getCommonQuery($identifier, $perspective);
-    $query->sortByDescending('version');
-    $items = $this->store->query($query);
-    return reset($items);
+    $map_ids = $this->entityStorage->getQuery()
+      ->condition('identifier', $identifier)
+      ->condition('perspective', $perspective)
+      ->sort('version', 'DESC')
+      ->execute();
+    if ($map_ids) {
+      return $this->entityStorage->load(reset($map_ids));
+    }
+    return NULL;
   }
 
   /**
@@ -191,10 +229,15 @@ class ResourceMapper {
    *   object || False
    */
   private function getRevision($identifier, $perspective, $version) {
-    $query = $this->getCommonQuery($identifier, $perspective);
-    $query->conditionByIsEqualTo('version', $version);
-    $items = $this->store->query($query);
-    return reset($items);
+    $map_ids = $this->entityStorage->getQuery()
+      ->condition('identifier', $identifier)
+      ->condition('perspective', $perspective)
+      ->condition('version', $version)
+      ->execute();
+    if ($map_ids) {
+      return $this->entityStorage->load(reset($map_ids));
+    }
+    return NULL;
   }
 
   /**
@@ -217,7 +260,7 @@ class ResourceMapper {
   }
 
   /**
-   * Check if a file path exists.
+   * Check if a file path exists in any record in the mapping DB.
    *
    * @param string $filePath
    *   The path to check.
@@ -228,15 +271,14 @@ class ResourceMapper {
    * @throws \Drupal\metastore\Exception\AlreadyRegistered
    *   An exception is thrown if the file exists with json info about the
    *   existing resource.
-   *
-   * @todo Refactor this so it's not an exception.
    */
   public function filePathExists($filePath) {
-    $query = new Query();
-    $query->conditionByIsEqualTo('filePath', $filePath, TRUE);
-    $results = $this->getStore()->query($query);
-    if (!empty($results)) {
-      throw new AlreadyRegistered(json_encode($results));
+    $map_ids = $this->entityStorage->getQuery()
+      ->condition('filePath', $filePath)
+      ->execute();
+    if (!empty($map_ids)) {
+      $maps = $this->entityStorage->loadMultiple($map_ids);
+      throw new AlreadyRegistered(json_encode($maps));
     }
     return FALSE;
   }
@@ -247,16 +289,6 @@ class ResourceMapper {
   private function exists($identifier, $perspective, $version = NULL): bool {
     $item = $this->get($identifier, $perspective, $version);
     return isset($item);
-  }
-
-  /**
-   * Get the storage class.
-   *
-   * @return \Drupal\common\Storage\DatabaseTableInterface
-   *   A DB storage service.
-   */
-  public function getStore() {
-    return $this->store;
   }
 
 }
