@@ -14,41 +14,12 @@ class DatasetRevisionTest extends Api1TestBase {
 
   public function testList() {
     $data = $this->getSampleDataset(0);
-    $this->httpClient->post('/api/1/metastore/schemas/dataset/items', [
-      RequestOptions::JSON => $data,
-      RequestOptions::AUTH => $this->auth,
-    ]);
-    $this->httpClient->patch("/api/1/metastore/schemas/dataset/items/{$data->identifier}", [
-      RequestOptions::JSON => ['title' => "Changing title"],
-      RequestOptions::AUTH => $this->auth,
-    ]);
-
-    $response = $this->httpClient->get($this->endpoint, [
-      RequestOptions::AUTH => $this->auth,
-    ]);
-    $responseBody = json_decode($response->getBody());
-    $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals(2, count($responseBody));
-    $this->assertTrue($responseBody[0]->identifier > $responseBody[1]->identifier);
-    $this->assertTrue($responseBody[0]->published);
-
-    // Test a bad dataset ID.
-    $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions";
-    $response = $this->httpClient->get($badDatasetUrl, [
-      RequestOptions::HTTP_ERRORS => FALSE,
-      RequestOptions::AUTH => $this->auth,
-    ]);
-    $this->assertEquals(404, $response->getStatusCode());
-    $responseBody = json_decode($response->getBody());
-    $this->assertStringContainsString("No dataset found", $responseBody->message);
-  }
-
-  public function testGetItem() {
-    $data = $this->getSampleDataset(0);
     $response = $this->httpClient->post('/api/1/metastore/schemas/dataset/items', [
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
     ]);
+
+    // Test individual item endpoint.
     $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $responseBody = json_decode($response->getBody());
@@ -70,6 +41,31 @@ class DatasetRevisionTest extends Api1TestBase {
 
     // Confirm error if we have a non-existant dataset ID.
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions/$listRevision->identifier";
+    $response = $this->httpClient->get($badDatasetUrl, [
+      RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::AUTH => $this->auth,
+    ]);
+    $this->assertEquals(404, $response->getStatusCode());
+    $responseBody = json_decode($response->getBody());
+    $this->assertStringContainsString("No dataset found", $responseBody->message);
+
+    // Modify item.
+    $this->httpClient->patch("/api/1/metastore/schemas/dataset/items/{$data->identifier}", [
+      RequestOptions::JSON => ['title' => "Changing title"],
+      RequestOptions::AUTH => $this->auth,
+    ]);
+
+    $response = $this->httpClient->get($this->endpoint, [
+      RequestOptions::AUTH => $this->auth,
+    ]);
+    $responseBody = json_decode($response->getBody());
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals(2, count($responseBody));
+    $this->assertTrue($responseBody[0]->identifier > $responseBody[1]->identifier);
+    $this->assertTrue($responseBody[0]->published);
+
+    // Test a bad dataset ID.
+    $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions";
     $response = $this->httpClient->get($badDatasetUrl, [
       RequestOptions::HTTP_ERRORS => FALSE,
       RequestOptions::AUTH => $this->auth,
