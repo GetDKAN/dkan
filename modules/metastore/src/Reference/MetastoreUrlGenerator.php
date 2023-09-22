@@ -3,11 +3,11 @@
 namespace Drupal\metastore\Reference;
 
 use Drupal\common\StreamWrapper\DkanStreamWrapper;
-use Drupal\Core\Http\RequestStack;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Convert between local file paths and public file URLs.
@@ -28,7 +28,7 @@ class MetastoreUrlGenerator {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService;
+   * @var \Drupal\metastore\MetastoreService
    */
   protected MetastoreService $metastore;
 
