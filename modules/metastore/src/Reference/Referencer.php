@@ -195,7 +195,7 @@ class Referencer {
 
   /**
    * Normalize an incoming URL to a reference ID.
-   * 
+   *
    * @param string $value
    *   Value for describedBy field, usually a URL.
    *
