@@ -66,7 +66,6 @@ class UrlHostTokenResolver {
     ));
   }
 
-
   /**
    * Substitute the host for local URLs with a custom localhost token.
    *

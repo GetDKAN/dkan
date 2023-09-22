@@ -44,7 +44,7 @@ class MetastoreUrlGenerator {
    *
    * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
    *   The stream wrapper manager.
-   * @param \Drupal\metastore\Service $metastore
+   * @param \Drupal\metastore\MetastoreService $metastore
    *   Metastore service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
@@ -139,17 +139,15 @@ class MetastoreUrlGenerator {
    */
   public function validateUri(string $uri, ?string $schema = NULL): bool {
     $uri_scheme = StreamWrapperManager::getScheme($uri);
-    if ($uri_scheme != self::DKAN_SCHEME) {
-      return FALSE;
-    }
-
     $path = substr($uri, strlen(self::DKAN_SCHEME) + 3);
     $parts = explode('/', $path);
-    if ($parts[0] != 'metastore' || $parts[1] != 'schemas' || $parts[3] != 'items') {
-      return FALSE;
-    }
 
-    if ($schema && ($parts[2] != $schema)) {
+    if (
+      ($uri_scheme != self::DKAN_SCHEME)
+      || ($uri_scheme != self::DKAN_SCHEME) 
+      || ($parts[0] != 'metastore' || $parts[1] != 'schemas' || $parts[3] != 'items')
+      || ($schema && ($parts[2] != $schema))
+    ) {
       return FALSE;
     }
 

@@ -2,16 +2,15 @@
 
 namespace Drupal\metastore\EventSubscriber;
 
-use Drupal\common\Events\Event;
 use Drupal\common\DataResource;
+use Drupal\common\Events\Event;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Logger\LoggerChannelFactory;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\metastore\MetastoreService;
+use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\metastore\Reference\Referencer;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Event subscriber for Metastore.
@@ -23,7 +22,21 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @var \Drupal\Core\Logger\LoggerChannelFactory
    */
-  protected $loggerFactory;
+  protected LoggerChannelFactory $loggerFactory;
+
+  /**
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreService
+   */
+  protected MetastoreService $service;
+
+  /**
+   * Resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected ResourceMapper $resourceMapper;
 
   /**
    * Inherited.

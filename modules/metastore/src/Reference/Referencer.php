@@ -2,20 +2,18 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-
-use Drupal\common\LoggerTrait;
-use Drupal\common\DataResource;
-use Drupal\common\UrlHostTokenResolver;
-use Drupal\metastore\Exception\AlreadyRegistered;
-use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\MetastoreService;
-
 use Contracts\FactoryInterface;
+use Drupal\common\DataResource;
+use Drupal\common\LoggerTrait;
+use Drupal\common\UrlHostTokenResolver;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\metastore\Exception\AlreadyRegistered;
+use Drupal\metastore\MetastoreService;
+use Drupal\metastore\ResourceMapper;
+
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Psr7\StreamWrapper;
 
 /**
  * Metastore referencer service.
@@ -195,6 +193,15 @@ class Referencer {
     return $distribution;
   }
 
+  /**
+   * Normalize an incoming URL to a reference ID.
+   * 
+   * @param string $value
+   *   Value for describedBy field, usually a URL.
+   *
+   * @return string
+   *   Metastore Item ID.
+   */
   protected function normalizeDictionaryValue(string $value): string {
     $incoming_scheme = StreamWrapperManager::getScheme($value);
     $uri = in_array($incoming_scheme, ['http', 'https']) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;

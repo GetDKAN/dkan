@@ -3,18 +3,17 @@
 namespace Drupal\datastore\Service;
 
 use Contracts\FactoryInterface;
-use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
+use Drupal\common\EventDispatcherTrait;
+use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\AlreadyRegistered;
-use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
-use Drupal\common\EventDispatcherTrait;
 
 /**
  * Resource localizer.
