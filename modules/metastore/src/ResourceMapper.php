@@ -170,8 +170,8 @@ class ResourceMapper {
    */
   public function get(string $identifier, $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version = NULL): ?DataResource {
     $data = $this->getFull($identifier, $perspective, $version);
-    if ($data !== FALSE) {
-      return DataResource::createFromRecord($data);
+    if ($data) {
+      return DataResource::createFromEntity($data);
     }
     return NULL;
   }
@@ -233,6 +233,7 @@ class ResourceMapper {
       ->condition('identifier', $identifier)
       ->condition('perspective', $perspective)
       ->condition('version', $version)
+      ->accessCheck(FALSE)
       ->execute();
     if ($map_ids) {
       return $this->entityStorage->load(reset($map_ids));
@@ -275,6 +276,7 @@ class ResourceMapper {
   public function filePathExists($filePath) {
     $map_ids = $this->entityStorage->getQuery()
       ->condition('filePath', $filePath)
+      ->accessCheck(FALSE)
       ->execute();
     if (!empty($map_ids)) {
       $maps = $this->entityStorage->loadMultiple($map_ids);
