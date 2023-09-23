@@ -29,6 +29,8 @@ class ImportQueueWorkerTest extends KernelTestBase {
   ];
 
   public function testErrorPath() {
+    $this->installEntitySchema('resource_mapping');
+
     // The result we'll mock to come from the datastore service.
     $result = new Result();
     $result->setStatus(Result::ERROR);
@@ -79,6 +81,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
   }
 
   public function testRequeue() {
+    $this->installEntitySchema('resource_mapping');
     // The result we'll mock to come from the datastore service.
     $result = new Result();
     $result->setStatus(Result::STOPPED);
@@ -166,6 +169,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
    * @covers ::processItem
    */
   public function testProcessItemImportException() {
+    $this->installEntitySchema('resource_mapping');
     // Mock the logger so we can tell when the error occurs.
     $logger = $this->getMockForAbstractClass(LoggerChannelInterface::class);
     // We expect an error to be logged, and we set an expectation for the message.

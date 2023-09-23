@@ -31,7 +31,7 @@ use Drupal\metastore\ResourceMappingInterface;
  *   },
  * )
  */
-class ResourceMapping extends ContentEntityBase implements ResourceMappingInterface {
+class ResourceMapping extends ContentEntityBase implements ResourceMappingInterface, \JsonSerializable {
 
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $base_fields = parent::baseFieldDefinitions($entity_type);
@@ -60,6 +60,19 @@ class ResourceMapping extends ContentEntityBase implements ResourceMappingInterf
       ->setReadOnly(FALSE)
       ->setTranslatable(FALSE);
     return $base_fields;
+  }
+
+  #[\ReturnTypeWillChange]
+  public function jsonSerialize() {
+    return (object) [
+      'id' => $this->get('id')->value,
+      'identifier' => $this->get('identifier')->value,
+      'version' => $this->get('version')->value,
+      'filepath' => $this->get('filePath')->value,
+      'perspective' => $this->get('perspective')->value,
+      'mimetype' => $this->get('mimeType')->value,
+      'checksum' => $this->get('checksum')->value,
+    ];
   }
 
 }
