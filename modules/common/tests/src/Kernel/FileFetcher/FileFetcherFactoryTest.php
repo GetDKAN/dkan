@@ -97,9 +97,6 @@ class FileFetcherFactoryTest extends KernelTestBase {
    * @covers ::getInstance
    */
   public function testGetInstance($always_use_existing_local_perspective, $expected_class) {
-    $this->markTestIncomplete('coming back to this...');
-    $this->installConfig(['common']);
-
     // Config for overwrite.
     $this->installConfig(['common']);
     $config = $this->config('common.settings');
@@ -110,12 +107,12 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $factory = $this->container->get('dkan.common.file_fetcher');
 
     $instance = $factory->getInstance('id', ['filePath' => '/tmp/thingie.csv']);
-    $instance->setTimeLimit(5);
-    $ref_get_processor = new \ReflectionMethod($instance, 'getProcessor');
-    $ref_get_processor->setAccessible(TRUE);
-    $processor = $ref_get_processor->invoke($instance);
 
-    $this->assertInstanceOf($expected_class, $processor);
+    $ref_get_processors = new \ReflectionMethod($instance, 'getProcessors');
+    $ref_get_processors->setAccessible(TRUE);
+    $processors = $ref_get_processors->invoke($instance);
+
+    $this->assertInstanceOf($expected_class, $processors[$expected_class] ?? 'nope');
   }
 
 }
