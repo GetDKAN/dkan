@@ -5,11 +5,11 @@ namespace Drupal\Tests\harvest\Unit\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Schema;
 use MockChain\Chain;
-use Drupal\harvest\Storage\HarvestDatabaseTable;
+use Drupal\harvest\Storage\DatabaseTable;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \Drupal\harvest\Storage\HarvestDatabaseTable
+ * @coversDefaultClass \Drupal\harvest\Storage\DatabaseTable
  * @group harvest
  */
 class DatabaseTableTest extends TestCase {
@@ -23,7 +23,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Schema::class, 'tableExists', FALSE)
       ->getMock();
 
-    $databaseTable = new HarvestDatabaseTable($connection, "blah");
+    $databaseTable = new DatabaseTable($connection, "blah");
     $this->assertTrue(is_object($databaseTable));
   }
 

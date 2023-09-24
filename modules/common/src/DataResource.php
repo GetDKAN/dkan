@@ -135,14 +135,17 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Create a DataResource object from a database record.
+   * Create a DataResource object from a Drupal entity.
    *
-   * @param object $mapping
-   *   Data resource record from the database. Must contain these properties:
-   *   'filePath', 'mimeType', 'perspective', 'version'.
+   * @param \Drupal\metastore\Entity\ResourceMapping $mapping
+   *   A resource_mapping entity.
    *
    * @return \Drupal\common\DataResource
    *   DataResource object.
+   *
+   * @todo DataResource really should be the entity, but because it's used in
+   *   so many different ways within the codebase, changing it would require
+   *   even more refactoring. Fix this in 3.x.
    */
   public static function createFromEntity(ResourceMapping $mapping): DataResource {
     $resource = new static(

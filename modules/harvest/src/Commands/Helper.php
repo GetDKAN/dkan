@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest\Commands;
 
-use Drupal\harvest\Storage\HarvestDatabaseTable;
+use Drupal\harvest\Storage\DatabaseTable;
 use Harvest\ETL\Factory;
 use Harvest\Harvester;
 use Harvest\ResultInterpreter;
@@ -35,7 +35,7 @@ trait Helper {
    */
   private function getPlanStorage() {
     $connection = \Drupal::service('database');
-    return new HarvestDatabaseTable($connection, "harvest_plans");
+    return new DatabaseTable($connection, "harvest_plans");
   }
 
   /**
@@ -43,7 +43,7 @@ trait Helper {
    */
   private function getStorage($id, $type) {
     $connection = \Drupal::service('database');
-    return new HarvestDatabaseTable($connection, "harvest_{$id}_{$type}");
+    return new DatabaseTable($connection, "harvest_{$id}_{$type}");
   }
 
   /**
