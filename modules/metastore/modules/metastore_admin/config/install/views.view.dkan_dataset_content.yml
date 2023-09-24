@@ -1,4 +1,3 @@
-uuid: c0964d9a-bd75-400f-9c1f-e894ad143951
 langcode: en
 status: true
 dependencies:
@@ -9,8 +8,6 @@ dependencies:
     - content_moderation
     - node
     - user
-_core:
-  default_config_hash: HCA18uEyP4cck_d6itshxQD0dlQHcZZ0ZAC6HGZEM8E
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
