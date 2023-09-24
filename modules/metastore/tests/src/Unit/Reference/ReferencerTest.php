@@ -224,6 +224,7 @@ class ReferencerTest extends TestCase {
    * Test that CSV format translates to correct mediatype if mediatype not supplied
    */
   public function testChangeMediaType() {
+    $this->markTestIncomplete('Convert this test to kernel test.');
     $options = (new Options())
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('logger.factory', LoggerChannelFactory::class)

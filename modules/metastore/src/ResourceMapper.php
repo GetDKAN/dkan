@@ -215,6 +215,7 @@ class ResourceMapper {
       ->condition('identifier', $identifier)
       ->condition('perspective', $perspective)
       ->sort('version', 'DESC')
+      ->accessCheck(FALSE)
       ->execute();
     if ($map_ids) {
       return $this->entityStorage->load(reset($map_ids));
@@ -280,7 +281,8 @@ class ResourceMapper {
       ->execute();
     if (!empty($map_ids)) {
       $maps = $this->entityStorage->loadMultiple($map_ids);
-      throw new AlreadyRegistered(json_encode($maps));
+      throw (new AlreadyRegistered(json_encode($maps)))
+        ->setAlreadyRegistered($maps);
     }
     return FALSE;
   }
