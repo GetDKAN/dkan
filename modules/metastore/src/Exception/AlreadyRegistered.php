@@ -10,6 +10,8 @@ namespace Drupal\metastore\Exception;
 class AlreadyRegistered extends \Exception {
 
   /**
+   * An array of entities that have already been registered in the mapping.
+   *
    * @var \Drupal\Core\Entity\EntityInterface[]
    */
   protected array $alreadyRegistered;
@@ -31,6 +33,7 @@ class AlreadyRegistered extends \Exception {
    * Get the resource mapping entities that were already registered.
    *
    * @return \Drupal\Core\Entity\EntityInterface[]
+   *   The entities that were already registered.
    */
   public function getAlreadyRegistered(): array {
     return $this->alreadyRegistered;

@@ -34,11 +34,15 @@ class ResourceMapper {
   private $store;
 
   /**
+   * Entity type manager service.
+   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * Entity storage service.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   private EntityStorageInterface $entityStorage;
@@ -240,25 +244,6 @@ class ResourceMapper {
       return $this->entityStorage->load(reset($map_ids));
     }
     return NULL;
-  }
-
-  /**
-   * Private.
-   */
-  private function getCommonQuery($identifier, $perspective) {
-    $query = new Query();
-    $query->properties = [
-      'identifier',
-      'version',
-      'perspective',
-      'filePath',
-      'mimeType',
-      'id',
-    ];
-    $query->conditionByIsEqualTo('identifier', $identifier);
-    $query->conditionByIsEqualTo('perspective', $perspective);
-    $query->limitTo(1);
-    return $query;
   }
 
   /**

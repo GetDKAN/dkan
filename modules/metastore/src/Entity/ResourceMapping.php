@@ -33,6 +33,9 @@ use Drupal\metastore\ResourceMappingInterface;
  */
 class ResourceMapping extends ContentEntityBase implements ResourceMappingInterface, \JsonSerializable {
 
+  /**
+   * {@inheritDoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $base_fields = parent::baseFieldDefinitions($entity_type);
     $base_fields['identifier'] = BaseFieldDefinition::create('string')
@@ -62,6 +65,9 @@ class ResourceMapping extends ContentEntityBase implements ResourceMappingInterf
     return $base_fields;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return (object) [

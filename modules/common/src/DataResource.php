@@ -271,7 +271,11 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
+   * Get the checksum for this resource.
+   *
    * @return string|null
+   *   The checksum for the local file perspective. NULL if it has not yet been
+   *   computed, or if this resource is a different perspective.
    */
   public function getChecksum(): ?string {
     return $this->checksum;
