@@ -4,7 +4,6 @@ namespace Drupal\metastore;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
