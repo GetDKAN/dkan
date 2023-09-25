@@ -251,7 +251,33 @@ description or notes column.
          ]
        }
 
+How to return a filtered list of datasets using the DKAN search endpoint.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+The DKAN search endpoint ( https://{site-domain}/api/1/search ) can be used to return a filtered list of datasets - for
+example all datasets tagged with a given keyword or where the title and/or description contain a given search term.
+
+Filter options are passed as query parameters to the endpoint. For example, to find all the datasets with a theme of
+'Supplier directory', you would use:
+
+https://{site-domain}/api/1/search?theme=Supplier%20directory
+
+Note that '%20' is inserted for the spaces between words in a theme or keyword. Separate multiple query parameters with
+ampersands.
+
+The default result limit - if page-size is not provided - is 10. The API will not return more than 100 results at one
+time. If you want the next batch of results, you can increment the page number by passing the 'page' query parameter.
+E.g.
+
+https://{site-domain}/api/1/search?page-size=100&page=2
+
+Search endpoint options include:
+
+  -  page-size: how many results to return; maximum number supported is 100; defaults to 10 if not specified
+  -  page: which page of results (divided by page-size) to return; defaults to 1 if not specified
+  -  theme: return datasets associated with a given theme
+  -  keyword: return datasets associated with a given keyword/tag
+  -  fulltext: return datasets that contain a given text string in the title or description of the dataset
 
 Authenticated API Examples
 --------------------------
