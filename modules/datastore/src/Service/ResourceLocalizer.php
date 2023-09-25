@@ -335,4 +335,45 @@ class ResourceLocalizer {
     return $this->drupalFiles->getFileSystem();
   }
 
+  /**
+   * Prepare the local perspective for a resource.
+   *
+   * Will do the following:
+   * - Prepare the directory in the file system.
+   * - Add the local_url perspective to the resource mapper. Note this is
+   *   missing the file checksum.
+   * - Display the info necessary to perform an external file fetch.
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @return array
+   *   Various localization paths.
+   */
+  public function prepareLocalized(string $identifier): array {
+    $info = [];
+    if ($resource = $this->resourceMapper->get($identifier)) {
+      $public_dir = $this->getPublicLocalizedDirectory($resource);
+      $localized_filepath = $this->localizeFilePath($resource);
+      $localized_resource = $resource->createNewPerspective(
+        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $localized_filepath
+      );
+      try {
+        $this->resourceMapper->registerNewPerspective($localized_resource);
+      }
+      catch (AlreadyRegistered $e) {
+        // Catch the already-registered exception.
+      }
+      $file_system = $this->getFileSystem();
+      $info = [
+        'source' => $resource->getFilePath(),
+        'path_uri' => $public_dir,
+        'path' => $file_system->realpath($public_dir),
+        'file_uri' => $localized_filepath,
+        'file' => $file_system->realpath($localized_filepath),
+      ];
+    }
+    return $info;
+  }
+
 }

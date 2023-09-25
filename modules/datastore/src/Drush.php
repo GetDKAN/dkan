@@ -6,7 +6,6 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\ResourceMapper;
@@ -65,6 +64,7 @@ class Drush extends DrushCommands {
     ResourceLocalizer $resourceLocalizer,
     ResourceMapper $resourceMapper
   ) {
+    parent::__construct();
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
     $this->postImport = $postImport;
@@ -241,35 +241,10 @@ class Drush extends DrushCommands {
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
    *
    * @command dkan:datastore:prepare-localized
-   *
-   * @todo Move all this to the ResourceLocalizer so we're responsible for test
-   *   coverage.
    */
   public function prepareLocalized(string $identifier) {
-    if ($resource = $this->resourceMapper->get($identifier)) {
-      // ResourceLocalizer will create the public directory here.
-      $public_dir = $this->resourceLocalizer->getPublicLocalizedDirectory($resource);
-      $localized_filepath = $this->resourceLocalizer->localizeFilePath($resource);
-      $localized_resource = $resource->createNewPerspective(
-        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $localized_filepath
-      );
-      try {
-        $this->resourceMapper->registerNewPerspective($localized_resource);
-      }
-      catch (AlreadyRegistered $e) {
-        // Catch the already-registered exception so we can continue to show
-        // the file info to the user.
-        $this->logger()->warning($e->getMessage());
-      }
-      // @todo inject file system service.
-      $file_system = $this->resourceLocalizer->getFileSystem();
-      $info = [
-        'source' => $resource->getFilePath(),
-        'path_uri' => $public_dir,
-        'path' => $file_system->realpath($public_dir),
-        'file_uri' => $localized_filepath,
-        'file' => $file_system->realpath($localized_filepath),
-      ];
+    $info = $this->resourceLocalizer->prepareLocalized($identifier);
+    if ($info) {
       $this->output()->writeln(json_encode($info, JSON_PRETTY_PRINT));
       return DrushCommands::EXIT_SUCCESS;
     }

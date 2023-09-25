@@ -85,13 +85,12 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
    */
   public function processItem($data) {
     $identifier = $data['identifier'] ?? NULL;
-    $version = $data['data'] ?? NULL;
+    $version = $data['version'] ?? NULL;
 
     // LocalizeTask() must return Result::DONE if the resource is already
     // localized.
     $result = $this->resourceLocalizer->localizeTask($identifier, $version, FALSE);
 
-    // @todo Make result handling more sophisticated.
     if ($result->getStatus() !== Result::DONE) {
       $message = 'Localization of resource ' . $identifier . ': ' . $result->getError();
       $this->logger->notice($message);
