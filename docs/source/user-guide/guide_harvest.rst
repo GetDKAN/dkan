@@ -3,10 +3,54 @@ How to create a harvest
 
 Use drush commands to :term:`Harvest` data into your catalog.
 
+Create a harvest JSON file
+__________________________
+
+Normally you would use the data.json provided by another data catalog and ‘harvest’ the datasets. But harvests can also
+be used for bulk management of datasets from a manually generated data.json file.
+
+Example data.json file with various placeholders:
+
+    .. code-block::
+
+    {
+      "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+      "@id": "https://site-domain.com/data.json",
+      "@type": "dcat:Catalog",
+      "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+      "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+      "dataset": [
+        {
+          "@type": "dcat:Dataset",
+          "identifier": "my-universally-unique-identifier",
+          "modified": "2023-10-01",
+          "accessLevel": "public",
+          "title": "Example Dataset Title",
+          "description": "<p>Example dataset description text.</p>",
+          "keyword": [
+            "Example keyword"
+          ]
+          "distribution": [
+            {
+              "@type": "dcat:Distribution",
+              "downloadURL": "https://site-domain.com/sites/default/files/Bike_Lane.csv",
+              "mediaType": "text/csv"
+            }
+          ]
+        }
+      ]
+    }
+
+The above example contains all the required properties for a dataset if using the default schema provided with DKAN. The
+default schema requires a distribution and at least one keyword. The identifier must be a unique string within the given
+catalog. You can find descriptions of the above properties and additional optional properties by viewing the example
+dataset schema that ships with DKAN at schema/collections/dataset.json.
+
 Register a harvest
 ------------------
 
   Register a new :term:`Harvest Plan`.
+
   - Create a unique name as the **identifier** of your harvest
   - Provide the full URI for the data source
 
