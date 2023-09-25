@@ -41,7 +41,10 @@ function dkan_js_frontend_library_info_build() {
   }
   foreach(glob(\Drupal::root() . $css_path . '*.css') as $full_path) {
     $basename = basename($full_path);
-    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename] = [];
+    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename] = [
+      "minified" => $minified ? $minified : true,
+      "preprocess" => $preprocess ? $preprocess : false,
+    ];
   }
   $libraries['dkan_js_frontend']['dependencies'] = [
     'core/drupal',
