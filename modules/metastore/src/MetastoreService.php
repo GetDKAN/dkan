@@ -233,12 +233,14 @@ class MetastoreService implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param bool $published
+   *   If true, retrieve only published revision.
    *
    * @return \RootedData\RootedJsonData
    *   The json data.
    */
-  public function get(string $schema_id, string $identifier): RootedJsonData {
-    $json_string = $this->getStorage($schema_id)->retrieve($identifier, TRUE);
+  public function get(string $schema_id, string $identifier, bool $published = TRUE): RootedJsonData {
+    $json_string = $this->getStorage($schema_id)->retrieve($identifier, $published);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);

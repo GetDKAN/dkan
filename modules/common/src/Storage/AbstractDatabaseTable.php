@@ -5,6 +5,7 @@ namespace Drupal\common\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Core\Database\SchemaObjectExistsException;
 
 /**
  * Base class for database storage methods.
@@ -123,8 +124,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
       if (count($fields) != count($data)) {
         throw new \Exception(
-          "The number of fields and data given do not match: fields - "
-            . json_encode($fields) . " data - " . json_encode($data)
+          'The number of fields and data given do not match: fields - '
+            . json_encode($fields) . ' data - ' . json_encode($data)
         );
       }
 
@@ -162,8 +163,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     foreach ($data as $datum) {
       $datum = $this->prepareData($datum);
       if (count($fields) != count($datum)) {
-        throw new \Exception("The number of fields and data given do not match: fields - " .
-          json_encode($fields) . " data - " . json_encode($datum));
+        throw new \Exception('The number of fields and data given do not match: fields - ' .
+          json_encode($fields) . ' data - ' . json_encode($datum));
       }
       $q->values($datum);
     }
@@ -190,7 +191,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();
-    $this->connection->delete($tableName)
+    return $this->connection->delete($tableName)
       ->condition($this->primaryKey(), $id)
       ->execute();
   }
@@ -237,7 +238,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Create a minimal error message that does not leak database information.
    */
-  private function sanitizedErrorMessage(string $unsanitizedMessage) {
+  protected function sanitizedErrorMessage(string $unsanitizedMessage) {
     // Insert portions of exception messages you want caught here.
     $messages = [
       // Portion of the message => User friendly message.
@@ -247,22 +248,31 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     ];
     foreach ($messages as $portion => $message) {
       if (strpos($unsanitizedMessage, $portion) !== FALSE) {
-        return $message . ".";
+        return $message . '.';
       }
     }
-    return "Database internal error.";
+    return 'Database internal error.';
   }
 
   /**
    * Create the table in the db if it does not yet exist.
+   *
+   * @throws \Exception
+   *   Throws an exception if the schema was not already set.
    */
   protected function setTable() {
-    if (!$this->tableExist($this->getTableName())) {
-      if ($this->schema) {
-        $this->tableCreate($this->getTableName(), $this->schema);
+    if (!$this->tableExist($table_name = $this->getTableName())) {
+      if ($schema = $this->schema) {
+        try {
+          $this->tableCreate($table_name, $schema);
+        }
+        catch (SchemaObjectExistsException $e) {
+          // Table already exists, which is totally OK. Other throwables find
+          // their way out to the caller.
+        }
       }
       else {
-        throw new \Exception("Could not instantiate the table due to a lack of schema.");
+        throw new \Exception('Could not instantiate the table due to a lack of schema.');
       }
     }
   }
@@ -281,15 +291,16 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Check for existence of a table name.
    */
-  protected function tableExist($table_name) {
-    $exists = $this->connection->schema()->tableExists($table_name);
-    return $exists;
+  protected function tableExist($table_name): bool {
+    return $this->connection->schema()->tableExists($table_name);
   }
 
   /**
    * Create a table given a name and schema.
+   *
+   * @throws \Throwable
    */
-  private function tableCreate($table_name, $schema) {
+  protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
 
@@ -300,7 +311,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Set the schema using the existing database table.
    */
   protected function setSchemaFromTable() {
-    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
+    $fields_info = $this->connection->query('DESCRIBE {' . $this->getTableName() . '}')->fetchAll();
     if (empty($fields_info)) {
       return;
     }
@@ -327,7 +338,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $header = $fields;
     foreach ($header as $field) {
       $schema['fields'][$field] = [
-        'type' => "text",
+        'type' => 'text',
       ];
     }
     return $schema;
@@ -340,10 +351,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $cleanSchema = $this->schema;
     $cleanSchema['fields'] = [];
     foreach ($this->schema['fields'] as $field => $info) {
-      $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
+      $new = preg_replace('/[^A-Za-z0-9_ ]/', '', $field);
       $new = trim($new);
       $new = strtolower($new);
-      $new = str_replace(" ", "_", $new);
+      $new = str_replace(' ', '_', $new);
 
       $mysqlMaxColLength = 64;
       if (strlen($new) > $mysqlMaxColLength) {

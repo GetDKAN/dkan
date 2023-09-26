@@ -26,7 +26,7 @@ commands:
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
-        default: '7.4'
+        default: '8.0'
         type: string
       addon_branch:
         description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
@@ -52,10 +52,6 @@ commands:
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
             # Modify config to use our PHP version.
             sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
-            # Clear out omit_containers.
-            sed -i '/omit_containers/d' .ddev/config.dkan.yaml
-            # Don't load the DBA container.
-            echo "omit_containers: [dba]" >> .ddev/config.dkan.yaml
             ddev restart
             ddev status
             ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
@@ -254,6 +250,11 @@ workflows:
            parameters:
              dkan_recommended_branch: [ '10.0.x-dev']
              php_version: [ '8.1' ]
+      - phpunit:
+          matrix:
+            parameters:
+              dkan_recommended_branch: [ '10.1.x-dev' ]
+              php_version: [ '8.1' ]
   upgrade_and_test:
     jobs:
       - cypress:

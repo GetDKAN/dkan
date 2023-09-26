@@ -3,6 +3,8 @@
 namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\Core\Cache\Context\CacheContextsManager;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -38,6 +40,18 @@ class MetastoreControllerTest extends TestCase {
    * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
+
+  /**
+   * List html allowed schema properties properties.
+   *
+   * @var string[]
+   */
+  public const HTML_ALLOWED_PROPERTIES = [
+    'dataset_description' => 'dataset_description',
+    'distribution_description' => 'distribution_description',
+    'dataset_title' => 0,
+    'dataset_identifier' => 0,
+  ];
 
   protected function setUp(): void {
     parent::setUp();
@@ -111,7 +125,13 @@ class MetastoreControllerTest extends TestCase {
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', NULL)
       ->getMock();
-    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock);
+    $immutableConfig = (new Chain($this))
+      ->add(ImmutableConfig::class, 'get', self::HTML_ALLOWED_PROPERTIES)
+      ->getMock();
+    $configFactoryMock = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->getMock();
+    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock, $configFactoryMock);
     $container = $this->getCommonMockChain()
       ->add(MetastoreService::class, 'getStorage', $nodeDataMock)
       ->getMock();

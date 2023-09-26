@@ -102,11 +102,19 @@
     <div{{ content_attributes }}>
         {% if not page %}
         <p>Last updated: {{ dataset.modified|date("m/d/Y") }}</p>
-        {{ dataset.description | raw }}
+        {{ dataset.description | drupal_escape }}
         {% endif %}
         {% if page %}
         <p>Last updated: {{ dataset.modified|date("m/d/Y") }}</p>
-        {{ dataset.description | raw }}
+        {{ dataset.description | drupal_escape }}
+        {% if dataset.distributions|length > 0 %}
+            <h2>Downloads</h2>
+            <ul>
+            {% for distribution in dataset.distributions %}
+                <li><a href="{{distribution.downloadURL}}">{{distribution.title}} ({{distribution.format}})</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
         {% if dataset.themes|length > 1 %}
             <h2>Themes</h2>
         {% elseif dataset.themes|length == 1 %}
@@ -118,12 +126,6 @@
                 <li>{{ theme }}</li>
             {% endfor %}</ul>
         {% endif %}
-        <h2>Downloads</h2>
-        <ul>
-        {% for distribution in dataset.distributions %}
-            <li><a href="{{distribution.downloadURL}}">{{distribution.title}} ({{distribution.format}})</a></li>
-        {% endfor %}
-        </ul>
         {% if dataset.keywords|length > 1 %}
             <h2>Keywords</h2>
         {% elseif dataset.keywords|length == 1 %}

@@ -12,3 +12,5 @@ User Guide
    guide_metastore_properties
    guide_harvest
    guide_queues
+   guide_local_files
+   guide_revisions

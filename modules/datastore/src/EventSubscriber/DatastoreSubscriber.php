@@ -9,6 +9,7 @@ use Drupal\common\Events\Event;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
@@ -137,10 +138,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The event object containing the resource object.
    */
   public function drop(Event $event) {
-    /** @var \Drupal\common\Events\Event $event */
     $resource = $event->getData();
-    $ref_uuid = $resource->getUniqueIdentifier();
-    $id = md5(str_replace('source', 'local_file', $ref_uuid));
+    $id = md5(str_replace(DataResource::DEFAULT_SOURCE_PERSPECTIVE, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource->getUniqueIdentifier()));
     try {
       $this->service->drop($resource->getIdentifier(), $resource->getVersion());
       $this->loggerFactory->get('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);

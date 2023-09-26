@@ -5,6 +5,7 @@ namespace Drupal\metastore\LifeCycle;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\MetastoreItemInterface;
@@ -15,7 +16,14 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 
 /**
- * Data.
+ * Abstraction of logic used in entity hooks.
+ *
+ * The LifeCycle class contains the logic that is used by our entity hooks, to
+ * make changes to the metadata at the time of save or load. To prepare for a
+ * move to a custom entity, we abstract out any code that is specific to a
+ * certain entity type, bundle or field name, and replace these references with
+ * methods that are defined in an interface to be shared with future
+ * storage systems.
  */
 class LifeCycle {
   use EventDispatcherTrait;
@@ -73,6 +81,13 @@ class LifeCycle {
   protected $queueFactory;
 
   /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactory
+   */
+  protected $configFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -82,7 +97,8 @@ class LifeCycle {
     ResourceMapper $resourceMapper,
     DateFormatter $dateFormatter,
     DataFactory $dataFactory,
-    QueueFactory $queueFactory
+    QueueFactory $queueFactory,
+    ConfigFactory $configFactory
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
@@ -91,6 +107,7 @@ class LifeCycle {
     $this->dateFormatter = $dateFormatter;
     $this->dataFactory = $dataFactory;
     $this->queueFactory = $queueFactory;
+    $this->configFactory = $configFactory;
   }
 
   /**
@@ -98,7 +115,7 @@ class LifeCycle {
    *
    * @param string $stage
    *   Stage or hook name for execution.
-   * @param Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item object.
    */
   public function go($stage, MetastoreItemInterface $data) {
@@ -227,7 +244,8 @@ class LifeCycle {
     }
 
     $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = \resource_mapper_display();
+    $perspective = $this->configFactory->get('metastore.settings')->get('resource_perspective_display')
+      ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE;
     $resource = $sourceResource;
 
     if (

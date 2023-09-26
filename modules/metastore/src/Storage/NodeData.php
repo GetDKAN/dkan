@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore\Storage;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
@@ -12,14 +13,14 @@ class NodeData extends Data {
   /**
    * NodeData constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory) {
     $this->entityType = 'node';
     $this->bundle = 'data';
     $this->bundleKey = "type";
     $this->labelKey = "title";
     $this->schemaIdField = "field_data_type";
     $this->metadataField = "field_json_metadata";
-    parent::__construct($schemaId, $entityTypeManager);
+    parent::__construct($schemaId, $entityTypeManager, $config_factory);
   }
 
   /**

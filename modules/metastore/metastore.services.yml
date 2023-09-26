@@ -16,6 +16,7 @@ services:
       - '@date.formatter'
       - '@dkan.metastore.storage'
       - '@queue'
+      - '@config.factory'
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
@@ -32,12 +33,14 @@ services:
     class: \Drupal\metastore\Storage\DataFactory
     arguments:
       - '@entity_type.manager'
+      - '@config.factory'
 
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.resource_mapper'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
 
