@@ -40,7 +40,9 @@ How to run a simple query against a dataset.
 
 To pull dataset data via the API, the recommended method is to use the datastore query endpoint.
 
-https://{site-domain}/api/1/datastore/query/{datasetID}/{index}
+    .. code-block::
+
+      https://{site-domain}/api/1/datastore/query/{datasetID}/{index}
 
 The datastore query endpoint takes two arguments: the dataset ID, which can be obtained from the URL of
 the dataset and does not change between data refreshes, and the index of the distribution.
@@ -71,7 +73,11 @@ Doing so results in the following query string:
       conditions[0][property]=product_category_code&conditions[0][value]=022&conditions[0][operator]==
 
 The query string can be appended to the datastore query endpoint url and return results directly in the browser.
-i.e. https://{site-domain}/api/1/datastore/query/{datasetID}/{index}?{queryString}
+i.e.
+
+    .. code-block::
+
+      https://{site-domain}/api/1/datastore/query/{datasetID}/{index}?{queryString}
 
 Additional query options include:
 

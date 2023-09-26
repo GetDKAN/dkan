@@ -13,33 +13,33 @@ Example data.json file with various placeholders:
 
     .. code-block::
 
-    {
-      "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
-      "@id": "https://site-domain.com/data.json",
-      "@type": "dcat:Catalog",
-      "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
-      "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
-      "dataset": [
-        {
-          "@type": "dcat:Dataset",
-          "identifier": "my-universally-unique-identifier",
-          "modified": "2023-10-01",
-          "accessLevel": "public",
-          "title": "Example Dataset Title",
-          "description": "<p>Example dataset description text.</p>",
-          "keyword": [
-            "Example keyword"
-          ]
-          "distribution": [
-            {
-              "@type": "dcat:Distribution",
-              "downloadURL": "https://site-domain.com/sites/default/files/Bike_Lane.csv",
-              "mediaType": "text/csv"
-            }
-          ]
-        }
-      ]
-    }
+      {
+        "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+        "@id": "https://site-domain.com/data.json",
+        "@type": "dcat:Catalog",
+        "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+        "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+        "dataset": [
+          {
+            "@type": "dcat:Dataset",
+            "identifier": "my-universally-unique-identifier",
+            "modified": "2023-10-01",
+            "accessLevel": "public",
+            "title": "Example Dataset Title",
+            "description": "<p>Example dataset description text.</p>",
+            "keyword": [
+               "Example keyword"
+            ]
+            "distribution": [
+              {
+                "@type": "dcat:Distribution",
+                "downloadURL": "https://site-domain.com/sites/default/files/Bike_Lane.csv",
+                "mediaType": "text/csv"
+              }
+            ]
+          }
+        ]
+      }
 
 The above example contains all the required properties for a dataset if using the default schema provided with DKAN. The
 default schema requires a distribution and at least one keyword. The identifier must be a unique string within the given
