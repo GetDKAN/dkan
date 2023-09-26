@@ -69,7 +69,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
 
     // Add identifier for new objects if necessary.
     if (isset($options['method']) && $options['method'] == 'POST') {
-      $data = json_decode($json_string);
+      $data = json_decode($json_string, FALSE, 512, JSON_THROW_ON_ERROR);
       if (!isset($data->identifier)) {
         $json_string = $this->addIdentifier($schema_id, $json_string);
       }
@@ -82,6 +82,10 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   /**
    * Adds identifier to JSON payload.
    *
+   * Note: The "valid metadata" model in DKAN currently expects *all*
+   * metadata types to include an "identifier" property. If a new metadata
+   * item is posted without an identifier, it will be added.
+   * 
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
    * @param string $json_string
@@ -89,6 +93,9 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    *
    * @return string
    *   Json string with the identifier.
+   *
+   * @todo Improve this system so that it does not require "identifier" properties
+   * on all metadata, as this makes the system much less flexible.
    */
   private function addIdentifier(string $schema_id, string $json_string): string {
     // We coerce to an object, because the data might already be an object, or
