@@ -306,6 +306,7 @@ class Referencer {
     $filename = urldecode($filename);
 
     // Attempt to load the file by file name.
+    /** @var \Drupal\file\FileInterface[] $files */
     $files = \Drupal::entityTypeManager()
       ->getStorage('file')
       ->loadByProperties(['filename' => $filename]);
