@@ -1,11 +1,8 @@
 API Examples
 =============
 
-When visiting a dataset page, you will see dataset specific API examples
-for that dataset that do not require authentication.
-
-This guide will provide examples that do and do not require authentication as well as
-additional options for more advanced usage.
+This section provides examples for developers who want to write external code that can interact with DKAN catalogs and
+the data within, or utilize core functionality without engaging the web interface.
 
 Identifiers
 -----------
@@ -14,7 +11,8 @@ Every dataset has an identifier, a.k.a. UUID. The dataset identifier is used in 
 and does not change when edits are made to the dataset. So if you are creating an automated
 script it is better to use APIs that utilize the dataset ID and the index of the distribution.
 Commonly datasets have a single distribution, in this case, the index will always be 0. For datasets that have several
-distributions, the index corresponds to the order in which they were entered. The first distribution would be 0, the second would be 1, and so on.
+distributions, the index corresponds to the order in which they were entered. The first distribution would be 0, the
+second would be 1, and so on.
 
 Distributions also have their own identifiers. The distribution identifier will
 change each time there is a change to the distribution resource or any change to
