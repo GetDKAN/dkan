@@ -266,7 +266,9 @@ example all datasets tagged with a given keyword or where the title and/or descr
 Filter options are passed as query parameters to the endpoint. For example, to find all the datasets with a theme of
 'Supplier directory', you would use:
 
-https://{site-domain}/api/1/search?theme=Supplier%20directory
+    .. code-block::
+
+      https://{site-domain}/api/1/search?theme=Supplier%20directory
 
 Note that '%20' is inserted for the spaces between words in a theme or keyword. Separate multiple query parameters with
 ampersands.
@@ -275,7 +277,9 @@ The default result limit - if page-size is not provided - is 10. The API will no
 time. If you want the next batch of results, you can increment the page number by passing the 'page' query parameter.
 E.g.
 
-https://{site-domain}/api/1/search?page-size=100&page=2
+    .. code-block::
+
+      https://{site-domain}/api/1/search?page-size=100&page=2
 
 Search endpoint options include:
 
