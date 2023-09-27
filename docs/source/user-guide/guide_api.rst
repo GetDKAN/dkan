@@ -13,8 +13,8 @@ Identifiers
 Every dataset has an identifier, a.k.a. UUID. The dataset identifier is used in the dataset URL (/dataset/datasetID),
 and does not change when edits are made to the dataset. So if you are creating an automated
 script it is better to use APIs that utilize the dataset ID and the index of the distribution.
-The index for the first distribution is 0, the index for the second distribution is 1, etc. In most cases
-when querying a dataset, the index will be 0.
+Commonly datasets have a single distribution, in this case, the index will always be 0. For datasets that have several
+distributions, the index corresponds to the order in which they were entered. The first distribution would be 0, the second would be 1, and so on.
 
 Distributions also have their own identifiers. The distribution identifier will
 change each time there is a change to the distribution resource or any change to
@@ -30,10 +30,10 @@ In the following examples, we will use {datasetID} to represent the dataset iden
 represent the distribution identifier, and {index} to represent which distribution is being referenced on a
 dataset.
 
-Anonymous API Examples
-----------------------
+Datastore: Query Data
+---------------------
 
-As an anonymous user, the API allows read operations of datasets via a browser (GET requests) or with an HTTP Client.
+The API allows read operations of datasets without authentication via a browser (GET requests) or with an HTTP Client.
 
 How to run a simple query against a dataset.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -257,8 +257,8 @@ description or notes column.
          ]
        }
 
-How to return a filtered list of datasets using the DKAN search endpoint.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Metastore: Search
+-----------------
 
 The DKAN search endpoint ( https://{site-domain}/api/1/search ) can be used to return a filtered list of datasets - for
 example all datasets tagged with a given keyword or where the title and/or description contain a given search term.
@@ -285,10 +285,11 @@ Search endpoint options include:
   -  keyword: return datasets associated with a given keyword/tag
   -  fulltext: return datasets that contain a given text string in the title or description of the dataset
 
-Authenticated API Examples
---------------------------
+Metastore: Create, Edit, Delete
+-------------------------------
 
-With authentication, the API supports creating and updating datasets.
+Some API functions require authorization. Any user that has dataset CRUD permissions will be able to perform those
+functions via the API.
 
 Authentication
 ^^^^^^^^^^^^^^
