@@ -104,9 +104,11 @@ The above will return the first 500 rows of the dataset along with the total num
 If the count is between 1000 and 1500 rows, you could pull all the results in 3 batches, each with a maximum of
 500 rows, by using the offset parameter. When not passed as a parameter, offset defaults to zero.
 
-  -  https://{site-domain}/api/1/datastore/query/{datasetID}/{index}
-  -  https://{site-domain}/api/1/datastore/query/{datasetID}/{index}?offset=500
-  -  https://{site-domain}/api/1/datastore/query/{datasetID}/{index}?offset=1000
+    .. code-block::
+
+      https://{site-domain}/api/1/datastore/query/{datasetID}/{index}
+      https://{site-domain}/api/1/datastore/query/{datasetID}/{index}?offset=500
+      https://{site-domain}/api/1/datastore/query/{datasetID}/{index}?offset=1000
 
 If using an HTTP Client, you can set the offset in the request body:
 
