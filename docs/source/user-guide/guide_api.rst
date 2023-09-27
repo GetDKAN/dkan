@@ -17,7 +17,7 @@ second would be 1, and so on.
 Distributions also have their own identifiers. The distribution identifier will
 change each time there is a change to the distribution resource or any change to
 :doc:`triggering properties <guide_datastore_settings>`. You can get the distribution identifier by viewing
-the dataset metadata API ``/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids``
+the dataset metadata API ``/api/1/metastore/schemas/dataset/items/{datasetID}?show-reference-ids``
 or by running this drush command, passing in the dataset ID:
 
     .. code-block::
