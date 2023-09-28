@@ -101,11 +101,12 @@ class Drush extends DrushCommands {
     $deferred = (bool) $options['deferred'];
 
     try {
-      $result = $this->datastoreService->import($identifier, $deferred);
       if ($deferred) {
+        $this->datastoreService->importDeferred($identifier);
         $this->logger->notice('Queued import for ' . $identifier);
       }
       else {
+        $result = $this->datastoreService->import($identifier, $deferred);
         $this->logger->notice('Ran import for ' . $identifier);
         foreach ($result as $jobname => $result_object) {
           /** @var \Procrastinator\Result $result_object */
@@ -114,7 +115,7 @@ class Drush extends DrushCommands {
       }
     }
     catch (\Exception $e) {
-      $this->logger->error("No resource found to import with identifier {$identifier}");
+      $this->logger->error('No resource found to import with identifier ' . $identifier);
       $this->logger->debug($e->getMessage());
     }
   }

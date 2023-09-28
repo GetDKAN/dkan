@@ -143,19 +143,12 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
     $results = [];
-    // @todo Determine if we have already done all this for the whole dataset
-    //   before continuing.
-    // Have we localized yet?
-    if (
-      $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version) === NULL
-    ) {
-      $result = $this->resourceLocalizer->localizeTask($identifier, $version, $deferred);
-      $results[$this->getLabelFromObject($this->resourceLocalizer)] = $result;
-      // If the localize task is deferred, then it will send events to
-      // re-trigger the database import later, so we should stop here.
-      if ($deferred) {
-        return $results;
-      }
+    $results[$this->getLabelFromObject($this->resourceLocalizer)] =
+      $this->resourceLocalizer->localizeTask($identifier, $version, $deferred);
+    // If the localize task is deferred, then it will send events to
+    // re-trigger the database import later, so we should stop here.
+    if ($deferred) {
+      return $results;
     }
 
     // Now work on the database. If we passed $deferred, add to the queue for
@@ -170,9 +163,11 @@ class DatastoreService implements ContainerInjectionInterface {
       return $results;
     }
     // Do the database import.
+    $importService = $this->getImportService($resource);
+    $importService->import();
     return array_merge(
       $results,
-      $this->doImport($resource)
+      [$this->getLabelFromObject($importService) => $importService->getResult()]
     );
   }
 
@@ -201,15 +196,6 @@ class DatastoreService implements ContainerInjectionInterface {
     return [
       'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
     ];
-  }
-
-  /**
-   * Private.
-   */
-  private function doImport($resource) {
-    $importService = $this->getImportService($resource);
-    $importService->import();
-    return [$this->getLabelFromObject($importService) => $importService->getResult()];
   }
 
   /**

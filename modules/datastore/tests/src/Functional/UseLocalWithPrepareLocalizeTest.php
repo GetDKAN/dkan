@@ -3,10 +3,9 @@
 namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\common\DataResource;
-use Drupal\Component\Uuid\Uuid;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\BrowserTestBase;
+use RootedData\RootedJsonData;
 
 /**
  * Test adding and localizing a datastore.
@@ -32,39 +31,26 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
   protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   public function test() {
-    // @see ResourcePurger::scheduleAllUuids
-    // Create dataset.
-    /** @var \Drupal\metastore\Storage\DataFactory $data_factory */
-    $data_factory = $this->container->get('dkan.metastore.storage');
-    $data_node_storage = $data_factory->getInstance('dataset');
-    $node_storage = $data_node_storage->getEntityStorage();
-    $entity = $node_storage->create(
-      [
-        $this->labelKey => $title,
-        $this->bundleKey => $this->bundle,
-        'uuid' => $uuid,
-        $this->schemaIdField => $this->schemaId,
-        $this->metadataField => json_encode($data),
-      ]
-    );
+    $identifier = 'id_1';
 
+    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    $metastore_service = $this->container->get('dkan.metastore.service');
 
+    $rooted = $this->getData($identifier, '1.1', [self::SOURCE_URL]);
+    $dataset_identifier = $metastore_service->post('dataset', $rooted);
 
-    $this->assertEquals('foo', print_r($node_data, true));
+//    $this->assertEquals('foo', print_r($rooted, TRUE));
 
-    $source_resource = new DataResource(
-      self::SOURCE_URL,
-      'text/csv',
-      DataResource::DEFAULT_SOURCE_PERSPECTIVE
-    );
+//    $source_resource = new DataResource(
+//      self::SOURCE_URL,
+//      'text/csv',
+//      DataResource::DEFAULT_SOURCE_PERSPECTIVE
+//    );
     // Add our source data resource to the mapper.
-    /** @var \Drupal\metastore\ResourceMapper $mapper */
-    $mapper = $this->container->get('dkan.metastore.resource_mapper');
-    $mapper->register($source_resource);
-    $this->assertInstanceOf(
-      DataResource::class,
-      $source_resource = $mapper->get($source_resource->getIdentifier())
-    );
+    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $source_resource = $resource_mapper->get($identifier);
+    $this->assertInstanceOf(DataResource::class, $source_resource);
 
     // Set always_use_existing_local_perspective to true.
     $this->config('common.settings')
@@ -99,8 +85,6 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
     $this->assertStringEqualsFile($info['file'], $preexisting_file_contents);
 
     // Get the resource again.
-    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
-    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
     $localized_resource = $resource_mapper->get(
       $source_resource->getIdentifier(),
       ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
@@ -112,6 +96,59 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
     $localize_file = $file_system->realpath($localized_resource->getFilePath());
     $this->assertEquals($info['file'], $localize_file);
     $this->assertStringEqualsFile($localize_file, $preexisting_file_contents);
+  }
+
+  /**
+   * Generate dataset metadata, possibly with multiple distributions.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   * @param string $title
+   *   Dataset title.
+   * @param array $downloadUrls
+   *   Array of resource files URLs for this dataset.
+   *
+   * @return \RootedData\RootedJsonData
+   *   Json encoded string of this dataset's metadata, or FALSE if error.
+   *
+   * @see \Drupal\Tests\dkan\Functional\DatasetBTBTest::getData()
+   */
+  private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
+    $data = new \stdClass();
+    $data->title = $title;
+    $data->description = 'This & that description. <a onauxclick=prompt(document.domain)>Right click me</a>.';
+    $data->identifier = $identifier;
+    $data->accessLevel = 'public';
+    $data->modified = '06-04-2020';
+    $data->keyword = ['some keyword'];
+    $data->distribution = [];
+    $data->publisher = (object) [
+      'name' => 'Test Publisher',
+    ];
+    $data->contactPoint = (object) [
+      'fn' => 'Test Name',
+      'hasEmail' => 'test@example.com',
+    ];
+
+    foreach ($downloadUrls as $key => $downloadUrl) {
+      $distribution = new \stdClass();
+      $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
+      $distribution->downloadURL = $downloadUrl;
+      $distribution->format = 'csv';
+      $distribution->mediaType = 'text/csv';
+
+      $data->distribution[] = $distribution;
+    }
+    $this->assertGreaterThan(
+      0,
+      count($data->distribution),
+      'JSON Schema requires one or more distributions.'
+    );
+    // @todo: Figure out how to assert against $factory->getResult()->getError()
+    // so we can have a useful test fail message.
+    /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
+    $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
+    return $valid_metadata_factory->get(json_encode($data), 'dataset');
   }
 
 }
