@@ -182,11 +182,8 @@ class Referencer {
         UrlHostTokenResolver::hostify($distribution->downloadURL), $this->getMimeType($distribution));
     }
 
-    $config = $this->configService->get('metastore.settings');
-    if (($distribution->describedBy ?? FALSE) && $config->get('data_dictionary_mode') == DataDictionaryDiscovery::MODE_REFERENCE) {
-      // Register this distribution's resource with the resource mapper and
-      // replace the download URL with a unique ID registered in the resource
-      // mapper.
+    // If there is a describedBy value, convert to dkan:// URL if appropriate.
+    if ($distribution->describedBy ?? FALSE) {
       $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);
     }
 
@@ -204,14 +201,18 @@ class Referencer {
    */
   protected function normalizeDictionaryValue(string $value): string {
     $incoming_scheme = StreamWrapperManager::getScheme($value);
-    $uri = in_array($incoming_scheme, ['http', 'https']) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
-    if (StreamWrapperManager::getScheme($uri) != MetastoreUrlGenerator::DKAN_SCHEME) {
-      throw new \DomainException("The value in describedBy was not a valid data dictionary URL: $value");
+    try {
+      $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
     }
+    // If the URL cannot be converted to a DKAN URI, pass it through.
+    catch (\DomainException $e) {
+      return $value;
+    }
+    // If it was converted to DKAN URI, validate it as a data dictionary.
     if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
       throw new \DomainException("The value $uri, derived from $value, is not a valid data-dictionary URI.");
     }
-    return $this->metastoreUrlGenerator->extractItemId($uri);
+    return $uri;
   }
 
   /**

@@ -2,13 +2,13 @@
 
 namespace Drupal\metastore\Form;
 
-use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
-use Drupal\metastore\MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\metastore\MetastoreService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data-Dictionary settings form.
@@ -96,6 +96,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
       '#options' => [
         DataDictionaryDiscoveryInterface::MODE_NONE => $this->t('Disabled'),
         DataDictionaryDiscoveryInterface::MODE_SITEWIDE => $this->t('Sitewide'),
+        DataDictionaryDiscoveryInterface::MODE_REFERENCE => $this->t('Distribution reference'),
       ],
       '#default_value' => $config->get('data_dictionary_mode'),
       '#attributes' => [

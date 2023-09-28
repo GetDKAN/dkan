@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Functional\Api1;
 
+use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
@@ -13,36 +14,37 @@ class DistributionHandlingTest extends Api1TestBase {
     return 'api/1/metastore/schemas/dataset/items';
   }
 
-  public function testPostDataDictionary() {
-    $response = $this->addDataDictionary();
-    $this->assertEquals(201, $response->getStatusCode());
+  /**
+   * Post a data dictionary and reference from describedBy.
+   */
+  public function testDescribedByDataDictionary() {
+    // Set data dictionary discovery mode to reference.
+    $config = $this->config('metastore.settings');
+    $config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
+    $config->save();
 
-    $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
-
-    $this->assertJsonIsValid($responseSchema, $responseBody);
-    $dictionaryId = $responseBody->identifier;
-    assertEquals($dictionaryId, "17c142da-b433-478f-a2db-b0a36fa9c335");
-
-    $datasetMetadata = $this->getSampleDataset(0);
-    $uri = "dkan://metastore/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335";
-    $url = \Drupal::service('dkan.metastore.url_generator')->generateAbsoluteString($uri);
-    $this->assertEquals("{$this->baseUrl}/api/1/metastore/schema/data-dictionary/items/17c142da-b433-478f-a2db-b0a36fa9c335", $url);
-    $datasetMetadata->distribution[0]->describedBy = $url;
-    $datasetMetadata->distribution[0]->describedByType = 'application/vnd.tableschema+json';
+    // Create a data dictionary.
+    $dictionaryId = $this->postDataDictionary();
 
     // Post dataset with absolute URL in distribution's describedBy field.
+    $datasetMetadata = $this->getSampleDataset(0);
+    $uri = "dkan://metastore/schemas/data-dictionary/items/$dictionaryId";
+    $url = \Drupal::service('dkan.metastore.url_generator')->absoluteString($uri);
+    $this->assertEquals("{$this->baseUrl}/api/1/metastore/schemas/data-dictionary/items/$dictionaryId", $url);
+    $datasetMetadata->distribution[0]->describedBy = $url;
+    $datasetMetadata->distribution[0]->describedByType = 'application/vnd.tableschema+json';
     $response = $this->post($datasetMetadata, FALSE);
     $responseBody = json_decode($response->getBody());
     $datasetId = $responseBody->identifier;
-
     $dataset_endpoint = $this->getEndpoint();
-    $response = $this->httpClient->get("$dataset_endpoint/$datasetId");
+    $response = $this->httpClient->get("$dataset_endpoint/$datasetId", [RequestOptions::TIMEOUT => 10000]);
     $responseBody = json_decode($response->getBody());
-    // URL is still unchanged on GET.
+
+    // Ensure that when we retrieve the dataset, the full URL is still shown.
     $this->assertEquals($url, $responseBody->distribution[0]->describedBy);
 
-    // Now try with dkan:// URI.
+    // Now patch to change to dkan:// URI (domain-agnostic) in the
+    // describedBy field.
     $patch = (object) ["distribution" => [clone $responseBody->distribution[0]]];
     $patch->distribution[0]->describedBy = $uri;
     $response = $this->httpClient->patch("$dataset_endpoint/$datasetId", [
@@ -50,93 +52,58 @@ class DistributionHandlingTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
-
     $response = $this->httpClient->get("$dataset_endpoint/$datasetId");
     // When we GET the dataset, describedBy should still be expressed as
     // absolute URL.
+    $responseBody = json_decode($response->getBody());
     $this->assertEquals($url, $responseBody->distribution[0]->describedBy);
+
+    // Patch again with a bad ID in the URL.
+    $patch->distribution[0]->describedBy = "dkan://metastore/schemas/data-dictionary/items/foobar";
+    $response = $this->httpClient->patch("$dataset_endpoint/$datasetId", [
+      RequestOptions::JSON => $patch,
+      RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    // This should cause a 400 bad request response.
+    $this->assertEquals(400, $response->getStatusCode());
+    $this->assertStringContainsString("is not a valid data-dictionary URI", $response->getBody());
+
+    // Patch again with a completely foriegn URL.
+    $pdf_url = "https://www.example.com/dictionary.pdf";
+    $patch->distribution[0]->describedBy = $pdf_url;
+    $response = $this->httpClient->patch("$dataset_endpoint/$datasetId", [
+      RequestOptions::JSON => $patch,
+      RequestOptions::AUTH => $this->auth,
+    ]);
+    // This should just be saved as-is.
+    $this->assertEquals(200, $response->getStatusCode());
+    $response = $this->httpClient->get("$dataset_endpoint/$datasetId");
+    $responseBody = json_decode($response->getBody());
+    $this->assertEquals($pdf_url, $responseBody->distribution[0]->describedBy);
   }
 
-  private function addDataDictionary() {    
-    $dictionaryId = "17c142da-b433-478f-a2db-b0a36fa9c335";
-    $dictionary = (object) [
-      "identifier" => $dictionaryId,
-      "title" => "Bike lanes data dictionary",
-      "data" => (object) [
-        "fields" => [
-          (object) [
-            "name" => "objectid",
-            "title" => "OBJECTID",
-            "type" => "integer",
-            "description" => "Internal feature number.",
-          ],
-          (object) [
-            "name" => "roadway",
-            "title" => "ROADWAY",
-            "type" => "string",
-            "description" => "A unique 8-character identification number assigned to a roadway or section of a roadway either On or Off the State Highway System for which information is maintained in the Department's Roadway Characteristics Inventory (RCI).",
-          ],
-          (object) [
-            "name" => "road_side",
-            "title" => "ROAD_SIDE",
-            "type" => "string",
-            "constraints" => (object) [
-              "maxLength" => 1,
-              "minLength" => 1,
-              "enum" => ["R", "L", "C"],
-            ],
-            "description" => "Side of the road. C = Composite; L = Left side; R = Right side",
-          ],
-          (object) [
-            "name" => "lncd",
-            "title" => "LNCD",
-            "type" => "integer",
-            "constraints" => (object) [
-              "maxLength" => 1,
-              "minLength" => 1,
-              "maximum" => 5,
-              "minimum" => 0,
-            ],
-            "description" => "Codes 0 = UNDESIGNATED; 1 = DESIGNATED; 2 = BUFFERED; 3 = COLORED; 4 = BOTH 2 AND 3; 5 = SHARROW",
-          ],
-          (object) [
-            "name" => "descr",
-            "title" => "DESCR",
-            "type" => "string",
-            "constraints" => (object) [
-              "maxLength" => 30,
-              "enum" => ["UNDESIGNATED", "DESIGNATED"],
-            ],
-            "description" => "Designation description.",
-          ],
-          (object) [
-            "name" => "begin_post",
-            "title" => "BEGIN_POST",
-            "type" => "number",
-            "description" => "Denotes the lowest milepoint for the record.",
-          ],
-          (object) [
-            "name" => "end_post",
-            "title" => "END_POST",
-            "type" => "number",
-            "description" => "Denotes the highest milepoint for the record.",
-          ],
-          (object) [
-            "name" => "shape_len",
-            "title" => "Shape_Leng",
-            "type" => "number",
-            "description" => "Length in meters",
-          ],
-        ],
-      ],
-    ];
+  /**
+   * Create a data dictionary in the metastore.
+   */
+  private function postDataDictionary() {
+    $dictionary = json_decode(file_get_contents(dirname(__DIR__, 2) . '/files/DataDictionary.json'));
 
     $response = $this->httpClient->post('api/1/metastore/schemas/data-dictionary/items', [
       RequestOptions::JSON => $dictionary,
       RequestOptions::AUTH => $this->auth,
     ]);
 
-    return $response;
+    $this->assertEquals(201, $response->getStatusCode());
+
+    $responseBody = json_decode($response->getBody());
+    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
+
+    $this->assertJsonIsValid($responseSchema, $responseBody);
+    // Unless JSON changes, we should always get same id back.
+    assertEquals($responseBody->identifier, "5a0a82d9-9a91-5165-b948-927387029590");
+
+    return $responseBody->identifier;
   }
 
 }

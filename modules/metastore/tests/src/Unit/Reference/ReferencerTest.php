@@ -467,6 +467,10 @@ class ReferencerTest extends TestCase {
     $urlGenerator = (new Chain($this))
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', (new Options())
         ->add('http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
+        ->add("http://remote-domain.com/dictionary.pdf", new \DomainException())
+        ->add('dkan://metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
+        ->add('s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111', new \DomainException())
+        ->add('dkan://metastore/schemas/data-dictionary/items/222', 'dkan://metastore/schemas/data-dictionary/items/222')
       )
       ->add(MetastoreUrlGenerator::class, 'metastore', MetastoreService::class)
       ->add(MetastoreService::class, 'get', (new Options())
@@ -490,15 +494,19 @@ class ReferencerTest extends TestCase {
     return [
       [
         (object) ["describedBy" => "http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],
-        "111",
+        "dkan://metastore/schemas/data-dictionary/items/111",
+      ],
+      [
+        (object) ["describedBy" => "http://remote-domain.com/dictionary.pdf"],
+        "http://remote-domain.com/dictionary.pdf",
       ],
       [
         (object) ["describedBy" => "dkan://metastore/schemas/data-dictionary/items/111"],
-        "111",
+        "dkan://metastore/schemas/data-dictionary/items/111",
       ],
       [
         (object) ["describedBy" => "s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],
-        new \DomainException("The value in describedBy was not a valid data dictionary URL"),
+        "s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111",
       ],
       [
         (object) ["describedBy" => "dkan://metastore/schemas/data-dictionary/items/222"],

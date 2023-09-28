@@ -75,7 +75,7 @@ class MetastoreUrlGenerator {
    * @return string|null
    *   The HTTP server public files URL, or NULL in the case of failure.
    */
-  public function generateAbsoluteString($uri): string {
+  public function absoluteString($uri): string {
     if (StreamWrapperManager::getScheme($uri) != self::DKAN_SCHEME) {
       throw new \DomainException("Only dkan:// urls accepted.");
     }
@@ -98,13 +98,13 @@ class MetastoreUrlGenerator {
    * @throws \DomainException
    */
   public function uriFromUrl(string $url): string {
-    $allowed = ['dkan', 'http', 'https'];
+    $allowed = [self::DKAN_SCHEME, 'http', 'https'];
     $parts = parse_url($url);
     if (!isset($parts['scheme']) || !in_array($parts['scheme'], $allowed)) {
       throw new \DomainException("Invalid URL $url");
     }
 
-    if ($parts['scheme'] == 'dkan') {
+    if ($parts['scheme'] == self::DKAN_SCHEME) {
       return $url;
     }
 

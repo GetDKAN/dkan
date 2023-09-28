@@ -11,7 +11,6 @@ use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\metastore\Service;
 use MockChain\Chain;
 use MockChain\Options;
-use MockChain\Sequence;
 use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;

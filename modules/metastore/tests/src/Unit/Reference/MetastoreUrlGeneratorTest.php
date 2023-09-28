@@ -75,11 +75,11 @@ class MetastoreUrlGeneratorTest extends TestCase {
     $url = "http://web/api/1/metastore/schemas/data-dictionary/items/111";
     
     $generator = $this->getGenerator();
-    $this->assertEquals($url, $generator->generateAbsoluteString($uri));
+    $this->assertEquals($url, $generator->absoluteString($uri));
 
     $uri = "public://something.txt";
     $this->expectExceptionMessage("Only dkan:// urls accepted");
-    $generator->generateAbsoluteString($uri);
+    $generator->absoluteString($uri);
   }
 
 
