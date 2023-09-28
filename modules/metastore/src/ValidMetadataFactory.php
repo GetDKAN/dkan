@@ -85,7 +85,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    * Note: The "valid metadata" model in DKAN currently expects *all*
    * metadata types to include an "identifier" property. If a new metadata
    * item is posted without an identifier, it will be added.
-   * 
+   *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
    * @param string $json_string

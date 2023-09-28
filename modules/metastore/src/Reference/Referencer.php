@@ -8,7 +8,6 @@ use Drupal\common\LoggerTrait;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
