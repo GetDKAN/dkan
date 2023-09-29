@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest\Entity;
 
+use Contracts\HydratableInterface;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\harvest\HarvestPlanInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -87,6 +88,17 @@ class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
       ])
       ->setDisplayConfigurable('view', TRUE);
     return $base_fields;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  #[\ReturnTypeWillChange]
+  public function jsonSerialize() {
+    // In the case of this entity, we only want the serialized 'data' property,
+    // which is already serialized. Therefore, we have to DECODE it, so that
+    // json_encode() can then RE-ENCODE it.
+    return json_decode($this->get('data')->getString());
   }
 
 }

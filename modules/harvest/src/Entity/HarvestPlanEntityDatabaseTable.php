@@ -39,7 +39,7 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
   }
 
   public function storeMultiple(array $data) {
-    // TODO: Implement storeMultiple() method.
+    throw new \Exception(__METHOD__);
   }
 
   public function count(): int {
@@ -90,24 +90,20 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
       ->accessCheck(FALSE)
       ->execute();
     if ($ids) {
-      return $this->entityStorage->load($ids);
+      return json_encode($this->entityStorage->load(reset($ids)));
     }
-    return NULL;
+    return '';
   }
 
   public function store($data, string $id = NULL): string {
-//    $entity = $this->entityTypeManager->createInstance()
-    // Does this ID already exist?
-    $count = $this->entityStorage->getQuery()
-      ->condition($this->primaryKey(), $id)
-      ->count()
-      ->accessCheck(FALSE)
-      ->execute();
-    if ($count > 0) {
-
-
-    }
-
+    /** @var \Drupal\harvest\Entity\HarvestPlan $entity */
+    $entity = $this->entityStorage->create([
+      $this->primaryKey() => $id,
+      // We assume there is a 'data' base field.
+      'data' => $data,
+    ]);
+    $entity->save();
+    return $entity->get($this->primaryKey())->value;
   }
 
 }
