@@ -1,0 +1,5 @@
+harvest_plan.add_form:
+  title: 'Add harvest plan'
+  route_name: entity.harvest_plan.add_form
+  appears_on:
+    - entity.harvest_plan.collection

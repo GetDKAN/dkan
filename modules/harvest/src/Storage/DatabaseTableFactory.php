@@ -4,6 +4,8 @@ namespace Drupal\harvest\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\harvest\Entity\HarvestPlanEntityDatabaseTable;
 
 /**
  * Database table factory.
@@ -25,10 +27,18 @@ class DatabaseTableFactory implements FactoryInterface {
   private $storage = [];
 
   /**
+   * Entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
    * Constructor.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(Connection $connection, EntityTypeManagerInterface $entityTypeManager) {
     $this->connection = $connection;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -47,6 +57,9 @@ class DatabaseTableFactory implements FactoryInterface {
    * Protected.
    */
   protected function getDatabaseTable($identifier) {
+    if ($identifier = 'harvest_plans') {
+      return new HarvestPlanEntityDatabaseTable($this->entityTypeManager);
+    }
     return new DatabaseTable($this->connection, $identifier);
   }
 

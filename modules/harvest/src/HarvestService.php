@@ -39,13 +39,6 @@ class HarvestService implements ContainerInjectionInterface {
   private $metastore;
 
   /**
-   * Entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManager
-   */
-  private $entityTypeManager;
-
-  /**
    * Create.
    *
    * @inheritdoc
@@ -61,10 +54,9 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
-    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**

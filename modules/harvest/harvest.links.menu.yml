@@ -4,3 +4,4 @@ dkan.harvest.dashboard:
   description: 'View status information on DKAN harvests.'
   route_name: dkan.harvest.dashboard
   weight: 13
+
