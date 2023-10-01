@@ -163,7 +163,8 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   public function testHarvestOrphan() {
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
-    $harvester = $this->getHarvester();
+    /** @var HarvestService $harvester */
+    $harvester = $this->container->get('dkan.harvest.service');
     $harvester->registerHarvest($plan);
 
     // First harvest.

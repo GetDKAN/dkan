@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class HarvestService implements ContainerInjectionInterface {
 
   use LoggerTrait;
-  use OrphanDatasetsProcessor;
+  use OrphanDatasetsProcessorTrait;
 
   /**
    * Service to instantiate storage objects for Harvest plan storage.

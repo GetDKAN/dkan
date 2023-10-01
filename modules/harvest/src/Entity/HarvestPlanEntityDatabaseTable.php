@@ -28,6 +28,9 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
     $this->entityStorage = $entityTypeManager->getStorage(self::ENTITY_TYPE);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function retrieveAll(): array {
     $ids = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
@@ -38,16 +41,25 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
     return [];
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function storeMultiple(array $data) {
     throw new \Exception(__METHOD__);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function count(): int {
     return $this->entityStorage->getQuery()
       ->count()
       ->execute();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function destruct() {
     // DKAN API wants us to destroy the table, but we will delete all entities.
     $ids = $this->entityStorage->getQuery()
@@ -62,27 +74,45 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function query(Query $query) {
     throw new \Exception(__METHOD__);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function primaryKey() {
     $definition = $this->entityTypeManager->getDefinition(self::ENTITY_TYPE);
     return ($definition->getKeys())['id'];
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function setSchema(array $schema): void {
     throw new \Exception(__METHOD__);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function getSchema(): array {
     throw new \Exception(__METHOD__);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function remove(string $id) {
     $this->entityStorage->delete([$id]);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function retrieve(string $id) {
     $ids = $this->entityStorage->getQuery()
       ->condition($this->primaryKey(), $id)
@@ -95,6 +125,9 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
     return '';
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function store($data, string $id = NULL): string {
     /** @var \Drupal\harvest\Entity\HarvestPlan $entity */
     $entity = $this->entityStorage->create([
