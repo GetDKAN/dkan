@@ -111,7 +111,7 @@ services:
   dkan.datastore.import_info_list:
     class: \Drupal\datastore\Service\Info\ImportInfoList
     arguments:
-      - '@dkan.common.file_fetcher'
+      - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
 
   pdlt.converter.strptime_to_mysql:
