@@ -96,6 +96,7 @@ commands:
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
                   ddev drush updb -y
+                  ddev drush cr
                   ddev drush rq
       - unless:
           condition: << parameters.upgrade >>
