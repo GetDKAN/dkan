@@ -4,15 +4,19 @@ namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\BrowserTestBase;
 use RootedData\RootedJsonData;
 
 /**
- * Test adding and localizing a datastore.
+ * Test dataset import when using existing localized files.
  *
  * @group datastore
  * @group btb
- * @group functional
+ * @group kernel
+ *
+ * @see \Drupal\Tests\datastore\Kernel\UseLocalWithPrepareLocalizeTest
+ * @see \Drupal\Tests\datastore_mysql_import\Functional\UseLocalWithPrepareLocalizeTest
  */
 class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
 
@@ -31,29 +35,29 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
   protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   public function test() {
-    $this->markTestIncomplete('very imcomplete');
-    $identifier = 'id_1';
+    // Explicitly turn off always_use_existing_local_perspective.
+    $this->config('common.settings')
+      ->set('always_use_existing_local_perspective', FALSE)
+      ->save();
+    $this->assertFalse(
+      $this->config('common.settings')->get('always_use_existing_local_perspective')
+    );
 
+    $identifier = uniqid();
+
+    // Post our dataset.
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
+    $rooted = $this->getData($identifier, 'Test Title', [self::SOURCE_URL]);
+    $this->assertEquals(
+      $identifier,
+      $metastore_service->post('dataset', $rooted)
+    );
 
-    $rooted = $this->getData($identifier, '1.1', [self::SOURCE_URL]);
-    $dataset_identifier = $metastore_service->post('dataset', $rooted);
-
-//    $this->assertEquals('foo', print_r($rooted, TRUE));
-
-//    $source_resource = new DataResource(
-//      self::SOURCE_URL,
-//      'text/csv',
-//      DataResource::DEFAULT_SOURCE_PERSPECTIVE
-//    );
-    // Add our source data resource to the mapper.
-    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
-    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
-    $source_resource = $resource_mapper->get($identifier);
-    $this->assertInstanceOf(DataResource::class, $source_resource);
-
-    // Set always_use_existing_local_perspective to true.
+    // Set always_use_existing_local_perspective to true. The place where this
+    // happens in the process matters, because jobstores are persistent, and
+    // basically every service makes a new filefetcher object to check on the
+    // status of files.
     $this->config('common.settings')
       ->set('always_use_existing_local_perspective', TRUE)
       ->save();
@@ -61,12 +65,32 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
       $this->config('common.settings')->get('always_use_existing_local_perspective')
     );
 
+    // Get our resource ID.
+    /** @var \Drupal\common\DatasetInfo $dataset_info */
+    $dataset_info = $this->container->get('dkan.common.dataset_info');
+    $info = $dataset_info->gather($identifier);
+    $resource_id = $info['latest_revision']['distributions'][0]['resource_id'] ?? NULL;
+
+    // Is our resource in the mapper?
+    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $this->assertInstanceOf(
+      DataResource::class,
+      $source_resource = $mapper->get($resource_id)
+    );
+    // No local file perspective yet.
+    $this->assertNull($mapper->get($resource_id, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE));
+
     // Run prepare-localized, emulating the Drush command.
     $identifier = $source_resource->getIdentifier();
     /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     $info = $resource_localizer->prepareLocalized($identifier);
     $this->assertArrayHasKey('file', $info);
+    $this->assertInstanceOf(
+      DataResource::class,
+      $source_resource = $mapper->get($resource_id, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
+    );
 
     // 'Pre-download' the file. We'll just write an arbitrary file here.
     $preexisting_file_contents = '1234,5678';
@@ -83,9 +107,11 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
     ]);
 
     // Assert that the file wasn't changed.
-    $this->assertStringEqualsFile($info['file'], $preexisting_file_contents);
+    $this->assertEquals($preexisting_file_contents, file_get_contents($info['file']));
 
     // Get the resource again.
+    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
     $localized_resource = $resource_mapper->get(
       $source_resource->getIdentifier(),
       ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,

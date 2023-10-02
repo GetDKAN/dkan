@@ -7,11 +7,13 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * Test adding and localizing a datastore.
+ * Test dataset import when using existing localized files.
  *
  * @group datastore
  * @group btb
  * @group kernel
+ *
+ * @see \Drupal\Tests\datastore\Functional\UseLocalWithPrepareLocalizeTest
  */
 class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
 

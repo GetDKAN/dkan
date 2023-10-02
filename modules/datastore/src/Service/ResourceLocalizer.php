@@ -113,7 +113,7 @@ class ResourceLocalizer {
       // been localized.
       if ($result->getStatus() === Result::DONE) {
         // Localization is done. Register the perspectives.
-        $this->registerNewPerspectives($resource, $ff);
+        $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
         // Send the event.
         $this->dispatchEvent(static::EVENT_RESOURCE_LOCALIZED, [
           'identifier' => $resource->getIdentifier(),
@@ -183,7 +183,7 @@ class ResourceLocalizer {
       return NULL;
     }
 
-    $this->registerNewPerspectives($resource, $ff);
+    $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
 
     return $this->resourceMapper->get($resource->getIdentifier(), $perpective, $resource->getVersion());
   }
@@ -191,9 +191,7 @@ class ResourceLocalizer {
   /**
    * Add local file and local URL perspectives to the resource mapper.
    */
-  private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
-
-    $localFilePath = $fileFetcher->getStateProperty('destination');
+  private function registerNewPerspectives(DataResource $resource, string $localFilePath) {
     $public_dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
     $localFileDrupalUri = str_replace($public_dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);

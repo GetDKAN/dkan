@@ -14,7 +14,12 @@ use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * @covers \Drupal\datastore\Service\Info\ImportInfoList
+ * @coversDefaultClass \Drupal\datastore\Service\Info\ImportInfoList
+ */
 class ImportInfoListTest extends TestCase {
+
   public function test() {
 
     $ff = FileFetcher::hydrate('{}');
@@ -22,7 +27,7 @@ class ImportInfoListTest extends TestCase {
     $result = Result::hydrate('{"status":"error","data":"","error":"File import error"}');
 
     $imp = (new Chain($this))
-      ->add(ImportJob::class, "getResult", $result)
+      ->add(ImportJob::class, 'getResult', $result)
       ->getMock();
 
     $services = (new Options())
@@ -33,7 +38,7 @@ class ImportInfoListTest extends TestCase {
     $container = (new Chain($this))
       ->add(Container::class, 'get', $services)
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'retrieveAll', ["1_1"])
+      ->add(JobStore::class, 'retrieveAll', ['1_1'])
       ->add(ImportInfo::class, 'getFileFetcherAndImporter', [$ff, $imp])
       ->add(ImportInfo::class, 'getBytesProcessed', 1500)
       ->getMock();

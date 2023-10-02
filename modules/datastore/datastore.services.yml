@@ -106,11 +106,12 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
+      - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.import_info_list:
     class: \Drupal\datastore\Service\Info\ImportInfoList
     arguments:
-      - '@dkan.common.job_store'
+      - '@dkan.common.file_fetcher'
       - '@dkan.datastore.import_info'
 
   pdlt.converter.strptime_to_mysql:

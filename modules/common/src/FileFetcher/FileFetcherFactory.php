@@ -28,6 +28,13 @@ class FileFetcherFactory implements FactoryInterface {
   private ImmutableConfig $dkanConfig;
 
   /**
+   * JobStore instances keyed by unique identifiers.
+   *
+   * @var \Drupal\common\Storage\JobStore[]
+   */
+  private $instances = [];
+
+  /**
    * Default file fetcher config.
    *
    * @var array
@@ -48,17 +55,26 @@ class FileFetcherFactory implements FactoryInterface {
    * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
+    // Use the instances array to make sure we return the same file fetcher for
+    // the given resource id and config, also accounting for the
+    // use-existing-file config since it results in different types of config
+    // later.
     $config = array_merge($this->configDefault, $config);
-    // Use our bespoke file fetcher class that uses the existing file if we're
-    // configured to do so.
-    if ($this->dkanConfig->get('always_use_existing_local_perspective') ?? FALSE) {
-      $config['processors'] = [FileFetcherRemoteUseExisting::class];
+    $use_existing = $this->dkanConfig->get('always_use_existing_local_perspective') ?? FALSE;
+    $hash = $identifier . print_r($config, TRUE) . $use_existing;
+    if (!isset($this->instances[$hash])) {
+      // Use our bespoke file fetcher class that uses the existing file if we're
+      // configured to do so.
+      if ($use_existing) {
+        $config['processors'] = [FileFetcherRemoteUseExisting::class];
+      }
+      $this->instances[$hash] = FileFetcher::get(
+        $identifier,
+        $this->jobStoreFactory->getInstance(FileFetcher::class),
+        $config
+      );
     }
-    return FileFetcher::get(
-      $identifier,
-      $this->jobStoreFactory->getInstance(FileFetcher::class),
-      $config
-    );
+    return $this->instances[$hash];
   }
 
 }
