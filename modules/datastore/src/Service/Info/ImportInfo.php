@@ -2,7 +2,6 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Drupal\common\DataResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
@@ -78,20 +77,7 @@ class ImportInfo {
    *   And object with info about imports: file name, fetching status, etc.
    */
   public function getItem(string $identifier, string $version) {
-    $ff = NULL;
-    $imp = NULL;
-    // Get the record from the mapper. ResourceLocalizer->get() has side
-    // effects that we don't want.
-    $resource = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
-
-    if ($resource) {
-      $ff = $this->resourceLocalizer->getFileFetcher($resource);
-
-      $imp = $this->importServiceFactory->getInstance(
-        $resource->getUniqueIdentifier(),
-        ['resource' => $resource]
-      )->getImporter();
-    }
+    [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
 
     $item = (object) [
       'fileName' => '',
@@ -104,6 +90,7 @@ class ImportInfo {
       'importerError' => NULL,
     ];
 
+    unset($this->fileFetcher);
     if (isset($ff)) {
       $this->fileFetcher = $ff;
       $item->fileName = $this->getFileName($ff);
@@ -121,6 +108,37 @@ class ImportInfo {
     }
 
     return (object) $item;
+  }
+
+  /**
+   * Get the filefetcher and importer objects for a resource.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   *
+   * @return array
+   *   Array with a filefetcher and importer object.
+   */
+  protected function getFileFetcherAndImporter($identifier, $version) {
+    try {
+      $resource = $this->resourceMapper->get($identifier, $version);
+
+      if ($resource) {
+        $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
+
+        $importer = $this->importServiceFactory->getInstance(
+          $resource->getUniqueIdentifier(),
+          ['resource' => $resource]
+        )->getImporter();
+
+        return [$fileFetcher, $importer];
+      }
+    }
+    catch (\Exception $e) {
+    }
+    return [NULL, NULL];
   }
 
   /**
