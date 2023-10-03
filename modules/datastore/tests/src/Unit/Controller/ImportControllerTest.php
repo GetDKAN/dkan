@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
+use Drupal\datastore\Service\Info\ImportInfoList;
 use MockChain\Options;
 use Drupal\datastore\DatastoreService;
 use PHPUnit\Framework\TestCase;
@@ -43,6 +44,7 @@ class ImportControllerTest extends TestCase {
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
+      ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->index(0);
 
     return (new Chain($this))

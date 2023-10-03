@@ -3,9 +3,9 @@
 namespace Drupal\datastore\Service\Info;
 
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
 
@@ -14,12 +14,16 @@ use Procrastinator\Job\Job;
  */
 class ImportInfo {
 
-  /**
-   * A JobStore object.
-   *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   */
-  private $jobStoreFactory;
+  protected static array $defaultValues = [
+    'fileName' => '',
+    'fileFetcherStatus' => 'waiting',
+    'fileFetcherBytes' => 0,
+    'fileFetcherPercentDone' => 0,
+    'importerStatus' => 'waiting',
+    'importerBytes' => 0,
+    'importerPercentDone' => 0,
+    'importerError' => NULL,
+  ];
 
   /**
    * Resource localizer service.
@@ -36,7 +40,14 @@ class ImportInfo {
   private $importServiceFactory;
 
   /**
-   * FileFetcher service.
+   * Resourcer mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  private ResourceMapper $resourceMapper;
+
+  /**
+   * FileFetcher for the current query.
    *
    * @var \FileFetcher\FileFetcher
    */
@@ -45,10 +56,14 @@ class ImportInfo {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(
+    ResourceLocalizer $resourceLocalizer,
+    ImportFactoryInterface $importServiceFactory,
+    ResourceMapper $resourceMapper
+  ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -65,17 +80,9 @@ class ImportInfo {
   public function getItem(string $identifier, string $version) {
     [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
 
-    $item = (object) [
-      'fileName' => '',
-      'fileFetcherStatus' => 'waiting',
-      'fileFetcherBytes' => 0,
-      'fileFetcherPercentDone' => 0,
-      'importerStatus' => 'waiting',
-      'importerBytes' => 0,
-      'importerPercentDone' => 0,
-      'importerError' => NULL,
-    ];
+    $item = (object) static::$defaultValues;
 
+    unset($this->fileFetcher);
     if (isset($ff)) {
       $this->fileFetcher = $ff;
       $item->fileName = $this->getFileName($ff);
@@ -108,13 +115,13 @@ class ImportInfo {
    */
   protected function getFileFetcherAndImporter($identifier, $version) {
     try {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
-
+      $resource = $this->resourceMapper->get($identifier, $version);
       if ($resource) {
         $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
-
-        $importer = $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(),
-          ['resource' => $resource])->getImporter();
+        $importer = $this->importServiceFactory->getInstance(
+          $resource->getUniqueIdentifier(),
+          ['resource' => $resource]
+        )->getImporter();
 
         return [$fileFetcher, $importer];
       }
@@ -155,7 +162,10 @@ class ImportInfo {
    *   File size in bytes.
    */
   protected function getFileSize(): int {
-    return $this->fileFetcher->getStateProperty('total_bytes');
+    if (isset($this->fileFetcher)) {
+      return $this->fileFetcher->getStateProperty('total_bytes');
+    }
+    return 0;
   }
 
   /**

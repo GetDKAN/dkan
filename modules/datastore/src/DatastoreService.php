@@ -238,16 +238,6 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
-   * Get a list of all stored importers and filefetchers, and their status.
-   *
-   * @return array
-   *   The importer list object.
-   */
-  public function list() {
-    return $this->importInfoList->buildList();
-  }
-
-  /**
    * Summary.
    */
   public function summary($identifier) {
