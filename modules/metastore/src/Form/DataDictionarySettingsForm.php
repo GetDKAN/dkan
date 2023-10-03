@@ -40,7 +40,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
    *   The metastore service.
    */
   public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger, MetastoreService $metastore) {
-    $this->setConfigFactory($config_factory);
+    parent::__construct($config_factory);
     $this->messenger = $messenger;
     $this->metastore = $metastore;
   }
