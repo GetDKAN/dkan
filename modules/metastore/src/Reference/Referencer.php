@@ -209,7 +209,7 @@ class Referencer {
     }
     // If it was converted to DKAN URI, validate it as a data dictionary.
     if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
-      throw new \DomainException("The value $uri, derived from $value, is not a valid data-dictionary URI.");
+      throw new \DomainException("The value $value, is not a valid data-dictionary URI.");
     }
     return $uri;
   }
