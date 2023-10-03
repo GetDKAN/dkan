@@ -120,9 +120,13 @@ class ImportInfo {
    *
    * @return array
    *   Array with a filefetcher and importer object.
+   *
+   * @todo place this inline to avoid the awkward return array.
    */
   protected function getFileFetcherAndImporter($identifier, $version) {
     try {
+      // Use resource mapper rather than resource localizer, because
+      // ResourceLocalizer::get() has side effects we don't want.
       $resource = $this->resourceMapper->get($identifier, $version);
 
       if ($resource) {

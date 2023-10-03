@@ -4,7 +4,6 @@ namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\BrowserTestBase;
 use RootedData\RootedJsonData;
 
@@ -13,7 +12,7 @@ use RootedData\RootedJsonData;
  *
  * @group datastore
  * @group btb
- * @group kernel
+ * @group functional
  *
  * @see \Drupal\Tests\datastore\Kernel\UseLocalWithPrepareLocalizeTest
  * @see \Drupal\Tests\datastore_mysql_import\Functional\UseLocalWithPrepareLocalizeTest
@@ -54,17 +53,6 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
       $metastore_service->post('dataset', $rooted)
     );
 
-    // Set always_use_existing_local_perspective to true. The place where this
-    // happens in the process matters, because jobstores are persistent, and
-    // basically every service makes a new filefetcher object to check on the
-    // status of files.
-    $this->config('common.settings')
-      ->set('always_use_existing_local_perspective', TRUE)
-      ->save();
-    $this->assertTrue(
-      $this->config('common.settings')->get('always_use_existing_local_perspective')
-    );
-
     // Get our resource ID.
     /** @var \Drupal\common\DatasetInfo $dataset_info */
     $dataset_info = $this->container->get('dkan.common.dataset_info');
@@ -85,8 +73,8 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
     $identifier = $source_resource->getIdentifier();
     /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
-    $info = $resource_localizer->prepareLocalized($identifier);
-    $this->assertArrayHasKey('file', $info);
+    $prepare_localized_info = $resource_localizer->prepareLocalized($identifier);
+    $this->assertArrayHasKey('file', $prepare_localized_info);
     $this->assertInstanceOf(
       DataResource::class,
       $source_resource = $mapper->get($resource_id, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
@@ -94,8 +82,18 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
 
     // 'Pre-download' the file. We'll just write an arbitrary file here.
     $preexisting_file_contents = '1234,5678';
-    file_put_contents($info['file'], $preexisting_file_contents);
-    $this->assertStringEqualsFile($info['file'], $preexisting_file_contents);
+    file_put_contents($prepare_localized_info['file'], $preexisting_file_contents);
+    $this->assertStringEqualsFile($prepare_localized_info['file'], $preexisting_file_contents);
+
+    // Set always_use_existing_local_perspective to true. Changing this setting
+    // should work at any point in this process before running the
+    // localize_import queue item.
+    $this->config('common.settings')
+      ->set('always_use_existing_local_perspective', TRUE)
+      ->save();
+    $this->assertTrue(
+      $this->config('common.settings')->get('always_use_existing_local_perspective')
+    );
 
     // Run localize_import queue item.
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queue_worker_manager */
@@ -107,7 +105,7 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
     ]);
 
     // Assert that the file wasn't changed.
-    $this->assertEquals($preexisting_file_contents, file_get_contents($info['file']));
+    $this->assertEquals($preexisting_file_contents, file_get_contents($prepare_localized_info['file']));
 
     // Get the resource again.
     /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
@@ -121,7 +119,7 @@ class UseLocalWithPrepareLocalizeTest extends BrowserTestBase {
     /** @var \Drupal\Core\File\FileSystem $file_system */
     $file_system = $this->container->get('file_system');
     $localize_file = $file_system->realpath($localized_resource->getFilePath());
-    $this->assertEquals($info['file'], $localize_file);
+    $this->assertEquals($prepare_localized_info['file'], $localize_file);
     $this->assertStringEqualsFile($localize_file, $preexisting_file_contents);
   }
 
