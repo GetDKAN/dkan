@@ -34,20 +34,6 @@ class ReferenceLookup implements ReferenceLookupInterface {
   protected $metastoreItemFactory;
 
   /**
-   * Cache tag invalidator.
-   *
-   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
-   */
-  protected CacheTagsInvalidatorInterface $invalidator;
-
-  /**
-   * Module handler service.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected ModuleHandlerInterface $moduleHandler;
-
-  /**
    * Module Handler service.
    *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
@@ -78,14 +64,22 @@ class ReferenceLookup implements ReferenceLookupInterface {
       [$identifier, $metadata] = $this->decodeJsonMetadata($item);
       $propertyValue = $metadata->{$propertyId};
       // Check if uuid is found either directly or in an array.
-      $idIsValue = $referenceId == $propertyValue;
-      $idInArray = is_array($propertyValue) && in_array($referenceId, $propertyValue);
+      $idIsValue = is_string($propertyValue) && str_starts_with($propertyValue, $referenceId);
+      $idInArray = is_array($propertyValue) && self::hasElementStartsWith($referenceId, $propertyValue);
       if ($idIsValue || $idInArray) {
         $referencers[] = $identifier;
       }
     }
 
     return $referencers;
+  }
+
+  private static function hasElementStartsWith(string $needle, $haystack): bool {
+    $idInArray = FALSE;
+    array_walk($haystack, function ($value) use (&$idInArray, $needle) {
+      $idInArray = str_starts_with($value, $needle) ? TRUE : $idInArray;
+    });
+    return $idInArray;
   }
 
   /**

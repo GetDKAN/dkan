@@ -99,6 +99,10 @@ class DataDictionarySettingsForm extends ConfigFormBase {
         DataDictionaryDiscoveryInterface::MODE_REFERENCE => $this->t('Distribution reference'),
       ],
       '#default_value' => $config->get('data_dictionary_mode'),
+      '#description' => t("Chose how to use data dictionaries in DKAN. Sitewide means you will enter a single
+        data dictionary UUID that will be used for all datasets on the site. Distribution reference means
+        DKAN will look in the describedBy field of a distribution for data dictionary for that specific
+        resource."),
       '#attributes' => [
         'name' => 'dictionary_mode',
       ],
