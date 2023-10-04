@@ -205,8 +205,7 @@ Tutorial II: Assign a data dictionary to a dataset
 Datasets can reference specific data dictionaries as well. Follow the last tutorial and create a data dictionary
 with ID `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
 
-Now, let's change the data dictionary mode. In the last example, we used the command line, which required us to know
-the numeric equivilant for the mode we wanted (sitewide = 1). Let's use the UI to set the mode to "distribution reference".
+Now, let's use the UI to set the data dictionary mode mode to "distribution reference".
 
 .. note:: Distribution reference mode
    Distribution reference mode for data dictionaries means that DKAN will look for links to data dictionaries in the
