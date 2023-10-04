@@ -119,12 +119,6 @@ class DatastoreService implements ContainerInjectionInterface {
    * This is the entry point for both the file localization step and the
    * database import step. This method knows how to do both.
    *
-   * This method will also try to short-circuit import steps if they are already
-   * complete.
-   *
-   * This method should also not re-trigger processes that are already in
-   * progress.
-   *
    * @param string $identifier
    *   The data resource identifier.
    * @param bool $deferred
@@ -143,8 +137,6 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
     $results = [];
-    // @todo Determine if we have already done all this for the whole dataset
-    //   before continuing.
     // Have we localized yet?
     if (
       $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version) === NULL
