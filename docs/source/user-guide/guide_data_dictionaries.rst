@@ -207,7 +207,7 @@ with ID `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
 
 Now, let's use the UI to set the data dictionary mode mode to "distribution reference".
 
-.. note:: Distribution reference mode
+.. note::
    Distribution reference mode for data dictionaries means that DKAN will look for links to data dictionaries in the
    `describedBy` field of the distribution that a data file is described in. It will look for a URL to a data dictionary
    in the metastore The `describedByType` must also be `application/vnd.tableschema+json` to signal correct data 
