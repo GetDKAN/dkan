@@ -11,8 +11,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Convert between local file paths and public file URLs.
- *
- * @todo Convert to service with Dependency Injection.
  */
 class MetastoreUrlGenerator {
   const DKAN_SCHEME = 'dkan';
