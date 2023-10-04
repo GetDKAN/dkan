@@ -96,7 +96,13 @@ Tutorial I: Catalog-wide data dictionary
 
 Creating a data dictionary via the API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The simplest way to use data dictionaries on your site is to create one for the entire catalog. To do this, let's first create a new dictionary using the API. We will define a list of fields based on the example header row below.
+
+.. note:: Note
+   Data dictionaries through the UI are still a work in progress!
+
+The simplest way to use data dictionaries on your site is to create one for the entire catalog. To 
+do this, let's first create a new dictionary using the API. We will define a list of fields based 
+on the example header row below.
 
 .. list-table::
    :widths: 16 16 16 16 16 16
@@ -117,7 +123,7 @@ The simplest way to use data dictionaries on your site is to create one for the 
 
 ----
 
-.. code-block::
+.. code-block:: http
 
     POST http://mydomain.com/api/1/metastore/schemas/data-dictionary/items
     Authorization: Basic username:password
@@ -166,13 +172,15 @@ The simplest way to use data dictionaries on your site is to create one for the 
 
 We get a response that tells us the identifier for the new dictionary is `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
 
-We now need to set the data dictionary mode to *sitewide*, and the sitewide data dictionary to this identifier. For now, we must do this through drush:
+We now need to set the data dictionary mode to *sitewide*, and the sitewide data dictionary to this identifier. 
 
-.. code-block::
+1. Go to admin/dkan/data-dictionary/settings
+2. Set "Dictionary Mode" to "Sitewide".
+3. Set "Sitewide Dictionary ID" to `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
 
-    drush -y config:set metastore.settings data_dictionary_mode 1
-    drush -y config:set metastore.settings data_dictionary_sitewide 7fd6bb1f-2752-54de-9a33-81ce2ea0feb2
-
+.. image:: images/dictionary-settings.png
+  :alt: Data dictionay settings admin page, with select input for "Dictionary Mode" set to "Sitewide" and text 
+        input for Sitewide Dictionary ID containing the identifier 7fd6bb1f-2752-54de-9a33-81ce2ea0feb2.
 
 Creating a data dictionary via the UI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -190,3 +198,65 @@ Adding indexes
 ^^^^^^^^^^^^^^
 Data dictionaries can be used to describe indexes that should be applied when importing to a database.
 Learn more about this on :doc:`guide_indexes`
+
+Tutorial II: Assign a data dictionary to a dataset
+--------------------------------------------------
+
+Datasets can reference specific data dictionaries as well. Follow the last tutorial and create a data dictionary
+with ID `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
+
+Now, let's change the data dictionary mode. In the last example, we used the command line, which required us to know
+the numeric equivilant for the mode we wanted (sitewide = 1). Let's use the UI to set the mode to "distribution reference".
+
+.. note:: Distribution reference mode
+   Distribution reference mode for data dictionaries means that DKAN will look for links to data dictionaries in the
+   `describedBy` field of the distribution that a data file is described in. It will look for a URL to a data dictionary
+   in the metastore The `describedByType` must also be `application/vnd.tableschema+json` to signal correct data 
+   dictionary format.
+
+1. Go to admin/dkan/data-dictionary/settings
+2. Set "Dictionary Mode" to "Distribution reference".
+
+Now let's link a dataset to a data dictionay. Again, let's use the API for now. 
+
+.. code-block:: http
+
+    POST http://mydomain.com/api/1/metastore/schemas/dataset/items
+    Authorization: Basic username:password
+
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "contactPoint": {
+          "fn": "Jane Doe",
+          "hasEmail": "mailto:data.admin@example.com"
+      },
+      "title": "Project list",
+      "description": "Example dataset.",
+      "distribution": [
+      {
+          "@type": "dcat:Distribution",
+          "downloadURL": "https://example.com/projects.csv",
+          "mediaType": "text\/csv",
+          "format": "csv",
+          "title": "Projects",
+          "describedBy": "dkan://metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
+          "describedByType": "application/vnd.tableschema+json"
+      }
+      ],
+      "issued": "2016-06-22",
+      "license": "http://opendatacommons.org/licenses/by/1.0/",
+      "modified": "2016-06-22",
+      "publisher": {
+          "@type": "org:Organization",
+          "name": "Data publisher"
+      },
+      "keyword":["tag1"]
+    }
+
+Note the special URL used to point to the data dictionary. The full URL, e.g. 
+http://mydomain.com/api/1metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2,
+could also be used, and would be converted to an internal `dkan://` URL on save.
+
+This data dictionary will now be used to modify the datastore table after import. If we were to
+request the dataset back from the API, it would show us the absolute URL as well.
