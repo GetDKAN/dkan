@@ -51,7 +51,7 @@ commands:
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
-            bash -c 'echo GITHUB_TOKEN=$GITHUB_TOKEN' > .ddev/.env
+            bash -c 'echo COMPOSER_AUTH=$COMPOSER_AUTH' > .ddev/.env
             # Modify config to use our PHP version.
             sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
             ddev restart
@@ -137,7 +137,6 @@ jobs:
       - prepare_build:
           php_version: << parameters.php_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
-          addon_branch: composer-verbose
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: false
