@@ -38,6 +38,7 @@ commands:
         type: string
     steps:
       - run:
+          # TODO: We might not need to do this.
           name: Set up composer config
           command: |
             mkdir ~/.composer
@@ -50,6 +51,7 @@ commands:
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            bash -c 'echo GITHUB_TOKEN=$GITHUB_TOKEN' > .ddev/.env
             # Modify config to use our PHP version.
             sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
             ddev restart
