@@ -6,6 +6,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -136,7 +137,7 @@ class HarvestCommands extends DrushCommands {
       }
     }
     else {
-      $message = "Skipped deregistering harvest {$id}";
+      throw new UserAbortException();
     }
 
     $this->logger->notice($message);
