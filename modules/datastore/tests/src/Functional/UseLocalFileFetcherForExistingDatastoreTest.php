@@ -7,6 +7,7 @@ use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use FileFetcher\Processor\Remote;
+use Procrastinator\Result;
 use RootedData\RootedJsonData;
 
 /**
@@ -46,7 +47,8 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     // There should be no mapper records.
     /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
     $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
-    $this->assertEquals(0, $resource_mapper->getStore()->count());
+    $mapping_store = $resource_mapper->getStore();
+    $this->assertEquals(0, $mapping_store->count());
 
     // Post our dataset.
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
@@ -60,13 +62,12 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     );
 
     // 1 mapping after posting the datastore.
-    $mapping_store = $resource_mapper->getStore();
     $this->assertEquals(1, $mapping_store->count());
 
     // Get our resource info.
-    /** @var \Drupal\common\DatasetInfo $dataset_info */
-    $dataset_info = $this->container->get('dkan.common.dataset_info');
-    $info = $dataset_info->gather($identifier);
+    /** @var \Drupal\common\DatasetInfo $dataset_info_service */
+    $dataset_info_service = $this->container->get('dkan.common.dataset_info');
+    $info = $dataset_info_service->gather($identifier);
 
     // Having gotten the info, there should still only be 1 record.
     $this->assertEquals(1, $mapping_store->count());
@@ -90,10 +91,13 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     // Getting the source resource should not change the record count.
     $this->assertEquals(1, $mapping_store->count());
     // No local file perspective yet.
-    $this->assertNull($resource_mapper->get($resource_id, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE));
+    $this->assertNull($resource_mapper->get(
+      $resource_id,
+      ResourceLocalizer::LOCAL_FILE_PERSPECTIVE
+    ));
 
-    // Interrogate the file fetcher. We want to keep track of the processor
-    // class that it uses.
+    // Interrogate the file fetcher. We want to test which processor class it
+    // uses.
     /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
@@ -101,6 +105,12 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     $this->assertEquals(
       Remote::class,
       $job_data->processor
+    );
+    // Result should be waiting.
+    $some_info = $dataset_info_service->gather($identifier);
+    $this->assertEquals(
+      'waiting', // @todo Should be: Result::STOPPED,
+      $some_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
 
     // Turn on always_use_existing_local_perspective.
@@ -118,6 +128,42 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     $this->assertEquals(
       FileFetcherRemoteUseExisting::class,
       $job_data->processor
+    );
+
+    // Turn off always_use_exsting_* and get the file fetcher again. It should
+    // be Remote again.
+    $this->config('common.settings')
+      ->set('always_use_existing_local_perspective', FALSE)
+      ->save();
+    $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
+    $job_data = json_decode($file_fetcher->getResult()->getData());
+    $this->assertEquals(
+      Remote::class,
+      $job_data->processor
+    );
+
+    // In order to perform the localization without importing, we have to call
+    // DatastoreService::getResource(), which is private.
+    /** @var \Drupal\datastore\DatastoreService $datastore_service */
+    $datastore_service = $this->container->get('dkan.datastore.service');
+    $ref_get_resource = new \ReflectionMethod($datastore_service, 'getResource');
+    $ref_get_resource->setAccessible(TRUE);
+    $results = $ref_get_resource->invokeArgs($datastore_service, [
+      $source_resource->getIdentifier(),
+      $source_resource->getVersion(),
+    ]);
+    $this->assertInstanceOf(DataResource::class, $results[0]);
+    // $this->assertEquals('ofdfsdfasdfa', print_r($results[1], true));
+    $this->assertEquals(Result::DONE, $results[1]['ResourceLocalizer']->getStatus());
+
+    // Now there should be three mappings.
+    $this->assertEquals(3, $mapping_store->count());
+    // Get the info again after localization.
+    $localized_info = $dataset_info_service->gather($identifier);
+    $this->assertNotEquals($localized_info, $info);
+    $this->assertEquals(
+      Result::STOPPED, // @todo should be Result::DONE,
+      $localized_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
   }
 

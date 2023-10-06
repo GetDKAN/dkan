@@ -169,7 +169,7 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Resource version.
    *
    * @return array
-   *   The resource object and a result object in an array.
+   *   The resource object and the result array, in an array.
    */
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
@@ -183,15 +183,14 @@ class DatastoreService implements ContainerInjectionInterface {
     }
 
     // @todo we should not do this, we need a filefetcher queue worker.
-    $result = [
-      $label => $this->resourceLocalizer->localize($identifier, $version),
+    $localize_result = $this->resourceLocalizer->localize($identifier, $version);
+
+    return [
+      $this->resourceLocalizer->get($identifier, $version),
+      [
+        $label => $localize_result,
+      ],
     ];
-
-    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
-    }
-
-    return [$resource, $result];
   }
 
   /**
