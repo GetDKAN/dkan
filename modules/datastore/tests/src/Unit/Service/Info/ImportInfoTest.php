@@ -4,21 +4,13 @@ namespace Drupal\Tests\datastore\Unit\Service\Info;
 
 use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
-use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\JobStore;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Info\ImportInfo;
-use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\Tests\datastore\Unit\Plugin\QueueWorker\TestMemStorage;
 use FileFetcher\FileFetcher;
-use MockChain\Chain;
-use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Job\Job;
-use Procrastinator\Result;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * @coversDefaultClass \Drupal\datastore\Service\Info\ImportInfo
@@ -62,12 +54,12 @@ class ImportInfoTest extends TestCase {
     // Make a FileFetcher object.
     $storage = new Memory();
     $config = [
-      "resource" => (new DatastoreResource('id', 'path', 'mime')),
-      "storage" => new TestMemStorage(),
-      "parser" => Csv::getParser(),
-      "filePath" => 'test',
+      'resource' => (new DatastoreResource('id', 'path', 'mime')),
+      'storage' => new TestMemStorage(),
+      'parser' => Csv::getParser(),
+      'filePath' => 'test',
     ];
-    $job = FileFetcher::get("1", $storage, $config);
+    $job = FileFetcher::get('1', $storage, $config);
 
     // Tell the FileFetcher how many bytes it has processed.
     $job->setStateProperty('total_bytes_copied', 1024);
@@ -93,11 +85,11 @@ class ImportInfoTest extends TestCase {
     // Make an ImportJob object.
     $storage = new Memory();
     $config = [
-      "resource" => (new DatastoreResource('id', 'path', 'mime')),
-      "storage" => new TestMemStorage(),
-      "parser" => Csv::getParser(),
+      'resource' => (new DatastoreResource('id', 'path', 'mime')),
+      'storage' => new TestMemStorage(),
+      'parser' => Csv::getParser(),
     ];
-    $job = ImportJob::get("1", $storage, $config);
+    $job = ImportJob::get('1', $storage, $config);
 
     // Make getBytesProcessed() public.
     $ref_get_bytes_processed = new \ReflectionMethod($import_info, 'getBytesProcessed');

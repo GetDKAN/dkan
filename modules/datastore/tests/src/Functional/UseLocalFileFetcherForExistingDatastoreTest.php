@@ -1,0 +1,177 @@
+<?php
+
+namespace Drupal\Tests\datastore\Functional;
+
+use Drupal\common\DataResource;
+use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
+use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\Tests\BrowserTestBase;
+use FileFetcher\Processor\Remote;
+use RootedData\RootedJsonData;
+
+/**
+ * Test dataset import when using existing localized files.
+ *
+ * @group datastore
+ * @group btb
+ * @group functional
+ */
+class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = [
+    'common',
+    'datastore',
+    'metastore',
+    'node',
+  ];
+
+  protected $defaultTheme = 'stark';
+
+  protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+
+  public function test() {
+    // Explicitly turn off always_use_existing_local_perspective for now.
+    $this->config('common.settings')
+      ->set('always_use_existing_local_perspective', FALSE)
+      ->save();
+    $this->assertFalse(
+      $this->config('common.settings')->get('always_use_existing_local_perspective')
+    );
+
+    $identifier = uniqid();
+
+    // There should be no mapper records.
+    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $this->assertEquals(0, $resource_mapper->getStore()->count());
+
+    // Post our dataset.
+    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    $metastore_service = $this->container->get('dkan.metastore.service');
+    $this->assertEquals(
+      $identifier,
+      $metastore_service->post(
+        'dataset',
+        $this->getData($identifier, 'Test Title', [self::SOURCE_URL])
+      )
+    );
+
+    // 1 mapping after posting the datastore.
+    $mapping_store = $resource_mapper->getStore();
+    $this->assertEquals(1, $mapping_store->count());
+
+    // Get our resource info.
+    /** @var \Drupal\common\DatasetInfo $dataset_info */
+    $dataset_info = $this->container->get('dkan.common.dataset_info');
+    $info = $dataset_info->gather($identifier);
+
+    // Having gotten the info, there should still only be 1 record.
+    $this->assertEquals(1, $mapping_store->count());
+
+    // Let's interrogate it. It should be a source mapping.
+    $all_mappings = $mapping_store->retrieveAll();
+    $mapping = $mapping_store->retrieve(reset($all_mappings));
+    $this->assertEquals(
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+      $mapping->perspective
+    );
+
+    // Now let's ask the mapper instead of its storage.
+    $this->assertNotNull(
+      $resource_id = $info['latest_revision']['distributions'][0]['resource_id'] ?? NULL
+    );
+    $this->assertInstanceOf(
+      DataResource::class,
+      $source_resource = $resource_mapper->get($resource_id)
+    );
+    // Getting the source resource should not change the record count.
+    $this->assertEquals(1, $mapping_store->count());
+    // No local file perspective yet.
+    $this->assertNull($resource_mapper->get($resource_id, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE));
+
+    // Interrogate the file fetcher. We want to keep track of the processor
+    // class that it uses.
+    /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
+    $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
+    $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
+    $job_data = json_decode($file_fetcher->getResult()->getData());
+    $this->assertEquals(
+      Remote::class,
+      $job_data->processor
+    );
+
+    // Turn on always_use_existing_local_perspective.
+    $this->config('common.settings')
+      ->set('always_use_existing_local_perspective', TRUE)
+      ->save();
+    $this->assertTrue(
+      $this->config('common.settings')->get('always_use_existing_local_perspective')
+    );
+
+    // Getting the file fetcher should result in a different processor class
+    // because we turned on always_use_existing_local_perspective.
+    $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
+    $job_data = json_decode($file_fetcher->getResult()->getData());
+    $this->assertEquals(
+      FileFetcherRemoteUseExisting::class,
+      $job_data->processor
+    );
+  }
+
+  /**
+   * Generate dataset metadata, possibly with multiple distributions.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   * @param string $title
+   *   Dataset title.
+   * @param array $downloadUrls
+   *   Array of resource files URLs for this dataset.
+   *
+   * @return \RootedData\RootedJsonData
+   *   Json encoded string of this dataset's metadata, or FALSE if error.
+   *
+   * @see \Drupal\Tests\dkan\Functional\DatasetBTBTest::getData()
+   */
+  private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
+    $data = new \stdClass();
+    $data->title = $title;
+    $data->description = 'This & that description. <a onauxclick=prompt(document.domain)>Right click me</a>.';
+    $data->identifier = $identifier;
+    $data->accessLevel = 'public';
+    $data->modified = '06-04-2020';
+    $data->keyword = ['some keyword'];
+    $data->distribution = [];
+    $data->publisher = (object) [
+      'name' => 'Test Publisher',
+    ];
+    $data->contactPoint = (object) [
+      'fn' => 'Test Name',
+      'hasEmail' => 'test@example.com',
+    ];
+
+    foreach ($downloadUrls as $key => $downloadUrl) {
+      $distribution = new \stdClass();
+      $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
+      $distribution->downloadURL = $downloadUrl;
+      $distribution->format = 'csv';
+      $distribution->mediaType = 'text/csv';
+
+      $data->distribution[] = $distribution;
+    }
+    $this->assertGreaterThan(
+      0,
+      count($data->distribution),
+      'JSON Schema requires one or more distributions.'
+    );
+    // @todo: Figure out how to assert against $factory->getResult()->getError()
+    // so we can have a useful test fail message.
+    /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
+    $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
+    return $valid_metadata_factory->get(json_encode($data), 'dataset');
+  }
+
+}

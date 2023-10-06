@@ -49,16 +49,22 @@ class FileFetcherFactory implements FactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []) {
     $config = array_merge($this->configDefault, $config);
-    // Use our bespoke file fetcher class that uses the existing file if we're
-    // configured to do so.
+    // Use our bespoke file fetcher class that won't overwrite the existing file
+    // if we're configured to do so.
     if ($this->dkanConfig->get('always_use_existing_local_perspective') ?? FALSE) {
       $config['processors'] = [FileFetcherRemoteUseExisting::class];
     }
-    return FileFetcher::get(
-      $identifier,
+    // Hash the original identifier with config, accounting for
+    // always_use_existing_local_perspective. FileFetcher will store this in the
+    // jobstore table with this alternate hash as identifier, resulting in
+    // unique file fetcher objects depending on configuration.
+    $hash = md5($identifier . print_r($config, TRUE));
+    $ff = FileFetcher::get(
+      $hash,
       $this->jobStoreFactory->getInstance(FileFetcher::class),
       $config
     );
+    return $ff;
   }
 
 }

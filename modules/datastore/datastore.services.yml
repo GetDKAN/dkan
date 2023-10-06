@@ -8,7 +8,6 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info_list'
       - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
-      - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport
@@ -28,7 +27,6 @@ services:
       - '@dkan.common.file_fetcher'
       - '@dkan.common.drupal_files'
       - '@dkan.common.job_store'
-      - '@queue'
 
   dkan.datastore.service.resource_processor_collector:
     class: \Drupal\datastore\Service\ResourceProcessorCollector
@@ -103,9 +101,9 @@ services:
   dkan.datastore.import_info:
     class: \Drupal\datastore\Service\Info\ImportInfo
     arguments:
+      - '@dkan.common.job_store'
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
-      - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.import_info_list:
     class: \Drupal\datastore\Service\Info\ImportInfoList
