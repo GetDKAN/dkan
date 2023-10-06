@@ -21,10 +21,26 @@ class ValidMetadataFactoryTest extends TestCase {
     $validMetadataFactory->get(json_encode(['title' => 'blah']), 'dataset');
   }
 
+  /**
+   * UUID is added as "identifier" field if not present.
+   *
+   * Note: The "valid metadata" model in DKAN currently expects *all*
+   * metadata types to include an "identifier" property. If a new metadata
+   * item is posted without an identifier, it will be added.
+   */
   public function testGetNoIdentifier() {
     $validMetadataFactory = ValidMetadataFactory::create($this->getCommonMockChain()->getMock());
     $result = $validMetadataFactory->get(json_encode(['title' => 'blah']), 'dataset', ['method' => 'POST']);
     $this->assertTrue(isset($result->{'$.identifier'}));
+  }
+
+  /**
+   * Ensure that completely invalid JSON will throw exception.
+   */
+  public function testInvalidJson() {
+    $validMetadataFactory = ValidMetadataFactory::create($this->getCommonMockChain()->getMock());
+    $this->expectExceptionMessage("Invalid JSON: Syntax error");
+    $validMetadataFactory->get('{"foo": "bar",}');
   }
 
   /**

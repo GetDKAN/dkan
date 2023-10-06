@@ -2,20 +2,30 @@
 
 namespace Drupal\Tests\metastore\Unit\DataDictionary;
 
+use DomainException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery as Discovery;
+use Drupal\metastore\Reference\MetastoreUrlGenerator;
+use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\metastore\Service;
 use MockChain\Chain;
 use MockChain\Options;
+use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
+use RootedData\RootedJsonData;
 
 class DataDictionaryDiscoveryTest extends TestCase {
   
 
   // If mode is set to "none", we should get NULL no matter what.
   public function testModeNone() {
-    $configFactoryMock = $this->getConfigFactoryMock(Discovery::MODE_NONE, 'abc-123');
-    $discovery = new Discovery($configFactoryMock);
+    $discovery = new Discovery(
+      $this->getConfigFactoryMock(Discovery::MODE_NONE, 'abc-123'),
+      $this->getMetastoreService(),
+      $this->getLookup(),
+      $this->getUrlGenerator()
+    );
     $id = $discovery->dictionaryIdFromResource('resource1');
     $this->assertNull($id);
   }
@@ -23,8 +33,12 @@ class DataDictionaryDiscoveryTest extends TestCase {
   // If mode is sitewide, and we have a sitewide dictionary ID set, it should be
   // returned, no matter what resource we pass to the method.
   public function testSitewideId() {
-    $configFactoryMock = $this->getConfigFactoryMock(Discovery::MODE_SITEWIDE, 'abc-123');
-    $discovery = new Discovery($configFactoryMock);
+    $discovery = new Discovery(
+      $this->getConfigFactoryMock(Discovery::MODE_SITEWIDE, 'abc-123'),
+      $this->getMetastoreService(),
+      $this->getLookup(),
+      $this->getUrlGenerator()
+    );
     $id = $discovery->dictionaryIdFromResource('resource1');
     $this->assertEquals('abc-123', $id);
     $idVersion = $discovery->dictionaryIdFromResource('resource1', '2352643');
@@ -34,31 +48,60 @@ class DataDictionaryDiscoveryTest extends TestCase {
   // If mode is sitewide but sitewide ID unset, we should get an exception.
   public function testSitewideIdUnset() {
     // Need to use 0 because MockChain\Options doesn't support NULL returns.
-    $configFactoryMock = $this->getConfigFactoryMock(Discovery::MODE_SITEWIDE, 0);
-    $discovery = new Discovery($configFactoryMock);
+    $discovery = new Discovery(
+      $this->getConfigFactoryMock(Discovery::MODE_SITEWIDE, 0),
+      $this->getMetastoreService(),
+      $this->getLookup(),
+      $this->getUrlGenerator()
+    );
 
     $this->expectException(\OutOfBoundsException::class);
     $discovery->dictionaryIdFromResource('resource1');
   }
 
-  // If mode is set to "collection", at the moment we should throw an exception
-  // because this is not yet supported.
-  public function testModeCollection() {
-    $configFactoryMock = $this->getConfigFactoryMock(Discovery::MODE_COLLECTION, 'abc-123');
-    $discovery = new Discovery($configFactoryMock);
+  // Test the reference type, four different flows:
+  public function testGetReferenceDictId() {
+    $discovery = new Discovery(
+      $this->getConfigFactoryMock(Discovery::MODE_REFERENCE, 'abc-123'),
+      $this->getMetastoreService(),
+      $this->getLookup(),
+      $this->getUrlGenerator()
+    );    
+    $id = $discovery->dictionaryIdFromResource('resource1');
+    $this->assertEquals('111', $id);
 
-    $this->expectException(\OutOfRangeException::class);
-    $discovery->dictionaryIdFromResource('resource1');
+    $id = $discovery->dictionaryIdFromResource('resource2');
+    $this->assertNull($id);
+
+    $id = $discovery->dictionaryIdFromResource('resource3');
+    $this->assertNull($id);
+
+    $id = $discovery->dictionaryIdFromResource('resource4');
+    $this->assertNull($id);
   }
 
-  // If mode is set to "generate", at the moment we should throw an exception
-  // because this is not yet supported.
-  public function testModeGenerate() {
-    $configFactoryMock = $this->getConfigFactoryMock(Discovery::MODE_GENERATE, 'abc-123');
-    $discovery = new Discovery($configFactoryMock);
+  // Test if bad mode in settings
+  public function testDictBadMode() {
+    $discovery = new Discovery(
+      $this->getConfigFactoryMock('foo', 'abc-123'),
+      $this->getMetastoreService(),
+      $this->getLookup(),
+      $this->getUrlGenerator()
+    );
 
-    $this->expectException(\OutOfRangeException::class);
+    $this->expectException(OutOfRangeException::class);
     $discovery->dictionaryIdFromResource('resource1');
+  }
+  private function getLookup() {
+    $options = (new Options())
+      ->add('resource1', ['111'])
+      ->add('resource2', [])
+      ->add('resource3', ['333'])
+      ->add('resource4', ['444'])
+      ->index(1);
+    return (new Chain($this))
+      ->add(ReferenceLookup::class, 'getReferencers', $options)
+      ->getMock();
   }
 
   // Build mock config service, based on arguments for mode and sitewide ID.
@@ -73,4 +116,43 @@ class DataDictionaryDiscoveryTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', $options)
       ->getMock();
   }
+
+  private function getMetastoreService() {
+    $json1 = json_encode((object) [
+      'data' => (object) [
+        'describedBy' => "https://example.com/api/1/metastore/schemas/data-dictionary/items/111",
+        'describedByType' => 'application/vnd.tableschema+json',
+      ],
+    ]);
+    $json4 = json_encode((object) [
+      'data' => (object) [
+        'describedBy' => "dkan://metastore/schemas/dataset/items/444",
+        'describedByType' => 'application/vnd.tableschema+json',
+      ],
+    ]);
+    $sequence = (new options())
+      ->add('111', new RootedJsonData($json1, "{}"))
+      ->add('333', new RootedJsonData())
+      ->add('444', new RootedJsonData($json4, "{}"))
+      ->index(1);
+    return (new Chain($this))
+      ->add(Service::class, 'get', $sequence)
+      ->getMock();
+  }
+
+  private function getUrlGenerator() {
+    $extract = (new Options())
+      ->add('dkan://metastore/schemas/data-dictionary/items/111', '111')
+      ->add('dkan://metastore/schemas/dataset/items/444', new DomainException())
+      ->index(0);
+    $uriFromUrl = (new Options())
+      ->add('https://example.com/api/1/metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
+      ->add('dkan://metastore/schemas/dataset/items/444', 'dkan://metastore/schemas/dataset/items/444');
+      
+    return (new Chain($this))
+      ->add(MetastoreUrlGenerator::class, 'uriFromUrl', $uriFromUrl)
+      ->add(MetastoreUrlGenerator::class, 'extractItemId', $extract)
+      ->getMock();
+  }
+
 }

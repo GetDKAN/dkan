@@ -85,7 +85,7 @@
         "describedByType": {
           "title": "Data Dictionary Type",
           "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL.",
-          "pattern": "^[a-z]+?$",
+          "pattern": "^[a-z\\/\\.\\+]+?$",
           "type": "string"
         }
       }

@@ -14,7 +14,7 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
 
   use StringTranslationTrait;
 
-  const DKAN_API_VERSION = 1;
+  const DKAN_API_URL_BASE = "/api/1/";
 
   /**
    * {@inheritdoc}
@@ -41,15 +41,16 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
    * {@inheritdoc}
    */
   public function getExternalUrl() {
-    $url = Url::fromUserInput("/api/1/" . $this->getTarget(), ['absolute' => TRUE]);
-    return $url->toString();
+    $url = Url::fromUserInput(self::DKAN_API_URL_BASE . $this->getTarget(), ['absolute' => TRUE]);
+    $return = $url->toString(TRUE);
+    return $return->getGeneratedUrl();
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDirectoryPath() {
-    $url = Url::fromUserInput("/api/1/", ['absolute' => TRUE]);
+    $url = Url::fromUserInput(self::DKAN_API_URL_BASE, ['absolute' => TRUE]);
     return $url->toString();
   }
 

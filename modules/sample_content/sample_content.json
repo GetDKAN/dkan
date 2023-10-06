@@ -16,7 +16,7 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Bike_Lane.csv",
+          "downloadURL": "file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/Bike_Lane.csv",
           "mediaType": "text\/csv",
           "format": "csv",
           "title": "Florida Bike Lanes"
@@ -49,21 +49,21 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
           "mediaType":"application\/zip",
           "format":"zip",
           "title":"MVA Geographic Data 2016"
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/2016mvadatadictionary.pdf",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/2016mvadatadictionary.pdf",
           "mediaType":"application\/pdf",
           "format":"pdf",
           "title":"2016 MVA Data Dictionary"
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/IMD-MAPS.zip",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/IMD-MAPS.zip",
           "mediaType":"application\/zip",
           "format":"zip",
           "title":"Map files"
@@ -94,7 +94,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/ViolentCrimeRates.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/ViolentCrimeRates.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.",
@@ -124,7 +124,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Asthma-Prevalence-Map-2017.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/Asthma-Prevalence-Map-2017.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
@@ -156,7 +156,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/CDCSmokingRates.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/CDCSmokingRates.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"This dataset highlights critical trends in adult total and per capita consumption of both combustible (cigarettes, little cigars, small cigars, pipe tobacco, roll-your-own tobacco) tobacco products and smokeless (chewing tobacco and snuff) tobacco.",
@@ -188,7 +188,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1991_2007.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1991_2007.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
@@ -196,7 +196,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1974_1990.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1974_1990.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
@@ -228,7 +228,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/polling-places.csv",
+          "downloadURL": "file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/polling-places.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"List of polling places in Madison, WI.",
@@ -259,7 +259,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/us_foreclosures_jan_2012_by_state.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/us_foreclosures_jan_2012_by_state.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"US National Foreclosure Statistics - By State - January 2012",
@@ -287,7 +287,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/data.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/data.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "title":"Table of Gold Prices"
@@ -318,7 +318,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/district_centerpoints.csv",
+          "downloadURL":"file:\/\//var/www/html/docroot/modules/contrib/dkan/modules/sample_content/files\/district_centerpoints.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "title":"District Names"
