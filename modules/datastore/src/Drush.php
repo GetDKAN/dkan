@@ -5,8 +5,10 @@ namespace Drupal\datastore;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
+use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -15,6 +17,7 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
+
   /**
    * The metastore service.
    *
@@ -44,31 +47,41 @@ class Drush extends DrushCommands {
   protected ResourceLocalizer $resourceLocalizer;
 
   /**
+   * Resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected ResourceMapper $resourceMapper;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
     MetastoreService $metastoreService,
     DatastoreService $datastoreService,
     PostImport $postImport,
-    ResourceLocalizer $resourceLocalizer
+    ResourceLocalizer $resourceLocalizer,
+    ResourceMapper $resourceMapper
   ) {
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
     $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
    * Import a datastore resource.
    *
-   * Passing simply a resource identifier will immediately run an import for that
-   * resource. However, if both the FileFetcher and Import jobs are already recorded
-   * as "done" in the jobstore, nothing will happen. To re-import an existing
-   * resource, first use the dkan:datastore:drop command then use import. If you
-   * want to re-import the file to the datastore without repeating the FileFetcher,
-   * make sure to run the drop command with --keep-local. The local file and the
-   * FileFetcher status will be preserved, so the import will see them as "done"
-   * and go straight to the actual DB import job.
+   * Passing simply a resource identifier will immediately run an import for
+   * that resource. However, if both the FileFetcher and Import jobs are
+   * already recorded as "done" in the jobstore, nothing will happen. To
+   * re-import an existing resource, first use the dkan:datastore:drop command
+   * then use import. If you want to re-import the file to the datastore
+   * without repeating the FileFetcher, make sure to run the drop command with
+   * --keep-local. The local file and the FileFetcher status will be preserved,
+   * so the import will see them as "done" and go straight to the actual DB
+   * import job.
    *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
@@ -76,7 +89,8 @@ class Drush extends DrushCommands {
    * @option deferred
    *   Add the import to the datastore_import queue, rather than importing now.
    *
-   * @todo pass configurable options for csv delimiter, quite, and escape characters.
+   * @todo pass configurable options for csv delimiter, quote, and escape
+   *   characters.
    * @command dkan:datastore:import
    */
   public function import(string $identifier, array $options = ['deferred' => FALSE]) {
@@ -84,9 +98,16 @@ class Drush extends DrushCommands {
 
     try {
       $result = $this->datastoreService->import($identifier, $deferred);
-      $status = $result['Import'] ? $result['Import']->getStatus() : 'failed, resource not found';
-      $message = $deferred ? "Queued import for {$identifier}" : "Ran import for {$identifier}; status: $status";
-      $this->logger->notice($message);
+      if ($deferred) {
+        $this->logger->notice('Queued import for ' . $identifier);
+      }
+      else {
+        $this->logger->notice('Ran import for ' . $identifier);
+        foreach ($result as $jobname => $result_object) {
+          /** @var \Procrastinator\Result $result_object */
+          $this->logger->notice('[' . $jobname . '] ' . $result_object->getStatus());
+        }
+      }
     }
     catch (\Exception $e) {
       $this->logger->error("No resource found to import with identifier {$identifier}");
@@ -198,36 +219,58 @@ class Drush extends DrushCommands {
    */
   public function dropAll() {
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
+      $uuid = $distribution->data->{'%Ref:downloadURL'}[0]->data->identifier;
       $this->drop($uuid);
     }
   }
 
   /**
-   * Delete jobstore entries related to a datastore.
+   * Prepare the local perspective for a resource.
+   *
+   * Will do the following:
+   * - Prepare the directory in the file system.
+   * - Add the local_url perspective to the resource mapper. Note this is
+   *   missing the file checksum.
+   * - Display the info necessary to perform an external file fetch.
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @command dkan:datastore:prepare-localized
+   *
+   * @todo Move all this to the ResourceLocalizer so we're responsible for test
+   *   coverage.
    */
-  protected function jobstorePrune($ref_uuid) {
-
-    $jobs = [
-      [
-        "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
-        "table" => "jobstore_filefetcher_filefetcher",
-      ],
-      [
-        "id" => md5($ref_uuid),
-        "table" => "jobstore_dkan_datastore_importer",
-      ],
-    ];
-
-    try {
-      foreach ($jobs as $job) {
-        \Drupal::database()->delete($job['table'])->condition('ref_uuid', $job['id'])->execute();
-        $this->logger('datastore')->notice("Successfully removed the {$job['table']} record for ref_uuid {$job['id']}.");
+  public function prepareLocalized(string $identifier) {
+    if ($resource = $this->resourceMapper->get($identifier)) {
+      // ResourceLocalizer will create the public directory here.
+      $public_dir = $this->resourceLocalizer->getPublicLocalizedDirectory($resource);
+      $localized_filepath = $this->resourceLocalizer->localizeFilePath($resource);
+      $localized_resource = $resource->createNewPerspective(
+        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $localized_filepath
+      );
+      try {
+        $this->resourceMapper->registerNewPerspective($localized_resource);
       }
+      catch (AlreadyRegistered $e) {
+        // Catch the already-registered exception so we can continue to show
+        // the file info to the user.
+        $this->logger()->warning($e->getMessage());
+      }
+      // @todo inject file system service.
+      $file_system = $this->resourceLocalizer->getFileSystem();
+      $info = [
+        'source' => $resource->getFilePath(),
+        'path_uri' => $public_dir,
+        'path' => $file_system->realpath($public_dir),
+        'file_uri' => $localized_filepath,
+        'file' => $file_system->realpath($localized_filepath),
+      ];
+      $this->output()->writeln(json_encode($info, JSON_PRETTY_PRINT));
+      return DrushCommands::EXIT_SUCCESS;
     }
-    catch (\Exception $e) {
-      $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}.", $e->getMessage());
-    }
+    $this->output()->writeln('No resource for identifier: ' . $identifier);
+    return DrushCommands::EXIT_FAILURE;
   }
 
 }

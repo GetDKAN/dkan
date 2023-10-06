@@ -5,6 +5,7 @@ namespace Drupal\Tests\metastore\Unit;
 use Drupal\common\DataResource;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
 use MockChain\Chain;
 use MockChain\Options;
@@ -59,7 +60,7 @@ class ResourceMapperTest extends TestCase {
     $this->registerResource($resource2, $mapper);
 
     // Register a different perspective of the first resource.
-    $resource1local = $resource1->createNewPerspective('local_url', $localUrl);
+    $resource1local = $resource1->createNewPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $localUrl);
     $mapper->registerNewPerspective($resource1local);
     $this->retrieveAndCheck($resource1, $mapper);
     $this->retrieveAndCheck($resource1local, $mapper);
@@ -73,19 +74,19 @@ class ResourceMapperTest extends TestCase {
 
     // Should be able to get local from first revision but not second.
     $this->assertEquals($localUrl,
-      $mapper->get($resource1->getIdentifier(), 'local_url', $resource1->getVersion())
+      $mapper->get($resource1->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1->getVersion())
         ->getFilePath()
     );
-    $this->assertNull($mapper->get($resource1v2->getIdentifier(), 'local_url', $resource1v2->getVersion()));
+    $this->assertNull($mapper->get($resource1v2->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1v2->getVersion()));
 
     // Add perspective to the new revision.
-    $resource1v2local = $resource1v2->createNewPerspective('local_url', $localUrl2);
+    $resource1v2local = $resource1v2->createNewPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $localUrl2);
     $mapper->registerNewPerspective($resource1v2local);
     $this->assertEquals($localUrl,
-      $mapper->get($resource1local->getIdentifier(), 'local_url', $resource1local->getVersion())
+      $mapper->get($resource1local->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1local->getVersion())
         ->getFilePath());
     $this->assertEquals($localUrl2,
-      $mapper->get($resource1v2local->getIdentifier(), 'local_url', $resource1v2local->getVersion())
+      $mapper->get($resource1v2local->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1v2local->getVersion())
         ->getFilePath());
 
     // The file mapper should not register other perspectives as sources.

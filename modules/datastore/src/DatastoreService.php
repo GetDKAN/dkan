@@ -51,7 +51,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Datastore Query object for conversion.
    *
-   * @var Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+   * @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
    */
   private $dictionaryEnforcer;
 
@@ -82,7 +82,7 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Jobstore factory service.
    * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
    *   Import info list service.
-   * @param Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
+   * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */
   public function __construct(
@@ -123,11 +123,11 @@ class DatastoreService implements ContainerInjectionInterface {
         ->createItem(['identifier' => $identifier, 'version' => $version]);
 
       if ($queueId === FALSE) {
-        throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
+        throw new \RuntimeException('Failed to create file fetcher queue for ' . $identifier . ':' . $version);
       }
 
       return [
-        'message' => "Resource {$identifier}:{$version} has been queued to be imported.",
+        'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
       ];
     }
 
@@ -157,11 +157,19 @@ class DatastoreService implements ContainerInjectionInterface {
    * Private.
    */
   private function getLabelFromObject($object) {
-    return substr(strrchr(get_class($object), "\\"), 1);
+    return substr(strrchr(get_class($object), '\\'), 1);
   }
 
   /**
-   * Private.
+   * Get a resource and the result of localizing it.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   *
+   * @return array
+   *   The resource object and a result object in an array.
    */
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
@@ -212,20 +220,20 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   public function drop(string $identifier, ?string $version = NULL, bool $local_resource = TRUE) {
     $storage = $this->getStorage($identifier, $version);
-    $resource_id = $this->resourceLocalizer->get($identifier, $version)->getUniqueIdentifier();
+    $resource = $this->resourceLocalizer->get($identifier, $version);
 
     if ($storage) {
       $storage->destruct();
       $this->jobStoreFactory
         ->getInstance(ImportJob::class)
-        ->remove(md5($resource_id));
+        ->remove(md5($resource->getUniqueIdentifier()));
     }
 
     if ($local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
       $this->jobStoreFactory
         ->getInstance(FileFetcher::class)
-        ->remove(substr(str_replace('__', '_', $resource_id), 0, -11));
+        ->remove($resource->getUniqueIdentifierNoPerspective());
     }
   }
 
@@ -252,7 +260,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $data = $storage->getSummary();
       return $data;
     }
-    throw new \Exception("no storage");
+    throw new \Exception('no storage');
   }
 
   /**
@@ -266,7 +274,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * @return \Drupal\datastore\Storage\DatabaseTable
    *   Storage object.
    *
-   * @throws \Exception
+   * @throws \InvalidArgumentException
    */
   public function getStorage(string $identifier, $version = NULL) {
     $resource = $this->resourceLocalizer->get($identifier, $version);

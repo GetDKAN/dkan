@@ -5,6 +5,7 @@ namespace Drupal\datastore\Form;
 use Drupal\common\DataResource;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\datastore\Service\ResourceLocalizer;
 
 /**
  * DKAN resource settings form.
@@ -56,14 +57,13 @@ class ResourceSettingsForm extends ConfigFormBase {
     $form['resource_perspective_display'] = [
       '#type' => 'select',
       '#title' => $this->t('Resource download url display'),
-      '#description' => $this->t('Choose to display either the source or local path to a resource file in the 
+      '#description' => $this->t('Choose to display either the source or local path to a resource file in the
         metadata. Note that "Local URL" display only makes sense if "Delete local resource" is unchecked.'),
       '#options' => [
         DataResource::DEFAULT_SOURCE_PERSPECTIVE => $this->t('Source'),
-        'local_url' => $this->t('Local URL'),
+        ResourceLocalizer::LOCAL_URL_PERSPECTIVE => $this->t('Local URL'),
       ],
-      '#default_value' => $this->config('metastore.settings')->get('resource_perspective_display')
-      ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+      '#default_value' => $this->config('metastore.settings')->get('resource_perspective_display') ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE,
     ];
     return parent::buildForm($form, $form_state);
   }

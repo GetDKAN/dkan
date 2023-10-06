@@ -3,13 +3,63 @@
 namespace Drupal\metastore\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 /**
  * Data-Dictionary settings form.
  */
 class DataDictionarySettingsForm extends ConfigFormBase {
+
+  /**
+   * The metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreService
+   */
+  protected $metastore;
+
+  /**
+   * The messenger interface.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * Constructs a \Drupal\Core\Form\ConfigFormBase object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The factory for configuration objects.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger.
+   * @param \Drupal\metastore\MetastoreService $metastore
+   *   The metastore service.
+   */
+  public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger, MetastoreService $metastore) {
+    $this->setConfigFactory($config_factory);
+    $this->messenger = $messenger;
+    $this->metastore = $metastore;
+  }
+
+  /**
+   * Instantiates a new instance of this class.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   Interface implemented by service container classes.
+   *
+   * @return static
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('config.factory'),
+      $container->get('messenger'),
+      $container->get('dkan.metastore.service')
+    );
+  }
 
   /**
    * Config ID.
@@ -65,6 +115,25 @@ class DataDictionarySettingsForm extends ConfigFormBase {
     ];
 
     return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    if ($form_state->getValue('dictionary_mode') === 'sitewide') {
+      try {
+        // Search for existing data-dictionary id.
+        if (!$this->metastore->get('data-dictionary', $form_state->getValue('sitewide_dictionary_id'))) {
+          throw new \Exception('Data not found.');
+        }
+      }
+      catch (\Exception $e) {
+        $form_state->setErrorByName('sitewide_dictionary_id', $e->getMessage());
+      }
+    }
+
+    parent::validateForm($form, $form_state);
   }
 
   /**

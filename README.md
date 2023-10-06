@@ -30,5 +30,8 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 
 ---
 
-> Looking for the Drupal 7 version of DKAN? See the 7.x-1.x branch on [DKAN's Github Repository](https://github.com/GetDKAN/dkan/tree/7.x-1.x).
+## History
 
+- DKAN’s initial v1.0 release was in 2014 (this code is still available on the [7.x-1.x branch](https://github.com/GetDKAN/dkan/tree/7.x-1.x), although no longer supported).
+- In the fall of 2017, CivicActions took over sponsorship and maintenance of DKAN.
+- In May 2020 CivicActions released a completely rewritten version of DKAN to support Drupal 8, then 9 and 10. This new version (v2) was a complete ground up rebuild of the platform, integrating architectural insight from DKAN v1 and many new capabilities.

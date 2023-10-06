@@ -11,13 +11,13 @@ class SchemaTest extends Api1TestBase {
   }
 
   public function testList() {
-    $response = $this->http->request('GET', $this->endpoint);
+    $response = $this->httpClient->request('GET', $this->endpoint);
     $responseBody = json_decode($response->getBody());
     $this->assertEquals("http://dkan/api/v1/schema/dataset", $responseBody->dataset->id);
   }
 
   public function testGetItem() {
-    $response = $this->http->request('GET', "$this->endpoint/dataset");
+    $response = $this->httpClient->request('GET', "$this->endpoint/dataset");
     $responseBody = json_decode($response->getBody());
     $this->assertEquals("http://dkan/api/v1/schema/dataset", $responseBody->id);
   }

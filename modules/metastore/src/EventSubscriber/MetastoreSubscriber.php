@@ -75,7 +75,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   public function cleanResourceMapperTable(Event $event) {
     $distribution_id = $event->getData();
     // Use the metastore service to build a distribution object.
-    $distribution = $this->service->get('distribution', $distribution_id);
+    $distribution = $this->service->get('distribution', $distribution_id, FALSE);
     // Attempt to extract all resources for the given distribution.
     $resources = $distribution->{'$.data["%Ref:downloadURL"]..data'} ?? [];
 

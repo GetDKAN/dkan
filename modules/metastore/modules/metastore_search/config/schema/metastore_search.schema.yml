@@ -1,0 +1,2 @@
+plugin.plugin_configuration.search_api_datasource.dkan_dataset:
+  type: config_dependencies

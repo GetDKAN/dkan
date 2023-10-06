@@ -58,6 +58,23 @@ dkan:datastore:list
 
 ~~~~~~
 
+dkan:datastore:prepare-localized
+--------------------------------
+
+    Prepare the local perspective for a resource.
+
+    Will do the following:
+
+    - Prepare the directory in the file system.
+    - Add the local_url perspective to the resource mapper. Note this is missing the file checksum.
+    - Display the info necessary to perform an external file fetch.
+
+    **Arguments**
+
+    - **identifier** Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+
+~~~~~~
+
 dkan:harvest:archive
 ---------------------
 

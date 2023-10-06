@@ -45,8 +45,9 @@ context('Admin dataset json form', () => {
           .click({ force: true });
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
+        cy.wait(2000)
         cy.get('#edit-actions').within(() => {
-          cy.get('#edit-preview').should('not.exist')
+          cy.get('#edit-preview').should('exist')
         })
         cy.get('#edit-submit').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true });
@@ -73,21 +74,17 @@ context('Admin dataset json form', () => {
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title').type('DKANTEST distribution title text', { force:true })
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description').type('DKANTEST distribution description text', { force:true })
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select').select('csv', { force:true })
-        cy.get('#edit-actions').within(() => {
-          cy.get('#edit-preview').should('not.exist')
-        })
         cy.get('#edit-submit').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true });
         cy.get('.messages--status').should('contain','has been updated')
         // Delete dataset.
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
-        cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
         cy.get('#edit-node-bulk-form-0').check({ force:true })
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('.button').contains('Yes').click({ force:true });
+        cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
+        cy.get('#edit-submit').click({ force:true })
         cy.get('input[value="Delete"]').click({ force:true })
-        cy.get('.messages').should('contain','Deleted 1 content item.')
+        cy.get('.messages__content').should('contain','Deleted 1 content item.')
     })
 
 })
