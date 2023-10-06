@@ -89,7 +89,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
 
     $form['html_allowed_properties'] = [
       '#type' => 'checkboxes',
-      '#title' => $this->t('Properties that allow HTML'),
+      '#title' => $this->t('Dataset properties that allow HTML'),
       '#description' => $this->t('Metadata properties that may contain HTML elements.'),
       '#options' => $this->schemaHelper->retrieveStringSchemaProperties(),
       '#default_value' => $config->get('html_allowed_properties') ?:
