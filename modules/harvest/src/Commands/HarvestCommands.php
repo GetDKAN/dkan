@@ -6,6 +6,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -127,13 +128,16 @@ class HarvestCommands extends DrushCommands {
    */
   public function deregister($id) {
     $message = 'Could not deregister the ' . $id . ' harvest.';
-    try {
+    $this->logger->warning(
+      'If you deregister a harvest with published datasets, you will
+       not be able to bulk revert the datasets connected to this harvest.');
+    if ($this->io()->confirm("Deregister harvest {$id}")) {
       if ($this->harvestService->deregisterHarvest($id)) {
         $message = 'Successfully deregistered the ' . $id . ' harvest.';
       }
     }
-    catch (\Exception $e) {
-      $message = $e->getMessage();
+    else {
+      throw new UserAbortException();
     }
 
     $this->logger->notice($message);
