@@ -77,6 +77,9 @@ class StringHelper implements ContainerInjectionInterface {
     // Add options if element type is select.
     if ($element['#type'] === 'select') {
       $element['#options'] = $this->getSelectOptions($property);
+      if ($property->empty_value) {
+        $element['#empty_value'] = '';
+      }
     }
 
     // Add extra validate if element type is email.
