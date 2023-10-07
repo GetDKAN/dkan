@@ -162,6 +162,7 @@ class JsonFormBuilderTest extends TestCase {
           "R/P10Y" => "Decennial",
           "R/P4Y" => "Quadrennial",
         ],
+        "#empty_value" => ''
       ],
     ];
     $default_data = new stdClass();
