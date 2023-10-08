@@ -8,8 +8,10 @@ use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
+use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
@@ -163,9 +165,17 @@ class LifeCycle {
   }
 
   /**
-   * Private.
+   * Pre-process distribution node on load.
    *
-   * @todo Decouple "resource" functionality from specific dataset properties.
+   * Translate resource ID to downloadUrl, and translate internal DKAN URI
+   * for data dictionary to absolute URL.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Distribution Metastore item.
+   *
+   * @todo For consistency, this should either be abstracted so that it is not
+   * so tightly coupled with the distribution schema, or we should better
+   * document that DKAN only supports DCAT standard.
    */
   protected function distributionLoad(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
@@ -182,7 +192,7 @@ class LifeCycle {
       $original = NULL;
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
 
-      $downloadUrl = isset($original) ? $original : "";
+      $downloadUrl = $original ?? "";
 
       $refProperty = "%Ref:downloadURL";
       $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
@@ -191,9 +201,12 @@ class LifeCycle {
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
-
     $metadata->data->downloadURL = $downloadUrl;
 
+    // If describedBy contains dkan:// URI, convert to absolute URL.
+    if (StreamWrapperManager::getScheme($metadata->data->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {
+      $metadata->data->describedBy = $this->referencer->metastoreUrlGenerator->absoluteString($metadata->data->describedBy);
+    }
     $data->setMetadata($metadata);
   }
 

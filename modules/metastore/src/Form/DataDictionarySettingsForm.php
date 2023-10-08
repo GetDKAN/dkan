@@ -2,13 +2,13 @@
 
 namespace Drupal\metastore\Form;
 
-use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
-use Drupal\metastore\MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\metastore\MetastoreService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data-Dictionary settings form.
@@ -40,7 +40,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
    *   The metastore service.
    */
   public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger, MetastoreService $metastore) {
-    $this->setConfigFactory($config_factory);
+    parent::__construct($config_factory);
     $this->messenger = $messenger;
     $this->metastore = $metastore;
   }
@@ -96,8 +96,13 @@ class DataDictionarySettingsForm extends ConfigFormBase {
       '#options' => [
         DataDictionaryDiscoveryInterface::MODE_NONE => $this->t('Disabled'),
         DataDictionaryDiscoveryInterface::MODE_SITEWIDE => $this->t('Sitewide'),
+        DataDictionaryDiscoveryInterface::MODE_REFERENCE => $this->t('Distribution reference'),
       ],
       '#default_value' => $config->get('data_dictionary_mode'),
+      '#description' => $this->t("Chose how to use data dictionaries in DKAN. Sitewide means you will enter a single
+        data dictionary UUID that will be used for all datasets on the site. Distribution reference means
+        DKAN will look in the describedBy field of a distribution for data dictionary for that specific
+        resource."),
       '#attributes' => [
         'name' => 'dictionary_mode',
       ],

@@ -1,44 +1,37 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\metastore\Kernel;
 
 use Drupal\common\DataResource;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\Core\DependencyInjection\Container;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\ResourceMapper;
-use MockChain\Chain;
-use MockChain\Options;
-use PHPUnit\Framework\TestCase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
+ * @group dkan
+ * @group metastore
+ * @group kernel
  *
+ * @covers \Drupal\metastore\ResourceMapper
+ * @coversDefaultClass \Drupal\metastore\ResourceMapper
  */
-class ResourceMapperTest extends TestCase {
+class ResourceMapperTest extends KernelTestBase {
+
+  protected static $modules = [
+    'common',
+    'metastore',
+  ];
 
   /**
    * Test.
    */
   public function test() {
-    $url = "http://blah.blah/file/blah.csv";
-    $url2 = "http://blah.blah/file/blah2.csv";
-    $localUrl = "https://dkan.dkan/resources/file/blah.csv";
-    $localUrl2 = "https://dkan.dkan/resources/file/newblah.csv";
+    $url = 'http://blah.blah/file/blah.csv';
+    $url2 = 'http://blah.blah/file/blah2.csv';
+    $localUrl = 'https://dkan.dkan/resources/file/blah.csv';
+    $localUrl2 = 'https://dkan.dkan/resources/file/newblah.csv';
 
-    $store = (new Chain($this))
-      ->add(DatabaseTableMock::class)
-      ->getMock();
-
-    $options = (new Options())
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
-      ->index(0);
-
-    $container = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->getMock();
-    \Drupal::setContainer($container);
-
-    $mapper = new ResourceMapper($store);
+    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
 
     // Register a resource.
     $resource1 = $this->getResource($url);

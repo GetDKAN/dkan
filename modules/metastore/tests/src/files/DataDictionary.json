@@ -1,0 +1,70 @@
+{
+    "title": "Bike lanes data dictionary",
+    "data": {
+        "fields": [
+            {
+                "name": "objectid",
+                "title": "OBJECTID",
+                "type": "integer",
+                "description": "Internal feature number."
+            },
+            {
+                "name": "roadway",
+                "title": "ROADWAY",
+                "type": "string",
+                "description": "A unique 8-character identification number assigned to a roadway or section of a roadway either On or Off the State Highway System for which information is maintained in the Department's Roadway Characteristics Inventory (RCI)."
+            },
+            {
+                "name": "road_side",
+                "title": "ROAD_SIDE",
+                "type": "string",
+                "constraints": {
+                    "maxLength": 1,
+                    "minLength": 1,
+                    "enum": ["R", "L", "C"]
+                },
+                "description": "Side of the road. C = Composite; L = Left side; R = Right side"
+            },
+            {
+                "name": "lncd",
+                "title": "LNCD",
+                "type": "integer",
+                "constraints": {
+                    "maxLength": 1,
+                    "minLength": 1,
+                    "maximum": 5,
+                    "minimum": 0
+                },
+                "description": "Codes 0 = UNDESIGNATED; 1 = DESIGNATED; 2 = BUFFERED; 3 = COLORED; 4 = BOTH 2 AND 3; 5 = SHARROW"
+            },
+            {
+                "name": "descr",
+                "title": "DESCR",
+                "type": "string",
+                "constraints": {
+                  "maxLength": 30,
+                  "enum": ["UNDESIGNATED", "DESIGNATED"]
+                },
+                "description": "Designation description."
+            },
+            {
+                "name": "begin_post",
+                "title": "BEGIN_POST",
+                "type": "number",
+                "description": "Denotes the lowest milepoint for the record."
+            },
+            {
+                "name": "end_post",
+                "title": "END_POST",
+                "type": "number",
+                "description": "Denotes the highest milepoint for the record."
+            },
+            {
+                "name": "shape_len",
+                "title": "Shape_Leng",
+                "type": "number",
+                "description": "Length in meters"
+            }
+        ]
+    }
+}

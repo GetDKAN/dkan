@@ -58,7 +58,7 @@ The term "data dictionary" is fairly broad, and can refer to anything from a PDF
 machine-readable table schema.
 
 While users are free to integrate data dictionaries into their metadata schemas in any way they chose
-in DKAN, we are introducing our own native data dictionary concept. Data dictionaries in DKAN are JSON
+in DKAN, DKAN also has its own native data dictionary type. Data dictionaries in DKAN are JSON
 metadata items managed in the metastore in the same way that datasets and distributions are. They are,
 however, less flexible than other metadata schema, which can be completely overridden/replaced in your
 instance of DKAN. To use DKAN's new native data dictionary features, you must use the `data-dictionary`
@@ -69,8 +69,6 @@ Data dictionaries can have three different relationships with your catalog:
 1. You may have a single data dictionary for your entire catalog, and share its column definitions across all datasets.
 2. You may define a set of domain-specific data dictionaries for your catalog, which you can chose between when creating a dataset.
 3. You may define one data dictionary for every dataset, or even every distribution, in your catalog.
-
-*(Note that only option #1 above has been implemented in the current version of DKAN.)*
 
 Data dictionaries will affect the behavior of the :doc:`Datastore <dkan_datastore>`.
 
