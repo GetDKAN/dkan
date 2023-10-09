@@ -13,6 +13,8 @@ use Symfony\Component\Routing\RouteCollection;
 class RouteProvider {
 
   /**
+   * Query factory.
+   *
    * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
    */
   protected QueryFactoryInterface $entityQuery;

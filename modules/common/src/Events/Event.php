@@ -31,6 +31,7 @@ class Event extends SymfonyEvent {
    * @var \Exception|null
    */
   protected ?\Exception $exception;
+
   /**
    * Constructor.
    */

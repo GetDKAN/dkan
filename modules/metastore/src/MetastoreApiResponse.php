@@ -104,7 +104,7 @@ class MetastoreApiResponse {
       $this->addItemDependencies($cacheMetadata, $item);
     }
     elseif (is_string($item)) {
-      // @todo: Add a metastore dependency for a whole schema/type.
+      // @todo Add a metastore dependency for a whole schema/type.
       $cacheMetadata->addCacheTags(
         $this->getMetastoreItemFactory()->getCacheTags()
       );

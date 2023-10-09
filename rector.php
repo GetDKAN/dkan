@@ -2,15 +2,14 @@
 
 /**
  * @file
+ * Rector config for DKAN.
  *
- * % ddev composer show palantirnet/drupal-rector --tree
- * palantirnet/drupal-rector dev-stable-in-composer Instant fixes for your Drupal code by using Rector.
- * ├──rector/rector @stable
- * │  ├──php ^7.2|^8.0
- * │  └──phpstan/phpstan ^1.10.35
- * │     └──php ^7.2|^8.0
- * └──webflo/drupal-finder @stable
- * └──ext-json *
+ * To use this file:
+ * - Copy to the project root.
+ * - Use Composer to add Drupal Rector to your project:
+ *   composer require --dev palantirnet/drupal-rector
+ * - ./vendor/bin/rector process --dry-run
+ * - Leave off the --dry-run to do the actual processing.
  */
 
 declare(strict_types=1);
