@@ -3,17 +3,18 @@
 namespace Drupal\metastore\Controller;
 
 use Drupal\common\JsonResponseTrait;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
 use Drupal\metastore\Exception\MissingPayloadException;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\MetastoreService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class Api.
@@ -28,21 +29,28 @@ class MetastoreController implements ContainerInjectionInterface {
    *
    * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  private $requestStack;
+  private RequestStack $requestStack;
 
   /**
    * Metastore service.
    *
    * @var \Drupal\metastore\MetastoreService
    */
-  private $service;
+  private MetastoreService $service;
 
   /**
    * Metastore dataset docs service.
    *
    * @var \Drupal\metastore\DatasetApiDocs
    */
-  private $docs;
+  private DatasetApiDocs $docs;
+
+  /**
+   * Metastore API response service.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  private MetastoreApiResponse $apiResponse;
 
   /**
    * Inherited.

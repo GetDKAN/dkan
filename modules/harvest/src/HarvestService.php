@@ -127,11 +127,6 @@ class HarvestService implements ContainerInjectionInterface {
    *   Boolean.
    */
   public function deregisterHarvest(string $id) {
-    try {
-      $this->revertHarvest($id);
-    }
-    catch (\Exception $e) {
-    }
 
     $plan_store = $this->storeFactory->getInstance('harvest_plans');
 
