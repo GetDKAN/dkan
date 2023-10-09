@@ -20,7 +20,13 @@ use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
  */
 class DatastoreService implements ContainerInjectionInterface {
 
-  public $importInfoList;
+  /**
+   * Import info service.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfoList
+   */
+  private ImportInfoList $importInfoList;
+
   /**
    * Resource localizer for handling remote resource URLs.
    *

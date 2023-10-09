@@ -4,6 +4,7 @@ namespace Drupal\Tests\metastore\Functional\Storage;
 
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
+use Drupal\metastore\ValidMetadataFactory;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use RootedData\RootedJsonData;
@@ -16,10 +17,16 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @group dkan
  */
 class NodeDataTest extends ExistingSiteBase {
-  public $validMetadataFactory;
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+
+  /**
+   * Metadata factory.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory
+   */
+  protected ValidMetadataFactory $validMetadataFactory;
 
   public function setUp(): void {
     parent::setUp();

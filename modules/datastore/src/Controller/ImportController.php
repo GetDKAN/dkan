@@ -20,8 +20,21 @@ use Symfony\Component\HttpFoundation\Request;
  * @codeCoverageIgnore
  */
 class ImportController implements ContainerInjectionInterface {
-  public $metastoreApiResponse;
-  public $referenceLookup;
+
+  /**
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  public MetastoreApiResponse $metastoreApiResponse;
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  public ReferenceLookup $referenceLookup;
+
   use JsonResponseTrait;
 
   /**

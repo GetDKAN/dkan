@@ -18,9 +18,22 @@ use Symfony\Component\HttpFoundation\Request;
  * @codeCoverageIgnore.
  */
 class MetastoreRevisionController implements ContainerInjectionInterface {
-  public $apiResponse;
-  public $storageFactory;
+
   use JsonResponseTrait;
+
+  /**
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  protected MetastoreApiResponse $apiResponse;
+
+  /**
+   * Storage.
+   *
+   * @var \Contracts\FactoryInterface
+   */
+  protected ContractsFactoryInterface $storageFactory;
 
   /**
    * Request stack.

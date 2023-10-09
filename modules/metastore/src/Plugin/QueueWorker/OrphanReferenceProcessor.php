@@ -24,11 +24,17 @@ use Drupal\metastore\ReferenceLookupInterface;
  * @codeCoverageIgnore
  */
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-  public $referenceLookup;
   use LoggerTrait;
   use EventDispatcherTrait;
 
   const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\ReferenceLookupInterface
+   */
+  protected ReferenceLookupInterface $referenceLookup;
 
   /**
    * The node storage service.

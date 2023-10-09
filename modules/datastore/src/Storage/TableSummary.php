@@ -9,7 +9,13 @@ namespace Drupal\datastore\Storage;
  */
 class TableSummary implements \JsonSerializable {
 
-  public $fulltextIndexes;
+  /**
+   * Full text indexes.
+   *
+   * @var array|null
+   */
+  public ?array $fulltextIndexes;
+
   /**
    * Number of columns.
    *
@@ -46,7 +52,8 @@ class TableSummary implements \JsonSerializable {
     array $columns,
     ?array $indexes,
     ?array $fulltext_indexes,
-    int $numOfRows) {
+    int $numOfRows
+  ) {
     $this->numOfColumns = $numOfColumns;
     $this->columns = $columns;
     $this->indexes = $indexes;

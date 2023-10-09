@@ -10,8 +10,20 @@ use Drupal\Core\Config\ConfigFactoryInterface;
  */
 class Page {
 
-  public $buildFolder;
-  public $frontendPath;
+  /**
+   * Build folder.
+   *
+   * @var string
+   */
+  private string $buildFolder;
+
+  /**
+   * Frontend path.
+   *
+   * @var string
+   */
+  private string $frontendPath;
+
   /**
    * App root directory for react data catalog app.
    *

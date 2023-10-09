@@ -15,10 +15,29 @@ class RouteProvider {
   /**
    * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
    */
-  public $entityQuery;
-  public $buildFolder;
-  public $frontendPath;
-  public $routes;
+  protected QueryFactoryInterface $entityQuery;
+
+  /**
+   * Build folder.
+   *
+   * @var string
+   */
+  private string $buildFolder;
+
+  /**
+   * Front end path.
+   *
+   * @var string
+   */
+  private string $frontendPath;
+
+  /**
+   * Routes.
+   *
+   * @var array
+   */
+  private array $routes;
+
   /**
    * App root directory for react data catalog app.
    *

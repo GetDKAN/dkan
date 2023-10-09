@@ -16,10 +16,22 @@ use RootedData\RootedJsonData;
  * Service to find metastore items referencing an identifier.
  */
 class ReferenceLookup implements ReferenceLookupInterface {
-  public $invalidator;
-  public $moduleHandler;
   use HelperTrait;
   use LoggerTrait;
+
+  /**
+   * Cache tags invalidator service.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  protected CacheTagsInvalidatorInterface $invalidator;
+
+  /**
+   * Module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected ModuleHandlerInterface $moduleHandler;
 
   /**
    * Metastore Storage service.

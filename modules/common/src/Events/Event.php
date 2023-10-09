@@ -11,9 +11,26 @@ use Drupal\Component\EventDispatcher\Event as SymfonyEvent;
  */
 class Event extends SymfonyEvent {
 
+  /**
+   * Validator.
+   *
+   * @var \Closure|mixed|null
+   */
   public $validator;
-  public $data;
-  public $exception;
+
+  /**
+   * Arbitrary data.
+   *
+   * @var mixed
+   */
+  protected $data;
+
+  /**
+   * The exception we stored.
+   *
+   * @var \Exception|null
+   */
+  protected ?\Exception $exception;
   /**
    * Constructor.
    */

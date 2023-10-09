@@ -14,11 +14,18 @@ use Drupal\metastore\MetastoreApiResponse;
  * Api class.
  */
 class WebServiceApi implements ContainerInjectionInterface {
-  public $metastoreApiResponse;
+
   use JsonResponseTrait;
   use EventDispatcherTrait;
 
   const EVENT_RUN_QUERY = 'dkan_datastore_sql_run_query';
+
+  /**
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  private MetastoreApiResponse $metastoreApiResponse;
 
   /**
    * DKAN SQL Endpoint service.

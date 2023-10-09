@@ -24,9 +24,27 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class DatastoreSubscriber implements EventSubscriberInterface {
 
-  public $service;
-  public $resourcePurger;
-  public $jobStoreFactory;
+  /**
+   * Datastore service.
+   *
+   * @var \Drupal\datastore\DatastoreService
+   */
+  protected DatastoreService $service;
+
+  /**
+   * Resource purger.
+   *
+   * @var \Drupal\datastore\Service\ResourcePurger
+   */
+  protected ResourcePurger $resourcePurger;
+
+  /**
+   * Jobstore factory.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
+  protected JobStoreFactory $jobStoreFactory;
+
   /**
    * Drupal Config Factory.
    *
@@ -208,10 +226,6 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   protected function lazyDiffObject($a, $b, array $scope): bool {
     $changed = FALSE;
     foreach ($scope as $property) {
-//      if (property_exists($a, $property) !== property_exists($b, $property)) {
-//        $changed = TRUE;
-//        break;
-//      }
       if ($a->{$property} != $b->{$property}) {
         $changed = TRUE;
         break;

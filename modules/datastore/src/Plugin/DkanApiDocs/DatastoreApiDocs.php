@@ -20,11 +20,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DatastoreApiDocs extends DkanApiDocsBase {
 
-  public $importInfo;
+  /**
+   * Import info.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfo
+   */
+  protected ImportInfo $importInfo;
+
   /**
    * The DKAN metastore service.
    *
-   * @var Drupal\metastore\Service
+   * @var \Drupal\metastore\Service
    */
   private $metastore;
 
@@ -43,7 +49,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\metastore\MetastoreService $metastore
    *   The module handler service.
-   * @param Drupal\datastore\Service\Info\ImportInfo $importInfo
+   * @param \Drupal\datastore\Service\Info\ImportInfo $importInfo
    *   Import info datastoer service.
    */
   public function __construct(
