@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Controller.
  */
 class SearchController implements ContainerInjectionInterface {
+  public $metastoreApiResponse;
+  public $schemaRetriever;
   use JsonResponseTrait;
 
   /**

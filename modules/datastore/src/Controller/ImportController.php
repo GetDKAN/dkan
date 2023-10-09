@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @codeCoverageIgnore
  */
 class ImportController implements ContainerInjectionInterface {
+  public $metastoreApiResponse;
+  public $referenceLookup;
   use JsonResponseTrait;
 
   /**
@@ -100,8 +102,7 @@ class ImportController implements ContainerInjectionInterface {
     else {
       $distributions = [];
     }
-    $dependencies = empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
-    return $dependencies;
+    return empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
   }
 
   /**

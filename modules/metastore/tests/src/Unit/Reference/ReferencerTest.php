@@ -109,9 +109,7 @@ class ReferencerTest extends TestCase {
     $urlGenerator = (new Chain($this))
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', 'dkan://metastore/schemas/data-dictionary/items/111')
       ->getMock();
-
-    $referencer = new Referencer($configService, $storageFactory, $urlGenerator);
-    return $referencer;
+    return new Referencer($configService, $storageFactory, $urlGenerator);
   }
 
   private function getContainer() {
@@ -123,14 +121,12 @@ class ReferencerTest extends TestCase {
       ->add('file_system', FileSystem::class)
       ->index(0);
 
-    $container_chain = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'test.test')
       ->add(ResourceMapper::class, 'register', TRUE, 'resource')
       ->add(FileSystem::class, 'getTempDirectory', '/tmp');
-
-    return $container_chain;
   }
 
   /**

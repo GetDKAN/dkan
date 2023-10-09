@@ -9,6 +9,7 @@ namespace Drupal\datastore\Storage;
  */
 class TableSummary implements \JsonSerializable {
 
+  public $fulltextIndexes;
   /**
    * Number of columns.
    *

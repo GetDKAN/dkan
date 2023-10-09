@@ -81,12 +81,11 @@ class JobStore extends AbstractDatabaseTable {
   protected function getHashedTableName(): string {
     // Avoid table-name-too-long errors by hashing the FQN of the class.
     $exploded_class = explode('\\', $this->jobClass);
-    $table_name = strtolower(implode('_', [
+    return strtolower(implode('_', [
       'jobstore',
       crc32($this->jobClass),
       array_pop($exploded_class),
     ]));
-    return $table_name;
   }
 
   /**

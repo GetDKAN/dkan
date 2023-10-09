@@ -20,6 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class MetastoreSearchApiDocs extends DkanApiDocsBase {
 
+  public $metastoreSearch;
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *

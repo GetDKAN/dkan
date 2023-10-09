@@ -16,6 +16,8 @@ use RootedData\RootedJsonData;
  * Service to find metastore items referencing an identifier.
  */
 class ReferenceLookup implements ReferenceLookupInterface {
+  public $invalidator;
+  public $moduleHandler;
   use HelperTrait;
   use LoggerTrait;
 

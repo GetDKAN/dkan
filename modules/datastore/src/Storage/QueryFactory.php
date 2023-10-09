@@ -143,10 +143,7 @@ class QueryFactory {
    *   DKAN generalized query object.
    */
   private function populateQueryProperties(Query $query) {
-    if (empty($this->datastoreQuery->{"$.properties"})) {
-      return;
-    }
-    foreach ($this->datastoreQuery->{"$.properties"} as $property) {
+    foreach ($this->datastoreQuery->{"$.properties"} ?? [] as $property) {
       $query->properties[] = $this->propertyConvert($property);
     }
   }

@@ -59,8 +59,6 @@ class WebServiceApiTest extends TestCase {
     switch ($input) {
       case 'dkan.harvest.service':
         return new HarvestService(new MemoryFactory(), $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
-
-      break;
       case 'request_stack':
         $stack = $this->getMockBuilder(RequestStack::class)
           ->disableOriginalConstructor()
@@ -70,8 +68,6 @@ class WebServiceApiTest extends TestCase {
         $stack->method("getCurrentRequest")->willReturn($this->request);
 
         return $stack;
-
-      break;
     }
   }
 

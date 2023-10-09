@@ -20,6 +20,7 @@ use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
  */
 class DatastoreService implements ContainerInjectionInterface {
 
+  public $importInfoList;
   /**
    * Resource localizer for handling remote resource URLs.
    *
@@ -257,8 +258,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
-      $data = $storage->getSummary();
-      return $data;
+      return $storage->getSummary();
     }
     throw new \Exception('no storage');
   }

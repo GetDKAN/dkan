@@ -15,13 +15,6 @@ use Procrastinator\Job\Job;
 class ImportInfo {
 
   /**
-   * A JobStore object.
-   *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   */
-  private $jobStoreFactory;
-
-  /**
    * Resource localizer service.
    *
    * @var \Drupal\datastore\Service\ResourceLocalizer
@@ -45,8 +38,7 @@ class ImportInfo {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
   }

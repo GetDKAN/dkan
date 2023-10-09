@@ -72,7 +72,7 @@ class DatastoreServiceTest extends TestCase {
     $actual = $service->drop('foo', NULL, FALSE);
     $this->assertNull($actual);
     $this->expectException(\TypeError::class);
-    $actual = $service->drop('foo', NULL, NULL);
+    $service->drop('foo', NULL, NULL);
   }
 
   /**

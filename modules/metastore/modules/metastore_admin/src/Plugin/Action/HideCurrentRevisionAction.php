@@ -26,13 +26,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPluginInterface {
 
-  /**
-   * Private.
-   *
-   * @var entity
-   */
-  private $entity = NULL;
-
+  public $logger;
+  public $currentUser;
+  public $timeInterface;
   /**
    * Constructor.
    *

@@ -21,7 +21,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
    *
    * @var string[]
    */
-  public static $modules = ['system', 'node', 'user', 'field', 'field_ui', 'filter', 'text', 'metastore', 'common', 'datastore', 'dkan', 'menu_link_content', 'basic_auth', 'content_moderation', 'workflows'];
+  protected static $modules = ['system', 'node', 'user', 'field', 'field_ui', 'filter', 'text', 'metastore', 'common', 'datastore', 'dkan', 'menu_link_content', 'basic_auth', 'content_moderation', 'workflows'];
 
   /**
    * Metastore service.

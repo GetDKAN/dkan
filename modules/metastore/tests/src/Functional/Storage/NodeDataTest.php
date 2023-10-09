@@ -16,6 +16,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @group dkan
  */
 class NodeDataTest extends ExistingSiteBase {
+  public $validMetadataFactory;
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';

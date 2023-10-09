@@ -11,6 +11,9 @@ use Drupal\Component\EventDispatcher\Event as SymfonyEvent;
  */
 class Event extends SymfonyEvent {
 
+  public $validator;
+  public $data;
+  public $exception;
   /**
    * Constructor.
    */

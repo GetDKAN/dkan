@@ -49,21 +49,6 @@ class PageTest extends TestCase {
   }
 
   /**
-   * Private.
-   */
-  private function getNodeMock() {
-    $node = $this->getMockBuilder(NodeInterface::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['uuid'])
-      ->getMockForAbstractClass();
-
-    $node->method('uuid')
-      ->willReturn(['123']);
-
-    return $node;
-  }
-
-  /**
    * Test regular page.
    */
   public function test() {

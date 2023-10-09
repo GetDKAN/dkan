@@ -61,7 +61,7 @@ class DashboardControllerTest extends TestCase {
     $controller = new DashboardController();
     $response = $controller->harvests();
 
-    $json = json_encode((array)$response);
+    $json = json_encode($response);
     $strings = array_merge(DashboardController::HARVEST_HEADERS, [
       'harvest_link',
       'SUCCESS',
