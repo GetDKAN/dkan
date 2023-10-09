@@ -12,11 +12,14 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\DataResource;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
@@ -27,6 +30,7 @@ use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -102,7 +106,11 @@ class ReferencerTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $referencer = new Referencer($configService, $storageFactory);
+    $urlGenerator = (new Chain($this))
+      ->add(MetastoreUrlGenerator::class, 'uriFromUrl', 'dkan://metastore/schemas/data-dictionary/items/111')
+      ->getMock();
+
+    $referencer = new Referencer($configService, $storageFactory, $urlGenerator);
     return $referencer;
   }
 
@@ -367,25 +375,6 @@ class ReferencerTest extends TestCase {
   }
 
   /**
-   * Test the `Referencer::hostify()` method.
-   */
-  public function testHostify(): void {
-    // Initialize `\Drupal::container`.
-    $options = (new Options())
-      ->add('stream_wrapper_manager', StreamWrapperManager::class)
-      ->index(0);
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
-      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class);
-    \Drupal::setContainer($container_chain->getMock());
-    // Ensure the hostify method is properly resolving the supplied URL.
-    $this->assertEquals(
-      'http://' . UrlHostTokenResolver::TOKEN . '/' . self::FILE_PATH,
-      Referencer::hostify(self::HOST . '/' . self::FILE_PATH));
-  }
-
-  /**
    * Test the remote/local file mime type detection logic.
    */
   public function testMimeTypeDetection(): void {
@@ -437,7 +426,12 @@ class ReferencerTest extends TestCase {
       ->add(DataFactory::class, 'getInstance', NodeData::class)
       ->add(NodeData::class, 'getEntityStorage', $entity)
       ->getMock();
-    $referencer = new Referencer($configService, $storageFactory);
+
+    $urlGenerator = (new Chain($this))
+      ->add(MetastoreUrlGenerator::class, 'uriFromUrl', '')
+      ->getMock();
+
+    $referencer = new Referencer($configService, $storageFactory, $urlGenerator);
 
     // Test Mime Type detection using the resource `mediaType` property.
     $data = $this->getData(self::HOST . '/' . self::FILE_PATH, self::MIME_TYPE);
@@ -455,6 +449,71 @@ class ReferencerTest extends TestCase {
     $data = $this->getData('http://invalid');
     $this->expectException(ConnectException::class);
     $referencer->reference($data);
+  }
+
+  /**
+   * @dataProvider provideDataDictionaryData
+   */
+  public function testDistributionHandlingDataDict($distribution, $describedBy) {
+    \Drupal::setContainer($this->getContainer()->getMock());
+    $storageFactory = (new Chain($this))
+      ->add(DataFactory::class, 'getInstance', NodeData::class)
+      ->getMock();
+
+    $configService = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', DataDictionaryDiscovery::MODE_REFERENCE)
+      ->getMock();
+
+    $urlGenerator = (new Chain($this))
+      ->add(MetastoreUrlGenerator::class, 'uriFromUrl', (new Options())
+        ->add('http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
+        ->add("http://remote-domain.com/dictionary.pdf", new \DomainException())
+        ->add('dkan://metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
+        ->add('s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111', new \DomainException())
+        ->add('dkan://metastore/schemas/data-dictionary/items/222', 'dkan://metastore/schemas/data-dictionary/items/222')
+      )
+      ->add(MetastoreUrlGenerator::class, 'metastore', MetastoreService::class)
+      ->add(MetastoreService::class, 'get', (new Options())
+        ->add('111', RootedJsonData::class)
+        ->add('222', new MissingObjectException())
+      ->index(1)
+      )
+      ->getMock();
+
+    $referencer = new Referencer($configService, $storageFactory, $urlGenerator);
+
+    if ($describedBy instanceof \Exception) {
+      $this->expectException(get_class($describedBy));
+      $this->expectExceptionMessage($describedBy->getMessage());
+    }
+    $referencer->distributionHandling($distribution);
+    $this->assertSame($describedBy, $distribution->describedBy);
+  }
+
+  public function provideDataDictionaryData() {
+    return [
+      [
+        (object) ["describedBy" => "http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],
+        "dkan://metastore/schemas/data-dictionary/items/111",
+      ],
+      [
+        (object) ["describedBy" => "http://remote-domain.com/dictionary.pdf"],
+        "http://remote-domain.com/dictionary.pdf",
+      ],
+      [
+        (object) ["describedBy" => "dkan://metastore/schemas/data-dictionary/items/111"],
+        "dkan://metastore/schemas/data-dictionary/items/111",
+      ],
+      [
+        (object) ["describedBy" => "s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],
+        "s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111",
+      ],
+      [
+        (object) ["describedBy" => "dkan://metastore/schemas/data-dictionary/items/222"],
+        new \DomainException("is not a valid data-dictionary URI"),
+      ],
+    ];
   }
 
 }

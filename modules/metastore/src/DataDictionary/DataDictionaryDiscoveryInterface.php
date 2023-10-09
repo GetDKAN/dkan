@@ -9,8 +9,7 @@ interface DataDictionaryDiscoveryInterface {
 
   public const MODE_NONE = 'none';
   public const MODE_SITEWIDE = 'sitewide';
-  public const MODE_COLLECTION = 'collection';
-  public const MODE_GENERATE = 'generate';
+  public const MODE_REFERENCE = 'reference';
 
   /**
    * Return the item ID for the appropriate data dictionary for a resource.
@@ -24,6 +23,19 @@ interface DataDictionaryDiscoveryInterface {
    *   The data dictionary identifier or NULL if none exists.
    */
   public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string;
+
+  /**
+   * Look for a data dictionary from a metastore reference.
+   *
+   * @param string $resourceId
+   *   DKAN datastore resource identifier.
+   * @param int|null $resourceIdVersion
+   *   DKAN datastore resource version ID.
+   *
+   * @return string|null
+   *   The data dictionary identifier or NULL if none exists.
+   */
+  public function getReferenceDictionaryId(string $resourceId, ?int $resourceIdVersion = NULL): ?string;
 
   /**
    * Get the current data dictionary "mode" from DKAN config.
@@ -41,9 +53,9 @@ interface DataDictionaryDiscoveryInterface {
   /**
    * If a single sitewide data dictionary has been defined, return its ID.
    *
-   * @return string
+   * @return string|null
    *   Data dictionary identifier.
    */
-  public function getSitewideDictionaryId(): string;
+  public function getSitewideDictionaryId(): ?string;
 
 }

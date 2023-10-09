@@ -64,14 +64,31 @@ class ReferenceLookup implements ReferenceLookupInterface {
       [$identifier, $metadata] = $this->decodeJsonMetadata($item);
       $propertyValue = $metadata->{$propertyId};
       // Check if uuid is found either directly or in an array.
-      $idIsValue = $referenceId == $propertyValue;
-      $idInArray = is_array($propertyValue) && in_array($referenceId, $propertyValue);
-      if ($idIsValue || $idInArray) {
-        $referencers[] = $identifier;
-      }
+      $idIsValue = is_string($propertyValue) && str_starts_with($propertyValue, $referenceId);
+      $idInArray = is_array($propertyValue) && self::hasElementStartsWith($referenceId, $propertyValue);
+      $referencers[] = ($idIsValue || $idInArray) ? $identifier : NULL;
     }
 
-    return $referencers;
+    return array_filter($referencers);
+  }
+
+  /**
+   * Check each element in array for starts with ID fragment.
+   *
+   * @param string $needle
+   *   The ID or ID fragment.
+   * @param array $haystack
+   *   Array of ID references.
+   *
+   * @return bool
+   *   True if array contains reference.
+   */
+  private static function hasElementStartsWith(string $needle, array $haystack): bool {
+    $idInArray = FALSE;
+    array_walk($haystack, function ($value) use (&$idInArray, $needle) {
+      $idInArray = str_starts_with($value, $needle) ? TRUE : $idInArray;
+    });
+    return $idInArray;
   }
 
   /**
