@@ -109,7 +109,8 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     // Result should be waiting.
     $some_info = $dataset_info_service->gather($identifier);
     $this->assertEquals(
-      'waiting', // @todo Should be: Result::STOPPED,
+      // @todo Should be: Result::STOPPED, or new value added to Result.
+      'waiting',
       $some_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
 
@@ -162,7 +163,8 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     $localized_info = $dataset_info_service->gather($identifier);
     $this->assertNotEquals($localized_info, $info);
     $this->assertEquals(
-      Result::STOPPED, // @todo should be Result::DONE,
+      // @todo should be Result::DONE.
+      Result::STOPPED,
       $localized_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
   }

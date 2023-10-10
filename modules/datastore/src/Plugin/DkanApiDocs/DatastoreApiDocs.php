@@ -385,6 +385,9 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   TRUE if imported.
    */
   private function resourceHasDatastore($resourceId) {
+    /** @var \Drupal\common\DatasetInfo $dataset_info */
+    $dataset_info = \Drupal::service('dkan.common.dataset_info');
+    $dataset_info->
     $resourceId = $this->removePerspective($resourceId);
     $parts = explode("_", $resourceId);
     try {

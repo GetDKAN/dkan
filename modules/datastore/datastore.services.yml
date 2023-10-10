@@ -104,6 +104,7 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
+      - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.import_info_list:
     class: \Drupal\datastore\Service\Info\ImportInfoList

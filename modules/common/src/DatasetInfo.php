@@ -46,7 +46,7 @@ class DatasetInfo implements ContainerInjectionInterface {
    *
    * @var \Drupal\datastore\Service\Info\ImportInfo
    */
-  protected $importInfo;
+  protected ImportInfo $importInfo;
 
   /**
    * Set storage.

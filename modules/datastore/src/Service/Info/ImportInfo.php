@@ -2,10 +2,12 @@
 
 namespace Drupal\datastore\Service\Info;
 
+use Drupal\common\DataResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
 
@@ -43,12 +45,25 @@ class ImportInfo {
   private $fileFetcher;
 
   /**
+   * Resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  private ResourceMapper $resourceMapper;
+
+  /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory) {
+  public function __construct(
+    JobStoreFactory $jobStoreFactory,
+    ResourceLocalizer $resourceLocalizer,
+    ImportFactoryInterface $importServiceFactory,
+    ResourceMapper $resourceMapper
+  ) {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
