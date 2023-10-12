@@ -123,9 +123,9 @@ class ImportInfo {
    */
   protected function getFileFetcherAndImporter($identifier, $version) {
     try {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
-
-      if ($resource) {
+      if (
+        $resource = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)
+      ) {
         $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
 
         $importer = $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(),

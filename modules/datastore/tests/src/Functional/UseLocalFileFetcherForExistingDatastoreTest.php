@@ -3,6 +3,7 @@
 namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\common\DataResource;
+use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
@@ -106,11 +107,10 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
       Remote::class,
       $job_data->processor
     );
-    // Result should be waiting.
+    // Result should be stopped.
     $some_info = $dataset_info_service->gather($identifier);
     $this->assertEquals(
-      // @todo Should be: Result::STOPPED, or new value added to Result.
-      'waiting',
+      Result::STOPPED,
       $some_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
 
@@ -122,13 +122,26 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
       $this->config('common.settings')->get('always_use_existing_local_perspective')
     );
 
-    // Getting the file fetcher should result in a different processor class
-    // because we turned on always_use_existing_local_perspective.
+    // Because file fetchers are persistent jobs, the result->data will be the
+    // Remote class. But if we ask $ff->getProcessor(), it will be our special
+    // processor.
+    // @todo This is not a good pattern, but it is how it currently behaves.
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
     $job_data = json_decode($file_fetcher->getResult()->getData());
     $this->assertEquals(
-      FileFetcherRemoteUseExisting::class,
+      Remote::class,
       $job_data->processor
+    );
+    // Get the file fetcher again so the config makes it to the file fetcher.
+    $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
+    $this->assertInstanceOf(DkanFileFetcher::class, $file_fetcher);
+    // Access getProcessor().
+    $ref_get_processor = new \ReflectionMethod($file_fetcher, 'getProcessor');
+    $ref_get_processor->setAccessible(TRUE);
+    // Now we get our special processor.
+    $this->assertInstanceOf(
+      FileFetcherRemoteUseExisting::class,
+      $ref_get_processor->invoke($file_fetcher)
     );
 
     // Turn off always_use_exsting_* and get the file fetcher again. It should
@@ -163,8 +176,7 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     $localized_info = $dataset_info_service->gather($identifier);
     $this->assertNotEquals($localized_info, $info);
     $this->assertEquals(
-      // @todo should be Result::DONE.
-      Result::STOPPED,
+      Result::DONE,
       $localized_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
   }
