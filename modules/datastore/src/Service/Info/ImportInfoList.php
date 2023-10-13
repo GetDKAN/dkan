@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use FileFetcher\FileFetcher;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,9 +15,9 @@ class ImportInfoList implements ContainerInjectionInterface {
   /**
    * A JobStore object.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\common\FileFetcher\FileFetcherFactory
    */
-  private $jobStoreFactory;
+  private FileFetcherFactory $fileFetcherFactory;
 
   /**
    * Datastore import job info.
@@ -33,7 +33,7 @@ class ImportInfoList implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.common.job_store'),
+      $container->get('dkan.common.file_fetcher'),
       $container->get('dkan.datastore.import_info')
     );
   }
@@ -41,8 +41,8 @@ class ImportInfoList implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ImportInfo $importInfo) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(FileFetcherFactory $fileFetcherFactory, ImportInfo $importInfo) {
+    $this->fileFetcherFactory = $fileFetcherFactory;
     $this->importInfo = $importInfo;
   }
 
@@ -51,17 +51,14 @@ class ImportInfoList implements ContainerInjectionInterface {
    *
    * @return array
    *   An array of ImportInfo objects, keyed by UUID.
-   *
-   * @todo Going directly to get filefetcher objects does not feel right.
-   * We should have cleaner interfaces to get the data we need.
    */
   public function buildList() {
     $list = [];
 
-    $store = $this->jobStoreFactory->getInstance(FileFetcher::class);
+    $store = $this->fileFetcherFactory->getReadOnlyInstance(FileFetcher::class);
 
     foreach ($store->retrieveAll() as $id) {
-      $pieces = explode("_", $id);
+      $pieces = explode('_', $id);
 
       // The filefetcher identifier for resources has the form <id>_<version>
       // by doing this check we can eliminate processing some unrelated file

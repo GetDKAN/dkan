@@ -64,4 +64,12 @@ class FileFetcherFactory implements FactoryInterface {
     return $ff;
   }
 
+  public function getReadOnlyInstance(string $identifier, array $config = []) {
+    return FileFetcherStatus::get(
+      $identifier,
+      $this->jobStoreFactory->getInstance(FileFetcher::class),
+      $config
+    );
+  }
+
 }
