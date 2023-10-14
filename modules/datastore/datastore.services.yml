@@ -26,7 +26,6 @@ services:
       - '@dkan.metastore.resource_mapper'
       - '@dkan.common.file_fetcher'
       - '@dkan.common.drupal_files'
-      - '@dkan.common.job_store'
 
   dkan.datastore.service.resource_processor_collector:
     class: \Drupal\datastore\Service\ResourceProcessorCollector

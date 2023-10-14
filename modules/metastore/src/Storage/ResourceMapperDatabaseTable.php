@@ -14,13 +14,6 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   use LoggerTrait;
 
   /**
-   * Resource mapper database table schema.
-   *
-   * @var array
-   */
-  protected $schema;
-
-  /**
    * Constructor.
    */
   public function __construct(Connection $connection) {

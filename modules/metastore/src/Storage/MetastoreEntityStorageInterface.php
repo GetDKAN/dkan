@@ -10,9 +10,9 @@ use Drupal\Core\Entity\ContentEntityInterface;
 interface MetastoreEntityStorageInterface extends MetastoreStorageInterface {
 
   /**
-   * Get entity storage.
+   * Get entity storage service for our Drupal entity.
    *
-   * @return \Drupal\Core\Entity\EntityStorageInterface|mixed|object
+   * @return \Drupal\Core\Entity\EntityStorageInterface
    *   Entity storage.
    */
   public function getEntityStorage();
