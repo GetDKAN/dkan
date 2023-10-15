@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\common\Kernel\FileFetcher;
 
-use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\KernelTests\KernelTestBase;
+use FileFetcher\FileFetcher;
 use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
 use FileFetcher\Processor\Remote;
 use Procrastinator\Result;
@@ -62,7 +62,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
       'temporaryDirectory' => $tmp,
     ];
     $ff = $factory->getInstance('identifier', $config);
-    $this->assertInstanceOf(DkanFileFetcher::class, $ff);
+    $this->assertInstanceOf(FileFetcher::class, $ff);
 
     // Make sure we have the correct processor class that corresponds to our
     // config.

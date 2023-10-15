@@ -79,7 +79,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
    * Test dataset page caching.
    */
   public function testDatasetApiPageCache() {
-    $identifier = 'f0f41705-b7f9-433b-b1c9-e352baaadb27';
+    $identifier = '111';
 
     // Before we've done anything, GET should yield a 404.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
@@ -169,7 +169,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
     // The import endpoints shouldn't be there at all anymore.
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
-    $this->assertEquals(404, $response->getStatusCode(), $response->getBody()->getContents());
+    $this->assertEquals(404, $response->getStatusCode());
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals(404, $response->getStatusCode());
   }
@@ -248,7 +248,6 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
   }
 
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
 
     if ($method == 'post') {

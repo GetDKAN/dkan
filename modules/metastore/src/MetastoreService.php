@@ -266,17 +266,19 @@ class MetastoreService implements ContainerInjectionInterface {
    *   Json payload.
    *
    * @return string
-   *   The POSTed record identifier.
+   *   The identifier.
    */
   public function post($schema_id, RootedJsonData $data): string {
     $identifier = NULL;
 
     // If resource already exists, return HTTP 409 Conflict and existing uri.
-    if (!empty($identifier = $data->get('$.identifier'))) {
+    if (!empty($data->{'$.identifier'})) {
+      $identifier = $data->{'$.identifier'};
       if ($this->objectExists($schema_id, $identifier)) {
-        throw new ExistingObjectException($schema_id . "/" . $identifier . " already exists.");
+        throw new ExistingObjectException("{$schema_id}/{$identifier} already exists.");
       }
     }
+
     return $this->getStorage($schema_id)->store($data, $identifier);
   }
 

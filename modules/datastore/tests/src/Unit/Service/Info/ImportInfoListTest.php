@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\Info;
 
-use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStore;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use FileFetcher\FileFetcher;
@@ -15,7 +15,6 @@ use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
 
 class ImportInfoListTest extends TestCase {
-
   public function test() {
 
     $ff = FileFetcher::hydrate('{}');
@@ -23,18 +22,18 @@ class ImportInfoListTest extends TestCase {
     $result = Result::hydrate('{"status":"error","data":"","error":"File import error"}');
 
     $imp = (new Chain($this))
-      ->add(ImportJob::class, 'getResult', $result)
+      ->add(ImportJob::class, "getResult", $result)
       ->getMock();
 
     $services = (new Options())
-      ->add('dkan.common.file_fetcher', FileFetcherFactory::class)
+      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_info', ImportInfo::class)
       ->index(0);
 
     $container = (new Chain($this))
       ->add(Container::class, 'get', $services)
-      ->add(FileFetcherFactory::class, 'getReadOnlyInstance', JobStore::class)
-      ->add(JobStore::class, 'retrieveAll', ['1_1'])
+      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(JobStore::class, 'retrieveAll', ["1_1"])
       ->add(ImportInfo::class, 'getFileFetcherAndImporter', [$ff, $imp])
       ->add(ImportInfo::class, 'getBytesProcessed', 1500)
       ->getMock();

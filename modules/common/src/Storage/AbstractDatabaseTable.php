@@ -20,7 +20,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    * @var array
    */
-  protected array $schema = [];
+  protected $schema;
 
   /**
    * Drupal DB connection object.
@@ -391,7 +391,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   A schema array.
    */
   public function getSchema(): array {
-    return $this->schema;
+    return $this->schema ?? [];
   }
 
   /**

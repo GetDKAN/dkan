@@ -2,14 +2,10 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\FileFetcherFactory;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
 
@@ -47,32 +43,12 @@ class ImportInfo {
   private $fileFetcher;
 
   /**
-   * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
-   */
-  private ResourceMapper $resourceMapper;
-
-  /**
-   * @var \Drupal\common\FileFetcher\FileFetcherFactory
-   */
-  private FileFetcherFactory $fileFetcherFactory;
-
-  /**
    * Constructor.
    */
-  public function __construct(
-    JobStoreFactory $jobStoreFactory,
-    ResourceLocalizer $resourceLocalizer,
-    ImportFactoryInterface $importServiceFactory,
-    ResourceMapper $resourceMapper,
-    FileFetcherFactory $fileFetcherFactory
-  ) {
+  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory) {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
-    $this->resourceMapper = $resourceMapper;
-    $this->fileFetcherFactory = $fileFetcherFactory;
   }
 
   /**
@@ -87,7 +63,7 @@ class ImportInfo {
    *   And object with info about imports: file name, fetching status, etc.
    */
   public function getItem(string $identifier, string $version) {
-    [$fileFetcher, $importer] = $this->getFileFetcherAndImporter($identifier, $version);
+    [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
 
     $item = (object) [
       'fileName' => '',
@@ -100,22 +76,23 @@ class ImportInfo {
       'importerError' => NULL,
     ];
 
-    if (isset($fileFetcher)) {
-      $this->fileFetcher = $fileFetcher;
-      $item->fileName = $this->getFileName($fileFetcher);
-      $item->fileFetcherStatus = $fileFetcher->getResult()->getStatus();
-      $item->fileFetcherBytes = $this->getBytesProcessed($fileFetcher);
-      $item->fileFetcherPercentDone = $this->getPercentDone($fileFetcher);
+    if (isset($ff)) {
+      $this->fileFetcher = $ff;
+      $item->fileName = $this->getFileName($ff);
+      $item->fileFetcherStatus = $ff->getResult()->getStatus();
+      $item->fileFetcherBytes = $this->getBytesProcessed($ff);
+      $item->fileFetcherPercentDone = $this->getPercentDone($ff);
     }
 
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $importer */
-    if (isset($importer)) {
-      $item->importerStatus = $importer->getResult()->getStatus();
-      $item->importerError = $importer->getResult()->getError();
-      $item->importerBytes = $this->getBytesProcessed($importer);
-      $item->importerPercentDone = $this->getPercentDone($importer);
+    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $imp */
+    if (isset($imp)) {
+      $item->importerStatus = $imp->getResult()->getStatus();
+      $item->importerError = $imp->getResult()->getError();
+      $item->importerBytes = $this->getBytesProcessed($imp);
+      $item->importerPercentDone = $this->getPercentDone($imp);
     }
-    return $item;
+
+    return (object) $item;
   }
 
   /**
@@ -131,9 +108,9 @@ class ImportInfo {
    */
   protected function getFileFetcherAndImporter($identifier, $version) {
     try {
-      if (
-        $resource = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)
-      ) {
+      $resource = $this->resourceLocalizer->get($identifier, $version);
+
+      if ($resource) {
         $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
 
         $importer = $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(),
@@ -205,14 +182,6 @@ class ImportInfo {
       default:
         return 0;
     }
-  }
-
-  protected function getReadOnlyFileFetcher(DataResource $source_data_resource) {
-    return $this->fileFetcherFactory->getReadOnlyInstance(
-    $source_data_resource->getUniqueIdentifierNoPerspective(), [
-      'filePath' => UrlHostTokenResolver::resolveFilePath($source_data_resource->getFilePath()),
-      'temporaryDirectory' => $this->resourceLocalizer->getPublicLocalizedDirectory($source_data_resource),
-    ]);
   }
 
 }

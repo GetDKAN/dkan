@@ -3,7 +3,6 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\common\DataResource;
-use Drupal\datastore\Service\Info\ImportInfoList;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
@@ -31,25 +30,16 @@ class ImportController implements ContainerInjectionInterface {
   protected $datastoreService;
 
   /**
-   * Import info list service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
-   */
-  protected ImportInfoList $importInfoList;
-
-  /**
    * Api constructor.
    */
   public function __construct(
     DatastoreService $datastoreService,
     MetastoreApiResponse $metastoreApiResponse,
-    ReferenceLookup $referenceLookup,
-    ImportInfoList $importInfoList
+    ReferenceLookup $referenceLookup
   ) {
     $this->datastoreService = $datastoreService;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->referenceLookup = $referenceLookup;
-    $this->importInfoList = $importInfoList;
   }
 
   /**
@@ -59,8 +49,7 @@ class ImportController implements ContainerInjectionInterface {
     return new ImportController(
       $container->get('dkan.datastore.service'),
       $container->get('dkan.metastore.api_response'),
-      $container->get('dkan.metastore.reference_lookup'),
-      $container->get('dkan.datastore.import_info_list')
+      $container->get('dkan.metastore.reference_lookup')
     );
   }
 
@@ -222,7 +211,7 @@ class ImportController implements ContainerInjectionInterface {
    */
   public function list(Request $request) {
     try {
-      $data = $this->importInfoList->buildList();
+      $data = $this->datastoreService->list();
       return $this->metastoreApiResponse->cachedJsonResponse($data, 200, ['distribution'], $request->query);
     }
     catch (\Exception $e) {

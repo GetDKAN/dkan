@@ -3,8 +3,9 @@
 namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\metastore\ResourceMapper;
+use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
@@ -56,11 +57,9 @@ class DatastoreService implements ContainerInjectionInterface {
   private $dictionaryEnforcer;
 
   /**
-   * File fetcher factory service.
-   *
-   * @var \Drupal\common\FileFetcher\FileFetcherFactory
+   * @var \Drupal\metastore\ResourceMapper
    */
-  private FileFetcherFactory $fileFetcherFactory;
+  private ResourceMapper $resourceMapper;
 
   /**
    * {@inheritdoc}
@@ -73,7 +72,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.common.job_store'),
       $container->get('dkan.datastore.import_info_list'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
-      $container->get('dkan.common.file_fetcher')
+      $container->get('dkan.metastore.resource_mapper')
     );
   }
 
@@ -92,6 +91,8 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Import info list service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
+   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   *   Resource mapping service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
@@ -100,7 +101,7 @@ class DatastoreService implements ContainerInjectionInterface {
     JobStoreFactory $jobStoreFactory,
     ImportInfoList $importInfoList,
     DictionaryEnforcer $dictionaryEnforcer,
-    FileFetcherFactory $fileFetcherFactory
+    ResourceMapper $resourceMapper
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
@@ -108,7 +109,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->importInfoList = $importInfoList;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
-    $this->fileFetcherFactory = $fileFetcherFactory;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -179,7 +180,7 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Resource version.
    *
    * @return array
-   *   The resource object and the result array, in an array.
+   *   The resource object and a result object in an array.
    */
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
@@ -193,14 +194,15 @@ class DatastoreService implements ContainerInjectionInterface {
     }
 
     // @todo we should not do this, we need a filefetcher queue worker.
-    $localize_result = $this->resourceLocalizer->localize($identifier, $version);
-
-    return [
-      $this->resourceLocalizer->get($identifier, $version),
-      [
-        $label => $localize_result,
-      ],
+    $result = [
+      $label => $this->resourceLocalizer->localize($identifier, $version),
     ];
+
+    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
+      $resource = $this->resourceLocalizer->get($identifier, $version);
+    }
+
+    return [$resource, $result];
   }
 
   /**
@@ -240,10 +242,20 @@ class DatastoreService implements ContainerInjectionInterface {
 
     if ($local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
-      $this->fileFetcherFactory
+      $this->jobStoreFactory
         ->getInstance(FileFetcher::class)
         ->remove($resource->getUniqueIdentifierNoPerspective());
     }
+  }
+
+  /**
+   * Get a list of all stored importers and filefetchers, and their status.
+   *
+   * @return array
+   *   The importer list object.
+   */
+  public function list() {
+    return $this->importInfoList->buildList();
   }
 
   /**

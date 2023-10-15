@@ -7,7 +7,6 @@ services:
       - '@dkan.datastore.service.post_import'
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.metastore.resource_mapper'
-      - '@dkan.datastore.import_info_list'
     tags:
       - { name: drush.command }
   datastore.purger.commands:

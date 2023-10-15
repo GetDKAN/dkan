@@ -5,13 +5,12 @@ declare(strict_types = 1);
 namespace Drupal\common;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -22,18 +21,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DatasetInfo implements ContainerInjectionInterface {
 
   /**
-   * Dataset storage.
+   * Metastore storage.
    *
    * @var \Drupal\metastore\Storage\Data
    */
-  protected ?Data $datasetDataStorage = NULL;
+  protected $storage;
 
   /**
    * Datastore.
    *
    * @var \Drupal\datastore\DatastoreService
    */
-  protected DatastoreService $datastoreService;
+  protected $datastore;
 
   /**
    * Resource mapper.
@@ -47,7 +46,7 @@ class DatasetInfo implements ContainerInjectionInterface {
    *
    * @var \Drupal\datastore\Service\Info\ImportInfo
    */
-  protected ImportInfo $importInfo;
+  protected $importInfo;
 
   /**
    * Set storage.
@@ -56,17 +55,17 @@ class DatasetInfo implements ContainerInjectionInterface {
    *   Metastore's data factory.
    */
   public function setStorage(DataFactory $dataFactory) {
-    $this->datasetDataStorage = $dataFactory->getInstance('dataset');
+    $this->storage = $dataFactory->getInstance('dataset');
   }
 
   /**
    * Set datastore.
    *
-   * @param \Drupal\datastore\DatastoreService $datastoreService
+   * @param \Drupal\datastore\DatastoreService $datastore
    *   Datastore service.
    */
-  public function setDatastore(DatastoreService $datastoreService) {
-    $this->datastoreService = $datastoreService;
+  public function setDatastore(DatastoreService $datastore) {
+    $this->datastore = $datastore;
   }
 
   /**
@@ -115,12 +114,12 @@ class DatasetInfo implements ContainerInjectionInterface {
    *   Dataset information array.
    */
   public function gather(string $uuid) : array {
-    if (!$this->datasetDataStorage) {
+    if (!$this->storage) {
       $info['notice'] = 'The DKAN Metastore module is not enabled.';
       return $info;
     }
 
-    $latest = $this->datasetDataStorage->getEntityLatestRevision($uuid);
+    $latest = $this->storage->getEntityLatestRevision($uuid);
     if (!$latest) {
       $info['notice'] = 'Not found';
       return $info;
@@ -128,7 +127,7 @@ class DatasetInfo implements ContainerInjectionInterface {
     $info['latest_revision'] = $this->getRevisionInfo($latest);
 
     $latestRevisionIsDraft = 'draft' === $latest->get('moderation_state')->getString();
-    $published = $this->datasetDataStorage->getEntityPublishedRevision($uuid);
+    $published = $this->storage->getEntityPublishedRevision($uuid);
     if ($latestRevisionIsDraft && isset($published)) {
       $info['published_revision'] = $this->getRevisionInfo($published);
     }
@@ -139,13 +138,13 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Get various information from a dataset node's specific revision.
    *
-   * @param \Drupal\Core\Entity\ContentEntityInterface $node
+   * @param \Drupal\node\Entity\Node $node
    *   Dataset node.
    *
    * @return array
    *   Dataset node revision info.
    */
-  protected function getRevisionInfo(ContentEntityInterface $node) : array {
+  protected function getRevisionInfo(Node $node) : array {
 
     $metadata = json_decode($node->get('field_json_metadata')->getString());
 
@@ -197,7 +196,7 @@ class DatasetInfo implements ContainerInjectionInterface {
    */
   protected function getStorage(string $identifier, string $version) {
     try {
-      $storage = $this->datastoreService->getStorage($identifier, $version);
+      $storage = $this->datastore->getStorage($identifier, $version);
     }
     catch (\Exception $e) {
       $storage = NULL;

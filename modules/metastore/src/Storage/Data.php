@@ -6,7 +6,6 @@ use Drupal\common\LoggerTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
@@ -38,13 +37,11 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $schemaId;
 
   /**
-   * Entity storage service for our Drupal entity.
+   * Entity storage service.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   *
-   * @see self::getEntityStorage()
+   * @var \Drupal\Core\Entity\EntityStorageInterface|mixed|object
    */
-  protected EntityStorageInterface $entityStorage;
+  protected $entityStorage;
 
   /**
    * Entity label key.
@@ -108,7 +105,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function getEntityStorage(): EntityStorageInterface {
+  public function getEntityStorage() {
     return $this->entityStorage;
   }
 
@@ -126,7 +123,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   A Drupal query object.
    */
   protected function listQueryBase(int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
-    $query = $this->getEntityStorage()->getQuery()
+    $query = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
       ->condition($this->schemaIdField, $this->schemaId)
@@ -153,7 +150,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
     return array_map(function ($entity) {
       return $entity->get($this->metadataField)->getString();
-    }, array_values($this->getEntityStorage()->loadMultiple($entityIds)));
+    }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
   /**
@@ -165,7 +162,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
 
     return array_map(function ($entity) {
       return $entity->uuid();
-    }, array_values($this->getEntityStorage()->loadMultiple($entityIds)));
+    }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
   /**
@@ -255,7 +252,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
       return NULL;
     }
 
-    $entity = $this->getEntityStorage()->load($entity_id);
+    $entity = $this->entityStorage->load($entity_id);
     if ($entity instanceof EntityPublishedInterface) {
       return $entity->isPublished() ? $entity : NULL;
     }
@@ -270,9 +267,8 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $entity_id = $this->getEntityIdFromUuid($uuid);
 
     if ($entity_id) {
-      $storage = $this->getEntityStorage();
-      $revision_id = $storage->getLatestRevisionId($entity_id);
-      return $storage->loadRevision($revision_id);
+      $revision_id = $this->entityStorage->getLatestRevisionId($entity_id);
+      return $this->entityStorage->loadRevision($revision_id);
     }
 
     return NULL;
@@ -289,7 +285,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    */
   public function getEntityIdFromUuid(string $uuid) : ?int {
 
-    $entity_ids = $this->getEntityStorage()->getQuery()
+    $entity_ids = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('uuid', $uuid)
       ->condition($this->bundleKey, $this->bundle)
@@ -393,7 +389,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
       ]
     );
     if ($entity instanceof RevisionLogInterface) {
-      $entity->setRevisionLogMessage('Created on ' . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
+      $entity->setRevisionLogMessage("Created on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
     }
 
     $entity->save();

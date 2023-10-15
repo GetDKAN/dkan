@@ -3,7 +3,6 @@
 namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
@@ -198,7 +197,6 @@ class DatastoreQueryTest extends TestCase {
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
-      ->add('dkan.common.file_fetcher', FileFetcherFactory::class)
       ->index(0);
 
     $resource_metadata = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';

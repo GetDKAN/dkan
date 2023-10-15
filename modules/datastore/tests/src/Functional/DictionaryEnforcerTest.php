@@ -128,6 +128,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
    * Test dictionary enforcement.
    */
   public function testDictionaryEnforcement(): void {
+//    $this->markTestIncomplete('publishing?');
     // Build data-dictionary.
     $dict_id = $this->uuid->generate();
     $fields = [
@@ -191,8 +192,9 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $dataset_id = $this->uuid->generate();
     $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
     // Create dataset.
-    $this->metastore->post('dataset', $dataset);
-    $this->metastore->publish('dataset', $dataset_id);
+    $this->assertEquals($dataset_id, $this->metastore->post('dataset', $dataset));
+    // Publish should return FALSE, because the node was already published.
+    $this->assertEquals(FALSE, $this->metastore->publish('dataset', $dataset_id));
 
     // Run cron to import dataset into datastore.
     $this->cron->run();
@@ -206,6 +208,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $request = Request::create('http://blah/api');
     // Retrieve schema for dataset resource.
     $response = $this->webServiceApi->summary($dist_id, $request);
+//    $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $result = json_decode($response->getContent(), TRUE);
 
     // Clean up after ourselves, before performing the assertion.

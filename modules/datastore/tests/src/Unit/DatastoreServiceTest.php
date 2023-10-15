@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\datastore\Unit;
 
-use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
@@ -54,7 +53,6 @@ class DatastoreServiceTest extends TestCase {
   }
 
   public function testDrop() {
-    $this->markTestIncomplete('needs to inject dkan config');
     $resource = new DataResource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
       ->add(ResourceLocalizer::class, 'get', $resource)
@@ -98,7 +96,6 @@ class DatastoreServiceTest extends TestCase {
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
-      ->add('dkan.common.file_fetcher', FileFetcherFactory::class)
       ->index(0);
 
     return (new Chain($this))

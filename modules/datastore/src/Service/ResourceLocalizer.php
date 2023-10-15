@@ -5,8 +5,8 @@ namespace Drupal\datastore\Service;
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\LoggerTrait;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
@@ -51,7 +51,7 @@ class ResourceLocalizer {
    *
    * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
-  private FileFetcherFactory $fileFetcherFactory;
+  private FactoryInterface $fileFetcherFactory;
 
   /**
    * Drupal files utility service.
@@ -61,16 +61,25 @@ class ResourceLocalizer {
   private DrupalFiles $drupalFiles;
 
   /**
+   * Job store factory.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
+  private JobStoreFactory $jobStoreFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(
     ResourceMapper $fileMapper,
-    FileFetcherFactory $fileFetcherFactory,
-    DrupalFiles $drupalFiles
+    FactoryInterface $fileFetcherFactory,
+    DrupalFiles $drupalFiles,
+    JobStoreFactory $jobStoreFactory
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
+    $this->jobStoreFactory = $jobStoreFactory;
   }
 
   /**
@@ -171,7 +180,7 @@ class ResourceLocalizer {
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      $this->fileFetcherFactory->getInstance(FileFetcher::class)->remove($uuid);
+      $this->jobStoreFactory->getInstance(FileFetcher::class)->remove($uuid);
     }
   }
 

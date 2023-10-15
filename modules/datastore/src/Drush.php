@@ -4,7 +4,6 @@ namespace Drupal\datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
@@ -55,13 +54,6 @@ class Drush extends DrushCommands {
   protected ResourceMapper $resourceMapper;
 
   /**
-   * Import info list service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
-   */
-  private ImportInfoList $importInfoList;
-
-  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -69,16 +61,13 @@ class Drush extends DrushCommands {
     DatastoreService $datastoreService,
     PostImport $postImport,
     ResourceLocalizer $resourceLocalizer,
-    ResourceMapper $resourceMapper,
-    ImportInfoList $importInfoList
+    ResourceMapper $resourceMapper
   ) {
-    parent::__construct();
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
     $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->resourceMapper = $resourceMapper;
-    $this->importInfoList = $importInfoList;
   }
 
   /**
@@ -151,7 +140,7 @@ class Drush extends DrushCommands {
     $status = $options['status'];
     $uuid_only = $options['uuid-only'];
 
-    $list = $this->importInfoList->buildList();
+    $list = $this->datastoreService->list();
     $rows = [];
     foreach ($list as $uuid => $item) {
       $rows[] = $this->createRow($uuid, $item);
