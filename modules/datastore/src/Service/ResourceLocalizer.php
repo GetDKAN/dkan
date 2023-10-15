@@ -5,6 +5,7 @@ namespace Drupal\datastore\Service;
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\LoggerTrait;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
@@ -50,7 +51,7 @@ class ResourceLocalizer {
    *
    * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
-  private FactoryInterface $fileFetcherFactory;
+  private FileFetcherFactory $fileFetcherFactory;
 
   /**
    * Drupal files utility service.
@@ -64,7 +65,7 @@ class ResourceLocalizer {
    */
   public function __construct(
     ResourceMapper $fileMapper,
-    FactoryInterface $fileFetcherFactory,
+    FileFetcherFactory $fileFetcherFactory,
     DrupalFiles $drupalFiles
   ) {
     $this->resourceMapper = $fileMapper;

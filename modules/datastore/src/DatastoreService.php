@@ -3,6 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\Storage\JobStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -55,6 +56,13 @@ class DatastoreService implements ContainerInjectionInterface {
   private $dictionaryEnforcer;
 
   /**
+   * File fetcher factory service.
+   *
+   * @var \Drupal\common\FileFetcher\FileFetcherFactory
+   */
+  private FileFetcherFactory $fileFetcherFactory;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -64,7 +72,8 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('queue'),
       $container->get('dkan.common.job_store'),
       $container->get('dkan.datastore.import_info_list'),
-      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
+      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
+      $container->get('dkan.common.file_fetcher')
     );
   }
 
@@ -90,7 +99,8 @@ class DatastoreService implements ContainerInjectionInterface {
     QueueFactory $queue,
     JobStoreFactory $jobStoreFactory,
     ImportInfoList $importInfoList,
-    DictionaryEnforcer $dictionaryEnforcer
+    DictionaryEnforcer $dictionaryEnforcer,
+    FileFetcherFactory $fileFetcherFactory
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
@@ -98,6 +108,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->importInfoList = $importInfoList;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
+    $this->fileFetcherFactory = $fileFetcherFactory;
   }
 
   /**
@@ -229,7 +240,7 @@ class DatastoreService implements ContainerInjectionInterface {
 
     if ($local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
-      $this->jobStoreFactory
+      $this->fileFetcherFactory
         ->getInstance(FileFetcher::class)
         ->remove($resource->getUniqueIdentifierNoPerspective());
     }

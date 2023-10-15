@@ -35,7 +35,6 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
   protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   public function test() {
-    $this->markTestIncomplete('FIX ME.');
     // Explicitly turn off always_use_existing_local_perspective for now.
     $this->config('common.settings')
       ->set('always_use_existing_local_perspective', FALSE)
@@ -129,21 +128,20 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     // @todo This is not a good pattern, but it is how it currently behaves.
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
     $job_data = json_decode($file_fetcher->getResult()->getData());
-    $this->assertEquals(
-      Remote::class,
-      $job_data->processor
-    );
-    // Get the file fetcher again so the config makes it to the file fetcher.
+    // @todo This really should fail.
+    $this->assertEquals(Remote::class, $job_data->processor);
+
+    // Get the file fetcher again.
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
     $this->assertInstanceOf(DkanFileFetcher::class, $file_fetcher);
+//    $this->assertTrue($file_fetcher->alwaysUseExistingLocalPerspective);
     // Access getProcessor().
     $ref_get_processor = new \ReflectionMethod($file_fetcher, 'getProcessor');
     $ref_get_processor->setAccessible(TRUE);
     // Now we get our special processor.
-    $this->assertInstanceOf(
-      FileFetcherRemoteUseExisting::class,
-      $ref_get_processor->invoke($file_fetcher)
-    );
+    /** @var \FileFetcher\Processor\Remote $processor */
+    $processor = $ref_get_processor->invoke($file_fetcher);
+    $this->assertInstanceOf(FileFetcherRemoteUseExisting::class, $processor);
 
     // Turn off always_use_exsting_* and get the file fetcher again. It should
     // be Remote again.
@@ -168,7 +166,6 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
       $source_resource->getVersion(),
     ]);
     $this->assertInstanceOf(DataResource::class, $results[0]);
-    // $this->assertEquals('ofdfsdfasdfa', print_r($results[1], true));
     $this->assertEquals(Result::DONE, $results[1]['ResourceLocalizer']->getStatus());
 
     // Now there should be three mappings.
