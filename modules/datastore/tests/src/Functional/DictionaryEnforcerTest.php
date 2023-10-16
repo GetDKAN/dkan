@@ -128,7 +128,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
    * Test dictionary enforcement.
    */
   public function testDictionaryEnforcement(): void {
-//    $this->markTestIncomplete('publishing?');
     // Build data-dictionary.
     $dict_id = $this->uuid->generate();
     $fields = [
@@ -208,7 +207,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $request = Request::create('http://blah/api');
     // Retrieve schema for dataset resource.
     $response = $this->webServiceApi->summary($dist_id, $request);
-//    $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
+    $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $result = json_decode($response->getContent(), TRUE);
 
     // Clean up after ourselves, before performing the assertion.
