@@ -103,16 +103,14 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
     $job_data = json_decode($file_fetcher->getResult()->getData());
-    $this->assertEquals(
-      Remote::class,
-      $job_data->processor
-    );
-    // Result should be stopped.
+    $this->assertEquals(Remote::class, $job_data->processor);
+    // Result should be 'waiting,' which is the default value if there is no
+    // actual result object.
     $some_info = $dataset_info_service->gather($identifier);
-//    $this->assertEquals(
-//      Result::STOPPED,
-//      $some_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
-//    );
+    $this->assertEquals(
+      'waiting',
+      $some_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
+    );
 
     // Turn on always_use_existing_local_perspective.
     $this->config('common.settings')
@@ -122,25 +120,27 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
       $this->config('common.settings')->get('always_use_existing_local_perspective')
     );
 
-
     // We should get our FileFetcherRemoteUseExisting when we get another
     // file fetcher.
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
     $this->assertInstanceOf(DkanFileFetcher::class, $file_fetcher);
     $job_data = json_decode($file_fetcher->getResult()->getData());
-    $this->assertEquals(FileFetcherRemoteUseExisting::class, $job_data->processor);
+    $this->assertEquals(
+      FileFetcherRemoteUseExisting::class,
+      $job_data->processor
+    );
 
-    // Get the file fetcher again.
+    // Get the file fetcher again so we can test getProcessor().
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
     $this->assertInstanceOf(DkanFileFetcher::class, $file_fetcher);
-//    $this->assertTrue($file_fetcher->alwaysUseExistingLocalPerspective);
     // Access getProcessor().
     $ref_get_processor = new \ReflectionMethod($file_fetcher, 'getProcessor');
     $ref_get_processor->setAccessible(TRUE);
     // Now we get our special processor.
-    /** @var \FileFetcher\Processor\Remote $processor */
-    $processor = $ref_get_processor->invoke($file_fetcher);
-    $this->assertInstanceOf(FileFetcherRemoteUseExisting::class, $processor);
+    $this->assertInstanceOf(
+      FileFetcherRemoteUseExisting::class,
+      $ref_get_processor->invoke($file_fetcher)
+    );
 
     // Turn off always_use_exsting_* and get the file fetcher again. It should
     // be Remote again.
@@ -152,6 +152,10 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     $this->assertEquals(
       Remote::class,
       $job_data->processor
+    );
+    $this->assertInstanceOf(
+      Remote::class,
+      $ref_get_processor->invoke($file_fetcher)
     );
 
     // In order to perform the localization without importing, we have to call
@@ -165,7 +169,10 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
       $source_resource->getVersion(),
     ]);
     $this->assertInstanceOf(DataResource::class, $results[0]);
-    $this->assertEquals(Result::DONE, $results[1]['ResourceLocalizer']->getStatus());
+    $this->assertEquals(
+      Result::DONE,
+      $results[1]['ResourceLocalizer']->getStatus()
+    );
 
     // Now there should be three mappings.
     $this->assertEquals(3, $mapping_store->count());

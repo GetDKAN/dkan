@@ -57,11 +57,6 @@ class DatastoreService implements ContainerInjectionInterface {
   private $dictionaryEnforcer;
 
   /**
-   * @var \Drupal\metastore\ResourceMapper
-   */
-  private ResourceMapper $resourceMapper;
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -71,8 +66,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('queue'),
       $container->get('dkan.common.job_store'),
       $container->get('dkan.datastore.import_info_list'),
-      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
-      $container->get('dkan.metastore.resource_mapper')
+      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
     );
   }
 
@@ -91,8 +85,6 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Import info list service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
-   *   Resource mapping service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
@@ -100,8 +92,7 @@ class DatastoreService implements ContainerInjectionInterface {
     QueueFactory $queue,
     JobStoreFactory $jobStoreFactory,
     ImportInfoList $importInfoList,
-    DictionaryEnforcer $dictionaryEnforcer,
-    ResourceMapper $resourceMapper
+    DictionaryEnforcer $dictionaryEnforcer
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
@@ -109,7 +100,6 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->importInfoList = $importInfoList;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
-    $this->resourceMapper = $resourceMapper;
   }
 
   /**
