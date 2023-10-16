@@ -98,7 +98,7 @@ class ResourceLocalizer {
   /**
    * Create local file and URL perspectives in the mapper, get a perspective.
    *
-   * Requires the localized file to exist so it can be checksummed.
+   * The source perspective must already exist.
    *
    * @return \Drupal\common\DataResource|null
    *   Return the perspective, or NULL if the source perspective did not exist.
