@@ -74,7 +74,7 @@ Now that we have the resource ID, we can tell DKAN expect some other process to 
 
     $ drush dkan:datastore:prepare-localized 1fecf29222b12fc1ce2678abbc8f870f
 
-.. code-block::
+.. code-block:: json
     :caption: Response
 
     {
@@ -144,7 +144,7 @@ If we used harvest to set up the datasets, they are probably already queued to i
 
     $ drush dkan:datastore:import --deferred 1fecf29222b12fc1ce2678abbc8f870f
 
-.. code-block::
+.. code-block:: shell-session
     :caption: Response
 
     [notice] Queued import for 5c10426922cb88f20d3f5a2ae45d2f11
@@ -155,7 +155,7 @@ Now we run cron, or we can run the specific queue:
 
     $ drush queue:run datastore_import
 
-.. code-block::
+.. code-block:: shell-session
     :caption: Response
 
      [notice] ResourceLocalizer for 1fecf29222b12fc1ce2678abbc8f870f__ completed.
@@ -168,7 +168,7 @@ And now we look at the dataset again and verify that it has imported:
 
     $ drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44
 
-.. code-block::
+.. code-block:: json
     :caption: Response
 
     {
