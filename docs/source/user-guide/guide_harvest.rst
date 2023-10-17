@@ -6,12 +6,12 @@ Use drush commands to :term:`Harvest` data into your catalog.
 Create a harvest JSON file
 __________________________
 
-Normally you would use the data.json provided by another data catalog and ‘harvest’ the datasets. But harvests can also
-be used for bulk management of datasets from a manually generated data.json file.
+Normally you would use the data.json provided by another data catalog and "harvest" the datasets into your catalog.
+But harvests can also be used for bulk management of datasets from a manually generated data.json file.
 
 Example data.json file with various placeholders:
 
-    .. code-block::
+    .. code-block:: json
 
       {
         "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
@@ -44,7 +44,7 @@ Example data.json file with various placeholders:
 The above example contains all the required properties for a dataset if using the default schema provided with DKAN. The
 default schema requires a distribution and at least one keyword. The identifier must be a unique string within the given
 catalog. You can find descriptions of the above properties and additional optional properties by viewing the example
-dataset schema that ships with DKAN at schema/collections/dataset.json.
+dataset schema that ships with DKAN at `schema/collections/dataset.json <https://github.com/GetDKAN/dkan/blob/2.x/schema/collections/dataset.json>`_.
 
 Register a harvest
 ------------------

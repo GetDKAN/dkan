@@ -8,9 +8,9 @@ Installation
 
 For either working on a project locally or working on the core DKAN software and libraries, using a standardized, `docker <https://www.docker.com/>`_-based local environment is recommended.
 
-- [Installing Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
-- [Installing Docker](https://ddev.readthedocs.io/en/latest/users/install/docker-installation/)
-- [Installing DDEV](https://ddev.readthedocs.io/en/latest/users/install/ddev-installation/)
+- `Installing Composer <https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx>`_
+- `Installing Docker <https://ddev.readthedocs.io/en/latest/users/install/docker-installation/>`_
+- `Installing DDEV <https://ddev.readthedocs.io/en/latest/users/install/ddev-installation/>`_
 
 Using `DDEV <https://ddev.readthedocs.io/en/stable/>`_ with the `DKAN DDev Addon <https://getdkan.github.io/dkan-ddev-addon/>`_ command-line utility will work on Mac, Linux, or Windows to create containers for the various services needed by DKAN.
 This will ensure you have the same setup as DKAN's core developers, and that your environment is very close to that of our continuous integration tools.
@@ -59,3 +59,9 @@ To start with some example datasets:
       drush en sample_content -y
       drush dkan:sample-content:create
       drush cron
+
+.. note::
+   Current DKAN development is utilizing a :ref:`decoupled frontend <decoupled_frontend>`.
+   To use Drupal's theme system, there is a dataset twig template
+   available in the metastore module. However, views
+   integration is a roadmap epic with no target date as of yet.

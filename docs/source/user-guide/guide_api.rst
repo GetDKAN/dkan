@@ -295,18 +295,32 @@ Metastore: Create, Edit, Delete
 Some API functions require authorization. Any user that has dataset CRUD permissions will be able to perform those
 functions via the API.
 
+.. _authentication:
+
 Authentication
 ^^^^^^^^^^^^^^
 
 Drupal uses Basic Authentication, this is a method for an HTTP user agent (e.g., a web browser)
 to provide a username and password when making a request.
 
-When employing Basic Authentication, users include an encoded string in the Authorization
+When employing Basic Authentication, users include a base 64 encoded string in the Authorization
 header of each request they make. The string is used by the request's recipient to verify
 users' identity and rights to access a resource.
 
   -  Key = Authorization
   -  Value = Basic + base 64 encoding of a user ID and password separated by a colon
+
+You can obtain the base 64 encoded string from the command line by running the following (replace admin:admin with your username:password):
+
+.. code-block::
+
+    echo -n 'admin:admin' | base64
+    // Result
+    YWRtaW46YWRtaW4=
+
+    // When using basic auth via REST API
+    content-type: application/json
+    Authorization: Basic YWRtaW46YWRtaW4=
 
 How to set the moderation state through the API.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
