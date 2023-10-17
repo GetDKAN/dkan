@@ -120,9 +120,9 @@ We will define a list of fields based on the example header row below.
 
 .. http:post:: /api/1/metastore/schemas/data-dictionary/items
 
-   **Example**:
+  **Example request**:
 
-   .. sourcecode:: http
+  .. sourcecode:: http
 
       POST /api/1/metastore/schemas/data-dictionary/items HTTP/1.1
       Host: mydomain.com
@@ -168,6 +168,17 @@ We will define a list of fields based on the example header row below.
                   }
               ]
           }
+      }
+
+  **Example response**:
+
+  .. sourcecode:: http
+
+      HTTP/1.1 201 Created
+
+      {
+        "endpoint": "\/api\/1\/metastore\/schemas\/data-dictionary\/items\/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
+        "identifier": "7fd6bb1f-2752-54de-9a33-81ce2ea0feb2"
       }
 
 We get a response that tells us the identifier for the new dictionary is `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
@@ -231,7 +242,7 @@ To set the data dictionary mode to **distribution reference**:
 2. Set "Dictionary Mode" to "Distribution reference".
 
 .. note:: Note
-   Assigning data dictionaries to datasets through the UI are still a work in progress!
+   Assigning data dictionaries to datasets through the UI is still a work in progress!
 
 Now let's use the API to link a new dataset to the data dictionay we created above.
 Look closely at the distribution property in the example below.
