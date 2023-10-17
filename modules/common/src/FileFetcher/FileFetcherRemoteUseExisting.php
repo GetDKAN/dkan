@@ -21,12 +21,19 @@ class FileFetcherRemoteUseExisting extends Remote {
    */
   public function copy(array $state, Result $result, int $timeLimit = PHP_INT_MAX): array {
     // Always short-circuit if the file already exists.
+    $existing_status = $this->discoverStatusForExistingFile($state, $result);
+    if ($existing_status['result']->getStatus() === Result::DONE) {
+      return $existing_status;
+    }
+    return parent::copy($state, $result, $timeLimit);
+  }
+
+  public function discoverStatusForExistingFile(array $state, Result $result): array {
     if (file_exists($state['destination'])) {
       $state['total_bytes_copied'] = $state['total_bytes'] = $this->getFilesize($state['destination']);
       $result->setStatus(Result::DONE);
-      return ['state' => $state, 'result' => $result];
     }
-    return parent::copy($state, $result, $timeLimit);
+    return ['state' => $state, 'result' => $result];
   }
 
 }

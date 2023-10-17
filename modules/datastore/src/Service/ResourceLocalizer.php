@@ -5,6 +5,7 @@ namespace Drupal\datastore\Service;
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
@@ -47,11 +48,11 @@ class ResourceLocalizer {
   /**
    * DKAN resource file fetcher factory.
    *
-   * @var \Contracts\FactoryInterface
+   * @var FileFetcherFactory
    *
    * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
-  private FactoryInterface $fileFetcherFactory;
+  private FileFetcherFactory $fileFetcherFactory;
 
   /**
    * Drupal files utility service.
@@ -72,7 +73,7 @@ class ResourceLocalizer {
    */
   public function __construct(
     ResourceMapper $fileMapper,
-    FactoryInterface $fileFetcherFactory,
+    FileFetcherFactory $fileFetcherFactory,
     DrupalFiles $drupalFiles,
     JobStoreFactory $jobStoreFactory
   ) {
@@ -111,6 +112,7 @@ class ResourceLocalizer {
     }
 
     $ff = $this->getFileFetcher($resource);
+//    throw new \Exception(print_r($ff->getResult(), TRUE));
 
     if ($ff->getResult()->getStatus() != Result::DONE) {
       return NULL;

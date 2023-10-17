@@ -113,10 +113,9 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
     $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
     $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path, FileSystemInterface::EXISTS_REPLACE);
-    // Create resource URL.
-    $this->resourceUrl = \Drupal::service('stream_wrapper_manager')
-      ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
-      ->getExternalUrl();
+    // Create https resource URL.
+    $this->resourceUrl = \Drupal::service('file_url_generator')
+      ->generateAbsoluteString(self::UPLOAD_LOCATION . self::RESOURCE_FILE);
   }
 
   public function tearDown(): void {
@@ -206,18 +205,18 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     // Publish should return FALSE, because the node was already published.
     $this->assertEquals(FALSE, $this->metastore->publish('dataset', $dataset_id));
 
-    // Run cron to import dataset into datastore.
-    $this->cron->run();
-    // Run cron to apply data-dictionary.
-    $this->cron->run();
+    // Run queues to import the dataset and apply the dictionary.
+    $this->runQueues(['datastore_import', 'post_import']);
 
     // Retrieve dataset distribution ID.
+    /** @var \RootedData\RootedJsonData $dataset */
     $dataset = $this->metastore->get('dataset', $dataset_id);
-    $dist_id = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL;
+//    $this->assertEquals('foo', $dataset->pretty());
+    $dist_uuid = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL;
     // Retrieve schema for dataset resource.
     $response = $this->webServiceApi->summary(
-      $dist_id,
-      Request::create('http://blah/api')
+      $dist_uuid,
+      Request::create('http://blah//api/1/datastore/imports/' . $dist_uuid)
     );
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $result = json_decode($response->getContent(), TRUE);
@@ -278,6 +277,20 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
       ],
       'numOfRows' => 3,
     ], $result);
+  }
+
+  private function runQueues(array $relevantQueues = []) {
+    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
+    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    $queueService = \Drupal::service('queue');
+    foreach ($relevantQueues as $queueName) {
+      $worker = $queueWorkerManager->createInstance($queueName);
+      $queue = $queueService->get($queueName);
+      while ($item = $queue->claimItem()) {
+        $worker->processItem($item->data);
+        $queue->deleteItem($item);
+      }
+    }
   }
 
 }

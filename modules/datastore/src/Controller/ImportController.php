@@ -65,15 +65,15 @@ class ImportController implements ContainerInjectionInterface {
    *   The json response.
    */
   public function summary(string $identifier, Request $request) {
-    try {
+//    try {
       $data = $this->datastoreService->summary($identifier);
       $dependencies = $this->getDependencies($identifier);
       return $this->metastoreApiResponse->cachedJsonResponse($data, 200, $dependencies, $request->query);
-    }
-    catch (\Exception $e) {
-      $exception = new \Exception("A datastore for resource {$identifier} does not exist.");
-      return $this->getResponseFromException($exception, 404);
-    }
+//    }
+//    catch (\Exception $e) {
+//      $exception = new \Exception("A datastore for resource {$identifier} does not exist.");
+//      return $this->getResponseFromException($exception, 404);
+//    }
   }
 
   /**
