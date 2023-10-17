@@ -9,7 +9,7 @@ __________________________
 Normally you would use the data.json provided by another data catalog and "harvest" the datasets into your catalog.
 But harvests can also be used for bulk management of datasets from a manually generated data.json file.
 
-Example data.json file with various placeholders:
+Example data.json with a single dataset:
 
     .. code-block:: json
 
@@ -45,6 +45,10 @@ The above example contains all the required properties for a dataset if using th
 default schema requires a distribution and at least one keyword. The identifier must be a unique string within the given
 catalog. You can find descriptions of the above properties and additional optional properties by viewing the example
 dataset schema that ships with DKAN at `schema/collections/dataset.json <https://github.com/GetDKAN/dkan/blob/2.x/schema/collections/dataset.json>`_.
+
+If you are using the harvest to bulk generate datasets, you should deregister the harvest after the datasets are created. If you plan
+to maintain the datasets with the harvest process then do not edit the datasets via the UI, or individually with the API. Edit the
+metadata in the data.json file and re-run the harvest to update the datasets.
 
 Register a harvest
 ------------------

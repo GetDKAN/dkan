@@ -12,49 +12,72 @@ See :ref:`Authentication <authentication>` for details.
 
 .. http:post:: /api/1/metastore/schemas/dataset/items
 
-   Send a json formatted request body.
+  **Create a dataset:**
 
-   .. sourcecode:: http
+  .. sourcecode:: http
 
-      POST http://dkan.ddev.site/api/1/metastore/schemas/dataset/items?format_json HTTP/1.1
-      content-type: application/json
-      Authorization: Basic username:password
+    POST http://dkan.ddev.site/api/1/metastore/schemas/dataset/items?format_json HTTP/1.1
+    content-type: application/json
+    Authorization: Basic username:password
 
-          {
-            "title": "My new dataset",
-            "description": "Detailed description for my new dataset.",
-            "accessLevel": "public",
-            "accrualPeriodicity": "R/P1Y",
-            "publisher": {
-              "name": "Publisher Name"
-            },
-            "contactPoint": {
-              "fn": "Test Contact",
-              "hasEmail": "test@example.com"
-            },
-            "issued": "2013-02-10",
-            "modified": "2022-06-01",
-            "keyword": ["tag1","tag2"],
-            "license": "http://opendefinition.org/licenses/odc-pddl/",
-            "spatial": "London, England",
-            "temporal": "2013-02-10/2022-06-01"
-            "theme": [
-              "Category"
-            ],
-            "distribution": [
-                {
-                    "downloadURL": "http://demo.getdkan.org/sites/default/files/distribution/5dc1cfcf-8028-476c-a020-f58ec6dd621c/data.csv",
-                    "mediaType": "text/csv",
-                    "format": "csv",
-                    "description": "The data we want to share.",
-                    "title": "Resource Example"
-                }
-            ]
-          }
+        {
+          "title": "My new dataset",
+          "description": "Detailed description for my new dataset.",
+          "accessLevel": "public",
+          "accrualPeriodicity": "R/P1Y",
+          "publisher": {
+            "name": "Publisher Name"
+          },
+          "contactPoint": {
+            "fn": "Test Contact",
+            "hasEmail": "test@example.com"
+          },
+          "issued": "2013-02-10",
+          "modified": "2022-06-01",
+          "keyword": ["tag1","tag2"],
+          "license": "http://opendefinition.org/licenses/odc-pddl/",
+          "spatial": "London, England",
+          "temporal": "2013-02-10/2022-06-01"
+          "theme": [
+            "Category"
+          ],
+          "distribution": [
+              {
+                  "downloadURL": "http://demo.getdkan.org/sites/default/files/distribution/5dc1cfcf-8028-476c-a020-f58ec6dd621c/data.csv",
+                  "mediaType": "text/csv",
+                  "format": "csv",
+                  "description": "The data we want to share.",
+                  "title": "Resource Example"
+              }
+          ]
+        }
 
+.. http:patch:: /api/1/metastore/schemas/dataset/items/{datasetID}
+
+  **Edit a dataset:**
+
+  .. sourcecode:: http
+
+    PATCH http://dkan.ddev.site/api/1/metastore/schemas/dataset/items/{datasetID}?format_json HTTP/1.1
+    content-type: application/json
+    Authorization: Basic username:password
+
+        {
+          "modified": "2023-06-01",
+          "distribution": [
+              {
+                  "downloadURL": "http://demo.getdkan.org/sites/default/files/new-data-file.csv",
+                  "mediaType": "text/csv",
+                  "format": "csv",
+                  "title": "2023 data update"
+              }
+          ]
+        }
 
 GUI
 ----
+
+**Create a dataset:**
 
 1. Log in to the site.
 2. Navigate to Admin > DKAN > Datasets.
@@ -70,6 +93,13 @@ GUI
 12. If you are adding more than one distribution to a dataset be sure to utilize the **File Title** field to distinguish the differences in the files to the user.
 13. Click "Save".
 14. Run cron to start the import.
+
+**Edit a dataset:**
+
+1. Log in to the site.
+2. Navigate to Admin > DKAN > Datasets.
+3. Find the dataset you wish to edit and click the "Edit" link in the right-hand column.
+4. Click "Save"
 
 
 Harvest
