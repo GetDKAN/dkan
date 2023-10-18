@@ -25,8 +25,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * @coversDefaultClass \Drupal\harvest\HarvestService
  * @group harvest
+ * @group unit
  */
-class ServiceTest extends TestCase {
+class ServiceTesty extends TestCase {
   use ServiceCheckTrait;
 
   private $storageFactory;

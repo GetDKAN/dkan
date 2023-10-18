@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 /**
  *
  */
-class DatabaseTableFactoryTest extends TestCase {
+class DatabaseTableFactoryTesty extends TestCase {
 
   /**
    * Test basic function (no indexer service).

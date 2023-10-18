@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest\Entity;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
@@ -107,22 +108,18 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function remove(string $id) {
-    $this->entityStorage->delete([$id]);
+    $this->entityStorage->delete([$this->loadEntity($id)]);
   }
 
   /**
    * {@inheritDoc}
    */
   public function retrieve(string $id) {
-    $ids = $this->entityStorage->getQuery()
-      ->condition($this->primaryKey(), $id)
-      ->range(0, 1)
-      ->accessCheck(FALSE)
-      ->execute();
-    if ($ids) {
-      return json_encode($this->entityStorage->load(reset($ids)));
+    $entity = $this->loadEntity($id);
+    if ($entity !== NULL) {
+      return json_encode($entity);
     }
-    return '';
+    return NULL;
   }
 
   /**
@@ -130,13 +127,32 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
    */
   public function store($data, string $id = NULL): string {
     /** @var \Drupal\harvest\Entity\HarvestPlan $entity */
-    $entity = $this->entityStorage->create([
-      $this->primaryKey() => $id,
-      // We assume there is a 'data' base field.
-      'data' => $data,
-    ]);
+    $entity = NULL;
+    if ($entity = $this->loadEntity($id)) {
+      // Modify entity.
+      $entity->set('data', $data);
+    }
+    else {
+      $entity = $this->entityStorage->create([
+        $this->primaryKey() => $id,
+        // We assume there is a 'data' base field.
+        'data' => $data,
+      ]);
+    }
     $entity->save();
     return $entity->get($this->primaryKey())->value;
+  }
+
+  protected function loadEntity(string $id): ?EntityInterface {
+    if ($ids = $this->entityStorage->getQuery()
+      ->condition($this->primaryKey(), $id)
+      ->range(0, 1)
+      ->accessCheck(FALSE)
+      ->execute()
+    ) {
+      return $this->entityStorage->load(reset($ids));
+    }
+    return NULL;
   }
 
 }
