@@ -55,7 +55,7 @@ Register a harvest
 
   Register a new :term:`Harvest Plan`.
 
-  - Create a unique name as the **identifier** of your harvest
+  - Create a unique name as the **identifier** of your harvest. Do not use a hyphen in the identifier.
   - Provide the full URI for the data source
 
   **Example**
