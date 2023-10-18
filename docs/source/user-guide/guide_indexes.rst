@@ -16,9 +16,9 @@ API
 
 In the example below we are defining two fields, and adding a standard index for the first field and a fulltext index for the second.
 
-.. code-block::
+.. sourcecode:: http
 
-    POST http://mydomain.com/api/1/metastore/schemas/data-dictionary/items
+    POST http://mydomain.com/api/1/metastore/schemas/data-dictionary/items HTTP/1.1
     Authorization: Basic username:password
 
     {
