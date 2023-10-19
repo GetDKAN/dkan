@@ -2,12 +2,8 @@
 
 namespace Drupal\harvest\Entity;
 
-use Contracts\HydratableInterface;
-use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\common\Entity\DkanDatabaseTableEntityBase;
 use Drupal\harvest\HarvestPlanInterface;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Defines the harvest plan entity class.
@@ -49,56 +45,6 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  *   },
  * )
  */
-class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
-
-  public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
-    $base_fields = parent::baseFieldDefinitions($entity_type);
-    $base_fields['id'] = BaseFieldDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('Harvest identifier'))
-      ->setReadOnly(FALSE)
-      ->setTranslatable(FALSE)
-      ->setRequired(TRUE)
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
-    // String_long is a blob.
-    $base_fields['data'] = BaseFieldDefinition::create('string_long')
-      ->setLabel(new TranslatableMarkup('Data'))
-      ->setReadOnly(FALSE)
-      ->setTranslatable(FALSE)
-      ->setDisplayOptions('form', [
-        'type' => 'string_textarea',
-        'weight' => 0,
-        'settings' => [
-          'rows' => 12,
-        ],
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', [
-        'type' => 'string',
-        'weight' => 0,
-        'label' => 'above',
-      ])
-      ->setDisplayConfigurable('view', TRUE);
-    return $base_fields;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
-    // In the case of this entity, we only want the serialized 'data' property,
-    // which is already serialized. Therefore, we have to DECODE it, so that
-    // json_encode() can then RE-ENCODE it.
-    return json_decode($this->get('data')->getString());
-  }
+class HarvestPlan extends DkanDatabaseTableEntityBase implements HarvestPlanInterface {
 
 }

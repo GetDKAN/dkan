@@ -5,7 +5,6 @@ namespace Drupal\Tests\dkan\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
@@ -139,7 +138,8 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   public function testHarvestArchive() {
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
-    $harvester = $this->getHarvester();
+    /** @var \Drupal\harvest\HarvestService $harvester */
+    $harvester = $this->container->get('dkan.harvest.service');
     $harvester->registerHarvest($plan);
 
     // First harvest.
@@ -163,7 +163,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   public function testHarvestOrphan() {
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
-    /** @var HarvestService $harvester */
+    /** @var \Drupal\harvest\HarvestService $harvester */
     $harvester = $this->container->get('dkan.harvest.service');
     $harvester->registerHarvest($plan);
 
@@ -561,10 +561,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   private function getQueueService() : QueueFactory {
     return \Drupal::service('queue');
-  }
-
-  private function getHarvester() : HarvestService {
-    return \Drupal::service('dkan.harvest.service');
   }
 
   private function getNodeStorage(): NodeStorage {
