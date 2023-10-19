@@ -9,6 +9,9 @@ use Drupal\common\Storage\DrupalEntityDatabaseTableBase;
  */
 class HarvestPlanEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
 
+  /**
+   * {@inheritdoc}
+   */
   protected static $entityType = 'harvest_plan';
 
 }

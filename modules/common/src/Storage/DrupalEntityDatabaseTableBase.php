@@ -16,11 +16,15 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * The entity type's ID.
    *
    * Override this with your own entity type ID.
+   *
+   * @var string
    */
   protected static $entityType = '';
 
   /**
    * Data field which is where DKAN will put all the JSON data for this entity.
+   *
+   * @var string
    */
   protected static $dataFieldName = 'data';
 
@@ -38,6 +42,12 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    */
   protected EntityStorageInterface $entityStorage;
 
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Entity type manager service.
+   */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $entityTypeManager->getStorage(static::$entityType);
@@ -159,6 +169,15 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
     return $entity->get($this->primaryKey())->value;
   }
 
+  /**
+   * Helper method to load an entity given an ID.
+   *
+   * @param string $id
+   *   Entity ID.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The loaded entity or NULL if none could be loaded.
+   */
   protected function loadEntity(string $id): ?EntityInterface {
     if ($ids = $this->entityStorage->getQuery()
       ->condition($this->primaryKey(), $id)
