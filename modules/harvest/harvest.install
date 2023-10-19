@@ -19,3 +19,16 @@ function harvest_update_8002(&$sandbox) {
     \Drupal::database()->schema()->dropTable($table);
   }
 }
+
+/**
+ * Ensure the entity manager knows about harvest_plan entities.
+ *
+ * Note: The harvest_plans table might already exist in your
+ * database. The harvest_plan entity is designed to use it without
+ * modification.
+ */
+function metastore_update_8003(&$sandbox) {
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+  \Drupal::entityDefinitionUpdateManager()
+    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_plan'));
+}
