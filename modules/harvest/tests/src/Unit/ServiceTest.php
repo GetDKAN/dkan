@@ -24,102 +24,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @coversDefaultClass \Drupal\harvest\HarvestService
+ *
  * @group harvest
  * @group unit
+ *
+ * @see \Drupal\Tests\harvest\Kernel\ServiceTest
  */
-class ServiceTesty extends TestCase {
+class ServiceTest extends TestCase {
   use ServiceCheckTrait;
 
   private $storageFactory;
-
-  /**
-   *
-   */
-  public function test() {
-    $options = (new Options())
-      ->add('dkan.harvest.storage.database_table', $this->getStorageFactory())
-      ->add('dkan.metastore.service', $this->getMetastoreMockChain())
-      ->add('entity_type.manager', $this->getEntityTypeManagerMockChain())
-      ->index(0);
-
-    $this->checkService('dkan.harvest.storage.database_table', 'harvest');
-
-    $container = (new Chain($this))
-      ->add(ContainerInterface::class, 'get', $options)
-      ->getMock();
-
-    $service = HarvestService::create($container);
-
-    $plan = (object) [
-      'identifier' => 'test_plan',
-      'extract' => (object) [
-        "type" => DataJson::class,
-        "uri" => "file://" . __DIR__ . '/../../files/data.json',
-      ],
-      'transforms' => [],
-      'load' => (object) [
-        "type" => Simple::class,
-      ],
-    ];
-
-    // Register a harvest.
-    $result = $service->registerHarvest($plan);
-
-    $this->assertEquals('test_plan', $result);
-
-    $storedTestPlan = json_decode($this->getStorageFactory()->getInstance('harvest_plans')->retrieve('test_plan'));
-    $this->assertEquals('test_plan', $storedTestPlan->identifier);
-
-    // Run a harvest.
-    $result = $service->runHarvest('test_plan');
-
-    $this->assertEquals("SUCCESS", $result['status']['extract']);
-    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(["NEW", "NEW"]), json_encode(array_values($result['status']['load'])));
-
-    $storedObject = $this->getStorageFactory()->getInstance('harvest_test_plan_items')->retrieve("cedcd327-4e5d-43f9-8eb1-c11850fa7c55");
-    $this->assertTrue(is_string($storedObject));
-    $storedObject = json_decode($storedObject);
-    $this->assertTrue(is_object($storedObject));
-
-    // Run harvest again, no changes.
-    $result = $service->runHarvest('test_plan');
-
-    $this->assertEquals("SUCCESS", $result['status']['extract']);
-    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(["UNCHANGED", "UNCHANGED"]), json_encode(array_values($result['status']['load'])));
-
-    // Run harvest with changes.
-    $plan2 = clone $plan;
-    $plan2->extract->uri = "file://" . __DIR__ . '/../../files/data2.json';
-    $service->registerHarvest($plan2);
-    $result = $service->runHarvest('test_plan');
-
-    $this->assertEquals("SUCCESS", $result['status']['extract']);
-    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(["UPDATED", "UNCHANGED"]), json_encode(array_values($result['status']['load'])));
-
-    $storedObject = $this->getStorageFactory()->getInstance('harvest_test_plan_items')->retrieve("cedcd327-4e5d-43f9-8eb1-c11850fa7c55");
-    $this->assertTrue(is_string($storedObject));
-    $storedObject = json_decode($storedObject);
-    $this->assertTrue(is_object($storedObject));
-    $this->assertEquals("Florida Bike Lanes 2", $storedObject->title);
-
-    // Revert harvest.
-    $service->revertHarvest('test_plan');
-    $storageTypes = [
-      'harvest_test_plan_items',
-      'harvest_test_plan_hashes',
-      'harvest_test_plan_runs',
-    ];
-    foreach ($storageTypes as $storageId) {
-      $this->assertEquals(0, count($this->getStorageFactory()->getInstance($storageId)->retrieveAll()));
-    }
-
-    // Deregister harvest.
-    $service->deregisterHarvest('test_plan');
-    $this->assertEquals(0, count($this->getStorageFactory()->getInstance('harvest_plans')->retrieveAll()));
-  }
 
   /**
    *
@@ -341,6 +255,7 @@ class ServiceTesty extends TestCase {
   }
 
   public function testGetAllHarvestIds() {
+    $this->markTestIncomplete('This test only tests our ability to mock a factory object.');
     $container = $this->getCommonMockChain();
 
     $service = HarvestService::create($container->getMock());

@@ -3,15 +3,12 @@
 namespace Drupal\Tests\datastore\Kernel\Storage;
 
 use Drupal\datastore\DatastoreResource;
-use Drupal\Core\Database\Connection;
-use Drupal\KernelTests\KernelTestBase;
-use MockChain\Chain;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\indexer\IndexManager;
-use PHPUnit\Framework\TestCase;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
+ * @covers \Drupal\datastore\Storage\DatabaseTableFactory
+ *
  * @group datastore
  * @group kernel
  */
@@ -27,25 +24,14 @@ class DatabaseTableFactoryTest extends KernelTestBase {
    * Test basic function (no indexer service).
    */
   public function test() {
-    $this->markTestIncomplete('do kernel stuff');
-    $connection = (new Chain($this))
-      ->add(Connection::class, "__destruct", NULL)
-      ->getMock();
+    /** @var \Drupal\datastore\Storage\DatabaseTableFactory $database_table_factory */
+    $database_table_factory = $this->container->get('dkan.datastore.database_table_factory');
 
-    $databaseTable = (new Chain($this))
-      ->add(DatabaseTable::class, "retrieveAll", [])
-      ->getMock();
-
-    $builder = $this->getMockBuilder(DatabaseTableFactory::class);
-    $factory = $builder->setConstructorArgs([$connection])
-      ->onlyMethods(["getDatabaseTable"])
-      ->getMock();
-
-    $factory->method("getDatabaseTable")->willReturn($databaseTable);
-
-    $resource = new DatastoreResource("blah", "", "text/csv");
-    $object = $factory->getInstance($resource->getId(), ['resource' => $resource]);
-    $this->assertTrue($object instanceof DatabaseTable);
+    $resource = new DatastoreResource('blah', '', 'text/csv');
+    $this->assertInstanceOf(
+      DatabaseTable::class,
+      $database_table_factory->getInstance($resource->getId(), ['resource' => $resource])
+    );
   }
 
 }
