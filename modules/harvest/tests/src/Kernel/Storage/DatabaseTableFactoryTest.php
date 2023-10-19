@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\harvest\Kernel\Storage;
 
-use Drupal\harvest\Entity\HarvestPlanEntityDatabaseTable;
+use Drupal\harvest\Storage\HarvestPlanEntityDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 
 /**

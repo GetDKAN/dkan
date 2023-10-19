@@ -5,7 +5,6 @@ namespace Drupal\harvest\Storage;
 use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\harvest\Entity\HarvestPlanEntityDatabaseTable;
 
 /**
  * Database table factory.
