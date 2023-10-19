@@ -27,7 +27,7 @@ function harvest_update_8002(&$sandbox) {
  * database. The harvest_plan entity is designed to use it without
  * modification.
  */
-function metastore_update_8003(&$sandbox) {
+function harvest_update_8003(&$sandbox) {
   \Drupal::entityTypeManager()->clearCachedDefinitions();
   \Drupal::entityDefinitionUpdateManager()
     ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_plan'));
