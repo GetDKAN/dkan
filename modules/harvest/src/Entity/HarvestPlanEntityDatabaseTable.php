@@ -2,24 +2,40 @@
 
 namespace Drupal\harvest\Entity;
 
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Contracts\HydratableInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
+/**
+ * Implement DatabaseTableInterface so you can use Drupal entities as storage.
+ */
 class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
 
+  /**
+   * The entity type's ID.
+   *
+   * Override this with your own entity type ID.
+   */
   protected const ENTITY_TYPE = 'harvest_plan';
 
-  protected const TABLE_NAME = 'harvest_plans';
+  /**
+   * Data field which is where DKAN will put all the JSON data for this entity.
+   */
+  protected const DATA_FIELD_NAME = 'data';
 
   /**
+   * Entity type manager service.
+   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * Entity storage interface for the entity type we're wrapping.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected EntityStorageInterface $entityStorage;
@@ -62,7 +78,8 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function destruct() {
-    // DKAN API wants us to destroy the table, but we will delete all entities.
+    // DKAN API wants us to destroy the table, but we can't/shouldn't do that
+    // within Drupal's Entity API. So instead, we will delete all entities.
     $ids = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->execute();
@@ -86,6 +103,7 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function primaryKey() {
+    // Use the primary key defined in the entity definition.
     $definition = $this->entityTypeManager->getDefinition(self::ENTITY_TYPE);
     return ($definition->getKeys())['id'];
   }
@@ -115,8 +133,10 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function retrieve(string $id) {
-    $entity = $this->loadEntity($id);
-    if ($entity !== NULL) {
+    if ($entity = $this->loadEntity($id)) {
+      if ($entity instanceof HydratableInterface) {
+        return $entity;
+      }
       return json_encode($entity);
     }
     return NULL;
@@ -126,17 +146,15 @@ class HarvestPlanEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function store($data, string $id = NULL): string {
-    /** @var \Drupal\harvest\Entity\HarvestPlan $entity */
-    $entity = NULL;
-    if ($entity = $this->loadEntity($id)) {
+    $entity = $this->loadEntity($id);
+    if ($entity) {
       // Modify entity.
-      $entity->set('data', $data);
+      $entity->set(static::DATA_FIELD_NAME, $data);
     }
     else {
       $entity = $this->entityStorage->create([
         $this->primaryKey() => $id,
-        // We assume there is a 'data' base field.
-        'data' => $data,
+        static::DATA_FIELD_NAME => $data,
       ]);
     }
     $entity->save();
