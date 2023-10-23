@@ -20,5 +20,6 @@ services:
     arguments:
       - '@dkan.datastore.service'
       - '@dkan.common.dataset_info'
+      - '@logger.factory'
     tags:
       - { name: drush.command }
