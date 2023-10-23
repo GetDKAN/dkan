@@ -46,9 +46,12 @@ default schema requires a distribution and at least one keyword. The identifier 
 catalog. You can find descriptions of the above properties and additional optional properties by viewing the example
 dataset schema that ships with DKAN at `schema/collections/dataset.json <https://github.com/GetDKAN/dkan/blob/2.x/schema/collections/dataset.json>`_.
 
-If you are using the harvest to bulk generate datasets, you should deregister the harvest after the datasets are created. If you plan
-to maintain the datasets with the harvest process then do not edit the datasets via the UI, or individually with the API. Edit the
-metadata in the data.json file and re-run the harvest to update the datasets.
+If you plan to maintain the datasets with the harvest process then do not edit the datasets via the UI or API.
+Edit the metadata in the data.json file and re-run the harvest to update the datasets.
+
+If you are using the harvest to simply bulk generate datasets, and want to allow data publishers to update the datasets as needed
+via the UI or API, delete the data.json file to prevent overwritting any changes. After the 2.16.13 release, you could also
+deregister the harvest.
 
 Register a harvest
 ------------------

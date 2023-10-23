@@ -96,7 +96,7 @@ This Drush command, :code:`dkan:datastore:prepare-localized`, will add this file
 
 .. code-block::
 
-    $ ddev drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44 | jq -r '.latest_revision.distributions[].file_path'
+    $ drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44 | jq -r '.latest_revision.distributions[].file_path'
     public://resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866/Bike_Lane.csv
 
 Transfer the file
