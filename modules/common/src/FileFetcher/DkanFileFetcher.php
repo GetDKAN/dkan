@@ -4,7 +4,6 @@ namespace Drupal\common\FileFetcher;
 
 use FileFetcher\FileFetcher;
 use FileFetcher\Processor\Remote;
-use Procrastinator\Result;
 
 /**
  * Our FileFetcher clone.
@@ -39,7 +38,6 @@ class DkanFileFetcher extends FileFetcher {
         $this->getState(),
         $this->getResult()
       );
-//      throw new \Exception(print_r($existing_status, true));
       $this->setState($existing_status['state']);
     }
     else {
