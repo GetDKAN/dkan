@@ -28,6 +28,18 @@ class FileFetcherRemoteUseExisting extends Remote {
     return parent::copy($state, $result, $timeLimit);
   }
 
+  /**
+   * Check for the existing file, setting state and result appropriately.
+   *
+   * @param array $state
+   *   State.
+   * @param \Procrastinator\Result $result
+   *   Result object.
+   *
+   * @return array
+   *   Array of $state and $result. Appropriate for return from
+   *   ProcessorInterface::copy.
+   */
   public function discoverStatusForExistingFile(array $state, Result $result): array {
     if (file_exists($state['destination'])) {
       $state['total_bytes_copied'] = $state['total_bytes'] = $this->getFilesize($state['destination']);

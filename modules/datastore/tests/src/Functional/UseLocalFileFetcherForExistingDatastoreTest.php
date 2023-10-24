@@ -65,7 +65,7 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
     // 1 mapping after posting the datastore.
     $this->assertEquals(1, $mapping_store->count());
 
-    // Get our resource info.
+    // Get our resource info from the dataset info service.
     /** @var \Drupal\common\DatasetInfo $dataset_info_service */
     $dataset_info_service = $this->container->get('dkan.common.dataset_info');
     $info = $dataset_info_service->gather($identifier);
@@ -158,16 +158,19 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
       $ref_get_processor->invoke($file_fetcher)
     );
 
-    // In order to perform the localization without importing, we have to call
-    // DatastoreService::getResource(), which is private.
+    // Perform the localization.
     /** @var \Drupal\datastore\DatastoreService $datastore_service */
     $datastore_service = $this->container->get('dkan.datastore.service');
+    // In order to perform the localization without importing, we have to call
+    // DatastoreService::getResource(), which is private.
     $ref_get_resource = new \ReflectionMethod($datastore_service, 'getResource');
     $ref_get_resource->setAccessible(TRUE);
     $results = $ref_get_resource->invokeArgs($datastore_service, [
       $source_resource->getIdentifier(),
       $source_resource->getVersion(),
     ]);
+    // First result should be a resource, second result should be result objects
+    // keyed by the localizer label.
     $this->assertInstanceOf(DataResource::class, $results[0]);
     $this->assertEquals(
       Result::DONE,

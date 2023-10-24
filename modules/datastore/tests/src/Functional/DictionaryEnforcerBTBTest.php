@@ -129,11 +129,6 @@ class DictionaryEnforcerBTBTest extends BrowserTestBase {
       ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
       ->getExternalUrl();
   }
-//
-//  public function tearDown(): void {
-//    parent::tearDown();
-//    $this->removeAllMappedFiles();
-//  }
 
   /**
    * Test dictionary enforcement.
