@@ -75,6 +75,17 @@ dkan:datastore:prepare-localized
 
 ~~~~~~
 
+dkan:datastore:reimport
+--------------------------------
+
+    Re-import data into the datastore for every distribution in a dataset.
+
+    **Arguments**
+
+    - **uuid** The uuid of a dataset.
+
+~~~~~~
+
 dkan:harvest:archive
 ---------------------
 
