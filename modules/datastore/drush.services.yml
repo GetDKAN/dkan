@@ -15,3 +15,11 @@ services:
       - '@dkan.datastore.service.resource_purger'
     tags:
       - { name: drush.command }
+  datastore.reimport.commands:
+    class: \Drupal\datastore\Commands\ReimportCommands
+    arguments:
+      - '@dkan.datastore.service'
+      - '@dkan.common.dataset_info'
+      - '@logger.factory'
+    tags:
+      - { name: drush.command }
