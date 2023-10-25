@@ -6,7 +6,6 @@ use Drupal\common\DataResource;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\ResourceMapper;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
@@ -124,11 +123,11 @@ class DatastoreQueryTest extends TestCase {
    * Ensure if an ungrouped property is specified, the query fails.
    */
   public function testUngroupedPropertyInGroupByQueryFails(): void {
+    $this->expectExceptionMessage('Un-grouped properties found in aggregate query: prop2');
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
     $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson('ungroupedGroupByQuery');
-    $this->expectExceptionMessage('Un-grouped properties found in aggregate query: prop2');
     $queryService->runQuery($datastoreQuery);
   }
 
@@ -198,7 +197,6 @@ class DatastoreQueryTest extends TestCase {
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
-      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->index(0);
 
     $resource_metadata = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';
