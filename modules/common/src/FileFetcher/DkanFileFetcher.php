@@ -3,14 +3,9 @@
 namespace Drupal\common\FileFetcher;
 
 use FileFetcher\FileFetcher;
-use FileFetcher\Processor\Remote;
 
 /**
- * Our FileFetcher clone.
- *
- * This is mostly the same as \FileFetcher\FileFetcher, except we hijack the
- * processor using Drupal configuration for
- * always_use_existing_local_perspective.
+ * Allows FileFetcher to be reconfigured for using existing local files.
  */
 class DkanFileFetcher extends FileFetcher {
 
@@ -27,6 +22,8 @@ class DkanFileFetcher extends FileFetcher {
    * @see https://dkan.readthedocs.io/en/2.x/user-guide/guide_local_files.html
    */
   public function setAlwaysUseExistingLocalPerspective(bool $use_local_file = TRUE) : self {
+    // @todo Re-computing the custom processor classes should be in another
+    //   method that is in the parent class.
     if ($use_local_file) {
       // Set the state/config to use our remote class.
       $this->setProcessors(['processors' => [FileFetcherRemoteUseExisting::class]]);
@@ -41,8 +38,17 @@ class DkanFileFetcher extends FileFetcher {
       $this->setState($existing_status['state']);
     }
     else {
-      $this->setProcessors(['processors' => []]);
-      $this->setStateProperty('processor', Remote::class);
+      // @todo This ignores any other custom processor classes that might have
+      //   been configured. Improve this situation.
+      $this->customProcessorClasses = [];
+      $state = $this->getState();
+      foreach ($this->getProcessors() as $processor) {
+        if ($processor->isServerCompatible($state)) {
+          $state['processor'] = get_class($processor);
+          break;
+        }
+      }
+      $this->getResult()->setData(json_encode($state));
     }
     return $this;
   }

@@ -142,8 +142,8 @@ class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
       $ref_get_processor->invoke($file_fetcher)
     );
 
-    // Turn off always_use_exsting_* and get the file fetcher again. It should
-    // be Remote again.
+    // Turn off always_use_existing_local_perspective and get the file fetcher
+    // again. It should be Remote again.
     $this->config('common.settings')
       ->set('always_use_existing_local_perspective', FALSE)
       ->save();
