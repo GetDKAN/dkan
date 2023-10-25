@@ -110,7 +110,7 @@ class ResourceLocalizer {
 
     $ff = $this->getFileFetcher($resource);
 
-    if ($ff->getResult()->getStatus() != Result::DONE) {
+    if ($ff->getResult()->getStatus() !== Result::DONE) {
       return NULL;
     }
 
@@ -130,10 +130,10 @@ class ResourceLocalizer {
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
     $localUrl = UrlHostTokenResolver::hostify($localUrl);
 
-    $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
+    $localFilePerspective = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
     try {
-      $this->resourceMapper->registerNewPerspective($new);
+      $this->resourceMapper->registerNewPerspective($localFilePerspective);
     }
     catch (AlreadyRegistered $e) {
     }

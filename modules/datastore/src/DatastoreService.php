@@ -277,12 +277,14 @@ class DatastoreService implements ContainerInjectionInterface {
    * @throws \InvalidArgumentException
    */
   public function getStorage(string $identifier, $version = NULL) {
-    $resource = $this->resourceLocalizer->get($identifier, $version);
+    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    $mapper = \Drupal::service('dkan.metastore.resource_mapper');
+    $resource = $mapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
     if ($resource) {
       $importService = $this->getImportService($resource);
       return $importService->getStorage();
     }
-    throw new \InvalidArgumentException("No datastore storage found for {$identifier}:{$version}.");
+    throw new \InvalidArgumentException('No datastore storage found for ' . $identifier . ':' . $version . '.');
   }
 
   /**

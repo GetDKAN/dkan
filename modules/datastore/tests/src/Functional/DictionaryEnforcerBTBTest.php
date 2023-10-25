@@ -210,17 +210,15 @@ class DictionaryEnforcerBTBTest extends BrowserTestBase {
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($this->metastore->publish('dataset', $dataset_id));
 
-    // Run cron to import dataset into datastore.
-    $this->cron->run();
-    // Run cron to apply data-dictionary.
-    $this->cron->run();
+    // Run queue items to perform the import.
+    $this->runQueues(['datastore_import', 'post_import']);
 
     // Retrieve dataset distribution ID.
     $this->assertInstanceOf(
       RootedJsonData::class,
       $dataset = $this->metastore->get('dataset', $dataset_id)
     );
-    $this->assertNotNull(
+    $this->assertNotEmpty(
       $dist_id = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL
     );
     // Retrieve schema for dataset resource.
@@ -284,6 +282,24 @@ class DictionaryEnforcerBTBTest extends BrowserTestBase {
       ],
       'numOfRows' => 3,
     ], $result);
+  }
+
+  /**
+   * Process queues in a predictable order.
+   */
+  private function runQueues(array $relevantQueues = []) {
+    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
+    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
+    $queueFactory = $this->container->get('queue');
+    foreach ($relevantQueues as $queueName) {
+      $worker = $queueWorkerManager->createInstance($queueName);
+      $queue = $queueFactory->get($queueName);
+      while ($item = $queue->claimItem()) {
+        $worker->processItem($item->data);
+        $queue->deleteItem($item);
+      }
+    }
   }
 
 }
