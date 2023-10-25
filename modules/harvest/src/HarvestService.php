@@ -7,6 +7,7 @@ use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\LoggerTrait;
+use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
@@ -27,6 +28,8 @@ class HarvestService implements ContainerInjectionInterface {
    * Service to instantiate storage objects for Harvest plan storage.
    *
    * @var \Contracts\FactoryInterface
+   *
+   * @see \Drupal\harvest\Storage\DatabaseTableFactory
    */
   private $storeFactory;
 
@@ -35,7 +38,7 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @var \Drupal\metastore\MetastoreService
    */
-  private $metastore;
+  private MetastoreService $metastore;
 
   /**
    * Create.
@@ -105,7 +108,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @throws \Exception
    *   Exceptions may be thrown if validation fails.
    */
-  public function registerHarvest($plan) {
+  public function registerHarvest($plan): string {
 
     $this->validateHarvestPlan($plan);
 
@@ -125,6 +128,9 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @return bool
    *   Boolean.
+   *
+   * @todo Deregistering a harvest plan should also manage the hashes and runs
+   *   for that harvest.
    */
   public function deregisterHarvest(string $id) {
 

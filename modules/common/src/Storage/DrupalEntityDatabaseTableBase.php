@@ -135,6 +135,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    */
   public function remove(string $id) {
     $this->entityStorage->delete([$this->loadEntity($id)]);
+    return TRUE;
   }
 
   /**
