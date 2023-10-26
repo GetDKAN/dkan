@@ -29,6 +29,9 @@ class FlexibleDateTime extends Datetime {
     if (empty($element['#default_value']) && !empty($input['date'])) {
       $input['time'] = !empty($input['time']) ? $input['time'] : '00:00:00';
     }
+    elseif (isset($element['#default_value']) && empty($input['time'])) {
+      $input['time'] = '00:00:00';
+    }
     return parent::valueCallback($element, $input, $form_state);
   }
 
