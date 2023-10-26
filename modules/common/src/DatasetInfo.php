@@ -7,6 +7,7 @@ namespace Drupal\common;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
@@ -225,8 +226,8 @@ class DatasetInfo implements ContainerInjectionInterface {
     $version = $resource->data->version;
 
     $info = $this->importInfo->getItem($identifier, $version);
-    $fileMapper = $this->resourceMapper->get($identifier, 'local_file', $version);
-    $source = $this->resourceMapper->get($identifier, 'source', $version);
+    $fileMapper = $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version);
+    $source = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
 
     return [
       'distribution_uuid' => $distribution->identifier,

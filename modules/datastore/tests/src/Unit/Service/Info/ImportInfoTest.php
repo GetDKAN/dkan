@@ -4,7 +4,7 @@ namespace Drupal\Tests\datastore\Unit\Service\Info;
 
 use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
-use Drupal\common\FileFetcher\Factory;
+use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStore;

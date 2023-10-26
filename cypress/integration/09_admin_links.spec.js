@@ -9,7 +9,7 @@ context('Administration pages', () => {
   it('I should see a link for the dataset properties configuration', () => {
     cy.get('.toolbar-icon-system-admin-dkan').contains('DKAN').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
-        cy.wrap($el).contains('Metastore referencer')
+        cy.wrap($el).contains('Metastore settings')
     })
     cy.visit(baseurl + "/admin/dkan/properties")
     cy.get('.option').should('contain.text', 'Distribution (distribution)')

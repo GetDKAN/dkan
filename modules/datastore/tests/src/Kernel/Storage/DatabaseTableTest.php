@@ -1,8 +1,10 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
+namespace Drupal\Tests\datastore\Kernel\Storage;
 
 use Drupal\common\DataResource;
+use Drupal\common\Storage\ImportedItemInterface;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
@@ -27,9 +29,15 @@ class DatabaseTableTest extends KernelTestBase {
   ];
 
   /**
-   * @covers ::hasBeenImported
+   * Ensure that non-mysql-import tables do not implement hasBeenImported().
+   *
+   * We don't want DatabaseTable to be able to report that the table has already
+   * been imported.
+   *
+   * We exercise the whole import service factory pattern here to make sure we
+   * get the DatabaseTable object we expect.
    */
-  public function testHasBeenImported() {
+  public function testIsNotImportedItemInterface() {
     // Do an import.
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
@@ -40,25 +48,16 @@ class DatabaseTableTest extends KernelTestBase {
 
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
+    $this->assertInstanceOf(ImportJob::class, $import_job);
 
     $table = $import_job->getStorage();
     $this->assertInstanceOf(DatabaseTable::class, $table);
+    $this->assertNotInstanceOf(ImportedItemInterface::class, $table);
 
-    // Has not been imported yet.
-    $this->assertFalse($table->hasBeenImported());
-
+    // Perform the import.
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
     $this->assertEquals(2, $import_job->getStorage()->count());
-
-    // Has been imported.
-    $this->assertTrue($table->hasBeenImported());
-
-    // Make a whole new importer.
-    $import_job = $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
-      ->getImporter();
-    // Storage should report that it's been imported.
-    $this->assertTrue($import_job->getStorage()->hasBeenImported());
   }
 
 }

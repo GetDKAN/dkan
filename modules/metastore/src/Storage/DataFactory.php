@@ -3,6 +3,7 @@
 namespace Drupal\metastore\Storage;
 
 use Contracts\FactoryInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 
 /**
@@ -25,10 +26,18 @@ class DataFactory implements FactoryInterface {
   private $entityTypeManager;
 
   /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
    * Constructor.
    */
-  public function __construct(EntityTypeManager $entityTypeManager) {
+  public function __construct(EntityTypeManager $entityTypeManager, ConfigFactoryInterface $config_factory) {
     $this->entityTypeManager = $entityTypeManager;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -79,7 +88,7 @@ class DataFactory implements FactoryInterface {
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {
-    return new NodeData($identifier, $this->entityTypeManager);
+    return new NodeData($identifier, $this->entityTypeManager, $this->configFactory);
   }
 
   /**

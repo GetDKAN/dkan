@@ -8,3 +8,5 @@ routes:
   - datasetapi,/dataset/{id}/api
   - search,/search
   - publishers,/publishers
+minified: true
+preprocess: true

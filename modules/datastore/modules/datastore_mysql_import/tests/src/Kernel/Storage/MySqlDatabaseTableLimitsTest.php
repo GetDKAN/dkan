@@ -41,7 +41,7 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
     // "test87602183datastore_1cbe23ff091e4a60c97250fbd708f154"
     // 1117 is an error code, not a limit number.
     for ($i = 0; $i < $columns; ++$i) {
-      $values[uniqid().uniqid().uniqid().uniqid().uniqid().uniqid()] = $i;
+      $values[uniqid() . uniqid() . uniqid() . uniqid() . uniqid() . uniqid()] = $i;
     }
     return [[$values]];
   }
@@ -50,7 +50,7 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
    * @dataProvider provideColumns
    */
   public function testTableWidth($columns) {
-    $this->markTestIncomplete('This test fails sporadically.');
+    $this->markTestIncomplete('Intermittent fails.');
     $file_path = stream_get_meta_data(tmpfile())['uri'];
 
     $fp = fopen($file_path, 'w');
@@ -70,7 +70,6 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
     $this->assertInstanceOf(MySqlDatabaseTable::class, $import_job->getStorage());
-
 
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());

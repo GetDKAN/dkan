@@ -1,0 +1,7 @@
+common.settings:
+  type: config_object
+  label: 'DKAN Common Settings'
+  mapping:
+    always_use_existing_local_perspective:
+      label: 'If a local file is in place, use it.'
+      type: boolean

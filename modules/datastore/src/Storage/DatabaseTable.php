@@ -4,7 +4,6 @@ namespace Drupal\datastore\Storage;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Drupal\common\Storage\ImportedDatabaseTableInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\datastore\DatastoreResource;
 
@@ -13,7 +12,7 @@ use Drupal\datastore\DatastoreResource;
  *
  * @see \Drupal\common\Storage\DatabaseTableInterface
  */
-class DatabaseTable extends AbstractDatabaseTable implements ImportedDatabaseTableInterface, \JsonSerializable {
+class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
   use LoggerTrait;
 
@@ -253,19 +252,6 @@ class DatabaseTable extends AbstractDatabaseTable implements ImportedDatabaseTab
       'not null' => $notNull,
       $driver . '_type' => $db_type,
     ];
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * For datastore (and datastore_mysql_import by inheritance), at this point
-   * we only check if the table exists in the database and has more than 0 rows.
-   */
-  public function hasBeenImported(): bool {
-    if ($this->tableExist($this->getTableName())) {
-      return $this->count() > 0;
-    }
-    return FALSE;
   }
 
 }

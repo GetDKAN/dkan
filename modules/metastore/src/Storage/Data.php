@@ -3,6 +3,7 @@
 namespace Drupal\metastore\Storage;
 
 use Drupal\common\LoggerTrait;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -85,12 +86,20 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $schemaIdField;
 
   /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->schemaId = $schemaId;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -303,7 +312,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   public function store($data, string $uuid = NULL): string {
     $data = json_decode($data);
 
-    $data = $this->filterHtml($data);
+    $data = $this->filterHtml($data, $this->schemaId);
 
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
@@ -365,7 +374,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   private function createNewEntity(string $uuid, $data) {
     $title = '';
     if ($this->schemaId === 'dataset') {
-      $title = isset($data->title) ? $data->title : $data->name;
+      $title = $data->title ?? $data->name;
     }
     else {
       $title = MetastoreService::metadataHash($data->data);
@@ -393,20 +402,30 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * @param mixed $input
    *   Unfiltered input.
+   * @param string $parent
+   *   The parent schema of a given property.
    *
    * @return mixed
    *   Filtered output.
    */
-  private function filterHtml($input) {
-    // @todo find out if we still need it.
+  private function filterHtml($input, string $parent = 'dataset') {
+    $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
+      ?: ['dataset_description', 'distribution_description'];
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);
 
       case "array":
       case "object":
-        foreach ($input as &$value) {
-          $value = $this->filterHtml($value);
+        foreach ($input as $name => &$value) {
+          // Only apply filtering to properties that allow HTML.
+          if (in_array($parent . '_' . $name, $html_allowed)) {
+            $value = $this->filterHtml($value, $name);
+          }
+          // Nested properties; check using parent.
+          elseif ($name == 'data' && gettype($value) == 'object') {
+            $value = $this->filterHtml($value, $parent);
+          }
         }
         return $input;
 

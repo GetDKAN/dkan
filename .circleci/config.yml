@@ -26,7 +26,7 @@ commands:
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
-        default: '7.4'
+        default: '8.1'
         type: string
       addon_branch:
         description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
@@ -34,10 +34,11 @@ commands:
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '9.5.x-dev'
+        default: '10.1.x-dev'
         type: string
     steps:
       - run:
+          # TODO: We might not need to do this.
           name: Set up composer config
           command: |
             mkdir ~/.composer
@@ -50,12 +51,9 @@ commands:
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            bash -c 'echo COMPOSER_AUTH=$COMPOSER_AUTH' > .ddev/.env
             # Modify config to use our PHP version.
             sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
-            # Clear out omit_containers.
-            sed -i '/omit_containers/d' .ddev/config.dkan.yaml
-            # Don't load the DBA container.
-            echo "omit_containers: [dba]" >> .ddev/config.dkan.yaml
             ddev restart
             ddev status
             ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
@@ -100,6 +98,7 @@ commands:
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
                   ddev drush updb -y
+                  ddev drush cr
                   ddev drush rq
       - unless:
           condition: << parameters.upgrade >>
@@ -121,11 +120,11 @@ jobs:
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
-        default: '8.0'
+        default: '8.1'
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '9.5.x-dev'
+        default: '10.1.x-dev'
         type: string
       report_coverage:
         description: 'Generate coverage report and send it to CodeClimate'
@@ -188,11 +187,11 @@ jobs:
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
-        default: '8.0'
+        default: '8.1'
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '9.5.x-dev'
+        default: '10.1.x-dev'
         type: string
       upgrade:
         description: 'If true, will install the latest stable DKAN version and test upgrade'
@@ -231,7 +230,7 @@ workflows:
     jobs:
       - cypress:
           name: install_test_cypress
-          dkan_recommended_branch: '9.5.x-dev'
+          dkan_recommended_branch: '10.1.x-dev'
       - phpunit:
           matrix:
             parameters:
@@ -241,14 +240,14 @@ workflows:
           matrix:
             parameters:
               dkan_recommended_branch: [ '9.5.x-dev']
-              php_version: [ '7.4', '8.1' ]
+              php_version: [ '7.4', '8.0', '8.1' ]
       - phpunit:
-          name: 'Install target (Drupal 9.5, PHP 8.0)'
+          name: 'Install target (Drupal 10.1, PHP 8.1)'
           report_coverage: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ '9.5.x-dev']
-              php_version: [ '8.0' ]
+              dkan_recommended_branch: [ '10.1.x-dev']
+              php_version: [ '8.1' ]
       - phpunit:
          matrix:
            parameters:
@@ -259,11 +258,11 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          dkan_recommended_branch: '9.5.x-dev'
+          dkan_recommended_branch: '10.1.x-dev'
       - phpunit:
-          name: 'Upgrade target (Drupal 9.5, PHP 8.0)'
+          name: 'Upgrade target (Drupal 10.1, PHP 8.1)'
           upgrade: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ '9.5.x-dev']
-              php_version: [ '8.0' ]
+              dkan_recommended_branch: [ '10.1.x-dev']
+              php_version: [ '8.1' ]

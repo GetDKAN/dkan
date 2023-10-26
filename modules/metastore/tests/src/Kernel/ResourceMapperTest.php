@@ -1,43 +1,37 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\metastore\Kernel;
 
 use Drupal\common\DataResource;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\Core\DependencyInjection\Container;
-use Drupal\metastore\ResourceMapper;
-use MockChain\Chain;
-use MockChain\Options;
-use PHPUnit\Framework\TestCase;
+use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\KernelTests\KernelTestBase;
 
 /**
+ * @group dkan
+ * @group metastore
+ * @group kernel
  *
+ * @covers \Drupal\metastore\ResourceMapper
+ * @coversDefaultClass \Drupal\metastore\ResourceMapper
  */
-class ResourceMapperTest extends TestCase {
+class ResourceMapperTest extends KernelTestBase {
+
+  protected static $modules = [
+    'common',
+    'metastore',
+  ];
 
   /**
    * Test.
    */
   public function test() {
-    $url = "http://blah.blah/file/blah.csv";
-    $url2 = "http://blah.blah/file/blah2.csv";
-    $localUrl = "https://dkan.dkan/resources/file/blah.csv";
-    $localUrl2 = "https://dkan.dkan/resources/file/newblah.csv";
+    $url = 'http://blah.blah/file/blah.csv';
+    $url2 = 'http://blah.blah/file/blah2.csv';
+    $localUrl = 'https://dkan.dkan/resources/file/blah.csv';
+    $localUrl2 = 'https://dkan.dkan/resources/file/newblah.csv';
 
-    $store = (new Chain($this))
-      ->add(DatabaseTableMock::class)
-      ->getMock();
-
-    $options = (new Options())
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
-      ->index(0);
-
-    $container = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->getMock();
-    \Drupal::setContainer($container);
-
-    $mapper = new ResourceMapper($store);
+    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
 
     // Register a resource.
     $resource1 = $this->getResource($url);
@@ -59,7 +53,7 @@ class ResourceMapperTest extends TestCase {
     $this->registerResource($resource2, $mapper);
 
     // Register a different perspective of the first resource.
-    $resource1local = $resource1->createNewPerspective('local_url', $localUrl);
+    $resource1local = $resource1->createNewPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $localUrl);
     $mapper->registerNewPerspective($resource1local);
     $this->retrieveAndCheck($resource1, $mapper);
     $this->retrieveAndCheck($resource1local, $mapper);
@@ -73,19 +67,19 @@ class ResourceMapperTest extends TestCase {
 
     // Should be able to get local from first revision but not second.
     $this->assertEquals($localUrl,
-      $mapper->get($resource1->getIdentifier(), 'local_url', $resource1->getVersion())
+      $mapper->get($resource1->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1->getVersion())
         ->getFilePath()
     );
-    $this->assertNull($mapper->get($resource1v2->getIdentifier(), 'local_url', $resource1v2->getVersion()));
+    $this->assertNull($mapper->get($resource1v2->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1v2->getVersion()));
 
     // Add perspective to the new revision.
-    $resource1v2local = $resource1v2->createNewPerspective('local_url', $localUrl2);
+    $resource1v2local = $resource1v2->createNewPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $localUrl2);
     $mapper->registerNewPerspective($resource1v2local);
     $this->assertEquals($localUrl,
-      $mapper->get($resource1local->getIdentifier(), 'local_url', $resource1local->getVersion())
+      $mapper->get($resource1local->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1local->getVersion())
         ->getFilePath());
     $this->assertEquals($localUrl2,
-      $mapper->get($resource1v2local->getIdentifier(), 'local_url', $resource1v2local->getVersion())
+      $mapper->get($resource1v2local->getIdentifier(), ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $resource1v2local->getVersion())
         ->getFilePath());
 
     // The file mapper should not register other perspectives as sources.

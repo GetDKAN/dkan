@@ -2,16 +2,16 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-
-use Drupal\common\LoggerTrait;
-use Drupal\common\DataResource;
-use Drupal\common\UrlHostTokenResolver;
-use Drupal\metastore\Exception\AlreadyRegistered;
-use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\MetastoreService;
-
 use Contracts\FactoryInterface;
+use Drupal\common\DataResource;
+use Drupal\common\LoggerTrait;
+use Drupal\common\UrlHostTokenResolver;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\metastore\Exception\AlreadyRegistered;
+use Drupal\metastore\MetastoreService;
+use Drupal\metastore\ResourceMapper;
+
 use GuzzleHttp\Client as GuzzleClient;
 
 /**
@@ -36,12 +36,24 @@ class Referencer {
   private $storageFactory;
 
   /**
+   * Metastore URL Generator service.
+   *
+   * @var \Drupal\metastore\Reference\MetastoreUrlGenerator
+   */
+  public MetastoreUrlGenerator $metastoreUrlGenerator;
+
+  /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
+  public function __construct(
+    ConfigFactoryInterface $configService,
+    FactoryInterface $storageFactory,
+    MetastoreUrlGenerator $metastoreUrlGenerator
+  ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
+    $this->metastoreUrlGenerator = $metastoreUrlGenerator;
   }
 
   /**
@@ -158,18 +170,48 @@ class Referencer {
    * @return object
    *   The supplied distribution with an updated resource download URL.
    */
-  private function distributionHandling($distribution): object {
+  public function distributionHandling($distribution): object {
     // Ensure the supplied distribution has a valid resource before attempting
     // to register it with the resource mapper.
-    if (is_object($distribution) && isset($distribution->downloadURL)) {
+    if (isset($distribution->downloadURL)) {
       // Register this distribution's resource with the resource mapper and
       // replace the download URL with a unique ID registered in the resource
       // mapper.
       $distribution->downloadURL = $this->registerWithResourceMapper(
-        $this->hostify($distribution->downloadURL), $this->getMimeType($distribution));
+        UrlHostTokenResolver::hostify($distribution->downloadURL), $this->getMimeType($distribution));
+    }
+
+    // If there is a describedBy value, convert to dkan:// URL if appropriate.
+    if ($distribution->describedBy ?? FALSE) {
+      $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);
     }
 
     return $distribution;
+  }
+
+  /**
+   * Normalize an incoming URL to a reference ID.
+   *
+   * @param string $value
+   *   Value for describedBy field, usually a URL.
+   *
+   * @return string
+   *   Metastore Item ID.
+   */
+  protected function normalizeDictionaryValue(string $value): string {
+    $incoming_scheme = StreamWrapperManager::getScheme($value);
+    try {
+      $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
+    }
+    // If the URL cannot be converted to a DKAN URI, pass it through.
+    catch (\DomainException $e) {
+      return $value;
+    }
+    // If it was converted to DKAN URI, validate it as a data dictionary.
+    if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
+      throw new \DomainException("The value $value, is not a valid data-dictionary URI.");
+    }
+    return $uri;
   }
 
   /**
@@ -248,60 +290,6 @@ class Referencer {
   }
 
   /**
-   * Substitute the host for local URLs with a custom localhost token.
-   *
-   * @param string $resourceUrl
-   *   The URL of the resource being substituted.
-   *
-   * @return string
-   *   The resource URL with the custom localhost token.
-   */
-  public static function hostify(string $resourceUrl): string {
-    // Get HTTP server public files URL and extract the host.
-    $serverPublicFilesUrl = UrlHostTokenResolver::getServerPublicFilesUrl();
-    $serverPublicFilesUrl = isset($serverPublicFilesUrl) ? parse_url($serverPublicFilesUrl) : NULL;
-    $serverHost = $serverPublicFilesUrl['host'] ?? \Drupal::request()->getHost();
-    // Determine whether the resource URL has the same host as this server.
-    $resourceParsedUrl = parse_url($resourceUrl);
-    if (isset($resourceParsedUrl['host']) && $resourceParsedUrl['host'] == $serverHost) {
-      // Swap out the host portion of the resource URL with the localhost token.
-      $resourceParsedUrl['host'] = UrlHostTokenResolver::TOKEN;
-      $resourceUrl = self::unparseUrl($resourceParsedUrl);
-    }
-    return $resourceUrl;
-  }
-
-  /**
-   * Private.
-   */
-  private static function unparseUrl($parsedUrl) {
-    $url = '';
-    $urlParts = [
-      'scheme',
-      'host',
-      'port',
-      'user',
-      'pass',
-      'path',
-      'query',
-      'fragment',
-    ];
-
-    foreach ($urlParts as $part) {
-      if (!isset($parsedUrl[$part])) {
-        continue;
-      }
-      $url .= ($part == "port") ? ':' : '';
-      $url .= ($part == "query") ? '?' : '';
-      $url .= ($part == "fragment") ? '#' : '';
-      $url .= $parsedUrl[$part];
-      $url .= ($part == "scheme") ? '://' : '';
-    }
-
-    return $url;
-  }
-
-  /**
    * Determine the mime type of the supplied local file.
    *
    * @param string $downloadUrl
@@ -318,6 +306,7 @@ class Referencer {
     $filename = urldecode($filename);
 
     // Attempt to load the file by file name.
+    /** @var \Drupal\file\FileInterface[] $files */
     $files = \Drupal::entityTypeManager()
       ->getStorage('file')
       ->loadByProperties(['filename' => $filename]);
@@ -394,7 +383,7 @@ class Referencer {
     elseif (isset($distribution->downloadURL)) {
       // Determine whether the supplied distribution has a local or remote
       // resource.
-      $is_local = $distribution->downloadURL !== $this->hostify($distribution->downloadURL);
+      $is_local = $distribution->downloadURL !== UrlHostTokenResolver::hostify($distribution->downloadURL);
       $mimeType = $is_local ?
         $this->getLocalMimeType($distribution->downloadURL) :
         $this->getRemoteMimeType($distribution->downloadURL);

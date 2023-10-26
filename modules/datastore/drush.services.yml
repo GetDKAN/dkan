@@ -6,11 +6,20 @@ services:
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.post_import'
       - '@dkan.datastore.service.resource_localizer'
+      - '@dkan.metastore.resource_mapper'
     tags:
       - { name: drush.command }
   datastore.purger.commands:
     class: Drupal\datastore\Commands\PurgeCommands
     arguments:
       - '@dkan.datastore.service.resource_purger'
+    tags:
+      - { name: drush.command }
+  datastore.reimport.commands:
+    class: \Drupal\datastore\Commands\ReimportCommands
+    arguments:
+      - '@dkan.datastore.service'
+      - '@dkan.common.dataset_info'
+      - '@logger.factory'
     tags:
       - { name: drush.command }

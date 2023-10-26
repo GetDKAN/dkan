@@ -9,6 +9,20 @@ API
 ---
 You will need to authenticate with a user account possessing the 'api user' role. Use *Basic Auth*.
 
+Note that the username:password string submitted as the Authorization must be base 64 encoded.
+
+You can obtain the base 64 encoded string from the command line by running the following (replace admin:admin with username:password):
+
+.. code-block::
+
+    echo -n 'admin:admin' | base64
+    // Result
+    YWRtaW46YWRtaW4=
+
+    // When using basic auth via REST API
+    content-type: application/json
+    Authorization: Basic YWRtaW46YWRtaW4=
+
 Run a POST command to ``/api/1/metastore/schemas/dataset/items`` with a json formatted request body, the minimal elements are:
 
 
@@ -20,11 +34,33 @@ Run a POST command to ``/api/1/metastore/schemas/dataset/items`` with a json for
 
         {
           "title": "My new dataset",
-          "description": "Description for my new dataset.",
+          "description": "Detailed description for my new dataset.",
           "accessLevel": "public",
-          "modified": "2020-02-02",
-          "keyword": [
-            "test"
+          "accrualPeriodicity": "R/P1Y",
+          "publisher": {
+            "name": "Publisher Name"
+          },
+          "contactPoint": {
+            "fn": "Test Contact",
+            "hasEmail": "test@example.com"
+          },
+          "issued": "2013-02-10",
+          "modified": "2022-06-01",
+          "keyword": ["tag1","tag2"],
+          "license": "http://opendefinition.org/licenses/odc-pddl/",
+          "spatial": "London, England",
+          "temporal": "2013-02-10/2022-06-01"
+          "theme": [
+            "Category"
+          ],
+          "distribution": [
+              {
+                  "downloadURL": "http://demo.getdkan.org/sites/default/files/distribution/5dc1cfcf-8028-476c-a020-f58ec6dd621c/data.csv",
+                  "mediaType": "text/csv",
+                  "format": "csv",
+                  "description": "The data we want to share.",
+                  "title": "Resource Example"
+              }
           ]
         }
 
@@ -96,9 +132,9 @@ Create a harvest based on the file above:
 
 .. code-block::
 
-      dktl drush dkan:harvest:register --identifier=data --extract-uri=http://dkan.ddev.site/sites/default/files/h1.json
-      dktl drush dkan:harvest:run data
-      dktl drush cron
+      drush dkan:harvest:register --identifier=data --extract-uri=http://dkan.ddev.site/sites/default/files/h1.json
+      drush dkan:harvest:run data
+      drush cron
 
 Add demo site content
 ---------------------
@@ -110,8 +146,8 @@ Remove the datasets with the remove command.
 
 .. code-block::
 
-      dktl drush en sample_content -y
-      dktl drush dkan:sample-content:create
-      dktl drush cron
-      dktl drush dkan:sample:content:remove
+      drush en sample_content -y
+      drush dkan:sample-content:create
+      drush cron
+      drush dkan:sample:content:remove
 
