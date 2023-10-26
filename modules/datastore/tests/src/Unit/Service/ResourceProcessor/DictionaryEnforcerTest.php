@@ -16,7 +16,7 @@ use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-use Drupal\datastore\service\PostImport;
+use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\MetastoreService;
 
