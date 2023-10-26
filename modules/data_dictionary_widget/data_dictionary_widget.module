@@ -3,6 +3,22 @@
 use \Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 
 /**
+ * Implements hook_theme().
+ */
+function data_dictionary_widget_theme($existing, $type, $theme, $path) {
+  return [
+    'custom_table' => [
+      'variables' => [
+        'header' => [],
+        'rows' => [],
+        'attributes' => [],
+      ],
+      'template' => 'custom-table',
+    ],
+  ];
+}
+
+/**
  * Implements hook_entity_form_display_alter().
  *
  * Dynamically set the widget type for the field_json_metadata field.
