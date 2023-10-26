@@ -59,10 +59,11 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
-    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
+    $mock_container = $container_chain->getMock();
+    \Drupal::setContainer($mock_container);
 
     $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+       $mock_container, [], '', ['cron' => ['lease_time' => 10800]]
     );
 
     $dictionaryEnforcer->postImportProcessItem($resource);
@@ -94,13 +95,14 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
-    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
+    $mock_container = $container_chain->getMock();
+    \Drupal::setContainer($mock_container);
 
     $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+       $mock_container, [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-     $dictionaryEnforcer->postImportProcessItem($resource);
+    $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
@@ -131,13 +133,14 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
-    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
+    $mock_container = $container_chain->getMock();
+    \Drupal::setContainer($mock_container);
 
     $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+       $mock_container, [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-     $dictionaryEnforcer->postImportProcessItem($resource);
+    $dictionaryEnforcer->postImportProcessItem($resource);
 
     // Assert no exceptions are thrown.
     $errors = $container_chain->getStoredInput('error');
@@ -169,7 +172,8 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
       ->add(DictionaryEnforcer::class, 'returnDataDictionaryFields', ['data' => ['fields' => []]]);
-    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
+    $mock_container = $container_chain->getMock();
+    \Drupal::setContainer($mock_container);
 
     $result = $dictionary_enforcer->returnDataDictionaryFields();
     $this->assertIsArray($result);

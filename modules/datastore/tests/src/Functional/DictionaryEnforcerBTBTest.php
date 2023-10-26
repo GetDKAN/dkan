@@ -13,7 +13,6 @@ use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
  * DictionaryEnforcer QueueWorker test.
