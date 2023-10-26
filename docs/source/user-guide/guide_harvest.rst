@@ -63,7 +63,7 @@ Register a harvest
 
   **Example**
 
-  .. code-block::
+  .. prompt:: bash $
 
     drush dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
 
@@ -75,7 +75,7 @@ Run the harvest
   Once you have registered a harvest source, run the import, passing in
   the identifier as an arguement
 
-  .. code-block::
+  .. prompt:: bash $
 
     drush dkan:harvest:run myHarvestId
 
@@ -101,6 +101,6 @@ example of how you can create a custom module to add a transform class.
 
   **Example with a transform item**
 
-  .. code-block::
+  .. prompt:: bash $
 
     drush dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json  --transform="\\Drupal\\custom_module\\Transform\\CustomTransform"

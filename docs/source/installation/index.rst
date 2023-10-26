@@ -33,7 +33,7 @@ Follow the instructions from the **DKAN DDev Addon** documentation: `Starting a 
 
 DKAN DDev Addon bases new projects off of a `composer project <https://github.com/GetDKAN/recommended-project>`_ that you can also use to start a project using your own toolset:
 
-  .. code-block::
+  .. prompt:: bash $
 
     composer create-project getdkan/recommended-project my-project
 
@@ -47,14 +47,14 @@ Adding DKAN into an existing project
 
 If you already have an existing Drupal site, install DKAN with `composer <https://www.drupal.org/node/2718229>`_. You can find the `latest DKAN release here <https://github.com/GetDKAN/dkan/releases>`_. Composer will download the module and all of the dependencies it requires for the backend.
 
-  .. code-block::
+  .. prompt:: bash $
 
-    composer require 'getdkan/dkan'
-    drush en dkan
+      composer require 'getdkan/dkan'
+      drush en dkan
 
 To start with some example datasets:
 
-  .. code-block::
+  .. prompt:: bash $
 
       drush en sample_content -y
       drush dkan:sample-content:create

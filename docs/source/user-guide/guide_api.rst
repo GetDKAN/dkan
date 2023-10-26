@@ -20,13 +20,13 @@ change each time there is a change to the distribution resource or any change to
 the dataset metadata API ``/api/1/metastore/schemas/dataset/items/{datasetID}?show-reference-ids``
 or by running this drush command, passing in the dataset ID:
 
-    .. code-block::
+    .. prompt:: bash $
 
       drush dkan:dataset-info {datasetID}
 
 In the following examples, we will use {datasetID} to represent the dataset identifier, {distributionID} to
 represent the distribution identifier, and {index} to represent which distribution is being referenced on a
-dataset.
+dataset, the index starts at 0.
 
 Datastore: Query Data
 ---------------------
@@ -38,9 +38,8 @@ How to run a simple query against a dataset.
 
 To pull dataset data via the API, the recommended method is to use the datastore query endpoint.
 
-    .. code-block::
+    .. http:post:: https://{site-domain}/api/1/datastore/query/{datasetID}/{index}
 
-      https://{site-domain}/api/1/datastore/query/{datasetID}/{index}
 
 The datastore query endpoint takes two arguments: the dataset ID, which can be obtained from the URL of
 the dataset and does not change between data refreshes, and the index of the distribution.
@@ -48,9 +47,9 @@ the dataset and does not change between data refreshes, and the index of the dis
 To apply conditions, include them in the request body. For example, to return all results where the
 product_category_code column was equal to '022':
 
-    .. code-block::
+    .. sourcecode:: http
 
-      POST https://{site-domain}/api/1/datastore/query/{datasetID}/{index} HTTP 1.1
+      POST https://{site-domain}/api/1/datastore/query/{datasetID}/{index} HTTP/1.1
 
        {
          "conditions": [
@@ -62,7 +61,7 @@ product_category_code column was equal to '022':
          ]
        }
 
-This can be converted to a query string to be used with a simple GET request by pasting the request body above
+You can convert the above json into to a query string to be used with a simple GET request by pasting the request body above
 into a service such as `Convert Online <https://www.convertonline.io/convert/json-to-query-string>`_.
 Doing so results in the following query string:
 
@@ -73,16 +72,16 @@ Doing so results in the following query string:
 The query string can be appended to the datastore query endpoint url and return results directly in the browser.
 i.e.
 
-    .. code-block::
+    .. sourcecode:: http
 
-      https://{site-domain}/api/1/datastore/query/{datasetID}/{index}?{queryString}
+      GET https://{site-domain}/api/1/datastore/query/{datasetID}/0?conditions[0][property]=product_category_code&conditions[0][value]=022&conditions[0][operator]== HTTP/1.1
 
 Additional query options include:
 
-  -  properties: which columns to return in results; defaults to all columns if not specified
-  -  sorts: how to order the results; defaults to row ID in the database if not specified
-  -  limit: number of results to return; only limited by the overall row limit (generally 500) if not specified
-  -  offset: how many rows to skip before displaying results; defaults to zero if not specified
+  -  **properties**: which columns to return in results; defaults to all columns if not specified
+  -  **sorts**: how to order the results; defaults to row ID in the database if not specified
+  -  **limit**: number of results to return; only limited by the overall row limit (generally 500) if not specified
+  -  **offset**: how many rows to skip before displaying results; defaults to zero if not specified
 
 See below for examples of how to use these options.
 
@@ -95,9 +94,9 @@ etc for each subsequent pull.
 
 For example, when using the datastore query endpoint against a result set that has a row limit of 500:
 
-    .. code-block::
+    .. sourcecode:: http
 
-      GET https://{site-domain}/api/1/datastore/query/{datasetID}/{index}
+      GET https://{site-domain}/api/1/datastore/query/{datasetID}/{index} HTTP/1.1
 
 The above will return the first 500 rows of the dataset along with the total number of results labeled as 'count'.
 
@@ -112,9 +111,9 @@ If the count is between 1000 and 1500 rows, you could pull all the results in 3 
 
 If using an HTTP Client, you can set the offset in the request body:
 
-    .. code-block::
+    .. sourcecode:: http
 
-      POST https://{site-domain}/api/1/datastore/query/{datasetID}/{index} HTTP 1.1
+      POST https://{site-domain}/api/1/datastore/query/{datasetID}/{index} HTTP/1.1
 
        {
          "offset":500
@@ -133,9 +132,12 @@ set up an alias to collect the values to a single property in the results.
 Add any conditions you like to filter the data. Then add the join, defining
 the property and value to match.
 
-    .. code-block::
+  **Create a join:**
 
-      POST https://{site-domain}/api/1/datastore/query HTTP/1.1
+  .. sourcecode:: http
+
+    POST https://{site-domain}/api/1/datastore/query HTTP/1.1
+    content-type: application/json
 
       {
         "resources": [
@@ -216,59 +218,62 @@ Below would give you the first 5 results for service_type = "General" AND
 matches any word that starts with "knee" OR equals "ankle" in either the
 description or notes column.
 
-    .. code-block::
+    .. sourcecode:: http
 
-      POST https://{site-domain}/api/1/datastore/query/{datasetID}/0 HTTP 1.1
+      POST https://{site-domain}/api/1/datastore/query/{datasetID}/0 HTTP/1.1
+      content-type: application/json
 
-       {
-         "offset":0,
-         "limit":5,
-         "rowIds":true,
-         "conditions":[
-           {
-             "resource":"t",
-             "property":"service_type",
-             "value":"General",
-             "operator":"="
-           },
-           {
-             "groupOperator":"or",
-             "conditions": [
-               {
-                 "resource":"t",
-                 "property":"description, notes",
-                 "value":"knee*",
-                 "operator":"match"
-               },
-               {
-                 "resource":"t",
-                 "property":"description, notes",
-                 "value":"ankle",
-                 "operator":"match"
-               }
-             ]
-           }
-         ],
-         "sorts":[
-           {
-             "property":"decision_date",
-             "order":"desc"
-           }
-         ]
-       }
+      {
+        "offset":0,
+        "limit":5,
+        "rowIds":true,
+        "conditions":[
+          {
+            "resource":"t",
+            "property":"service_type",
+            "value":"General",
+            "operator":"="
+          },
+          {
+            "groupOperator":"or",
+            "conditions": [
+              {
+                "resource":"t",
+                "property":"description, notes",
+                "value":"knee*",
+                "operator":"match"
+              },
+              {
+                "resource":"t",
+                "property":"description, notes",
+                "value":"ankle",
+                "operator":"match"
+              }
+            ]
+          }
+        ],
+        "sorts":[
+          {
+            "property":"decision_date",
+            "order":"desc"
+          }
+        ]
+      }
 
 Metastore: Search
 -----------------
 
-The DKAN search endpoint ( https://{site-domain}/api/1/search ) can be used to return a filtered list of datasets - for
+.. http:get:: /api/1/search
+
+The DKAN search endpoint can be used to return a filtered list of datasets - for
 example all datasets tagged with a given keyword or where the title and/or description contain a given search term.
 
 Filter options are passed as query parameters to the endpoint. For example, to find all the datasets with a theme of
 'Supplier directory', you would use:
 
-    .. code-block::
+    .. sourcecode:: http
 
-      https://{site-domain}/api/1/search?theme=Supplier%20directory
+      GET https://{site-domain}/api/1/search?theme=Supplier%20directory HTTP/1.1
 
 Note that '%20' is inserted for the spaces between words in a theme or keyword. Separate multiple query parameters with
 ampersands.
@@ -277,17 +282,17 @@ The default result limit - if page-size is not provided - is 10. The API will no
 time. If you want the next batch of results, you can increment the page number by passing the 'page' query parameter.
 E.g.
 
-    .. code-block::
+    .. sourcecode:: http
 
-      https://{site-domain}/api/1/search?page-size=100&page=2
+      GET https://{site-domain}/api/1/search?page-size=100&page=2 HTTP/1.1
 
 Search endpoint options include:
 
-  -  page-size: how many results to return; maximum number supported is 100; defaults to 10 if not specified
-  -  page: which page of results (divided by page-size) to return; defaults to 1 if not specified
-  -  theme: return datasets associated with a given theme
-  -  keyword: return datasets associated with a given keyword/tag
-  -  fulltext: return datasets that contain a given text string in the title or description of the dataset
+  -  **page-size**: how many results to return; maximum number supported is 100; defaults to 10 if not specified
+  -  **page**: which page of results (divided by page-size) to return; defaults to 1 if not specified
+  -  **theme**: return datasets associated with a given theme
+  -  **keyword**: return datasets associated with a given keyword/tag
+  -  **fulltext**: return datasets that contain a given text string in the title or description of the dataset
 
 Metastore: Create, Edit, Delete
 -------------------------------
@@ -331,14 +336,14 @@ Learn more about :term:`Moderation State` here.
 1. Get the current moderation state and confirm there is at least one revision.
 
 
-    .. code-block::
+    .. sourcecode:: http
 
-      GET https://{site-domain}/api/1/metastore/schemas/dataset/items/{datasetID}/revisions
+      GET https://{site-domain}/api/1/metastore/schemas/dataset/items/{datasetID}/revisions HTTP/1.1
 
 
 2. Let's say the returned result says the revision is published "true" and state "published", here is how we change the state to hidden.
 
-    .. code-block::
+    .. sourcecode:: http
 
        POST https://{site-domain}/api/1/metastore/schemas/dataset/items/{datasetID}/revisions HTTP/1.1
 

@@ -157,7 +157,7 @@ the dataset array as you want. Create a json file in your local sites/default/fi
 
 Create a harvest based on the file above:
 
-.. code-block::
+.. prompt:: bash $
 
       drush dkan:harvest:register --identifier=harvest1 --extract-uri=http://dkan.ddev.site/sites/default/files/h1.json
       drush dkan:harvest:run harvest1
@@ -173,7 +173,7 @@ Enable the sample content module. Run the create command to add the datasets.
 Running cron will run the queues that fetch the csv files and import them into datstore tables.
 Remove the datasets with the remove command.
 
-.. code-block::
+.. prompt:: bash $
 
       drush en sample_content -y
       drush dkan:sample-content:create
