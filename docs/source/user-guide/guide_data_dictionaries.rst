@@ -206,22 +206,15 @@ Learn more about this on :doc:`guide_indexes`
 How to set the data dictionary mode
 -----------------------------------
 
+In the section above we created a data dictionary
+with ID `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
+We will use this ID when setting either of the data dictionary modes.
+
 Sitewide
 ^^^^^^^^
 The simplest way to use data dictionaries on your site is to create one for the entire catalog.
 In this mode, any datastore table that contains any of the defined fields in it's header row will
 be altered according to the sitewide data dictionary.
-
-Distribution reference
-^^^^^^^^^^^^^^^^^^^^^^
-Datasets can reference specific data dictionaries in this mode. Distribution reference mode means that DKAN will look for links to data dictionaries in the
-`describedBy` field of the distribution that a data file is described in. It will look for a URL to a data dictionary
-in the metastore. The `describedByType` must also be `application/vnd.tableschema+json` to signal correct data
-dictionary format.
-
-In the section above we created a data dictionary
-with ID `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
-We will use this ID when setting either of the data dictionary modes.
 
 To set the data dictionary mode to **sitewide**:
 
@@ -235,6 +228,12 @@ To set the data dictionary mode to **sitewide**:
         input for Sitewide Dictionary ID containing the identifier 7fd6bb1f-2752-54de-9a33-81ce2ea0feb2.
 
 
+Distribution reference
+^^^^^^^^^^^^^^^^^^^^^^
+Datasets can reference specific data dictionaries in this mode. Distribution reference mode means that DKAN will look for links to data dictionaries in the
+`describedBy` field of the distribution that a data file is described in. It will look for a URL to a data dictionary
+in the metastore. The `describedByType` must also be `application/vnd.tableschema+json` to signal correct data
+dictionary format.
 
 To set the data dictionary mode to **distribution reference**:
 

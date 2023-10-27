@@ -66,8 +66,8 @@ GUI
   1. Log in as an administrator.
   2. From the DKAN menu, select Data Dictionary -> Create.
   3. Enter a name for your data dictionary that will serve as its identifier.
-  4. Define the fields in the 'Dictionary Fields' section.
-  5. Define the indexes in the 'Dictionary Indexes' section.
+  4. Any column you want to index must be defined in the 'Dictionary Fields' section.
+  5. After defining the fields, move to the 'Dictionary Indexes' section.
   6. Enter the column name into the 'Name' field.
   7. Use the 'Add one' button to add more fields if desired.
   8. Select the index type: standard or fulltext
