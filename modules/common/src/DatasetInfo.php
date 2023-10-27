@@ -140,7 +140,6 @@ class DatasetInfo implements ContainerInjectionInterface {
    *
    * @param string $uuid
    *   The uuid of a dataset.
-   *
    * @param string $index
    *   The index of the resource in the dataset array. Defaults to first.
    *
