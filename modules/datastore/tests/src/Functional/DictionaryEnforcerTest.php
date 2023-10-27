@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @group functional
  * @group btb
  */
-class DictionaryEnforcerBTBTest extends BrowserTestBase {
+class DictionaryEnforcerTest extends BrowserTestBase {
 
   use GetDataTrait, CleanUp;
 
