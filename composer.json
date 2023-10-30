@@ -6,7 +6,7 @@
     "description": "DKAN Open Data Catalog",
     "require": {
         "drupal/moderated_content_bulk_publish": "~2.0.20",
-        "drupal/search_api": "<1.30",
+        "drupal/search_api": "^1.15",
         "drupal/select_or_other": "^4.1.0",
         "drupal/select2": "^1.13",
         "drupal/views_bulk_operations": "^4.0",
