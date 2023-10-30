@@ -2,9 +2,9 @@
 
 namespace Drupal\datastore\Service;
 
+use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
@@ -47,9 +47,11 @@ class ResourceLocalizer {
   /**
    * DKAN resource file fetcher factory.
    *
-   * @var \Drupal\common\FileFetcher\FileFetcherFactory
+   * @var \Contracts\FactoryInterface
+   *
+   * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
-  private FileFetcherFactory $fileFetcherFactory;
+  private FactoryInterface $fileFetcherFactory;
 
   /**
    * Drupal files utility service.
@@ -70,7 +72,7 @@ class ResourceLocalizer {
    */
   public function __construct(
     ResourceMapper $fileMapper,
-    FileFetcherFactory $fileFetcherFactory,
+    FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
     JobStoreFactory $jobStoreFactory
   ) {
@@ -96,7 +98,7 @@ class ResourceLocalizer {
   /**
    * Create local file and URL perspectives in the mapper, get a perspective.
    *
-   * The source perspective must already exist.
+   * Requires the localized file to exist so it can be checksummed.
    *
    * @return \Drupal\common\DataResource|null
    *   Return the perspective, or NULL if the source perspective did not exist.
@@ -110,7 +112,7 @@ class ResourceLocalizer {
 
     $ff = $this->getFileFetcher($resource);
 
-    if ($ff->getResult()->getStatus() !== Result::DONE) {
+    if ($ff->getResult()->getStatus() != Result::DONE) {
       return NULL;
     }
 
@@ -130,10 +132,10 @@ class ResourceLocalizer {
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
     $localUrl = UrlHostTokenResolver::hostify($localUrl);
 
-    $localFilePerspective = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
+    $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
     try {
-      $this->resourceMapper->registerNewPerspective($localFilePerspective);
+      $this->resourceMapper->registerNewPerspective($new);
     }
     catch (AlreadyRegistered $e) {
     }
