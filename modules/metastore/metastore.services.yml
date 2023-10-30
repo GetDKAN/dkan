@@ -40,7 +40,7 @@ services:
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
-      - '@dkan.metastore.resource_mapper'
+      - '@dkan.metastore.url_generator'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
 
@@ -108,7 +108,17 @@ services:
       - '@cache_tags.invalidator'
       - '@module_handler'
 
+  dkan.metastore.url_generator:
+    class: \Drupal\metastore\Reference\MetastoreUrlGenerator
+    arguments:
+      - '@stream_wrapper_manager'
+      - '@dkan.metastore.service'
+      - '@request_stack'
+
   dkan.metastore.data_dictionary_discovery:
     class: \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
     arguments:
       - '@config.factory'
+      - '@dkan.metastore.service'
+      - '@dkan.metastore.reference_lookup'
+      - '@dkan.metastore.url_generator'

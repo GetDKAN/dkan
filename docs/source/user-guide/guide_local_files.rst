@@ -1,11 +1,11 @@
-Importing Very Large Files
+Importing very large files
 --------------------------
 
 Very large datasets can present challenges for the datastore import process. What "very large" means will depend on your server infrastructure, but it's safe to say that when dealing with multi-gigabyte CSV files you may start to encounter broken file transfers or timeouts.
 
 Because DKAN will make a local copy of a remote file in order to import it, it can help to prepare the import by transfering the files to the web server manually (or with shell scripts). Then you can instruct DKAN to use that already-existing local copy for processing into the database.
 
-These instructions assume you’ve already created a dataset (through the the UI, a harvest or the API) that contains a distribution pointing to a remote CSV file, and that this CSV file has not yet been imported to the datastore. We’ll need the ID of the existing dataset.
+These instructions assume you've already created a dataset (through the the UI, a harvest or the API) that contains a distribution pointing to a remote CSV file, and that this CSV file has not yet been imported to the datastore. We'll need the ID of the existing dataset.
 
 Note that for the most part, DKAN will not have trouble performing dataset imports. These instructions, and the features which support them, are for those times when the datasets are large enough to cause errors during normal imports.
 
@@ -20,16 +20,20 @@ Below are some abbreviated instructions. Read past this section for details.
 - Set up the import: :code:`drush dkan:datastore:import --deferred [id]`
 - Perform the import, using queues: :code:`drush queue:run localize_import && drush queue:run datstore_import`
 - Alternately, perform the import, running cron at least twice: :code:`drush cron && drush cron`
-- Disable the local file configuration so future imports will use source files: :code:`drush config:set common.settings always_use_existing_local_perspective 0`
+- Disable the local file configuration: :code:`drush config:set common.settings always_use_existing_local_perspective 0`
 
-Prepare The Local Perspective
+Prepare the local perspective
 =============================
 
 You can use Drush to discover more information about the dataset, given its ID:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44
+    drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44
+
+.. code-block:: json
+    :caption: Response
+
     {
         "latest_revision": {
             "uuid": "bf215cd3-dd81-498c-b57a-4847dbeaac44",
@@ -59,16 +63,24 @@ You can use Drush to discover more information about the dataset, given its ID:
 
 We want the resource ID from the distribution. You can just select and copy it from the JSON output, or extract it using `jq <https://jqlang.github.io/jq/>`_:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44 | jq -r '.latest_revision.distributions[].resource_id'
+    drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44 | jq -r '.latest_revision.distributions[].resource_id'
+
+.. code-block::
+    :caption: Response
+
     1fecf29222b12fc1ce2678abbc8f870f
 
 Now that we have the resource ID, we can tell DKAN expect some other process to download the file. We use :code:`drush dkan:datastore:prepare-localized` to do this:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush dkan:datastore:prepare-localized 1fecf29222b12fc1ce2678abbc8f870f
+    drush dkan:datastore:prepare-localized 1fecf29222b12fc1ce2678abbc8f870f
+
+.. code-block:: json
+    :caption: Response
+
     {
         "source": "http:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/cedcd327-4e5d-43f9-8eb1-c11850fa7c55\/Bike_Lane.csv",
         "path_uri": "public:\/\/resources\/1fecf29222b12fc1ce2678abbc8f870f_1691778866",
@@ -79,78 +91,90 @@ Now that we have the resource ID, we can tell DKAN expect some other process to 
 
 We can pipe this to jq as well, to extract the specific path where DKAN expects the file:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush dkan:datastore:prepare-localized 1fecf29222b12fc1ce2678abbc8f870f | jq -r .path
+    drush dkan:datastore:prepare-localized 1fecf29222b12fc1ce2678abbc8f870f | jq -r .path
     /var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866
 
 This Drush command, :code:`dkan:datastore:prepare-localized`, will add this file path information to the dataset map as well, which we can check by re-running our dataset info:
 
-.. code-block::
+.. prompt:: bash $
 
-    % ddev drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44 | jq -r '.latest_revision.distributions[].file_path'
+    drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44 | jq -r '.latest_revision.distributions[].file_path'
     public://resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866/Bike_Lane.csv
 
-Transfer The File
+Transfer the file
 =================
 
-In this example we’ll just use wget to copy the file at the command line. At the moment, automating this process is left as an exercise for the reader, but a combination of bash and jq should be able to accomplish this.
+In this example we'll just use wget to copy the file at the command line. At the moment, automating this process is left as an exercise for the reader, but a combination of bash and jq should be able to accomplish this.
 
 From the output of :code:`dkan:datastore:prepare-localized` we get the path. In our case this is */var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866*
 
-We’ll need to change into this directory… This may differ on your system.
+We'll need to change into this directory… This may differ on your system.
 
-.. code-block::
+.. prompt:: bash $
 
-    % cd sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866
+    cd sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866
 
 Now we can use a file transfer tool to put the file where it belongs. The file is the source field from :code:`dkan:datastore:prepare-localized`.
 
-.. code-block::
+.. prompt:: bash $
 
-    % wget http://demo.getdkan.org/sites/default/files/distribution/cedcd327-4e5d-43f9-8eb1-c11850fa7c55/Bike_Lane.csv
+    wget http://demo.getdkan.org/sites/default/files/distribution/cedcd327-4e5d-43f9-8eb1-c11850fa7c55/Bike_Lane.csv
 
-Perform The Import
+Perform the import
 ==================
 
-In order to perform this style of import, we have to set a configuration to use the local file. It’s important that we do this or else DKAN will perform the file transfers again, negating all our work so far.
+In order to perform this style of import, we have to set a configuration to use the local file. It's important that we do this or else DKAN will perform the file transfers again, negating all our work so far.
 
 This configuration can only be set via Drush:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush config:set common.settings always_use_existing_local_perspective 1
+    drush config:set common.settings always_use_existing_local_perspective 1
 
 We can verify that this configuration was set:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush config:get common.settings always_use_existing_local_perspective
+    drush config:get common.settings always_use_existing_local_perspective
     'common.settings:always_use_existing_local_perspective': true
 
 Now our import will use the local file.
 
 If we used harvest to set up the datasets, they are probably already queued to import. If not, we can set up our dataset to import:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush dkan:datastore:import --deferred 1fecf29222b12fc1ce2678abbc8f870f
-     [notice] Queued import for 5c10426922cb88f20d3f5a2ae45d2f11
+    drush dkan:datastore:import --deferred 1fecf29222b12fc1ce2678abbc8f870f
+
+.. code-block:: shell-session
+    :caption: Response
+
+    [notice] Queued import for 5c10426922cb88f20d3f5a2ae45d2f11
 
 Now we run cron, or we can run the specific queue:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush queue:run datastore_import
+    drush queue:run datastore_import
+
+.. code-block:: shell-session
+    :caption: Response
+
      [notice] ResourceLocalizer for 1fecf29222b12fc1ce2678abbc8f870f__ completed.
      [notice] ImportService for 1fecf29222b12fc1ce2678abbc8f870f__ completed.
      [success] Processed 1 items from the datastore_import queue in 0.25 sec.
 
 And now we look at the dataset again and verify that it has imported:
 
-.. code-block::
+.. prompt:: bash $
 
-    % drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44
+    drush dkan:dataset-info bf215cd3-dd81-498c-b57a-4847dbeaac44
+
+.. code-block:: json
+    :caption: Response
+
     {
         "latest_revision": {
             "uuid": "bf215cd3-dd81-498c-b57a-4847dbeaac44",

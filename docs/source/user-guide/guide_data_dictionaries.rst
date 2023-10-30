@@ -91,12 +91,13 @@ This property is important for fields where you need to specify the format of th
 
 If your date values are not in ISO8601 format, use this property to define the format being used so that the data will import into the datastore correctly. Month and day values must be zero-padded. Follow the date formatting syntax of C / Python `strftime <http://strftime.org/>`_ to determine the pattern to use in your format property. For example, if your dates are in mm/dd/YYYY format, use "format": "%m/%d/%Y".
 
-Tutorial I: Catalog-wide data dictionary
-----------------------------------------
+How to create a data dictionary
+-------------------------------
 
 Creating a data dictionary via the API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The simplest way to use data dictionaries on your site is to create one for the entire catalog. To do this, let's first create a new dictionary using the API. We will define a list of fields based on the example header row below.
+
+We will define a list of fields based on the example header row below.
 
 .. list-table::
    :widths: 16 16 16 16 16 16
@@ -117,76 +118,177 @@ The simplest way to use data dictionaries on your site is to create one for the 
 
 ----
 
-.. code-block::
+.. http:post:: /api/1/metastore/schemas/data-dictionary/items
 
-    POST http://mydomain.com/api/1/metastore/schemas/data-dictionary/items
-    Authorization: Basic username:password
+  **Example request**:
 
-    {
-        "title": "Demo Dictionary",
-        "data": {
-            "fields": [
-                {
-                    "name": "project_id",
-                    "title": "Project ID",
-                    "type": "integer"
-                },
-                {
-                    "name": "project_name",
-                    "title": "Project",
-                    "type": "string"
-                },
-                {
-                    "name": "start_date",
-                    "title": "Start Date",
-                    "type": "date",
-                    "format": "%m/%d/%Y"
-                },
-                {
-                    "name": "end_date",
-                    "title": "End Date",
-                    "type": "date",
-                    "format": "%m/%d/%Y"
-                },
-                {
-                    "name": "cost",
-                    "title": "Cost",
-                    "type": "number"
-                },
-                {
-                    "name": "contact",
-                    "title": "Contact",
-                    "type": "string",
-                    "format": "email"
-                }
-            ]
-        }
-    }
+  .. sourcecode:: http
 
+      POST /api/1/metastore/schemas/data-dictionary/items HTTP/1.1
+      Host: mydomain.com
+      Accept: application/json
+      Authorization: Basic username:password
+
+      {
+          "title": "Demo Dictionary",
+          "data": {
+              "fields": [
+                  {
+                      "name": "project_id",
+                      "title": "Project ID",
+                      "type": "integer"
+                  },
+                  {
+                      "name": "project_name",
+                      "title": "Project",
+                      "type": "string"
+                  },
+                  {
+                      "name": "start_date",
+                      "title": "Start Date",
+                      "type": "date",
+                      "format": "%m/%d/%Y"
+                  },
+                  {
+                      "name": "end_date",
+                      "title": "End Date",
+                      "type": "date",
+                      "format": "%m/%d/%Y"
+                  },
+                  {
+                      "name": "cost",
+                      "title": "Cost",
+                      "type": "number"
+                  },
+                  {
+                      "name": "contact",
+                      "title": "Contact",
+                      "type": "string",
+                      "format": "email"
+                  }
+              ]
+          }
+      }
+
+  **Example response**:
+
+  .. sourcecode:: http
+
+      HTTP/1.1 201 Created
+
+      {
+        "endpoint": "\/api\/1\/metastore\/schemas\/data-dictionary\/items\/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
+        "identifier": "7fd6bb1f-2752-54de-9a33-81ce2ea0feb2"
+      }
 
 We get a response that tells us the identifier for the new dictionary is `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
 
-We now need to set the data dictionary mode to *sitewide*, and the sitewide data dictionary to this identifier. For now, we must do this through drush:
-
-.. code-block::
-
-    drush -y config:set metastore.settings data_dictionary_mode 1
-    drush -y config:set metastore.settings data_dictionary_sitewide 7fd6bb1f-2752-54de-9a33-81ce2ea0feb2
-
-
 Creating a data dictionary via the UI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-1. Log in as an administrator.
+1. Log in as a user with the *Data: Create new content* permission.
 2. From the DKAN menu, select Data Dictionary -> Create.
-3. Enter a name for your data dictionary that will serve as its identifier.
-4. Define the fields for your data dictionary
-5. Click the "Save" button.
-6. From the DKAN menu, select Data Dictionary -> Settings.
-7. Select "Sitewide" from the Dictionary Mode options.
-8. Type in the name of the data-dictionary you created in step 3.
-9. Click the "Save configuration" button.
+3. Enter a UUID for your data dictionary that will serve as its identifier.
+4. Enter a human readable title for your data dictionary.
+5. In the **Dictionary Fields** section, click the "Add one" button.
+6. Fill the form to define your field. Reference the Table Schema section above if needed.
+7. Repeat steps 5 and 6 for each field you want in your data dictionary.
+8. Click the "Save" button.
+9. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`
+10. Edit your data dictionary by going to `/admin/dkan/datasets`, then select "data-dictionary" from the data type filter, and click "Filter".
+11. Click the "Edit" link in the right-hand column.
+
 
 Adding indexes
 ^^^^^^^^^^^^^^
-The same process is used for adding indexes to the datastores.
+Data dictionaries can be used to describe indexes that should be applied when importing to a database.
 Learn more about this on :doc:`guide_indexes`
+
+How to set the data dictionary mode
+-----------------------------------
+
+In the section above we created a data dictionary
+with ID `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
+We will use this ID when setting either of the data dictionary modes.
+
+Sitewide
+^^^^^^^^
+The simplest way to use data dictionaries on your site is to create one for the entire catalog.
+In this mode, any datastore table that contains any of the defined fields in it's header row will
+be altered according to the sitewide data dictionary.
+
+To set the data dictionary mode to **sitewide**:
+
+1. Go to admin/dkan/data-dictionary/settings
+2. Set "Dictionary Mode" to "Sitewide".
+3. Set "Sitewide Dictionary ID" to `7fd6bb1f-2752-54de-9a33-81ce2ea0feb2`.
+4. Click "Save configuration".
+
+.. image:: images/dictionary-settings.png
+  :alt: Data dictionay settings admin page, with select input for "Dictionary Mode" set to "Sitewide" and text
+        input for Sitewide Dictionary ID containing the identifier 7fd6bb1f-2752-54de-9a33-81ce2ea0feb2.
+
+
+Distribution reference
+^^^^^^^^^^^^^^^^^^^^^^
+Datasets can reference specific data dictionaries in this mode. Distribution reference mode means that DKAN will look for links to data dictionaries in the
+`describedBy` field of the distribution that a data file is described in. It will look for a URL to a data dictionary
+in the metastore. The `describedByType` must also be `application/vnd.tableschema+json` to signal correct data
+dictionary format.
+
+To set the data dictionary mode to **distribution reference**:
+
+1. Go to admin/dkan/data-dictionary/settings
+2. Set "Dictionary Mode" to "Distribution reference".
+
+.. note:: Note
+   Assigning data dictionaries to datasets through the UI is still a work in progress!
+
+Now let's use the API to link a new dataset to the data dictionay we created above.
+Look closely at the distribution property in the example below.
+
+.. http:post:: /api/1/metastore/schemas/dataset/items
+
+   **Example**:
+
+   .. sourcecode:: http
+
+      POST https://mydomain.com/api/1/metastore/schemas/data-dictionary/items HTTP/1.1
+      Accept: application/json
+      Authorization: Basic username:password
+
+      {
+        "@type": "dcat:Dataset",
+        "accessLevel": "public",
+        "contactPoint": {
+          "fn": "Jane Doe",
+          "hasEmail": "mailto:data.admin@example.com"
+        },
+        "title": "Project list",
+        "description": "Example dataset.",
+        "distribution": [
+          {
+            "@type": "dcat:Distribution",
+            "downloadURL": "https://example.com/projects.csv",
+            "mediaType": "text\/csv",
+            "format": "csv",
+            "title": "Projects",
+            "describedBy": "dkan://metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
+            "describedByType": "application/vnd.tableschema+json"
+          }
+        ],
+        "issued": "2016-06-22",
+        "license": "http://opendatacommons.org/licenses/by/1.0/",
+        "modified": "2016-06-22",
+        "publisher": {
+          "@type": "org:Organization",
+          "name": "Data publisher"
+        },
+        "keyword":["tag1"]
+      }
+
+Note the special URL used to point to the data dictionary. The full URL, e.g.
+http://mydomain.com/api/1/metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2,
+could also be used, and would be converted to an internal `dkan://` URL on save.
+
+This data dictionary will now be used to modify the datastore table after import. If we were to
+request the dataset back from the API, it would show us the absolute URL as well.

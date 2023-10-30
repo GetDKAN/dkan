@@ -3,19 +3,18 @@
 namespace Drupal\datastore\Service;
 
 use Contracts\FactoryInterface;
-use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
+use Drupal\common\EventDispatcherTrait;
+use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\Exception\AlreadyRegistered;
-use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
-use Drupal\common\EventDispatcherTrait;
 
 /**
  * Resource localizer.
@@ -195,7 +194,7 @@ class ResourceLocalizer {
     $public_dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
     $localFileDrupalUri = str_replace($public_dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
-    $localUrl = Referencer::hostify($localUrl);
+    $localUrl = UrlHostTokenResolver::hostify($localUrl);
 
     $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
