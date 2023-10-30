@@ -42,9 +42,9 @@ Filenames are written as inline code as in this example: ``thisfile.txt`` will d
 
 Terminal commands
 ^^^^^^^^^^^^^^^^^
-Terminal commands should be expressed in a full code block:
+Terminal commands should be expressed in a sphinx prompt block:
 
-  .. code-block:: console
+  .. prompt:: bash $
 
     drush cim -y
     drush cr
@@ -52,7 +52,7 @@ Terminal commands should be expressed in a full code block:
 
 Code blocks
 ^^^^^^^^^^^^^^^^^
-Code blocks are also expressed as... code blocks:
+Code blocks are expressed as... code blocks:
 
   .. code-block:: php
 
@@ -94,14 +94,14 @@ local platform.
 
 Install the dependencies for this project. Make sure you are in the `/docs` directory:
 
-  .. code-block:: console
+  .. prompt:: console $
 
     cd docs
     pip install -r requirements.txt
 
 Now you should be able to build the Sphinx site by typing
 
-  .. code-block:: console
+  .. prompt:: console $
 
     make html
 
@@ -127,6 +127,6 @@ The documentation will build in `docs/build/html`, you can then open the
 Sometimes changes to indexes are not picked up very well. If you see issues with the sidebar
 table of contents, delete the `docs/build` directory by running:
 
-  .. code-block:: console
+  .. prompt:: console $
 
     make clean
