@@ -25,7 +25,7 @@ class FlexibleDateTime extends Datetime {
   /**
    * {@inheritdoc}
    */
-  public static function valueCallback(&$element, $input, FormStateInterface $form_state) {    
+  public static function valueCallback(&$element, $input, FormStateInterface $form_state) { 
     if (!empty($input["date"]) && empty($input['time'])) {
       $input['time'] = '00:00:00';
     }
