@@ -42,15 +42,17 @@ class DashboardController {
     date_default_timezone_set(date_default_timezone_get());
 
     $rows = [];
-    foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
-      // @todo Make Harvest Service's private getLastHarvestRunId() public,
-      //   And replace 7-8 cases where we recreate it.
-      $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
+    foreach ($this->harvest->getAllHarvestIds() as $harvestPlanId) {
+      if ($runId = $this->harvest->getLastHarvestRunId($harvestPlanId)) {
+        // There is a run identifier, so we should get that info.
+        $info = json_decode($this->harvest->getHarvestRunInfo($harvestPlanId, $runId));
 
-      if ($runId = end($runIds)) {
-        $info = json_decode($this->harvest->getHarvestRunInfo($harvestId, $runId));
-
-        $rows[] = $this->buildHarvestRow($harvestId, $runId, $info);
+        $rows[] = $this->buildHarvestRow($harvestPlanId, $runId, $info);
+      }
+      else {
+        // There is no recent run identifier, so we should display some default
+        // info to the user.
+        $rows[] = $this->buildHarvestRow($harvestPlanId, '', NULL);
       }
     }
 
@@ -60,25 +62,40 @@ class DashboardController {
       '#rows' => $rows,
       '#attributes' => ['class' => 'dashboard-harvests'],
       '#attached' => ['library' => ['harvest/style']],
-      '#empty' => "No harvests found",
+      '#empty' => 'No harvests found',
     ];
   }
 
   /**
    * Private.
    */
-  private function buildHarvestRow(string $harvestId, string $runId, $info) {
-    $url = Url::fromRoute('datastore.datasets_import_status_dashboard', ['harvest_id' => $harvestId]);
+  private function buildHarvestRow(string $harvestId, string $runId, $info): array {
+    $url = Url::fromRoute(
+      'datastore.datasets_import_status_dashboard',
+      ['harvest_id' => $harvestId]
+    );
 
-    return [
+    // Default values if there is no run information. This will show the harvest
+    // in the list, even if there is no run status to report.
+    $row = [
       'harvest_link' => Link::fromTextAndUrl($harvestId, $url),
       'extract_status' => [
+        'data' => 'REGISTERED',
+        'class' => 'registered',
+      ],
+      'last_run' => 'never',
+      'dataset_count' => 'unknown',
+    ];
+    // Add run information if available.
+    if ($info) {
+      $row['extract_status'] = [
         'data' => $info->status->extract,
         'class' => strtolower($info->status->extract),
-      ],
-      'last_run' => date('m/d/y H:m:s T', $runId),
-      'dataset_count' => count(array_keys((array) $info->status->load)),
-    ];
+      ];
+      $row['last_run'] = date('m/d/y H:m:s T', $runId);
+      $row['dataset_count'] = count(array_keys((array) $info->status->load));
+    }
+    return $row;
   }
 
 }

@@ -9,6 +9,15 @@ table.dashboard-datasets td.done
   background-color: #f3faef;
 }
 
+/**
+ * Waiting.
+ */
+table.dashboard-harvests td.registered
+{
+  color: #5c5e1c;
+  background-color: #faf8ef;
+}
+
 /*
  * Warning.
  */
