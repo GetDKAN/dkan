@@ -136,7 +136,8 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
-   * Get the distribution UUID for the most recent published revision of a dataset.
+   * Get the distribution UUID for the most recent published revision
+   * of a dataset.
    *
    * @param string $dataset_uuid
    *   The uuid of a dataset.
