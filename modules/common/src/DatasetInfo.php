@@ -136,9 +136,9 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
-   * Get the current distribution UUID for a dataset.
+   * Get the distribution UUID for the most recent published revision of a dataset.
    *
-   * @param string $uuid
+   * @param string $dataset_uuid
    *   The uuid of a dataset.
    * @param string $index
    *   The index of the resource in the dataset array. Defaults to first.
@@ -146,19 +146,19 @@ class DatasetInfo implements ContainerInjectionInterface {
    * @return string
    *   The distribution UUID
    */
-  public function getDistributionUuid(string $uuid, string $index = '0'): string {
-    $metadata = $this->gather($uuid);
+  public function getDistributionUuid(string $dataset_uuid, string $index = '0'): string {
+    $dataset_info = $this->gather($dataset_uuid);
 
-    if (!isset($metadata['latest_revision'])) {
+    if (!isset($dataset_info['latest_revision'])) {
       return '';
     }
 
     // Default to latest dataset revision.
-    $datasetRevision = $metadata['latest_revision'];
+    $datasetRevision = $dataset_info['latest_revision'];
 
     // Use the published dataset revision instead if present.
-    if (isset($metadata['published_revision'])) {
-      $datasetRevision = $metadata['published_revision'];
+    if (isset($dataset_info['published_revision'])) {
+      $datasetRevision = $dataset_info['published_revision'];
     }
     return $datasetRevision['distributions'][$index]['distribution_uuid'] ?? '';
   }
