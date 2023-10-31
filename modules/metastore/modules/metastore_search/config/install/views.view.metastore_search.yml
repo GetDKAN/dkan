@@ -1,4 +1,3 @@
-uuid: cfaca12e-c6c9-4c32-bd18-3d36ac4a6eac
 langcode: en
 status: true
 dependencies:
@@ -414,7 +413,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: metastore-search
+      path: datastore-search
     cache_metadata:
       max-age: -1
       contexts:

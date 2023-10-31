@@ -1,4 +1,4 @@
-name: Search
+name: Metastore Search
 description: Provides an endpoint to perform searches against DKAN's metadata.
 type: module
 core_version_requirement: ^9.4 || ^10
@@ -6,4 +6,5 @@ dependencies:
   - metastore
   - search_api
   - search_api_db
+  - facets
 package: DKAN

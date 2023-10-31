@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.keyword
+  module:
+    - facets
+    - system
+  theme:
+    - dkan_theme
+id: keyword
+theme: dkan_theme
+region: sidebar_second
+weight: 0
+provider: null
+plugin: 'facet_block:keyword'
+settings:
+  id: 'facet_block:keyword'
+  label: Tags
+  label_display: visible
+  provider: facets
+  context_mapping: {  }
+  block_id: keyword
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: '/metastore-search/*'
