@@ -10,6 +10,7 @@
         "drupal/select_or_other": "^4.1.0",
         "drupal/select2": "^1.13",
         "drupal/views_bulk_operations": "^4.0",
+        "drupal/facets": "^2.0",
         "ext-json": "*",
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.1",
