@@ -101,6 +101,24 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertArrayNotHasKey('dkan_dataset/' . $id_3, $searchResults->results);
   }
 
+  /**
+   * Test the resource purger when the default moderation state is 'published'.
+   */
+  public function testResourcePurgePublished() {
+    $id_1 = uniqid(__FUNCTION__ . '1');
+
+    // Post then update a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues($id_1, '1.2', ['2.csv', '4.csv'], 'put');
+
+    // Verify only the 2 most recent resources remain.
+    $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
+    $this->assertEquals(2, $this->countTables());
+  }
+
+  /**
+   * Test that the downloadURL is different when using local url perspective.
+   */
   public function testChangingDatasetResourcePerspectiveOnOutput() {
     $this->datastoreImportAndQuery();
 
@@ -117,21 +135,6 @@ class DatasetBTBTest extends BrowserTestBase {
       $dataset->distribution[0]->downloadURL,
       $this->getDownloadUrl('district_centerpoints_small.csv')
     );
-  }
-
-  /**
-   * Test the resource purger when the default moderation state is 'published'.
-   */
-  public function testResourcePurgePublished() {
-    $id_1 = uniqid(__FUNCTION__ . '1');
-
-    // Post then update a dataset with multiple, changing resources.
-    $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
-    $this->storeDatasetRunQueues($id_1, '1.2', ['2.csv', '4.csv'], 'put');
-
-    // Verify only the 2 most recent resources remain.
-    $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
-    $this->assertEquals(2, $this->countTables());
   }
 
   /**
@@ -195,19 +198,16 @@ class DatasetBTBTest extends BrowserTestBase {
    * Test cleanup of orphaned draft distributions.
    */
   public function testOrphanDraftDistributionCleanup() {
-    // Get the original configuration settings.
-    $config = $this->container->get('config.factory');
-    $datastoreSettings = $config->getEditable('datastore.settings');
-    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
-
-    // Set delete local resource files = false.
-    $datastoreSettings->set('delete_local_resource', 0);
-
-    // Set modified as a triggering property.
-    $datastoreSettings->set('triggering_properties', ['modified'])->save();
+    // Set delete local resource files = false and modified as a triggering property.
+    $this->config('datastore.settings')
+      ->set('delete_local_resource', 0)
+      ->set('triggering_properties', ['modified'])
+      ->save();
 
     // Set default moderation state = draft.
-    $defaultModerationState->set('type_settings.default_moderation_state', 'draft')->save();
+    $this->config('workflows.workflow.dkan_publishing')
+      ->set('type_settings.default_moderation_state', 'draft')
+      ->save();
 
     // Post dataset 1 and run the 'datastore_import' queue.
     $id_1 = uniqid(__FUNCTION__ . '1');
@@ -284,11 +284,10 @@ class DatasetBTBTest extends BrowserTestBase {
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
 
-    // Get the datastore configuration.
-    $datastoreSettings = $this->container->get('config.factory')->getEditable('datastore.settings');
-
     // delete_local_resource is on.
-    $datastoreSettings->set('delete_local_resource', 1)->save();
+    $this->config('datastore.settings')
+      ->set('delete_local_resource', 1)
+      ->save();
 
     // Post dataset 1 and run the 'datastore_import' queue.
     $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
@@ -304,7 +303,9 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertDirectoryDoesNotExist('public://resources/' . $refUuid);
 
     // delete_local_resource is off.
-    $datastoreSettings->set('delete_local_resource', 0)->save();
+    $this->config('datastore.settings')
+      ->set('delete_local_resource', 0)
+      ->save();
 
     // Post dataset 2 and run the 'datastore_import' queue.
     $this->storeDatasetRunQueues($id_2, '2', ['2.csv']);
@@ -323,11 +324,10 @@ class DatasetBTBTest extends BrowserTestBase {
    * Test sanitization of dataset properties.
    */
   public function testSanitizeDatasetProperties() {
-    $config = $this->container->get('config.factory');
-    $metastoreSettings = $config->getEditable('metastore.settings');
-
     // Set HTML allowed on dataset description.
-    $metastoreSettings->set('html_allowed_properties', ['dataset_description'])->save();
+    $this->config('metastore.settings')
+      ->set('html_allowed_properties', ['dataset_description'])
+      ->save();
 
     // Title with HTML and an ampersand.
     $datasetRootedJsonData = $this->getData(123, 'This & That <a onauxclick=prompt(document.domain)>Right click me</a>', ['1.csv']);
@@ -347,9 +347,6 @@ class DatasetBTBTest extends BrowserTestBase {
     );
   }
 
-  /**
-   * Test sanitization of dataset properties.
-   */
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);
