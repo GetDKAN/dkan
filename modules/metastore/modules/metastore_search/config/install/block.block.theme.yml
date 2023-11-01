@@ -7,9 +7,9 @@ dependencies:
     - facets
     - system
   theme:
-    - stark
+    - claro
 id: theme
-theme: stark
+theme: claro
 region: sidebar_second
 weight: 0
 provider: null
