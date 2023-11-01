@@ -7,9 +7,9 @@ dependencies:
     - facets
     - system
   theme:
-    - dkan_theme
+    - stark
 id: theme
-theme: dkan_theme
+theme: stark
 region: sidebar_second
 weight: 0
 provider: null
