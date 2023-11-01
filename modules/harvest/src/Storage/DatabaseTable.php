@@ -38,6 +38,7 @@ class DatabaseTable extends AbstractDatabaseTable {
    */
   public function retrieve(string $id) {
     $result = parent::retrieve($id);
+    if ($result)
     return ($result === NULL) ? NULL : $result->data;
   }
 

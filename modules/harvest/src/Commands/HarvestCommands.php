@@ -3,10 +3,10 @@
 namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
-use Drush\Exceptions\UserAbortException;
 use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -27,13 +27,25 @@ class HarvestCommands extends DrushCommands {
   protected $harvestService;
 
   /**
+   * Harvest utility service.
+   *
+   * @var \Drupal\harvest\HarvestUtility
+   */
+  protected HarvestUtility $harvestUtility;
+
+  /**
    * Constructor.
    */
-  public function __construct(HarvestService $service, LoggerChannelInterface $logger) {
+  public function __construct(
+    HarvestService $service,
+    LoggerChannelInterface $logger,
+    HarvestUtility $harvestUtility
+  ) {
     parent::__construct();
     // @todo passing via arguments doesn't seem play well with drush.services.yml
     $this->harvestService = $service;
     $this->logger = $logger;
+    $this->harvestUtility = $harvestUtility;
   }
 
   /**
@@ -51,7 +63,7 @@ class HarvestCommands extends DrushCommands {
         return [$id];
       },
       $this->harvestService->getAllHarvestIds()
-      );
+    );
     (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
   }
 
@@ -128,16 +140,13 @@ class HarvestCommands extends DrushCommands {
    */
   public function deregister($id) {
     $message = 'Could not deregister the ' . $id . ' harvest.';
-    $this->logger->warning(
-      'If you deregister a harvest with published datasets, you will
-       not be able to bulk revert the datasets connected to this harvest.');
-    if ($this->io()->confirm("Deregister harvest {$id}")) {
+    try {
       if ($this->harvestService->deregisterHarvest($id)) {
         $message = 'Successfully deregistered the ' . $id . ' harvest.';
       }
     }
-    else {
-      throw new UserAbortException();
+    catch (\Exception $e) {
+      $message = $e->getMessage();
     }
 
     $this->logger->notice($message);
@@ -345,6 +354,39 @@ class HarvestCommands extends DrushCommands {
       ]);
       return DrushCommands::EXIT_FAILURE;
     }
+  }
+
+  /**
+   * Report and cleanup harvest data which may be cluttering your database.
+   *
+   * Will print a report, unless the --cleanup argument is added, in which case
+   * the clutter will be removed.
+   *
+   * @command dkan:harvest:cleanup
+   *
+   * @return int
+   * @option cleanup Clean up the extra tables.
+   * @bootstrap full
+   */
+  public function harvestCleanup(array $options = ['cleanup' => false]): int {
+    $logger = $this->logger();
+    $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
+    if ($orphaned) {
+      $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
+      if ($options['cleanup'] ?? FALSE) {
+        foreach ($orphaned as $orphan) {
+          $logger->notice('Cleaning up: ' . $orphan);
+          $this->harvestUtility->destructOrphanTables($orphan);
+        }
+      }
+      else {
+        $logger->notice('Run this command again with the --cleanup flag to remove leftover data.');
+      }
+    }
+    else {
+      $logger->notice('No leftover harvest data detected.');
+    }
+    return DrushCommands::EXIT_SUCCESS;
   }
 
   /**
