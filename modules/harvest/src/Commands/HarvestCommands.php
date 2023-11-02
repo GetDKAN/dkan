@@ -380,10 +380,7 @@ class HarvestCommands extends DrushCommands {
     if ($orphaned) {
       $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
       if ($options['cleanup'] ?? FALSE) {
-        foreach ($orphaned as $orphan) {
-          $logger->notice('Cleaning up: ' . $orphan);
-          $this->harvestUtility->destructOrphanTables($orphan);
-        }
+        $this->cleanupHarvestDataTables($orphaned);
       }
       else {
         $logger->notice('Run this command again with the --cleanup flag to remove leftover data.');
@@ -393,6 +390,19 @@ class HarvestCommands extends DrushCommands {
       $logger->notice('No leftover harvest data detected.');
     }
     return DrushCommands::EXIT_SUCCESS;
+  }
+
+  /**
+   * Perform the harvest data table cleanup.
+   *
+   * @param array $plan_ids
+   *   An array of plan identifiers to clean up.
+   */
+  protected function cleanupHarvestDataTables(array $plan_ids) : void {
+    foreach ($plan_ids as $plan_id) {
+      $this->logger()->notice('Cleaning up: ' . $plan_id);
+      $this->harvestUtility->destructOrphanTables($plan_id);
+    }
   }
 
   /**

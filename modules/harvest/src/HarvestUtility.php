@@ -67,7 +67,7 @@ class HarvestUtility implements ContainerInjectionInterface {
    *
    * Harvest table names are assumed to look like this:
    * harvest_ID_that_might_have_underscores_[something]. For example:
-   * 'harvest_id_here_run'.
+   * 'harvest_ABC_123_runs'.
    *
    * @param string $table_name
    *   The table name.
@@ -97,6 +97,26 @@ class HarvestUtility implements ContainerInjectionInterface {
   public function findOrphanedHarvestDataIds(): array {
     $existing_plans = $this->harvestService->getAllHarvestIds();
 
+    $table_names = $this->findAllHarvestDataTables();
+
+    $orphan_ids = [];
+    // Find IDs that are not in the existing plans.
+    foreach ($table_names as $table_name) {
+      $plan_id = static::planIdFromTableName($table_name);
+      if (!in_array($plan_id, $existing_plans)) {
+        $orphan_ids[$plan_id] = $plan_id;
+      }
+    }
+    return $orphan_ids;
+  }
+
+  /**
+   * Find all the potential harvest data tables names in the database.
+   *
+   * @return array
+   *   All the table names that might be harvest data tables.
+   */
+  protected function findAllHarvestDataTables(): array {
     $tables = [];
     foreach ([
       // @todo Figure out an expression for harvest_%_thing, since underscore
@@ -109,16 +129,7 @@ class HarvestUtility implements ContainerInjectionInterface {
         $tables = array_merge($tables, $found_tables);
       }
     }
-
-    $orphan_ids = [];
-    // Find IDs that are not in the existing plans.
-    foreach ($tables as $table_name) {
-      $plan_id = static::planIdFromTableName($table_name);
-      if (!in_array($plan_id, $existing_plans)) {
-        $orphan_ids[$plan_id] = $plan_id;
-      }
-    }
-    return $orphan_ids;
+    return $tables;
   }
 
   /**
