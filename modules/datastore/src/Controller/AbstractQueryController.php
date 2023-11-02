@@ -156,15 +156,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json response.
    */
   public function queryDatasetResource(string $dataset, string $index, Request $request) {
-    $metadata = $this->datasetInfo->gather($dataset);
-    if (!isset($metadata['latest_revision'])) {
-      return $this->getResponse((object) ['message' => "No dataset found with the identifier $dataset"], 404);
+    $distribution_uuid = $this->datasetInfo->getDistributionUuid($dataset, $index);
+
+    if (empty($distribution_uuid)) {
+      return $this->getResponse((object) ['message' => "No resource found for dataset $dataset at index $index"], 404);
     }
-    if (!isset($metadata['latest_revision']['distributions'][$index]['distribution_uuid'])) {
-      return $this->getResponse((object) ['message' => "No resource found at index $index"], 404);
-    }
-    $identifier = $metadata['latest_revision']['distributions'][$index]['distribution_uuid'];
-    return $this->queryResource($identifier, $request);
+
+    return $this->queryResource($distribution_uuid, $request);
   }
 
   /**
@@ -266,8 +264,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $hasProperty = $hasProperty ?: (isset($property->property) && $property->property == 'record_number');
       if ($hasProperty) {
         throw new \Exception('The record_number property is for internal use and cannot be requested ' .
-        'directly. Set rowIds to true and remove properties from your query to see the full table ' .
-        'with row IDs.');
+          'directly. Set rowIds to true and remove properties from your query to see the full table ' .
+          'with row IDs.');
       }
     }
   }
