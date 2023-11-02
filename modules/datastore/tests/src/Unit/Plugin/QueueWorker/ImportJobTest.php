@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
 use Contracts\ParserInterface;
-use CsvParser\Parser\Csv;
+use Drupal\dkan\CsvParser\Parser\Csv;
 use Contracts\Mock\Storage\Memory;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
