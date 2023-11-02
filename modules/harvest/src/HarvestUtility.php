@@ -69,14 +69,14 @@ class HarvestUtility implements ContainerInjectionInterface {
    * harvest_ID_that_might_have_underscores_[something]. For example:
    * 'harvest_id_here_run'.
    *
-   * @param $table_name
+   * @param string $table_name
    *   The table name.
    *
    * @return string
    *   The ID gleaned from the table name. If no ID could be gleaned, returns
    *   an empty string.
    */
-  public static function planIdFromTableName($table_name): string {
+  public static function planIdFromTableName(string $table_name): string {
     $name_explode = explode('_', $table_name);
     if (count($name_explode) < 3) {
       return '';
@@ -126,12 +126,10 @@ class HarvestUtility implements ContainerInjectionInterface {
    *
    * Will not remove data tables for existing plans.
    *
-   * @param $plan_id
+   * @param string $plan_id
    *   Plan identifier to work with.
-   *
-   * @return void
    */
-  public function destructOrphanTables($plan_id): void {
+  public function destructOrphanTables(string $plan_id): void {
     if (!in_array($plan_id, $this->harvestService->getAllHarvestIds())) {
       foreach ([
         'harvest_' . $plan_id . '_runs',

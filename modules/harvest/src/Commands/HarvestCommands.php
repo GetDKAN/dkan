@@ -369,6 +369,7 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:cleanup
    *
    * @return int
+   *   Bash status code.
    *
    * @option cleanup Clean up the extra tables.
    * @bootstrap full
