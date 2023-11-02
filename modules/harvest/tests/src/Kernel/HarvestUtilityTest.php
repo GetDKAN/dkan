@@ -3,8 +3,6 @@
 namespace Drupal\Tests\harvest\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\harvest\HarvestService;
-use Drupal\harvest\Storage\DatabaseTableFactory;
 
 /**
  * @covers \Drupal\harvest\HarvestUtility
@@ -26,12 +24,12 @@ class HarvestUtilityTest extends KernelTestBase {
     $existing_plan_id = 'testplanid';
     $orphan_plan_id = 'orphanplanid';
 
-    /** @var HarvestService $harvest_service */
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
 
     // Use a database table to store a fake plan so we don't have to actually
     // store a plan.
-    /** @var DatabaseTableFactory $table_factory */
+    /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
     $table_factory = $this->container->get('dkan.harvest.storage.database_table');
     /** @var \Drupal\harvest\Storage\DatabaseTable $plan_storage */
     $plan_storage = $table_factory->getInstance('harvest_plans');
@@ -49,7 +47,7 @@ class HarvestUtilityTest extends KernelTestBase {
     $this->assertEquals([$orphan_plan_id => $orphan_plan_id], $orphaned);
 
     // Remove the orphans.
-    foreach($orphaned as $orphan) {
+    foreach ($orphaned as $orphan) {
       $harvest_utility->destructOrphanTables($orphan);
     }
     $this->assertEmpty(

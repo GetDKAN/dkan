@@ -365,10 +365,11 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:cleanup
    *
    * @return int
+   *
    * @option cleanup Clean up the extra tables.
    * @bootstrap full
    */
-  public function harvestCleanup(array $options = ['cleanup' => false]): int {
+  public function harvestCleanup(array $options = ['cleanup' => FALSE]): int {
     $logger = $this->logger();
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {

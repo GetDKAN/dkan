@@ -31,12 +31,12 @@ class HarvestServiceTest extends KernelTestBase {
     $plan = (object) [
       'identifier' => 'test_plan',
       'extract' => (object) [
-        "type" => DataJson::class,
-        "uri" => "file://" . __DIR__ . '/../../files/data.json',
+        'type' => DataJson::class,
+        'uri' => 'file://' . __DIR__ . '/../../files/data.json',
       ],
       'transforms' => [],
       'load' => (object) [
-        "type" => Simple::class,
+        'type' => Simple::class,
       ],
     ];
 
@@ -51,11 +51,11 @@ class HarvestServiceTest extends KernelTestBase {
     // Run a harvest.
     $result = $harvest_service->runHarvest('test_plan');
 
-    $this->assertEquals("SUCCESS", $result['status']['extract']);
+    $this->assertEquals('SUCCESS', $result['status']['extract']);
     $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(["NEW", "NEW"]), json_encode(array_values($result['status']['load'])));
+    $this->assertEquals(json_encode(['NEW', 'NEW']), json_encode(array_values($result['status']['load'])));
 
-    $storedObject = $storage_factory->getInstance('harvest_test_plan_items')->retrieve("cedcd327-4e5d-43f9-8eb1-c11850fa7c55");
+    $storedObject = $storage_factory->getInstance('harvest_test_plan_items')->retrieve('cedcd327-4e5d-43f9-8eb1-c11850fa7c55');
     $this->assertTrue(is_string($storedObject));
     $storedObject = json_decode($storedObject);
     $this->assertTrue(is_object($storedObject));
@@ -63,25 +63,25 @@ class HarvestServiceTest extends KernelTestBase {
     // Run harvest again, no changes.
     $result = $harvest_service->runHarvest('test_plan');
 
-    $this->assertEquals("SUCCESS", $result['status']['extract']);
+    $this->assertEquals('SUCCESS', $result['status']['extract']);
     $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(["UNCHANGED", "UNCHANGED"]), json_encode(array_values($result['status']['load'])));
+    $this->assertEquals(json_encode(['UNCHANGED', 'UNCHANGED']), json_encode(array_values($result['status']['load'])));
 
     // Run harvest with changes.
     $plan2 = clone $plan;
-    $plan2->extract->uri = "file://" . __DIR__ . '/../../files/data2.json';
+    $plan2->extract->uri = 'file://' . __DIR__ . '/../../files/data2.json';
     $harvest_service->registerHarvest($plan2);
     $result = $harvest_service->runHarvest('test_plan');
 
-    $this->assertEquals("SUCCESS", $result['status']['extract']);
+    $this->assertEquals('SUCCESS', $result['status']['extract']);
     $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(["UPDATED", "UNCHANGED"]), json_encode(array_values($result['status']['load'])));
+    $this->assertEquals(json_encode(['UPDATED', 'UNCHANGED']), json_encode(array_values($result['status']['load'])));
 
-    $storedObject = $storage_factory->getInstance('harvest_test_plan_items')->retrieve("cedcd327-4e5d-43f9-8eb1-c11850fa7c55");
+    $storedObject = $storage_factory->getInstance('harvest_test_plan_items')->retrieve('cedcd327-4e5d-43f9-8eb1-c11850fa7c55');
     $this->assertTrue(is_string($storedObject));
     $storedObject = json_decode($storedObject);
     $this->assertTrue(is_object($storedObject));
-    $this->assertEquals("Florida Bike Lanes 2", $storedObject->title);
+    $this->assertEquals('Florida Bike Lanes 2', $storedObject->title);
 
     /** @var \Drupal\Core\Database\Schema $schema */
     $schema = $this->container->get('database')->schema();

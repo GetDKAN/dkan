@@ -25,7 +25,7 @@ class HarvestUtility implements ContainerInjectionInterface {
   /**
    * Service to instantiate storage objects for Harvest plan storage.
    *
-   * @var DatabaseTableFactory
+   * @var \Drupal\harvest\Storage\DatabaseTableFactory
    */
   private DatabaseTableFactory $storeFactory;
 
@@ -44,7 +44,7 @@ class HarvestUtility implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new self(
       $container->get('dkan.harvest.service'),
-      $container->get("dkan.harvest.storage.database_table"),
+      $container->get('dkan.harvest.storage.database_table'),
       $container->get('database'),
     );
   }

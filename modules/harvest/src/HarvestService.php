@@ -52,7 +52,7 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new self(
-      $container->get("dkan.harvest.storage.database_table"),
+      $container->get('dkan.harvest.storage.database_table'),
       $container->get('dkan.metastore.service'),
       $container->get('entity_type.manager')
     );
@@ -147,7 +147,7 @@ class HarvestService implements ContainerInjectionInterface {
       $store->destruct();
     }
     // Remove the plan id from the harvest_plans table.
-    $plan_store = $this->storeFactory->getInstance("harvest_plans");
+    $plan_store = $this->storeFactory->getInstance('harvest_plans');
     return $plan_store->remove($plan_id);
   }
 
