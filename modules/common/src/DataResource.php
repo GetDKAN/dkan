@@ -4,7 +4,7 @@ namespace Drupal\common;
 
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\Entity\ResourceMapping;
+use Drupal\metastore\ResourceMappingInterface;
 use Procrastinator\JsonSerializeTrait;
 
 /**
@@ -137,7 +137,7 @@ class DataResource implements \JsonSerializable {
   /**
    * Create a DataResource object from a Drupal entity.
    *
-   * @param \Drupal\metastore\Entity\ResourceMapping $mapping
+   * @param \Drupal\metastore\ResourceMappingInterface $mapping
    *   A resource_mapping entity.
    *
    * @return \Drupal\common\DataResource
@@ -147,16 +147,16 @@ class DataResource implements \JsonSerializable {
    *   so many different ways within the codebase, changing it would require
    *   even more refactoring. Fix this in 3.x.
    */
-  public static function createFromEntity(ResourceMapping $mapping): DataResource {
+  public static function createFromEntity(ResourceMappingInterface $mapping): DataResource {
     $resource = new static(
-      $mapping->filePath->value,
-      $mapping->mimeType->value,
-      $mapping->perspective->value
+      $mapping->get('filePath')->value,
+      $mapping->get('mimeType')->value,
+      $mapping->get('perspective')->value
     );
     // MD5 of record's file path can differ from the MD5 generated in the
     // constructor, so we have to explicitly set the identifier.
-    $resource->identifier = $mapping->identifier->value;
-    $resource->version = $mapping->version->value;
+    $resource->identifier = $mapping->get('identifier')->value;
+    $resource->version = $mapping->get('version')->value;
     return $resource;
   }
 
