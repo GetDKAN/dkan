@@ -2,15 +2,16 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
-use Drupal\Component\Uuid\Php;
 use Drupal\Core\File\FileSystemInterface;
+
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\ValidMetadataFactory;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+
+use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -18,18 +19,19 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
+ * @group functional
+ * @group btb
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait;
+  use GetDataTrait, CleanUp;
+
+  protected $defaultTheme = 'stark';
 
   protected static $modules = [
     'datastore',
-    'metastore',
     'node',
   ];
-
-  protected $defaultTheme = 'stark';
 
   /**
    * Uploaded resource file destination.
@@ -64,42 +66,42 @@ class DictionaryEnforcerTest extends BrowserTestBase {
    *
    * @var \Drupal\metastore\Storage\NodeData
    */
-  protected NodeData $datasetStorage;
+  protected $datasetStorage;
 
   /**
    * Metastore service.
    *
    * @var \Drupal\metastore\MetastoreService
    */
-  protected MetastoreService $metastore;
+  protected $metastore;
 
   /**
    * Uuid service.
    *
    * @var \Drupal\Component\Uuid\Php
    */
-  protected Php $uuid;
+  protected $uuid;
 
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
-  protected ValidMetadataFactory $validMetadataFactory;
+  protected $validMetadataFactory;
 
   /**
    * Import controller.
    *
    * @var \Drupal\datastore\Controller\ImportController
    */
-  protected ImportController $webServiceApi;
+  protected $importController;
 
   /**
    * External URL for the fixture CSV file.
    *
    * @var string
    */
-  protected string $resourceUrl;
+  protected $resourceUrl;
 
   /**
    * {@inheritdoc}
@@ -111,8 +113,8 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $this->cron = $this->container->get('cron');
     $this->metastore = $this->container->get('dkan.metastore.service');
     $this->uuid = $this->container->get('uuid');
-    $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
-    $this->webServiceApi = ImportController::create($this->container);
+    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    $this->importController = ImportController::create(\Drupal::getContainer());
     $this->datasetStorage = $this->container->get('dkan.metastore.storage')
       ->getInstance('dataset');
     // Copy resource file to uploads directory.
@@ -180,38 +182,51 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     ];
     $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $indexes, $dict_id), 'data-dictionary');
     // Create data-dictionary.
-    $this->metastore->post('data-dictionary', $data_dict);
-    $this->metastore->publish('data-dictionary', $dict_id);
+    $this->assertEquals(
+      $dict_id,
+      $this->metastore->post('data-dictionary', $data_dict)
+    );
+    // Publish should return FALSE, because the node was already published.
+    $this->assertFalse($this->metastore->publish('data-dictionary', $dict_id));
 
-    // Set global data-dictionary in metastore config.
-    $this->config('metastore.settings')
-      ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
+    // Set global data-dictinary in metastore config.
+    $metastore_config = $this->config('metastore.settings');
+    $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
       ->set('data_dictionary_sitewide', $dict_id)
       ->save();
 
     // Build dataset.
     $dataset_id = $this->uuid->generate();
-    $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
+    $this->assertInstanceOf(
+      RootedJsonData::class,
+      $dataset = $this->validMetadataFactory->get(
+        $this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE),
+        'dataset'
+      )
+    );
     // Create dataset.
-    $this->metastore->post('dataset', $dataset);
-    $this->metastore->publish('dataset', $dataset_id);
+    $this->assertEquals($dataset_id, $this->metastore->post('dataset', $dataset));
+    // Publish should return FALSE, because the node was already published.
+    $this->assertFalse($this->metastore->publish('dataset', $dataset_id));
 
-    // Run cron to import dataset into datastore.
-    $this->cron->run();
-    // Run cron to apply data-dictionary.
-    $this->cron->run();
+    // Run queue items to perform the import.
+    $this->runQueues(['datastore_import', 'post_import']);
 
     // Retrieve dataset distribution ID.
-    $dataset = $this->metastore->get('dataset', $dataset_id);
-    $dist_id = $dataset->{'$["%Ref:distribution"][0].identifier'};
-    // Build mock request.
-    $request = Request::create('http://blah/api');
+    $this->assertInstanceOf(
+      RootedJsonData::class,
+      $dataset = $this->metastore->get('dataset', $dataset_id)
+    );
+    $this->assertNotEmpty(
+      $dist_id = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL
+    );
     // Retrieve schema for dataset resource.
-    $response = $this->webServiceApi->summary($dist_id, $request);
+    $response = $this->importController->summary(
+      $dist_id,
+      Request::create('http://blah/api')
+    );
+    $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $result = json_decode($response->getContent(), TRUE);
-
-    // Clean up after ourselves, before performing the assertion.
-    $this->metastore->delete('dataset', $dataset_id);
 
     // Validate schema.
     $this->assertEquals([
@@ -266,6 +281,24 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       ],
       'numOfRows' => 3,
     ], $result);
+  }
+
+  /**
+   * Process queues in a predictable order.
+   */
+  private function runQueues(array $relevantQueues = []) {
+    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
+    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
+    $queueFactory = $this->container->get('queue');
+    foreach ($relevantQueues as $queueName) {
+      $worker = $queueWorkerManager->createInstance($queueName);
+      $queue = $queueFactory->get($queueName);
+      while ($item = $queue->claimItem()) {
+        $worker->processItem($item->data);
+        $queue->deleteItem($item);
+      }
+    }
   }
 
 }
