@@ -18,7 +18,7 @@ use RootedData\RootedJsonData;
  * @group btb
  * @group functional
  */
-class UseLocalFileFetcherForExistingDatastoreTest extends BrowserTestBase {
+class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
   /**
    * {@inheritdoc}
