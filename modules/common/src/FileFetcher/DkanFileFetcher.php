@@ -6,13 +6,12 @@ use FileFetcher\FileFetcher;
 
 /**
  * Allows FileFetcher to be reconfigured for using existing local files.
- * 
+ *
  * This DKAN-specific extension of the FileFetcher (which comes from an
- * external library) applies the DKAN configuration 
+ * external library) applies the DKAN configuration
  * common.settings.always_use_existing_local_perspective
  * when selecting the processor. The configuration itself is retrieved
  * in FileFetcherFactory and passed to DkanFileFetcher on getInstance().
- *
  */
 class DkanFileFetcher extends FileFetcher {
 
