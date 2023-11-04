@@ -226,13 +226,12 @@ class ResourceLocalizer {
     // Remove the LOCAL_FILE_PERSPECTIVE if it exists.
     if ($resource = $this->get($identifier, $version, self::LOCAL_FILE_PERSPECTIVE)) {
       // Remove the file.
-      $resource_id = $resource->getUniqueIdentifierNoPerspective();
       if (file_exists($resource->getFilePath())) {
         $this->drupalFiles->getFilesystem()
           ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
       }
       // Remove the fetcher job.
-      $this->removeJob($resource_id);
+      $this->removeJob($resource->getUniqueIdentifierNoPerspective());
       // Remove the LOCAL_FILE_PERSPECTIVE.
       $this->resourceMapper->remove($resource);
     }

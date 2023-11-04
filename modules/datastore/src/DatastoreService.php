@@ -226,7 +226,7 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
-   * Drop a resources datastore.
+   * Drop a resource's datastore, and optionally its localized file.
    *
    * @param string $identifier
    *   A resource's identifier.
@@ -237,21 +237,18 @@ class DatastoreService implements ContainerInjectionInterface {
    *   localized files for this resource. Defaults to TRUE.
    */
   public function drop(string $identifier, ?string $version = NULL, bool $remove_local_resource = TRUE) {
-    $storage = $this->getStorage($identifier, $version);
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
-    if ($storage) {
+    if ($storage = $this->getStorage($identifier, $version)) {
       $storage->destruct();
       $this->jobStoreFactory
         ->getInstance(ImportJob::class)
+        // @todo The resource should be able to generate the hash itself.
         ->remove(md5($resource->getUniqueIdentifier()));
     }
 
     if ($remove_local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
-      $this->jobStoreFactory
-        ->getInstance(FileFetcher::class)
-        ->remove($resource->getUniqueIdentifierNoPerspective());
     }
   }
 
