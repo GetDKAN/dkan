@@ -35,7 +35,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
   protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   public function test() {
-    $this->markTestIncomplete('borked.');
+    $this->markTestIncomplete('incorrect result in record.');
     // Explicitly turn off always_use_existing_local_perspective for now.
     $this->config('common.settings')
       ->set('always_use_existing_local_perspective', FALSE)
@@ -160,22 +160,14 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     );
 
     // Perform the localization.
-    /** @var \Drupal\datastore\DatastoreService $datastore_service */
-    $datastore_service = $this->container->get('dkan.datastore.service');
-    // In order to perform the localization without importing, we have to call
-    // DatastoreService::getResource(), which is private.
-    $ref_get_resource = new \ReflectionMethod($datastore_service, 'getResource');
-    $ref_get_resource->setAccessible(TRUE);
-    $results = $ref_get_resource->invokeArgs($datastore_service, [
-      $source_resource->getIdentifier(),
-      $source_resource->getVersion(),
-    ]);
-    // First result should be a resource, second result should be result objects
-    // keyed by the localizer label.
-    $this->assertInstanceOf(DataResource::class, $results[0]);
+    $this->assertInstanceOf(
+      Result::class,
+      $result = $resource_localizer->localizeTask(
+        $source_resource->getIdentifier(), $source_resource->getVersion()
+      )
+    );
     $this->assertEquals(
-      Result::DONE,
-      $results[1]['ResourceLocalizer']->getStatus()
+      Result::DONE, $result->getStatus()
     );
 
     // Now there should be three mappings.

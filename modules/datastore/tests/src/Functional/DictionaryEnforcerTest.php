@@ -55,13 +55,6 @@ class DictionaryEnforcerTest extends BrowserTestBase {
   protected const RESOURCE_FILE = 'data-dict.csv';
 
   /**
-   * Cron service.
-   *
-   * @var \Drupal\Core\Cron
-   */
-  protected $cron;
-
-  /**
    * Node data storage.
    *
    * @var \Drupal\metastore\Storage\NodeData
@@ -110,7 +103,6 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     parent::setUp();
 
     // Initialize services.
-    $this->cron = $this->container->get('cron');
     $this->metastore = $this->container->get('dkan.metastore.service');
     $this->uuid = $this->container->get('uuid');
     $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
@@ -210,7 +202,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $this->assertFalse($this->metastore->publish('dataset', $dataset_id));
 
     // Run queue items to perform the import.
-    $this->runQueues(['datastore_import', 'post_import']);
+    $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
 
     // Retrieve dataset distribution ID.
     $this->assertInstanceOf(
