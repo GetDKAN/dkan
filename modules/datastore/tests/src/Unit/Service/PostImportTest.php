@@ -4,7 +4,7 @@ namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\Core\Database\Connection;
 use Drupal\metastore\ResourceMapper;
-use Drupal\datastore\service\PostImport;
+use Drupal\datastore\Service\PostImport;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +47,7 @@ class PostImportTest extends TestCase {
       $resourceMapperMock = $this->getMockBuilder(ResourceMapper::class)
         ->disableOriginalConstructor()
         ->getMock();
-  
+
       $queryMock = $this->getMockBuilder('stdClass')
         ->addMethods(['fields', 'execute'])
         ->getMock();
@@ -70,11 +70,11 @@ class PostImportTest extends TestCase {
       $queryMock->expects($this->once())
         ->method('execute')
         ->willReturn(TRUE);
-  
+
       $postImport = new PostImport($connectionMock, $resourceMapperMock);
-  
+
       $result_store = $postImport->storeJobStatus('test_identifier', 'test_version', 'test_status', 'test_error');
-  
+
       // Assert that the method returned the expected result.
       $this->assertTrue($result_store);
   }
