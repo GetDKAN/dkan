@@ -363,27 +363,23 @@ class HarvestCommands extends DrushCommands {
   /**
    * Report and cleanup harvest data which may be cluttering your database.
    *
-   * Will print a report, unless the --cleanup argument is added, in which case
-   * the clutter will be removed.
+   * Will print a report. Add -y or --no-interaction to automatically perform
+   * this cleanup.
    *
    * @command dkan:harvest:cleanup
    *
    * @return int
    *   Bash status code.
    *
-   * @option cleanup Clean up the extra tables.
    * @bootstrap full
    */
-  public function harvestCleanup(array $options = ['cleanup' => FALSE]): int {
+  public function harvestCleanup(): int {
     $logger = $this->logger();
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
       $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
-      if ($options['cleanup'] ?? FALSE) {
+      if ($this->io()->confirm(t('Do you want to remove this data?'), FALSE)) {
         $this->cleanupHarvestDataTables($orphaned);
-      }
-      else {
-        $logger->notice('Run this command again with the --cleanup flag to remove leftover data.');
       }
     }
     else {
