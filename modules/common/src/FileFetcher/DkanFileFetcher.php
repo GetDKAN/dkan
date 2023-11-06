@@ -18,20 +18,20 @@ class DkanFileFetcher extends FileFetcher {
   /**
    * Tell this file fetcher whether to use local files if they exist.
    *
-   * @param bool $use_local_file
-   *   (optional) Whether to use the local file. If TRUE, we'll use the file
-   *   processor that prefers to use local files. Defaults to TRUE.
+   * @param bool $use_localized_file
+   *   (optional) Whether to use the localized file. If TRUE, we'll use the file
+   *   processor that prefers to use localized files. Defaults to TRUE.
    *
    * @return self
    *   Fluent interface.
    *
    * @see https://dkan.readthedocs.io/en/2.x/user-guide/guide_local_files.html
    */
-  public function setAlwaysUseExistingLocalPerspective(bool $use_local_file = TRUE) : self {
+  public function setAlwaysUseExistingLocalPerspective(bool $use_localized_file = TRUE) : self {
     // @todo Re-computing the custom processor classes should be in another
     //   method that is in the parent class.
-    if ($use_local_file) {
-      $this->dkanUseLocalFileProcessor();
+    if ($use_localized_file) {
+      $this->dkanUseLocalizedFileProcessor();
     }
     else {
       $this->dkanUseDefaultFileProcessor();
@@ -40,9 +40,9 @@ class DkanFileFetcher extends FileFetcher {
   }
 
   /**
-   * Configure the processor to respect the local file if it already exists.
+   * Configure the processor to respect the localized file if it already exists.
    */
-  protected function dkanUseLocalFileProcessor() {
+  protected function dkanUseLocalizedFileProcessor() {
     // Set the state/config to use our remote class.
     $this->setProcessors(['processors' => [FileFetcherRemoteUseExisting::class]]);
     $this->setStateProperty('processor', FileFetcherRemoteUseExisting::class);

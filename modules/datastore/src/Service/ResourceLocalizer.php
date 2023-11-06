@@ -5,6 +5,7 @@ namespace Drupal\datastore\Service;
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
@@ -263,7 +264,7 @@ class ResourceLocalizer {
    * @return \FileFetcher\FileFetcher
    *   FileFetcher object which is ready to transfer the file.
    */
-  public function getFileFetcher(DataResource $sourceDataResource): FileFetcher {
+  public function getFileFetcher(DataResource $sourceDataResource): DkanFileFetcher {
     return $this->fileFetcherFactory->getInstance(
       $sourceDataResource->getUniqueIdentifierNoPerspective(),
       [
