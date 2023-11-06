@@ -378,7 +378,7 @@ class HarvestCommands extends DrushCommands {
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
       $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
-      if ($this->io()->confirm(t('Do you want to remove this data?'), FALSE)) {
+      if ($this->io()->confirm('Do you want to remove this data?', FALSE)) {
         $this->cleanupHarvestDataTables($orphaned);
       }
     }
