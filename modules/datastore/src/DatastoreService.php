@@ -12,7 +12,6 @@ use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

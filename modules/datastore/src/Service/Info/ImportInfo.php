@@ -78,7 +78,6 @@ class ImportInfo {
    */
   public function getItem(string $identifier, string $version) {
     [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
-
     $item = (object) [
       'fileName' => '',
       'fileFetcherStatus' => 'waiting',
@@ -89,7 +88,6 @@ class ImportInfo {
       'importerPercentDone' => 0,
       'importerError' => NULL,
     ];
-
     unset($this->fileFetcher);
     if (isset($ff)) {
       $this->fileFetcher = $ff;
@@ -98,15 +96,12 @@ class ImportInfo {
       $item->fileFetcherBytes = $this->getBytesProcessed($ff);
       $item->fileFetcherPercentDone = $this->getPercentDone($ff);
     }
-
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $imp */
     if (isset($imp)) {
       $item->importerStatus = $imp->getResult()->getStatus();
       $item->importerError = $imp->getResult()->getError();
       $item->importerBytes = $this->getBytesProcessed($imp);
       $item->importerPercentDone = $this->getPercentDone($imp);
     }
-
     return (object) $item;
   }
 
