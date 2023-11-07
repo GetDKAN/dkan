@@ -3,7 +3,6 @@
 namespace Drupal\datastore\Service\Info;
 
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use FileFetcher\FileFetcher;
@@ -13,13 +12,6 @@ use Procrastinator\Job\Job;
  * Defines and provide a single item for an ImportInfoList.
  */
 class ImportInfo {
-
-  /**
-   * A JobStore object.
-   *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   */
-  private $jobStoreFactory;
 
   /**
    * Resource localizer service.
@@ -36,17 +28,12 @@ class ImportInfo {
   private $importServiceFactory;
 
   /**
-   * FileFetcher service.
-   *
-   * @var \FileFetcher\FileFetcher
-   */
-  private $fileFetcher;
-
-  /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(
+    ResourceLocalizer $resourceLocalizer,
+    ImportFactoryInterface $importServiceFactory
+  ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
   }
@@ -77,7 +64,6 @@ class ImportInfo {
     ];
 
     if (isset($ff)) {
-      $this->fileFetcher = $ff;
       $item->fileName = $this->getFileName($ff);
       $item->fileFetcherStatus = $ff->getResult()->getStatus();
       $item->fileFetcherBytes = $this->getBytesProcessed($ff);
@@ -92,7 +78,7 @@ class ImportInfo {
       $item->importerPercentDone = $this->getPercentDone($imp);
     }
 
-    return (object) $item;
+    return $item;
   }
 
   /**
@@ -144,7 +130,7 @@ class ImportInfo {
    */
   private function getPercentDone(Job $job): float {
     $bytes = $this->getBytesProcessed($job);
-    $filesize = $this->getFileSize();
+    $filesize = $this->getFileSize($job);
     return ($filesize > 0) ? round($bytes / $filesize * 100) : 0;
   }
 
@@ -154,8 +140,8 @@ class ImportInfo {
    * @return int
    *   File size in bytes.
    */
-  protected function getFileSize(): int {
-    return $this->fileFetcher->getStateProperty('total_bytes');
+  protected function getFileSize(Job $job): int {
+    return $job->getStateProperty('total_bytes');
   }
 
   /**
@@ -173,7 +159,7 @@ class ImportInfo {
       // For Importer, avoid going above total size due to chunk multiplication.
       case ImportJob::class:
         $chunksSize = $job->getStateProperty('chunksProcessed') * ImportJob::BYTES_PER_CHUNK;
-        $fileSize = $this->getFileSize();
+        $fileSize = $this->getFileSize($job);
         return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;
 
       case FileFetcher::class:
