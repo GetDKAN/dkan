@@ -3,14 +3,14 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\common\DataResource;
-use Drupal\datastore\Service\Info\ImportInfoList;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use Drupal\Component\Uuid\Uuid;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Reference\ReferenceLookup;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -31,11 +31,15 @@ class ImportController implements ContainerInjectionInterface {
   protected DatastoreService $datastoreService;
 
   /**
+   * Metastore API response service.
+   *
    * @var \Drupal\metastore\MetastoreApiResponse
    */
   protected MetastoreApiResponse $metastoreApiResponse;
 
   /**
+   * Reference lookup service.
+   *
    * @var \Drupal\metastore\Reference\ReferenceLookup
    */
   protected ReferenceLookup $referenceLookup;
