@@ -2,8 +2,11 @@
 
 namespace Drupal\datastore\Service\Info;
 
+use Drupal\common\DataResource;
+use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\datastore\Service\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
@@ -94,7 +97,7 @@ class ImportInfo {
    */
   protected function getFileFetcherAndImporter($identifier, $version) {
     try {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
+      $resource = $this->resourceLocalizer->get($identifier, $version, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
 
       if ($resource) {
         $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
@@ -148,26 +151,24 @@ class ImportInfo {
    * Calculate bytes processed based on chunks processed in the importer data.
    *
    * @param \Procrastinator\Job\Job $job
-   *   Either a FileFetcher or Importer object.
+   *   Job object. In practice this will be either an ImportJob, a FileFetcher,
+   *   or one of their subclasses.
    *
    * @return int
    *   Total bytes processed.
    */
   protected function getBytesProcessed(Job $job): int {
-    $className = get_class($job);
-    switch ($className) {
-      // For Importer, avoid going above total size due to chunk multiplication.
-      case ImportJob::class:
-        $chunksSize = $job->getStateProperty('chunksProcessed') * ImportJob::BYTES_PER_CHUNK;
-        $fileSize = $this->getFileSize($job);
-        return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;
-
-      case FileFetcher::class:
-        return $job->getStateProperty('total_bytes_copied');
-
-      default:
-        return 0;
+    // Handle ImportJob and its subclasses.
+    if (is_a($job, ImportJob::class)) {
+      $chunksSize = $job->getStateProperty('chunksProcessed') * ImportJob::BYTES_PER_CHUNK;
+      $fileSize = $this->getFileSize($job);
+      return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;
     }
+    // Handle FileFetcher and its subclasses.
+    if (is_a($job, FileFetcher::class)) {
+      return $job->getStateProperty('total_bytes_copied');
+    }
+    return 0;
   }
 
 }

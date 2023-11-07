@@ -30,7 +30,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Datastore import factory class.
    *
-   * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
+   * @var \Drupal\datastore\Service\Factory\ImportServiceFactory
    */
   private $importServiceFactory;
 
