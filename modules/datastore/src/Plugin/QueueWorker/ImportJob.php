@@ -283,9 +283,6 @@ class ImportJob extends AbstractPersistentJob {
    *   Maximum time to parse for before exiting.
    */
   protected function parseAndStore($filename, $maximumExecutionTime) {
-    $this->setStateProperty('chunksProcessed', 23);
-    $this->setStatus(Result::DONE);
-    return;
     $h = fopen($filename, 'r');
     fseek($h, $this->getBytesProcessed());
 

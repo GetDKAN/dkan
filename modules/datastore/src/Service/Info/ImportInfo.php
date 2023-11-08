@@ -3,11 +3,10 @@
 namespace Drupal\datastore\Service\Info;
 
 use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
 
@@ -31,14 +30,32 @@ class ImportInfo {
   private $importServiceFactory;
 
   /**
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  private ResourceMapper $resourceMapper;
+
+  protected static $defaultItemValues = [
+    'fileName' => '',
+    'fileFetcherStatus' => 'waiting',
+    'fileFetcherBytes' => 0,
+    'fileFetcherPercentDone' => 0,
+    'importerStatus' => 'waiting',
+    'importerBytes' => 0,
+    'importerPercentDone' => 0,
+    'importerError' => NULL,
+  ];
+
+  /**
    * Constructor.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
-    ImportFactoryInterface $importServiceFactory
+    ImportFactoryInterface $importServiceFactory,
+    ResourceMapper $resourceMapper
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -53,64 +70,47 @@ class ImportInfo {
    *   And object with info about imports: file name, fetching status, etc.
    */
   public function getItem(string $identifier, string $version) {
-    [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
+    $item = (object) static::$defaultItemValues;
 
-    $item = (object) [
-      'fileName' => '',
-      'fileFetcherStatus' => 'waiting',
-      'fileFetcherBytes' => 0,
-      'fileFetcherPercentDone' => 0,
-      'importerStatus' => 'waiting',
-      'importerBytes' => 0,
-      'importerPercentDone' => 0,
-      'importerError' => NULL,
-    ];
+    if ($resource = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
+      /** @var \FileFetcher\FileFetcher $ff */
+      if ($ff = $this->getFileFetcher($resource)) {
+        $item->fileName = $this->getFileName($ff);
+        $item->fileFetcherStatus = $ff->getResult()->getStatus();
+        $item->fileFetcherBytes = $this->getBytesProcessed($ff);
+        $item->fileFetcherPercentDone = $this->getPercentDone($ff);
+      }
 
-    if (isset($ff)) {
-      $item->fileName = $this->getFileName($ff);
-      $item->fileFetcherStatus = $ff->getResult()->getStatus();
-      $item->fileFetcherBytes = $this->getBytesProcessed($ff);
-      $item->fileFetcherPercentDone = $this->getPercentDone($ff);
-    }
-
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $imp */
-    if (isset($imp)) {
-      $item->importerStatus = $imp->getResult()->getStatus();
-      $item->importerError = $imp->getResult()->getError();
-      $item->importerBytes = $this->getBytesProcessed($imp);
-      $item->importerPercentDone = $this->getPercentDone($imp);
+      /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $imp */
+      if ($imp = $this->getImporter($resource)) {
+        $item->importerStatus = $imp->getResult()->getStatus();
+        $item->importerError = $imp->getResult()->getError();
+        $item->importerBytes = $this->getBytesProcessed($imp);
+        $item->importerPercentDone = $this->getPercentDone($imp);
+      }
     }
 
     return $item;
   }
 
+  protected function getFileFetcher(DataResource $resource): FileFetcher {
+    return $this->resourceLocalizer->getFileFetcher($resource);
+  }
+
   /**
-   * Get the filefetcher and importer objects for a resource.
+   * Get an import job store object for the resource.
    *
-   * @param string $identifier
-   *   Resource identifier.
-   * @param string $version
-   *   Resource version.
+   * @param \Drupal\common\DataResource $resource
+   *   Resource object reperesenting the resource.
    *
-   * @return array
-   *   Array with a filefetcher and importer object.
+   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
+   *   Import
    */
-  protected function getFileFetcherAndImporter($identifier, $version) {
-    try {
-      $resource = $this->resourceLocalizer->get($identifier, $version, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
-
-      if ($resource) {
-        $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
-
-        $importer = $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(),
-          ['resource' => $resource])->getImporter();
-
-        return [$fileFetcher, $importer];
-      }
-    }
-    catch (\Exception $e) {
-    }
-    return [NULL, NULL];
+  protected function getImporter(DataResource $resource): ImportJob {
+    return $this->importServiceFactory->getInstance(
+      $resource->getUniqueIdentifier(),
+      ['resource' => $resource]
+    )->getImporter();
   }
 
   /**

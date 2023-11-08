@@ -61,7 +61,7 @@ class ImportInfoTest extends KernelTestBase {
       $source_resource->getVersion()
     );
     // Not done, and bytes are zero.
-    $this->assertEquals('waiting', $import_info_item->fileFetcherStatus);
+    $this->assertEquals('stopped', $import_info_item->fileFetcherStatus);
     // Fair to say there are no bytes yet since we haven't localized.
     $this->assertEquals(0, $import_info_item->fileFetcherBytes);
 
@@ -108,7 +108,13 @@ class ImportInfoTest extends KernelTestBase {
     $import_service = $datastore_service->getImportService($local_resource);
     /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_service->getImporter();
-    // @todo Finish this part of the test.
+    // @todo This still fails as 'stopped' rather than 'done', because
+    //   ImportInfo gets confused as to which jobstore record has the most
+    //   recent information.
+    $this->assertEquals(
+      Result::DONE,
+      $import_job->getResult()->getStatus()
+    );
 
     // ImportInfo::getItem() ultimately calls
     // ResourceLocalizer::getFileFetcher() just like we did above. Do its
@@ -118,7 +124,7 @@ class ImportInfoTest extends KernelTestBase {
       $source_resource->getVersion()
     );
     // Is it done?
-    $this->assertEquals('done', $import_info_item->fileFetcherStatus);
+    $this->assertEquals(Result::DONE, $import_info_item->fileFetcherStatus);
     // Do we report the correct number of bytes?
     $this->assertEquals(
       filesize($local_resource->getFilePath()),
