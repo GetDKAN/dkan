@@ -5,7 +5,7 @@ namespace Drupal\metastore_search\ComplexData;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\ListDataDefinition;
 use Drupal\Core\TypedData\Plugin\DataType\ItemList;
-use Drupal\Core\TypedData\TypedData;
+use Drupal\Core\TypedData\Plugin\DataType\StringData;
 use Drupal\metastore_search\Facade\ComplexDataFacade;
 
 /**
@@ -124,7 +124,7 @@ class Dataset extends ComplexDataFacade {
       $property->setValue($values);
     }
     else {
-      $property = new class ($definition, $property_name) extends TypedData{};
+      $property = new StringData($definition, $property_name);
       $value = $this->getPropertyValue($property_name);
       $property->setValue($value);
     }
