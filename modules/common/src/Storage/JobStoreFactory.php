@@ -11,13 +11,6 @@ use Drupal\Core\Database\Connection;
 class JobStoreFactory implements FactoryInterface {
 
   /**
-   * JobStore instances keyed by unique identifiers.
-   *
-   * @var \Drupal\common\Storage\JobStore[]
-   */
-  private $instances = [];
-
-  /**
    * Drupal database connection.
    *
    * @var \Drupal\Core\Database\Connection
@@ -35,11 +28,7 @@ class JobStoreFactory implements FactoryInterface {
    * {@inheritdoc}
    */
   public function getInstance(string $identifier, array $config = []) {
-    if (!isset($this->instances[$identifier])) {
-      $this->instances[$identifier] = new JobStore($identifier, $this->connection);
-    }
-
-    return $this->instances[$identifier];
+    return new JobStore($identifier, $this->connection);
   }
 
 }

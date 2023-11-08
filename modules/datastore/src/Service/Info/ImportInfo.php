@@ -4,9 +4,7 @@ namespace Drupal\datastore\Service\Info;
 
 use Drupal\common\DataResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
@@ -30,13 +28,6 @@ class ImportInfo {
    * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
    */
   private $importServiceFactory;
-
-  /**
-   * FileFetcher service.
-   *
-   * @var \FileFetcher\FileFetcher
-   */
-  private $fileFetcher;
 
   /**
    * Resourcer mapper service.

@@ -24,7 +24,7 @@ class ImportInfoList implements ContainerInjectionInterface {
    *
    * @var \Drupal\datastore\Service\Info\ImportInfo
    */
-  private $importInfo;
+  private ImportInfo $importInfo;
 
   /**
    * Create.
