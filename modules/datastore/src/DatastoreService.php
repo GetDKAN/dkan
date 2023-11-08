@@ -256,6 +256,9 @@ class DatastoreService implements ContainerInjectionInterface {
    *
    * @return array
    *   The importer list object.
+   *
+   * @deprecated use ImportInfoList->buildList() directly.
+   * @see ImportInfoList::buildList()
    */
   public function list() {
     return $this->importInfoList->buildList();

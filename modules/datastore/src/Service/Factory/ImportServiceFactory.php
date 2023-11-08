@@ -26,13 +26,6 @@ class ImportServiceFactory implements ImportFactoryInterface {
   private $databaseTableFactory;
 
   /**
-   * Import services.
-   *
-   * @var \Drupal\datastore\Service\ImportService[]
-   */
-  private $services = [];
-
-  /**
    * Constructor.
    */
   public function __construct(JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
@@ -46,18 +39,10 @@ class ImportServiceFactory implements ImportFactoryInterface {
    * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
-
-    if (!isset($config['resource'])) {
-      throw new \Exception("config['resource'] is required");
+    if ($resource = $config['resource'] ?? FALSE) {
+      return new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
     }
-
-    $resource = $config['resource'];
-
-    if (!isset($this->services[$identifier])) {
-      $this->services[$identifier] = new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
-    }
-
-    return $this->services[$identifier];
+    throw new \Exception("config['resource'] is required");
   }
 
 }

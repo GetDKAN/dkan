@@ -103,7 +103,6 @@ services:
   dkan.datastore.import_info:
     class: \Drupal\datastore\Service\Info\ImportInfo
     arguments:
-      - '@dkan.common.job_store'
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
       - '@dkan.metastore.resource_mapper'
