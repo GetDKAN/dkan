@@ -318,7 +318,7 @@ class LifeCycle {
       return $data instanceof MetastoreItemInterface;
     });
 
-    $metadata = $this->referencer->reference($metadata);
+    $metadata = $this->referencer->reference($metadata, $data->getRawMetadata());
 
     $data->setMetadata($metadata);
 

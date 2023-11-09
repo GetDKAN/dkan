@@ -65,14 +65,14 @@ class Referencer {
    * @return object
    *   Json object modified with references to some of its properties' values.
    */
-  public function reference($data) {
+  public function reference($data, $raw) {
     if (!is_object($data)) {
       throw new \Exception("data must be an object.");
     }
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
-        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
+        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id}, $raw->{$property_id});
       }
     }
     return $data;
@@ -89,13 +89,13 @@ class Referencer {
    * @return string|array
    *   Single reference, or an array of references.
    */
-  private function referenceProperty(string $property_id, $data) {
+  private function referenceProperty(string $property_id, $data, $raw) {
     if (is_array($data)) {
-      return $this->referenceMultiple($property_id, $data);
+      return $this->referenceMultiple($property_id, $data, $raw);
     }
     else {
       // Case for $data being an object or a string.
-      return $this->referenceSingle($property_id, $data);
+      return $this->referenceSingle($property_id, $data, $raw);
     }
   }
 
@@ -110,10 +110,10 @@ class Referencer {
    * @return array
    *   The array of uuid references.
    */
-  private function referenceMultiple(string $property_id, array $values) : array {
+  private function referenceMultiple(string $property_id, array $values, $raw) : array {
     $result = [];
-    foreach ($values as $value) {
-      $data = $this->referenceSingle($property_id, $value);
+    foreach ($values as $key => $value) {
+      $data = $this->referenceSingle($property_id, $value, $raw[$key]);
       if (NULL !== $data) {
         $result[] = $data;
       }
@@ -132,16 +132,28 @@ class Referencer {
    * @return string|null
    *   The Uuid reference, or NULL on failure.
    */
-  private function referenceSingle(string $property_id, $value) {
+  private function referenceSingle(string $property_id, $value, $raw) {
 
     if ($property_id == 'distribution') {
       $value = $this->distributionHandling($value);
     }
 
-    $uuid = $this->checkExistingReference($property_id, $value);
+    $uuid = $this->checkExistingReference($property_id, $value, $raw);
+
     if (!$uuid) {
       $uuid = $this->createPropertyReference($property_id, $value);
     }
+    else {
+      $data = new \stdClass();
+      $data->identifier = $uuid;
+      $data->data = $value;
+      $json = json_encode($data);
+
+      // Create node to store this reference.
+      $storage = $this->storageFactory->getInstance($property_id);
+      $storage->store($json, $data->identifier);
+    }
+
     if ($uuid) {
       return $uuid;
     }
@@ -406,12 +418,20 @@ class Referencer {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  private function checkExistingReference(string $property_id, $data) {
+  private function checkExistingReference(string $property_id, $data, $raw) {
     $storage = $this->storageFactory->getInstance($property_id);
-    $nodes = $storage->getEntityStorage()->loadByProperties([
-      'field_data_type' => $property_id,
-      'title' => MetastoreService::metadataHash($data),
-    ]);
+    if (!empty($raw)) {
+      $nodes = $storage->getEntityStorage()->loadByProperties([
+        'field_data_type' => $property_id,
+        'uuid' => $raw,
+      ]);
+    }
+    if (empty($nodes)) {
+      $nodes = $storage->getEntityStorage()->loadByProperties([
+        'field_data_type' => $property_id,
+        'title' => MetastoreService::metadataHash($data),
+      ]);
+    }
 
     if ($node = reset($nodes)) {
       // @todo if referencing node in draft state, don't publish referenced node
