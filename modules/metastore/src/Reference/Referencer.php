@@ -420,7 +420,7 @@ class Referencer {
    */
   private function checkExistingReference(string $property_id, $data, $raw) {
     $storage = $this->storageFactory->getInstance($property_id);
-    if (!empty($raw)) {
+    if (!empty($raw) && is_string($raw)) {
       $nodes = $storage->getEntityStorage()->loadByProperties([
         'field_data_type' => $property_id,
         'uuid' => $raw,
