@@ -29,7 +29,7 @@ class FlexibleDateTime extends Datetime {
     if (!empty($input['date']) && empty($input['time'])) {
       $input['time'] = '00:00:00';
     }
-    if ($element['#date_date_element'] !== 'none' && empty($input['date'])) {
+    if (!empty($input['time']) && $element['#date_date_element'] !== 'none' && empty($input['date'])) {
       if ($input['time'] === '00:00:00') {
         unset($input['time']);
       }
