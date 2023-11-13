@@ -11,14 +11,14 @@ function metastore_search_update_8002() {
 }
 
 /**
- * Install search api view configs.
+ * Install enable facet module and install view/facet configs.
  */
 function metastore_search_update_8003() {
     $config_files = [
-      'views.view.metastore_search',
+      'views.view.datastore_search',
       'block.block.keyword',
       'block.block.theme',
-      'facets.facet_source.search_api__views_page__metastore_search__page_1',
+      'facets.facet_source.search_api__views_page__datastore_search__page_1',
       'facets.facet.keyword',
       'facets.facet.theme',
     ];

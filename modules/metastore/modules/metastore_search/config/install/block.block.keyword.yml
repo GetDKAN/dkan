@@ -1,5 +1,5 @@
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - facets.facet.keyword
@@ -7,16 +7,16 @@ dependencies:
     - facets
     - system
   theme:
-    - claro
+    - olivero
 id: keyword
-theme: claro
-region: sidebar_second
+theme: olivero
+region: sidebar
 weight: 0
 provider: null
 plugin: 'facet_block:keyword'
 settings:
   id: 'facet_block:keyword'
-  label: Tags
+  label: Keyword
   label_display: visible
   provider: facets
   context_mapping: {  }
@@ -25,4 +25,4 @@ visibility:
   request_path:
     id: request_path
     negate: false
-    pages: '/metastore-search/*'
+    pages: '/datastore-search*'

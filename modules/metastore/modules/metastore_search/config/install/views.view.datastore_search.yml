@@ -5,10 +5,10 @@ dependencies:
     - search_api.index.dkan
   module:
     - search_api
-id: metastore_search
-label: 'Metastore Search'
+id: datastore_search
+label: 'Datastore Search'
 module: views
-description: 'Dataset Search Landing Page'
+description: ''
 tag: ''
 base_table: search_api_index_dkan
 base_field: search_api_id
@@ -187,12 +187,14 @@ display:
           relationship: none
           group_type: group
           admin_label: Description
+          entity_type: null
+          entity_field: null
           plugin_id: search_api
           label: ''
           exclude: false
           alter:
-            alter_text: true
-            text: '{{ description }}'
+            alter_text: false
+            text: ''
             make_link: false
             path: ''
             absolute: false
@@ -318,50 +320,42 @@ display:
         type: none
         options: {  }
       cache:
-        type: search_api_time
-        options:
-          results_lifespan: 3600
-          results_lifespan_custom: 0
-          output_lifespan: 3600
-          output_lifespan_custom: 0
+        type: none
+        options: {  }
       empty: {  }
       sorts: {  }
       arguments: {  }
       filters:
-        search_api_fulltext:
-          id: search_api_fulltext
-          table: search_api_index_dkan
-          field: search_api_fulltext
+        combine:
+          id: combine
+          table: views
+          field: combine
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: search_api_fulltext
-          operator: and
+          plugin_id: combine
+          operator: '='
           value: ''
           group: 1
           exposed: true
           expose:
-            operator_id: search_api_fulltext_op
-            label: ''
+            operator_id: combine_op
+            label: 'Dataset Text Search'
             description: ''
             use_operator: false
-            operator: search_api_fulltext_op
+            operator: combine_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: search_api_fulltext
+            identifier: fulltext
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
-              administrator: '0'
               api_user: '0'
-              data_publisher: '0'
-              site_manager: '0'
-            expose_fields: false
+              administrator: '0'
             placeholder: ''
-            searched_fields_id: search_api_fulltext_searched_fields
           is_grouped: false
           group_info:
             label: ''
@@ -374,11 +368,9 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: terms
-          min_length: null
           fields:
-            - description
-            - title
+            title: title
+            description: description
       filter_groups:
         operator: AND
         groups:
@@ -406,12 +398,14 @@ display:
         - url.query_args
       tags:
         - 'config:search_api.index.dkan'
-  page_1:
-    id: page_1
-    display_title: Page
+        - 'search_api_list:dkan'
+  datastore_search:
+    id: datastore_search
+    display_title: Search
     display_plugin: page
     position: 1
     display_options:
+      display_description: ''
       display_extenders: {  }
       path: datastore-search
     cache_metadata:
@@ -421,6 +415,5 @@ display:
         - url
         - url.query_args
       tags:
-        - 'config:facets.facet.keyword'
-        - 'config:facets.facet.theme'
         - 'config:search_api.index.dkan'
+        - 'search_api_list:dkan'
