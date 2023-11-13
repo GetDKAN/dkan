@@ -1,27 +1,11 @@
 <?php
 
 /**
- * Import config from metastore_admin view page.
+ * Import config from datastore_search view page.
  */
 function metastore_search_update_8002() {
     $config_path =  \Drupal::service('extension.list.module')->getPath('metastore_search') . '/config/install/';
     $source = new \Drupal\Core\Config\FileStorage($config_path);
     $config_storage = \Drupal::service('config.storage');
-    $config_storage->write('views.view.metastore_search', $source->read('views.view.metastore_search'));
+    $config_storage->write('views.view.datastore_search', $source->read('views.view.datastore_search'));
 }
-
-
-/**
- * Install view configs.
- */
-function metastore_search_update_8003() {
-    $config_files = [
-      'views.view.datastore_search',
-    ];
-    $config_path = \Drupal::service('extension.list.module')->getPath('metastore_search') . '/config/install';
-    $source = new \Drupal\Core\Config\FileStorage($config_path);
-    $config_storage = \Drupal::service('config.storage');
-    foreach ($config_files as $config) {
-    $config_storage->write($config, $source->read($config));
-    }
-  }
