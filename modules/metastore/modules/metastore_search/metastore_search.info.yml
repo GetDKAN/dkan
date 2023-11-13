@@ -6,5 +6,4 @@ dependencies:
   - metastore
   - search_api
   - search_api_db
-  - facets
 package: DKAN
