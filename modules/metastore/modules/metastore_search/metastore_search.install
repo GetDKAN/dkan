@@ -10,17 +10,11 @@ function metastore_search_update_8002() {
     $config_storage->write('views.view.metastore_search', $source->read('views.view.metastore_search'));
 }
 
-/**
- * Install facets module.
- */
-function metastore_search_update_8003() {
-  \Drupal::service('module_installer')->install(['facets']);
-}
 
 /**
- * Install enable facet module and install view/facet configs.
+ * Install view configs.
  */
-function metastore_search_update_8004() {
+function metastore_search_update_8003() {
     $config_files = [
       'views.view.datastore_search',
     ];
