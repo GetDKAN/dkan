@@ -6,4 +6,5 @@ dependencies:
   - metastore
   - search_api
   - search_api_db
+  - drupal:views
 package: DKAN

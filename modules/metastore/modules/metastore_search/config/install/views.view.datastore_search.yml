@@ -5,8 +5,8 @@ dependencies:
     - search_api.index.dkan
   module:
     - search_api
-id: datastore_search
-label: 'Datastore Search'
+id: dataset_search
+label: 'dataset Search'
 module: views
 description: ''
 tag: ''
@@ -399,15 +399,15 @@ display:
       tags:
         - 'config:search_api.index.dkan'
         - 'search_api_list:dkan'
-  datastore_search:
-    id: datastore_search
+  dataset_search:
+    id: dataset_search
     display_title: Search
     display_plugin: page
     position: 1
     display_options:
       display_description: ''
       display_extenders: {  }
-      path: datastore-search
+      path: dataset-search
     cache_metadata:
       max-age: -1
       contexts:
