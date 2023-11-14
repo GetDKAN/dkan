@@ -8,6 +8,8 @@ function metastore_search_install() {
     \Drupal::service('update.update_hook_registry')->setInstalledVersion('metastore_search', '9000');
   }
 
+
+
 /**
  * Import config from datastore_search view page.
  */
@@ -16,6 +18,20 @@ function metastore_search_update_9001() {
     $source = new \Drupal\Core\Config\FileStorage($config_path);
     $config_storage = \Drupal::service('config.storage');
     $config_storage->write('views.view.datastore_search', $source->read('views.view.datastore_search'));
+    metastore_search_import_single_config('views.view.dataset_search');
 
     drupal_flush_all_caches();
+}
+
+/**
+ * Helper function to import single config file.
+ *
+ * @param string $config_name
+ *   The name of the config item to import from the config sync folder.
+ */
+function metastore_search_import_single_config($config_name) {
+  $config_path = Settings::get('config_sync_directory');
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write($config_name, $source->read($config_name));
 }
