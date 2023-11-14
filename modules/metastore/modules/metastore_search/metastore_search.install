@@ -11,13 +11,13 @@ function metastore_search_install() {
 
 
 /**
- * Import config from datastore_search view page.
+ * Import config from dataset_search view page.
  */
 function metastore_search_update_9001() {
     $config_path =  \Drupal::service('extension.list.module')->getPath('metastore_search') . '/config/install/';
     $source = new \Drupal\Core\Config\FileStorage($config_path);
     $config_storage = \Drupal::service('config.storage');
-    $config_storage->write('views.view.datastore_search', $source->read('views.view.datastore_search'));
+    $config_storage->write('views.view.dataset_search', $source->read('views.view.dataset_search'));
     metastore_search_import_single_config('views.view.dataset_search');
 
     drupal_flush_all_caches();
