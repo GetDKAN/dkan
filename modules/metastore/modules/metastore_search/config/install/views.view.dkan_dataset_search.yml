@@ -1,3 +1,4 @@
+uuid: 65f56334-59b5-4b7e-9218-a0599fd56fab
 langcode: en
 status: true
 dependencies:
@@ -5,8 +6,10 @@ dependencies:
     - search_api.index.dkan
   module:
     - search_api
-id: dataset_search
-label: 'dataset Search'
+_core:
+  default_config_hash: ksK7g8bPswpXYrIEMfnMmxT-Vd5YgpzplevFdnUyVY4
+id: dkan_dataset_search
+label: 'DKAN Dataset Search'
 module: views
 description: ''
 tag: ''
@@ -21,6 +24,59 @@ display:
     display_options:
       title: Datasets
       fields:
+        title:
+          id: title
+          table: search_api_index_dkan
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: Title
+          plugin_id: search_api
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         theme:
           id: theme
           table: search_api_index_dkan
@@ -81,59 +137,6 @@ display:
           relationship: none
           group_type: group
           admin_label: Modified
-          plugin_id: search_api
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-        title:
-          id: title
-          table: search_api_index_dkan
-          field: title
-          relationship: none
-          group_type: group
-          admin_label: Title
           plugin_id: search_api
           label: ''
           exclude: false
@@ -326,27 +329,27 @@ display:
       sorts: {  }
       arguments: {  }
       filters:
-        combine:
-          id: combine
-          table: views
-          field: combine
+        search_api_fulltext:
+          id: search_api_fulltext
+          table: search_api_index_dkan
+          field: search_api_fulltext
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: combine
-          operator: '='
+          plugin_id: search_api_fulltext
+          operator: or
           value: ''
           group: 1
           exposed: true
           expose:
-            operator_id: combine_op
-            label: 'Dataset Text Search'
+            operator_id: search_api_fulltext_op
+            label: 'Fulltext search'
             description: ''
             use_operator: false
-            operator: combine_op
+            operator: search_api_fulltext_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: fulltext
+            identifier: search_api_fulltext
             required: false
             remember: false
             multiple: false
@@ -355,7 +358,9 @@ display:
               anonymous: '0'
               api_user: '0'
               administrator: '0'
+            expose_fields: false
             placeholder: ''
+            searched_fields_id: search_api_fulltext_searched_fields
           is_grouped: false
           group_info:
             label: ''
@@ -368,9 +373,9 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          fields:
-            title: title
-            description: description
+          parse_mode: terms
+          min_length: null
+          fields: {  }
       filter_groups:
         operator: AND
         groups:
