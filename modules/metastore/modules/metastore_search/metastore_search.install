@@ -21,9 +21,9 @@ function metastore_search_update_9001() {
     $source = new \Drupal\Core\Config\FileStorage($config_path);
     $config_storage = \Drupal::service('config.storage');
     $config_storage->write('views.view.dataset_search', $source->read('views.view.dataset_search'));
+    drupal_flush_all_caches();
     metastore_search_import_single_config('views.view.dataset_search');
 
-    drupal_flush_all_caches();
 }
 
 /**
