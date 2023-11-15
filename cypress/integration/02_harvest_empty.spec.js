@@ -14,7 +14,7 @@ context('Harvest', () => {
   });
 
   context('GET harvest/plans', () => {
-    it('List harvest identifiers', () => {
+    it('List harvest identifiers #api', () => {
       cy.request({
         url: apiUri + '/harvest/plans',
         auth: user_credentials
@@ -24,7 +24,7 @@ context('Harvest', () => {
       })
     })
 
-    it('Requires authenticated user', () => {
+    it('Requires authenticated user #api', () => {
       cy.request({
         url: apiUri + '/harvest/plans',
         failOnStatusCode: false
