@@ -18,7 +18,7 @@ function metastore_search_install() {
  */
 function metastore_search_update_9001() {
     $config_path =  \Drupal::service('extension.list.module')->getPath('metastore_search') . '/config/install/';
-    metastore_search_import_single_config('views.view.dataset_search', $config_path);
+    metastore_search_import_single_config('views.view.dkan_dataset_search', $config_path);
     drupal_flush_all_caches();
 }
 
