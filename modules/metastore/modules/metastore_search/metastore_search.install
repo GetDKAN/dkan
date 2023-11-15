@@ -18,12 +18,8 @@ function metastore_search_install() {
  */
 function metastore_search_update_9001() {
     $config_path =  \Drupal::service('extension.list.module')->getPath('metastore_search') . '/config/install/';
-    $source = new \Drupal\Core\Config\FileStorage($config_path);
-    $config_storage = \Drupal::service('config.storage');
-    $config_storage->write('views.view.dataset_search', $source->read('views.view.dataset_search'));
+    metastore_search_import_single_config('views.view.dataset_search', $config_path);
     drupal_flush_all_caches();
-    metastore_search_import_single_config('views.view.dataset_search');
-
 }
 
 /**
@@ -32,8 +28,7 @@ function metastore_search_update_9001() {
  * @param string $config_name
  *   The name of the config item to import from the config sync folder.
  */
-function metastore_search_import_single_config($config_name) {
-  $config_path = Settings::get('config_sync_directory');
+function metastore_search_import_single_config($config_name, $config_path) {
   $source = new FileStorage($config_path);
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($config_name, $source->read($config_name));
