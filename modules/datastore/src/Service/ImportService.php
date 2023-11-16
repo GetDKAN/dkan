@@ -13,7 +13,11 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Procrastinator\Result;
 
 /**
- * Datastore import service.
+ * Datastore importer.
+ *
+ * @todo This class has state and is not actually a service because it holds
+ *   state. Have import() take an argument of a resource, instead of storing it
+ *   as a property.
  */
 class ImportService {
   use LoggerTrait;
