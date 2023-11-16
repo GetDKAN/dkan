@@ -90,7 +90,7 @@ class ImportInfo {
   public function getItem(string $identifier, string $version) {
     $item = (object) static::$defaultItemValues;
 
-    if ($resource = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
+    if ($resource = $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version)) {
       /** @var \FileFetcher\FileFetcher $ff */
       if ($ff = $this->getFileFetcher($resource)) {
         $item->fileName = $this->getFileName($ff);
