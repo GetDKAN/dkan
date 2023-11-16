@@ -68,9 +68,9 @@ class ImportService {
    *
    * Access using self::getImporter().
    *
-   * @see self::getImporter()
-   *
    * @var \Drupal\datastore\Plugin\QueueWorker\ImportJob|null
+   *
+   * @see self::getImporter()
    */
   private ?ImportJob $importJob;
 

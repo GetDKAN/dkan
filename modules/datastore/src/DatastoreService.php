@@ -10,11 +10,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Info\ImportInfoList;
-use FileFetcher\FileFetcher;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use FileFetcher\FileFetcher;
 
 /**
  * Main services for the datastore.
@@ -80,8 +79,6 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Queue factory service.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   Jobstore factory service.
-   * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
-   *   Import info list service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */

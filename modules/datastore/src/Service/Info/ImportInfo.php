@@ -32,10 +32,17 @@ class ImportInfo {
   private $importServiceFactory;
 
   /**
+   * Resource mapper service.
+   *
    * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
 
+  /**
+   * Default values for import status.
+   *
+   * @var array
+   */
   protected static $defaultItemValues = [
     'fileName' => '',
     'fileFetcherStatus' => Result::WAITING,
@@ -48,6 +55,8 @@ class ImportInfo {
   ];
 
   /**
+   * Datastore service.
+   *
    * @var \Drupal\datastore\DatastoreService
    */
   protected DatastoreService $datastoreService;
@@ -102,6 +111,15 @@ class ImportInfo {
     return $item;
   }
 
+  /**
+   * Get a file fetcher for the given resource.
+   *
+   * @param \Drupal\common\DataResource $resource
+   *   Resource to get the file fetcher for.
+   *
+   * @return \FileFetcher\FileFetcher
+   *   File fetcher object for the resource.
+   */
   protected function getFileFetcher(DataResource $resource): FileFetcher {
     return $this->resourceLocalizer->getFileFetcher($resource);
   }
