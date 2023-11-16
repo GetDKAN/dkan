@@ -43,9 +43,9 @@ class ImportService {
   /**
    * The DKAN Resource to import.
    *
-   * @var \Drupal\common\DataResource
+   * @var \Drupal\common\DataResource|null
    */
-  private $resource;
+  private ?DataResource $resource;
 
   /**
    * The jobstore factory service.
@@ -54,14 +54,25 @@ class ImportService {
    *
    * @todo Can we remove this?
    */
-  private $jobStoreFactory;
+  private JobStoreFactory $jobStoreFactory;
 
   /**
    * Database table factory service.
    *
    * @var \Drupal\datastore\Storage\DatabaseTableFactory
    */
-  private $databaseTableFactory;
+  private DatabaseTableFactory $databaseTableFactory;
+
+  /**
+   * Import job for the current import.
+   *
+   * Access using self::getImporter().
+   *
+   * @see self::getImporter()
+   *
+   * @var \Drupal\datastore\Plugin\QueueWorker\ImportJob|null
+   */
+  private ?ImportJob $importJob;
 
   /**
    * Create a resource service instance.
@@ -100,10 +111,10 @@ class ImportService {
    * Import.
    */
   public function import() {
-    $importer = $this->getImporter();
-    $importer->run();
+    $import_job = $this->getImporter();
+    $import_job->run();
 
-    $result = $this->getResult();
+    $result = $import_job->getResult();
     $resource = $this->getResource();
     if ($result->getStatus() === Result::ERROR) {
       $datastore_resource = $resource->getDatastoreResource();
@@ -124,6 +135,10 @@ class ImportService {
 
   /**
    * Get result.
+   *
+   * @deprecated ImportService does not have a result. Get the ImportJob you
+   *   desire and check its result.
+   * @see self::getImporter()
    */
   public function getResult(): Result {
     $importer = $this->getImporter();
@@ -133,13 +148,16 @@ class ImportService {
   /**
    * Build an Importer.
    *
-   * @return \Drupal\datastore\Import
+   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
    *   Importer.
    *
    * @throws \Exception
-   *   Throws exception if cannot create valid importer object.
+   *   Throws exception if we cannot create a valid importer object.
    */
   public function getImporter(): ImportJob {
+    if ($this->importJob ?? FALSE) {
+      return $this->importJob;
+    }
     $datastore_resource = $this->getResource()->getDatastoreResource();
 
     $delimiter = ",";
@@ -147,7 +165,7 @@ class ImportService {
       $delimiter = "\t";
     }
 
-    $importer = call_user_func([$this->importerClass, 'get'],
+    $this->importJob = call_user_func([$this->importerClass, 'get'],
       $datastore_resource->getId(),
       $this->jobStoreFactory->getInstance(ImportJob::class),
       [
@@ -157,9 +175,9 @@ class ImportService {
       ]
     );
 
-    $importer->setTimeLimit(self::DEFAULT_TIMELIMIT);
+    $this->importJob->setTimeLimit(self::DEFAULT_TIMELIMIT);
 
-    return $importer;
+    return $this->importJob;
   }
 
   /**

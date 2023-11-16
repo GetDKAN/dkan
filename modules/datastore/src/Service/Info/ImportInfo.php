@@ -3,12 +3,14 @@
 namespace Drupal\datastore\Service\Info;
 
 use Drupal\common\DataResource;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
+use Procrastinator\Result;
 
 /**
  * Defines and provide a single item for an ImportInfoList.
@@ -36,14 +38,19 @@ class ImportInfo {
 
   protected static $defaultItemValues = [
     'fileName' => '',
-    'fileFetcherStatus' => 'waiting',
+    'fileFetcherStatus' => Result::WAITING,
     'fileFetcherBytes' => 0,
     'fileFetcherPercentDone' => 0,
-    'importerStatus' => 'waiting',
+    'importerStatus' => Result::WAITING,
     'importerBytes' => 0,
     'importerPercentDone' => 0,
     'importerError' => NULL,
   ];
+
+  /**
+   * @var \Drupal\datastore\DatastoreService
+   */
+  protected DatastoreService $datastoreService;
 
   /**
    * Constructor.
@@ -51,11 +58,13 @@ class ImportInfo {
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
     ImportFactoryInterface $importServiceFactory,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
+    DatastoreService $datastoreService
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->resourceMapper = $resourceMapper;
+    $this->datastoreService = $datastoreService;
   }
 
   /**
@@ -72,7 +81,7 @@ class ImportInfo {
   public function getItem(string $identifier, string $version) {
     $item = (object) static::$defaultItemValues;
 
-    if ($resource = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
+    if ($resource = $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version)) {
       /** @var \FileFetcher\FileFetcher $ff */
       if ($ff = $this->getFileFetcher($resource)) {
         $item->fileName = $this->getFileName($ff);
@@ -81,12 +90,12 @@ class ImportInfo {
         $item->fileFetcherPercentDone = $this->getPercentDone($ff);
       }
 
-      /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $imp */
-      if ($imp = $this->getImporter($resource)) {
-        $item->importerStatus = $imp->getResult()->getStatus();
-        $item->importerError = $imp->getResult()->getError();
-        $item->importerBytes = $this->getBytesProcessed($imp);
-        $item->importerPercentDone = $this->getPercentDone($imp);
+      /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+      if ($import_job = $this->getImporter($resource)) {
+        $item->importerStatus = $import_job->getResult()->getStatus();
+        $item->importerError = $import_job->getResult()->getError();
+        $item->importerBytes = $this->getBytesProcessed($import_job);
+        $item->importerPercentDone = $this->getPercentDone($import_job);
       }
     }
 
@@ -107,10 +116,7 @@ class ImportInfo {
    *   Import
    */
   protected function getImporter(DataResource $resource): ImportJob {
-    return $this->importServiceFactory->getInstance(
-      $resource->getUniqueIdentifier(),
-      ['resource' => $resource]
-    )->getImporter();
+    return $this->datastoreService->getImportService($resource)->getImporter();
   }
 
   /**

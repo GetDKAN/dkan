@@ -6,7 +6,6 @@ services:
       - '@dkan.datastore.service.factory.import'
       - '@queue'
       - '@dkan.common.job_store'
-      - '@dkan.datastore.import_info_list'
       - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
 
   dkan.datastore.service.post_import:
@@ -104,6 +103,7 @@ services:
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
       - '@dkan.metastore.resource_mapper'
+      - '@dkan.datastore.service'
 
   dkan.datastore.import_info_list:
     class: \Drupal\datastore\Service\Info\ImportInfoList

@@ -4,6 +4,7 @@ namespace Drupal\Tests\datastore\Unit;
 
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
@@ -42,7 +43,8 @@ class DatastoreServiceTest extends TestCase {
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "import", NULL)
-      ->add(ImportService::class, "getResult", new Result())
+      ->add(ImportService::class, 'getImporter', ImportJob::class)
+      ->add(ImportJob::class, 'getResult', new Result())
       ->add(QueueFactory::class, "get", NULL)
       ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
 

@@ -4,6 +4,7 @@ namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Service\ImportService;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -64,7 +65,6 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.factory.import'),
       $container->get('queue'),
       $container->get('dkan.common.job_store'),
-      $container->get('dkan.datastore.import_info_list'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
     );
   }
@@ -90,14 +90,12 @@ class DatastoreService implements ContainerInjectionInterface {
     ImportFactoryInterface $importServiceFactory,
     QueueFactory $queue,
     JobStoreFactory $jobStoreFactory,
-    ImportInfoList $importInfoList,
     DictionaryEnforcer $dictionaryEnforcer
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
-    $this->importInfoList = $importInfoList;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
   }
 
@@ -150,7 +148,9 @@ class DatastoreService implements ContainerInjectionInterface {
   private function doImport($resource) {
     $importService = $this->getImportService($resource);
     $importService->import();
-    return [$this->getLabelFromObject($importService) => $importService->getResult()];
+    return [
+      $this->getLabelFromObject($importService) => $importService->getImporter()->getResult(),
+    ];
   }
 
   /**
@@ -197,8 +197,10 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Getter.
    */
-  public function getImportService(DataResource $resource) {
-    return $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(), ['resource' => $resource]);
+  public function getImportService(DataResource $resource): ImportService {
+    return $this->importServiceFactory->getInstance(
+      $resource->getUniqueIdentifier(), ['resource' => $resource]
+    );
   }
 
   /**
@@ -235,19 +237,6 @@ class DatastoreService implements ContainerInjectionInterface {
         ->getInstance(FileFetcher::class)
         ->remove($resource->getUniqueIdentifierNoPerspective());
     }
-  }
-
-  /**
-   * Get a list of all stored importers and filefetchers, and their status.
-   *
-   * @return array
-   *   The importer list object.
-   *
-   * @deprecated Use ImportInfoList::buildList() directly.
-   * @see ImportInfoList::buildList()
-   */
-  public function list() {
-    return $this->importInfoList->buildList();
   }
 
   /**

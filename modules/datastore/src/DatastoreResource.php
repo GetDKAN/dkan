@@ -4,6 +4,10 @@ namespace Drupal\datastore;
 
 /**
  * Basic datastore resource class.
+ *
+ * Always generate this object using DataResource::getDatastoreResource().
+ *
+ * @see \Drupal\common\DataResource::getDatastoreResource()
  */
 class DatastoreResource implements \JsonSerializable {
 
