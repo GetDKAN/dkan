@@ -16,7 +16,7 @@ use Drupal\datastore\Form\DashboardForm;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-use Drupal\datastore\service\PostImport;
+use Drupal\datastore\Service\PostImport;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
