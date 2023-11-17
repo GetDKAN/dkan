@@ -5,7 +5,7 @@ const uuid_regex = new RegExp(Cypress.env('UUID_REGEX'))
 
 context('Metastore', () => {
   context('Catalog', () => {
-    it('Should contain newly created datasets #api', () => {
+    it('Should contain newly created datasets <api>', () => {
       dkan.createMetastore('dataset').then((response) => {
         expect(response.status).eql(201)
         const identifier = response.body.identifier
@@ -21,7 +21,7 @@ context('Metastore', () => {
     })
 
     // Requires the data from 'Should contain newly created datasets'.
-    it('Corresponds to catalog shell #api', () => {
+    it('Corresponds to catalog shell <api>', () => {
       cy.request('data.json').then((response) => {
         expect(response.status).eql(200)
         expect(response.body["@context"]).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld")
@@ -36,7 +36,7 @@ context('Metastore', () => {
   context('Dereference methods', () => {
     const schema_id = 'dataset'
 
-    it('bad query parameter #api', () => {
+    it('bad query parameter <api>', () => {
       const item = dkan.generateMetastore(schema_id)
       dkan.createMetastore(schema_id, item).then((response) => {
         cy.request(dkan.getMetastoreGetEndpoint(schema_id, response.body.identifier) + '?view=foobar').then((response) => {
@@ -45,7 +45,7 @@ context('Metastore', () => {
       })
     })
 
-    it('data (default) #api', () => {
+    it('data (default) <api>', () => {
       const item = dkan.generateMetastore(schema_id)
       dkan.createMetastore(schema_id, item).then((response) => {
         cy.request(dkan.getMetastoreGetEndpoint(schema_id, item.identifier)).then((response) => {
@@ -54,7 +54,7 @@ context('Metastore', () => {
       })
     })
 
-    it('data+identifier #api', () => {
+    it('data+identifier <api>', () => {
       const item = dkan.generateMetastore(schema_id)
       dkan.createMetastore(schema_id, item).then((response) => {
         cy.request(dkan.getMetastoreGetEndpoint(schema_id, item.identifier) + '?show-reference-ids').then((response) => {
@@ -73,14 +73,14 @@ context('Metastore', () => {
 
   dkan.metastore_schemas.forEach((schema_id) => {
     context(`Metastore Item Creation (${schema_id})`, () => {
-      it(`Create a ${schema_id} #api`, () => {
+      it(`Create a ${schema_id} <api>`, () => {
         dkan.createMetastore(schema_id).then((response) => {
           expect(response.status).eql(201)
           expect(response.body.identifier).to.match(uuid_regex)
         })
       })
 
-      it('Create request fails with an empty payload #api', () => {
+      it('Create request fails with an empty payload <api>', () => {
         cy.request({
           method: 'POST',
           url: dkan.getMetastoreCreateEndpoint(schema_id),
@@ -92,7 +92,7 @@ context('Metastore', () => {
         })
       })
 
-      it('Create request fails with no payload #api', () => {
+      it('Create request fails with no payload <api>', () => {
         cy.request({
           method: 'POST',
           url: dkan.getMetastoreCreateEndpoint(schema_id),
@@ -104,7 +104,7 @@ context('Metastore', () => {
       })
     })
 
-    context(`Metastore Item Retrieval (${schema_id}) #api`, () => {
+    context(`Metastore Item Retrieval (${schema_id}) <api>`, () => {
       it(`GET a non-existent ${schema_id}`, () => {
         cy.request({
           url: dkan.getMetastoreGetEndpoint(schema_id, dkan.generateRandomString()),
@@ -115,7 +115,7 @@ context('Metastore', () => {
       })
     })
 
-    context(`Metastore Item Replacement (${schema_id}) #api`, () => {
+    context(`Metastore Item Replacement (${schema_id}) <api>`, () => {
       it('PUT fails with an empty payload', () => {
         cy.request({
           method: 'PUT',
@@ -128,7 +128,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PUT fails with no payload #api', () => {
+      it('PUT fails with no payload <api>', () => {
         cy.request({
           method: 'PUT',
           url: dkan.getMetastorePutEndpoint(schema_id, dkan.generateRandomString()),
@@ -139,7 +139,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PUT fails to modify the identifier #api', () => {
+      it('PUT fails to modify the identifier <api>', () => {
         dkan.createMetastore(schema_id).then((response) => {
           expect(response.status).eql(201)
           cy.request({
@@ -154,7 +154,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PUT updates an existing dataset #api', () => {
+      it('PUT updates an existing dataset <api>', () => {
         dkan.createMetastore(schema_id).then((response) => {
           expect(response.status).eql(201)
           const new_item = dkan.generateMetastore(schema_id, response.body.identifier)
@@ -176,7 +176,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PUT creates a dataset, if non-existent #api', () => {
+      it('PUT creates a dataset, if non-existent <api>', () => {
         const item = dkan.generateMetastore(schema_id)
         const endpoint = dkan.getMetastorePutEndpoint(schema_id, item.identifier)
         cy.request({
@@ -195,7 +195,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PUT fails to modify if data is the same #api', () => {
+      it('PUT fails to modify if data is the same <api>', () => {
         const item = dkan.generateMetastore(schema_id)
         dkan.createMetastore(schema_id, item).then((response) => {
           cy.request({
@@ -217,7 +217,7 @@ context('Metastore', () => {
     })
 
     context(`Metastore Item Replacement (${schema_id})`, () => {
-      it('PATCH fails for non-existent dataset #api', () => {
+      it('PATCH fails for non-existent dataset <api>', () => {
         const identifier = dkan.generateRandomString(schema_id)
         cy.request({
           method: 'PATCH',
@@ -230,7 +230,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PATCH fails to modify the identifier #api', () => {
+      it('PATCH fails to modify the identifier <api>', () => {
         dkan.createMetastore(schema_id).then((response) => {
           expect(response.status).eql(201)
           cy.request({
@@ -247,7 +247,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PATCH - empty payload #api', () => {
+      it('PATCH - empty payload <api>', () => {
         const item = dkan.generateMetastore(schema_id)
         dkan.createMetastore(schema_id, item).then((response) => {
           expect(response.status).eql(201)
@@ -268,7 +268,7 @@ context('Metastore', () => {
         })
       })
 
-      it('PATCH - basic case #api', () => {
+      it('PATCH - basic case <api>', () => {
         dkan.createMetastore(schema_id).then((response) => {
           expect(response.status).eql(201)
           const item = dkan.generateMetastore(schema_id, response.body.identifier)
@@ -290,7 +290,7 @@ context('Metastore', () => {
     })
 
     context(`Metastore Item Deletion (${schema_id})`, () => {
-      it('Delete existing datasets #api', () => {
+      it('Delete existing datasets <api>', () => {
         dkan.createMetastore(schema_id).then((response) => {
           const identifier = response.body.identifier
           cy.request({
@@ -313,7 +313,7 @@ context('Metastore', () => {
 
   context('Metastore Item Replacement (dataset; edge cases)', () => {
     const schema_id = 'dataset'
-    it('PATCH modifies array elements (add, remove, edit) #api', () => {
+    it('PATCH modifies array elements (add, remove, edit) <api>', () => {
       const item = dkan.generateMetastore(schema_id)
       dkan.createMetastore(schema_id, item).then((response) => {
         expect(response.status).eql(201)
@@ -340,7 +340,7 @@ context('Metastore', () => {
       })
     })
 
-    it('PATCH modifies object properties (add, remove, edit) #api', () => {
+    it('PATCH modifies object properties (add, remove, edit) <api>', () => {
       const item = dkan.generateMetastore(schema_id)
       dkan.createMetastore(schema_id, item).then((response) => {
         expect(response.status).eql(201)
