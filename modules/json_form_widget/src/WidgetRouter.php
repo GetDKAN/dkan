@@ -152,6 +152,9 @@ class WidgetRouter implements ContainerInjectionInterface {
       if (isset($element[$spec->titleProperty])) {
         $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
       }
+      if (isset($spec->source->returnValue)) {
+        $element = $this->getDropdownElement($element, $spec, $spec->titleProperty);
+      }
     }
     else {
       $element = $this->getDropdownElement($element, $spec);
@@ -245,17 +248,34 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function getOptionsFromMetastore($source, $titleProperty = FALSE) {
     $options = [];
-    $values = $this->metastore->getAll($source->metastoreSchema);
-    foreach ($values as $value) {
-      $value = json_decode($value);
-      if ($titleProperty) {
-        $options[$value->data->{$titleProperty}] = $value->data->{$titleProperty};
-      }
-      else {
-        $options[$value->data] = $value->data;
-      }
+    $metastore_items = $this->metastore->getAll($source->metastoreSchema);
+    foreach ($metastore_items as $item) {
+      $item = json_decode($item);
+      $title = $this->metastoreOptionTitle($item, $source, $titleProperty);
+      $value = $this->metastoreOptionValue($item, $source, $titleProperty);
+      $options[$value] = $title;
     }
     return $options;
+  }
+
+  private function metastoreOptionTitle(object|string $item, object $source, string|false $titleProperty) {
+    if ($titleProperty) {
+      return is_object($item) ? $item->data->$titleProperty : $item;
+    }
+    if (isset($source->returnValue)) {
+      return $item->data->{$source->returnValue};
+    }
+    return $item->data;
+  }
+
+  private function metastoreOptionValue(object|string $item, object $source, string|false $titleProperty) {
+    if ($source->returnValue ?? NULL == 'url') {
+      return 'dkan://metastore/schemas/' . $source->metastoreSchema . '/items/' . $item->identifier;
+    }
+    if ($titleProperty) {
+      return is_object($item) ? $item->data->$titleProperty : $item;
+    }
+    return $item->data;
   }
 
   /**
