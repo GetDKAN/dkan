@@ -115,13 +115,10 @@ class ImportService {
    * Import.
    */
   public function import() {
-    $import_job = $this->getImporter();
-    $import_job->run();
+    $result = $this->getImporter()->run();
 
-    $result = $import_job->getResult();
-    $resource = $this->getResource();
     if ($result->getStatus() === Result::ERROR) {
-      $datastore_resource = $resource->getDatastoreResource();
+      $datastore_resource = $this->getResource()->getDatastoreResource();
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->error('Error importing resource id:%id path:%path message:%message', [
         '%id' => $datastore_resource->getId(),
@@ -130,10 +127,12 @@ class ImportService {
       ]);
     }
     // If the import job finished successfully...
+    // @todo This should be an event that is emitted, and then processed
+    //   elsewhere.
     elseif ($result->getStatus() === Result::DONE) {
       // Queue the imported resource for post-import processing.
       $post_import_queue = \Drupal::service('queue')->get('post_import');
-      $post_import_queue->createItem($resource);
+      $post_import_queue->createItem($this->getResource());
     }
   }
 
