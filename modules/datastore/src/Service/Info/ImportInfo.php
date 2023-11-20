@@ -85,7 +85,7 @@ class ImportInfo {
    *   Resource version.
    *
    * @return object
-   *   And object with info about imports: file name, fetching status, etc.
+   *   An object with info about imports: file name, fetching status, etc.
    */
   public function getItem(string $identifier, string $version) {
     $item = (object) static::$defaultItemValues;

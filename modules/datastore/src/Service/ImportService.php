@@ -137,18 +137,6 @@ class ImportService {
   }
 
   /**
-   * Get result.
-   *
-   * @deprecated ImportService does not have a result. Get the ImportJob you
-   *   desire and check its result.
-   * @see self::getImporter()
-   */
-  public function getResult(): Result {
-    $importer = $this->getImporter();
-    return $importer->getResult();
-  }
-
-  /**
    * Build an Importer.
    *
    * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
