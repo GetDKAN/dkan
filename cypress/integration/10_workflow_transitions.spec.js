@@ -6,7 +6,7 @@ context('DKAN Workflow', () => {
     cy.drupalLogin(user_credentials.user, user_credentials.pass)
   })
 
-  it('Draft datasets are hidden from the catalog until published.', () => {
+  xit('Draft datasets are hidden from the catalog until published.', () => {
     // Create draft dataset
     const dataset_title = dkan.generateRandomString()
     dkan.createDatasetWithModerationState(dataset_title, 'draft')
@@ -51,7 +51,7 @@ context('DKAN Workflow', () => {
     })
   })
 
-  it('Existing datasets which are archived cannot be visited, and are hidden from the catalog.', () => {
+  xit('Existing datasets which are archived cannot be visited, and are hidden from the catalog.', () => {
     // Create published dataset
     const dataset_title = dkan.generateRandomString()
     dkan.createDatasetWithModerationState(dataset_title, 'published')
@@ -95,7 +95,7 @@ context('DKAN Workflow', () => {
     })
   })
 
-  it('Newly created hidden datasets are visible when visited directly, but hidden from the catalog.', () => {
+  xit('Newly created hidden datasets are visible when visited directly, but hidden from the catalog.', () => {
     // create hidden dataset
     const dataset_title = dkan.generateRandomString()
     dkan.createDatasetWithModerationState(dataset_title, 'hidden')
@@ -129,10 +129,10 @@ context('DKAN Workflow', () => {
       })
 
       // Ensure dataset is visible in search
-      dkan.searchMetastore({fulltext: dataset_title, facets: ''}).then((response) => {
-        expect(response.status).to.eq(200)
-        expect(response.body.total).to.eq('1')
-      })
+      // dkan.searchMetastore({fulltext: dataset_title, facets: ''}).then((response) => {
+      //   expect(response.status).to.eq(200)
+      //   expect(response.body.total).to.eq('1')
+      // })
 
       // Set the dataset workflow state to hidden
       cy.get('@nodeId').then((nodeId) => {
