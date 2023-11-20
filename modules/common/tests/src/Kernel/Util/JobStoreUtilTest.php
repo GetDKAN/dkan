@@ -38,22 +38,16 @@ namespace Drupal\Tests\common\Kernel\Util {
       $factory_accessor = new JobStoreFactoryAccessor($db);
 
       // First, get the non-deprecated table name.
-      $ref_get_table_name = new \ReflectionMethod($factory_accessor, 'getHashedTableName');
-      $ref_get_table_name->setAccessible(TRUE);
-      $table_name = $ref_get_table_name->invokeArgs($factory_accessor, [$class_name]);
+      $table_name = $factory_accessor->accessTableName($class_name);
 
       // Use the deprecated table name.
-      $ref_get_deprecated_table_name = new \ReflectionMethod($factory_accessor, 'getDeprecatedTableName');
-      $ref_get_deprecated_table_name->setAccessible(TRUE);
-      $deprecated_table_name = $ref_get_deprecated_table_name->invokeArgs(
-        $factory_accessor, [$class_name]
-      );
+      $deprecated_table_name = $factory_accessor->accessDeprecatedTableName($class_name);
 
-      // Make the deprecated table.
+      // Make the deprecated table by creating a new jobstore object rather than
+      // use the factory, so it does not recompute the table name.
       $this->assertFalse($db->schema()->tableExists($deprecated_table_name));
-      // Create a new jobstore object rather than use the factory, so it does
-      // not recompute the table name.
       $job_store = new JobStore($deprecated_table_name, $db);
+      // Count() will create the table.
       $this->assertEquals(0, $job_store->count());
 
       // Assert that the deprecated table exists but not the non-deprecated.

@@ -98,8 +98,8 @@ class JobStoreUtil {
     if ($deprecated_table_names = $this->getAllDeprecatedJobstoreTableNames()) {
       $renamed = [];
       foreach ($deprecated_table_names as $class_name => $deprecated_table_name) {
-        $job_store = new JobStoreFactoryAccessor($this->connection);
-        $table_name = $job_store->accessTableName($class_name);
+        $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+        $table_name = $factory_accessor->accessTableName($class_name);
         $renamed[$deprecated_table_name] = $table_name;
         $this->connection->schema()->renameTable(
           $deprecated_table_name,
@@ -144,9 +144,9 @@ class JobStoreUtil {
    *   Class name identifier for the jobstore table to merge.
    */
   public function reconcileDuplicateJobstoreTable(string $class_name) {
-    $job_store_accessor = new JobStoreFactoryAccessor($this->connection);
-    $deprecated_table_name = $job_store_accessor->accessDeprecatedTableName($class_name);
-    $table_name = $job_store_accessor->accessTableName($class_name);
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+    $deprecated_table_name = $factory_accessor->accessDeprecatedTableName($class_name);
+    $table_name = $factory_accessor->accessTableName($class_name);
 
     // Hold all this in a transaction so that we don't lose anything.
     $transaction = $this->connection->startTransaction();
@@ -243,11 +243,11 @@ class JobStoreUtil {
    *   FALSE otherwise.
    */
   public function tableIsDeprecatedNameForClassname(string $class_name): bool {
-    $job_store_factory_accessor = new JobStoreFactoryAccessor($this->connection);
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
     return $this->connection->schema()
-      ->tableExists($job_store_factory_accessor->accessDeprecatedTableName($class_name)) &&
+      ->tableExists($factory_accessor->accessDeprecatedTableName($class_name)) &&
       !$this->connection->schema()
-        ->tableExists($job_store_factory_accessor->accessTableName($class_name));
+        ->tableExists($factory_accessor->accessTableName($class_name));
   }
 
   /**
@@ -260,8 +260,8 @@ class JobStoreUtil {
    *   The deprecated table name.
    */
   public function getDeprecatedTableNameForClassname(string $className): string {
-    $job_store_factory = new JobStoreFactoryAccessor($this->connection);
-    return $job_store_factory->accessDeprecatedTableName($className);
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+    return $factory_accessor->accessDeprecatedTableName($className);
   }
 
   /**
@@ -274,8 +274,8 @@ class JobStoreUtil {
    *   The non-deprecated table name.
    */
   public function getTableNameForClassname(string $className): string {
-    $job_store_factory = new JobStoreFactoryAccessor($this->connection);
-    return $job_store_factory->accessTableName($className);
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+    return $factory_accessor->accessTableName($className);
   }
 
   /**
