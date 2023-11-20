@@ -340,10 +340,30 @@ class LifeCycle {
   }
 
   /**
-   * Private.
+   * Distribution presave.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Dataset metastore item.
    */
-  protected function distributionPresave(MetastoreItemInterface $data) {
+  protected function distributionPresave(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
+
+    if (!$data->isNew()) {
+      $distributionUuid = $data->getIdentifier();
+      $storage = $this->dataFactory->getInstance('distribution');
+      $resource = $storage->retrieve($distributionUuid);
+      $resource = json_decode($resource);
+
+      $resourceId = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
+
+      // Replace download url with the resource reference ID again.
+      if (isset($resourceId)) {
+        $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
+        $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
+        $metadata->data->downloadURL = $resourceId . '__' . $version . '__' . $perspective;
+        unset($metadata->data->{'%Ref:downloadURL'});
+      }
+    }
     $data->setMetadata($metadata);
   }
 
