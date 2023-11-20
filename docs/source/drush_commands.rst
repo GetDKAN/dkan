@@ -269,7 +269,7 @@ dkan:sample-content:create
 dkan-test-users
 ---------------
 
-    If you are using the `DKAN DDEV Add-On <https://github.com/GetDKAN/dkan-ddev-addon>`_, you can create and delete test user accounts with the following commands.
+    If you are using the `DKAN DDEV Add-On <https://github.com/GetDKAN/ddev-dkan>`_, you can create and delete test user accounts with the following commands.
 
     **Add users**
 
