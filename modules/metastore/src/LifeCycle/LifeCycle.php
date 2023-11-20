@@ -329,19 +329,6 @@ class LifeCycle {
     // Create new reference entities if they do not exist.
     $metadata = $this->referencer->reference($metadata);
 
-    // Remove dereferenced data from the metadata to save.
-    if (isset($metadata->{'%Ref:distribution'})) {
-      unset($metadata->{'%Ref:distribution'});
-    }
-    if (isset($metadata->{'%Ref:keyword'})) {
-      unset($metadata->{'%Ref:keyword'});
-    }
-    if (isset($metadata->{'%Ref:theme'})) {
-      unset($metadata->{'%Ref:theme'});
-    }
-    if (isset($metadata->{'%Ref:publisher'})) {
-      unset($metadata->{'%Ref:publisher'});
-    }
     // Re-add metadata to data object with uuids.
     $data->setMetadata($metadata);
   }
