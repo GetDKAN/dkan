@@ -329,6 +329,19 @@ class LifeCycle {
     // Create new reference entities if they do not exist.
     $metadata = $this->referencer->reference($metadata);
 
+    // Remove dereferenced data from the metadata to save.
+    if (isset($metadata->{'%Ref:distribution'})) {
+      unset($metadata->{'%Ref:distribution'});
+    }
+    if (isset($metadata->{'%Ref:keyword'})) {
+      unset($metadata->{'%Ref:keyword'});
+    }
+    if (isset($metadata->{'%Ref:theme'})) {
+      unset($metadata->{'%Ref:theme'});
+    }
+    if (isset($metadata->{'%Ref:publisher'})) {
+      unset($metadata->{'%Ref:publisher'});
+    }
     // Re-add metadata to data object with uuids.
     $data->setMetadata($metadata);
   }
@@ -404,10 +417,31 @@ class LifeCycle {
   }
 
   /**
-   * Private.
+   * Distribution presave.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Dataset metastore item.
    */
-  protected function distributionPresave(MetastoreItemInterface $data) {
+  protected function distributionPresave(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
+
+    // If updating an existing distribution, re-reference it.
+    if (!$data->isNew()) {
+      $distributionUuid = $data->getIdentifier();
+      $storage = $this->dataFactory->getInstance('distribution');
+      $resource = $storage->retrieve($distributionUuid);
+      $resource = json_decode($resource);
+
+      $resourceId = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
+
+      // Replace download url with the resource reference ID again.
+      if (isset($resourceId)) {
+        $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
+        $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
+        $metadata->data->downloadURL = $resourceId . '__' . $version . '__' . $perspective;
+        unset($metadata->data->{'%Ref:downloadURL'});
+      }
+    }
     $data->setMetadata($metadata);
   }
 
