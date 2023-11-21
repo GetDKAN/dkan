@@ -10,11 +10,18 @@ use Drupal\Core\Database\Connection;
 class JobStore extends AbstractDatabaseTable {
 
   /**
-   * Store the name of the table so that we do not have to recompute.
+   * The table name for this job store.
    *
    * @var string
    */
   protected string $tableName;
+
+  /**
+   * A deprecated table name for this job store, if applicable.
+   *
+   * @var string
+   */
+  protected string $deprecatedTableName;
 
   /**
    * Constructor.
@@ -23,8 +30,10 @@ class JobStore extends AbstractDatabaseTable {
    *   Table name for this jobstore table.
    * @param \Drupal\Core\Database\Connection $connection
    *   Database connection.
+   * @param string $deprecatedTableName
+   *   (Optional) Deprecated table name, if there is one.
    */
-  public function __construct(string $tableName, Connection $connection) {
+  public function __construct(string $tableName, Connection $connection, string $deprecatedTableName = '') {
     $this->tableName = $tableName;
     $this->setOurSchema();
     parent::__construct($connection);
@@ -91,6 +100,20 @@ class JobStore extends AbstractDatabaseTable {
    */
   public function primaryKey() {
     return 'ref_uuid';
+  }
+
+  /**
+   * Drop the table if it exists.
+   *
+   * Will also drop the deprecated table if it exists.
+   */
+  public function destruct() {
+    parent::destruct();
+    // If the factory gave us a deprecated table name, we should clean that up,
+    // too.
+    if ($this->deprecatedTableName) {
+      $this->connection->schema()->dropTable($this->deprecatedTableName);
+    }
   }
 
 }

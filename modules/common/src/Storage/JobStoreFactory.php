@@ -40,7 +40,15 @@ class JobStoreFactory implements StorageFactoryInterface {
    * The configuration parameter is unused, for JobStore instances.
    */
   public function getInstance(string $identifier, array $config = []): DatabaseTableInterface {
-    return new JobStore($this->getTableName($identifier), $this->connection);
+    $table_name = $this->getTableName($identifier);
+    $deprecated_table_name = $this->getDeprecatedTableName($identifier);
+    // Figure out whether we need a separate deprecated table name. This will
+    // be used in JobStore::destruct() to clean up deprecated tables if they
+    // exist.
+    if ($table_name === $deprecated_table_name) {
+      $deprecated_table_name = '';
+    }
+    return new JobStore($table_name, $this->connection, $deprecated_table_name);
   }
 
   /**
