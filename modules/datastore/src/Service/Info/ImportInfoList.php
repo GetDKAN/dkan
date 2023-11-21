@@ -51,6 +51,9 @@ class ImportInfoList implements ContainerInjectionInterface {
    *
    * @return array
    *   An array of ImportInfo objects, keyed by UUID.
+   *
+   * @todo This method assumes a 1:1 relationship between filefetcher job stores
+   *   and status to report. This might not be the case.
    */
   public function buildList() {
     $list = [];

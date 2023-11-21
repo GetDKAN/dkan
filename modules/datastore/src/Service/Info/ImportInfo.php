@@ -3,17 +3,35 @@
 namespace Drupal\datastore\Service\Info;
 
 use Drupal\common\DataResource;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
+use Procrastinator\Result;
 
 /**
  * Defines and provide a single item for an ImportInfoList.
  */
 class ImportInfo {
+
+  /**
+   * Default values for import status.
+   *
+   * @var array
+   */
+  protected static $defaultItemValues = [
+    'fileName' => '',
+    'fileFetcherStatus' => Result::WAITING,
+    'fileFetcherBytes' => 0,
+    'fileFetcherPercentDone' => 0,
+    'importerStatus' => Result::WAITING,
+    'importerBytes' => 0,
+    'importerPercentDone' => 0,
+    'importerError' => NULL,
+  ];
 
   /**
    * Resource localizer service.
@@ -37,16 +55,25 @@ class ImportInfo {
   private ResourceMapper $resourceMapper;
 
   /**
+   * Datastore service.
+   *
+   * @var \Drupal\datastore\DatastoreService
+   */
+  protected DatastoreService $datastoreService;
+
+  /**
    * Constructor.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
     ImportFactoryInterface $importServiceFactory,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
+    DatastoreService $datastoreService
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->resourceMapper = $resourceMapper;
+    $this->datastoreService = $datastoreService;
   }
 
   /**
@@ -58,68 +85,56 @@ class ImportInfo {
    *   Resource version.
    *
    * @return object
-   *   And object with info about imports: file name, fetching status, etc.
+   *   An object with info about imports: file name, fetching status, etc.
    */
   public function getItem(string $identifier, string $version) {
-    [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
-    $item = (object) [
-      'fileName' => '',
-      'fileFetcherStatus' => 'waiting',
-      'fileFetcherBytes' => 0,
-      'fileFetcherPercentDone' => 0,
-      'importerStatus' => 'waiting',
-      'importerBytes' => 0,
-      'importerPercentDone' => 0,
-      'importerError' => NULL,
-    ];
-    if ($ff) {
-      $item->fileName = $this->getFileName($ff);
-      $item->fileFetcherStatus = $ff->getResult()->getStatus();
-      $item->fileFetcherBytes = $this->getBytesProcessed($ff);
-      $item->fileFetcherPercentDone = $this->getPercentDone($ff);
+    $item = (object) static::$defaultItemValues;
+
+    if ($resource = $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version)) {
+      /** @var \FileFetcher\FileFetcher $ff */
+      if ($ff = $this->getFileFetcher($resource)) {
+        $item->fileName = $this->getFileName($ff);
+        $item->fileFetcherStatus = $ff->getResult()->getStatus();
+        $item->fileFetcherBytes = $this->getBytesProcessed($ff);
+        $item->fileFetcherPercentDone = $this->getPercentDone($ff);
+      }
+
+      /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+      if ($import_job = $this->getImporter($resource)) {
+        $item->importerStatus = $import_job->getResult()->getStatus();
+        $item->importerError = $import_job->getResult()->getError();
+        $item->importerBytes = $this->getBytesProcessed($import_job);
+        $item->importerPercentDone = $this->getPercentDone($import_job);
+      }
     }
-    if ($imp) {
-      $item->importerStatus = $imp->getResult()->getStatus();
-      $item->importerError = $imp->getResult()->getError();
-      $item->importerBytes = $this->getBytesProcessed($imp);
-      $item->importerPercentDone = $this->getPercentDone($imp);
-    }
+
     return $item;
   }
 
   /**
-   * Get the filefetcher and importer objects for a resource.
+   * Get a file fetcher for the given resource.
    *
-   * @param string $identifier
-   *   Resource identifier.
-   * @param string $version
-   *   Resource version.
+   * @param \Drupal\common\DataResource $resource
+   *   Resource to get the file fetcher for.
    *
-   * @return array
-   *   Array with a filefetcher and importer object.
-   *
-   * @todo place this inline to avoid the awkward return array.
+   * @return \FileFetcher\FileFetcher
+   *   File fetcher object for the resource.
    */
-  protected function getFileFetcherAndImporter($identifier, $version) {
-    try {
-      // Use resource mapper rather than resource localizer, because
-      // ResourceLocalizer::get() has side effects we don't want.
-      $resource = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
+  protected function getFileFetcher(DataResource $resource): FileFetcher {
+    return $this->resourceLocalizer->getFileFetcher($resource);
+  }
 
-      if ($resource) {
-        $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
-
-        $importer = $this->importServiceFactory->getInstance(
-          $resource->getUniqueIdentifier(),
-          ['resource' => $resource]
-        )->getImporter();
-
-        return [$fileFetcher, $importer];
-      }
-    }
-    catch (\Exception $e) {
-    }
-    return [NULL, NULL];
+  /**
+   * Get an import job store object for the resource.
+   *
+   * @param \Drupal\common\DataResource $resource
+   *   Resource object reperesenting the resource.
+   *
+   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
+   *   Import
+   */
+  protected function getImporter(DataResource $resource): ImportJob {
+    return $this->datastoreService->getImportService($resource)->getImporter();
   }
 
   /**
@@ -160,7 +175,8 @@ class ImportInfo {
    * Calculate bytes processed based on chunks processed in the importer data.
    *
    * @param \Procrastinator\Job\Job $job
-   *   Either a FileFetcher or Importer object.
+   *   Job object. In practice this will be either an ImportJob, a FileFetcher,
+   *   or one of their subclasses.
    *
    * @return int
    *   Total bytes processed.
@@ -168,7 +184,6 @@ class ImportInfo {
   protected function getBytesProcessed(Job $job): int {
     // Handle ImportJob and its subclasses.
     if (is_a($job, ImportJob::class)) {
-      // For Importer, avoid going above total size due to chunk multiplication.
       $chunksSize = $job->getStateProperty('chunksProcessed') * ImportJob::BYTES_PER_CHUNK;
       $fileSize = $this->getFileSize($job);
       return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;

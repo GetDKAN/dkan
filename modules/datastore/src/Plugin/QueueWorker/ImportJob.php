@@ -305,8 +305,8 @@ class ImportJob extends AbstractPersistentJob {
       $this->parser->feed($chunk);
       $chunksProcessed++;
 
-      $this->store();
       $this->setStateProperty('chunksProcessed', $chunksProcessed);
+      $this->store();
     }
     fclose($h);
   }

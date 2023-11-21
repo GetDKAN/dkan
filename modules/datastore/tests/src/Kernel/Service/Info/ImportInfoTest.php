@@ -61,7 +61,7 @@ class ImportInfoTest extends KernelTestBase {
       $source_resource->getVersion()
     );
     // Not done, and bytes are zero.
-    $this->assertEquals('stopped', $import_info_item->fileFetcherStatus);
+    $this->assertEquals(Result::WAITING, $import_info_item->fileFetcherStatus);
     // Fair to say there are no bytes yet since we haven't localized.
     $this->assertEquals(0, $import_info_item->fileFetcherBytes);
 
@@ -101,16 +101,16 @@ class ImportInfoTest extends KernelTestBase {
       $ff_state['total_bytes_copied']
     );
 
-    // Let's now examine the import job
+    // Let's now examine the import job. It should be waiting, since we haven't
+    // performed the import yet.
     /** @var \Drupal\datastore\DatastoreService $datastore_service */
     $datastore_service = $this->container->get('dkan.datastore.service');
     /** @var \Drupal\datastore\Service\ImportService $import_service */
     $import_service = $datastore_service->getImportService($local_resource);
     /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_service->getImporter();
-    // @todo This still fails as 'stopped' rather than 'done'.
     $this->assertEquals(
-      Result::DONE,
+      Result::WAITING,
       $import_job->getResult()->getStatus()
     );
 
@@ -122,7 +122,7 @@ class ImportInfoTest extends KernelTestBase {
       $source_resource->getVersion()
     );
     // Is it done?
-    $this->assertEquals('done', $import_info_item->fileFetcherStatus);
+    $this->assertEquals(Result::DONE, $import_info_item->fileFetcherStatus);
     // Do we report the correct number of bytes?
     $this->assertEquals(
       filesize($local_resource->getFilePath()),

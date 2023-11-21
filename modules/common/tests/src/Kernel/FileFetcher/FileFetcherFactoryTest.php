@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\common\Kernel\FileFetcher;
 
+use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\KernelTests\KernelTestBase;
 use FileFetcher\FileFetcher;
@@ -63,6 +64,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     ];
     $ff = $factory->getInstance('identifier', $config);
     $this->assertInstanceOf(FileFetcher::class, $ff);
+    $this->assertInstanceOf(DkanFileFetcher::class, $ff);
 
     // Make sure we have the correct processor class that corresponds to our
     // config.

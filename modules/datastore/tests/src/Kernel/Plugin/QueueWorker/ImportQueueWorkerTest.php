@@ -42,7 +42,6 @@ class ImportQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.datastore.service.factory.import'),
         $this->container->get('queue'),
         $this->container->get('dkan.common.job_store'),
-        $this->container->get('dkan.datastore.import_info_list'),
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
         $this->container->get('dkan.metastore.resource_mapper'),
       ])
@@ -92,7 +91,6 @@ class ImportQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.datastore.service.factory.import'),
         $this->container->get('queue'),
         $this->container->get('dkan.common.job_store'),
-        $this->container->get('dkan.datastore.import_info_list'),
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
         $this->container->get('dkan.metastore.resource_mapper'),
       ])
@@ -232,7 +230,6 @@ class ImportQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.datastore.service.factory.import'),
         $this->container->get('queue'),
         $this->container->get('dkan.common.job_store'),
-        $this->container->get('dkan.datastore.import_info_list'),
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
         $this->container->get('dkan.metastore.resource_mapper'),
       ])
