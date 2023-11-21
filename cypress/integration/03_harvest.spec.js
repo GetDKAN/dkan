@@ -4,6 +4,7 @@ context('Harvest', () => {
   let apiUri = Cypress.config().apiUri;
 
   // Set up.
+  // BTB conversion notes: Do not use API to test API.
   before(() => {
     cy.request({
       method: 'POST',
@@ -25,6 +26,7 @@ context('Harvest', () => {
   });
 
   // Clean up.
+  // BTB conversion notes: Do not use API to test API.
   after(() => {
     cy.request({
       method: 'DELETE',
@@ -36,7 +38,7 @@ context('Harvest', () => {
   });
 
   context('GET harvest/plans', () => {
-    it('List harvest identifiers', () => {
+    it('List harvest identifiers <api>', () => {
       cy.request({
         url: apiUri + '/harvest/plans',
         auth: user_credentials
@@ -58,7 +60,7 @@ context('Harvest', () => {
       })
     })
 
-    it('Requires authenticated user', () => {
+    it('Requires authenticated user <api>', () => {
       cy.request({
         url: apiUri + '/harvest/plans',
         failOnStatusCode: false
@@ -69,7 +71,7 @@ context('Harvest', () => {
   });
 
   context('POST harvest/plans', () => {
-    it('Requires authenticated user', () => {
+    it('Requires authenticated user <api>', () => {
       cy.request({
         method: "POST",
         url: apiUri + '/harvest/plans',
@@ -81,7 +83,7 @@ context('Harvest', () => {
   });
 
   context('GET harvest/plans/PLAN_ID', () => {
-    it('Get a single harvest plan', () => {
+    it('Get a single harvest plan <api>', () => {
       cy.request({
         url: apiUri + '/harvest/plans/test',
         auth: user_credentials
@@ -91,7 +93,7 @@ context('Harvest', () => {
       })
     });
 
-    it('Requires authenticated user', () => {
+    it('Requires authenticated user <api>', () => {
       cy.request({
         url: apiUri + '/harvest/runs',
         failOnStatusCode: false
@@ -102,7 +104,7 @@ context('Harvest', () => {
   });
 
   context('GET harvest/runs?plan=PLAN_ID', () => {
-    it('Gives list of previous runs for a harvest id', () => {
+    it('Gives list of previous runs for a harvest id <api>', () => {
       cy.request({
         url: apiUri + '/harvest/runs?plan=test',
         auth: user_credentials
@@ -112,7 +114,7 @@ context('Harvest', () => {
       })
     });
 
-    it('Requires authenticated user', () => {
+    it('Requires authenticated user <api>', () => {
       cy.request({
         url: apiUri + '/harvest/runs?plan=PLAN_ID',
         failOnStatusCode: false
@@ -123,7 +125,7 @@ context('Harvest', () => {
   });
 
   context('POST harvest/runs', () => {
-    it('Requires authenticated user', () => {
+    it('Requires authenticated user <api>', () => {
       cy.request({
         method: "POST",
         url: apiUri + '/harvest/runs',
@@ -135,7 +137,7 @@ context('Harvest', () => {
   });
 
   context('GET harvest/runs/{identifier}', () => {
-    it('Gives information about a single previous harvest run', () => {
+    it('Gives information about a single previous harvest run <api>', () => {
       cy.request({
         url: apiUri + '/harvest/runs?plan=test',
         auth: user_credentials
@@ -152,7 +154,7 @@ context('Harvest', () => {
       })
     });
 
-    it('Requires authenticated user', () => {
+    it('Requires authenticated user <api>', () => {
       cy.request({
         url: apiUri + '/harvest/runs',
         failOnStatusCode: false
