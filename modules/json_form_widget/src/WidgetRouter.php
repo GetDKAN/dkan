@@ -269,7 +269,7 @@ class WidgetRouter implements ContainerInjectionInterface {
   }
 
   private function metastoreOptionValue(object|string $item, object $source, string|false $titleProperty) {
-    if ($source->returnValue ?? NULL == 'url') {
+    if (($source->returnValue ?? NULL) == 'url') {
       return 'dkan://metastore/schemas/' . $source->metastoreSchema . '/items/' . $item->identifier;
     }
     if ($titleProperty) {
