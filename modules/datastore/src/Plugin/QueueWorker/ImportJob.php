@@ -95,10 +95,6 @@ class ImportJob extends AbstractPersistentJob {
 
   public const BYTES_PER_CHUNK = 8192;
 
-  public function getANiftyIdentifier() {
-    return $this->identifier;
-  }
-
   /**
    * Constructor method.
    *
