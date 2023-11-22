@@ -6,17 +6,14 @@ use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
-
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-
 /**
  * MySQL LOAD DATA importer.
  *
  * @todo Figure out how to inject the file_system service into this class.
  */
 class MysqlImport extends ImportJob {
-
-  /**
+ /**
    * End Of Line character sequence escape to literal map.
    *
    * @var string[]
@@ -26,7 +23,6 @@ class MysqlImport extends ImportJob {
     '\r' => "\r",
     '\n' => "\n",
   ];
-
   /**
    * Constructor method.
    *
@@ -59,53 +55,52 @@ class MysqlImport extends ImportJob {
    *   in the run() method.
    */
   protected function runIt() {
-    // If the storage table already exists, we already performed an import and
+        // If the storage table already exists, we already performed an import and
     // can stop here.
     if ($this->dataStorage->hasBeenImported()) {
       $this->getResult()->setStatus(Result::DONE);
       return NULL;
     }
-
     // Attempt to resolve resource file name from file path.
+
     if (($file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath())) === FALSE) {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
-
     // Read the columns and EOL character sequence from the CSV file.
-    $delimiter = $this->resource->getMimeType() == 'text/tab-separated-values' ? "\t" : ',';
+
+    $delimiter = $this->detectDelimiter($file_path); // Detect the delimiter.
+
     try {
       [$columns, $column_lines] = $this->getColsFromFile($file_path, $delimiter);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
     }
-    // Attempt to detect the EOL character sequence for this file; default to
+  // Attempt to detect the EOL character sequence for this file; default to
     // '\n' on failure.
     $eol = $this->getEol($column_lines) ?? '\n';
-    // Count the number of EOL characters in the header row to determine how
+       // Count the number of EOL characters in the header row to determine how
     // many lines the headers are occupying.
     $header_line_count = substr_count(trim($column_lines), self::EOL_TABLE[$eol]) + 1;
-    // Generate sanitized table headers from column names.
+      // Generate sanitized table headers from column names.
     // Use headers to set the storage schema.
     $spec = $this->generateTableSpec($columns);
-    $this->dataStorage->setSchema(['fields' => $spec]);
 
-    // Count() will attempt to create the database table by side-effect of
+    $this->dataStorage->setSchema(['fields' => $spec]);
+        // Count() will attempt to create the database table by side-effect of
     // calling setTable().
     $this->dataStorage->count();
-
-    // Construct and execute a SQL import statement using the information
+      // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter));
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count, $delimiter)
+    );
 
     Database::setActiveConnection();
-
     $this->getResult()->setStatus(Result::DONE);
     return NULL;
   }
-
-  /**
+ /**
    * Attempt to read the columns and detect the EOL chars of the given CSV file.
    *
    * @param string $file_path
@@ -122,33 +117,29 @@ class MysqlImport extends ImportJob {
    *   on failure to read the first line from the file.
    */
   protected function getColsFromFile(string $file_path, string $delimiter): array {
-
-    // Open the CSV file.
     $f = fopen($file_path, 'r');
-
-    // Ensure the file could be successfully opened.
     if (!isset($f) || $f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
-
     // Attempt to retrieve the columns from the resource file.
+
     $columns = fgetcsv($f, 0, $delimiter);
-    // Attempt to read the column lines from the resource file.
+        // Attempt to read the column lines from the resource file.
+
     $end_pointer = ftell($f);
     rewind($f);
     $column_lines = fread($f, $end_pointer);
+        // Close the resource file, since it is no longer needed.
 
-    // Close the resource file, since it is no longer needed.
     fclose($f);
-    // Ensure the columns of the resource file were successfully read.
+
     if (!isset($columns) || $columns === FALSE) {
       throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
     }
 
     return [$columns, $column_lines];
   }
-
-  /**
+ /**
    * Attempt to detect the EOL character for the given line.
    *
    * @param string $line
@@ -172,7 +163,6 @@ class MysqlImport extends ImportJob {
 
     return $eol;
   }
-
   /**
    * Private.
    */
@@ -184,8 +174,7 @@ class MysqlImport extends ImportJob {
 
     return Database::getConnection();
   }
-
-  /**
+/**
    * Properly escape and format the supplied list of column names.
    *
    * @param string|null[] $columns
@@ -198,16 +187,9 @@ class MysqlImport extends ImportJob {
     $spec = [];
 
     foreach ($columns as $column) {
-      // Sanitize the supplied table header to generate a unique column name;
-      // null-coalesce potentially NULL column names to empty strings.
       $name = ImportJob::sanitizeHeader($column ?? '');
-
-      // Truncate the generated table column name, if necessary, to fit the max
-      // column length.
       $name = ImportJob::truncateHeader($name);
 
-      // Generate unique numeric suffix for the header if a header already
-      // exists with the same name.
       for ($i = 2; isset($spec[$name]); $i++) {
         $suffix = '_' . $i;
         $name = substr($name, 0, ImportJob::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
@@ -221,8 +203,7 @@ class MysqlImport extends ImportJob {
 
     return $spec;
   }
-
-  /**
+/**
    * Construct a SQL file import statement using the given file information.
    *
    * @param string $file_path
@@ -255,4 +236,45 @@ class MysqlImport extends ImportJob {
     ]);
   }
 
+  protected function detectDelimiter($file_path) {
+    $delimiters = [',', ';', '\t']; // Comma, semicolon, and tab as potential delimiters.
+    $max_lines = 10; // Maximum number of lines to analyze.
+
+    $handle = fopen($file_path, 'r');
+    if ($handle === false) {
+      return ','; // Default to comma if the file cannot be opened.
+    }
+
+    $sample_lines = [];
+    $line_count = 0;
+
+    while (($line = fgets($handle)) !== false && $line_count < $max_lines) {
+      $sample_lines[] = $line;
+      $line_count++;
+    }
+
+    fclose($handle);
+
+    // Iterate through potential delimiters and count the number of columns in each line.
+    $best_delimiter = ',';
+    $max_columns = 0;
+
+    foreach ($delimiters as $delimiter) {
+      $column_counts = [];
+
+      foreach ($sample_lines as $sample_line) {
+        $columns = str_getcsv($sample_line, $delimiter);
+        $column_counts[] = count($columns);
+      }
+
+      $average_columns = array_sum($column_counts) / count($column_counts);
+
+      if ($average_columns > $max_columns) {
+        $max_columns = $average_columns;
+        $best_delimiter = $delimiter;
+      }
+    }
+
+    return $best_delimiter;
+  }
 }
