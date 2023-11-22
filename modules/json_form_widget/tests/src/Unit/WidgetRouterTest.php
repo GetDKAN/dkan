@@ -19,7 +19,7 @@ class WidgetRouterTest extends TestCase {
   /**
    * @dataProvider dataProvider
    */
-  public function testhandleListElement($spec, $element, $handledElement) {
+  public function testHandleListElement($spec, $element, $handledElement) {
     $router = WidgetRouter::create($this->getContainerChain()->getMock());
 
     $new_element = $router->getConfiguredWidget($spec, $element);
@@ -46,7 +46,7 @@ class WidgetRouterTest extends TestCase {
 
   public static function dataProvider(): array {
     return [
-      // Tag field is a free-tagging autocomplete that populates from metastore
+      // Tag field is a free-tagging autocomplete that populates from metastore.
       'tagField' => [
         (object) [
           'widget' => 'list',

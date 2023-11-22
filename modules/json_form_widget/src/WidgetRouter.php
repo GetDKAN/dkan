@@ -121,7 +121,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element = $this->getDropdownElement($element, $spec, $spec->titleProperty);
     }
     else {
-      $element = $this->getDropdownElement($element, $spec);
+      $element = $this->getDropdownElement($element, $spec, $spec->titleProperty ?? FALSE);
     }
     return $element;
   }
