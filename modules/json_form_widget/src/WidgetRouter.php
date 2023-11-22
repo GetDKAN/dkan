@@ -114,13 +114,11 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The element configured as a list element.
    */
   public function handleListElement($spec, array $element) {
-    if (isset($spec->titleProperty)) {
-      if (isset($element[$spec->titleProperty])) {
-        $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
-      }
-      if (isset($spec->source->returnValue)) {
-        $element = $this->getDropdownElement($element, $spec, $spec->titleProperty);
-      }
+    if (isset($spec->titleProperty) && isset($element[$spec->titleProperty])) {
+      $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
+    }
+    elseif (isset($spec->source->returnValue) && isset($element[$spec->titleProperty])) {
+      $element = $this->getDropdownElement($element, $spec, $spec->titleProperty);
     }
     else {
       $element = $this->getDropdownElement($element, $spec);
@@ -246,6 +244,7 @@ class WidgetRouter implements ContainerInjectionInterface {
 
   /**
    * Determine the value for the select option.
+   *
    * @param object|string $item
    *   Single item from Metastore::getAll()
    * @param object $source

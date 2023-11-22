@@ -209,7 +209,6 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     return [];
   }
 
-
   /**
    * Apply schema UI to object fields.
    *
