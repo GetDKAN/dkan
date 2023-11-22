@@ -100,7 +100,8 @@ class WidgetRouterTest extends TestCase {
           '#input_type' => 'textfield',
         ],
       ],
-      // Publisher popualtes from metastore but returns whole object, is wrapped in a details element.
+      // Publisher popualtes from metastore but returns whole object,
+      // is wrapped in a details element.
       'publisherField' => [
         (object) [
           "widget" => "list",
@@ -140,7 +141,7 @@ class WidgetRouterTest extends TestCase {
           ],
         ],
       ],
-      // Data dict field draws from metastore but just shows URLs
+      // Data dict field draws from metastore but just shows URLs.
       'dataDict' => [
         (object) [
           "widget" => "list",

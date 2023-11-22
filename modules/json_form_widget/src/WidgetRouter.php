@@ -103,40 +103,6 @@ class WidgetRouter implements ContainerInjectionInterface {
   }
 
   /**
-   * Flatten array elements and unset actions if hideActions is set.
-   *
-   * @param mixed $spec
-   *   Object with spec for UI options.
-   * @param array $element
-   *   Element to apply UI options.
-   *
-   * @return array
-   *   Return flattened element without actions.
-   */
-  public function flattenArrays($spec, array $element) {
-    unset($element['actions']);
-    $default_value = [];
-    foreach ($element[$spec->child] as $key => $item) {
-      $default_value = array_merge($default_value, $this->formatArrayDefaultValue($item));
-      if ($key != 0) {
-        unset($element[$spec->child][$key]);
-      }
-    }
-    $element[$spec->child][0]['#default_value'] = $default_value;
-    return $element;
-  }
-
-  /**
-   * Format default values for arrays (flattened).
-   */
-  private function formatArrayDefaultValue($item) {
-    if (!empty($item['#default_value'])) {
-      return [$item['#default_value'] => $item['#default_value']];
-    }
-    return [];
-  }
-
-  /**
    * Handle configuration for list elements.
    *
    * @param mixed $spec
@@ -258,17 +224,39 @@ class WidgetRouter implements ContainerInjectionInterface {
     return $options;
   }
 
-  private function metastoreOptionTitle(object|string $item, object $source, string|false $titleProperty) {
+  /**
+   * Determine the title for the select option.
+   *
+   * @param object|string $item
+   *   Single item from Metastore::getAll()
+   * @param object $source
+   *   Source defintion from UI schema.
+   * @param string|false $titleProperty
+   *   Title property defined in UI schema.
+   *
+   * @return string
+   *   String to be used in title.
+   */
+  private function metastoreOptionTitle($item, object $source, $titleProperty): string {
     if ($titleProperty) {
       return is_object($item) ? $item->data->$titleProperty : $item;
-    }
-    if (isset($source->returnValue)) {
-      return $item->data->{$source->returnValue};
     }
     return $item->data;
   }
 
-  private function metastoreOptionValue(object|string $item, object $source, string|false $titleProperty) {
+  /**
+   * Determine the value for the select option.
+   * @param object|string $item
+   *   Single item from Metastore::getAll()
+   * @param object $source
+   *   Source defintion from UI schema.
+   * @param string|false $titleProperty
+   *   Title property defined in UI schema.
+   *
+   * @return string
+   *   String to be used as option value.
+   */
+  private function metastoreOptionValue($item, object $source, $titleProperty): string {
     if (($source->returnValue ?? NULL) == 'url') {
       return 'dkan://metastore/schemas/' . $source->metastoreSchema . '/items/' . $item->identifier;
     }
