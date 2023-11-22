@@ -179,14 +179,7 @@
       },
       "describedBy": {
         "ui:options": {
-          "description": "URL to the data dictionary for the file found at the Download URL.",
-          "widget": "list",
-          "type": "select",
-          "titleProperty": "title",
-          "source": {
-            "metastoreSchema": "data-dictionary",
-            "returnValue": "url"
-          }
+          "description": "URL to the data dictionary for the file found at the Download URL."
         }
       },
       "describedByType": {
