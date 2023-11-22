@@ -35,6 +35,7 @@ class JobStore extends AbstractDatabaseTable {
    */
   public function __construct(string $tableName, Connection $connection, string $deprecatedTableName = '') {
     $this->tableName = $tableName;
+    $this->deprecatedTableName = $deprecatedTableName;
     $this->setOurSchema();
     parent::__construct($connection);
   }
