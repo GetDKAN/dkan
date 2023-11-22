@@ -111,7 +111,7 @@ class JobStore extends AbstractDatabaseTable {
     parent::destruct();
     // If the factory gave us a deprecated table name, we should clean that up,
     // too.
-    if ($this->deprecatedTableName) {
+    if ($this->deprecatedTableName ?? FALSE) {
       $this->connection->schema()->dropTable($this->deprecatedTableName);
     }
   }
