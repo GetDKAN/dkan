@@ -114,15 +114,19 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The element configured as a list element.
    */
   public function handleListElement($spec, array $element) {
-    if (isset($spec->titleProperty) && isset($element[$spec->titleProperty])) {
-      $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
+    $title_property = ($spec->titleProperty ?? FALSE);
+
+    if (isset($title_property, $element[$title_property])) {
+      $element[$title_property] = $this->getDropdownElement($element[$title_property], $spec, $title_property);
     }
-    elseif (isset($spec->source->returnValue) && isset($element[$spec->titleProperty])) {
-      $element = $this->getDropdownElement($element, $spec, $spec->titleProperty);
+
+    if (isset($spec->source->returnValue)) {
+      $element = $this->getDropdownElement($element, $spec, $title_property);
     }
-    else {
-      $element = $this->getDropdownElement($element, $spec, $spec->titleProperty ?? FALSE);
+    elseif (!isset($spec->titleProperty)) {
+      $element = $this->getDropdownElement($element, $spec);
     }
+
     return $element;
   }
 
