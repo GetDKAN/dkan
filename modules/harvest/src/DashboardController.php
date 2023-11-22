@@ -2,14 +2,16 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Controller.
  */
-class DashboardController {
+class DashboardController implements ContainerInjectionInterface {
 
   use StringTranslationTrait;
 
@@ -25,13 +27,19 @@ class DashboardController {
    *
    * @var \Drupal\harvest\HarvestService
    */
-  protected $harvest;
+  protected $harvestService;
+
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.harvest.service')
+    );
+  }
 
   /**
    * Controller constructor.
    */
-  public function __construct() {
-    $this->harvest = \Drupal::service('dkan.harvest.service');
+  public function __construct(HarvestService $harvestService) {
+    $this->harvestService = $harvestService;
   }
 
   /**
@@ -42,10 +50,10 @@ class DashboardController {
     date_default_timezone_set(date_default_timezone_get());
 
     $rows = [];
-    foreach ($this->harvest->getAllHarvestIds() as $harvestPlanId) {
-      if ($runId = $this->harvest->getLastHarvestRunId($harvestPlanId)) {
+    foreach ($this->harvestService->getAllHarvestIds() as $harvestPlanId) {
+      if ($runId = $this->harvestService->getLastHarvestRunId($harvestPlanId)) {
         // There is a run identifier, so we should get that info.
-        $info = json_decode($this->harvest->getHarvestRunInfo($harvestPlanId, $runId));
+        $info = json_decode($this->harvestService->getHarvestRunInfo($harvestPlanId, $runId));
 
         $rows[] = $this->buildHarvestRow($harvestPlanId, $runId, $info);
       }

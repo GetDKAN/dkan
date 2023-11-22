@@ -60,7 +60,7 @@ class ImportJobTest extends TestCase {
     $datastore = $this->getDatastore($resource);
 
     $this->assertTrue($datastore->getParser() instanceof ParserInterface);
-    $this->assertEquals(Result::STOPPED, $datastore->getResult()->getStatus());
+    $this->assertEquals(Result::WAITING, $datastore->getResult()->getStatus());
 
     $datastore->run();
     $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
