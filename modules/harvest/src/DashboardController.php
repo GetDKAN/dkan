@@ -29,6 +29,9 @@ class DashboardController implements ContainerInjectionInterface {
    */
   protected $harvestService;
 
+  /**
+   * {@inheritDoc}
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.harvest.service')
