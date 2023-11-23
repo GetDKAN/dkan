@@ -4,10 +4,10 @@ namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Service\ImportService;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
