@@ -102,8 +102,10 @@ class Drush extends DrushCommands {
 
     try {
       if ($deferred) {
-        $this->datastoreService->importDeferred($identifier);
-        $this->logger->notice('Queued import for ' . $identifier);
+        $results = $this->datastoreService->importDeferred($identifier);
+        foreach ($results as $result) {
+          $this->logger->notice($result);
+        }
       }
       else {
         $result = $this->datastoreService->import($identifier, $deferred);

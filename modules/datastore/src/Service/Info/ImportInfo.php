@@ -18,22 +18,6 @@ use Procrastinator\Result;
 class ImportInfo {
 
   /**
-   * Default values for import status.
-   *
-   * @var array
-   */
-  protected static $defaultItemValues = [
-    'fileName' => '',
-    'fileFetcherStatus' => Result::WAITING,
-    'fileFetcherBytes' => 0,
-    'fileFetcherPercentDone' => 0,
-    'importerStatus' => Result::WAITING,
-    'importerBytes' => 0,
-    'importerPercentDone' => 0,
-    'importerError' => NULL,
-  ];
-
-  /**
    * Resource localizer service.
    *
    * @var \Drupal\datastore\Service\ResourceLocalizer
@@ -48,11 +32,27 @@ class ImportInfo {
   private $importServiceFactory;
 
   /**
-   * Resourcer mapper service.
+   * Resource mapper service.
    *
    * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
+
+  /**
+   * Default values for import status.
+   *
+   * @var array
+   */
+  protected static $defaultItemValues = [
+    'fileName' => '',
+    'fileFetcherStatus' => Result::WAITING,
+    'fileFetcherBytes' => 0,
+    'fileFetcherPercentDone' => 0,
+    'importerStatus' => Result::WAITING,
+    'importerBytes' => 0,
+    'importerPercentDone' => 0,
+    'importerError' => NULL,
+  ];
 
   /**
    * Datastore service.
