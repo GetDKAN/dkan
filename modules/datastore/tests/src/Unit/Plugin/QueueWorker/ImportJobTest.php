@@ -22,6 +22,11 @@ use PHPUnit\Framework\TestCase;
  */
 class ImportJobTest extends TestCase {
 
+  /**
+   * Database.
+   *
+   * @var \Drupal\common\Storage\DatabaseTableInterface
+   */
   private $database;
 
   /**
