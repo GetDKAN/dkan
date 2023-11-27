@@ -48,11 +48,9 @@ class DashboardControllerTest extends KernelTestBase {
         'type' => Simple::class,
       ],
     ];
+    $this->assertNotNull($harvest_service->registerHarvest($plan));
 
-    // Register a harvest.
-    $result = $harvest_service->registerHarvest($plan);
-
-    // Revisit the dashboard. It should reflect the registered harvest.
+    // Revisit the dashboard. It should show the registered harvest.
     $render_array = $dashboard_controller->harvests();
     $this->assertCount(1, $render_array['#rows'] ?? NULL);
     $this->assertNotNull($row = $render_array['#rows'][0] ?? NULL);
