@@ -170,7 +170,7 @@ Add demo site content
 
 Generate the same 10 datasets that are used on the demo site.
 Enable the sample content module. Run the create command to add the datasets.
-Running cron will run the queues that fetch the csv files and import them into datstore tables.
+Running cron will run the queues that fetch the csv files and import them into datastore tables.
 Remove the datasets with the remove command.
 
 .. prompt:: bash $
