@@ -140,9 +140,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Handle configuration for list elements.
    *
    * @param mixed $spec
-   *   Element to convert into list element.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into list element.
    *
    * @return array
    *   The element configured as a list element.
@@ -274,9 +274,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Handle configuration for upload_or_link elements.
    *
    * @param mixed $spec
-   *   Element to convert into upload_or_link.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into upload_or_link.
    *
    * @return array
    *   The element configured as upload_or_link.
@@ -298,9 +298,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a textarea element.
    *
    * @param mixed $spec
-   *   Element to convert into textarea.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into textarea.
    *
    * @return array
    *   The element configured as textarea.
@@ -320,9 +320,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for hiding an element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into hidden.
    *
    * @return array
    *   The element configured as hidden.
@@ -336,9 +336,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a dkan_uuid element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into dkan_uuid.
    *
    * @return array
    *   The element configured as dkan_uuid.
@@ -353,9 +353,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a date element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into date.
    *
    * @return array
    *   The element configured as date.
@@ -375,12 +375,12 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a datetime element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into datetime.
    *
    * @return array
-   *   The element configured as date.
+   *   The element configured as datetime.
    */
   public function handleDatetimeElement($spec, array $element) {
     $element['#type'] = 'flexible_datetime';
@@ -398,9 +398,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a date_range element.
    *
    * @param mixed $spec
-   *   Element to convert into date_range.
+   *    Object with spec for UI options.
    * @param array $element
-   *   Object with spec for UI options.
+   *    Element to convert into date_range.
    *
    * @return array
    *   The element configured as date_range.
