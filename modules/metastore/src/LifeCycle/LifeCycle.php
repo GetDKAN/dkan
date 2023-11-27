@@ -365,8 +365,8 @@ class LifeCycle {
 
       // Only proceed if latest revision was NOT the published revision.
       if ($published && $published->getRevisionId() <> $latestVid) {
-        $published_metadata = $published->getMetaData();
-        $published_metadata = $this->referencer->reference($published_metadata);
+        // Get the raw referenced metadata.
+        $published_metadata = $published->getRawMetadata();
         $this->orphanChecker->processReferencesInUpdatedDataset($published_metadata, $metadata);
       }
     }
