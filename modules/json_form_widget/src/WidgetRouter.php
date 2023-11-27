@@ -99,6 +99,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       'date' => 'handleDateElement',
       'flexible_datetime' => 'handleDatetimeElement',
       'date_range' => 'handleDateRangeElement',
+      'number' => 'handleNumberElement',
     ];
   }
 
@@ -407,6 +408,35 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDateRangeElement($spec, array $element) {
     $element['#type'] = 'date_range';
+    return $element;
+  }
+
+  /**
+   * Helper function for getting a number element.
+   *
+   * @param mixed $spec
+   *    Object with spec for UI options.
+   *    optional specs
+   *    - step
+   *    - min
+   *    - max
+   * @param array $element
+   *    Element to convert into number.
+   *
+   * @return array
+   *   The element configured as number.
+   */
+  public function handleNumberElement($spec, array $element) {
+    $element['#type'] = 'number';
+    if (isset($spec->step)) {
+      $element['#step'] = $spec->step;
+    }
+    if (isset($spec->min)) {
+      $element['#min'] = $spec->min;
+    }
+    if (isset($spec->step)) {
+      $element['#max'] = $spec->max;
+    }
     return $element;
   }
 
