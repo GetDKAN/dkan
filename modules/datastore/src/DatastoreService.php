@@ -4,16 +4,16 @@ namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Service\ImportService;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Info\ImportInfoList;
-use FileFetcher\FileFetcher;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use FileFetcher\FileFetcher;
 
 /**
  * Main services for the datastore.
@@ -30,7 +30,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Datastore import factory class.
    *
-   * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
+   * @var \Drupal\datastore\Service\Factory\ImportServiceFactory
    */
   private $importServiceFactory;
 
@@ -64,7 +64,6 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.factory.import'),
       $container->get('queue'),
       $container->get('dkan.common.job_store'),
-      $container->get('dkan.datastore.import_info_list'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
     );
   }
@@ -80,8 +79,6 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Queue factory service.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   Jobstore factory service.
-   * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
-   *   Import info list service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */
@@ -90,14 +87,12 @@ class DatastoreService implements ContainerInjectionInterface {
     ImportFactoryInterface $importServiceFactory,
     QueueFactory $queue,
     JobStoreFactory $jobStoreFactory,
-    ImportInfoList $importInfoList,
     DictionaryEnforcer $dictionaryEnforcer
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
-    $this->importInfoList = $importInfoList;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
   }
 
@@ -150,7 +145,9 @@ class DatastoreService implements ContainerInjectionInterface {
   private function doImport($resource) {
     $importService = $this->getImportService($resource);
     $importService->import();
-    return [$this->getLabelFromObject($importService) => $importService->getResult()];
+    return [
+      $this->getLabelFromObject($importService) => $importService->getImporter()->getResult(),
+    ];
   }
 
   /**
@@ -197,8 +194,10 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Getter.
    */
-  public function getImportService(DataResource $resource) {
-    return $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(), ['resource' => $resource]);
+  public function getImportService(DataResource $resource): ImportService {
+    return $this->importServiceFactory->getInstance(
+      $resource->getUniqueIdentifier(), ['resource' => $resource]
+    );
   }
 
   /**
@@ -235,16 +234,6 @@ class DatastoreService implements ContainerInjectionInterface {
         ->getInstance(FileFetcher::class)
         ->remove($resource->getUniqueIdentifierNoPerspective());
     }
-  }
-
-  /**
-   * Get a list of all stored importers and filefetchers, and their status.
-   *
-   * @return array
-   *   The importer list object.
-   */
-  public function list() {
-    return $this->importInfoList->buildList();
   }
 
   /**
