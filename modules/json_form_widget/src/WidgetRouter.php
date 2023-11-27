@@ -415,13 +415,13 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a number element.
    *
    * @param mixed $spec
-   *    Object with spec for UI options.
-   *    optional specs
-   *    - step
-   *    - min
-   *    - max
+   *   Object with spec for UI options.
+   *   optional specs
+   *   - step
+   *   - min
+   *   - max
    * @param array $element
-   *    Element to convert into number.
+   *   Element to convert into number.
    *
    * @return array
    *   The element configured as number.
