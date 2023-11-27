@@ -48,16 +48,18 @@ class HarvestService implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new self(
       $container->get('dkan.harvest.storage.database_table'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('entity_type.manager')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore) {
+  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -123,20 +125,26 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Deregister harvest.
    *
-   * @param string $id
-   *   Id.
+   * @param string $plan_id
+   *   Plan identifier.
    *
    * @return bool
-   *   Boolean.
-   *
-   * @todo Deregistering a harvest plan should also manage the hashes and runs
-   *   for that harvest.
+   *   Whether this happened successfully.
    */
-  public function deregisterHarvest(string $id) {
-
+  public function deregisterHarvest(string $plan_id) {
+    // Remove all the support tables for this plan id.
+    foreach ([
+      'harvest_' . $plan_id . '_items',
+      'harvest_' . $plan_id . '_hashes',
+      'harvest_' . $plan_id . '_runs',
+    ] as $table_name) {
+      /** @var \Drupal\common\Storage\DatabaseTableInterface $store */
+      $store = $this->storeFactory->getInstance($table_name);
+      $store->destruct();
+    }
+    // Remove the plan id from the harvest_plans table.
     $plan_store = $this->storeFactory->getInstance('harvest_plans');
-
-    return $plan_store->remove($id);
+    return $plan_store->remove($plan_id);
   }
 
   /**

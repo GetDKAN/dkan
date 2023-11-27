@@ -52,12 +52,7 @@ class ImportServiceFactory implements ImportFactoryInterface {
     }
 
     $resource = $config['resource'];
-
-    if (!isset($this->services[$identifier])) {
-      $this->services[$identifier] = new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
-    }
-
-    return $this->services[$identifier];
+    return new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
   }
 
 }

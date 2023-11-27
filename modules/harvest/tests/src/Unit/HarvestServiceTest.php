@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\harvest\Unit;
 
-use Contracts\FactoryInterface;
-use Contracts\Mock\Storage\Memory;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Logger\LoggerChannelFactory;
@@ -14,23 +12,22 @@ use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
-use Harvest\ETL\Extract\DataJson;
-use Harvest\ETL\Load\Simple;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * @covers \Drupal\harvest\HarvestService
  * @coversDefaultClass \Drupal\harvest\HarvestService
  *
+ * @group dkan
  * @group harvest
  * @group unit
  *
  * @see \Drupal\Tests\harvest\Kernel\ServiceTest
  */
-class ServiceTest extends TestCase {
+class HarvestServiceTest extends TestCase {
   use ServiceCheckTrait;
 
   private $storageFactory;
@@ -73,46 +70,6 @@ class ServiceTest extends TestCase {
 
     $result = $service->getHarvestRunInfo("test", "1");
     $this->assertFalse($result);
-  }
-
-  /**
-   * Private.
-   */
-  private function getStorageFactory() {
-    if (!isset($this->storageFactory)) {
-      $this->storageFactory = new class() implements FactoryInterface {
-        private $stores = [];
-
-        /**
-         * Getter.
-         */
-        public function getInstance(string $identifier, array $config = []) {
-          if (!isset($this->stores[$identifier])) {
-            $this->stores[$identifier] = new class() extends Memory {
-
-              /**
-               *
-               */
-              public function retrieveAll(): array {
-                return array_keys(parent::retrieveAll());
-              }
-
-              /**
-               *
-               */
-              public function destruct() {
-                $this->storage = [];
-              }
-
-            };
-          }
-          return $this->stores[$identifier];
-        }
-
-      };
-    }
-
-    return $this->storageFactory;
   }
 
   /**
@@ -255,7 +212,6 @@ class ServiceTest extends TestCase {
   }
 
   public function testGetAllHarvestIds() {
-    $this->markTestIncomplete('This test only tests our ability to mock a factory object.');
     $container = $this->getCommonMockChain();
 
     $service = HarvestService::create($container->getMock());

@@ -6,6 +6,12 @@ services:
       - '@dkan.metastore.service'
     calls:
       - [ setLoggerFactory, [ '@logger.factory' ] ]
+  dkan.harvest.utility:
+    class: Drupal\harvest\HarvestUtility
+    arguments:
+      - '@dkan.harvest.service'
+      - '@dkan.harvest.storage.database_table'
+      - '@database'
   dkan.harvest.storage.database_table:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:

@@ -4,6 +4,30 @@
  * @file
  */
 
+function harvest_requirements($phase): array {
+  $requirements = [];
+  if ($phase == 'runtime') {
+    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    if ($harvest_utility = \Drupal::service('dkan.harvest.utility')) {
+      if ($leftover_harvest_data_ids = $harvest_utility->findOrphanedHarvestDataIds()) {
+        $requirements['dkan harvest leftover data'] = [
+          'title' => t('DKAN Harvest Leftover Plan Data'),
+          'value' => t('Leftover harvest data for plans: @plans', [
+            '@plans' => implode(', ', $leftover_harvest_data_ids)
+            ]),
+          'description' => t(
+            'DKAN\'s harvest module has detected extra unneeded data tables.
+            You can remove them using this Drush command from the CLI:
+            <code>drush dkan:harvest:cleanup</code>'
+          ),
+          'severity' => REQUIREMENT_WARNING,
+        ];
+      }
+    }
+  }
+  return $requirements;
+}
+
 /**
  * Uninstall obsolete submodule harvest_dashboard.
  */
