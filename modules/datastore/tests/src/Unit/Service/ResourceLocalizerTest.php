@@ -3,6 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\common\DataResource;
+use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
@@ -14,7 +15,6 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- *
+ * @group dkan
+ * @group datastore
  */
 class ResourceLocalizerTest extends TestCase {
   /**
@@ -37,7 +38,6 @@ class ResourceLocalizerTest extends TestCase {
    * Test removal of a local resource file.
    */
   public function testResourceLocalizerRemove(): void {
-    $this->markTestIncomplete('very confusing test.');
     $this->callWithTmpFile([$this, 'doTestResourceLocalizerRemove']);
   }
 
@@ -56,7 +56,7 @@ class ResourceLocalizerTest extends TestCase {
       ->getMock();
 
     $fileFetcher = $this->getFileFetcherFactoryChain()
-      ->add(FileFetcher::class, 'getStateProperty', $file_path)
+      ->add(DkanFileFetcher::class, 'getStateProperty', $file_path)
       ->getMock();
 
     $service = new ResourceLocalizer(
@@ -116,8 +116,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getFileFetcherFactoryChain() {
     return (new Chain($this))
-      ->add(FileFetcherFactory::class, 'getInstance', FileFetcher::class)
-      ->add(FileFetcher::class, 'getResult', Result::class)
+      ->add(FileFetcherFactory::class, 'getInstance', DkanFileFetcher::class)
+      ->add(DkanFileFetcher::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE);
   }
 
