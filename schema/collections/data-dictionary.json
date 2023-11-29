@@ -4,15 +4,11 @@
   "type": "object",
   "required": [
     "identifier",
-    "title"
+    "data"
   ],
   "properties": {
     "identifier": {
       "title": "Identifier",
-      "type": "string"
-    },
-    "title": {
-      "title": "Title",
       "type": "string"
     },
     "data": {
@@ -23,6 +19,10 @@
         "fields"
       ],
       "properties": {
+		    "title": {
+   			  "title": "Title",
+    	  	"type": "string"
+		    },
         "fields": {
           "title": "Dictionary Fields",
           "type": "array",
