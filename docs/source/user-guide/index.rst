@@ -13,4 +13,5 @@ User Guide
    guide_harvest
    guide_queues
    guide_local_files
+   guide_file_fetchers
    guide_revisions

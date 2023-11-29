@@ -48,18 +48,26 @@ class FileFetcherFactory implements FactoryInterface {
    * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
+    // Merge in our defaults.
     $config = array_merge($this->configDefault, $config);
-    $file_fetcher = DkanFileFetcher::get(
+    // Add our special custom processor to the config if we're configured to
+    // always use the local perspective file.
+    if ($this->dkanConfig->get('always_use_existing_local_perspective')) {
+      $processors = $config['processors'] ?? [];
+      $processors = array_unshift($processors, FileFetcherRemoteUseExisting::class);
+      $config['processors'] = $processors;
+    }
+    return FileFetcher::get(
       $identifier,
       $this->jobStoreFactory->getInstance(FileFetcher::class),
       $config
     );
     // Inject our special configuration into the file fetcher, so it can use
     // local files rather than re-downloading them.
-    $file_fetcher->setAlwaysUseExistingLocalPerspective(
-      (bool) $this->dkanConfig->get('always_use_existing_local_perspective')
-    );
-    return $file_fetcher;
+//    $file_fetcher->setAlwaysUseExistingLocalPerspective(
+//      (bool) $this->dkanConfig->get('always_use_existing_local_perspective')
+//    );
+//    return $file_fetcher;
   }
 
 }
