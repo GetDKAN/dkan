@@ -38,7 +38,6 @@ class FileFetcherFactoryTest extends KernelTestBase {
    * @see \Drupal\Tests\datastore\Kernel\Service\ResourceLocalizerTest::testLocalizeOverwriteExistingLocalFile()
    */
   public function testOurRemote($use_existing, $remote_class) {
-    $this->markTestIncomplete('needs update');
     // Config for overwrite.
     $this->installConfig(['common']);
     $config = $this->config('common.settings');
@@ -48,6 +47,15 @@ class FileFetcherFactoryTest extends KernelTestBase {
     /** @var \Drupal\common\FileFetcher\FileFetcherFactory $factory */
     $factory = $this->container->get('dkan.common.file_fetcher');
     $this->assertInstanceOf(FileFetcherFactory::class, $factory);
+
+    $ref_get_config = new \ReflectionMethod($factory, 'getFileFetcherConfig');
+    $ref_get_config->setAccessible(TRUE);
+
+    $ff_config = $ref_get_config->invokeArgs($factory, [[]]);
+    if ($use_existing) {
+      $this->assertArrayHasKey('processors', $ff_config);
+      $this->assertContains(FileFetcherRemoteUseExisting::class, $ff_config['processors']);
+    }
 
     // Set up an existing file.
     $tmp = sys_get_temp_dir();

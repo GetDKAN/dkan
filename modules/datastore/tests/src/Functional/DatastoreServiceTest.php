@@ -49,7 +49,7 @@ class DatastoreServiceTest extends BrowserTestBase {
    * @see \Drupal\Tests\datastore\Kernel\Service\ResourceLocalizerTest::testLocalizeOverwriteExistingLocalFile()
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
-    $this->markTestIncomplete('needs update');
+//    $this->markTestIncomplete('needs update');
     // Config for overwrite.
     $config = $this->config('common.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);

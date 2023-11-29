@@ -3,7 +3,6 @@
 namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
@@ -36,7 +35,6 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
   protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   public function test() {
-    $this->markTestIncomplete('needs updating');
     // Explicitly turn off always_use_existing_local_perspective for now.
     $this->config('common.settings')
       ->set('always_use_existing_local_perspective', FALSE)
@@ -142,11 +140,6 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
       ->set('always_use_existing_local_perspective', FALSE)
       ->save();
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
-    $job_data = json_decode($file_fetcher->getResult()->getData());
-    $this->assertEquals(
-      Remote::class,
-      $job_data->processor
-    );
     $this->assertInstanceOf(
       Remote::class,
       $ref_get_processor->invoke($file_fetcher)
