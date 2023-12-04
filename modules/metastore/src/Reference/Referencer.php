@@ -13,6 +13,7 @@ use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Metastore referencer service.
@@ -342,7 +343,12 @@ class Referencer {
     // Perform HTTP Head request against the supplied URL in order to determine
     // the content type of the remote resource.
     $client = new GuzzleClient();
-    $response = $client->head($downloadUrl);
+    try {
+      $response = $client->head($downloadUrl);
+    }
+    catch (GuzzleException $exception) {
+      return $mime_type;
+    }
     // Extract the full value of the content type header.
     $content_type = $response->getHeader('Content-Type');
     // Attempt to extract the mime type from the content type header.
