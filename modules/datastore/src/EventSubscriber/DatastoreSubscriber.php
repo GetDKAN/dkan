@@ -187,6 +187,10 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       $rev = &drupal_static('metastore_resource_mapper_new_revision');
       $rev = 1;
     }
+    else {
+      $rev = &drupal_static('metastore_resource_mapper_new_revision');
+      $rev = 0;
+    }
   }
 
   /**
