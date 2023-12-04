@@ -181,14 +181,14 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     // of the wrapped node.
     // If a change was found in one of the triggering elements, change the
     // "new revision" flag to true in order to trigger a datastore update.
+    $rev = &drupal_static('metastore_resource_mapper_new_revision');
     if (!empty($triggers) && $original instanceof MetastoreItemInterface &&
       $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers)) {
-      // Assign value to static variable.
-      $rev = &drupal_static('metastore_resource_mapper_new_revision');
+      // Update static to reflect that a new resource is needed.
       $rev = 1;
     }
     else {
-      $rev = &drupal_static('metastore_resource_mapper_new_revision');
+      // Set static back to default value of false.
       $rev = 0;
     }
   }
