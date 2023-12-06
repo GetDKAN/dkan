@@ -96,7 +96,6 @@ class ResourceLocalizerTest extends KernelTestBase {
    * @see \Drupal\Tests\common\Kernel\FileFetcher\FileFetcherFactoryTest::testOurRemote()
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
-//    $this->markTestIncomplete('needs update');
     // Config for overwrite.
     $this->installConfig(['common']);
     $config = $this->config('common.settings');
