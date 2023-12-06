@@ -3,7 +3,7 @@
 namespace Drupal\Tests\common\Kernel\FileFetcher;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\processor_api_test\FileFetcher\FileFetcherFactory as CustomFileFetcherFactory;
+use Drupal\processor_api_test\FileFetcher\CustomFileFetcherFactory;
 use Drupal\processor_api_test\FileFetcher\NonProcessor;
 use Drupal\processor_api_test\FileFetcher\YesProcessor;
 use FileFetcher\FileFetcher;
@@ -24,7 +24,7 @@ class ProcessorApiTest extends KernelTestBase {
 
   public function test() {
     $identifier = 'my_identifier';
-    // Services from processor_api_test should decorate
+    // Services from processor_api_test module should decorate
     // dkan.common.file_fetcher so that we get the custom file fetcher instead.
     $factory = $this->container->get('dkan.common.file_fetcher');
     $this->assertInstanceOf(CustomFileFetcherFactory::class, $factory);
@@ -37,7 +37,10 @@ class ProcessorApiTest extends KernelTestBase {
     $ref_custom_processors->setAccessible(TRUE);
 
     // NonProcessor is always set by our custom file fetcher factory.
-    $this->assertContains(NonProcessor::class, $ref_custom_processors->getValue($instance));
+    $this->assertContains(
+      NonProcessor::class,
+      $ref_custom_processors->getValue($instance)
+    );
 
     $ref_get_processor = new \ReflectionMethod($instance, 'getProcessor');
     $ref_get_processor->setAccessible(TRUE);
@@ -55,17 +58,24 @@ class ProcessorApiTest extends KernelTestBase {
 
     // Both custom processors are still available because our factory always
     // specifies NonProcessor in addition to whatever is in $config.
-    $this->assertContains(NonProcessor::class, $ref_custom_processors->getValue($instance));
-    $this->assertContains(YesProcessor::class, $ref_custom_processors->getValue($instance));
-    $this->assertInstanceOf(YesProcessor::class, $ref_get_processor->invoke($instance));
+    $this->assertEquals([
+      NonProcessor::class,
+      YesProcessor::class,
+    ], $ref_custom_processors->getValue($instance));
+    $this->assertInstanceOf(
+      YesProcessor::class,
+      $ref_get_processor->invoke($instance)
+    );
 
     // Gather a third time, and now don't specify a custom processor.
     $instance = $factory->getInstance($identifier, ['filePath' => 'asdf']);
 
     // NonProcessor and YesProcessor are still available because they're both
     // serialized into the jobstore for this file fetcher.
-    $this->assertContains(NonProcessor::class, $ref_custom_processors->getValue($instance));
-    $this->assertContains(YesProcessor::class, $ref_custom_processors->getValue($instance));
+    $this->assertEquals([
+      NonProcessor::class,
+      YesProcessor::class,
+    ], $ref_custom_processors->getValue($instance));
     // Processor will still be YesProcessor because NonProcessor always returns
     // false for isServerCompatible() which rules it out.
     $this->assertInstanceOf(YesProcessor::class, $ref_get_processor->invoke($instance));
