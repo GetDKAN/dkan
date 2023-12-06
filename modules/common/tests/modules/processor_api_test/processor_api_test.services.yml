@@ -1,5 +1,0 @@
-services:
-  processor_api_test.file_fetcher:
-    class: Drupal\processor_api_test\FileFetcher\CustomFileFetcherFactory
-    decorates: dkan.common.file_fetcher
-    arguments: ['@processor_api_test.file_fetcher.inner']

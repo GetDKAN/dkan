@@ -54,7 +54,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $ff_config = $ref_get_config->invokeArgs($factory, [[]]);
     if ($use_existing) {
       $this->assertArrayHasKey('processors', $ff_config);
-      $this->assertContains(FileFetcherRemoteUseExisting::class, $ff_config['processors']);
+      $this->assertContains($remote_class, $ff_config['processors']);
     }
 
     // Set up an existing file.

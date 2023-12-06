@@ -3,9 +3,9 @@
 namespace Drupal\Tests\common\Kernel\FileFetcher;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\processor_api_test\FileFetcher\CustomFileFetcherFactory;
-use Drupal\processor_api_test\FileFetcher\NonProcessor;
-use Drupal\processor_api_test\FileFetcher\YesProcessor;
+use Drupal\custom_processor_test\FileFetcher\CustomFileFetcherFactory;
+use Drupal\custom_processor_test\FileFetcher\NonProcessor;
+use Drupal\custom_processor_test\FileFetcher\YesProcessor;
 use FileFetcher\FileFetcher;
 
 /**
@@ -15,16 +15,16 @@ use FileFetcher\FileFetcher;
  * @group common
  * @group kernel
  */
-class ProcessorApiTest extends KernelTestBase {
+class CustomProcessorTest extends KernelTestBase {
 
   protected static $modules = [
     'common',
-    'processor_api_test',
+    'custom_processor_test',
   ];
 
   public function test() {
     $identifier = 'my_identifier';
-    // Services from processor_api_test module should decorate
+    // Services from custom_processor_test module should decorate
     // dkan.common.file_fetcher so that we get the custom file fetcher instead.
     $factory = $this->container->get('dkan.common.file_fetcher');
     $this->assertInstanceOf(CustomFileFetcherFactory::class, $factory);

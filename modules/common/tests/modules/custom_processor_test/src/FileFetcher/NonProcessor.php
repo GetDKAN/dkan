@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\processor_api_test\FileFetcher;
+namespace Drupal\custom_processor_test\FileFetcher;
 
 use FileFetcher\Processor\ProcessorInterface;
 use Procrastinator\Result;

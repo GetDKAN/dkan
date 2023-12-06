@@ -58,13 +58,13 @@ class FileFetcherFactory implements FactoryInterface {
   /**
    * Adjust the provided config for our defaults and DKAN configuration.
    *
-   * @param $config
+   * @param array $config
    *   Configuration provided by the caller to getInstance().
    *
    * @return array
    *   Modified configuration array.
    */
-  protected function getFileFetcherConfig($config): array {
+  protected function getFileFetcherConfig(array $config): array {
     // Merge in our defaults.
     $config = array_merge($this->configDefault, $config);
     // Add our special custom processor to the config if we're configured to

@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\processor_api_test\FileFetcher;
+namespace Drupal\custom_processor_test\FileFetcher;
 
 use Contracts\FactoryInterface;
 
 /**
  * Creates new file fetcher objects with NonProcessor as a custom processor.
  *
- * @see modules/common/tests/modules/processor_api_test/processor_api_test.services.yml
- * @see \Drupal\processor_api_test\FileFetcher\NonProcessor
+ * @see modules/common/tests/modules/custom_processor_test/custom_processor_test.services.yml
+ * @see \Drupal\custom_processor_test\FileFetcher\NonProcessor
  */
 class CustomFileFetcherFactory implements FactoryInterface {
 
