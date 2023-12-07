@@ -101,6 +101,9 @@ function common_update_90201() {
 function common_update_90202(&$sandbox) {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('common.settings');
-  $config->set('always_use_existing_local_perspective', FALSE);
-  $config->save(TRUE);
+  // Protect existing config if it exists.
+  if ($config->get('always_use_existing_local_perspective') === NULL) {
+    $config->set('always_use_existing_local_perspective', FALSE);
+    $config->save(TRUE);
+  }
 }
