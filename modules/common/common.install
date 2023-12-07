@@ -91,3 +91,16 @@ function common_update_90201() {
   }
   return implode(' ', $messages);
 }
+
+/**
+ * Register configuration from common module.
+ *
+ * Drupal will add this config if it installs the common module, but if the
+ * common module is already installed it will not. So we have to add it here.
+ */
+function common_update_90202(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('common.settings');
+  $config->set('always_use_existing_local_perspective', FALSE);
+  $config->save(TRUE);
+}
