@@ -6,7 +6,8 @@
 
 namespace Drupal\Tests\common\Kernel\Util {
 
-  use Drupal\common\Util\JobStoreAccessor;
+  use Drupal\common\Storage\JobStore;
+  use Drupal\common\Util\JobStoreFactoryAccessor;
   use Drupal\common\Util\JobStoreUtil;
   use Drupal\KernelTests\KernelTestBase;
   use FileFetcher\FileFetcher;
@@ -34,26 +35,19 @@ namespace Drupal\Tests\common\Kernel\Util {
     protected function deprecatedJobStoreSetup(string $class_name = FileFetcher::class): void {
       /** @var \Drupal\Core\Database\Connection $db */
       $db = $this->container->get('database');
-      /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
-      $job_store_factory = $this->container->get('dkan.common.job_store');
-      // FileFetcher is one of the classes we check for in JobStoreUtil.
-      $job_store = $job_store_factory->getInstance($class_name);
+      $factory_accessor = new JobStoreFactoryAccessor($db);
 
       // First, get the non-deprecated table name.
-      $ref_get_table_name = new \ReflectionMethod($job_store, 'getHashedTableName');
-      $ref_get_table_name->setAccessible(TRUE);
-      $table_name = $ref_get_table_name->invoke($job_store);
+      $table_name = $factory_accessor->accessTableName($class_name);
 
       // Use the deprecated table name.
-      $ref_get_deprecated_table_name = new \ReflectionMethod($job_store, 'getDeprecatedTableName');
-      $ref_get_deprecated_table_name->setAccessible(TRUE);
-      $deprecated_table_name = $ref_get_deprecated_table_name->invoke($job_store);
-      $ref_table_name = new \ReflectionProperty($job_store, 'tableName');
-      $ref_table_name->setAccessible(TRUE);
-      $ref_table_name->setValue($job_store, $deprecated_table_name);
+      $deprecated_table_name = $factory_accessor->accessDeprecatedTableName($class_name);
 
-      // Make the deprecated table.
+      // Make the deprecated table by creating a new jobstore object rather than
+      // use the factory, so it does not recompute the table name.
       $this->assertFalse($db->schema()->tableExists($deprecated_table_name));
+      $job_store = new JobStore($deprecated_table_name, $db);
+      // Count() will create the table.
       $this->assertEquals(0, $job_store->count());
 
       // Assert that the deprecated table exists but not the non-deprecated.
@@ -103,30 +97,24 @@ namespace Drupal\Tests\common\Kernel\Util {
       // Create both deprecated and non-deprecated table for a jobstore.
       /** @var \Drupal\Core\Database\Connection $db */
       $db = $this->container->get('database');
-      /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
-      $job_store_factory = $this->container->get('dkan.common.job_store');
-      $job_store = $job_store_factory->getInstance(\DkanTestUtilJobSubclass::class);
+
+      $job_store_factory = new JobStoreFactoryAccessor($db);
+      $identifier = \DkanTestUtilJobSubclass::class;
 
       // First, get the table name without deprecation.
-      $ref_get_table_name = new \ReflectionMethod($job_store, 'getHashedTableName');
-      $ref_get_table_name->setAccessible(TRUE);
-      $table_name = $ref_get_table_name->invoke($job_store);
+      $table_name = $job_store_factory->accessTableName($identifier);
 
       // Make the non-deprecated table.
+      $table_store = new JobStore($table_name, $db);
       $this->assertFalse($db->schema()->tableExists($table_name));
-      $this->assertEquals(0, $job_store->count());
-
-      // Use the deprecated table name.
-      $ref_get_deprecated_table_name = new \ReflectionMethod($job_store, 'getDeprecatedTableName');
-      $ref_get_deprecated_table_name->setAccessible(TRUE);
-      $deprecated_table_name = $ref_get_deprecated_table_name->invoke($job_store);
-      $ref_table_name = new \ReflectionProperty($job_store, 'tableName');
-      $ref_table_name->setAccessible(TRUE);
-      $ref_table_name->setValue($job_store, $deprecated_table_name);
+      $this->assertEquals(0, $table_store->count());
 
       // Make the deprecated table.
+      $deprecated_table_name = $job_store_factory->accessDeprecatedTableName($identifier);
+      $deprecated_store = new JobStore($deprecated_table_name, $db);
+
       $this->assertFalse($db->schema()->tableExists($deprecated_table_name));
-      $this->assertEquals(0, $job_store->count());
+      $this->assertEquals(0, $deprecated_store->count());
 
       // Assert that both the non-deprecated and deprecated tables exist.
       $this->assertTrue(
@@ -142,14 +130,14 @@ namespace Drupal\Tests\common\Kernel\Util {
       $job_store_util = new JobStoreUtil($db);
       $this->assertEquals(
         $deprecated_table_name,
-        $job_store_util->getDeprecatedTableNameForClassname(\DkanTestUtilJobSubclass::class)
+        $job_store_util->getDeprecatedTableNameForClassname($identifier)
       );
       $this->assertEquals(
         $table_name,
-        $job_store_util->getTableNameForClassname(\DkanTestUtilJobSubclass::class)
+        $job_store_util->getTableNameForClassname($identifier)
       );
       $this->assertTrue(
-        $job_store_util->duplicateJobstoreTablesForClassname(\DkanTestUtilJobSubclass::class)
+        $job_store_util->duplicateJobstoreTablesForClassname($identifier)
       );
     }
 
@@ -192,9 +180,9 @@ namespace Drupal\Tests\common\Kernel\Util {
      * @covers ::reconcileDuplicateJobstoreTable
      */
     public function testReconcileDuplicateJobstoreTable() {
-      /** @var \Drupal\Core\Database\Connection $connection */
-      $connection = $this->container->get('database');
-      $job_class = FileFetcher::class;
+      /** @var \Drupal\Core\Database\Connection $db */
+      $db = $this->container->get('database');
+      $identifier = FileFetcher::class;
       // Key is identifier, value is value.
       $deprecated_data = [
         'a' => '"old a"',
@@ -203,24 +191,29 @@ namespace Drupal\Tests\common\Kernel\Util {
       $non_deprecated_data = [
         'a' => '"new a"',
       ];
-      // Create the deprecated table.
-      $job_store_accessor = new JobStoreAccessor($job_class, $connection);
-      $job_store_accessor->setTableName($job_store_accessor->accessDeprecatedTableName());
+
+      $job_store_factory = new JobStoreFactoryAccessor($db);
+
+      // Store deprecated job data.
+      $deprecated_table_name = $job_store_factory->accessDeprecatedTableName($identifier);
+      $deprecated_job = new JobStore($deprecated_table_name, $db);
       foreach ($deprecated_data as $key => $value) {
-        $job_store_accessor->store($value, $key);
+        $deprecated_job->store($value, $key);
       }
-      // Create the non-deprecated table.
-      $job_store_accessor->setTableName($job_store_accessor->accessTableName());
+
+      // Store non-deprecated job data.
+      $table_name = $job_store_factory->accessTableName($identifier);
+      $table_job = new JobStore($table_name, $db);
       foreach ($non_deprecated_data as $key => $value) {
-        $job_store_accessor->store($value, $key);
+        $table_job->store($value, $key);
       }
+
       // Assert both tables.
-      $this->assertTrue($connection->schema()
-        ->tableExists($job_store_accessor->accessDeprecatedTableName()));
-      $this->assertTrue($connection->schema()
-        ->tableExists($job_store_accessor->accessTableName()));
+      $this->assertTrue($db->schema()->tableExists($deprecated_table_name));
+      $this->assertTrue($db->schema()->tableExists($table_name));
+
       // Job store utility.
-      $job_store_util = new JobStoreUtil($connection);
+      $job_store_util = new JobStoreUtil($db);
       // getDuplicateJobstoreTables() should find this becasue FileFetcher is
       // one of our fixable classes.
       $this->assertEquals(
@@ -229,14 +222,14 @@ namespace Drupal\Tests\common\Kernel\Util {
       );
       // Perform the reconciliation.
       $job_store_util->reconcileDuplicateJobstoreTables();
+
       // Assert only the non-deprecated table exists.
-      $this->assertFalse($connection->schema()
-        ->tableExists($job_store_accessor->accessDeprecatedTableName()));
-      $this->assertTrue($connection->schema()
-        ->tableExists($job_store_accessor->accessTableName()));
+      $this->assertFalse($db->schema()->tableExists($deprecated_table_name));
+      $this->assertTrue($db->schema()->tableExists($table_name));
+
       // Assert the contents.
-      $this->assertEquals('"new a"', $job_store_accessor->retrieve('a'));
-      $this->assertEquals('"old b"', $job_store_accessor->retrieve('b'));
+      $this->assertEquals('"new a"', $table_job->retrieve('a'));
+      $this->assertEquals('"old b"', $table_job->retrieve('b'));
     }
 
     /**
@@ -245,9 +238,9 @@ namespace Drupal\Tests\common\Kernel\Util {
      * @covers ::reconcileDuplicateJobstoreTable
      */
     public function testReconcileDuplicateJobstoreTableNoOverlap() {
-      /** @var \Drupal\Core\Database\Connection $connection */
-      $connection = $this->container->get('database');
-      $job_class = FileFetcher::class;
+      /** @var \Drupal\Core\Database\Connection $db */
+      $db = $this->container->get('database');
+      $identifier = FileFetcher::class;
       // Key is identifier, value is value.
       $deprecated_data = [
         'a' => '"old a"',
@@ -256,24 +249,29 @@ namespace Drupal\Tests\common\Kernel\Util {
       $non_deprecated_data = [
         'c' => '"new c"',
       ];
-      // Create the deprecated table.
-      $job_store_accessor = new JobStoreAccessor($job_class, $connection);
-      $job_store_accessor->setTableName($job_store_accessor->accessDeprecatedTableName());
+
+      $job_store_factory = new JobStoreFactoryAccessor($db);
+
+      // Store deprecated job data.
+      $deprecated_table_name = $job_store_factory->accessDeprecatedTableName($identifier);
+      $deprecated_job = new JobStore($deprecated_table_name, $db);
       foreach ($deprecated_data as $key => $value) {
-        $job_store_accessor->store($value, $key);
+        $deprecated_job->store($value, $key);
       }
-      // Create the non-deprecated table.
-      $job_store_accessor->setTableName($job_store_accessor->accessTableName());
+
+      // Store non-deprecated job data.
+      $table_name = $job_store_factory->accessTableName($identifier);
+      $table_job = new JobStore($table_name, $db);
       foreach ($non_deprecated_data as $key => $value) {
-        $job_store_accessor->store($value, $key);
+        $table_job->store($value, $key);
       }
+
       // Assert both tables.
-      $this->assertTrue($connection->schema()
-        ->tableExists($job_store_accessor->accessDeprecatedTableName()));
-      $this->assertTrue($connection->schema()
-        ->tableExists($job_store_accessor->accessTableName()));
+      $this->assertTrue($db->schema()->tableExists($deprecated_table_name));
+      $this->assertTrue($db->schema()->tableExists($table_name));
+
       // Job store utility.
-      $job_store_util = new JobStoreUtil($connection);
+      $job_store_util = new JobStoreUtil($db);
       // getDuplicateJobstoreTables() should find this becasue FileFetcher is
       // one of our fixable classes.
       $this->assertEquals(
@@ -282,15 +280,15 @@ namespace Drupal\Tests\common\Kernel\Util {
       );
       // Perform the reconciliation.
       $job_store_util->reconcileDuplicateJobstoreTables();
+
       // Assert only the non-deprecated table exists.
-      $this->assertFalse($connection->schema()
-        ->tableExists($job_store_accessor->accessDeprecatedTableName()));
-      $this->assertTrue($connection->schema()
-        ->tableExists($job_store_accessor->accessTableName()));
+      $this->assertFalse($db->schema()->tableExists($deprecated_table_name));
+      $this->assertTrue($db->schema()->tableExists($table_name));
+
       // Assert the contents.
-      $this->assertEquals('"old a"', $job_store_accessor->retrieve('a'));
-      $this->assertEquals('"old b"', $job_store_accessor->retrieve('b'));
-      $this->assertEquals('"new c"', $job_store_accessor->retrieve('c'));
+      $this->assertEquals('"old a"', $table_job->retrieve('a'));
+      $this->assertEquals('"old b"', $table_job->retrieve('b'));
+      $this->assertEquals('"new c"', $table_job->retrieve('c'));
     }
 
     /**
