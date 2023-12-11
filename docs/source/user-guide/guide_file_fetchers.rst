@@ -7,26 +7,34 @@ This library is used to download a resource, such as a CSV file, so that it can 
 
 The standard file fetcher processors will probably be adequate for most uses, but there could be other use cases, such as needing to authenticate, or getting a file from S3 instead of HTTP.
 
+In cases such as these, we might want to add our own processor class to extend the file fetcher functionality.
+
 TL;DR:
 ======
 
 - A code example can be found in the ``custom_processor_test`` module, which is used to test this functionality.
-- Implement ``FileFetcher\Processor\ProcessorInterface`` as a custom processor for ``FileFetcher``.
-- Create a ``FileFetcherFactory`` class which instantiates a ``FileFetcher`` using configuration specifying the new processor in the processors array.
+- Implement ``FileFetcher\Processor\ProcessorInterface`` as a custom processor for ``FileFetcher``. Copy or subclass ``FileFetcher\Processor\Local`` and/or ``FileFetcher\Processor\Remote`` if it makes things easier.
+- Create a ``FileFetcherFactory`` class which instantiates a ``FileFetcher`` using configuration specifying the new processor in the processors array. Always merge in the configuration supplied to ``getInstance()``, as well.
 - Specify this new ``FileFetcherFactory`` as a service which decorates ``dkan.common.file_fetcher``.
 
 How to:
 =======
 
-To implement a new file processor, a custom file-fetcher processor class should be created, implementing ``FileFetcher\Processor\ProcessorInterface``. This class could subclass ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a new implementation.
+To implement a new file processor, a custom file-fetcher processor class should be created, implementing ``FileFetcher\Processor\ProcessorInterface``. This class could subclass ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a new implementation. See the section below, "How processors work" for some more implementation details.
 
-A ``FileFetcherFactory`` class should then be created. It should implement ``Contracts\FactoryInterface``. The new factory should configure ``FileFetcher`` to use the custom processor. This is done by passing in the ``$config`` array to ``getInstance()``, something like this:
+A ``FileFetcherFactory`` class should then be created. The new factory should configure ``FileFetcher`` to use the custom processor. This is done by merging configuration for your new processor with in the ``$config`` parameter to ``getInstance()``, something like this:
 
     .. code-block:: php
 
-      return $this->decoratedFactory->getInstance($identifier, [
-        'processors' => [MyNewProcessor::class]
-      ]);
+      public function getInstance(string $identifier, array $config = []) {
+        // Add OurProcessor as a custom processor.
+        $config['processors'] = array_merge(
+          [OurProcessor::class],
+          $config['processors'] ?? []
+        );
+        // Get the instance from the decorated factory, using our modified config.
+        return $this->decoratedFactory->getInstance($identifier, $config);
+      }
 
 It is also very important to declare your new factory class as a service. You accomplish this by decorating ``dkan.common.file_fetcher`` in your module's ``*.services.yml`` file, something like this:
 
@@ -38,3 +46,12 @@ It is also very important to declare your new factory class as a service. You ac
         arguments: ['@our_module.file_fetcher.inner']
 
 Now whenever DKAN uses the ``dkan.common.file_fetcher`` service, your file fetcher factory will be used instead.
+
+How processors work
+===================
+
+A little discourse on how file-fetcher decides which processor to use...
+
+When you ask a file fetcher object to perform the transfer (using the ``copy()`` method), it will instantiate all the different types of processors it knows about. Then it will loop through them and use the ``isServerCompatible()`` method to determine if the given ``source`` is suitable for use with that processor object. The file fetcher will then use the first processor that answers ``TRUE``.
+
+You can look at the implementations of ``FileFetcher\Processor\Local::isServerCompatible()`` or ``FileFetcher\Processor\Remote::isServerCompatible()`` to see how they each handle the question of whether they're suitable for the ``source``.
