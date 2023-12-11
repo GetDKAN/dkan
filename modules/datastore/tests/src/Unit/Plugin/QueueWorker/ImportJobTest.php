@@ -45,7 +45,7 @@ class ImportJobTest extends TestCase {
   /**
    *
    */
-  private function getDatastore(DatastoreResource $resource): ImportJob {
+  private function getImportJob(DatastoreResource $resource): ImportJob {
     $storage = new Memory();
     $config = [
       'resource' => $resource,
@@ -62,29 +62,29 @@ class ImportJobTest extends TestCase {
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/countries.csv', 'text/csv');
     $this->assertEquals(1, $resource->getID());
 
-    $datastore = $this->getDatastore($resource);
+    $import_job = $this->getImportJob($resource);
 
-    $this->assertTrue($datastore->getParser() instanceof ParserInterface);
-    $this->assertEquals(Result::WAITING, $datastore->getResult()->getStatus());
+    $this->assertTrue($import_job->getParser() instanceof ParserInterface);
+    $this->assertEquals(Result::WAITING, $import_job->getResult()->getStatus());
 
-    $datastore->run();
-    $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
+    $import_job->run();
+    $this->assertNotEquals(Result::ERROR, $import_job->getResult()->getStatus());
 
-    $schema = $datastore->getStorage()->getSchema();
+    $schema = $import_job->getStorage()->getSchema();
     $this->assertTrue(is_array($schema['fields'] ?? FALSE));
 
-    $status = $datastore->getResult()->getStatus();
+    $status = $import_job->getResult()->getStatus();
     $this->assertEquals(Result::DONE, $status);
 
-    $this->assertEquals(4, $datastore->getStorage()->count());
+    $this->assertEquals(4, $import_job->getStorage()->count());
 
-    $datastore->run();
-    $status = $datastore->getResult()->getStatus();
+    $import_job->run();
+    $status = $import_job->getResult()->getStatus();
     $this->assertEquals(Result::DONE, $status);
 
-    $datastore->drop();
+    $import_job->drop();
 
-    $status = $datastore->getResult()->getStatus();
+    $status = $import_job->getResult()->getStatus();
     $this->assertEquals(Result::STOPPED, $status);
   }
 
@@ -93,7 +93,7 @@ class ImportJobTest extends TestCase {
    */
   public function testFileNotFound() {
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/non-existent.csv', 'text/csv');
-    $datastore = $this->getDatastore($resource);
+    $datastore = $this->getImportJob($resource);
     $datastore->run();
 
     $this->assertEquals(Result::ERROR, $datastore->getResult()->getStatus());
@@ -104,7 +104,7 @@ class ImportJobTest extends TestCase {
    */
   public function testNonTextFile() {
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/non-text.csv', 'text/csv');
-    $datastore = $this->getDatastore($resource);
+    $datastore = $this->getImportJob($resource);
     $datastore->run();
 
     $this->assertEquals(Result::ERROR, $datastore->getResult()->getStatus());
@@ -115,7 +115,7 @@ class ImportJobTest extends TestCase {
    */
   public function testDuplicateHeaders() {
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/duplicate-headers.csv', 'text/csv');
-    $datastore = $this->getDatastore($resource);
+    $datastore = $this->getImportJob($resource);
     $datastore->run();
 
     $this->assertEquals(Result::ERROR, $datastore->getResult()->getStatus());
@@ -128,7 +128,7 @@ class ImportJobTest extends TestCase {
    */
   public function testLongColumnName() {
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/longcolumn.csv', 'text/csv');
-    $datastore = $this->getDatastore($resource);
+    $datastore = $this->getImportJob($resource);
     $truncatedLongFieldName = 'extra_long_column_name_with_tons_of_characters_that_will_ne_e872';
 
     $datastore->run();
@@ -147,7 +147,7 @@ class ImportJobTest extends TestCase {
    */
   public function testColumnNameSpaces() {
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/columnspaces.csv', 'text/csv');
-    $datastore = $this->getDatastore($resource);
+    $datastore = $this->getImportJob($resource);
     $noMoreSpaces = 'column_name_with_spaces_in_it';
 
     $datastore->run();
@@ -168,7 +168,7 @@ class ImportJobTest extends TestCase {
     $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/countries.csv', 'text/csv');
     $this->assertEquals(1, $resource->getID());
 
-    $datastore = $this->getDatastore($resource);
+    $datastore = $this->getImportJob($resource);
     $datastore->setTimeLimit($timeLimit);
     $datastore->run();
     $json = json_encode($datastore);
