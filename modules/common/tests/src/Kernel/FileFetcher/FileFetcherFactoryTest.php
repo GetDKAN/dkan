@@ -68,7 +68,9 @@ class FileFetcherFactoryTest extends KernelTestBase {
 
     // Make sure we have the correct processor class that corresponds to our
     // config.
-    $this->assertEquals($remote_class, $ff->getState()['processor']);
+    $ref_get_processor = new \ReflectionMethod($ff, 'getProcessor');
+    $ref_get_processor->setAccessible(TRUE);
+    $this->assertEquals($remote_class, get_class($ref_get_processor->invoke($ff)));
 
     // Did it work?
     $result = $ff->run();

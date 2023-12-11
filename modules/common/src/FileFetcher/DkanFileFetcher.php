@@ -28,10 +28,8 @@ class DkanFileFetcher extends FileFetcher {
    * @see https://dkan.readthedocs.io/en/2.x/user-guide/guide_local_files.html
    */
   public function setAlwaysUseExistingLocalPerspective(bool $use_localized_file = TRUE) : self {
-    // @todo Re-computing the custom processor classes should be in another
-    //   method that is in the parent class.
     if ($use_localized_file) {
-      $this->dkanUseLocalizedFileProcessor();
+      $this->addProcessors(['processors' => [FileFetcherRemoteUseExisting::class]]);
     }
     else {
       $this->dkanUseDefaultFileProcessor();
@@ -40,37 +38,22 @@ class DkanFileFetcher extends FileFetcher {
   }
 
   /**
-   * Configure the processor to respect the localized file if it already exists.
-   */
-  protected function dkanUseLocalizedFileProcessor() {
-    // Set the state/config to use our remote class.
-    $this->setProcessors(['processors' => [FileFetcherRemoteUseExisting::class]]);
-    $this->setStateProperty('processor', FileFetcherRemoteUseExisting::class);
-    // At this very early stage, update the status if the file already exists.
-    /** @var \Drupal\common\FileFetcher\FileFetcherRemoteUseExisting $processor */
-    $processor = $this->getProcessor();
-    $existing_status = $processor->discoverStatusForExistingFile(
-      $this->getState(),
-      $this->getResult()
-    );
-    $this->setState($existing_status['state']);
-  }
-
-  /**
    * Configure the processor to use its default behavior.
    */
   protected function dkanUseDefaultFileProcessor() {
-    // @todo This ignores any other custom processor classes that might have
-    //   been configured. Improve this situation.
-    $this->customProcessorClasses = [];
-    $state = $this->getState();
-    foreach ($this->getProcessors() as $processor) {
-      if ($processor->isServerCompatible($state)) {
-        $state['processor'] = get_class($processor);
-        break;
-      }
-    }
-    $this->getResult()->setData(json_encode($state));
+    // In FileFetcher 5.0.2+, we have the unsetDuplicateCustomProcessorClasses
+    // method, but it's private. In PR #4074 we formalize the custom processor
+    // API for DKAN, which removes this class (DkanFileFetcher). Therefore,
+    // rather than making unsetDuplicateCustomProcessorClasses protected and
+    // making a new release, we'll use reflection here, for this effectively
+    // deprecated class.
+    // @todo Remove this along with everything else when we merge it with #4074
+    //   or vice-versa.
+    $ref_unset_duplicate = new \ReflectionMethod($this, 'unsetDuplicateCustomProcessorClasses');
+    $ref_unset_duplicate->setAccessible(TRUE);
+
+    $ref_unset_duplicate->invoke($this, [FileFetcherRemoteUseExisting::class]);
+    $ref_unset_duplicate->setAccessible(FALSE);
   }
 
 }
