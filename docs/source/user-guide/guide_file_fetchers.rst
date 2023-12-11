@@ -24,17 +24,17 @@ A ``FileFetcherFactory`` class should then be created. It should implement ``Con
 
     .. code-block:: php
 
-    return $this->decoratedFactory->getInstance($identifier, [
-      'processors' => [MyNewProcessor::class]
-    ]);
+      return $this->decoratedFactory->getInstance($identifier, [
+        'processors' => [MyNewProcessor::class]
+      ]);
 
 It is also very important to declare your new factory class as a service. You accomplish this by decorating ``dkan.common.file_fetcher`` in your module's ``*.services.yml`` file, something like this:
 
     .. code-block:: yaml
 
-    our_module.file_fetcher:
-      class: Drupal\our_module\FileFetcher\FileFetcherFactory
-      decorates: dkan.common.file_fetcher
-      arguments: ['@our_module.file_fetcher.inner']
+      our_module.file_fetcher:
+        class: Drupal\our_module\FileFetcher\FileFetcherFactory
+        decorates: dkan.common.file_fetcher
+        arguments: ['@our_module.file_fetcher.inner']
 
 Now whenever DKAN uses the ``dkan.common.file_fetcher`` service, your file fetcher factory will be used instead.
