@@ -12,7 +12,7 @@ TL;DR:
 
 - A code example can be found in the ``custom_processor_test`` module, which is used to test this functionality.
 - Implement ``FileFetcher\Processor\ProcessorInterface`` as a custom processor for ``FileFetcher``.
-- Create a ``FileFetcherFactory`` class which instantiates a FileFetcher using configuration specifying the new processor in the processors array.
+- Create a ``FileFetcherFactory`` class which instantiates a ``FileFetcher`` using configuration specifying the new processor in the processors array.
 - Specify this new ``FileFetcherFactory`` as a service which decorates ``dkan.common.file_fetcher``.
 
 How to:
