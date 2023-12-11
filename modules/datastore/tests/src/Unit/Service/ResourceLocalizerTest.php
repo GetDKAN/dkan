@@ -5,7 +5,7 @@ namespace Drupal\Tests\datastore\Unit\Service;
 use Drupal\common\DataResource;
 use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherFactory;
-use Drupal\common\Storage\JobStore;
+use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
@@ -138,8 +138,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getJobStoreFactoryChain() {
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', NULL);
+      ->add(JobStoreFactory::class, 'getInstance', DatabaseTableInterface::class)
+      ->add(DatabaseTableInterface::class, 'remove', NULL);
   }
 
   /**

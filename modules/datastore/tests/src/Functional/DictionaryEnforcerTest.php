@@ -71,7 +71,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
   /**
    * Uuid service.
    *
-   * @var \Drupal\Component\Uuid\Php
+   * @var \Drupal\Component\Uuid\UuidInterface
    */
   protected $uuid;
 
