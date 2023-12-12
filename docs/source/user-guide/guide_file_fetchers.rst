@@ -3,7 +3,7 @@ Implementing a custom file fetcher
 
 DKAN uses a library called [getdkan/file-fetcher](https://github.com/GetDKAN/file-fetcher). This library allows developers to extend the file transfer functionality for their specialized needs.
 
-This library is used to download a resource, such as a CSV file, so that it can be loaded into the database and presented through the UI and API. This process is called 'localization,' because the source resource is copied to the local file system.
+This library is used to download a resource, such as a CSV file, so that it can be loaded into the database and presented through the UI and API. This process is called "localization," because the source resource is copied to the local file system. Usually, this downloaded copy is temporary and is eventually removed.
 
 The standard file fetcher processors will probably be adequate for most uses, but there could be other use cases, such as needing to authenticate, or getting a file from S3 instead of HTTP.
 
