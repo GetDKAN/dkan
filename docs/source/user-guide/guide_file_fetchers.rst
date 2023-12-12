@@ -20,7 +20,7 @@ TL;DR:
 How to:
 =======
 
-To implement a new file processor, a custom file-fetcher processor class should be created, implementing ``FileFetcher\Processor\ProcessorInterface``. This class could subclass ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a new implementation. See the section below, "How processors work" for some more implementation details.
+To implement a new file processor, a create a custom file-fetcher processor class. This class could extend ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a new implementation of `FileFetcher\Processor\ProcessorInterface`.
 
 A ``FileFetcherFactory`` class should then be created. The new factory should configure ``FileFetcher`` to use the custom processor. This is done by merging configuration for your new processor within the ``$config`` parameter to ``getInstance()``, something like this:
 
