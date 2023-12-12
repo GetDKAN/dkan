@@ -9,20 +9,22 @@ The standard file fetcher processors will probably be adequate for most uses, bu
 
 In cases such as these, we might want to add our own processor class to extend the file fetcher functionality.
 
-TL;DR:
-======
-
-- A code example can be found in the ``custom_processor_test`` module, which is used to test this functionality.
-- Implement ``FileFetcher\Processor\ProcessorInterface`` as a custom processor for ``FileFetcher``. Copy or subclass ``FileFetcher\Processor\Local`` and/or ``FileFetcher\Processor\Remote`` if it makes things easier.
-- Create a ``FileFetcherFactory`` class which instantiates a ``FileFetcher`` using configuration specifying the new processor in the processors array. Always merge in the configuration supplied to ``getInstance()``, as well.
-- Specify this new ``FileFetcherFactory`` as a service which decorates ``dkan.common.file_fetcher``.
-
-How to:
+How-to:
 =======
 
-To implement a new file processor, a create a custom file-fetcher processor class. This class could extend ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a new implementation of `FileFetcher\Processor\ProcessorInterface`.
+Note that a code example can be found in the ``custom_processor_test`` module, which is used to test this functionality.
 
-Next, create a new ``FileFetcherFactory`` class. The new factory should configure ``FileFetcher`` to use your new custom processor. Do this by merging configuration for your new processor into the ``$config['processors']`` array that is passed to ``FileFetcherFactory::getInstance()``:
+Create a file processor class
+_____________________________
+
+To implement a new file processor, a create a custom file fetcher processor class. This class could extend ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a totally new implementation of ``FileFetcher\Processor\ProcessorInterface``.
+
+Create a FileFetcherFactory
+___________________________
+
+Next, create a new file fetcher factory class. This class should emulate ``Drupal\common\FileFetcher\FileFetcherFactory``. There is example code in the ``custom_processor_test`` module which demonstrates how to do this.
+
+The new factory should create and configure a ``FileFetcher\FileFetcher`` object to use your new custom processor. Do this by merging configuration for your new processor into the ``$config['processors']`` array that is passed to ``FileFetcherFactory::getInstance()``:
 
     .. code-block:: php
 
@@ -36,6 +38,9 @@ Next, create a new ``FileFetcherFactory`` class. The new factory should configur
         return $this->decoratedFactory->getInstance($identifier, $config);
       }
 
+Declare your factory as a service
+_________________________________
+
 It is also very important to declare your new factory class as a service. You accomplish this by decorating ``dkan.common.file_fetcher`` in your module's ``*.services.yml`` file, something like this:
 
     .. code-block:: yaml
@@ -45,17 +50,17 @@ It is also very important to declare your new factory class as a service. You ac
         decorates: dkan.common.file_fetcher
         arguments: ['@our_module.file_fetcher.inner']
 
-Now whenever DKAN uses the ``dkan.common.file_fetcher`` service, your file fetcher factory will be used instead.
+Now whenever DKAN uses the ``dkan.common.file_fetcher`` service, your file fetcher factory will be used instead, and your new processor will find its way into use.
 
-How processors work
-===================
+Processor negotiation
+=====================
 
-A little discourse on how file-fetcher decides which processor to use...
+It's important to know how ``FileFetcher`` goes about choosing a processor.
 
-File fetcher 'knows about' two processors by default: ``FileFetcher\Processor\Local`` and ``FileFetcher\Processor\Remote``. It also knows about whichever custom processor class names you configured in the ``processors`` array in configuration.
+File fetcher knows about two processors by default: ``FileFetcher\Processor\Local`` and ``FileFetcher\Processor\Remote``. It also knows about whichever custom processor class names you configured in the ``processors`` array in configuration.
 
-When you ask a file fetcher object to perform the transfer (using the ``copy()`` method), it will instantiate all the different types of processors it knows about.
+When you ask a file fetcher object to perform the transfer (using ``FileFetcher::run()``), it will instantiate all the different types of processors it knows about.
 
-Then it will loop through them and use the ``isServerCompatible()`` method to determine if the given ``source`` is suitable for use with that processor object. The file fetcher will use the first processor that answers ``TRUE``.
+Then it will loop through them and use the ``ProcessorInterface::isServerCompatible()`` method to determine if the given ``source`` is suitable for use with that processor object. The file fetcher will use the first processor that answers ``true``.
 
 You can look at the implementations of ``FileFetcher\Processor\Local::isServerCompatible()`` or ``FileFetcher\Processor\Remote::isServerCompatible()`` to see how they each handle the question of whether they're suitable for the ``source``.
