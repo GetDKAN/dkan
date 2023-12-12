@@ -37,6 +37,13 @@ class Data implements MetastoreItemInterface {
   private $entityTypeManager;
 
   /**
+   * Entity Node Storage.
+   *
+   * @var Drupal\Core\Entity\EntityStorageInterface
+   */
+  private $nodeStorage;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
@@ -50,6 +57,7 @@ class Data implements MetastoreItemInterface {
     $this->validate($entity);
     $this->node = $entity;
     $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $this->entityTypeManager->getStorage('node');
   }
 
   /**
@@ -236,8 +244,7 @@ class Data implements MetastoreItemInterface {
       // node->original is set to the published revision, not the latest.
       // Compare to the latest revision of the node instead.
       $latest_revision_id = $this->getLoadedRevisionId();
-      $node_storage = $this->entityTypeManager->getStorage('node');
-      $original = $node_storage->loadRevision($latest_revision_id);
+      $original = $this->nodeStorage->loadRevision($latest_revision_id);
       return new Data($original, $this->entityTypeManager);
     }
   }
@@ -254,8 +261,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getPublishedRevision() {
     if (!$this->isNew()) {
-      $node_storage = $this->entityTypeManager->getStorage('node');
-      $node = $node_storage->load($this->node->id());
+      $node = $this->nodeStorage->load($this->node->id());
       if ($node->isPublished()) {
         return new Data($node, $this->entityTypeManager);
       }
