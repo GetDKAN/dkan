@@ -300,7 +300,7 @@ class LifeCycle {
 
     if (!$data->isNew()) {
       try {
-        $this->triggerOrphanReferences($data);
+        $this->queueOrphanReferenceCleanup($data);
       }
       catch (InvalidPluginDefinitionException | PluginNotFoundException | DataNodeLifeCycleEntityValidationException $e) {
         throw new \Exception($e->getMessage());
@@ -343,7 +343,7 @@ class LifeCycle {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    */
-  protected function triggerOrphanReferences(MetastoreItemInterface $data): void {
+  protected function queueOrphanReferenceCleanup(MetastoreItemInterface $data): void {
     $metadata = $data->getMetadata();
 
     // Check for possible orphan property references when updating a dataset.
