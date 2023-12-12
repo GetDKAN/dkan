@@ -22,7 +22,7 @@ How to:
 
 To implement a new file processor, a create a custom file-fetcher processor class. This class could extend ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a new implementation of `FileFetcher\Processor\ProcessorInterface`.
 
-A ``FileFetcherFactory`` class should then be created. The new factory should configure ``FileFetcher`` to use the custom processor. This is done by merging configuration for your new processor within the ``$config`` parameter to ``getInstance()``, something like this:
+Next, create a new ``FileFetcherFactory`` class. The new factory should configure ``FileFetcher`` to use your new custom processor. Do this by merging configuration for your new processor into the ``$config['processors']`` array that is passed to ``FileFetcherFactory::getInstance()``:
 
     .. code-block:: php
 
