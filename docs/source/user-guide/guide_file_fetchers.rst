@@ -22,7 +22,7 @@ How to:
 
 To implement a new file processor, a custom file-fetcher processor class should be created, implementing ``FileFetcher\Processor\ProcessorInterface``. This class could subclass ``FileFetcher\Processor\Remote`` or ``FileFetcher\Processor\Local``, or be a new implementation. See the section below, "How processors work" for some more implementation details.
 
-A ``FileFetcherFactory`` class should then be created. The new factory should configure ``FileFetcher`` to use the custom processor. This is done by merging configuration for your new processor with in the ``$config`` parameter to ``getInstance()``, something like this:
+A ``FileFetcherFactory`` class should then be created. The new factory should configure ``FileFetcher`` to use the custom processor. This is done by merging configuration for your new processor within the ``$config`` parameter to ``getInstance()``, something like this:
 
     .. code-block:: php
 
@@ -52,6 +52,10 @@ How processors work
 
 A little discourse on how file-fetcher decides which processor to use...
 
-When you ask a file fetcher object to perform the transfer (using the ``copy()`` method), it will instantiate all the different types of processors it knows about. Then it will loop through them and use the ``isServerCompatible()`` method to determine if the given ``source`` is suitable for use with that processor object. The file fetcher will then use the first processor that answers ``TRUE``.
+File fetcher 'knows about' two processors by default: ``FileFetcher\Processor\Local`` and ``FileFetcher\Processor\Remote``. It also knows about whichever custom processor class names you configured in the ``processors`` array in configuration.
+
+When you ask a file fetcher object to perform the transfer (using the ``copy()`` method), it will instantiate all the different types of processors it knows about.
+
+Then it will loop through them and use the ``isServerCompatible()`` method to determine if the given ``source`` is suitable for use with that processor object. The file fetcher will use the first processor that answers ``TRUE``.
 
 You can look at the implementations of ``FileFetcher\Processor\Local::isServerCompatible()`` or ``FileFetcher\Processor\Remote::isServerCompatible()`` to see how they each handle the question of whether they're suitable for the ``source``.
