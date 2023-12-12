@@ -219,10 +219,10 @@ class ImportJob extends AbstractPersistentJob {
     $this->store();
 
     if ($this->getBytesProcessed() >= $size) {
-      $this->getResult()->setStatus(Result::DONE);
+      $this->setStatus(Result::DONE);
     }
     else {
-      $this->getResult()->setStatus(Result::STOPPED);
+      $this->setStatus(Result::STOPPED);
     }
 
     return $this->getResult();
@@ -258,8 +258,8 @@ class ImportJob extends AbstractPersistentJob {
    *   Updated result object.
    */
   protected function setResultError($message): Result {
-    $this->getResult()->setStatus(Result::ERROR);
     $this->getResult()->setError($message);
+    $this->setStatus(Result::ERROR);
     return $this->getResult();
   }
 
@@ -291,7 +291,7 @@ class ImportJob extends AbstractPersistentJob {
       $chunk = fread($h, self::BYTES_PER_CHUNK);
 
       if (!$chunk) {
-        $this->getResult()->setStatus(Result::DONE);
+        $this->setStatus(Result::DONE);
         $this->parser->finish();
         break;
       }
@@ -299,8 +299,8 @@ class ImportJob extends AbstractPersistentJob {
       $this->parser->feed($chunk);
       $chunksProcessed++;
 
-      $this->store();
       $this->setStateProperty('chunksProcessed', $chunksProcessed);
+      $this->store();
     }
     fclose($h);
   }

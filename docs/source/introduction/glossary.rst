@@ -50,9 +50,9 @@ Glossary
      - **Draft**: Status is unpublished.
        This moderation state means the content is only visible to authenticated users with permission to view/edit unpublished content.
      - **Published**: Status is published.
-       This moderation state means the content is publicly availble, no authentication required to view.
+       This moderation state means the content is publicly available, no authentication required to view.
      - **Published (hidden)**: Status is published.
-       This moderation state means the content is publicly availble, but will not be indexed, meaning it will not be discoverable through the Dataset Search page. This 'hidden' state keeps the API endpoints public but the user must know the ID, and the dataset page is only visible if you know the URL.
+       This moderation state means the content is publicly available, but will not be indexed, meaning it will not be discoverable through the Dataset Search page. This 'hidden' state keeps the API endpoints public but the user must know the ID, and the dataset page is only visible if you know the URL.
      - **Archived**: Status is unpublished.
        This state is useful if you have published a dataset, but would like to remove it from public access but not delete it entirely.
      - **Orphaned**: Status is unpublished.

@@ -13,7 +13,11 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Procrastinator\Result;
 
 /**
- * Datastore import service.
+ * Datastore importer.
+ *
+ * @todo This class has state and is not actually a service because it holds
+ *   state. Have import() take an argument of a resource, instead of storing it
+ *   as a property.
  */
 class ImportService {
   use LoggerTrait;
@@ -43,9 +47,9 @@ class ImportService {
   /**
    * The DKAN Resource to import.
    *
-   * @var \Drupal\common\DataResource
+   * @var \Drupal\common\DataResource|null
    */
-  private $resource;
+  private ?DataResource $resource;
 
   /**
    * The jobstore factory service.
@@ -54,14 +58,25 @@ class ImportService {
    *
    * @todo Can we remove this?
    */
-  private $jobStoreFactory;
+  private JobStoreFactory $jobStoreFactory;
 
   /**
    * Database table factory service.
    *
    * @var \Drupal\datastore\Storage\DatabaseTableFactory
    */
-  private $databaseTableFactory;
+  private DatabaseTableFactory $databaseTableFactory;
+
+  /**
+   * Import job for the current import.
+   *
+   * Access using self::getImporter().
+   *
+   * @var \Drupal\datastore\Plugin\QueueWorker\ImportJob|null
+   *
+   * @see self::getImporter()
+   */
+  private ?ImportJob $importJob;
 
   /**
    * Create a resource service instance.
@@ -100,13 +115,10 @@ class ImportService {
    * Import.
    */
   public function import() {
-    $importer = $this->getImporter();
-    $importer->run();
+    $result = $this->getImporter()->run();
 
-    $result = $this->getResult();
-    $resource = $this->getResource();
     if ($result->getStatus() === Result::ERROR) {
-      $datastore_resource = $resource->getDatastoreResource();
+      $datastore_resource = $this->getResource()->getDatastoreResource();
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->error('Error importing resource id:%id path:%path message:%message', [
         '%id' => $datastore_resource->getId(),
@@ -115,31 +127,28 @@ class ImportService {
       ]);
     }
     // If the import job finished successfully...
+    // @todo This should be an event that is emitted, and then processed
+    //   elsewhere.
     elseif ($result->getStatus() === Result::DONE) {
       // Queue the imported resource for post-import processing.
       $post_import_queue = \Drupal::service('queue')->get('post_import');
-      $post_import_queue->createItem($resource);
+      $post_import_queue->createItem($this->getResource());
     }
-  }
-
-  /**
-   * Get result.
-   */
-  public function getResult(): Result {
-    $importer = $this->getImporter();
-    return $importer->getResult();
   }
 
   /**
    * Build an Importer.
    *
-   * @return \Drupal\datastore\Import
+   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
    *   Importer.
    *
    * @throws \Exception
-   *   Throws exception if cannot create valid importer object.
+   *   Throws exception if we cannot create a valid importer object.
    */
   public function getImporter(): ImportJob {
+    if ($this->importJob ?? FALSE) {
+      return $this->importJob;
+    }
     $datastore_resource = $this->getResource()->getDatastoreResource();
 
     $delimiter = ",";
@@ -147,7 +156,7 @@ class ImportService {
       $delimiter = "\t";
     }
 
-    $importer = call_user_func([$this->importerClass, 'get'],
+    $this->importJob = call_user_func([$this->importerClass, 'get'],
       $datastore_resource->getId(),
       $this->jobStoreFactory->getInstance(ImportJob::class),
       [
@@ -157,9 +166,9 @@ class ImportService {
       ]
     );
 
-    $importer->setTimeLimit(self::DEFAULT_TIMELIMIT);
+    $this->importJob->setTimeLimit(self::DEFAULT_TIMELIMIT);
 
-    return $importer;
+    return $this->importJob;
   }
 
   /**

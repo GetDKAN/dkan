@@ -3,7 +3,9 @@
 namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStore;
+use Drupal\common\FileFetcher\DkanFileFetcher;
+use Drupal\common\FileFetcher\FileFetcherFactory;
+use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
@@ -12,7 +14,6 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +36,6 @@ class ResourceLocalizerTest extends TestCase {
    * Test removal of a local resource file.
    */
   public function testResourceLocalizerRemove(): void {
-    $this->markTestIncomplete('Convert this to a kernel test.');
     $this->callWithTmpFile([$this, 'doTestResourceLocalizerRemove']);
   }
 
@@ -54,7 +54,7 @@ class ResourceLocalizerTest extends TestCase {
       ->getMock();
 
     $fileFetcher = $this->getFileFetcherFactoryChain()
-      ->add(FileFetcher::class, 'getStateProperty', $file_path)
+      ->add(DkanFileFetcher::class, 'getStateProperty', $file_path)
       ->getMock();
 
     $service = new ResourceLocalizer(
@@ -113,8 +113,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getFileFetcherFactoryChain() {
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', FileFetcher::class)
-      ->add(FileFetcher::class, 'getResult', Result::class)
+      ->add(FileFetcherFactory::class, 'getInstance', DkanFileFetcher::class)
+      ->add(DkanFileFetcher::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE);
   }
 
@@ -135,8 +135,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getJobStoreFactoryChain() {
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', NULL);
+      ->add(JobStoreFactory::class, 'getInstance', DatabaseTableInterface::class)
+      ->add(DatabaseTableInterface::class, 'remove', NULL);
   }
 
   /**
