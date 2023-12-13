@@ -278,4 +278,17 @@ class Data implements MetastoreItemInterface {
     return $this->node->get('moderation_state')->getString();
   }
 
+  /**
+   * Getter.
+   *
+   * @deprecated Use getLatestRevision() instead.
+   *
+   * @see https://www.drupal.org/project/drupal/issues/3346430
+   */
+  public function getOriginal() {
+    if (isset($this->node->original)) {
+      return new Data($this->node->original);
+    }
+  }
+
 }
