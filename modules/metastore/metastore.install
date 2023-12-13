@@ -114,12 +114,3 @@ function metastore_update_8007() {
   $config = \Drupal::service('config.factory')->getEditable('node.type.data');
   $config->set('preview_mode', 1)->save();
 }
-
-
-/**
- * Restore the preveiw button on data form.
- */
-function metastore_update_8008() {
-  $all = \Drupal::service('dkan.metastore.service')->getAll('data-dictionary');
-  print_r($all)
-}
