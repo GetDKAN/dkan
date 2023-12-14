@@ -5,7 +5,6 @@ namespace Drupal\datastore\Service;
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
