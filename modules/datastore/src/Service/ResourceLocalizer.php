@@ -264,7 +264,7 @@ class ResourceLocalizer {
    * @return \FileFetcher\FileFetcher
    *   FileFetcher object which is ready to transfer the file.
    */
-  public function getFileFetcher(DataResource $sourceDataResource): DkanFileFetcher {
+  public function getFileFetcher(DataResource $sourceDataResource): FileFetcher {
     return $this->fileFetcherFactory->getInstance(
       $sourceDataResource->getUniqueIdentifierNoPerspective(),
       [

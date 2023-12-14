@@ -690,6 +690,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Simulate all possible queues post update.
     // Should include datastore_import, orphan_reference_processor and resource_purger
     $this->runQueues([
+      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
