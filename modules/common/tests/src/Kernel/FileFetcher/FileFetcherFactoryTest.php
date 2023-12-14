@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\common\Kernel\FileFetcher;
 
-use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\KernelTests\KernelTestBase;
 use FileFetcher\FileFetcher;
@@ -49,6 +48,15 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $factory = $this->container->get('dkan.common.file_fetcher');
     $this->assertInstanceOf(FileFetcherFactory::class, $factory);
 
+    $ref_get_config = new \ReflectionMethod($factory, 'getFileFetcherConfig');
+    $ref_get_config->setAccessible(TRUE);
+
+    $ff_config = $ref_get_config->invokeArgs($factory, [[]]);
+    if ($use_existing) {
+      $this->assertArrayHasKey('processors', $ff_config);
+      $this->assertContains($remote_class, $ff_config['processors']);
+    }
+
     // Set up an existing file.
     $tmp = sys_get_temp_dir();
     $dest_file_path = $tmp . '/' . basename(self::DATA_FILE_URL);
@@ -64,11 +72,12 @@ class FileFetcherFactoryTest extends KernelTestBase {
     ];
     $ff = $factory->getInstance('identifier', $config);
     $this->assertInstanceOf(FileFetcher::class, $ff);
-    $this->assertInstanceOf(DkanFileFetcher::class, $ff);
 
     // Make sure we have the correct processor class that corresponds to our
     // config.
-    $this->assertEquals($remote_class, $ff->getState()['processor']);
+    $ref_get_processor = new \ReflectionMethod($ff, 'getProcessor');
+    $ref_get_processor->setAccessible(TRUE);
+    $this->assertInstanceOf($remote_class, $ref_get_processor->invoke($ff));
 
     // Did it work?
     $result = $ff->run();
