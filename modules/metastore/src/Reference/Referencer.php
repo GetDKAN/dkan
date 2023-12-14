@@ -73,6 +73,9 @@ class Referencer {
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
         $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
+
+        // Remove de-referenced info from metadata.
+        unset($data->{'%Ref:' . $property_id});
       }
     }
     return $data;
@@ -246,7 +249,7 @@ class Referencer {
       if (isset($info[0]->identifier)) {
         /** @var \Drupal\common\DataResource $stored */
         $stored = $this->getFileMapper()->get($info[0]->identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
-        $downloadUrl = $this->handleExistingResource($info, $stored, $mimeType);
+        $downloadUrl = $this->handleExistingResource($stored, $mimeType);
       }
     }
 
@@ -256,8 +259,6 @@ class Referencer {
   /**
    * Get download URL for existing resource.
    *
-   * @param array $info
-   *   Info.
    * @param \Drupal\common\DataResource $stored
    *   Stored data resource object.
    * @param string $mimeType
@@ -266,8 +267,8 @@ class Referencer {
    * @return string
    *   The download URL.
    */
-  private function handleExistingResource(array $info, DataResource $stored, string $mimeType): string {
-    if ($info[0]->perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
+  private function handleExistingResource(DataResource $stored, string $mimeType): string {
+    if ($stored->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
       // Update the MIME type, since this may be updated by the user.

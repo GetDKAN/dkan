@@ -17,7 +17,7 @@ use Drupal\metastore\NodeWrapper\Data;
 function _metastore_search_is_dataset(EntityInterface $entity): bool {
   try {
     // Attempt to check this entity's data type.
-    return (new Data($entity))->getDataType() === 'dataset';
+    return (new Data($entity, \Drupal::entityTypeManager()))->getDataType() === 'dataset';
   }
   catch (DataNodeLifeCycleEntityValidationException $e) {
     // If the data object fails validation, the given entity is not a dataset.
@@ -31,8 +31,8 @@ function _metastore_search_is_dataset(EntityInterface $entity): bool {
  * Track created datasets in the DKAN search api index.
  */
 function metastore_search_entity_insert(EntityInterface $entity): void {
-  // Ensure the entity in question is a dataset and is not hidden or
-  // unpublished.
+  // Ensure the entity in question is a dataset.
+  // @todo Ensure it is not hidden or unpublished.
   if (!_metastore_search_is_dataset($entity)) {
     return;
   }
