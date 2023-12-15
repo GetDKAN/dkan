@@ -96,6 +96,8 @@ class DataFactory implements FactoryInterface {
    *
    * @return string
    *   Qualified storage class name.
+   *
+   * @todo This is unused.
    */
   public static function getStorageClass() {
     return NodeData::class;
