@@ -29,7 +29,7 @@ commands:
         default: '8.1'
         type: string
       addon_branch:
-        description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
+        description: 'Repo branch name for the ddev-dkan you want to test against.'
         default: 'xdebug-mode-debug-only'
         type: string
       dkan_recommended_branch:
