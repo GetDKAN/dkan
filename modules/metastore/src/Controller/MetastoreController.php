@@ -121,8 +121,6 @@ class MetastoreController implements ContainerInjectionInterface {
   /**
    * Implements GET method.
    *
-   * Handles route metastore.1.metastore.schemas.id.items.id.
-   *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier

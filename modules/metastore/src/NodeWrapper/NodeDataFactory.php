@@ -16,14 +16,14 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
   /**
    * EntityRepository object.
    *
-   * @var \Drupal\Core\Entity\EntityRepository
+   * @var Drupal\Core\Entity\EntityRepository
    */
   private $entityRepository;
 
   /**
    * Entity Type Manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var Drupal\Core\Entity\EntityTypeManager
    */
   private $entityTypeManager;
 

@@ -32,14 +32,14 @@ class Data implements MetastoreItemInterface {
   /**
    * Entity Type Manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var Drupal\Core\Entity\EntityTypeManager
    */
   private $entityTypeManager;
 
   /**
    * Entity Node Storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var Drupal\Core\Entity\EntityStorageInterface
    */
   private $nodeStorage;
 

@@ -61,7 +61,7 @@ class DatasetItemTest extends Api1TestBase {
     $datasetId = $dataset->identifier;
 
     $newTitle = (object) ['title' => 'Modified Title'];
-    $response = $this->httpClient->patch($this->endpoint . '/' . $datasetId, [
+    $response = $this->httpClient->patch("$this->endpoint/$datasetId", [
       RequestOptions::JSON => $newTitle,
       RequestOptions::AUTH => $this->auth,
     ]);
@@ -79,7 +79,7 @@ class DatasetItemTest extends Api1TestBase {
     $datasetId = "abc-123";
     $newTitle = (object) ['title' => 'Modified Title'];
 
-    $response = $this->httpClient->patch($this->endpoint . '/' . $datasetId, [
+    $response = $this->httpClient->patch("$this->endpoint/$datasetId", [
       RequestOptions::HTTP_ERRORS => FALSE,
       RequestOptions::JSON => $newTitle,
       RequestOptions::AUTH => $this->auth,
@@ -122,13 +122,11 @@ class DatasetItemTest extends Api1TestBase {
 
   private function assertDatasetGet($dataset) {
     $id = $dataset->identifier;
-    $response = $this->httpClient->get($this->endpoint . '/' . $id);
-    $this->assertEquals(200, $response->getStatusCode());
+    $responseSchema = $this->spec->components->schemas->dataset;
+    $response = $this->httpClient->get("$this->endpoint/$id");
     $responseBody = json_decode($response->getBody());
-    $this->assertJsonIsValid(
-      $this->spec->components->schemas->dataset,
-      $responseBody
-    );
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertJsonIsValid($responseSchema, $responseBody);
     $this->assertEquals($dataset, $responseBody);
   }
 
