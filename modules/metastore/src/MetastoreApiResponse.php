@@ -34,8 +34,8 @@ class MetastoreApiResponse {
    *   Should be an array of arrays of metastore IDs, keyed by schema type. For
    *   instance, ['dataset' => ['5160a9f1-ee5d-4e94-ab53-183104e2ef4b']]. If you
    *   want to add a general schema tag -- for instance, for a route that lists
-   *   all items of a particular schema, simply add that schema to the array as
-   *   a string. For instance, ['dataset'].
+   *   all items of a particular schema, add that schema to the array as a
+   *   string. For instance, ['dataset'].
    * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
    *   The parameter object from the request.
    *

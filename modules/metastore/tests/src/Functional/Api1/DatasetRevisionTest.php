@@ -47,6 +47,9 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => FALSE,
     ]);
+    // We should be missing the cache because this is the first time we've
+    // gotten the list.
+    $this->assertXDrupalDynamicCache($response, 'MISS');
     $this->assertEquals(200, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($listRevision, $responseBody);
@@ -72,6 +75,7 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => FALSE,
     ]);
+//    $this->assertEquals('foo', print_r($response->getHeaders(), true));
     $this->assertEquals(200, $response->getStatusCode());
     // We should be missing the cache because we just posted the change.
     $this->assertXDrupalDynamicCache($response, 'MISS');

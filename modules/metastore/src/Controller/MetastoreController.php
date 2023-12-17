@@ -289,12 +289,14 @@ class MetastoreController implements ContainerInjectionInterface {
       if (!$obj) {
         throw new InvalidJsonException("Invalid JSON");
       }
+      // CheckIdentifier() will throw an exception if the identifier is
+      // unusable.
       $this->checkIdentifier($data, $identifier);
 
       $this->service->patch($schema_id, $identifier, $data);
       return $this->apiResponse->cachedJsonResponse((object) [
-        "endpoint" => $request->getRequestUri(),
-        "identifier" => $identifier,
+        'endpoint' => $request->getRequestUri(),
+        'identifier' => $identifier,
       ]);
     }
     catch (MetastoreException $e) {
@@ -378,9 +380,11 @@ class MetastoreController implements ContainerInjectionInterface {
    *   Thrown when the identifiers are different.
    */
   private function checkIdentifier(string $data, $identifier = NULL) {
-    $obj = json_decode($data);
-    if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
-      throw new CannotChangeUuidException("Identifier cannot be modified");
+    if ($identifier) {
+      $obj = json_decode($data);
+      if (isset($obj->identifier) && $obj->identifier != $identifier) {
+        throw new CannotChangeUuidException('Identifier cannot be modified');
+      }
     }
   }
 

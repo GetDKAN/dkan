@@ -30,7 +30,7 @@ commands:
         type: string
       addon_branch:
         description: 'Repo branch name for the ddev-dkan you want to test against.'
-        default: 'xdebug-mode-debug-only'
+        default: 'main'
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
