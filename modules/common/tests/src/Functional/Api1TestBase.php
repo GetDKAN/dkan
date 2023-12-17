@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class Api1TestBase extends BrowserTestBase {
   use UserCreationTrait;
@@ -76,10 +77,18 @@ abstract class Api1TestBase extends BrowserTestBase {
   }
 
   protected function setDefaultModerationState($state = 'published') {
-    /** @var \Drupal\Core\Config\ConfigFactory $config */
-    $config = \Drupal::service('config.factory');
-    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
-    $defaultModerationState->set('type_settings.default_moderation_state', $state);
-    $defaultModerationState->save();
+    $this->config('workflows.workflow.dkan_publishing')
+      ->set('type_settings.default_moderation_state', $state)
+      ->save();
   }
+
+  protected function assertXDrupalDynamicCache(ResponseInterface $response, $value = 'HIT') {
+    if ($cache_headers = $response->getHeader('X-Drupal-Dynamic-Cache')) {
+      $this->assertEquals($value, $cache_headers[0]);
+    }
+    else {
+      $this->fail('No X-Drupal-Dynamic-Cache header.');
+    }
+  }
+
 }

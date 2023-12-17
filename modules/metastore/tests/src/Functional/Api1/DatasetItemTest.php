@@ -4,7 +4,14 @@ namespace Drupal\Tests\metastore\Functional\Api1;
 
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @group dkan
+ * @group metastore
+ * @group functional
+ * @group api
+ */
 class DatasetItemTest extends Api1TestBase {
 
   public function getEndpoint():string {
@@ -19,9 +26,12 @@ class DatasetItemTest extends Api1TestBase {
 
     $this->post($this->getSampleDataset(1));
 
-    $responseSchema = $this->spec->paths->{'/api/1/metastore/schemas/{schema_id}/items'}
+    $responseSchema = $this->spec->paths
+      ->{'/api/1/metastore/schemas/{schema_id}/items'}
       ->get->responses->{"200"}->content->{"application/json"}->schema;
     $response = $this->httpClient->request('GET', $this->endpoint);
+    // We should have missed the cache because we just posted the dataset.
+    $this->assertXDrupalDynamicCache($response, 'MISS');
     $responseBody = json_decode($response->getBody());
     $this->assertEquals(2, count($responseBody));
     $this->assertTrue(is_object($responseBody[1]));
@@ -44,10 +54,12 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(201, $response->getStatusCode());
 
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
+    $responseSchema = $this->spec->components->responses
+      ->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $this->assertJsonIsValid($responseSchema, $responseBody);
-    $this->assertDatasetGet($dataset);
+    // The dataset get should miss the cache because we just posted the dataset.
+    $this->assertDatasetGet($dataset, 'MISS');
 
     // Now try a duplicate.
     $response = $this->post($dataset, FALSE);
@@ -69,11 +81,13 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(200, $response->getStatusCode());
 
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
+    $responseSchema = $this->spec->components->responses
+      ->{"201MetadataCreated"}->content->{"application/json"}->schema;
     $this->assertJsonIsValid($responseSchema, $responseBody);
 
     $dataset->title = $newTitle->title;
-    $this->assertDatasetGet($dataset);
+    // The dataset get should miss the cache because we just patched the dataset.
+    $this->assertDatasetGet($dataset, 'MISS');
 
     // Now, try with a non-existent identifier.
     $datasetId = "abc-123";
@@ -106,9 +120,10 @@ class DatasetItemTest extends Api1TestBase {
     ]);
     $this->assertEquals(200, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
+    $responseSchema = $this->spec->components->responses
+      ->{"201MetadataCreated"}->content->{"application/json"}->schema;
     $this->assertJsonIsValid($responseSchema, $responseBody);
-    $this->assertDatasetGet($newDataset);
+    $this->assertDatasetGet($newDataset, 'MISS');
 
     // Now try with mismatched identifiers.
     $datasetId = 'abc-123';
@@ -120,14 +135,18 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(409, $response->getStatusCode());
   }
 
-  private function assertDatasetGet($dataset) {
+  private function assertDatasetGet($dataset, $drupal_cache_hit = NULL): ResponseInterface {
     $id = $dataset->identifier;
     $responseSchema = $this->spec->components->schemas->dataset;
     $response = $this->httpClient->get("$this->endpoint/$id");
-    $responseBody = json_decode($response->getBody());
     $this->assertEquals(200, $response->getStatusCode());
+    if ($drupal_cache_hit !== NULL) {
+      $this->assertXDrupalDynamicCache($response, $drupal_cache_hit);
+    }
+    $responseBody = json_decode($response->getBody());
     $this->assertJsonIsValid($responseSchema, $responseBody);
     $this->assertEquals($dataset, $responseBody);
+    return $response;
   }
 
 }

@@ -8,6 +8,12 @@ use GuzzleHttp\RequestOptions;
 
 use function PHPUnit\Framework\assertEquals;
 
+/**
+ * @group dkan
+ * @group metastore
+ * @group functional
+ * @group api
+ */
 class DistributionHandlingTest extends Api1TestBase {
 
   public function getEndpoint():string {
@@ -19,9 +25,9 @@ class DistributionHandlingTest extends Api1TestBase {
    */
   public function testDescribedByDataDictionary() {
     // Set data dictionary discovery mode to reference.
-    $config = $this->config('metastore.settings');
-    $config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
-    $config->save();
+    $config = $this->config('metastore.settings')
+      ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
+      ->save();
 
     // Create a data dictionary.
     $dictionaryId = $this->postDataDictionary();
@@ -29,7 +35,8 @@ class DistributionHandlingTest extends Api1TestBase {
     // Post dataset with absolute URL in distribution's describedBy field.
     $datasetMetadata = $this->getSampleDataset(0);
     $uri = "dkan://metastore/schemas/data-dictionary/items/$dictionaryId";
-    $url = \Drupal::service('dkan.metastore.url_generator')->absoluteString($uri);
+    $url = $this->container->get('dkan.metastore.url_generator')
+      ->absoluteString($uri);
     $this->assertEquals("{$this->baseUrl}/api/1/metastore/schemas/data-dictionary/items/$dictionaryId", $url);
     $datasetMetadata->distribution[0]->describedBy = $url;
     $datasetMetadata->distribution[0]->describedByType = 'application/vnd.tableschema+json';
@@ -38,6 +45,8 @@ class DistributionHandlingTest extends Api1TestBase {
     $datasetId = $responseBody->identifier;
     $dataset_endpoint = $this->getEndpoint();
     $response = $this->httpClient->get("$dataset_endpoint/$datasetId", [RequestOptions::TIMEOUT => 10000]);
+    // The dataset get should miss the cache because we just patched the dataset.
+    $this->assertXDrupalDynamicCache($response, 'MISS');
     $responseBody = json_decode($response->getBody());
 
     // Ensure that when we retrieve the dataset, the full URL is still shown.

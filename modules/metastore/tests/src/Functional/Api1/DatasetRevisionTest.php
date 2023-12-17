@@ -5,11 +5,17 @@ namespace Drupal\Tests\metastore\Functional\Api1;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
+/**
+ * @group dkan
+ * @group metastore
+ * @group functional
+ * @group api
+ */
 class DatasetRevisionTest extends Api1TestBase {
 
   public function getEndpoint():string {
     $data = $this->getSampleDataset(0);
-    return "/api/1/metastore/schemas/dataset/items/{$data->identifier}/revisions";
+    return '/api/1/metastore/schemas/dataset/items/' . $data->identifier . '/revisions';
   }
 
   public function testList() {
@@ -17,23 +23,29 @@ class DatasetRevisionTest extends Api1TestBase {
     $response = $this->httpClient->post('/api/1/metastore/schemas/dataset/items', [
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
 
     // Test individual item endpoint.
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
+    $responseSchema = $this->spec->components->responses
+      ->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $responseBody = json_decode($response->getBody());
     $this->assertJsonIsValid($responseSchema, $responseBody);
 
     $response = $this->httpClient->get($this->endpoint, [
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
+    // We should be missing the cache because we just posted the change.
+    $this->assertXDrupalDynamicCache($response, 'MISS');
     $responseBody = json_decode($response->getBody());
     $listRevision = $responseBody[0];
 
     // Confirm we get the same object from the item get as the list.
     $response = $this->httpClient->get($this->endpoint . "/$listRevision->identifier", [
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
@@ -53,13 +65,17 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->httpClient->patch("/api/1/metastore/schemas/dataset/items/{$data->identifier}", [
       RequestOptions::JSON => ['title' => "Changing title"],
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
 
     $response = $this->httpClient->get($this->endpoint, [
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
-    $responseBody = json_decode($response->getBody());
     $this->assertEquals(200, $response->getStatusCode());
+    // We should be missing the cache because we just posted the change.
+    $this->assertXDrupalDynamicCache($response, 'MISS');
+    $responseBody = json_decode($response->getBody());
     $this->assertEquals(2, count($responseBody));
     $this->assertTrue($responseBody[0]->identifier > $responseBody[1]->identifier);
     $this->assertTrue($responseBody[0]->published);
@@ -79,6 +95,7 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->httpClient->post('/api/1/metastore/schemas/dataset/items', [
       RequestOptions::JSON => $secondData,
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/$secondData->identifier/revisions/$listRevision->identifier";
     $response = $this->httpClient->get($badDatasetUrl, [
@@ -115,7 +132,8 @@ class DatasetRevisionTest extends Api1TestBase {
       'archived' => FALSE,
       'hidden' => TRUE,
     ];
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
+    $responseSchema = $this->spec->components->responses
+      ->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $count = 1;
     foreach ($states as $state => $public) {
@@ -131,6 +149,7 @@ class DatasetRevisionTest extends Api1TestBase {
       // Validate URL and contents of response object.
       $response = $this->httpClient->get($responseBody->endpoint, [
         RequestOptions::AUTH => $this->auth,
+        RequestOptions::HTTP_ERRORS => FALSE,
       ]);
       $responseBody = json_decode($response->getBody());
       // Message and state match the values submitted.
