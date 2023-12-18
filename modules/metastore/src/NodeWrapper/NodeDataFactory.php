@@ -3,6 +3,7 @@
 namespace Drupal\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
 
 /**
@@ -20,13 +21,23 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
   private $entityRepository;
 
   /**
+   * Entity Type Manager.
+   *
+   * @var Drupal\Core\Entity\EntityTypeManager
+   */
+  private $entityTypeManager;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityRepository $entityRepository
    *   The entity repository service.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   Entity Type Manager service.
    */
-  public function __construct(EntityRepository $entityRepository) {
+  public function __construct(EntityRepository $entityRepository, EntityTypeManager $entityTypeManager) {
     $this->entityRepository = $entityRepository;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -42,7 +53,7 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []) {
     $dataNode = $this->entityRepository->loadEntityByUuid("node", $identifier);
-    return new Data($dataNode);
+    return new Data($dataNode, $this->entityTypeManager);
   }
 
   /**
@@ -55,7 +66,7 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    *   Metastore data node object.
    */
   public function wrap($dataNode) {
-    return new Data($dataNode);
+    return new Data($dataNode, $this->entityTypeManager);
   }
 
   /**

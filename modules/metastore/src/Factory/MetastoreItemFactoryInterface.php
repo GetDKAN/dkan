@@ -4,6 +4,7 @@ namespace Drupal\metastore\Factory;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Entity\EntityTypeManager;
 
 /**
  * Interface MetastoreItemFactoryInterface.
@@ -19,8 +20,10 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    *
    * @param \Drupal\Core\Entity\EntityRepository $entityRepository
    *   Entity Repository service.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   Entity Type Manager service.
    */
-  public function __construct(EntityRepository $entityRepository);
+  public function __construct(EntityRepository $entityRepository, EntityTypeManager $entityTypeManager);
 
   /**
    * Return a metastore item.
