@@ -111,6 +111,11 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
 
+  dkan.datastore.import_job_store_factory:
+    class: \Drupal\datastore\Storage\ImportJobFactory
+    arguments:
+      - '@database'
+
   pdlt.converter.strptime_to_mysql:
     class: \PDLT\Converter
     arguments:

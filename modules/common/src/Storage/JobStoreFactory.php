@@ -14,7 +14,7 @@ class JobStoreFactory implements StorageFactoryInterface {
    *
    * @var \Drupal\Core\Database\Connection
    */
-  private Connection $connection;
+  protected Connection $connection;
 
   /**
    * Constructor.
