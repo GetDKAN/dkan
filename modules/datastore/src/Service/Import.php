@@ -19,13 +19,13 @@ class Import extends ImportService {
    *
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
-   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
+   * @param \Drupal\common\Storage\JobStoreFactory $importJobStoreFactory
    *   Jobstore factory.
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
    */
-  public function __construct(DataResource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    parent::__construct($resource, $jobStoreFactory, $databaseTableFactory);
+  public function __construct(DataResource $resource, JobStoreFactory $importJobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+    parent::__construct($resource, $importJobStoreFactory, $databaseTableFactory);
     @trigger_error(__NAMESPACE__ . '\Import is deprecated. Use \Drupal\datastore\Service\ImportService instead.', E_USER_DEPRECATED);
   }
 

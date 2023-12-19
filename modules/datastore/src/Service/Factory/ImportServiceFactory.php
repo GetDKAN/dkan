@@ -4,7 +4,7 @@ namespace Drupal\datastore\Service\Factory;
 
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Service\ImportService;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 
 /**
  * Create an importer object for a given resource.
@@ -14,9 +14,9 @@ class ImportServiceFactory implements ImportFactoryInterface {
   /**
    * Job store factory.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
-  private $jobStoreFactory;
+  private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory.
@@ -35,8 +35,8 @@ class ImportServiceFactory implements ImportFactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(ImportJobStoreFactory $importJobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
@@ -52,7 +52,7 @@ class ImportServiceFactory implements ImportFactoryInterface {
     }
 
     $resource = $config['resource'];
-    return new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
+    return new ImportService($resource, $this->importJobStoreFactory, $this->databaseTableFactory);
   }
 
 }

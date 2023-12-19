@@ -5,6 +5,7 @@ namespace Drupal\Tests\datastore\Unit;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
@@ -63,6 +64,7 @@ class DatastoreServiceTest extends TestCase {
       ->add(DatabaseTable::class, 'destruct')
       ->add(ResourceLocalizer::class, 'remove')
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', TRUE);
 
     $service = DatastoreService::create($mockChain->getMock());
@@ -96,6 +98,7 @@ class DatastoreServiceTest extends TestCase {
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->index(0);

@@ -50,7 +50,7 @@ class ImportServiceTest extends KernelTestBase {
       ->onlyMethods(['getImporter'])
       ->setConstructorArgs([
         new DataResource('abc.txt', 'text/csv'),
-        $this->container->get('dkan.common.job_store'),
+        $this->container->get('dkan.datastore.import_job_store_factory'),
         $this->container->get('dkan.datastore.database_table_factory'),
       ])
       ->getMock();
