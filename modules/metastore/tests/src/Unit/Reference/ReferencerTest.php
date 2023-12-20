@@ -118,15 +118,11 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', 'dkan://metastore/schemas/data-dictionary/items/111')
       ->getMock();
 
-    $http_client = $this->getMockBuilder(Client::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-
     return new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
-      $http_client
+      new Client()
     );
   }
 
