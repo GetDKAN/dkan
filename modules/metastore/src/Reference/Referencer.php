@@ -27,7 +27,7 @@ class Referencer {
    *
    * @var string
    */
-  protected const DEFAULT_MIME_TYPE = 'text/plain';
+  public const DEFAULT_MIME_TYPE = 'text/plain';
 
   /**
    * Storage factory interface service.
@@ -380,7 +380,7 @@ class Referencer {
    * @todo Update the UI to set mediaType when a format is selected.
    */
   private function getMimeType($distribution): string {
-    $mimeType = "text/plain";
+    $mimeType = self::DEFAULT_MIME_TYPE;
 
     // If we have a mediaType set, use that.
     if (isset($distribution->mediaType)) {
@@ -398,7 +398,8 @@ class Referencer {
     elseif (isset($distribution->downloadURL)) {
       // Determine whether the supplied distribution has a local or remote
       // resource.
-      $is_local = $distribution->downloadURL !== UrlHostTokenResolver::hostify($distribution->downloadURL);
+      $is_local = $distribution->downloadURL !==
+        UrlHostTokenResolver::hostify($distribution->downloadURL);
       $mimeType = $is_local ?
         $this->getLocalMimeType($distribution->downloadURL) :
         $this->getRemoteMimeType($distribution->downloadURL);
