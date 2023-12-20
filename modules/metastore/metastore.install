@@ -114,3 +114,14 @@ function metastore_update_8007() {
   $config = \Drupal::service('config.factory')->getEditable('node.type.data');
   $config->set('preview_mode', 1)->save();
 }
+
+function metastore_update_8008() {
+  $ids = \Drupal::service('dkan.metastore.service')->getIdentifiers('data-dictionary');
+  foreach ($ids as $id) {
+    $dict = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $id);
+    if (!isset($$dict->{"$.data.title"}) && isset($dict->{"$.title"})) {
+      $dict->{"$.data.title"} = $dict->{"$.title"};
+      unset($dict->{"$.title"});
+    }
+  }
+}
