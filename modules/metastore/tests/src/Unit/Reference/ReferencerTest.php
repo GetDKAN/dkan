@@ -35,6 +35,12 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * @group dkan
+ * @group metastore
+ *
+ * @see Drupal\Tests\metastore\Kernel\Reference\ReferencerTest
+ */
 class ReferencerTest extends TestCase {
 
   /**

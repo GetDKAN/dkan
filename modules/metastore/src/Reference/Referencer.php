@@ -12,7 +12,7 @@ use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
 /**
@@ -44,17 +44,26 @@ class Referencer {
   public MetastoreUrlGenerator $metastoreUrlGenerator;
 
   /**
+   * Guzzle HTTP client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  private Client $httpClient;
+
+  /**
    * Constructor.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
     FactoryInterface $storageFactory,
-    MetastoreUrlGenerator $metastoreUrlGenerator
+    MetastoreUrlGenerator $metastoreUrlGenerator,
+    Client $httpClient
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
     $this->metastoreUrlGenerator = $metastoreUrlGenerator;
+    $this->httpClient = $httpClient;
   }
 
   /**
@@ -343,9 +352,8 @@ class Referencer {
 
     // Perform HTTP Head request against the supplied URL in order to determine
     // the content type of the remote resource.
-    $client = new GuzzleClient();
     try {
-      $response = $client->head($downloadUrl);
+      $response = $this->httpClient->head($downloadUrl);
     }
     catch (GuzzleException $exception) {
       return $mime_type;
