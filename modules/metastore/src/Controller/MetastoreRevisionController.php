@@ -42,6 +42,16 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
   private $docs;
 
   /**
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  private MetastoreApiResponse $apiResponse;
+
+  /**
+   * @var \Contracts\FactoryInterface
+   */
+  private ContractsFactoryInterface $storageFactory;
+
+  /**
    * Inherited.
    *
    * {@inheritdoc}
@@ -56,7 +66,10 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(MetastoreApiResponse $apiResponse, ContractsFactoryInterface $storageFactory) {
+  public function __construct(
+    MetastoreApiResponse $apiResponse,
+    ContractsFactoryInterface $storageFactory
+  ) {
     $this->apiResponse = $apiResponse;
     $this->storageFactory = $storageFactory;
   }

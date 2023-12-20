@@ -32,6 +32,16 @@ class SearchController implements ContainerInjectionInterface {
   private $requestStack;
 
   /**
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  private MetastoreApiResponse $metastoreApiResponse;
+
+  /**
+   * @var \Drupal\metastore\SchemaRetriever
+   */
+  private SchemaRetriever $schemaRetriever;
+
+  /**
    * SearchController constructor.
    *
    * @param \Drupal\metastore_search\Search $service

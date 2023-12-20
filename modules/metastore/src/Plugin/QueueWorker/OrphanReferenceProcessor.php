@@ -37,6 +37,13 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
   protected $nodeStorage;
 
   /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\ReferenceLookupInterface
+   */
+  private ReferenceLookupInterface $referenceLookup;
+
+  /**
    * Constructs a new class instance.
    *
    * @param array $configuration
@@ -55,7 +62,8 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     $plugin_id,
     $plugin_definition,
     NodeStorageInterface $nodeStorage,
-    ReferenceLookupInterface $referenceLookup) {
+    ReferenceLookupInterface $referenceLookup
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->referenceLookup = $referenceLookup;
     $this->nodeStorage = $nodeStorage;

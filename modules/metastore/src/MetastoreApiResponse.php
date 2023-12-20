@@ -13,6 +13,11 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class MetastoreApiResponse {
 
   /**
+   * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
+   */
+  private MetastoreItemFactoryInterface $metastoreItemFactory;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory

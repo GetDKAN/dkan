@@ -28,6 +28,11 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   private $metastore;
 
   /**
+   * @var ImportInfo
+   */
+  private ImportInfo $importInfo;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -42,7 +47,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\metastore\MetastoreService $metastore
    *   The module handler service.
-   * @param Drupal\datastore\Service\Info\ImportInfo $importInfo
+   * @param \Drupal\datastore\Service\Info\ImportInfo $importInfo
    *   Import info datastoer service.
    */
   public function __construct(

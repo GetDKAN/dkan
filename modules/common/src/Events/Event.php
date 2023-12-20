@@ -2,14 +2,29 @@
 
 namespace Drupal\common\Events;
 
-use Drupal\Component\EventDispatcher\Event as SymfonyEvent;
+use Drupal\Component\EventDispatcher\Event as DrupalEvent;
 
 /**
  * Custom DKAN extension of the Drupal Event class.
  *
  * @package Drupal\common\Events
  */
-class Event extends SymfonyEvent {
+class Event extends DrupalEvent {
+
+  /**
+   * @var \Closure|mixed|null
+   */
+  private $validator;
+
+  /**
+   * @var mixed
+   */
+  private $data;
+
+  /**
+   * @var \Exception|null
+   */
+  private ?\Exception $exception;
 
   /**
    * Constructor.

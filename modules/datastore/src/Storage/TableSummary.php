@@ -37,6 +37,8 @@ class TableSummary implements \JsonSerializable {
    */
   public $numOfRows;
 
+  private ?array $fulltextIndexes;
+
   /**
    * Constructor.
    */
@@ -45,7 +47,8 @@ class TableSummary implements \JsonSerializable {
     array $columns,
     ?array $indexes,
     ?array $fulltext_indexes,
-    int $numOfRows) {
+    int $numOfRows
+  ) {
     $this->numOfColumns = $numOfColumns;
     $this->columns = $columns;
     $this->indexes = $indexes;

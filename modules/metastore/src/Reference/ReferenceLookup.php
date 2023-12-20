@@ -34,6 +34,16 @@ class ReferenceLookup implements ReferenceLookupInterface {
   protected $metastoreItemFactory;
 
   /**
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  private CacheTagsInvalidatorInterface $invalidator;
+
+  /**
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private ModuleHandlerInterface $moduleHandler;
+
+  /**
    * Module Handler service.
    *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
