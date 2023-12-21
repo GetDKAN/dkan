@@ -198,4 +198,14 @@ class Data implements MetastoreItemInterface {
     }
   }
 
+  /**
+   * Save the "wrapped" node.
+   *
+   * Useful for some operations - usually recommended to use the metastore
+   * service's POST and PUT functions rather than saving the node directly.
+   */
+  public function save() {
+    $this->node->save();
+  }
+
 }

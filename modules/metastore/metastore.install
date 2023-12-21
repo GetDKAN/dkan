@@ -115,14 +115,25 @@ function metastore_update_8007() {
   $config->set('preview_mode', 1)->save();
 }
 
+/**
+ * Update existing data dictionary nodes to use corrected schema.
+ */
 function metastore_update_8008() {
   $ids = \Drupal::service('dkan.metastore.service')->getIdentifiers('data-dictionary');
+  $count = 0;
   foreach ($ids as $id) {
-    $dict = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $id);
-    if (!isset($$dict->{"$.data.title"}) && isset($dict->{"$.title"})) {
-      $dict->{"$.data.title"} = $dict->{"$.title"};
-      unset($dict->{"$.title"});
+    $dict = \Drupal::service('dkan.metastore.metastore_item_factory')->getInstance($id);
+    $metadata = $dict->getMetadata();
+    if (!isset($metadata->data->title) && isset($metadata->title)) {
+      $metadata->data->title = $metadata->title;
+      unset($metadata->title);
     }
-    \Drupal::service('dkan.metastore.service')->put('data-dictionary', $id, $dict);
+    $dict->setMetadata($metadata);
+    $dict->save();
+    $count++;
   }
+  return t("Updated $count dictionaries. If you have overridden DKAN's core schemas, 
+    you must update your site's data dictionary schema after this update. Copy
+    modules/contrib/dkan/schema/collections/data-dictionary.json over you local
+    site version before attempting to read or write any data dictionaries.");
 }
