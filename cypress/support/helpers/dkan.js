@@ -191,8 +191,8 @@ export function generateKeyword(uuid) {
 export function generateDataDictionary(uuid) {
   return {
     "identifier": uuid,
-    "title": "Title for " + uuid,
     "data": {
+      "title": "Title for " + uuid,
       "fields": [
         {
           "name": generateRandomString(),
