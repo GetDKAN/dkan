@@ -41,6 +41,7 @@ services:
       - '@config.factory'
       - '@dkan.metastore.storage'
       - '@dkan.metastore.url_generator'
+      - '@http_client'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
 
