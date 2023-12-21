@@ -36,9 +36,14 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * API request data.
    *
-   * @var Symfony\Component\HttpFoundation\RequestStack
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private $requestStack;
+
+  /**
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  private MetastoreApiResponse $metastoreApiResponse;
 
   /**
    * {@inheritdoc}

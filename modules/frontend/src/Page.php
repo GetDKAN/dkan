@@ -25,9 +25,23 @@ class Page {
   private $nodeStorage;
 
   /**
+   * @var array|mixed|null
+   */
+  private $buildFolder;
+
+  /**
+   * @var array|mixed|null
+   */
+  private $frontendPath;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $appRoot, NodeStorageInterface $nodeStorage, ConfigFactoryInterface $configFactory) {
+  public function __construct(
+    string $appRoot,
+    NodeStorageInterface $nodeStorage,
+    ConfigFactoryInterface $configFactory
+  ) {
     $this->appRoot = $appRoot;
     $this->nodeStorage = $nodeStorage;
     $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');

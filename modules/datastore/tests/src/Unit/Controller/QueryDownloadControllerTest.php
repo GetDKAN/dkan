@@ -35,6 +35,11 @@ class QueryDownloadControllerTest extends TestCase {
 
   private $buffer;
 
+  /**
+   * @var \Drupal\common\Storage\SelectFactory
+   */
+  private SelectFactory $selectFactory;
+
   protected function setUp(): void {
     parent::setUp();
     // Set cache services
@@ -70,7 +75,7 @@ class QueryDownloadControllerTest extends TestCase {
     $csv = $response->getContent();
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([$this, 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->dataDictionaryFields = $dataDictionaryFields;
     $streamResponse->sendContent();
@@ -110,7 +115,7 @@ class QueryDownloadControllerTest extends TestCase {
     $csv = $response->getContent();
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([$this, 'getBuffer']);
     $streamResponse = $dController->query($request);
     $streamResponse->dataDictionaryFields = $dataDictionaryFields;
     //$streamResponse->sendContent();
@@ -282,7 +287,7 @@ class QueryDownloadControllerTest extends TestCase {
     $container = $this->getQueryContainer($pageLimit);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
-    ob_start(['self', 'getBuffer']);
+    ob_start([$this, 'getBuffer']);
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
@@ -371,7 +376,7 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     $request = $this->mockRequest($data);
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([$this, 'getBuffer']);
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;

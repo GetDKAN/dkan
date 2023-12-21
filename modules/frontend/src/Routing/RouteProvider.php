@@ -20,9 +20,33 @@ class RouteProvider {
   private $appRoot;
 
   /**
+   * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
+   */
+  private QueryFactoryInterface $entityQuery;
+
+  /**
+   * @var array|mixed|null
+   */
+  private $buildFolder;
+
+  /**
+   * @var array|mixed|null
+   */
+  private $frontendPath;
+
+  /**
+   * @var array|mixed|null
+   */
+  private $routes;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
+  public function __construct(
+    string $appRoot,
+    QueryFactoryInterface $entityQuery,
+    ConfigFactoryInterface $configFactory
+  ) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
     $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');

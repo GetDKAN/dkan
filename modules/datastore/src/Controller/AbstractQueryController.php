@@ -91,7 +91,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request object.
    *
-   * @return Ilbee\CSVResponse\CSVResponse|Symfony\Component\HttpFoundation\JsonResponse
+   * @return \Ilbee\CSVResponse\CSVResponse|\Symfony\Component\HttpFoundation\JsonResponse
    *   The json or CSV response.
    */
   public function query(Request $request) {
