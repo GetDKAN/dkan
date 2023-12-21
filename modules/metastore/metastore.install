@@ -118,10 +118,12 @@ function metastore_update_8007() {
 function metastore_update_8008() {
   $ids = \Drupal::service('dkan.metastore.service')->getIdentifiers('data-dictionary');
   foreach ($ids as $id) {
-    $dict = \Drupal::service('dkan.metastore.service')->get('data-dictionary', $id);
-    if (!isset($$dict->{"$.data.title"}) && isset($dict->{"$.title"})) {
-      $dict->{"$.data.title"} = $dict->{"$.title"};
-      unset($dict->{"$.title"});
+    $dict = \Drupal::service('dkan.metastore.metastore_item_factory')->getInstance($id);
+    $metadata = $dict->getMetadata();
+    if (isset($metadata->data->title) && isset($metadata->title)) {
+      $metadata->data->title = $metadata->title;
+      unset($metadata->title);
     }
+    throw new \Exception("failing");
   }
 }
