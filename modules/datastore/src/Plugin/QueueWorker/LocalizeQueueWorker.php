@@ -90,11 +90,24 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
     // LocalizeTask() must return Result::DONE if the resource is already
     // localized.
     $result = $this->resourceLocalizer->localizeTask($identifier, $version, FALSE);
+    $status = $result->getStatus();
 
-    if ($result->getStatus() !== Result::DONE) {
-      $message = 'Localization of resource ' . $identifier . ': ' . $result->getError();
-      $this->logger->notice($message);
-      // Throwing an exception re-queues the item.
+    // Handy message string.
+    $message = 'Localization of resource ' . $identifier . ': ' . $result->getError();
+
+    // Error status means do not re-queue. The user should fix something and
+    // manually set up the queue again.
+    if ($status === Result::ERROR) {
+      $this->logger->error($message);
+      return;
+    }
+
+    // For all other cases, we want to log a message.
+    $this->logger->notice($message);
+
+    // If the status is not done, but it's not an error, then re-queue the item
+    // by throwing an exception.
+    if ($status !== Result::DONE) {
       throw new \Exception($message);
     }
   }

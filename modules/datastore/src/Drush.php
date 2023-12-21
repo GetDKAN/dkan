@@ -281,7 +281,7 @@ class Drush extends DrushCommands {
         $this->output()->writeln($result->getError());
         return DrushCommands::EXIT_SUCCESS;
       }
-      $this->output()->writeln($result->getData());
+      $this->output()->writeln($result->getError());
       return DrushCommands::EXIT_FAILURE;
     }
     $this->output()->writeln('No resource for identifier: ' . $identifier);
