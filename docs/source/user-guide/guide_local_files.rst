@@ -116,7 +116,7 @@ We'll need to change into this directory… This may differ on your system.
 
     cd sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866
 
-Now we can use a file transfer tool to put the file where it belongs. The file is the :code:`source` field from :code:`dkan:datastore:prepare-localized`.
+Now we can use a file transfer tool to put the file where it belongs. The file URL is the :code:`source` field from :code:`dkan:datastore:prepare-localized`.
 
 .. prompt:: bash $
 
@@ -142,7 +142,7 @@ We can verify that this configuration was set:
 
 Now our import will use the local file.
 
-If we used harvest to set up the datasets, they are probably already queued to import. If not, we can set up our dataset to import. We use :code:`dkan:datastore:localize`, which will finalize the localization of the files we've uploaded, and will also then trigger the database imports of these resources.
+If we used harvest to set up the datasets, they are probably already queued to import. If not, we can set up our dataset to import. We use :code:`dkan:datastore:localize`, which will finalize the localization of the files we've uploaded, and will also then queue the database imports of these resources for subsequent runs.
 
 .. prompt:: bash $
 
@@ -153,7 +153,7 @@ If we used harvest to set up the datasets, they are probably already queued to i
 
     [notice] Queued import for 5c10426922cb88f20d3f5a2ae45d2f11
 
-Now we run cron, or we can run the specific queue:
+Now we run cron at least twice, or we can run the specific queue:
 
 .. prompt:: bash $
 
@@ -163,7 +163,7 @@ Running the :code:`localize_import` queue will finalize the localization of our 
 
 .. prompt:: bash $
 
-    drush queue:run localize_import
+    drush queue:run datastore_import
 
 .. code-block:: shell-session
     :caption: Response
