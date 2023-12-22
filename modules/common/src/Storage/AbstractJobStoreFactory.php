@@ -16,7 +16,7 @@ abstract class AbstractJobStoreFactory implements StorageFactoryInterface {
    *
    * Override this for your table name.
    */
-  protected string $TABLE_NAME = '';
+  protected string $tableName = '';
 
   /**
    * Drupal database connection.
@@ -48,14 +48,14 @@ abstract class AbstractJobStoreFactory implements StorageFactoryInterface {
   public function getInstance(string $identifier = '', array $config = []): DatabaseTableInterface {
     // For historical reasons, we keep the getInstance() method signature, but
     // we also want to enforce our static table name.
-    if ($identifier && $identifier !== $this->TABLE_NAME) {
+    if ($identifier && $identifier !== $this->tableName) {
       // Silent error to be picked up by tests.
       @trigger_error(
-        'Import job store identifier must be either empty or ' . $this->TABLE_NAME . '.',
+        'Import job store identifier must be either empty or ' . $this->tableName . '.',
         E_USER_DEPRECATED
       );
     }
-    $table_name = $this->TABLE_NAME;
+    $table_name = $this->tableName;
     $deprecated_table_name = $this->getDeprecatedTableName($identifier);
     // Figure out whether we need a separate deprecated table name. This will
     // be used in JobStore::destruct() to clean up deprecated tables if they

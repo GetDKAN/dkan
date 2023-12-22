@@ -14,6 +14,6 @@ class ImportJobStoreFactory extends AbstractJobStoreFactory {
    *
    * This string contains an ugly hash for historical reasons.
    */
-  protected string $TABLE_NAME = 'jobstore_2613055649_importjob';
+  protected string $tableName = 'jobstore_2613055649_importjob';
 
 }
