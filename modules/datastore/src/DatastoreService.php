@@ -87,6 +87,8 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Queue factory service.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   Jobstore factory service.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   Import jobstore factory service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */
