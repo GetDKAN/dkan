@@ -2,12 +2,11 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
-
 use Drupal\common\Events\Event;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourcePurger;
@@ -15,8 +14,6 @@ use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\ResourceMapper;
-
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -75,6 +72,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.datastore.service.resource_purger service.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   The dkan.common.job_store service.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   The dkan.datastore.import_job_store_factory service.
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,

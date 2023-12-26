@@ -15,6 +15,8 @@ abstract class AbstractJobStoreFactory implements StorageFactoryInterface {
    * The import job store table name.
    *
    * Override this for your table name.
+   *
+   * @var string
    */
   protected string $tableName = '';
 
