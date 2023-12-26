@@ -57,13 +57,9 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function retrieveAll(): array {
-    $ids = $this->entityStorage->getQuery()
+    return $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->execute();
-    if ($ids) {
-      return $this->entityStorage->loadMultiple($ids);
-    }
-    return [];
   }
 
   /**

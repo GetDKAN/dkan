@@ -6,6 +6,7 @@ use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
@@ -56,7 +57,11 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(
+    FactoryInterface $storeFactory,
+    MetastoreService $metastore,
+    EntityTypeManager $entityTypeManager
+  ) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
     $this->entityTypeManager = $entityTypeManager;
@@ -72,7 +77,7 @@ class HarvestService implements ContainerInjectionInterface {
     $plan_store = $this->storeFactory->getInstance('harvest_plans');
 
     if ($plan_store instanceof BulkRetrieverInterface) {
-      return array_keys($plan_store->retrieveAll());
+      return $plan_store->retrieveAll();
     }
     throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetrieverInterface::class}");
   }

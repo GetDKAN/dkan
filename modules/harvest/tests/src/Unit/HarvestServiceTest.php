@@ -211,20 +211,6 @@ class HarvestServiceTest extends TestCase {
     $this->assertEquals(['4'], array_values($removedIds));
   }
 
-  public function testGetAllHarvestIds() {
-    $container = $this->getCommonMockChain();
-
-    $service = HarvestService::create($container->getMock());
-
-    $expected = ['100', '102', '101'];
-
-    $actual = $service->getAllHarvestIds();
-    $this->assertEquals($expected, $actual);
-  }
-
-  /**
-   * Private.
-   */
   private function getCommonMockChain() {
 
     $options = (new Options())

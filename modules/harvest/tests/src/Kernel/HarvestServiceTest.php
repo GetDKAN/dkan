@@ -3,6 +3,7 @@
 namespace Drupal\Tests\harvest\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\views\Plugin\views\area\Result;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
 
@@ -22,6 +23,11 @@ class HarvestServiceTest extends KernelTestBase {
     'metastore',
     'node',
   ];
+
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('harvest_plan');
+  }
 
   public function testPlan() {
     /** @var \Drupal\harvest\HarvestService $harvest_service */
@@ -116,6 +122,35 @@ class HarvestServiceTest extends KernelTestBase {
     foreach ($storageTables as $storageId) {
       $this->assertFalse($schema->tableExists($storageId), $storageId . ' exists.');
     }
+  }
+
+  public function testGetAllHarvestIds() {
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    $harvest_service = $this->container->get('dkan.harvest.service');
+
+    foreach (['100', '102', '101'] as $identifier) {
+      $plan = (object) [
+        'identifier' => $identifier,
+        'extract' => (object) [
+          'type' => DataJson::class,
+          'uri' => 'file://' . __DIR__ . '/../../files/data.json',
+        ],
+        'transforms' => [],
+        'load' => (object) [
+          'type' => Simple::class,
+        ],
+      ];
+
+      // Register a harvest.
+      $this->assertEquals(
+        $identifier,
+        $harvest_service->registerHarvest($plan)
+      );
+    }
+    $this->assertEquals(
+      ['100', '101', '102'],
+      array_values($harvest_service->getAllHarvestIds())
+    );
   }
 
 }
