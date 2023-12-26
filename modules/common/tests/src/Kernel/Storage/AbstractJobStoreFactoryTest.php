@@ -16,6 +16,8 @@ namespace Drupal\Tests\common\Kernel\Storage {
    * @group dkan
    * @group common
    * @group kernel
+   *
+   * @see \Drupal\Tests\common\Kernel\Storage\JobStoreFactoryTest
    */
   class AbstractJobStoreFactoryTest extends KernelTestBase {
 
@@ -28,15 +30,16 @@ namespace Drupal\Tests\common\Kernel\Storage {
       // Make a concrete AbstractJobStoreFactory object.
       /** @var \DkanTestConcreteAbstractJobStoreFactory $job_store_factory */
       $job_store_factory = new \DkanTestConcreteAbstractJobStoreFactory($db);
+      // Get a Job object by specifying an instance name.
       $job_store = $job_store_factory->getInstance(\DkanTestConcreteJobSubclass::class);
 
       $this->assertInstanceOf(JobStore::class, $job_store);
 
-      // First, get the table name without deprecation.
+      // First, get the table name without deprecation by calculating a hash.
       $ref_get_table_name = new \ReflectionMethod($job_store, 'getTableName');
       $ref_get_table_name->setAccessible(TRUE);
       $table_name = $ref_get_table_name->invoke($job_store);
-      $this->assertEquals('concrete_job_store', $table_name);
+      $this->assertEquals('jobstore_580088250_dkantestconcretejobsubclass', $table_name);
 
       // This table does not exist.
       $this->assertFalse(
@@ -103,13 +106,25 @@ namespace Drupal\Tests\common\Kernel\Storage {
         $db->schema()->tableExists($table_name)
       );
 
-      // And finally, use an identifier string that doesn't look like a class
-      // name.
+      // Use an identifier string that doesn't look like a class name.
       $identifier = 'testthisshouldneverbeaclassname';
       $job_store->destruct();
       $job_store = $job_store_factory->getInstance($identifier);
       $this->assertEquals(
         'jobstore_' . $identifier,
+        $table_name = $ref_get_table_name->invoke($job_store)
+      );
+      $this->assertEquals(0, $job_store->count());
+      $this->assertTrue(
+        $db->schema()->tableExists($table_name)
+      );
+
+      // And finally, the right way. We create an instance without specifying
+      // an identifier, so that the factory uses its default.
+      $job_store->destruct();
+      $job_store = $job_store_factory->getInstance();
+      $this->assertEquals(
+        'concrete_job_store',
         $table_name = $ref_get_table_name->invoke($job_store)
       );
       $this->assertEquals(0, $job_store->count());

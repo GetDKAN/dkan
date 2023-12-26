@@ -46,16 +46,14 @@ abstract class AbstractJobStoreFactory implements StorageFactoryInterface {
    *   Resulting JobStore object.
    */
   public function getInstance(string $identifier = '', array $config = []): DatabaseTableInterface {
+    $table_name = $this->tableName;
     // For historical reasons, we keep the getInstance() method signature, but
     // we also want to enforce our static table name.
     if ($identifier && $identifier !== $this->tableName) {
-      // Silent error to be picked up by tests.
-      @trigger_error(
-        'Import job store identifier must be either empty or ' . $this->tableName . '.',
-        E_USER_DEPRECATED
-      );
+      // If the caller passed an unusual identifier, we should try to use the
+      // table name they desire for backwards compatibility.
+      $table_name = $this->getTableName($identifier);
     }
-    $table_name = $this->tableName;
     $deprecated_table_name = $this->getDeprecatedTableName($identifier);
     // Figure out whether we need a separate deprecated table name. This will
     // be used in JobStore::destruct() to clean up deprecated tables if they
