@@ -210,13 +210,18 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Get a harvest's most recent run identifier, i.e. timestamp.
+   * Get a harvest's most recent run identifier.
    *
-   * @param string $id
+   * Since the run record id is a timestamp, we can sort on the id.
+   *
+   * @param string $planId
    *   The harvest identifier.
+   *
+   * @return string
+   *   The most recent harvest run record identifier.
    */
-  private function getLastHarvestRunId(string $id) {
-    $runs = $this->getAllHarvestRunInfo($id);
+  public function getLastHarvestRunId(string $planId) {
+    $runs = $this->getAllHarvestRunInfo($planId);
     rsort($runs);
     return reset($runs);
   }
