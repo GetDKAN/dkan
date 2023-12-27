@@ -1,0 +1,10 @@
+entity.harvest_hash.edit_form:
+  route_name: entity.harvest_hash.edit_form
+  group: harvest_hash
+  title: Edit
+
+entity.harvest_hash.delete_form:
+  route_name: entity.harvest_hash.delete_form
+  group: harvest_hash
+  title: Delete
+  weight: 10

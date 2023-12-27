@@ -1,0 +1,5 @@
+harvest_hash.add_form:
+  title: 'Add harvest hash'
+  route_name: entity.harvest_hash.add_form
+  appears_on:
+    - entity.harvest_hash.collection

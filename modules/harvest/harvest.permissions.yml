@@ -13,3 +13,7 @@
 'dkan.harvest.dashboard':
   title: 'DKAN: Harvest Dashaboard'
   description: 'See information about DKAN harvests.'
+
+administer harvest hash:
+  title: 'Administer harvest hash settings'
+  restrict access: true
