@@ -34,7 +34,7 @@ use Drupal\harvest\HarvestHashInterface;
  *   base_table = "harvest_hashes",
  *   admin_permission = "administer harvest hash",
  *   entity_keys = {
- *     "id" = "id",
+ *     "id" = "dataset_uuid",
  *   },
  *   links = {
  *     "collection" = "/admin/content/harvest-hash",
@@ -51,18 +51,12 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions($entity_type) {
-    // The node id is an integer, using the IntegerItem field item class.
-    $fields['id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Harvest hash ID'))
-      ->setDescription(t('The harvest hash ID for this record.'))
-      ->setReadOnly(TRUE);
-
     // The UUID field uses the uuid_field type which ensures that a new UUID will automatically be generated when an entity is created.
     $fields['dataset_uuid'] = BaseFieldDefinition::create('uuid')
       ->setLabel(t('UUID'))
       ->setDescription(t('The node UUID.'))
       ->setReadOnly(FALSE)
-      // Require the UUID to be set, because the node it references must already
+        // Require the UUID to be set, because the node it references must already
         // exist.
       ->setRequired(TRUE);
 
@@ -89,14 +83,6 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
         'default_value' => '',
         'max_length' => 255,
       ]);
-
-    // @todo Do we want an entity reference here?
-//    $fields['dataset'] = BaseFieldDefinition::create('entity_reference')
-//      ->setLabel(t('Dataset node ID'))
-//      ->setDescription(t('The node ID of the referenced dataset.'))
-//      ->setSettings([
-//        'target_type' => 'node',
-//      ]);
 
     return $fields;
   }
