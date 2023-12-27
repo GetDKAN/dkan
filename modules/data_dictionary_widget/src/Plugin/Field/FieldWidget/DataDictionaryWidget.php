@@ -6,6 +6,12 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use phpDocumentor\Reflection\PseudoTypes\True_;
+use Drupal\Core\Security\TrustedCallbackInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Component\Utility\NestedArray;
 
 /**
  * A data-dictionary widget.
@@ -18,7 +24,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   }
  * )
  */
-class DataDictionaryWidget extends WidgetBase {
+class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterface {
 
   /**
    * {@inheritdoc}
@@ -26,9 +32,16 @@ class DataDictionaryWidget extends WidgetBase {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {    
     $field_values = $form_state->getValue(["field_json_metadata"]);
     $current_fields = $form_state->get('current_fields');
-    $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, true) : [];
-    $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
     $op = $form_state->getTriggeringElement()['#op'] ?? null;
+    $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, true) : [];
+
+    if (str_contains($op, 'edit') || str_contains($op, 'cancel')  || str_contains($op, 'update')) {
+      $op_index = explode("_", $form_state->getTriggeringElement()['#op']);
+      $field_index = $op_index[1];
+
+    }
+
+    $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
 
     // build the data_results array to display the rows in the data table.
     $data_results = $this->processDataResults($data_results, $current_fields, $field_values, $op);
@@ -53,6 +66,9 @@ class DataDictionaryWidget extends WidgetBase {
       '#prefix' => '<div id = field-json-metadata-dictionary-fields>',
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">A data dictionary for this resource, compliant with the <a href="https://specs.frictionlessdata.io/table-schema/" target="_blank">Table Schema</a> specification.</div>'),
+      '#pre_render' => [
+        [$this, 'preRenderForm'],
+      ],
     ];
     
     $element['dictionary_fields']['data'] = [
@@ -63,17 +79,113 @@ class DataDictionaryWidget extends WidgetBase {
       '#tree' => TRUE,
       '#theme' => 'custom_table',
     ];
-    
+
+    //Creating ajax buttons/fields to be placed in correct location later.
+    foreach ($data_results as $key => $data) {
+      if ( str_contains($op, 'edit') && $key == $field_index ) {
+        $element['dictionary_fields']['edit_field_buttons'][$field_index]['edit_field']['actions' ]= [
+          '#type' => 'actions',
+          'save_update' => [
+            '#type' => 'submit',
+            '#name' => 'update_' . $key,
+            '#value' => $this->t('Save'),
+            '#op' => 'update_' . $key,
+            '#submit' => [
+              [$this, 'editSubformCallback'],
+            ],
+            '#ajax' => [
+              'callback' => [$this, 'editSubformAjax'],
+              'wrapper' => 'field-json-metadata-dictionary-fields',
+              'effect' => 'fade',
+            ],
+            '#limit_validation_errors' => [],
+          ],
+          'cancel_updates' => [
+            '#type' => 'submit',
+            '#name' => 'cancel_update_' . $key,
+            '#value' => $this->t('Cancel'),
+            '#op' => 'cancel_update_' . $key,
+            '#submit' => [
+              [$this, 'editSubformCallback'],
+            ],
+            '#ajax' => [
+              'callback' => [$this, 'editSubformAjax'],
+              'wrapper' => 'field-json-metadata-dictionary-fields',
+              'effect' => 'fade',
+            ],
+            '#limit_validation_errors' => [],
+            ],
+            'delete_field' => [
+              '#type' => 'submit',
+              '#name' => 'delete_' . $key,
+              '#value' => $this->t('Delete'),
+              '#op' => 'delete_' . $key,
+              '#submit' => [
+                [$this, 'editSubformCallback'],
+              ],
+              '#ajax' => [
+                'callback' => [$this, 'editSubformAjax'],
+                'wrapper' => 'field-json-metadata-dictionary-fields',
+                'effect' => 'fade',
+              ],
+              '#limit_validation_errors' => [],
+              ],
+          ];
+
+          $element['dictionary_fields']['data_types'][$key] = [
+            '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $field_index .'][field_collection][type]',
+            '#type' => 'select',
+            '#required' => TRUE,
+            '#title' => 'Data type',
+            '#value' =>  $field_json_metadata['data']['fields'][$field_index]['type'],
+            '#op' => 'update_type_' . $key,
+            '#options' => [
+              'string' => t('String'),
+              'date' => t('Date'),
+              'integer' => t('Integer'),
+              'number' => t('Number'),
+            ],
+            '#ajax' => [
+              'callback' => [$this, 'updateFormatOptions'],
+              'method' => 'replace',
+              'wrapper' => 'field-json-metadata-format',
+            ],
+          ];
+         
+        }else{
+        $element['dictionary_fields']['edit_buttons'][$key]['edit_button'] = [
+          '#type' => 'submit',
+          '#name' => 'edit_' . $key,
+          '#value' => 'Edit',
+          '#access' => TRUE,
+          '#op' => 'edit_' . $key,
+          '#attributes' => [
+            'src' => '/core/misc/icons/787878/cog.svg',
+            'alt' => t('Edit'),
+          ],
+          '#submit' => [
+            [$this, 'editSubformCallback'],
+          ],
+          '#ajax' => [
+            'callback' => [$this, 'editSubformAjax'],
+            'wrapper' => 'field-json-metadata-dictionary-fields',
+            'effect' => 'fade',
+          ],
+          '#limit_validation_errors' => [],
+        ];
+      }
+    }
+   
     $element['dictionary_fields']['add_row_button'] = [
       '#type' => 'submit',
       '#value' => 'Add field',
       '#access' => TRUE,
       '#op' => 'add_new_field',
       '#submit' => [
-        [$this, 'addSubformCallback'],
+        [$this, 'submitSubformCallback'],
       ],
       '#ajax' => [
-        'callback' => [$this, 'addSubformAjax'],
+        'callback' => [$this, 'submitSubformAjax'],
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -94,6 +206,17 @@ class DataDictionaryWidget extends WidgetBase {
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
     }
+    if (str_contains($op, 'edit')) {
+     // unset($element['dictionary_fields']['data']['#rows'][$field_index]);
+     // $element['dictionary_fields']['data']['#rows'][$field_index]['field_collection'] = $form_state->get('edit_field');
+      $element['dictionary_fields']['data']['#rows'][$field_index]['field_collection']['#access'] = TRUE;
+      $element['dictionary_fields']['fields_being_modified'] = $form_state->get('fields_being_modified');
+      $element['dictionary_fields']['add_row_button']['#access'] = TRUE;
+      $element['identifier']['#required'] = FALSE;
+      $element['title']['#required'] = FALSE;
+      ksort($element['dictionary_fields']['data']['#rows']);
+    }
+
 
     return $element;
   }
@@ -104,7 +227,7 @@ class DataDictionaryWidget extends WidgetBase {
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
-    
+   
     if (!empty($field_collection)) {
       $data_results = [
         [
@@ -139,7 +262,7 @@ class DataDictionaryWidget extends WidgetBase {
     }
   
     if (isset($field_values[0]['dictionary_fields']["field_collection"])) {
-      $field_group = $field_values[0]['dictionary_fields']["field_collection"]["group"];
+      $field_group = $field_values[0]['dictionary_fields']['field_collection']['group'];
       $field_format = $field_group["format"] == 'other' ? $field_group["format_other"] : $field_group["format"];
 
       $data_pre = [
@@ -160,7 +283,6 @@ class DataDictionaryWidget extends WidgetBase {
     if (!isset($data_pre) && isset($data_results) && $current_fields) {
       $data_results = $current_fields;
     }
-
     
   
     return $data_results;
@@ -170,12 +292,23 @@ class DataDictionaryWidget extends WidgetBase {
    * AJAX callback to update the options of the "Format" field.
    */
   public function updateFormatOptions(array &$form, FormStateInterface $form_state) {
+    $trigger = $form_state->getTriggeringElement();
+    $op = $trigger['#op'];
+    $op_index = explode("_", $trigger['#op']);
     $field = $form_state->getValue(["field_json_metadata"]);
+    $format_field = $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"];
     $data_type = $field[0]['dictionary_fields']["field_collection"]["group"]["type"];
+    if(str_contains($op, 'update')){
+      $field_index = $op_index[2];
+      $field = $field[0]["dictionary_fields"]["data"][$field_index]["field_collection"];
+      $format_field =$form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"][$field_index]["field_collection"]["format"];
+      $data_type = $field["type"];
+    }
+    
     $options = [];
 
     if ($data_type == 'string') {
-      $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"]['#description'] = $this->generateFormatDescription($data_type);
+      $format_field['#description'] = $this->generateFormatDescription($data_type);
       $options = [
         'default' => 'default',
         'email' => 'email',
@@ -186,7 +319,7 @@ class DataDictionaryWidget extends WidgetBase {
     }
 
     if ($data_type == 'date') {
-      $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"]['#description'] = $this->generateFormatDescription($data_type);
+      $format_field['#description'] = $this->generateFormatDescription($data_type);
       $options = [
         'default' => 'default',
         'any' => 'any',
@@ -195,22 +328,25 @@ class DataDictionaryWidget extends WidgetBase {
     }
 
     if ($data_type == 'integer') {
-      $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"]['#description'] = $this->generateFormatDescription($data_type);
+      $format_field['#description'] = $this->generateFormatDescription($data_type);
       $options = [
         'default' => 'default',
       ];
     }
 
     if ($data_type == 'number') {
-      $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"]['#description'] = $this->generateFormatDescription($data_type);
+      $format_field['#description'] = $this->generateFormatDescription($data_type);
       $options = [
         'default' => 'default',
       ];
     }
 
-    $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"]["#options"] = $options;
-
-    return $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"];
+    $format_field["#options"] = $options;
+    if(str_contains($op, 'update')){
+      return $format_field;
+    }else{
+      return $format_field;
+    }
   }
 
   /**
@@ -260,15 +396,148 @@ class DataDictionaryWidget extends WidgetBase {
     return $description;
   }
 
+   /**
+   * Ajax callback for the Add button.
+   */
+  public function editSubformCallback(array &$form, FormStateInterface $form_state) {
+    $trigger = $form_state->getTriggeringElement();
+    $op = $trigger['#op'];
+    $op_index = explode("_", $trigger['#op']);
+    $form_state->set('edit_field', '');
+    $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+    $field_index =  $op_index[1];
+
+    if (str_contains($op, 'cancel') && isset($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["fields_being_modified"][$field_index])) {
+      unset($current_fields[$field_index] );
+      $current_fields[$field_index] =  $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["fields_being_modified"][$field_index];
+      ksort($current_fields);
+      $form_state->set('cancel', TRUE);
+      $form_state->set('edit', FALSE);
+      $form_state->set('update', FALSE);
+      $form_state->set('delete', FALSE);
+    }
+
+    if (str_contains($op, 'delete') && isset($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["fields_being_modified"][$field_index])) {
+      unset($current_fields[$field_index] );
+      unset($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["fields_being_modified"][$field_index]);
+      $form_state->set('cancel', FALSE);
+      $form_state->set('edit', FALSE);
+      $form_state->set('update', FALSE);
+      $form_state->set('delete', TRUE);
+    }
+
+    if (str_contains($op, 'update')) {
+      $update_values = $form_state->getUserInput();
+      //$form_state->input["field_json_metadata"][0]["dictionary_fields"]["data"][$field_index]["field_collection"];
+      unset($current_fields[$field_index]);
+      $current_fields[$field_index] =  [
+        'name' => $update_values['field_json_metadata'][0]['dictionary_fields']['data'][1]['field_collection']['name'],
+        'title' => $update_values['field_json_metadata'][0]['dictionary_fields']['data'][1]['field_collection']['title'],
+        'type' => $update_values['field_json_metadata'][0]['dictionary_fields']['data'][1]['field_collection']['type'],
+        'format' => $update_values['field_json_metadata'][0]['dictionary_fields']['data'][1]['field_collection']['format'],
+        'format_other' => $$update_values['field_json_metadata'][0]['dictionary_fields']['data'][1]['field_collection']['format_other'],
+        'description' => $update_values['field_json_metadata'][0]['dictionary_fields']['data'][1]['field_collection']['description'],
+      ];
+      ksort($current_fields);
+      $form_state->set('cancel', FALSE);
+      $form_state->set('edit', FALSE);
+      $form_state->set('update', TRUE);
+      $form_state->set('delete', FALSE);
+    }
+
+    if (str_contains($op, 'edit')) {
+      $seleted_type = $current_fields[$field_index]['type'];
+      
+      $edit_field = [
+        '#access' => FALSE,
+        'name' => [
+          '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $field_index .'][field_collection][name]',
+          '#type' => 'textfield',
+          '#value' =>  t($current_fields[$field_index]['name']),
+          '#required' => TRUE,
+          '#title' => 'Name',
+          '#description' => 'A name for this field.',
+        ],
+        'title' => [
+          '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $field_index .'][field_collection][title]',
+          '#type' => 'textfield',
+          '#value' =>  t($current_fields[$field_index]['title']),
+          '#required' => TRUE,
+          '#title' => 'Title',
+          '#description' => 'A human-readable title.',
+        ],
+        'type' => [],
+        'format' => [
+          '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $field_index .'][field_collection][format]',
+          '#type' => 'select',
+          '#required' => TRUE,
+          '#title' => 'Format',
+          '#description' => [$this->generateFormatDescription($seleted_type)],
+          '#value' =>  $current_fields[$field_index]['format'],
+          '#prefix' => '<div id = field-json-metadata-format>',
+          '#suffix' => '</div>',
+          '#validated' => TRUE,
+          '#options' => [
+            'default' => 'default',
+            'email' => 'email',
+            'uri' => 'uri',
+            'binary' => 'binary',
+            'uuid' => 'uuid'
+          ],
+        ],
+        'format_other' => [
+          '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $field_index .'][field_collection][format]',
+          '#type' => 'textfield',
+          '#title' => $this->t('Other format'),
+          //'#required' => TRUE,
+          '#value' =>  $current_fields[$field_index]['format_other'],
+          '#description' => 'A supported format',
+          '#states' => [
+            'visible' => [
+              ':input[name="field_json_metadata[0][dictionary_fields][data][' . $field_index .'][field_collection][format]"]' => ['value' => 'other'],
+            ],
+          ],
+        ],
+        'description' => [
+          '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $field_index .'][field_collection][description]',
+          '#type' => 'textfield',
+          '#value' =>  $current_fields[$field_index]['description'],
+          '#required' => TRUE,
+          '#title' => 'Description',
+          '#description' => 'Information about the field data.',
+        ],
+
+      ];
+      //$form_state->set('edit_field', $edit_field);
+      //setting Fields Being Modified
+      $fields_being_modified[$field_index] = $current_fields[$field_index];
+      //Remove the fileds from current fields
+      unset($current_fields[$field_index]);
+      $current_fields[$field_index]['field_collection'] = $edit_field;
+      $form_state->set('fields_being_modified', $fields_being_modified);
+      $form_state->set('cancel', FALSE);
+      $form_state->set('edit', TRUE);
+      $form_state->set('update', FALSE);
+      $form_state->set('delete', FALSE);
+      ksort($current_fields);
+    }
+
+   
+    $form_state->set('current_fields', $current_fields);
+    $form_state->setRebuild();
+
+  }
+
   /**
    * Ajax callback for the Add button.
    */
-  public function addSubformCallback(array &$form, FormStateInterface $form_state) {
+  public function submitSubformCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
-    $form_state->set('add_new_field', '');
     $op = $trigger['#op'];
+      $form_state->set('add_new_field', '');
+    
 
-    $current_fields = $form["field_json_metadata"]["widget"][0]['dictionary_fields']["data"]["#rows"];
+    $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     if ($current_fields) {
       $form_state->set('current_fields', $current_fields);
     }
@@ -348,7 +617,7 @@ class DataDictionaryWidget extends WidgetBase {
             '#type' => 'textfield',
             '#required' => TRUE,
             '#title' => 'Description',
-            '#description' => 'A human-readable title.',
+            '#description' => 'Information about the field data.',
           ],
           'actions' => [
             '#type' => 'actions',
@@ -358,10 +627,10 @@ class DataDictionaryWidget extends WidgetBase {
               '#value' => $this->t('Add'),
               '#op' => 'add',
               '#submit' => [
-                [$this, 'addSubformCallback'],
+                [$this, 'submitSubformCallback'],
               ],
               '#ajax' => [
-                'callback' => [$this, 'addSubformAjax'],
+                'callback' => [$this, 'submitSubformAjax'],
                 'wrapper' => 'field-json-metadata-dictionary-fields',
                 'effect' => 'fade',
               ],
@@ -372,10 +641,10 @@ class DataDictionaryWidget extends WidgetBase {
               '#value' => $this->t('Cancel'),
               '#op' => 'cancel',
               '#submit' => [
-                [$this, 'addSubformCallback'],
+                [$this, 'submitSubformCallback'],
               ],
               '#ajax' => [
-                'callback' => [$this, 'addSubformAjax'],
+                'callback' => [$this, 'submitSubformAjax'],
                 'wrapper' => 'field-json-metadata-dictionary-fields',
                 'effect' => 'fade',
               ],
@@ -384,8 +653,6 @@ class DataDictionaryWidget extends WidgetBase {
           ],
         ],
       ];
-
-      
 
       $form_state->set('add_new_field', $add_fields);
     }
@@ -398,139 +665,57 @@ class DataDictionaryWidget extends WidgetBase {
     $form_state->setRebuild();
   }
 
-  public function addSubformAjax(array &$form, FormStateInterface $form_state) {
-    $trigger = $form_state->getTriggeringElement();
-    $form_state->set('add_new_field', '');
-    $op = $trigger['#op'];
-
-    $current_fields = $form["field_json_metadata"]["widget"][0]['dictionary_fields']["data"]["#rows"];
-    if ($current_fields) {
-      $form_state->set('current_fields', $current_fields);
-    }
-
-    if ($op === 'cancel') {
-      $form_state->set('cancel', TRUE);
-    }
-
-    if ($op === 'add_new_field') {
-      $add_fields = [
-        '#access' => FALSE,
-        'group' => [
-          '#type' => 'fieldset',
-          '#title' => t('Add new field'),
-          '#collapsible' => TRUE,
-          '#collapsed' => FALSE,
-          'name' => [
-            '#type' => 'textfield',
-            '#required' => TRUE,
-            '#title' => 'Name',
-            '#description' => 'A name for this field.',
-          ],
-          'title' => [
-            '#type' => 'textfield',
-            '#required' => TRUE,
-            '#title' => 'Title',
-            '#description' => 'A human-readable title.',
-          ],
-          'type' => [
-            '#type' => 'select',
-            '#required' => TRUE,
-            '#title' => 'Data type',
-            '#default_value' => 'string',
-            '#op' => 'type',
-            '#options' => [
-              'string' => t('String'),
-              'date' => t('Date'),
-              'integer' => t('Integer'),
-              'number' => t('Number'),
-            ],
-            '#ajax' => [
-              'callback' => [$this, 'updateFormatOptions'],
-              'method' => 'replace',
-              'wrapper' => 'field-json-metadata-format',
-            ],
-          ],
-          'format' => [
-            '#type' => 'select',
-            '#required' => TRUE,
-            '#title' => 'Format',
-            '#description' => $this->generateFormatDescription("string"),
-            '#default_value' => 'default',
-            '#prefix' => '<div id = field-json-metadata-format>',
-            '#suffix' => '</div>',
-            '#validated' => TRUE,
-            '#options' => [
-              'default' => 'default',
-              'email' => 'email',
-              'uri' => 'uri',
-              'binary' => 'binary',
-              'uuid' => 'uuid'
-            ],
-          ],
-          'format_other' => [
-            '#type' => 'textfield',
-            //'#required' => TRUE,
-            '#title' => $this->t('Other format'),
-            '#description' => 'A supported format',
-            '#states' => [
-              'visible' => [
-                ':input[name="field_json_metadata[0][dictionary_fields][field_collection][group][format]"]' => ['value' => 'other'],
-              ],
-            ],
-            //'#element_validate' => [[$this, 'customValidationCallback']],
-          ],
-          'description' => [
-            '#type' => 'textfield',
-            '#required' => TRUE,
-            '#title' => 'Description',
-            '#description' => 'A human-readable title.',
-          ],
-          'actions' => [
-            '#type' => 'actions',
-            'save_settings' => [
-              '#type' => 'submit',
-              '#button_type' => 'primary',
-              '#value' => $this->t('Add'),
-              '#op' => 'add',
-              '#submit' => [
-                [$this, 'addSubformCallback'],
-              ],
-              '#ajax' => [
-                'callback' => [$this, 'addSubformAjax'],
-                'wrapper' => 'field-json-metadata-dictionary-fields',
-                'effect' => 'fade',
-              ],
-              //'#limit_validation_errors' => [$form["field_json_metadata"]["widget"][0]["identifier"]],
-            ],
-            'cancel_settings' => [
-              '#type' => 'submit',
-              '#value' => $this->t('Cancel'),
-              '#op' => 'cancel',
-              '#submit' => [
-                [$this, 'addSubformCallback'],
-              ],
-              '#ajax' => [
-                'callback' => [$this, 'addSubformAjax'],
-                'wrapper' => 'field-json-metadata-dictionary-fields',
-                'effect' => 'fade',
-              ],
-              '#limit_validation_errors' => [['identifier', 'title']],
-            ],
-          ],
-        ],
-      ];
-
-      $form_state->set('add_new_field', $add_fields);
-    }
-
-    if ($op === 'add') {
-      $form_state->set('add', TRUE);
-      $form_state->set('cancel', FALSE);
-    }
-
+  public function editSubformAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
-    
   }
+
+  public function submitSubformAjax(array &$form, FormStateInterface $form_state) {
+    return $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
+  }
+
+  public function setAjaxElements(array $dictionaryFields){
+    foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
+      $edit_button = $dictionaryFields['edit_buttons'][$row];
+      $edit_field_buttons = $dictionaryFields['edit_field_buttons'][$row];
+      $data_types = $dictionaryFields['data_types'][$row];
+       //Setting the ajax fields if they exsist.
+      if ($edit_button) {
+        $dictionaryFields['data']['#rows'][$row] =  array_merge($data, $edit_button) ;
+        unset($dictionaryFields['edit_buttons'][$row]);
+      }else if ($data_types && $edit_field_buttons) {
+        unset($dictionaryFields['data']['#rows'][$row]);
+        $fields_with_ajax = [
+          'name' => $data['field_collection']['name'],
+          'title' => $data['field_collection']['title'],
+          'type' => $data_types,
+          'format' => $data['field_collection']['format'],
+          'format_other' => $data['field_collection']['format_other'],
+          'description' => $data['field_collection']['description'],
+          'edit_field' => $edit_field_buttons,
+        ];
+
+        $dictionaryFields['data']['#rows'][$row]['field_collection'] = $fields_with_ajax;
+        ksort($dictionaryFields['data']['#rows']);
+        //Remove the buttons so they don't show up twice.
+        unset($dictionaryFields['edit_field_buttons'][$row]);
+        unset($dictionaryFields['data_types'][$row]);
+      }
+     
+    }
+
+    return $dictionaryFields;
+
+  }
+
+/**
+ * Prerender callback for the form.
+ *
+ * Moves the buttons into the table.
+ * 
+ */
+public function preRenderForm(array $form) {
+   return self::setAjaxElements($form);
+}
 
   public function customValidationCallback($element, &$form_state) {
     $format_field = $form_state->getUserInput()['field_json_metadata'][0]['dictionary_fields']['field_collection']['group']['format'];
@@ -542,5 +727,12 @@ class DataDictionaryWidget extends WidgetBase {
       $form_state->setError($element, $this->t('Other format is required when "Other" is selected as the format.'));
     }
   }
+
+/**
+ * {@inheritdoc}
+ */
+public static function trustedCallbacks() {
+  return ['preRenderForm'];
+}
 
 }
