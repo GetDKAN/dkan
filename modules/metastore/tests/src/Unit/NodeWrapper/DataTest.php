@@ -5,42 +5,64 @@ namespace Drupal\Tests\metastore\Unit\NodeWrapper;
 use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Testing the NodeWrapper.
  */
-class DataTest extends TestCase
-{
-  public function testGetOriginalGetUsAWrapper() {
+class DataTest extends TestCase {
+  public function testGetLatestRevisionGetUsAWrapper() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
       ->addd('__get', Node::class)
+      ->addd('isNew', false)
+      ->addd('id', 123)
+      ->addd('getLoadedRevisionId', 111)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->add(EntityTypeManager::class, 'findDefinitions', ['node'])
+      ->add(RevisionableStorageInterface::class, 'getLatestRevisionId', 123)
+      ->addd('loadRevision', $node)
       ->getMock();
 
     $container = (new Chain($this))
-      ->add(Container::class)
+      ->add(Container::class, 'get', (new Options())
+        ->add('entity_type.manager', $entityTypeManager)
+        ->index(0)
+      )
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
       ->getMock();
 
     \Drupal::setContainer($container);
 
-    $wrapper = new Data($node);
+    $wrapper = new Data($node, $entityTypeManager);
     $this->assertTrue(
-      $wrapper->getOriginal() instanceof Data
+      $wrapper->getLatestRevision() instanceof Data
     );
   }
 
-  public function testGetOriginalGiveUsNull() {
+  public function testGetLatestRevisionGiveUsNull() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
-      ->addd('__isset', false)
+      ->addd('__isset', true)
+      ->addd('__get', Node::class)
+      ->addd('isNew', true)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
       ->getMock();
 
     $container = (new Chain($this))
@@ -49,9 +71,65 @@ class DataTest extends TestCase
 
     \Drupal::setContainer($container);
 
-    $wrapper = new Data($node);
+    $wrapper = new Data($node, $entityTypeManager);
     $this->assertNull(
-      $wrapper->getOriginal()
+      $wrapper->getLatestRevision()
+    );
+  }
+
+  public function testGetPublishedRevisionGetUsAWrapper() {
+    $node = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->addd('__isset', true)
+      ->addd('__get', Node::class)
+      ->addd('isNew', false)
+      ->addd('id', 123)
+      ->addd('isPublished', true)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->add(EntityTypeManager::class, 'findDefinitions', ['node'])
+      ->add(RevisionableStorageInterface::class, 'load', $node)
+      ->getMock();
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', (new Options())
+        ->add('entity_type.manager', $entityTypeManager)
+        ->index(0)
+      )
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    \Drupal::setContainer($container);
+
+    $wrapper = new Data($node, $entityTypeManager);
+    $this->assertTrue(
+      $wrapper->getPublishedRevision() instanceof Data
+    );
+  }
+
+  public function testGetPublishedRevisionGiveUsNull() {
+    $node = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->addd('__isset', true)
+      ->addd('__get', Node::class)
+      ->addd('isNew', true)
+      ->getMock();
+
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $container = (new Chain($this))
+      ->add(Container::class)
+      ->getMock();
+
+    \Drupal::setContainer($container);
+
+    $wrapper = new Data($node, $entityTypeManager);
+    $this->assertNull(
+      $wrapper->getPublishedRevision()
     );
   }
 
@@ -65,7 +143,11 @@ class DataTest extends TestCase
       ->add(EntityRepository::class, 'loadEntityByUuid', EntityInterface::class)
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $factory->getInstance("123");
   }
 
@@ -80,7 +162,11 @@ class DataTest extends TestCase
       ->add(Node::class, 'bundle', 'blah')
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $factory->getInstance("123");
   }
 
@@ -107,7 +193,11 @@ class DataTest extends TestCase
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $data = $factory->wrap($entity);
     $this->assertEquals('123', $data->getIdentifier());
   }
@@ -117,7 +207,11 @@ class DataTest extends TestCase
       ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $entityTypeManager = (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', RevisionableStorageInterface::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $this->assertEquals('node', $factory->getEntityType());
     $this->assertEquals(['data'], $factory->getBundles());
     $this->assertEquals('field_json_metadata', $factory->getMetadataField());

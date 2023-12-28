@@ -94,17 +94,17 @@
 <article{{ attributes }}>
     {{ title_prefix }}
     {% if label and not page %}
-    <h1{{ title_attributes }}>
-        <a href="{{ url }}" rel="bookmark">{{ label }}</a>
-    </h1>
+        <h1{{ title_attributes }}>
+            <a href="{{ url }}" rel="bookmark">{{ label }}</a>
+        </h1>
     {% endif %}
     {{ title_suffix }}
     <div{{ content_attributes }}>
-        {% if not page %}
+    {% if not page %}
         <p>Last updated: {{ dataset.modified|date("m/d/Y") }}</p>
         {{ dataset.description | drupal_escape }}
-        {% endif %}
-        {% if page %}
+    {% endif %}
+    {% if page or view_mode == "full" %}
         <p>Last updated: {{ dataset.modified|date("m/d/Y") }}</p>
         {{ dataset.description | drupal_escape }}
         {% if dataset.distributions|length > 0 %}
@@ -138,6 +138,6 @@
             {% endfor %}</ul>
         {% endif %}
         {{ dataset.metadata_table }}
-        {% endif %}
+    {% endif %}
     </div>
 </article>

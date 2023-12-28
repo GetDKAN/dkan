@@ -41,6 +41,7 @@ services:
       - '@config.factory'
       - '@dkan.metastore.storage'
       - '@dkan.metastore.url_generator'
+      - '@http_client'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
 
@@ -87,6 +88,7 @@ services:
     class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:
       - '@entity.repository'
+      - '@entity_type.manager'
 
   dkan.metastore.dataset_api_docs:
     class: \Drupal\metastore\DatasetApiDocs

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
+use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
@@ -193,6 +194,81 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertEquals('orphaned', $this->getModerationState('3'));
     $this->assertEquals('published', $this->getModerationState('4'));
   }
+
+  /**
+   * Test draft moderation workflow with distribution url update and default source resource perspective.
+   */
+  public function testDraftWorkflowDistributionUrlSourcePerspective() {
+    // Set resource perspective to source.
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
+      ->save();
+
+    $this->runDraftWorkflowUpdateDistributionUrl();
+  }
+
+  /**
+   * Test draft moderation workflow with distribution url update and local_url source resource perspective.
+   */
+  public function testDraftWorkflowDistributionUrlLocalPerspective() {
+    // Set resource perspective to source.
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
+      ->save();
+
+    $this->runDraftWorkflowUpdateDistributionUrl();
+  }
+
+  /**
+   * Test draft moderation workflow with modified trigger and default source resource perspective.
+   */
+  public function testDraftWorkflowModifiedTriggerSourcePerspective() {
+    // Set resource perspective to source.
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
+      ->save();
+
+    $this->runDraftWorkflowModifiedTrigger();
+  }
+
+  /**
+   * Test draft moderation workflow with modified trigger and local_url resource perspective.
+   */
+  public function testDraftWorkflowModifiedTriggerLocalPerspective() {
+    // Set resource perspective to local_url.
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
+      ->save();
+
+    $this->runDraftWorkflowModifiedTrigger();
+  }
+
+  /**
+   * Test draft moderation workflow with distribution title update and source resource perspective.
+   */
+  public function testDraftWorkflowUpdateDistributionTitleSourcePerspective() {
+    // Set resource perspective to local_url.
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
+      ->save();
+
+    $this->runDraftWorkflowUpdateDistributionTitle();
+  }
+
+  /**
+   * Test draft moderation workflow with distribution title update and local_url resource perspective.
+   * Current fails due to faulty logic in MetastoreSubscriber::resourceInUseElsewhere.
+   * Should use ReferenceLookup similar to ResourcePurger::resourceNotShared.
+
+  public function testDraftWorkflowUpdateDistributionTitleLocalPerspective() {
+    // Set resource perspective to local_url.
+    $this->config('metastore.settings')
+      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
+      ->save();
+
+    $this->runDraftWorkflowUpdateDistributionTitle();
+  }
+   */
 
   /**
    * Test cleanup of orphaned draft distributions.
@@ -574,4 +650,244 @@ class DatasetBTBTest extends BrowserTestBase {
     return \Drupal::service('dkan.metastore.service');
   }
 
+  /**
+   * Create a draft dataset and publish it.
+   */
+  private function createInitialDraftDatasetAndPublish(string $identifier): void {
+    // Set delete local resource files = false and modified as a triggering property.
+    $this->config('datastore.settings')
+      ->set('delete_local_resource', 0)
+      ->set('triggering_properties', ['modified'])
+      ->save();
+
+    // Set default moderation state = draft.
+    $this->config('workflows.workflow.dkan_publishing')
+      ->set('type_settings.default_moderation_state', 'draft')
+      ->save();
+
+    $this->storeDatasetRunQueues($identifier, '1', ['1.csv']);
+
+    // Publish the draft dataset
+    $this->getMetastore()->publish('dataset', $identifier);
+
+    // Simulate all possible queues post publish.
+    // Should only include post_import (not included earlier) and resource_purger.
+    $this->runQueues([
+      'datastore_import',
+      'resource_purger',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+      'post_import',
+    ]);
+  }
+
+  /**
+   * Confirm a new datastore import took place after an update to an existing dataset (draft workflow).
+   */
+  private function confirmNewDatastoreImportDraftWorkflow(string $identifier): void {
+    // Simulate all possible queues post update.
+    // Should include datastore_import, orphan_reference_processor and resource_purger
+    $this->runQueues([
+      'datastore_import',
+      'resource_purger',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+      'post_import',
+    ]);
+
+    // Get dataset info.
+    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $metadata = $datasetInfoService->gather($identifier);
+    $distributionTableLatest = $metadata['latest_revision']['distributions'][0]['table_name'];
+    $distributionTablePublished = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
+    $distributionUuidOld = $metadata['published_revision']['distributions'][0]['distribution_uuid'] ?? '';
+
+    // Make sure there are both latest and published versions with different tables.
+    $this->assertNotEmpty($distributionTablePublished, 'Draft revision exists.');
+    $this->assertNotEquals($distributionTableLatest, $distributionTablePublished, 'Separate distribution tables exist for latest and published revisions.');
+
+    // Confirm latest and published distribution tables exist.
+    $databaseSchema = $this->container->get('database')->schema();
+    $distributionTableLatestExists = $databaseSchema->tableExists($distributionTableLatest);
+    $this->assertTrue($distributionTableLatestExists, $distributionTableLatest . ' exists.');
+    $distributionTablePublishedExists = $databaseSchema->tableExists($distributionTablePublished);
+    $this->assertTrue($distributionTablePublishedExists, $distributionTablePublished . ' exists.');
+
+    // Publish the draft dataset revision.
+    $this->getMetastore()->publish('dataset', $identifier);
+
+    // Simulate all possible queues post update.
+    $this->runQueues([
+      'datastore_import',
+      'resource_purger',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+    ]);
+
+    $metadata = $datasetInfoService->gather($identifier);
+    $distributionTableLatestNew = $metadata['latest_revision']['distributions'][0]['table_name'];
+    $distributionUuidLatestNew = $metadata['latest_revision']['distributions'][0]['distribution_uuid'];
+    $distributionTablePublishedUpdated = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
+
+    // Load previous distribution node and its moderation state.
+    $entityManager = \Drupal::entityTypeManager()->getStorage('node');
+    $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
+    $distributionNodeOld = reset($distributionNodeOld);
+    $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();
+    $this->assertEquals('orphaned', $distributionStateOld, 'Old distribution orphaned.');
+
+    // Load new distribution node and its moderation state.
+    $distributionNodeNew = $entityManager->loadByProperties(['uuid' => $distributionUuidLatestNew]);
+    $distributionNodeNew = reset($distributionNodeNew);
+    $distributionStateNew = $distributionNodeNew->get('moderation_state')->getString();
+    $this->assertEquals('published', $distributionStateNew, 'New distribution published.');
+
+    // Make sure there is only a single latest revision.
+    $this->assertEmpty($distributionTablePublishedUpdated, 'Only published revision listed.');
+    $this->assertEquals($distributionTableLatestNew, $distributionTableLatest, 'Latest draft distribution table now published version.');
+
+    // Confirm new latest revision table exists.
+    $this->assertTrue(
+      $databaseSchema->tableExists($distributionTableLatest),
+      'Distribution table exists: ' . $distributionTableLatest
+    );
+
+    // Confirm original published distribution table removed.
+    $this->assertFalse(
+      $databaseSchema->tableExists($distributionTablePublished),
+      'Distribution table exists: ' . $distributionTablePublished
+    );
+  }
+
+  /**
+   * Run a typical draft workflow using modified trigger.
+   */
+  private function runDraftWorkflowModifiedTrigger(): void {
+    // Post dataset 1 and run the 'datastore_import' queue.
+    $id_1 = uniqid(__FUNCTION__ . '1');
+
+    // Create initial draft dataset and then publish it.
+    $this->createInitialDraftDatasetAndPublish($id_1);
+
+    // Create a new draft with an updated modified date.
+    $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
+
+    // Run queues; check that datastore import and orphan cleanup worked as expected.
+    $this->confirmNewDatastoreImportDraftWorkflow($id_1);
+  }
+
+  /**
+   * Run a typical draft workflow with distribution title update.
+   */
+  private function runDraftWorkflowUpdateDistributionTitle(): void {
+    // Post dataset 1 and run the 'datastore_import' queue.
+    $id_1 = uniqid(__FUNCTION__ . '1');
+
+    // Create initial draft dataset and then publish it.
+    $this->createInitialDraftDatasetAndPublish($id_1);
+
+    // Use same values for distribution as original getData() with updated title.
+    $distribution = new \stdClass();
+    $distribution->title = 'Updated Distribution #0 for ' . $id_1;
+    $distribution->downloadURL = $this->getDownloadUrl('1.csv');
+    $distribution->format = 'csv';
+    $distribution->mediaType = 'text/csv';
+
+    // Create a new draft with the new distribution title.
+    $this->getMetastore()->patch('dataset', $id_1, json_encode(
+      ['distribution' => [$distribution]]
+    ));
+
+    // Simulate all possible queues post update.
+    // Should NOT include datastore_import.
+    $this->runQueues([
+      'datastore_import',
+      'resource_purger',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+      'post_import',
+    ]);
+
+    // Get dataset info.
+    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $metadata = $datasetInfoService->gather($id_1);
+    $distributionTableLatest = $metadata['latest_revision']['distributions'][0]['table_name'];
+    $distributionTablePublished = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
+    $distributionUuidOld = $metadata['published_revision']['distributions'][0]['distribution_uuid'] ?? '';
+
+    // Make sure there are both latest and published versions that share the same table.
+    $this->assertNotEmpty($distributionTablePublished, 'Draft revision exists.');
+    $this->assertEquals($distributionTableLatest, $distributionTablePublished, 'Same distribution used for latest and published revisions.');
+
+    // Confirm latest/published distribution table exists.
+    $databaseSchema = $this->container->get('database')->schema();
+    $distributionTableLatestExists = $databaseSchema->tableExists($distributionTableLatest);
+    $this->assertTrue($distributionTableLatestExists, $distributionTableLatest . ' exists.');
+
+    // Publish the draft dataset revision.
+    $this->getMetastore()->publish('dataset', $id_1);
+
+    // Simulate all possible queues post update.
+    // Should NOT include datastore_import.
+    $this->runQueues([
+      'datastore_import',
+      'resource_purger',
+      'orphan_reference_processor',
+      'orphan_resource_remover',
+    ]);
+
+    $metadata = $datasetInfoService->gather($id_1);
+    $distributionTableLatestNew = $metadata['latest_revision']['distributions'][0]['table_name'];
+    $distributionUuidLatestNew = $metadata['latest_revision']['distributions'][0]['distribution_uuid'];
+    $distributionTablePublishedUpdated = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
+
+    // Load previous distribution node and its moderation state.
+    $entityManager = \Drupal::entityTypeManager()->getStorage('node');
+    $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
+    $distributionNodeOld = reset($distributionNodeOld);
+    $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();
+    $this->assertEquals('orphaned', $distributionStateOld, 'Old distribution orphaned.');
+
+    // Load new distribution node and its moderation state.
+    $distributionNodeNew = $entityManager->loadByProperties(['uuid' => $distributionUuidLatestNew]);
+    $distributionNodeNew = reset($distributionNodeNew);
+    $distributionStateNew = $distributionNodeNew->get('moderation_state')->getString();
+    $this->assertEquals('published', $distributionStateNew, 'New distribution published.');
+
+    // Make sure there is only a single latest revision.
+    $this->assertEmpty($distributionTablePublishedUpdated, 'Only published revision listed.');
+    $this->assertEquals($distributionTableLatestNew, $distributionTableLatest, 'Latest draft distribution table now published version.');
+
+    // Confirm latest revision table exists.
+    $this->assertTrue(
+      $databaseSchema->tableExists($distributionTableLatest),
+      'Distribution table exists: ' . $distributionTableLatest
+    );
+  }
+
+  /**
+   * Run a typical draft workflow with distribution url update.
+   */
+  private function runDraftWorkflowUpdateDistributionUrl(): void {
+    // Post dataset 1 and run the 'datastore_import' queue.
+    $id_1 = uniqid(__FUNCTION__ . '1');
+
+    // Create initial draft dataset and then publish it.
+    $this->createInitialDraftDatasetAndPublish($id_1);
+
+    // Use same values for distribution as original getData() with new file path.
+    $distribution = new \stdClass();
+    $distribution->title = 'Distribution #0 for ' . $id_1;
+    $distribution->downloadURL = $this->getDownloadUrl('2.csv');
+    $distribution->format = 'csv';
+    $distribution->mediaType = 'text/csv';
+
+    // Create a new draft with the new distribution title.
+    $this->getMetastore()->patch('dataset', $id_1, json_encode(
+      ['distribution' => [$distribution]]
+    ));
+
+    // Run queues; check that datastore import and orphan cleanup worked as expected.
+    $this->confirmNewDatastoreImportDraftWorkflow($id_1);
+  }
 }
