@@ -99,7 +99,7 @@ Revert a harvest
     drush dkan:harvest:revert myHarvestId
 
 This will delete all of the datasets listed in the specified harvest ID. Any referenced
-terms will be set to the orphaned state. And distributions from the harvest will be unpublished.
+terms will be set to the orphaned state. Any distributions from the harvest will be unpublished.
 Alternatively you could run `dkan:harvest:archive` to unpublish the datasets without
 deleting them from your catalog.
 
