@@ -14,7 +14,7 @@ class AlreadyRegistered extends \Exception {
    *
    * @var \Drupal\Core\Entity\EntityInterface[]
    */
-  protected array $alreadyRegistered;
+  protected array $alreadyRegistered = [];
 
   /**
    * Set the entities that are already registered.

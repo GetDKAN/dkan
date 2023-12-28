@@ -115,7 +115,6 @@ class ReferencerTest extends KernelTestBase {
    * Test that CSV format translates to correct mediatype if mediatype not supplied.
    */
   public function testChangeMediaType() {
-    $this->markTestIncomplete('this test is still broken.');
     /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
     $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
 

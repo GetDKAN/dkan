@@ -71,7 +71,7 @@ trait Helper {
     $table->setHeaders(['run_id', 'processed', 'created', 'updated', 'errors']);
 
     foreach ($runInfos as $runInfo) {
-      [$run_id, $result] = $runInfo;
+      list($run_id, $result) = $runInfo;
 
       $row = array_merge(
         [$run_id],

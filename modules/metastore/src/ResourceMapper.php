@@ -44,7 +44,7 @@ class ResourceMapper {
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  private EntityStorageInterface $entityStorage;
+  private EntityStorageInterface $mappingEntityStorage;
 
   /**
    * Constructor.
@@ -55,7 +55,7 @@ class ResourceMapper {
   ) {
     $this->store = $store;
     $this->entityTypeManager = $entityTypeManager;
-    $this->entityStorage = $this->entityTypeManager
+    $this->mappingEntityStorage = $this->entityTypeManager
       ->getStorage('resource_mapping');
   }
 
@@ -136,7 +136,7 @@ class ResourceMapper {
    *   Fix this in 3.x.
    */
   protected function storeResourceToMapping(DataResource $resource): int {
-    $map = $this->entityStorage->create([
+    $map = $this->mappingEntityStorage->create([
       'identifier' => $resource->getIdentifier(),
       'version' => $resource->getVersion(),
       'filePath' => $resource->getFilePath(),
@@ -197,13 +197,17 @@ class ResourceMapper {
    */
   public function remove(DataResource $resource) {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
-      $mapping = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
+      $mapping = $this->getRevision(
+        $resource->getIdentifier(),
+        $resource->getPerspective(),
+        $resource->getVersion()
+      );
       if ($resource->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
         // Dispatch event to initiate removal of the datastore and local file.
         $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE, $resource);
       }
       // Remove the resource mapper perspective.
-      $this->entityStorage->delete([$mapping]);
+      $this->mappingEntityStorage->delete([$mapping]);
     }
   }
 
@@ -214,14 +218,15 @@ class ResourceMapper {
    *   object || False
    */
   private function getLatestRevision($identifier, $perspective) {
-    $map_ids = $this->entityStorage->getQuery()
+    $map_ids = $this->mappingEntityStorage->getQuery()
       ->condition('identifier', $identifier)
       ->condition('perspective', $perspective)
       ->sort('version', 'DESC')
+      ->range(0, 1)
       ->accessCheck(FALSE)
       ->execute();
     if ($map_ids) {
-      return $this->entityStorage->load(reset($map_ids));
+      return $this->mappingEntityStorage->load(reset($map_ids));
     }
     return NULL;
   }
@@ -233,14 +238,15 @@ class ResourceMapper {
    *   object || False
    */
   private function getRevision($identifier, $perspective, $version) {
-    $map_ids = $this->entityStorage->getQuery()
+    $map_ids = $this->mappingEntityStorage->getQuery()
       ->condition('identifier', $identifier)
       ->condition('perspective', $perspective)
       ->condition('version', $version)
+      ->range(0, 1)
       ->accessCheck(FALSE)
       ->execute();
     if ($map_ids) {
-      return $this->entityStorage->load(reset($map_ids));
+      return $this->mappingEntityStorage->load(reset($map_ids));
     }
     return NULL;
   }
@@ -259,14 +265,14 @@ class ResourceMapper {
    *   existing resource.
    */
   public function filePathExists($filePath) {
-    $map_ids = $this->entityStorage->getQuery()
+    $map_ids = $this->mappingEntityStorage->getQuery()
       ->condition('filePath', $filePath)
       ->accessCheck(FALSE)
       ->execute();
-    if (!empty($map_ids)) {
-      $maps = $this->entityStorage->loadMultiple($map_ids);
-      throw (new AlreadyRegistered(json_encode($maps)))
-        ->setAlreadyRegistered($maps);
+    if ($map_ids) {
+      $mappings = $this->mappingEntityStorage->loadMultiple($map_ids);
+      throw (new AlreadyRegistered(json_encode($mappings)))
+        ->setAlreadyRegistered($mappings);
     }
     return FALSE;
   }
