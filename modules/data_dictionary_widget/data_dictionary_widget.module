@@ -73,7 +73,7 @@ function validate_unique_identifier($form, &$form_state){
     return;
 
   }else if(in_array($submitted_identifier,$exsisting_identifiers) && array_search($submitted_identifier, $exsisting_identifiers) != $current_nid){
-    $form_state->setError($form, 'The identifier you entered is taken. Please choose antheor one.');
+    $form_state->setError($form, 'The identifier you entered is taken. Please choose another one.');
     return $form_state;
   }
 }
