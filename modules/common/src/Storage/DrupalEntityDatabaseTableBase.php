@@ -187,16 +187,4 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
     return NULL;
   }
 
-  protected function loadEntityByField($field, $value) {
-    if ($ids = $this->entityStorage->getQuery()
-      ->condition($field, $value)
-      ->range(0,1)
-      ->accessCheck(FALSE)
-      ->execute()
-    ) {
-      return $this->entityStorage->load(reset($ids));
-    }
-    return NULL;
-  }
-
 }

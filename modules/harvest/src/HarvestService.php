@@ -8,6 +8,8 @@ use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
@@ -32,6 +34,11 @@ class HarvestService implements ContainerInjectionInterface {
   private $storeFactory;
 
   /**
+   * @var \Contracts\FactoryInterface
+   */
+  private HarvestHashesDatabaseTableFactory $hashesStoreFactory;
+
+  /**
    * DKAN metastore service.
    *
    * @var \Drupal\metastore\MetastoreService
@@ -53,6 +60,7 @@ class HarvestService implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new self(
       $container->get('dkan.harvest.storage.database_table'),
+      $container->get('dkan.harvest.storage.hashes_database_table'),
       $container->get('dkan.metastore.service'),
       $container->get('entity_type.manager')
     );
@@ -61,8 +69,14 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(
+    FactoryInterface $storeFactory,
+    HarvestHashesDatabaseTableFactory $hashesStoreFactory,
+    MetastoreService $metastore,
+    EntityTypeManager $entityTypeManager
+  ) {
     $this->storeFactory = $storeFactory;
+    $this->hashesStoreFactory = $hashesStoreFactory;
     $this->metastore = $metastore;
     $this->entityTypeManager = $entityTypeManager;
   }
@@ -139,13 +153,13 @@ class HarvestService implements ContainerInjectionInterface {
     // Remove all the support tables for this plan id.
     foreach ([
       'harvest_' . $plan_id . '_items',
-      'harvest_' . $plan_id . '_hashes',
       'harvest_' . $plan_id . '_runs',
     ] as $table_name) {
       /** @var \Drupal\common\Storage\DatabaseTableInterface $store */
       $store = $this->storeFactory->getInstance($table_name);
       $store->destruct();
     }
+    $this->hashesStoreFactory->getInstance($plan_id)->destruct();
     // Remove the plan id from the harvest_plans table.
     $plan_store = $this->storeFactory->getInstance('harvest_plans');
     return $plan_store->remove($plan_id);
@@ -339,17 +353,16 @@ class HarvestService implements ContainerInjectionInterface {
    *   Harvester object.
    */
   private function getHarvester(string $id) {
-    $plan_store = $this->storeFactory->getInstance("harvest_plans");
-    $harvestPlan = json_decode($plan_store->retrieve($id));
-    $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
-    $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
-    return $this->getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store);
+    $plan_store = $this->storeFactory->getInstance('harvest_plans');
+    return $this->getDkanHarvesterInstance(
+      json_decode($plan_store->retrieve($id)),
+      $this->storeFactory->getInstance('harvest_' . $id . '_items'),
+      $this->hashesStoreFactory->getInstance($id)
+    );
   }
 
   /**
    * Protected.
-   *
-   * @codeCoverageIgnore
    */
   protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
     return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));

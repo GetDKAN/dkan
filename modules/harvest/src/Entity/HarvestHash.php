@@ -45,7 +45,7 @@ use Drupal\harvest\HarvestHashInterface;
  *   },
  * )
  */
-class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
+class HarvestHash extends ContentEntityBase implements HarvestHashInterface, \JsonSerializable {
 
   /**
    * {@inheritdoc}
@@ -85,6 +85,20 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
       ]);
 
     return $fields;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @todo This is for backwards compatibility with DatabaseTableInterface.
+   *   Remote when we're no longer using that interface for harvest_hashes.
+   */
+  #[\ReturnTypeWillChange]
+  public function jsonSerialize() {
+    return (object) [
+      'harvest_plan_id' => $this->get('harvest_plan_id')->getString(),
+      'hash' => $this->get('hash')->getString(),
+    ];
   }
 
 }
