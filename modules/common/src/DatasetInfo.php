@@ -5,12 +5,12 @@ declare(strict_types = 1);
 namespace Drupal\common;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -169,13 +169,13 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Get various information from a dataset node's specific revision.
    *
-   * @param \Drupal\node\Entity\Node $node
+   * @param \Drupal\Core\Entity\ContentEntityInterface $node
    *   Dataset node.
    *
    * @return array
    *   Dataset node revision info.
    */
-  protected function getRevisionInfo(Node $node) : array {
+  protected function getRevisionInfo(ContentEntityInterface $node) : array {
 
     $metadata = json_decode($node->get('field_json_metadata')->getString());
 
