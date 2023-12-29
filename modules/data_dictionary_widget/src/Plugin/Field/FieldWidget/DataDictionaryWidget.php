@@ -73,7 +73,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       '#theme' => 'custom_table',
     ];
    $action_list = [
-    'type',
+    'format',
     'edit',
     'update',
     'abort',
@@ -105,7 +105,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
             '#required' => TRUE,
             '#title' => 'Data type',
             '#value' =>  $current_fields[$key]['type'],
-            '#op' => 'type_' . $key,
+            '#op' => 'format_' . $key,
             '#options' => [
               'string' => t('String'),
               'date' => t('Date'),
@@ -128,13 +128,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
             '#prefix' => '<div id = field-json-metadata-' . $key .'-format>',
             '#suffix' => '</div>',
             '#validated' => TRUE,
-            '#options' => [
-              'default' => 'default',
-              'email' => 'email',
-              'uri' => 'uri',
-              'binary' => 'binary',
-              'uuid' => 'uuid'
-            ],
+            '#options' => DataDictionary::setFormatOptions($current_fields[$key]['type']),
           ];
           $element['dictionary_fields']['edit_fields'][$key]['format_other'] = [
             '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $key .'][field_collection][format_other]',
@@ -347,46 +341,14 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $field_index = $op_index[1];
 
     //The update format field is located in a diferent location.
-    if(str_contains($op, 'type')){
+    if(str_contains($op, 'format')){
       $format_field = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$field_index]["format"];
       $data_type = $field[0]["dictionary_fields"]["data"][$field_index]["field_collection"]["type"];
     }
     
-    $options = [];
 
-    if ($data_type == 'string') {
-      $format_field['#description'] = DataDictionary::generateFormatDescription($data_type);
-      $options = [
-        'default' => 'default',
-        'email' => 'email',
-        'uri' => 'uri',
-        'binary' => 'binary',
-        'uuid' => 'uuid'
-      ];
-    }
-
-    if ($data_type == 'date') {
-      $format_field['#description'] = DataDictionary::generateFormatDescription($data_type);
-      $options = [
-        'default' => 'default',
-        'any' => 'any',
-        'other' => 'other'
-      ];
-    }
-
-    if ($data_type == 'integer') {
-      $format_field['#description'] = DataDictionary::generateFormatDescription($data_type);
-      $options = [
-        'default' => 'default',
-      ];
-    }
-
-    if ($data_type == 'number') {
-      $format_field['#description'] = DataDictionary::generateFormatDescription($data_type);
-      $options = [
-        'default' => 'default',
-      ];
-    }
+    $format_field['#description'] = DataDictionary::generateFormatDescription($data_type);
+    $options = DataDictionary::setFormatOptions($data_type);
 
     $format_field["#options"] = $options;
     return $format_field;
@@ -449,7 +411,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
     $form_state->set('add_new_field', '');
-    
+    $fields_being_added = $form_state->set('fields_being_added', '');
 
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     if ($current_fields) {

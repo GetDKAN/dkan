@@ -31,8 +31,7 @@ public static function setAjaxElements(array $dictionaryFields){
   foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
     $edit_button = $dictionaryFields['edit_buttons'][$row];
     $edit_fields = $dictionaryFields['edit_fields'][$row];
-    $data_types = $dictionaryFields['data_types'][$row];
-     //Setting the ajax fields if they exsist.
+    //Setting the ajax fields if they exsist.
     if ($edit_button) {
       $dictionaryFields['data']['#rows'][$row] =  array_merge($data, $edit_button) ;
       unset($dictionaryFields['edit_buttons'][$row]);
@@ -94,6 +93,49 @@ public static function setAjaxElements(array $dictionaryFields){
     }
 
     return $description;
+  }
+
+    /**
+   * Function to generate the options for the "Format" field.
+   *
+   * @param string $dataType
+   *
+   * @return array
+   */
+  public static function setFormatOptions($dataType) {
+    
+    if ($dataType == 'string') {
+      $options = [
+        'default' => 'default',
+        'email' => 'email',
+        'uri' => 'uri',
+        'binary' => 'binary',
+        'uuid' => 'uuid'
+      ];
+    }
+
+    if ($dataType == 'date') {
+      $options = [
+        'default' => 'default',
+        'any' => 'any',
+        'other' => 'other'
+      ];
+    }
+
+    if ($dataType == 'integer') {
+      $options = [
+        'default' => 'default',
+      ];
+    }
+
+    if ($dataType == 'number') {
+      $options = [
+        'default' => 'default',
+      ];
+    }
+
+    return $options;
+
   }
 
 }
