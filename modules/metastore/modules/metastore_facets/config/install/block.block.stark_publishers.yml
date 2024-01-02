@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.publishers
+  module:
+    - facets
+    - system
+  theme:
+    - stark
+id: stark_publishers
+theme: stark
+region: sidebar_first
+weight: -2
+provider: null
+plugin: 'facet_block:publishers'
+settings:
+  id: 'facet_block:publishers'
+  label: Publishers
+  label_display: visible
+  provider: facets
+  context_mapping: {  }
+  block_id: stark_publishers
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /dataset-search

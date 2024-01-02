@@ -6,25 +6,18 @@ dependencies:
     - views.view.dkan_dataset_search
   module:
     - search_api
+_core:
+  default_config_hash: 5l9y65p885oRNMqrRRM4GHCPi8QjjR73QdW86S7hNao
 id: tags
 name: Tags
+url_alias: tags
 weight: 0
 min_count: 1
 missing: false
 missing_label: others
-url_alias: tags
-facet_source_id: 'search_api:views_page__dkan_dataset_search__dataset_search'
+show_only_one_result: false
 field_identifier: keyword
-query_operator: and
-hard_limit: 0
-exclude: false
-use_hierarchy: false
-keep_hierarchy_parents_active: false
-hierarchy:
-  type: taxonomy
-  config: {  }
-expand_hierarchy: false
-enable_parent_when_child_gets_disabled: true
+facet_source_id: 'search_api:views_page__dkan_dataset_search__dataset_search'
 widget:
   type: checkbox
   config:
@@ -36,11 +29,17 @@ widget:
     soft_limit_settings:
       show_less_label: 'Show less'
       show_more_label: 'Show more'
-empty_behavior:
-  behavior: none
+query_operator: and
+use_hierarchy: false
+keep_hierarchy_parents_active: false
+hierarchy:
+  type: taxonomy
+  config: {  }
+expand_hierarchy: false
+enable_parent_when_child_gets_disabled: true
+hard_limit: 0
+exclude: false
 only_visible_when_facet_source_is_visible: true
-show_only_one_result: false
-show_title: false
 processor_configs:
   active_widget_order:
     processor_id: active_widget_order
@@ -71,3 +70,6 @@ processor_configs:
       pre_query: 50
       build: 15
     settings: {  }
+empty_behavior:
+  behavior: none
+show_title: false

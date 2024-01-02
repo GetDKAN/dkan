@@ -79,7 +79,7 @@ function metastore_search_entity_delete(EntityInterface $entity): void {
  * Implements hook_views_pre_render().
  */
 function metastore_search_views_pre_render(ViewExecutable $view) {
-  if($view->id() == 'dkan_dataset_search') {
+  if ($view->id() == 'dkan_dataset_search') {
     $view->element['#attached']['library'][] = 'metastore_search/search_results';
   }
 }

@@ -1,5 +1,5 @@
 Installation
-===============
+=============
 
 .. note::
   `DKAN DDEV Add-on <https://getdkan.github.io/ddev-dkan/>`_ is a project
