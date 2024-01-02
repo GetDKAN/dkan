@@ -26,13 +26,13 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
   /**
    * {@inheritdoc}
    */
-  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {    
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $field_values = $form_state->getValue(["field_json_metadata"]);
     $current_fields = $form_state->get('current_fields');
     $fields_being_modified = $form_state->get("fields_being_modified");
     $op = $form_state->getTriggeringElement()['#op'] ?? null;
     $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, true) : [];
-    $op_index = explode("_", $form_state->getTriggeringElement()['#op']);
+    $op_index = $form_state->getTriggeringElement()['#op'] ? explode("_", $form_state->getTriggeringElement()['#op']) : null;
 
     $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
 
@@ -63,7 +63,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
         [$this, 'preRenderForm'],
       ],
     ];
-    
+
     $element['dictionary_fields']['data'] = [
       '#access' => ((bool) $current_fields || (bool) $data_results),
       '#type' => 'table',
@@ -200,8 +200,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
                 '#limit_validation_errors' => [],
                 ],
             ];
-                
-        
+
+
         }else{
         $element['dictionary_fields']['edit_buttons'][$key]['edit_button'] = [
           //'#type' => 'image_button',
@@ -225,7 +225,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
         ];
       }
     }
-   
+
     $element['dictionary_fields']['add_row_button'] = [
       '#type' => 'submit',
       '#value' => 'Add field',
@@ -267,7 +267,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
-   
+
     if (!empty($field_collection)) {
       $data_results = [
         [
@@ -300,7 +300,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     if (isset($current_fields)) {
       $data_results = $current_fields;
     }
-  
+
     if (isset($field_values[0]['dictionary_fields']["field_collection"])) {
       $field_group = $field_values[0]['dictionary_fields']['field_collection']['group'];
       $field_format = $field_group["format"] == 'other' ? $field_group["format_other"] : $field_group["format"];
@@ -314,17 +314,17 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
           "description" => $field_group["description"],
         ]
       ];
-  
+
       if (isset($data_pre) && $op === "add") {
         $data_results = isset($current_fields) ? array_merge($current_fields, $data_pre) : $data_pre;
       }
     }
-  
+
     if (!isset($data_pre) && isset($data_results) && $current_fields) {
       $data_results = $current_fields;
     }
-    
-  
+
+
     return $data_results;
   }
 
@@ -345,7 +345,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       $format_field = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$field_index]["format"];
       $data_type = $field[0]["dictionary_fields"]["data"][$field_index]["field_collection"]["type"];
     }
-    
+
 
     $format_field['#description'] = DataDictionary::generateFormatDescription($data_type);
     $options = DataDictionary::setFormatOptions($data_type);
@@ -550,7 +550,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
  * Prerender callback for the form.
  *
  * Moves the buttons into the table.
- * 
+ *
  */
 public function preRenderForm(array $dictionaryFields) {
    return DataDictionary::setAjaxElements($dictionaryFields);
