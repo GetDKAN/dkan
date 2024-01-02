@@ -6,7 +6,7 @@ dependencies:
   module:
     - search_api
 _core:
-  default_config_hash: ksK7g8bPswpXYrIEMfnMmxT-Vd5YgpzplevFdnUyVY4
+  default_config_hash: N36f1tselTT9qsSHY_UEUnOeGu2MDceXQzOB0Zzvk4E
 id: dkan_dataset_search
 label: 'DKAN Dataset Search'
 module: views
@@ -23,15 +23,64 @@ display:
     display_options:
       title: Datasets
       fields:
-        title:
-          id: title
+        search_api_id:
+          id: search_api_id
           table: search_api_index_dkan
-          field: title
+          field: search_api_id
           relationship: none
           group_type: group
-          admin_label: Title
-          plugin_id: search_api
+          admin_label: ''
+          plugin_id: standard
           label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+        modified:
+          id: modified
+          table: search_api_index_dkan
+          field: modified
+          relationship: none
+          group_type: group
+          admin_label: Modified
+          plugin_id: search_api
+          label: Updated
           exclude: false
           alter:
             alter_text: false
@@ -61,6 +110,59 @@ display:
             preserve_tags: ''
             html: false
           element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        title:
+          id: title
+          table: search_api_index_dkan
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: Title
+          plugin_id: search_api
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: true
+            path: '{{ search_api_id }}'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: h2
           element_class: ''
           element_label_type: ''
           element_label_class: ''
@@ -127,60 +229,7 @@ display:
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-        modified:
-          id: modified
-          table: search_api_index_dkan
-          field: modified
-          relationship: none
-          group_type: group
-          admin_label: Modified
-          plugin_id: search_api
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
+          multi_type: ul
           multi_separator: ', '
         description:
           id: description
@@ -288,7 +337,7 @@ display:
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
-          multi_type: separator
+          multi_type: ul
           multi_separator: ', '
       pager:
         type: mini
@@ -391,6 +440,7 @@ display:
           preserve_facet_query_args: false
           query_tags: {  }
       relationships: {  }
+      css_class: dkan-dataset-search
       header: {  }
       footer: {  }
       display_extenders: {  }

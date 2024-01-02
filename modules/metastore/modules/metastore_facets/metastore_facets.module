@@ -1,0 +1,12 @@
+<?php
+
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function metastore_facets_views_pre_render(ViewExecutable $view) {
+  if($view->id() == 'dkan_dataset_search') {
+    $view->element['#attached']['library'][] = 'metastore_facets/search_facets';
+  }
+}

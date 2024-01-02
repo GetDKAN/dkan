@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.tags
+  module:
+    - facets
+    - system
+  theme:
+    - stark
+id: stark_tags
+theme: stark
+region: sidebar_first
+weight: 0
+provider: null
+plugin: 'facet_block:tags'
+settings:
+  id: 'facet_block:tags'
+  label: Tags
+  label_display: visible
+  provider: facets
+  context_mapping: {  }
+  block_id: stark_tags
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /dataset-search
