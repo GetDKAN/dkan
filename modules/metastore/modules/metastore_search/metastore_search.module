@@ -4,7 +4,6 @@ use Drupal\Core\Entity\EntityInterface;
 
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\NodeWrapper\Data;
-use Drupal\views\ViewExecutable;
 
 /**
  * Determine whether the supplied entity is a dataset.
@@ -73,13 +72,4 @@ function metastore_search_entity_delete(EntityInterface $entity): void {
   $storage = \Drupal::service('entity_type.manager')->getStorage('search_api_index');
   $index = $storage->load('dkan');
   $index->trackItemsDeleted('dkan_dataset', [$entity->uuid()]);
-}
-
-/**
- * Implements hook_views_pre_render().
- */
-function metastore_search_views_pre_render(ViewExecutable $view) {
-  if ($view->id() == 'dkan_dataset_search') {
-    $view->element['#attached']['library'][] = 'metastore_search/search_results';
-  }
 }

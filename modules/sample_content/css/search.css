@@ -27,3 +27,11 @@
   background: #eeeeee;
   margin: 8px 8px 8px 0;
 }
+.facets-widget-checkbox ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.facets-widget-checkbox li {
+  margin: 8px 0;
+}
