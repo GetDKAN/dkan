@@ -12,7 +12,7 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description": "Data on bike lanes in Florida.",
+      "description": "Data on bike lanes in Florida. Florida's bike lanes provide a safe and designated space for riders to pedal along the coastlines, through bustling urban areas, and amidst tranquil suburban neighborhoods. Whether navigating the bustling streets of Miami, cruising alongside the white sandy beaches of the Gulf Coast, or meandering through the picturesque Everglades, cyclists in Florida enjoy a network of bike lanes that cater to both recreational riders and daily commuters. With a combination of dedicated paths, shared roadways, and expansive trails, Florida's bike lanes contribute to a healthier and more sustainable lifestyle, encouraging residents and visitors alike to embrace the joy of two-wheeled travel under the warm Florida sun.",
       "distribution": [
         {
           "@type": "dcat:Distribution",
@@ -90,7 +90,7 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"Source: FBI Uniform Crime Report, 2014",
+      "description":"In 2014, crime in U.S. cities continued to be a complex and multifaceted issue, shaped by a variety of social, economic, and demographic factors. While overall crime rates had been on a gradual decline for several years, specific cities experienced fluctuations in crime statistics. Major metropolitan areas often grappled with challenges related to violent crimes. Law enforcement agencies, community organizations, and policymakers are working to collect and analyze data to inform policies addressing the root causes of crime. Source: FBI Uniform Crime Report, 2014",
       "distribution":[
         {
           "@type":"dcat:Distribution",
@@ -120,7 +120,7 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"Sample data.",
+      "description":"Asthma prevalence remains a significant public health concern worldwide, affecting people of all ages and backgrounds. Globally, the World Health Organization estimates that over 339 million individuals grapple with asthma, a chronic respiratory condition characterized by recurrent episodes of wheezing, breathlessness, chest tightness, and coughing. The prevalence of asthma varies across regions and is influenced by factors such as genetics, environmental exposures, and socio-economic conditions. In some developed nations, urbanization and increased exposure to allergens contribute to higher rates of asthma. Moreover, disparities in healthcare access and quality can impact the prevalence and management of asthma, with vulnerable populations often facing greater challenges. Efforts to address asthma prevalence involve public health initiatives, education, and research aimed at understanding the multifaceted factors influencing the condition, ultimately contributing to better prevention and management strategies.",
       "distribution":[
         {
           "@type":"dcat:Distribution",
@@ -152,7 +152,7 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.\nSource: Centers for Disease Control and Prevention, 2015",
+      "description":"Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.\nSource: Centers for Disease Control and Prevention, 2015.\nIn 2019, the Centers for Disease Control and Prevention (CDC) reported that approximately 14% of adults in the U.S. were current cigarette smokers. While this figure represented a significant decline from previous decades, the prevalence of alternative tobacco products, such as e-cigarettes, among youth garnered attention. The use of vaping products increased, contributing to concerns about nicotine addiction and potential health risks, particularly among adolescents.",
       "distribution":[
         {
           "@type":"dcat:Distribution",
@@ -184,7 +184,7 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"Example data for reviewing catalog functionality.",
+      "description":"The varicella vaccine stands as a crucial tool in preventing the highly contagious viral infection known as chickenpox, caused by the varicella-zoster virus. This vaccine has been an integral part of routine childhood immunization schedules in many countries, demonstrating its effectiveness in reducing the incidence and severity of chickenpox. Administered typically in two doses, the varicella vaccine not only provides direct protection against chickenpox but also contributes to the prevention of more severe complications and the potential reactivation of the virus as shingles later in life. By stimulating the immune system to recognize and combat the varicella-zoster virus, the vaccine plays a pivotal role in public health efforts to control the spread of this contagious disease, promoting a healthier and safer community.",
       "distribution":[
         {
           "@type":"dcat:Distribution",
@@ -224,7 +224,7 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"Polling places in the state of Wisconsin.",
+      "description":"Wisconsin's polling places serve as the cornerstone of the state's democratic process, providing citizens with the essential means to exercise their right to vote. Dotted across the diverse landscapes of cities, towns, and rural areas, these polling locations are meticulously organized to facilitate fair and accessible elections. On election days, voters converge at designated sites equipped with trained poll workers, electronic voting machines, and paper ballots, ensuring a smooth and secure voting experience. Wisconsin's commitment to democratic values is evident in the accessibility measures implemented, such as early voting options and absentee balloting, providing flexibility to accommodate the diverse schedules of its residents. The state's polling places embody the collective voice of its people, playing a pivotal role in shaping the political landscape and fostering civic engagement.",
       "distribution":[
         {
           "@type":"dcat:Distribution",
@@ -283,7 +283,7 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"Monthly gold prices (USD) in London from Bundesbank. General: 1 ounce of fine gold = 31.1034768g.\u003Cp\u003EMethod of calculation:\u003C\/p\u003E\n\u003Cul\u003E\n\u003Cli\u003ESince 1 April 1968, calculated from the daily morning fixing;\u003C\/li\u003E\n\u003Cli\u003EFrom January 1950 to 21 March 1954, calculated using the Bank of England\u0027s gold purchasing price (1 ounce of fine = pound 12.40) in connection with the average exchange rate for the pound in New York (up to the end of 1952; source: Federal Reserve Bulletin) and, from January 1953, midpoint exchange rates for the US dollar in London (source: Financial Times (FT)).\u003C\/li\u003E\n\u003Cli\u003EFrom 22 March 1954 to December 1959, calculated using the fixing price for gold bars of approx. 12 1\/2 kg and 995\/1000 fineness and over (so-called standard bars) according to data from Metallgesellschaft AG, Frankfurt am Main, in connection with the average midpoint exchange rates for the US dollar in London (source: FT).\u003C\/li\u003E\n\u003Cli\u003EFrom January 1960 to 14 March 1968, average fixing price for standard bars as specified in the Bank of England\u0027s Quarterly Bulletin.\u003C\/li\u003E\n\u003Cli\u003EOn 15 March 1968, fixing price suspended. Gold market split into an official (reserved for central banks) and a free market as a result of the Washington Communique of 17 March 1968. Gold trading suspended from 18 to 29 March 1968.\u003C\/li\u003E\n\u003Cli\u003ESources for daily prices: April 1968 - March 1974: FT; April 1974 - December 1980: Samuel Montagu \u0026amp; Co. Ltd.; January 1981 - December 2005: FT; January 2006 - present: Reuters.\u003C\/li\u003E\n\u003Cli\u003EComment on 1968-03: Average from 1 to 14 March 1968.\u003C\/li\u003E\n\u003C\/ul\u003E\n\u003Cp\u003cense: PDDL (Source indicates no restrictions on data).\u003C\/p\u003E\n",
+      "description":"Monthly gold prices (USD) in London from Bundesbank. General: 1 ounce of fine gold = 31.1034768g. Method of calculation: Since 1 April 1968, calculated from the daily morning fixing; From January 1950 to 21 March 1954, calculated using the Bank of England's gold purchasing price (1 ounce of fine = pound 12.40) in connection with the average exchange rate for the pound in New York (up to the end of 1952; source: Federal Reserve Bulletin) and, from January 1953, midpoint exchange rates for the US dollar in London (source: Financial Times (FT)). From 22 March 1954 to December 1959, calculated using the fixing price for gold bars of approx. 12 1/2 kg and 995/1000 fineness and over (so-called standard bars) according to data from Metallgesellschaft AG, Frankfurt am Main, in connection with the average midpoint exchange rates for the US dollar in London (source: FT). From January 1960 to 14 March 1968, average fixing price for standard bars as specified in the Bank of England's Quarterly Bulletin. On 15 March 1968, fixing price suspended. Gold market split into an official (reserved for central banks) and a free market as a result of the Washington Communique of 17 March 1968. Gold trading suspended from 18 to 29 March 1968. Sources for daily prices: April 1968 - March 1974: FT; April 1974 - December 1980: Samuel Montagu &amp; Co. Ltd.; January 1981 - December 2005: FT; January 2006 - present: Reuters. Comment on 1968-03: Average from 1 to 14 March 1968.",
       "distribution":[
         {
           "@type":"dcat:Distribution",
