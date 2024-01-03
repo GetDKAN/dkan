@@ -11,6 +11,8 @@ use Drupal\metastore\ResourceMappingInterface;
 /**
  * Defines the resource mapping entity class.
  *
+ * Used as storage by \Drupal\metastore\ResourceMapper.
+ *
  * @ContentEntityType(
  *   id = "resource_mapping",
  *   label = @Translation("Resource mapping"),

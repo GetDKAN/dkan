@@ -26,7 +26,10 @@ class ReferencerTest extends KernelTestBase {
 
   protected static $modules = [
     'common',
+    'datastore',
     'metastore',
+    'node',
+    'user',
   ];
 
   /**
@@ -62,7 +65,14 @@ class ReferencerTest extends KernelTestBase {
 
   protected function setUp(): void {
     parent::setUp();
-    $this->installEntitySchema('resource_mapping');
+    foreach ([
+      'node',
+      'resource_mapping',
+      'user',
+    ] as $entity) {
+      $this->installEntitySchema($entity);
+    }
+    $this->installConfig(['datastore', 'metastore', 'node']);
   }
 
   private function mockReferencer($existing = TRUE) {
