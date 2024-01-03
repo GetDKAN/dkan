@@ -6,9 +6,9 @@ use Drupal\Tests\BrowserTestBase;
 
 /**
  * Data_Dictionary_Widget test.
- * 
+ *
  * @coversDefaultClass \Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget
- * 
+ *
  * @group data_dictionary_widget
  * @group functional
  */
