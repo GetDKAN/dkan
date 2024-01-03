@@ -1,6 +1,13 @@
 <?php
 
-use \Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+/**
+ * @file
+ * Module for creating Data Dictionary Widget.
+ */
+
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\data_dictionary_widget\Controller\DataDictionary;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_theme().
@@ -24,7 +31,7 @@ function data_dictionary_widget_theme($existing, $type, $theme, $path) {
  * Dynamically set the widget type for the field_json_metadata field.
  */
 function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
-  if (_data_dictionary_data_type_checker($context) === 'data-dictionary') {
+  if (data_dictionary_widget__data_dictionary_data_type_checker($context) === 'data-dictionary') {
     $form_display->setComponent('field_json_metadata', [
       'type' => 'data_dictionary_widget',
     ]);
@@ -36,19 +43,48 @@ function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInter
  *
  * @param array $context
  *   An associative array containing entity_type, bundle and form_mode.
- * 
+ *
  * @return string
  *   Schema/field_data_type value depending on form_mode.
  */
-function _data_dictionary_data_type_checker($context) {
+function data_dictionary_widget__data_dictionary_data_type_checker($context) {
   if ($context['form_mode'] === "edit") {
     $node = \Drupal::routeMatch()->getParameter('node');
-    if ($node instanceof \Drupal\node\NodeInterface && $node->hasField('field_data_type')) {
+    if ($node instanceof NodeInterface && $node->hasField('field_data_type')) {
       return $node->get('field_data_type')->value;
     }
   }
 
   if ($context['form_mode'] === "default") {
     return \Drupal::request()->query->get('schema');
+  }
+}
+
+/**
+ * Setting form validation for unique identifier.
+ */
+function data_dictionary_widget_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'node_data_edit_form' || $form_id == 'node_data_form') {
+    $form['#validate'][] = 'data_dictionary_widget_validate_unique_identifier';
+  }
+}
+
+/**
+ * Checking if identifier is already used.
+ */
+function data_dictionary_widget_validate_unique_identifier($form, &$form_state) {
+  $op = $form_state->getFormObject()->getOperation();
+  $current_nid = $op != 'default' ?? \Drupal::routeMatch()->getParameter('node')->id();
+  $exsisting_identifiers = DataDictionary::getDataDictionaries();
+
+  $submitted_identifier = $form["field_json_metadata"]["widget"][0]["identifier"]["#value"];
+
+  if ($current_nid && isset($exsisting_identifiers[$current_nid]) && $exsisting_identifiers[$current_nid] == $submitted_identifier) {
+    return;
+
+  }
+  elseif (in_array($submitted_identifier, $exsisting_identifiers) && array_search($submitted_identifier, $exsisting_identifiers) != $current_nid) {
+    $form_state->setError($form, 'The identifier you entered is taken. Please choose another one.');
+    return $form_state;
   }
 }
