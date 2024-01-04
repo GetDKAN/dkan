@@ -3,7 +3,6 @@ status: true
 dependencies:
   config:
     - search_api.index.dkan
-    - system.menu.admin
   module:
     - search_api
 id: dkan_dataset_search
@@ -386,7 +385,33 @@ display:
         type: none
         options: {  }
       empty: {  }
-      sorts: {  }
+      sorts:
+        modified:
+          id: modified
+          table: search_api_index_dkan
+          field: modified
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: DESC
+          expose:
+            label: 'Last Updated'
+            field_identifier: modified
+          exposed: true
+        title_string:
+          id: title_string
+          table: search_api_index_dkan
+          field: title_string
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: ASC
+          expose:
+            label: Alphabetical
+            field_identifier: title_string
+          exposed: true
       arguments: {  }
       filters:
         search_api_fulltext:
@@ -453,7 +478,17 @@ display:
           query_tags: {  }
       relationships: {  }
       css_class: dkan-dataset-search
-      header: {  }
+      header:
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: result
+          empty: true
+          content: 'Displaying @start - @end of @total'
       footer: {  }
       display_extenders: {  }
     cache_metadata:
@@ -462,6 +497,8 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
       tags:
         - 'config:search_api.index.dkan'
         - 'search_api_list:dkan'
@@ -480,6 +517,8 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
       tags:
         - 'config:search_api.index.dkan'
         - 'search_api_list:dkan'

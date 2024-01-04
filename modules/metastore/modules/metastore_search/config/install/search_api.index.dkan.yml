@@ -46,6 +46,11 @@ field_settings:
     datasource_id: dkan_dataset
     property_path: title
     type: text
+  title_string:
+    label: title_string
+    datasource_id: dkan_dataset
+    property_path: title
+    type: string
 datasource_settings:
   dkan_dataset: {  }
 processor_settings:
