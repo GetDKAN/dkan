@@ -1,8 +1,10 @@
+uuid: d2ed00e3-8f67-4fc9-be3c-b5c076ed0f77
 langcode: en
 status: true
 dependencies:
   config:
     - search_api.index.dkan
+    - system.menu.admin
   module:
     - search_api
 _core:
@@ -23,14 +25,14 @@ display:
     display_options:
       title: Datasets
       fields:
-        search_api_id:
-          id: search_api_id
+        nid:
+          id: nid
           table: search_api_index_dkan
-          field: search_api_id
+          field: nid
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: standard
+          plugin_id: search_api_numeric
           label: ''
           exclude: true
           alter:
@@ -72,6 +74,19 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
+          set_precision: false
+          precision: 0
+          decimal: .
+          separator: ''
+          format_plural: false
+          format_plural_string: !!binary MQNAY291bnQ=
+          prefix: ''
+          suffix: ''
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          format_plural_values: {  }
         modified:
           id: modified
           table: search_api_index_dkan
@@ -139,7 +154,7 @@ display:
             alter_text: false
             text: ''
             make_link: true
-            path: '{{ search_api_id }}'
+            path: '/node/{{ nid }}'
             absolute: false
             external: false
             replace_spaces: false
