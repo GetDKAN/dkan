@@ -24,7 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   hidden = true,
  * )
  */
-
 class DkanDatasetAddNid extends ProcessorPluginBase implements ContainerFactoryPluginInterface {
 
   /**
@@ -46,7 +45,7 @@ class DkanDatasetAddNid extends ProcessorPluginBase implements ContainerFactoryP
    * @param \Drupal\Core\Entity\EntityRepository $entityRepository
    *   EntityRepository.
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityRepository $entityRepository) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityRepository $entityRepository) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityRepository = $entityRepository;
   }
