@@ -2,6 +2,8 @@
 
 namespace Drupal\metastore_search\Plugin\search_api\processor;
 
+use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Item\ItemInterface;
 use Drupal\search_api\Processor\ProcessorPluginBase;
@@ -23,7 +25,54 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 
-class DkanDatasetAddNid extends ProcessorPluginBase {
+class DkanDatasetAddNid extends ProcessorPluginBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The entity repository service.
+   *
+   * @var \Drupal\Core\Entity\EntityRepository
+   */
+  protected $entityRepository;
+
+  /**
+   * Constructor.
+   *
+   * @param array $configuration
+   *   Config.
+   * @param string $plugin_id
+   *   Plugin.
+   * @param mixed $plugin_definition
+   *   Plugin definition.
+   * @param \Drupal\Core\Entity\EntityRepository $entityRepository
+   *   EntityRepository.
+   */
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityRepository $entityRepository) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->entityRepository = $entityRepository;
+  }
+
+  /**
+   * Create.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   Container.
+   * @param array $configuration
+   *   Config.
+   * @param string $plugin_id
+   *   Plugin.
+   * @param mixed $plugin_definition
+   *   Plugin definition.
+   *
+   * @return static
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity.repository')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -59,7 +108,7 @@ class DkanDatasetAddNid extends ProcessorPluginBase {
     $id = $item->getId();
     if ($id) {
       $uuid = str_replace("dkan_dataset/", "", $id);
-      $nid = \Drupal::service('entity.repository')->loadEntityByUuid('node', $uuid)->id();
+      $nid = $this->entityRepository->loadEntityByUuid('node', $uuid)->id();
 
       $fields = $item->getFields(FALSE);
       $fields = $this->getFieldsHelper()->filterForPropertyPath($fields, $item->getDatasourceId(), 'search_api_nid');
