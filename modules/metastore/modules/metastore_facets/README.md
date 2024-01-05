@@ -6,7 +6,11 @@ This is an optional module for sites that are not using a decoupled frontend. It
 
 Use the block layout screen at /admin/structure/block, and place the facets into a sidebar region, restrict the display to the /dataset-search page only.
 
-If you don't see the view available, try
+If you do not see the dataset search view, you will need to run the following to get the view and facets working:
+
+    composer require drupal/facets:3.0.x-dev
+
+    drush en metastore_facets
 
     drush cim --partial --source=modules/contrib/dkan/modules/metastore/modules/metastore_search/config/install
 
