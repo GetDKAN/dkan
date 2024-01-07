@@ -6,8 +6,6 @@ use Drupal\common\Events\Event;
 
 /**
  * Event dispatcher trait.
- *
- * @codeCoverageIgnore
  */
 trait EventDispatcherTrait {
 
