@@ -2,20 +2,18 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
-
 use Drupal\common\Events\Event;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourcePurger;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\ResourceMapper;
-
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -39,6 +37,13 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   protected $loggerFactory;
 
   /**
+   * Import job store factory.
+   *
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
+   */
+  private ImportJobStoreFactory $importJobStoreFactory;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -49,7 +54,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       $container->get('logger.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.service.resource_purger'),
-      $container->get('dkan.common.job_store')
+      $container->get('dkan.common.job_store'),
+      $container->get('dkan.datastore.import_job_store_factory')
     );
   }
 
@@ -66,13 +72,23 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.datastore.service.resource_purger service.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   The dkan.common.job_store service.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   The dkan.datastore.import_job_store_factory service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, LoggerChannelFactory $logger_factory, DatastoreService $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    LoggerChannelFactory $logger_factory,
+    DatastoreService $service,
+    ResourcePurger $resourcePurger,
+    JobStoreFactory $jobStoreFactory,
+    ImportJobStoreFactory $importJobStoreFactory
+  ) {
     $this->configFactory = $config_factory;
     $this->loggerFactory = $logger_factory;
     $this->service = $service;
     $this->resourcePurger = $resourcePurger;
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->importJobStoreFactory = $importJobStoreFactory;
   }
 
   /**
@@ -152,7 +168,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       ]);
     }
     try {
-      $this->jobStoreFactory->getInstance(ImportJob::class)->remove($id);
+      $this->importJobStoreFactory->getInstance()->remove($id);
     }
     catch (\Exception $e) {
       $this->loggerFactory->get('datastore')->error('Failed to remove importer job. @message',

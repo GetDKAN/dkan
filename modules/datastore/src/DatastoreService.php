@@ -5,11 +5,11 @@ namespace Drupal\datastore;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\ImportService;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
@@ -56,6 +56,13 @@ class DatastoreService implements ContainerInjectionInterface {
   private $dictionaryEnforcer;
 
   /**
+   * Import job store factory.
+   *
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
+   */
+  private ImportJobStoreFactory $importJobStoreFactory;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -64,6 +71,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.factory.import'),
       $container->get('queue'),
       $container->get('dkan.common.job_store'),
+      $container->get('dkan.datastore.import_job_store_factory'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
     );
   }
@@ -79,6 +87,8 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Queue factory service.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   Jobstore factory service.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   Import jobstore factory service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    */
@@ -87,12 +97,14 @@ class DatastoreService implements ContainerInjectionInterface {
     ImportFactoryInterface $importServiceFactory,
     QueueFactory $queue,
     JobStoreFactory $jobStoreFactory,
+    ImportJobStoreFactory $importJobStoreFactory,
     DictionaryEnforcer $dictionaryEnforcer
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
   }
 
@@ -223,8 +235,7 @@ class DatastoreService implements ContainerInjectionInterface {
 
     if ($storage) {
       $storage->destruct();
-      $this->jobStoreFactory
-        ->getInstance(ImportJob::class)
+      $this->importJobStoreFactory->getInstance()
         ->remove(md5($resource->getUniqueIdentifier()));
     }
 

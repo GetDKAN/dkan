@@ -6,6 +6,7 @@ services:
       - '@dkan.datastore.service.factory.import'
       - '@queue'
       - '@dkan.common.job_store'
+      - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
 
   dkan.datastore.service.post_import:
@@ -54,7 +55,7 @@ services:
   dkan.datastore.service.factory.import:
     class: \Drupal\datastore\Service\Factory\ImportServiceFactory
     arguments:
-      - '@dkan.common.job_store'
+      - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore.database_table_factory'
 
   dkan.datastore.logger_channel:
@@ -94,6 +95,7 @@ services:
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.resource_purger'
       - '@dkan.common.job_store'
+      - '@dkan.datastore.import_job_store_factory'
     tags:
       - { name: event_subscriber }
 
@@ -110,6 +112,11 @@ services:
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
+
+  dkan.datastore.import_job_store_factory:
+    class: \Drupal\datastore\Storage\ImportJobStoreFactory
+    arguments:
+      - '@database'
 
   pdlt.converter.strptime_to_mysql:
     class: \PDLT\Converter
