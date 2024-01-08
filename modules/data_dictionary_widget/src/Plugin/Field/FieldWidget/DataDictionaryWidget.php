@@ -2,8 +2,8 @@
 
 namespace Drupal\data_dictionary_widget\Plugin\Field\FieldWidget;
 
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use phpDocumentor\Reflection\PseudoTypes\True_;
@@ -36,26 +36,26 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
 
-    // build the data_results array to display the rows in the data table.
+    // Build the data_results array to display the rows in the data table.
     $data_results = $this->processDataResults($data_results, $current_fields, $field_values, $op);
 
     $element['identifier'] = [
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => $this->t('Identifier'),
-      '#default_value' => isset($field_json_metadata['identifier']) ? $field_json_metadata['identifier'] : '',
+      '#default_value' => $field_json_metadata['identifier'] ?? '',
     ];
 
     $element['title'] = [
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => $this->t('Title'),
-      '#default_value' => isset($field_json_metadata['title']) ? $field_json_metadata['title'] : '',
+      '#default_value' => $field_json_metadata['title'] ?? '',
     ];
 
     $element['dictionary_fields'] = [
       '#type' => 'fieldset',
-      '#title' => t('Data Dictionary Fields'),
+      '#title' => $this->t('Data Dictionary Fields'),
       '#prefix' => '<div id = field-json-metadata-dictionary-fields>',
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">A data dictionary for this resource, compliant with the <a href="https://specs.frictionlessdata.io/table-schema/" target="_blank">Table Schema</a> specification.</div>'),
@@ -232,7 +232,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       '#access' => TRUE,
       '#op' => 'add_new_field',
       '#submit' => [
-        [$this, 'addSubformCallback'],
+      [$this, 'addSubformCallback'],
       ],
       '#ajax' => [
         'callback' => [$this, 'subformAjax'],
@@ -250,7 +250,6 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     if ($form_state->get('add_new_field')) {
 
       $element['dictionary_fields']['field_collection'] = $form_state->get('add_new_field');
-      //$element['dictionary_fields']['field_collection']['#limit_validation_errors'] = [['identifier']];
       $element['dictionary_fields']['field_collection']['#access'] = TRUE;
       $element['dictionary_fields']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
@@ -276,10 +275,11 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
           "type" => $field_collection["type"],
           "format" => $field_collection["format"],
           "description" => $field_collection["description"],
-        ]
+        ],
       ];
       $updated = array_merge($current_fields ?? [], $data_results);
-    } else {
+    }
+    else {
       $updated = $current_fields ?? [];
     }
 
@@ -288,7 +288,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       'title' => $values[0]['title'] ?? '',
       'data' => [
         'fields' => $updated,
-      ]
+      ],
     ];
 
     $all_values = json_encode($json_data);
@@ -296,6 +296,9 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     return $all_values;
   }
 
+  /**
+   * Cleaning the data up.
+   */
   private function processDataResults($data_results, $current_fields, $field_values, $op) {
     if (isset($current_fields)) {
       $data_results = $current_fields;
@@ -312,7 +315,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
           "type" => $field_group["type"],
           "format" => $field_format,
           "description" => $field_group["description"],
-        ]
+        ],
       ];
 
       if (isset($data_pre) && $op === "add") {
@@ -323,7 +326,6 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     if (!isset($data_pre) && isset($data_results) && $current_fields) {
       $data_results = $current_fields;
     }
-
 
     return $data_results;
   }
@@ -427,20 +429,20 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
         '#access' => FALSE,
         'group' => [
           '#type' => 'fieldset',
-          '#title' => t('Add new field'),
+          '#title' => $this->t('Add new field'),
           '#collapsible' => TRUE,
           '#collapsed' => FALSE,
           'name' => [
             '#type' => 'textfield',
             '#required' => TRUE,
             '#title' => 'Name',
-            '#description' => 'A name for this field.',
+            '#description' => $this->t('A name for this field.'),
           ],
           'title' => [
             '#type' => 'textfield',
             '#required' => TRUE,
             '#title' => 'Title',
-            '#description' => 'A human-readable title.',
+            '#description' => $this->t('A human-readable title.'),
           ],
           'type' => [
             '#type' => 'select',
@@ -449,10 +451,10 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
             '#default_value' => 'string',
             '#op' => 'type',
             '#options' => [
-              'string' => t('String'),
-              'date' => t('Date'),
-              'integer' => t('Integer'),
-              'number' => t('Number'),
+              'string' => $this->t('String'),
+              'date' => $this->t('Date'),
+              'integer' => $this->t('Integer'),
+              'number' => $this->t('Number'),
             ],
             '#ajax' => [
               'callback' => [$this, 'updateFormatOptions'],
@@ -474,20 +476,20 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
               'email' => 'email',
               'uri' => 'uri',
               'binary' => 'binary',
-              'uuid' => 'uuid'
+              'uuid' => 'uuid',
             ],
           ],
           'format_other' => [
             '#type' => 'textfield',
             '#title' => $this->t('Other format'),
-            //'#required' => TRUE,
-            '#description' => 'A supported format',
+          // '#required' => TRUE,
+            '#description' => $this->t('A supported format'),
             '#states' => [
               'visible' => [
                 ':input[name="field_json_metadata[0][dictionary_fields][field_collection][group][format]"]' => ['value' => 'other'],
               ],
             ],
-            //'#element_validate' => [[$this, 'customValidationCallback']],
+            // '#element_validate' => [[$this, 'customValidationCallback']],
           ],
           'description' => [
             '#type' => 'textfield',
@@ -503,21 +505,20 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
               '#value' => $this->t('Add'),
               '#op' => 'add',
               '#submit' => [
-                [$this, 'addSubformCallback'],
+            [$this, 'addSubformCallback'],
               ],
               '#ajax' => [
                 'callback' => [$this, 'subformAjax'],
                 'wrapper' => 'field-json-metadata-dictionary-fields',
                 'effect' => 'fade',
               ],
-              //'#limit_validation_errors' => [$form["field_json_metadata"]["widget"][0]["identifier"]],
             ],
             'cancel_settings' => [
               '#type' => 'submit',
               '#value' => $this->t('Cancel'),
               '#op' => 'cancel',
               '#submit' => [
-                [$this, 'addSubformCallback'],
+            [$this, 'addSubformCallback'],
               ],
               '#ajax' => [
                 'callback' => [$this, 'subformAjax'],
@@ -541,37 +542,41 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $form_state->setRebuild();
   }
 
+  /**
+   * Ajax callback.
+   */
   public function subformAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
   }
 
+  /**
+   * Prerender callback for the form.
+   *
+   * Moves the buttons into the table.
+   */
+  public function preRenderForm(array $dictionaryFields) {
+    return DataDictionary::setAjaxElements($dictionaryFields);
+  }
 
-/**
- * Prerender callback for the form.
- *
- * Moves the buttons into the table.
- *
- */
-public function preRenderForm(array $dictionaryFields) {
-   return DataDictionary::setAjaxElements($dictionaryFields);
-}
-
+  /**
+   * Widget validation callback.
+   */
   public function customValidationCallback($element, &$form_state) {
     $format_field = $form_state->getUserInput()['field_json_metadata'][0]['dictionary_fields']['field_collection']['group']['format'];
     $other_format_value = $element['#value'];
 
-    // Check if the 'format' field is 'other' and the 'format_other' field is empty.
+    // Check if the 'format' field is 'other' and 'format_other' field is empty.
     if ($format_field == 'other' && empty($other_format_value)) {
       // Add a validation error.
       $form_state->setError($element, $this->t('Other format is required when "Other" is selected as the format.'));
     }
   }
 
-/**
- * {@inheritdoc}
- */
-public static function trustedCallbacks() {
-  return ['preRenderForm'];
-}
+  /**
+   * {@inheritdoc}
+   */
+  public static function trustedCallbacks() {
+    return ['preRenderForm'];
+  }
 
 }
