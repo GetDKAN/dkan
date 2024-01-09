@@ -6,7 +6,6 @@ use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
