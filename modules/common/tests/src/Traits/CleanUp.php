@@ -46,13 +46,12 @@ trait CleanUp {
    *
    */
   private function removeAllFileFetchingJobs() {
-    /** @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
-    $jobStoreFactory = \Drupal::service('dkan.common.job_store');
+    /** @var \Drupal\common\Storage\FileFetcherJobStoreFactory $jobStoreFactory */
+    $jobStoreFactory = \Drupal::service('dkan.common.filefetcher_job_store_factory');
 
-    /** @var \Drupal\common\Storage\JobStore $jobStore */
-    $jobStore = $jobStoreFactory->getInstance(FileFetcher::class);
-    foreach ($jobStore->retrieveAll() as $id) {
-      $jobStore->remove($id);
+    $fileFetcherJob = $jobStoreFactory->getInstance();
+    foreach ($fileFetcherJob->retrieveAll() as $id) {
+      $fileFetcherJob->remove($id);
     }
   }
 

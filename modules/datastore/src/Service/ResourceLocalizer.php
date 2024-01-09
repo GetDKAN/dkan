@@ -11,6 +11,7 @@ use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
@@ -69,11 +70,11 @@ class ResourceLocalizer {
   private DrupalFiles $drupalFiles;
 
   /**
-   * Job store factory.
+   * File fetcher job store factory.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
-  private JobStoreFactory $jobStoreFactory;
+  private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
    * Drupal queue.
@@ -89,13 +90,13 @@ class ResourceLocalizer {
     ResourceMapper $fileMapper,
     FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
-    JobStoreFactory $jobStoreFactory,
+    FileFetcherJobStoreFactory $fileFetcherJobStoreFactory,
     QueueFactory $queueFactory
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
-    $this->jobStoreFactory = $jobStoreFactory;
+    $this->fileFetcherJobStoreFactory = $fileFetcherJobStoreFactory;
     $this->queueFactory = $queueFactory;
   }
 
@@ -242,7 +243,7 @@ class ResourceLocalizer {
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      $this->jobStoreFactory->getInstance(FileFetcher::class)->remove($uuid);
+      $this->fileFetcherJobStoreFactory->getInstance()->remove($uuid);
     }
   }
 
