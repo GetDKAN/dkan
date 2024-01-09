@@ -3,16 +3,13 @@
 namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Procrastinator\Result;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -101,9 +98,9 @@ class DatastoreService implements ContainerInjectionInterface {
     DictionaryEnforcer $dictionaryEnforcer,
     ResourceMapper $resourceMapper
   ) {
-    $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
+    $this->queue = $queue;
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
     $this->resourceMapper = $resourceMapper;

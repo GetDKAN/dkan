@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Service\Factory;
 
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 
