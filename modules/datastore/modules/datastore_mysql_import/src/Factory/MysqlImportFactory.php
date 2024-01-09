@@ -2,9 +2,9 @@
 
 namespace Drupal\datastore_mysql_import\Factory;
 
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
 
@@ -16,9 +16,9 @@ class MysqlImportFactory implements ImportFactoryInterface {
   /**
    * The JobStore Factory service.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
-  private $jobStoreFactory;
+  private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory service.
@@ -30,8 +30,8 @@ class MysqlImportFactory implements ImportFactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, MySqlDatabaseTableFactory $databaseTableFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(ImportJobStoreFactory $importJobStoreFactory, MySqlDatabaseTableFactory $databaseTableFactory) {
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
@@ -46,7 +46,7 @@ class MysqlImportFactory implements ImportFactoryInterface {
       throw new \Exception("config['resource'] is required");
     }
 
-    $importer = new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
+    $importer = new ImportService($resource, $this->importJobStoreFactory, $this->databaseTableFactory);
     $importer->setImporterClass(MysqlImport::class);
     return $importer;
   }

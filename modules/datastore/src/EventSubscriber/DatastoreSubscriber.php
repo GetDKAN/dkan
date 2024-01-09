@@ -4,18 +4,15 @@ namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
-
-use Drupal\common\Events\Event;
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\common\Events\Event;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourcePurger;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\ResourceMapper;
-
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -39,6 +36,27 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   protected $loggerFactory;
 
   /**
+   * Datastore service.
+   *
+   * @var \Drupal\datastore\DatastoreService
+   */
+  private DatastoreService $datastoreService;
+
+  /**
+   * Resource purger service.
+   *
+   * @var \Drupal\datastore\Service\ResourcePurger
+   */
+  private ResourcePurger $resourcePurger;
+
+  /**
+   * Import job store factory.
+   *
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
+   */
+  private ImportJobStoreFactory $importJobStoreFactory;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -49,7 +67,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       $container->get('logger.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.service.resource_purger'),
-      $container->get('dkan.common.job_store')
+      $container->get('dkan.datastore.import_job_store_factory')
     );
   }
 
@@ -64,15 +82,21 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.datastore.service service.
    * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_purger service.
-   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
-   *   The dkan.common.job_store service.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   The dkan.datastore.import_job_store_factory service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, LoggerChannelFactory $logger_factory, DatastoreService $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    LoggerChannelFactory $logger_factory,
+    DatastoreService $service,
+    ResourcePurger $resourcePurger,
+    ImportJobStoreFactory $importJobStoreFactory
+  ) {
     $this->configFactory = $config_factory;
     $this->loggerFactory = $logger_factory;
-    $this->service = $service;
+    $this->datastoreService = $service;
     $this->resourcePurger = $resourcePurger;
-    $this->jobStoreFactory = $jobStoreFactory;
+    $this->importJobStoreFactory = $importJobStoreFactory;
   }
 
   /**
@@ -87,22 +111,24 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
     $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
     $events[LifeCycle::EVENT_PRE_REFERENCE][] = ['onPreReference'];
+    $events[ResourceLocalizer::EVENT_RESOURCE_LOCALIZED][] = ['onLocalizeComplete'];
     return $events;
   }
 
   /**
-   * Inherited.
+   * The resource mapper has registered a resource.
    *
-   * @inheritdoc
+   * @param \Drupal\common\Events\Event $event
+   *   Event.
+   *
+   * @see ResourceMapper::EVENT_REGISTRATION
    */
   public function onRegistration(Event $event) {
-
-    /** @var \Drupal\common\Events\Event $event */
     $resource = $event->getData();
 
     if ($resource->getPerspective() == 'source' && $this->isDataStorable($resource)) {
       try {
-        $this->service->import($resource->getIdentifier(), TRUE, $resource->getVersion());
+        $this->datastoreService->import($resource->getIdentifier(), TRUE, $resource->getVersion());
       }
       catch (\Exception $e) {
         $this->loggerFactory->get('datastore')->error($e->getMessage());
@@ -141,7 +167,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $resource = $event->getData();
     $id = md5(str_replace(DataResource::DEFAULT_SOURCE_PERSPECTIVE, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource->getUniqueIdentifier()));
     try {
-      $this->service->drop($resource->getIdentifier(), $resource->getVersion());
+      $this->datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
       $this->loggerFactory->get('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);
     }
     catch (\Exception $e) {
@@ -152,7 +178,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       ]);
     }
     try {
-      $this->jobStoreFactory->getInstance(ImportJob::class)->remove($id);
+      $this->importJobStoreFactory->getInstance()->remove($id);
     }
     catch (\Exception $e) {
       $this->loggerFactory->get('datastore')->error('Failed to remove importer job. @message',
@@ -191,6 +217,27 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       // Set static back to default value of false.
       $rev = 0;
     }
+  }
+
+  /**
+   * React to files being localized.
+   *
+   * This happens when the source CSV has been downloaded to the local file
+   * system. When that happens successfully, we create queue items for importing
+   * the file into the database.
+   *
+   * @param \Drupal\common\Events\Event $event
+   *   The Event.
+   *
+   * @see \Drupal\datastore\Service\ResourceLocalizer::EVENT_RESOURCE_LOCALIZED
+   */
+  public function onLocalizeComplete(Event $event) {
+    $data = $event->getData();
+    $this->datastoreService->import(
+      $data['identifier'] ?? NULL,
+      TRUE,
+      $data['version'] ?? NULL
+    );
   }
 
   /**

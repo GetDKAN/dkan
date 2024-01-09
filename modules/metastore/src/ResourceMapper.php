@@ -71,6 +71,9 @@ class ResourceMapper {
 
   /**
    * Register a new url for mapping.
+   *
+   * @todo the Resource class currently lives in datastore, we should move it
+   *   to a more neutral place.
    */
   public function register(DataResource $resource): bool {
     // Call filePathExists() so it throws an exception if the path is a
@@ -93,13 +96,13 @@ class ResourceMapper {
     $version = $resource->getVersion();
     // Ensure a source perspective already exists for the resource.
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
-      throw new \Exception('A resource with identifier ' . $identifier . ' was not found.');
+      throw new \Exception("A resource with identifier {$identifier} was not found.");
     }
 
     $perspective = $resource->getPerspective();
     // Ensure the current perspective does not already exist for the resource.
     if ($this->exists($identifier, $perspective, $version)) {
-      throw new AlreadyRegistered('A resource with identifier ' . $identifier . ' and perspective ' . $perspective . ' already exists.');
+      throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
     }
 
     // If the given resource has a local file, generate a checksum for the
@@ -158,13 +161,13 @@ class ResourceMapper {
     $identifier = $resource->getIdentifier();
     if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE)) {
       throw new \Exception(
-        'A resource with identifier ' . $identifier . ' was not found.');
+        "A resource with identifier {$identifier} was not found.");
     }
 
     $version = $resource->getVersion();
     if ($this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new AlreadyRegistered(
-        'A resource with identifier ' . $identifier . ' and version ' . $version . ' already exists.');
+        "A resource with identifier {$identifier} and version {$version} already exists.");
     }
   }
 
@@ -193,7 +196,10 @@ class ResourceMapper {
   }
 
   /**
-   * Remove.
+   * Remove mapping entry representing the given resource object.
+   *
+   * @param \Drupal\common\DataResource $resource
+   *   DataResource object to be removed.
    */
   public function remove(DataResource $resource) {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
@@ -232,7 +238,7 @@ class ResourceMapper {
   }
 
   /**
-   * Private.
+   * Get the DB record for the mapping, accounting for version.
    *
    * @return mixed
    *   object || False

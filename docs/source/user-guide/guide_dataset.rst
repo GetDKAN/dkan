@@ -170,7 +170,7 @@ Add demo site content
 
 Generate the same 10 datasets that are used on the `DKAN demo site <https://demo.getdkan.org/>`_.
 Enable the sample content module. Run the create command to add the datasets.
-Running cron will run the queues that fetch the csv files and import them into datastore tables.
+Running cron will run the queues that fetch the csv files and import them into datstore tables. You will likely need to run cron multiple times.
 When the sample content is no longer needed, remove the datasets with the remove command.
 
 .. prompt:: bash $
@@ -178,7 +178,8 @@ When the sample content is no longer needed, remove the datasets with the remove
       drush en sample_content -y
       drush dkan:sample-content:create
       drush cron
-      drush dkan:sample-content:remove
+      drush cron
+      drush dkan:sample:content:remove
 
 Troubleshooting
 ^^^^^^^^^^^^^^^

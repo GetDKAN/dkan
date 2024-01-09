@@ -129,7 +129,9 @@ class DatasetBTBTest extends BrowserTestBase {
       ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
       ->save();
 
-    $metadata = $this->getMetastore()->get('dataset', 123);
+    // @todo Why does this fail the test when we use $this->container instead of
+    //   \Drupal::service()?
+    $metadata = \Drupal::service('dkan.metastore.service')->get('dataset', 123);
     $dataset = json_decode($metadata);
 
     $this->assertNotEquals(
@@ -451,7 +453,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $dataset = $this->datasetPostAndRetrieve();
     $resource = $this->getResourceFromDataset($dataset);
 
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
 
     $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
     $this->queryResource($resource, $queryString);
@@ -565,7 +567,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Simulate a cron on queues relevant to this scenario.
-    $this->runQueues(['datastore_import', 'resource_purger']);
+    $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
   }
 
   /**
@@ -632,22 +634,22 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   private function getQueueService() : QueueFactory {
-    return \Drupal::service('queue');
+    return $this->container->get('queue');
   }
 
   private function getHarvester() : HarvestService {
-    return \Drupal::service('dkan.harvest.service');
+    return $this->container->get('dkan.harvest.service');
   }
 
   private function getNodeStorage(): NodeStorage {
-    return \Drupal::service('entity_type.manager')->getStorage('node');
+    return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
   /**
    * @return \Drupal\metastore\MetastoreService
    */
   private function getMetastore(): MetastoreService {
-    return \Drupal::service('dkan.metastore.service');
+    return $this->container->get('dkan.metastore.service');
   }
 
   /**
@@ -688,6 +690,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Simulate all possible queues post update.
     // Should include datastore_import, orphan_reference_processor and resource_purger
     $this->runQueues([
+      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
