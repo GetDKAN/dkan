@@ -60,6 +60,8 @@ To start with some example datasets:
       drush dkan:sample-content:create
       drush cron
 
+If you have trouble with generating the sample content, check the :doc:`Troubleshooting <../user-guide/guide_dataset>` section in the user guide.
+
 .. note::
    Current DKAN development is utilizing a :ref:`decoupled frontend <decoupled_frontend>`.
    To use Drupal's theme system, there is a dataset twig template

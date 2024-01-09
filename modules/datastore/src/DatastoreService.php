@@ -4,10 +4,12 @@ namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Service\ImportService;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Procrastinator\Result;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
@@ -41,13 +43,6 @@ class DatastoreService implements ContainerInjectionInterface {
   private $queue;
 
   /**
-   * JobStore factory object.
-   *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   */
-  private $jobStoreFactory;
-
-  /**
    * Datastore Query object for conversion.
    *
    * @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
@@ -62,6 +57,13 @@ class DatastoreService implements ContainerInjectionInterface {
   private ResourceMapper $resourceMapper;
 
   /**
+   * Import job store factory.
+   *
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
+   */
+  private ImportJobStoreFactory $importJobStoreFactory;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -69,7 +71,7 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.resource_localizer'),
       $container->get('dkan.datastore.service.factory.import'),
       $container->get('queue'),
-      $container->get('dkan.common.job_store'),
+      $container->get('dkan.datastore.import_job_store_factory'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
       $container->get('dkan.metastore.resource_mapper')
     );
@@ -84,8 +86,8 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Import factory service.
    * @param \Drupal\Core\Queue\QueueFactory $queue
    *   Queue factory service.
-   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
-   *   Jobstore factory service.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   Import jobstore factory service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
@@ -95,14 +97,14 @@ class DatastoreService implements ContainerInjectionInterface {
     ResourceLocalizer $resourceLocalizer,
     ImportFactoryInterface $importServiceFactory,
     QueueFactory $queue,
-    JobStoreFactory $jobStoreFactory,
+    ImportJobStoreFactory $importJobStoreFactory,
     DictionaryEnforcer $dictionaryEnforcer,
     ResourceMapper $resourceMapper
   ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
-    $this->jobStoreFactory = $jobStoreFactory;
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
     $this->resourceMapper = $resourceMapper;
   }
@@ -238,9 +240,7 @@ class DatastoreService implements ContainerInjectionInterface {
 
     if ($storage = $this->getStorage($identifier, $version)) {
       $storage->destruct();
-      $this->jobStoreFactory
-        ->getInstance(ImportJob::class)
-        // @todo The resource should be able to generate the hash itself.
+      $this->importJobStoreFactory->getInstance()
         ->remove(md5($resource->getUniqueIdentifier()));
     }
 

@@ -7,6 +7,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\ResourceMapper;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
@@ -195,6 +196,7 @@ class DatastoreQueryTest extends TestCase {
       ->add('queue', QueueFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
