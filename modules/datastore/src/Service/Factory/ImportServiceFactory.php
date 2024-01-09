@@ -2,8 +2,8 @@
 
 namespace Drupal\datastore\Service\Factory;
 
-use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Service\ImportService;
+use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 
 /**
@@ -26,13 +26,6 @@ class ImportServiceFactory implements ImportFactoryInterface {
   private $databaseTableFactory;
 
   /**
-   * Import services.
-   *
-   * @var \Drupal\datastore\Service\ImportService[]
-   */
-  private $services = [];
-
-  /**
    * Constructor.
    */
   public function __construct(ImportJobStoreFactory $importJobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
@@ -46,13 +39,10 @@ class ImportServiceFactory implements ImportFactoryInterface {
    * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
-
-    if (!isset($config['resource'])) {
-      throw new \Exception("config['resource'] is required");
+    if ($resource = $config['resource'] ?? FALSE) {
+      return new ImportService($resource, $this->importJobStoreFactory, $this->databaseTableFactory);
     }
-
-    $resource = $config['resource'];
-    return new ImportService($resource, $this->importJobStoreFactory, $this->databaseTableFactory);
+    throw new \Exception("config['resource'] is required");
   }
 
 }

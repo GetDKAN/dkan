@@ -10,6 +10,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
@@ -22,6 +23,13 @@ class ResourceLocalizer {
 
   use LoggerTrait;
   use EventDispatcherTrait;
+
+  /**
+   * Event sent when a resource is successfully localized.
+   *
+   * @var string
+   */
+  const EVENT_RESOURCE_LOCALIZED = 'event_resource_localized';
 
   /**
    * Perspective representing the local file with public:// URI scheme.
@@ -68,31 +76,89 @@ class ResourceLocalizer {
   private JobStoreFactory $jobStoreFactory;
 
   /**
+   * Drupal queue.
+   *
+   * @var \Drupal\Core\Queue\QueueFactory
+   */
+  private QueueFactory $queueFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(
     ResourceMapper $fileMapper,
     FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
-    JobStoreFactory $jobStoreFactory
+    JobStoreFactory $jobStoreFactory,
+    QueueFactory $queueFactory
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->queueFactory = $queueFactory;
   }
 
   /**
    * Copy the source file to the local file system.
    *
-   * Do not (yet) update the file map database with this information.
+   * As a side effect, register new perspectives to the mapper DB.
    */
-  public function localize($identifier, $version = NULL): ?Result {
+  protected function localize($identifier, $version = NULL): Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
-      return $ff->run();
+      $result = $ff->run();
+      // The result object should report DONE, even if the file has previously
+      // been localized.
+      if ($result->getStatus() === Result::DONE) {
+        // Localization is done. Register the perspectives.
+        $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
+        // Send the event.
+        $this->dispatchEvent(static::EVENT_RESOURCE_LOCALIZED, [
+          'identifier' => $resource->getIdentifier(),
+          'version' => $resource->getVersion(),
+        ]);
+      }
+      return $result;
     }
-    return NULL;
+    $result = new Result();
+    $result->setStatus(Result::ERROR);
+    $result->setError('Unable to find resource to localize: ' . $identifier . ':' . $version);
+    return $result;
+  }
+
+  /**
+   * Either localize or queue a localization.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string|null $version
+   *   (Optional) Resource version. If not provided, will use latest revision.
+   * @param bool $deferred
+   *   (Optional) If TRUE, queue a localization task, otherwise perform the
+   *   localization. Defaults to FALSE.
+   *
+   * @return \Procrastinator\Result
+   *   Result of the process. If deferred, will be the result of creating a
+   *   queue item. Otherwise, will be the result of localizing. Result will be
+   *   DONE if the localization had already occurred.
+   */
+  public function localizeTask(string $identifier, ?string $version = NULL, bool $deferred = FALSE): Result {
+    if (!$deferred) {
+      return $this->localize($identifier, $version);
+    }
+    $result = new Result();
+    if ($this->queueFactory->get('localize_import')->createItem([
+      'identifier' => $identifier,
+      'version' => $version,
+    ]) !== FALSE) {
+      $result->setStatus(Result::DONE);
+      $result->setError('Queued localize_import for ' . $identifier . ':' . $version);
+      return $result;
+    }
+    $result->setStatus(Result::ERROR);
+    $result->setError('Failed to create localize_import queue for ' . $identifier . ':' . $version);
+    return $result;
   }
 
   /**
@@ -116,7 +182,7 @@ class ResourceLocalizer {
       return NULL;
     }
 
-    $this->registerNewPerspectives($resource, $ff);
+    $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
 
     return $this->resourceMapper->get($resource->getIdentifier(), $perpective, $resource->getVersion());
   }
@@ -124,9 +190,7 @@ class ResourceLocalizer {
   /**
    * Add local file and local URL perspectives to the resource mapper.
    */
-  private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
-
-    $localFilePath = $fileFetcher->getStateProperty('destination');
+  private function registerNewPerspectives(DataResource $resource, string $localFilePath) {
     $public_dir = 'file://' . $this->drupalFiles->getPublicFilesDirectory();
     $localFileDrupalUri = str_replace($public_dir, 'public://', $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
@@ -150,27 +214,25 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get a file fetcher result.
-   */
-  public function getResult($identifier, $version = NULL) {
-    $ff = $this->getFileFetcher($this->getResourceSource($identifier, $version));
-    return $ff->getResult();
-  }
-
-  /**
    * Remove local file.
+   *
+   * Also remove local perspectives from mapping DB.
    */
   public function remove($identifier, $version = NULL): void {
-    if ($local_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
-      $this->resourceMapper->remove($local_resource);
+    // Remove the LOCAL_URL_PERSPECTIVE if it exists.
+    if ($local_url_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
+      $this->resourceMapper->remove($local_url_resource);
     }
-    if ($resource = $this->get($identifier, $version)) {
-      $resource_id = $resource->getUniqueIdentifierNoPerspective();
+    // Remove the LOCAL_FILE_PERSPECTIVE if it exists.
+    if ($resource = $this->get($identifier, $version, self::LOCAL_FILE_PERSPECTIVE)) {
+      // Remove the file.
       if (file_exists($resource->getFilePath())) {
         $this->drupalFiles->getFilesystem()
           ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
       }
-      $this->removeJob($resource_id);
+      // Remove the fetcher job.
+      $this->removeJob($resource->getUniqueIdentifierNoPerspective());
+      // Remove the LOCAL_FILE_PERSPECTIVE.
       $this->resourceMapper->remove($resource);
     }
   }
@@ -267,6 +329,47 @@ class ResourceLocalizer {
    */
   public function getFileSystem(): FileSystemInterface {
     return $this->drupalFiles->getFileSystem();
+  }
+
+  /**
+   * Prepare the local perspective for a resource.
+   *
+   * Will do the following:
+   * - Prepare the directory in the file system.
+   * - Add the local_url perspective to the resource mapper. Note this is
+   *   missing the file checksum.
+   * - Display the info necessary to perform an external file fetch.
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @return array
+   *   Various localization paths.
+   */
+  public function prepareLocalized(string $identifier): array {
+    $info = [];
+    if ($resource = $this->resourceMapper->get($identifier)) {
+      $public_dir = $this->getPublicLocalizedDirectory($resource);
+      $localized_filepath = $this->localizeFilePath($resource);
+      $localized_resource = $resource->createNewPerspective(
+        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $localized_filepath
+      );
+      try {
+        $this->resourceMapper->registerNewPerspective($localized_resource);
+      }
+      catch (AlreadyRegistered $e) {
+        // Catch the already-registered exception.
+      }
+      $file_system = $this->getFileSystem();
+      $info = [
+        'source' => $resource->getFilePath(),
+        'path_uri' => $public_dir,
+        'path' => $file_system->realpath($public_dir),
+        'file_uri' => $localized_filepath,
+        'file' => $file_system->realpath($localized_filepath),
+      ];
+    }
+    return $info;
   }
 
 }

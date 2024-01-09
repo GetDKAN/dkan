@@ -26,6 +26,7 @@ use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
+ * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
  */
 class DatastoreServiceTest extends TestCase {
@@ -39,7 +40,6 @@ class DatastoreServiceTest extends TestCase {
     $resource = new DataResource('http://example.org', 'text/csv');
     $chain = $this->getContainerChainForService('dkan.datastore.service')
       ->add(ResourceLocalizer::class, 'get', $resource)
-      ->add(ResourceLocalizer::class, 'getResult', Result::class)
       ->add(FileFetcher::class, 'run', Result::class)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
@@ -58,25 +58,24 @@ class DatastoreServiceTest extends TestCase {
   public function testDrop() {
     $resource = new DataResource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
-      ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'destruct')
       ->add(ResourceLocalizer::class, 'remove')
+      ->add(ResourceLocalizer::class, 'get', $resource)
+      ->add(ResourceMapper::class, 'get', $resource)
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', TRUE);
 
     $service = DatastoreService::create($mockChain->getMock());
-    // Ensure variations on drop return nothing.
-    $actual = $service->drop('foo');
-    $this->assertNull($actual);
-    $actual = $service->drop('foo', '123152');
-    $this->assertNull($actual);
-    $actual = $service->drop('foo', NULL, FALSE);
-    $this->assertNull($actual);
+    // These are all valid ways to call drop().
+    $this->assertNull($service->drop('foo'));
+    $this->assertNull($service->drop('foo', '123152'));
+    $this->assertNull($service->drop('foo', NULL, FALSE));
+    // Should throw a TypeError on the NULL third argument.
     $this->expectException(\TypeError::class);
-    $actual = $service->drop('foo', NULL, NULL);
+    $service->drop('foo', NULL, NULL);
   }
 
   /**
@@ -94,6 +93,7 @@ class DatastoreServiceTest extends TestCase {
 
   private function getCommonChain() {
     $options = (new Options())
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)

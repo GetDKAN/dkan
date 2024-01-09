@@ -59,7 +59,7 @@ class ResourceMapper {
    * Register a new url for mapping.
    *
    * @todo the Resource class currently lives in datastore, we should move it
-   * to a more neutral place.
+   *   to a more neutral place.
    */
   public function register(DataResource $resource): bool {
     $this->filePathExists($resource->getFilePath());
@@ -115,7 +115,7 @@ class ResourceMapper {
    */
   protected function validateNewVersion(DataResource $resource) {
     if ($resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
-      throw new \Exception("Only versions of source resources are allowed.");
+      throw new \Exception('Only versions of source resources are allowed.');
     }
 
     $identifier = $resource->getIdentifier();
@@ -156,14 +156,16 @@ class ResourceMapper {
   }
 
   /**
-   * Remove.
+   * Remove mapping entry representing the given resource object.
+   *
+   * @param \Drupal\common\DataResource $resource
+   *   DataResource object to be removed.
    */
   public function remove(DataResource $resource) {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
       $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
-      if ($resource->getPerspective() == 'source') {
-        // Dispatch event to initiate removal of
-        // the the datastore and local file.
+      if ($resource->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
+        // Dispatch event to signal removal of the datastore and local file.
         $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE, $resource);
       }
       // Remove the resource mapper perspective.
@@ -185,7 +187,7 @@ class ResourceMapper {
   }
 
   /**
-   * Private.
+   * Get the DB record for the mapping, accounting for version.
    *
    * @return mixed
    *   object || False

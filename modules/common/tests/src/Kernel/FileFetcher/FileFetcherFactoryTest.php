@@ -96,4 +96,34 @@ class FileFetcherFactoryTest extends KernelTestBase {
     }
   }
 
+  public function provideFetcherUseExisting() {
+    return [
+      'Use existing localized file' => [TRUE, FileFetcherRemoteUseExisting::class],
+      'Do not use existing localized file' => [FALSE, Remote::class],
+    ];
+  }
+
+  /**
+   * @dataProvider provideFetcherUseExisting
+   * @covers ::getInstance
+   */
+  public function testGetInstance($always_use_existing_local_perspective, $expected_class) {
+    // Config for overwrite.
+    $this->installConfig(['common']);
+    $config = $this->config('common.settings');
+    $config->set('always_use_existing_local_perspective', $always_use_existing_local_perspective);
+    $config->save();
+
+    /** @var \Drupal\common\FileFetcher\FileFetcherFactory $factory */
+    $factory = $this->container->get('dkan.common.file_fetcher');
+
+    $instance = $factory->getInstance('id', ['filePath' => '/tmp/thingie.csv']);
+
+    $ref_get_processors = new \ReflectionMethod($instance, 'getProcessors');
+    $ref_get_processors->setAccessible(TRUE);
+    $processors = $ref_get_processors->invoke($instance);
+
+    $this->assertInstanceOf($expected_class, $processors[$expected_class] ?? 'nope');
+  }
+
 }
