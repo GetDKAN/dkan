@@ -34,6 +34,11 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
     'node',
   ];
 
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('resource_mapping');
+  }
+
   public function provideUseExisting() {
     return [
       'Use existing localized file' => [TRUE],
