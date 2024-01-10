@@ -77,7 +77,7 @@ class Referencer {
    */
   public function reference($data) {
     if (!is_object($data)) {
-      throw new \Exception("data must be an object.");
+      throw new \Exception('data must be an object.');
     }
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
@@ -252,33 +252,37 @@ class Referencer {
     }
     catch (AlreadyRegistered $e) {
       $already_registered = $e->getAlreadyRegistered();
+      // If resource mapper registration failed due to this resource already
+      // being registered, generate a new version of the resource and update the
+      // download URL with the new version ID.
       if ($entity = reset($already_registered) ?? FALSE) {
-        /** @var \Drupal\common\DataResource $stored */
-        $stored = $this->getFileMapper()->get($entity->get('identifier')->value, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
-        $downloadUrl = $this->handleExistingResource($entity->get('perspective')->value, $stored, $mimeType);
+        $stored = $this->getFileMapper()->get(
+          $entity->get('identifier')->getString(),
+          DataResource::DEFAULT_SOURCE_PERSPECTIVE
+        );
+        $downloadUrl = $this->handleExistingResource($stored, $mimeType);
       }
     }
-
     return $downloadUrl;
   }
 
   /**
    * Get download URL for existing resource.
    *
-   * @param string $perspective
-   *   Resource perspective.
-   * @param \Drupal\common\DataResource $stored
-   *   Stored data resource object.
+   * @param \Drupal\common\DataResource $existing
+   *   Existing data resource object.
    * @param string $mimeType
    *   MIME type.
    *
    * @return string
    *   The download URL.
    */
-  private function handleExistingResource(string $perspective, DataResource $stored, string $mimeType): string {
-    if ($perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
-      $new = $stored->createNewVersion();
+  private function handleExistingResource(DataResource $existing, string $mimeType): string {
+    if (
+      $existing->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
+      (ResourceMapper::newRevision() == 1 || $existing->getMimeType() != $mimeType)
+    ) {
+      $new = $existing->createNewVersion();
       // Update the MIME type, since this may be updated by the user.
       $new->changeMimeType($mimeType);
 
@@ -286,7 +290,7 @@ class Referencer {
       $downloadUrl = $new->getUniqueIdentifier();
     }
     else {
-      $downloadUrl = $stored->getUniqueIdentifier();
+      $downloadUrl = $existing->getUniqueIdentifier();
     }
     return $downloadUrl;
   }
@@ -430,7 +434,7 @@ class Referencer {
     if ($node = reset($nodes)) {
       // @todo if referencing node in draft state, don't publish referenced node
       // If an existing referenced node is found but unpublished, publish it.
-      if ($node->get('moderation_state')->value !== "published") {
+      if ($node->get('moderation_state')->value !== 'published') {
         $node->set('moderation_state', 'published');
         $node->save();
       }
