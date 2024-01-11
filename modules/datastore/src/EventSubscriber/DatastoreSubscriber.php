@@ -243,9 +243,6 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Determine differences in the supplied objects in the given property scope.
    *
-   * If a property is not present in one object but present in the other, they
-   * are different.
-   *
    * @param object $a
    *   The first object being compared.
    * @param object $b
@@ -257,17 +254,15 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   Whether any differences were found in the scoped two objects.
    */
   protected function lazyDiffObject($a, $b, array $scope): bool {
+    $changed = FALSE;
     foreach ($scope as $property) {
-      if (property_exists($a, $property) && property_exists($b, $property)) {
-        if (($a->{$property} != $b->{$property})) {
-          // Values are different.
-          return TRUE;
-        }
+      if ($a->{$property} != $b->{$property}) {
+        $changed = TRUE;
+        break;
       }
-      // Property is not present in one or the other of the objects.
-      return TRUE;
     }
-    return FALSE;
+
+    return $changed;
   }
 
 }

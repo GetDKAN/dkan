@@ -3,7 +3,6 @@
 namespace Drupal\Tests\harvest\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\views\Plugin\views\area\Result;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
 

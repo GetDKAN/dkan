@@ -8,12 +8,13 @@ use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
 
 /**
+ * @covers \Drupal\harvest\HarvestService
  * @coversDefaultClass \Drupal\harvest\HarvestService
  *
  * @group harvest
  * @group kernel
  *
- * @see \Drupal\Tests\harvest\Unit\ServiceTest
+ * @todo Is this equivalent to Drupal\Tests\harvest\Kernel\HarvestServiceTest?
  */
 class ServiceTest extends KernelTestBase {
   use ServiceCheckTrait;
