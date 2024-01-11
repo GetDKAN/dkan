@@ -699,7 +699,6 @@ class DatasetBTBTest extends BrowserTestBase {
     ]);
 
     // Get dataset info.
-    /** @var \Drupal\common\DatasetInfo $datasetInfoService */
     $datasetInfoService = $this->container->get('dkan.common.dataset_info');
     $metadata = $datasetInfoService->gather($identifier);
     $distributionTableLatest = $metadata['latest_revision']['distributions'][0]['table_name'];
