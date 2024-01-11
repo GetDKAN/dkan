@@ -50,13 +50,17 @@ context('Admin dataset file upload', () => {
     })
 
     it('can fill up the form with distribution and submit', () => {
-      // run cron to import new dataset
+      // run cron to gather file.
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')
         .click({force: true})
       cy.contains('h1', 'Cron');
       cy.get('.messages--status', {timeout: 120000})
         .should('be.visible')
+      // run cron to perform data import.
+      cy.visit('/admin/config/system/cron')
+      cy.get('#edit-run')
+        .click({force: true})
 
       // verify dataset was imported successfully
       dkan.verifyFileImportedSuccessfully(fileUrl.split('/').pop())
@@ -132,7 +136,13 @@ context('Admin dataset file upload', () => {
 
 
     it('can import dataset with uploaded file', () => {
-      // run cron to import new dataset
+      // run cron to localize the file.
+      cy.visit('/admin/config/system/cron')
+      cy.get('#edit-run')
+        .click({force: true})
+      cy.get('.messages--status', {timeout: 120000})
+        .should('be.visible')
+      // run cron again to import new dataset.
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')
         .click({force: true})

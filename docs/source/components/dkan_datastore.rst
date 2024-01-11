@@ -12,12 +12,12 @@ import queue to be parsed and imported into the datastore during cron runs.
 When defining the distribution object of your dataset, be sure to include the mimetype property:
 `"mediaType": "text/csv"` if using the API, or select 'CSV' from the format field if using the GUI.
 
-The import will happen in batches during cron runs as part of the datastore_import queue. The import
-will iterate over the file, if it does not finish, the job will be returned to the queue. Be sure to
-have cron running on a regular basis so that large file imports will complete. You can view the status
-of datastore imports at `/admin/dkan/datastore/status`.
+The import will happen in batches during cron runs as the localize_import and datastore_import queues.
+The import will iterate over the file. If it does not finish, the job will be returned to the queue. Be
+sure to have cron running on a regular basis so that large file imports will complete. You can view the
+status of datastore imports at `/admin/dkan/datastore/status`.
 
-If you enable the :ref:`Datastore Mysql Import <mysql_import>` module, the file will be imported in
+If you enable the :ref:`Datastore Mysql Import <mysql_import>` module, the data will be imported in
 a single step using MySQL's native LOAD DATA function.
 
 .. attention::

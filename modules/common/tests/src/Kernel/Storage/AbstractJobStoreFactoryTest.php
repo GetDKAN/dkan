@@ -10,16 +10,16 @@ namespace Drupal\Tests\common\Kernel\Storage {
   use Drupal\KernelTests\KernelTestBase;
 
   /**
-   * @covers \Drupal\common\Storage\JobStoreFactory
-   * @coversDefaultClass \Drupal\common\Storage\JobStoreFactory
+   * @covers \Drupal\common\Storage\AbstractJobStoreFactory
+   * @coversDefaultClass \Drupal\common\Storage\AbstractJobStoreFactory
    *
    * @group dkan
    * @group common
    * @group kernel
    *
-   * @see  @see \Drupal\Tests\common\Kernel\Storage\AbstractJobStoreFactoryTest
+   * @see \Drupal\Tests\common\Kernel\Storage\JobStoreFactoryTest
    */
-  class JobStoreFactoryTest extends KernelTestBase {
+  class AbstractJobStoreFactoryTest extends KernelTestBase {
 
     protected static $modules = [
       'common',
@@ -27,18 +27,19 @@ namespace Drupal\Tests\common\Kernel\Storage {
 
     public function testDeprecatedClassnameTable() {
       $db = $this->container->get('database');
-      // Make a JobStore object.
-      /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
-      $job_store_factory = $this->container->get('dkan.common.job_store');
-      $job_store = $job_store_factory->getInstance(\DkanTestJobSubclass::class);
+      // Make a concrete AbstractJobStoreFactory object.
+      /** @var \DkanTestConcreteAbstractJobStoreFactory $job_store_factory */
+      $job_store_factory = new \DkanTestConcreteAbstractJobStoreFactory($db);
+      // Get a Job object by specifying an instance name.
+      $job_store = $job_store_factory->getInstance(\DkanTestConcreteJobSubclass::class);
 
       $this->assertInstanceOf(JobStore::class, $job_store);
 
-      // First, get the table name without deprecation.
+      // First, get the table name without deprecation by calculating a hash.
       $ref_get_table_name = new \ReflectionMethod($job_store, 'getTableName');
       $ref_get_table_name->setAccessible(TRUE);
       $table_name = $ref_get_table_name->invoke($job_store);
-      $this->assertEquals('jobstore_3358540512_dkantestjobsubclass', $table_name);
+      $this->assertEquals('jobstore_580088250_dkantestconcretejobsubclass', $table_name);
 
       // This table does not exist.
       $this->assertFalse(
@@ -50,9 +51,9 @@ namespace Drupal\Tests\common\Kernel\Storage {
       $ref_get_deprecated_table_name->setAccessible(TRUE);
       $deprecated_table_name = $ref_get_deprecated_table_name->invokeArgs(
         $job_store_factory,
-        [\DkanTestJobSubclass::class]
+        [\DkanTestConcreteJobSubclass::class]
       );
-      $this->assertEquals('jobstore_dkantestjobsubclass', $deprecated_table_name);
+      $this->assertEquals('jobstore_dkantestconcretejobsubclass', $deprecated_table_name);
       $ref_table_name = new \ReflectionProperty($job_store, 'tableName');
       $ref_table_name->setAccessible(TRUE);
       $ref_table_name->setValue($job_store, $deprecated_table_name);
@@ -70,7 +71,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
 
       // Create a new JobStore object. The factory should see that the
       // deprecated table already exists and try to use it as the table name.
-      $job_store = $job_store_factory->getInstance(\DkanTestJobSubclass::class);
+      $job_store = $job_store_factory->getInstance(\DkanTestConcreteJobSubclass::class);
       $this->assertEquals(
         $deprecated_table_name,
         $ref_get_table_name->invoke($job_store)
@@ -85,7 +86,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
       $this->assertFalse(
         $db->schema()->tableExists($table_name)
       );
-      $job_store = $job_store_factory->getInstance(\DkanTestJobSubclass::class);
+      $job_store = $job_store_factory->getInstance(\DkanTestConcreteJobSubclass::class);
       $this->assertEquals($table_name, $ref_get_table_name->invoke($job_store));
       $this->assertEquals(0, $job_store->count());
       $this->assertTrue(
@@ -105,13 +106,25 @@ namespace Drupal\Tests\common\Kernel\Storage {
         $db->schema()->tableExists($table_name)
       );
 
-      // And finally, use an identifier string that doesn't look like a class
-      // name.
+      // Use an identifier string that doesn't look like a class name.
       $identifier = 'testthisshouldneverbeaclassname';
       $job_store->destruct();
       $job_store = $job_store_factory->getInstance($identifier);
       $this->assertEquals(
         'jobstore_' . $identifier,
+        $table_name = $ref_get_table_name->invoke($job_store)
+      );
+      $this->assertEquals(0, $job_store->count());
+      $this->assertTrue(
+        $db->schema()->tableExists($table_name)
+      );
+
+      // And finally, the right way. We create an instance without specifying
+      // an identifier, so that the factory uses its default.
+      $job_store->destruct();
+      $job_store = $job_store_factory->getInstance();
+      $this->assertEquals(
+        'concrete_job_store',
         $table_name = $ref_get_table_name->invoke($job_store)
       );
       $this->assertEquals(0, $job_store->count());
@@ -129,9 +142,16 @@ namespace Drupal\Tests\common\Kernel\Storage {
 
 namespace {
 
+  use Drupal\common\Storage\AbstractJobStoreFactory;
   use Procrastinator\Job\Job;
 
-  class DkanTestJobSubclass extends Job {
+  class DkanTestConcreteAbstractJobStoreFactory extends AbstractJobStoreFactory {
+
+    protected string $tableName = 'concrete_job_store';
+
+  }
+
+  class DkanTestConcreteJobSubclass extends Job {
 
     protected function runIt() {
     }
