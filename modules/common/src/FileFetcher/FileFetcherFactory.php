@@ -3,7 +3,7 @@
 namespace Drupal\common\FileFetcher;
 
 use Contracts\FactoryInterface;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use FileFetcher\FileFetcher;
@@ -14,11 +14,11 @@ use FileFetcher\FileFetcher;
 class FileFetcherFactory implements FactoryInterface {
 
   /**
-   * Job store factory service.
+   * File fetcher job store factory.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
-  private JobStoreFactory $jobStoreFactory;
+  private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
    * The common.settings config.
@@ -39,8 +39,8 @@ class FileFetcherFactory implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ConfigFactoryInterface $configFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(FileFetcherJobStoreFactory $fileFetcherJobStoreFactory, ConfigFactoryInterface $configFactory) {
+    $this->fileFetcherJobStoreFactory = $fileFetcherJobStoreFactory;
     $this->dkanConfig = $configFactory->get('common.settings');
   }
 
@@ -50,7 +50,7 @@ class FileFetcherFactory implements FactoryInterface {
   public function getInstance(string $identifier, array $config = []) {
     return FileFetcher::get(
       $identifier,
-      $this->jobStoreFactory->getInstance(FileFetcher::class),
+      $this->fileFetcherJobStoreFactory->getInstance(),
       $this->getFileFetcherConfig($config)
     );
   }

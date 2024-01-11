@@ -26,7 +26,7 @@ services:
       - '@dkan.metastore.resource_mapper'
       - '@dkan.common.file_fetcher'
       - '@dkan.common.drupal_files'
-      - '@dkan.common.job_store'
+      - '@dkan.common.filefetcher_job_store_factory'
       - '@queue'
 
   dkan.datastore.service.resource_processor_collector:
@@ -110,7 +110,7 @@ services:
   dkan.datastore.import_info_list:
     class: \Drupal\datastore\Service\Info\ImportInfoList
     arguments:
-      - '@dkan.common.job_store'
+      - '@dkan.common.filefetcher_job_store_factory'
       - '@dkan.datastore.import_info'
 
   dkan.datastore.import_job_store_factory:

@@ -131,7 +131,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.metastore.resource_mapper'),
         $this->container->get('dkan.common.file_fetcher'),
         $this->container->get('dkan.common.drupal_files'),
-        $this->container->get('dkan.common.job_store'),
+        $this->container->get('dkan.common.filefetcher_job_store_factory'),
         $this->container->get('queue'),
       ])
       ->onlyMethods(['localizeTask'])
@@ -165,7 +165,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.metastore.resource_mapper'),
         $this->container->get('dkan.common.file_fetcher'),
         $this->container->get('dkan.common.drupal_files'),
-        $this->container->get('dkan.common.job_store'),
+        $this->container->get('dkan.common.filefetcher_job_store_factory'),
         $this->container->get('queue'),
       ])
       ->onlyMethods(['localizeTask'])
