@@ -9,6 +9,15 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Provide a DKAN storage shim for Drupal Entity API.
+ *
+ * How to use: Make a subclass which overrides static::$entityType and/or
+ * static::$dataFieldName.
+ *
+ * Now your DKAN storage factory can create a new storage object: Your subclass.
+ * This object will use the entity type as a backend.
+ *
+ * @todo Move all mountains necessary to remove this compatibility layer from
+ *   DKAN, and just use Entity API.
  */
 abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
 
@@ -66,7 +75,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function storeMultiple(array $data) {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**
@@ -84,10 +93,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
   public function destruct() {
     // DKAN API wants us to destroy the table, but we can't/shouldn't do that
     // within Drupal's Entity API. So instead, we will delete all entities.
-    $ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->execute();
-    if ($ids) {
+    if ($ids = $this->retrieveAll()) {
       // Limit the number of entities deleted at one time. This can prevent
       // problems with huge tables of fielded entities.
       foreach (array_chunk($ids, 100) as $chunked_ids) {
@@ -100,7 +106,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function query(Query $query) {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**
@@ -116,14 +122,14 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function setSchema(array $schema): void {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**
    * {@inheritDoc}
    */
   public function getSchema(): array {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**

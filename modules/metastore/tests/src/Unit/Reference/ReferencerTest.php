@@ -122,7 +122,10 @@ class ReferencerTest extends TestCase {
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client()
+      new Client(),
+      $this->getMockBuilder(ResourceMapper::class)
+        ->disableOriginalConstructor()
+        ->getMock()
     );
   }
 
@@ -174,7 +177,10 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
+    $this->assertEquals(
+      'text/csv',
+      $container_chain->getStoredInput('resource')[0]->getMimeType()
+    );
   }
 
   /**
@@ -450,7 +456,10 @@ class ReferencerTest extends TestCase {
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client()
+      new Client(),
+      $this->getMockBuilder(ResourceMapper::class)
+        ->disableOriginalConstructor()
+        ->getMock()
     );
 
     // Test Mime Type detection using the resource `mediaType` property.
@@ -510,7 +519,10 @@ class ReferencerTest extends TestCase {
       $configService,
       $storageFactory,
       $urlGenerator,
-      $http_client
+      $http_client,
+      $this->getMockBuilder(ResourceMapper::class)
+        ->disableOriginalConstructor()
+        ->getMock()
     );
 
     if ($describedBy instanceof \Exception) {
