@@ -2,6 +2,7 @@
 
 namespace Drupal\common\Plugin;
 
+use Drupal\common\Annotation\DkanApiDocs;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
@@ -26,10 +27,10 @@ class DkanApiDocsPluginManager extends DefaultPluginManager {
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
     $subdir = 'Plugin/DkanApiDocs';
-    $plugin_interface = 'Drupal\common\Plugin\DkanApiDocsInterface';
+    $plugin_interface = DkanApiDocsInterface::class;
 
     // The name of the annotation class that contains the plugin definition.
-    $plugin_definition_annotation_name = 'Drupal\common\Annotation\DkanApiDocs';
+    $plugin_definition_annotation_name = DkanApiDocs::class;
 
     parent::__construct($subdir, $namespaces, $module_handler, $plugin_interface, $plugin_definition_annotation_name);
 

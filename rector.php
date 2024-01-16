@@ -19,18 +19,20 @@
 declare(strict_types=1);
 
 use DrupalFinder\DrupalFinder;
-use DrupalRector\Set\Drupal10SetList;
+use DrupalRector\Set\Drupal9SetList;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
-use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
 use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
 use Rector\Set\ValueObject\LevelSetList;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Core\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -39,10 +41,12 @@ return static function (RectorConfig $rectorConfig): void {
     __DIR__,
   ]);
 
+  // Our base version of PHP.
+  $rectorConfig->phpVersion(PhpVersion::PHP_74);
+
   $rectorConfig->sets([
-    // This is actually 10.0.x.
-    Drupal10SetList::DRUPAL_100,
-    LevelSetList::UP_TO_PHP_80,
+    Drupal9SetList::DRUPAL_94,
+    LevelSetList::UP_TO_PHP_74,
   ]);
 
   $rectorConfig->skip([
@@ -58,8 +62,9 @@ return static function (RectorConfig $rectorConfig): void {
     RemoveUselessParamTagRector::class,
     RemoveUselessVarTagRector::class,
     RemoveUselessReturnTagRector::class,
-    ClassPropertyAssignToConstructorPromotionRector::class,
     AddDoesNotPerformAssertionToNonAssertingTestRector::class,
+    ClosureToArrowFunctionRector::class,
+    StringClassNameToClassConstantRector::class,
   ]);
 
   $drupalFinder = new DrupalFinder();
@@ -74,6 +79,6 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
   $rectorConfig->skip(['*/upgrade_status/tests/modules/*']);
   $rectorConfig->fileExtensions(['php', 'module', 'theme', 'install', 'profile', 'inc', 'engine']);
-  $rectorConfig->importNames(true, false);
-  $rectorConfig->importShortClasses(false);
+  $rectorConfig->importNames(TRUE, FALSE);
+  $rectorConfig->importShortClasses(FALSE);
 };
