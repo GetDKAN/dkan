@@ -14,6 +14,7 @@ use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\common\Events\Event;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -103,6 +104,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
       ->index(0);
 
@@ -113,6 +115,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
@@ -138,6 +141,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
       ->index(0);
 
@@ -147,6 +151,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
@@ -171,6 +176,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
       ->index(0);
 
@@ -180,6 +186,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', new \Exception('error'))
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
@@ -200,6 +207,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->index(0);
 
     return (new Chain($this))

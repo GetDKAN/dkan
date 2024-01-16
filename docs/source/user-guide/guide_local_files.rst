@@ -7,6 +7,8 @@ Because DKAN will make a local copy of a remote file in order to import it, it c
 
 These instructions assume you've already created a dataset (through the the UI, a harvest or the API) that contains a distribution pointing to a remote CSV file, and that this CSV file has not yet been imported to the datastore. We'll need the ID of the existing dataset.
 
+Note that for the most part, DKAN will not have trouble performing dataset imports. These instructions, and the features which support them, are for those times when the datasets are large enough to cause errors during normal imports.
+
 TL;DR
 =====
 
@@ -15,7 +17,9 @@ Below are some abbreviated instructions. Read past this section for details.
 - Use :code:`drush dkan:datastore:prepare-localized [resource_id]` to set up the local file directory.
 - Transfer the file to that directory on the server using the command line or your file transfer program of choice.
 - Set DKAN to use existing local files for imports: :code:`drush config:set common.settings always_use_existing_local_perspective 1`
-- Perform the import: :code:`drush dkan:datastore:import --deferred [resource_id] && drush queue:run datastore_import`
+- Set up the file localization: :code:`drush dkan:datastore:localize --deferred [id]`
+- Perform the import, using queues: :code:`drush queue:run localize_import && drush queue:run datastore_import`
+- Alternately, perform the import, running cron at least twice: :code:`drush cron && drush cron`
 - Disable the local file configuration: :code:`drush config:set common.settings always_use_existing_local_perspective 0`
 
 Prepare the local perspective
@@ -104,7 +108,7 @@ Transfer the file
 
 In this example we'll just use wget to copy the file at the command line. At the moment, automating this process is left as an exercise for the reader, but a combination of bash and jq should be able to accomplish this.
 
-From the output of :code:`dkan:datastore:prepare-localized` we get the path. In our case this is */var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866*
+From the output of :code:`dkan:datastore:prepare-localized` we get the :code:`path`. In our case this is */var/www/html/docroot/sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866*
 
 We'll need to change into this directory… This may differ on your system.
 
@@ -112,7 +116,7 @@ We'll need to change into this directory… This may differ on your system.
 
     cd sites/default/files/resources/1fecf29222b12fc1ce2678abbc8f870f_1691778866
 
-Now we can use a file transfer tool to put the file where it belongs. The file is the source field from :code:`dkan:datastore:prepare-localized`.
+Now we can use a file transfer tool to put the file where it belongs. The file URL is the :code:`source` field from :code:`dkan:datastore:prepare-localized`.
 
 .. prompt:: bash $
 
@@ -138,18 +142,24 @@ We can verify that this configuration was set:
 
 Now our import will use the local file.
 
-If we used harvest to set up the datasets, they are probably already queued to import. If not, we can set up our dataset to import:
+If we used harvest to set up the datasets, they are probably already queued to import. If not, we can set up our dataset to import. We use :code:`dkan:datastore:localize`, which will finalize the localization of the files we've uploaded, and will also then queue the database imports of these resources for subsequent runs.
 
 .. prompt:: bash $
 
-    drush dkan:datastore:import --deferred 1fecf29222b12fc1ce2678abbc8f870f
+    drush dkan:datastore:localize --deferred 1fecf29222b12fc1ce2678abbc8f870f
 
 .. code-block:: shell-session
     :caption: Response
 
     [notice] Queued import for 5c10426922cb88f20d3f5a2ae45d2f11
 
-Now we run cron, or we can run the specific queue:
+Now we run cron at least twice, or we can run the specific queue:
+
+.. prompt:: bash $
+
+    drush queue:run localize_import
+
+Running the :code:`localize_import` queue will finalize the localization of our files, and also queue the database imports of those files. At this point we can then run the :code:`datastore_import` queue:
 
 .. prompt:: bash $
 

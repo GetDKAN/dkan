@@ -46,13 +46,12 @@ trait CleanUp {
    *
    */
   private function removeAllFileFetchingJobs() {
-    /** @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
-    $jobStoreFactory = \Drupal::service('dkan.common.job_store');
+    /** @var \Drupal\common\Storage\FileFetcherJobStoreFactory $jobStoreFactory */
+    $jobStoreFactory = \Drupal::service('dkan.common.filefetcher_job_store_factory');
 
-    /** @var \Drupal\common\Storage\JobStore $jobStore */
-    $jobStore = $jobStoreFactory->getInstance(FileFetcher::class);
-    foreach ($jobStore->retrieveAll() as $id) {
-      $jobStore->remove($id);
+    $fileFetcherJob = $jobStoreFactory->getInstance();
+    foreach ($fileFetcherJob->retrieveAll() as $id) {
+      $fileFetcherJob->remove($id);
     }
   }
 
@@ -60,7 +59,12 @@ trait CleanUp {
    *
    */
   private function flushQueues() {
-    $dkanQueues = ['orphan_reference_processor', 'datastore_import', 'resource_purger'];
+    $dkanQueues = [
+      'localizer_import',
+      'datastore_import',
+      'orphan_reference_processor',
+      'resource_purger',
+    ];
     foreach ($dkanQueues as $queueName) {
       /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
       $queueFactory = \Drupal::service('queue');

@@ -7,9 +7,9 @@ use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Procrastinator\Result;
 
 /**
@@ -54,11 +54,9 @@ class ImportService {
   /**
    * The jobstore factory service.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   *
-   * @todo Can we remove this?
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
-  private JobStoreFactory $jobStoreFactory;
+  private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory service.
@@ -83,14 +81,14 @@ class ImportService {
    *
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
-   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
-   *   Jobstore factory.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   Import jobstore factory.
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
    */
-  public function __construct(DataResource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(DataResource $resource, ImportJobStoreFactory $importJobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
     $this->resource = $resource;
-    $this->jobStoreFactory = $jobStoreFactory;
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
@@ -158,7 +156,7 @@ class ImportService {
 
     $this->importJob = call_user_func([$this->importerClass, 'get'],
       $datastore_resource->getId(),
-      $this->jobStoreFactory->getInstance(ImportJob::class),
+      $this->importJobStoreFactory->getInstance(),
       [
         "storage" => $this->getStorage(),
         "parser" => $this->getNonRecordingParser($delimiter),
