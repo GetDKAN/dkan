@@ -4,7 +4,6 @@ namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
@@ -70,7 +69,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   The dkan.metastore.resource_mapper.
    * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
-   *    The dkan.metastore.reference_lookup service.
+   *   The dkan.metastore.reference_lookup service.
    */
   public function __construct(LoggerChannelFactory $logger_factory, MetastoreService $service, ResourceMapper $resourceMapper, ReferenceLookupInterface $referenceLookup) {
     $this->loggerFactory = $logger_factory;
@@ -138,7 +137,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   private function resourceInUseElsewhere(string $resource_id): bool {
     $distributions = $this->referenceLookup->getReferencers('distribution', $resource_id, 'downloadURL');
 
-    // If more than one distribution is using this resource, consider it still in use.
+    // If more than one distribution is using this resource, it's still in use.
     return count($distributions) > 1;
   }
 
