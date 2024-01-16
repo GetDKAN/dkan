@@ -4,8 +4,6 @@
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
   bootstrap="/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
   colors="true"
-  stopOnFailure="false"
-  stopOnError="false"
   verbose="true">
   <coverage>
     <include>
@@ -18,7 +16,6 @@
       <directory>modules/dkan_js_frontend/tests</directory>
       <directory>modules/metastore/tests</directory>
       <directory>modules/sample_content</directory>
-      <directory suffix="Test.php">./</directory>
       <directory suffix="TestBase.php">./</directory>
     </exclude>
   </coverage>
@@ -51,6 +48,9 @@
       <group>requires-database</group>
     </exclude>
   </groups>
+  <listeners>
+    <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+  </listeners>
   <php>
     <!-- These variables may alternatively be set as environment variables. -->
     <!-- E.g., `DRUPAL_VERSION=V8 ./vendor/bin/phpunit` -->
@@ -58,6 +58,7 @@
     <env name="DTT_BASE_URL" value="http://web"/>
     <env name="SIMPLETEST_BASE_URL" value="http://web"/>
     <env name="SIMPLETEST_DB" value="mysql://drupal:123@db/drupal"/>
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    <!-- Don't fail for external dependencies. -->
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0"/>
   </php>
 </phpunit>
