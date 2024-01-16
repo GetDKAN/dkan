@@ -8,6 +8,7 @@ use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
+use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -39,6 +40,13 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   protected ResourceMapper $resourceMapper;
 
   /**
+   * The dkan.metastore.reference_lookup service.
+   *
+   * @var \Drupal\metastore\ReferenceLookupInterface
+   */
+  private $referenceLookup;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -47,7 +55,8 @@ class MetastoreSubscriber implements EventSubscriberInterface {
     return new static(
       $container->get('logger.factory'),
       $container->get('dkan.metastore.service'),
-      $container->get('dkan.metastore.resource_mapper')
+      $container->get('dkan.metastore.resource_mapper'),
+      $container->get('dkan.metastore.reference_lookup')
     );
   }
 
@@ -60,11 +69,14 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.metastore.service service.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   The dkan.metastore.resource_mapper.
+   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
+   *    The dkan.metastore.reference_lookup service.
    */
-  public function __construct(LoggerChannelFactory $logger_factory, MetastoreService $service, ResourceMapper $resourceMapper) {
+  public function __construct(LoggerChannelFactory $logger_factory, MetastoreService $service, ResourceMapper $resourceMapper, ReferenceLookupInterface $referenceLookup) {
     $this->loggerFactory = $logger_factory;
     $this->service = $service;
     $this->resourceMapper = $resourceMapper;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -97,13 +109,15 @@ class MetastoreSubscriber implements EventSubscriberInterface {
     // metadata resource mapper.
     foreach ($resources as $resourceParams) {
       // Retrieve the distributions ID, perspective, and version metadata.
-      $resource_id = $resourceParams['identifier'] ?? NULL;
+      $resource_identifier = $resourceParams['identifier'] ?? NULL;
       $perspective = $resourceParams['perspective'] ?? NULL;
       $version = $resourceParams['version'] ?? NULL;
-      $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
+      $resource_id = $resource_identifier . '__' . $version . '__' . $perspective;
+      $resource = $this->resourceMapper->get($resource_identifier, $perspective, $version);
+
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($distribution_id, $resource->getFilePath())) {
+      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($resource_id)) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
@@ -113,31 +127,19 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   /**
    * Determine if a resource is in use in another distribution.
    *
-   * @param string $dist_id
-   *   The uuid of the distribution where this resource is know to be in use.
-   * @param string $file_path
-   *   The file path of the resource being checked.
+   * @param string $resource_id
+   *   The identifier of the resource.
    *
    * @return bool
    *   Whether the resource is in use elsewhere.
    *
    * @todo Abstract out "distribution" and field_data_type.
    */
-  private function resourceInUseElsewhere(string $dist_id, string $file_path): bool {
-    // Iterate over the metadata for all dataset distributions.
-    foreach ($this->service->getAll('distribution') as $metadata) {
-      // Attempt to determine the filepath for this distribution's resource.
-      $dist_file_path = UrlHostTokenResolver::hostify($metadata->{'$.data.downloadURL'} ?? '');
-      // If the current distribution does is not the excluded distribution, and
-      // it's resource file path matches the supplied file path...
-      if ($metadata->{'$.identifier'} !== $dist_id && !empty($dist_file_path) && $dist_file_path === $file_path) {
-        // Another distribution with the same resource was found, meaning the
-        // resource is still in use.
-        return TRUE;
-      }
-    }
-    // No other distributions were found using this resource.
-    return FALSE;
+  private function resourceInUseElsewhere(string $resource_id): bool {
+    $distributions = $this->referenceLookup->getReferencers('distribution', $resource_id, 'downloadURL');
+
+    // If more than one distribution is using this resource, consider it still in use.
+    return count($distributions) > 1;
   }
 
 }
