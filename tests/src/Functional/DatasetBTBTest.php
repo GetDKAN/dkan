@@ -259,8 +259,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution title update and local_url resource perspective.
-   * Current fails due to faulty logic in MetastoreSubscriber::resourceInUseElsewhere.
-   * Should use ReferenceLookup similar to ResourcePurger::resourceNotShared.
    */
   public function testDraftWorkflowUpdateDistributionTitleLocalPerspective() {
     // Set resource perspective to local_url.
