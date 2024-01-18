@@ -66,9 +66,15 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function retrieveAll(): array {
-    return $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->execute();
+    // Some calling code is very particular about the output being an array,
+    // both as a return value here and after json_encode(). Since the entity
+    // query returns a keyed array, json_encode() will think it's an object. We
+    // don't want that, so we use array_values().
+    return array_values(
+      $this->entityStorage->getQuery()
+        ->accessCheck(FALSE)
+        ->execute()
+    );
   }
 
   /**
