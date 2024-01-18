@@ -223,10 +223,18 @@ class Drush extends DrushCommands {
    */
   public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
     $local_resource = $options['keep-local'] ? FALSE : TRUE;
-    $this->datastoreService->drop($identifier, NULL, $local_resource);
-    $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
+    try {
+      $this->datastoreService->drop($identifier, NULL, $local_resource);
+      $this->logger->notice('Successfully dropped the datastore for resource ' . $identifier);
+    }
+    catch (\InvalidArgumentException $e) {
+      // We get an invalid argument exception when the datastore does not exist.
+      // This can be because it was never imported, or because the resource
+      // is a type that will never be imported, such as a ZIP file.
+      $this->logger->warning('Unable to drop datastore for ' . $identifier);
+    }
     $this->postImport->removeJobStatus($identifier);
-    $this->logger->notice("Successfully removed the post import job status for resource {$identifier}");
+    $this->logger->notice('Successfully removed the post import job status for resource ' . $identifier);
   }
 
   /**
@@ -235,9 +243,12 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:drop-all
    */
   public function dropAll() {
+    /** @var \RootedData\RootedJsonData $distribution*/
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      $uuid = $distribution->data->{'%Ref:downloadURL'}[0]->data->identifier;
-      $this->drop($uuid);
+      $data = $distribution->get('$.data');
+      if ($uuid = $data['%Ref:downloadURL'][0]['data']['identifier'] ?? FALSE) {
+        $this->drop($uuid);
+      }
     }
   }
 
