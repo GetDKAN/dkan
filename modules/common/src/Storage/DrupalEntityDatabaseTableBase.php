@@ -175,7 +175,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
       ]);
     }
     $entity->save();
-    return $entity->get($this->primaryKey())->value;
+    return $entity->get($this->primaryKey())->getString();
   }
 
   /**
