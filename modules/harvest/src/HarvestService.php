@@ -6,7 +6,6 @@ use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
@@ -48,8 +47,7 @@ class HarvestService implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new self(
       $container->get('dkan.harvest.storage.database_table'),
-      $container->get('dkan.metastore.service'),
-      $container->get('entity_type.manager')
+      $container->get('dkan.metastore.service')
     );
   }
 
@@ -58,12 +56,10 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function __construct(
     FactoryInterface $storeFactory,
-    MetastoreService $metastore,
-    EntityTypeManager $entityTypeManager
+    MetastoreService $metastore
   ) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
-    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**

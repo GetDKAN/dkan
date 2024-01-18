@@ -177,10 +177,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $this->assertEquals(
-      'text/csv',
-      $container_chain->getStoredInput('resource')[0]->getMimeType()
-    );
+    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
   }
 
   /**

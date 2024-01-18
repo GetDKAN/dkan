@@ -35,7 +35,10 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(Connection $connection, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(
+    Connection $connection,
+    EntityTypeManagerInterface $entityTypeManager
+  ) {
     $this->connection = $connection;
     $this->entityTypeManager = $entityTypeManager;
   }

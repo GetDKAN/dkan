@@ -5,7 +5,7 @@ namespace Drupal\harvest;
 /**
  * Handle dataset orphaning.
  *
- * @todo Turn this into the OrphanProcessorService.
+ * @todo Turn this into a service.
  */
 trait OrphanDatasetsProcessorTrait {
 
@@ -39,8 +39,6 @@ trait OrphanDatasetsProcessorTrait {
    *   Orphan dataset identifiers.
    */
   public function processOrphanIds(array $orphanIds) {
-    // @todo Turn this trait into a service and inject the entity storage
-    //   manager.
     $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
 
     foreach ($orphanIds as $uuid) {

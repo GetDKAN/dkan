@@ -13,6 +13,8 @@ use Harvest\ETL\Load\Simple;
  * @group dkan
  * @group harvest
  * @group kernel
+ *
+ * @todo Is this equivalent to Drupal\Tests\harvest\Kernel\ServiceTest?
  */
 class HarvestServiceTest extends KernelTestBase {
 
