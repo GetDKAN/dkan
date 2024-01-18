@@ -245,8 +245,7 @@ class Drush extends DrushCommands {
   public function dropAll() {
     /** @var \RootedData\RootedJsonData $distribution*/
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      $data = $distribution->get('$.data');
-      if ($uuid = $data['%Ref:downloadURL'][0]['data']['identifier'] ?? FALSE) {
+      if ($uuid = $distribution->get('$[data]["%Ref:downloadURL"][0][data][identifier]') ?? FALSE) {
         $this->drop($uuid);
       }
     }
