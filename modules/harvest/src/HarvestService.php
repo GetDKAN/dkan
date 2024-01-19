@@ -114,7 +114,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @throws \Exception
    *   Exceptions may be thrown if validation fails.
    */
-  public function registerHarvest($plan): string {
+  public function registerHarvest($plan) {
 
     $this->validateHarvestPlan($plan);
 

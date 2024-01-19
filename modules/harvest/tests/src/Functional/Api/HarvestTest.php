@@ -22,8 +22,6 @@ use Harvest\ETL\Extract\DataJson;
  * @group api
  *
  * @todo Add API schema validation to responses.
- * @todo Change the harvest so it doesn't involve a request across the
- *   internet.
  */
 class HarvestTest extends BrowserTestBase {
 
@@ -81,10 +79,12 @@ class HarvestTest extends BrowserTestBase {
     $identifier = uniqid();
     $endpoint = '/api/1/harvest/plans';
 
+    // 02_harvest_empty.spec.js:GET harvest/plans
     // Unauthenticated request to empty list of harvests, should yield 401.
     $response = $this->getApiClient()->get($endpoint);
     $this->assertEquals(401, $response->getStatusCode());
 
+    // 02_harvest_empty.spec.js:GET harvest/plans
     // Authenticated request of empty list should yield 200.
     $user = $this->createUser(['harvest_api_index'], 'harvest_testapiuser', FALSE);
     $response = $this->getApiClient($user)->get($endpoint);
@@ -94,10 +94,12 @@ class HarvestTest extends BrowserTestBase {
     // Add a harvest.
     $this->addHarvestPlan($identifier);
 
+    // 03_harvest.spec.js: GET harvest/plans : Requires authenticated user
     // Unauthenticated request should yield 401.
     $response = $this->getApiClient()->get($endpoint);
     $this->assertEquals(401, $response->getStatusCode());
 
+    // 03_harvest.spec.js: GET harvest/plans : List harvest identifiers
     // Authenticated request should yield 200.
     $response = $this->getApiClient($user)->get($endpoint);
     $this->assertEquals(200, $response->getStatusCode());
@@ -115,6 +117,7 @@ class HarvestTest extends BrowserTestBase {
   }
 
   public function testAnonymousPostHarvestPlans() {
+    // 03_harvest.spec.js: POST harvest/plans : Requires authenticated user
     $endpoint = 'api/1/harvest/plans';
     $response = $this->getApiClient()->post($endpoint);
     $this->assertEquals(401, $response->getStatusCode());
@@ -125,9 +128,11 @@ class HarvestTest extends BrowserTestBase {
     $this->addHarvestPlan($identifier);
     $endpoint = '/api/1/harvest/plans/' . $identifier;
 
+    // 03_harvest.spec.js: GET harvest/plans/PLAN_ID : Requires authenticated user
     $response = $this->getApiClient()->get($endpoint);
     $this->assertEquals(401, $response->getStatusCode());
 
+    // 03_harvest.spec.js: GET harvest/plans/PLAN_ID : Get a single harvest plan
     $user = $this->createUser(['harvest_api_index'], 'harvest_user', FALSE);
     $response = $this->getApiClient($user)->get($endpoint);
     $this->assertEquals(200, $response->getStatusCode());
@@ -138,36 +143,40 @@ class HarvestTest extends BrowserTestBase {
   public function testGetHarvestRunsPlanIdQuery() {
     $identifier = uniqid();
     $this->addHarvestPlan($identifier);
-    $query = ['plan' => $identifier];
+    $plan_query = ['plan' => $identifier];
     $endpoint = '/api/1/harvest/runs';
 
+    // Run the harvest.
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $result = $harvest_service->runHarvest($identifier);
     $this->assertEquals('SUCCESS', $result['status']['extract'] ?? 'test fail');
 
+    // 03_harvest.spec.js: GET harvest/runs?plan=PLAN_ID : Requires authenticated user
     $response = $this->getApiClient()->get($endpoint, [
-      RequestOptions::QUERY => $query,
+      RequestOptions::QUERY => $plan_query,
     ]);
     $this->assertEquals(401, $response->getStatusCode());
 
+    // 03_harvest.spec.js: GET harvest/runs?plan=PLAN_ID : Gives list of previous runs for a harvest id
+    // Authenticated user gets the list.
     $user = $this->createUser(['harvest_api_info'], 'harvest_user', FALSE);
     $response = $this->getApiClient($user)->get($endpoint, [
-      RequestOptions::QUERY => $query,
+      RequestOptions::QUERY => $plan_query,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertCount(1, json_decode($response->getBody()->getContents()));
   }
 
-  public function testPostHarvestRuns() {
-    $endpoint = '/api/1/harvest/runs';
-    $response = $this->getApiClient()->post($endpoint);
-    $this->assertEquals(401, $response->getStatusCode());
-  }
-
   public function testGetHarvestRunsIdentifierQuery() {
     $identifier = uniqid();
     $endpoint = '/api/1/harvest/runs';
+
+    // 03_harvest.spec.js: POST harvest/runs : Requires authenticated user
+    // @todo Create POST-oriented test method and move this to it. This single
+    //   POST test is located here for test speed.
+    $response = $this->getApiClient()->post($endpoint);
+    $this->assertEquals(401, $response->getStatusCode());
 
     // Add a harvest plan and run it.
     $this->addHarvestPlan($identifier);
@@ -176,10 +185,12 @@ class HarvestTest extends BrowserTestBase {
     $result = $harvest_service->runHarvest($identifier);
     $this->assertEquals('SUCCESS', $result['status']['extract'] ?? 'test fail');
 
+    // 03_harvest.spec.js: GET harvest/runs/{identifier}' : Requires authenticated user
     // Unauthenticated user is 401.
     $response = $this->getApiClient()->get($endpoint);
     $this->assertEquals(401, $response->getStatusCode());
 
+    // 03_harvest.spec.js: GET harvest/runs/{identifier}' : Gives information about a single previous harvest run
     // Authorized user with a plan available.
     $query = ['plan' => $identifier];
     $user = $this->createUser(['harvest_api_info'], 'test_user', FALSE);
