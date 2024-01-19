@@ -8,7 +8,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery as Discovery;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\ReferenceLookup;
-use Drupal\metastore\Service;
+use Drupal\metastore\MetastoreService as Service;
 use MockChain\Chain;
 use MockChain\Options;
 use OutOfRangeException;
@@ -16,7 +16,6 @@ use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;
 
 class DataDictionaryDiscoveryTest extends TestCase {
-  
 
   // If mode is set to "none", we should get NULL no matter what.
   public function testModeNone() {
@@ -66,7 +65,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
       $this->getMetastoreService(),
       $this->getLookup(),
       $this->getUrlGenerator()
-    );    
+    );
     $id = $discovery->dictionaryIdFromResource('resource1');
     $this->assertEquals('111', $id);
 
@@ -148,7 +147,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $uriFromUrl = (new Options())
       ->add('https://example.com/api/1/metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
       ->add('dkan://metastore/schemas/dataset/items/444', 'dkan://metastore/schemas/dataset/items/444');
-      
+
     return (new Chain($this))
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', $uriFromUrl)
       ->add(MetastoreUrlGenerator::class, 'extractItemId', $extract)
