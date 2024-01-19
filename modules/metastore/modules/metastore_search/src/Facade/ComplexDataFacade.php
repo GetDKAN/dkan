@@ -69,9 +69,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return mixed
    */
   #[\ReturnTypeWillChange]
   public function current() {
@@ -79,9 +77,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return void
    */
   #[\ReturnTypeWillChange]
   public function next() {
@@ -89,9 +85,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return mixed
    */
   #[\ReturnTypeWillChange]
   public function key() {
@@ -99,9 +93,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return bool
    */
   #[\ReturnTypeWillChange]
   public function valid() {
@@ -109,9 +101,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return void
    */
   #[\ReturnTypeWillChange]
   public function rewind() {

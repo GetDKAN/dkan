@@ -34,9 +34,7 @@ class ImportServiceFactory implements ImportFactoryInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return mixed
    */
   public function getInstance(string $identifier, array $config = []) {
     if ($resource = $config['resource'] ?? FALSE) {

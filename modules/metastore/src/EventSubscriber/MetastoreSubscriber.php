@@ -68,9 +68,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return array
    */
   public static function getSubscribedEvents() {
     $events = [];

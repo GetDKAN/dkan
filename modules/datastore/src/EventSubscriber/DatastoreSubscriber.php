@@ -100,10 +100,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @codeCoverageIgnore
-   * @inheritdoc
+   * @return array
    */
   public static function getSubscribedEvents() {
     $events = [];

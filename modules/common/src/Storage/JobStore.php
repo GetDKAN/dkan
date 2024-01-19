@@ -41,9 +41,7 @@ class JobStore extends AbstractDatabaseTable {
   }
 
   /**
-   * {@inheritDoc}
-   *
-   * Retrieve job data.
+   * @return string
    */
   public function retrieve(string $id) {
     $result = parent::retrieve($id);

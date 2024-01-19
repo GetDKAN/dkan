@@ -32,9 +32,7 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * @return mixed
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->storage[$identifier])) {

@@ -57,9 +57,7 @@ class TableSummary implements \JsonSerializable {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}
+   * @return mixed
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {

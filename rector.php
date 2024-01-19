@@ -18,21 +18,26 @@
 
 declare(strict_types=1);
 
+use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
 use DrupalFinder\DrupalFinder;
 use DrupalRector\Set\Drupal9SetList;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
-use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
 use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
 use Rector\Set\ValueObject\LevelSetList;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
-use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Core\ValueObject\PhpVersion;
+use Rector\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector;
+use Rector\Transform\ValueObject\ClassMethodReference;
+use Rector\ValueObject\PhpVersion;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
+use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -65,6 +70,7 @@ return static function (RectorConfig $rectorConfig): void {
     AddDoesNotPerformAssertionToNonAssertingTestRector::class,
     ClosureToArrowFunctionRector::class,
     StringClassNameToClassConstantRector::class,
+    RemoveExtraParametersRector::class,
   ]);
 
   $drupalFinder = new DrupalFinder();
