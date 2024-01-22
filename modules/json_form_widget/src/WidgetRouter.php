@@ -103,40 +103,6 @@ class WidgetRouter implements ContainerInjectionInterface {
   }
 
   /**
-   * Flatten array elements and unset actions if hideActions is set.
-   *
-   * @param mixed $spec
-   *   Object with spec for UI options.
-   * @param array $element
-   *   Element to apply UI options.
-   *
-   * @return array
-   *   Return flattened element without actions.
-   */
-  public function flattenArrays($spec, array $element) {
-    unset($element['actions']);
-    $default_value = [];
-    foreach ($element[$spec->child] as $key => $item) {
-      $default_value = array_merge($default_value, $this->formatArrayDefaultValue($item));
-      if ($key != 0) {
-        unset($element[$spec->child][$key]);
-      }
-    }
-    $element[$spec->child][0]['#default_value'] = $default_value;
-    return $element;
-  }
-
-  /**
-   * Format default values for arrays (flattened).
-   */
-  private function formatArrayDefaultValue($item) {
-    if (!empty($item['#default_value'])) {
-      return [$item['#default_value'] => $item['#default_value']];
-    }
-    return [];
-  }
-
-  /**
    * Handle configuration for list elements.
    *
    * @param mixed $spec
@@ -148,14 +114,19 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The element configured as a list element.
    */
   public function handleListElement($spec, array $element) {
-    if (isset($spec->titleProperty)) {
-      if (isset($element[$spec->titleProperty])) {
-        $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
-      }
+    $title_property = ($spec->titleProperty ?? FALSE);
+
+    if (isset($title_property, $element[$title_property])) {
+      $element[$title_property] = $this->getDropdownElement($element[$title_property], $spec, $title_property);
     }
-    else {
+
+    if (isset($spec->source->returnValue)) {
+      $element = $this->getDropdownElement($element, $spec, $title_property);
+    }
+    elseif (!isset($spec->titleProperty)) {
       $element = $this->getDropdownElement($element, $spec);
     }
+
     return $element;
   }
 
@@ -245,17 +216,57 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function getOptionsFromMetastore($source, $titleProperty = FALSE) {
     $options = [];
-    $values = $this->metastore->getAll($source->metastoreSchema);
-    foreach ($values as $value) {
-      $value = json_decode($value);
-      if ($titleProperty) {
-        $options[$value->data->{$titleProperty}] = $value->data->{$titleProperty};
-      }
-      else {
-        $options[$value->data] = $value->data;
-      }
+    $metastore_items = $this->metastore->getAll($source->metastoreSchema);
+    foreach ($metastore_items as $item) {
+      $item = json_decode($item);
+      $title = $this->metastoreOptionTitle($item, $source, $titleProperty);
+      $value = $this->metastoreOptionValue($item, $source, $titleProperty);
+      $options[$value] = $title;
     }
     return $options;
+  }
+
+  /**
+   * Determine the title for the select option.
+   *
+   * @param object|string $item
+   *   Single item from Metastore::getAll()
+   * @param object $source
+   *   Source defintion from UI schema.
+   * @param string|false $titleProperty
+   *   Title property defined in UI schema.
+   *
+   * @return string
+   *   String to be used in title.
+   */
+  private function metastoreOptionTitle($item, object $source, $titleProperty): string {
+    if ($titleProperty) {
+      return is_object($item) ? $item->data->$titleProperty : $item;
+    }
+    return $item->data;
+  }
+
+  /**
+   * Determine the value for the select option.
+   *
+   * @param object|string $item
+   *   Single item from Metastore::getAll()
+   * @param object $source
+   *   Source defintion from UI schema.
+   * @param string|false $titleProperty
+   *   Title property defined in UI schema.
+   *
+   * @return string
+   *   String to be used as option value.
+   */
+  private function metastoreOptionValue($item, object $source, $titleProperty): string {
+    if (($source->returnValue ?? NULL) == 'url') {
+      return 'dkan://metastore/schemas/' . $source->metastoreSchema . '/items/' . $item->identifier;
+    }
+    if ($titleProperty) {
+      return is_object($item) ? $item->data->$titleProperty : $item;
+    }
+    return $item->data;
   }
 
   /**

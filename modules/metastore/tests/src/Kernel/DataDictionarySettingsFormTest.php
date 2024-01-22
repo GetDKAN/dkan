@@ -100,8 +100,8 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
   private function getDataDictionary(array $fields, array $indexes, string $identifier, string $title = 'Test DataDict') {
     return json_encode([
       'identifier' => $identifier,
-      'title' => $title,
       'data' => [
+        'title' => $title,
         'fields' => $fields,
         'indexes' => $indexes,
       ],

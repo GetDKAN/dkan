@@ -130,8 +130,8 @@ We will define a list of fields based on the example header row below.
       Authorization: Basic username:password
 
       {
-          "title": "Demo Dictionary",
           "data": {
+              "title": "Demo Dictionary",
               "fields": [
                   {
                       "name": "project_id",

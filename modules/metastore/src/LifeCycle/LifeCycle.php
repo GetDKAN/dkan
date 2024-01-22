@@ -400,7 +400,20 @@ class LifeCycle {
    *   Data-Dictionary metastore item.
    */
   protected function datadictionaryPresave(MetastoreItemInterface $data): void {
-    $this->setNodeValuesFromMetadata($data);
+    $metadata = $data->getMetaData();
+
+    $title = $metadata->data->title;
+    $data->setTitle($title);
+
+    // If there is no uuid add one.
+    if (!isset($metadata->identifier)) {
+      $metadata->identifier = $data->getIdentifier();
+    }
+    // If one exists in the uuid it should be the same in the table.
+    else {
+      $data->setIdentifier($metadata->identifier);
+    }
+    $data->setMetadata($metadata);
   }
 
   /**
