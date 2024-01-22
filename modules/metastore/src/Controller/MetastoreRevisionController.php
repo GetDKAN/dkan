@@ -42,11 +42,15 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
   private $docs;
 
   /**
+   * Metastore API response service.
+   *
    * @var \Drupal\metastore\MetastoreApiResponse
    */
   private MetastoreApiResponse $apiResponse;
 
   /**
+   * Storage factory service.
+   *
    * @var \Contracts\FactoryInterface
    */
   private ContractsFactoryInterface $storageFactory;

@@ -20,17 +20,21 @@ class Page {
   /**
    * Node storage service.
    *
-   * @var string
+   * @var \Drupal\node\NodeStorageInterface
    */
   private $nodeStorage;
 
   /**
-   * @var array|mixed|null
+   * Build folder configuration.
+   *
+   * @var ?string
    */
   private $buildFolder;
 
   /**
-   * @var array|mixed|null
+   * Frontend path configuration.
+   *
+   * @var ?string
    */
   private $frontendPath;
 

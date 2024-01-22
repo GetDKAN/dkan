@@ -21,6 +21,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class MetastoreSearchApiDocs extends DkanApiDocsBase {
 
   /**
+   * Metastore search service.
+   *
    * @var \Drupal\metastore_search\Search
    */
   private Search $metastoreSearch;

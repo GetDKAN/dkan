@@ -10,8 +10,10 @@
  * - Add the following to the script section of your project composer.json:
  *
  * "scripts": {
- *   "rector": "./vendor/bin/rector -c ./docroot/modules/contrib/dkan/rector.php",
- *   "rector-dry-run": "./vendor/bin/rector -c ./docroot/modules/contrib/dkan/rector.php --dry-run"
+ *   "rector": "./vendor/bin/rector -c \
+ *              ./docroot/modules/contrib/dkan/rector.php",
+ *   "rector-dry-run": "./vendor/bin/rector -c \
+ *              ./docroot/modules/contrib/dkan/rector.php --dry-run"
  * }
  *
  * Now you can say: composer rector-dry-run, and eventually: composer rector.
@@ -83,7 +85,9 @@ return static function (RectorConfig $rectorConfig): void {
     $drupalRoot . '/themes',
   ]);
   $rectorConfig->skip(['*/upgrade_status/tests/modules/*']);
-  $rectorConfig->fileExtensions(['php', 'module', 'theme', 'install', 'profile', 'inc', 'engine']);
+  $rectorConfig->fileExtensions([
+    'php', 'module', 'theme', 'install', 'profile', 'inc', 'engine',
+  ]);
   $rectorConfig->importNames(TRUE, FALSE);
   $rectorConfig->importShortClasses(FALSE);
 };

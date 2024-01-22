@@ -12,16 +12,24 @@ use Drupal\Component\EventDispatcher\Event as DrupalEvent;
 class Event extends DrupalEvent {
 
   /**
+   * Validation callback.
+   *
    * @var \Closure|mixed|null
    */
   private $validator;
 
   /**
+   * Data.
+   *
+   * How this is used depends on the event we're responding to.
+   *
    * @var mixed
    */
   private $data;
 
   /**
+   * Exception.
+   *
    * @var \Exception|null
    */
   private ?\Exception $exception;

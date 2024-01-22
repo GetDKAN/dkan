@@ -20,22 +20,30 @@ class RouteProvider {
   private $appRoot;
 
   /**
+   * Query factory service.
+   *
    * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
    */
   private QueryFactoryInterface $entityQuery;
 
   /**
-   * @var array|mixed|null
+   * Build folder config.
+   *
+   * @var ?string
    */
   private $buildFolder;
 
   /**
-   * @var array|mixed|null
+   * Frontend path config.
+   *
+   * @var ?string
    */
   private $frontendPath;
 
   /**
-   * @var array|mixed|null
+   * Routes config.
+   *
+   * @var ?array
    */
   private $routes;
 

@@ -23,12 +23,14 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   /**
    * The DKAN metastore service.
    *
-   * @var Drupal\metastore\Service
+   * @var \Drupal\metastore\Service
    */
   private $metastore;
 
   /**
-   * @var ImportInfo
+   * Import info service.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfo
    */
   private ImportInfo $importInfo;
 
@@ -67,7 +69,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
