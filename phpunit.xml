@@ -48,9 +48,6 @@
       <group>requires-database</group>
     </exclude>
   </groups>
-  <listeners>
-    <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
-  </listeners>
   <php>
     <!-- These variables may alternatively be set as environment variables. -->
     <!-- E.g., `DRUPAL_VERSION=V8 ./vendor/bin/phpunit` -->
@@ -58,7 +55,5 @@
     <env name="DTT_BASE_URL" value="http://web"/>
     <env name="SIMPLETEST_BASE_URL" value="http://web"/>
     <env name="SIMPLETEST_DB" value="mysql://drupal:123@db/drupal"/>
-    <!-- Don't fail for external dependencies. -->
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
   </php>
 </phpunit>
