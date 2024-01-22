@@ -59,6 +59,6 @@
     <env name="SIMPLETEST_BASE_URL" value="http://web"/>
     <env name="SIMPLETEST_DB" value="mysql://drupal:123@db/drupal"/>
     <!-- Don't fail for external dependencies. -->
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0"/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
   </php>
 </phpunit>
