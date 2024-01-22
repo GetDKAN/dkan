@@ -5,6 +5,7 @@ namespace Drupal\datastore;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\common\DataResource;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
@@ -55,6 +56,13 @@ class Drush extends DrushCommands {
   protected ResourceMapper $resourceMapper;
 
   /**
+   * Import info list service.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfoList
+   */
+  private ImportInfoList $importInfoList;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -62,7 +70,8 @@ class Drush extends DrushCommands {
     DatastoreService $datastoreService,
     PostImport $postImport,
     ResourceLocalizer $resourceLocalizer,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
+    ImportInfoList $importInfoList
   ) {
     parent::__construct();
     $this->metastoreService = $metastoreService;
@@ -70,6 +79,7 @@ class Drush extends DrushCommands {
     $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->resourceMapper = $resourceMapper;
+    $this->importInfoList = $importInfoList;
   }
 
   /**
@@ -147,7 +157,7 @@ class Drush extends DrushCommands {
     $status = $options['status'];
     $uuid_only = $options['uuid-only'];
 
-    $list = $this->datastoreService->list();
+    $list = $this->importInfoList->buildList();
     $rows = [];
     foreach ($list as $uuid => $item) {
       $rows[] = $this->createRow($uuid, $item);
@@ -213,10 +223,18 @@ class Drush extends DrushCommands {
    */
   public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
     $local_resource = $options['keep-local'] ? FALSE : TRUE;
-    $this->datastoreService->drop($identifier, NULL, $local_resource);
-    $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
+    try {
+      $this->datastoreService->drop($identifier, NULL, $local_resource);
+      $this->logger->notice('Successfully dropped the datastore for resource ' . $identifier);
+    }
+    catch (\InvalidArgumentException $e) {
+      // We get an invalid argument exception when the datastore does not exist.
+      // This can be because it was never imported, or because the resource
+      // is a type that will never be imported, such as a ZIP file.
+      $this->logger->warning('Unable to drop datastore for ' . $identifier);
+    }
     $this->postImport->removeJobStatus($identifier);
-    $this->logger->notice("Successfully removed the post import job status for resource {$identifier}");
+    $this->logger->notice('Successfully removed the post import job status for resource ' . $identifier);
   }
 
   /**
@@ -225,9 +243,11 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:drop-all
    */
   public function dropAll() {
+    /** @var \RootedData\RootedJsonData $distribution*/
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      $uuid = $distribution->data->{'%Ref:downloadURL'}[0]->data->identifier;
-      $this->drop($uuid);
+      if ($uuid = $distribution->get('$[data]["%Ref:downloadURL"][0][data][identifier]') ?? FALSE) {
+        $this->drop($uuid);
+      }
     }
   }
 
