@@ -56,7 +56,9 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   }
 
   /**
-   * @return void
+   * Inherited.
+   *
+   * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {
     $schema_id = $this->getSchemaIdFromEntity($items);

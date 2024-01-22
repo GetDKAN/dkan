@@ -61,7 +61,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * @return mixed
+   * Inherited.
+   *
+   * {@inheritdoc}
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {

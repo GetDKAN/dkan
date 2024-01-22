@@ -67,7 +67,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * @return string
+   * {@inheritdoc}
    */
   public function retrieve(string $id) {
     $this->setTable();

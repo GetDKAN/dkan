@@ -4,7 +4,10 @@
  * @file
  * Rector config for DKAN.
  *
- * To use this file, add this script section to your project's composer.json:
+ * To use this file:
+ * - Require palantirnet/drupal-rector into your project root composer.json
+ *   file.
+ * - Add the following to the script section of your project composer.json:
  *
  * "scripts": {
  *   "rector": "./vendor/bin/rector -c ./docroot/modules/contrib/dkan/rector.php",
@@ -32,11 +35,7 @@ use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMock
 use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
 use Rector\Set\ValueObject\LevelSetList;
-use Rector\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector;
-use Rector\Transform\ValueObject\ClassMethodReference;
 use Rector\ValueObject\PhpVersion;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 
 return static function (RectorConfig $rectorConfig): void {

@@ -45,7 +45,7 @@ class FileFetcherFactory implements FactoryInterface {
   }
 
   /**
-   * @return string
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     return FileFetcher::get(

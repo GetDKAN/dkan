@@ -32,7 +32,9 @@ class DatabaseTable extends AbstractDatabaseTable {
   }
 
   /**
-   * @return string
+   * Inherited.
+   *
+   * @inheritdoc
    */
   public function retrieve(string $id) {
     $result = parent::retrieve($id);

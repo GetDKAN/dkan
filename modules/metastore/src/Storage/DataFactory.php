@@ -41,7 +41,9 @@ class DataFactory implements FactoryInterface {
   }
 
   /**
-   * @return mixed
+   * Inherited.
+   *
+   * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->stores[$identifier])) {

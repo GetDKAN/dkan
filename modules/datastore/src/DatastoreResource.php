@@ -63,7 +63,7 @@ class DatastoreResource implements \JsonSerializable {
   }
 
   /**
-   * @return mixed
+   * {@inheritdoc}
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {

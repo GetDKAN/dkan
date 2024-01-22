@@ -21,9 +21,6 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
 
     public function primaryKey() { }
 
-    /**
-     * @return string
-     */
     public function retrieve(string $id)
     {
         if (isset($this->storage[$id])) {
@@ -76,9 +73,6 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         return count($this->storage);
     }
 
-    /**
-     * @return mixed
-     */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
