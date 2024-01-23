@@ -5,6 +5,8 @@ services:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
       - '@dkan.metastore.valid_metadata'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
 
   dkan.metastore.lifecycle:
     class: \Drupal\metastore\LifeCycle\LifeCycle
