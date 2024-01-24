@@ -116,7 +116,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
 
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($resource_id)) {
+      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($resource_id, $distribution_id)) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
@@ -128,17 +128,24 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @param string $resource_id
    *   The identifier of the resource.
+   * @param string $distribution_id
+   *    The identifier of the orphaned distribution.
    *
    * @return bool
    *   Whether the resource is in use elsewhere.
    *
    * @todo Abstract out "distribution" and field_data_type.
    */
-  private function resourceInUseElsewhere(string $resource_id): bool {
+  private function resourceInUseElsewhere(string $resource_id, string $distribution_id): bool {
     $distributions = $this->referenceLookup->getReferencers('distribution', $resource_id, 'downloadURL');
 
-    // If more than one distribution is using this resource, it's still in use.
-    return count($distributions) > 1;
+    // Check if any other distributions reference it.
+    foreach ($distributions as $distribution) {
+      if ($distribution != $distribution_id) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
