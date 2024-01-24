@@ -108,15 +108,15 @@ class MetastoreSubscriber implements EventSubscriberInterface {
     // metadata resource mapper.
     foreach ($resources as $resourceParams) {
       // Retrieve the distributions ID, perspective, and version metadata.
-      $resource_identifier = $resourceParams['identifier'] ?? NULL;
+      $resource_id = $resourceParams['identifier'] ?? NULL;
       $perspective = $resourceParams['perspective'] ?? NULL;
       $version = $resourceParams['version'] ?? NULL;
-      $resource_id = $resource_identifier . '__' . $version . '__' . $perspective;
-      $resource = $this->resourceMapper->get($resource_identifier, $perspective, $version);
+      $resource_full_id = $resource_id . '__' . $version . '__' . $perspective;
+      $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
 
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($resource_id, $distribution_id)) {
+      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($distribution_id, $resource_full_id)) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
@@ -126,26 +126,26 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   /**
    * Determine if a resource is in use in another distribution.
    *
+   * @param string $dist_id
+   *   The uuid of the distribution where this resource is know to be in use.
    * @param string $resource_id
    *   The identifier of the resource.
-   * @param string $distribution_id
-   *    The identifier of the orphaned distribution.
    *
    * @return bool
    *   Whether the resource is in use elsewhere.
    *
    * @todo Abstract out "distribution" and field_data_type.
    */
-  private function resourceInUseElsewhere(string $resource_id, string $distribution_id): bool {
+  private function resourceInUseElsewhere(string $dist_id, string $resource_id): bool {
     $distributions = $this->referenceLookup->getReferencers('distribution', $resource_id, 'downloadURL');
 
     // Check if any other distributions reference it.
     foreach ($distributions as $distribution) {
-      if ($distribution != $distribution_id) {
-        return true;
+      if ($distribution != $dist_id) {
+        return TRUE;
       }
     }
-    return false;
+    return FALSE;
   }
 
 }
