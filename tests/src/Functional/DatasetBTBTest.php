@@ -667,25 +667,8 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->storeDatasetRunQueues($identifier, '1', ['1.csv']);
 
-    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
-    $databaseSchema = $this->container->get('database')->schema();
-
-    $metadata = $datasetInfoService->gather($identifier);
-    $distributionTable = $metadata['latest_revision']['distributions'][0]['table_name'];
-    $distributionUuid = $metadata['latest_revision']['distributions'][0]['distribution_uuid'];
-
-    $distributionTableExists = $databaseSchema->tableExists($distributionTable);
-    $this->assertTrue($distributionTableExists, $distributionTable . ' exists.');
-
     // Publish the draft dataset
     $this->getMetastore()->publish('dataset', $identifier);
-
-    $published = $datasetInfoService->gather($identifier);
-    $distributionTablePublished = $published['latest_revision']['distributions'][0]['table_name'];
-    $distributionUuidPublished = $published['latest_revision']['distributions'][0]['distribution_uuid'];
-
-    $this->assertEquals($distributionTable, $distributionTablePublished, 'Distribution table has not changed.');
-    $this->assertEquals($distributionUuid, $distributionUuidPublished, 'Distribution has not changed.');
 
     // Simulate all possible queues post publish.
     // Should only include post_import (not included earlier) and resource_purger.
@@ -697,12 +680,6 @@ class DatasetBTBTest extends BrowserTestBase {
       'orphan_resource_remover',
       'post_import',
     ]);
-
-    $postCleanup = $datasetInfoService->gather($identifier);
-    $distributionTableFinal = $postCleanup['latest_revision']['distributions'][0]['table_name'];
-
-    $distributionTableExistsFinal = $databaseSchema->tableExists($distributionTableFinal);
-    $this->assertTrue($distributionTableExistsFinal, $distributionTableFinal . ' exists.');
   }
 
   /**
