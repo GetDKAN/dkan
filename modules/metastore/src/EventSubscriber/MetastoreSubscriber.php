@@ -145,6 +145,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
         return TRUE;
       }
     }
+    // No other distributions were found using this resource.
     return FALSE;
   }
 
