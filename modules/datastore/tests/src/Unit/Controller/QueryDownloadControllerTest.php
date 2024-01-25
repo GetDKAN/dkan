@@ -24,7 +24,6 @@ use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\common\Storage\SelectFactory;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Tests\common\Unit\Connection;
 
@@ -35,13 +34,6 @@ use Drupal\Tests\common\Unit\Connection;
 class QueryDownloadControllerTest extends TestCase {
 
   private $buffer;
-
-  /**
-   * Select factory service.
-   *
-   * @var \Drupal\common\Storage\SelectFactory
-   */
-  private SelectFactory $selectFactory;
 
   protected function setUp(): void {
     parent::setUp();
@@ -54,8 +46,6 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
-    $this->selectFactory = $this->getSelectFactory();
-
   }
 
   protected function tearDown(): void {
@@ -98,13 +88,6 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
-  }
-
-  /**
-   *
-   */
-  private function getSelectFactory() {
-    return new SelectFactory($this->getConnection());
   }
 
   /**
