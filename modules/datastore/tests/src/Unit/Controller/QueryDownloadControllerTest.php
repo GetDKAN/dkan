@@ -29,11 +29,19 @@ use Drupal\Core\Database\Query\Select;
 use Drupal\Tests\common\Unit\Connection;
 
 /**
- *
+ * @group dkan
+ * @group datastore
  */
 class QueryDownloadControllerTest extends TestCase {
 
   private $buffer;
+
+  /**
+   * Select factory service.
+   *
+   * @var \Drupal\common\Storage\SelectFactory
+   */
+  private SelectFactory $selectFactory;
 
   protected function setUp(): void {
     parent::setUp();
@@ -65,7 +73,7 @@ class QueryDownloadControllerTest extends TestCase {
     $csv = $response->getContent();
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([self::class, 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;
@@ -80,34 +88,34 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedQueryCsv() {
     $data = [
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
+      'format' => 'csv',
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
   }
 
-  public function queryResultReformatted($data){
+  public function queryResultReformatted($data) {
     $request = $this->mockRequest($data);
     $dataDictionaryFields = [
       'name' => 'date',
       'type' => 'date',
-      'format '=>'%m/%d/%Y'
+      'format ' => '%m/%d/%Y',
     ];
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $qController->query($request);
     $csv = $response->getContent();
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([self::class, 'getBuffer']);
     $streamResponse = $dController->query($request);
     $streamResponse->dataDictionaryFields = $dataDictionaryFields;
-    //$streamResponse->sendContent();
+    // $streamResponse->sendContent();
     $this->selectFactory->create($streamResponse);
 
     $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
@@ -128,8 +136,8 @@ class QueryDownloadControllerTest extends TestCase {
     return (new Chain($this))
       ->add(
         Connection::class,
-        "select",
-        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
+        'select',
+        new Select(new Connection(new \PDO('sqlite::memory:'), []), 'table', 't')
       )
       ->getMock();
   }
@@ -139,10 +147,10 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedResourceQueryCsv() {
     $data = [
-      "format" => "csv",
+      'format' => 'csv',
     ];
     // Need 2 json responses which get combined on output.
-    $this->queryResultCompare($data, "2");
+    $this->queryResultCompare($data, '2');
   }
 
   /**
@@ -150,15 +158,15 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedOtherSortCsv() {
     $data = [
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
-      "properties" => ["state", "year"],
-      "sorts" => [
+      'format' => 'csv',
+      'properties' => ['state', 'year'],
+      'sorts' => [
         [
           'property' => 'state',
           'order' => 'asc',
@@ -179,34 +187,34 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedJoinCsv() {
     $data = [
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
         [
-          "id" => "3",
-          "alias" => "j",
-        ],
-      ],
-      "properties" => [
-        [
-          "resource" => "t",
-          "property" => "state",
-        ],
-        [
-          "resource" => "t",
-          "property" => "year",
-        ],
-        [
-          "resource" => "j",
-          "property" => "color",
+          'id' => '3',
+          'alias' => 'j',
         ],
       ],
-      "joins" => [
+      'properties' => [
         [
-          "resource" => 'j',
-          "condition" => [
+          'resource' => 't',
+          'property' => 'state',
+        ],
+        [
+          'resource' => 't',
+          'property' => 'year',
+        ],
+        [
+          'resource' => 'j',
+          'property' => 'color',
+        ],
+      ],
+      'joins' => [
+        [
+          'resource' => 'j',
+          'condition' => [
             'resource' => 't',
             'property' => 'year',
             'value' => [
@@ -216,8 +224,8 @@ class QueryDownloadControllerTest extends TestCase {
           ],
         ],
       ],
-      "format" => "csv",
-      "sorts" => [
+      'format' => 'csv',
+      'sorts' => [
         [
           'resource' => 'j',
           'property' => 'color',
@@ -241,10 +249,10 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedQueryJson() {
     $data = json_encode([
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
     ]);
@@ -263,20 +271,20 @@ class QueryDownloadControllerTest extends TestCase {
     $queryLimit = 75;
     $pageLimit = 50;
     $data = json_encode([
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
-      "limit" => $queryLimit,
+      'format' => 'csv',
+      'limit' => $queryLimit,
     ]);
     // Set the row limit to 50 even though we're requesting 1000.
     $container = $this->getQueryContainer($pageLimit);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
-    ob_start(['self', 'getBuffer']);
+    ob_start([self::class, 'getBuffer']);
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
@@ -292,14 +300,14 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedCsvSpecificColumns() {
     $data = [
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
-      "properties" => ["state", "year"],
+      'format' => 'csv',
+      'properties' => ['state', 'year'],
     ];
     $this->queryResultCompare($data);
   }
@@ -309,21 +317,21 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedCsvResourceColumns() {
     $data = [
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
-      "properties" => [
+      'format' => 'csv',
+      'properties' => [
         [
-          "resource" => "t",
-          "property" => "state",
+          'resource' => 't',
+          'property' => 'state',
         ],
         [
-          "resource" => "t",
-          "property" => "year",
+          'resource' => 't',
+          'property' => 'year',
         ],
       ],
     ];
@@ -331,20 +339,19 @@ class QueryDownloadControllerTest extends TestCase {
     $this->queryResultCompare($data);
   }
 
-
   /**
    * Ensure that rowIds appear correctly if requested.
    */
   public function testStreamedCsvRowIds() {
     $data = [
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "t",
+          'id' => '2',
+          'alias' => 't',
         ],
       ],
-      "format" => "csv",
-      "rowIds" => TRUE,
+      'format' => 'csv',
+      'rowIds' => TRUE,
     ];
 
     $this->queryResultCompare($data);
@@ -355,23 +362,23 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedBadSchema() {
     $data = [
-      "resources" => [
+      'resources' => [
         [
-          "id" => "2",
-          "alias" => "tx",
+          'id' => '2',
+          'alias' => 'tx',
         ],
       ],
-      "format" => "csv",
+      'format' => 'csv',
     ];
     $request = $this->mockRequest($data);
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([self::class, 'getBuffer']);
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;
     ob_get_clean();
 
-    $this->assertStringContainsString("Could not generate header", $streamedCsv);
+    $this->assertStringContainsString('Could not generate header', $streamedCsv);
   }
 
   /**
@@ -385,10 +392,10 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function getQueryContainer(int $rowLimit) {
     $options = (new Options())
-      ->add("dkan.metastore.storage", DataFactory::class)
-      ->add("dkan.datastore.service", DatastoreService::class)
-      ->add("dkan.datastore.query", Query::class)
-      ->add("dkan.common.dataset_info", DatasetInfo::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
+      ->add('dkan.datastore.query', Query::class)
+      ->add('dkan.common.dataset_info', DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
@@ -407,19 +414,19 @@ class QueryDownloadControllerTest extends TestCase {
       'color' => ['type' => 'text'],
     ];
 
-    $storage2 = $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2);
+    $storage2 = $this->mockDatastoreTable($connection, '2', 'states_with_dupes.csv', $schema2);
     $storage2x = clone($storage2);
     $storage2x->setSchema(['fields' => []]);
     $storageMap = [
       't' => $storage2,
       'tx' => $storage2x,
-      'j' => $this->mockDatastoreTable($connection, "3", 'years_colors.csv', $schema3
+      'j' => $this->mockDatastoreTable($connection, '3', 'years_colors.csv', $schema3
       ),
     ];
 
     $chain = (new Chain($this))
-      ->add(Container::class, "get", $options)
-      ->add(DatasetInfo::class, "gather", [])
+      ->add(Container::class, 'get', $options)
+      ->add(DatasetInfo::class, 'gather', [])
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
@@ -427,8 +434,8 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(Query::class, "getQueryStorageMap", $storageMap)
-      ->add(Query::class, 'getDatastoreService',  DatastoreService::class)
+      ->add(Query::class, 'getQueryStorageMap', $storageMap)
+      ->add(Query::class, 'getDatastoreService', DatastoreService::class)
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
       ->add(ImmutableConfig::class, 'get', $rowLimit);
 
@@ -448,7 +455,7 @@ class QueryDownloadControllerTest extends TestCase {
     else {
       $body = $data;
     }
-    return Request::create("http://example.com", 'POST', [], [], [], [], $body);
+    return Request::create('http://example.com', 'POST', [], [], [], [], $body);
   }
 
   /**
@@ -468,7 +475,7 @@ class QueryDownloadControllerTest extends TestCase {
       $notNull = $field['not null'] ?? FALSE;
       $createFields[] = "`$name` " . strtoupper($field['type']) . (($notNull) ? ' NOT NULL' : '');
     }
-    $createFieldsStr = implode(", ", $createFields);
+    $createFieldsStr = implode(', ', $createFields);
     $connection->query("CREATE TABLE `datastore_$id` ($createFieldsStr);");
 
     $sampleData = [];
@@ -479,13 +486,13 @@ class QueryDownloadControllerTest extends TestCase {
     foreach ($sampleData as $row) {
       $values = [];
       foreach ($row as $key => $value) {
-        $values[] = $types[$key] == "int" ? $value : "'$value'";
-        $valuesStr = implode(", ", $values);
+        $values[] = $types[$key] == 'int' ? $value : "'$value'";
+        $valuesStr = implode(', ', $values);
       }
       $connection->query("INSERT INTO `datastore_$id` VALUES ($valuesStr);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new DatastoreResource($id, "data-$id.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable($connection, new DatastoreResource($id, "data-$id.csv", 'text/csv'));
     $storage->setSchema([
       'fields' => $fields,
     ]);
