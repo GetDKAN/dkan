@@ -111,12 +111,12 @@ class MetastoreSubscriber implements EventSubscriberInterface {
       $resource_id = $resourceParams['identifier'] ?? NULL;
       $perspective = $resourceParams['perspective'] ?? NULL;
       $version = $resourceParams['version'] ?? NULL;
-      $resource_full_id = $resource_id . '__' . $version . '__' . $perspective;
+      $resource_id_wo_perspective = $resource_id . '__' . $version;
       $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
 
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($distribution_id, $resource_full_id)) {
+      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($distribution_id, $resource_id_wo_perspective)) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
