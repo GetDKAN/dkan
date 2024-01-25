@@ -145,8 +145,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   public function testHarvestArchive() {
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
-    /** @var \Drupal\harvest\HarvestService $harvester */
-    $harvester = $this->container->get('dkan.harvest.service');
+    $harvester = $this->getHarvester();
     $harvester->registerHarvest($plan);
 
     // First harvest.
@@ -170,8 +169,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   public function testHarvestOrphan() {
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
-    /** @var \Drupal\harvest\HarvestService $harvester */
-    $harvester = $this->container->get('dkan.harvest.service');
+    $harvester = $this->getHarvester();
     $harvester->registerHarvest($plan);
 
     // First harvest.
@@ -637,6 +635,10 @@ class DatasetBTBTest extends BrowserTestBase {
 
   private function getQueueService() : QueueFactory {
     return $this->container->get('queue');
+  }
+
+  private function getHarvester() : HarvestService {
+    return $this->container->get('dkan.harvest.service');
   }
 
   private function getNodeStorage(): NodeStorage {

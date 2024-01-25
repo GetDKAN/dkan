@@ -148,7 +148,7 @@ class HarvestCommands extends DrushCommands {
     $this->logger->warning(
       'If you deregister a harvest with published datasets, you will
        not be able to bulk revert the datasets connected to this harvest.');
-    if ($this->io()->confirm('Deregister harvest ' . $id)) {
+    if ($this->io()->confirm("Deregister harvest {$id}")) {
       if ($this->harvestService->deregisterHarvest($id)) {
         $message = 'Successfully deregistered the ' . $id . ' harvest.';
       }
