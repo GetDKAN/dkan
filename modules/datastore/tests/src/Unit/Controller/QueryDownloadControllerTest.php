@@ -100,28 +100,6 @@ class QueryDownloadControllerTest extends TestCase {
     $this->queryResultCompare($data);
   }
 
-  public function queryResultReformatted($data) {
-    $request = $this->mockRequest($data);
-    $dataDictionaryFields = [
-      'name' => 'date',
-      'type' => 'date',
-      'format ' => '%m/%d/%Y',
-    ];
-    $qController = QueryController::create($this->getQueryContainer(500));
-    $response = $qController->query($request);
-    $csv = $response->getContent();
-
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start([self::class, 'getBuffer']);
-    $streamResponse = $dController->query($request);
-    $streamResponse->dataDictionaryFields = $dataDictionaryFields;
-    // $streamResponse->sendContent();
-    $this->selectFactory->create($streamResponse);
-
-    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
-    $this->assertEquals($csv, $streamedCsv);
-  }
-
   /**
    *
    */
