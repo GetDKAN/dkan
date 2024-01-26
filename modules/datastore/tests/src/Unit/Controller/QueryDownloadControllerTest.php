@@ -46,8 +46,6 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
-    $this->selectFactory = $this->getSelectFactory();
-
   }
 
   protected function tearDown(): void {
