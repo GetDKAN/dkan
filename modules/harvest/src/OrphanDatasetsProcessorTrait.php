@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  *
  * @package Drupal\harvest
  */
-trait OrphanDatasetsProcessor {
+trait OrphanDatasetsProcessorTrait {
 
   /**
    * Entity type manager.
