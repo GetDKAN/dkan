@@ -40,7 +40,7 @@ use Drupal\harvest\HarvestPlanInterface;
  *     "label" = "id",
  *   },
  *   links = {
- *     "collection" = "/admin/content/harvest-plan",
+ *     "collection" = "/admin/dkan/harvest",
  *     "add-form" = "/harvest-plan/add",
  *     "canonical" = "/harvest-plan/{harvest_plan}",
  *     "edit-form" = "/harvest-plan/{harvest_plan}",

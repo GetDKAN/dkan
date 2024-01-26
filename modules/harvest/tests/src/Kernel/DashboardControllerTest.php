@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\harvest\Kernel;
 
-use Drupal\harvest\DashboardController;
+use Drupal\harvest\OldDashboardController;
 use Drupal\KernelTests\KernelTestBase;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
 
 /**
- * @covers \Drupal\harvest\DashboardController
- * @coversDefaultClass \Drupal\harvest\DashboardController
+ * @covers \Drupal\harvest\OldDashboardController
+ * @coversDefaultClass \Drupal\harvest\OldDashboardController
  *
  * @group dkan
  * @group harvest
@@ -32,7 +32,7 @@ class DashboardControllerTest extends KernelTestBase {
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
 
-    $dashboard_controller = DashboardController::create($this->container);
+    $dashboard_controller = OldDashboardController::create($this->container);
 
     // There are no registered harvests, so there should be zero rows. We also
     // verify the empty table value.
