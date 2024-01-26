@@ -6,6 +6,7 @@ services:
       - '@dkan.metastore.service'
     calls:
       - [ setLoggerFactory, [ '@logger.factory' ] ]
+      - [ setEntityTypeManager, [ '@entity_type.manager' ] ]
   dkan.harvest.utility:
     class: Drupal\harvest\HarvestUtility
     arguments:
