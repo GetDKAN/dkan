@@ -73,6 +73,8 @@ class TableSummary implements \JsonSerializable {
   }
 
   /**
+   * Specify data which should be serialized to JSON.
+   *
    * @return mixed
    */
   #[\ReturnTypeWillChange]

@@ -29,14 +29,14 @@ class RouteProvider {
   /**
    * Build folder config.
    *
-   * @var ?string
+   * @var string
    */
   private $buildFolder;
 
   /**
    * Frontend path config.
    *
-   * @var ?string
+   * @var string
    */
   private $frontendPath;
 

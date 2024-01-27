@@ -27,14 +27,14 @@ class Page {
   /**
    * Build folder configuration.
    *
-   * @var ?string
+   * @var string
    */
   private $buildFolder;
 
   /**
    * Frontend path configuration.
    *
-   * @var ?string
+   * @var string
    */
   private $frontendPath;
 
