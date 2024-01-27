@@ -3,7 +3,7 @@ context('Datastore API - Empty', () => {
   let apiUri = Cypress.config().apiUri;
   let resource_identifier = "blah";
 
-  it('GET empty', () => {
+  it('GET empty <api>', () => {
     cy.request({
       url: apiUri + '/datastore/imports/' + resource_identifier,
       failOnStatusCode: false
@@ -12,7 +12,7 @@ context('Datastore API - Empty', () => {
     })
   });
 
-  it('GET openapi api spec', () => {
+  it('GET openapi api spec <api>', () => {
     cy.request(apiUri + '/datastore').then((response) => {
       expect(response.status).eql(200);
       expect(response.body.hasOwnProperty('openapi')).equals(true);

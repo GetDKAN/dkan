@@ -5,6 +5,7 @@ namespace Drupal\metastore\NodeWrapper;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
@@ -29,16 +30,34 @@ class Data implements MetastoreItemInterface {
   protected $rawMetadata;
 
   /**
+   * Entity Type Manager.
+   *
+   * @var Drupal\Core\Entity\EntityTypeManager
+   */
+  private $entityTypeManager;
+
+  /**
+   * Entity Node Storage.
+   *
+   * @var Drupal\Core\Entity\EntityStorageInterface
+   */
+  private $nodeStorage;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   A Drupal entity.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   Entity Type Manager service.
    *
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    */
-  public function __construct(EntityInterface $entity) {
+  public function __construct(EntityInterface $entity, EntityTypeManager $entityTypeManager) {
     $this->validate($entity);
     $this->node = $entity;
+    $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $this->entityTypeManager->getStorage('node');
   }
 
   /**
@@ -188,7 +207,81 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
+   * Get the latest revision ID.
+   *
+   * @return int|string|null
+   *   Latest revision ID or null
+   */
+  public function getLoadedRevisionId() {
+    return $this->node->getLoadedRevisionId();
+  }
+
+  /**
+   * Get the current revision ID.
+   *
+   * @return int|mixed|string|null
+   *   Revision ID or null
+   */
+  public function getRevisionId() {
+    return $this->node->getRevisionId();
+  }
+
+  /**
+   * Get latest revision.
+   *
+   * @return Data|void
+   *   Data object containing the latest revision or null
+   *
+   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function getLatestRevision() {
+    if (!$this->isNew()) {
+      // See https://www.drupal.org/project/drupal/issues/3201209
+      // node->original is set to the published revision, not the latest.
+      // Compare to the latest revision of the node instead.
+      $latest_revision_id = $this->getLoadedRevisionId();
+      $original = $this->nodeStorage->loadRevision($latest_revision_id);
+      return new Data($original, $this->entityTypeManager);
+    }
+  }
+
+  /**
+   * Get published revision.
+   *
+   * @return Data|void
+   *   Data object containing the latest revision or null
+   *
+   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function getPublishedRevision() {
+    if (!$this->isNew()) {
+      $node = $this->nodeStorage->load($this->node->id());
+      if ($node->isPublished()) {
+        return new Data($node, $this->entityTypeManager);
+      }
+    }
+  }
+
+  /**
+   * Get moderation state.
+   *
+   * @return string
+   *   Node moderation state
+   */
+  public function getModerationState() {
+    return $this->node->get('moderation_state')->getString();
+  }
+
+  /**
    * Getter.
+   *
+   * @deprecated Use getLatestRevision() instead.
+   *
+   * @see https://www.drupal.org/project/drupal/issues/3346430
    */
   public function getOriginal() {
     if (isset($this->node->original)) {

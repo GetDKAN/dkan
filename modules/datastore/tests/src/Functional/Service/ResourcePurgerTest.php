@@ -46,7 +46,6 @@ class ResourcePurgerTest extends ExistingSiteBase {
    */
   protected $queue;
 
-
   /**
    * The Drupal Core queue worker manager service.
    *
@@ -68,6 +67,13 @@ class ResourcePurgerTest extends ExistingSiteBase {
    */
   protected $validMetadataFactory;
 
+  /**
+   * The Config Factory
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $config;
+
   public function setUp(): void {
     parent::setUp();
 
@@ -88,17 +94,23 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $this->queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
     $this->resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
     $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    $this->config = \Drupal::service('config.factory');
   }
 
   /**
    * Test deleting a dataset doesn't delete other datasets sharing a resource.
    */
   public function testDatasetsWithSharedResourcesAreNotDeletedPrematurely(): void {
+    // Make sure the default moderation state is "published".
+    $workflowConfig = $this->config->getEditable('workflows.workflow.dkan_publishing');
+    $defaultModerationState = $workflowConfig->get('type_settings.default_moderation_state');
+    $workflowConfig->set('type_settings.default_moderation_state', 'published')->save();
+
     // Create 2 datasets with the same resource, and change the resource of one.
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
     $this->metastore->post('dataset', $dataset);
     $this->assertNotEmpty($this->datasetStorage->retrieve(123));
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['retirements_0.csv']), 'dataset');
     $this->metastore->patch('dataset', 123, $dataset);
     $this->assertNotEmpty($this->datasetStorage->retrieve(123));
@@ -106,7 +118,7 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $dataset2 = $this->validMetadataFactory->get($this->getDataset(456, 'Test #2', ['district_centerpoints_small.csv']), 'dataset');
     $this->metastore->post('dataset', $dataset2);
     $this->assertNotEmpty($this->datasetStorage->retrieve(456));
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
 
     // Ensure calling the resource purger on the updated dataset does not delete
     // the previously shared resource.
@@ -114,6 +126,9 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $resources = $this->getResourcesForDataset(456);
     $resource = reset($resources);
     $this->assertNotEmpty($this->datastore->getStorage($resource->identifier, $resource->version));
+
+    // Set default moderation state back to default.
+    $workflowConfig->set('type_settings.default_moderation_state', $defaultModerationState)->save();
   }
 
   /**

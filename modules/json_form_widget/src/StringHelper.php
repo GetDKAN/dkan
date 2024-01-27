@@ -82,7 +82,7 @@ class StringHelper implements ContainerInjectionInterface {
     // Add extra validate if element type is email.
     if ($element['#type'] === 'email') {
       $element['#element_validate'][] = [$this, 'validateEmail'];
-      $element['#default_value'] = ltrim($element['#default_value'] ?? '', 'mailto:');
+      $element['#default_value'] = str_replace('mailto:', '', $element['#default_value'] ?? '');
     }
 
     return $element;

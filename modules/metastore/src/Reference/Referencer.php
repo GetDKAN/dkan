@@ -12,7 +12,8 @@ use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Metastore referencer service.
@@ -26,7 +27,7 @@ class Referencer {
    *
    * @var string
    */
-  protected const DEFAULT_MIME_TYPE = 'text/plain';
+  public const DEFAULT_MIME_TYPE = 'text/plain';
 
   /**
    * Storage factory interface service.
@@ -43,17 +44,26 @@ class Referencer {
   public MetastoreUrlGenerator $metastoreUrlGenerator;
 
   /**
+   * Guzzle HTTP client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  private Client $httpClient;
+
+  /**
    * Constructor.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
     FactoryInterface $storageFactory,
-    MetastoreUrlGenerator $metastoreUrlGenerator
+    MetastoreUrlGenerator $metastoreUrlGenerator,
+    Client $httpClient
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
     $this->metastoreUrlGenerator = $metastoreUrlGenerator;
+    $this->httpClient = $httpClient;
   }
 
   /**
@@ -73,6 +83,9 @@ class Referencer {
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
         $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
+
+        // Remove de-referenced info from metadata.
+        unset($data->{'%Ref:' . $property_id});
       }
     }
     return $data;
@@ -246,7 +259,7 @@ class Referencer {
       if (isset($info[0]->identifier)) {
         /** @var \Drupal\common\DataResource $stored */
         $stored = $this->getFileMapper()->get($info[0]->identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
-        $downloadUrl = $this->handleExistingResource($info, $stored, $mimeType);
+        $downloadUrl = $this->handleExistingResource($stored, $mimeType);
       }
     }
 
@@ -256,8 +269,6 @@ class Referencer {
   /**
    * Get download URL for existing resource.
    *
-   * @param array $info
-   *   Info.
    * @param \Drupal\common\DataResource $stored
    *   Stored data resource object.
    * @param string $mimeType
@@ -266,8 +277,8 @@ class Referencer {
    * @return string
    *   The download URL.
    */
-  private function handleExistingResource(array $info, DataResource $stored, string $mimeType): string {
-    if ($info[0]->perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
+  private function handleExistingResource(DataResource $stored, string $mimeType): string {
+    if ($stored->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
       // Update the MIME type, since this may be updated by the user.
@@ -341,8 +352,12 @@ class Referencer {
 
     // Perform HTTP Head request against the supplied URL in order to determine
     // the content type of the remote resource.
-    $client = new GuzzleClient();
-    $response = $client->head($downloadUrl);
+    try {
+      $response = $this->httpClient->head($downloadUrl);
+    }
+    catch (GuzzleException $exception) {
+      return $mime_type;
+    }
     // Extract the full value of the content type header.
     $content_type = $response->getHeader('Content-Type');
     // Attempt to extract the mime type from the content type header.
@@ -365,7 +380,7 @@ class Referencer {
    * @todo Update the UI to set mediaType when a format is selected.
    */
   private function getMimeType($distribution): string {
-    $mimeType = "text/plain";
+    $mimeType = self::DEFAULT_MIME_TYPE;
 
     // If we have a mediaType set, use that.
     if (isset($distribution->mediaType)) {
@@ -383,7 +398,8 @@ class Referencer {
     elseif (isset($distribution->downloadURL)) {
       // Determine whether the supplied distribution has a local or remote
       // resource.
-      $is_local = $distribution->downloadURL !== UrlHostTokenResolver::hostify($distribution->downloadURL);
+      $is_local = $distribution->downloadURL !==
+        UrlHostTokenResolver::hostify($distribution->downloadURL);
       $mimeType = $is_local ?
         $this->getLocalMimeType($distribution->downloadURL) :
         $this->getRemoteMimeType($distribution->downloadURL);

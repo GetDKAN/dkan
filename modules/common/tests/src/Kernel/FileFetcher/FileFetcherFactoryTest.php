@@ -48,6 +48,15 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $factory = $this->container->get('dkan.common.file_fetcher');
     $this->assertInstanceOf(FileFetcherFactory::class, $factory);
 
+    $ref_get_config = new \ReflectionMethod($factory, 'getFileFetcherConfig');
+    $ref_get_config->setAccessible(TRUE);
+
+    $ff_config = $ref_get_config->invokeArgs($factory, [[]]);
+    if ($use_existing) {
+      $this->assertArrayHasKey('processors', $ff_config);
+      $this->assertContains($remote_class, $ff_config['processors']);
+    }
+
     // Set up an existing file.
     $tmp = sys_get_temp_dir();
     $dest_file_path = $tmp . '/' . basename(self::DATA_FILE_URL);
@@ -66,7 +75,9 @@ class FileFetcherFactoryTest extends KernelTestBase {
 
     // Make sure we have the correct processor class that corresponds to our
     // config.
-    $this->assertEquals($remote_class, $ff->getState()['processor']);
+    $ref_get_processor = new \ReflectionMethod($ff, 'getProcessor');
+    $ref_get_processor->setAccessible(TRUE);
+    $this->assertInstanceOf($remote_class, $ref_get_processor->invoke($ff));
 
     // Did it work?
     $result = $ff->run();
@@ -83,6 +94,36 @@ class FileFetcherFactoryTest extends KernelTestBase {
     else {
       $this->assertNotEquals($dest_file_contents, file_get_contents($dest_file_path));
     }
+  }
+
+  public function provideFetcherUseExisting() {
+    return [
+      'Use existing localized file' => [TRUE, FileFetcherRemoteUseExisting::class],
+      'Do not use existing localized file' => [FALSE, Remote::class],
+    ];
+  }
+
+  /**
+   * @dataProvider provideFetcherUseExisting
+   * @covers ::getInstance
+   */
+  public function testGetInstance($always_use_existing_local_perspective, $expected_class) {
+    // Config for overwrite.
+    $this->installConfig(['common']);
+    $config = $this->config('common.settings');
+    $config->set('always_use_existing_local_perspective', $always_use_existing_local_perspective);
+    $config->save();
+
+    /** @var \Drupal\common\FileFetcher\FileFetcherFactory $factory */
+    $factory = $this->container->get('dkan.common.file_fetcher');
+
+    $instance = $factory->getInstance('id', ['filePath' => '/tmp/thingie.csv']);
+
+    $ref_get_processors = new \ReflectionMethod($instance, 'getProcessors');
+    $ref_get_processors->setAccessible(TRUE);
+    $processors = $ref_get_processors->invoke($instance);
+
+    $this->assertInstanceOf($expected_class, $processors[$expected_class] ?? 'nope');
   }
 
 }

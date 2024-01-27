@@ -3,8 +3,8 @@
 namespace Drupal\datastore\Service;
 
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 
 /**
  * Datastore import service.
@@ -19,13 +19,13 @@ class Import extends ImportService {
    *
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
-   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
-   *   Jobstore factory.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   Import jobstore factory.
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
    */
-  public function __construct(DataResource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    parent::__construct($resource, $jobStoreFactory, $databaseTableFactory);
+  public function __construct(DataResource $resource, ImportJobStoreFactory $importJobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+    parent::__construct($resource, $importJobStoreFactory, $databaseTableFactory);
     @trigger_error(__NAMESPACE__ . '\Import is deprecated. Use \Drupal\datastore\Service\ImportService instead.', E_USER_DEPRECATED);
   }
 

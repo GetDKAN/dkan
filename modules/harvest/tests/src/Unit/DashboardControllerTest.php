@@ -18,9 +18,7 @@ class DashboardControllerTest extends TestCase {
       ->add(HarvestService::class, 'getAllHarvestIds', [])
       ->getMock();
 
-    \Drupal::setContainer($container);
-
-    $controller = new DashboardController();
+    $controller = DashboardController::create($container);
     $response = $controller->harvests();
 
     $json = json_encode($response);
@@ -36,9 +34,7 @@ class DashboardControllerTest extends TestCase {
       ->add(HarvestService::class, 'getAllHarvestRunInfo', [])
       ->getMock();
 
-    \Drupal::setContainer($container);
-
-    $controller = new DashboardController();
+    $controller = DashboardController::create($container);
     $response = $controller->harvests();
 
     $json = json_encode($response);
@@ -56,9 +52,7 @@ class DashboardControllerTest extends TestCase {
       ->add(HarvestService::class, 'getAllHarvestRunInfo', [$time])
       ->getMock();
 
-    \Drupal::setContainer($container);
-
-    $controller = new DashboardController();
+    $controller = DashboardController::create($container);
     $response = $controller->harvests();
 
     $json = json_encode($response);

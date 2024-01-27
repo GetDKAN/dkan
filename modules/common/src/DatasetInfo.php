@@ -136,6 +136,37 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
+   * Get the distribution UUID for a dataset.
+   *
+   * Return the distribution UUID for the most recent published revision
+   * of a dataset.
+   *
+   * @param string $dataset_uuid
+   *   The uuid of a dataset.
+   * @param string $index
+   *   The index of the resource in the dataset array. Defaults to first.
+   *
+   * @return string
+   *   The distribution UUID
+   */
+  public function getDistributionUuid(string $dataset_uuid, string $index = '0'): string {
+    $dataset_info = $this->gather($dataset_uuid);
+
+    if (!isset($dataset_info['latest_revision'])) {
+      return '';
+    }
+
+    // Default to latest dataset revision.
+    $datasetRevision = $dataset_info['latest_revision'];
+
+    // Use the published dataset revision instead if present.
+    if (isset($dataset_info['published_revision'])) {
+      $datasetRevision = $dataset_info['published_revision'];
+    }
+    return $datasetRevision['distributions'][$index]['distribution_uuid'] ?? '';
+  }
+
+  /**
    * Get various information from a dataset node's specific revision.
    *
    * @param \Drupal\node\Entity\Node $node

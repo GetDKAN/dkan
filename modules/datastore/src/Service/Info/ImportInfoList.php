@@ -2,9 +2,8 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use FileFetcher\FileFetcher;
+use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -13,11 +12,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ImportInfoList implements ContainerInjectionInterface {
 
   /**
-   * A JobStore object.
+   * File fetcher job store factory.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
-  private $jobStoreFactory;
+  private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
    * Datastore import job info.
@@ -33,7 +32,7 @@ class ImportInfoList implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.common.job_store'),
+      $container->get('dkan.common.filefetcher_job_store_factory'),
       $container->get('dkan.datastore.import_info')
     );
   }
@@ -41,8 +40,8 @@ class ImportInfoList implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ImportInfo $importInfo) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(FileFetcherJobStoreFactory $fileFetcherJobStoreFactory, ImportInfo $importInfo) {
+    $this->fileFetcherJobStoreFactory = $fileFetcherJobStoreFactory;
     $this->importInfo = $importInfo;
   }
 
@@ -52,16 +51,16 @@ class ImportInfoList implements ContainerInjectionInterface {
    * @return array
    *   An array of ImportInfo objects, keyed by UUID.
    *
-   * @todo Going directly to get filefetcher objects does not feel right.
-   * We should have cleaner interfaces to get the data we need.
+   * @todo This method assumes a 1:1 relationship between filefetcher job stores
+   *   and status to report. This might not be the case.
    */
   public function buildList() {
     $list = [];
 
-    $store = $this->jobStoreFactory->getInstance(FileFetcher::class);
+    $store = $this->fileFetcherJobStoreFactory->getInstance();
 
     foreach ($store->retrieveAll() as $id) {
-      $pieces = explode("_", $id);
+      $pieces = explode('_', $id);
 
       // The filefetcher identifier for resources has the form <id>_<version>
       // by doing this check we can eliminate processing some unrelated file

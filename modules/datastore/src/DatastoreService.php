@@ -3,17 +3,15 @@
 namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
-use Procrastinator\Result;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\Info\ImportInfoList;
-use FileFetcher\FileFetcher;
+use Drupal\datastore\Service\ImportService;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\metastore\ResourceMapper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Main services for the datastore.
@@ -37,7 +35,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Datastore import factory class.
    *
-   * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
+   * @var \Drupal\datastore\Service\Factory\ImportServiceFactory
    */
   private $importServiceFactory;
 
@@ -49,18 +47,25 @@ class DatastoreService implements ContainerInjectionInterface {
   private $queue;
 
   /**
-   * JobStore factory object.
-   *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   */
-  private $jobStoreFactory;
-
-  /**
    * Datastore Query object for conversion.
    *
    * @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
    */
   private $dictionaryEnforcer;
+
+  /**
+   * Resource mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  private ResourceMapper $resourceMapper;
+
+  /**
+   * Import job store factory.
+   *
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
+   */
+  private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * {@inheritdoc}
@@ -70,9 +75,9 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.resource_localizer'),
       $container->get('dkan.datastore.service.factory.import'),
       $container->get('queue'),
-      $container->get('dkan.common.job_store'),
-      $container->get('dkan.datastore.import_info_list'),
-      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer')
+      $container->get('dkan.datastore.import_job_store_factory'),
+      $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
+      $container->get('dkan.metastore.resource_mapper')
     );
   }
 
@@ -85,70 +90,108 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Import factory service.
    * @param \Drupal\Core\Queue\QueueFactory $queue
    *   Queue factory service.
-   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
-   *   Jobstore factory service.
-   * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
-   *   Import info list service.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   Import jobstore factory service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
+   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   *   Resource mapper service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
     ImportFactoryInterface $importServiceFactory,
     QueueFactory $queue,
-    JobStoreFactory $jobStoreFactory,
-    ImportInfoList $importInfoList,
-    DictionaryEnforcer $dictionaryEnforcer
+    ImportJobStoreFactory $importJobStoreFactory,
+    DictionaryEnforcer $dictionaryEnforcer,
+    ResourceMapper $resourceMapper
   ) {
-    $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
-    $this->jobStoreFactory = $jobStoreFactory;
-    $this->importInfoList = $importInfoList;
+    $this->queue = $queue;
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
-   * Start import process for a resource, provided by UUID.
+   * Start the import process for a resource.
+   *
+   * This is the entry point for both the file localization step and the
+   * database import step. This method knows how to do both.
    *
    * @param string $identifier
-   *   A resource identifier.
+   *   The data resource identifier.
    * @param bool $deferred
-   *   Send to the queue for later? Will import immediately if FALSE..
+   *   (Optional) Whether to create queue workers for the import process. If
+   *   TRUE, will create a localize_import queue worker for the resource, which
+   *   will in turn create a datastore_import worker when successful. If FALSE,
+   *   will perform file localization and then data import without queueing
+   *   jobs. Defaults to FALSE.
    * @param string|null $version
-   *   A resource's version.
+   *   (Optional) The resource version. If NULL, the most recent version will
+   *   be used.
    *
    * @return array
-   *   Response.
+   *   Array of response messages from the various import-related services we
+   *   call. Key is the name of the class, value is the message.
    */
   public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
-
-    // If we passed $deferred, immediately add to the queue for later.
-    if ($deferred == TRUE) {
-      // Attempt to fetch the file in a queue so as to not block user.
-      $queueId = $this->queue->get('datastore_import')
-        ->createItem(['identifier' => $identifier, 'version' => $version]);
-
-      if ($queueId === FALSE) {
-        throw new \RuntimeException('Failed to create file fetcher queue for ' . $identifier . ':' . $version);
+    $results = [];
+    // Have we localized yet?
+    if (
+      $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version) === NULL
+    ) {
+      $result = $this->resourceLocalizer->localizeTask($identifier, $version, $deferred);
+      $results[$this->getLabelFromObject($this->resourceLocalizer)] = $result;
+      // If the localize task is deferred, then it will send events to
+      // re-trigger the database import later, so we should stop here.
+      if ($deferred) {
+        return $results;
       }
-
-      return [
-        'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
-      ];
     }
 
-    $resource = NULL;
-    $result = NULL;
-    [$resource, $result] = $this->getResource($identifier, $version);
+    // Now work on the database. If we passed $deferred, add to the queue for
+    // later.
+    if ($deferred) {
+      return $this->importDeferred($identifier, $version);
+    }
 
+    // Get the resource object.
+    $resource = $this->resourceLocalizer->get($identifier, $version);
     if (!$resource) {
-      return $result;
+      return $results;
     }
+    // Do the database import.
+    return array_merge(
+      $results,
+      $this->doImport($resource)
+    );
+  }
 
-    $result2 = $this->doImport($resource);
+  /**
+   * Create a queue item for the import.
+   *
+   * @param string $identifier
+   *   The data resource identifier.
+   * @param string|null $version
+   *   (Optional) The resource version. If NULL, the most recent version will
+   *   be used.
+   *
+   * @return array
+   *   Array of response messages, each with a meaningful key.
+   */
+  public function importDeferred(string $identifier, $version = NULL): array {
+    $queueId = $this->queue->get('datastore_import')->createItem([
+      'identifier' => $identifier,
+      'version' => $version,
+    ]);
 
-    return array_merge($result, $result2);
+    if ($queueId === FALSE) {
+      throw new \RuntimeException('Failed to create datastore_import queue for ' . $identifier . ':' . $version);
+    }
+    return [
+      'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
+    ];
   }
 
   /**
@@ -157,7 +200,9 @@ class DatastoreService implements ContainerInjectionInterface {
   private function doImport($resource) {
     $importService = $this->getImportService($resource);
     $importService->import();
-    return [$this->getLabelFromObject($importService) => $importService->getResult()];
+    return [
+      $this->getLabelFromObject($importService) => $importService->getImporter()->getResult(),
+    ];
   }
 
   /**
@@ -168,44 +213,12 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
-   * Get a resource and the result of localizing it.
-   *
-   * @param string $identifier
-   *   Resource identifier.
-   * @param string $version
-   *   Resource version.
-   *
-   * @return array
-   *   The resource object and a result object in an array.
-   */
-  private function getResource($identifier, $version) {
-    $label = $this->getLabelFromObject($this->resourceLocalizer);
-    $resource = $this->resourceLocalizer->get($identifier, $version);
-
-    if ($resource) {
-      $result = [
-        $label => $this->resourceLocalizer->getResult($identifier, $version),
-      ];
-      return [$resource, $result];
-    }
-
-    // @todo we should not do this, we need a filefetcher queue worker.
-    $result = [
-      $label => $this->resourceLocalizer->localize($identifier, $version),
-    ];
-
-    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
-    }
-
-    return [$resource, $result];
-  }
-
-  /**
    * Getter.
    */
-  public function getImportService(DataResource $resource) {
-    return $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(), ['resource' => $resource]);
+  public function getImportService(DataResource $resource): ImportService {
+    return $this->importServiceFactory->getInstance(
+      $resource->getUniqueIdentifier(), ['resource' => $resource]
+    );
   }
 
   /**
@@ -216,42 +229,28 @@ class DatastoreService implements ContainerInjectionInterface {
   }
 
   /**
-   * Drop a resources datastore.
+   * Drop a resource's datastore, and optionally its localized file.
    *
    * @param string $identifier
    *   A resource's identifier.
    * @param string|null $version
    *   A resource's version.
-   * @param bool $local_resource
-   *   Whether to remove the local resource. If false, just drop the db table.
+   * @param bool $remove_local_resource
+   *   (optional) Whether to remove the local resource. If FALSE, keep the
+   *   localized files for this resource. Defaults to TRUE.
    */
-  public function drop(string $identifier, ?string $version = NULL, bool $local_resource = TRUE) {
-    $storage = $this->getStorage($identifier, $version);
+  public function drop(string $identifier, ?string $version = NULL, bool $remove_local_resource = TRUE) {
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
-    if ($storage) {
+    if ($storage = $this->getStorage($identifier, $version)) {
       $storage->destruct();
-      $this->jobStoreFactory
-        ->getInstance(ImportJob::class)
+      $this->importJobStoreFactory->getInstance()
         ->remove(md5($resource->getUniqueIdentifier()));
     }
 
-    if ($local_resource) {
+    if ($remove_local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
-      $this->jobStoreFactory
-        ->getInstance(FileFetcher::class)
-        ->remove($resource->getUniqueIdentifierNoPerspective());
     }
-  }
-
-  /**
-   * Get a list of all stored importers and filefetchers, and their status.
-   *
-   * @return array
-   *   The importer list object.
-   */
-  public function list() {
-    return $this->importInfoList->buildList();
   }
 
   /**
@@ -283,12 +282,16 @@ class DatastoreService implements ContainerInjectionInterface {
    * @throws \InvalidArgumentException
    */
   public function getStorage(string $identifier, $version = NULL) {
-    $resource = $this->resourceLocalizer->get($identifier, $version);
+    $resource = $this->resourceMapper->get(
+      $identifier,
+      ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
+      $version
+    );
     if ($resource) {
       $importService = $this->getImportService($resource);
       return $importService->getStorage();
     }
-    throw new \InvalidArgumentException("No datastore storage found for {$identifier}:{$version}.");
+    throw new \InvalidArgumentException('No datastore storage found for ' . $identifier . ':' . $version . '.');
   }
 
   /**

@@ -24,12 +24,12 @@ use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\common\Storage\SelectFactory;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Tests\common\Unit\Connection;
 
 /**
- *
+ * @group dkan
+ * @group datastore
  */
 class QueryDownloadControllerTest extends TestCase {
 
@@ -47,8 +47,6 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
-    $this->selectFactory = $this->getSelectFactory();
-
   }
 
   protected function tearDown(): void {
@@ -61,19 +59,13 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompare($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $dataDictionaryFields = [
-      'name' => 'date',
-      'type' => 'date',
-      'format '=>'%m/%d/%Y'
-    ];
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $csv = $response->getContent();
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([self::class, 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
-    $streamResponse->dataDictionaryFields = $dataDictionaryFields;
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;
     ob_get_clean();
@@ -97,35 +89,6 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
-  }
-
-  public function queryResultReformatted($data){
-    $request = $this->mockRequest($data);
-    $dataDictionaryFields = [
-      'name' => 'date',
-      'type' => 'date',
-      'format '=>'%m/%d/%Y'
-    ];
-    $qController = QueryController::create($this->getQueryContainer(500));
-    $response = $qController->query($request);
-    $csv = $response->getContent();
-
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
-    $streamResponse = $dController->query($request);
-    $streamResponse->dataDictionaryFields = $dataDictionaryFields;
-    //$streamResponse->sendContent();
-    $this->selectFactory->create($streamResponse);
-
-    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
-    $this->assertEquals($csv, $streamedCsv);
-  }
-
-  /**
-   *
-   */
-  private function getSelectFactory() {
-    return new SelectFactory($this->getConnection());
   }
 
   /**
@@ -283,7 +246,7 @@ class QueryDownloadControllerTest extends TestCase {
     $container = $this->getQueryContainer($pageLimit);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
-    ob_start(['self', 'getBuffer']);
+    ob_start([self::class, 'getBuffer']);
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
@@ -372,7 +335,7 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     $request = $this->mockRequest($data);
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start(['self', 'getBuffer']);
+    ob_start([self::class, 'getBuffer']);
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;

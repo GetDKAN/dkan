@@ -10,7 +10,9 @@ User Guide
    guide_api
    guide_datastore_settings
    guide_metastore_properties
+   guide_custom_schemas
    guide_harvest
    guide_queues
    guide_local_files
+   guide_file_fetchers
    guide_revisions

@@ -7,30 +7,18 @@ There are several methods for adding datasets to your site.
 
 API
 ---
-You will need to authenticate with a user account possessing the 'api user' role. Use *Basic Auth*.
+You will need to authenticate with a user account possessing the *Data: Create new content* permission.
+See :ref:`Authentication <authentication>` for details.
 
-Note that the username:password string submitted as the Authorization must be base 64 encoded.
+.. http:post:: /api/1/metastore/schemas/dataset/items
 
-You can obtain the base 64 encoded string from the command line by running the following (replace admin:admin with username:password):
+  **Create a dataset:**
 
-.. code-block::
-
-    echo -n 'admin:admin' | base64
-    // Result
-    YWRtaW46YWRtaW4=
-
-    // When using basic auth via REST API
-    content-type: application/json
-    Authorization: Basic YWRtaW46YWRtaW4=
-
-Run a POST command to ``/api/1/metastore/schemas/dataset/items`` with a json formatted request body, the minimal elements are:
-
-
-.. code-block::
+  .. sourcecode:: http
 
     POST http://dkan.ddev.site/api/1/metastore/schemas/dataset/items?format_json HTTP/1.1
     content-type: application/json
-    Authorization: Basic admin:admin
+    Authorization: Basic username:password
 
         {
           "title": "My new dataset",
@@ -64,22 +52,61 @@ Run a POST command to ``/api/1/metastore/schemas/dataset/items`` with a json for
           ]
         }
 
+.. http:patch:: /api/1/metastore/schemas/dataset/items/{datasetID}
+
+  **Edit a dataset:**
+
+  .. sourcecode:: http
+
+    PATCH http://dkan.ddev.site/api/1/metastore/schemas/dataset/items/{datasetID}?format_json HTTP/1.1
+    content-type: application/json
+    Authorization: Basic username:password
+
+        {
+          "modified": "2023-06-01",
+          "distribution": [
+              {
+                  "downloadURL": "http://demo.getdkan.org/sites/default/files/new-data-file.csv",
+                  "mediaType": "text/csv",
+                  "format": "csv",
+                  "title": "2023 data update"
+              }
+          ]
+        }
 
 GUI
 ----
 
+**Create a dataset:**
+
 1. Log in to the site.
 2. Navigate to Admin > DKAN > Datasets.
 3. Click the "+ Add new dataset" button.
-4. Use the Distribution *Download URL* field to enter a url to your file or upload a local file.
-5. Fill in the form with as much descriptive information as you can to make it discoverable.
-6. Click "submit".
-7. Run cron to start the import.
+4. Be sure to provide as much descriptive details for your dataset as you can so that users who may be interested in your data can find it.
+5. The Release Date is the date on which the dataset was first made available.
+6. The Temporal field describes the time frame to which the data is applicable.
+7. The Frequency field describes how often the data is updated.
+8. When adding keywords and category terms, be sure you are not duplicating existing terms with minor spelling/capitalization differences.
+9. Pay close attention to the required fields (marked with \*).
+10. Use the Distribution *Download URL* field to enter a url to your file or upload a local file.
+11. If you are uploading a file, wait for the upload to finish before clicking the Save button. The file name will turn blue when is it complete.
+12. If you are adding more than one distribution to a dataset be sure to utilize the **File Title** field to distinguish the differences in the files to the user.
+13. Click "Save".
+14. Run cron to start the import.
+
+**Edit a dataset:**
+
+1. Log in to the site.
+2. Navigate to Admin > DKAN > Datasets.
+3. Find the dataset you wish to edit and click the "Edit" link in the right-hand column.
+4. Click "Save"
 
 
 Harvest
 -------
-If you just need a sample dataset for local development or want to test the harvest process, create a json file in your local sites/default/files directory like this:
+Harvesting is a method well suited for managing datasets in bulk.
+In the example below we are only creating a single dataset, but you can add as many datasets to
+the dataset array as you want. Create a json file in your local sites/default/files directory like this:
 
 *h1.json*
 
@@ -130,24 +157,45 @@ If you just need a sample dataset for local development or want to test the harv
 
 Create a harvest based on the file above:
 
-.. code-block::
+.. prompt:: bash $
 
-      drush dkan:harvest:register --identifier=data --extract-uri=http://dkan.ddev.site/sites/default/files/h1.json
-      drush dkan:harvest:run data
+      drush dkan:harvest:register --identifier=harvest1 --extract-uri=http://dkan.ddev.site/sites/default/files/h1.json
+      drush dkan:harvest:run harvest1
       drush cron
+
+More on the :doc:`harvest method can be found here <guide_harvest>`.
 
 Add demo site content
 ---------------------
 
-Generate the same 10 datasets that are used on the demo site.
+Generate the same 10 datasets that are used on the `DKAN demo site <https://demo.getdkan.org/>`_.
 Enable the sample content module. Run the create command to add the datasets.
-Running cron will run the queues that fetch the csv files and import them into datstore tables.
-Remove the datasets with the remove command.
+Running cron will run the queues that fetch the csv files and import them into datstore tables. You will likely need to run cron multiple times.
+When the sample content is no longer needed, remove the datasets with the remove command.
 
-.. code-block::
+.. prompt:: bash $
 
       drush en sample_content -y
       drush dkan:sample-content:create
       drush cron
+      drush cron
       drush dkan:sample:content:remove
 
+Troubleshooting
+^^^^^^^^^^^^^^^
+
+If you see output like this:
+
+.. code-block::
+
+   +----------------+-----------+---------+---------+--------+
+   | run_id         | processed | created | updated | errors |
+   +----------------+-----------+---------+---------+--------+
+   | sample_content | 10        | 0       | 0       | 10     |
+   +----------------+-----------+---------+---------+--------+
+
+You will need to add this line to your settings.php file, adjust as needed.
+
+.. code-block::
+
+   $settings['file_public_base_url'] = $settings['base_url'] . 'sites/default/files';

@@ -6,6 +6,8 @@ use Drupal\common\DataResource;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\metastore\ResourceMapper;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
@@ -46,7 +48,6 @@ class DatastoreQueryTest extends TestCase {
     $dkanQuery = QueryFactory::create($datastoreQuery, $storageMap);
     $dkanQueryCompare = QueryData::$testName(QueryData::QUERY_OBJECT);
     $dkanQueryCompare->showDbColumns = TRUE;
-    // $this->assertEquals(serialize($dkanQuery), serialize($dkanQueryCompare));
     $this->assertEquals(json_encode($dkanQuery, JSON_PRETTY_PRINT), json_encode($dkanQueryCompare, JSON_PRETTY_PRINT));
     $result = $queryService->runQuery($datastoreQuery);
     $this->assertIsArray($result->{"$.results"});
@@ -187,6 +188,7 @@ class DatastoreQueryTest extends TestCase {
   public function getCommonMockChain() {
 
     $options = (new Options())
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.datastore.service", DatastoreService::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
@@ -194,6 +196,7 @@ class DatastoreQueryTest extends TestCase {
       ->add('queue', QueueFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
@@ -210,6 +213,7 @@ class DatastoreQueryTest extends TestCase {
       ->add(Data::class, "retrieve", $resource_metadata)
       ->add(QueueFactory::class, "get", [])
       ->add(ResourceLocalizer::class, "get", $resource)
+      ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "query", $queryResult, 'DatabaseTableQuery')

@@ -3,7 +3,7 @@
 namespace Drupal\common\FileFetcher;
 
 use Contracts\FactoryInterface;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use FileFetcher\FileFetcher;
@@ -14,11 +14,11 @@ use FileFetcher\FileFetcher;
 class FileFetcherFactory implements FactoryInterface {
 
   /**
-   * Job store factory service.
+   * File fetcher job store factory.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
-  private JobStoreFactory $jobStoreFactory;
+  private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
    * The common.settings config.
@@ -39,8 +39,8 @@ class FileFetcherFactory implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ConfigFactoryInterface $configFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(FileFetcherJobStoreFactory $fileFetcherJobStoreFactory, ConfigFactoryInterface $configFactory) {
+    $this->fileFetcherJobStoreFactory = $fileFetcherJobStoreFactory;
     $this->dkanConfig = $configFactory->get('common.settings');
   }
 
@@ -48,17 +48,32 @@ class FileFetcherFactory implements FactoryInterface {
    * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
-    $config = array_merge($this->configDefault, $config);
-    // Use our bespoke file fetcher class that uses the existing file if we're
-    // configured to do so.
-    if ($this->dkanConfig->get('always_use_existing_local_perspective') ?? FALSE) {
-      $config['processors'] = [FileFetcherRemoteUseExisting::class];
-    }
     return FileFetcher::get(
       $identifier,
-      $this->jobStoreFactory->getInstance(FileFetcher::class),
-      $config
+      $this->fileFetcherJobStoreFactory->getInstance(),
+      $this->getFileFetcherConfig($config)
     );
+  }
+
+  /**
+   * Adjust the provided config for our defaults and DKAN configuration.
+   *
+   * @param array $config
+   *   Configuration provided by the caller to getInstance().
+   *
+   * @return array
+   *   Modified configuration array.
+   */
+  protected function getFileFetcherConfig(array $config): array {
+    // Merge in our defaults.
+    $config = array_merge($this->configDefault, $config);
+    // Add our special custom processor to the config if we're configured to
+    // always use the local perspective file.
+    if ($this->dkanConfig->get('always_use_existing_local_perspective')) {
+      $processors = [FileFetcherRemoteUseExisting::class] + ($config['processors'] ?? []);
+      $config['processors'] = $processors;
+    }
+    return $config;
   }
 
 }
