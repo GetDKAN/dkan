@@ -74,7 +74,7 @@ class ImportService {
    *
    * @see self::getImporter()
    */
-  private ?ImportJob $importJob;
+  private ?ImportJob $importJob = null;
 
   /**
    * Create a resource service instance.

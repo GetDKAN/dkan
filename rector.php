@@ -6,7 +6,7 @@
  *
  * To use this file:
  * - Require palantirnet/drupal-rector into your project root composer.json
- *   file.
+ *   file: composer require --dev palantirnet/drupal-rector
  * - Add the following to the script section of your project composer.json:
  *
  * "scripts": {
@@ -31,14 +31,15 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
+use Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector;
+use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
-use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -70,8 +71,13 @@ return static function (RectorConfig $rectorConfig): void {
     RemoveUselessReturnTagRector::class,
     AddDoesNotPerformAssertionToNonAssertingTestRector::class,
     ClosureToArrowFunctionRector::class,
+    // Don't automate ::class because we need some string literals that look
+    // like class names.
+    // @see \Drupal\common\Util\JobStoreUtil
+    // @see \Drupal\common\EventDispatcherTrait
     StringClassNameToClassConstantRector::class,
     RemoveExtraParametersRector::class,
+    PublicConstantVisibilityRector::class,
   ]);
 
   $drupalFinder = new DrupalFinder();

@@ -29,7 +29,7 @@ class IdGenerator implements IdGeneratorInterface {
    * Public.
    */
   public function generate() {
-    return isset($this->data->identifier) ? $this->data->identifier : NULL;
+    return $this->data->identifier ?? NULL;
   }
 
 }

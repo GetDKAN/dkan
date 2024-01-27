@@ -155,7 +155,7 @@ class SearchController implements ContainerInjectionInterface {
     $params = $request->query->all();
 
     foreach ($defaults as $param => $default) {
-      $params[$param] = isset($params[$param]) ? $params[$param] : $default;
+      $params[$param] ??= $default;
     }
 
     if (!is_numeric($params['page-size']) || !is_numeric($params['page'])) {

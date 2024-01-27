@@ -107,7 +107,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     // Reformat definitions.
     foreach ($querySchema["definitions"] as $key => $def) {
       $schemaName = "datastoreQuery" . ucfirst($key);
-      $def["title"] = "Datastore Query: " . (isset($def["title"]) ? $def["title"] : $key);
+      $def["title"] = "Datastore Query: " . ($def["title"] ?? $key);
       $spec["components"]["schemas"][$schemaName] = $def;
     }
     unset($querySchema["definitions"]);
