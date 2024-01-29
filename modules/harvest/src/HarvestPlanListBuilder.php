@@ -54,7 +54,6 @@ class HarvestPlanListBuilder extends EntityListBuilder {
       'dataset_count' => $this->t('# of Datasets'),
     ];
     // Don't call parent::buildHeader() because we don't want operations (yet).
-    return $header + parent::buildHeader();
     return $header;
   }
 
@@ -70,6 +69,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
       $info = json_decode($this->harvestService->getHarvestRunInfo($harvest_plan_id, $runId));
     }
 
+    // Default values for a row if there's no info.
     $row = [
       'harvest_link' => Link::fromTextAndUrl($harvest_plan_id, Url::fromRoute(
         'datastore.datasets_import_status_dashboard',
@@ -82,6 +82,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
       'last_run' => 'never',
       'dataset_count' => 'unknown',
     ];
+    // Add stats if there is info for it.
     if ($info ?? FALSE) {
       $row['extract_status'] = [
         'data' => $info->status->extract,
@@ -91,7 +92,6 @@ class HarvestPlanListBuilder extends EntityListBuilder {
       $row['dataset_count'] = count(array_keys((array) $info->status->load));
     }
     // Don't call parent::buildRow() because we don't want operations (yet).
-    return $row + parent::buildRow($entity);
     return $row;
   }
 

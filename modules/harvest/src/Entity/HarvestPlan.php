@@ -24,11 +24,6 @@ use Drupal\harvest\HarvestPlanInterface;
  *   handlers = {
  *     "list_builder" = "Drupal\harvest\HarvestPlanListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
- *     "form" = {
- *       "add" = "Drupal\harvest\Form\HarvestPlanForm",
- *       "edit" = "Drupal\harvest\Form\HarvestPlanForm",
- *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
- *     },
  *     "route_provider" = {
  *       "html" = "Drupal\harvest\Routing\HarvestPlanHtmlRouteProvider",
  *     }
@@ -40,11 +35,8 @@ use Drupal\harvest\HarvestPlanInterface;
  *     "label" = "id",
  *   },
  *   links = {
- *     "collection" = "/admin/content/harvest-plan",
- *     "add-form" = "/harvest-plan/add",
+ *     "collection" = "/admin/dkan/harvest",
  *     "canonical" = "/harvest-plan/{harvest_plan}",
- *     "edit-form" = "/harvest-plan/{harvest_plan}",
- *     "delete-form" = "/harvest-plan/{harvest_plan}/delete",
  *   },
  *   internal = TRUE,
  * )
