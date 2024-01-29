@@ -43,7 +43,7 @@ class RouteProvider {
   /**
    * Routes config.
    *
-   * @var ?array
+   * @var array
    */
   private $routes;
 
@@ -168,7 +168,7 @@ class RouteProvider {
    * Private. All routes return root JS file.
    */
   private function addIndexPage(RouteCollection $routes) {
-    $config_routes = $this->routes;
+    $config_routes = $this->routes ?? [];
     foreach ($config_routes as $config_route) {
       $possible_page = explode(",", $config_route);
       $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));
