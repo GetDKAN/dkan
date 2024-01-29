@@ -2,20 +2,20 @@
 
 namespace Drupal\Tests\harvest\Kernel;
 
-use Drupal\harvest\OldDashboardController;
+use Drupal\harvest\HarvestPlanListBuilder;
 use Drupal\KernelTests\KernelTestBase;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
 
 /**
- * @covers \Drupal\harvest\OldDashboardController
- * @coversDefaultClass \Drupal\harvest\OldDashboardController
+ * @covers \Drupal\harvest\HarvestPlanListBuilder
+ * @coversDefaultClass \Drupal\harvest\HarvestPlanListBuilder
  *
  * @group dkan
  * @group harvest
  * @group kernel
  */
-class DashboardControllerTest extends KernelTestBase {
+class HarvestPlanListBuilderTest extends KernelTestBase {
 
   protected static $modules = [
     'common',
@@ -31,14 +31,19 @@ class DashboardControllerTest extends KernelTestBase {
   public function testRegisteredPlan() {
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
+    $entity_type_manager = $this->container->get('entity_type.manager');
 
-    $dashboard_controller = OldDashboardController::create($this->container);
+    $list_builder = HarvestPlanListBuilder::createInstance(
+      $this->container,
+      $entity_type_manager->getDefinition('harvest_plan')
+    );
 
     // There are no registered harvests, so there should be zero rows. We also
     // verify the empty table value.
-    $render_array = $dashboard_controller->harvests();
-    $this->assertCount(0, $render_array['#rows'] ?? NULL);
-    $this->assertEquals('No harvests found', $render_array['#empty'] ?? NULL);
+    $table_render = $list_builder->render()['table']['table'] ?? 'phail';
+    $this->assertCount(0, $table_render['#rows'] ?? NULL);
+    $this->assertEquals('There are no harvest plans yet.', $table_render['#empty'] ?? NULL);
 
     // Register a harvest plan but don't run it...
     $plan_identifier = 'test_plan';
@@ -56,9 +61,9 @@ class DashboardControllerTest extends KernelTestBase {
     $this->assertNotNull($harvest_service->registerHarvest($plan));
 
     // Revisit the dashboard. It should show the registered harvest.
-    $render_array = $dashboard_controller->harvests();
-    $this->assertCount(1, $render_array['#rows'] ?? NULL);
-    $this->assertNotNull($row = $render_array['#rows'][0] ?? NULL);
+    $table_render = $list_builder->render()['table']['table'] ?? 'phail';
+    $this->assertCount(1, $table_render['#rows'] ?? NULL);
+    $this->assertNotNull($row = $table_render['#rows'][$plan_identifier] ?? 'phail');
     /** @var \Drupal\Core\Link $link */
     $this->assertNotNull($link = $row['harvest_link'] ?? NULL);
     $this->assertEquals($plan_identifier, $link->getText());
