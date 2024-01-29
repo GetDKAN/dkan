@@ -40,12 +40,13 @@ use Drupal\harvest\HarvestPlanInterface;
  *     "label" = "id",
  *   },
  *   links = {
- *     "collection" = "/admin/dkan/harvest",
+ *     "collection" = "/admin/content/harvest-plan",
  *     "add-form" = "/harvest-plan/add",
  *     "canonical" = "/harvest-plan/{harvest_plan}",
  *     "edit-form" = "/harvest-plan/{harvest_plan}",
  *     "delete-form" = "/harvest-plan/{harvest_plan}/delete",
  *   },
+ *   internal = TRUE,
  * )
  */
 class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
