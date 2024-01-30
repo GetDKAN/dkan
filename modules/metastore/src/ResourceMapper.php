@@ -131,9 +131,6 @@ class ResourceMapper {
    *
    * @return int
    *   Either SAVED_NEW or SAVED_UPDATED, depending on the operation performed.
-   *
-   * @todo This illustrates why DataResource should really be the entity.
-   *   Fix this in 3.x.
    */
   protected function storeResourceToMapping(DataResource $resource): int {
     $map = $this->mappingEntityStorage->create([
@@ -310,7 +307,7 @@ class ResourceMapper {
   /**
    * Private.
    */
-  private function exists($identifier, $perspective, $version = ''): bool {
+  private function exists($identifier, $perspective, $version = NULL): bool {
     $item = $this->get($identifier, $perspective, $version);
     return isset($item);
   }

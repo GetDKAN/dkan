@@ -32,8 +32,6 @@ use Drupal\metastore\ResourceMappingInterface;
  *     "id" = "id",
  *   },
  * )
- *
- * @todo Eventually merge with DataResource.
  */
 class ResourceMapping extends ContentEntityBase implements ResourceMappingInterface {
 

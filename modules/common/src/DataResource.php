@@ -127,7 +127,7 @@ class DataResource implements \JsonSerializable {
    *
    * @deprecated Use DataResource::createFromEntity() instead.
    *
-   * @see ::createFromEntity()
+   * @see self::createFromEntity()
    */
   public static function createFromRecord(object $record): DataResource {
     $resource = new static($record->filePath, $record->mimeType, $record->perspective);
@@ -146,10 +146,6 @@ class DataResource implements \JsonSerializable {
    *
    * @return \Drupal\common\DataResource
    *   DataResource object.
-   *
-   * @todo DataResource really should be the entity, but because it's used in
-   *   so many different ways within the codebase, changing it would require
-   *   even more refactoring. Fix this in 3.x.
    */
   public static function createFromEntity(ResourceMappingInterface $mapping): DataResource {
     $resource = new static(
