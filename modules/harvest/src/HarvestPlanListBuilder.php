@@ -32,6 +32,9 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    */
   public function render() {
     $build['table'] = parent::render();
+    // Add our styles.
+    $build['table']['table']['#attributes']['class'][] = 'dashboard-harvests';
+    $build['table']['table']['#attached']['library'][] = 'harvest/style';
 
     $total = $this->getStorage()
       ->getQuery()
