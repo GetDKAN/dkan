@@ -71,9 +71,6 @@ class ResourceMapper {
 
   /**
    * Register a new url for mapping.
-   *
-   * @todo the Resource class currently lives in datastore, we should move it
-   *   to a more neutral place.
    */
   public function register(DataResource $resource): bool {
     // Call filePathExists() so it throws an exception if the path is a
@@ -174,7 +171,25 @@ class ResourceMapper {
   /**
    * Retrieve.
    */
-  public function get(string $identifier, $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version = NULL): ?DataResource {
+
+  /**
+   * @param string $identifier
+   *   Data resource identifier.
+   * @param string $perspective
+   *   (Optional) Data resource perspective. The source perspective will be used
+   *   if not provided.
+   * @param string $version
+   *   (Optional) Data resource version. The newest version will be used if not
+   *   provided.
+   *
+   * @return \Drupal\common\DataResource|null
+   *   DataResource for the mapping.
+   */
+  public function get(
+    string $identifier,
+    string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+    string $version = NULL
+  ): ?DataResource {
     $data = $this->getFull($identifier, $perspective, $version);
     if ($data) {
       return DataResource::createFromEntity($data);
@@ -183,9 +198,20 @@ class ResourceMapper {
   }
 
   /**
-   * Private.
+   * Get a resource mapping entity.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string $perspective
+   *   Resource perspective.
+   * @param string $version
+   *   (Optional) Resource version. If not supplied, the latest revision will be
+   *   returned.
+   *
+   * @return \Drupal\metastore\ResourceMappingInterface|null
+   *   Resource mapping.
    */
-  private function getFull(string $identifier, $perspective, $version) {
+  private function getFull(string $identifier, string $perspective, string $version = NULL): ?ResourceMappingInterface {
     if (!$version) {
       $data = $this->getLatestRevision($identifier, $perspective);
     }
@@ -220,10 +246,10 @@ class ResourceMapper {
   /**
    * Private.
    *
-   * @return mixed
-   *   object || False
+   * @return \Drupal\metastore\ResourceMappingInterface|null
+   *   Resource mapping.
    */
-  private function getLatestRevision($identifier, $perspective) {
+  private function getLatestRevision($identifier, $perspective): ?ResourceMappingInterface {
     $map_ids = $this->mappingEntityStorage->getQuery()
       ->condition('identifier', $identifier)
       ->condition('perspective', $perspective)
@@ -240,10 +266,10 @@ class ResourceMapper {
   /**
    * Get the DB record for the mapping, accounting for version.
    *
-   * @return mixed
-   *   object || False
+   * @return \Drupal\metastore\ResourceMappingInterface|null
+   *   Resource mapping.
    */
-  private function getRevision($identifier, $perspective, $version) {
+  private function getRevision($identifier, $perspective, $version): ?ResourceMappingInterface {
     $map_ids = $this->mappingEntityStorage->getQuery()
       ->condition('identifier', $identifier)
       ->condition('perspective', $perspective)
@@ -286,7 +312,7 @@ class ResourceMapper {
   /**
    * Private.
    */
-  private function exists($identifier, $perspective, $version = NULL): bool {
+  private function exists($identifier, $perspective, $version = ''): bool {
     $item = $this->get($identifier, $perspective, $version);
     return isset($item);
   }

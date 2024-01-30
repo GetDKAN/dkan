@@ -124,6 +124,10 @@ class DataResource implements \JsonSerializable {
    *
    * @return \Drupal\common\DataResource
    *   DataResource object.
+   *
+   * @deprecated Use DataResource::createFromEntity() instead.
+   *
+   * @see ::createFromEntity()
    */
   public static function createFromRecord(object $record): DataResource {
     $resource = new static($record->filePath, $record->mimeType, $record->perspective);
@@ -149,14 +153,14 @@ class DataResource implements \JsonSerializable {
    */
   public static function createFromEntity(ResourceMappingInterface $mapping): DataResource {
     $resource = new static(
-      $mapping->get('filePath')->value,
-      $mapping->get('mimeType')->value,
-      $mapping->get('perspective')->value
+      $mapping->get('filePath')->getString(),
+      $mapping->get('mimeType')->getString(),
+      $mapping->get('perspective')->getString()
     );
     // MD5 of record's file path can differ from the MD5 generated in the
     // constructor, so we have to explicitly set the identifier.
-    $resource->identifier = $mapping->get('identifier')->value;
-    $resource->version = $mapping->get('version')->value;
+    $resource->identifier = $mapping->get('identifier')->getString();
+    $resource->version = $mapping->get('version')->getString();
     return $resource;
   }
 
