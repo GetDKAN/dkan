@@ -13,10 +13,10 @@ use Drupal\harvest\HarvestPlanInterface;
  *
  * @ContentEntityType(
  *   id = "harvest_plan",
- *   label = @Translation("Harvest"),
- *   label_collection = @Translation("Harvests"),
- *   label_singular = @Translation("harvest"),
- *   label_plural = @Translation("harvests"),
+ *   label = @Translation("Harvest Plan"),
+ *   label_collection = @Translation("Harvest Plans"),
+ *   label_singular = @Translation("harvest plan"),
+ *   label_plural = @Translation("harvest plans"),
  *   label_count = @PluralTranslation(
  *     singular = "@count harvest plans",
  *     plural = "@count harvest plans",
