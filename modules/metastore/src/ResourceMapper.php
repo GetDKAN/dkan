@@ -169,10 +169,8 @@ class ResourceMapper {
   }
 
   /**
-   * Retrieve.
-   */
-
-  /**
+   * Retrieve a data resource.
+   *
    * @param string $identifier
    *   Data resource identifier.
    * @param string $perspective
