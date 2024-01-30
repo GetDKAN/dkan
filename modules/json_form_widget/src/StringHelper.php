@@ -65,13 +65,13 @@ class StringHelper implements ContainerInjectionInterface {
     $element = [
       '#type' => $this->getElementType($property),
     ];
-    $element['#title'] = isset($property->title) ? $property->title : '';
-    $element['#description'] = isset($property->description) ? $property->description : '';
+    $element['#title'] = $property->title ?? '';
+    $element['#description'] = $property->description ?? '';
     $element['#description_display'] = 'before';
     $element['#default_value'] = $this->getDefaultValue($data, $property);
 
     // Check if the field is required.
-    $element_schema = $object_schema ? $object_schema : $this->builder->getSchema();
+    $element_schema = $object_schema ?: $this->builder->getSchema();
     $element['#required'] = $this->checkIfRequired($field_name, $element_schema);
 
     // Add options if element type is select.
