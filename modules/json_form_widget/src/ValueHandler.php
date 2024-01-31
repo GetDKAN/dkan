@@ -49,7 +49,7 @@ class ValueHandler {
     }
     // Handle select_or_other_select.
     if (isset($formValues[$property]['select'])) {
-      return isset($formValues[$property][0]) ? $formValues[$property][0] : NULL;
+      return $formValues[$property][0] ?? NULL;
     }
     return !empty($formValues[$property]) && is_string($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
   }

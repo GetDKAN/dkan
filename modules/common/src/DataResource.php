@@ -320,9 +320,7 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {

@@ -91,7 +91,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request object.
    *
-   * @return Ilbee\CSVResponse\CSVResponse|Symfony\Component\HttpFoundation\JsonResponse
+   * @return \Ilbee\CSVResponse\CSVResponse|\Symfony\Component\HttpFoundation\JsonResponse
    *   The json or CSV response.
    */
   public function query(Request $request) {
@@ -292,7 +292,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   Normalized and type-casted JSON string.
    */
   public static function getPayloadJson(Request $request, $schema = NULL) {
-    $schema = $schema ?? file_get_contents(__DIR__ . "/../../docs/query.json");
+    $schema ??= file_get_contents(__DIR__ . "/../../docs/query.json");
     $payloadJson = static::getJson($request);
     $payloadJson = static::fixTypes($payloadJson, $schema);
     return $payloadJson;

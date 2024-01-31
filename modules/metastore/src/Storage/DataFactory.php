@@ -75,7 +75,7 @@ class DataFactory implements FactoryInterface {
     $mapping = [
       'dataset' => 'node',
     ];
-    return isset($mapping[$schema_id]) ? $mapping[$schema_id] : 'node';
+    return $mapping[$schema_id] ?? 'node';
   }
 
   /**
