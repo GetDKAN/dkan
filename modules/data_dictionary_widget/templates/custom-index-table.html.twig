@@ -14,17 +14,10 @@
             {{ row.field_collection }}
           </td>
         </tr>
-        {% elseif  row.name %}
+        {% elseif  row.type %}
         <tr>
-          <td>{{ row.name }}</td>
-          <td>{{ row.title }}</td>
-          <td>
-            <div><b>Data Type</b>: {{ row.type }}</div>
-            <div><b>Format</b>: {{ row.format }}</div>
-              {% if row.description %}
-                <div><b>Description</b>: {{ row.description }}</div>
-              {% endif %}
-          </td>
+          <td>{{ row.type }}</td>
+          <td>{{ row.description }}</td>
           <td>
           {{ row.edit_button }}
           </td>

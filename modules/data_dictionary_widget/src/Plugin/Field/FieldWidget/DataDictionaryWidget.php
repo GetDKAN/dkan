@@ -349,11 +349,14 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       $element['title']['#required'] = FALSE;
     }
 
+    // If the form state is to add a new index allow
+    // allow access to the index add form and remove access to the index add button
+    // Also make the Identifier and title not required in order to pass validation
     if ($form_state->get('add_new_index')) {
 
       $element['dictionary_indexes']['field_collection'] = $form_state->get('add_new_index');
       $element['dictionary_indexes']['field_collection']['#access'] = TRUE;
-      $element['dictionary_indexes']['add_row_button']['#access'] = FALSE;
+      $element['dictionary_indexes']['add_index_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
     }
@@ -758,6 +761,37 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
             '#title' => 'Description',
             '#description' => 'Description of index purpose or functionality.',
             '#description_display' => 'before',
+          ],
+          'actions' => [
+            '#type' => 'actions',
+            'save_index_settings' => [
+              '#type' => 'submit',
+              '#button_type' => 'primary',
+              '#value' => $this->t('Add'),
+              '#op' => 'add',
+              '#submit' => [
+            [$this, 'addIndexSubformCallback'],
+              ],
+              '#ajax' => [
+                'callback' => [$this, 'subIndexformAjax'],
+                'wrapper' => 'field-json-metadata-dictionary-indexes',
+                'effect' => 'fade',
+              ],
+            ],
+            'cancel_index_settings' => [
+              '#type' => 'submit',
+              '#value' => $this->t('Cancel'),
+              '#op' => 'cancel',
+              '#submit' => [
+            [$this, 'addIndexSubformCallback'],
+              ],
+              '#ajax' => [
+                'callback' => [$this, 'subIndexformAjax'],
+                'wrapper' => 'field-json-metadata-dictionary-indexes',
+                'effect' => 'fade',
+              ],
+              '#limit_validation_errors' => [],
+            ],
           ],
         ],
       ];
