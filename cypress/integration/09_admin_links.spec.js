@@ -39,7 +39,7 @@ context('Administration pages', () => {
         cy.wrap($el).contains('Harvests')
     })
     cy.visit(baseurl + "/admin/dkan/harvest")
-    cy.contains('h1', 'Harvest plans');
+    cy.contains('h1', 'Harvest Plans');
   })
 
   it('There is a link in the admin menu to the datasets admin screen.', () => {
