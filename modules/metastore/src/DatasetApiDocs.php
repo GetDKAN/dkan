@@ -292,7 +292,7 @@ class DatasetApiDocs {
    * Private.
    */
   private function modifySqlEndpoint($operations, $distribution) {
-    $distKey = isset($distribution['data']['title']) ? $distribution['data']['title'] : $distribution['identifier'];
+    $distKey = $distribution['data']['title'] ?? $distribution['identifier'];
     unset($operations['get']['parameters'][0]['example']);
     $operations['get']['parameters'][0]['examples'][$distKey] = [
       "summary" => "Query distribution {$distribution['identifier']}",

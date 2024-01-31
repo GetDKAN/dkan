@@ -38,14 +38,33 @@ class TableSummary implements \JsonSerializable {
   public $numOfRows;
 
   /**
+   * Full text indexes.
+   *
+   * @var array|null
+   */
+  private ?array $fulltextIndexes;
+
+  /**
    * Constructor.
+   *
+   * @param int $numOfColumns
+   *   Number of columns.
+   * @param array $columns
+   *   Summary columns.
+   * @param array|null $indexes
+   *   Summary indexes.
+   * @param array|null $fulltext_indexes
+   *   Full text indexes.
+   * @param int $numOfRows
+   *   Number of rows.
    */
   public function __construct(
     int $numOfColumns,
     array $columns,
     ?array $indexes,
     ?array $fulltext_indexes,
-    int $numOfRows) {
+    int $numOfRows
+  ) {
     $this->numOfColumns = $numOfColumns;
     $this->columns = $columns;
     $this->indexes = $indexes;
@@ -54,9 +73,9 @@ class TableSummary implements \JsonSerializable {
   }
 
   /**
-   * Inherited.
+   * Specify data which should be serialized to JSON.
    *
-   * {@inheritdoc}
+   * @return mixed
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {

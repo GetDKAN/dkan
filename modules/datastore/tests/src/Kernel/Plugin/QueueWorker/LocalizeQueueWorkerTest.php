@@ -22,7 +22,7 @@ use Procrastinator\Result;
  */
 class LocalizeQueueWorkerTest extends KernelTestBase {
 
-  const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+  protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   /**
    * {@inheritdoc}

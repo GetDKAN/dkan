@@ -12,7 +12,7 @@ use Drupal\Core\Site\Settings;
 /**
  *
  */
-class FileSystem extends DrupalFileSystem {
+class FileSystem extends DrupalFilesystem {
 
   /**
    *

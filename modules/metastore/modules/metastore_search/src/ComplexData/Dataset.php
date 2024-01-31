@@ -165,7 +165,7 @@ class Dataset extends ComplexDataFacade {
       && isset($this->data->{$matches[1]})
       && is_array($this->data->{$matches[1]})) {
       foreach ($this->data->{$matches[1]} as $dist) {
-        $values[] = isset($dist->{$matches[2]}) ? $dist->{$matches[2]} : [];
+        $values[] = $dist->{$matches[2]} ?? [];
       }
     }
     elseif (isset($this->data->{$property_name})) {
