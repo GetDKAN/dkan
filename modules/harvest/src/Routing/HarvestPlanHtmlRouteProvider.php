@@ -22,8 +22,6 @@ class HarvestPlanHtmlRouteProvider extends AdminHtmlRouteProvider {
    */
   protected function getCollectionRoute(EntityTypeInterface $entity_type) {
     // Require dkan.harvest.dashboard permission to view the collection.
-    // Note that in other code, this permission is only used to limit access
-    // to the import status dashboard.
     $route = NULL;
     if ($route = parent::getCollectionRoute($entity_type)) {
       $required_permissions = ['dkan.harvest.dashboard'];

@@ -21,6 +21,9 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    */
   protected HarvestService $harvestService;
 
+  /**
+   * {@inheritDoc}
+   */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     $builder = parent::createInstance($container, $entity_type);
     $builder->harvestService = $container->get('dkan.harvest.service');
