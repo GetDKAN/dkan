@@ -14,7 +14,7 @@ use Drupal\harvest\HarvestPlanInterface;
  * @ContentEntityType(
  *   id = "harvest_plan",
  *   label = @Translation("Harvest Plan"),
- *   label_collection = @Translation("Harvest Plans"),
+ *   label_collection = @Translation("Harvests"),
  *   label_singular = @Translation("harvest plan"),
  *   label_plural = @Translation("harvest plans"),
  *   label_count = @PluralTranslation(
