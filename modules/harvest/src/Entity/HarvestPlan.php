@@ -11,6 +11,12 @@ use Drupal\harvest\HarvestPlanInterface;
 /**
  * Defines the harvest plan entity class.
  *
+ * The entity stores an identifier for the plan ('id') and a blob of JSON to
+ * represent the plan ('data').
+ *
+ * The plan JSON must contain an object with a property named 'identifier'. The
+ * 'id' field of this entity must contain the same value as that identifier.
+ *
  * @ContentEntityType(
  *   id = "harvest_plan",
  *   label = @Translation("Harvest Plan"),
@@ -44,7 +50,7 @@ use Drupal\harvest\HarvestPlanInterface;
  * Canonical must be supplied for the route builder, but is never used.
  *
  * Internal = TRUE tells JSON:API not to expose this entity. We have our own
- * API, so we don't want this.
+ * harvest API, so we don't want this.
  *
  * @todo Add operations for register, run, deregister.
  */
@@ -57,6 +63,8 @@ class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $base_fields = parent::baseFieldDefinitions($entity_type);
+
+    // The 'id' field is the unique identifier for each harvest plan row.
     $base_fields['id'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Identifier'))
       ->setReadOnly(FALSE)
@@ -72,7 +80,9 @@ class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
         'weight' => -5,
       ])
       ->setDisplayConfigurable('form', TRUE);
-    // String_long is a blob.
+
+    // The 'data' field contains JSON which describes the harvest plan. The plan
+    // must be an object with at least a property of 'identifier'.
     $base_fields['data'] = BaseFieldDefinition::create('string_long')
       ->setLabel(new TranslatableMarkup('Data'))
       ->setReadOnly(FALSE)
