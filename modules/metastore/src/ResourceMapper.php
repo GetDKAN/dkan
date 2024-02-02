@@ -42,7 +42,11 @@ class ResourceMapper {
   /**
    * Entity storage service.
    *
+   * The data used by the ResourceMapper is stored in resource_mapping entities.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
+   *
+   * @see \Drupal\metastore\Entity\ResourceMapping
    */
   private EntityStorageInterface $mappingEntityStorage;
 

@@ -18,10 +18,10 @@ use Procrastinator\JsonSerializeTrait;
  * Currently, the allowable perspectives are:
  * - 'source' which represents a CSV file somewhere on the internet. In this
  *   case the file path will be an http:// URL.
- * - 'local_path' which represents the same CSV file as a source file, but
+ * - 'local_file' which represents the same CSV file as a source file, but
  *   stored locally in the file system. The file path will be a local URI,
  *   probably in the public:// scheme.
- * - 'local_url' which also can exist.
+ * - 'local_url' which is the 'hostified' version of the local URL to the file.
  *
  * Feed these various permutations of the DataResource object to the
  * ResourceMapper, and it will store these differences in a database table.
@@ -40,6 +40,8 @@ use Procrastinator\JsonSerializeTrait;
  * For more details refer to the methods governing these behaviors:
  * 1. Resource::createNewVersion()
  * 2. Resource::createNewPerspective()
+ *
+ * @see \Drupal\metastore\Entity\ResourceMapping
  */
 class DataResource implements \JsonSerializable {
 
