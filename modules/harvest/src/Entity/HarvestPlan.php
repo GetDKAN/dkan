@@ -40,6 +40,13 @@ use Drupal\harvest\HarvestPlanInterface;
  *   },
  *   internal = TRUE,
  * )
+ *
+ * Canonical must be supplied for the route builder, but is never used.
+ *
+ * Internal = TRUE tells JSON:API not to expose this entity. We have our own
+ * API, so we don't want this.
+ *
+ * @todo Add operations for register, run, deregister.
  */
 class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
 
