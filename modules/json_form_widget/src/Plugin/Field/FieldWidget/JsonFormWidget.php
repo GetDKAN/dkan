@@ -159,7 +159,7 @@ class JsonFormWidget extends WidgetBase {
 
     $field_state = static::getWidgetState($form['#parents'], $field_name, $form_state);
     foreach ($items as $delta => $item) {
-      $field_state['original_deltas'][$delta] = isset($item->_original_delta) ? $item->_original_delta : $delta;
+      $field_state['original_deltas'][$delta] = $item->_original_delta ?? $delta;
       unset($item->_original_delta, $item->_weight);
     }
     static::setWidgetState($form['#parents'], $field_name, $form_state, $field_state);

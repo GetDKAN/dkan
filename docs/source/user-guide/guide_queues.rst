@@ -8,8 +8,10 @@ DKAN Queues
 
   * - Queue
     - Description
+  * - localize_import
+    -	This queue fetches remote files from source URLs to the local filesystem
   * - datastore_import
-    -	This queue handles fetching remote files and parsing the data into datastore tables
+    -	This queue handles parsing the localized data into datastore tables
   * - post_import
     - This queue will apply data-dictionary definitions and indexes to the datastore tables
   * - resource_purger

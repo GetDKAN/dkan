@@ -129,7 +129,9 @@ class DatasetBTBTest extends BrowserTestBase {
       ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
       ->save();
 
-    $metadata = $this->getMetastore()->get('dataset', 123);
+    // @todo Why does this fail the test when we use $this->container instead of
+    //   \Drupal::service()?
+    $metadata = \Drupal::service('dkan.metastore.service')->get('dataset', 123);
     $dataset = json_decode($metadata);
 
     $this->assertNotEquals(
@@ -257,9 +259,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution title update and local_url resource perspective.
-   * Current fails due to faulty logic in MetastoreSubscriber::resourceInUseElsewhere.
-   * Should use ReferenceLookup similar to ResourcePurger::resourceNotShared.
-
+   */
   public function testDraftWorkflowUpdateDistributionTitleLocalPerspective() {
     // Set resource perspective to local_url.
     $this->config('metastore.settings')
@@ -268,7 +268,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->runDraftWorkflowUpdateDistributionTitle();
   }
-   */
+
 
   /**
    * Test cleanup of orphaned draft distributions.
@@ -311,6 +311,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Simulate datastore_import and cleanup queues post update.
     $this->runQueues([
+      'localize_import',
       'datastore_import',
       'orphan_reference_processor',
       'orphan_resource_remover',
@@ -451,7 +452,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $dataset = $this->datasetPostAndRetrieve();
     $resource = $this->getResourceFromDataset($dataset);
 
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
 
     $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
     $this->queryResource($resource, $queryString);
@@ -565,7 +566,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Simulate a cron on queues relevant to this scenario.
-    $this->runQueues(['datastore_import', 'resource_purger']);
+    $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
   }
 
   /**
@@ -632,22 +633,22 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   private function getQueueService() : QueueFactory {
-    return \Drupal::service('queue');
+    return $this->container->get('queue');
   }
 
   private function getHarvester() : HarvestService {
-    return \Drupal::service('dkan.harvest.service');
+    return $this->container->get('dkan.harvest.service');
   }
 
   private function getNodeStorage(): NodeStorage {
-    return \Drupal::service('entity_type.manager')->getStorage('node');
+    return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
   /**
    * @return \Drupal\metastore\MetastoreService
    */
   private function getMetastore(): MetastoreService {
-    return \Drupal::service('dkan.metastore.service');
+    return $this->container->get('dkan.metastore.service');
   }
 
   /**
@@ -673,6 +674,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Simulate all possible queues post publish.
     // Should only include post_import (not included earlier) and resource_purger.
     $this->runQueues([
+      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
@@ -688,6 +690,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Simulate all possible queues post update.
     // Should include datastore_import, orphan_reference_processor and resource_purger
     $this->runQueues([
+      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
@@ -730,7 +733,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionTablePublishedUpdated = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
 
     // Load previous distribution node and its moderation state.
-    $entityManager = \Drupal::entityTypeManager()->getStorage('node');
+    $entityManager = $this->getNodeStorage();
     $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
     $distributionNodeOld = reset($distributionNodeOld);
     $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();
@@ -793,14 +796,62 @@ class DatasetBTBTest extends BrowserTestBase {
     $distribution->format = 'csv';
     $distribution->mediaType = 'text/csv';
 
+    // Run distribution title update with cron run between update and publish events.
+    $this->runDistributionTitleUpdate($id_1, $distribution);
+
+    // Run distribution title update with cron run only after publish.
+    $distribution->title = 'Second Update to Distribution #0 for ' . $id_1;
+    $this->runDistributionTitleUpdate($id_1, $distribution, TRUE);
+  }
+
+  /**
+   * Separate distribution title update to allow for multiple runs.
+   */
+  private function runDistributionTitleUpdate(string $identifier, \stdClass $distribution, bool $skip_cron = FALSE) {
     // Create a new draft with the new distribution title.
-    $this->getMetastore()->patch('dataset', $id_1, json_encode(
+    $this->getMetastore()->patch('dataset', $identifier, json_encode(
       ['distribution' => [$distribution]]
     ));
 
-    // Simulate all possible queues post update.
+    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $databaseSchema = $this->container->get('database')->schema();
+    $entityManager = $this->getNodeStorage();
+
+    if (!$skip_cron) {
+      // Simulate cron by running all possible queues post update.
+      // Should NOT include datastore_import.
+      $this->runQueues([
+        'localize_import',
+        'datastore_import',
+        'resource_purger',
+        'orphan_reference_processor',
+        'orphan_resource_remover',
+        'post_import',
+      ]);
+    }
+
+    // Get dataset info.
+    $metadata = $datasetInfoService->gather($identifier);
+    // Store old distribution UUID for later comparison.
+    $distributionUuidOld = $metadata['published_revision']['distributions'][0]['distribution_uuid'] ?? '';
+
+    // Make sure we aren't creating a new datastore table with this update.
+    $distributionTableLatest = $metadata['latest_revision']['distributions'][0]['table_name'];
+    $distributionTablePublished = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
+    $this->assertNotEmpty($distributionTablePublished, 'Draft revision exists.');
+    $this->assertEquals($distributionTableLatest, $distributionTablePublished, 'Same distribution used for latest and published revisions.');
+
+    // Confirm latest/published distribution table exists.
+    $distributionTableLatestExists = $databaseSchema->tableExists($distributionTableLatest);
+    $this->assertTrue($distributionTableLatestExists, $distributionTableLatest . ' exists.');
+
+    // Publish the draft dataset revision.
+    $this->getMetastore()->publish('dataset', $identifier);
+
+    // Simulate cron by running all possible queues post publish.
     // Should NOT include datastore_import.
     $this->runQueues([
+      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
@@ -808,41 +859,13 @@ class DatasetBTBTest extends BrowserTestBase {
       'post_import',
     ]);
 
-    // Get dataset info.
-    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
-    $metadata = $datasetInfoService->gather($id_1);
-    $distributionTableLatest = $metadata['latest_revision']['distributions'][0]['table_name'];
-    $distributionTablePublished = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
-    $distributionUuidOld = $metadata['published_revision']['distributions'][0]['distribution_uuid'] ?? '';
-
-    // Make sure there are both latest and published versions that share the same table.
-    $this->assertNotEmpty($distributionTablePublished, 'Draft revision exists.');
-    $this->assertEquals($distributionTableLatest, $distributionTablePublished, 'Same distribution used for latest and published revisions.');
-
-    // Confirm latest/published distribution table exists.
-    $databaseSchema = $this->container->get('database')->schema();
-    $distributionTableLatestExists = $databaseSchema->tableExists($distributionTableLatest);
-    $this->assertTrue($distributionTableLatestExists, $distributionTableLatest . ' exists.');
-
-    // Publish the draft dataset revision.
-    $this->getMetastore()->publish('dataset', $id_1);
-
-    // Simulate all possible queues post update.
-    // Should NOT include datastore_import.
-    $this->runQueues([
-      'datastore_import',
-      'resource_purger',
-      'orphan_reference_processor',
-      'orphan_resource_remover',
-    ]);
-
-    $metadata = $datasetInfoService->gather($id_1);
+    // Get dataset info again.
+    $metadata = $datasetInfoService->gather($identifier);
     $distributionTableLatestNew = $metadata['latest_revision']['distributions'][0]['table_name'];
     $distributionUuidLatestNew = $metadata['latest_revision']['distributions'][0]['distribution_uuid'];
     $distributionTablePublishedUpdated = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
 
     // Load previous distribution node and its moderation state.
-    $entityManager = \Drupal::entityTypeManager()->getStorage('node');
     $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
     $distributionNodeOld = reset($distributionNodeOld);
     $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();

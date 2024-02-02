@@ -94,6 +94,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     );
 
     $queues = [
+      'localize_import',
       'datastore_import',
       'resource_purger',
       'orphan_reference_processor',
@@ -116,6 +117,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
 
+    // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
     // Re-render the dataset nodes using the render service.
     $this->renderDatasetNodesForCache();

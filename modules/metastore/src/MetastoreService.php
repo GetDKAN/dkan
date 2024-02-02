@@ -431,7 +431,7 @@ class MetastoreService implements ContainerInjectionInterface {
   public function getCatalog() {
     $catalog = $this->getSchema('catalog');
     $catalog->dataset = array_map(function ($object) {
-      $modified_object = $this->removeReferences($object);
+      $modified_object = static::removeReferences($object);
       return (object) $modified_object->get('$');
     }, $this->getAll('dataset'));
 

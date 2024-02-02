@@ -76,6 +76,7 @@ services:
       - '@logger.factory'
       - '@dkan.metastore.service'
       - '@dkan.metastore.resource_mapper'
+      - '@dkan.metastore.reference_lookup'
     tags:
       - { name: event_subscriber }
 

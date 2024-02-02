@@ -10,12 +10,15 @@ namespace Drupal\Tests\common\Kernel\Storage {
   use Drupal\KernelTests\KernelTestBase;
 
   /**
-   * @covers \Drupal\common\Storage\JobStore
-   * @coversDefaultClass \Drupal\common\Storage\JobStore
+   * @covers \Drupal\common\Storage\JobStoreFactory
+   * @coversDefaultClass \Drupal\common\Storage\JobStoreFactory
    *
    * @group dkan
    * @group common
    * @group kernel
+   * @group legacy
+   *
+   * @see \Drupal\Tests\common\Kernel\Storage\AbstractJobStoreFactoryTest
    */
   class JobStoreFactoryTest extends KernelTestBase {
 
