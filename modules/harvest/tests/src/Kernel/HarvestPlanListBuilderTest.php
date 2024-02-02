@@ -136,7 +136,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
 
     // There are no registered harvests, so there should be zero rows. We also
     // verify the empty table value.
-    $table_render = $list_builder->render()['table']['table'] ?? 'phail';
+    $table_render = $list_builder->render()['table'] ?? 'phail';
     $this->assertCount(0, $table_render['#rows'] ?? NULL);
     $this->assertEquals('There are no harvest plans yet.', $table_render['#empty'] ?? NULL);
 
@@ -145,7 +145,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $this->registerHarvestPlan($harvest_service, $plan_identifier);
 
     // Revisit the dashboard. It should show the registered harvest.
-    $table_render = $list_builder->render()['table']['table'] ?? 'phail';
+    $table_render = $list_builder->render()['table'] ?? 'phail';
     $this->assertCount(1, $table_render['#rows'] ?? NULL);
     $this->assertNotNull($row = $table_render['#rows'][$plan_identifier] ?? 'phail');
     /** @var \Drupal\Core\Link $link */
