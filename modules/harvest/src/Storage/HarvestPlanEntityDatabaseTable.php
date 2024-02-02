@@ -16,6 +16,6 @@ class HarvestPlanEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
   /**
    * {@inheritdoc}
    */
-  protected static $entityType = 'harvest_plan';
+  protected string $entityType = 'harvest_plan';
 
 }

@@ -10,14 +10,19 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 /**
  * Provide a DKAN storage shim for Drupal Entity API.
  *
- * How to use: Make a subclass which overrides static::$entityType and/or
- * static::$dataFieldName.
- *
- * Now your DKAN storage factory can create a new storage object: Your subclass.
- * This object will use the entity type as a backend.
+ * How to use:
+ * - Make a subclass which overrides $this->$entityType.
+ * - Optionally, override $this->$dataFieldName as needed if your entity adopts
+ *   the identifier + JSON blob schema pattern, but uses a different base field
+ *   name for the data.
+ * - Override any of the DatabaseTableInterface methods as needed for your own
+ *   entity's use cases.
+ * - Add or modify a storage factory that can create an instance of your new
+ *   class within Drupal\common\Storage\StorageFactoryInterface::getInstance().
+ *   This instance will then use the entity type as a backend.
  *
  * @todo Move all mountains necessary to remove this compatibility layer from
- *   DKAN, and just use Entity API.
+ *   DKAN, and just use Entity API for everything.
  */
 abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
 
@@ -28,14 +33,14 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    *
    * @var string
    */
-  protected static $entityType = '';
+  protected string $entityType = '';
 
   /**
    * Data field which is where DKAN will put all the JSON data for this entity.
    *
    * @var string
    */
-  protected static $dataFieldName = 'data';
+  protected string $dataFieldName = 'data';
 
   /**
    * Entity type manager service.
@@ -59,7 +64,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->entityStorage = $entityTypeManager->getStorage(static::$entityType);
+    $this->entityStorage = $entityTypeManager->getStorage($this->entityType);
   }
 
   /**
@@ -120,7 +125,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    */
   public function primaryKey() {
     // Use the primary key defined in the entity definition.
-    $definition = $this->entityTypeManager->getDefinition(static::$entityType);
+    $definition = $this->entityTypeManager->getDefinition($this->entityType);
     return ($definition->getKeys())['id'];
   }
 
@@ -166,12 +171,12 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
     $entity = $this->loadEntity($id);
     if ($entity) {
       // Modify entity.
-      $entity->set(static::$dataFieldName, $data);
+      $entity->set($this->dataFieldName, $data);
     }
     else {
       $entity = $this->entityStorage->create([
         $this->primaryKey() => $id,
-        static::$dataFieldName => $data,
+        $this->dataFieldName => $data,
       ]);
     }
     $entity->save();
