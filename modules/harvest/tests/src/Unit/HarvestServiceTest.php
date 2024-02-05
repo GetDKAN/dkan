@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @group harvest
  * @group unit
  *
- * @see \Drupal\Tests\harvest\Kernel\ServiceTest
+ * @see \Drupal\Tests\harvest\Kernel\HarvestServiceTest
  */
 class HarvestServiceTest extends TestCase {
   use ServiceCheckTrait;

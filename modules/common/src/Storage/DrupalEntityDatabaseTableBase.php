@@ -23,6 +23,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  *
  * @todo Move all mountains necessary to remove this compatibility layer from
  *   DKAN, and just use Entity API for everything.
+ *
+ * @internal
  */
 abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
 
