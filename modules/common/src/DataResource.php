@@ -4,6 +4,7 @@ namespace Drupal\common;
 
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\ResourceMappingInterface;
 use Procrastinator\JsonSerializeTrait;
 
 /**
@@ -17,10 +18,10 @@ use Procrastinator\JsonSerializeTrait;
  * Currently, the allowable perspectives are:
  * - 'source' which represents a CSV file somewhere on the internet. In this
  *   case the file path will be an http:// URL.
- * - 'local_path' which represents the same CSV file as a source file, but
+ * - 'local_file' which represents the same CSV file as a source file, but
  *   stored locally in the file system. The file path will be a local URI,
  *   probably in the public:// scheme.
- * - 'local_url' which also can exist.
+ * - 'local_url' which is the 'hostified' version of the local URL to the file.
  *
  * Feed these various permutations of the DataResource object to the
  * ResourceMapper, and it will store these differences in a database table.
@@ -39,6 +40,8 @@ use Procrastinator\JsonSerializeTrait;
  * For more details refer to the methods governing these behaviors:
  * 1. Resource::createNewVersion()
  * 2. Resource::createNewPerspective()
+ *
+ * @see \Drupal\metastore\Entity\ResourceMapping
  */
 class DataResource implements \JsonSerializable {
 
@@ -123,6 +126,10 @@ class DataResource implements \JsonSerializable {
    *
    * @return \Drupal\common\DataResource
    *   DataResource object.
+   *
+   * @deprecated Use DataResource::createFromEntity() instead.
+   *
+   * @see self::createFromEntity()
    */
   public static function createFromRecord(object $record): DataResource {
     $resource = new static($record->filePath, $record->mimeType, $record->perspective);
@@ -130,6 +137,28 @@ class DataResource implements \JsonSerializable {
     // constructor, so we have to explicitly set the identifier.
     $resource->identifier = $record->identifier;
     $resource->version = $record->version;
+    return $resource;
+  }
+
+  /**
+   * Create a DataResource object from a Drupal entity.
+   *
+   * @param \Drupal\metastore\ResourceMappingInterface $mapping
+   *   A resource_mapping entity.
+   *
+   * @return \Drupal\common\DataResource
+   *   DataResource object.
+   */
+  public static function createFromEntity(ResourceMappingInterface $mapping): DataResource {
+    $resource = new static(
+      $mapping->get('filePath')->getString(),
+      $mapping->get('mimeType')->getString(),
+      $mapping->get('perspective')->getString()
+    );
+    // MD5 of record's file path can differ from the MD5 generated in the
+    // constructor, so we have to explicitly set the identifier.
+    $resource->identifier = $mapping->get('identifier')->getString();
+    $resource->version = $mapping->get('version')->getString();
     return $resource;
   }
 
@@ -241,6 +270,17 @@ class DataResource implements \JsonSerializable {
    */
   public function getPerspective() {
     return $this->perspective;
+  }
+
+  /**
+   * Get the checksum for this resource.
+   *
+   * @return string|null
+   *   The checksum for the local file perspective. NULL if it has not yet been
+   *   computed, or if this resource is a different perspective.
+   */
+  public function getChecksum(): ?string {
+    return $this->checksum;
   }
 
   /**
