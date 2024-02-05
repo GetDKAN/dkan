@@ -9,6 +9,20 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Provide a DKAN storage shim for Drupal Entity API.
+ *
+ * How to use:
+ * - Make a subclass which overrides $this->$entityType.
+ * - Optionally, override $this->$dataFieldName as needed if your entity adopts
+ *   the identifier + JSON blob schema pattern, but uses a different base field
+ *   name for the data.
+ * - Override any of the DatabaseTableInterface methods as needed for your own
+ *   entity's use cases.
+ * - Add or modify a storage factory that can create an instance of your new
+ *   class within Drupal\common\Storage\StorageFactoryInterface::getInstance().
+ *   This instance will then use the entity type as a backend.
+ *
+ * @todo Move all mountains necessary to remove this compatibility layer from
+ *   DKAN, and just use Entity API for everything.
  */
 abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
 
@@ -19,14 +33,14 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    *
    * @var string
    */
-  protected static $entityType = '';
+  protected string $entityType = '';
 
   /**
    * Data field which is where DKAN will put all the JSON data for this entity.
    *
    * @var string
    */
-  protected static $dataFieldName = 'data';
+  protected string $dataFieldName = 'data';
 
   /**
    * Entity type manager service.
@@ -50,23 +64,29 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->entityStorage = $entityTypeManager->getStorage(static::$entityType);
+    $this->entityStorage = $entityTypeManager->getStorage($this->entityType);
   }
 
   /**
    * {@inheritDoc}
    */
   public function retrieveAll(): array {
-    return $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->execute();
+    // Some calling code is very particular about the output being an array,
+    // both as a return value here and after json_encode(). Since the entity
+    // query returns a keyed array, json_encode() will think it's an object. We
+    // don't want that, so we use array_values().
+    return array_values(
+      $this->entityStorage->getQuery()
+        ->accessCheck(FALSE)
+        ->execute()
+    );
   }
 
   /**
    * {@inheritDoc}
    */
   public function storeMultiple(array $data) {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**
@@ -84,10 +104,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
   public function destruct() {
     // DKAN API wants us to destroy the table, but we can't/shouldn't do that
     // within Drupal's Entity API. So instead, we will delete all entities.
-    $ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->execute();
-    if ($ids) {
+    if ($ids = $this->retrieveAll()) {
       // Limit the number of entities deleted at one time. This can prevent
       // problems with huge tables of fielded entities.
       foreach (array_chunk($ids, 100) as $chunked_ids) {
@@ -100,7 +117,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function query(Query $query) {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**
@@ -108,7 +125,7 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    */
   public function primaryKey() {
     // Use the primary key defined in the entity definition.
-    $definition = $this->entityTypeManager->getDefinition(static::$entityType);
+    $definition = $this->entityTypeManager->getDefinition($this->entityType);
     return ($definition->getKeys())['id'];
   }
 
@@ -116,14 +133,14 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function setSchema(array $schema): void {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**
    * {@inheritDoc}
    */
   public function getSchema(): array {
-    throw new \Exception(__METHOD__);
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
   /**
@@ -154,16 +171,16 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
     $entity = $this->loadEntity($id);
     if ($entity) {
       // Modify entity.
-      $entity->set(static::$dataFieldName, $data);
+      $entity->set($this->dataFieldName, $data);
     }
     else {
       $entity = $this->entityStorage->create([
         $this->primaryKey() => $id,
-        static::$dataFieldName => $data,
+        $this->dataFieldName => $data,
       ]);
     }
     $entity->save();
-    return $entity->get($this->primaryKey())->value;
+    return $entity->get($this->primaryKey())->getString();
   }
 
   /**

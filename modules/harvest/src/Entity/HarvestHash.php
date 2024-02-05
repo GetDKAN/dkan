@@ -20,30 +20,17 @@ use Drupal\harvest\HarvestHashInterface;
  *     plural = "@count harvest hashes",
  *   ),
  *   handlers = {
- *     "list_builder" = "Drupal\harvest\HarvestHashListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
- *     "form" = {
- *       "add" = "Drupal\harvest\Form\HarvestHashForm",
- *       "edit" = "Drupal\harvest\Form\HarvestHashForm",
- *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
- *     },
- *     "route_provider" = {
- *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
- *     }
  *   },
  *   base_table = "harvest_hashes",
  *   admin_permission = "administer harvest hash",
  *   entity_keys = {
  *     "id" = "dataset_uuid",
  *   },
- *   links = {
- *     "collection" = "/admin/content/harvest-hash",
- *     "add-form" = "/harvest-hash/add",
- *     "canonical" = "/harvest-hash/{harvest_hash}",
- *     "edit-form" = "/harvest-hash/{harvest_hash}/edit",
- *     "delete-form" = "/harvest-hash/{harvest_hash}/delete",
- *   },
+ *   internal = TRUE,
  * )
+ *
+ * Internal is TRUE so that JSONAPI does not provide a REST API for this entity.
  */
 class HarvestHash extends ContentEntityBase implements HarvestHashInterface, \JsonSerializable {
 

@@ -10,12 +10,24 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  */
 class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
 
-  protected static $entityType = 'harvest_hash';
+  protected string $entityType = 'harvest_hash';
 
-  protected static $dataFieldName = '';
+  protected string $dataFieldName = '';
 
-  private string $planId;
+  protected string $planId;
 
+  /**
+   * Construct an entity shim.
+   *
+   * Luckily for us, we only ever need one of these 'tables' per plan id. This
+   * means that if you want a 'table' for another plan, use the factory to
+   * create it with the different plan id.
+   *
+   * @param string $planId
+   *   Harvest plan identifier.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Entity type manager service.
+   */
   public function __construct(string $planId, EntityTypeManagerInterface $entityTypeManager) {
     $this->planId = $planId;
     parent::__construct($entityTypeManager);
@@ -29,8 +41,7 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
    *   - harvest_plan_id (The harvest name.)
    *   - hash
    * @param string|null $id
-   *   A UUID node entity identifier. Must reference an existing data
-   *   node. Must never be NULL.
+   *   A node entity UUID identifier. Must not be NULL.
    *
    * @return string
    *   Identifier.
@@ -47,11 +58,12 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
 
     $entity = $this->loadEntity($id);
     if ($entity) {
-      // Modify entity.
+      // Modify existing entity.
       $entity->set('harvest_plan_id', $harvest_plan_id);
       $entity->set('hash', $hash);
     }
     else {
+      // Create a new entity.
       $entity = $this->entityStorage->create([
         'dataset_uuid' => $id,
         'harvest_plan_id' => $harvest_plan_id,
@@ -59,9 +71,18 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
       ]);
     }
     $entity->save();
-    return $entity->get($this->primaryKey())->value;
+    return $entity->get($this->primaryKey())->getString();
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @param string $id
+   *   Dataset node UUID.
+   *
+   * @return \Contracts\HydratableInterface|false|string|void|null
+   *   JSON-encoded result of query.
+   */
   public function retrieve(string $id) {
     if ($ids = $this->entityStorage->getQuery()
       ->condition('harvest_plan_id', $this->planId)
@@ -74,6 +95,9 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function destruct() {
     // DKAN API wants us to destroy the table, but we can't/shouldn't do that
     // here. So instead, we will delete all entities for our plan ID.
@@ -85,7 +109,7 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
       // Limit the number of entities deleted at one time. This can prevent
       // problems with huge tables of fielded entities.
       foreach (array_chunk($ids, 100) as $chunked_ids) {
-        $this->entityStorage->delete($chunked_ids);
+        $this->entityStorage->delete($this->entityStorage->loadMultiple($chunked_ids));
       }
     }
   }
