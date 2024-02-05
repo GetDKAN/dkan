@@ -20,7 +20,7 @@
         "getdkan/procrastinator": "^5.0.0",
         "getdkan/rooted-json-data": "^0.2.1",
         "guzzlehttp/guzzle" : "^6.5.8 || ^7.4.5",
-        "ilbee/csv-response": "^1.1.1",
+        "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
         "fylax/forceutf8": "~3.0",
