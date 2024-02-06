@@ -37,7 +37,6 @@ class FieldCreation extends ControllerBase {
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">A data dictionary for this resource, compliant with the <a href="https://specs.frictionlessdata.io/table-schema/" target="_blank">Table Schema</a> specification.</div>'),
     ];
-    $element['dictionary_fields']['bulk_changes'] = '';
     $element['dictionary_fields']['current_fields'] = $current_fields;
 
     return $element;
