@@ -12,7 +12,9 @@ use Drupal\harvest\HarvestPlanInterface;
  * Defines the harvest plan entity class.
  *
  * The entity stores an identifier for the plan ('id') and a blob of JSON to
- * represent the plan ('data').
+ * represent the plan ('data'). This is not the JSON of the harvest, but the
+ * DKAN harvest plan. See components.schemas.harvestPlan within
+ * modules/harvest/docs/openapi_spec.json for the schema of a plan.
  *
  * The plan JSON must contain an object with a property named 'identifier'. The
  * 'id' field of this entity must contain the same value as that identifier.
@@ -47,12 +49,13 @@ use Drupal\harvest\HarvestPlanInterface;
  *   internal = TRUE,
  * )
  *
- * Canonical must be supplied for the route builder, but is never used.
+ * Canonical must be supplied for the route builder, but is not currently used.
  *
  * Internal = TRUE tells JSON:API not to expose this entity. We have our own
  * harvest API, so we don't want this.
  *
- * @todo Add operations for register, run, deregister.
+ * @todo Add fields for each element of the harvestPlan schema.
+ * @todo Add links and handlers for register, run, and deregister operations.
  */
 class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
 

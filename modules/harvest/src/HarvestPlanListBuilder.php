@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a list controller for the harvest plan entity type.
+ *
+ * @todo Add operations for register, run, and deregister.
  */
 class HarvestPlanListBuilder extends EntityListBuilder {
 
