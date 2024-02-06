@@ -513,7 +513,7 @@ display:
     display_options:
       display_description: ''
       display_extenders: {  }
-      path: dataset-search
+      path: dataset/search
     cache_metadata:
       max-age: -1
       contexts:
