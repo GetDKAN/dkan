@@ -1,0 +1,4 @@
+data_dictionary_widget.style:
+  css:
+    layout:
+     src\css\dataDictionaryWidget.css: {}
