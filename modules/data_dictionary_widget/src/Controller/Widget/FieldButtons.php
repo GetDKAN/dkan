@@ -126,49 +126,6 @@ class FieldButtons extends ControllerBase {
   }
 
   /**
-   * Create bulk changes buttons.
-   */
-  public static function bulkChangesButtons($type = NULL) {
-    if ($type == 'edit_all') {
-      return self::bulkButtons('edit');
-    }
-    else {
-      return [
-        '#type' => 'actions',
-        'save_all_settings' => self::bulkButtons('save'),
-        'cancel_all_settings' => self::bulkButtons('cancel'),
-      ];
-    }
-
-  }
-
-  /**
-   * Create save, cancel. and edit all buttons.
-   */
-  public static function bulkButtons($type) {
-    $button = [
-      '#type' => 'submit',
-      '#value' => ucfirst($type) . ' All',
-      '#title' => ucfirst($type) . ' all fields in edit mode.',
-      '#op' => $type . '_all',
-      '#submit' => [
-            [
-              '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
-              'bulkChangeSubformCallback',
-            ],
-      ],
-      '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
-        'wrapper' => 'field-json-metadata-dictionary-fields',
-        'effect' => 'fade',
-      ],
-      '#limit_validation_errors' => [],
-    ];
-
-    return $button;
-  }
-
-  /**
    * Create Delete button.
    */
   public static function deleteButton($key) {

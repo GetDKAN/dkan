@@ -50,10 +50,6 @@ class FieldOperations extends ControllerBase {
       }
 
     }
-    if ($dictionaryFields['bulk_changes_buttons'] != NULL) {
-      $dictionaryFields["bulk_changes"] = $dictionaryFields['bulk_changes_buttons'];
-      unset($dictionaryFields['bulk_changes_buttons']);
-    }
 
     return $dictionaryFields;
   }
@@ -231,30 +227,9 @@ class FieldOperations extends ControllerBase {
         $element['edit_buttons'][$key]['edit_button'] = FieldButtons::editButtons($key);
       }
     }
-    $element['bulk_changes_buttons'] = self::getBulkChangesButton($fields_being_modified, $current_fields, $op_index);
     $element['add_row_button'] = FieldButtons::addButton();
 
     return $element;
-  }
-
-  /**
-   * Get save all button.
-   */
-  public static function getBulkChangesButton($fields_being_modified, $current_fields, $op_index) {
-    $current_fields_count = is_array($current_fields) ? count($current_fields) : 0;
-    $op_count = is_array($op_index) ? count($op_index) : 0;
-    $action = $op_count > 0 ? $op_index[0] : NULL;
-    $check_modifying_fields = is_array($fields_being_modified) && count($fields_being_modified) > 0 ? TRUE : FALSE;
-    if ($op_count == 1 && $action == 'add') {
-      ++$current_fields_count;
-    }
-    if ($check_modifying_fields && count($fields_being_modified) > 1) {
-      return FieldButtons::bulkChangesButtons();
-    }
-    elseif ($current_fields_count > 1 && !$check_modifying_fields) {
-      return FieldButtons::bulkChangesButtons('edit_all');
-    }
-
   }
 
 }

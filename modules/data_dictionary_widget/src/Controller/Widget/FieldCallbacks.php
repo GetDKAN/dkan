@@ -105,48 +105,6 @@ class FieldCallbacks extends ControllerBase {
   }
 
   /**
-   * Submit callback for the bulk changes button.
-   */
-  public static function bulkChangeSubformCallback(array &$form, FormStateInterface $form_state) {
-    $trigger = $form_state->getTriggeringElement();
-    $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $op = $trigger['#op'];
-    $currently_modifying = $form_state->get('fields_being_modified') != NULL ? $form_state->get('fields_being_modified') : [];
-
-    if ($op == 'save_all' && count($currently_modifying) > 0) {
-      $update_values = $form_state->getUserInput();
-      $current_fields = self::saveAllCallback($currently_modifying, $current_fields, $update_values);
-      $form_state->set('fields_being_modified', []);
-    }
-
-    if ($op == 'edit_all' && count($currently_modifying) == 0) {
-      $form_state->set('fields_being_modified', $current_fields);
-    }
-
-    if ($op == 'cancel_all' && count($currently_modifying) > 0) {
-      $form_state->set('fields_being_modified', []);
-    }
-
-    $form_state->set('current_fields', $current_fields);
-    $form_state->setRebuild();
-  }
-
-  /**
-   * Submit callback for the save all button.
-   */
-  public static function saveAllCallback($currently_modifying, $current_fields, $update_values) {
-    $current_fields = [];
-    foreach ($currently_modifying as $key => $value) {
-      unset($currently_modifying[$key]);
-      unset($current_fields[$key]);
-      $current_fields[$key] = FieldValues::updateValues($key, $update_values);
-    }
-
-    ksort($current_fields);
-    return $current_fields;
-  }
-
-  /**
    * Ajax callback.
    */
   public static function subformAjax(array &$form, FormStateInterface $form_state) {
