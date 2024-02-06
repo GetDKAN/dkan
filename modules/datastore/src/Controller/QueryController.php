@@ -4,7 +4,7 @@ namespace Drupal\datastore\Controller;
 
 use Drupal\datastore\Service\DatastoreQuery;
 use RootedData\RootedJsonData;
-use Ilbee\CSVResponse\CSVResponse as CsvResponse;
+use Ilbee\CSVResponse\CSVResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -37,7 +37,7 @@ class QueryController extends AbstractQueryController {
   ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        $response = new CsvResponse($result->{"$.results"}, 'data', ',');
+        $response = new CSVResponse($result->{"$.results"}, 'data.csv', ',');
         return $this->addCacheHeaders($response);
 
       case 'json':

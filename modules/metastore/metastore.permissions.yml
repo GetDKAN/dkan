@@ -6,3 +6,7 @@
   description: 'Administer data dictionary settings'
 
 
+
+administer resource mapping:
+  title: 'Administer resource mapping settings'
+  restrict access: true
