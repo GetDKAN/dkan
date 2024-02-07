@@ -11,6 +11,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class HarvestHashesDatabaseTableFactory implements FactoryInterface {
 
   /**
+   * Entity type manager service.
+   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private EntityTypeManagerInterface $entityTypeManager;
@@ -27,6 +29,7 @@ class HarvestHashesDatabaseTableFactory implements FactoryInterface {
 
   /**
    * {@inheritDoc}
+   *
    * @param string $identifier
    *   The plan ID.
    * @param array $config

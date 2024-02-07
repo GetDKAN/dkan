@@ -33,6 +33,8 @@ class HarvestService implements ContainerInjectionInterface {
   private $storeFactory;
 
   /**
+   * Harvest hash database table factory service.
+   *
    * @var \Contracts\FactoryInterface
    */
   private HarvestHashesDatabaseTableFactory $hashesStoreFactory;

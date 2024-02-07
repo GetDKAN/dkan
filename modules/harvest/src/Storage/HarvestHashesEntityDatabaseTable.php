@@ -13,10 +13,21 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  */
 class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
 
+  /**
+   * {@inheritDoc}
+   */
   protected string $entityType = 'harvest_hash';
 
+  /**
+   * {@inheritDoc}
+   */
   protected string $dataFieldName = '';
 
+  /**
+   * The plan ID for this 'table'.
+   *
+   * @var string
+   */
   protected string $planId;
 
   /**
@@ -39,7 +50,7 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
   /**
    * {@inheritDoc}
    *
-   * @param $data
+   * @param string $data
    *   Data is assumed to be a JSON-encoded object with these properties:
    *   - harvest_plan_id (The harvest name.)
    *   - hash
@@ -152,10 +163,16 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function storeMultiple(array $data) {
     throw new \RuntimeException(__METHOD__);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function count() : int {
     throw new \RuntimeException(__METHOD__);
   }
