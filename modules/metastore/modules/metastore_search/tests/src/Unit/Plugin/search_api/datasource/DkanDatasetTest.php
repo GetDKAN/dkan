@@ -75,6 +75,7 @@ class DkanDatasetTest extends TestCase {
 
   /**
    * @covers ::loadMultiple
+   * @group group2
    */
   public function testLoadMultipleUnpublished() {
     // The retrieve() method will throw MissingObjectException, so we won't see
@@ -110,6 +111,7 @@ class DkanDatasetTest extends TestCase {
 
   /**
    * @covers ::getItemId
+   * @group group3
    */
   public function testGetItemId() {
     $dkan_dataset = $this->getMockBuilder(DkanDataset::class)

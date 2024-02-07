@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 class CommonCommandsTest extends TestCase {
 
   /**
-   *
+   *@group group1
    */
   public function testDatasetInfo() {
 

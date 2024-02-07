@@ -19,7 +19,7 @@ use Drupal\Core\DependencyInjection\Container;
 class DatasetTest extends TestCase {
 
   /**
-   *
+   *@group group1
    */
   public function test() {
     $schema = '
