@@ -38,17 +38,17 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface, \Js
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions($entity_type) {
-    // The UUID field uses the uuid_field type which ensures that a new UUID will automatically be generated when an entity is created.
+    // Dataset node UUID.
+    // @todo Add uuid constraint.
     $fields['dataset_uuid'] = BaseFieldDefinition::create('uuid')
-      ->setLabel(t('UUID'))
-      ->setDescription(t('The node UUID.'))
+      ->setLabel(t('Dataset UUID'))
+      ->setDescription(t('The dataset node UUID.'))
       ->setReadOnly(FALSE)
-        // Require the UUID to be set, because the node it references must already
-        // exist.
+      // Require the UUID to be set, because the node it references must already
+      // exist.
       ->setRequired(TRUE);
 
-    // The title is StringItem, the default value is an empty string and defines a property constraint for the
-    // value to be at most 255 characters long.
+    // Harvest plan id.
     $fields['harvest_plan_id'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Harvest Plan ID'))
       ->setDescription(t('The harvest plan ID.'))
@@ -59,8 +59,7 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface, \Js
         'max_length' => 255,
       ]);
 
-    // The title is StringItem, the default value is an empty string and defines a property constraint for the
-    // value to be at most 255 characters long.
+    // Hash for the harvest.
     $fields['hash'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Harvest hash'))
       ->setDescription(t('Harvest hash.'))
@@ -78,7 +77,7 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface, \Js
    * {@inheritDoc}
    *
    * @todo This is for backwards compatibility with DatabaseTableInterface.
-   *   Remote when we're no longer using that interface for harvest_hashes.
+   *   Remove when we're no longer using that interface for harvest_hashes.
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {

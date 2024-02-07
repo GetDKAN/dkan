@@ -8,6 +8,7 @@ use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfoList;
+use Drupal\datastore\Storage\TableSummary;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Reference\ReferenceLookup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -91,6 +92,7 @@ class ImportController implements ContainerInjectionInterface {
    */
   public function summary(string $identifier, Request $request) {
     try {
+      /** @var \Drupal\datastore\Storage\TableSummary $data */
       $data = $this->datastoreService->summary($identifier);
       $dependencies = $this->getDependencies($identifier);
       return $this->metastoreApiResponse->cachedJsonResponse($data, 200, $dependencies, $request->query);

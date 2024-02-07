@@ -9,10 +9,9 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
-use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
-use Harvest\Harvester as DkanHarvester;
+use Harvest\Harvester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -352,7 +351,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @return \Harvest\Harvester
    *   Harvester object.
    */
-  private function getHarvester(string $id) {
+  private function getHarvester(string $id): Harvester {
     $plan_store = $this->storeFactory->getInstance('harvest_plans');
     return $this->getDkanHarvesterInstance(
       json_decode($plan_store->retrieve($id)),
@@ -364,8 +363,8 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Protected.
    */
-  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
-    return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));
+  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store): Harvester {
+    return new Harvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 
 }

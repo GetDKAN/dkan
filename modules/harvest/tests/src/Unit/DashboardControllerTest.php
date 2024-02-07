@@ -11,6 +11,11 @@ use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group dkan
+ * @group harvest
+ * @group unit
+ */
 class DashboardControllerTest extends TestCase {
 
   public function testNoHarvests() {
@@ -55,7 +60,7 @@ class DashboardControllerTest extends TestCase {
     $controller = DashboardController::create($container);
     $response = $controller->harvests();
 
-    $json = json_encode((array)$response);
+    $json = json_encode((array) $response);
     $strings = array_merge(DashboardController::HARVEST_HEADERS, [
       'harvest_link',
       'SUCCESS',
@@ -79,15 +84,15 @@ class DashboardControllerTest extends TestCase {
       'status' => (object) [
         'extract' => 'SUCCESS',
         'load' => [
-          'dataset-1' => "NEW"
-        ]
-      ]
+          'dataset-1' => 'NEW',
+        ],
+      ],
     ];
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(HarvestService::class, 'getAllHarvestIds', ['test'])
-      ->add(HarvestService::class,'getHarvestRunInfo', json_encode($runInfo));
+      ->add(HarvestService::class, 'getHarvestRunInfo', json_encode($runInfo));
   }
 
 }

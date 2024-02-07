@@ -23,6 +23,11 @@ class HarvestServiceTest extends KernelTestBase {
     'node',
   ];
 
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('harvest_hash');
+  }
+
   public function testPlan() {
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
@@ -91,7 +96,6 @@ class HarvestServiceTest extends KernelTestBase {
     $harvest_service->revertHarvest('test_plan');
     foreach ([
       'harvest_test_plan_items',
-      'harvest_test_plan_hashes',
     ] as $storageId) {
       $this->assertTrue($schema->tableExists($storageId), $storageId . ' does not exist.');
     }
@@ -101,7 +105,6 @@ class HarvestServiceTest extends KernelTestBase {
     // as a side effect of calling retrieveAll() on it.
     $storageTables = [
       'harvest_test_plan_items',
-      'harvest_test_plan_hashes',
       'harvest_test_plan_runs',
     ];
     foreach ($storageTables as $storageId) {

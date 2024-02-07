@@ -23,6 +23,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  *
  * @todo Move all mountains necessary to remove this compatibility layer from
  *   DKAN, and just use Entity API for everything.
+ *
+ * @internal
  */
 abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
 
@@ -193,6 +195,9 @@ abstract class DrupalEntityDatabaseTableBase implements DatabaseTableInterface {
    *   The loaded entity or NULL if none could be loaded.
    */
   protected function loadEntity(string $id): ?EntityInterface {
+    if (!$id) {
+      return NULL;
+    }
     if ($ids = $this->entityStorage->getQuery()
       ->condition($this->primaryKey(), $id)
       ->range(0, 1)

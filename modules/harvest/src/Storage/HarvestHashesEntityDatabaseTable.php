@@ -6,7 +6,10 @@ use Drupal\common\Storage\DrupalEntityDatabaseTableBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
- * Shim implementation between DatabaseTableInterface and Drupal's Entity API.
+ * Shim between the harvest_hash entity type and DKAN db table interface.
+ *
+ * Some method implementations are stubbed out and throw a runtime exception,
+ * so that future callers can implement them if needed.
  */
 class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
 
@@ -41,21 +44,23 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
    *   - harvest_plan_id (The harvest name.)
    *   - hash
    * @param string|null $id
-   *   A node entity UUID identifier. Must not be NULL.
+   *   A node entity UUID identifier.
    *
    * @return string
    *   Identifier.
    */
   public function store($data, string $id = NULL) : string {
-    if (!$id) {
-      throw new \InvalidArgumentException('ID can not be NULL.');
-    }
     $decoded = json_decode($data, TRUE);
     // Coalesce to NULL because if these values are not present, there
     // should be an error when we write the entity.
     $harvest_plan_id = $decoded['harvest_plan_id'] ?? NULL;
     $hash = $decoded['hash'] ?? NULL;
 
+    // Does the JSON plan id match our table plan id?
+    if ($harvest_plan_id !== $this->planId) {
+      throw new \InvalidArgumentException('Encoded JSON plan identifier: ' . $harvest_plan_id . ' must match table plan identifier: ' . $this->planId);
+    }
+    // Try to load the entity.
     $entity = $this->loadEntity($id);
     if ($entity) {
       // Modify existing entity.
@@ -98,6 +103,39 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
   /**
    * {@inheritDoc}
    */
+  public function remove(string $id) {
+    if ($ids = $this->entityStorage->getQuery()
+      ->condition('harvest_plan_id', $this->planId)
+      ->condition('dataset_uuid', $id)
+      ->range(0, 1)
+      ->accessCheck(FALSE)
+      ->execute()
+    ) {
+      $entity_id = reset($ids);
+      $this->entityStorage->delete([$this->loadEntity($entity_id)]);
+    }
+    return $id;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function retrieveAll(): array {
+    // Some calling code is very particular about the output being an array,
+    // both as a return value here and after json_encode(). Since the entity
+    // query returns a keyed array, json_encode() will think it's an object. We
+    // don't want that, so we use array_values().
+    return array_values(
+      $this->entityStorage->getQuery()
+        ->condition('harvest_plan_id', $this->planId)
+        ->accessCheck(FALSE)
+        ->execute()
+    );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public function destruct() {
     // DKAN API wants us to destroy the table, but we can't/shouldn't do that
     // here. So instead, we will delete all entities for our plan ID.
@@ -112,6 +150,14 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
         $this->entityStorage->delete($this->entityStorage->loadMultiple($chunked_ids));
       }
     }
+  }
+
+  public function storeMultiple(array $data) {
+    throw new \RuntimeException(__METHOD__);
+  }
+
+  public function count() : int {
+    throw new \RuntimeException(__METHOD__);
   }
 
 }
