@@ -155,7 +155,7 @@ jobs:
                     ddev xdebug on
                     $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                     ddev dkan-phpunit \
-                      --group group1 --configuration ./phpunit.xml \
+                      --group group2 --configuration ./phpunit.xml \
                       --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                       --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                       --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -176,7 +176,7 @@ jobs:
                     ddev xdebug on
                     $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                     ddev dkan-phpunit \
-                      --group group2 --configuration ./phpunit.xml \
+                      --group group1 --configuration ./phpunit.xml \
                       --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                       --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                       --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
