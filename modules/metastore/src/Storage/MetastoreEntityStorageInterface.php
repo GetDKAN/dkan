@@ -3,6 +3,7 @@
 namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 
 /**
  * Storage interface specifically for using drupal entities.
@@ -12,10 +13,10 @@ interface MetastoreEntityStorageInterface extends MetastoreStorageInterface {
   /**
    * Get entity storage.
    *
-   * @return \Drupal\Core\Entity\EntityStorageInterface|mixed|object
+   * @return \Drupal\Core\Entity\RevisionableStorageInterface
    *   Entity storage.
    */
-  public function getEntityStorage();
+  public function getEntityStorage(): RevisionableStorageInterface;
 
   /**
    * Load a Data entity's published revision.
