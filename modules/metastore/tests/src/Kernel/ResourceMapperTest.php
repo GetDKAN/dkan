@@ -21,6 +21,11 @@ class ResourceMapperTest extends KernelTestBase {
     'metastore',
   ];
 
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('resource_mapping');
+  }
+
   /**
    * Test.
    */
