@@ -153,7 +153,8 @@ jobs:
                   if [ $CIRCLE_NODE_INDEX = 0 ]; then
                     ddev xdebug on
                     $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
-                    ddev exec ./vendor/bin/phpunit --group group1 \
+                    ddev dkan-phpunit \
+                      --group group1 --configuration ./phpunit.xml \
                       --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                       --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                       --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -173,7 +174,8 @@ jobs:
                   if [ $CIRCLE_NODE_INDEX = 1 ] || [ $CIRLE_NODE_TOTALS = 1 ]; then
                     ddev xdebug on
                     $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
-                    ddev exec ./vendor/bin/phpunit --group group2 \
+                    ddev dkan-phpunit \
+                      --group group2 --configuration ./phpunit.xml \
                       --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                       --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                       --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -193,7 +195,8 @@ jobs:
                   if [ $CIRCLE_NODE_INDEX = 2 ] || [ $CIRLE_NODE_TOTALS = 2 ]; then
                     ddev xdebug on
                     $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
-                    ddev exec ./vendor/bin/phpunit --group group3 \
+                    ddev dkan-phpunit \
+                      --group group3 --configuration ./phpunit.xml \
                       --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                       --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                       --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
