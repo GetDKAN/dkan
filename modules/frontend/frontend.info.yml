@@ -5,3 +5,5 @@ core_version_requirement: ^9.4 || ^10
 dependencies:
   - drupal:field
 package: DKAN
+lifecycle: deprecated
+lifecycle_link: https://github.com/GetDKAN/dkan/pull/3859
