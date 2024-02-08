@@ -8,7 +8,6 @@ use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfoList;
-use Drupal\datastore\Storage\TableSummary;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Reference\ReferenceLookup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
