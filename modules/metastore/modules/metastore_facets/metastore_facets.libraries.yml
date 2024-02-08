@@ -1,0 +1,5 @@
+search_facets:
+  version: 1.0
+  css:
+    theme:
+      css/metastore_facets.css: {}

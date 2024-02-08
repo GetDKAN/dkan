@@ -1,0 +1,37 @@
+.dkan-dataset-search .views-row {
+  border-top: 1px solid #cccccc;
+  padding: 8px 0;
+}
+.dkan-dataset-search .views-field-modified {
+  text-align: right;
+}
+.dkan-dataset-search ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.dkan-dataset-search .views-field-theme li {
+  display: inline;
+  font-style: italic;
+  font-weight: bold;
+}
+.dkan-dataset-search .views-field-theme li + li:before {
+  content: ", ";
+}
+.dkan-dataset-search .views-field-keyword li {
+  display: inline-block;
+  text-align: center;
+  padding: 4px 16px;
+  text-decoration: none;
+  background: #eeeeee;
+  margin: 8px 8px 8px 0;
+}
+.facets-widget-checkbox ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.facets-widget-checkbox li {
+  margin: 8px 0;
+}
