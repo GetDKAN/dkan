@@ -4,24 +4,30 @@ namespace Drupal\Tests\metastore\Unit\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+
+use Drupal\common\DataResource;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
+use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
+
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -374,7 +380,7 @@ class ReferencerTest extends TestCase {
 
     // Initialize mock referencer service.
     $entity = (new Chain($this))
-      ->add(RevisionableStorageInterface::class, 'loadByProperties', [$node])
+      ->add(EntityStorageInterface::class, 'loadByProperties', [$node])
       ->getMock();
     $configService = (new Chain($this))
       ->add(ConfigFactoryInterface::class, 'get', new class { public function get() { return ReferencerTest::REFERENCEABLE_PROPERTY_LIST; } })

@@ -8,7 +8,6 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
@@ -40,9 +39,9 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * Entity storage service.
    *
-   * @var \Drupal\Core\Entity\RevisionableStorageInterface
+   * @var \Drupal\Core\Entity\EntityStorageInterface|mixed|object
    */
-  protected RevisionableStorageInterface $entityStorage;
+  protected $entityStorage;
 
   /**
    * Entity label key.
@@ -106,7 +105,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function getEntityStorage(): RevisionableStorageInterface {
+  public function getEntityStorage() {
     return $this->entityStorage;
   }
 

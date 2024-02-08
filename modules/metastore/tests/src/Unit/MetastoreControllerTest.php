@@ -18,7 +18,7 @@ use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\Core\Entity\RevisionableStorageInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 
@@ -119,8 +119,8 @@ class MetastoreControllerTest extends TestCase {
     $this->assertEquals($json, $response->getContent());
 
     $entityTypeManagerMock = (new Chain($this))
-      ->add(EntityTypeManagerInterface::class, 'getStorage', RevisionableStorageInterface::class)
-      ->add(RevisionableStorageInterface::class, 'getQuery', QueryInterface::class)
+      ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', NULL)

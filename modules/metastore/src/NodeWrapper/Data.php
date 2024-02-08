@@ -6,7 +6,6 @@ use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
@@ -35,14 +34,14 @@ class Data implements MetastoreItemInterface {
    *
    * @var Drupal\Core\Entity\EntityTypeManager
    */
-  private EntityTypeManager $entityTypeManager;
+  private $entityTypeManager;
 
   /**
    * Entity Node Storage.
    *
-   * @var \Drupal\Core\Entity\RevisionableStorageInterface
+   * @var Drupal\Core\Entity\EntityStorageInterface
    */
-  private RevisionableStorageInterface $nodeStorage;
+  private $nodeStorage;
 
   /**
    * Constructor.
@@ -287,11 +286,9 @@ class Data implements MetastoreItemInterface {
    * @see https://www.drupal.org/project/drupal/issues/3346430
    */
   public function getOriginal() {
-    $original = NULL;
     if (isset($this->node->original)) {
-      $original = new self($this->node->original, $this->entityTypeManager);
+      return new Data($this->node->original);
     }
-    return $original;
   }
 
 }
