@@ -13,6 +13,7 @@ use MockChain\Options;
 
 /**
  * Test class for StringHelper.
+ * @group unit
  */
 class StringHelperTest extends TestCase {
 

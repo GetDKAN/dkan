@@ -13,6 +13,7 @@ use Drupal\common\Storage\Query;
  *
  * @see Drupal\Tests\common\Storage\SelectFactoryTest
  * @see Drupal\Tests\datastore\Service\QueryTest
+ * @group unit
  */
 class QueryDataProvider {
 

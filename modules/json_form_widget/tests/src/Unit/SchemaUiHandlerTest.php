@@ -21,6 +21,7 @@ use MockChain\Options;
 
 /**
  * Test class for SchemaUiHandlerTest.
+ * @group unit
  */
 class SchemaUiHandlerTest extends TestCase {
 

@@ -4,6 +4,9 @@ namespace Drupal\Tests\common\Functional;
 
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
+/**
+ * @group functional
+ */
 class DkanStreamWrapperTest extends ExistingSiteBase {
   public function testPublicScheme() {
     $uri = 'dkan://metastore';

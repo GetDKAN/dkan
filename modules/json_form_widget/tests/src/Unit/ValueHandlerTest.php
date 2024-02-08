@@ -13,6 +13,7 @@ use MockChain\Options;
 
 /**
  * Test class for ValueHandlerTest.
+ * @group unit
  */
 class ValueHandlerTest extends TestCase {
 

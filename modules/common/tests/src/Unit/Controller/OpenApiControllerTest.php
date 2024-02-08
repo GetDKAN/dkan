@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Test the DKAN Docs controller.
+ * @group unit
  */
 class OpenApiControllerTest extends TestCase {
 

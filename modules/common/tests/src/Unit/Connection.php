@@ -6,6 +6,7 @@ use Drupal\Core\Database\Connection as CoreConnection;
 
 /**
  * A fake Connection class for testing purposes.
+ * @group unit
  */
 class Connection extends CoreConnection {
 

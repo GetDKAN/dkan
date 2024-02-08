@@ -25,7 +25,7 @@ use Drupal\common\Storage\JobStore;
 use Drupal\metastore\MetastoreItemInterface;
 
 /**
- *
+ *@group unit
  */
 class DatastoreSubscriberTest extends TestCase {
 

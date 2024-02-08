@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Drupal\common\Resource.
- *
+ *@group unit
  * @coversDefaultClass \Drupal\common\DataResource
  */
 class DataResourceTest extends TestCase {

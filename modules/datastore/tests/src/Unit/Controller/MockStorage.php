@@ -7,6 +7,7 @@ use Drupal\metastore\Storage\Data;
 
 /**
  * Mock metastore controller for certain datastore tests.
+ * @group unit
  */
 class MockStorage extends Data {
 

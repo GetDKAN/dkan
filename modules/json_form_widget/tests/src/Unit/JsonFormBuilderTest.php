@@ -22,6 +22,7 @@ use stdClass;
 
 /**
  * Test class for JsonFormWidget.
+ * @group unit
  */
 class JsonFormBuilderTest extends TestCase {
 

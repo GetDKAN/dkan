@@ -53,7 +53,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test the resource purger when the default moderation state is 'draft'.
-   * @group group1
    */
   public function testResourcePurgeDraft() {
     $id_1 = uniqid(__FUNCTION__ . '1');
@@ -105,7 +104,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test the resource purger when the default moderation state is 'published'.
-   * @group group2
    */
   public function testResourcePurgePublished() {
     $id_1 = uniqid(__FUNCTION__ . '1');
@@ -121,7 +119,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test that the downloadURL is different when using local url perspective.
-   * @group group3
    */
   public function testChangingDatasetResourcePerspectiveOnOutput() {
     $this->datastoreImportAndQuery();
@@ -145,7 +142,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test archiving of datasets after a harvest.
-   * @group group1
    */
   public function testHarvestArchive() {
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
@@ -204,7 +200,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution url update and default source resource perspective.
-   * @group group3
    */
   public function testDraftWorkflowDistributionUrlSourcePerspective() {
     // Set resource perspective to source.
@@ -217,7 +212,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution url update and local_url source resource perspective.
-   * @group group1
    */
   public function testDraftWorkflowDistributionUrlLocalPerspective() {
     // Set resource perspective to source.
@@ -230,7 +224,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with modified trigger and default source resource perspective.
-   * @group group2
    */
   public function testDraftWorkflowModifiedTriggerSourcePerspective() {
     // Set resource perspective to source.
@@ -243,7 +236,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with modified trigger and local_url resource perspective.
-   * @group group3
    */
   public function testDraftWorkflowModifiedTriggerLocalPerspective() {
     // Set resource perspective to local_url.
@@ -268,8 +260,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Test draft moderation workflow with distribution title update and local_url resource perspective.
-   * @group group2
+   * Test draft moderation workflow with distribution title update and local_url resource perspective
    */
   public function testDraftWorkflowUpdateDistributionTitleLocalPerspective() {
     // Set resource perspective to local_url.
@@ -283,7 +274,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test cleanup of orphaned draft distributions.
-   * @group group3
    */
   public function testOrphanDraftDistributionCleanup() {
     // Set delete local resource files = false and modified as a triggering property.
@@ -341,7 +331,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test resource removal on distribution deleting.
-   * @group group1
    */
   public function testDeleteDistribution() {
     $id_1 = uniqid(__FUNCTION__ . '1');
@@ -369,7 +358,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test local resource removal on datastore import.
-   * @group group2
    */
   public function testDatastoreImportDeleteLocalResource() {
     $id_1 = uniqid(__FUNCTION__ . '1');
@@ -413,7 +401,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test sanitization of dataset properties.
-   * @group group3
    */
   public function testSanitizeDatasetProperties() {
     // Set HTML allowed on dataset description.
@@ -439,9 +426,6 @@ class DatasetBTBTest extends BrowserTestBase {
     );
   }
 
-  /**
-   * @group group1
-   */
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);
@@ -466,9 +450,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $retrievedDataset;
   }
 
-  /**
-   * @group group2
-   */
   private function datastoreImportAndQuery() {
     $dataset = $this->datasetPostAndRetrieve();
     $resource = $this->getResourceFromDataset($dataset);
@@ -479,16 +460,10 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->queryResource($resource, $queryString);
   }
 
-  /**
-   * @group group3
-   */
   private function getResourceDatastoreTable(object $resource) {
     return $resource->identifier . '__' . $resource->version;
   }
 
-  /**
-   * @group group1
-   */
   private function getResourceFromDataset(object $dataset) {
     $this->assertTrue(isset($dataset->{'%Ref:distribution'}));
     $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]));
@@ -500,9 +475,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $dataset->{'%Ref:distribution'}[0]->data->{'%Ref:downloadURL'}[0]->data;
   }
 
-  /**
-   * @group group2
-   */
   private function getDownloadUrl(string $filename) {
     return self::S3_PREFIX . '/' . $filename;
   }
@@ -519,7 +491,6 @@ class DatasetBTBTest extends BrowserTestBase {
    *
    * @return \RootedData\RootedJsonData
    *   Json encoded string of this dataset's metadata, or FALSE if error.
-   * @group group3
    */
   private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
     /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
@@ -562,7 +533,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Generate a harvest plan object.
-   * @group group1
    */
   private function getPlan(string $identifier, string $testFilename) : \stdClass {
     return (object) [
@@ -580,7 +550,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Get a dataset's moderation state.
-   * @group group2
    */
   private function getModerationState(string $uuid) : string {
     $nodeStorage = $this->getNodeStorage();
@@ -593,7 +562,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Store or update a dataset,run datastore_import and resource_purger queues.
-   * @group group3
    */
   private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
     $datasetRootedJsonData = $this->getData($identifier, $title, $filenames);
@@ -605,7 +573,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Process queues in a predictable order.
-   * @group group1
    */
   private function runQueues(array $relevantQueues = []) {
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
@@ -620,9 +587,6 @@ class DatasetBTBTest extends BrowserTestBase {
     }
   }
 
-  /**
-   * @group group2
-   */
   private function countTables() {
     /** @var \Drupal\Core\Database\Connection $db */
     $db = $this->container->get('database');
@@ -631,9 +595,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return count($tables);
   }
 
-  /**
-   * @group group3
-   */
   private function checkFiles() {
     /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
     $fileSystem = $this->container->get('file_system');
@@ -651,9 +612,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $filenames;
   }
 
-  /**
-   * @group group1
-   */
   private function queryResource(object $resource, string $queryString) {
     /** @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
@@ -661,9 +619,6 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertGreaterThan(0, count($results));
   }
 
-  /**
-   * @group group2
-   */
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
 
     if ($method == 'post') {
@@ -679,30 +634,20 @@ class DatasetBTBTest extends BrowserTestBase {
     return $identifier;
   }
 
-  /**
-   * @group group3
-   */
   private function getQueueService() : QueueFactory {
     return $this->container->get('queue');
   }
 
-  /**
-   * @group group1
-   */
   private function getHarvester() : HarvestService {
     return $this->container->get('dkan.harvest.service');
   }
 
-  /**
-   * @group group2
-   */
   private function getNodeStorage(): NodeStorage {
     return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
   /**
    * @return \Drupal\metastore\MetastoreService
-   * @group group3
    */
   private function getMetastore(): MetastoreService {
     return $this->container->get('dkan.metastore.service');
@@ -710,7 +655,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Create a draft dataset and publish it.
-   * @group group1
    */
   private function createInitialDraftDatasetAndPublish(string $identifier): void {
     // Set delete local resource files = false and modified as a triggering property.
@@ -743,7 +687,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Confirm a new datastore import took place after an update to an existing dataset (draft workflow).
-   * @group group2
    */
   private function confirmNewDatastoreImportDraftWorkflow(string $identifier): void {
     // Simulate all possible queues post update.
@@ -823,7 +766,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Run a typical draft workflow using modified trigger.
-   * @group group3
    */
   private function runDraftWorkflowModifiedTrigger(): void {
     // Post dataset 1 and run the 'datastore_import' queue.
@@ -841,7 +783,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Run a typical draft workflow with distribution title update.
-   * @group group1
    */
   private function runDraftWorkflowUpdateDistributionTitle(): void {
     // Post dataset 1 and run the 'datastore_import' queue.
@@ -867,7 +808,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Separate distribution title update to allow for multiple runs.
-   * @group group2
    */
   private function runDistributionTitleUpdate(string $identifier, \stdClass $distribution, bool $skip_cron = FALSE) {
     // Create a new draft with the new distribution title.
@@ -952,7 +892,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Run a typical draft workflow with distribution url update.
-   * @group group3
    */
   private function runDraftWorkflowUpdateDistributionUrl(): void {
     // Post dataset 1 and run the 'datastore_import' queue.

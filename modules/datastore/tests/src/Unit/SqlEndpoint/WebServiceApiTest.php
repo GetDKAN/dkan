@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * @coversDefaultClass \Drupal\datastore\WebServiceApi
  * @group dkan
+ * @group unit
  */
 class WebServiceApiTest extends TestCase {
   use TestHelperTrait;

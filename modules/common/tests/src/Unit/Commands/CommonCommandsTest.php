@@ -8,13 +8,11 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ *group unit
  */
 class CommonCommandsTest extends TestCase {
 
-  /**
-   *@group group1
-   */
+  
   public function testDatasetInfo() {
 
     $datasetInfo = (new Chain($this))

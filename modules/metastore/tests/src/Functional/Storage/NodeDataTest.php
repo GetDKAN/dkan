@@ -15,6 +15,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
+ * @group functional
  */
 class NodeDataTest extends ExistingSiteBase {
   use CleanUp;

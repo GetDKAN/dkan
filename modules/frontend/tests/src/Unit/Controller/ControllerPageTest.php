@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @coversDefaultClass Drupal\frontend\Controller\Page
+ * @group unit
  */
 class ControllerPageTest extends TestCase {
 

@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
  * Tests the PostImport service.
  *
  * @group datastore
+ * @group unit
  */
 class PostImportTest extends TestCase {
 

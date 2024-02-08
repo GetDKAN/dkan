@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Drupal\Tests\common\Unit\Connection;
 
 /**
- *
+ *@group unit
  */
 class SelectFactoryTest extends TestCase {
   private $query;

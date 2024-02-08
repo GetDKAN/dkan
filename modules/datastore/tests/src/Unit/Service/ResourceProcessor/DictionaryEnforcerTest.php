@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;
 
 /**
+ * @group unit
  * Test \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer.
  */
 class DictionaryEnforcerTest extends TestCase {

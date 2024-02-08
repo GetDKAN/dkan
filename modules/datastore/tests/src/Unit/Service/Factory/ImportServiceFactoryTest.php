@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @group dkan
  * @group datastore
+ * @group unit
  */
 class ImportServiceFactoryTest extends TestCase {
 

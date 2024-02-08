@@ -9,6 +9,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * Run tests in separate processes, since they rely on the value of
  *   drupal_static().
  * @runTestsInSeparateProcesses
+ * @group functional
  */
 class OnPreReferenceTest extends ExistingSiteBase {
   use CleanUp;

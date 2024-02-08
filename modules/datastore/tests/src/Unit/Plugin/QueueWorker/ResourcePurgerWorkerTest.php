@@ -9,6 +9,9 @@ use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group unit
+ */
 class ResourcePurgerWorkerTest extends TestCase {
 
   public function test() {

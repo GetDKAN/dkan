@@ -4,6 +4,8 @@ namespace Drupal\Tests\dkan_js_frontend\Unit;
 
 /**
  * Settings service mock interface.
+ * @group unit
+ * @group functional
  */
 interface SimpleSitemapSettingsInterface {
 

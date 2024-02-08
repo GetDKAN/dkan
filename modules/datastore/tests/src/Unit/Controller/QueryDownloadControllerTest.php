@@ -30,6 +30,7 @@ use Drupal\Tests\common\Unit\Connection;
 /**
  * @group dkan
  * @group datastore
+ * @group unit
  */
 class QueryDownloadControllerTest extends TestCase {
 

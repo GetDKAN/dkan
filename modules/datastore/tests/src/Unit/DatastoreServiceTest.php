@@ -28,6 +28,7 @@ use Symfony\Component\DependencyInjection\Container;
 /**
  * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
+ * @group unit
  */
 class DatastoreServiceTest extends TestCase {
 

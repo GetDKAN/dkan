@@ -25,6 +25,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package Drupal\Tests\metastore_search\Unit
  * @group metastore_search
+ * @group unit
  */
 class SearchTest extends TestCase {
   use ServiceCheckTrait;

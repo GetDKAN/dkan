@@ -19,6 +19,7 @@ use MockChain\Options;
 
 /**
  * Test class for ArrayHelper.
+ * @group unit
  */
 class ArrayHelperTest extends TestCase {
 

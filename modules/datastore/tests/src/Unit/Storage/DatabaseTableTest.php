@@ -16,7 +16,7 @@ use Drupal\datastore\Storage\DatabaseTable;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ *@group unit
  */
 class DatabaseTableTest extends TestCase {
 

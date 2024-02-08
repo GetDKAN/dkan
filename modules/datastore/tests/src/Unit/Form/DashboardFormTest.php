@@ -30,6 +30,7 @@ class DashboardFormTest extends TestCase {
    * The ValidMetadataFactory class used for testing.
    *
    * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @group unit
    */
   protected $validMetadataFactory;
 

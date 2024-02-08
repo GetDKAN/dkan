@@ -7,6 +7,7 @@ use Drupal\common\Storage\Query;
 
 /**
  * @todo Modify the storage class in Contracts to allow the necessary changes.
+ * @group unit
  */
 class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
 {

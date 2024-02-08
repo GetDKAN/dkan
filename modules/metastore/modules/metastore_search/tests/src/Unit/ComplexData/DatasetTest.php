@@ -15,12 +15,10 @@ use Drupal\Core\DependencyInjection\Container;
  *
  * @package Drupal\Tests\metastore_search\Unit\ComplexData
  * @group metastore_search
+ * @group unit
  */
 class DatasetTest extends TestCase {
 
-  /**
-   *@group group1
-   */
   public function test() {
     $schema = '
     {

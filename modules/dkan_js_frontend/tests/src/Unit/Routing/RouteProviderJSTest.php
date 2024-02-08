@@ -12,7 +12,8 @@ use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\Query\QueryInterface;
 
 /**
- *
+ * @group unit
+ * @group functional
  */
 class RouteProviderJSTest extends TestCase {
   /**

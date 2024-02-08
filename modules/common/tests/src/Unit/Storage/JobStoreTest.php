@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Drupal\common\Storage\JobStore
  * @coversDefaultClass \Drupal\common\Storage\JobStore
  * @group common
+ * @group unit
  */
 class JobStoreTest extends TestCase {
 

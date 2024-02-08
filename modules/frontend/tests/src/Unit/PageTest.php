@@ -9,7 +9,7 @@ use MockChain\Chain;
 use MockChain\Options;
 
 /**
- *
+ * @group unit
  */
 class PageTest extends TestCase {
   private $node;

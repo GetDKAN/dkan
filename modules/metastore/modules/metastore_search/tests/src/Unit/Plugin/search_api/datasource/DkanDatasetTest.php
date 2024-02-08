@@ -28,6 +28,7 @@ use Drupal\metastore_search\ComplexData\Dataset;
  * @package Drupal\Tests\metastore_search\Unit\Plugin\search_api\datasource
  * @group metastore_search
  * @group dkan-core
+ * @group unit
  */
 class DkanDatasetTest extends TestCase {
 
@@ -75,7 +76,6 @@ class DkanDatasetTest extends TestCase {
 
   /**
    * @covers ::loadMultiple
-   * @group group2
    */
   public function testLoadMultipleUnpublished() {
     // The retrieve() method will throw MissingObjectException, so we won't see
@@ -111,7 +111,6 @@ class DkanDatasetTest extends TestCase {
 
   /**
    * @covers ::getItemId
-   * @group group3
    */
   public function testGetItemId() {
     $dkan_dataset = $this->getMockBuilder(DkanDataset::class)

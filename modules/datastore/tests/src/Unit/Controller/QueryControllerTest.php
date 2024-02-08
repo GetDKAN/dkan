@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- *
+ *@group unit
  */
 class QueryControllerTest extends TestCase {
 

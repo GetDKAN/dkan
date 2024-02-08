@@ -13,6 +13,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\metastore_search\Functional
  * @group metastore_search
+ * @group functional
  */
 class SearchTest extends ExistingSiteBase {
 
