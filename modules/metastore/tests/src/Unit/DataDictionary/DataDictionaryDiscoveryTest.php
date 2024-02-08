@@ -6,9 +6,9 @@ use DomainException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery as Discovery;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\ReferenceLookup;
-use Drupal\metastore\MetastoreService as Service;
 use MockChain\Chain;
 use MockChain\Options;
 use OutOfRangeException;
@@ -135,7 +135,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
       ->add('444', new RootedJsonData($json4, "{}"))
       ->index(1);
     return (new Chain($this))
-      ->add(Service::class, 'get', $sequence)
+      ->add(MetastoreService::class, 'get', $sequence)
       ->getMock();
   }
 
