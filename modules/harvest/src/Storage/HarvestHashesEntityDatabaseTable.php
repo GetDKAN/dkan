@@ -10,6 +10,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  *
  * Some method implementations are stubbed out and throw a runtime exception,
  * so that future callers can implement them if needed.
+ *
+ * @see \Drupal\harvest\Entity\HarvestHash
  */
 class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
 
