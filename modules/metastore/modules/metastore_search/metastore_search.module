@@ -73,3 +73,63 @@ function metastore_search_entity_delete(EntityInterface $entity): void {
   $index = $storage->load('dkan');
   $index->trackItemsDeleted('dkan_dataset', [$entity->uuid()]);
 }
+
+/**
+ * Implements hook_entity_extra_field_info().
+ *
+ * Expose Dataset properties as pseudo fields
+ */
+function metastore_search_entity_extra_field_info()
+{
+  $extra = [];
+
+  $dataset = new \Drupal\metastore_search\ComplexData\Dataset('');
+  foreach ($dataset->getProperties() as $property_key => $property) {
+    if ($property instanceof \Drupal\Core\TypedData\TypedData) {
+      $extra['node']['data']['display']['dataset_' . $property_key] = [
+        'label' => t('Dataset property: @property', ['@property' => $property->getName()]),
+        'weight' => 0,
+        'visible' => FALSE
+      ];
+    }
+  }
+
+  return $extra;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ *
+ * output exposed dataset properties
+ */
+function metastore_search_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode)
+{
+  if ($entity instanceof \Drupal\node\Entity\Node && $entity->bundle() === 'data'
+    && $entity->hasField('field_data_type')
+    && !$entity->get('field_data_type')->isEmpty()
+    && $entity->get('field_data_type')->value === 'dataset'
+  ) {
+    $dataset = new \Drupal\metastore_search\ComplexData\Dataset($entity->get('field_json_metadata')->value);
+    foreach ($dataset->getProperties() as $property_key => $property) {
+      if ($property instanceof \Drupal\Core\TypedData\TypedData) {
+        if ($display->getComponent('dataset_' . $property_key)) {
+          if ($property instanceof \Drupal\Core\TypedData\Plugin\DataType\ItemList) {
+            foreach ($property->getValue() as $value) {
+              $build['dataset_' . $property_key][] = [
+                '#markup' => $value
+              ];
+            }
+          }
+          else {
+            if (is_string($property->getValue())) {
+              $build['dataset_' . $property_key] = [
+                '#markup' => $property->getValue()
+              ];
+            }
+          }
+        }
+
+      }
+    }
+  }
+}
