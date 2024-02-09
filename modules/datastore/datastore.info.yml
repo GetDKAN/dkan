@@ -1,8 +1,8 @@
 name: Datastore
 description: Provides integration with the datastore library.
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.5 || ^10
 package: DKAN
 dependencies:
-  - common
-  - metastore
+  - dkan:common
+  - dkan:metastore
