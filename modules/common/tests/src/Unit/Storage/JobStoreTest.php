@@ -52,6 +52,7 @@ class JobStoreTest extends TestCase {
       (object) ['Field' => "job_data"],
     ];
 
+    // Substitute StatementWrapper as necessary for Drupal 10.0.x BC.
     $statement_wrapper_class = class_exists(StatementWrapperIterator::class)
       ? StatementWrapperIterator::class : StatementWrapper::class;
 
@@ -88,6 +89,7 @@ class JobStoreTest extends TestCase {
       ->add($fieldInfo)
       ->add([$job]);
 
+    // Substitute StatementWrapper as necessary for Drupal 10.0.x BC.
     $statement_wrapper_class = class_exists(StatementWrapperIterator::class)
       ? StatementWrapperIterator::class : StatementWrapper::class;
 
@@ -121,6 +123,7 @@ class JobStoreTest extends TestCase {
       (object) ['Field' => "job_data"],
     ];
 
+    // Substitute StatementWrapper as necessary for Drupal 10.0.x BC.
     $statement_wrapper_class = class_exists(StatementWrapperIterator::class)
       ? StatementWrapperIterator::class : StatementWrapper::class;
 
@@ -154,6 +157,7 @@ class JobStoreTest extends TestCase {
       (object) ['Field' => "job_data"],
     ];
 
+    // Substitute StatementWrapper as necessary for Drupal 10.0.x BC.
     $statement_wrapper_class = class_exists(StatementWrapperIterator::class)
       ? StatementWrapperIterator::class : StatementWrapper::class;
 
