@@ -117,7 +117,7 @@ commands:
 jobs:
   phpunit:
     executor: docker/machine
-    parallelism: 4
+    parallelism: 2
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
@@ -155,7 +155,7 @@ jobs:
                     ddev xdebug on
                     $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                     ddev dkan-phpunit \
-                      --group unit --configuration ./phpunit.xml \
+                      --group functional --configuration ./phpunit.xml \
                       --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                       --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                       --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -176,7 +176,7 @@ jobs:
                     ddev xdebug on
                     $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                     ddev dkan-phpunit \
-                      --group functional --configuration ./phpunit.xml \
+                      --group unit --configuration ./phpunit.xml \
                       --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                       --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                       --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
