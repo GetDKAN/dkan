@@ -18,7 +18,7 @@ use RootedData\RootedJsonData;
  * Dataset tests.
  *
  * @group dkan
- * @group functional
+ * @group functional_3
  */
 class DatasetBTBTest extends BrowserTestBase {
 

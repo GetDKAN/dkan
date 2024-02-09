@@ -26,7 +26,7 @@ require_once $module_path . '/dkan_js_frontend.module';
 /**
  * Test dkan_js_frontend_simple_sitemap_arbitrary_links_alter() function.
  * @group unit
- * @group functional
+ * @group functional_3
  */
 class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
 

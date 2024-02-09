@@ -18,7 +18,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
- * @group functional
+ * @group functional_3
  */
 class HideCurrentRevisionActionTest extends ExistingSiteBase {
   use CleanUp;

@@ -20,7 +20,7 @@ use Procrastinator\Result;
  *
  * @group datastore
  * @group btb
- * @group functional
+ * @group functional_2
  */
 class DatastoreServiceTest extends BrowserTestBase {
 

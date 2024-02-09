@@ -9,7 +9,7 @@ use GuzzleHttp\RequestOptions;
 use function PHPUnit\Framework\assertEquals;
 
 /**
- * @group functional
+ * @group functional_3
  */
 class DistributionHandlingTest extends Api1TestBase {
 

@@ -10,7 +10,7 @@ use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 
 /**
- * @group functional
+ * @group functional_1
  */
 abstract class Api1TestBase extends BrowserTestBase {
   use UserCreationTrait;

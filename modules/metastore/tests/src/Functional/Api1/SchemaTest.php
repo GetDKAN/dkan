@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Functional\Api1;
 use Drupal\Tests\common\Functional\Api1TestBase;
 
 /**
- * @group functional
+ * @group functional_1
  */
 class SchemaTest extends Api1TestBase {
 

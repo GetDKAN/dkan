@@ -13,7 +13,7 @@ use Drupal\Core\Entity\Query\QueryInterface;
 
 /**
  * @group unit
- * @group functional
+ * @group functional_2
  */
 class RouteProviderJSTest extends TestCase {
   /**
