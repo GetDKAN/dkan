@@ -83,7 +83,7 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
     else {
       // Create a new entity.
       $entity = $this->entityStorage->create([
-        'dataset_uuid' => $id,
+        'data_uuid' => $id,
         'harvest_plan_id' => $harvest_plan_id,
         'hash' => $hash,
       ]);
@@ -104,7 +104,7 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
   public function retrieve(string $id) {
     if ($ids = $this->entityStorage->getQuery()
       ->condition('harvest_plan_id', $this->planId)
-      ->condition('dataset_uuid', $id)
+      ->condition('data_uuid', $id)
       ->range(0, 1)
       ->accessCheck(FALSE)
       ->execute()
@@ -119,7 +119,7 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
   public function remove(string $id) {
     if ($ids = $this->entityStorage->getQuery()
       ->condition('harvest_plan_id', $this->planId)
-      ->condition('dataset_uuid', $id)
+      ->condition('data_uuid', $id)
       ->range(0, 1)
       ->accessCheck(FALSE)
       ->execute()

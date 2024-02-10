@@ -91,15 +91,12 @@ class HarvestServiceTest extends KernelTestBase {
     /** @var \Drupal\Core\Database\Schema $schema */
     $schema = $this->container->get('database')->schema();
 
-    // Reverting the harvest should leave behind the items and hashes tables,
-    // but remove the runs table.
+    // Reverting the harvest should leave behind the items table, but remove
+    // the runs table. Harvest_hash table is managed as an entity and will
+    // always remain.
     $harvest_service->revertHarvest('test_plan');
-    foreach ([
-      'harvest_test_plan_items',
-    ] as $storageId) {
-      $this->assertTrue($schema->tableExists($storageId), $storageId . ' does not exist.');
-    }
-    $this->assertFalse($schema->tableExists('harvest_test_plan_runs', 'harvest_test_plan_runs exists.'));
+    $this->assertTrue($schema->tableExists('harvest_test_plan_items'), 'harvest_test_plan_items does not exist.');
+    $this->assertFalse($schema->tableExists('harvest_test_plan_runs'), 'harvest_test_plan_runs exists.');
 
     // All these tables should be empty. The runs table will be re-created
     // as a side effect of calling retrieveAll() on it.
