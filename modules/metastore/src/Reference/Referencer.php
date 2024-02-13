@@ -59,10 +59,10 @@ class Referencer {
   protected $mimeTypeGuesser;
 
   /**
-   * Constructor
+   * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
-   *   Drupal config factory service
+   *   Drupal config factory service.
    * @param \Contracts\FactoryInterface $storageFactory
    *   DKAN contracts factory.
    * @param \Drupal\metastore\Reference\MetastoreUrlGenerator $metastoreUrlGenerator
@@ -333,7 +333,7 @@ class Referencer {
    *   The detected mime type or NULL on failure.
    */
   private function getLocalMimeType(string $downloadUrl): ?string {
-    // Use Drupal's mime type guesser service to get the mime type
+    // Use Drupal's mime type guesser service to get the mime type.
     $mime_type = $this->mimeTypeGuesser->guessMimeType($downloadUrl);
 
     // If we couldn't find a mime type, log an error notifying the user.
