@@ -14,6 +14,7 @@ use Drupal\metastore\ResourceMapper;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
  * Metastore referencer service.
@@ -51,19 +52,39 @@ class Referencer {
   private Client $httpClient;
 
   /**
-   * Constructor.
+   * The MIME type guesser.
+   *
+   * @var \Symfony\Component\Mime\MimeTypeGuesserInterface
+   */
+  protected $mimeTypeGuesser;
+
+  /**
+   * Constructor
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
+   *   Drupal config factory service
+   * @param \Contracts\FactoryInterface $storageFactory
+   *   DKAN contracts factory.
+   * @param \Drupal\metastore\Reference\MetastoreUrlGenerator $metastoreUrlGenerator
+   *   DKAN metastore url generator.
+   * @param \GuzzleHttp\Client $httpClient
+   *   Guzzle http client.
+   * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mimeTypeGuesser
+   *   The MIME type guesser.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
     FactoryInterface $storageFactory,
     MetastoreUrlGenerator $metastoreUrlGenerator,
-    Client $httpClient
+    Client $httpClient,
+    MimeTypeGuesserInterface $mimeTypeGuesser
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
     $this->metastoreUrlGenerator = $metastoreUrlGenerator;
     $this->httpClient = $httpClient;
+    $this->mimeTypeGuesser = $mimeTypeGuesser;
   }
 
   /**
@@ -312,27 +333,13 @@ class Referencer {
    *   The detected mime type or NULL on failure.
    */
   private function getLocalMimeType(string $downloadUrl): ?string {
-    $mime_type = NULL;
+    // Use Drupal's mime type guesser service to get the mime type
+    $mime_type = $this->mimeTypeGuesser->guessMimeType($downloadUrl);
 
-    // Retrieve and decode the file name from the supplied download URL's path.
-    $filename = \Drupal::service('file_system')->basename($downloadUrl);
-    $filename = urldecode($filename);
-
-    // Attempt to load the file by file name.
-    /** @var \Drupal\file\FileInterface[] $files */
-    $files = \Drupal::entityTypeManager()
-      ->getStorage('file')
-      ->loadByProperties(['filename' => $filename]);
-    $file = reset($files);
-
-    // If a valid file was found for the given file name, extract the file's
-    // mime type...
-    if ($file !== FALSE) {
-      $mime_type = $file->getMimeType();
-    }
-    // Otherwise, log an error notifying the user that a file was not found.
-    else {
-      $this->log('value_referencer', 'Unable to determine mime type of file with name "@name", because no file was found with that name.', [
+    // If we couldn't find a mime type, log an error notifying the user.
+    if (is_null($mime_type)) {
+      $filename = basename($downloadUrl);
+      $this->log('value_referencer', 'Unable to determine mime type of file with name "@name".', [
         '@name' => $filename,
       ]);
     }
