@@ -5,6 +5,7 @@ namespace Drupal\harvest;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\harvest\Storage\DatabaseTableFactory;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -37,6 +38,13 @@ class HarvestUtility implements ContainerInjectionInterface {
   private Connection $connection;
 
   /**
+   * The harvest hashes database table factory service.
+   *
+   * @var \Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
+   */
+  private HarvestHashesDatabaseTableFactory $hashesFactory;
+
+  /**
    * Create.
    *
    * @inheritdoc
@@ -45,6 +53,7 @@ class HarvestUtility implements ContainerInjectionInterface {
     return new self(
       $container->get('dkan.harvest.service'),
       $container->get('dkan.harvest.storage.database_table'),
+      $container->get('dkan.harvest.storage.hashes_database_table'),
       $container->get('database'),
     );
   }
@@ -55,10 +64,12 @@ class HarvestUtility implements ContainerInjectionInterface {
   public function __construct(
     HarvestService $harvestService,
     DatabaseTableFactory $storeFactory,
+    HarvestHashesDatabaseTableFactory $hashesFactory,
     Connection $connection
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;
+    $this->hashesFactory = $hashesFactory;
     $this->connection = $connection;
   }
 
@@ -149,6 +160,21 @@ class HarvestUtility implements ContainerInjectionInterface {
       ] as $table) {
         $this->storeFactory->getInstance($table)->destruct();
       }
+    }
+  }
+
+  /**
+   * Convert a table from DatabaseTableInterface to use the harvest_hash entity.
+   *
+   * @param string $plan_id
+   *   Harvest plan ID to convert.
+   */
+  public function convertHashTable(string $plan_id) {
+    $old_hash_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes');
+    $hash_table = $this->hashesFactory->getInstance($plan_id);
+    foreach ($old_hash_table->retrieveAll() as $id) {
+      $data = $old_hash_table->retrieve($id);
+      $hash_table->store($data, $id);
     }
   }
 

@@ -25,7 +25,7 @@ class HarvestCommands extends DrushCommands {
    *
    * @var \Drupal\harvest\HarvestService
    */
-  protected $harvestService;
+  protected HarvestService $harvestService;
 
   /**
    * Harvest utility service.
@@ -412,6 +412,27 @@ class HarvestCommands extends DrushCommands {
       $this->logger()->error("Harvest id {$harvestId} not found.");
       return DrushCommands::EXIT_FAILURE;
     }
+  }
+
+  /**
+   * Update all harvest-related database tables to the latest version.
+   *
+   * @command dkan:harvest:update
+   *
+   * @return int
+   *   Bash status code.
+   *
+   * @bootstrap full
+   */
+  public function harvestUpdate(): int {
+    $harvest_plan_ids = $this->harvestService->getAllHarvestIds();
+
+    foreach ($harvest_plan_ids as $id) {
+      $this->logger()->notice('Converting hashes for ' . $id);
+      $this->harvestUtility->convertHashTable($id);
+    }
+    $this->logger()->success('Converted!');
+    return DrushCommands::EXIT_SUCCESS;
   }
 
 }

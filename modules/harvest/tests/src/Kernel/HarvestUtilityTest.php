@@ -56,4 +56,48 @@ class HarvestUtilityTest extends KernelTestBase {
     );
   }
 
+  public function testConvertHashTable() {
+    $this->installEntitySchema('harvest_hash');
+    $harvest_plan_id = 'TEST';
+    /** @var \Drupal\harvest\Storage\DatabaseTable $old_hash_table */
+    $old_hash_table = $this->container
+      ->get('dkan.harvest.storage.database_table')
+      ->getInstance('harvest_' . $harvest_plan_id . '_hashes');
+    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $hash_table */
+    $hash_table = $this->container
+      ->get('dkan.harvest.storage.hashes_database_table')
+      ->getInstance($harvest_plan_id);
+    /** @var \Drupal\Component\Uuid\UuidInterface $uuid_generator */
+    $uuid_generator = $this->container->get('uuid');
+
+    // Fill an old-style hash table.
+    $iterations = 5;
+    foreach (range(1, $iterations) as $iteration) {
+      $old_hash_table->store(json_encode((object) [
+        'harvest_plan_id' => $harvest_plan_id,
+        'hash' => uniqid(),
+      ]), $uuid_generator->generate());
+    }
+
+    // Convert the table.
+    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    $harvest_utility = $this->container->get('dkan.harvest.utility');
+    $harvest_utility->convertHashTable($harvest_plan_id);
+
+    // Assert the converted table using DatabaseTableInterface.
+    $this->assertCount($iterations, $ids = $hash_table->retrieveAll());
+    foreach ($ids as $id) {
+      $data = json_decode($hash_table->retrieve($id), TRUE);
+      $this->assertEquals($harvest_plan_id, $data['harvest_plan_id'] ?? 'FAIL');
+    }
+
+    // Assert the converted table using entity API.
+    $entity_storage = $this->container->get('entity_type.manager')
+      ->getStorage('harvest_hash');
+    $this->assertCount($iterations, $entities = $entity_storage->loadMultiple());
+    foreach ($entities as $entity) {
+      $this->assertEquals($harvest_plan_id, $entity->get('harvest_plan_id')->getString());
+    }
+  }
+
 }

@@ -54,8 +54,8 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
    *
    * @param string $data
    *   Data is assumed to be a JSON-encoded object with these properties:
-   *   - harvest_plan_id (The harvest name.)
-   *   - hash
+   *   - harvest_plan_id (The harvest name).
+   *   - hash.
    * @param string|null $id
    *   A node entity UUID identifier.
    *
