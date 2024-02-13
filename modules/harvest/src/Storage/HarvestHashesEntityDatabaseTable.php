@@ -12,6 +12,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  * so that future callers can implement them if needed.
  *
  * @see \Drupal\harvest\Entity\HarvestHash
+ *
+ * @todo Remove this and the parent class in a refactor of the harvester.
  */
 class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
 

@@ -63,8 +63,8 @@ class HarvestUtilityTest extends KernelTestBase {
     $old_hash_table = $this->container
       ->get('dkan.harvest.storage.database_table')
       ->getInstance('harvest_' . $harvest_plan_id . '_hashes');
-    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $hash_table */
-    $hash_table = $this->container
+    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $new_hash_table */
+    $new_hash_table = $this->container
       ->get('dkan.harvest.storage.hashes_database_table')
       ->getInstance($harvest_plan_id);
     /** @var \Drupal\Component\Uuid\UuidInterface $uuid_generator */
@@ -85,9 +85,9 @@ class HarvestUtilityTest extends KernelTestBase {
     $harvest_utility->convertHashTable($harvest_plan_id);
 
     // Assert the converted table using DatabaseTableInterface.
-    $this->assertCount($iterations, $ids = $hash_table->retrieveAll());
+    $this->assertCount($iterations, $ids = $new_hash_table->retrieveAll());
     foreach ($ids as $id) {
-      $data = json_decode($hash_table->retrieve($id), TRUE);
+      $data = json_decode($new_hash_table->retrieve($id), TRUE);
       $this->assertEquals($harvest_plan_id, $data['harvest_plan_id'] ?? 'FAIL');
     }
 
