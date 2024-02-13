@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Unit\Reference;
 use Drupal\common\StreamWrapper\DkanStreamWrapper;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\GeneratedUrl;
-use Drupal\Core\Http\RequestStack;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Path\PathValidator;
 use Drupal\Core\Render\MetadataBubblingUrlGenerator;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
@@ -100,7 +100,7 @@ class MetastoreUrlGeneratorTest extends TestCase {
   }
 
   /**
-   * 
+   *
    */
   public function testExtractItemId() {
     $generator = $this->getGenerator();
@@ -121,7 +121,7 @@ class MetastoreUrlGeneratorTest extends TestCase {
         ->index(0)
       )
       ->add(PathValidator::class, 'getPathAttributes', ['_route' => "dkan.common.api.version", '_raw_variables' => new ParameterBag()])
-      ->add(UnroutedUrlAssembler::class, 'assemble', "/api/1/metastore/schemas/data-dictionary/items/111") 
+      ->add(UnroutedUrlAssembler::class, 'assemble', "/api/1/metastore/schemas/data-dictionary/items/111")
       ->add(MetadataBubblingUrlGenerator::class, 'generateFromRoute', GeneratedUrl::class)
       ->add(GeneratedUrl::class, 'getGeneratedUrl', 'http://web/api/1')
       ->getMock();

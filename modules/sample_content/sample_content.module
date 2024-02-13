@@ -1,0 +1,12 @@
+<?php
+
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function sample_content_views_pre_render(ViewExecutable $view) {
+  if ($view->id() == 'dkan_dataset_search') {
+    $view->element['#attached']['library'][] = 'sample_content/dkan';
+  }
+}
