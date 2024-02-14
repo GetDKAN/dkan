@@ -69,6 +69,7 @@ trait Helper {
   private function renderHarvestRunsInfo(array $runInfos) {
     $table = new Table(new ConsoleOutput());
     $table->setHeaders(['run_id', 'processed', 'created', 'updated', 'errors']);
+    $errors = [];
 
     foreach ($runInfos as $runInfo) {
       [$run_id, $result] = $runInfo;
@@ -79,9 +80,22 @@ trait Helper {
       );
 
       $table->addRow($row);
+      if ($run_errors = $result['errors'] ?? FALSE) {
+        $errors[$run_id] = $run_errors;
+      }
     }
 
     $table->render();
+    if ($errors) {
+      foreach ($errors as $run_id => $run_errors) {
+        foreach ($run_errors as $type => $messages) {
+          foreach ($messages as $id => $message) {
+            $this->logger()->error('[' . $run_id . '][' . $type . '][' . $id . '] ' . $message);
+          }
+        }
+      }
+    }
+
   }
 
   /**
