@@ -40,7 +40,6 @@ function harvest_update_8001(&$sandbox) {
  */
 function harvest_update_8002(&$sandbox) {
   foreach (['harvest_source', 'harvest_run', 'harvest_hash'] as $table) {
-    // @todo check if the harvest_id_hash table exists before removing it.
     \Drupal::database()->schema()->dropTable($table);
   }
 }

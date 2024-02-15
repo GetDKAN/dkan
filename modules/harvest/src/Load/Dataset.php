@@ -22,7 +22,7 @@ class Dataset extends Load {
   /**
    * Save a harvested dataset item into our metastore.
    *
-   * @param mixed $item
+   * @param object $item
    *   An object representing the dataset. This object should comport to
    *   DCAT-US Schema v1.1 once JSON-encoded.
    *
