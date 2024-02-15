@@ -12,6 +12,7 @@ use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\PostImportResult;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
@@ -67,6 +68,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   protected $dataDictionaryDiscovery;
 
   /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
+
+  /**
    * Build queue worker.
    *
    * @param array $configuration
@@ -87,6 +95,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The post import service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The reference lookup service.
    */
   public function __construct(
     array $configuration,
@@ -97,7 +107,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     ResourceMapper $resource_mapper,
     ResourceProcessorCollector $processor_collector,
     PostImport $post_import,
-    DataDictionaryDiscoveryInterface $data_dictionary_discovery
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery,
+    ReferenceLookup $referenceLookup
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger_factory->get('datastore');
@@ -110,6 +121,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
     $alter_table_query_builder->setConnectionTimeout($timeout);
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -126,6 +138,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $container->get('dkan.datastore.service.resource_processor_collector'),
       $container->get('dkan.datastore.service.post_import'),
       $container->get('dkan.metastore.data_dictionary_discovery'),
+      $container->get('dkan.metastore.reference_lookup'),
     );
   }
 
@@ -134,6 +147,9 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    */
   public function processItem($data) {
     $postImportResult = $this->postImportProcessItem($data);
+    $id = $data->getIdentifier();
+    $version = $data->getVersion();
+    $this->invalidateCacheTags($id . '__' . $version . '__source');
     // Store the results of the PostImportResult object.
     $postImportResult->storeResult();
   }
@@ -176,6 +192,16 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     }
 
     return $postImportResult;
+  }
+
+  /**
+   * Invalidate all appropriate cache tags for this resource.
+   *
+   * @param mixed $resourceId
+   *   A resource ID.
+   */
+  protected function invalidateCacheTags($resourceId) {
+    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
   /**
