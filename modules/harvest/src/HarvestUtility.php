@@ -124,17 +124,18 @@ class HarvestUtility implements ContainerInjectionInterface {
   /**
    * Find all the potential harvest data tables names in the database.
    *
+   * NOTE: Can find hashes tables that have not yet been converted to
+   * harvest_hash entities.
+   *
    * @return array
    *   All the table names that might be harvest data tables.
    */
   protected function findAllHarvestDataTables(): array {
     $tables = [];
     foreach ([
-      // @todo Figure out an expression for harvest_%_thing, since underscore
-      //   is a special character.
-      'harvest%runs',
-      'harvest%items',
-      'harvest%hashes',
+      'harvest_%_runs',
+      'harvest_%_items',
+      'harvest_%_hashes',
     ] as $table_expression) {
       if ($found_tables = $this->connection->schema()->findTables($table_expression)) {
         $tables = array_merge($tables, $found_tables);
