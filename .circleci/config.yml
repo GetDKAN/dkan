@@ -26,7 +26,7 @@ commands:
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
-        default: '8.1'
+        default: '8.2'
         type: string
       addon_branch:
         description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
@@ -34,7 +34,7 @@ commands:
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '10.1.x-dev'
+        default: '10.2.x-dev'
         type: string
     steps:
       - run:
@@ -124,7 +124,7 @@ jobs:
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '10.1.x-dev'
+        default: '10.2.x-dev'
         type: string
       report_coverage:
         description: 'Generate coverage report and send it to CodeClimate'
@@ -191,7 +191,7 @@ jobs:
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '10.1.x-dev'
+        default: '10.2.x-dev'
         type: string
       upgrade:
         description: 'If true, will install the latest stable DKAN version and test upgrade'
@@ -230,19 +230,14 @@ workflows:
     jobs:
       - cypress:
           name: install_test_cypress
-          dkan_recommended_branch: '10.1.x-dev'
+          dkan_recommended_branch: '10.2.x-dev'
       - phpunit:
-          matrix:
-            parameters:
-              dkan_recommended_branch: [ '9.5.x-dev']
-              php_version: [ '7.4', '8.0', '8.1' ]
-      - phpunit:
-          name: 'Install target (Drupal 10.1, PHP 8.1)'
+          name: 'Install target (Drupal 10.2, PHP 8.2)'
           report_coverage: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ '10.1.x-dev']
-              php_version: [ '8.1' ]
+              dkan_recommended_branch: [ '10.2.x-dev']
+              php_version: [ '8.2' ]
       - phpunit:
           matrix:
             parameters:
@@ -253,16 +248,21 @@ workflows:
            parameters:
              dkan_recommended_branch: [ '10.0.x-dev']
              php_version: [ '8.1' ]
+      - phpunit:
+          matrix:
+            parameters:
+              dkan_recommended_branch: [ '10.2.x-dev']
+              php_version: [ '8.1' ]
   upgrade_and_test:
     jobs:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          dkan_recommended_branch: '10.1.x-dev'
+          dkan_recommended_branch: '10.2.x-dev'
       - phpunit:
-          name: 'Upgrade target (Drupal 10.1, PHP 8.1)'
+          name: 'Upgrade target (Drupal 10.2, PHP 8.2)'
           upgrade: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ '10.1.x-dev']
-              php_version: [ '8.1' ]
+              dkan_recommended_branch: [ '10.2.x-dev']
+              php_version: [ '8.2' ]
