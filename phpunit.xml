@@ -15,6 +15,9 @@
       <directory>modules/common/tests</directory>
       <directory>modules/datastore/tests</directory>
       <directory>modules/dkan_js_frontend/tests</directory>
+      <directory>modules/frontend/tests</directory>
+      <directory>modules/harvest/tests</directory>
+      <directory>modules/json_form_widget/tests</directory>
       <directory>modules/metastore/tests</directory>
       <directory>modules/sample_content</directory>
       <directory suffix="TestBase.php">./</directory>
