@@ -7,6 +7,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Database table factory.
+ *
+ * This is the service dkan.harvest.storage.hashes_database_table.
  */
 class HarvestHashesDatabaseTableFactory implements FactoryInterface {
 
@@ -31,7 +33,7 @@ class HarvestHashesDatabaseTableFactory implements FactoryInterface {
    * {@inheritDoc}
    *
    * @param string $identifier
-   *   The plan ID.
+   *   The plan ID. Do not use the table name, but the harvest plan ID.
    * @param array $config
    *   (Optional) Unused.
    */
