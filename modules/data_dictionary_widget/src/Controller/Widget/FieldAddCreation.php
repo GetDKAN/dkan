@@ -39,7 +39,7 @@ class FieldAddCreation extends ControllerBase {
   }
 
   /**
-   * Create Type field.
+   * Create Title field.
    */
   private static function createTitle() {
     return [
