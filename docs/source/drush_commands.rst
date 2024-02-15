@@ -46,7 +46,7 @@ dkan:datastore:import
 ~~~~~~
 
 dkan:datastore:localize
----------------------
+-----------------------
 
     You can manually 'localize' the source files for a distribution, by fetching a
     copy to the local file system.
