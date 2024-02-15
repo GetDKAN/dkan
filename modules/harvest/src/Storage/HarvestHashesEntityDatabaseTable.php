@@ -45,6 +45,8 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
    *   Harvest plan identifier.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager service.
+   *
+   * @see \Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
    */
   public function __construct(string $planId, EntityTypeManagerInterface $entityTypeManager) {
     $this->planId = $planId;

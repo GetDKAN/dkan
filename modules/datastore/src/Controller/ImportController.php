@@ -91,7 +91,6 @@ class ImportController implements ContainerInjectionInterface {
    */
   public function summary(string $identifier, Request $request) {
     try {
-      /** @var \Drupal\datastore\Storage\TableSummary $data */
       $data = $this->datastoreService->summary($identifier);
       $dependencies = $this->getDependencies($identifier);
       return $this->metastoreApiResponse->cachedJsonResponse($data, 200, $dependencies, $request->query);

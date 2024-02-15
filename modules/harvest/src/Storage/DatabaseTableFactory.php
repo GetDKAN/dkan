@@ -28,10 +28,6 @@ class DatabaseTableFactory implements FactoryInterface {
    * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
-    // Tell the caller not to use the old style hashes table.
-    if (str_ends_with($identifier, '_hashes')) {
-      throw new \RuntimeException('The harvest hashes factory has moved. @see ' . HarvestHashesDatabaseTableFactory::class);
-    }
     return new DatabaseTable($this->connection, $identifier);
   }
 
