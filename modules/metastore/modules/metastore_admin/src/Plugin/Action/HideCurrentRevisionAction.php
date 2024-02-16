@@ -28,13 +28,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPluginInterface {
 
   /**
-   * Private.
-   *
-   * @var entity
-   */
-  private $entity = NULL;
-
-  /**
    * Account.
    *
    * @var \Drupal\Core\Session\AccountInterface

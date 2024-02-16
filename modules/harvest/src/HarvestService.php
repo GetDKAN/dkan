@@ -209,8 +209,7 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function getAllHarvestRunInfo($id) {
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    $runs = $run_store->retrieveAll();
-    return $runs;
+    return $run_store->retrieveAll();
   }
 
   /**

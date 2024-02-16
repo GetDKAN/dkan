@@ -25,13 +25,6 @@ class ImportInfo {
   private $resourceLocalizer;
 
   /**
-   * Import factory service.
-   *
-   * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
-   */
-  private $importServiceFactory;
-
-  /**
    * Resource mapper service.
    *
    * @var \Drupal\metastore\ResourceMapper
@@ -71,7 +64,6 @@ class ImportInfo {
     DatastoreService $datastoreService
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
-    $this->importServiceFactory = $importServiceFactory;
     $this->resourceMapper = $resourceMapper;
     $this->datastoreService = $datastoreService;
   }
