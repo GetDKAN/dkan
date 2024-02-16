@@ -22,6 +22,10 @@ use stdClass;
 
 /**
  * Test class for JsonFormWidget.
+ *
+ * @group dkan
+ * @group json_form_widget
+ * @group unit
  */
 class JsonFormBuilderTest extends TestCase {
 

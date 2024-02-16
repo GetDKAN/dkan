@@ -55,7 +55,7 @@ class JsonFormWidget extends WidgetBase {
   protected ?string $schema;
 
   /**
-   * Constructs a WidgetBase object.
+   * Constructs a JsonFormWidget object.
    *
    * @param string $plugin_id
    *   The plugin_id for the widget.
