@@ -26,21 +26,12 @@ class DatabaseTableFactory implements FactoryInterface {
   private $storage = [];
 
   /**
-   * Entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected EntityTypeManagerInterface $entityTypeManager;
-
-  /**
    * Constructor.
    */
   public function __construct(
-    Connection $connection,
-    EntityTypeManagerInterface $entityTypeManager
+    Connection $connection
   ) {
     $this->connection = $connection;
-    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**

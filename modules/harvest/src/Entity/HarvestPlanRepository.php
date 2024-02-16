@@ -6,14 +6,12 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
+/**
+ * Repository for various queries related to harvest plans.
+ *
+ * This is the service dkan.harvest.harvest_plan_repository.
+ */
 class HarvestPlanRepository {
-
-  /**
-   * Entity type storage service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  private EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Storage service for harvest_plans entities.
@@ -31,8 +29,7 @@ class HarvestPlanRepository {
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager
   ) {
-    $this->entityTypeManager = $entityTypeManager;
-    $this->planStorage = $this->entityTypeManager->getStorage('harvest_plan');
+    $this->planStorage = $entityTypeManager->getStorage('harvest_plan');
   }
 
   /**

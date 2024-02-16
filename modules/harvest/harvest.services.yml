@@ -22,7 +22,6 @@ services:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:
       - '@database'
-      - '@entity_type.manager'
   dkan.harvest.logger_channel:
       parent: logger.channel_base
       arguments: ['harvest']

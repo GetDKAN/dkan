@@ -12,7 +12,7 @@ use Drupal\common\Storage\AbstractDatabaseTable;
  * harvest_[id]_hashes.
  *
  * @see \Drupal\harvest\Storage\DatabaseTableFactory::getDatabaseTable()
- * @see \Drupal\harvest\Storage\HarvestPlanEntityDatabaseTable
+ * @see \Drupal\harvest\Entity\HarvestPlanRepository
  */
 class DatabaseTable extends AbstractDatabaseTable {
 
