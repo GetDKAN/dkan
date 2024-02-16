@@ -22,17 +22,17 @@ class IndexFieldCallbacks extends ControllerBase {
       $form_state->set('current_index_fields', $current_index_fields);
     }
 
-    if ($op === 'cancel') {
+    if ($op === 'cancel_index_field') {
       $form_state->set('cancel', TRUE);
     }
 
     if ($op === 'add_new_index_field') {
-      $add_fields = IndexFieldAddCreation::addIndexFields();
+      $add_index_fields = IndexFieldAddCreation::addIndexFields();
 
       $form_state->set('add_new_index_field', $add_index_fields);
     }
 
-    if ($op === 'add') {
+    if ($op === 'add_index_field') {
       $form_state->set('new_index_fields', $form_state->getUserInput());
       $form_state->set('add', TRUE);
       $form_state->set('cancel', FALSE);
@@ -42,9 +42,45 @@ class IndexFieldCallbacks extends ControllerBase {
   }
 
   /**
+   * Submit callback for the Index Edit button.
+   */
+  public static function editSubformCallback(array &$form, FormStateInterface $form_state) {
+    $trigger = $form_state->getTriggeringElement();
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
+    $op = $trigger['#op'];
+    $op_index = explode("_", $trigger['#op']);
+    $currently_modifying = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+
+    if (str_contains($op, 'abort')) {
+      unset($currently_modifying[$op_index[1]]);
+    }
+
+    if (str_contains($op, 'delete')) {
+      unset($currently_modifying[$op_index[1]]);
+      unset($current_fields[$op_index[1]]);
+    }
+
+    if (str_contains($op, 'update')) {
+      $update_values = $form_state->getUserInput();
+      unset($currently_modifying[$op_index[1]]);
+      unset($current_index_fields [$op_index[1]]);
+      $current_index_fields [$op_index[1]] = FieldValues::updateValues($op_index[1], $update_values, $current_index_fields );
+      ksort($current_index_fields );
+    }
+
+    if (str_contains($op, 'edit')) {
+      $currently_modifying[$op_index[1]] = $current_index_fields [$op_index[1]];
+    }
+
+    $form_state->set('index_fields_being_modified', $currently_modifying);
+    $form_state->set('current_index_fields', $current_index_fields );
+    $form_state->setRebuild();
+  }
+
+  /**
    * Ajax callback.
    */
-  public static function subformAjax(array &$form, FormStateInterface $form_state) {
+  public static function subIndexformAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["index_fields"];
   }
 }
