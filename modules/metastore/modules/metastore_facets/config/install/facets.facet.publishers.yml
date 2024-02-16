@@ -1,0 +1,73 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.index.dkan
+    - views.view.dkan_dataset_search
+  module:
+    - search_api
+id: publishers
+name: Publishers
+weight: 0
+min_count: 1
+missing: false
+missing_label: others
+url_alias: publishers
+facet_source_id: 'search_api:views_page__dkan_dataset_search__dataset_search'
+field_identifier: publisher__name
+query_operator: and
+hard_limit: 0
+exclude: false
+use_hierarchy: false
+keep_hierarchy_parents_active: false
+hierarchy:
+  type: taxonomy
+  config: {  }
+expand_hierarchy: false
+enable_parent_when_child_gets_disabled: true
+widget:
+  type: checkbox
+  config:
+    show_numbers: true
+    soft_limit: 0
+    show_reset_link: true
+    reset_text: 'Show all'
+    hide_reset_when_no_selection: false
+    soft_limit_settings:
+      show_less_label: 'Show less'
+      show_more_label: 'Show more'
+empty_behavior:
+  behavior: none
+only_visible_when_facet_source_is_visible: true
+show_only_one_result: false
+show_title: false
+processor_configs:
+  active_widget_order:
+    processor_id: active_widget_order
+    weights:
+      sort: 20
+    settings:
+      sort: DESC
+  count_widget_order:
+    processor_id: count_widget_order
+    weights:
+      sort: 30
+    settings:
+      sort: DESC
+  display_value_widget_order:
+    processor_id: display_value_widget_order
+    weights:
+      sort: 40
+    settings:
+      sort: ASC
+  hierarchy_processor:
+    processor_id: hierarchy_processor
+    weights:
+      build: 100
+    settings: {  }
+  url_processor_handler:
+    processor_id: url_processor_handler
+    weights:
+      pre_query: 50
+      build: 15
+    settings: {  }

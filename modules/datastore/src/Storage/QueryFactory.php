@@ -219,7 +219,7 @@ class QueryFactory {
       return;
     }
     foreach ($this->datastoreQuery->{"$.sorts"} as $sort) {
-      $query->sorts[] = (object) $this->resourceRename($sort);
+      $query->sorts[] = (object) self::resourceRename($sort);
     }
   }
 
@@ -254,7 +254,7 @@ class QueryFactory {
     $primaryAlias = $this->datastoreQuery->{"$.resources[0].alias"};
     if (isset($condition["property"])) {
       $return = (object) [
-        "collection" => isset($condition["resource"]) ? $condition["resource"] : $primaryAlias,
+        "collection" => $condition["resource"] ?? $primaryAlias,
         "property" => $condition["property"],
         "value" => $this->propertyConvert($condition["value"]),
       ];

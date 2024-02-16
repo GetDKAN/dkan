@@ -149,7 +149,7 @@ class DataTest extends TestCase {
       $nodes[$i] = new class {
         private $uuid;
         public function uuid() {
-          return isset($this->uuid) ? $this->uuid : $this->uuid = uniqid();
+          return $this->uuid ?? ($this->uuid = uniqid());
         }
       };
       $uuids[$i] = $nodes[$i]->uuid();

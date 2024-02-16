@@ -48,9 +48,41 @@ class RouteProvider {
   private $appRoot;
 
   /**
+   * Query factory service.
+   *
+   * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
+   */
+  private QueryFactoryInterface $entityQuery;
+
+  /**
+   * Build folder config.
+   *
+   * @var string
+   */
+  private $buildFolder;
+
+  /**
+   * Frontend path config.
+   *
+   * @var string
+   */
+  private $frontendPath;
+
+  /**
+   * Routes config.
+   *
+   * @var array
+   */
+  private $routes;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
+  public function __construct(
+    string $appRoot,
+    QueryFactoryInterface $entityQuery,
+    ConfigFactoryInterface $configFactory
+  ) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
     $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');
@@ -164,7 +196,7 @@ class RouteProvider {
    * Private. All routes return root JS file.
    */
   private function addIndexPage(RouteCollection $routes) {
-    $config_routes = $this->routes;
+    $config_routes = $this->routes ?? [];
     foreach ($config_routes as $config_route) {
       $possible_page = explode(",", $config_route);
       $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));

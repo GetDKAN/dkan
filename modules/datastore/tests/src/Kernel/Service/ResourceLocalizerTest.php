@@ -33,7 +33,13 @@ class ResourceLocalizerTest extends KernelTestBase {
    */
   const HOST = 'http://example.com';
 
-  const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+  protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+
+  protected function setUp() : void {
+    parent::setUp();
+    // All our tests need the resource_mapping entity.
+    $this->installEntitySchema('resource_mapping');
+  }
 
   public function testNoResourceFound() {
     $service = $this->container->get('dkan.datastore.service.resource_localizer');

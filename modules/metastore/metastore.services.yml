@@ -42,6 +42,7 @@ services:
       - '@dkan.metastore.storage'
       - '@dkan.metastore.url_generator'
       - '@http_client'
+      - '@file.mime_type.guesser.extension'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
 
@@ -63,7 +64,7 @@ services:
     class: \Drupal\metastore\ResourceMapper
     arguments:
       - '@dkan.metastore.resource_mapper_database_table'
-      - '@event_dispatcher'
+      - '@entity_type.manager'
 
   dkan.metastore.resource_mapper_database_table:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
@@ -76,6 +77,7 @@ services:
       - '@logger.factory'
       - '@dkan.metastore.service'
       - '@dkan.metastore.resource_mapper'
+      - '@dkan.metastore.reference_lookup'
     tags:
       - { name: event_subscriber }
 

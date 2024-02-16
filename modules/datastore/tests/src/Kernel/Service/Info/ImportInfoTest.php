@@ -31,7 +31,12 @@ class ImportInfoTest extends KernelTestBase {
    */
   const HOST = 'http://example.com';
 
-  const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+  protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('resource_mapping');
+  }
 
   public function testFileSize() {
     $source_resource = new DataResource(

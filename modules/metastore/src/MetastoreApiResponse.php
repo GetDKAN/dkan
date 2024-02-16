@@ -13,17 +13,17 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class MetastoreApiResponse {
 
   /**
-   * Metastore item factory.
+   * Metastore item factory service.
    *
    * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
    */
-  protected MetastoreItemFactoryInterface $metastoreItemFactory;
+  private MetastoreItemFactoryInterface $metastoreItemFactory;
 
   /**
    * Constructor.
    *
    * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
-   *   Metastore Item factory service.
+   *   Metastore item factory service.
    */
   public function __construct(MetastoreItemFactoryInterface $metastoreItemFactory) {
     $this->metastoreItemFactory = $metastoreItemFactory;
@@ -104,10 +104,7 @@ class MetastoreApiResponse {
       $this->addItemDependencies($cacheMetadata, $item);
     }
     elseif (is_string($item)) {
-      // @todo Add a metastore dependency for a whole schema/type.
-      $cacheMetadata->addCacheTags(
-        $this->getMetastoreItemFactory()->getCacheTags()
-      );
+      $this->addSchemaDependency($cacheMetadata, $item);
     }
     else {
       throw new \InvalidArgumentException("Invalid cacheable dependency. " . print_r([$key => $item], TRUE));
@@ -167,6 +164,25 @@ class MetastoreApiResponse {
     else {
       $ids[] = $value->identifier ?? NULL;
     }
+  }
+
+  /**
+   * Add a metastore dependency for a whole schema/type.
+   *
+   * This is necessary so that the page cache distinguishes between
+   * requests with different GET queries.
+   *
+   * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
+   *   Cache metadata object to modify.
+   * @param mixed $schema
+   *   The schemaID (e.g., "dataset").
+   */
+  private function addSchemaDependency(CacheableMetadata $cacheMetadata, $schema) {
+    // Silly line to make linters happy. Right now the itemFactory doesn't
+    // require a schema so it's not used.
+    $schema = $schema;
+    $cacheTags = $this->getMetastoreItemFactory()->getCacheTags();
+    $cacheMetadata->addCacheTags($cacheTags);
   }
 
   /**

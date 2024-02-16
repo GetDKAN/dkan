@@ -21,11 +21,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class MetastoreSearchApiDocs extends DkanApiDocsBase {
 
   /**
-   * Metastore search.
+   * Metastore search service.
    *
    * @var \Drupal\metastore_search\Search
    */
-  protected Search $metastoreSearch;
+  private Search $metastoreSearch;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -58,7 +58,7 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

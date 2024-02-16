@@ -5,6 +5,7 @@ namespace Drupal\metastore_admin\Plugin\Action;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\RevisionLogInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -47,6 +48,27 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    * @var \Drupal\Component\Datetime\TimeInterface
    */
   protected TimeInterface $timeInterface;
+
+  /**
+   * Account.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  private AccountInterface $currentUser;
+
+  /**
+   * Time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  private TimeInterface $timeInterface;
+
+  /**
+   * Logger channel.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
 
   /**
    * Constructor.

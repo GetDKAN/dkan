@@ -30,7 +30,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * DKAN SQL Endpoint service.
    *
-   * @var \Drupal\datastore\SqlEndpoint
+   * @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
    */
   private $service;
 
@@ -44,9 +44,16 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * API request data.
    *
-   * @var Symfony\Component\HttpFoundation\RequestStack
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private $requestStack;
+
+  /**
+   * Metastore API response service.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  private MetastoreApiResponse $metastoreApiResponse;
 
   /**
    * {@inheritdoc}

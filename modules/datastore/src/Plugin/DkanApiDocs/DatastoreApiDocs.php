@@ -35,6 +35,13 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   private $metastore;
 
   /**
+   * Import info service.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfo
+   */
+  private ImportInfo $importInfo;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -69,7 +76,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -107,7 +114,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     // Reformat definitions.
     foreach ($querySchema["definitions"] as $key => $def) {
       $schemaName = "datastoreQuery" . ucfirst($key);
-      $def["title"] = "Datastore Query: " . (isset($def["title"]) ? $def["title"] : $key);
+      $def["title"] = "Datastore Query: " . ($def["title"] ?? $key);
       $spec["components"]["schemas"][$schemaName] = $def;
     }
     unset($querySchema["definitions"]);

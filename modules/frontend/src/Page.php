@@ -34,14 +34,32 @@ class Page {
   /**
    * Node storage service.
    *
-   * @var string
+   * @var \Drupal\node\NodeStorageInterface
    */
   private $nodeStorage;
 
   /**
+   * Build folder configuration.
+   *
+   * @var string
+   */
+  private $buildFolder;
+
+  /**
+   * Frontend path configuration.
+   *
+   * @var string
+   */
+  private $frontendPath;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $appRoot, NodeStorageInterface $nodeStorage, ConfigFactoryInterface $configFactory) {
+  public function __construct(
+    string $appRoot,
+    NodeStorageInterface $nodeStorage,
+    ConfigFactoryInterface $configFactory
+  ) {
     $this->appRoot = $appRoot;
     $this->nodeStorage = $nodeStorage;
     $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');

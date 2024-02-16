@@ -47,6 +47,20 @@ class SearchController implements ContainerInjectionInterface {
   private $requestStack;
 
   /**
+   * Metastore API response service.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  private MetastoreApiResponse $metastoreApiResponse;
+
+  /**
+   * Schema retriever service.
+   *
+   * @var \Drupal\metastore\SchemaRetriever
+   */
+  private SchemaRetriever $schemaRetriever;
+
+  /**
    * SearchController constructor.
    *
    * @param \Drupal\metastore_search\Search $service
@@ -156,7 +170,7 @@ class SearchController implements ContainerInjectionInterface {
     $params = $request->query->all();
 
     foreach ($defaults as $param => $default) {
-      $params[$param] = isset($params[$param]) ? $params[$param] : $default;
+      $params[$param] ??= $default;
     }
 
     if (!is_numeric($params['page-size']) || !is_numeric($params['page'])) {

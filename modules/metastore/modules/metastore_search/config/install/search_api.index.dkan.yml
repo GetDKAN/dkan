@@ -26,6 +26,11 @@ field_settings:
     datasource_id: dkan_dataset
     property_path: modified
     type: string
+  nid:
+    label: nid
+    datasource_id: dkan_dataset
+    property_path: search_api_nid
+    type: string
   publisher__name:
     label: publisher__name
     datasource_id: dkan_dataset
@@ -41,14 +46,25 @@ field_settings:
     datasource_id: dkan_dataset
     property_path: title
     type: text
+  title_string:
+    label: title_string
+    datasource_id: dkan_dataset
+    property_path: title
+    type: string
 datasource_settings:
   dkan_dataset: {  }
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  custom_value: {  }
+  dkan_dataset_add_nid: {  }
   dkan_dataset_filter_hidden: {  }
   dkan_dataset_filter_unpublished: {  }
+  entity_type: {  }
   ignorecase:
+    weights:
+      preprocess_index: -20
+      preprocess_query: -20
     all_fields: false
     fields:
       - description
@@ -56,15 +72,13 @@ processor_settings:
       - publisher__name
       - theme
       - title
-    weights:
-      preprocess_index: -20
-      preprocess_query: -20
   language_with_fallback: {  }
   rendered_item: {  }
 tracker_settings:
   default:
     indexing_order: fifo
 options:
-  index_directly: true
   cron_limit: 50
+  index_directly: true
+  track_changes_in_references: true
 server: dkan
