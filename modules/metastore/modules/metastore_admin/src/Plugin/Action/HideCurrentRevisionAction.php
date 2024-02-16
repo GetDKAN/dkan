@@ -7,7 +7,6 @@ use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -48,27 +47,6 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    * @var \Drupal\Component\Datetime\TimeInterface
    */
   protected TimeInterface $timeInterface;
-
-  /**
-   * Account.
-   *
-   * @var \Drupal\Core\Session\AccountInterface
-   */
-  private AccountInterface $currentUser;
-
-  /**
-   * Time service.
-   *
-   * @var \Drupal\Component\Datetime\TimeInterface
-   */
-  private TimeInterface $timeInterface;
-
-  /**
-   * Logger channel.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  private LoggerChannelInterface $logger;
 
   /**
    * Constructor.
