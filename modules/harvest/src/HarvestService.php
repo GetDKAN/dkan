@@ -5,7 +5,6 @@ namespace Drupal\harvest;
 use Contracts\FactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\LoggerTrait;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
@@ -38,13 +37,6 @@ class HarvestService implements ContainerInjectionInterface {
    * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $metastore;
-
-  /**
-   * Entity storage for harvest plans entities.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  private EntityStorageInterface $planStorage;
 
   /**
    * Harvest plan storage repository service.
@@ -327,25 +319,23 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Get a DKAN harvester instance.
    *
-   * @param string $id
+   * @param string $plan_id
    *   Harvester ID.
    *
    * @return \Harvest\Harvester
    *   Harvester object.
    */
-  private function getHarvester(string $id) {
-    $harvest_plan = json_decode($this->harvestPlanRepository->retrieve($id));
-    $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
-    $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
+  private function getHarvester(string $plan_id): Harvester {
+    $harvest_plan = $this->harvestPlanRepository->getPlanObject($plan_id);
+    $item_store = $this->storeFactory->getInstance("harvest_{$plan_id}_items");
+    $hash_store = $this->storeFactory->getInstance("harvest_{$plan_id}_hashes");
     return $this->getDkanHarvesterInstance($harvest_plan, $item_store, $hash_store);
   }
 
   /**
-   * Protected.
-   *
-   * @codeCoverageIgnore
+   * Get the harvester from the harvester library.
    */
-  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
+  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store): Harvester {
     return new Harvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 

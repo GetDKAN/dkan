@@ -33,6 +33,19 @@ class HarvestPlanRepository {
   }
 
   /**
+   * Get the plan object for the plan identifier.
+   *
+   * @param string $plan_id
+   *   Plan identifier.
+   *
+   * @return object
+   *   Object form of the plan.
+   */
+  public function getPlanObject(string $plan_id): object {
+    return json_decode($this->retrieve($plan_id));
+  }
+
+  /**
    * Get all the plan identifiers.
    *
    * This is the plan name.

@@ -123,10 +123,7 @@ class ReferencerTest extends TestCase {
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client(),
-      $this->getMockBuilder(ResourceMapper::class)
-        ->disableOriginalConstructor()
-        ->getMock()
+      new Client()
     );
   }
 
@@ -401,10 +398,7 @@ class ReferencerTest extends TestCase {
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client(),
-      $this->getMockBuilder(ResourceMapper::class)
-        ->disableOriginalConstructor()
-        ->getMock()
+      new Client()
     );
 
     // Test Mime Type detection using the resource `mediaType` property.
@@ -464,10 +458,7 @@ class ReferencerTest extends TestCase {
       $configService,
       $storageFactory,
       $urlGenerator,
-      $http_client,
-      $this->getMockBuilder(ResourceMapper::class)
-        ->disableOriginalConstructor()
-        ->getMock()
+      $http_client
     );
 
     if ($describedBy instanceof \Exception) {

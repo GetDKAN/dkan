@@ -13,6 +13,7 @@ use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
+use Harvest\Harvester;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
@@ -62,14 +63,14 @@ class HarvestServiceTest extends TestCase {
       ->getMock();
 
     $dkanHarvester = (new Chain($this))
-      ->add(HarvestService::class)
+      ->add(Harvester::class)
       ->getMock();
 
     $service = $this->getMockBuilder(HarvestService::class)
       ->setConstructorArgs([
         $storeFactory,
         $this->getMetastoreMockChain(),
-        $this->createStub(HarvestPlanRepository::class)
+        $this->createStub(HarvestPlanRepository::class),
       ])
       ->onlyMethods(['getDkanHarvesterInstance'])
       ->getMock();
