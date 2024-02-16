@@ -24,10 +24,9 @@ class IndexFieldAddCreation extends ControllerBase {
     $add_index_fields['group']['name'] = [
       '#name' => 'field_json_metadata[0][index_fields][field_collection][group][name]',
       '#type' => 'textfield',
-      '#required' => TRUE,
       '#title' => 'Name',
     ];
-    $add_index_fields['group']['description'] = self::createIndexFieldDescriptionField();
+    $add_index_fields['group']['description'] = self::createIndexFieldLengthField();
     
     return $add_index_fields;
   }
@@ -35,12 +34,11 @@ class IndexFieldAddCreation extends ControllerBase {
   /**
    * Create Description field.
    */
-  private static function createIndexFieldDescriptionField() {
+  private static function createIndexFieldLengthField() {
     return [
-      '#name' => 'field_json_metadata[0][index_fields][field_collection][group][description]',
-      '#type' => 'textfield',
-      '#required' => TRUE,
-      '#title' => 'Description',
+      '#name' => 'field_json_metadata[0][index_fields][field_collection][group][length]',
+      '#type' => 'number',
+      '#title' => 'Length',
     ];
   }
 }
