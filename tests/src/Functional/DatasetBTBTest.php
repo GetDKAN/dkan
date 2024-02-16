@@ -514,8 +514,7 @@ class DatasetBTBTest extends BrowserTestBase {
       $distribution = new \stdClass();
       $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->format = 'csv';
-      $distribution->mediaType = 'text/csv';
+      // Don't provide mime type or format fields since they're not required.
 
       $data->distribution[] = $distribution;
     }
