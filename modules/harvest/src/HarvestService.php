@@ -78,7 +78,11 @@ class HarvestService implements ContainerInjectionInterface {
    *   All ids.
    */
   public function getAllHarvestIds() {
-    return $this->harvestPlanRepository->retrieveAll();
+    // Some calling code is very particular about the output being an array,
+    // both as a return value here and after json_encode(). Since the entity
+    // query returns a keyed array, json_encode() will think it's an object. We
+    // don't want that, so we use array_values().
+    return array_values($this->harvestPlanRepository->retrieveAll());
   }
 
   /**
@@ -111,7 +115,7 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function registerHarvest($plan) {
     $this->validateHarvestPlan($plan);
-    return $this->harvestPlanRepository->store(json_encode($plan), $plan->identifier);
+    return $this->harvestPlanRepository->storePlanObject($plan, $plan->identifier);
   }
 
   /**

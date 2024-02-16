@@ -14,7 +14,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class HarvestPlanRepository {
 
   /**
-   * Storage service for harvest_plans entities.
+   * Storage service for harvest_plan entities.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
@@ -26,9 +26,7 @@ class HarvestPlanRepository {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager service.
    */
-  public function __construct(
-    EntityTypeManagerInterface $entityTypeManager
-  ) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->planStorage = $entityTypeManager->getStorage('harvest_plan');
   }
 
@@ -48,21 +46,13 @@ class HarvestPlanRepository {
   /**
    * Get all the plan identifiers.
    *
-   * This is the plan name.
-   *
-   * @return array
+   * @return string[]
    *   All plan identifiers.
    */
   public function retrieveAll(): array {
-    // Some calling code is very particular about the output being an array,
-    // both as a return value here and after json_encode(). Since the entity
-    // query returns a keyed array, json_encode() will think it's an object. We
-    // don't want that, so we use array_values().
-    return array_values(
-      $this->planStorage->getQuery()
-        ->accessCheck(FALSE)
-        ->execute()
-    );
+    return $this->planStorage->getQuery()
+      ->accessCheck(FALSE)
+      ->execute();
   }
 
   /**
@@ -84,10 +74,27 @@ class HarvestPlanRepository {
   }
 
   /**
+   * Store a plan object for a plan identifier.
+   *
+   * @param object $plan
+   *   The plan object. See components.schemas.harvestPlan within
+   *   modules/harvest/docs/openapi_spec.json for the schema of a plan.
+   * @param string $plan_id
+   *   The plan identifier.
+   *
+   * @return string
+   *   The plan id.
+   */
+  public function storePlanObject(object $plan, string $plan_id) {
+    return $this->store(json_encode($plan), $plan_id);
+  }
+
+  /**
    * Store a JSON-encoded plan for a plan identifier.
    *
    * @param string $plan_data
-   *   JSON-encoded plan data.
+   *   JSON-encoded plan data.See components.schemas.harvestPlan within
+   *    modules/harvest/docs/openapi_spec.json for the schema of a plan.
    * @param string $plan_id
    *   The plan identifier.
    *
