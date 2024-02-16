@@ -120,7 +120,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * Moves the buttons into the table.
    */
   public function preRenderIndexForm(array $dictionaryIndexFields) {
-    return IndexFieldOperations::setAjaxElements($dictionaryIndexFields);
+    return IndexFieldOperations::setIndexAjaxElements($dictionaryIndexFields);
   }
 
   /**

@@ -3,6 +3,7 @@
 namespace Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\data_dictionary_widget\Controller\Widget\FieldOperations;
 
 /**
  * Various operations for the Data Dictionary Widget.
@@ -11,7 +12,7 @@ class IndexFieldOperations extends ControllerBase {
   /**
    * Setting ajax elements.
    */
-  public static function setAjaxElements(array $dictionaryIndexFields) {
+  public static function setIndexAjaxElements(array $dictionaryIndexFields) {
     foreach ($dictionaryIndexFields['data']['#rows'] as $row => $data) {
       $edit_button = $dictionaryIndexFields['edit_buttons'][$row] ?? NULL;
       $edit_fields = $dictionaryIndexFields['edit_fields'][$row] ?? NULL;
@@ -56,10 +57,10 @@ class IndexFieldOperations extends ControllerBase {
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($data_results as $key => $data) {
       if (self::checkEditingField($key, $op_index, $index_fields_being_modified)) {
-        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_fields, $fields_being_modified);
+        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_index_fields, $index_fields_being_modified);
       }
       else {
-        $element['edit_buttons'][$key]['edit_button'] = FieldButtons::editButtons($key);
+        $element['edit_buttons'][$key]['edit_button'] = IndexFieldButtons::editButtons($key);
       }
     }
     $element['add_row_button'] = IndexFieldButtons::addButton();

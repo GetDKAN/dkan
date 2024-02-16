@@ -16,7 +16,7 @@ class IndexFieldAddCreation extends ControllerBase {
     $add_index_fields['#access'] = FALSE;
     $add_index_fields['group'] = [
       '#type' => 'fieldset',
-      '#title' => t('Add new field'),
+      '#title' => t('Add new index field'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
     ];
@@ -27,7 +27,7 @@ class IndexFieldAddCreation extends ControllerBase {
       '#required' => TRUE,
       '#title' => 'Name',
     ];
-    $add_index_fields['group']['description'] = self::createDescriptionField();
+    $add_index_fields['group']['description'] = self::createIndexFieldDescriptionField();
     
     return $add_index_fields;
   }
@@ -35,7 +35,7 @@ class IndexFieldAddCreation extends ControllerBase {
   /**
    * Create Description field.
    */
-  private static function createDescriptionField() {
+  private static function createIndexFieldDescriptionField() {
     return [
       '#name' => 'field_json_metadata[0][index_fields][field_collection][group][description]',
       '#type' => 'textfield',
