@@ -6,6 +6,7 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\HarvestService;
@@ -36,14 +37,17 @@ class HarvestServiceTest extends TestCase {
    *
    */
   public function testGetHarvestPlan() {
-    $storeFactory = (new Chain($this))
-      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
-      ->add(DatabaseTable::class, "retrieve", "Hello")
+    $planRepository = (new Chain($this))
+      ->add(HarvestPlanRepository::class, 'retrieve', 'Hello')
       ->getMock();
 
-    $service = new HarvestService($storeFactory, $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
-    $plan = $service->getHarvestPlan("test");
-    $this->assertEquals("Hello", $plan);
+    $service = new HarvestService(
+      $this->createStub(DatabaseTableFactory::class),
+      $this->createStub(MetastoreService::class),
+      $planRepository
+    );
+    $plan = $service->getHarvestPlan('test');
+    $this->assertEquals('Hello', $plan);
   }
 
   /**
@@ -62,7 +66,11 @@ class HarvestServiceTest extends TestCase {
       ->getMock();
 
     $service = $this->getMockBuilder(HarvestService::class)
-      ->setConstructorArgs([$storeFactory, $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain()])
+      ->setConstructorArgs([
+        $storeFactory,
+        $this->getMetastoreMockChain(),
+        $this->createStub(HarvestPlanRepository::class)
+      ])
       ->onlyMethods(['getDkanHarvesterInstance'])
       ->getMock();
 
@@ -217,6 +225,7 @@ class HarvestServiceTest extends TestCase {
       ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('dkan.harvest.harvest_plan_repository', HarvestPlanRepository::class)
       ->index(0);
 
     return (new Chain($this))

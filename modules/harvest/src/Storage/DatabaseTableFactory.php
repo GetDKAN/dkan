@@ -59,9 +59,6 @@ class DatabaseTableFactory implements FactoryInterface {
    * Protected.
    */
   protected function getDatabaseTable($identifier) {
-    if ($identifier === 'harvest_plans') {
-      return new HarvestPlanEntityDatabaseTable($this->entityTypeManager);
-    }
     return new DatabaseTable($this->connection, $identifier);
   }
 
