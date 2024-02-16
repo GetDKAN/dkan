@@ -4,7 +4,6 @@ namespace Drupal\harvest\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Database table factory.
@@ -28,9 +27,7 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(
-    Connection $connection
-  ) {
+  public function __construct(Connection $connection) {
     $this->connection = $connection;
   }
 
