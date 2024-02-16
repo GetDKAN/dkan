@@ -19,13 +19,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DatastoreService implements ContainerInjectionInterface {
 
   /**
-   * Import info service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
-   */
-  private ImportInfoList $importInfoList;
-
-  /**
    * Resource localizer for handling remote resource URLs.
    *
    * @var \Drupal\datastore\Service\ResourceLocalizer
@@ -263,7 +256,8 @@ class DatastoreService implements ContainerInjectionInterface {
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
-      return $storage->getSummary();
+      $data = $storage->getSummary();
+      return $data;
     }
     throw new \Exception('no storage');
   }

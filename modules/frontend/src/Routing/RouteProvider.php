@@ -13,34 +13,6 @@ use Symfony\Component\Routing\RouteCollection;
 class RouteProvider {
 
   /**
-   * Query factory.
-   *
-   * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
-   */
-  protected QueryFactoryInterface $entityQuery;
-
-  /**
-   * Build folder.
-   *
-   * @var string
-   */
-  private string $buildFolder;
-
-  /**
-   * Front end path.
-   *
-   * @var string
-   */
-  private string $frontendPath;
-
-  /**
-   * Routes.
-   *
-   * @var array
-   */
-  private array $routes;
-
-  /**
    * App root directory for react data catalog app.
    *
    * @var string

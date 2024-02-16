@@ -15,22 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Controller.
  */
 class SearchController implements ContainerInjectionInterface {
-
   use JsonResponseTrait;
-
-  /**
-   * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
-   */
-  protected MetastoreApiResponse $metastoreApiResponse;
-
-  /**
-   * Schema retriever.
-   *
-   * @var \Drupal\metastore\SchemaRetriever
-   */
-  protected SchemaRetriever $schemaRetriever;
 
   /**
    * Dkan search service.

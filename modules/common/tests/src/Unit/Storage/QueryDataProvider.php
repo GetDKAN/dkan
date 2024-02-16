@@ -67,7 +67,8 @@ class QueryDataProvider {
   public static function noPropertiesQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
-        return new Query();
+        $query = new Query();
+        return $query;
 
       case self::SQL:
         return "SELECT t.* FROM {table} t";

@@ -20,20 +20,6 @@ class ReferenceLookup implements ReferenceLookupInterface {
   use LoggerTrait;
 
   /**
-   * Cache tags invalidator service.
-   *
-   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
-   */
-  protected CacheTagsInvalidatorInterface $invalidator;
-
-  /**
-   * Module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected ModuleHandlerInterface $moduleHandler;
-
-  /**
    * Metastore Storage service.
    *
    * @var \Contracts\FactoryInterface

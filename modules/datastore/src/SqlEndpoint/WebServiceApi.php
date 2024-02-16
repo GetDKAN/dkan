@@ -14,18 +14,10 @@ use Drupal\metastore\MetastoreApiResponse;
  * Api class.
  */
 class WebServiceApi implements ContainerInjectionInterface {
-
   use JsonResponseTrait;
   use EventDispatcherTrait;
 
   const EVENT_RUN_QUERY = 'dkan_datastore_sql_run_query';
-
-  /**
-   * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
-   */
-  private MetastoreApiResponse $metastoreApiResponse;
 
   /**
    * DKAN SQL Endpoint service.
@@ -87,6 +79,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function runQueryGet() {
 
+    $query = NULL;
     $query = $this->requestStack->getCurrentRequest()->get('query');
 
     // @todo Deprecate parameter show-db-columns in favor of show_db_columns.

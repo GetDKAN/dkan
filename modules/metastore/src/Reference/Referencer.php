@@ -474,7 +474,8 @@ class Referencer {
 
     // Create node to store this reference.
     $storage = $this->storageFactory->getInstance($property_id);
-    return $storage->store($json, $data->identifier);
+    $entity_uuid = $storage->store($json, $data->identifier);
+    return $entity_uuid;
   }
 
 }

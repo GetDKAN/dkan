@@ -93,7 +93,7 @@ class DatastoreSubscriberTest extends TestCase {
     $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
-    (new Chain($this))
+    $config = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', [])
       ->getMock();
@@ -122,7 +122,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
-    $subscriber->drop($event);
+    $test = $subscriber->drop($event);
     $this->assertStringContainsString('Dropping datastore', $chain->getStoredInput('notices')[0]);
     $this->assertEmpty($chain->getStoredInput('errors'));
   }
@@ -158,7 +158,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
-    $subscriber->drop($event);
+    $test = $subscriber->drop($event);
     $this->assertStringContainsString('Failed to drop', $chain->getStoredInput('errors')[0]);
   }
 
@@ -193,7 +193,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
-    $subscriber->drop($event);
+    $test = $subscriber->drop($event);
     $this->assertStringContainsString('Failed to remove importer job', $chain->getStoredInput('errors')[0]);
   }
 

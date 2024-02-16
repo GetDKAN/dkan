@@ -21,7 +21,8 @@ class AuthCleanupHelper {
   public static function makePublicSpec(OpenApiSpec $spec) {
     $filteredSpec = static::removeAuthenticatedEndpoints($spec);
     $filteredSpec = static::cleanUpParameters($filteredSpec);
-    return static::cleanUpSchemas($filteredSpec);
+    $filteredSpec = static::cleanUpSchemas($filteredSpec);
+    return $filteredSpec;
   }
 
   /**
@@ -125,7 +126,10 @@ class AuthCleanupHelper {
    *   Array to store the used parameters as they're found.
    */
   private static function getParametersFromMethod(array $method, array &$usedParameters) {
-    foreach ($method["parameters"] ?? [] as $parameter) {
+    if (empty($method["parameters"])) {
+      return;
+    }
+    foreach ($method["parameters"] as $parameter) {
       static::getUsedParameters($parameter, $usedParameters);
     }
   }

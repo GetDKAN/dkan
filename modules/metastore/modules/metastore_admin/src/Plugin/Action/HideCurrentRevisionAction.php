@@ -28,25 +28,32 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPluginInterface {
 
   /**
+   * Private.
+   *
+   * @var entity
+   */
+  private $entity = NULL;
+
+  /**
+   * Account.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  private AccountInterface $currentUser;
+
+  /**
+   * Time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  private TimeInterface $timeInterface;
+
+  /**
    * Logger channel.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
-  protected LoggerChannelInterface $logger;
-
-  /**
-   * Current user account.
-   *
-   * @var \Drupal\Core\Session\AccountInterface
-   */
-  protected AccountInterface $currentUser;
-
-  /**
-   * Time.
-   *
-   * @var \Drupal\Component\Datetime\TimeInterface
-   */
-  protected TimeInterface $timeInterface;
+  private LoggerChannelInterface $logger;
 
   /**
    * Constructor.

@@ -243,7 +243,7 @@ class ValueHandlerTest extends TestCase {
    * Helper function to get complex object schema.
    */
   private function getComplexObjectSchema() {
-    return '{
+    $schema = '{
       "title": "Distribution",
       "description": "Description.",
       "type": "array",
@@ -287,6 +287,7 @@ class ValueHandlerTest extends TestCase {
         }
       }
     }';
+    return $schema;
   }
 
   /**

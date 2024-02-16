@@ -294,7 +294,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public static function getPayloadJson(Request $request, $schema = NULL) {
     $schema ??= file_get_contents(__DIR__ . "/../../docs/query.json");
     $payloadJson = static::getJson($request);
-    return static::fixTypes($payloadJson, $schema);
+    $payloadJson = static::fixTypes($payloadJson, $schema);
+    return $payloadJson;
   }
 
   /**

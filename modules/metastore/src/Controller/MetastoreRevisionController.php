@@ -18,22 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @codeCoverageIgnore.
  */
 class MetastoreRevisionController implements ContainerInjectionInterface {
-
   use JsonResponseTrait;
-
-  /**
-   * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
-   */
-  protected MetastoreApiResponse $apiResponse;
-
-  /**
-   * Storage.
-   *
-   * @var \Contracts\FactoryInterface
-   */
-  protected ContractsFactoryInterface $storageFactory;
 
   /**
    * Request stack.
@@ -162,7 +147,7 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
         throw new MissingObjectException("This $schema_id $identifier has no revision with that identifier.");
       }
       $output = (object) [
-        'identifier' => $revision_id,
+        'identifier' => (string) $revision_id,
         'published' => $revision_id == $entity->getRevisionId(),
         'message' => $revision->get('revision_log')->getString(),
         'modified' => date('c', $revision->get('changed')->getString()),

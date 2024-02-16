@@ -13,6 +13,8 @@ use Drupal\Tests\common\Unit\Connection;
  *
  */
 class SelectFactoryTest extends TestCase {
+  private $query;
+
   /**
    * SelectFactory object.
    *
@@ -105,7 +107,16 @@ class SelectFactoryTest extends TestCase {
   /**
    *
    */
+  private function queryDebug() {
+    print_r($this->query);
+    print "\n" . $this->selectToString($this->selectFactory->create($this->query));
+  }
+
+  /**
+   *
+   */
   public function setUp():void {
+    $this->query = new Query();
     $this->selectFactory = $this->getSelectFactory();
   }
 

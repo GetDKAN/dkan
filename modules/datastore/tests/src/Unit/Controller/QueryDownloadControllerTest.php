@@ -33,7 +33,6 @@ use Drupal\Tests\common\Unit\Connection;
  */
 class QueryDownloadControllerTest extends TestCase {
 
-  public $selectFactory;
   private $buffer;
 
   protected function setUp(): void {

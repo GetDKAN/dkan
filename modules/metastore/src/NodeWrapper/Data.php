@@ -71,7 +71,8 @@ class Data implements MetastoreItemInterface {
    * {@inheritdoc}
    */
   public function getCacheTags() {
-    return $this->node->getCacheTags();
+    $cacheTags = $this->node->getCacheTags();
+    return $cacheTags;
   }
 
   /**
@@ -192,7 +193,8 @@ class Data implements MetastoreItemInterface {
    */
   public function getSchemaId() {
     $this->fix();
-    return $this->node->get('field_data_type')->getString();
+    $schemaId = $this->node->get('field_data_type')->getString();
+    return $schemaId;
   }
 
   /**

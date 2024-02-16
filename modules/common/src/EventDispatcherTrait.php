@@ -28,7 +28,8 @@ trait EventDispatcherTrait {
    */
   private function dispatchEvent($eventName, $data, $validator = NULL) {
     if ($this->useLegacyDispatcher()) {
-      return $this->legacyDispatchEvent($eventName, $data, $validator);
+      $data = $this->legacyDispatchEvent($eventName, $data, $validator);
+      return $data;
     }
     $dispatcher = \Drupal::service('event_dispatcher');
 

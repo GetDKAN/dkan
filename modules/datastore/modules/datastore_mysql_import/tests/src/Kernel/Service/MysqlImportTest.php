@@ -100,13 +100,13 @@ class MysqlImportTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
+    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
     $import_service = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]
     );
     $this->assertInstanceOf(ImportService::class, $import_service);
     $import_service->setImporterClass(MockQueryVisibilityImport::class);
-    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
     $mysql_import = $import_service->getImporter();
     $this->assertInstanceOf(MockQueryVisibilityImport::class, $mysql_import);
     $this->assertInstanceOf(MySqlDatabaseTable::class, $mysql_import->getStorage());

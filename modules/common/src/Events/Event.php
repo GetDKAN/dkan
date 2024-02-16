@@ -35,27 +35,6 @@ class Event extends DrupalEvent {
   private ?\Exception $exception;
 
   /**
-   * Validator.
-   *
-   * @var \Closure|mixed|null
-   */
-  public $validator;
-
-  /**
-   * Arbitrary data.
-   *
-   * @var mixed
-   */
-  protected $data;
-
-  /**
-   * The exception we stored.
-   *
-   * @var \Exception|null
-   */
-  protected ?\Exception $exception;
-
-  /**
    * Constructor.
    */
   public function __construct($data, $validator = NULL) {

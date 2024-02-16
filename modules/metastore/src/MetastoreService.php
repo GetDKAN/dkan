@@ -92,8 +92,9 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public function getSchema($identifier) {
     $schema = $this->schemaRetriever->retrieve($identifier);
+    $schema = json_decode($schema);
 
-    return json_decode($schema);
+    return $schema;
   }
 
   /**
@@ -241,7 +242,9 @@ class MetastoreService implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier, bool $published = TRUE): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier, $published);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
-    return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+
+    $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+    return $data;
   }
 
   /**

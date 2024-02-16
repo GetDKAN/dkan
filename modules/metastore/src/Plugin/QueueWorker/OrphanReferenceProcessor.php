@@ -30,13 +30,6 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
   const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
 
   /**
-   * Reference lookup service.
-   *
-   * @var \Drupal\metastore\ReferenceLookupInterface
-   */
-  protected ReferenceLookupInterface $referenceLookup;
-
-  /**
    * The node storage service.
    *
    * @var \Drupal\node\NodeStorageInterface

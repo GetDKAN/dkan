@@ -370,7 +370,9 @@ class JsonFormBuilderTest extends TestCase {
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
-    return FieldTypeRouter::create($container);
+
+    $router = FieldTypeRouter::create($container);
+    return $router;
   }
 
 }

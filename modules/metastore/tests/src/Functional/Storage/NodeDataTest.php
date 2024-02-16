@@ -21,12 +21,7 @@ class NodeDataTest extends ExistingSiteBase {
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
 
-  /**
-   * Metadata factory.
-   *
-   * @var \Drupal\metastore\ValidMetadataFactory
-   */
-  protected ValidMetadataFactory $validMetadataFactory;
+  private ValidMetadataFactory $validMetadataFactory;
 
   public function setUp(): void {
     parent::setUp();

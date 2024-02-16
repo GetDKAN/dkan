@@ -22,27 +22,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class DatastoreSubscriber implements EventSubscriberInterface {
 
   /**
-   * Datastore service.
-   *
-   * @var \Drupal\datastore\DatastoreService
-   */
-  protected DatastoreService $service;
-
-  /**
-   * Resource purger.
-   *
-   * @var \Drupal\datastore\Service\ResourcePurger
-   */
-  protected ResourcePurger $resourcePurger;
-
-  /**
-   * Jobstore factory.
-   *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   */
-  protected JobStoreFactory $jobStoreFactory;
-
-  /**
    * Drupal Config Factory.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
