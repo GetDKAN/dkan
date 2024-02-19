@@ -4,6 +4,7 @@ package: DKAN
 type: module
 core_version_requirement: ^10
 dependencies:
+  - file
   - select_or_other
   - select2
   - dkan:metastore

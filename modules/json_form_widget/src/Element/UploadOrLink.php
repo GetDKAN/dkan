@@ -132,7 +132,7 @@ class UploadOrLink extends ManagedFile {
    * Helper function to unsetFids.
    */
   private static function unsetFids($element) {
-    foreach ($element['#value']['fids'] as $fid) {
+    foreach ($element['#value']['fids'] ?? [] as $fid) {
       unset($element['file_' . $fid]);
     }
     $element['#value']['fids'] = [];
