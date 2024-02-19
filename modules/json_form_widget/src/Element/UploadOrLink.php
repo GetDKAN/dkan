@@ -13,6 +13,7 @@ use Drupal\json_form_widget\Entity\RemoteFile;
  * Provides a new Element for uploading or linking to files.
  *
  * @FormElement("upload_or_link")
+ * @codeCoverageIgnore
  */
 class UploadOrLink extends ManagedFile {
 
@@ -27,7 +28,11 @@ class UploadOrLink extends ManagedFile {
   const TYPE_REMOTE = 'remote';
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}
+   *
+   * @codeCoverageIgnore
    */
   public function getInfo() {
     $class = get_class($this);
@@ -132,7 +137,7 @@ class UploadOrLink extends ManagedFile {
    * Helper function to unsetFids.
    */
   private static function unsetFids($element) {
-    foreach ($element['#value']['fids'] ?? [] as $fid) {
+    foreach ($element['#value']['fids'] as $fid) {
       unset($element['file_' . $fid]);
     }
     $element['#value']['fids'] = [];

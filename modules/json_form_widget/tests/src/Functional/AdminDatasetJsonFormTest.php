@@ -72,7 +72,8 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     ] as $locator) {
       $this->assertNotNull($page->find('css', $locator));
     }
-    // @todo Test more behavior from 07_admin_dataset_json_form.spec.js
+    // @todo Test more behavior from 07_admin_dataset_json_form.spec.js.
+    //   Needs to be able to generate tags and publisher entities.
   }
 
 }
