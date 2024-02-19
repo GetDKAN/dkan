@@ -184,6 +184,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       else {
         array_map(fn ($processor) => $processor->process($resource), $processors);
         $postImportResult = $this->createPostImportResult('done', NULL, $resource);
+        $this->logger->notice('Post import job for resource @id completed.', ['@id' => (string) $resource->getIdentifier()]);
       }
     }
     catch (\Exception $e) {
