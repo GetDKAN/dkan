@@ -86,10 +86,10 @@ function json_form_widget_field_widget_complete_form_alter(&$field_widget_comple
  * Add custom submit handler to form if it contains an upload_or_link element.
  */
 function json_form_widget_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  if (!isset($form['actions']['submit']) || !($has_json_form_widget = $form_state->get('has_json_form_widget'))) {
+  if (!isset($form['actions']['submit'])) {
     return;
   }
-  if ($has_json_form_widget) {
+  if ($form_state->get('has_json_form_widget')) {
     $form['actions']['submit']['#submit'][] = 'json_form_widget_file_submit';
   }
 }

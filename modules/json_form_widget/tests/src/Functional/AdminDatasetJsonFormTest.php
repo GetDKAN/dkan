@@ -7,7 +7,7 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Test the json form widget.
  *
- * This test replaces Cypress test:
+ * This test begins to replace Cypress test:
  * - 07_admin_dataset_json_form.spec.js
  *
  * @group dkan
@@ -23,32 +23,6 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
   ];
 
   protected $defaultTheme = 'stark';
-
-  public function testEmptyForm() {
-    $this->markTestIncomplete('need to create tags and publishers to include in form submission.');
-    $this->drupalLogin(
-    // @todo Figure out least possible admin permissions.
-      $this->drupalCreateUser(['bypass node access'])
-    );
-    $assert = $this->assertSession();
-
-    $this->drupalGet('node/add/data');
-    $assert->statusCodeEquals(200);
-
-    $node_title = 'dkan data title';
-
-    $this->submitForm([
-      'edit-field-json-metadata-0-value-title' => $node_title,
-      'edit-field-json-metadata-0-value-description' => 'description',
-      'edit-field-json-metadata-0-value-modified-date' => '2024-02-18',
-      'edit-field-json-metadata-0-value-contactpoint-contactpoint-fn' => 'contact name',
-      'edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail' => 'foo@example.com',
-      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote' => 'https://demo.getdkan.org/sites/default/files/distribution/cedcd327-4e5d-43f9-8eb1-c11850fa7c55/Bike_Lane.csv',
-    ], 'Save', 'node-data-form');
-
-    $this->assertNotEmpty($node = $this->drupalGetNodeByTitle($node_title));
-    $this->assertEquals($node_title, $node->get('label')->getValue());
-  }
 
   public function testAdminDatasetJsonForm() {
     $this->drupalLogin(
@@ -98,7 +72,7 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     ] as $locator) {
       $this->assertNotNull($page->find('css', $locator));
     }
-    // More to do here.
+    // @todo Test more behavior from 07_admin_dataset_json_form.spec.js
   }
 
 }

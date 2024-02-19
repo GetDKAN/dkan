@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Provides a flexible_datetime element.
  *
  * @FormElement("flexible_datetime")
+ * @codeCoverageIgnore
  */
 class FlexibleDateTime extends Datetime {
 

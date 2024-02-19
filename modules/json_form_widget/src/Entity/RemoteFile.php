@@ -24,6 +24,7 @@ use Drupal\file\Entity\File;
  *     "uuid" = "uuid"
  *   }
  * )
+ * @codeCoverageIgnore
  */
 class RemoteFile extends File {
 
