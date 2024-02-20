@@ -8,7 +8,6 @@
   <coverage includeUncoveredFiles="true">
     <include>
       <directory>.</directory>
-      <directory suffix="module">modules/json_form_widget</directory>
     </include>
     <exclude>
       <file>rector.php</file>
