@@ -13,7 +13,7 @@ class FieldOperations extends ControllerBase {
    * Get a list of data dictionaries.
    */
   public static function getDataDictionaries() {
-    $exsisting_identifiers = [];
+    $existing_identifiers = [];
     $node_storage = \Drupal::entityTypeManager()->getStorage('node');
     $query = $node_storage
       ->getQuery()
@@ -23,10 +23,13 @@ class FieldOperations extends ControllerBase {
     $nodes_ids = $query->execute();
     $nodes = $node_storage->loadMultiple($nodes_ids);
     foreach ($nodes as $node) {
-      $exsisting_identifiers[$node->id()] .= $node->uuid();
+      $existing_identifiers[] = [
+        'nid' => $node->id(),
+        'identifier' => $node->uuid(),
+      ];
     }
 
-    return $exsisting_identifiers;
+    return $existing_identifiers;
   }
 
   /**
