@@ -150,7 +150,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     if ($postImportResult->getStatus() === Result::DONE) {
       $this->invalidateCacheTags(DataResource::buildUniqueIdentifier(
         $data->getIdentifier(),
-        $data->getVersion
+        $data->getVersion(),
         DataResource::DEFAULT_SOURCE_PERSPECTIVE
       );
     }
