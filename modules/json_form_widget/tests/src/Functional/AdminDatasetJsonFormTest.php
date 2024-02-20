@@ -80,7 +80,10 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
 
     // 07_admin_dataset_json_form.spec.js : User can create and edit a dataset
     // with the json form UI. User can delete a dataset.
-    // We need a publisher.
+    //
+    // Since we don't have JavaScript, we can't use select2 or select_or_other
+    // to add publisher or keyword entities. We create them here with arbitrary
+    // UUIDs so that we can post the names to the form.
     $publisher_name = uniqid();
     $metastore_service->post('publisher',
       $metastore_service->getValidMetadataFactory()->get(
@@ -101,8 +104,9 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     // Use the form.
     $this->drupalGet('node/add/data');
     $assert->statusCodeEquals(200);
+    $dataset_title = 'DKANTEST dataset title';
     $this->submitForm([
-      'edit-field-json-metadata-0-value-title' => 'DKANTEST dataset title',
+      'edit-field-json-metadata-0-value-title' => $dataset_title,
       'edit-field-json-metadata-0-value-description' => 'DKANTEST dataset description.',
       'edit-field-json-metadata-0-value-accesslevel' => 'public',
       'edit-field-json-metadata-0-value-modified-date' => '2020-02-02',
@@ -115,44 +119,45 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     $assert->pageTextContains('Data DKANTEST dataset title has been created.');
 
     // Confirm the default dkan admin view is filtered to show only datasets.
-//    $this->drupalGet('admin/dkan/datasets');
+    $this->drupalGet('admin/dkan/datasets');
+    foreach ($page->findAll('css', 'tbody tr') as $row) {
+      $this->assertStringContainsString(
+        'dataset',
+        $row->find('css', 'td.views-field-field-data-type')->getText()
+      );
+    }
 
-//    cy.visit(baseurl + "/admin/dkan/datasets")
-//        cy.get('tbody tr').each(($el) => {
-//      cy.wrap($el).within(() => {
-//        cy.get('td.views-field-field-data-type').should('contain', 'dataset')
-//          })
-//        })
-
-
+    // Filter for our dataset.
+    $this->drupalGet('admin/dkan/datasets');
+    $this->submitForm(['edit-title' => $dataset_title], 'Filter');
 
     // Edit the dataset.
-//    $this->drupalGet('admin/dkan/datasets');
-//    cy.get('#edit-title').type('DKANTEST dataset title', { force:true } )
-//        cy.get('#edit-submit-dkan-dataset-content').click({ force:true })
-//        cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
-//        cy.wait(2000)
-//        cy.get('#edit-field-json-metadata-0-value-title').should('have.value','DKANTEST dataset title')
-//        cy.get('#edit-field-json-metadata-0-value-title').type('NEW dkantest dataset title',{ force:true })
-//        cy.get('#edit-field-json-metadata-0-value-accrualperiodicity').select('Annual', { force:true })
-//        cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
-//        .find('.select2-selection')
-//        .click({ force: true });
-//        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('testing{enter}')
-//        cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title').type('DKANTEST distribution title text', { force:true })
-//        cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description').type('DKANTEST distribution description text', { force:true })
-//        cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select').select('csv', { force:true })
-//        cy.get('#edit-submit').click({ force:true })
-//        cy.get('.button').contains('Yes').click({ force:true });
-//        cy.get('.messages--status').should('contain','has been updated')
+    $page->find('css', 'tbody > tr:first-of-type > .views-field-nothing > a')->click();
+    $this->assertNotNull($page->find('css', '#edit-field-json-metadata-0-value-title'));
+    $assert->fieldValueEquals('edit-field-json-metadata-0-value-title', $dataset_title);
+    $dataset_new_title = 'NEW dkantest dataset title';
+    // @todo cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('testing{enter}')
+    $this->submitForm([
+      'edit-field-json-metadata-0-value-title' => $dataset_new_title,
+      // R/P1Y means Annual.
+      'edit-field-json-metadata-0-value-accrualperiodicity' => 'R/P1Y',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'DKANTEST distribution title text',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'DKANTEST distribution description text',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
+    ], 'Save');
+    $assert->statusCodeEquals(200);
+    $assert->pageTextContains('Data ' . $dataset_new_title . ' has been updated.');
 
-//    cy.visit(baseurl + "/admin/dkan/datasets")
-//        cy.wait(2000)
-//        cy.get('#edit-node-bulk-form-0').check({ force:true })
-//        cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
-//        cy.get('#edit-submit').click({ force:true })
-//        cy.get('input[value="Delete"]').click({ force:true })
-//        cy.get('.messages__content').should('contain','Deleted 1 content item.')
+    // User can delete the dataset.
+    $this->drupalGet('admin/dkan/datasets');
+    $this->submitForm([
+      'edit-node-bulk-form-0' => TRUE,
+      'edit-action' => 'node_delete_action',
+    ], 'Apply to selected items');
+    $assert->statusCodeEquals(200);
+    // Are you sure?
+    $page->find('css', '#edit-submit')->click();
+    $assert->pageTextContains('Deleted 1 content item.');
   }
 
 }
