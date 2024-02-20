@@ -16,6 +16,7 @@ use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
+use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -152,7 +153,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
         $data->getIdentifier(),
         $data->getVersion(),
         DataResource::DEFAULT_SOURCE_PERSPECTIVE
-      );
+      ));
     }
     // Store the results of the PostImportResult object.
     $postImportResult->storeResult();
