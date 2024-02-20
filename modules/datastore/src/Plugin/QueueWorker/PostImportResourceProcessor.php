@@ -147,9 +147,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    */
   public function processItem($data) {
     $postImportResult = $this->postImportProcessItem($data);
-    $id = $data->getIdentifier();
-    $version = $data->getVersion();
-    $this->invalidateCacheTags($id . '__' . $version . '__source');
+    if ($postImportResult->getStatus() === Result::DONE) {
+      $this->invalidateCacheTags(DataResource::buildUniqueIdentifier(
+        $data->getIdentifier(),
+        $data->getVersion
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE
+      );
+    }
     // Store the results of the PostImportResult object.
     $postImportResult->storeResult();
   }
