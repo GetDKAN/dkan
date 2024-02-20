@@ -7,7 +7,7 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Test the json form widget.
  *
- * This test begins to replace Cypress test:
+ * This test replaces Cypress test:
  * - 07_admin_dataset_json_form.spec.js
  *
  * @group dkan
@@ -136,7 +136,6 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     $this->assertNotNull($page->find('css', '#edit-field-json-metadata-0-value-title'));
     $assert->fieldValueEquals('edit-field-json-metadata-0-value-title', $dataset_title);
     $dataset_new_title = 'NEW dkantest dataset title';
-    // @todo cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('testing{enter}')
     $this->submitForm([
       'edit-field-json-metadata-0-value-title' => $dataset_new_title,
       // R/P1Y means Annual.
