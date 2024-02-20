@@ -67,6 +67,11 @@ class FieldCallbacks extends ControllerBase {
       $currently_modifying[$op_index[1]] = $current_fields[$op_index[1]];
     }
 
+    // Reindex the current_fields array
+    if ($current_fields) {
+      $current_fields = array_values($current_fields);
+    }
+
     $form_state->set('fields_being_modified', $currently_modifying);
     $form_state->set('current_fields', $current_fields);
     $form_state->setRebuild();
