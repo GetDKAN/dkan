@@ -35,7 +35,7 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * Storage factory.
    *
-   * @var \Drupal\metastore\Storage\MetastoreStorageFactoryInterface
+   * @var \Drupal\metastore\Storage\DataFactory
    */
   private $storageFactory;
 

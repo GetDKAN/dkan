@@ -5,9 +5,10 @@
   bootstrap="/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
   colors="true"
   verbose="true">
-  <coverage>
+  <coverage includeUncoveredFiles="true">
     <include>
       <directory>.</directory>
+      <directory suffix="module">.</directory>
     </include>
     <exclude>
       <file>rector.php</file>
