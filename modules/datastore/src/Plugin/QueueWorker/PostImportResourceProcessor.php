@@ -16,7 +16,6 @@ use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
-use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -148,7 +147,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    */
   public function processItem($data) {
     $postImportResult = $this->postImportProcessItem($data);
-    if ($postImportResult->getStatus() === Result::DONE) {
+    if ($postImportResult->getPostImportStatus() === 'done') {
       $this->invalidateCacheTags(DataResource::buildUniqueIdentifier(
         $data->getIdentifier(),
         $data->getVersion(),
