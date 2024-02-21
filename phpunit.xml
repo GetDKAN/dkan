@@ -5,7 +5,7 @@
   bootstrap="/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
   colors="true"
   verbose="true">
-  <coverage includeUncoveredFiles="true">
+  <coverage>
     <include>
       <directory>.</directory>
     </include>
