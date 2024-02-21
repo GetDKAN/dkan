@@ -90,9 +90,8 @@ class DrupalFiles implements ContainerInjectionInterface {
       $filename = $this->getFilenameFromUrl($url);
       $dest = $this->getFilesystem()->realpath($destination) . "/{$filename}";
       copy($src, $dest);
-      $url = $this->fileCreateUrl("{$destination}/{$filename}");
 
-      return $url;
+      return $this->fileCreateUrl("{$destination}/{$filename}");
     }
     else {
       return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);

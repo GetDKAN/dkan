@@ -295,8 +295,7 @@ class UploadOrLink extends ManagedFile {
       return static::getLocalFileUrl($element);
     }
     elseif (!empty($element['#value']['file_url_remote'])) {
-      $uri = $element['#value']['file_url_remote'];
-      return $uri;
+      return $element['#value']['file_url_remote'];
     }
 
     return $element['#uri'] ?? NULL;

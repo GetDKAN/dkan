@@ -7,7 +7,8 @@ use Drupal\Core\Database\Query\Update;
 
 class UpdateQueryMock extends Update {
 
-    public function __construct(Connection $connection, $table, array $options = []) {
+    public function __construct()
+    {
     }
 
     public function expression($field, $expression, $arguments = NULL) {

@@ -46,9 +46,7 @@ trait FacetsFromContentTrait {
     foreach ($facetsKeys as $key) {
       $facets[$key]->total++;
     }
-
-    $facets = array_values($facets);
-    return $facets;
+    return array_values($facets);
   }
 
   /**

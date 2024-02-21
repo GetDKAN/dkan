@@ -38,7 +38,7 @@ class DereferencerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', ['publisher'])
       ->getMock();
 
-    $queueService = (new Chain($this))
+    (new Chain($this))
       ->add(QueueFactory::class)
       ->getMock();
 
@@ -85,14 +85,14 @@ class DereferencerTest extends TestCase {
       ->add(NodeData::class, 'retrieve', $keywords)
       ->getMock();
 
-    $uuidService = new Uuid5();
+    new Uuid5();
 
     $configService = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', ['keyword'])
       ->getMock();
 
-    $queueService = (new Chain($this))
+    (new Chain($this))
       ->add(QueueFactory::class)
       ->getMock();
 

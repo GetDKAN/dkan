@@ -172,14 +172,12 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    *   Altered schema.
    */
   private function makeAllOptional(array $schema) {
-    $filteredSchema = self::nestedFilterKeys($schema, function ($prop) {
+    return self::nestedFilterKeys($schema, function ($prop) {
       if ($prop === 'required') {
         return FALSE;
       }
       return TRUE;
     });
-
-    return $filteredSchema;
   }
 
   /**
@@ -193,11 +191,10 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    */
   private function schemaComponent($schemaId) {
     $schema = json_decode(json_encode($this->metastore->getSchema($schemaId)), TRUE);
-    $doc = [
+
+    return [
       "{$schemaId}" => self::filterJsonSchemaUnsupported($schema),
     ];
-
-    return $doc;
   }
 
   /**
@@ -210,7 +207,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    *   Array with single key, value is full parameter array.
    */
   private function schemaParameters($schemaId) {
-    $doc = [
+    return [
       "{$schemaId}Uuid" => [
         "name" => "identifier",
         "in" => "path",
@@ -220,8 +217,6 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         "example" => $this->getExampleIdentifier($schemaId) ?: "00000000-0000-0000-0000-000000000000",
       ],
     ];
-
-    return $doc;
   }
 
   /**

@@ -62,8 +62,6 @@ class ControllerPageTest extends TestCase {
           ->getMock();
         $pageBuilder->method('build')->willReturn("<h1>Hello World!!!</h1>\n");
         return $pageBuilder;
-
-        break;
       case 'config.factory':
         $immutableConfig = $this->getMockBuilder(ImmutableConfig::class)
           ->disableOriginalConstructor()
@@ -77,8 +75,6 @@ class ControllerPageTest extends TestCase {
           ->getMock();
         $configFactory->method('get')->willReturn($immutableConfig);
         return $configFactory;
-
-        break;
     }
   }
 

@@ -25,7 +25,7 @@ class Connection extends CoreConnection {
   /**
    * {@inheritdoc}
    */
-  protected $statementClass = NULL;
+  protected $statementClass;
 
   /**
    * {@inheritdoc}
@@ -58,8 +58,8 @@ class Connection extends CoreConnection {
   /**
    * {@inheritdoc}
    */
-  public function createDatabase($database) {
-    return;
+  public function createDatabase($database)
+  {
   }
 
   /**

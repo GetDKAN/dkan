@@ -23,23 +23,22 @@
 
 declare(strict_types=1);
 
-use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
 use DrupalFinder\DrupalFinder;
-use DrupalRector\Set\Drupal9SetList;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
-use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
-use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
+use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
+use DrupalRector\Set\Drupal10SetList;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Set\ValueObject\SetList;
+use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -49,19 +48,15 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
 
   // Our base version of PHP.
-  $rectorConfig->phpVersion(PhpVersion::PHP_74);
+  $rectorConfig->phpVersion(PhpVersion::PHP_81);
 
   $rectorConfig->sets([
-    Drupal9SetList::DRUPAL_94,
-    LevelSetList::UP_TO_PHP_74,
+    Drupal10SetList::DRUPAL_10,
+    SetList::DEAD_CODE,
   ]);
 
   $rectorConfig->skip([
     '*/upgrade_status/tests/modules/*',
-    // Keep getMockBuilder() for now.
-    GetMockBuilderGetMockToCreateMockRector::class,
-    DrupalGetMockRector::class,
-    GetMockRector::class,
     // Don't throw errors on JSON parse problems. Yet.
     // @todo Throw errors and deal with them appropriately.
     JsonThrowOnErrorRector::class,
@@ -77,7 +72,9 @@ return static function (RectorConfig $rectorConfig): void {
     // @see \Drupal\common\EventDispatcherTrait
     StringClassNameToClassConstantRector::class,
     RemoveExtraParametersRector::class,
-    PublicConstantVisibilityRector::class,
+    RemoveParentCallWithoutParentRector::class,
+    ClassPropertyAssignToConstructorPromotionRector::class,
+    FunctionToStaticRector::class,
   ]);
 
   $drupalFinder = new DrupalFinder();

@@ -48,12 +48,11 @@ trait DeprecatedJobStoreFactoryTrait {
     // Avoid table-name-too-long errors by hashing the FQN of the identifier,
     // assuming it's a class name.
     $exploded_class = explode('\\', $identifier);
-    $table_name = strtolower(implode('_', [
+    return strtolower(implode('_', [
       'jobstore',
       crc32($identifier),
       array_pop($exploded_class),
     ]));
-    return $table_name;
   }
 
   /**

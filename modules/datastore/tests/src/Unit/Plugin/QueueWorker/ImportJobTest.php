@@ -33,6 +33,7 @@ class ImportJobTest extends TestCase {
    * This method is called before each test.
    */
   protected function setUp(): void {
+    parent::setUp();
     $this->database = new TestMemStorage();
     $this->assertTrue($this->database instanceof DatabaseTableInterface);
   }
