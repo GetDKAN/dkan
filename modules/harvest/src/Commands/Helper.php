@@ -80,12 +80,23 @@ trait Helper {
       );
 
       $table->addRow($row);
-      if ($run_errors = $result['errors'] ?? FALSE) {
-        $errors[$run_id] = $run_errors;
-      }
+      // Store error messages if we have them.
+      $errors[$run_id] = $result['errors'] ?? NULL;
     }
 
     $table->render();
+    $this->renderHarvestRunsErrors($errors);
+  }
+
+  /**
+   * Display errors.
+   *
+   * @param array $errors
+   *   Nested array of error messages and the systems they belong to.
+   *
+   * @see self::renderHarvestRunsInfo()
+   */
+  private function renderHarvestRunsErrors(array $errors) {
     if ($errors) {
       foreach ($errors as $run_id => $run_errors) {
         foreach ($run_errors as $type => $messages) {
@@ -95,7 +106,6 @@ trait Helper {
         }
       }
     }
-
   }
 
   /**
