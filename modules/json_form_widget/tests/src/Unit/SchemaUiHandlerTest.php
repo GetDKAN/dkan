@@ -21,6 +21,10 @@ use MockChain\Options;
 
 /**
  * Test class for SchemaUiHandlerTest.
+ *
+ * @group dkan
+ * @group json_form_widget
+ * @group unit
  */
 class SchemaUiHandlerTest extends TestCase {
 
