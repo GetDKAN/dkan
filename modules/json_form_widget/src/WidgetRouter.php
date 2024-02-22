@@ -311,7 +311,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element['#type'] = 'text_format';
       $element['#format'] = $spec->text_format;
       $element['#allowed_formats'] = [
-        $spec->text_format
+        $spec->text_format,
       ];
     }
     if (isset($spec->rows)) {
