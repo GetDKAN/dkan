@@ -119,8 +119,9 @@ class HarvestService implements ContainerInjectionInterface {
    * Register a new harvest plan.
    *
    * @param object $plan
-   *   Usually an \stdClass representation. Will be json encoded. Must contain
-   *   an 'identifier' property.
+   *   The plan object. Must contain an 'identifier' propoerty. See
+   *   components.schemas.harvestPlan within
+   *   modules/harvest/docs/openapi_spec.json for the schema of a plan.
    *
    * @return string
    *   Identifier.

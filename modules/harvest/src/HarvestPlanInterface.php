@@ -16,6 +16,7 @@ interface HarvestPlanInterface extends ContentEntityInterface, \JsonSerializable
    * modules/harvest/docs/openapi_spec.json for the schema of a plan.
    *
    * @return object
+   *   The harvest plan as an object.
    */
   public function getPlan(): object;
 
