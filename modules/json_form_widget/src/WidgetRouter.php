@@ -307,7 +307,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleTextareaElement($spec, array $element) {
     $element['#type'] = 'textarea';
-    if ($spec->text_format) {
+    if (isset($spec->text_format)) {
       $element['#type'] = 'text_format';
       $element['#format'] = $spec->text_format;
       $element['#allowed_formats'] = [
