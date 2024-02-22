@@ -39,7 +39,7 @@ class HarvestServiceTest extends TestCase {
    */
   public function testGetHarvestPlan() {
     $planRepository = (new Chain($this))
-      ->add(HarvestPlanRepository::class, 'retrieve', 'Hello')
+      ->add(HarvestPlanRepository::class, 'getPlanJson', 'Hello')
       ->getMock();
 
     $service = new HarvestService(

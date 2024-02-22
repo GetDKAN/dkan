@@ -2,9 +2,9 @@
 
 namespace Drupal\harvest\Entity;
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\harvest\HarvestPlanInterface;
 
 /**
  * Repository for various queries related to harvest plans.
@@ -31,28 +31,31 @@ class HarvestPlanRepository {
   }
 
   /**
-   * Get the plan object for the plan identifier.
-   *
-   * @param string $plan_id
-   *   Plan identifier.
-   *
-   * @return object
-   *   Object form of the plan.
-   */
-  public function getPlanObject(string $plan_id): object {
-    return json_decode($this->retrieve($plan_id));
-  }
-
-  /**
    * Get all the plan identifiers.
    *
    * @return string[]
    *   All plan identifiers.
    */
-  public function retrieveAll(): array {
+  public function getAllHarvestPlanIds(): array {
     return $this->planStorage->getQuery()
       ->accessCheck(FALSE)
       ->execute();
+  }
+
+  /**
+   * Get the plan object for the plan identifier.
+   *
+   * @param string $plan_id
+   *   Plan identifier.
+   *
+   * @return object|null
+   *   Object form of the plan or null.
+   */
+  public function getPlan(string $plan_id): ?object {
+    if ($entity = $this->loadEntity($plan_id)) {
+      return $entity->getPlan();
+    }
+    return NULL;
   }
 
   /**
@@ -61,12 +64,14 @@ class HarvestPlanRepository {
    * @param string $plan_id
    *   The plan ID to retrieve.
    *
-   * @return string
+   * @return string|null
    *   The plan record.
    *
    * @see \Drupal\harvest\Entity\HarvestPlan::jsonSerialize()
+   *
+   * @todo Move away from expecting a plan to be JSON-encoded.
    */
-  public function retrieve(string $plan_id) {
+  public function getPlanJson(string $plan_id) {
     if ($entity = $this->loadEntity($plan_id)) {
       return json_encode($entity);
     }
@@ -85,8 +90,8 @@ class HarvestPlanRepository {
    * @return string
    *   The plan id.
    */
-  public function storePlanObject(object $plan, string $plan_id) {
-    return $this->store(json_encode($plan), $plan_id);
+  public function storePlan(object $plan, string $plan_id) {
+    return $this->storePlanJson(json_encode($plan), $plan_id);
   }
 
   /**
@@ -100,8 +105,10 @@ class HarvestPlanRepository {
    *
    * @return string
    *   The plan id.
+   *
+   * @todo Move away from using JSON to store plans.
    */
-  public function store(string $plan_data, string $plan_id): string {
+  public function storePlanJson(string $plan_data, string $plan_id): string {
     $entity = $this->loadEntity($plan_id);
     if ($entity) {
       // Modify entity.
@@ -124,7 +131,7 @@ class HarvestPlanRepository {
    *   The plan identifier.
    *
    * @return bool
-   *   Whether the
+   *   TRUE if the plan was removed successfully.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
@@ -134,15 +141,15 @@ class HarvestPlanRepository {
   }
 
   /**
-   * Helper method to load an entity given an ID.
+   * Helper method to load a harvest_plan entity given an ID.
    *
    * @param string $plan_id
    *   Entity ID.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\harvest\HarvestPlanInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
-  protected function loadEntity(string $plan_id): ?EntityInterface {
+  protected function loadEntity(string $plan_id): ?HarvestPlanInterface {
     if ($ids = $this->planStorage->getQuery()
       ->condition('id', $plan_id)
       ->range(0, 1)

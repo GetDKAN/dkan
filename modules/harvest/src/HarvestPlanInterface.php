@@ -9,4 +9,14 @@ use Drupal\Core\Entity\ContentEntityInterface;
  */
 interface HarvestPlanInterface extends ContentEntityInterface, \JsonSerializable {
 
+  /**
+   * Get the harvest plan as an object, ready to be JSON-encoded.
+   *
+   * See components.schemas.harvestPlan within
+   * modules/harvest/docs/openapi_spec.json for the schema of a plan.
+   *
+   * @return object
+   */
+  public function getPlan(): object;
+
 }

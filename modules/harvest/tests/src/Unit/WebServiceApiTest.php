@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\harvest\Unit;
 
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
@@ -173,8 +172,8 @@ class WebServiceApiTest extends TestCase {
    */
   private function getHarvestEntityRepositoryMock() {
     return (new Chain($this))
-      ->add(HarvestPlanRepository::class, 'retrieveAll', [])
-      ->add(HarvestPlanRepository::class, 'store', 'test')
+      ->add(HarvestPlanRepository::class, 'getAllHarvestPlanIds', [])
+      ->add(HarvestPlanRepository::class, 'storePlanJson', 'test')
       ->getMock();
   }
 

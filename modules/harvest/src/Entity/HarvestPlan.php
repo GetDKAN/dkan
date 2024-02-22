@@ -112,9 +112,13 @@ class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {
-    // In the case of this entity, we only want the serialized 'data' property,
-    // which is already serialized. Therefore, we have to DECODE it, so that
-    // json_encode() can then RE-ENCODE it.
+    return $this->getPlan();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function getPlan(): object {
     return json_decode($this->get('data')->getString());
   }
 

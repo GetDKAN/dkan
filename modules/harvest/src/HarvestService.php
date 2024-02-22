@@ -82,7 +82,7 @@ class HarvestService implements ContainerInjectionInterface {
     // both as a return value here and after json_encode(). Since the entity
     // query returns a keyed array, json_encode() will think it's an object. We
     // don't want that, so we use array_values().
-    return array_values($this->harvestPlanRepository->retrieveAll());
+    return array_values($this->harvestPlanRepository->getAllHarvestPlanIds());
   }
 
   /**
@@ -91,13 +91,28 @@ class HarvestService implements ContainerInjectionInterface {
    * @param string $plan_id
    *   The harvest plan id.
    *
-   * @return mixed
+   * @return string|null
    *   The harvest plan, if any, or NULL.
    *
    * @throws \Exception
    */
   public function getHarvestPlan($plan_id) {
-    return $this->harvestPlanRepository->retrieve($plan_id);
+    return $this->harvestPlanRepository->getPlanJson($plan_id);
+  }
+
+  /**
+   * Return a harvest plan object.
+   *
+   * @param string $plan_id
+   *   The harvest plan id.
+   *
+   * @return object
+   *   The harvest plan, if any, or NULL.
+   *
+   * @throws \Exception
+   */
+  public function getHarvestPlanObject($plan_id): object {
+    return $this->harvestPlanRepository->getPlan($plan_id);
   }
 
   /**
@@ -115,7 +130,7 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function registerHarvest($plan) {
     $this->validateHarvestPlan($plan);
-    return $this->harvestPlanRepository->storePlanObject($plan, $plan->identifier);
+    return $this->harvestPlanRepository->storePlan($plan, $plan->identifier);
   }
 
   /**
@@ -314,9 +329,9 @@ class HarvestService implements ContainerInjectionInterface {
    *   Plan.
    *
    * @return bool
-   *   Throws exceptions instead of false it seems.
+   *   TRUE if harvest plan validates. Throws exception otherwise.
    */
-  public function validateHarvestPlan($plan) {
+  public function validateHarvestPlan($plan): bool {
     return Factory::validateHarvestPlan($plan);
   }
 
@@ -330,7 +345,7 @@ class HarvestService implements ContainerInjectionInterface {
    *   Harvester object.
    */
   private function getHarvester(string $plan_id): Harvester {
-    $harvest_plan = $this->harvestPlanRepository->getPlanObject($plan_id);
+    $harvest_plan = $this->harvestPlanRepository->getPlan($plan_id);
     $item_store = $this->storeFactory->getInstance("harvest_{$plan_id}_items");
     $hash_store = $this->storeFactory->getInstance("harvest_{$plan_id}_hashes");
     return $this->getDkanHarvesterInstance($harvest_plan, $item_store, $hash_store);
