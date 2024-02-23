@@ -24,6 +24,11 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
 
   protected $defaultTheme = 'stark';
 
+  /**
+   * @todo Remove this when we drop support for Drupal 10.0.
+   */
+  protected $strictConfigSchema = FALSE;
+
   public function testAdminDatasetJsonForm() {
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
