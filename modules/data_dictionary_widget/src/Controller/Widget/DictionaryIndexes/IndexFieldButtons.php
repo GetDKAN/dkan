@@ -62,4 +62,65 @@ class IndexFieldButtons extends ControllerBase {
       '#limit_validation_errors' => [],
     ];
   }
+
+  /**
+   * Create Submit buttons.
+   */
+  public static function submitIndexFieldButton($location, $key) {
+    $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
+    $op = is_int($key) ? 'update_' . $key : 'add';
+    $value = $location == 'edit' ? 'Save index' : 'Add';
+    $edit_index_button = [
+      '#type' => 'submit',
+      '#value' => $value,
+      '#op' => $op,
+      '#submit' => [
+          [
+            '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+            $callbackClass,
+          ],
+      ],
+      '#ajax' => [
+        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields',
+        'effect' => 'fade',
+      ],
+      '#limit_validation_errors' => [],
+    ];
+
+    if ($location == 'edit') {
+      $edit_index_button['#name'] = 'index_field_update_' . $key;
+    }
+    return $edit_index_button;
+  }
+
+  /**
+   * Create Cancel button.
+   */
+  public static function cancelIndexFieldButton($location, $key) {
+    $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
+    $op = $location == 'edit' && $key ? 'abort_' . $key : 'cancel';
+    $cancel_index_button = [
+      '#type' => 'submit',
+      '#value' => t('Cancel'),
+      '#op' => $op,
+      '#submit' => [
+            [
+              '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+              $callbackClass,
+            ],
+      ],
+      '#ajax' => [
+        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields',
+        'effect' => 'fade',
+      ],
+      '#limit_validation_errors' => [],
+    ];
+
+    if ($location == 'edit') {
+      $cancel_index_button['#name'] = 'index_field_cancel_update_' . $key;
+    }
+    return $cancel_index_button;
+  }
 }
