@@ -44,7 +44,7 @@ class IndexFieldCallbacks extends ControllerBase {
   /**
    * Submit callback for the Index Edit button.
    */
-  public static function editSubformCallback(array &$form, FormStateInterface $form_state) {
+  public static function indexEditSubformCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
     $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
     $op = $trigger['#op'];
@@ -64,7 +64,7 @@ class IndexFieldCallbacks extends ControllerBase {
       $update_values = $form_state->getUserInput();
       unset($currently_modifying[$op_index[1]]);
       unset($current_index_fields [$op_index[1]]);
-      $current_index_fields [$op_index[1]] = FieldValues::updateValues($op_index[1], $update_values, $current_index_fields );
+      $current_index_fields [$op_index[1]] = IndexFieldValues::updateIndexFieldValues($op_index[1], $update_values, $current_index_fields );
       ksort($current_index_fields );
     }
 

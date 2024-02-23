@@ -26,7 +26,8 @@ class IndexFieldAddCreation extends ControllerBase {
       '#type' => 'textfield',
       '#title' => 'Name',
     ];
-    $add_index_fields['group']['description'] = self::createIndexFieldLengthField();
+    $add_index_fields['group']['length'] = self::createIndexFieldLengthField();
+    $add_index_fields['group']['actions'] = self::createIndexActionFields();
     
     return $add_index_fields;
   }
@@ -39,6 +40,17 @@ class IndexFieldAddCreation extends ControllerBase {
       '#name' => 'field_json_metadata[0][index_fields][field_collection][group][length]',
       '#type' => 'number',
       '#title' => 'Length',
+    ];
+  }
+
+  /**
+   * Create Action buttons.
+   */
+  private static function createIndexActionFields() {
+    return [
+      '#type' => 'actions',
+      'save_index_settings' => IndexFieldButtons::submitIndexFieldButton('add', NULL),
+      'cancel_index_settings' => IndexFieldButtons::cancelIndexFieldButton('cancel', NULL),
     ];
   }
 }
