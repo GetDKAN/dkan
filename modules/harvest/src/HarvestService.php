@@ -168,6 +168,8 @@ class HarvestService implements ContainerInjectionInterface {
 
   /**
    * Public.
+   *
+   * @todo Return the run ID somehow so it's not required that we look it up.
    */
   public function runHarvest($id) {
     $harvester = $this->getHarvester($id);
