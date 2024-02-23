@@ -19,12 +19,8 @@ use Drupal\harvest\WebServiceApi;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @covers \Drupal\harvest\WebServiceApi
  * @coversDefaultClass \Drupal\harvest\WebServiceApi
- *
- * @group dkan
  * @group harvest
- * @group unit
  */
 class WebServiceApiTest extends TestCase {
   use ServiceCheckTrait;
