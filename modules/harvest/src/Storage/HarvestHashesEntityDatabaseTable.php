@@ -2,8 +2,11 @@
 
 namespace Drupal\harvest\Storage;
 
-use Drupal\common\Storage\DrupalEntityDatabaseTableBase;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\common\Storage\Query;
+use Drupal\harvest\HarvestHashInterface;
 
 /**
  * Shim between the harvest_hash entity type and DKAN db table interface.
@@ -11,28 +14,42 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  * Some method implementations are stubbed out and throw a runtime exception,
  * so that future callers can implement them if needed.
  *
+ * Note: Our way of storing this data means that we can't have more than one
+ * harvest ID per Data node.
+ *
  * @see \Drupal\harvest\Entity\HarvestHash
  *
- * @todo Remove this and the parent class in a refactor of the harvester.
+ * @todo Remove this in a refactor of the harvester.
  */
-class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
+class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
 
   /**
-   * {@inheritDoc}
+   * Entity type we're dealing with.
    */
-  protected string $entityType = 'harvest_hash';
-
-  /**
-   * {@inheritDoc}
-   */
-  protected string $dataFieldName = '';
+  protected const ENTITY_TYPE = 'harvest_hash';
 
   /**
    * The plan ID for this 'table'.
    *
+   * All queries will use this plan ID to limit the results.
+   *
    * @var string
    */
   protected string $planId;
+
+  /**
+   * Entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * Entity storage interface for the entity type we're wrapping.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected EntityStorageInterface $entityStorage;
 
   /**
    * Construct an entity shim.
@@ -50,7 +67,8 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
    */
   public function __construct(string $planId, EntityTypeManagerInterface $entityTypeManager) {
     $this->planId = $planId;
-    parent::__construct($entityTypeManager);
+    $this->entityTypeManager = $entityTypeManager;
+    $this->entityStorage = $entityTypeManager->getStorage(static::ENTITY_TYPE);
   }
 
   /**
@@ -141,7 +159,7 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
     // Some calling code is very particular about the output being an array,
     // both as a return value here and after json_encode(). Since the entity
     // query returns a keyed array, json_encode() will think it's an object. We
-    // don't want that, so we use array_values().
+    // don't want that, so we use array_values() to yield an indexed array.
     return array_values(
       $this->entityStorage->getQuery()
         ->condition('harvest_plan_id', $this->planId)
@@ -156,11 +174,11 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
   public function destruct() {
     // DKAN API wants us to destroy the table, but we can't/shouldn't do that
     // here. So instead, we will delete all entities for our plan ID.
-    $ids = $this->entityStorage->getQuery()
+    if ($ids = $this->entityStorage->getQuery()
       ->condition('harvest_plan_id', $this->planId)
       ->accessCheck(FALSE)
-      ->execute();
-    if ($ids) {
+      ->execute()
+    ) {
       // Limit the number of entities deleted at one time. This can prevent
       // problems with huge tables of fielded entities.
       foreach (array_chunk($ids, 100) as $chunked_ids) {
@@ -172,15 +190,73 @@ class HarvestHashesEntityDatabaseTable extends DrupalEntityDatabaseTableBase {
   /**
    * {@inheritDoc}
    */
-  public function storeMultiple(array $data) {
-    throw new \RuntimeException(__METHOD__);
+  public function count(): int {
+    return $this->entityStorage->getQuery()
+      ->condition('harvest_plan_id', $this->planId)
+      ->count()
+      ->execute();
   }
 
   /**
    * {@inheritDoc}
    */
-  public function count() : int {
-    throw new \RuntimeException(__METHOD__);
+  public function primaryKey() {
+    // Use the primary key defined in the entity definition.
+    $definition = $this->entityTypeManager->getDefinition(static::ENTITY_TYPE);
+    return ($definition->getKeys())['id'];
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function storeMultiple(array $data) {
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function query(Query $query) {
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function setSchema(array $schema): void {
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function getSchema(): array {
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
+  }
+
+  /**
+   * Helper method to load an entity given an ID.
+   *
+   * @param string $id
+   *   Entity ID.
+   *
+   * @return \Drupal\harvest\HarvestHashInterface|null
+   *   The loaded entity or NULL if none could be loaded.
+   */
+  protected function loadEntity(string $id): ?HarvestHashInterface {
+    if (!$id) {
+      return NULL;
+    }
+    if ($ids = $this->entityStorage->getQuery()
+      ->condition($this->primaryKey(), $id)
+      ->condition('harvest_plan_id', $this->planId)
+      ->range(0, 1)
+      ->accessCheck(FALSE)
+      ->execute()
+    ) {
+      return $this->entityStorage->load(reset($ids));
+    }
+    return NULL;
   }
 
 }

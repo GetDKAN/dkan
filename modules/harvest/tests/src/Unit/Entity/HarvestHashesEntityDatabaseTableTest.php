@@ -1,20 +1,20 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Storage;
+namespace Drupal\Tests\harvest\Unit\Entity;
 
-use Drupal\common\Storage\DrupalEntityDatabaseTableBase;
 use Drupal\common\Storage\Query;
+use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\common\Storage\DrupalEntityDatabaseTableBase
- * @coversDefaultClass \Drupal\common\Storage\DrupalEntityDatabaseTableBase
+ * @covers \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+ * @coversDefaultClass \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
  *
  * @group dkan
- * @group common
+ * @group harvest
  * @group unit
  */
-class DrupalEntityDatabaseTableBaseTest extends TestCase {
+class HarvestHashesEntityDatabaseTableTest extends TestCase {
 
   public function providerNotImplementedMethods() {
     return [
@@ -29,12 +29,12 @@ class DrupalEntityDatabaseTableBaseTest extends TestCase {
    * @dataProvider providerNotImplementedMethods
    */
   public function testNotImplementedMethods($method, $arguments) {
-    $table = $this->getMockBuilder(DrupalEntityDatabaseTableBase::class)
+    $table = $this->getMockBuilder(HarvestHashesEntityDatabaseTable::class)
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
     $this->expectException(\RuntimeException::class);
-    $this->expectExceptionMessage(DrupalEntityDatabaseTableBase::class . '::' . $method . ' not yet implemented.');
+    $this->expectExceptionMessage(HarvestHashesEntityDatabaseTable::class . '::' . $method . ' not yet implemented.');
 
     $ref_method = new \ReflectionMethod($table, $method);
     $ref_method->invokeArgs($table, $arguments);
