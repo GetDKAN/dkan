@@ -31,15 +31,26 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $field_values = $form_state->get("new_fields");
+    $index_field_values = $form_state->get("new_index_fields");
+
     $current_fields = $form_state->get('current_fields');
+    $current_index_fields = $form_state->get('current_index_fields');
+
     $fields_being_modified = $form_state->get("fields_being_modified") ?? NULL;
+    $index_fields_being_modified = $form_state->get("index_fields_being_modified") ?? NULL;
+
     $op = $form_state->getTriggeringElement()['#op'] ?? NULL;
     $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, TRUE) : [];
     $op_index = isset($form_state->getTriggeringElement()['#op']) ? explode("_", $form_state->getTriggeringElement()['#op']) : NULL;
+
     $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
+    $index_data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
 
     // Build the data_results array to display the rows in the data table.
     $data_results = FieldOperations::processDataResults($data_results, $current_fields, $field_values, $op);
+
+    // Build the index_data_results array to display the rows in the data table.
+    $index_data_results = IndexFieldOperations::processIndexDataResults($index_data_results, $current_index_fields, $index_field_values, $op);
 
     $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $fields_being_modified);
 

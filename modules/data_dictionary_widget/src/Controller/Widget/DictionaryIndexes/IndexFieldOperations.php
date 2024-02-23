@@ -35,6 +35,33 @@ class IndexFieldOperations extends ControllerBase {
   }
 
   /**
+   * Cleaning the data up.
+   */
+  public static function processIndexDataResults($index_data_results, $current_index_fields, $index_field_values, $op) {
+    if (isset($current_index_fields)) {
+      $index_data_results = $current_index_fields;
+    }
+
+    if (isset($index_field_values["field_json_metadata"][0]["index_fields"]["field_collection"])) {
+      $index_field_group = $index_field_values["field_json_metadata"][0]["index_fields"]["field_collection"]["group"];
+
+      $data_pre = [
+        [
+          "name" => $index_field_group["name"],
+          "length" => $index_field_group["length"],
+        ],
+      ];
+
+    }
+
+    if (isset($data_pre) && $op === "add") {
+      $index_data_results = isset($current_index_fields) ? array_merge($current_index_fields, $data_pre) : $data_pre;
+    }
+
+    return $index_data_results;
+  }
+
+  /**
    * Set the elements associated with adding a new field.
    */
   public static function setAddIndexFormState($add_new_index_field, $element) {
