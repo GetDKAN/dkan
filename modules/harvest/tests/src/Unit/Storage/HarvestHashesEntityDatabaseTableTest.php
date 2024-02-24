@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest\Unit\Entity;
+namespace Drupal\Tests\harvest\Unit\Storage;
 
 use Drupal\common\Storage\Query;
 use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
@@ -26,6 +26,8 @@ class HarvestHashesEntityDatabaseTableTest extends TestCase {
   }
 
   /**
+   * Gives us coverage on unimplemented methods.
+   *
    * @dataProvider providerNotImplementedMethods
    */
   public function testNotImplementedMethods($method, $arguments) {
@@ -38,6 +40,21 @@ class HarvestHashesEntityDatabaseTableTest extends TestCase {
 
     $ref_method = new \ReflectionMethod($table, $method);
     $ref_method->invokeArgs($table, $arguments);
+  }
+
+  /**
+   * @covers ::loadEntity
+   */
+  public function testLoadEntityBadId() {
+    $table = $this->getMockBuilder(HarvestHashesEntityDatabaseTable::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $ref_method = new \ReflectionMethod($table, 'loadEntity');
+    $ref_method->setAccessible(TRUE);
+
+    // Invoke with empty string.
+    $this->assertNull($ref_method->invokeArgs($table, ['']));
   }
 
 }

@@ -40,7 +40,7 @@ use Drupal\harvest\HarvestHashInterface;
  *
  * Internal is TRUE so that JSONAPI does not provide a REST API for this entity.
  */
-class HarvestHash extends ContentEntityBase implements HarvestHashInterface, \JsonSerializable {
+class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
 
   /**
    * {@inheritdoc}

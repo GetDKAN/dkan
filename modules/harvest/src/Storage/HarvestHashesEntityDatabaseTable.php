@@ -15,11 +15,13 @@ use Drupal\harvest\HarvestHashInterface;
  * so that future callers can implement them if needed.
  *
  * Note: Our way of storing this data means that we can't have more than one
- * harvest ID per Data node.
+ * harvest plan ID per Data node.
  *
  * @see \Drupal\harvest\Entity\HarvestHash
  *
  * @todo Remove this in a refactor of the harvester.
+ *
+ * @internal
  */
 class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
 
@@ -194,6 +196,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
     return $this->entityStorage->getQuery()
       ->condition('harvest_plan_id', $this->planId)
       ->count()
+      ->accessCheck(FALSE)
       ->execute();
   }
 

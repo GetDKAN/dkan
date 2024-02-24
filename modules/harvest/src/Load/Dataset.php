@@ -49,8 +49,6 @@ class Dataset extends Load {
    *
    * @return \Drupal\metastore\MetastoreService
    *   Metastore service.
-   *
-   * @codeCoverageIgnore
    */
   protected function getMetastoreService(): MetastoreService {
     $service = \Drupal::service('dkan.metastore.service');

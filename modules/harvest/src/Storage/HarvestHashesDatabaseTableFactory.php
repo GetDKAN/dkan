@@ -9,6 +9,10 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  * Database table factory.
  *
  * This is the service dkan.harvest.storage.hashes_database_table.
+ *
+ * @todo Remove this in a refactor of the harvester.
+ *
+ * @internal
  */
 class HarvestHashesDatabaseTableFactory implements FactoryInterface {
 

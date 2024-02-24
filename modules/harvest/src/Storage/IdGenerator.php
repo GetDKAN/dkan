@@ -8,6 +8,8 @@ use Contracts\IdGeneratorInterface;
  * Extracts identifiers from metastore data objects.
  *
  * @codeCoverageIgnore
+ *
+ * @deprecated Is this dead code?
  */
 class IdGenerator implements IdGeneratorInterface {
 
