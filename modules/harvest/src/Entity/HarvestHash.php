@@ -68,7 +68,8 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface, \Js
         'max_length' => 255,
       ]);
 
-    // Hash for the harvest. This is a hash of the dataset that was harvested.
+    // Hash for the harvested resource. This is a hash of the JSON that was used
+    // to harvest the datastore.
     // @see \Harvest\ETL\Load\Load::run()
     $fields['hash'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Harvest hash'))
