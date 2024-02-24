@@ -18,6 +18,13 @@ class DatabaseTableFactory implements FactoryInterface {
   private $connection;
 
   /**
+   * Database table data objects.
+   *
+   * @var \Drupal\harvest\Storage\DatabaseTable
+   */
+  private $storage = [];
+
+  /**
    * Constructor.
    */
   public function __construct(Connection $connection) {
@@ -25,9 +32,21 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   * {@inheritDoc}
+   * Inherited.
+   *
+   * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
+    if (!isset($this->storage[$identifier])) {
+      $this->storage[$identifier] = $this->getDatabaseTable($identifier);
+    }
+    return $this->storage[$identifier];
+  }
+
+  /**
+   * Protected.
+   */
+  protected function getDatabaseTable($identifier) {
     return new DatabaseTable($this->connection, $identifier);
   }
 

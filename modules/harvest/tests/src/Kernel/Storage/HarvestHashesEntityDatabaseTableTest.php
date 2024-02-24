@@ -80,7 +80,9 @@ class HarvestHashesEntityDatabaseTableTest extends KernelTestBase {
     $dataset2_uuid = '5EAC66F4-4B4A-4E25-AC4F-28220B8316AE';
     $this->assertEquals($dataset2_uuid, $table->store(json_encode($hash_data), $dataset2_uuid));
     $this->assertEquals(2, $table->count());
-    $this->assertCount(2, $table->retrieveAll());
+    $all = $table->retrieveAll();
+    $this->assertCount(2, $all);
+    $this->assertContains($dataset2_uuid, $all);
 
     // Remove the first one.
     $this->assertEquals($dataset_uuid, $table->remove($dataset_uuid));
