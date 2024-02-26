@@ -26,6 +26,11 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * @todo Remove this when we drop support for Drupal 10.0.
+   */
+  protected $strictConfigSchema = FALSE;
+
+  /**
    * Process queues in a predictable order.
    */
   private function runQueues(array $relevantQueues = []) {
