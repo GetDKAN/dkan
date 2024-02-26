@@ -150,11 +150,10 @@ class HarvestServiceTest extends KernelTestBase {
       ->get('dkan.harvest.storage.database_table')
       ->getInstance('harvest_' . $plan_identifier . '_hashes');
     $this->assertCount(2, $hash_table->retrieveAll());
-    // This is the datastore that will change.
+    // Get the hashes for comparison later. Bike lanes will change later.
     $this->assertNotEmpty(
       $bike_lanes_hash = json_decode($hash_table->retrieve('cedcd327-4e5d-43f9-8eb1-c11850fa7c55'))->hash ?? NULL
     );
-    // This one will stay the same.
     $this->assertNotEmpty(
       $deprivation_hash = json_decode($hash_table->retrieve('fb3525f2-d32a-451e-8869-906ed41f7695'))->hash ?? NULL
     );
