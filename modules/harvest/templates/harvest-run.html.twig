@@ -13,12 +13,17 @@
  * @see template_preprocess_harvest_runz()
  */
 #}
-<article{{ attributes }}>
-  {% if view_mode != 'full' %}
-    {{ title_prefix }}
-    {{ title_suffix }}
-  {% endif %}
-  {% if content %}
-    {{- content -}}
-  {% endif %}
-</article>
+{# ** @file themes/custom/mytheme/templates/artwork.html.twig #}
+
+{% if content %}
+  <div{{ attributes.addClass('harvest_run') }}>
+    <a href="{{ url }}">
+      {{ label }}
+      <p>
+        {{ content.field_image }}
+        <br/>
+        {{ content.body }}
+      </p>
+    </a>
+  </div>
+{% endif %}

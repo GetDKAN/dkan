@@ -10,9 +10,14 @@ use Drupal\Core\Render\Element;
 /**
  * Implements hook_theme().
  */
-function harvest_theme(): array {
+function harvest_theme($existing, $type, $theme, $path) {
   return [
-    'harvest_run' => ['render element' => 'elements'],
+    'harvest_run' => [// the entity id
+      'path' => $path . '/templates',          // template directory in module or theme
+      'template'  => 'harvest-run',                // defines base template as /artwork.html.twig
+      'render element' => 'elements',          // Theme API call to define the container of the entity in the render array
+      // The entity will be prefixed with a hash sign as ['elements']['#artwork']
+    ]
   ];
 }
 
@@ -27,9 +32,27 @@ function harvest_theme(): array {
  *     fields attached to the entity.
  *   - attributes: HTML attributes for the containing element.
  */
-function template_preprocess_harvest_run(array &$variables): void {
-  $variables['view_mode'] = $variables['elements']['#view_mode'];
+function template_preprocess_harvest_run(&$variables) {
+  // Helpful $content variable for templates.
+  $variables['content'] = [];
   foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
+  }
+
+  /** @var \Drupal\harvest\HarvestRunInterface $entity */
+  $entity = $variables['elements']['#harvest_run'];
+  //provide the label
+  $variables['label'] = $entity->label();
+  //provide the alias
+  $variables['url'] = $entity->toUrl()->toString();
+}
+
+
+function harvest_theme_suggestions_artwork_alter( array &$suggestions, array $vars, $hook ) {
+  /** @var \Drupal\harvest\HarvestRunInterface $artwork */
+  if ( $harvest_run = $vars['elements']['#harvest_run'] ) {
+    if (isset($vars['elements']['#view_mode'])) {
+      $suggestions[] = 'harvest_run__' . $vars['elements']['#view_mode'];
+    }
   }
 }
