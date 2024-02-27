@@ -1,5 +1,0 @@
-harvest_run.add_form:
-  title: 'Add harvest run'
-  route_name: entity.harvest_run.add_form
-  appears_on:
-    - entity.harvest_run.collection

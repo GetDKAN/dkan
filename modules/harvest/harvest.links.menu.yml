@@ -9,4 +9,4 @@ entity.harvest_run.collection:
   title: 'Harvest Runs'
   description: 'List of harvest runs.'
   route_name: entity.harvest_run.collection
-  parent: system.admin_content
+  parent: dkan.harvest.dashboard

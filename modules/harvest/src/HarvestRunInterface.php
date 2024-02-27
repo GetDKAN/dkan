@@ -7,6 +7,6 @@ use Drupal\Core\Entity\ContentEntityInterface;
 /**
  * Provides an interface defining a harvest run entity type.
  */
-interface HarvestRunInterface extends ContentEntityInterface {
+interface HarvestRunInterface extends ContentEntityInterface, \JsonSerializable {
 
 }

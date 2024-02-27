@@ -8,6 +8,7 @@ use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
@@ -46,6 +47,11 @@ class HarvestService implements ContainerInjectionInterface {
   private $entityTypeManager;
 
   /**
+   * @var \Drupal\harvest\Entity\HarvestRunRepository
+   */
+  private HarvestRunRepository $runRepository;
+
+  /**
    * Create.
    *
    * @inheritdoc
@@ -54,6 +60,7 @@ class HarvestService implements ContainerInjectionInterface {
     return new self(
       $container->get('dkan.harvest.storage.database_table'),
       $container->get('dkan.metastore.service'),
+      $container->get('dkan.harvest.storage.harvest_run_repository'),
       $container->get('entity_type.manager')
     );
   }
@@ -61,9 +68,15 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(
+    FactoryInterface $storeFactory,
+    MetastoreService $metastore,
+    HarvestRunRepository $runRepository,
+    EntityTypeManager $entityTypeManager
+  ) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
+    $this->runRepository = $runRepository;
     $this->entityTypeManager = $entityTypeManager;
   }
 
@@ -140,12 +153,12 @@ class HarvestService implements ContainerInjectionInterface {
     foreach ([
       'harvest_' . $plan_id . '_items',
       'harvest_' . $plan_id . '_hashes',
-      'harvest_' . $plan_id . '_runs',
     ] as $table_name) {
       /** @var \Drupal\common\Storage\DatabaseTableInterface $store */
       $store = $this->storeFactory->getInstance($table_name);
       $store->destruct();
     }
+    $this->runRepository->destructForPlanId($plan_id);
     // Remove the plan id from the harvest_plans table.
     $plan_store = $this->storeFactory->getInstance('harvest_plans');
     return $plan_store->remove($plan_id);
@@ -153,15 +166,9 @@ class HarvestService implements ContainerInjectionInterface {
 
   /**
    * Public.
-   *
-   * @todo the destruct method should be part of some interface.
    */
   public function revertHarvest($id) {
-    $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    if (!method_exists($run_store, "destruct")) {
-      throw new \Exception("Storage of class " . get_class($run_store) . " does not implement destruct method.");
-    }
-    $run_store->destruct();
+    $this->runRepository->destructForPlanId($id);
     $harvester = $this->getHarvester($id);
     return $harvester->revert();
   }
@@ -169,19 +176,19 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Public.
    */
-  public function runHarvest($id) {
-    $harvester = $this->getHarvester($id);
+  public function runHarvest($plan_id) {
+    $harvester = $this->getHarvester($plan_id);
 
+    $run_id = (string) time();
     $result = $harvester->harvest();
     if (is_null($result['status']['extracted_items_ids'] ?? NULL)) {
       throw new \Exception("No items found to extract, review your harvest plan.");
     }
-    $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($id, $result['status']['extracted_items_ids']);
+    $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($plan_id, $result['status']['extracted_items_ids']);
     $this->processOrphanIds($result['status']['orphan_ids']);
 
-    $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    $current_time = time();
-    $run_store->store(json_encode($result), "{$current_time}");
+    $result['identifier'] = $run_id;
+    $this->runRepository->storeRun(json_encode($result), $plan_id, $run_id);
 
     return $result;
   }
@@ -192,25 +199,22 @@ class HarvestService implements ContainerInjectionInterface {
    * @return mixed
    *   FALSE if no matching runID is found.
    */
-  public function getHarvestRunInfo($id, $runId) {
-    $allRuns = $this->getAllHarvestRunInfo($id);
-    $found = array_search($runId, $allRuns);
-
-    if ($found !== FALSE) {
-      $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-      return $run_store->retrieve($runId);
+  public function getHarvestRunInfo(string $plan_id, string $run_id) {
+    if ($info = $this->runRepository->retrieveRun($plan_id, $run_id)) {
+      return $info;
     }
-
     return FALSE;
   }
 
   /**
    * Public.
    */
-  public function getAllHarvestRunInfo($id) {
-    $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    $runs = $run_store->retrieveAll();
-    return $runs;
+  public function getAllHarvestRunInfo($plan_id) {
+    return $this->runRepository->retrieveAllRuns($plan_id);
+  }
+
+  public function getAllHarvestRunIds($plan_id) {
+    return $this->runRepository->retrieveAllRunIds($plan_id);
   }
 
   /**
@@ -218,16 +222,16 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * Since the run record id is a timestamp, we can sort on the id.
    *
-   * @param string $planId
+   * @param string $plan_id
    *   The harvest identifier.
    *
    * @return string
-   *   The most recent harvest run record identifier.
+   *   The most recent harvest run record identifier, which is also a timestamp.
    */
-  public function getLastHarvestRunId(string $planId) {
-    $runs = $this->getAllHarvestRunInfo($planId);
-    rsort($runs);
-    return reset($runs);
+  public function getLastHarvestRunId(string $plan_id): string {
+    $run_ids = $this->runRepository->retrieveAllRunIds($plan_id);
+    rsort($run_ids);
+    return reset($run_ids);
   }
 
   /**
