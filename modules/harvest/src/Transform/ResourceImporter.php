@@ -48,7 +48,7 @@ class ResourceImporter extends Transform {
   protected function testEnvironment() {
     $setting = Settings::get('file_public_base_url');
     if (!isset($setting) || empty($setting)) {
-      throw new \Exception('file_public_base_url should be set.');
+      throw new \Exception("file_public_base_url should be set.");
     }
     return TRUE;
   }
