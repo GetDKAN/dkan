@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Service\Factory;
 
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
@@ -26,11 +27,23 @@ class ImportServiceFactory implements ImportFactoryInterface {
   private $databaseTableFactory;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(ImportJobStoreFactory $importJobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(
+    ImportJobStoreFactory $importJobStoreFactory,
+    DatabaseTableFactory $databaseTableFactory,
+    LoggerChannelInterface $loggerChannel
+  ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -40,7 +53,12 @@ class ImportServiceFactory implements ImportFactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []) {
     if ($resource = $config['resource'] ?? FALSE) {
-      return new ImportService($resource, $this->importJobStoreFactory, $this->databaseTableFactory);
+      return new ImportService(
+        $resource,
+        $this->importJobStoreFactory,
+        $this->databaseTableFactory,
+        $this->logger
+      );
     }
     throw new \Exception("config['resource'] is required");
   }

@@ -5,6 +5,7 @@ namespace Drupal\datastore\Storage;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\DatastoreResource;
 
 /**
@@ -14,7 +15,7 @@ use Drupal\datastore\DatastoreResource;
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
-  use LoggerTrait;
+//  use LoggerTrait;
 
   /**
    * Datastore resource object.
@@ -24,6 +25,13 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   private $resource;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Constructor method.
    *
    * @param \Drupal\Core\Database\Connection $connection
@@ -31,11 +39,16 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * @param \Drupal\datastore\DatastoreResource $resource
    *   A resource.
    */
-  public function __construct(Connection $connection, DatastoreResource $resource) {
+  public function __construct(
+    Connection $connection,
+    DatastoreResource $resource,
+    LoggerChannelInterface $loggerChannel
+  ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
     $this->connection = $connection;
+    $this->logger = $loggerChannel;
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
@@ -89,7 +102,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   protected function prepareData(string $data, string $id = NULL): array {
     $decoded = json_decode($data);
     if ($decoded === NULL) {
-      $this->log(
+      $this->logger->log(
         'datastore_import',
         'Error decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
@@ -97,7 +110,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_array($decoded)) {
-      $this->log(
+      $this->logger->log(
         'datastore_import',
         'Array expected while decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]

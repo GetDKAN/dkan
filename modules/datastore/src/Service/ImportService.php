@@ -3,6 +3,7 @@
 namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
@@ -20,7 +21,7 @@ use Procrastinator\Result;
  *   as a property.
  */
 class ImportService {
-  use LoggerTrait;
+
   use EventDispatcherTrait;
 
   /**
@@ -77,6 +78,13 @@ class ImportService {
   private ?ImportJob $importJob = NULL;
 
   /**
+   * Logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Create a resource service instance.
    *
    * @param \Drupal\common\DataResource $resource
@@ -86,10 +94,16 @@ class ImportService {
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
    */
-  public function __construct(DataResource $resource, ImportJobStoreFactory $importJobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(
+    DataResource $resource,
+    ImportJobStoreFactory $importJobStoreFactory,
+    DatabaseTableFactory $databaseTableFactory,
+    LoggerChannelInterface $loggerChannel
+  ) {
     $this->resource = $resource;
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -117,8 +131,7 @@ class ImportService {
 
     if ($result->getStatus() === Result::ERROR) {
       $datastore_resource = $this->getResource()->getDatastoreResource();
-      $this->setLoggerFactory(\Drupal::service('logger.factory'));
-      $this->error('Error importing resource id:%id path:%path message:%message', [
+      $this->logger->error('Error importing resource id:%id path:%path message:%message', [
         '%id' => $datastore_resource->getId(),
         '%path' => $datastore_resource->getFilePath(),
         '%message' => $result->getError(),

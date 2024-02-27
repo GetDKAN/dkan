@@ -7,6 +7,7 @@ use Drupal\common\DataResource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
@@ -21,7 +22,7 @@ use Symfony\Component\Mime\MimeTypeGuesserInterface;
  */
 class Referencer {
   use HelperTrait;
-  use LoggerTrait;
+//  use LoggerTrait;
 
   /**
    * Default Mime Type to use when mime type detection fails.
@@ -59,6 +60,13 @@ class Referencer {
   protected $mimeTypeGuesser;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
@@ -77,14 +85,15 @@ class Referencer {
     FactoryInterface $storageFactory,
     MetastoreUrlGenerator $metastoreUrlGenerator,
     Client $httpClient,
-    MimeTypeGuesserInterface $mimeTypeGuesser
+    MimeTypeGuesserInterface $mimeTypeGuesser,
+    LoggerChannelInterface $loggerChannel
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
-    $this->setLoggerFactory(\Drupal::service('logger.factory'));
     $this->metastoreUrlGenerator = $metastoreUrlGenerator;
     $this->httpClient = $httpClient;
     $this->mimeTypeGuesser = $mimeTypeGuesser;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -180,7 +189,7 @@ class Referencer {
       return $uuid;
     }
     else {
-      $this->log(
+      $this->logger->log(
         'value_referencer',
         'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
         [
@@ -318,6 +327,8 @@ class Referencer {
 
   /**
    * Private.
+   *
+   * @todo Inject this service.
    */
   private function getFileMapper(): ResourceMapper {
     return \Drupal::service('dkan.metastore.resource_mapper');
@@ -339,7 +350,7 @@ class Referencer {
     // If we couldn't find a mime type, log an error notifying the user.
     if (is_null($mime_type)) {
       $filename = basename($downloadUrl);
-      $this->log('value_referencer', 'Unable to determine mime type of file with name "@name".', [
+      $this->logger->log('value_referencer', 'Unable to determine mime type of file with name "@name".', [
         '@name' => $filename,
       ]);
     }

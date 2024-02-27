@@ -8,6 +8,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
 use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
@@ -19,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Resource purger service.
  */
 class ResourcePurger implements ContainerInjectionInterface {
-  use LoggerTrait;
+//  use LoggerTrait;
 
   /**
    * The datastore.settings config.
@@ -50,6 +51,13 @@ class ResourcePurger implements ContainerInjectionInterface {
   private $storage;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Constructs a ResourcePurger object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
@@ -61,11 +69,18 @@ class ResourcePurger implements ContainerInjectionInterface {
    * @param \Drupal\datastore\DatastoreService $datastore
    *   The dkan.datastore.service service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, ReferenceLookupInterface $referenceLookup, DataFactory $dataFactory, DatastoreService $datastore) {
+  public function __construct(
+    ConfigFactoryInterface $configFactory,
+    ReferenceLookupInterface $referenceLookup,
+    DataFactory $dataFactory,
+    DatastoreService $datastore,
+    LoggerChannelInterface $loggerChannel
+  ) {
     $this->config = $configFactory->get('datastore.settings');
     $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');
     $this->datastore = $datastore;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -76,7 +91,8 @@ class ResourcePurger implements ContainerInjectionInterface {
       $container->get('config.factory'),
       $container->get('dkan.metastore.reference_lookup'),
       $container->get('dkan.metastore.storage'),
-      $container->get('dkan.datastore.service')
+      $container->get('dkan.datastore.service'),
+      $container->get('dkan.datastore.logger_channel')
     );
   }
 
@@ -147,7 +163,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       'uuids' => $uuids,
       'prior' => $prior,
     ]);
-    $this->notice('Queued resource purging with queueId:%queueId uuids:%uuids', [
+    $this->logger->notice('Queued resource purging with queueId:%queueId uuids:%uuids', [
       '%queueId' => $queueId,
       '%uuids' => implode(', ', $uuids),
     ]);
@@ -184,7 +200,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       $this->purge($vid, $uuid, $prior);
     }
     catch (\Exception $e) {
-      $this->error("Error purging uuid {$uuid}, revision id {$vid}: " . $e->getMessage());
+      $this->logger->error("Error purging uuid {$uuid}, revision id {$vid}: " . $e->getMessage());
     }
   }
 
@@ -387,7 +403,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       $this->datastore->getResourceLocalizer()->remove($id, $version);
     }
     catch (\Exception $e) {
-      $this->error("Error removing resource localizer id {$id}, version {$version}: " . $e->getMessage());
+      $this->logger->error("Error removing resource localizer id {$id}, version {$version}: " . $e->getMessage());
     }
   }
 
@@ -404,7 +420,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       $this->datastore->getStorage($id, $version)->destruct();
     }
     catch (\Exception $e) {
-      $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());
+      $this->logger->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());
     }
   }
 

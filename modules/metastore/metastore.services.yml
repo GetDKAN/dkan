@@ -5,6 +5,7 @@ services:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
       - '@dkan.metastore.valid_metadata'
+      - '@dkan.common.logger.channel'
 
   dkan.metastore.lifecycle:
     class: \Drupal\metastore\LifeCycle\LifeCycle
@@ -43,16 +44,14 @@ services:
       - '@dkan.metastore.url_generator'
       - '@http_client'
       - '@file.mime_type.guesser.extension'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
+      - '@dkan.common.logger.channel'
 
   dkan.metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
+      - '@dkan.common.logger.channel'
 
   dkan.metastore.orphan_checker:
     class: \Drupal\metastore\Reference\OrphanChecker
@@ -70,6 +69,7 @@ services:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
+      - '@dkan.common.logger.channel'
 
   dkan.metastore.event_subscriber:
     class: \Drupal\metastore\EventSubscriber\MetastoreSubscriber

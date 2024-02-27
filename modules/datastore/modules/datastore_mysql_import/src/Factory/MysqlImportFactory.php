@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore_mysql_import\Factory;
 
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
@@ -28,11 +29,23 @@ class MysqlImportFactory implements ImportFactoryInterface {
   private $databaseTableFactory;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(ImportJobStoreFactory $importJobStoreFactory, MySqlDatabaseTableFactory $databaseTableFactory) {
+  public function __construct(
+    ImportJobStoreFactory $importJobStoreFactory,
+    MySqlDatabaseTableFactory $databaseTableFactory,
+    LoggerChannelInterface $loggerChannel
+  ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -46,7 +59,12 @@ class MysqlImportFactory implements ImportFactoryInterface {
       throw new \Exception("config['resource'] is required");
     }
 
-    $importer = new ImportService($resource, $this->importJobStoreFactory, $this->databaseTableFactory);
+    $importer = new ImportService(
+      $resource,
+      $this->importJobStoreFactory,
+      $this->databaseTableFactory,
+      $this->logger
+    );
     $importer->setImporterClass(MysqlImport::class);
     return $importer;
   }

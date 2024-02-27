@@ -17,6 +17,8 @@ use Drupal\workflows\WorkflowInterface;
  * Abstract metastore storage class, for using Drupal entities.
  *
  * @todo Separate workflow management and storage into separate classes.
+ *
+ * @todo Figure out how to inject the logger service.
  */
 abstract class Data implements MetastoreEntityStorageInterface {
 

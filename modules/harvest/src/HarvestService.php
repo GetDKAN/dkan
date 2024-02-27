@@ -7,7 +7,7 @@ use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\common\LoggerTrait;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
@@ -21,7 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class HarvestService implements ContainerInjectionInterface {
 
-  use LoggerTrait;
   use OrphanDatasetsProcessor;
 
   /**
@@ -46,6 +45,13 @@ class HarvestService implements ContainerInjectionInterface {
   private $entityTypeManager;
 
   /**
+   * DKAN logger channel.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Create.
    *
    * @inheritdoc
@@ -54,17 +60,24 @@ class HarvestService implements ContainerInjectionInterface {
     return new self(
       $container->get('dkan.harvest.storage.database_table'),
       $container->get('dkan.metastore.service'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('dkan.harvest.logger.channel')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(
+    FactoryInterface $storeFactory,
+    MetastoreService $metastore,
+    EntityTypeManager $entityTypeManager,
+    LoggerChannelInterface $loggerChannel
+  ) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
     $this->entityTypeManager = $entityTypeManager;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -311,7 +324,7 @@ class HarvestService implements ContainerInjectionInterface {
         $this->metastore->$method('dataset', $datasetId);
     }
     catch (\Exception $e) {
-      $this->error("Error applying method {$method} to dataset {$datasetId}: {$e->getMessage()}");
+      $this->logger->error("Error applying method {$method} to dataset {$datasetId}: {$e->getMessage()}");
       return FALSE;
     }
   }
