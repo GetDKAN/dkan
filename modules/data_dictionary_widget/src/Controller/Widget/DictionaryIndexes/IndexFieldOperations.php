@@ -3,7 +3,6 @@
 namespace Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\data_dictionary_widget\Controller\Widget\FieldOperations;
 
 /**
  * Various operations for the Data Dictionary Widget.
@@ -14,18 +13,18 @@ class IndexFieldOperations extends ControllerBase {
    */
   public static function setIndexAjaxElements(array $dictionaryIndexFields) {
     foreach ($dictionaryIndexFields['data']['#rows'] as $row => $data) {
-      $edit_button = $dictionaryIndexFields['edit_buttons'][$row] ?? NULL;
-      $edit_fields = $dictionaryIndexFields['edit_fields'][$row] ?? NULL;
+      $edit_index_button = $dictionaryIndexFields['edit_buttons'][$row] ?? NULL;
+      $edit_index_fields = $dictionaryIndexFields['edit_index_fields'][$row] ?? NULL;
       // Setting the ajax fields if they exsist.
-      if ($edit_button) {
-        $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_button);
+      if ($edit_index_button) {
+        $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
         unset($dictionaryIndexFields['edit_buttons'][$row]);
       }
-      elseif ($edit_fields) {
+      elseif ($edit_index_fields) {
         unset($dictionaryIndexFields['data']['#rows'][$row]);
-        $dictionaryIndexFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
+        $dictionaryIndexFields['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
         // Remove the buttons so they don't show up twice.
-        unset($dictionaryIndexFields['edit_fields'][$row]);
+        unset($dictionaryIndexFields['edit_index_fields'][$row]);
         ksort($dictionaryIndexFields['data']['#rows']);
       }
 
@@ -45,7 +44,7 @@ class IndexFieldOperations extends ControllerBase {
     if (isset($index_field_values["field_json_metadata"][0]["index_fields"]["field_collection"])) {
       $index_field_group = $index_field_values["field_json_metadata"][0]["index_fields"]["field_collection"]["group"];
 
-      $data_pre = [
+      $data_index_fields_pre = [
         [
           "name" => $index_field_group["name"],
           "length" => $index_field_group["length"],
@@ -54,11 +53,24 @@ class IndexFieldOperations extends ControllerBase {
 
     }
 
-    if (isset($data_pre) && $op === "add") {
-      $index_data_results = isset($current_index_fields) ? array_merge($current_index_fields, $data_pre) : $data_pre;
+    if (isset($data_index_fields_pre) && $op === "add_index_field") {
+      $index_data_results = isset($current_index_fields) ? array_merge($current_index_fields, $data_index_fields_pre) : $data_index_fields_pre;
     }
 
     return $index_data_results;
+  }
+
+  /**
+   * Return acceptable edit actions.
+   */
+  public static function editIndexActions() {
+    return [
+      'format',
+      'edit',
+      'update',
+      'abort',
+      'delete',
+    ];
   }
 
   /**
@@ -99,8 +111,8 @@ class IndexFieldOperations extends ControllerBase {
    * Return true if field is being edited.
    */
   public static function checkEditingField($key, $op_index, $index_fields_being_modified) {
-    $action_list = FieldOperations::editActions();
-    if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($key, $fields_being_modified)) {
+    $action_list = IndexFieldOperations::editIndexActions();
+    if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($key, $index_fields_being_modified)) {
       return TRUE;
     }
     else {

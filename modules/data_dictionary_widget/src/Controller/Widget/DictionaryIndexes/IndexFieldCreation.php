@@ -26,4 +26,20 @@ public static function createGeneralIndexFields($element, $field_json_metadata, 
 
   return $element;
   }
+
+  /**
+   * Create data index data rows.
+   */
+  public static function createIndexDataRows($current_index_fields, $index_data_results, $form_state) {
+
+    return [
+      '#access' => ((bool) $current_index_fields || (bool) $index_data_results),
+      '#type' => 'table',
+      '#header' => ['NAME', 'LENGTH'],
+      '#rows' => $form_state->get('cancel_index') ? $current_index_fields : ($index_data_results ?? []),
+      '#tree' => TRUE,
+      '#theme' => 'custom_index_fields_table',
+    ];
+
+  }
 }
