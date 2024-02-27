@@ -43,6 +43,11 @@ use Drupal\harvest\HarvestRunInterface;
  *   },
  *   links = {
  *     "collection" = "/admin/dkan/harvest/runs",
+ *     "add-form" = "/harvest-run/add",
+ *     "canonical" = "/harvest-run/{harvest_run}",
+ *     "edit-form" = "/harvest-run/{harvest_run}/edit",
+ *     "delete-form" = "/harvest-run/{harvest_run}/delete",
+ *     "delete-multiple-form" = "/admin/content/harvest-run/delete-multiple",
  *   },
  * )
  */

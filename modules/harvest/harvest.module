@@ -1,0 +1,35 @@
+<?php declare(strict_types = 1);
+
+/**
+ * @file
+ * Provides a harvest runz entity type.
+ */
+
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_theme().
+ */
+function harvest_theme(): array {
+  return [
+    'harvest_run' => ['render element' => 'elements'],
+  ];
+}
+
+/**
+ * Prepares variables for harvest run templates.
+ *
+ * Default template: harvest-run.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the harvest runz information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_harvest_run(array &$variables): void {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
