@@ -22,12 +22,12 @@ trait Helper {
   private function getHarvester($id) {
 
     if (!method_exists($this, 'getHarvestPlan')) {
-      throw new \Exception("Drupal\harvest\Commands\Helper requires the host to implement the getHarvestPlan method.");
+      throw new \Exception('Drupal\harvest\Commands\Helper requires the host to implement the getHarvestPlan method.');
     }
 
     return new Harvester(new Factory($this->getHarvestPlan($id),
-      $this->getStorage($id, "item"),
-      $this->getStorage($id, "hash")));
+      $this->getStorage($id, 'item'),
+      $this->getStorage($id, 'hash')));
   }
 
   /**
@@ -35,7 +35,7 @@ trait Helper {
    */
   private function getPlanStorage() {
     $connection = \Drupal::service('database');
-    return new DatabaseTable($connection, "harvest_plans");
+    return new DatabaseTable($connection, 'harvest_plans');
   }
 
   /**
@@ -69,18 +69,15 @@ trait Helper {
   private function renderHarvestRunsInfo(array $runInfos) {
     $table = new Table(new ConsoleOutput());
     $table->setHeaders(['run_id', 'processed', 'created', 'updated', 'errors']);
-
     foreach ($runInfos as $runInfo) {
-      [$run_id, $result] = $runInfo;
-
-      $row = array_merge(
-        [$run_id],
-        $this->getResultCounts($result)
-      );
-
-      $table->addRow($row);
+      if ($runInfo) {
+        $row = array_merge(
+          [$runInfo['identifier'] ?? NULL],
+          $this->getResultCounts($runInfo)
+        );
+        $table->addRow($row);
+      }
     }
-
     $table->render();
   }
 
@@ -95,13 +92,13 @@ trait Helper {
 
       $consoleOutput->writeln(
         ["<warning>harvest id $harvest_id and run id $run_id extract status is $extract_status</warning>",
-          "<warning>No items were extracted.</warning>",
+          '<warning>No items were extracted.</warning>',
         ]
       );
     }
     else {
       $table = new Table($consoleOutput);
-      $table->setHeaders(["item_id", "extract", "transform", "load"]);
+      $table->setHeaders(['item_id', 'extract', 'transform', 'load']);
 
       foreach ($run['status']['extracted_items_ids'] as $item_id) {
         $row = $this->generateItemStatusRow($item_id, $run['status'], $run['errors'] ?? []);
@@ -124,7 +121,7 @@ trait Helper {
     $row['item_id'] = $item_id;
 
     /* Extract */
-    $row['extract'] = "[" . $status['extract'] . "]";
+    $row['extract'] = '[' . $status['extract'] . ']';
 
     /* transform */
 

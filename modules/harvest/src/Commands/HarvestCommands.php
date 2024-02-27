@@ -169,11 +169,7 @@ class HarvestCommands extends DrushCommands {
    */
   public function run($plan_id) {
     $result = $this->harvestService->runHarvest($plan_id);
-
-    $run_id = $this->harvestService->getLastHarvestRunId($plan_id);
-    $this->renderHarvestRunsInfo([
-      [$this->harvestService->getHarvestRunInfo($run_id, $plan_id), $result],
-    ]);
+    $this->renderHarvestRunsInfo([$result]);
   }
 
   /**
@@ -189,11 +185,7 @@ class HarvestCommands extends DrushCommands {
     $runs_info = [];
     foreach ($plan_ids as $plan_id) {
       $result = $this->harvestService->runHarvest($plan_id);
-      $run_id = $this->harvestService->getLastHarvestRunId($plan_id);
-      $runs_info[] = [
-        $this->harvestService->getHarvestRunInfo($run_id, $plan_id),
-        $result,
-      ];
+      $runs_info[] = $result;
     }
     $this->renderHarvestRunsInfo($runs_info);
   }
@@ -214,9 +206,7 @@ class HarvestCommands extends DrushCommands {
 
     foreach ($runIds as $id) {
       $run = $this->harvestService->getHarvestRunInfo($harvestId, $id);
-      $result = json_decode($run, TRUE);
-
-      $runs[] = [$id, $result];
+      $runs[] = json_decode($run, TRUE);
     }
 
     $this->renderHarvestRunsInfo($runs ?? []);
