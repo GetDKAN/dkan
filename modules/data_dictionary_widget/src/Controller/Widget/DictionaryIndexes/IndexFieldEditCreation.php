@@ -39,9 +39,9 @@ class IndexFieldEditCreation extends ControllerBase {
   private static function createIndexActionFields($key) {
     return [
       '#type' => 'actions',
-      'save_update' => FieldButtons::submitButton('edit', $key),
-      'cancel_updates' => FieldButtons::cancelButton('edit', $key),
-      'delete_field' => FieldButtons::deleteButton($key),
+      'save_update' => IndexFieldButtons::submitIndexFieldButton('edit', $key),
+      'cancel_updates' => IndexFieldButtons::cancelIndexFieldButton('edit', $key),
+      'delete_field' => IndexFieldButtons::deleteIndexButton($key),
     ];
   }
 

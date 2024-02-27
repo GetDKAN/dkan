@@ -43,7 +43,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $op_index = isset($form_state->getTriggeringElement()['#op']) ? explode("_", $form_state->getTriggeringElement()['#op']) : NULL;
 
     $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
-    $index_data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
+    $index_data_results = $field_json_metadata ? $field_json_metadata["data"]["indexes"] : [];
 
     // Build the data_results array to display the rows in the data table.
     $data_results = FieldOperations::processDataResults($data_results, $current_fields, $field_values, $op);
@@ -64,6 +64,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     ];
 
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_fields, $data_results, $form_state);
+
+    $element['index_fields']['data'] = IndexFieldCreation::createIndexDataRows($current_index_fields, $index_data_results, $form_state);
 
     // Creating ajax buttons/fields to be placed in correct location later.
     $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element['dictionary_fields']);
@@ -88,7 +90,13 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
+
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
+
+    $index_field_collection = $values[0]['index_fields']["field_collection"]["group"] ?? [];
+
     if (!empty($field_collection)) {
       $data_results = [
         [
@@ -105,11 +113,25 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       $updated = $current_fields ?? [];
     }
 
+    if (!empty($index_field_collection)) {
+      $index_field_results = [
+        [
+          "name" => $index_field_collection["name"],
+          "length" => $index_field_collection["length"],
+        ],
+      ];
+      $updated_index_fields = array_merge($current_index_fields ?? [], $index_field_results);
+    }
+    else {
+      $updated_index_fields = $current_index_fields ?? [];
+    }
+
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
       'title' => $values[0]['title'] ?? '',
       'data' => [
         'fields' => $updated,
+        'indexes' => [],
       ],
     ];
 

@@ -34,7 +34,7 @@ class IndexFieldButtons extends ControllerBase {
   }
 
   /**
-   * Returns te edit buttons.
+   * Returns the edit buttons.
    */
   public static function editButtons($key) {
     return [
@@ -51,12 +51,12 @@ class IndexFieldButtons extends ControllerBase {
       '#submit' => [
           [
             '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
-            'editIndexSubformCallback',
+            'indexEditSubformCallback',
           ],
       ],
       '#ajax' => [
         'callback' => '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
-        'wrapper' => 'field-json-metadata-dictionary-fields',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [],
@@ -68,8 +68,8 @@ class IndexFieldButtons extends ControllerBase {
    */
   public static function submitIndexFieldButton($location, $key) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = is_int($key) ? 'update_' . $key : 'add';
-    $value = $location == 'edit' ? 'Save index' : 'Add';
+    $op = is_int($key) ? 'update_' . $key : 'add_index_field';
+    $value = $location == 'edit' ? 'Save' : 'Add index field';
     $edit_index_button = [
       '#type' => 'submit',
       '#value' => $value,
@@ -99,10 +99,10 @@ class IndexFieldButtons extends ControllerBase {
    */
   public static function cancelIndexFieldButton($location, $key) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = $location == 'edit' && $key ? 'abort_' . $key : 'cancel';
+    $op = $location == 'edit' && $key ? 'index_abort_' . $key : 'cancel_index_field';
     $cancel_index_button = [
       '#type' => 'submit',
-      '#value' => t('Cancel'),
+      '#value' => t('Cancel index field'),
       '#op' => $op,
       '#submit' => [
             [
@@ -122,5 +122,29 @@ class IndexFieldButtons extends ControllerBase {
       $cancel_index_button['#name'] = 'index_field_cancel_update_' . $key;
     }
     return $cancel_index_button;
+  }
+
+  /**
+   * Create Delete button.
+   */
+  public static function deleteIndexButton($key) {
+    return [
+      '#type' => 'submit',
+      '#name' => 'delete_' . $key,
+      '#value' => t('Delete'),
+      '#op' => 'delete_' . $key,
+      '#submit' => [
+            [
+              '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
+              'editSubformCallback',
+            ],
+      ],
+      '#ajax' => [
+        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields',
+        'effect' => 'fade',
+      ],
+      '#limit_validation_errors' => [],
+    ];
   }
 }

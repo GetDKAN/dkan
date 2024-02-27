@@ -23,7 +23,7 @@ class IndexFieldCallbacks extends ControllerBase {
     }
 
     if ($op === 'cancel_index_field') {
-      $form_state->set('cancel', TRUE);
+      $form_state->set('cancel_index', TRUE);
     }
 
     if ($op === 'add_new_index_field') {
@@ -35,7 +35,7 @@ class IndexFieldCallbacks extends ControllerBase {
     if ($op === 'add_index_field') {
       $form_state->set('new_index_fields', $form_state->getUserInput());
       $form_state->set('add', TRUE);
-      $form_state->set('cancel', FALSE);
+      $form_state->set('cancel_index', FALSE);
     }
 
     $form_state->setRebuild();
@@ -49,30 +49,30 @@ class IndexFieldCallbacks extends ControllerBase {
     $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
     $op = $trigger['#op'];
     $op_index = explode("_", $trigger['#op']);
-    $currently_modifying = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+    $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
 
     if (str_contains($op, 'abort')) {
-      unset($currently_modifying[$op_index[1]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
     }
 
     if (str_contains($op, 'delete')) {
-      unset($currently_modifying[$op_index[1]]);
-      unset($current_fields[$op_index[1]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
+      unset($current_index_fields[$op_index[1]]);
     }
 
     if (str_contains($op, 'update')) {
       $update_values = $form_state->getUserInput();
-      unset($currently_modifying[$op_index[1]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
       unset($current_index_fields [$op_index[1]]);
       $current_index_fields [$op_index[1]] = IndexFieldValues::updateIndexFieldValues($op_index[1], $update_values, $current_index_fields );
       ksort($current_index_fields );
     }
 
     if (str_contains($op, 'edit')) {
-      $currently_modifying[$op_index[1]] = $current_index_fields [$op_index[1]];
+      $currently_modifying_index_fields[$op_index[1]] = $current_index_fields [$op_index[1]];
     }
 
-    $form_state->set('index_fields_being_modified', $currently_modifying);
+    $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
     $form_state->set('current_index_fields', $current_index_fields );
     $form_state->setRebuild();
   }
