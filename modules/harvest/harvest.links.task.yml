@@ -1,0 +1,5 @@
+entity.harvest_run.collection:
+  title: 'Harvest Runs'
+  route_name: entity.harvest_run.collection
+  base_route: system.admin_content
+  weight: 10
