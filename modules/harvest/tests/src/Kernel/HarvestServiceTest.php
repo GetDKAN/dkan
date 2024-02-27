@@ -153,7 +153,7 @@ class HarvestServiceTest extends KernelTestBase {
     );
   }
 
-  public function test() {
+  public function testHashesForChangingDataset() {
     $this->installEntitySchema('node');
     $this->installEntitySchema('user');
 
