@@ -32,7 +32,7 @@ use Drupal\harvest\HarvestRunInterface;
  *     "list_builder" = "Drupal\harvest\HarvestRunListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
  *     "route_provider" = {
- *       "html" = "Drupal\harvest\Routing\HarvestRunHtmlRouteProvider",
+ *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "harvest_runs",

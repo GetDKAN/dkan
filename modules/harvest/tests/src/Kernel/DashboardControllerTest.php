@@ -23,6 +23,11 @@ class DashboardControllerTest extends KernelTestBase {
     'metastore',
   ];
 
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('harvest_run');
+  }
+
   public function testRegisteredPlan() {
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');

@@ -23,6 +23,11 @@ class HarvestServiceTest extends KernelTestBase {
     'node',
   ];
 
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('harvest_run');
+  }
+
   public function testPlan() {
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');

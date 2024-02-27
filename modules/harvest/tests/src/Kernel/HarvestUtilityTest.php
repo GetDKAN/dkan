@@ -20,6 +20,11 @@ class HarvestUtilityTest extends KernelTestBase {
     'metastore',
   ];
 
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('harvest_run');
+  }
+
   public function test() {
     $existing_plan_id = 'testplanid';
     $orphan_plan_id = 'orphanplanid';
