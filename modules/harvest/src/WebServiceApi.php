@@ -8,11 +8,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Class Api.
+ * Harvest API controller.
  *
- * @package Drupal\harvest\Controller
- *
- * @codeCoverageIgnore
+ * @todo Move this to the Controller namespace.
  */
 class WebServiceApi implements ContainerInjectionInterface {
 
@@ -31,16 +29,14 @@ class WebServiceApi implements ContainerInjectionInterface {
   private $harvester;
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApi($container->get('request_stack'), $container->get('dkan.harvest.service'));
   }
 
   /**
-   * Api constructor.
+   * Constructor.
    */
   public function __construct(RequestStack $requestStack, HarvestService $service) {
     $this->requestStack = $requestStack;
@@ -176,6 +172,9 @@ class WebServiceApi implements ContainerInjectionInterface {
 
   /**
    * Gives list of previous runs for a harvest id.
+   *
+   * @todo Pass in $request instead of using the stack.
+   * @todo Pass in plan ID as an argument instead of/in addition to a parameter.
    */
   public function info() {
 
@@ -278,6 +277,8 @@ class WebServiceApi implements ContainerInjectionInterface {
 
   /**
    * Private.
+   *
+   * @todo Is this really needed?
    */
   private function jsonResponse(array $return, int $code = 400) {
     return new JsonResponse(
