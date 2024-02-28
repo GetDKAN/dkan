@@ -17,13 +17,11 @@
 
 {% if content %}
   <div{{ attributes.addClass('harvest_run') }}>
-    <a href="{{ url }}">
-      {{ label }}
+    <a href="{{ url }}">{{ label }}</a>
+    <h3>{{ content.pfield_status_extract }}</h3>
+      <h2>{{ content.harvest_plan_id }}</h2>
       <p>
-        {{ content.field_image }}
-        <br/>
-        {{ content.body }}
+        {{ content.data }}
       </p>
-    </a>
   </div>
 {% endif %}

@@ -20,6 +20,7 @@ use Drupal\harvest\HarvestRunInterface;
  *
  * @ContentEntityType(
  *   id = "harvest_run",
+ *   fieldable = 
  *   label = @Translation("Harvest Run"),
  *   label_collection = @Translation("Harvest Runs"),
  *   label_singular = @Translation("harvest run"),
@@ -88,6 +89,11 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
       ->setSettings([
         'default_value' => '',
         'max_length' => 255,
+      ])
+      ->setDisplayOptions('view', [
+        'type' => 'basic_string',
+        'weight' => 0,
+        'label' => 'hidden',
       ]);
 
     // The 'data' field contains JSON which describes the result of the harvest

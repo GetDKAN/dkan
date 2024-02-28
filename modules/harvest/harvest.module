@@ -12,11 +12,10 @@ use Drupal\Core\Render\Element;
  */
 function harvest_theme($existing, $type, $theme, $path) {
   return [
-    'harvest_run' => [// the entity id
-      'path' => $path . '/templates',          // template directory in module or theme
-      'template'  => 'harvest-run',                // defines base template as /artwork.html.twig
-      'render element' => 'elements',          // Theme API call to define the container of the entity in the render array
-      // The entity will be prefixed with a hash sign as ['elements']['#artwork']
+    'harvest_run' => [
+      'path' => $path . '/templates',
+      'template'  => 'harvest-run',
+      'render element' => 'elements',
     ]
   ];
 }
@@ -49,10 +48,31 @@ function template_preprocess_harvest_run(&$variables) {
 
 
 function harvest_theme_suggestions_artwork_alter( array &$suggestions, array $vars, $hook ) {
-  /** @var \Drupal\harvest\HarvestRunInterface $artwork */
-  if ( $harvest_run = $vars['elements']['#harvest_run'] ) {
+  if ($vars['elements']['#harvest_run'] ) {
     if (isset($vars['elements']['#view_mode'])) {
       $suggestions[] = 'harvest_run__' . $vars['elements']['#view_mode'];
     }
   }
+}
+
+//function harvest_entity_extra_field_info() {
+//  $extra['harvest_run']['harvest_run']['display']['pfield_status_extract'] = [
+//    'label' => t('Extract Status'),
+//    'visible' => TRUE,
+//    'weight' => 100,
+//  ];
+//  return $extra;
+//}
+
+function harvest_harvest_run_view(
+  array &$build,
+  \Drupal\Core\Entity\EntityInterface $entity,
+  \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display,
+  $view_mode
+) {
+//  throw new \Exception(print_r(array_keys($build), true));
+  $data = json_decode($entity->get('data')->getString(), TRUE);
+  $build['pfield_status_extract'] = [
+    '#markup' => $data['status']['extract'] ?? '',
+  ];
 }
