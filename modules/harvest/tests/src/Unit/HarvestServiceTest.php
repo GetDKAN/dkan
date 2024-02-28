@@ -23,6 +23,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @group dkan
  * @group harvest
+ * @group unit
  */
 class HarvestServiceTest extends TestCase {
   use ServiceCheckTrait;

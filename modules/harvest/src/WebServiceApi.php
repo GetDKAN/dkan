@@ -180,8 +180,8 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function info() {
 
     try {
-      $id = $this->requestStack->getCurrentRequest()->get('plan');
-      if (empty($id)) {
+      $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
+      if (empty($plan_id)) {
         return new JsonResponse(
           ["message" => "Missing 'plan' query parameter value"],
           400,
@@ -190,7 +190,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       }
 
       $response = $this->harvester
-        ->getAllHarvestRunInfo($id);
+        ->getAllHarvestRunInfo($plan_id);
 
       return new JsonResponse(
             $response,

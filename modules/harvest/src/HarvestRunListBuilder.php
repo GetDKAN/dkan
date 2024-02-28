@@ -20,12 +20,12 @@ final class HarvestRunListBuilder extends EntityListBuilder {
    */
   public function buildHeader(): array {
     return [
-      'run_id' => $this->t('Run ID'),
+      'run_id' => $this->t('Harvest Run ID'),
       'harvest_plan_id' => $this->t('Harvest Plan'),
-      'processed' => $this->t('Processed'),
-      'created' => $this->t('Created'),
-      'updated' => $this->t('Updated'),
-      'errors' => $this->t('Errors'),
+      'processed' => $this->t('# Processed'),
+      'created' => $this->t('# Created'),
+      'updated' => $this->t('# Updated'),
+      'errors' => $this->t('# Errors'),
     ];
   }
 

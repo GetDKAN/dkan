@@ -188,7 +188,7 @@ class HarvestService implements ContainerInjectionInterface {
     $this->processOrphanIds($result['status']['orphan_ids']);
 
     $result['identifier'] = $run_id;
-    $this->runRepository->storeRun(json_encode($result), $plan_id, $run_id);
+    $this->runRepository->storeRun($result, $plan_id, $run_id);
 
     return $result;
   }
@@ -196,11 +196,17 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Get Harvest Run Info.
    *
-   * @return mixed
-   *   FALSE if no matching runID is found.
+   * @param string $plan_id
+   *   The harvest plan ID.
+   * @param string $run_id
+   *   The harvest run ID.
+   *
+   * @return bool|string
+   *   JSON-encoded run information for the given run, or FALSE if no matching
+   *   runID is found.
    */
-  public function getHarvestRunInfo(string $plan_id, string $run_id) {
-    if ($info = $this->runRepository->retrieveRun($plan_id, $run_id)) {
+  public function getHarvestRunInfo(string $plan_id, string $run_id): bool|string {
+    if ($info = $this->runRepository->retrieveRunJson($plan_id, $run_id)) {
       return $info;
     }
     return FALSE;
@@ -210,7 +216,7 @@ class HarvestService implements ContainerInjectionInterface {
    * Public.
    */
   public function getAllHarvestRunInfo($plan_id) {
-    return $this->runRepository->retrieveAllRuns($plan_id);
+    return $this->runRepository->retrieveAllRunsJson($plan_id);
   }
 
   public function getAllHarvestRunIds($plan_id) {

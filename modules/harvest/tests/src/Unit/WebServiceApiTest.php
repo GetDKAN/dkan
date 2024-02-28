@@ -20,7 +20,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @coversDefaultClass \Drupal\harvest\WebServiceApi
+ *
+ * @group dkan
  * @group harvest
+ * @group unit
  */
 class WebServiceApiTest extends TestCase {
   use ServiceCheckTrait;
