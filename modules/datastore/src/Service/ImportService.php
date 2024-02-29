@@ -4,9 +4,9 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\EventDispatcherTrait;
 use Drupal\common\DataResource;
+use Drupal\common\EventDispatcherTrait;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
@@ -92,6 +92,8 @@ class ImportService {
    *   Import jobstore factory.
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $loggerChannel
+   *   DKAN logger channel service.
    */
   public function __construct(
     DataResource $resource,

@@ -76,6 +76,8 @@ class Referencer {
    *   Guzzle http client.
    * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mimeTypeGuesser
    *   The MIME type guesser.
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $loggerChannel
+   *   DKAN logger channel service.
    */
   public function __construct(
     ConfigFactoryInterface $configService,

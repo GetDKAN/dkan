@@ -4,7 +4,6 @@ namespace Drupal\datastore\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\common\DataResource;
@@ -66,6 +65,8 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The dkan.metastore.storage service.
    * @param \Drupal\datastore\DatastoreService $datastore
    *   The dkan.datastore.service service.
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $loggerChannel
+   *   DKAN logger channel service.
    */
   public function __construct(
     ConfigFactoryInterface $configFactory,

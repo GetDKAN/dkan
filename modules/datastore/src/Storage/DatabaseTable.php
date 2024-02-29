@@ -35,6 +35,8 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *   Drupal database connection object.
    * @param \Drupal\datastore\DatastoreResource $resource
    *   A resource.
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $loggerChannel
+   *   DKAN logger channel service.
    */
   public function __construct(
     Connection $connection,
