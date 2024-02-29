@@ -23,7 +23,7 @@ class DatabaseTableFactory implements FactoryInterface {
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
-  private LoggerChannelInterface $logger;
+  protected LoggerChannelInterface $logger;
 
   /**
    * Constructor.

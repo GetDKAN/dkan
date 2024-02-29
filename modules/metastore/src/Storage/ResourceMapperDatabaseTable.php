@@ -2,10 +2,9 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\common\LoggerTrait;
-use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\common\Storage\AbstractDatabaseTable;
 use Psr\Log\LogLevel;
 
 /**

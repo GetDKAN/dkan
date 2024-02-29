@@ -6,7 +6,6 @@ use CsvParser\Parser\Csv;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;

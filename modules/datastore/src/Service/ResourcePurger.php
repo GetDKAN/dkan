@@ -5,10 +5,9 @@ namespace Drupal\datastore\Service;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 
-use Drupal\common\LoggerTrait;
-use Drupal\common\DataResource;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\common\DataResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
@@ -20,7 +19,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Resource purger service.
  */
 class ResourcePurger implements ContainerInjectionInterface {
-//  use LoggerTrait;
 
   /**
    * The datastore.settings config.

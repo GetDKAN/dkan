@@ -2,10 +2,9 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\common\LoggerTrait;
-use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\datastore\DatastoreResource;
 
 /**
@@ -14,8 +13,6 @@ use Drupal\datastore\DatastoreResource;
  * @see \Drupal\common\Storage\DatabaseTableInterface
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
-
-//  use LoggerTrait;
 
   /**
    * Datastore resource object.

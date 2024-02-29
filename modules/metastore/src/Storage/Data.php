@@ -2,7 +2,6 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
@@ -21,8 +20,6 @@ use Drupal\workflows\WorkflowInterface;
  * @todo Figure out how to inject the logger service.
  */
 abstract class Data implements MetastoreEntityStorageInterface {
-
-  use LoggerTrait;
 
   /**
    * Entity type manager.

@@ -2,31 +2,34 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Drupal\datastore\DatastoreResource;
-use Drupal\common\DatasetInfo;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
-use MockChain\Options;
-use Drupal\datastore\DatastoreService;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use MockChain\Chain;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
+use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class QueryControllerTest extends TestCase {
 
@@ -498,7 +501,11 @@ class QueryControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new DatastoreResource("2", "data.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable(
+      $connection,
+      new DatastoreResource("2", "data.csv", "text/csv"),
+      $this->createStub(LoggerChannelInterface::class)
+    );
     $storage->setSchema([
       'fields' => [
         'record_number' => ['type' => 'int', 'not null' => TRUE],

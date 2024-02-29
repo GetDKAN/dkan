@@ -3,16 +3,14 @@
 namespace Drupal\metastore\Reference;
 
 use Contracts\FactoryInterface;
-use Drupal\common\DataResource;
-use Drupal\common\LoggerTrait;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\common\DataResource;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Mime\MimeTypeGuesserInterface;
@@ -22,7 +20,6 @@ use Symfony\Component\Mime\MimeTypeGuesserInterface;
  */
 class Referencer {
   use HelperTrait;
-//  use LoggerTrait;
 
   /**
    * Default Mime Type to use when mime type detection fails.
