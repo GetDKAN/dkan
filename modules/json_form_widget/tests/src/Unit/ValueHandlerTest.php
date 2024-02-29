@@ -13,6 +13,9 @@ use MockChain\Options;
 
 /**
  * Test class for ValueHandlerTest.
+ *
+ * @group dkan
+ * @group json_form_widget
  * @group unit
  */
 class ValueHandlerTest extends TestCase {

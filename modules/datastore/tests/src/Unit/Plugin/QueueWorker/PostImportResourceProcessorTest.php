@@ -19,7 +19,7 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\MetastoreService;
-
+use Drupal\metastore\Reference\ReferenceLookup;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -75,7 +75,7 @@ class PostImportResourceProcessorTest extends TestCase {
 
     // Ensure resources were processed.
     $notices = $container_chain->getStoredInput('notice');
-    $this->assertEmpty($notices);
+    $this->assertContains('Post import job for resource @id completed.', $notices);
     // Ensure no exceptions were thrown.
     $errors = $container_chain->getStoredInput('error');
     $this->assertEmpty($errors);
@@ -238,6 +238,7 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
@@ -246,7 +247,7 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(LoggerChannelFactoryInterface::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
-      ->add(LoggerChannelInterface::class, 'notice', NULL, 'notice')
+      ->add(LoggerChannelInterface::class, 'notice', '', 'notice')
       ->add(MetastoreService::class, 'get', new RootedJsonData($json))
       ->add(AlterTableQueryBuilderInterface::class, 'setConnectionTimeout', AlterTableQueryBuilderInterface::class)
       ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)

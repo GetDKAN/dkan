@@ -19,7 +19,7 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\MetastoreService;
-
+use Drupal\metastore\Reference\ReferenceLookup;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -192,6 +192,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';

@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
+use Drupal\Core\File\MimeType\ExtensionMimeTypeGuesser;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
@@ -35,6 +36,7 @@ use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
  * @covers \Drupal\metastore\Reference\Referencer
@@ -119,11 +121,16 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', 'dkan://metastore/schemas/data-dictionary/items/111')
       ->getMock();
 
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
     return new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client()
+      new Client(),
+      $mimeTypeGuesser
     );
   }
 
@@ -394,11 +401,16 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', '')
       ->getMock();
 
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
     $referencer = new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client()
+      new Client(),
+      $mimeTypeGuesser
     );
 
     // Test Mime Type detection using the resource `mediaType` property.
@@ -454,11 +466,16 @@ class ReferencerTest extends TestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
     $referencer = new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
-      $http_client
+      $http_client,
+      $mimeTypeGuesser
     );
 
     if ($describedBy instanceof \Exception) {
