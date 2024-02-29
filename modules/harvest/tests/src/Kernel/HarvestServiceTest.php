@@ -185,27 +185,6 @@ class HarvestServiceTest extends KernelTestBase {
       0,
       $harvest_storage_factory->getInstance('harvest_plans')->retrieveAll()
     );
-
-    // Revert harvest.
-    $harvest_service->revertHarvest($plan_identifier);
-    $storageTypes = [
-      'harvest_' . $plan_identifier . '_items',
-      'harvest_' . $plan_identifier . '_hashes',
-      'harvest_' . $plan_identifier . '_runs',
-    ];
-    foreach ($storageTypes as $storageId) {
-      $this->assertCount(
-        0,
-        $harvest_storage_factory->getInstance($storageId)->retrieveAll()
-      );
-    }
-
-    // Deregister harvest.
-    $harvest_service->deregisterHarvest($plan_identifier);
-    $this->assertCount(
-      0,
-      $harvest_storage_factory->getInstance('harvest_plans')->retrieveAll()
-    );
   }
 
 }
