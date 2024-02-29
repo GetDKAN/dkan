@@ -8,7 +8,7 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ *@group unit
  */
 class LoggerTraitTest extends TestCase {
 

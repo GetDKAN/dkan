@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * @group dkan
  * @group datastore
+ * @group unit
  */
 class ResourceLocalizerTest extends TestCase {
   /**

@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for DkanApiDocsGenerator.
+ * @group unit
  */
 class DkanApiDocsGeneratorTest extends TestCase {
 

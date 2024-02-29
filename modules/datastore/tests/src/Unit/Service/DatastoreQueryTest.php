@@ -30,6 +30,7 @@ use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 
 /**
  * @group dkan
+ * @group unit
  */
 class DatastoreQueryTest extends TestCase {
   use TestHelperTrait;

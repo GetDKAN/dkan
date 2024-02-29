@@ -11,6 +11,10 @@ use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group unit
+ */
+
 class DashboardControllerTest extends TestCase {
 
   public function testNoHarvests() {

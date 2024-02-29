@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \Drupal\harvest\Load\Dataset
  * @group harvest
+ * @group unit
  */
 class DatasetTest extends TestCase {
 

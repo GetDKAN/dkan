@@ -9,12 +9,15 @@ use GuzzleHttp\RequestOptions;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 
+/**
+ * @group functional_1
+ */
 abstract class Api1TestBase extends BrowserTestBase {
   use UserCreationTrait;
 
   /**
    * HTTP Client.
-   *
+   * 
    * @var \GuzzleHttp\Client
    */
   protected Client $httpClient;

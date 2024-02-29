@@ -23,6 +23,7 @@ use PHPUnit\Framework\TestCase;
  * Class ResourcePurgerTest
  *
  * @package Drupal\Tests\datastore\Service
+ * @group unit
  */
 class ResourcePurgerTest extends TestCase {
 

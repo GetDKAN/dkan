@@ -8,6 +8,9 @@ use GuzzleHttp\RequestOptions;
 
 use function PHPUnit\Framework\assertEquals;
 
+/**
+ * @group functional_3
+ */
 class DistributionHandlingTest extends Api1TestBase {
 
   public function getEndpoint():string {

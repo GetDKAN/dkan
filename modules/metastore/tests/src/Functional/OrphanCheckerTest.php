@@ -13,6 +13,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  *
  * @package Drupal\Tests\metastore\Functional
  * @group metastore
+ * @group functional_2
  */
 class OrphanCheckerTest extends ExistingSiteBase {
   use GetDataTrait;

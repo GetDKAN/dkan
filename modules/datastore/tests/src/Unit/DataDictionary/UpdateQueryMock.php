@@ -5,6 +5,9 @@ namespace Drupal\Tests\datastore\Unit\DataDictionary;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Update;
 
+/**
+ * @group unit
+ */
 class UpdateQueryMock extends Update {
 
     public function __construct(Connection $connection, $table, array $options = []) {

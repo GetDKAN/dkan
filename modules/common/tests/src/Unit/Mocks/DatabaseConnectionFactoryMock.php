@@ -5,6 +5,10 @@ namespace Drupal\Tests\common\Unit\Mocks;
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\DatabaseConnectionFactory;
 
+
+/**
+ * @group unit
+ */
 class DatabaseConnectionFactoryMock extends DatabaseConnectionFactory {
 
   protected Connection $connection;

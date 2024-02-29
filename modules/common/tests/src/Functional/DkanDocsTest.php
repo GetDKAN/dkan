@@ -6,6 +6,9 @@ use Drupal\common\Controller\OpenApiController;
 use Drupal\Core\Serialization\Yaml;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
+/**
+ * @group functional_3
+ */
 class DkanDocsTest extends ExistingSiteBase {
 
   public function testGetVersions() {

@@ -11,7 +11,7 @@ use Drupal\indexer\IndexManager;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ *@group unit
  */
 class DatabaseTableFactoryTest extends TestCase {
 

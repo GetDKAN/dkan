@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @package Drupal\Tests\datastore\Functional
  * @group datastore
- * @group functional
+ * @group functional_3
  * @group btb
  */
 class DictionaryEnforcerTest extends BrowserTestBase {

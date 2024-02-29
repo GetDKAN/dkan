@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test DatabaseConnectionFactory class.
+ * group unit
  */
 class DatabaseConnectionFactoryTest extends TestCase {
 

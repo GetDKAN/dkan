@@ -9,6 +9,9 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * @group unit
+ */
 class EventTest extends TestCase
 {
   use EventDispatcherTrait;

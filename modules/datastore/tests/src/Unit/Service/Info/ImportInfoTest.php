@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\Container;
  *
  * @group datastore
  * @group dkan-core
+ * @group unit
  */
 class ImportInfoTest extends TestCase {
 

@@ -27,6 +27,7 @@ use RootedData\RootedJsonData;
 
 /**
  * Test \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor.
+ * @group unit
  */
 class PostImportResourceProcessorTest extends TestCase {
 

@@ -18,7 +18,7 @@ use RootedData\RootedJsonData;
  * Dataset tests.
  *
  * @group dkan
- * @group functional
+ * @group functional_3
  */
 class DatasetBTBTest extends BrowserTestBase {
 
@@ -166,6 +166,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test removal of datasets by a subsequent harvest.
+   * @group group2
    */
   public function testHarvestOrphan() {
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
@@ -247,6 +248,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution title update and source resource perspective.
+   * @group group1
    */
   public function testDraftWorkflowUpdateDistributionTitleSourcePerspective() {
     // Set resource perspective to local_url.
@@ -258,7 +260,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Test draft moderation workflow with distribution title update and local_url resource perspective.
+   * Test draft moderation workflow with distribution title update and local_url resource perspective
    */
   public function testDraftWorkflowUpdateDistributionTitleLocalPerspective() {
     // Set resource perspective to local_url.

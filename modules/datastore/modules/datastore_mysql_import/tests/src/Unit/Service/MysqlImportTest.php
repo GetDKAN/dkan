@@ -18,6 +18,7 @@ use Procrastinator\Result;
  * @covers \Drupal\datastore_mysql_import\Service\MysqlImport
  *
  * @group datastore_mysql_import
+ * @group unit
  */
 class MysqlImportTest extends TestCase {
 

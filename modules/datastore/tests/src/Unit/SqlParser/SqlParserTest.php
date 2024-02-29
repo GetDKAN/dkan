@@ -17,6 +17,7 @@ class SqlParserTest extends TestCase {
 
   /**
    * Data provider.
+   * @group unit
    */
   public function dataTestSqlParser(): array {
     return [

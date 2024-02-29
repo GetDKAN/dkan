@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \Drupal\harvest\Storage\DatabaseTable
  * @group harvest
+ * @group unit
  */
 class DatabaseTableTest extends TestCase {
 

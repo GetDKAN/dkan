@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\Query\QueryInterface;
 
 /**
- *
+ * @group unit
  */
 class RouteProvider2Test extends TestCase {
 

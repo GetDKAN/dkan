@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @group datastore
  * @group dkan-core
+ * @group unit
  */
 class ImportJobTest extends TestCase {
 

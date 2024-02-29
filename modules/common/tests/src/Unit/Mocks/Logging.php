@@ -5,7 +5,7 @@ namespace Drupal\Tests\common\Unit\Mocks;
 use Drupal\common\LoggerTrait;
 
 /**
- *
+ *group unit
  */
 class Logging {
   use LoggerTrait;
