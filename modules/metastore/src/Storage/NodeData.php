@@ -4,7 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Node Data.
@@ -18,7 +18,7 @@ class NodeData extends Data {
     string $schemaId,
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->entityType = 'node';
     $this->bundle = 'data';

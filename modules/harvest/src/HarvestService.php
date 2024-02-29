@@ -7,10 +7,10 @@ use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
 use Harvest\Harvester as DkanHarvester;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -47,9 +47,9 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * DKAN logger channel.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Create.
@@ -72,7 +72,7 @@ class HarvestService implements ContainerInjectionInterface {
     FactoryInterface $storeFactory,
     MetastoreService $metastore,
     EntityTypeManager $entityTypeManager,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;

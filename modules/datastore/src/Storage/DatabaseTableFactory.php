@@ -4,7 +4,7 @@ namespace Drupal\datastore\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\LoggerChannelInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * DatabaseTable data object factory.
@@ -21,16 +21,16 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Constructor.
    */
   public function __construct(
     Connection $connection,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->connection = $connection;
     $this->logger = $loggerChannel;

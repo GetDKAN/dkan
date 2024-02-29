@@ -3,9 +3,9 @@
 namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Psr\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 
 /**
  * Database storage object.
@@ -26,16 +26,16 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
    */
   public function __construct(
     Connection $connection,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     parent::__construct($connection);
     $this->logger = $loggerChannel;

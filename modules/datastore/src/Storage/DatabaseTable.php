@@ -3,9 +3,9 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\datastore\DatastoreResource;
+use Psr\Log\LoggerInterface;
 
 /**
  * Database storage object.
@@ -24,9 +24,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructor method.
@@ -35,13 +35,13 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *   Drupal database connection object.
    * @param \Drupal\datastore\DatastoreResource $resource
    *   A resource.
-   * @param \Drupal\Core\Logger\LoggerChannelInterface $loggerChannel
+   * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
    */
   public function __construct(
     Connection $connection,
     DatastoreResource $resource,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.

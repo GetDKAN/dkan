@@ -4,13 +4,13 @@ namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -55,9 +55,9 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Inherited.
@@ -80,7 +80,7 @@ class MetastoreService implements ContainerInjectionInterface {
     SchemaRetriever $schemaRetriever,
     DataFactory $factory,
     ValidMetadataFactory $validMetadataFactory,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;

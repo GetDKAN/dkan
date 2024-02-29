@@ -4,7 +4,6 @@ namespace Drupal\metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
@@ -13,6 +12,7 @@ use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
@@ -59,9 +59,9 @@ class Referencer {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
@@ -76,7 +76,7 @@ class Referencer {
    *   Guzzle http client.
    * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mimeTypeGuesser
    *   The MIME type guesser.
-   * @param \Drupal\Core\Logger\LoggerChannelInterface $loggerChannel
+   * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
    */
   public function __construct(
@@ -85,7 +85,7 @@ class Referencer {
     MetastoreUrlGenerator $metastoreUrlGenerator,
     Client $httpClient,
     MimeTypeGuesserInterface $mimeTypeGuesser,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;

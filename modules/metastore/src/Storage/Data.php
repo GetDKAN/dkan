@@ -8,10 +8,10 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Abstract metastore storage class, for using Drupal entities.
@@ -93,9 +93,9 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
@@ -104,7 +104,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     string $schemaId,
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);

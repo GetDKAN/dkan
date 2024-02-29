@@ -4,7 +4,8 @@ namespace Drupal\metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
+use Psr\Log\LoggerInterface;
+
 use Drupal\metastore\Exception\MissingObjectException;
 
 /**
@@ -23,9 +24,9 @@ class Dereferencer {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
@@ -33,7 +34,7 @@ class Dereferencer {
   public function __construct(
     ConfigFactoryInterface $configService,
     FactoryInterface $storageFactory,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;

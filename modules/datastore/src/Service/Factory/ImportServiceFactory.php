@@ -2,10 +2,10 @@
 
 namespace Drupal\datastore\Service\Factory;
 
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * Create an importer object for a given resource.
@@ -29,9 +29,9 @@ class ImportServiceFactory implements ImportFactoryInterface {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
@@ -39,7 +39,7 @@ class ImportServiceFactory implements ImportFactoryInterface {
   public function __construct(
     ImportJobStoreFactory $importJobStoreFactory,
     DatabaseTableFactory $databaseTableFactory,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;

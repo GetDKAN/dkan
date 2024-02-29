@@ -5,13 +5,12 @@ namespace Drupal\datastore\Service;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\common\DataResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
-
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -50,9 +49,9 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * DKAN logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructs a ResourcePurger object.
@@ -65,7 +64,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The dkan.metastore.storage service.
    * @param \Drupal\datastore\DatastoreService $datastore
    *   The dkan.datastore.service service.
-   * @param \Drupal\Core\Logger\LoggerChannelInterface $loggerChannel
+   * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
    */
   public function __construct(
@@ -73,7 +72,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     ReferenceLookupInterface $referenceLookup,
     DataFactory $dataFactory,
     DatastoreService $datastore,
-    LoggerChannelInterface $loggerChannel
+    LoggerInterface $loggerChannel
   ) {
     $this->config = $configFactory->get('datastore.settings');
     $this->referenceLookup = $referenceLookup;

@@ -79,7 +79,6 @@ class ImportServiceTest extends KernelTestBase {
    * @covers ::import
    */
   public function testLogImportError() {
-    $this->markTestIncomplete('BufferingLogger is not a LoggerChannelInterface.');
     // Tell the logger channel factory to use a buffering logger.
     $logger = new BufferingLogger();
     $logger_factory = $this->createMock(LoggerChannelFactory::class);
