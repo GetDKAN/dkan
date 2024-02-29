@@ -2,12 +2,31 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+
 /**
  * Handle dataset orphaning.
  *
  * @package Drupal\harvest
  */
 trait OrphanDatasetsProcessor {
+
+  /**
+   * Entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * Setter for this trait's entity type manager service dependency.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
+   */
+  public function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) : void {
+    $this->entityTypeManager = $entityTypeManager;
+  }
 
   /**
    * Get the dataset identifiers orphaned by the harvest currently in progress.

@@ -4,8 +4,8 @@ namespace Drupal\Tests\harvest\Unit;
 
 use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\WebServiceApi;
 use Drupal\metastore\MetastoreService;
@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
+ * @covers \Drupal\harvest\WebServiceApi
  * @coversDefaultClass \Drupal\harvest\WebServiceApi
  *
  * @group dkan
@@ -65,7 +66,7 @@ class WebServiceApiTest extends TestCase {
         return new HarvestService(
           new MemoryFactory(),
           $this->getMetastoreMockChain(),
-          $this->getEntityTypeManagerMockChain(),
+          $this->getHarvestEntityRepositoryMock(),
           $this->createStub(LoggerInterface::class)
         );
 
@@ -171,9 +172,10 @@ class WebServiceApiTest extends TestCase {
   /**
    * Private.
    */
-  private function getEntityTypeManagerMockChain() {
+  private function getHarvestEntityRepositoryMock() {
     return (new Chain($this))
-      ->add(EntityTypeManager::class)
+      ->add(HarvestPlanRepository::class, 'getAllHarvestPlanIds', [])
+      ->add(HarvestPlanRepository::class, 'storePlanJson', 'test')
       ->getMock();
   }
 
