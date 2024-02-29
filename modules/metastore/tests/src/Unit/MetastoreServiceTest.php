@@ -410,7 +410,7 @@ EOF;
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
-      ->add('dkan.common.logger.channel', LoggerChannelInterface::class)
+      ->add('dkan.common.logger_channel', LoggerChannelInterface::class)
       ->index(0);
 
     return (new Chain($case))

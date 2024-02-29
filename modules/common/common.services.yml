@@ -43,7 +43,7 @@ services:
       - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
       - [setImportInfo, ['@?dkan.datastore.import_info']]
 
-  dkan.common.logger.channel:
+  dkan.common.logger_channel:
     parent: logger.channel_base
     arguments: [ 'dkan' ]
 
