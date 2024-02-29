@@ -61,7 +61,7 @@ class HarvestService implements ContainerInjectionInterface {
       $container->get('dkan.harvest.storage.database_table'),
       $container->get('dkan.metastore.service'),
       $container->get('entity_type.manager'),
-      $container->get('dkan.harvest.logger.channel')
+      $container->get('dkan.harvest.logger_channel')
     );
   }
 

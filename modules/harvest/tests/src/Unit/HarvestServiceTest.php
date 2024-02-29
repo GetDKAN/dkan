@@ -16,6 +16,7 @@ use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \Drupal\harvest\HarvestService
@@ -34,13 +35,13 @@ class HarvestServiceTest extends TestCase {
   public function testGetHarvestPlan() {
     $this->markTestIncomplete('Figure out mocking for logger.');
     $storeFactory = (new Chain($this))
-      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
-      ->add(DatabaseTable::class, 'retrieve', 'Hello')
+      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
+      ->add(DatabaseTable::class, "retrieve", "Hello")
       ->getMock();
 
     $service = new HarvestService($storeFactory, $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
-    $plan = $service->getHarvestPlan('test');
-    $this->assertEquals('Hello', $plan);
+    $plan = $service->getHarvestPlan("test");
+    $this->assertEquals("Hello", $plan);
   }
 
   /**
@@ -49,10 +50,10 @@ class HarvestServiceTest extends TestCase {
   public function testGetHarvestRunInfo() {
     $this->markTestIncomplete('Figure out mocking for logger.');
     $storeFactory = (new Chain($this))
-      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
-      ->add(DatabaseTable::class, 'retrieveAll', ['Hello'])
-      ->add(DatabaseTable::class, 'retrieve', 'Hello')
-      ->add(DatabaseTable::class, 'store', 'Hello')
+      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
+      ->add(DatabaseTable::class, "retrieveAll", ["Hello"])
+      ->add(DatabaseTable::class, "retrieve", "Hello")
+      ->add(DatabaseTable::class, "store", "Hello")
       ->getMock();
 
     $dkanHarvester = (new Chain($this))
@@ -66,7 +67,7 @@ class HarvestServiceTest extends TestCase {
 
     $service->method('getDkanHarvesterInstance')->willReturn($dkanHarvester);
 
-    $result = $service->getHarvestRunInfo('test', '1');
+    $result = $service->getHarvestRunInfo("test", "1");
     $this->assertFalse($result);
   }
 
@@ -100,10 +101,10 @@ class HarvestServiceTest extends TestCase {
         'status' => [
           'extracted_items_ids' => $datasetUuids,
           'load' => [
-            'abcd-1001' => 'SUCCESS',
-            'abcd-1002' => 'SUCCESS',
-            'abcd-1003' => 'SUCCESS',
-            'abcd-1004' => 'FAILURE',
+            'abcd-1001' => "SUCCESS",
+            'abcd-1002' => "SUCCESS",
+            'abcd-1003' => "SUCCESS",
+            'abcd-1004' => "FAILURE",
           ],
         ],
       ]))
@@ -124,7 +125,7 @@ class HarvestServiceTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'error', NULL, 'error');
 
     $container = $this->getCommonMockChain()
-      ->add(DatabaseTable::class, 'retrieve', $lastRunInfo)
+      ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
       ->add(MetastoreService::class, 'publish', $metastorePublicationResults);
 
     $service = HarvestService::create($container->getMock());
@@ -149,10 +150,10 @@ class HarvestServiceTest extends TestCase {
         'status' => [
           'extracted_items_ids' => $datasetUuids,
           'load' => [
-            'abcd-1001' => 'SUCCESS',
-            'abcd-1002' => 'SUCCESS',
-            'abcd-1003' => 'SUCCESS',
-            'abcd-1004' => 'FAILURE',
+            'abcd-1001' => "SUCCESS",
+            'abcd-1002' => "SUCCESS",
+            'abcd-1003' => "SUCCESS",
+            'abcd-1004' => "FAILURE",
           ],
         ],
       ]))
@@ -173,7 +174,7 @@ class HarvestServiceTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'error', NULL, 'error');
 
     $container = $this->getCommonMockChain()
-      ->add(DatabaseTable::class, 'retrieve', $lastRunInfo)
+      ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
       ->add(MetastoreService::class, 'archive', $metastoreArchiveResults);
 
     $service = HarvestService::create($container->getMock());
@@ -231,14 +232,14 @@ class HarvestServiceTest extends TestCase {
       ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
-      ->add('dkan.harvest.logger.channel', LoggerChannelInterface::class)
+      ->add('dkan.harvest.logger_channel', LoggerInterface::class)
       ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       // DatabaseTableFactory.
-      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
-      ->add(DatabaseTable::class, 'retrieveAll', ['100', '102', '101'])
+      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
+      ->add(DatabaseTable::class, "retrieveAll", ['100', '102', '101'])
       // Metastore.
       ->add(MetastoreService::class, 'publish', '1');
   }

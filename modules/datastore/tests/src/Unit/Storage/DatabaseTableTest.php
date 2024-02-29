@@ -7,7 +7,6 @@ use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\StatementWrapper;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\common\Storage\Query;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -15,6 +14,7 @@ use Drupal\mysql\Driver\Database\mysql\Schema;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @group dkan
@@ -31,7 +31,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertTrue(is_object($databaseTable));
   }
@@ -45,7 +45,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     $schema = $databaseTable->getSchema();
@@ -111,7 +111,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connection,
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertEquals([], $databaseTable->retrieveAll());
   }
@@ -134,7 +134,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]', "1"));
   }
@@ -157,7 +157,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $this->expectExceptionMessageMatches("/The number of fields and data given do not match:/");
     $this->assertEquals("1", $databaseTable->store('["Foobar"]', "1"));
@@ -181,7 +181,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $data = [
       '["Gerardo", "Gonzalez"]',
@@ -209,7 +209,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $data = [
       '["One"]',
@@ -234,7 +234,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertEquals(1, $databaseTable->count());
   }
@@ -253,7 +253,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     $actual = json_decode(json_encode(
@@ -275,7 +275,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $databaseTable->destruct();
     $this->assertTrue(TRUE);
@@ -300,7 +300,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $this->expectExceptionMessage('Import for 1 returned an error when preparing table header: {"foo":"bar"}');
     $this->assertEquals("1", $databaseTable->store('{"foo":"bar"}', "1"));
@@ -324,7 +324,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $this->expectExceptionMessage("Import for 1 error when decoding foobar");
     $this->assertEquals("1", $databaseTable->store("foobar", "1"));
@@ -346,7 +346,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->assertEquals([], $databaseTable->query($query));
@@ -367,7 +367,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectExceptionMessage("Database internal error.");
@@ -389,7 +389,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectExceptionMessage("Column not found");
@@ -411,7 +411,7 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectExceptionMessage("You have attempted a fulltext match against a column that is not indexed for fulltext searching");
