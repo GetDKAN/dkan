@@ -4,15 +4,20 @@ services:
     arguments:
       - '@dkan.harvest.storage.database_table'
       - '@dkan.metastore.service'
-      - '@entity_type.manager'
+      - '@dkan.harvest.harvest_plan_repository'
     calls:
       - [ setLoggerFactory, [ '@logger.factory' ] ]
+      - [ setEntityTypeManager, [ '@entity_type.manager' ] ]
   dkan.harvest.utility:
     class: Drupal\harvest\HarvestUtility
     arguments:
       - '@dkan.harvest.service'
       - '@dkan.harvest.storage.database_table'
       - '@database'
+  dkan.harvest.harvest_plan_repository:
+    class: Drupal\harvest\Entity\HarvestPlanRepository
+    arguments:
+      - '@entity_type.manager'
   dkan.harvest.storage.database_table:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:

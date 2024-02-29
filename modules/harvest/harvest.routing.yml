@@ -87,14 +87,3 @@ dkan.harvest.api.runs_id:
     _permission: 'harvest_api_info'
   options:
     _auth: ['basic_auth', 'cookie']
-
-dkan.harvest.dashboard:
-  path: '/admin/dkan/harvest'
-  methods: [GET]
-  defaults:
-    _controller: '\Drupal\harvest\DashboardController::harvests'
-    _title: Harvests
-  requirements:
-    _permission: 'dkan.harvest.dashboard'
-  options:
-    _auth: ['basic_auth', 'cookie']
