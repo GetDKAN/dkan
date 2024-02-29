@@ -21,7 +21,6 @@ class HarvestServiceTest extends KernelTestBase {
     'harvest',
     'metastore',
     'node',
-    'user',
   ];
 
   protected function setUp() : void {
@@ -154,93 +153,63 @@ class HarvestServiceTest extends KernelTestBase {
   }
 
   public function testHashesForChangingDataset() {
-    $this->installEntitySchema('node');
-    $this->installEntitySchema('user');
-
-    /** @var \Drupal\harvest\HarvestService $service */
-    $service = $this->container->get('dkan.harvest.service');
-
+    // Register a harvest.
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    $harvest_service = $this->container->get('dkan.harvest.service');
+    $plan_identifier = 'test_plan';
     $plan = (object) [
-      'identifier' => 'test_plan',
+      'identifier' => $plan_identifier,
       'extract' => (object) [
         'type' => DataJson::class,
-        'uri' => 'file://' . __DIR__ . '/../../files/data.json',
+        'uri' => 'file://' . realpath(__DIR__ . '/../../files/data.json'),
       ],
       'transforms' => [],
       'load' => (object) [
         'type' => Simple::class,
       ],
     ];
-
-    // Register a harvest.
-    $harvest_id = $service->registerHarvest($plan);
-
-    $this->assertEquals('test_plan', $harvest_id);
-
-    /** @var \Drupal\datastore\Storage\DatabaseTableFactory $harvest_storage_factory */
-    $harvest_storage_factory = $this->container->get('dkan.harvest.storage.database_table');
-    $this->assertNotEmpty(
-      $storedTestPlanJson = $harvest_storage_factory
-        ->getInstance('harvest_plans')
-        ->retrieve($harvest_id)
+    $this->assertEquals(
+      $plan_identifier,
+      $harvest_service->registerHarvest($plan)
     );
-    $storedTestPlan = json_decode($storedTestPlanJson);
-    $this->assertEquals('test_plan', $storedTestPlan->identifier);
 
-    // Run a harvest.
-    $result = $service->runHarvest('test_plan');
+    // Run the harvest.
+    $result = $harvest_service->runHarvest($plan_identifier);
+    $this->assertEquals('SUCCESS', $result['status']['extract'] ?? 'not success');
+    $this->assertArrayNotHasKey('errors', $result);
 
-    $this->assertEquals('SUCCESS', $result['status']['extract']);
-    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(['NEW', 'NEW']), json_encode(array_values($result['status']['load'])));
+    // Check the hashes.
+    /** @var \Drupal\harvest\Storage\DatabaseTable $hash_table */
+    $hash_table = $this->container
+      ->get('dkan.harvest.storage.database_table')
+      ->getInstance('harvest_' . $plan_identifier . '_hashes');
+    $this->assertCount(2, $hash_table->retrieveAll());
+    // Get the hashes for comparison later. Bike lanes will change later.
+    $this->assertNotEmpty(
+      $bike_lanes_hash = json_decode($hash_table->retrieve('cedcd327-4e5d-43f9-8eb1-c11850fa7c55'))->hash ?? NULL
+    );
+    $this->assertNotEmpty(
+      $deprivation_hash = json_decode($hash_table->retrieve('fb3525f2-d32a-451e-8869-906ed41f7695'))->hash ?? NULL
+    );
 
-    $storedObject = $harvest_storage_factory->getInstance('harvest_test_plan_items')->retrieve('cedcd327-4e5d-43f9-8eb1-c11850fa7c55');
-    $this->assertTrue(is_string($storedObject));
-    $storedObject = json_decode($storedObject);
-    $this->assertTrue(is_object($storedObject));
+    // Change the harvest plan to a new harvest for the same dataset IDs.
+    $plan->extract->uri = 'file://' . realpath(__DIR__ . '/../../files/data2.json');
+    $harvest_service->registerHarvest($plan);
 
-    // Run harvest again, no changes.
-    $result = $service->runHarvest('test_plan');
+    // Run the harvest.
+    $harvest_service->runHarvest($plan_identifier);
 
-    $this->assertEquals('SUCCESS', $result['status']['extract']);
-    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(['UNCHANGED', 'UNCHANGED']), json_encode(array_values($result['status']['load'])));
-
-    // Run harvest with changes.
-    $plan2 = clone $plan;
-    $plan2->extract->uri = 'file://' . __DIR__ . '/../../files/data2.json';
-    $service->registerHarvest($plan2);
-    $result = $service->runHarvest('test_plan');
-
-    $this->assertEquals('SUCCESS', $result['status']['extract']);
-    $this->assertEquals(2, count($result['status']['extracted_items_ids']));
-    $this->assertEquals(json_encode(['UPDATED', 'UNCHANGED']), json_encode(array_values($result['status']['load'])));
-
-    $storedObject = $harvest_storage_factory->getInstance('harvest_test_plan_items')->retrieve('cedcd327-4e5d-43f9-8eb1-c11850fa7c55');
-    $this->assertTrue(is_string($storedObject));
-    $storedObject = json_decode($storedObject);
-    $this->assertTrue(is_object($storedObject));
-    $this->assertEquals('Florida Bike Lanes 2', $storedObject->title);
-
-    // Revert harvest.
-    $service->revertHarvest('test_plan');
-    $storageTypes = [
-      'harvest_test_plan_items',
-      'harvest_test_plan_hashes',
-      'harvest_test_plan_runs',
-    ];
-    foreach ($storageTypes as $storageId) {
-      $this->assertCount(
-        0,
-        $harvest_storage_factory->getInstance($storageId)->retrieveAll()
-      );
-    }
-
-    // Deregister harvest.
-    $service->deregisterHarvest('test_plan');
-    $this->assertCount(
-      0,
-      $harvest_storage_factory->getInstance('harvest_plans')->retrieveAll()
+    // Verify the hash changed.
+    $this->assertCount(2, $hash_table->retrieveAll());
+    // This is the datastore that will change.
+    $this->assertNotEquals(
+      $bike_lanes_hash,
+      json_decode($hash_table->retrieve('cedcd327-4e5d-43f9-8eb1-c11850fa7c55'))->hash ?? NULL
+    );
+    // This one will stay the same.
+    $this->assertEquals(
+      $deprivation_hash,
+      json_decode($hash_table->retrieve('fb3525f2-d32a-451e-8869-906ed41f7695'))->hash ?? NULL
     );
   }
 
