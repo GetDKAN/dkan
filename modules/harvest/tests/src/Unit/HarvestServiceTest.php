@@ -6,6 +6,7 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -26,27 +27,30 @@ use PHPUnit\Framework\TestCase;
  * @group dkan
  * @group harvest
  * @group unit
+ *
+ * @see \Drupal\Tests\harvest\Kernel\HarvestServiceTest
  */
 class HarvestServiceTest extends TestCase {
   use ServiceCheckTrait;
+
+  private $storageFactory;
 
   /**
    *
    */
   public function testGetHarvestPlan() {
-    $storeFactory = (new Chain($this))
-      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
-      ->add(DatabaseTable::class, "retrieve", "Hello")
+    $planRepository = (new Chain($this))
+      ->add(HarvestPlanRepository::class, 'getPlanJson', 'Hello')
       ->getMock();
 
     $service = new HarvestService(
-      $storeFactory,
+      $this->createStub(DatabaseTableFactory::class),
       $this->createStub(HarvestHashesDatabaseTableFactory::class),
-      $this->getMetastoreMockChain(),
-      $this->getEntityTypeManagerMockChain()
+      $this->createStub(MetastoreService::class),
+      $planRepository
     );
-    $plan = $service->getHarvestPlan("test");
-    $this->assertEquals("Hello", $plan);
+    $plan = $service->getHarvestPlan('test');
+    $this->assertEquals('Hello', $plan);
   }
 
   /**
@@ -65,7 +69,7 @@ class HarvestServiceTest extends TestCase {
         $storeFactory,
         $this->createStub(HarvestHashesDatabaseTableFactory::class),
         $this->getMetastoreMockChain(),
-        $this->getEntityTypeManagerMockChain(),
+        $this->createStub(HarvestPlanRepository::class),
       ])
       ->onlyMethods(['getDkanHarvesterInstance'])
       ->getMock();
@@ -216,20 +220,6 @@ class HarvestServiceTest extends TestCase {
     $this->assertEquals(['4'], array_values($removedIds));
   }
 
-  public function testGetAllHarvestIds() {
-    $container = $this->getCommonMockChain();
-
-    $service = HarvestService::create($container->getMock());
-
-    $expected = ['100', '102', '101'];
-
-    $actual = $service->getAllHarvestIds();
-    $this->assertEquals($expected, $actual);
-  }
-
-  /**
-   * Private.
-   */
   private function getCommonMockChain() {
 
     $options = (new Options())
@@ -237,6 +227,7 @@ class HarvestServiceTest extends TestCase {
       ->add('dkan.harvest.storage.hashes_database_table', HarvestHashesDatabaseTableFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('dkan.harvest.harvest_plan_repository', HarvestPlanRepository::class)
       ->index(0);
 
     return (new Chain($this))

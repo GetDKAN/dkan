@@ -2,5 +2,5 @@ dkan.harvest.dashboard:
   title: 'Harvests'
   parent: system.admin_dkan
   description: 'View status information on DKAN harvests.'
-  route_name: dkan.harvest.dashboard
+  route_name: entity.harvest_plan.collection
   weight: 13

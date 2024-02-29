@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\harvest\Unit;
 
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
@@ -67,7 +67,7 @@ class WebServiceApiTest extends TestCase {
           new MemoryFactory(),
           $this->createStub(HarvestHashesDatabaseTableFactory::class),
           $this->getMetastoreMockChain(),
-          $this->getEntityTypeManagerMockChain()
+          $this->getHarvestEntityRepositoryMock()
         );
 
       break;
@@ -172,9 +172,10 @@ class WebServiceApiTest extends TestCase {
   /**
    * Private.
    */
-  private function getEntityTypeManagerMockChain() {
+  private function getHarvestEntityRepositoryMock() {
     return (new Chain($this))
-      ->add(EntityTypeManager::class)
+      ->add(HarvestPlanRepository::class, 'getAllHarvestPlanIds', [])
+      ->add(HarvestPlanRepository::class, 'storePlanJson', 'test')
       ->getMock();
   }
 
