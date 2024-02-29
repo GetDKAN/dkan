@@ -5,6 +5,7 @@ namespace Drupal\metastore\Storage;
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Logger\LoggerChannelInterface;
 
 /**
  * Data factory.
@@ -33,11 +34,23 @@ class DataFactory implements FactoryInterface {
   protected $configFactory;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(EntityTypeManager $entityTypeManager, ConfigFactoryInterface $config_factory) {
+  public function __construct(
+    EntityTypeManager $entityTypeManager,
+    ConfigFactoryInterface $config_factory,
+    LoggerChannelInterface $loggerChannel
+  ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -88,7 +101,12 @@ class DataFactory implements FactoryInterface {
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {
-    return new NodeData($identifier, $this->entityTypeManager, $this->configFactory);
+    return new NodeData(
+      $identifier,
+      $this->entityTypeManager,
+      $this->configFactory,
+      $this->logger
+    );
   }
 
   /**

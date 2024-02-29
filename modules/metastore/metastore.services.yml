@@ -35,6 +35,7 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@config.factory'
+      - '@dkan.common.logger_channel'
 
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer

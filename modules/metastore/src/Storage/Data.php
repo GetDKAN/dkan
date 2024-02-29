@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
@@ -16,8 +17,6 @@ use Drupal\workflows\WorkflowInterface;
  * Abstract metastore storage class, for using Drupal entities.
  *
  * @todo Separate workflow management and storage into separate classes.
- *
- * @todo Figure out how to inject the logger service.
  */
 abstract class Data implements MetastoreEntityStorageInterface {
 
@@ -92,13 +91,26 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $configFactory;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory) {
+  public function __construct(
+    string $schemaId,
+    EntityTypeManagerInterface $entityTypeManager,
+    ConfigFactoryInterface $config_factory,
+    LoggerChannelInterface $loggerChannel
+  ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->schemaId = $schemaId;
     $this->configFactory = $config_factory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -458,7 +470,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
 
     // Ensure the tmp cache directory exists.
     if (!is_dir($cache_dir) && !mkdir($cache_dir)) {
-      $this->log('metastore', 'Failed to create cache directory for HTML purifier');
+      $this->logger->log('metastore', 'Failed to create cache directory for HTML purifier');
     }
     else {
       $config['Cache.SerializerPath'] = $cache_dir;
