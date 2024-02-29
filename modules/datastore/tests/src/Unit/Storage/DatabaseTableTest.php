@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Storage;
+namespace Drupal\Tests\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\StatementWrapper;
-use Drupal\common\Storage\Query;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\common\Storage\Query;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\mysql\Driver\Database\mysql\Schema;
@@ -51,35 +51,35 @@ class DatabaseTableTest extends TestCase {
     $schema = $databaseTable->getSchema();
 
     $expectedSchema = [
-      'fields' => [
-        'record_number' => [
-          'type' => 'serial',
-          'unsigned' => TRUE,
-          'not null' => TRUE,
+      "fields" => [
+        "record_number" => [
+          "type" => "serial",
+          "unsigned" => TRUE,
+          "not null" => TRUE,
           'length' => 10,
           'mysql_type' => 'int',
         ],
-        'first_name' => [
-          'type' => 'varchar',
-          'description' => 'First Name',
+        "first_name" => [
+          "type" => "varchar",
+          "description" => "First Name",
           'length' => 10,
-          'mysql_type' => 'varchar',
+          'mysql_type' => 'varchar'
         ],
-        'last_name' => [
-          'type' => 'text',
-          'description' => 'lAST nAME',
-          'mysql_type' => 'text',
-        ],
-      ],
-      'indexes' => [
-        'idx1' => [
-          'first_name',
+        "last_name" => [
+          "type" => "text",
+          "description" => "lAST nAME",
+          "mysql_type" => "text",
         ],
       ],
-      'fulltext indexes' => [
-        'ftx1' => [
-          'first_name',
-          'last_name',
+      "indexes" => [
+        "idx1" => [
+          "first_name",
+        ],
+      ],
+      "fulltext indexes" => [
+        "ftx1" => [
+          "first_name",
+          "last_name",
         ],
       ],
     ];
@@ -93,8 +93,8 @@ class DatabaseTableTest extends TestCase {
   public function testRetrieveAll() {
 
     $fieldInfo = [
-      (object) ['Field' => 'first_name', 'Type' => 'varchar(10)'],
-      (object) ['Field' => 'last_name', 'Type' => 'text'],
+      (object) ['Field' => "first_name", 'Type' => "varchar(10)"],
+      (object) ['Field' => "last_name", 'Type' => 'text']
     ];
 
     $sequence = (new Sequence())
@@ -102,9 +102,9 @@ class DatabaseTableTest extends TestCase {
       ->add([]);
 
     $connection = $this->getConnectionChain()
-      ->add(Connection::class, 'select', Select::class)
-      ->add(Select::class, 'fields', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(Connection::class, "select", Select::class)
+      ->add(Select::class, "fields", Select::class)
+      ->add(Select::class, "execute", StatementWrapper::class)
       ->add(StatementWrapper::class, 'fetchAll', $sequence)
       ->getMock();
 
@@ -124,7 +124,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', '1')
+      ->add(Insert::class, 'execute', "1")
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -136,7 +136,7 @@ class DatabaseTableTest extends TestCase {
       $this->getResource(),
       $this->createStub(LoggerChannelInterface::class)
     );
-    $this->assertEquals('1', $databaseTable->store('["Gerardo", "Gonzalez"]', '1'));
+    $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]', "1"));
   }
 
   /**
@@ -147,7 +147,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', '1')
+      ->add(Insert::class, 'execute', "1")
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -159,8 +159,8 @@ class DatabaseTableTest extends TestCase {
       $this->getResource(),
       $this->createStub(LoggerChannelInterface::class)
     );
-    $this->expectExceptionMessageMatches('/The number of fields and data given do not match:/');
-    $this->assertEquals('1', $databaseTable->store('["Foobar"]', '1'));
+    $this->expectExceptionMessageMatches("/The number of fields and data given do not match:/");
+    $this->assertEquals("1", $databaseTable->store('["Foobar"]', "1"));
   }
 
   /**
@@ -171,7 +171,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', '1')
+      ->add(Insert::class, 'execute', "1")
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -188,7 +188,7 @@ class DatabaseTableTest extends TestCase {
       '["Thierry", "Dallacroce"]',
       '["Foo", "Bar"]',
     ];
-    $this->assertEquals('1', $databaseTable->storeMultiple($data, '1'));
+    $this->assertEquals("1", $databaseTable->storeMultiple($data, "1"));
   }
 
   /**
@@ -199,7 +199,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', '1')
+      ->add(Insert::class, 'execute', "1")
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -216,8 +216,8 @@ class DatabaseTableTest extends TestCase {
       '["Two"]',
       '["Three"]',
     ];
-    $this->expectExceptionMessageMatches('/The number of fields and data given do not match:/');
-    $this->assertEquals('1', $databaseTable->storeMultiple($data, '1'));
+    $this->expectExceptionMessageMatches("/The number of fields and data given do not match:/");
+    $this->assertEquals("1", $databaseTable->storeMultiple($data, "1"));
   }
 
   /**
@@ -262,7 +262,7 @@ class DatabaseTableTest extends TestCase {
 
     $this->assertEquals(3, $actual->numOfColumns);
     $this->assertEquals(1, $actual->numOfRows);
-    $this->assertEquals(['record_number', 'first_name', 'last_name'],
+    $this->assertEquals(["record_number", "first_name", "last_name"],
       array_keys((array) $actual->columns));
   }
 
@@ -290,7 +290,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', '1')
+      ->add(Insert::class, 'execute', "1")
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -303,7 +303,7 @@ class DatabaseTableTest extends TestCase {
       $this->createStub(LoggerChannelInterface::class)
     );
     $this->expectExceptionMessage('Import for 1 returned an error when preparing table header: {"foo":"bar"}');
-    $this->assertEquals('1', $databaseTable->store('{"foo":"bar"}', '1'));
+    $this->assertEquals("1", $databaseTable->store('{"foo":"bar"}', "1"));
   }
 
   /**
@@ -314,7 +314,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', '1')
+      ->add(Insert::class, 'execute', "1")
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -326,8 +326,8 @@ class DatabaseTableTest extends TestCase {
       $this->getResource(),
       $this->createStub(LoggerChannelInterface::class)
     );
-    $this->expectExceptionMessage('Import for 1 error when decoding foobar');
-    $this->assertEquals('1', $databaseTable->store('foobar', '1'));
+    $this->expectExceptionMessage("Import for 1 error when decoding foobar");
+    $this->assertEquals("1", $databaseTable->store("foobar", "1"));
   }
 
   /**
@@ -362,7 +362,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', new DatabaseExceptionWrapper('Integrity constraint violation'));
+      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("Integrity constraint violation"));
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -370,7 +370,7 @@ class DatabaseTableTest extends TestCase {
       $this->createStub(LoggerChannelInterface::class)
     );
 
-    $this->expectExceptionMessage('Database internal error.');
+    $this->expectExceptionMessage("Database internal error.");
     $databaseTable->query($query);
   }
 
@@ -392,7 +392,7 @@ class DatabaseTableTest extends TestCase {
       $this->createStub(LoggerChannelInterface::class)
     );
 
-    $this->expectExceptionMessage('Column not found');
+    $this->expectExceptionMessage("Column not found");
     $databaseTable->query($query);
   }
 
@@ -414,7 +414,7 @@ class DatabaseTableTest extends TestCase {
       $this->createStub(LoggerChannelInterface::class)
     );
 
-    $this->expectExceptionMessage('You have attempted a fulltext match against a column that is not indexed for fulltext searching');
+    $this->expectExceptionMessage("You have attempted a fulltext match against a column that is not indexed for fulltext searching");
     $databaseTable->query($query);
   }
 
@@ -424,34 +424,34 @@ class DatabaseTableTest extends TestCase {
   private function getConnectionChain() {
     $fieldInfo = [
       (object) [
-        'Field' => 'record_number',
-        'Type' => 'int(10)',
-        'Extra' => 'auto_increment',
+        'Field' => "record_number",
+        'Type' => "int(10)",
+        'Extra' => "auto_increment",
       ],
       (object) [
-        'Field' => 'first_name',
-        'Type' => 'varchar(10)',
+        'Field' => "first_name",
+        'Type' => "varchar(10)"
       ],
       (object) [
         'Field' =>
-        'last_name',
-        'Type' => 'text',
-      ],
+        "last_name",
+        'Type' => 'text'
+      ]
     ];
 
     $indexInfo = [
       (object) [
-        'Key_name' => 'idx1',
+        'Key_name' => "idx1",
         'Column_name' => 'first_name',
         'Index_type' => 'FOO',
       ],
       (object) [
-        'Key_name' => 'ftx1',
+        'Key_name' => "ftx1",
         'Column_name' => 'first_name',
         'Index_type' => 'FULLTEXT',
       ],
       (object) [
-        'Key_name' => 'ftx2',
+        'Key_name' => "ftx2",
         'Column_name' => 'first_name',
         'Index_type' => 'FULLTEXT',
       ],
@@ -459,13 +459,13 @@ class DatabaseTableTest extends TestCase {
 
     $chain = (new Chain($this))
       // Construction.
-      ->add(Connection::class, 'schema', Schema::class)
+      ->add(Connection::class, "schema", Schema::class)
       ->add(Connection::class, 'query', StatementWrapper::class)
       ->add(Connection::class, 'getConnectionOptions', ['driver' => 'mysql'])
       ->add(StatementWrapper::class, 'fetchAll',
         (new Sequence())->add($fieldInfo)->add($indexInfo)
       )
-      ->add(Schema::class, 'tableExists', TRUE)
+      ->add(Schema::class, "tableExists", TRUE)
       ->add(Schema::class, 'getComment',
         (new Sequence())->add(NULL)->add('First Name')->add('lAST nAME')
       )
@@ -478,7 +478,7 @@ class DatabaseTableTest extends TestCase {
    * Private.
    */
   private function getResource() {
-    return new DatastoreResource('people', '', 'text/csv');
+    return new DatastoreResource("people", "", "text/csv");
   }
 
 }

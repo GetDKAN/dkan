@@ -7,6 +7,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionableStorageInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\datastore\DatastoreService;
@@ -20,9 +21,9 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ResourcePurgerTest
- *
- * @package Drupal\Tests\datastore\Service
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class ResourcePurgerTest extends TestCase {
 
@@ -99,6 +100,7 @@ class ResourcePurgerTest extends TestCase {
       ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.service', DatastoreService::class)
+      ->add('dkan.datastore.logger_channel', LoggerChannelInterface::class)
       ->index(0);
 
     return (new Chain($this))

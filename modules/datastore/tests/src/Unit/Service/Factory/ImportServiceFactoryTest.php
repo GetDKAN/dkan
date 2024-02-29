@@ -2,8 +2,9 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\Factory;
 
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
+use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -13,6 +14,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @group dkan
  * @group datastore
+ * @group unit
  */
 class ImportServiceFactoryTest extends TestCase {
 
@@ -26,7 +28,8 @@ class ImportServiceFactoryTest extends TestCase {
         ->getMock(),
       $this->getMockBuilder(DatabaseTableFactory::class)
         ->disableOriginalConstructor()
-        ->getMock()
+        ->getMock(),
+      $this->createStub(LoggerChannelInterface::class)
     );
 
     $this->expectException(\Exception::class);
