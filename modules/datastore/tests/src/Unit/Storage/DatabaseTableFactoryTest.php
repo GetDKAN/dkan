@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\datastore\Unit\Storage;
 
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\DatastoreResource;
 use Drupal\Core\Database\Connection;
-use MockChain\Chain;
+use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\indexer\IndexManager;
+use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @group dkan
@@ -33,7 +33,7 @@ class DatabaseTableFactoryTest extends TestCase {
     $builder = $this->getMockBuilder(DatabaseTableFactory::class);
     $factory = $builder->setConstructorArgs([
         $connection,
-        $this->createStub(LoggerChannelInterface::class
+        $this->createStub(LoggerInterface::class
       )])
       ->onlyMethods(["getDatabaseTable"])
       ->getMock();

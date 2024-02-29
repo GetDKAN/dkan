@@ -7,7 +7,6 @@ use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Query\Select;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Tests\common\Unit\Connection;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
@@ -24,6 +23,7 @@ use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -459,7 +459,7 @@ class QueryDownloadControllerTest extends TestCase {
     $storage = new SqliteDatabaseTable(
       $connection,
       new DatastoreResource($id, "data-$id.csv", "text/csv"),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $storage->setSchema([
       'fields' => $fields,

@@ -2,11 +2,11 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\Factory;
 
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \Drupal\datastore\Service\Factory\ImportServiceFactory
@@ -29,7 +29,7 @@ class ImportServiceFactoryTest extends TestCase {
       $this->getMockBuilder(DatabaseTableFactory::class)
         ->disableOriginalConstructor()
         ->getMock(),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectException(\Exception::class);

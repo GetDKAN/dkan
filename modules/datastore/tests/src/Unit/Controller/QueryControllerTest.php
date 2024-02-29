@@ -5,7 +5,6 @@ namespace Drupal\Tests\datastore\Unit\Controller;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\DatastoreResource;
@@ -21,6 +20,7 @@ use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -504,7 +504,7 @@ class QueryControllerTest extends TestCase {
     $storage = new SqliteDatabaseTable(
       $connection,
       new DatastoreResource("2", "data.csv", "text/csv"),
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
     $storage->setSchema([
       'fields' => [

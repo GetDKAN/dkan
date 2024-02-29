@@ -5,7 +5,6 @@ namespace Drupal\Tests\harvest\Unit;
 use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\WebServiceApi;
@@ -14,6 +13,7 @@ use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,7 +66,7 @@ class WebServiceApiTest extends TestCase {
           new MemoryFactory(),
           $this->getMetastoreMockChain(),
           $this->getEntityTypeManagerMockChain(),
-          $this->createStub(LoggerChannelInterface::class)
+          $this->createStub(LoggerInterface::class)
         );
 
       break;
