@@ -22,6 +22,7 @@ class HarvestUtilityTest extends KernelTestBase {
 
   protected function setUp() : void {
     parent::setUp();
+    $this->installEntitySchema('harvest_plan');
     $this->installEntitySchema('harvest_run');
   }
 
