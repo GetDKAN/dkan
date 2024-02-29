@@ -4,6 +4,7 @@ namespace Drupal\Tests\metastore\Unit\Reference;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Reference\Dereferencer;
@@ -15,7 +16,9 @@ use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class DereferencerTest extends TestCase {
 
@@ -42,7 +45,7 @@ class DereferencerTest extends TestCase {
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory);
+    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerChannelInterface::class));
     $referenced = $valueReferencer->dereference((object) ['publisher' => $uuid]);
 
     $this->assertTrue(is_object($referenced));
@@ -63,7 +66,7 @@ class DereferencerTest extends TestCase {
     $uuidService = new Uuid5();
     $uuid = $uuidService->generate('dataset', "some value");
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory);
+    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerChannelInterface::class));
     $referenced = $valueReferencer->dereference((object) ['distribution' => $uuid]);
 
     $this->assertEmpty((array) $referenced);
@@ -96,7 +99,7 @@ class DereferencerTest extends TestCase {
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory);
+    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerChannelInterface::class));
     $referenced = $valueReferencer->dereference((object) ['keyword' => ['123456789', '987654321']]);
 
     $this->assertTrue(is_object($referenced));

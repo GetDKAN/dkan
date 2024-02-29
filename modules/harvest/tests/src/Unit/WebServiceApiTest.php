@@ -2,25 +2,29 @@
 
 namespace Drupal\Tests\harvest\Unit;
 
-use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\MetastoreService;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use MockChain\Options;
-use Drupal\Component\DependencyInjection\Container;
-use MockChain\Chain;
-use Procrastinator\Result;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Contracts\Mock\Storage\MemoryFactory;
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\harvest\HarvestService;
-use PHPUnit\Framework\TestCase;
 use Drupal\harvest\WebServiceApi;
+use Drupal\metastore\MetastoreService;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @coversDefaultClass \Drupal\harvest\WebServiceApi
+ *
+ * @group dkan
  * @group harvest
+ * @group unit
  */
 class WebServiceApiTest extends TestCase {
   use ServiceCheckTrait;
@@ -58,7 +62,12 @@ class WebServiceApiTest extends TestCase {
   public function containerGet($input) {
     switch ($input) {
       case 'dkan.harvest.service':
-        return new HarvestService(new MemoryFactory(), $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
+        return new HarvestService(
+          new MemoryFactory(),
+          $this->getMetastoreMockChain(),
+          $this->getEntityTypeManagerMockChain(),
+          $this->createStub(LoggerChannelInterface::class)
+        );
 
       break;
       case 'request_stack':
