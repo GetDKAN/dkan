@@ -2,19 +2,15 @@
 
 namespace Drupal\Tests\metastore\Unit\Reference;
 
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
-use Drupal\Core\File\MimeType\ExtensionMimeTypeGuesser;
 use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\common\DataResource;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
@@ -23,14 +19,13 @@ use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -130,7 +125,7 @@ class ReferencerTest extends TestCase {
       $urlGenerator,
       new Client(),
       $mimeTypeGuesser,
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
   }
 
@@ -411,7 +406,7 @@ class ReferencerTest extends TestCase {
       $urlGenerator,
       new Client(),
       $mimeTypeGuesser,
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     // Test Mime Type detection using the resource `mediaType` property.
@@ -477,7 +472,7 @@ class ReferencerTest extends TestCase {
       $urlGenerator,
       $http_client,
       $mimeTypeGuesser,
-      $this->createStub(LoggerChannelInterface::class)
+      $this->createStub(LoggerInterface::class)
     );
 
     if ($describedBy instanceof \Exception) {
