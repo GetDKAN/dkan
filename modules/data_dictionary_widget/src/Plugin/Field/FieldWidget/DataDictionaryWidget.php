@@ -50,7 +50,11 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element['dictionary_fields']);
     $element['dictionary_fields']['add_row_button']['#access'] = $fields_being_modified == NULL ? TRUE : FALSE;
 
-    $form_entity = $form_state->getFormObject()->getEntity();
+    $form_object = $form_state->getFormObject();
+    if (!($form_object instanceof \Drupal\Core\Entity\EntityFormInterface)) {
+      return;
+    }
+    $form_entity = $form_object->getEntity();
 
     if ($form_entity instanceof FieldableEntityInterface) {
       $form_entity->set('field_data_type', 'data-dictionary');
