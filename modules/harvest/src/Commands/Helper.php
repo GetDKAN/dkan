@@ -98,9 +98,9 @@ trait Helper {
    */
   private function renderHarvestRunsErrors(array $errors) {
     if ($errors) {
-      foreach ($errors as $run_id => $run_errors) {
-        foreach ($run_errors as $type => $messages) {
-          foreach ($messages as $id => $message) {
+      foreach ($errors ?? [] as $run_id => $run_errors) {
+        foreach ($run_errors ?? [] as $type => $messages) {
+          foreach ($messages ?? [] as $id => $message) {
             $this->logger()->error('[' . $run_id . '][' . $type . '][' . $id . '] ' . $message);
           }
         }
