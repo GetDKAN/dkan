@@ -64,8 +64,12 @@ class HarvestCommands extends DrushCommands {
         return [$id];
       },
       $this->harvestService->getAllHarvestIds()
-    );
-    (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
+      );
+    if ($rows) {
+      (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
+      return;
+    }
+    $this->logger->notice('No harvests registered.');
   }
 
   /**
