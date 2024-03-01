@@ -11,13 +11,6 @@ use Drupal\Core\Entity\Routing\AdminHtmlRouteProvider;
 class HarvestPlanHtmlRouteProvider extends AdminHtmlRouteProvider {
 
   /**
-   * {@inheritdoc}
-   */
-  protected function getCanonicalRoute(EntityTypeInterface $entity_type) {
-    return $this->getEditFormRoute($entity_type);
-  }
-
-  /**
    * {@inheritDoc}
    */
   protected function getCollectionRoute(EntityTypeInterface $entity_type) {
