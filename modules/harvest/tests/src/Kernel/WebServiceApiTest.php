@@ -28,6 +28,11 @@ class WebServiceApiTest extends KernelTestBase {
     'node',
   ];
 
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('harvest_plan');
+  }
+
   protected function getHarvestPlan(string $plan_identifier): object {
     return (object) [
       'identifier' => $plan_identifier,
@@ -46,10 +51,11 @@ class WebServiceApiTest extends KernelTestBase {
    * @covers ::getPlan
    */
   public function testGetPlanNoPlan() {
-    $this->markTestIncomplete('getPlan() tries to json encode null if the record is not found.');
+    $plan_id = 'foo';
     $controller = WebServiceApi::create($this->container);
-    $response = $controller->getPlan('foo');
+    $response = $controller->getPlan($plan_id);
     $this->assertEquals(404, $response->getStatusCode(), $response->getContent());
+    $this->assertEquals('Unable to find plan ' . $plan_id, (json_decode($response->getContent()))->message);
   }
 
   /**
@@ -84,10 +90,11 @@ class WebServiceApiTest extends KernelTestBase {
    * @covers ::deregister
    */
   public function testDeregisterNoPlan() {
-    $this->markTestIncomplete('Returns 400 plus SQL errors. Should return 404(?) and not show SQL errors.');
+    $plan_id = 'foo';
     $controller = WebServiceApi::create($this->container);
-    $response = $controller->deregister('foo');
+    $response = $controller->deregister($plan_id);
     $this->assertEquals(404, $response->getStatusCode(), $response->getContent());
+    $this->assertEquals('Unable to find plan ' . $plan_id, (json_decode($response->getContent()))->message);
   }
 
   public function testDeregister() {

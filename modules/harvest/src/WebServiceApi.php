@@ -11,8 +11,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Harvest API controller.
  *
  * @todo Move this to the Controller namespace.
+ * @todo Remove reliance on the request stack.
+ * @todo Add cache tags/contexts.
  */
 class WebServiceApi implements ContainerInjectionInterface {
+
+  private const DEFAULT_HEADERS = ['Access-Control-Allow-Origin' => '*'];
 
   /**
    * Request stack.
@@ -32,7 +36,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
-    return new WebServiceApi($container->get('request_stack'), $container->get('dkan.harvest.service'));
+    return new static(
+      $container->get('request_stack'),
+      $container->get('dkan.harvest.service')
+    );
   }
 
   /**
@@ -47,16 +54,12 @@ class WebServiceApi implements ContainerInjectionInterface {
    * List harvest ids.
    */
   public function index() {
-
     try {
-
-      $rows = $this->harvester
-        ->getAllHarvestIds();
-
+      $rows = $this->harvester->getAllHarvestIds();
       return new JsonResponse(
-            $rows,
-            200,
-            ["Access-Control-Allow-Origin" => "*"]
+        $rows,
+        200,
+        static::DEFAULT_HEADERS
       );
     }
     catch (\Exception $e) {
@@ -75,14 +78,21 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getPlan($identifier) {
     try {
-      $plan = $this->harvester
-        ->getHarvestPlan($identifier);
-
-      return new JsonResponse(
-        json_decode($plan),
-        200,
-        ["Access-Control-Allow-Origin" => "*"]
-      );
+      if ($plan = $this->harvester->getHarvestPlan($identifier)) {
+        return new JsonResponse(
+          json_decode($plan),
+          200,
+          static::DEFAULT_HEADERS
+        );
+      }
+      else {
+        // There was no plan to retrieve.
+        return new JsonResponse(
+          ['message' => 'Unable to find plan ' . $identifier],
+          404,
+          static::DEFAULT_HEADERS
+        );
+      }
     }
     catch (\Exception $e) {
       return $this->exceptionJsonResponse($e);
@@ -96,17 +106,11 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $harvest_plan = $this->requestStack->getCurrentRequest()->getContent();
       $plan = json_decode($harvest_plan);
-      $identifier = $this->harvester
-        ->registerHarvest($plan);
-
+      $identifier = $this->harvester->registerHarvest($plan);
       return new JsonResponse(
-            (object) [
-              "identifier" => $identifier,
-            ],
-            200,
-            [
-              "Access-Control-Allow-Origin" => "*",
-            ]
+        (object) ['identifier' => $identifier],
+        200,
+        static::DEFAULT_HEADERS
       );
     }
     catch (\Exception $e) {
@@ -118,18 +122,16 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Deregister a harvest.
    */
   public function deregister($identifier) {
-
+    $result = (object) ['identifier' => $identifier];
+    $status = 200;
     try {
-
-      $this->harvester
-        ->deregisterHarvest($identifier);
-
+      if (!$this->harvester->deregisterHarvest($identifier)) {
+        // We couldn't find a harvest plan to deregister.
+        $status = 404;
+        $result->message = 'Unable to find plan ' . $identifier;
+      }
       return new JsonResponse(
-            (object) [
-              "identifier" => $identifier,
-            ],
-            200,
-            ["Access-Control-Allow-Origin" => "*"]
+        $result, $status, static::DEFAULT_HEADERS
       );
     }
     catch (\Exception $e) {
@@ -146,8 +148,8 @@ class WebServiceApi implements ContainerInjectionInterface {
       $payload = json_decode($payloadJson);
       if (!isset($payload->plan_id)) {
         $return = [
-          "message" => "Invalid payload.",
-          "documentation" => "/api/1/harvest",
+          'message' => 'Invalid payload.',
+          'documentation' => '/api/1/harvest',
         ];
         return $this->jsonResponse($return, 422);
       }
@@ -157,12 +159,12 @@ class WebServiceApi implements ContainerInjectionInterface {
         ->runHarvest($id);
 
       return new JsonResponse(
-            (object) [
-              "identifier" => $id,
-              "result"     => $result,
-            ],
-            200,
-            ["Access-Control-Allow-Origin" => "*"]
+        (object) [
+          'identifier' => $id,
+          'result' => $result,
+        ],
+        200,
+        static::DEFAULT_HEADERS
       );
     }
     catch (\Exception $e) {
@@ -182,9 +184,9 @@ class WebServiceApi implements ContainerInjectionInterface {
       $id = $this->requestStack->getCurrentRequest()->get('plan');
       if (empty($id)) {
         return new JsonResponse(
-          ["message" => "Missing 'plan' query parameter value"],
+          ['message' => "Missing 'plan' query parameter value"],
           400,
-          ["Access-Control-Allow-Origin" => "*"]
+          static::DEFAULT_HEADERS
         );
       }
 
@@ -192,9 +194,9 @@ class WebServiceApi implements ContainerInjectionInterface {
         ->getAllHarvestRunInfo($id);
 
       return new JsonResponse(
-            $response,
-            200,
-            ["Access-Control-Allow-Origin" => "*"]
+        $response,
+        200,
+        static::DEFAULT_HEADERS
       );
     }
     catch (\Exception $e) {
@@ -213,9 +215,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     $id = $this->requestStack->getCurrentRequest()->get('plan');
     if (empty($id)) {
       return new JsonResponse(
-        ["message" => "Missing 'plan' query parameter value"],
+        ['message' => "Missing 'plan' query parameter value"],
         400,
-        ["Access-Control-Allow-Origin" => "*"]
+        static::DEFAULT_HEADERS
       );
     }
 
@@ -224,9 +226,9 @@ class WebServiceApi implements ContainerInjectionInterface {
         ->getHarvestRunInfo($id, $identifier);
 
       return new JsonResponse(
-            json_decode($response),
-            200,
-            ["Access-Control-Allow-Origin" => "*"]
+        json_decode($response),
+        200,
+        static::DEFAULT_HEADERS
       );
     }
     catch (\Exception $e) {
@@ -239,28 +241,22 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function revert() {
     try {
-
       $id = $this->requestStack->getCurrentRequest()->get('plan');
       if (empty($id)) {
         return new JsonResponse(
-          ["message" => "Missing 'plan' query parameter value"],
+          ['message' => "Missing 'plan' query parameter value"],
           400,
-          ["Access-Control-Allow-Origin" => "*"]
+          static::DEFAULT_HEADERS
         );
       }
-
-      $result = $this->harvester
-        ->revertHarvest($id);
-
+      $result = $this->harvester->revertHarvest($id);
       return new JsonResponse(
-            (object) [
-              "identifier" => $id,
-              'result'     => $result,
-            ],
-            200,
-            [
-              "Access-Control-Allow-Origin" => "*",
-            ]
+        (object) [
+          'identifier' => $id,
+          'result'     => $result,
+        ],
+        200,
+        static::DEFAULT_HEADERS
       );
     }
     catch (\Exception $e) {
