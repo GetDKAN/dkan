@@ -38,9 +38,9 @@ use Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget;
 class DataDictionaryWidgetBuildTest extends TestCase {
 
   /**
-   * Test a new/empty Data Dictionary Widget.
+   * Test rendering a new Data Dictionary Widget.
    */
-  public function testEmptyDataDictionaryWidget() {
+  public function testRenderDataDictionaryWidget() {
 
     // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
@@ -90,5 +90,48 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $this->assertArrayHasKey('identifier', $element, 'Identifier Field Does Not Exist On The Data Dictionary Form');
     $this->assertArrayHasKey('title', $element, 'Identifier Field Does Not Exist On The Data Dictionary Form');
     $this->assertArrayHasKey('dictionary_fields', $element, 'Identifier Field Does Not Exist On The Data Dictionary Form');
+  }
+
+  /**
+   * Test add new field functionality with the Data Dictionary Widget.
+   */
+  public function testAddDataDictionaryWidget() {
+
+    // Create mock objects.
+    $formState = $this->createMock(FormStateInterface::class);
+    $fieldItemList = $this->createMock(FieldItemListInterface::class);
+    $field_definition = $this->createMock(FieldDefinitionInterface::class);
+    $settings = [];
+    $third_party_settings = [];
+    $form = [];
+    $plugin_id = '';
+    $plugin_definition = [];
+
+    $dataDictionaryWidget = new DataDictionaryWidget (
+      $plugin_id,
+      $plugin_definition,
+      $field_definition,
+      $settings,
+      $third_party_settings
+    );
+
+    // Call the method under test.
+    $element = $dataDictionaryWidget->formElement(
+      $fieldItemList,
+      0,
+      [],
+      $form,
+      $formState
+    );
+
+    $add_fields = FieldAddCreation::addFields();
+
+    $element = FieldOperations::setAddFormState($add_fields, $element);
+
+    $this->assertNotNull($element);
+    $this->assertNotNull($element["dictionary_fields"]["field_collection"]);
+    $this->assertArrayHasKey('group', $element["dictionary_fields"]["field_collection"], 'Group Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('name', $element["dictionary_fields"]["field_collection"]["group"], 'Name Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('title', $element["dictionary_fields"]["field_collection"]["group"], 'Title Field Does Not Exist On The Data Dictionary Form');
   }
 }
