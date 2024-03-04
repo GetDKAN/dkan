@@ -93,14 +93,15 @@ class DataDictionaryWidgetBuildTest extends TestCase {
   }
 
   /**
-   * Test add new field functionality with the Data Dictionary Widget.
+   * Test collecting dictionary field information.
    */
-  public function testAddDataDictionaryWidget() {
+  public function testAddFieldCollectionDictionaryWidget() {
 
     // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
     $fieldItemList = $this->createMock(FieldItemListInterface::class);
     $field_definition = $this->createMock(FieldDefinitionInterface::class);
+    $entity = $this->createMock(FieldableEntityInterface::class);
     $settings = [];
     $third_party_settings = [];
     $form = [];
@@ -133,5 +134,121 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $this->assertArrayHasKey('group', $element["dictionary_fields"]["field_collection"], 'Group Does Not Exist On The Data Dictionary Form');
     $this->assertArrayHasKey('name', $element["dictionary_fields"]["field_collection"]["group"], 'Name Field Does Not Exist On The Data Dictionary Form');
     $this->assertArrayHasKey('title', $element["dictionary_fields"]["field_collection"]["group"], 'Title Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('type', $element["dictionary_fields"]["field_collection"]["group"], 'Type Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('format', $element["dictionary_fields"]["field_collection"]["group"], 'Format Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('format_other', $element["dictionary_fields"]["field_collection"]["group"], 'format other Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('description', $element["dictionary_fields"]["field_collection"]["group"], 'Description Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('title', $element["dictionary_fields"]["field_collection"]["group"], 'Title Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('actions', $element["dictionary_fields"]["field_collection"]["group"], 'Actions Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('save_settings', $element["dictionary_fields"]["field_collection"]["group"]["actions"], 'Add button Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('cancel_settings', $element["dictionary_fields"]["field_collection"]["group"]["actions"], 'Cancel button Does Not Exist On The Data Dictionary Form');
   }
+
+  /**
+   * Test creating a new dictionary field.
+   */
+  public function testAddNewFieldDictionaryWidget() {
+
+    // Create mock objects.
+    $formState = $this->createMock(FormStateInterface::class);
+    $fieldItemList = $this->createMock(FieldItemListInterface::class);
+    $field_definition = $this->createMock(FieldDefinitionInterface::class);
+    $settings = [];
+    $third_party_settings = [];
+      // Mock the form and form state objects
+    $form = [
+      'field_json_metadata' => [
+        'widget' => [
+          0 => [
+            'dictionary_fields' => [
+              'data' => [
+                '#rows' => null // Set #rows to null to mock $current_fields
+              ]
+            ]
+          ]
+        ]
+      ]
+    ];
+    $plugin_id = '';
+    $plugin_definition = [];
+
+    $dataDictionaryWidget = new DataDictionaryWidget (
+      $plugin_id,
+      $plugin_definition,
+      $field_definition,
+      $settings,
+      $third_party_settings
+    );
+
+    // Call the method under test.
+    $element = $dataDictionaryWidget->formElement(
+      $fieldItemList,
+      0,
+      [],
+      $form,
+      $formState
+    );
+
+    $add_fields = FieldAddCreation::addFields();
+
+    $element = FieldOperations::setAddFormState($add_fields, $element);
+
+    $user_input = [
+      'field_json_metadata' => [
+        'identifier' => '',
+        'title' => '',
+        'dictionary_fields' => [
+          'field_collection' => [
+            'group' => [
+                'name' => 'test',
+                'title' => 'test',
+                'type' => 'string',
+                'format' => 'default',
+                'format_other' => '',
+                'description' => 'test',
+                'data' => null,
+                'edit_buttons' => []
+            ]
+          ]
+        ]
+      ]
+    ];
+
+    $data_results = [
+      [
+        'name' => 'test',
+        'title' => 'test',
+        'type' => 'string',
+        'format' => 'default',
+        'description' => 'test'
+      ]
+    ];
+
+    // Set up a triggering element with '#op' set to 'add'
+    $trigger= ['#op' => 'add'];
+
+    // Expect that getTriggeringElement will be called once and return the addTrigger
+    $formState->expects($this->any())
+      ->method('getTriggeringElement')
+      ->willReturn($trigger);
+
+    $formState->expects($this->exactly(4))
+      ->method('set')
+      ->willReturnOnConsecutiveCalls (
+        '',
+        $this->equalTo($user_input),
+        TRUE,
+        FALSE
+      );
+
+    FieldCallbacks::addSubformCallback($form, $formState);
+    $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows([], $data_results, $formState);
+
+    $this->assertNotNull($element['dictionary_fields']['data']['#rows'][0]);
+    $this->assertNotNull($element["dictionary_fields"]["field_collection"]);
+    $this->assertArrayHasKey('name', $element['dictionary_fields']['data']['#rows'][0], 'Name Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('title', $element["dictionary_fields"]["field_collection"]["group"], 'Title Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('type', $element["dictionary_fields"]["field_collection"]["group"], 'Type Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('format', $element["dictionary_fields"]["field_collection"]["group"], 'Format Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('description', $element["dictionary_fields"]["field_collection"]["group"], 'Description Field Does Not Exist On The Data Dictionary Form');  }
 }
