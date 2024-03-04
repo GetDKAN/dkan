@@ -3,10 +3,8 @@
 namespace Drupal\harvest;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * DKAN Harvest utility service for maintenance tasks.
@@ -14,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * These methods generally exist to support a thin Drush layer. These are
  * methods that we don't need in the HarvestService object.
  */
-class HarvestUtility implements ContainerInjectionInterface {
+class HarvestUtility {
 
   /**
    * Harvest service.
@@ -45,20 +43,6 @@ class HarvestUtility implements ContainerInjectionInterface {
   private HarvestHashesDatabaseTableFactory $hashesFactory;
 
   /**
-   * Create.
-   *
-   * @inheritdoc
-   */
-  public static function create(ContainerInterface $container) {
-    return new self(
-      $container->get('dkan.harvest.service'),
-      $container->get('dkan.harvest.storage.database_table'),
-      $container->get('dkan.harvest.storage.hashes_database_table'),
-      $container->get('database'),
-    );
-  }
-
-  /**
    * Constructor.
    */
   public function __construct(
@@ -77,8 +61,8 @@ class HarvestUtility implements ContainerInjectionInterface {
    * Get the plan ID from a given harvest table name.
    *
    * Harvest table names are assumed to look like this:
-   * harvest_ID_that_might_have_underscores_[something]. For example:
-   * 'harvest_ABC_123_runs'.
+   * harvest_planID_that_might_have_underscores_[type], where [type] is one of
+   * hashes, items, or runs. For example: 'harvest_ABC_123_runs'.
    *
    * @param string $table_name
    *   The table name.
@@ -124,9 +108,6 @@ class HarvestUtility implements ContainerInjectionInterface {
   /**
    * Find all the potential harvest data tables names in the database.
    *
-   * NOTE: Can find hashes tables that have not yet been converted to
-   * harvest_hash entities.
-   *
    * @return array
    *   All the table names that might be harvest data tables.
    */
@@ -157,7 +138,6 @@ class HarvestUtility implements ContainerInjectionInterface {
       foreach ([
         'harvest_' . $plan_id . '_runs',
         'harvest_' . $plan_id . '_items',
-        'harvest_' . $plan_id . '_hashes',
       ] as $table) {
         $this->storeFactory->getInstance($table)->destruct();
       }
@@ -165,7 +145,7 @@ class HarvestUtility implements ContainerInjectionInterface {
   }
 
   /**
-   * Convert a table from DatabaseTableInterface to use the harvest_hash entity.
+   * Convert a table to use the harvest_hash entity.
    *
    * @param string $plan_id
    *   Harvest plan ID to convert.
