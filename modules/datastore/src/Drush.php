@@ -238,20 +238,17 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Drop ALL datastore tables.
+   * Drop a ALL datastore tables.
    *
    * @command dkan:datastore:drop-all
    */
   public function dropAll() {
-    $counter = 0;
     /** @var \RootedData\RootedJsonData $distribution*/
-    foreach ($this->metastoreService->getAll('distribution', NULL, NULL, TRUE) as $distribution) {
+    foreach ($this->metastoreService->getAll('distribution') as $distribution) {
       if ($uuid = $distribution->get('$[data]["%Ref:downloadURL"][0][data][identifier]') ?? FALSE) {
-        ++$counter;
         $this->drop($uuid);
       }
     }
-    $this->logger()->success('Dropped ' . $counter . ' distributions.');
   }
 
   /**
