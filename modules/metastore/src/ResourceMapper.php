@@ -29,6 +29,8 @@ class ResourceMapper {
    * Database storage service.
    *
    * @var \Drupal\common\Storage\DatabaseTableInterface
+   *
+   * @todo Deprecate/remove this form of storage.
    */
   private $store;
 

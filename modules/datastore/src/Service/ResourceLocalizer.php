@@ -5,7 +5,6 @@ namespace Drupal\datastore\Service;
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\LoggerTrait;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
@@ -21,7 +20,6 @@ use Procrastinator\Result;
  */
 class ResourceLocalizer {
 
-  use LoggerTrait;
   use EventDispatcherTrait;
 
   /**

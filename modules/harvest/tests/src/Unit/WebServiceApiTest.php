@@ -2,22 +2,23 @@
 
 namespace Drupal\Tests\harvest\Unit;
 
-use Drupal\harvest\Entity\HarvestPlanRepository;
-use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
-use Drupal\metastore\MetastoreService;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use MockChain\Options;
-use Drupal\Component\DependencyInjection\Container;
-use MockChain\Chain;
-use Procrastinator\Result;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Contracts\Mock\Storage\MemoryFactory;
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\HarvestService;
-use PHPUnit\Framework\TestCase;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\harvest\WebServiceApi;
+use Drupal\metastore\MetastoreService;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+use Procrastinator\Result;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @covers \Drupal\harvest\WebServiceApi
@@ -67,7 +68,8 @@ class WebServiceApiTest extends TestCase {
           new MemoryFactory(),
           $this->createStub(HarvestHashesDatabaseTableFactory::class),
           $this->getMetastoreMockChain(),
-          $this->getHarvestEntityRepositoryMock()
+          $this->getHarvestEntityRepositoryMock(),
+          $this->createStub(LoggerInterface::class)
         );
 
       break;

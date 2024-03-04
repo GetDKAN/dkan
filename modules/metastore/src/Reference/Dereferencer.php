@@ -4,7 +4,8 @@ namespace Drupal\metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\common\LoggerTrait;
+use Psr\Log\LoggerInterface;
+
 use Drupal\metastore\Exception\MissingObjectException;
 
 /**
@@ -12,7 +13,6 @@ use Drupal\metastore\Exception\MissingObjectException;
  */
 class Dereferencer {
   use HelperTrait;
-  use LoggerTrait;
 
   /**
    * Storage factory interface service.
@@ -22,15 +22,27 @@ class Dereferencer {
   private $storageFactory;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
+  public function __construct(
+    ConfigFactoryInterface $configService,
+    FactoryInterface $storageFactory,
+    LoggerInterface $loggerChannel
+  ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
+    $this->logger = $loggerChannel;
   }
 
   /**
-   * Replaces value references in a dataset with with their actual values.
+   * Replaces value references in a dataset with their actual values.
    *
    * @param object $data
    *   The json metadata object.
@@ -91,7 +103,7 @@ class Dereferencer {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      $this->log('value_referencer', 'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
+      $this->logger->log('value_referencer', 'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
         [
           '@property_id' => $property_id,
           '@uuid' => var_export($uuid, TRUE),
@@ -156,7 +168,7 @@ class Dereferencer {
 
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    $this->log(
+    $this->logger->log(
       'value_referencer',
       'Property @property_id reference @uuid not found',
       [

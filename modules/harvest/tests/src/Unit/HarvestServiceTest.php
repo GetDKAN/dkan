@@ -4,21 +4,19 @@ namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\harvest\Entity\HarvestPlanRepository;
-use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
-use Drupal\node\NodeStorage;
 use Harvest\Harvester;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \Drupal\harvest\HarvestService
@@ -33,8 +31,6 @@ use PHPUnit\Framework\TestCase;
 class HarvestServiceTest extends TestCase {
   use ServiceCheckTrait;
 
-  private $storageFactory;
-
   /**
    *
    */
@@ -47,7 +43,8 @@ class HarvestServiceTest extends TestCase {
       $this->createStub(DatabaseTableFactory::class),
       $this->createStub(HarvestHashesDatabaseTableFactory::class),
       $this->createStub(MetastoreService::class),
-      $planRepository
+      $planRepository,
+      $this->createStub(LoggerInterface::class)
     );
     $plan = $service->getHarvestPlan('test');
     $this->assertEquals('Hello', $plan);
@@ -70,6 +67,7 @@ class HarvestServiceTest extends TestCase {
         $this->createStub(HarvestHashesDatabaseTableFactory::class),
         $this->getMetastoreMockChain(),
         $this->createStub(HarvestPlanRepository::class),
+        $this->createStub(LoggerInterface::class),
       ])
       ->onlyMethods(['getDkanHarvesterInstance'])
       ->getMock();
@@ -91,19 +89,9 @@ class HarvestServiceTest extends TestCase {
   }
 
   /**
-   * Private.
-   */
-  private function getEntityTypeManagerMockChain() {
-    return (new Chain($this))
-      ->add(EntityTypeManager::class, 'getStorage', NodeStorage::class)
-      ->getMock();
-  }
-
-  /**
    *
    */
   public function testPublish() {
-
     $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003', 'abcd-1004'];
     $lastRunInfo = (new Sequence())
       ->add(json_encode((object) [
@@ -130,15 +118,13 @@ class HarvestServiceTest extends TestCase {
       ->add(TRUE);
 
     $logger = (new Chain($this))
-      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'error');
+      ->add(LoggerInterface::class, 'error', NULL, 'error');
 
-    $container = $this->getCommonMockChain()
+    $container = $this->getCommonMockChain($logger->getMock())
       ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
       ->add(MetastoreService::class, 'publish', $metastorePublicationResults);
 
     $service = HarvestService::create($container->getMock());
-    $service->setLoggerFactory($logger->getMock());
     $result = $service->publish('1');
 
     $this->assertEquals(['abcd-1003'], $result);
@@ -176,17 +162,14 @@ class HarvestServiceTest extends TestCase {
       ->add(new \Exception('FooBar'))
       // abcd-1003 should be archived without issue.
       ->add(TRUE);
-
     $logger = (new Chain($this))
-      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'error');
+      ->add(LoggerInterface::class, 'error', NULL, 'error');
 
-    $container = $this->getCommonMockChain()
+    $container = $this->getCommonMockChain($logger->getMock())
       ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
       ->add(MetastoreService::class, 'archive', $metastoreArchiveResults);
 
     $service = HarvestService::create($container->getMock());
-    $service->setLoggerFactory($logger->getMock());
     $result = $service->archive('1');
 
     $this->assertEquals(['abcd-1003'], $result);
@@ -220,15 +203,23 @@ class HarvestServiceTest extends TestCase {
     $this->assertEquals(['4'], array_values($removedIds));
   }
 
-  private function getCommonMockChain() {
+  private function getCommonMockChain($logger = NULL) {
 
     $options = (new Options())
       ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
       ->add('dkan.harvest.storage.hashes_database_table', HarvestHashesDatabaseTableFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
-      ->add('dkan.harvest.harvest_plan_repository', HarvestPlanRepository::class)
-      ->index(0);
+      ->add('dkan.harvest.harvest_plan_repository', HarvestPlanRepository::class);
+
+    if ($logger) {
+      $options->add('dkan.harvest.logger_channel', $logger)
+        ->index(0);
+    }
+    else {
+      $options->add('dkan.harvest.logger_channel', LoggerInterface::class)
+        ->index(0);
+    }
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
