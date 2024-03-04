@@ -1,8 +1,8 @@
 # Circle CI script to run a matrix of tests in DDev.
 
-version: '2.1'
+version: 2.1
 orbs:
-  docker: circleci/docker@2.2.0
+  docker: circleci/docker@2.5.0
 
 commands:
   install-ddev:
