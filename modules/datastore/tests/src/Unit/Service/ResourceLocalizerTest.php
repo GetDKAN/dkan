@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use GuzzleHttp\Client;
 
 /**
  * @group dkan
@@ -65,7 +66,8 @@ class ResourceLocalizerTest extends TestCase {
       $fileFetcher,
       $this->getDrupalFilesChain()->getMock(),
       $this->getJobStoreFactoryChain()->getMock(),
-      $this->createMock(QueueFactory::class)
+      $this->createMock(QueueFactory::class),
+      new Client()
     );
 
     \Drupal::setContainer($this->getContainer()->getMock());

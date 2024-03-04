@@ -13,6 +13,8 @@ use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Procrastinator\Result;
 
 /**
@@ -81,20 +83,42 @@ class ResourceLocalizer {
   private QueueFactory $queueFactory;
 
   /**
+   * Guzzle HTTP client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  private Client $httpClient;
+
+  /**
    * Constructor.
+   *
+   * @param \Drupal\metastore\ResourceMapper $fileMapper
+   *   The file mapper.
+   * @param \Contracts\FactoryInterface $fileFetcherFactory
+   *   The file fetcher.
+   * @param \Drupal\common\Util\DrupalFiles $drupalFiles
+   *   The files.
+   * @param \Drupal\common\Storage\FileFetcherJobStoreFactory $fileFetcherJobStoreFactory
+   *   The job.
+   * @param \Drupal\Core\Queue\QueueFactory $queueFactory
+   *   The queue.
+   * @param \GuzzleHttp\Client $httpClient
+   *   The http client.
    */
   public function __construct(
     ResourceMapper $fileMapper,
     FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
     FileFetcherJobStoreFactory $fileFetcherJobStoreFactory,
-    QueueFactory $queueFactory
+    QueueFactory $queueFactory,
+    Client $httpClient,
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->fileFetcherJobStoreFactory = $fileFetcherJobStoreFactory;
     $this->queueFactory = $queueFactory;
+    $this->httpClient = $httpClient;
   }
 
   /**
@@ -104,20 +128,30 @@ class ResourceLocalizer {
    */
   protected function localize($identifier, $version = NULL): Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
-      $ff = $this->getFileFetcher($resource);
-      $result = $ff->run();
-      // The result object should report DONE, even if the file has previously
-      // been localized.
-      if ($result->getStatus() === Result::DONE) {
-        // Localization is done. Register the perspectives.
-        $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
-        // Send the event.
-        $this->dispatchEvent(static::EVENT_RESOURCE_LOCALIZED, [
-          'identifier' => $resource->getIdentifier(),
-          'version' => $resource->getVersion(),
-        ]);
+      try {
+        // Confirm the source is available, a 404 will throw an exception.
+        $response = $this->httpClient->get($resource->getFilePath());
+        $ff = $this->getFileFetcher($resource);
+        $result = $ff->run();
+        // The result object should report DONE, even if the file has previously
+        // been localized.
+        if ($result->getStatus() === Result::DONE) {
+          // Localization is done. Register the perspectives.
+          $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
+          // Send the event.
+          $this->dispatchEvent(static::EVENT_RESOURCE_LOCALIZED, [
+            'identifier' => $resource->getIdentifier(),
+            'version' => $resource->getVersion(),
+          ]);
+        }
+        return $result;
       }
-      return $result;
+      catch (\Exception $e) {
+        $result = new Result();
+        $result->setStatus(Result::ERROR);
+        $result->setError($e->getMessage());
+        return $result;
+      }
     }
     $result = new Result();
     $result->setStatus(Result::ERROR);
