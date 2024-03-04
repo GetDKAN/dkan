@@ -2,27 +2,31 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
-use Drupal\common\Events\Event;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Component\DependencyInjection\Container;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\common\Events\Event;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Drupal\metastore\Storage\NodeData;
-
+use Drupal\metastore\ValidMetadataFactory;
 use MockChain\Chain;
+use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
-use MockChain\Options;
 use RootedData\RootedJsonData;
 
 /**
  * @coversDefaultClass Drupal\metastore\MetastoreService
+ *
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class MetastoreServiceTest extends TestCase {
 
@@ -406,6 +410,7 @@ EOF;
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
+      ->add('dkan.common.logger_channel', LoggerChannelInterface::class)
       ->index(0);
 
     return (new Chain($case))

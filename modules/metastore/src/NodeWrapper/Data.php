@@ -2,10 +2,9 @@
 
 namespace Drupal\metastore\NodeWrapper;
 
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
@@ -13,7 +12,6 @@ use Drupal\node\Entity\Node;
  * MetastoreItem object that wraps a data node, provides additional methods.
  */
 class Data implements MetastoreItemInterface {
-  use LoggerTrait;
 
   /**
    * Node.
@@ -32,14 +30,14 @@ class Data implements MetastoreItemInterface {
   /**
    * Entity Type Manager.
    *
-   * @var Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
   private $entityTypeManager;
 
   /**
    * Entity Node Storage.
    *
-   * @var Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   private $nodeStorage;
 

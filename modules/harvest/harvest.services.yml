@@ -6,8 +6,8 @@ services:
       - '@dkan.metastore.service'
       - '@dkan.harvest.harvest_plan_repository'
       - '@dkan.harvest.storage.harvest_run_repository'
+      - '@dkan.harvest.logger_channel'
     calls:
-      - [ setLoggerFactory, [ '@logger.factory' ] ]
       - [ setEntityTypeManager, [ '@entity_type.manager' ] ]
   dkan.harvest.utility:
     class: Drupal\harvest\HarvestUtility
