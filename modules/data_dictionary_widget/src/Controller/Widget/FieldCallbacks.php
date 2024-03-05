@@ -40,34 +40,31 @@ class FieldCallbacks extends ControllerBase {
    * Submit callback for the Edit button.
    */
   public static function editSubformCallback(array &$form, FormStateInterface $form_state) {
-    $trigger = $form_state->getTriggeringElement();
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $op = $trigger['#op'];
-    $op_index = explode("_", $trigger['#op']);
+    $op_index = explode("_", $form_state->getTriggeringElement()['#op']);
     $currently_modifying = $form_state->get('fields_being_modified') != NULL ? $form_state->get('fields_being_modified') : [];
 
-    if (str_contains($op, 'abort')) {
+    if (str_contains($form_state->getTriggeringElement()['#op'], 'abort')) {
       unset($currently_modifying[$op_index[1]]);
     }
 
-    if (str_contains($op, 'delete')) {
+    if (str_contains($form_state->getTriggeringElement()['#op'], 'delete')) {
       unset($currently_modifying[$op_index[1]]);
       unset($current_fields[$op_index[1]]);
     }
 
-    if (str_contains($op, 'update')) {
-      $update_values = $form_state->getUserInput();
+    if (str_contains($form_state->getTriggeringElement()['#op'], 'update')) {
       unset($currently_modifying[$op_index[1]]);
       unset($current_fields[$op_index[1]]);
-      $current_fields[$op_index[1]] = FieldValues::updateValues($op_index[1], $update_values, $current_fields);
+      $current_fields[$op_index[1]] = FieldValues::updateValues($op_index[1], $form_state->getUserInput(), $current_fields);
       ksort($current_fields);
     }
 
-    if (str_contains($op, 'edit')) {
+    if (str_contains($form_state->getTriggeringElement()['#op'], 'edit')) {
       $currently_modifying[$op_index[1]] = $current_fields[$op_index[1]];
     }
 
-    // Reindex the current_fields array
+    // Reindex the current_fields array.
     if ($current_fields) {
       $current_fields = array_values($current_fields);
     }
