@@ -118,13 +118,10 @@ class HarvestUtilityTest extends KernelTestBase {
     $table_factory = $this->container->get('dkan.harvest.storage.database_table');
     $orphaned_table = $table_factory->getInstance('harvest_' . $orphaned_plan_id . '_hashes');
     $this->assertCount(0, $orphaned_table->retrieveAll());
-    $orphaned_table->store(
-      json_encode((object) [
-        'hash' => $orphaned_hash,
-        'harvest_plan_id' => $orphaned_plan_id,
-      ]),
-      $orphaned_uuid
-    );
+    $orphaned_table->store(json_encode((object) [
+      'hash' => $orphaned_hash,
+      'harvest_plan_id' => $orphaned_plan_id,
+    ]), $orphaned_uuid);
 
     // Update the table using the utility.
     /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
