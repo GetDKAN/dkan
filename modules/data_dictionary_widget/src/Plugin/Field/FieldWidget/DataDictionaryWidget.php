@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Controller\Widget\FieldCreation;
 use Drupal\data_dictionary_widget\Controller\Widget\FieldOperations;
+use Drupal\Core\Entity\EntityFormInterface;
 
 /**
  * A data-dictionary widget.
@@ -51,7 +52,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element['dictionary_fields']['add_row_button']['#access'] = $fields_being_modified == NULL ? TRUE : FALSE;
 
     $form_object = $form_state->getFormObject();
-    if (!($form_object instanceof \Drupal\Core\Entity\EntityFormInterface)) {
+    if (!($form_object instanceof EntityFormInterface)) {
       return;
     }
     $form_entity = $form_object->getEntity();

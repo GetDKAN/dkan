@@ -95,13 +95,12 @@ class DataDictionaryWidgetBuildTest extends TestCase {
   /**
    * Test collecting dictionary field information.
    */
-  public function testAddFieldCollectionDictionaryWidget() {
+  public function testFieldCollectionDictionaryWidget() {
 
     // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
     $fieldItemList = $this->createMock(FieldItemListInterface::class);
     $field_definition = $this->createMock(FieldDefinitionInterface::class);
-    $entity = $this->createMock(FieldableEntityInterface::class);
     $settings = [];
     $third_party_settings = [];
     $form = [];
@@ -145,7 +144,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
   }
 
   /**
-   * Test creating a new dictionary field.
+   * Test creating a new dictionary field and adding it to the dictionary table.
    */
   public function testAddNewFieldDictionaryWidget() {
 
@@ -155,48 +154,27 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $field_definition = $this->createMock(FieldDefinitionInterface::class);
     $settings = [];
     $third_party_settings = [];
-      // Mock the form and form state objects
+    $plugin_id = '';
+    $plugin_definition = [];
+
     $form = [
       'field_json_metadata' => [
         'widget' => [
           0 => [
             'dictionary_fields' => [
               'data' => [
-                '#rows' => null // Set #rows to null to mock $current_fields
+                '#rows' => null
               ]
             ]
           ]
         ]
       ]
     ];
-    $plugin_id = '';
-    $plugin_definition = [];
-
-    $dataDictionaryWidget = new DataDictionaryWidget (
-      $plugin_id,
-      $plugin_definition,
-      $field_definition,
-      $settings,
-      $third_party_settings
-    );
-
-    // Call the method under test.
-    $element = $dataDictionaryWidget->formElement(
-      $fieldItemList,
-      0,
-      [],
-      $form,
-      $formState
-    );
-
-    $add_fields = FieldAddCreation::addFields();
-
-    $element = FieldOperations::setAddFormState($add_fields, $element);
 
     $user_input = [
       'field_json_metadata' => [
-        'identifier' => '',
-        'title' => '',
+        'identifier' => 'test',
+        'title' => 'test',
         'dictionary_fields' => [
           'field_collection' => [
             'group' => [
@@ -224,10 +202,52 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ]
     ];
 
-    // Set up a triggering element with '#op' set to 'add'
+    $values = [
+      [
+        'identifier' => 'test',
+        'title' => 'test',
+        'dictionary_fields' => [
+          'data' => '',
+          'add_row_button' => 'Add field',
+          'field_collection' => [
+            'group' => [
+                'name' => 'test',
+                'title' => 'test',
+                'type' => 'string',
+                'format' => 'default',
+                'format_other' => '',
+                'description' => 'test'
+            ]
+          ]
+        ]
+      ]
+    ];
+
+    $dataDictionaryWidget = new DataDictionaryWidget (
+      $plugin_id,
+      $plugin_definition,
+      $field_definition,
+      $settings,
+      $third_party_settings
+    );
+
+    // Call the method under test.
+    $element = $dataDictionaryWidget->formElement(
+      $fieldItemList,
+      0,
+      [],
+      $form,
+      $formState
+    );
+
+    $add_fields = FieldAddCreation::addFields();
+
+    $element = FieldOperations::setAddFormState($add_fields, $element);
+
+    // Set up a triggering element with '#op' set to 'add'.
     $trigger= ['#op' => 'add'];
 
-    // Expect that getTriggeringElement will be called once and return the addTrigger
+    // Expect that getTriggeringElement will be called once and return the addTrigger.
     $formState->expects($this->any())
       ->method('getTriggeringElement')
       ->willReturn($trigger);
@@ -243,12 +263,24 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     FieldCallbacks::addSubformCallback($form, $formState);
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows([], $data_results, $formState);
+    
+    // Call the method under test.
+    $json_data = $dataDictionaryWidget->massageFormValues(
+      $values,
+      $form,
+      $formState
+    );
 
-    $this->assertNotNull($element['dictionary_fields']['data']['#rows'][0]);
-    $this->assertNotNull($element["dictionary_fields"]["field_collection"]);
-    $this->assertArrayHasKey('name', $element['dictionary_fields']['data']['#rows'][0], 'Name Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('title', $element["dictionary_fields"]["field_collection"]["group"], 'Title Field Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('type', $element["dictionary_fields"]["field_collection"]["group"], 'Type Field Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('format', $element["dictionary_fields"]["field_collection"]["group"], 'Format Field Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('description', $element["dictionary_fields"]["field_collection"]["group"], 'Description Field Does Not Exist On The Data Dictionary Form');  }
+    // Convert JSON to array
+    $data = json_decode($json_data, true);
+
+    // Assert keys and values exist in $user_input
+    $this->assertEquals($data['identifier'], $user_input['field_json_metadata']['identifier']);
+    $this->assertEquals($data['title'], $user_input['field_json_metadata']['title']);
+    $this->assertEquals($data['data']['fields'][0]['name'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['name']);
+    $this->assertEquals($data['data']['fields'][0]['title'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['title']);
+    $this->assertEquals($data['data']['fields'][0]['type'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['type']);
+    $this->assertEquals($data['data']['fields'][0]['format'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['format']);
+    $this->assertEquals($data['data']['fields'][0]['description'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['description']);
+  }
 }
