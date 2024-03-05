@@ -23,6 +23,7 @@ class HarvestUtilityTest extends KernelTestBase {
   protected function setUp() : void {
     parent::setUp();
     $this->installEntitySchema('harvest_plan');
+    $this->installEntitySchema('harvest_hash');
   }
 
   public function test() {
@@ -103,6 +104,45 @@ class HarvestUtilityTest extends KernelTestBase {
     foreach ($entities as $entity) {
       $this->assertEquals($harvest_plan_id, $entity->get('harvest_plan_id')->getString());
     }
+  }
+
+  /**
+   * @covers ::harvestHashUpdate
+   */
+  public function testHarvestHashUpdate() {
+    // Use the old-style factory to create an orphaned harvest hash table.
+    $orphaned_plan_id = 'orphanage';
+    $orphaned_uuid = '24614086-9E33-4B09-B5B8-2ACAFE341AF9';
+    $orphaned_hash = '1234567890';
+    /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
+    $table_factory = $this->container->get('dkan.harvest.storage.database_table');
+    $orphaned_table = $table_factory->getInstance('harvest_' . $orphaned_plan_id . '_hashes');
+    $this->assertCount(0, $orphaned_table->retrieveAll());
+    $orphaned_table->store(
+      json_encode((object) [
+        'hash' => $orphaned_hash,
+        'harvest_plan_id' => $orphaned_plan_id,
+      ]),
+      $orphaned_uuid
+    );
+
+    // Update the table using the utility.
+    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    $harvest_utility = $this->container->get('dkan.harvest.utility');
+    $harvest_utility->harvestHashUpdate();
+
+    // Check that it happened.
+    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $new_hash_table */
+    $new_hash_table = $this->container
+      ->get('dkan.harvest.storage.hashes_database_table')
+      ->getInstance($orphaned_plan_id);
+    $this->assertCount(1, $new_hash_table->retrieveAll());
+    $this->assertNotNull($retrieved = $new_hash_table->retrieve($orphaned_uuid));
+    // Should be stored as an object.
+    $this->assertIsObject(json_decode($retrieved));
+    // Convert to array for convenience.
+    $retrieved = json_decode($retrieved, TRUE);
+    $this->assertEquals($orphaned_hash, $retrieved['hash'] ?? 'no hash');
   }
 
 }
