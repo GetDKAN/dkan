@@ -122,7 +122,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * @param string $id
    *   Dataset node UUID.
    *
-   * @return \Contracts\HydratableInterface|false|string|void|null
+   * @return \Contracts\HydratableInterface|string|null
    *   JSON-encoded result of query.
    */
   public function retrieve(string $id) {
@@ -135,6 +135,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
     ) {
       return json_encode($this->entityStorage->load(reset($ids)));
     }
+    return NULL;
   }
 
   /**
