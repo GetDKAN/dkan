@@ -16,6 +16,7 @@ services:
       - '@dkan.harvest.storage.database_table'
       - '@dkan.harvest.storage.hashes_database_table'
       - '@database'
+      - '@dkan.harvest.logger_channel'
   dkan.harvest.harvest_plan_repository:
     class: Drupal\harvest\Entity\HarvestPlanRepository
     arguments:

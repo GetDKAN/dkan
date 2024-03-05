@@ -429,12 +429,7 @@ class HarvestCommands extends DrushCommands {
    * @bootstrap full
    */
   public function harvestUpdate(): int {
-    $harvest_plan_ids = $this->harvestService->getAllHarvestIds();
-
-    foreach ($harvest_plan_ids as $id) {
-      $this->logger()->notice('Converting hashes for ' . $id);
-      $this->harvestUtility->convertHashTable($id);
-    }
+    $this->harvestUtility->harvestHashUpdate();
     $this->logger()->success('Converted!');
     return DrushCommands::EXIT_SUCCESS;
   }

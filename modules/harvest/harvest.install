@@ -75,17 +75,7 @@ function harvest_update_8004(&$sandbox) {
  * Outdated tables will be removed.
  */
 function harvest_update_8005(&$sandbox) {
-  /** @var \Drupal\harvest\HarvestService $harvest_service */
-  $harvest_service = \Drupal::service('dkan.harvest.service');
   /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
   $harvest_utility = \Drupal::service('dkan.harvest.utility');
-
-  $plan_ids = array_merge(
-    $harvest_service->getAllHarvestIds(),
-    array_values($harvest_utility->findOrphanedHarvestDataIds())
-  );
-  foreach ($plan_ids as $plan_id) {
-    $harvest_utility->convertHashTable($plan_id);
-    $harvest_utility->destructOldHashTable($plan_id);
-  }
+  $harvest_utility->harvestHashUpdate();
 }

@@ -5,6 +5,7 @@ namespace Drupal\harvest;
 use Drupal\Core\Database\Connection;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * DKAN Harvest utility service for maintenance tasks.
@@ -43,18 +44,27 @@ class HarvestUtility {
   private HarvestHashesDatabaseTableFactory $hashesFactory;
 
   /**
+   * Logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Constructor.
    */
   public function __construct(
     HarvestService $harvestService,
     DatabaseTableFactory $storeFactory,
     HarvestHashesDatabaseTableFactory $hashesFactory,
-    Connection $connection
+    Connection $connection,
+    LoggerInterface $loggerChannel
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;
     $this->hashesFactory = $hashesFactory;
     $this->connection = $connection;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -154,22 +164,31 @@ class HarvestUtility {
     $old_hash_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes');
     $hash_table = $this->hashesFactory->getInstance($plan_id);
     foreach ($old_hash_table->retrieveAll() as $id) {
-      $data = $old_hash_table->retrieve($id);
-      $hash_table->store($data, $id);
+      if ($data = $old_hash_table->retrieve($id)) {
+        $hash_table->store($data, $id);
+      }
     }
   }
 
   /**
-   * Perform a destruct operation on an old-style hash table.
+   * Update all the harvest hash tables to use entities.
    *
-   * This will remove the table from the database.
+   * This will move all harvest hash information to the updated schema,
+   * including data which does not have a corresponding hash plan ID.
    *
-   * @param $plan_id
-   *   The harvest plan ID for the table to be destroyed.
+   * Outdated tables will be removed.
    */
-  public function destructOldHashTable($plan_id) {
-    $hash_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes');
-    $hash_table->destruct();
+  public function harvestHashUpdate() {
+    $plan_ids = array_merge(
+      $this->harvestService->getAllHarvestIds(),
+      array_values($this->findOrphanedHarvestDataIds())
+    );
+    foreach ($plan_ids as $plan_id) {
+      $this->logger->notice('Converting hashes for ' . $plan_id);
+      $this->convertHashTable($plan_id);
+      $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes')
+        ->destruct();
+    }
   }
 
 }
