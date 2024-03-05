@@ -159,4 +159,17 @@ class HarvestUtility {
     }
   }
 
+  /**
+   * Perform a destruct operation on an old-style hash table.
+   *
+   * This will remove the table from the database.
+   *
+   * @param $plan_id
+   *   The harvest plan ID for the table to be destroyed.
+   */
+  public function destructOldHashTable($plan_id) {
+    $hash_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes');
+    $hash_table->destruct();
+  }
+
 }

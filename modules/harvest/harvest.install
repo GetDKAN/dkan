@@ -69,8 +69,10 @@ function harvest_update_8004(&$sandbox) {
 /**
  * Move data from harvest_ID_hashes tables to harvest_hash entity.
  *
- * This will move all hashes information to the updated schema, including data
- * which does not have a corresponding hash plan ID.
+ * This will move all harvest hash information to the updated schema, including
+ * data which does not have a corresponding hash plan ID.
+ *
+ * Outdated tables will be removed.
  */
 function harvest_update_8005(&$sandbox) {
   /** @var \Drupal\harvest\HarvestService $harvest_service */
@@ -84,5 +86,6 @@ function harvest_update_8005(&$sandbox) {
   );
   foreach ($plan_ids as $plan_id) {
     $harvest_utility->convertHashTable($plan_id);
+    $harvest_utility->destructOldHashTable($plan_id);
   }
 }
