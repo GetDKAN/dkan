@@ -14,7 +14,6 @@ use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Procrastinator\Result;
 
 /**
@@ -91,19 +90,6 @@ class ResourceLocalizer {
 
   /**
    * Constructor.
-   *
-   * @param \Drupal\metastore\ResourceMapper $fileMapper
-   *   The file mapper.
-   * @param \Contracts\FactoryInterface $fileFetcherFactory
-   *   The file fetcher.
-   * @param \Drupal\common\Util\DrupalFiles $drupalFiles
-   *   The files.
-   * @param \Drupal\common\Storage\FileFetcherJobStoreFactory $fileFetcherJobStoreFactory
-   *   The job.
-   * @param \Drupal\Core\Queue\QueueFactory $queueFactory
-   *   The queue.
-   * @param \GuzzleHttp\Client $httpClient
-   *   The http client.
    */
   public function __construct(
     ResourceMapper $fileMapper,
@@ -130,7 +116,7 @@ class ResourceLocalizer {
     if ($resource = $this->getResourceSource($identifier, $version)) {
       try {
         // Confirm the source is available, a 404 will throw an exception.
-        $response = $this->httpClient->get($resource->getFilePath());
+        $this->httpClient->get($resource->getFilePath());
         $ff = $this->getFileFetcher($resource);
         $result = $ff->run();
         // The result object should report DONE, even if the file has previously
