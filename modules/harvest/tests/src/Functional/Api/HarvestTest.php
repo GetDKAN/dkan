@@ -165,17 +165,17 @@ class HarvestTest extends BrowserTestBase {
       RequestOptions::QUERY => $plan_query,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertCount(1, json_decode($response->getBody()->getContents()));
+    $this->assertCount(1, json_decode($response->getBody()->getContents(), TRUE));
   }
 
   public function testGetHarvestRunsIdentifierQuery() {
     $identifier = uniqid();
-    $endpoint = '/api/1/harvest/runs';
+    $runs_endpoint = '/api/1/harvest/runs';
 
     // 03_harvest.spec.js: POST harvest/runs : Requires authenticated user
     // @todo Create POST-oriented test method and move this to it. This single
     //   POST test is located here for test speed.
-    $response = $this->getApiClient()->post($endpoint);
+    $response = $this->getApiClient()->post($runs_endpoint);
     $this->assertEquals(401, $response->getStatusCode());
 
     // Add a harvest plan and run it.
@@ -187,7 +187,7 @@ class HarvestTest extends BrowserTestBase {
 
     // 03_harvest.spec.js: GET harvest/runs/{identifier}' : Requires authenticated user
     // Unauthenticated user is 401.
-    $response = $this->getApiClient()->get($endpoint);
+    $response = $this->getApiClient()->get($runs_endpoint);
     $this->assertEquals(401, $response->getStatusCode());
 
     // 03_harvest.spec.js: GET harvest/runs/{identifier}' : Gives information about a single previous harvest run
@@ -195,12 +195,12 @@ class HarvestTest extends BrowserTestBase {
     $query = ['plan' => $identifier];
     $user = $this->createUser(['harvest_api_info'], 'test_user', FALSE);
     // Request the run ID.
-    $response = $this->getApiClient($user)->get($endpoint, [
+    $response = $this->getApiClient($user)->get($runs_endpoint, [
       RequestOptions::QUERY => $query,
     ]);
     // Request the run info.
     $result = json_decode($response->getBody()->getContents());
-    $response = $this->getApiClient($user)->get($endpoint . '/' . $result[0] ?? 'bad_id', [
+    $response = $this->getApiClient($user)->get($runs_endpoint . '/' . $result[0] ?? 'bad_id', [
       RequestOptions::QUERY => $query,
     ]);
     $this->assertEquals(200, $response->getStatusCode());

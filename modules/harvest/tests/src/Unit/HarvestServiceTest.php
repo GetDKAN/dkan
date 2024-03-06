@@ -4,6 +4,7 @@ namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Entity\HarvestPlanRepository;
@@ -42,6 +43,7 @@ class HarvestServiceTest extends TestCase {
       $this->createStub(DatabaseTableFactory::class),
       $this->createStub(MetastoreService::class),
       $planRepository,
+      $this->createStub(HarvestRunRepository::class),
       $this->createStub(LoggerInterface::class)
     );
     $plan = $service->getHarvestPlan('test');
@@ -68,6 +70,7 @@ class HarvestServiceTest extends TestCase {
         $storeFactory,
         $this->getMetastoreMockChain(),
         $this->createStub(HarvestPlanRepository::class),
+        $this->createStub(HarvestRunRepository::class),
         $this->createStub(LoggerInterface::class),
       ])
       ->onlyMethods(['getDkanHarvesterInstance'])
@@ -209,7 +212,8 @@ class HarvestServiceTest extends TestCase {
       ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
-      ->add('dkan.harvest.harvest_plan_repository', HarvestPlanRepository::class);
+      ->add('dkan.harvest.harvest_plan_repository', HarvestPlanRepository::class)
+      ->add('dkan.harvest.storage.harvest_run_repository', HarvestRunRepository::class);
 
     if ($logger) {
       $options->add('dkan.harvest.logger_channel', $logger)
