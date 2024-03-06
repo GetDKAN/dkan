@@ -2,8 +2,10 @@
 
 namespace Drupal\harvest\Entity;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\harvest\HarvestRunInterface;
 
 class HarvestRunRepository {
@@ -15,10 +17,27 @@ class HarvestRunRepository {
    */
   private EntityStorageInterface $runStorage;
 
+  /**
+   * Database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  private Connection $connection;
+
+  /**
+   * Harvest run entity definition service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeInterface
+   */
+  private EntityTypeInterface $entityTypeDefinition;
+
   public function __construct(
+    Connection $connection,
     EntityTypeManagerInterface $entityTypeManager
   ) {
+    $this->connection = $connection;
     $this->runStorage = $entityTypeManager->getStorage('harvest_run');
+    $this->entityTypeDefinition = $entityTypeManager->getDefinition('harvest_run');
   }
 
   /**
@@ -139,6 +158,23 @@ class HarvestRunRepository {
       }
     }
     return $runs;
+  }
+
+  /**
+   * Get all the harvet plan ids available in the harvest runs table.
+   *
+   * @return array
+   *   All the harvest plan ids present in the harvest runs table, as both key
+   *   and value.
+   */
+  public function getUniqueHarvestPlanIds(): array {
+    return array_keys(
+      $this->connection->select($this->entityTypeDefinition->getBaseTable(), 'hr')
+        ->fields('hr', ['harvest_plan_id'])
+        ->distinct()
+        ->execute()
+        ->fetchAllAssoc('harvest_plan_id')
+    );
   }
 
   /**

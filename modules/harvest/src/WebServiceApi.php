@@ -189,8 +189,12 @@ class WebServiceApi implements ContainerInjectionInterface {
         );
       }
 
-      $response = $this->harvester
-        ->getAllHarvestRunInfo($id);
+      // Harvester->getAllHarvestRunIds() returns a keyed array, which
+      // json_encode() turns into an object. Therefore, we use array_values() to
+      // get rid of those keys.
+      $response = array_values(
+        $this->harvester->getAllHarvestRunIds($id)
+      );
 
       return new JsonResponse(
             $response,

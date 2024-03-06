@@ -2,8 +2,11 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -37,6 +40,13 @@ class HarvestUtility implements ContainerInjectionInterface {
   private Connection $connection;
 
   /**
+   * Harvest run entity repository service.
+   *
+   * @var \Drupal\harvest\Entity\HarvestRunRepository
+   */
+  private HarvestRunRepository $runRepository;
+
+  /**
    * Create.
    *
    * @inheritdoc
@@ -46,6 +56,7 @@ class HarvestUtility implements ContainerInjectionInterface {
       $container->get('dkan.harvest.service'),
       $container->get('dkan.harvest.storage.database_table'),
       $container->get('database'),
+      $container->get('dkan.harvest.storage.harvest_run_repository')
     );
   }
 
@@ -55,11 +66,13 @@ class HarvestUtility implements ContainerInjectionInterface {
   public function __construct(
     HarvestService $harvestService,
     DatabaseTableFactory $storeFactory,
-    Connection $connection
+    Connection $connection,
+    HarvestRunRepository $runRepository
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;
     $this->connection = $connection;
+    $this->runRepository = $runRepository;
   }
 
   /**
@@ -95,13 +108,20 @@ class HarvestUtility implements ContainerInjectionInterface {
    *   orphaned plan ids.
    */
   public function findOrphanedHarvestDataIds(): array {
+    $orphan_ids = [];
+
+    // Plan IDs from the plans table.
     $existing_plans = $this->harvestService->getAllHarvestIds();
 
-    $table_names = $this->findAllHarvestDataTables();
+    // Potential orphan plan IDs in the runs table.
+    $run_ids = $this->runRepository->getUniqueHarvestPlanIds();
+    foreach (array_diff($run_ids, $existing_plans) as $run_id) {
+      $orphan_ids[$run_id] = $run_id;
+    }
 
-    $orphan_ids = [];
-    // Find IDs that are not in the existing plans.
-    foreach ($table_names as $table_name) {
+    // Use harvest data table names to glean more potential orphan harvest plan
+    // ids.
+    foreach ($this->findAllHarvestDataTables() as $table_name) {
       $plan_id = static::planIdFromTableName($table_name);
       if (!in_array($plan_id, $existing_plans)) {
         $orphan_ids[$plan_id] = $plan_id;
@@ -119,11 +139,9 @@ class HarvestUtility implements ContainerInjectionInterface {
   protected function findAllHarvestDataTables(): array {
     $tables = [];
     foreach ([
-      // @todo Figure out an expression for harvest_%_thing, since underscore
-      //   is a special character.
-      'harvest%runs',
-      'harvest%items',
-      'harvest%hashes',
+      'harvest_%_runs',
+      'harvest_%_items',
+      'harvest_%_hashes',
     ] as $table_expression) {
       if ($found_tables = $this->connection->schema()->findTables($table_expression)) {
         $tables = array_merge($tables, $found_tables);

@@ -26,40 +26,54 @@ class HarvestUtilityTest extends KernelTestBase {
     $this->installEntitySchema('harvest_run');
   }
 
-  public function test() {
+  public function testOrphanHarvestData() {
     $existing_plan_id = 'testplanid';
-    $orphan_plan_id = 'orphanplanid';
+    $entity_orphan_plan_id = 'entityorphanplanid';
+    $table_orphan_plan_id = 'tableorphanplanid';
 
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
 
-    // Use a database table to store a fake plan so we don't have to actually
-    // store a plan.
+    // Use a database table to store a fake plan. The plan entity is the same
+    // schema as the old table management.
+    /** @var \Drupal\harvest\Entity\HarvestPlanRepository $plan_repository */
+    $plan_repository = $this->container->get('dkan.harvest.harvest_plan_repository');
+    $plan_repository->storePlan((object) ['no' => 'plan'], $existing_plan_id);
+
+    // Create harvest run data with a different plan ID, using entity API.
+    /** @var \Drupal\harvest\Entity\HarvestRunRepository $run_repository */
+    $run_repository = $this->container->get('dkan.harvest.storage.harvest_run_repository');
+    $run_id = (string) time();
+    $run_repository->storeRun(['status' => ['extract' => 'neeto']], $entity_orphan_plan_id, $run_id);
+    $this->assertNotNull($run_repository->retrieveRunJson($entity_orphan_plan_id, $run_id));
+
+    // Create harvest run data with a different plan ID, using table API.
     /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
     $table_factory = $this->container->get('dkan.harvest.storage.database_table');
-    /** @var \Drupal\harvest\Storage\DatabaseTable $plan_storage */
-    $plan_storage = $table_factory->getInstance('harvest_plans');
-    $plan_storage->store('{we do not have a plan}', $existing_plan_id);
-
-    // Getting all harvest run info for a non-existent plan results in a run
-    // table being created.
-    // @todo This is probably something that needs fixing.
-    $harvest_service->getAllHarvestRunInfo($orphan_plan_id);
+    $run_table = $table_factory->getInstance('harvest_' . $table_orphan_plan_id . '_runs');
+    $run_table->store('{"fake_json"}', $run_id);
+    $this->assertNotNull($run_table->retrieve($run_id));
 
     /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
     $harvest_utility = $this->container->get('dkan.harvest.utility');
     $orphaned = $harvest_utility->findOrphanedHarvestDataIds();
     $this->assertNotContains($existing_plan_id, $orphaned);
-    $this->assertEquals([$orphan_plan_id => $orphan_plan_id], $orphaned);
+    foreach ([$entity_orphan_plan_id, $table_orphan_plan_id] as $orphan_plan_id) {
+      $this->assertArrayHasKey($orphan_plan_id, $orphaned);
+      $this->assertContains($orphan_plan_id, $orphaned);
+    }
 
     // Remove the orphans.
     foreach ($orphaned as $orphan) {
       $harvest_utility->destructOrphanTables($orphan);
     }
-    $this->assertEmpty(
+    foreach ([$entity_orphan_plan_id, $table_orphan_plan_id] as $orphan_plan_id) {
+      $this->assertEmpty(
       $this->container->get('database')->schema()
         ->findTables('harvest_' . $orphan_plan_id . '%')
-    );
+      );
+    }
+    $this->assertEquals('asdf', print_r($harvest_utility->findOrphanedHarvestDataIds(), TRUE));
   }
 
 }

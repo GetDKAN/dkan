@@ -15,6 +15,8 @@ services:
       - '@dkan.harvest.service'
       - '@dkan.harvest.storage.database_table'
       - '@database'
+      - '@dkan.harvest.storage.harvest_run_repository'
+      - '@entity_type.manager'
   dkan.harvest.harvest_plan_repository:
     class: Drupal\harvest\Entity\HarvestPlanRepository
     arguments:
@@ -26,6 +28,7 @@ services:
   dkan.harvest.storage.harvest_run_repository:
     class: Drupal\harvest\Entity\HarvestRunRepository
     arguments:
+      - '@database'
       - '@entity_type.manager'
   dkan.harvest.logger_channel:
       parent: logger.channel_base

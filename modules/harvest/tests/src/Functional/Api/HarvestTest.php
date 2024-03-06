@@ -198,8 +198,11 @@ class HarvestTest extends BrowserTestBase {
     $response = $this->getApiClient($user)->get($runs_endpoint, [
       RequestOptions::QUERY => $query,
     ]);
+    $this->assertEquals(200, $response->getStatusCode());
     // Request the run info.
     $result = json_decode($response->getBody()->getContents());
+    // @see modules/harvest/docs/openapi_spec.json
+    $this->assertIsArray($result);
     $response = $this->getApiClient($user)->get($runs_endpoint . '/' . $result[0] ?? 'bad_id', [
       RequestOptions::QUERY => $query,
     ]);

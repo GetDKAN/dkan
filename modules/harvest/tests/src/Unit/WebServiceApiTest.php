@@ -4,6 +4,7 @@ namespace Drupal\Tests\harvest\Unit;
 
 use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\Component\DependencyInjection\Container;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\HarvestService;
@@ -67,6 +68,7 @@ class WebServiceApiTest extends TestCase {
           new MemoryFactory(),
           $this->getMetastoreMockChain(),
           $this->getHarvestEntityRepositoryMock(),
+          $this->createStub(HarvestRunRepository::class),
           $this->createStub(LoggerInterface::class)
         );
 
