@@ -2,25 +2,25 @@
 
 namespace Drupal\Tests\datastore\Unit\Form;
 
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Form\FormState;
-use Drupal\common\DatasetInfo;
-use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Pager\Pager;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\Path\PathValidator;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Form\DashboardForm;
+use Drupal\datastore\Service\PostImport;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-use Drupal\datastore\Service\PostImport;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -375,6 +375,7 @@ class DashboardFormTest extends TestCase {
       ->add('path.validator', PathValidator::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
+      ->add('dkan.harvest.storage.harvest_run_repository', HarvestRunRepository::class)
       ->index(0);
 
     $runInfo = (new Options())
@@ -392,7 +393,7 @@ class DashboardFormTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(DatasetInfo::class, 'gather', ['notice' => 'Not found'])
       ->add(HarvestService::class, 'getAllHarvestIds', ['test', 'dataset-1'])
-      ->add(HarvestService::class,'getAllHarvestRunInfo', ['test'])
+      ->add(HarvestService::class,'getAllHarvestRunIds', ['test'])
       ->add(HarvestService::class,'getHarvestRunInfo', $runInfo)
       ->add(MetastoreService::class, 'count', 0)
       ->add(MetastoreService::class, 'getIdentifiers', [])
