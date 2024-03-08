@@ -115,12 +115,12 @@ class HarvestService implements ContainerInjectionInterface {
    * @param string $plan_id
    *   The harvest plan id.
    *
-   * @return object
+   * @return object|null
    *   The harvest plan, if any, or NULL.
    *
    * @throws \Exception
    */
-  public function getHarvestPlanObject($plan_id): object {
+  public function getHarvestPlanObject($plan_id): ?object {
     return $this->harvestPlanRepository->getPlan($plan_id);
   }
 

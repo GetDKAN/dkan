@@ -78,9 +78,9 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getPlan($identifier) {
     try {
-      if ($plan = $this->harvester->getHarvestPlan($identifier)) {
+      if ($plan = $this->harvester->getHarvestPlanObject($identifier)) {
         return new JsonResponse(
-          json_decode($plan),
+          $plan,
           200,
           static::DEFAULT_HEADERS
         );
@@ -178,9 +178,6 @@ class WebServiceApi implements ContainerInjectionInterface {
 
   /**
    * Gives list of previous runs for a harvest id.
-   *
-   * @todo Pass in $request instead of using the stack.
-   * @todo Pass in plan ID as an argument instead of/in addition to a parameter.
    */
   public function info() {
 
@@ -211,13 +208,13 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Gives information about a single previous harvest run.
    *
-   * @param string $identifier
+   * @param string $run_id
    *   The run's id.
    */
-  public function infoRun($identifier) {
+  public function infoRun($run_id) {
 
-    $id = $this->requestStack->getCurrentRequest()->get('plan');
-    if (empty($id)) {
+    $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
+    if (empty($plan_id)) {
       return new JsonResponse(
         ['message' => "Missing 'plan' query parameter value"],
         400,
@@ -227,7 +224,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $response = $this->harvester
-        ->getHarvestRunInfo($id, $identifier);
+        ->getHarvestRunInfo($plan_id, $run_id);
 
       return new JsonResponse(
         json_decode($response),
@@ -245,18 +242,18 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function revert() {
     try {
-      $id = $this->requestStack->getCurrentRequest()->get('plan');
-      if (empty($id)) {
+      $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
+      if (empty($plan_id)) {
         return new JsonResponse(
           ['message' => "Missing 'plan' query parameter value"],
           400,
           static::DEFAULT_HEADERS
         );
       }
-      $result = $this->harvester->revertHarvest($id);
+      $result = $this->harvester->revertHarvest($plan_id);
       return new JsonResponse(
         (object) [
-          'identifier' => $id,
+          'identifier' => $plan_id,
           'result'     => $result,
         ],
         200,

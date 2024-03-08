@@ -90,7 +90,7 @@ class WebServiceApiTest extends KernelTestBase {
     $message = 'harvest plan error';
     $this->container->set(
       'dkan.harvest.service',
-      $this->getExplodingHarvestService('getHarvestPlan', $message)
+      $this->getExplodingHarvestService('getHarvestPlanObject', $message)
     );
 
     $controller = WebServiceApi::create($this->container);
