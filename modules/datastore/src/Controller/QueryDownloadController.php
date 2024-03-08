@@ -135,7 +135,7 @@ class QueryDownloadController extends AbstractQueryController {
       else {
         $schema = $result->{'$.schema'};
         // Query has are no explicit properties; we should assume one table.
-        $header_row = array_keys(reset($schema)['fields']);
+        $header_row = array_column(reset($schema)['fields'], 'description');
       }
       if (empty($header_row) || !is_array($header_row)) {
         throw new \DomainException("Could not generate header for CSV.");
