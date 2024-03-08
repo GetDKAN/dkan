@@ -135,7 +135,11 @@ class WebServiceApi implements ContainerInjectionInterface {
       );
     }
     catch (\Exception $e) {
-      return $this->exceptionJsonResponse($e);
+      // Send a new exception through so that SQL errors and the like will not
+      // be given to users.
+      return $this->exceptionJsonResponse(
+        new \Exception('Unable to deregister harvest plan ' . $identifier)
+      );
     }
   }
 
