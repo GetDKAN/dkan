@@ -208,10 +208,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Gives information about a single previous harvest run.
    *
-   * @param string $run_id
-   *   The run's id.
+   * @param string $identifier
+   *   The harvest run identifier.
    */
-  public function infoRun($run_id) {
+  public function infoRun($identifier) {
 
     $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
     if (empty($plan_id)) {
@@ -224,7 +224,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $response = $this->harvester
-        ->getHarvestRunInfo($plan_id, $run_id);
+        ->getHarvestRunInfo($plan_id, $identifier);
 
       return new JsonResponse(
         json_decode($response),
