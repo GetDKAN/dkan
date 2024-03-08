@@ -8,9 +8,9 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Harvest\ResultInterpreter;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Harvest\ResultInterpreter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -58,7 +58,6 @@ final class HarvestRunListBuilder extends EntityListBuilder {
         'entity.harvest_run.canonical',
         ['harvest_run' => $entity_id],
       )),
-      // @todo Add plan link here when the harvest_plan entity PR is merged.
       'harvest_plan_id' => $harvest_plan_id,
       'processed' => $interpreter->countProcessed(),
       'created' => $interpreter->countCreated(),

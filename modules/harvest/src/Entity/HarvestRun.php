@@ -7,6 +7,7 @@ namespace Drupal\harvest\Entity;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\harvest\HarvestRunInterface;
 
@@ -56,7 +57,7 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
   /**
    * {@inheritDoc}
    *
-   * Provides identifier and JSON data base fields.
+   * @todo Formalize UUID constraints.
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $base_fields = parent::baseFieldDefinitions($entity_type);
@@ -116,7 +117,46 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
         'label' => 'above',
       ])
       ->setDisplayConfigurable('view', TRUE);
+
+    // UUID of entity that was extracted.
+    $base_fields['extracted_uuid'] = static::createUnlimitedCardinalityUuidField()
+      ->setLabel(t('Data node UUID'))
+      ->setDescription(t('The Data node UUID.'));
+
+    // @todo Put transform info here.
+    // UUID of datastore entity that was loaded.
+    $base_fields['load_new_uuid'] = static::createUnlimitedCardinalityUuidField()
+      ->setLabel(t('Data node UUID'))
+      ->setDescription(t('The Data node UUID.'));
+    $base_fields['load_updated_uuid'] = static::createUnlimitedCardinalityUuidField()
+      ->setLabel(t('Data node UUID'))
+      ->setDescription(t('The Data node UUID.'));
+    $base_fields['load_unchanged_uuid'] = static::createUnlimitedCardinalityUuidField()
+      ->setLabel(t('Data node UUID'))
+      ->setDescription(t('The Data node UUID.'));
+
+    // UUID of entity that was orphaned.
+    $base_fields['orphan_uuid'] = static::createUnlimitedCardinalityUuidField()
+      ->setLabel(t('Data node UUID'))
+      ->setDescription(t('The Data node UUID.'));
+
     return $base_fields;
+  }
+
+  /**
+   * Generic field definition for a field with unlimited cardinality.
+   *
+   * @return \Drupal\Core\Field\BaseFieldDefinition
+   *
+   * @todo Use type 'uuid', after we figure out how to allow duplicates.
+   */
+  private static function createUnlimitedCardinalityUuidField(): BaseFieldDefinition {
+    return BaseFieldDefinition::create('string')
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setRevisionable(FALSE)
+      ->setReadOnly(FALSE)
+      ->setStorageRequired(FALSE)
+      ->setRequired(FALSE);
   }
 
   /**
