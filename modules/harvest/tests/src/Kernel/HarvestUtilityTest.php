@@ -67,13 +67,20 @@ class HarvestUtilityTest extends KernelTestBase {
     foreach ($orphaned as $orphan) {
       $harvest_utility->destructOrphanTables($orphan);
     }
+    // DestructOrphanTables() only removes old-style harvest_id_runs type
+    // tables.
     foreach ([$entity_orphan_plan_id, $table_orphan_plan_id] as $orphan_plan_id) {
       $this->assertEmpty(
       $this->container->get('database')->schema()
         ->findTables('harvest_' . $orphan_plan_id . '%')
       );
     }
-    $this->assertEquals('asdf', print_r($harvest_utility->findOrphanedHarvestDataIds(), TRUE));
+    // Entity-based run orphans still remain. We don't need the utility service
+    // to remove them, so we don't test that here.
+    $this->assertContains(
+      $entity_orphan_plan_id,
+      $harvest_utility->findOrphanedHarvestDataIds()
+    );
   }
 
 }

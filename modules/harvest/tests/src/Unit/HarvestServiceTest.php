@@ -200,9 +200,12 @@ class HarvestServiceTest extends TestCase {
       ->add('104', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
       ->use('extractedIds');
 
+//    $container = $this->getCommonMockChain()
+//      ->add(DatabaseTable::class, 'retrieveAll', ['101', '102', '103', '104'])
+//      ->add(DatabaseTable::class, 'retrieve', $successiveExtractedIds);
     $container = $this->getCommonMockChain()
-      ->add(DatabaseTable::class, 'retrieveAll', ['101', '102', '103', '104'])
-      ->add(DatabaseTable::class, 'retrieve', $successiveExtractedIds);
+      ->add(HarvestRunRepository::class, 'retrieveAllRunIds', ['101', '102', '103', '104'])
+      ->add(HarvestRunRepository::class, 'retrieveRunJson', $successiveExtractedIds);
     $service = HarvestService::create($container->getMock());
     $removedIds = $service->getOrphanIdsFromCompleteHarvest('1');
 

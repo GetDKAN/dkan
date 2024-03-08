@@ -52,8 +52,7 @@ class HarvestRunRepository {
    */
   public function destructForPlanId($plan_id) {
     if ($ids = $this->retrieveAllRunIds($plan_id)) {
-      $entities = $this->runStorage->loadMultiple($ids);
-      foreach ($entities as $entity) {
+      foreach ($this->runStorage->loadMultiple($ids) as $entity) {
         $entity->delete();
       }
     }
