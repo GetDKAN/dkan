@@ -56,8 +56,6 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
 
   /**
    * {@inheritDoc}
-   *
-   * @todo Formalize UUID constraints.
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $base_fields = parent::baseFieldDefinitions($entity_type);
@@ -130,7 +128,7 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
       ])
       ->setDisplayOptions('view', [
         'type' => 'basic_string',
-        'weight' => 0,
+        'weight' => -4,
         'label' => 'inline',
       ]);
 
@@ -160,9 +158,10 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
   /**
    * Generic field definition for a field with unlimited cardinality.
    *
-   * @return \Drupal\Core\Field\BaseFieldDefinition
+   * Note: DKAN currently uses the fields defined here as UUIDs only by
+   * convention. Any string could be specified in the harvest.
    *
-   * @todo Use type 'uuid', after we figure out how to allow duplicates.
+   * @return \Drupal\Core\Field\BaseFieldDefinition
    */
   private static function createUnlimitedCardinalityUuidField(): BaseFieldDefinition {
     return BaseFieldDefinition::create('string')

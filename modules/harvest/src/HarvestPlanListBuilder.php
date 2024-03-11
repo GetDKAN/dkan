@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -24,11 +25,19 @@ class HarvestPlanListBuilder extends EntityListBuilder {
   protected HarvestService $harvestService;
 
   /**
+   * Harvest run repository service.
+   *
+   * @var \Drupal\harvest\Entity\HarvestRunRepository
+   */
+  protected HarvestRunRepository $runRepository;
+
+  /**
    * {@inheritDoc}
    */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     $builder = parent::createInstance($container, $entity_type);
     $builder->harvestService = $container->get('dkan.harvest.service');
+    $builder->runRepository = $container->get('dkan.harvest.storage.harvest_run_repository');
     return $builder;
   }
 
@@ -72,11 +81,6 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     /** @var \Drupal\harvest\HarvestPlanInterface $entity */
     $harvest_plan_id = $entity->get('id')->getString();
 
-    if ($runId = $this->harvestService->getLastHarvestRunId($harvest_plan_id)) {
-      // There is a run identifier, so we should get that info.
-      $info = json_decode($this->harvestService->getHarvestRunInfo($harvest_plan_id, $runId));
-    }
-
     // Default values for a row if there's no info.
     $row = [
       'harvest_link' => $entity->toLink($harvest_plan_id),
@@ -87,15 +91,18 @@ class HarvestPlanListBuilder extends EntityListBuilder {
       'last_run' => 'never',
       'dataset_count' => 'unknown',
     ];
-    // Add stats if there is info for it.
-    if ($info ?? FALSE) {
+
+    if ($runId = $this->harvestService->getLastHarvestRunId($harvest_plan_id)) {
+      // There is a run identifier, so we should get that info.
+      $run = $this->runRepository->loadEntity($harvest_plan_id, $runId);
+      $extract_status = $run->get('extract_status')->getString();
       $row['extract_status'] = [
-        'data' => $info->status->extract,
-        'class' => strtolower($info->status->extract),
+        'data' => $extract_status,
+        'class' => strtolower($extract_status),
       ];
       $row['last_run'] = date('m/d/y H:m:s T', $runId);
       $row['dataset_count'] = Link::fromTextAndUrl(
-        (string) count(array_keys((array) $info->status->load)),
+        (string) count($run->get('extracted_uuid')),
         Url::fromRoute(
           'datastore.datasets_import_status_dashboard',
           ['harvest_id' => $harvest_plan_id],

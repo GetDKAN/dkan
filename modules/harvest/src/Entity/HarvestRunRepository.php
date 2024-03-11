@@ -126,23 +126,6 @@ class HarvestRunRepository {
   }
 
   /**
-   * Store JSON-encoded run data.
-   *
-   * @param string $run_data
-   *   JSON-encoded run data.
-   * @param string $plan_id
-   *   The harvest plan identifier.
-   * @param string $run_id
-   *   The harvest run identifier.
-   *
-   * @return string
-   *   The run identifier.
-   */
-  public function storeRunJson(string $run_data, string $plan_id, string $run_id): string {
-    return $this->storeRun(json_decode($run_data), $plan_id, $run_id);
-  }
-
-  /**
    * Retrieve the JSON-encoded data for the given plan and run IDs.
    *
    * @param string $plan_id
@@ -155,7 +138,7 @@ class HarvestRunRepository {
    */
   public function retrieveRunJson(string $plan_id, string $run_id): ?string {
     if ($entity = $this->loadEntity($plan_id, $run_id)) {
-      return json_encode($entity);
+      return json_encode($entity->toResult());
     }
     return NULL;
   }
@@ -206,7 +189,8 @@ class HarvestRunRepository {
    */
   public function getUniqueHarvestPlanIds(): array {
     return array_keys(
-      $this->connection->select($this->entityTypeDefinition->getBaseTable(), 'hr')
+      $this->connection
+        ->select($this->entityTypeDefinition->getBaseTable(), 'hr')
         ->fields('hr', ['harvest_plan_id'])
         ->distinct()
         ->execute()
