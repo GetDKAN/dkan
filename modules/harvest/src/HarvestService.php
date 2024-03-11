@@ -153,7 +153,7 @@ class HarvestService implements ContainerInjectionInterface {
    *   Whether this happened successfully.
    */
   public function deregisterHarvest(string $plan_id) {
-    if (in_array($plan_id, $this->getAllHarvestIds())) {
+    if (in_array($plan_id, $this->harvestPlanRepository->getAllHarvestPlanIds())) {
       // Remove all the support tables for this plan id.
       foreach ([
         'harvest_' . $plan_id . '_items',
@@ -177,8 +177,8 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function revertHarvest($id) {
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    if (!method_exists($run_store, 'destruct')) {
-      throw new \Exception('Storage of class ' . get_class($run_store) . ' does not implement destruct method.');
+    if (!method_exists($run_store, "destruct")) {
+      throw new \Exception("Storage of class " . get_class($run_store) . " does not implement destruct method.");
     }
     $run_store->destruct();
     $harvester = $this->getHarvester($id);
@@ -193,7 +193,7 @@ class HarvestService implements ContainerInjectionInterface {
 
     $result = $harvester->harvest();
     if (is_null($result['status']['extracted_items_ids'] ?? NULL)) {
-      throw new \Exception('No items found to extract, review your harvest plan.');
+      throw new \Exception("No items found to extract, review your harvest plan.");
     }
     $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($id, $result['status']['extracted_items_ids']);
     $this->processOrphanIds($result['status']['orphan_ids']);

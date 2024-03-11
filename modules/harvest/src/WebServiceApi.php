@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Harvest API controller.
  *
- * @todo Move this to the Controller namespace.
  * @todo Remove reliance on the request stack.
  * @todo Add cache tags/contexts.
  */
@@ -106,7 +105,8 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $harvest_plan = $this->requestStack->getCurrentRequest()->getContent();
       $plan = json_decode($harvest_plan);
-      $identifier = $this->harvester->registerHarvest($plan);
+      $identifier = $this->harvester
+        ->registerHarvest($plan);
       return new JsonResponse(
         (object) ['identifier' => $identifier],
         200,
@@ -184,11 +184,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $id = $this->requestStack->getCurrentRequest()->get('plan');
       if (empty($id)) {
-        return new JsonResponse(
-          ['message' => "Missing 'plan' query parameter value"],
-          400,
-          static::DEFAULT_HEADERS
-        );
+        return $this->missingParameterJsonResponse('plan');
       }
 
       $response = $this->harvester
@@ -215,11 +211,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
     if (empty($plan_id)) {
-      return new JsonResponse(
-        ['message' => "Missing 'plan' query parameter value"],
-        400,
-        static::DEFAULT_HEADERS
-      );
+      return $this->missingParameterJsonResponse('plan');
     }
 
     try {
@@ -244,11 +236,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
       if (empty($plan_id)) {
-        return new JsonResponse(
-          ['message' => "Missing 'plan' query parameter value"],
-          400,
-          static::DEFAULT_HEADERS
-        );
+        return $this->missingParameterJsonResponse('plan');
       }
       $result = $this->harvester->revertHarvest($plan_id);
       return new JsonResponse(
@@ -281,6 +269,23 @@ class WebServiceApi implements ContainerInjectionInterface {
     return new JsonResponse(
       (object) $return,
       $code
+    );
+  }
+
+  /**
+   * Standardized response for a missing parameter.
+   *
+   * @param string $parameter
+   *   The missing parameter.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Response.
+   */
+  private function missingParameterJsonResponse(string $parameter) {
+    return new JsonResponse(
+      ['message' => "Missing '" . $parameter . "' query parameter value"],
+      400,
+      static::DEFAULT_HEADERS
     );
   }
 
