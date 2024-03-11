@@ -97,8 +97,8 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
       ]);
 
     // The 'data' field contains JSON which describes the result of the harvest
-    // run. This is an arbitrary array created by runHarvest() and
-    // Harvest\Harvester::harvest().
+    // run not explicitly stored in other fields here. This is an arbitrary
+    // array created by runHarvest() and Harvest\Harvester::harvest().
     $base_fields['data'] = BaseFieldDefinition::create('string_long')
       ->setLabel(new TranslatableMarkup('Data'))
       ->setReadOnly(FALSE)
@@ -118,12 +118,29 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
       ])
       ->setDisplayConfigurable('view', TRUE);
 
-    // UUID of entity that was extracted.
+    // Status string from the extract phase of the harvest.
+    $base_fields['extract_status'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Extract status'))
+      ->setDescription(t('The extraction status.'))
+      ->setRequired(FALSE)
+      ->setTranslatable(FALSE)
+      ->setSettings([
+        'default_value' => '',
+        'max_length' => 255,
+      ])
+      ->setDisplayOptions('view', [
+        'type' => 'basic_string',
+        'weight' => 0,
+        'label' => 'inline',
+      ]);
+
+    // UUID of entities that were extracted. Note: These are UUIDs only by
+    // convention. Any string could be specified in the harvest.
     $base_fields['extracted_uuid'] = static::createUnlimitedCardinalityUuidField()
       ->setLabel(t('Extracted nodes'));
 
     // @todo Put transform info here.
-    // UUID of datastore entity that was loaded.
+    // UUID of datastore entities that were loaded.
     $base_fields['load_new_uuid'] = static::createUnlimitedCardinalityUuidField()
       ->setLabel(t('New loaded nodes'));
 
@@ -149,7 +166,6 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
    */
   private static function createUnlimitedCardinalityUuidField(): BaseFieldDefinition {
     return BaseFieldDefinition::create('string')
-//      ->setDefaultValue(NULL)
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setRevisionable(FALSE)
       ->setReadOnly(FALSE)
@@ -168,6 +184,8 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
    */
   public function toResult(): array {
     $result = json_decode($this->get('data')->getString(), TRUE);
+
+    $result['status']['extract'] = $this->get('extract_status')->getString();
 
     foreach ($this->get('extracted_uuid') as $item) {
       $result['status']['extracted_items_ids'][] = $item->getString();
