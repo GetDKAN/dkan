@@ -14,8 +14,8 @@ interface HarvestRunInterface extends ContentEntityInterface, \JsonSerializable 
   /**
    * Get the run status array.
    *
-   * @return object
+   * @return array
    */
-  public function getRun(): mixed;
+  public function toResult(): array;
 
 }

@@ -120,25 +120,22 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
 
     // UUID of entity that was extracted.
     $base_fields['extracted_uuid'] = static::createUnlimitedCardinalityUuidField()
-      ->setLabel(t('Data node UUID'))
-      ->setDescription(t('The Data node UUID.'));
+      ->setLabel(t('Extracted nodes'));
 
     // @todo Put transform info here.
     // UUID of datastore entity that was loaded.
     $base_fields['load_new_uuid'] = static::createUnlimitedCardinalityUuidField()
-      ->setLabel(t('Data node UUID'))
-      ->setDescription(t('The Data node UUID.'));
+      ->setLabel(t('New loaded nodes'));
+
     $base_fields['load_updated_uuid'] = static::createUnlimitedCardinalityUuidField()
-      ->setLabel(t('Data node UUID'))
-      ->setDescription(t('The Data node UUID.'));
+      ->setLabel(t('Updated loaded nodes'));
+
     $base_fields['load_unchanged_uuid'] = static::createUnlimitedCardinalityUuidField()
-      ->setLabel(t('Data node UUID'))
-      ->setDescription(t('The Data node UUID.'));
+      ->setLabel(t('Unchanged loaded nodes'));
 
     // UUID of entity that was orphaned.
     $base_fields['orphan_uuid'] = static::createUnlimitedCardinalityUuidField()
-      ->setLabel(t('Data node UUID'))
-      ->setDescription(t('The Data node UUID.'));
+      ->setLabel(t('Orphaned data nodes'));
 
     return $base_fields;
   }
@@ -152,6 +149,7 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
    */
   private static function createUnlimitedCardinalityUuidField(): BaseFieldDefinition {
     return BaseFieldDefinition::create('string')
+//      ->setDefaultValue(NULL)
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setRevisionable(FALSE)
       ->setReadOnly(FALSE)
@@ -160,18 +158,43 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
   }
 
   /**
-   * {@inheritDoc}
+   * Assemble the data into a result array, as from Harvester::harvest().
+   *
+   * This exists for BC.
+   *
+   * @return array
+   *
+   * @see \Harvest\Harvester::harvest()
    */
-  #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
-    return $this->getRun();
+  public function toResult(): array {
+    $result = json_decode($this->get('data')->getString(), TRUE);
+
+    foreach ($this->get('extracted_uuid') as $item) {
+      $result['status']['extracted_items_ids'][] = $item->getString();
+    }
+
+    foreach ($this->get('orphan_uuid') as $item) {
+      $result['status']['orphan_ids'][] = $item->getString();
+    }
+
+    foreach ($this->get('load_new_uuid') as $item) {
+      $result['status']['load'][$item->getString()] = 'NEW';
+    }
+    foreach ($this->get('load_updated_uuid') as $item) {
+      $result['status']['load'][$item->getString()] = 'UPDATED';
+    }
+    foreach ($this->get('load_unchanged_uuid') as $item) {
+      $result['status']['load'][$item->getString()] = 'UNCHANGED';
+    }
+    return $result;
   }
 
   /**
    * {@inheritDoc}
    */
-  public function getRun(): mixed {
-    return json_decode($this->get('data')->getString());
+  #[\ReturnTypeWillChange]
+  public function jsonSerialize() {
+    return $this->toResult();
   }
 
 }

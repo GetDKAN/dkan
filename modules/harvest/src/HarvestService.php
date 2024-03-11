@@ -193,10 +193,11 @@ class HarvestService implements ContainerInjectionInterface {
 
     $run_id = (string) time();
     $result = $harvester->harvest();
-    if (is_null($result['status']['extracted_items_ids'] ?? NULL)) {
-      throw new \Exception("No items found to extract, review your harvest plan.");
+    if ($result['status']['extracted_items_ids'] ?? FALSE) {
+      throw new \Exception('No items found to extract, review your harvest plan.');
     }
-    $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($plan_id, $result['status']['extracted_items_ids']);
+    $result['status']['orphan_ids'] =
+      $this->getOrphanIdsFromResult($plan_id, $result['status']['extracted_items_ids']);
     $this->processOrphanIds($result['status']['orphan_ids']);
 
     $result['identifier'] = $run_id;

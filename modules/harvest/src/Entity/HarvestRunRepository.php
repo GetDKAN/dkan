@@ -65,6 +65,9 @@ class HarvestRunRepository {
   /**
    * Store run data.
    *
+   * Unsets any structured values from $run_data, and then stores the remainder
+   * as JSON in the data field.
+   *
    * @param array $run_data
    *   Run data. Usually the result returned by Harvester::harvest().
    * @param string $plan_id
@@ -76,48 +79,47 @@ class HarvestRunRepository {
    *   The run identifier.
    *
    * @see \Harvest\Harvester::harvest()
+   *
+   * @todo Eventually all the subsystems will be able to understand the entity
+   *   rather than needing conversion to and from the array format.
+   * @todo Move this array conversion to the entity.
    */
   public function storeRun(array $run_data, string $plan_id, string $run_id): string {
     $extracted_uuids = $run_data['status']['extracted_items_ids'] ?? [];
+    unset($run_data['status']['extracted_items_ids']);
+
     $orphan_uuids = $run_data['status']['orphan_ids'] ?? [];
+    unset($run_data['status']['orphan_ids']);
+
     $load_new_uuids = $load_updated_uuids = $load_unchanged_uuids = [];
     foreach ($run_data['status']['load'] ?? [] as $uuid => $status) {
       switch ($status) {
         case 'NEW':
           $load_new_uuids[] = $uuid;
+          unset($run_data['status']['load'][$uuid]);
           break;
 
         case 'UPDATED':
           $load_updated_uuids[] = $uuid;
+          unset($run_data['status']['load'][$uuid]);
           break;
 
         case 'UNCHANGED':
           $load_unchanged_uuids[] = $uuid;
+          unset($run_data['status']['load'][$uuid]);
       }
     }
 
-    /** @var \Drupal\harvest\HarvestRunInterface $entity */
-    $entity = $this->loadEntity($plan_id, $run_id);
-    if ($entity) {
-      // extracted, load, orphan
-      // Modify entity.
-      $entity->set('data', json_encode($run_data));
-      $entity->set('extracted_uuid', $extracted_uuids);
-    }
-    else {
-      $entity = $this->runStorage->create([
-        'id' => $run_id,
-        'harvest_plan_id' => $plan_id,
-        'data' => json_encode($run_data),
-        'extracted_uuid' => $extracted_uuids,
-        'orphan_uuid' => $orphan_uuids,
-        'load_new_uuid' => $load_new_uuids,
-        'load_updated_uuid' => $load_updated_uuids,
-        'load_unchanged_uuid' => $load_unchanged_uuids,
-      ]);
-    }
-    $entity->save();
-    return $entity->get('id')->getString();
+    return $this->writeEntity([
+      'id' => $run_id,
+      'harvest_plan_id' => $plan_id,
+      'data' => json_encode($run_data),
+      'extracted_uuid' => $extracted_uuids,
+      'orphan_uuid' => $orphan_uuids,
+      'load_new_uuid' => $load_new_uuids,
+      'load_updated_uuid' => $load_updated_uuids,
+      'load_unchanged_uuid' => $load_unchanged_uuids,
+    ], $plan_id, $run_id);
   }
 
   /**
@@ -150,7 +152,7 @@ class HarvestRunRepository {
    */
   public function retrieveRunJson(string $plan_id, string $run_id): ?string {
     if ($entity = $this->loadEntity($plan_id, $run_id)) {
-      return $entity->get('data')->getString();
+      return json_encode($entity);
     }
     return NULL;
   }
@@ -179,13 +181,13 @@ class HarvestRunRepository {
    *   The harvest plan identifier.
    *
    * @return array
-   *   JSON-encoded result strings, keyed by harvest run identifier.
+   *   JSON-encoded result arrays, keyed by harvest run identifier.
    */
   public function retrieveAllRunsJson(string $plan_id): array {
     $runs = [];
     if ($ids = $this->retrieveAllRunIds($plan_id)) {
       foreach ($this->runStorage->loadMultiple($ids) as $entity) {
-        $runs[$entity->id()] = $entity->get('data')->getString();
+        $runs[$entity->id()] = json_encode($entity);
       }
     }
     return $runs;
@@ -219,7 +221,7 @@ class HarvestRunRepository {
    * @return \Drupal\harvest\HarvestRunInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
-  protected function loadEntity(string $plan_id, string $run_id): ?HarvestRunInterface {
+  public function loadEntity(string $plan_id, string $run_id): ?HarvestRunInterface {
     if ($ids = $this->runStorage->getQuery()
       ->condition('id', $run_id)
       ->condition('harvest_plan_id', $plan_id)
@@ -230,6 +232,36 @@ class HarvestRunRepository {
       return $this->runStorage->load(reset($ids));
     }
     return NULL;
+  }
+
+  /**
+   * Write a harvest_run entity, updating or saving as needed.
+   *
+   * @param array $run_data
+   *   Structured data.
+   * @param string $plan_id
+   *   Harvest plan identifier.
+   * @param string $run_id
+   *   Harvest run identifier.
+   *
+   * @return string
+   *   Harvest plan identifier for the entity that was written.
+   */
+  public function writeEntity(array $run_data, string $plan_id, string $run_id) {
+    /** @var \Drupal\harvest\HarvestRunInterface $entity */
+    $entity = $this->loadEntity($plan_id, $run_id);
+    if ($entity) {
+      // Modify entity.
+      unset($run_data['id']);
+      foreach ($run_data as $key => $value) {
+        $entity->set($key, $value);
+      }
+    }
+    else {
+      $entity = $this->runStorage->create($run_data);
+    }
+    $entity->save();
+    return $entity->id();
   }
 
 }

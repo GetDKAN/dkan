@@ -45,19 +45,15 @@ final class HarvestRunListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity): array {
     /** @var \Drupal\harvest\HarvestRunInterface $entity */
-    $interpreter = new ResultInterpreter(
-      json_decode($entity->get('data')->getString(), TRUE)
-    );
+    $interpreter = new ResultInterpreter($entity->toResult());
     $entity_id = $entity->id();
     $harvest_plan_id = $entity->get('harvest_plan_id')->getString();
+    // Make a link to the harvest plan if it exists.
     if ($plan = $this->planStorage->load($harvest_plan_id)) {
       $harvest_plan_id = $plan->toLink($harvest_plan_id);
     }
     return [
-      'run_id' => Link::fromTextAndUrl($entity_id, Url::fromRoute(
-        'entity.harvest_run.canonical',
-        ['harvest_run' => $entity_id],
-      )),
+      'run_id' => $entity->toLink($entity_id),
       'harvest_plan_id' => $harvest_plan_id,
       'processed' => $interpreter->countProcessed(),
       'created' => $interpreter->countCreated(),
