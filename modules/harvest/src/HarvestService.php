@@ -193,7 +193,8 @@ class HarvestService implements ContainerInjectionInterface {
 
     $run_id = (string) time();
     $result = $harvester->harvest();
-    if ($result['status']['extracted_items_ids'] ?? FALSE) {
+
+    if (empty($result['status']['extracted_items_ids'])) {
       throw new \Exception('No items found to extract, review your harvest plan.');
     }
     $result['status']['orphan_ids'] =

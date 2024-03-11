@@ -2,9 +2,9 @@
 
 namespace Drupal\harvest\Entity;
 
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\harvest\HarvestRunInterface;
 
@@ -82,9 +82,11 @@ class HarvestRunRepository {
    *
    * @todo Eventually all the subsystems will be able to understand the entity
    *   rather than needing conversion to and from the array format.
-   * @todo Move this array conversion to the entity.
    */
   public function storeRun(array $run_data, string $plan_id, string $run_id): string {
+    $extract_status = $run_data['status']['extract'] ?? 'FAILURE';
+    unset($run_data['status']['extract']);
+
     $extracted_uuids = $run_data['status']['extracted_items_ids'] ?? [];
     unset($run_data['status']['extracted_items_ids']);
 
@@ -114,6 +116,7 @@ class HarvestRunRepository {
       'id' => $run_id,
       'harvest_plan_id' => $plan_id,
       'data' => json_encode($run_data),
+      'extract_status' => $extract_status,
       'extracted_uuid' => $extracted_uuids,
       'orphan_uuid' => $orphan_uuids,
       'load_new_uuid' => $load_new_uuids,
@@ -186,8 +189,9 @@ class HarvestRunRepository {
   public function retrieveAllRunsJson(string $plan_id): array {
     $runs = [];
     if ($ids = $this->retrieveAllRunIds($plan_id)) {
+      /** @var HarvestRunInterface $entity */
       foreach ($this->runStorage->loadMultiple($ids) as $entity) {
-        $runs[$entity->id()] = json_encode($entity);
+        $runs[$entity->id()] = json_encode($entity->toResult());
       }
     }
     return $runs;

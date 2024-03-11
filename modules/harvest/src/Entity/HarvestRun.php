@@ -174,13 +174,7 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
   }
 
   /**
-   * Assemble the data into a result array, as from Harvester::harvest().
-   *
-   * This exists for BC.
-   *
-   * @return array
-   *
-   * @see \Harvest\Harvester::harvest()
+   * {@inheritDoc}
    */
   public function toResult(): array {
     $result = json_decode($this->get('data')->getString(), TRUE);
@@ -205,14 +199,6 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
       $result['status']['load'][$item->getString()] = 'UNCHANGED';
     }
     return $result;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
-    return $this->toResult();
   }
 
 }

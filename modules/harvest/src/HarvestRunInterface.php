@@ -9,12 +9,19 @@ use Drupal\Core\Entity\ContentEntityInterface;
 /**
  * Provides an interface defining a harvest run entity type.
  */
-interface HarvestRunInterface extends ContentEntityInterface, \JsonSerializable {
+interface HarvestRunInterface extends ContentEntityInterface {
 
   /**
-   * Get the run status array.
+   * Assemble the data into a result array, as from Harvester::harvest().
+   *
+   * This exists for BC with \Harvest\ResultInterpreter.
    *
    * @return array
+   *
+   * @see \Harvest\Harvester::harvest()
+   * @see \Harvest\ResultInterpreter
+   *
+   * @todo Remove this when ResultInterpreter is changed or refactored away.
    */
   public function toResult(): array;
 
