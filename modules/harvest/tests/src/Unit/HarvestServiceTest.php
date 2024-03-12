@@ -31,9 +31,6 @@ use Psr\Log\LoggerInterface;
 class HarvestServiceTest extends TestCase {
   use ServiceCheckTrait;
 
-  /**
-   *
-   */
   public function testGetHarvestPlan() {
     $planRepository = (new Chain($this))
       ->add(HarvestPlanRepository::class, 'getPlanJson', 'Hello')
@@ -50,15 +47,12 @@ class HarvestServiceTest extends TestCase {
     $this->assertEquals('Hello', $plan);
   }
 
-  /**
-   *
-   */
   public function testGetHarvestRunInfo() {
     $storeFactory = (new Chain($this))
-      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
-      ->add(DatabaseTable::class, "retrieveAll", ["Hello"])
-      ->add(DatabaseTable::class, "retrieve", "Hello")
-      ->add(DatabaseTable::class, "store", "Hello")
+      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
+      ->add(DatabaseTable::class, 'retrieveAll', ['Hello'])
+      ->add(DatabaseTable::class, 'retrieve', 'Hello')
+      ->add(DatabaseTable::class, 'store', 'Hello')
       ->getMock();
 
     $dkanHarvester = (new Chain($this))
@@ -78,34 +72,27 @@ class HarvestServiceTest extends TestCase {
 
     $service->method('getDkanHarvesterInstance')->willReturn($dkanHarvester);
 
-    $result = $service->getHarvestRunInfo("test", "1");
+    $result = $service->getHarvestRunInfo('test', '1');
     $this->assertFalse($result);
   }
 
-  /**
-   * Private.
-   */
   private function getMetastoreMockChain() {
     return (new Chain($this))
       ->add(MetastoreService::class, 'publish', '1')
       ->getMock();
   }
 
-  /**
-   *
-   */
   public function testPublish() {
-    $this->markTestIncomplete('Finish this when the entity schema is fully baked.');
     $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003', 'abcd-1004'];
     $lastRunInfo = (new Sequence())
       ->add(json_encode((object) [
         'status' => [
           'extracted_items_ids' => $datasetUuids,
           'load' => [
-            'abcd-1001' => "SUCCESS",
-            'abcd-1002' => "SUCCESS",
-            'abcd-1003' => "SUCCESS",
-            'abcd-1004' => "FAILURE",
+            'abcd-1001' => 'SUCCESS',
+            'abcd-1002' => 'SUCCESS',
+            'abcd-1003' => 'SUCCESS',
+            'abcd-1004' => 'FAILURE',
           ],
         ],
       ]))
@@ -125,7 +112,7 @@ class HarvestServiceTest extends TestCase {
       ->add(LoggerInterface::class, 'error', NULL, 'error');
 
     $container = $this->getCommonMockChain($logger->getMock())
-      ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
+      ->add(HarvestRunRepository::class, 'retrieveRunJson', $lastRunInfo)
       ->add(MetastoreService::class, 'publish', $metastorePublicationResults);
 
     $service = HarvestService::create($container->getMock());
@@ -142,17 +129,16 @@ class HarvestServiceTest extends TestCase {
   }
 
   public function testArchive() {
-    $this->markTestIncomplete('Finish this when the entity schema is fully baked.');
     $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003', 'abcd-1004'];
     $lastRunInfo = (new Sequence())
       ->add(json_encode((object) [
         'status' => [
           'extracted_items_ids' => $datasetUuids,
           'load' => [
-            'abcd-1001' => "SUCCESS",
-            'abcd-1002' => "SUCCESS",
-            'abcd-1003' => "SUCCESS",
-            'abcd-1004' => "FAILURE",
+            'abcd-1001' => 'SUCCESS',
+            'abcd-1002' => 'SUCCESS',
+            'abcd-1003' => 'SUCCESS',
+            'abcd-1004' => 'FAILURE',
           ],
         ],
       ]))
@@ -171,7 +157,7 @@ class HarvestServiceTest extends TestCase {
       ->add(LoggerInterface::class, 'error', NULL, 'error');
 
     $container = $this->getCommonMockChain($logger->getMock())
-      ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
+      ->add(HarvestRunRepository::class, 'retrieveRunJson', $lastRunInfo)
       ->add(MetastoreService::class, 'archive', $metastoreArchiveResults);
 
     $service = HarvestService::create($container->getMock());
@@ -187,22 +173,14 @@ class HarvestServiceTest extends TestCase {
     $this->assertEmpty($result);
   }
 
-  /**
-   *
-   */
   public function testGetOrphansFromCompleteHarvest() {
-    $this->markTestIncomplete('Finish this when the entity schema is fully baked.');
-
     $successiveExtractedIds = (new Options())
-      ->add('101', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
-      ->add('102', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 4]]]))
-      ->add('103', json_encode((object) ['status' => ['extracted_items_ids' => [1, 3]]]))
-      ->add('104', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
+      ->add(['1', '101'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
+      ->add(['1', '102'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 4]]]))
+      ->add(['1', '103'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 3]]]))
+      ->add(['1', '104'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
       ->use('extractedIds');
 
-//    $container = $this->getCommonMockChain()
-//      ->add(DatabaseTable::class, 'retrieveAll', ['101', '102', '103', '104'])
-//      ->add(DatabaseTable::class, 'retrieve', $successiveExtractedIds);
     $container = $this->getCommonMockChain()
       ->add(HarvestRunRepository::class, 'retrieveAllRunIds', ['101', '102', '103', '104'])
       ->add(HarvestRunRepository::class, 'retrieveRunJson', $successiveExtractedIds);
@@ -232,10 +210,7 @@ class HarvestServiceTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
-      // DatabaseTableFactory.
-      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
-      ->add(DatabaseTable::class, "retrieveAll", ['100', '102', '101'])
-      // Metastore.
+      ->add(HarvestRunRepository::class, 'retrieveAllRunIds', ['100', '102', '101'])
       ->add(MetastoreService::class, 'publish', '1');
   }
 
