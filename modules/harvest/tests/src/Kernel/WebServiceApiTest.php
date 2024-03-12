@@ -32,6 +32,7 @@ class WebServiceApiTest extends KernelTestBase {
   protected function setUp() : void {
     parent::setUp();
     $this->installEntitySchema('harvest_plan');
+    $this->installEntitySchema('harvest_hash');
   }
 
   protected function getHarvestPlan(string $plan_identifier): object {
