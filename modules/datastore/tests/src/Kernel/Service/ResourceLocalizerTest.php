@@ -186,4 +186,37 @@ class ResourceLocalizerTest extends KernelTestBase {
     );
   }
 
+  public function testLocalizeBadUrl() {
+    $source_resource = new DataResource(
+      'https://example.com/bad/bad/bad/url.txt',
+      'text/csv',
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE
+    );
+    // Add our source data resource to the mapper.
+    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $mapper->register($source_resource);
+    $this->assertInstanceOf(
+      DataResource::class,
+      $source_resource = $mapper->get($source_resource->getIdentifier())
+    );
+
+    // Make sure it's not in the mapper as a localized resource yet...
+    $this->assertNull(
+      $mapper->get($source_resource->getIdentifier(), ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
+    );
+
+    // OK, let's localize it, without registering the local perspective in the
+    // mapper.
+    /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
+    $localizer = $this->container->get('dkan.datastore.service.resource_localizer');
+    // Try to localize.
+    $this->assertInstanceOf(
+      Result::class,
+      $result = $localizer->localizeTask($source_resource->getIdentifier())
+    );
+    $this->assertEquals(Result::ERROR, $result->getStatus(), $result->getError());
+    $this->assertStringContainsString('404 Not Found', $result->getError());
+  }
+
 }
