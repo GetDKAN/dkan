@@ -149,7 +149,8 @@ class WebServiceApiTest extends KernelTestBase {
     $this->assertInstanceOf(Response::class, $response = $controller->deregister($plan_id));
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getContent()));
-    $this->assertNotEquals($message, $payload->message);
+    // Response should not contain exception message.
+    $this->assertStringNotContainsString($message, $payload->message);
     $this->assertEquals('Unable to deregister harvest plan ' . $plan_id, $payload->message);
   }
 
