@@ -26,6 +26,7 @@ class HarvestServiceTest extends KernelTestBase {
   protected function setUp() : void {
     parent::setUp();
     $this->installEntitySchema('harvest_plan');
+    $this->installEntitySchema('harvest_hash');
   }
 
   public function testGetAllHarvestIds() {
@@ -106,10 +107,10 @@ class HarvestServiceTest extends KernelTestBase {
     $this->assertIsObject($storedObject);
 
     // Check the hashes.
-    /** @var \Drupal\harvest\Storage\DatabaseTable $hash_table */
+    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $hash_table */
     $hash_table = $this->container
-      ->get('dkan.harvest.storage.database_table')
-      ->getInstance('harvest_' . $plan_identifier . '_hashes');
+      ->get('dkan.harvest.storage.hashes_database_table')
+      ->getInstance($plan_identifier);
     $this->assertCount(2, $hash_table->retrieveAll());
     // Get the hashes for comparison later. Bike lanes will change later.
     $this->assertNotEmpty(
@@ -168,7 +169,6 @@ class HarvestServiceTest extends KernelTestBase {
     $harvest_service->revertHarvest($plan_identifier);
     $storageTypes = [
       'harvest_' . $plan_identifier . '_items',
-      'harvest_' . $plan_identifier . '_hashes',
       'harvest_' . $plan_identifier . '_runs',
     ];
     foreach ($storageTypes as $storageId) {
@@ -177,6 +177,7 @@ class HarvestServiceTest extends KernelTestBase {
         $harvest_storage_factory->getInstance($storageId)->retrieveAll()
       );
     }
+    $this->assertCount(0, $hash_table->retrieveAll());
 
     // Deregister harvest.
     $harvest_service->deregisterHarvest($plan_identifier);

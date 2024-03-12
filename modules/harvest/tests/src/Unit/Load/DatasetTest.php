@@ -15,7 +15,10 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Drupal\harvest\Load\Dataset
+ *
+ * @group dkan
  * @group harvest
+ * @group unit
  */
 class DatasetTest extends TestCase {
 
