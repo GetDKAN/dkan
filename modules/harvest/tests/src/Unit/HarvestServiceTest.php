@@ -175,15 +175,15 @@ class HarvestServiceTest extends TestCase {
 
   public function testGetOrphansFromCompleteHarvest() {
     $successiveExtractedIds = (new Options())
-      ->add(['1', '101'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
-      ->add(['1', '102'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 4]]]))
-      ->add(['1', '103'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 3]]]))
-      ->add(['1', '104'], json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
+      ->add(['1', '101'], [1, 2, 3])
+      ->add(['1', '102'], [1, 2, 4])
+      ->add(['1', '103'], [1, 3])
+      ->add(['1', '104'], [1, 2, 3])
       ->use('extractedIds');
 
     $container = $this->getCommonMockChain()
       ->add(HarvestRunRepository::class, 'retrieveAllRunIds', ['101', '102', '103', '104'])
-      ->add(HarvestRunRepository::class, 'retrieveRunJson', $successiveExtractedIds);
+      ->add(HarvestRunRepository::class, 'getExtractedUuids', $successiveExtractedIds);
     $service = HarvestService::create($container->getMock());
     $removedIds = $service->getOrphanIdsFromCompleteHarvest('1');
 

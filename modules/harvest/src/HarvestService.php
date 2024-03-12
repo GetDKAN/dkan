@@ -227,13 +227,31 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Public.
+   * Retrieve all run results for a given plan.
+   *
+   * @param string $plan_id
+   *   The harvest plan identifier.
+   *
+   * @return array
+   *   JSON-encoded result arrays, keyed by harvest run identifier.
+   *
+   * @deprecated Gather run IDs from getAllHarvestRunIds() and access specific
+   *   information based on those IDs.
    */
-  public function getAllHarvestRunInfo($plan_id) {
+  public function getAllHarvestRunInfo(string $plan_id): array {
     return $this->runRepository->retrieveAllRunsJson($plan_id);
   }
 
-  public function getAllHarvestRunIds($plan_id) {
+  /**
+   * Retrieve all harvest run IDs for a given harvest plan.
+   *
+   * @param string $plan_id
+   *   The harvest plan identifier.
+   *
+   * @return array
+   *   All harvest run identifiers, keyed by identifier.
+   */
+  public function getAllHarvestRunIds(string $plan_id): array {
     return $this->runRepository->retrieveAllRunIds($plan_id);
   }
 
@@ -325,7 +343,7 @@ class HarvestService implements ContainerInjectionInterface {
    *   Metastore update status method - "archive" or "publish" available.
    *
    * @return bool
-   *   Whether or not publish action was successful.
+   *   Whether status change action was successful.
    */
   protected function setDatasetStatus($runInfoStatus, string $datasetId, string $method): bool {
     try {

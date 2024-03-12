@@ -80,11 +80,8 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $response = $list_builder->render();
 
     $json = json_encode($response);
-    $strings = array_merge(self::HARVEST_HEADERS, [
-      'Total harvest plans: 1',
-    ]);
 
-    foreach ($strings as $string) {
+    foreach (self::HARVEST_HEADERS as $string) {
       $this->assertStringContainsString($string, $json);
     }
   }

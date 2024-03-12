@@ -20,8 +20,6 @@ interface HarvestRunInterface extends ContentEntityInterface {
    *
    * @see \Harvest\Harvester::harvest()
    * @see \Harvest\ResultInterpreter
-   *
-   * @todo Remove this when ResultInterpreter is changed or refactored away.
    */
   public function toResult(): array;
 

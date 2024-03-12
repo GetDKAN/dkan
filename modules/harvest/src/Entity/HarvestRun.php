@@ -96,7 +96,10 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
 
     // The 'data' field contains JSON which describes the result of the harvest
     // run not explicitly stored in other fields here. This is an arbitrary
-    // array created by runHarvest() and Harvest\Harvester::harvest().
+    // array created by Drupal\harvest\HarvestService::runHarvest() and
+    // Harvest\Harvester::harvest().
+    // @see \Drupal\harvest\HarvestService::runHarvest()
+    // @see \Harvest\Harvester::harvest()
     $base_fields['data'] = BaseFieldDefinition::create('string_long')
       ->setLabel(new TranslatableMarkup('Data'))
       ->setReadOnly(FALSE)
@@ -132,23 +135,25 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
         'label' => 'inline',
       ]);
 
-    // UUID of entities that were extracted. Note: These are UUIDs only by
+    // UUIDs of entities that were extracted. Note: These are UUIDs only by
     // convention. Any string could be specified in the harvest.
     $base_fields['extracted_uuid'] = static::createUnlimitedCardinalityUuidField()
       ->setLabel(t('Extracted nodes'));
 
-    // @todo Put transform info here.
-    // UUID of datastore entities that were loaded.
+    // UUIDs of datastore entities that were loaded.
     $base_fields['load_new_uuid'] = static::createUnlimitedCardinalityUuidField()
       ->setLabel(t('New loaded nodes'));
 
+    // UUIDs of datastore entities that were loaded and updated.
     $base_fields['load_updated_uuid'] = static::createUnlimitedCardinalityUuidField()
       ->setLabel(t('Updated loaded nodes'));
 
+    // UUIDs of datastore entities that were loaded and didn't need to be
+    // changed.
     $base_fields['load_unchanged_uuid'] = static::createUnlimitedCardinalityUuidField()
       ->setLabel(t('Unchanged loaded nodes'));
 
-    // UUID of entity that was orphaned.
+    // UUIDs of entity that was orphaned.
     $base_fields['orphan_uuid'] = static::createUnlimitedCardinalityUuidField()
       ->setLabel(t('Orphaned data nodes'));
 

@@ -8,6 +8,15 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\harvest\HarvestRunInterface;
 
+/**
+ * Convenient queries for harvest_run entities.
+ *
+ * Avoid using this repository from anywhere but HarvestService.
+ *
+ * @see \Drupal\harvest\HarvestService
+ *
+ * @internal
+ */
 class HarvestRunRepository {
 
   /**
@@ -31,6 +40,14 @@ class HarvestRunRepository {
    */
   private EntityTypeInterface $entityTypeDefinition;
 
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Entity type manager service.
+   */
   public function __construct(
     Connection $connection,
     EntityTypeManagerInterface $entityTypeManager
@@ -65,8 +82,8 @@ class HarvestRunRepository {
   /**
    * Store run data.
    *
-   * Unsets any structured values from $run_data, and then stores the remainder
-   * as JSON in the data field.
+   * Extracts and unsets any structured values from $run_data, and then stores
+   * the remainder as JSON in the data field.
    *
    * @param array $run_data
    *   Run data. Usually the result returned by Harvester::harvest().
@@ -172,7 +189,7 @@ class HarvestRunRepository {
   public function retrieveAllRunsJson(string $plan_id): array {
     $runs = [];
     if ($ids = $this->retrieveAllRunIds($plan_id)) {
-      /** @var HarvestRunInterface $entity */
+      /** @var \Drupal\harvest\HarvestRunInterface $entity */
       foreach ($this->runStorage->loadMultiple($ids) as $entity) {
         $runs[$entity->id()] = json_encode($entity->toResult());
       }
@@ -198,15 +215,27 @@ class HarvestRunRepository {
     );
   }
 
-  public function getExtractedUuids($plan_id, $run_id) {
-    $entities = [];
+  /**
+   * Get the extracted UUIDs from the given harvest run.
+   *
+   * @param string $plan_id
+   *   The harvest plan ID.
+   * @param string $run_id
+   *   The harvest run ID.
+   *
+   * @return string[]
+   *   Array of UUIDs, keyed by UUID. Note that these are UUIDs by convention;
+   *   they could be any string value.
+   */
+  public function getExtractedUuids(string $plan_id, string $run_id): array {
+    $extracted = [];
     if ($entity = $this->loadEntity($plan_id, $run_id)) {
       foreach ($entity->get('extracted_uuid')->getValue() as $field) {
         $uuid = $field['value'];
-        $entities[$uuid] = $uuid;
+        $extracted[$uuid] = $uuid;
       }
     }
-    return $entities;
+    return $extracted;
   }
 
   /**
