@@ -8,8 +8,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Link;
-use Drupal\Core\Url;
 use Harvest\ResultInterpreter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -42,18 +40,16 @@ final class HarvestRunListBuilder extends EntityListBuilder {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Link to plan and run from their IDs when we figure out UX.
    */
   public function buildRow(EntityInterface $entity): array {
     /** @var \Drupal\harvest\HarvestRunInterface $entity */
     $interpreter = new ResultInterpreter($entity->toResult());
     $entity_id = $entity->id();
     $harvest_plan_id = $entity->get('harvest_plan_id')->getString();
-    // Make a link to the harvest plan if it exists.
-    if ($plan = $this->planStorage->load($harvest_plan_id)) {
-      $harvest_plan_id = $plan->toLink($harvest_plan_id);
-    }
     return [
-      'run_id' => $entity->toLink($entity_id),
+      'run_id' => $entity_id,
       'harvest_plan_id' => $harvest_plan_id,
       'processed' => $interpreter->countProcessed(),
       'created' => $interpreter->countCreated(),
