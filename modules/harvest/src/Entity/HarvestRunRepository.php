@@ -198,6 +198,17 @@ class HarvestRunRepository {
     );
   }
 
+  public function getExtractedUuids($plan_id, $run_id) {
+    $entities = [];
+    if ($entity = $this->loadEntity($plan_id, $run_id)) {
+      foreach ($entity->get('extracted_uuid')->getValue() as $field) {
+        $uuid = $field['value'];
+        $entities[$uuid] = $uuid;
+      }
+    }
+    return $entities;
+  }
+
   /**
    * Helper method to load a harvest_run entity given an ID and plan ID.
    *

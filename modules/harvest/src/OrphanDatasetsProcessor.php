@@ -43,8 +43,7 @@ trait OrphanDatasetsProcessor {
    * Get ids extracted by a specific harvest run.
    */
   private function getExtractedIds(string $harvestId, string $runId) : array {
-    $runInfo = json_decode($this->getHarvestRunInfo($harvestId, $runId));
-    return $runInfo->status->extracted_items_ids ?? [];
+    return $this->runRepository->getExtractedUuids($harvestId, $runId);
   }
 
   /**
