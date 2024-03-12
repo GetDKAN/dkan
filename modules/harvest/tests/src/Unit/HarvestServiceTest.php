@@ -9,6 +9,7 @@ use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Harvest\Harvester;
 use MockChain\Chain;
@@ -40,6 +41,7 @@ class HarvestServiceTest extends TestCase {
 
     $service = new HarvestService(
       $this->createStub(DatabaseTableFactory::class),
+      $this->createStub(HarvestHashesDatabaseTableFactory::class),
       $this->createStub(MetastoreService::class),
       $planRepository,
       $this->createStub(LoggerInterface::class)
@@ -59,13 +61,10 @@ class HarvestServiceTest extends TestCase {
       ->add(DatabaseTable::class, "store", "Hello")
       ->getMock();
 
-    $dkanHarvester = (new Chain($this))
-      ->add(Harvester::class)
-      ->getMock();
-
     $service = $this->getMockBuilder(HarvestService::class)
       ->setConstructorArgs([
         $storeFactory,
+        $this->createStub(HarvestHashesDatabaseTableFactory::class),
         $this->getMetastoreMockChain(),
         $this->createStub(HarvestPlanRepository::class),
         $this->createStub(LoggerInterface::class),
@@ -73,7 +72,8 @@ class HarvestServiceTest extends TestCase {
       ->onlyMethods(['getDkanHarvesterInstance'])
       ->getMock();
 
-    $service->method('getDkanHarvesterInstance')->willReturn($dkanHarvester);
+    $service->method('getDkanHarvesterInstance')
+      ->willReturn($this->createStub(Harvester::class));
 
     $result = $service->getHarvestRunInfo("test", "1");
     $this->assertFalse($result);
@@ -207,6 +207,7 @@ class HarvestServiceTest extends TestCase {
 
     $options = (new Options())
       ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
+      ->add('dkan.harvest.storage.hashes_database_table', HarvestHashesDatabaseTableFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('dkan.harvest.harvest_plan_repository', HarvestPlanRepository::class);

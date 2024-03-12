@@ -3,6 +3,7 @@ services:
     class: Drupal\harvest\HarvestService
     arguments:
       - '@dkan.harvest.storage.database_table'
+      - '@dkan.harvest.storage.hashes_database_table'
       - '@dkan.metastore.service'
       - '@dkan.harvest.harvest_plan_repository'
       - '@dkan.harvest.logger_channel'
@@ -13,7 +14,9 @@ services:
     arguments:
       - '@dkan.harvest.service'
       - '@dkan.harvest.storage.database_table'
+      - '@dkan.harvest.storage.hashes_database_table'
       - '@database'
+      - '@dkan.harvest.logger_channel'
   dkan.harvest.harvest_plan_repository:
     class: Drupal\harvest\Entity\HarvestPlanRepository
     arguments:
@@ -22,6 +25,10 @@ services:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:
       - '@database'
+  dkan.harvest.storage.hashes_database_table:
+    class: Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
+    arguments:
+      - '@entity_type.manager'
   dkan.harvest.logger_channel:
       parent: logger.channel_base
       arguments: ['harvest']
