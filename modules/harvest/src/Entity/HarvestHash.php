@@ -31,7 +31,6 @@ use Drupal\harvest\HarvestHashInterface;
  *     "views_data" = "Drupal\views\EntityViewsData",
  *   },
  *   base_table = "harvest_hashes",
- *   admin_permission = "administer harvest hash",
  *   entity_keys = {
  *     "id" = "data_uuid",
  *   },

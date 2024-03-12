@@ -17,6 +17,3 @@
 administer harvest plan:
   title: 'Administer harvest plan settings'
   restrict access: true
-administer harvest hash:
-  title: 'Administer harvest hash settings'
-  restrict access: true
