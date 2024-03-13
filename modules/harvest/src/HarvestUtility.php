@@ -68,16 +68,16 @@ class HarvestUtility {
     HarvestService $harvestService,
     DatabaseTableFactory $storeFactory,
     HarvestHashesDatabaseTableFactory $hashesFactory,
+    HarvestRunRepository $runRepository,
     Connection $connection,
-    LoggerInterface $loggerChannel,
-    HarvestRunRepository $runRepository
+    LoggerInterface $loggerChannel
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;
     $this->hashesFactory = $hashesFactory;
+    $this->runRepository = $runRepository;
     $this->connection = $connection;
     $this->logger = $loggerChannel;
-    $this->runRepository = $runRepository;
   }
 
   /**
