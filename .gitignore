@@ -10,6 +10,7 @@ tagfile
 /cypress/videos
 /cypress/screenshots
 /libraries
+/modules/sample_content/sample_content.json
 /node_modules
 /vendor
 /tests/reports

@@ -22,7 +22,6 @@
       <directory>modules/metastore/tests</directory>
       <directory>modules/metastore/modules/metastore_admin/tests</directory>
       <directory>modules/metastore/modules/metastore_search/tests</directory>
-      <directory>modules/sample_content</directory>
       <directory suffix="TestBase.php">./</directory>
     </exclude>
   </coverage>

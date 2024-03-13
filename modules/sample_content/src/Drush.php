@@ -3,9 +3,9 @@
 namespace Drupal\sample_content;
 
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Drupal\harvest\Commands\Helper;
+use Drupal\harvest\HarvestService;
+use Drush\Commands\DrushCommands;
 
 /**
  * Class.
@@ -13,21 +13,48 @@ use Drupal\harvest\Commands\Helper;
 class Drush extends DrushCommands {
   use Helper;
 
+  protected const SAMPLE_CONTENT_HARVEST_ID = 'sample_content';
+
   /**
    * The core extension module list service.
    *
    * @var \Drupal\Core\Extension\ModuleExtensionList
    */
-  protected $extensionListModule;
+  protected ModuleExtensionList $moduleExtensionList;
+
+  /**
+   * Harvest service.
+   *
+   * @var \Drupal\harvest\HarvestService
+   */
+  private HarvestService $harvestService;
+
+  /**
+   * Absolute app root path.
+   *
+   * @var string
+   */
+  private string $appRoot;
 
   /**
    * Constructor for the Sample Content commands.
    *
-   * @param \Drupal\Core\Extension\ModuleExtensionList $extension_list_module
+   * @param \Drupal\Core\Extension\ModuleExtensionList $moduleExtensionList
    *   Extension list.
+   * @param \Drupal\harvest\HarvestService $harvestService
+   *   Harvest service.
+   * @param string $appRoot
+   *   The app root, equivalent to DRUPAL_ROOT.
    */
-  public function __construct(ModuleExtensionList $extension_list_module) {
-    $this->extensionListModule = $extension_list_module;
+  public function __construct(
+    ModuleExtensionList $moduleExtensionList,
+    HarvestService $harvestService,
+    string $appRoot
+  ) {
+    parent::__construct();
+    $this->moduleExtensionList = $moduleExtensionList;
+    $this->harvestService = $harvestService;
+    $this->appRoot = $appRoot;
   }
 
   /**
@@ -36,11 +63,15 @@ class Drush extends DrushCommands {
    * @command dkan:sample-content:create
    */
   public function create() {
-    $this->createJson();
-    $harvester = $this->getHarvester("sample_content");
-    $result = $harvester->harvest();
-
-    $this->renderHarvestRunsInfo([['sample_content', $result]]);
+    $this->logger()->notice('Setting up harvest: ' . static::SAMPLE_CONTENT_HARVEST_ID);
+    $this->registerSampleContentHarvest(static::SAMPLE_CONTENT_HARVEST_ID);
+    $this->renderHarvestRunsInfo([
+      [
+        'sample_content',
+        $this->harvestService->runHarvest(static::SAMPLE_CONTENT_HARVEST_ID),
+      ],
+    ]);
+    $this->logger()->notice('Run cron a few times to finish the import of this data.');
   }
 
   /**
@@ -49,47 +80,61 @@ class Drush extends DrushCommands {
    * @command dkan:sample-content:remove
    */
   public function remove() {
-    $harvester = $this->getHarvester("sample_content");
-    $result = $harvester->revert();
-
-    $count = $result;
-
-    $output = new ConsoleOutput();
-    $output->write("{$count} items reverted for the 'sample_content' harvest plan.");
+    if (!$this->harvestService->getHarvestPlanObject(static::SAMPLE_CONTENT_HARVEST_ID)) {
+      $this->logger()->notice('Harvest plan ' . static::SAMPLE_CONTENT_HARVEST_ID . ' is not available. Re-registering it so we can revert it.');
+      $this->registerSampleContentHarvest(static::SAMPLE_CONTENT_HARVEST_ID);
+      $this->harvestService->runHarvest(static::SAMPLE_CONTENT_HARVEST_ID);
+    }
+    $this->logger()->notice('Reverting harvest plan: ' . static::SAMPLE_CONTENT_HARVEST_ID);
+    $count = $this->harvestService->revertHarvest(static::SAMPLE_CONTENT_HARVEST_ID);
+    $this->logger()->notice($count . " items reverted for the 'sample_content' harvest plan.");
+    $this->logger()->notice('Deregistering harvest plan: ' . static::SAMPLE_CONTENT_HARVEST_ID);
+    $this->harvestService->deregisterHarvest(static::SAMPLE_CONTENT_HARVEST_ID);
   }
 
   /**
-   * Protected.
+   * Register our plan as the given harvest plan ID.
+   *
+   * @param $harvest_plan_id
+   *   Harvest plan id.
+   */
+  protected function registerSampleContentHarvest($harvest_plan_id) {
+    $this->createDatasetJsonFromTemplate();
+    $plan = $this->getHarvestPlan();
+    $plan->identifier = $harvest_plan_id;
+    $this->harvestService->registerHarvest($plan);
+  }
+
+  /**
+   * Get our harvest plan from the file system.
    */
   protected function getHarvestPlan() {
-    $module_path = DRUPAL_ROOT . "/" . $this->extensionListModule->getPath('sample_content');
-
-    $plan_path = $module_path . "/harvest_plan.json";
-    $json = file_get_contents($plan_path);
+    $module_path = $this->appRoot . '/' . $this->moduleExtensionList->getPath('sample_content');
+    $json = file_get_contents($module_path . '/harvest_plan.json');
     $plan = json_decode($json);
-
-    $plan->extract->uri = "file://" . $module_path . $plan->extract->uri;
-
+    $plan->extract->uri = 'file://' . $module_path . $plan->extract->uri;
     return $plan;
   }
 
   /**
-   * Private.
+   * Create dataset JSON, using string substitution for file paths.
    */
-  private function createJson() {
-    $sample_content_path = $this->extensionListModule->getPath('sample_content');
-    $sample_content_template = DRUPAL_ROOT . "/" . $sample_content_path . "/sample_content.template.json";
+  private function createDatasetJsonFromTemplate() {
+    $module_path = $this->moduleExtensionList->getPath('sample_content');
+    $sample_content_template = $this->appRoot . '/' . $module_path . '/sample_content.template.json';
     $content = file_get_contents($sample_content_template);
-    $new = $this->detokenize($content);
-    file_put_contents(DRUPAL_ROOT . "/" . $sample_content_path . "/sample_content.json", $new);
+    file_put_contents(
+      $this->appRoot . '/' . $module_path . '/sample_content.json',
+      $this->detokenize($content)
+    );
   }
 
   /**
-   * Private.
+   * Replace path tokens with an actual file path.
    */
   private function detokenize($content) {
-    $absolute_module_path = DRUPAL_ROOT . "/" . $this->extensionListModule->getPath('sample_content') . "/files";
-    return str_replace("<!*path*!>", $absolute_module_path, $content);
+    $absolute_module_path = $this->appRoot . '/' . $this->moduleExtensionList->getPath('sample_content') . '/files';
+    return str_replace('<!*path*!>', $absolute_module_path, $content);
   }
 
 }
