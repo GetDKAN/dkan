@@ -58,9 +58,32 @@ function harvest_update_8003(&$sandbox) {
 }
 
 /**
- * Ensure the entity manager knows about harvest_run entities.
+ * Ensure the entity manager knows about the harvest_hash entity.
  */
 function harvest_update_8004(&$sandbox) {
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+  \Drupal::entityDefinitionUpdateManager()
+    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_hash'));
+}
+
+/**
+ * Move data from harvest_ID_hashes tables to harvest_hash entity.
+ *
+ * This will move all harvest hash information to the updated schema, including
+ * data which does not have a corresponding hash plan ID.
+ *
+ * Outdated tables will be removed.
+ */
+function harvest_update_8005(&$sandbox) {
+  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+  $harvest_utility = \Drupal::service('dkan.harvest.utility');
+  $harvest_utility->harvestHashUpdate();
+}
+
+/**
+ * Ensure the entity manager knows about harvest_run entities.
+ */
+function harvest_update_8006(&$sandbox) {
   \Drupal::entityTypeManager()->clearCachedDefinitions();
   \Drupal::entityDefinitionUpdateManager()
     ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_run'));

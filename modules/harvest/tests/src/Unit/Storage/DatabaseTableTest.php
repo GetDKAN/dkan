@@ -10,7 +10,10 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Drupal\harvest\Storage\DatabaseTable
+ *
+ * @group dkan
  * @group harvest
+ * @group unit
  */
 class DatabaseTableTest extends TestCase {
 

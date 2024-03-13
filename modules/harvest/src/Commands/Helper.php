@@ -69,16 +69,42 @@ trait Helper {
   private function renderHarvestRunsInfo(array $runInfos) {
     $table = new Table(new ConsoleOutput());
     $table->setHeaders(['run_id', 'processed', 'created', 'updated', 'errors']);
+    $errors = [];
+
     foreach ($runInfos as $runInfo) {
-      if ($runInfo) {
-        $row = array_merge(
-          [$runInfo['identifier'] ?? NULL],
-          $this->getResultCounts($runInfo)
-        );
-        $table->addRow($row);
-      }
+      [$run_id, $result] = $runInfo;
+
+      $row = array_merge(
+        [$run_id],
+        $this->getResultCounts($result)
+      );
+
+      $table->addRow($row);
+      // Store error messages if we have them.
+      $errors[$run_id] = $result['errors'] ?? NULL;
     }
     $table->render();
+    $this->renderHarvestRunsErrors($errors);
+  }
+
+  /**
+   * Display errors.
+   *
+   * @param array $errors
+   *   Nested array of error messages and the systems they belong to.
+   *
+   * @see self::renderHarvestRunsInfo()
+   */
+  private function renderHarvestRunsErrors(array $errors) {
+    if ($errors) {
+      foreach ($errors ?? [] as $run_id => $run_errors) {
+        foreach ($run_errors ?? [] as $type => $messages) {
+          foreach ($messages ?? [] as $id => $message) {
+            $this->logger()->error('[' . $run_id . '][' . $type . '][' . $id . '] ' . $message);
+          }
+        }
+      }
+    }
   }
 
   /**
