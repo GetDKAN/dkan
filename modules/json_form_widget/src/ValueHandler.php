@@ -51,6 +51,10 @@ class ValueHandler {
     if (isset($formValues[$property]['select'])) {
       return $formValues[$property][0] ?? NULL;
     }
+    // Handle text_format.
+    if (isset($formValues[$property]['value'])) {
+      return $formValues[$property]['value'];
+    }
     return !empty($formValues[$property]) && is_string($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
   }
 
