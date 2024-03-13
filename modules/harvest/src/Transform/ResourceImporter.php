@@ -10,6 +10,8 @@ use Harvest\ETL\Transform\Transform;
  * Defines a transform that saves the resources from a dataset.
  *
  * @codeCoverageIgnore
+ *
+ * @deprecated Is this dead code?
  */
 class ResourceImporter extends Transform {
 

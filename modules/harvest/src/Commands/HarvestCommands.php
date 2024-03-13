@@ -25,7 +25,7 @@ class HarvestCommands extends DrushCommands {
    *
    * @var \Drupal\harvest\HarvestService
    */
-  protected $harvestService;
+  protected HarvestService $harvestService;
 
   /**
    * Harvest utility service.
@@ -406,6 +406,31 @@ class HarvestCommands extends DrushCommands {
     if (!in_array($harvest_plan_id, $this->harvestService->getAllHarvestIds())) {
       throw new \InvalidArgumentException('Harvest id ' . $harvest_plan_id . ' not found.');
     }
+  }
+
+  /**
+   * Update all harvest-related database tables to the latest version.
+   *
+   * This command is meant to aid in updating databases where the update hook
+   * has already run, but the database still has old-style hash tables, with
+   * names like harvest_PLANID_hash.
+   *
+   * This will move all harvest hash information to the updated schema,
+   * including data which does not have a corresponding hash plan ID.
+   *
+   * Outdated tables will be removed.
+   *
+   * @command dkan:harvest:update
+   *
+   * @return int
+   *   Bash status code.
+   *
+   * @bootstrap full
+   */
+  public function harvestUpdate(): int {
+    $this->harvestUtility->harvestHashUpdate();
+    $this->logger()->success('Converted!');
+    return DrushCommands::EXIT_SUCCESS;
   }
 
 }
