@@ -36,17 +36,17 @@ class IndexFieldButtons extends ControllerBase {
   /**
    * Returns the edit buttons.
    */
-  public static function editButtons($key) {
+  public static function editIndexButtons($indexKey) {
     return [
       '#type' => 'image_button',
-      '#name' => 'edit_' . $key,
-      '#id' => 'edit_' . $key,
+      '#name' => 'edit_index_' . $indexKey,
+      '#id' => 'edit_index_' . $indexKey,
       '#access' => TRUE,
-      '#op' => 'edit_' . $key,
+      '#op' => 'edit_' . $indexKey,
       '#src' => 'core/misc/icons/787878/cog.svg',
       '#attributes' => [
         'class' => ['index-field-plugin-settings-edit'],
-        'alt' => t('Edit'),
+        'alt' => t('Edit index'),
       ],
       '#submit' => [
           [
@@ -66,10 +66,10 @@ class IndexFieldButtons extends ControllerBase {
   /**
    * Create Submit buttons.
    */
-  public static function submitIndexFieldButton($location, $key) {
+  public static function submitIndexFieldButton($location, $indexKey) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = is_int($key) ? 'update_' . $key : 'add_index_field';
-    $value = $location == 'edit' ? 'Save' : 'Add index field';
+    $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index_field';
+    $value = $location == 'edit' ? 'Save index field' : 'Add index field';
     $edit_index_button = [
       '#type' => 'submit',
       '#value' => $value,
@@ -89,7 +89,7 @@ class IndexFieldButtons extends ControllerBase {
     ];
 
     if ($location == 'edit') {
-      $edit_index_button['#name'] = 'index_field_update_' . $key;
+      $edit_index_button['#name'] = 'update_' . $indexKey;
     }
     return $edit_index_button;
   }
@@ -97,9 +97,9 @@ class IndexFieldButtons extends ControllerBase {
   /**
    * Create Cancel button.
    */
-  public static function cancelIndexFieldButton($location, $key) {
+  public static function cancelIndexFieldButton($location, $indexKey) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = $location == 'edit' && $key ? 'index_abort_' . $key : 'cancel_index_field';
+    $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel_index_field';
     $cancel_index_button = [
       '#type' => 'submit',
       '#value' => t('Cancel index field'),
@@ -119,7 +119,7 @@ class IndexFieldButtons extends ControllerBase {
     ];
 
     if ($location == 'edit') {
-      $cancel_index_button['#name'] = 'index_field_cancel_update_' . $key;
+      $cancel_index_button['#name'] = 'cancel_update_' . $indexKey;
     }
     return $cancel_index_button;
   }
@@ -127,20 +127,20 @@ class IndexFieldButtons extends ControllerBase {
   /**
    * Create Delete button.
    */
-  public static function deleteIndexButton($key) {
+  public static function deleteIndexButton($indexKey) {
     return [
       '#type' => 'submit',
-      '#name' => 'delete_' . $key,
-      '#value' => t('Delete'),
-      '#op' => 'delete_' . $key,
+      '#name' => 'index_delete_' . $indexKey,
+      '#value' => t('Delete index field'),
+      '#op' => 'delete_' . $indexKey,
       '#submit' => [
             [
-              '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
-              'editSubformCallback',
+              '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+              'indexEditSubformCallback',
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
