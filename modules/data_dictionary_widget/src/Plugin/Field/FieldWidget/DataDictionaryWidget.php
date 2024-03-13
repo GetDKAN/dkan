@@ -72,7 +72,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element['dictionary_fields']['add_row_button']['#access'] = $fields_being_modified == NULL ? TRUE : FALSE;
 
     // Creating ajax buttons/fields to be placed in correct location later for index fields.
-    $element['index_fields'] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $data_results, $index_fields_being_modified, $element['index_fields']);
+    $element['index_fields'] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element['index_fields']);
     $element['index_fields']['add_row_button']['#access'] = $index_fields_being_modified == NULL ? TRUE : FALSE;
 
     $form_entity = $form_state->getFormObject()->getEntity();

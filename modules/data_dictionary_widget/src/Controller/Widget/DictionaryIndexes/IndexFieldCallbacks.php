@@ -33,6 +33,7 @@ class IndexFieldCallbacks extends ControllerBase {
     }
 
     if ($op === 'add_index_field') {
+      $test = $form_state->getUserInput();
       $form_state->set('new_index_fields', $form_state->getUserInput());
       $form_state->set('add', TRUE);
       $form_state->set('cancel_index', FALSE);
@@ -52,24 +53,24 @@ class IndexFieldCallbacks extends ControllerBase {
     $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
 
     if (str_contains($op, 'abort')) {
-      unset($currently_modifying_index_fields[$op_index[1]]);
+      unset($currently_modifying_index_fields[$op_index[4]]);
     }
 
     if (str_contains($op, 'delete')) {
-      unset($currently_modifying_index_fields[$op_index[1]]);
-      unset($current_index_fields[$op_index[1]]);
+      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($current_index_fields[$op_index[4]]);
     }
 
     if (str_contains($op, 'update')) {
       $update_values = $form_state->getUserInput();
-      unset($currently_modifying_index_fields[$op_index[1]]);
-      unset($current_index_fields [$op_index[1]]);
-      $current_index_fields [$op_index[1]] = IndexFieldValues::updateIndexFieldValues($op_index[1], $update_values, $current_index_fields );
+      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($current_index_fields[$op_index[4]]);
+      $current_index_fields[$op_index[4]] = IndexFieldValues::updateIndexFieldValues($op_index[4], $update_values, $current_index_fields );
       ksort($current_index_fields );
     }
 
     if (str_contains($op, 'edit')) {
-      $currently_modifying_index_fields[$op_index[1]] = $current_index_fields [$op_index[1]];
+      $currently_modifying_index_fields[$op_index[4]] = $current_index_fields[$op_index[4]];
     }
 
     $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
