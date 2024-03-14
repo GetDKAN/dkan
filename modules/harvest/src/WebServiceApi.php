@@ -155,7 +155,7 @@ class WebServiceApi implements ContainerInjectionInterface {
           'message' => 'Invalid payload.',
           'documentation' => '/api/1/harvest',
         ];
-        return $this->jsonResponse($return, 422);
+        return $this->jsonResponse($return, 400);
       }
 
       $id = $payload->plan_id;
