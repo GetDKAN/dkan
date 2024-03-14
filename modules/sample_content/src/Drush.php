@@ -8,7 +8,9 @@ use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
 
 /**
- * Class.
+ * Sample content Drush commands.
+ *
+ * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
   use Helper;

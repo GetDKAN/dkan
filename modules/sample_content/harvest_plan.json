@@ -4,7 +4,7 @@
     "type": "\\Harvest\\ETL\\Extract\\DataJson",
     "uri": "/sample_content.json"
   },
-  "transforms": ["\\Drupal\\harvest\\Transform\\ResourceImporter"],
+  "transforms": [],
   "load": {
     "type": "\\Drupal\\harvest\\Load\\Dataset"
   }

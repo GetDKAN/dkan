@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\sample_content\Functional;
 
+use Drupal\Core\Site\Settings;
 use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 
@@ -12,7 +13,7 @@ use Drush\TestTraits\DrushTestTrait;
  * @group sample_content
  * @group functional
  */
-class SampleContentCommmandsTest extends BrowserTestBase {
+class SampleContentCommandsTest extends BrowserTestBase {
 
   use DrushTestTrait;
 
@@ -24,6 +25,10 @@ class SampleContentCommmandsTest extends BrowserTestBase {
   ];
 
   public function test() {
+//    if (empty(Settings::get('file_public_base_url'))) {
+//      $this->markTestSkipped(__METHOD__ . ' requires setting file_public_base_url');
+//    }
+
     $harvest_plan_name = 'sample_content';
 
     // Run the create command.
@@ -54,12 +59,13 @@ class SampleContentCommmandsTest extends BrowserTestBase {
       $run_info = json_decode($harvest_service->getHarvestRunInfo($harvest_plan_name, $run_id), TRUE)
     );
     $this->assertCount(10, $run_info['status']['extracted_items_ids'] ?? []);
+    $this->assertEmpty($run_info['error'] ?? []);
 
     // Run the remove command.
     $this->drush('dkan:sample-content:remove');
+
     // Logged output counts as an error, even if it's not an error.
     $output = $this->getErrorOutput();
-
     // Assert the output.
     foreach ([
       'Reverting harvest plan: ' . $harvest_plan_name,
