@@ -2,8 +2,7 @@ services:
   dkan.sample_content.drush:
     class: \Drupal\sample_content\Drush
     arguments:
-      - '@extension.list.module'
+      - '@dkan.sample_content.service'
       - '@dkan.harvest.service'
-      - '%app.root%'
     tags:
       - { name: drush.command }
