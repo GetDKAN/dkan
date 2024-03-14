@@ -54,6 +54,8 @@ class HarvestService implements ContainerInjectionInterface {
   private HarvestPlanRepository $harvestPlanRepository;
 
   /**
+   * Harvest run entity repository service.
+   *
    * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
   private HarvestRunRepository $runRepository;

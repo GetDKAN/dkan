@@ -167,6 +167,7 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
    * convention. Any string could be specified in the harvest.
    *
    * @return \Drupal\Core\Field\BaseFieldDefinition
+   *   The base field definition.
    */
   private static function createUnlimitedCardinalityUuidField(): BaseFieldDefinition {
     return BaseFieldDefinition::create('string')

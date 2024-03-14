@@ -16,6 +16,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 final class HarvestRunListBuilder extends EntityListBuilder {
 
+  /**
+   * Harvest plan entity storage service.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
   protected EntityStorageInterface $planStorage;
 
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {

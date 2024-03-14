@@ -2,10 +2,7 @@
 
 namespace Drupal\harvest;
 
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;

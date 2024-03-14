@@ -17,6 +17,7 @@ interface HarvestRunInterface extends ContentEntityInterface {
    * This exists for BC with \Harvest\ResultInterpreter.
    *
    * @return array
+   *   Result array as would be returned from \Harvest\Harvester::harvest()
    *
    * @see \Harvest\Harvester::harvest()
    * @see \Harvest\ResultInterpreter
