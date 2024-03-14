@@ -135,12 +135,12 @@ class HarvestService implements ContainerInjectionInterface {
    * @param string $plan_id
    *   The harvest plan id.
    *
-   * @return object
+   * @return object|null
    *   The harvest plan, if any, or NULL.
    *
    * @throws \Exception
    */
-  public function getHarvestPlanObject($plan_id): object {
+  public function getHarvestPlanObject($plan_id): ?object {
     return $this->harvestPlanRepository->getPlan($plan_id);
   }
 
@@ -173,18 +173,21 @@ class HarvestService implements ContainerInjectionInterface {
    *   Whether this happened successfully.
    */
   public function deregisterHarvest(string $plan_id) {
-    // Remove all the support tables for this plan id.
-    foreach ([
-      'harvest_' . $plan_id . '_items',
-    ] as $table_name) {
-      /** @var \Drupal\common\Storage\DatabaseTableInterface $store */
-      $store = $this->storeFactory->getInstance($table_name);
-      $store->destruct();
+    if (in_array($plan_id, $this->harvestPlanRepository->getAllHarvestPlanIds())) {
+      // Remove all the support tables for this plan id.
+      foreach ([
+        'harvest_' . $plan_id . '_items',
+      ] as $table_name) {
+        /** @var \Drupal\common\Storage\DatabaseTableInterface $store */
+        $store = $this->storeFactory->getInstance($table_name);
+        $store->destruct();
+      }
+      $this->hashesStoreFactory->getInstance($plan_id)->destruct();
+      $this->runRepository->destructForPlanId($plan_id);
+      // Remove the plan id from the harvest_plans table.
+      return $this->harvestPlanRepository->remove($plan_id);
     }
-    $this->hashesStoreFactory->getInstance($plan_id)->destruct();
-    $this->runRepository->destructForPlanId($plan_id);
-    // Remove the plan id from the harvest_plans table.
-    return $this->harvestPlanRepository->remove($plan_id);
+    return FALSE;
   }
 
   /**
