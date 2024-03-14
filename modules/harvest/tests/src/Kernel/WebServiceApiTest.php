@@ -392,7 +392,7 @@ class WebServiceApiTest extends KernelTestBase {
   public function testRunErrors() {
     $controller = WebServiceApi::create($this->container);
     $this->assertInstanceOf(Response::class, $response = $controller->run());
-    $this->assertEquals(422, $response->getStatusCode());
+    $this->assertEquals(400, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals('Invalid payload.', $payload->message);
     $this->assertEquals('/api/1/harvest', $payload->documentation);
