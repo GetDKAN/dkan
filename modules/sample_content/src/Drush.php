@@ -95,10 +95,10 @@ class Drush extends DrushCommands {
   /**
    * Register our plan as the given harvest plan ID.
    *
-   * @param $harvest_plan_id
+   * @param string $harvest_plan_id
    *   Harvest plan id.
    */
-  protected function registerSampleContentHarvest($harvest_plan_id) {
+  protected function registerSampleContentHarvest(string $harvest_plan_id) {
     $this->createDatasetJsonFromTemplate();
     $plan = $this->getHarvestPlan();
     $plan->identifier = $harvest_plan_id;
