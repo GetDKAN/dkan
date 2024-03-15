@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\sample_content\Functional;
 
-use Drupal\Core\Site\Settings;
 use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 
@@ -19,16 +18,14 @@ class SampleContentCommandsTest extends BrowserTestBase {
 
   protected $defaultTheme = 'stark';
 
+  protected $strictConfigSchema = FALSE;
+
   protected static $modules = [
     'node',
     'sample_content',
   ];
 
   public function test() {
-//    if (empty(Settings::get('file_public_base_url'))) {
-//      $this->markTestSkipped(__METHOD__ . ' requires setting file_public_base_url');
-//    }
-
     $harvest_plan_name = 'sample_content';
 
     // Run the create command.

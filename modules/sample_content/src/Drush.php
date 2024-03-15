@@ -8,9 +8,7 @@ use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
 
 /**
- * Sample content Drush commands.
- *
- * @codeCoverageIgnore
+ * Drush commands for the sample content module.
  */
 class Drush extends DrushCommands {
   use Helper;
@@ -65,7 +63,7 @@ class Drush extends DrushCommands {
     $this->sampleContentService->registerSampleContentHarvest(static::HARVEST_ID);
     $this->renderHarvestRunsInfo([
       [
-        'sample_content',
+        static::HARVEST_ID,
         $this->harvestService->runHarvest(static::HARVEST_ID),
       ],
     ]);
