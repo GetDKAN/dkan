@@ -324,11 +324,16 @@ class QueryControllerTest extends TestCase {
    */
   public function testResourceQueryCsv() {
     $data = json_encode([
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+      ],
       "results" => TRUE,
       "format" => "csv",
     ]);
     $result = $this->getQueryResult($data);
-
     $this->assertTrue($result instanceof CsvResponse);
     $this->assertEquals(200, $result->getStatusCode());
   }
