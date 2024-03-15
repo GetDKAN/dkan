@@ -9,6 +9,10 @@ use Drush\Commands\DrushCommands;
 
 /**
  * Drush commands for the sample content module.
+ *
+ * @codeCoverageIgnore
+ *
+ * @todo Figure out why DrushTestTraits don't count as coverage for commands.
  */
 class Drush extends DrushCommands {
   use Helper;
