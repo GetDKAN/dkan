@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Fields;
 
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
-class FieldButtons extends ControllerBase {
+class FieldButtons  {
 
   /**
    * Returns the add button.
@@ -20,12 +18,12 @@ class FieldButtons extends ControllerBase {
       '#op' => 'add_new_field',
       '#submit' => [
       [
-        '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
+        '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
         'addSubformCallback',
       ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
+        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -50,12 +48,12 @@ class FieldButtons extends ControllerBase {
       ],
       '#submit' => [
           [
-            '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
+            '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
             'editSubformCallback',
           ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
+        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -77,12 +75,12 @@ class FieldButtons extends ControllerBase {
       '#op' => $op,
       '#submit' => [
           [
-            '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
+            '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
             $callbackClass,
           ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -107,12 +105,12 @@ class FieldButtons extends ControllerBase {
       '#op' => $op,
       '#submit' => [
             [
-              '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
+              '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
               $callbackClass,
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -136,12 +134,12 @@ class FieldButtons extends ControllerBase {
       '#op' => 'delete_' . $key,
       '#submit' => [
             [
-              '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks',
+              '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
               'editSubformCallback',
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::subformAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],

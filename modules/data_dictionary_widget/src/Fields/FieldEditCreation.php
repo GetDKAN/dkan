@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Fields;
 
 /**
  * Various operations for creating Data Dictionary Widget add fields.
  */
-class FieldEditCreation extends ControllerBase {
+class FieldEditCreation {
 
   /**
    * Create edit fields for Data Dictionary Widget.
@@ -53,7 +51,7 @@ class FieldEditCreation extends ControllerBase {
       '#op' => 'format_' . $key,
       '#options' => FieldOperations::setTypeOptions(),
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::updateFormatOptions',
+        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
         'method' => 'replace',
         'wrapper' => 'field-json-metadata-' . $key . '-format',
       ],

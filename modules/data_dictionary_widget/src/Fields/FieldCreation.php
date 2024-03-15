@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Fields;
 
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
-class FieldCreation extends ControllerBase {
+class FieldCreation {
 
   /**
    * Create basic widget.

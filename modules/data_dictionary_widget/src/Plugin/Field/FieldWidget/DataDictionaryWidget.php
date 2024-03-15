@@ -7,8 +7,8 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
-use Drupal\data_dictionary_widget\Controller\Widget\FieldCreation;
-use Drupal\data_dictionary_widget\Controller\Widget\FieldOperations;
+use Drupal\data_dictionary_widget\Fields\FieldCreation;
+use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Entity\EntityFormInterface;
 
 /**
