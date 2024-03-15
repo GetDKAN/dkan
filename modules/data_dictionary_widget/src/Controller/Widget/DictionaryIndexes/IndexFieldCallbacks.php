@@ -33,7 +33,6 @@ class IndexFieldCallbacks extends ControllerBase {
     }
 
     if ($op === 'add_index_field') {
-      $test = $form_state->getUserInput();
       $form_state->set('new_index_fields', $form_state->getUserInput());
       $form_state->set('add', TRUE);
       $form_state->set('cancel_index', FALSE);
