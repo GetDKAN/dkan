@@ -5,7 +5,7 @@ namespace Drupal\data_dictionary_widget\Fields;
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
-class FieldButtons  {
+class FieldButtons {
 
   /**
    * Returns the add button.
