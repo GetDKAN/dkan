@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Fields;
 
 /**
  * Various operations for creating Data Dictionary Widget add fields.
  */
-class FieldAddCreation extends ControllerBase {
+class FieldAddCreation {
 
   /**
    * Create add fields for Data Dictionary Widget.
@@ -69,7 +67,7 @@ class FieldAddCreation extends ControllerBase {
         'number' => t('Number'),
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Controller\Widget\FieldCallbacks::updateFormatOptions',
+        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
         'method' => 'replace',
         'wrapper' => 'field-json-metadata-format',
       ],

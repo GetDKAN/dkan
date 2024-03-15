@@ -1,14 +1,13 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget;
+namespace Drupal\data_dictionary_widget\Fields;
 
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Various operations for the Data Dictionary Widget callbacks.
  */
-class FieldCallbacks extends ControllerBase {
+class FieldCallbacks {
 
   /**
    * AJAX callback to update the options of the "Format" field.

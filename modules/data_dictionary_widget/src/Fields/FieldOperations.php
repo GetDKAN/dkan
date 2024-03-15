@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Fields;
 
 /**
  * Various operations for the Data Dictionary Widget.
  */
-class FieldOperations extends ControllerBase {
+class FieldOperations {
 
   /**
    * Get a list of data dictionaries.
