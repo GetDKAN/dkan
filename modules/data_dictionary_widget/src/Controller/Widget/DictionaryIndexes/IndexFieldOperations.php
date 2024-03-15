@@ -13,18 +13,18 @@ class IndexFieldOperations extends ControllerBase {
    */
   public static function setIndexAjaxElements(array $dictionaryIndexFields) {
     foreach ($dictionaryIndexFields['data']['#rows'] as $row => $data) {
-      $edit_index_button = $dictionaryIndexFields['edit_index_buttons'][$row] ?? NULL;
-      $edit_index_fields = $dictionaryIndexFields['edit_index_fields'][$row] ?? NULL;
+      $edit_index_button = $dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row] ?? NULL;
+      $edit_index_fields = $dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row] ?? NULL;
       // Setting the ajax fields if they exsist.
       if ($edit_index_button) {
         $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
-        unset($dictionaryIndexFields['edit_index_buttons'][$row]);
+        unset($dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row]);
       }
       elseif ($edit_index_fields) {
-        unset($dictionaryIndexFields['data']['#rows'][$row]);
+        unset($dictionaryIndexFields['data']['#rows']['index_field_key_' . $row]);
         $dictionaryIndexFields['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
         // Remove the buttons so they don't show up twice.
-        unset($dictionaryIndexFields['edit_index_fields'][$row]);
+        unset($dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row]);
         ksort($dictionaryIndexFields['data']['#rows']);
       }
 

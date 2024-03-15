@@ -71,7 +71,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     // Creating ajax buttons/fields to be placed in correct location later.
     $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element['dictionary_fields']);
     $element['dictionary_fields']['add_row_button']['#access'] = $fields_being_modified == NULL ? TRUE : FALSE;
-
+    
     // Creating ajax buttons/fields to be placed in correct location later for index fields.
     $element['index_fields'] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element['index_fields']);
     $element['index_fields']['add_row_button']['#access'] = $index_fields_being_modified == NULL ? TRUE : FALSE;
@@ -132,7 +132,9 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       'title' => $values[0]['title'] ?? '',
       'data' => [
         'fields' => $updated,
-        'indexes' => [],
+        'indexes' => [
+          'fields' => $updated_index_fields,
+        ],
       ],
     ];
 
