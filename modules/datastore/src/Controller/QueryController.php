@@ -37,13 +37,46 @@ class QueryController extends AbstractQueryController {
   ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        $response = new CSVResponse($result->{"$.results"}, 'data.csv', ',');
+        $results = $this->fixHeaderRow($result);
+        $response = new CSVResponse($results, 'data.csv', ',');
         return $this->addCacheHeaders($response);
 
       case 'json':
       default:
         return $this->metastoreApiResponse->cachedJsonResponse($result->{"$"}, 200, $dependencies, $params);
     }
+  }
+
+  /**
+   * Add the header row from specified properties or the schema.
+   *
+   * Alters the data array.
+   *
+   * @param \RootedData\RootedJsonData $result
+   *   The result of a DatastoreQuery.
+   */
+  private function fixHeaderRow(RootedJsonData &$result) {
+    try {
+      $schema = $result->{'$.schema'};
+      // Query has are no explicit properties; we should assume one table.
+      $header_row = array_column(reset($schema)['fields'], 'description');
+
+      if (empty($header_row) || !is_array($header_row)) {
+        throw new \DomainException("Could not generate header for CSV.");
+      }
+    }
+    catch (\Exception $e) {
+      throw new \DomainException("Could not generate header for CSV.");
+    }
+
+    $rows = $result->{"$.results"};
+    $newResults = [];
+    $newRows = [];
+    foreach ($rows as $row) {
+      $newRows = array_combine($header_row, array_values($row));
+      array_push($newResults, $newRows);
+    }
+    return $newResults;
   }
 
   /**
