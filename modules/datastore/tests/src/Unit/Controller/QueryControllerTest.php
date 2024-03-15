@@ -35,7 +35,7 @@ class QueryControllerTest extends TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    // Set cache services
+    // Set cache services.
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->index(0);
@@ -269,8 +269,8 @@ class QueryControllerTest extends TestCase {
             "value" => [
               "resource" => "t",
               "property" => "record_number",
-            ]
-          ]
+            ],
+          ],
         ],
       ],
     ]);
@@ -324,11 +324,16 @@ class QueryControllerTest extends TestCase {
    */
   public function testResourceQueryCsv() {
     $data = json_encode([
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+      ],
       "results" => TRUE,
       "format" => "csv",
     ]);
     $result = $this->getQueryResult($data);
-
     $this->assertTrue($result instanceof CsvResponse);
     $this->assertEquals(200, $result->getStatusCode());
   }
@@ -508,9 +513,9 @@ class QueryControllerTest extends TestCase {
     );
     $storage->setSchema([
       'fields' => [
-        'record_number' => ['type' => 'int', 'not null' => TRUE],
-        'state' => ['type' => 'text'],
-        'year' => ['type' => 'int'],
+        'record_number' => ['type' => 'int', 'description' => 'Record Number', 'not null' => TRUE],
+        'state' => ['type' => 'text', 'description' => 'State'],
+        'year' => ['type' => 'int', 'description' => 'Year'],
       ],
     ]);
     return $storage;
