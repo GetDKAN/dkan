@@ -179,12 +179,12 @@ When the sample content is no longer needed, remove the datasets with the remove
       drush dkan:sample-content:create
       drush cron
       drush cron
-      drush dkan:sample:content:remove
+      drush dkan:sample-content:remove
 
 Troubleshooting
 ^^^^^^^^^^^^^^^
 
-If you see output like this:
+If you see output like this (note the errors):
 
 .. code-block::
 

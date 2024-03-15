@@ -1,0 +1,7 @@
+services:
+  dkan.sample_content.service:
+    class: \Drupal\sample_content\SampleContentService
+    arguments:
+      - '@extension.list.module'
+      - '@dkan.harvest.service'
+      - '%app.root%'
