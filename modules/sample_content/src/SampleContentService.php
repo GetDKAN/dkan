@@ -11,6 +11,8 @@ use Drupal\harvest\HarvestService;
 class SampleContentService {
 
   /**
+   * Harvest service.
+   *
    * @var \Drupal\harvest\HarvestService
    */
   private HarvestService $harvestService;
