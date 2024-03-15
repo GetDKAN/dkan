@@ -79,3 +79,12 @@ function harvest_update_8005(&$sandbox) {
   $harvest_utility = \Drupal::service('dkan.harvest.utility');
   $harvest_utility->harvestHashUpdate();
 }
+
+/**
+ * Ensure the entity manager knows about harvest_run entities.
+ */
+function harvest_update_8006(&$sandbox) {
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+  \Drupal::entityDefinitionUpdateManager()
+    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_run'));
+}

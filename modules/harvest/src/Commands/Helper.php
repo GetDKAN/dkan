@@ -22,12 +22,12 @@ trait Helper {
   private function getHarvester($id) {
 
     if (!method_exists($this, 'getHarvestPlan')) {
-      throw new \Exception("Drupal\harvest\Commands\Helper requires the host to implement the getHarvestPlan method.");
+      throw new \Exception('Drupal\harvest\Commands\Helper requires the host to implement the getHarvestPlan method.');
     }
 
     return new Harvester(new Factory($this->getHarvestPlan($id),
-      $this->getStorage($id, "item"),
-      $this->getStorage($id, "hash")));
+      $this->getStorage($id, 'item'),
+      $this->getStorage($id, 'hash')));
   }
 
   /**
@@ -35,7 +35,7 @@ trait Helper {
    */
   private function getPlanStorage() {
     $connection = \Drupal::service('database');
-    return new DatabaseTable($connection, "harvest_plans");
+    return new DatabaseTable($connection, 'harvest_plans');
   }
 
   /**
@@ -83,7 +83,6 @@ trait Helper {
       // Store error messages if we have them.
       $errors[$run_id] = $result['errors'] ?? NULL;
     }
-
     $table->render();
     $this->renderHarvestRunsErrors($errors);
   }
@@ -119,13 +118,13 @@ trait Helper {
 
       $consoleOutput->writeln(
         ["<warning>harvest id $harvest_id and run id $run_id extract status is $extract_status</warning>",
-          "<warning>No items were extracted.</warning>",
+          '<warning>No items were extracted.</warning>',
         ]
       );
     }
     else {
       $table = new Table($consoleOutput);
-      $table->setHeaders(["item_id", "extract", "transform", "load"]);
+      $table->setHeaders(['item_id', 'extract', 'transform', 'load']);
 
       foreach ($run['status']['extracted_items_ids'] as $item_id) {
         $row = $this->generateItemStatusRow($item_id, $run['status'], $run['errors'] ?? []);
@@ -148,7 +147,7 @@ trait Helper {
     $row['item_id'] = $item_id;
 
     /* Extract */
-    $row['extract'] = "[" . $status['extract'] . "]";
+    $row['extract'] = '[' . $status['extract'] . ']';
 
     /* transform */
 

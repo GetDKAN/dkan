@@ -32,15 +32,11 @@ trait OrphanDatasetsProcessor {
    * Get the dataset identifiers orphaned by the harvest currently in progress.
    */
   private function getOrphanIdsFromResult(string $harvestId, array $extractedIds) : array {
-
-    $lastRunId = $this->getLastHarvestRunId($harvestId);
-    if (!$lastRunId) {
-      return [];
+    if ($lastRunId = $this->getLastHarvestRunId($harvestId)) {
+      $previouslyExtractedIds = $this->getExtractedIds($harvestId, $lastRunId);
+      return array_values(array_diff($previouslyExtractedIds, $extractedIds));
     }
-
-    $previouslyExtractedIds = $this->getExtractedIds($harvestId, $lastRunId);
-
-    return array_values(array_diff($previouslyExtractedIds, $extractedIds));
+    return [];
   }
 
   /**
@@ -82,7 +78,7 @@ trait OrphanDatasetsProcessor {
   public function getOrphanIdsFromCompleteHarvest(string $harvestId) : array {
 
     $cumulativelyRemovedIds = [];
-    $runIds = $this->getAllHarvestRunInfo($harvestId);
+    $runIds = $this->getAllHarvestRunIds($harvestId);
 
     // Initialize with the first harvest run.
     if ($previousRunId = array_shift($runIds)) {

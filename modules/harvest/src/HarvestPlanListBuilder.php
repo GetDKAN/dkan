@@ -79,10 +79,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
 
     // Default values for a row if there's no info.
     $row = [
-      'harvest_link' => Link::fromTextAndUrl($harvest_plan_id, Url::fromRoute(
-        'datastore.datasets_import_status_dashboard',
-        ['harvest_id' => $harvest_plan_id],
-      )),
+      'harvest_link' => $entity->toLink($harvest_plan_id),
       'extract_status' => [
         'data' => 'REGISTERED',
         'class' => 'registered',
@@ -97,7 +94,13 @@ class HarvestPlanListBuilder extends EntityListBuilder {
         'class' => strtolower($info->status->extract),
       ];
       $row['last_run'] = date('m/d/y H:m:s T', $runId);
-      $row['dataset_count'] = count(array_keys((array) $info->status->load));
+      $row['dataset_count'] = Link::fromTextAndUrl(
+        (string) count(array_keys((array) $info->status->load)),
+        Url::fromRoute(
+          'datastore.datasets_import_status_dashboard',
+          ['harvest_id' => $harvest_plan_id],
+        )
+      );
     }
     // Don't call parent::buildRow() because we don't want operations (yet).
     return $row;
