@@ -3,15 +3,12 @@
 namespace Drupal\harvest\Transform;
 
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Site\Settings;
 use Harvest\ETL\Transform\Transform;
 
 /**
- * Defines a transform that saves the resources from a dataset.
+ * Moves local files to public:// and alters the downloadUrl field.
  *
  * @codeCoverageIgnore
- *
- * @deprecated Is this dead code?
  */
 class ResourceImporter extends Transform {
 
@@ -35,22 +32,8 @@ class ResourceImporter extends Transform {
    *
    * {@inheritdoc}
    */
-  public function run($dataset) {
-    $this->testEnvironment();
-    return $this->updateDistributions($dataset);
-  }
-
-  /**
-   * Test Environment.
-   *
-   * @codeCoverageIgnore
-   */
-  protected function testEnvironment() {
-    $setting = Settings::get('file_public_base_url');
-    if (!isset($setting) || empty($setting)) {
-      throw new \Exception("file_public_base_url should be set.");
-    }
-    return TRUE;
+  public function run($item) {
+    return $this->updateDistributions($item);
   }
 
   /**
@@ -129,7 +112,9 @@ class ResourceImporter extends Transform {
 
     $targetDir = 'public://distribution/' . $dataset_id;
 
-    $this->drupalFiles->getFilesystem()->prepareDirectory($targetDir, FileSystemInterface::CREATE_DIRECTORY);
+    $this->drupalFiles
+      ->getFilesystem()
+      ->prepareDirectory($targetDir, FileSystemInterface::CREATE_DIRECTORY);
 
     // Abort if file can't be saved locally.
     if (!($path = $this->drupalFiles->retrieveFile($url, $targetDir))) {
