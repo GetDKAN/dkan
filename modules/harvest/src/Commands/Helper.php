@@ -2,9 +2,6 @@
 
 namespace Drupal\harvest\Commands;
 
-use Drupal\harvest\Storage\DatabaseTable;
-use Harvest\ETL\Factory;
-use Harvest\Harvester;
 use Harvest\ResultInterpreter;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -86,11 +83,10 @@ trait Helper {
     if (empty($run['status']['extracted_items_ids'])) {
       $extract_status = $run['status']['extract'];
 
-      $consoleOutput->writeln(
-        ["<warning>harvest id $harvest_id and run id $run_id extract status is $extract_status</warning>",
-          '<warning>No items were extracted.</warning>',
-        ]
-      );
+      $consoleOutput->writeln([
+        '<warning>harvest id ' . $harvest_id . ' and run id ' . $run_id . ' extract status is ' . $extract_status . '</warning>',
+        '<warning>No items were extracted.</warning>',
+      ]);
     }
     else {
       $table = new Table($consoleOutput);
@@ -101,9 +97,9 @@ trait Helper {
         $table->addRow($row);
       }
 
-      $consoleOutput->writeln(
-        ["<info>$harvest_id run id $run_id status </info>"]
-      );
+      $consoleOutput->writeln([
+        '<info>' . $harvest_id . ' run id ' . $run_id . ' status </info>',
+      ]);
       $table->render();
     }
   }
