@@ -15,6 +15,7 @@ class IndexFieldCallbacks extends ControllerBase {
   public static function indexAddSubformCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
+    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $form_state->set('add_new_index_field', '');
     // $fields_being_added = $form_state->set('fields_being_added', '');
     $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
@@ -28,7 +29,7 @@ class IndexFieldCallbacks extends ControllerBase {
 
     if ($op === 'add_new_index_field') {
       $add_index_fields = IndexFieldAddCreation::addIndexFields();
-
+      $form_state->set('current_fields', $current_dictionary_fields);
       $form_state->set('add_new_index_field', $add_index_fields);
     }
 
