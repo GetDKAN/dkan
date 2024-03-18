@@ -23,6 +23,17 @@ final class HarvestRunListBuilder extends EntityListBuilder {
    */
   protected EntityStorageInterface $planStorage;
 
+  /**
+   * Factory method for HarvestRunListBuilder.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   Container service.
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   Entity type service.
+   *
+   * @return \Drupal\harvest\HarvestRunListBuilder
+   *   The list builder object.
+   */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     $builder = parent::createInstance($container, $entity_type);
     $builder->planStorage = $container->get('entity_type.manager')->getStorage('harvest_plan');
@@ -46,7 +57,7 @@ final class HarvestRunListBuilder extends EntityListBuilder {
   /**
    * {@inheritdoc}
    *
-   * @todo Link to plan and run from their IDs when we figure out UX.
+   * @todo Link to plan and run entities when we figure out UX.
    */
   public function buildRow(EntityInterface $entity): array {
     /** @var \Drupal\harvest\HarvestRunInterface $entity */
