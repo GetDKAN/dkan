@@ -247,6 +247,9 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @deprecated Gather run IDs from getAllHarvestRunIds() and access specific
    *   information based on those IDs.
+   *
+   * @see self::getAllHarvestRunIds()
+   * @see self::getHarvestRunInfo()
    */
   public function getAllHarvestRunInfo(string $plan_id): array {
     return $this->runRepository->retrieveAllRunsJson($plan_id);

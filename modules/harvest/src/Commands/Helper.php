@@ -17,39 +17,9 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 trait Helper {
 
   /**
-   * Private..
-   */
-  private function getHarvester($id) {
-
-    if (!method_exists($this, 'getHarvestPlan')) {
-      throw new \Exception('Drupal\harvest\Commands\Helper requires the host to implement the getHarvestPlan method.');
-    }
-
-    return new Harvester(new Factory($this->getHarvestPlan($id),
-      $this->getStorage($id, 'item'),
-      $this->getStorage($id, 'hash')));
-  }
-
-  /**
-   * Private..
-   */
-  private function getPlanStorage() {
-    $connection = \Drupal::service('database');
-    return new DatabaseTable($connection, 'harvest_plans');
-  }
-
-  /**
-   * Private..
-   */
-  private function getStorage($id, $type) {
-    $connection = \Drupal::service('database');
-    return new DatabaseTable($connection, "harvest_{$id}_{$type}");
-  }
-
-  /**
    * Return Processed, Created, Updated, Failed counts from Harvest Run Result.
    */
-  private function getResultCounts($result) {
+  private function getResultCounts(array $result) {
     $interpreter = new ResultInterpreter($result);
 
     return [
@@ -61,10 +31,12 @@ trait Helper {
   }
 
   /**
-   * Display a list of [runIds, runInfo].
+   * Display a list of run IDs and run info.
    *
    * @param array $runInfos
-   *   Array of run Ids and HarvesterRunInfo association.
+   *   Array of harvest run results, as returned from Harvester::harvest().
+   *
+   * @see Harvester::harvest()
    */
   private function renderHarvestRunsInfo(array $runInfos) {
     $table = new Table(new ConsoleOutput());
@@ -72,16 +44,14 @@ trait Helper {
     $errors = [];
 
     foreach ($runInfos as $runInfo) {
-      [$run_id, $result] = $runInfo;
-
+      $run_id = $runInfo['identifier'] ?? NULL;
       $row = array_merge(
         [$run_id],
-        $this->getResultCounts($result)
+        $this->getResultCounts($runInfo)
       );
-
       $table->addRow($row);
       // Store error messages if we have them.
-      $errors[$run_id] = $result['errors'] ?? NULL;
+      $errors[$run_id] = $runInfo['errors'] ?? NULL;
     }
     $table->render();
     $this->renderHarvestRunsErrors($errors);
