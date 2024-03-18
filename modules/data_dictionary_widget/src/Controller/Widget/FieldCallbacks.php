@@ -83,6 +83,7 @@ class FieldCallbacks extends ControllerBase {
   public static function addSubformCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
     $form_state->set('add_new_field', '');
     // $fields_being_added = $form_state->set('fields_being_added', '');
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
@@ -96,7 +97,7 @@ class FieldCallbacks extends ControllerBase {
 
     if ($op === 'add_new_field') {
       $add_fields = FieldAddCreation::addFields();
-
+      $form_state->set('current_index_fields', $current_index_fields);
       $form_state->set('add_new_field', $add_fields);
     }
 
