@@ -18,6 +18,7 @@ use Drupal\json_form_widget\WidgetRouter;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\MetastoreService;
 use MockChain\Options;
+use Psr\Log\LoggerInterface;
 
 /**
  * Test class for SchemaUiHandlerTest.
@@ -49,7 +50,7 @@ class SchemaUiHandlerTest extends TestCase {
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('uuid', Php::class)
       ->add('json_form.widget_router', $widget_router)
       ->add('language_manager', $language_manager)
@@ -626,7 +627,7 @@ class SchemaUiHandlerTest extends TestCase {
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('uuid', Php::class)
       ->add('json_form.widget_router', $widget_router)
       ->index(0);
@@ -702,7 +703,7 @@ class SchemaUiHandlerTest extends TestCase {
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('uuid', Php::class)
       ->add('json_form.widget_router', $widget_router)
       ->index(0);
@@ -764,7 +765,7 @@ class SchemaUiHandlerTest extends TestCase {
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('uuid', Php::class)
       ->add('json_form.widget_router', $widget_router)
       ->index(0);

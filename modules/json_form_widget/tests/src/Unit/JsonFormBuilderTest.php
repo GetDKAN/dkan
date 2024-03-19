@@ -18,6 +18,7 @@ use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\SchemaRetriever;
 use MockChain\Options;
+use Psr\Log\LoggerInterface;
 use stdClass;
 
 /**
@@ -39,7 +40,7 @@ class JsonFormBuilderTest extends TestCase {
       ->add('json_form.object_helper', ObjectHelper::class)
       ->add('json_form.array_helper', ArrayHelper::class)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('json_form.router', FieldTypeRouter::class)
       ->index(0);
 
@@ -68,7 +69,7 @@ class JsonFormBuilderTest extends TestCase {
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.router', $router)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
 

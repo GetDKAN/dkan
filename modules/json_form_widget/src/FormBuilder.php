@@ -41,11 +41,11 @@ class FormBuilder implements ContainerInjectionInterface {
   protected $router;
 
   /**
-   * Logger service.
+   * Logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   * @var \Psr\Log\LoggerInterface
    */
-  protected $loggerFactory;
+  private LoggerInterface $logger;
 
   /**
    * Inherited.
