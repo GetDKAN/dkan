@@ -14,10 +14,18 @@ use Drupal\harvest\HarvestRunInterface;
 /**
  * Defines the harvest run entity class.
  *
- * The harvest run entity connects three things:
+ * The harvest run entity connects three categories of information:
  * - The timestamp/id of the harvest run.
  * - The plan id for the harvest that was run.
- * - The resulting status information for the run, as a blob of JSON.
+ * - The resulting status information for the run.
+ *
+ * Status information is normalized out of the harvest result array.
+ * UUID-oriented results are stored in unlimited cardinality fields, such as
+ * 'extracted_uuid', which tells us the UUIDs of resources extracted from the
+ * catalog JSON.
+ *
+ * Information not normalized out of the result array is JSON-encoded and stored
+ * in the 'data' column.
  *
  * @ContentEntityType(
  *   id = "harvest_run",
@@ -169,6 +177,7 @@ final class HarvestRun extends ContentEntityBase implements HarvestRunInterface 
     return BaseFieldDefinition::create('string')
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setRevisionable(FALSE)
+      ->setTranslatable(FALSE)
       ->setReadOnly(FALSE)
       ->setStorageRequired(FALSE)
       ->setRequired(FALSE);

@@ -19,8 +19,13 @@ interface HarvestRunInterface extends ContentEntityInterface {
    * @return array
    *   Result array as would be returned from \Harvest\Harvester::harvest()
    *
+   * @internal
+   *
    * @see \Harvest\Harvester::harvest()
    * @see \Harvest\ResultInterpreter
+   *
+   * @todo Refactor other areas of the harvest system so they know how to deal
+   *   with the entity rather than the results array.
    */
   public function toResult(): array;
 
