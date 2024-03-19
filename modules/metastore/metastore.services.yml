@@ -75,7 +75,6 @@ services:
   dkan.metastore.event_subscriber:
     class: \Drupal\metastore\EventSubscriber\MetastoreSubscriber
     arguments:
-      - '@logger.factory'
       - '@dkan.metastore.service'
       - '@dkan.metastore.resource_mapper'
       - '@dkan.metastore.reference_lookup'
