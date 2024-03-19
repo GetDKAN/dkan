@@ -29,7 +29,6 @@ class IndexFieldCallbacks extends ControllerBase {
 
     if ($op === 'add_new_index_field') {
       $add_index_fields = IndexFieldAddCreation::addIndexFields();
-      $form_state->set('current_fields', $current_dictionary_fields);
       $form_state->set('add_new_index_field', $add_index_fields);
     }
 
@@ -39,6 +38,7 @@ class IndexFieldCallbacks extends ControllerBase {
       $form_state->set('cancel_index', FALSE);
     }
 
+    $form_state->set('current_fields', $current_dictionary_fields);
     $form_state->setRebuild();
   }
 
@@ -48,9 +48,11 @@ class IndexFieldCallbacks extends ControllerBase {
   public static function indexEditSubformCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
     $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
+    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $op = $trigger['#op'];
     $op_index = explode("_", $trigger['#op']);
     $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+    $currently_modifying = $form_state->get('fields_being_modified') != NULL ? $form_state->get('fields_being_modified') : [];
 
     if (str_contains($op, 'abort')) {
       unset($currently_modifying_index_fields[$op_index[4]]);
@@ -73,8 +75,10 @@ class IndexFieldCallbacks extends ControllerBase {
       $currently_modifying_index_fields[$op_index[4]] = $current_index_fields[$op_index[4]];
     }
 
+    $form_state->set('fields_being_modified', $currently_modifying);
     $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
     $form_state->set('current_index_fields', $current_index_fields );
+    $form_state->set('current_fields', $current_dictionary_fields );
     $form_state->setRebuild();
   }
 
