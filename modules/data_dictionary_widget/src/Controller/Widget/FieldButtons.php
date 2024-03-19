@@ -100,10 +100,10 @@ class FieldButtons extends ControllerBase {
    */
   public static function cancelButton($location, $key) {
     $callbackClass = $location == 'edit' ? 'editSubformCallback' : 'addSubformCallback';
-    $op = $location == 'edit' && $key ? 'abort_' . $key : 'cancel';
+    $op = $location == 'edit' && is_int($key) ? 'abort_' . $key : 'cancel';
     $cancel_button = [
       '#type' => 'submit',
-      '#value' => t('Cancel'),
+      '#value' => t('Cancel field'),
       '#op' => $op,
       '#submit' => [
             [
