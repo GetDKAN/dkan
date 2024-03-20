@@ -57,7 +57,7 @@ use Drupal\harvest\HarvestPlanInterface;
  * @todo Add fields for each element of the harvestPlan schema.
  * @todo Add links and handlers for register, run, and deregister operations.
  */
-class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
+final class HarvestPlan extends HarvestEntityBase implements HarvestPlanInterface {
 
   /**
    * {@inheritDoc}
@@ -68,42 +68,13 @@ class HarvestPlan extends ContentEntityBase implements HarvestPlanInterface {
     $base_fields = parent::baseFieldDefinitions($entity_type);
 
     // The 'id' field is the unique identifier for each harvest plan row.
-    $base_fields['id'] = BaseFieldDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('Identifier'))
-      ->setReadOnly(FALSE)
-      ->setTranslatable(FALSE)
-      ->setRequired(TRUE)
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
-
+    $base_fields['id'] = static::getBaseFieldIdentifier(
+      new TranslatableMarkup('Identifier')
+    );
     // The 'data' field contains JSON which describes the harvest plan. The plan
     // must be an object with at least a property of 'identifier'.
-    $base_fields['data'] = BaseFieldDefinition::create('string_long')
-      ->setLabel(new TranslatableMarkup('Data'))
-      ->setReadOnly(FALSE)
-      ->setTranslatable(FALSE)
-      ->setDisplayOptions('form', [
-        'type' => 'string_textarea',
-        'weight' => 0,
-        'settings' => [
-          'rows' => 12,
-        ],
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', [
-        'type' => 'string',
-        'weight' => 0,
-        'label' => 'above',
-      ])
-      ->setDisplayConfigurable('view', TRUE);
+    $base_fields['data'] = static::getBaseFieldJsonData(new TranslatableMarkup('Data'));
+
     return $base_fields;
   }
 
