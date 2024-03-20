@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Indexes;
 
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
-class IndexFieldButtons extends ControllerBase {
+class IndexFieldButtons {
 
   /**
    * Returns the add button.
@@ -20,12 +18,12 @@ class IndexFieldButtons extends ControllerBase {
       '#op' => 'add_new_index_field',
       '#submit' => [
       [
-        '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+        '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
         'indexAddSubformCallback',
       ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
+        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
@@ -50,12 +48,12 @@ class IndexFieldButtons extends ControllerBase {
       ],
       '#submit' => [
           [
-            '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+            '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
             'indexEditSubformCallback',
           ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
+        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
@@ -76,12 +74,12 @@ class IndexFieldButtons extends ControllerBase {
       '#op' => $op,
       '#submit' => [
           [
-            '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+            '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
             $callbackClass,
           ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
@@ -106,12 +104,12 @@ class IndexFieldButtons extends ControllerBase {
       '#op' => $op,
       '#submit' => [
             [
-              '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+              '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
               $callbackClass,
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
@@ -135,12 +133,12 @@ class IndexFieldButtons extends ControllerBase {
       '#op' => 'delete_' . $indexKey,
       '#submit' => [
             [
-              '\Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks',
+              '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
               'indexEditSubformCallback',
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCallbacks::subIndexformAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],

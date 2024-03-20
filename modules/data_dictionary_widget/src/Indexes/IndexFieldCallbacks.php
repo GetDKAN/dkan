@@ -1,14 +1,13 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes;
+namespace Drupal\data_dictionary_widget\Indexes;
 
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Various operations for the Data Dictionary Widget callbacks.
  */
-class IndexFieldCallbacks extends ControllerBase {
+class IndexFieldCallbacks {
   /**
    * Submit callback for the Index Add button.
    */

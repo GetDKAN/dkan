@@ -10,8 +10,8 @@ use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Fields\FieldCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Entity\EntityFormInterface;
-use Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldCreation;
-use Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes\IndexFieldOperations;
+use Drupal\data_dictionary_widget\Indexes\IndexFieldCreation;
+use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
 
 /**
  * A data-dictionary widget.

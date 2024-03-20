@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Indexes;
 
 /**
  * Various operations for the Data Dictionary Widget.
  */
-class IndexFieldOperations extends ControllerBase {
+class IndexFieldOperations {
   /**
    * Setting ajax elements.
    */
