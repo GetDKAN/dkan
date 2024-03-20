@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Controller\Widget\DictionaryIndexes;
-
-use Drupal\Core\Controller\ControllerBase;
+namespace Drupal\data_dictionary_widget\Indexes;
 
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
-class IndexFieldCreation extends ControllerBase {
+class IndexFieldCreation {
 
   /**
    * Create basic widget.
