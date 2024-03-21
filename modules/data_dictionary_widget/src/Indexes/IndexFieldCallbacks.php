@@ -51,7 +51,7 @@ class IndexFieldCallbacks {
     $op = $trigger['#op'];
     $op_index = explode("_", $trigger['#op']);
     $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
-    $currently_modifying = $form_state->get('fields_being_modified') != NULL ? $form_state->get('fields_being_modified') : [];
+    $currently_modifying = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
 
     if (str_contains($op, 'abort')) {
       unset($currently_modifying_index_fields[$op_index[4]]);
@@ -74,7 +74,7 @@ class IndexFieldCallbacks {
       $currently_modifying_index_fields[$op_index[4]] = $current_index_fields[$op_index[4]];
     }
 
-    $form_state->set('fields_being_modified', $currently_modifying);
+    $form_state->set('dictionary_fields_being_modified', $currently_modifying);
     $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
     $form_state->set('current_index_fields', $current_index_fields );
     $form_state->set('current_dictionary_fields', $current_dictionary_fields );
