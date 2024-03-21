@@ -26,14 +26,12 @@ delete harvest_plan:
 create harvest_plan:
   title: 'Create harvest plan'
 
+# These permissions refer to harvest_run entities, not the act of running a
+# harvest.
 administer harvest_run:
   title: 'Administer harvest runs'
   restrict access: true
 view harvest_run:
   title: 'View harvest run'
-edit harvest_run:
-  title: 'Edit harvest run'
 delete harvest_run:
   title: 'Delete harvest run'
-create harvest_run:
-  title: 'Create harvest run'

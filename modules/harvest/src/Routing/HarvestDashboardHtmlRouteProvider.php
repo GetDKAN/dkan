@@ -17,14 +17,9 @@ class HarvestDashboardHtmlRouteProvider extends AdminHtmlRouteProvider {
    * {@inheritDoc}
    */
   protected function getCollectionRoute(EntityTypeInterface $entity_type) {
-    // Require a number of permissions based on entity type.
     $route = NULL;
     if ($route = parent::getCollectionRoute($entity_type)) {
-      $required_permissions = [
-        'dkan.harvest.dashboard',
-        'administer ' . $entity_type->id(),
-        'view ' . $entity_type->id(),
-      ];
+      $required_permissions = ['dkan.harvest.dashboard'];
       if ($permission = $route->getRequirement('_permission')) {
         $required_permissions += [$permission];
       }
