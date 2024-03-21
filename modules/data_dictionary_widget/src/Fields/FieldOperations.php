@@ -121,9 +121,9 @@ class FieldOperations {
   /**
    * Cleaning the data up.
    */
-  public static function processDataResults($data_results, $current_fields, $field_values, $op) {
-    if (isset($current_fields)) {
-      $data_results = $current_fields;
+  public static function processDataResults($data_results, $current_dictionary_fields, $field_values, $op) {
+    if (isset($current_dictionary_fields)) {
+      $data_results = $current_dictionary_fields;
     }
 
     if (isset($field_values["field_json_metadata"][0]["dictionary_fields"]["field_collection"])) {
@@ -143,7 +143,7 @@ class FieldOperations {
     }
 
     if (isset($data_pre) && $op === "add") {
-      $data_results = isset($current_fields) ? array_merge($current_fields, $data_pre) : $data_pre;
+      $data_results = isset($current_dictionary_fields) ? array_merge($current_dictionary_fields, $data_pre) : $data_pre;
     }
 
     return $data_results;
@@ -218,11 +218,11 @@ class FieldOperations {
    * Create edit and update fields where needed.
    */
   public static function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
-    $current_fields = $element['current_fields'];
+    $current_dictionary_fields = $element['current_dictionary_fields'];
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($data_results as $key => $data) {
       if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
-        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_fields, $fields_being_modified);
+        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_dictionary_fields, $fields_being_modified);
       }
       else {
         $element['edit_buttons'][$key]['edit_button'] = FieldButtons::editButtons($key);
