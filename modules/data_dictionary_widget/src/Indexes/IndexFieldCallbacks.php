@@ -37,7 +37,7 @@ class IndexFieldCallbacks {
       $form_state->set('cancel_index', FALSE);
     }
 
-    $form_state->set('current_fields', $current_dictionary_fields);
+    $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->setRebuild();
   }
 
@@ -77,7 +77,7 @@ class IndexFieldCallbacks {
     $form_state->set('fields_being_modified', $currently_modifying);
     $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
     $form_state->set('current_index_fields', $current_index_fields );
-    $form_state->set('current_fields', $current_dictionary_fields );
+    $form_state->set('current_dictionary_fields', $current_dictionary_fields );
     $form_state->setRebuild();
   }
 
