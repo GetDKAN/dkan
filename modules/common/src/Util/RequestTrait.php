@@ -4,6 +4,8 @@ namespace Drupal\common\Util;
 
 /**
  * Utilities relating to current request.
+ *
+ * @deprecated Inject services and use them instead.
  */
 trait RequestTrait {
 

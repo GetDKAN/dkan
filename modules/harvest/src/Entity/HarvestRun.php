@@ -38,8 +38,9 @@ use Drupal\harvest\HarvestRunInterface;
  *   handlers = {
  *     "list_builder" = "Drupal\harvest\HarvestRunListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
+ *     "access" = "Drupal\harvest\HarvestRunAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
+ *       "html" = "Drupal\harvest\Routing\HarvestDashboardHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "harvest_runs",

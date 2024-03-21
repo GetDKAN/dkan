@@ -426,6 +426,8 @@ class HarvestCommands extends DrushCommands {
    *   Bash status code.
    *
    * @bootstrap full
+   *
+   * @todo Add runs entity conversion.
    */
   public function harvestUpdate(): int {
     $this->harvestUtility->harvestHashUpdate();

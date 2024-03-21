@@ -14,9 +14,26 @@
   title: 'DKAN: Harvest Dashboard'
   description: 'See information about DKAN harvests.'
 
-administer harvest plan:
-  title: 'Administer harvest plan settings'
+administer harvest_plan:
+  title: 'Administer harvest plans'
   restrict access: true
+view harvest_plan:
+  title: 'View harvest plan'
+edit harvest_plan:
+  title: 'Edit harvest plan'
+delete harvest_plan:
+  title: 'Delete harvest plan'
+create harvest_plan:
+  title: 'Create harvest plan'
+
 administer harvest_run:
   title: 'Administer harvest runs'
   restrict access: true
+view harvest_run:
+  title: 'View harvest run'
+edit harvest_run:
+  title: 'Edit harvest run'
+delete harvest_run:
+  title: 'Delete harvest run'
+create harvest_run:
+  title: 'Create harvest run'

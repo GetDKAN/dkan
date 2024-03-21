@@ -30,8 +30,9 @@ use Drupal\harvest\HarvestPlanInterface;
  *   handlers = {
  *     "list_builder" = "Drupal\harvest\HarvestPlanListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
+ *     "access" = "Drupal\harvest\HarvestPlanAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\harvest\Routing\HarvestPlanHtmlRouteProvider",
+ *       "html" = "Drupal\harvest\Routing\HarvestDashboardHtmlRouteProvider",
  *     }
  *   },
  *   base_table = "harvest_plans",
