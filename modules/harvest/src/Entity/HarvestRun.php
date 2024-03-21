@@ -54,6 +54,9 @@ use Drupal\harvest\HarvestRunInterface;
  *     "canonical" = "/harvest-run/{harvest_run}",
  *   },
  * )
+ *
+ * @todo Convert to using microtime() or other better system for the timestamp/
+ *   id.
  */
 final class HarvestRun extends HarvestEntityBase implements HarvestRunInterface {
 

@@ -177,12 +177,12 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Run all pending harvests.
+   * Run all harvests.
    *
    * @command dkan:harvest:run-all
    *
    * @usage dkan:harvest:run-all
-   *   Runs all pending harvests.
+   *   Runs all harvests.
    */
   public function runAll() {
     $plan_ids = $this->harvestService->getAllHarvestIds();
@@ -190,6 +190,11 @@ class HarvestCommands extends DrushCommands {
     foreach ($plan_ids as $plan_id) {
       $result = $this->harvestService->runHarvest($plan_id);
       $runs_info[] = $result;
+      // Since run IDs are also one-second-resolution timestamps, we must wait
+      // one second before running the next harvest.
+      // @todo Remove this sleep when we've switched to a better system for
+      //   timestamps.
+      sleep(1);
     }
     $this->renderHarvestRunsInfo($runs_info);
   }
