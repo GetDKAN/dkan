@@ -64,7 +64,7 @@ class HarvestCommands extends DrushCommands {
         return [$id];
       },
       $this->harvestService->getAllHarvestIds()
-      );
+    );
     if ($rows) {
       (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
       return;
@@ -179,13 +179,20 @@ class HarvestCommands extends DrushCommands {
   /**
    * Run all harvests.
    *
+   * @option new Run only harvests which haven't run before.
+   *
    * @command dkan:harvest:run-all
    *
    * @usage dkan:harvest:run-all
    *   Runs all harvests.
    */
-  public function runAll() {
+  public function runAll($options = ['new' => FALSE]) {
     $plan_ids = $this->harvestService->getAllHarvestIds();
+    if ($options['new']) {
+      $plan_ids = array_diff(
+        $plan_ids, $this->harvestService->getAllRunHarvestIds()
+      );
+    }
     $runs_info = [];
     foreach ($plan_ids as $plan_id) {
       $result = $this->harvestService->runHarvest($plan_id);

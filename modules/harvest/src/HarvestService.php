@@ -286,6 +286,18 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
+   * Get all the harvest plans which have already been run at some point.
+   *
+   * This is useful for discovering which plans have not yet run.
+   *
+   * @return string[]
+   *   All the harvest plan ids which have been run.
+   */
+  public function getAllRunHarvestIds() {
+    return $this->runRepository->getUniqueHarvestPlanIds();
+  }
+
+  /**
    * Publish a harvest.
    *
    * @param string $harvestId
