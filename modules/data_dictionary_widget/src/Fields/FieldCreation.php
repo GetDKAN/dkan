@@ -10,7 +10,7 @@ class FieldCreation {
   /**
    * Create basic widget.
    */
-  public static function createGeneralFields($element, $field_json_metadata, $current_dictionary_fields, $fields_being_modified) {
+  public static function createGeneralFields($element, $field_json_metadata, $current_dictionary_fields, $dictionary_fields_being_modified) {
 
     $element['identifier'] = [
       '#name' => 'field_json_metadata[0][identifier]',
