@@ -11,10 +11,8 @@ use Drupal\Core\Session\AccountInterface;
 
 /**
  * Defines an access control handler for content entities.
- *
- * Declared abstract because you should override this class for your own entity.
  */
-abstract class ContentAccessControlHandler extends EntityAccessControlHandler {
+class ContentAccessControlHandler extends EntityAccessControlHandler {
 
   /**
    * {@inheritdoc}

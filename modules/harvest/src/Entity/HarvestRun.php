@@ -38,7 +38,7 @@ use Drupal\harvest\HarvestRunInterface;
  *   handlers = {
  *     "list_builder" = "Drupal\harvest\HarvestRunListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
- *     "access" = "Drupal\harvest\HarvestRunAccessControlHandler",
+ *     "access" = "Drupal\harvest\ContentAccessControlHandler",
  *     "route_provider" = {
  *       "html" = "Drupal\harvest\Routing\HarvestDashboardHtmlRouteProvider",
  *     },
