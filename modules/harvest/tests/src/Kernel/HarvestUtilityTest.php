@@ -164,4 +164,41 @@ class HarvestUtilityTest extends KernelTestBase {
     $this->assertEquals($orphaned_hash, $retrieved['hash'] ?? 'no hash');
   }
 
+  /**
+   * @covers ::harvestRunsUpdate
+   */
+  public function testHarvestRunsUpdate() {
+    // Use the old-style factory to create an orphaned harvest runs table.
+    $orphaned_plan_id = 'orphanage';
+    $orphaned_id = '1711038292';
+    $orphaned_result = [
+      'plan' => '{"plan": "json"}',
+      'status' => [
+        'extract' => 'AWESOME',
+      ],
+      'identifier' => $orphaned_id,
+    ];
+    /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
+    $orphaned_table = $this->container
+      ->get('dkan.harvest.storage.database_table')
+      ->getInstance('harvest_' . $orphaned_plan_id . '_runs');
+    $this->assertCount(0, $orphaned_table->retrieveAll());
+    $orphaned_table->store(json_encode($orphaned_result), $orphaned_id);
+
+    // Update the table using the utility.
+    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    $harvest_utility = $this->container->get('dkan.harvest.utility');
+    $harvest_utility->harvestRunsUpdate();
+
+    // Check that it happened.
+    /** @var \Drupal\harvest\Entity\HarvestRunRepository $new_runs_repository */
+    $new_runs_repository = $this->container->get('dkan.harvest.storage.harvest_run_repository');
+    $this->assertCount(1, $new_runs_repository->retrieveAllRunIds($orphaned_plan_id));
+    /** @var \Drupal\harvest\Entity\HarvestRun $run_entity */
+    $this->assertNotNull(
+      $run_entity = $new_runs_repository->loadEntity($orphaned_plan_id, $orphaned_id)
+    );
+    $this->assertEquals('AWESOME', $run_entity->get('extract_status')->getString());
+  }
+
 }

@@ -246,7 +246,7 @@ class HarvestRunRepository {
    * @param string $run_id
    *   Run ID, which is a timestamp.
    *
-   * @return \Drupal\harvest\HarvestRunInterface|null
+   * @return \Drupal\harvest\HarvestRunInterface|\Drupal\Core\Entity\EntityInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
   public function loadEntity(string $plan_id, string $run_id): ?HarvestRunInterface {

@@ -24,7 +24,7 @@ class HarvestUtility {
   private HarvestService $harvestService;
 
   /**
-   * Service to instantiate storage objects for Harvest plan storage.
+   * Service to instantiate storage objects for Harvest tables.
    *
    * @var \Drupal\harvest\Storage\DatabaseTableFactory
    */
@@ -205,6 +205,40 @@ class HarvestUtility {
       $this->logger->notice('Converting hashes for ' . $plan_id);
       $this->convertHashTable($plan_id);
       $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes')
+        ->destruct();
+    }
+  }
+
+  /**
+   * Convert a table to use the harvest_run entity.
+   *
+   * @param string $plan_id
+   *   Harvest plan ID to convert.
+   */
+  public function convertRunTable(string $plan_id) {
+    $old_runs_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs');
+    foreach ($old_runs_table->retrieveAll() as $id) {
+      if ($data = $old_runs_table->retrieve($id)) {
+        // Explicitly decode the data as an array.
+        $this->runRepository->storeRun(json_decode($data, TRUE), $plan_id, $id);
+      }
+    }
+  }
+
+  /**
+   * Update all the harvest run tables to use entities.
+   *
+   * Outdated tables will be removed.
+   */
+  public function harvestRunsUpdate() {
+    $plan_ids = array_merge(
+      $this->harvestService->getAllHarvestIds(),
+      array_values($this->findOrphanedHarvestDataIds())
+    );
+    foreach ($plan_ids as $plan_id) {
+      $this->logger->notice('Converting runs for ' . $plan_id);
+      $this->convertRunTable($plan_id);
+      $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs')
         ->destruct();
     }
   }
