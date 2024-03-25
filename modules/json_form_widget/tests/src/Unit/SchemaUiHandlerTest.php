@@ -2,22 +2,21 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-use PHPUnit\Framework\TestCase;
-use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\Component\Uuid\Php;
-use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\Component\Utility\EmailValidator;
+use Drupal\Component\Uuid\Php;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Language\LanguageDefault;
 use Drupal\Core\Language\LanguageManager;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\json_form_widget\WidgetRouter;
-use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\MetastoreService;
+use Drupal\metastore\SchemaRetriever;
+use MockChain\Chain;
 use MockChain\Options;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**

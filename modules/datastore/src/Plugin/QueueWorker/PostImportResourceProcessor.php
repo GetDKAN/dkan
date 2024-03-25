@@ -6,7 +6,6 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
@@ -15,7 +14,7 @@ use Drupal\datastore\PostImportResult;
 use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -35,9 +34,9 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   /**
    * A logger channel for this plugin.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * The metastore resource mapper service.
@@ -85,7 +84,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The plugin implementation definition.
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_channel
    *   A logger channel factory instance.
    * @param \Drupal\metastore\ResourceMapper $resource_mapper
    *   The metastore resource mapper service.
@@ -103,7 +102,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     $plugin_id,
     $plugin_definition,
     AlterTableQueryBuilderInterface $alter_table_query_builder,
-    LoggerChannelFactoryInterface $logger_factory,
+    LoggerInterface $logger_channel,
     ResourceMapper $resource_mapper,
     ResourceProcessorCollector $processor_collector,
     PostImport $post_import,
@@ -111,7 +110,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     ReferenceLookup $referenceLookup
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->logger = $logger_factory->get('datastore');
+    $this->logger = $logger_channel;
     $this->resourceMapper = $resource_mapper;
     $this->resourceProcessorCollector = $processor_collector;
     $this->postImport = $post_import;
@@ -133,7 +132,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $plugin_id,
       $plugin_definition,
       $container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql'),
-      $container->get('logger.factory'),
+      $container->get('dkan.datastore.logger_channel'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.datastore.service.resource_processor_collector'),
       $container->get('dkan.datastore.service.post_import'),

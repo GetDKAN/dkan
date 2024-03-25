@@ -2,31 +2,33 @@
 
 namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
-use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
+use Drupal\common\DataResource;
+use Drupal\common\Events\Event;
+use Drupal\common\Storage\JobStore;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
+use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
+use Drupal\datastore\Service\Factory\ImportServiceFactory;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\common\Events\Event;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\metastore\MetastoreItemInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Service\ImportService;
-use Drupal\common\Storage\JobStore;
-use Drupal\metastore\MetastoreItemInterface;
 
 /**
+ * @coversDefaultClass \Drupal\datastore\EventSubscriber\DatastoreSubscriber
  *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class DatastoreSubscriberTest extends TestCase {
 
