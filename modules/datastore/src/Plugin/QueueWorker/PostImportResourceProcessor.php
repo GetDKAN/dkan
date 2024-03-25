@@ -2,18 +2,16 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
-use Drupal\datastore\Service\ResourceProcessorCollector;
-use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\PostImportResult;
-use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\PostImport;
+use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\metastore\ResourceMapper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -84,7 +82,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The plugin implementation definition.
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_channel
+   * @param \Psr\Log\LoggerInterface $logger_channel
    *   A logger channel factory instance.
    * @param \Drupal\metastore\ResourceMapper $resource_mapper
    *   The metastore resource mapper service.

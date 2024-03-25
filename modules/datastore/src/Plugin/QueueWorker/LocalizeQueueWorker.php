@@ -2,8 +2,6 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\datastore\Service\ResourceLocalizer;
