@@ -62,6 +62,12 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     }
     $element = FieldOperations::setAddFormState($form_state->get('add_new_field'), $element);
 
+    // Storing existing indexes so they are not overwritten.
+    // This is a temporary solution as we finish building the indexes feature.
+    if (isset($field_json_metadata["data"]["indexes"])) {
+      $form_state->set('indexes', $field_json_metadata["data"]["indexes"]);
+    }
+
     return $element;
   }
 
@@ -71,6 +77,10 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
+
+    // Get existing indexes.
+    $indexes = $form_state->get("indexes") ?? [];
+
     if (!empty($field_collection)) {
       $data_results = [
         [
@@ -92,6 +102,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       'title' => $values[0]['title'] ?? '',
       'data' => [
         'fields' => $updated,
+        'indexes' => $indexes,
       ],
     ];
 
