@@ -66,10 +66,7 @@ class Drush extends DrushCommands {
     $this->logger()->notice('Setting up harvest: ' . static::HARVEST_ID);
     $this->sampleContentService->registerSampleContentHarvest(static::HARVEST_ID);
     $this->renderHarvestRunsInfo([
-      [
-        static::HARVEST_ID,
-        $this->harvestService->runHarvest(static::HARVEST_ID),
-      ],
+      $this->harvestService->runHarvest(static::HARVEST_ID),
     ]);
     $this->logger()->notice('Run cron a few times to finish the import of this data.');
   }

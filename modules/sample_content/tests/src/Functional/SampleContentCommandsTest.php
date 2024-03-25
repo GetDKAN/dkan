@@ -32,6 +32,9 @@ class SampleContentCommandsTest extends BrowserTestBase {
     $this->drush('dkan:sample-content:create');
     $output = $this->getOutput();
 
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    $harvest_service = $this->container->get('dkan.harvest.service');
+
     // Start asserting.
     foreach ([
       'run_id',
@@ -39,7 +42,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
       'created',
       'updated',
       'errors',
-      'sample_content',
+      $harvest_service->getLastHarvestRunId($harvest_plan_name),
       // The number of datasets we expect to create.
       '10',
     ] as $expected) {
@@ -47,8 +50,6 @@ class SampleContentCommandsTest extends BrowserTestBase {
     }
 
     // Ask the API.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
-    $harvest_service = $this->container->get('dkan.harvest.service');
     $this->assertCount(1, $harvest_service->getAllHarvestIds());
     $this->assertNotNull($harvest_service->getHarvestPlanObject($harvest_plan_name));
     $this->assertNotEmpty($run_id = $harvest_service->getLastHarvestRunId($harvest_plan_name));

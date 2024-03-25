@@ -7,21 +7,16 @@ use Drupal\Core\Entity\Routing\AdminHtmlRouteProvider;
 
 /**
  * Provides HTML routes for entities with administrative pages.
+ *
+ * We override for harvest-oriented dashboards so that they have consistent
+ * permissions handling.
  */
-class HarvestPlanHtmlRouteProvider extends AdminHtmlRouteProvider {
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getCanonicalRoute(EntityTypeInterface $entity_type) {
-    return $this->getEditFormRoute($entity_type);
-  }
+class HarvestDashboardHtmlRouteProvider extends AdminHtmlRouteProvider {
 
   /**
    * {@inheritDoc}
    */
   protected function getCollectionRoute(EntityTypeInterface $entity_type) {
-    // Require dkan.harvest.dashboard permission to view the collection.
     $route = NULL;
     if ($route = parent::getCollectionRoute($entity_type)) {
       $required_permissions = ['dkan.harvest.dashboard'];

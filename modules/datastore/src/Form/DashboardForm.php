@@ -331,7 +331,7 @@ class DashboardForm extends FormBase {
    *   Harvest statuses keyed by dataset UUIDs.
    */
   protected function getHarvestLoadStatus(?string $harvestId): array {
-    $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
+    $runIds = $this->harvest->getAllHarvestRunIds($harvestId);
     $runId = end($runIds);
 
     $json = $this->harvest->getHarvestRunInfo($harvestId, $runId);
