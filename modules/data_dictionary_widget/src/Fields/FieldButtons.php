@@ -27,12 +27,12 @@ class FieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => [],
+      '#limit_validation_errors' => []
     ];
   }
 
   /**
-   * Returns te edit buttons.
+   * Returns the edit buttons.
    */
   public static function editButtons($key) {
     return [
@@ -84,7 +84,7 @@ class FieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => [],
+      '#element_validate' => [['Drupal\data_dictionary_widget\Fields\FieldCallbacks', 'customValidationCallback']],
     ];
 
     if ($location == 'edit') {

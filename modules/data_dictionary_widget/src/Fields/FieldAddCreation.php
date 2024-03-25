@@ -111,6 +111,9 @@ class FieldAddCreation {
         'visible' => [
           ':input[name="field_json_metadata[0][dictionary_fields][field_collection][group][format]"]' => ['value' => 'other'],
         ],
+        'required' => [
+          ':input[name="field_json_metadata[0][dictionary_fields][field_collection][group][format]"]' => ['value' => 'other'],
+        ],
       ],
     ];
   }

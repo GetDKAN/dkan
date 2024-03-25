@@ -47,6 +47,7 @@ class FieldEditCreation {
       '#type' => 'select',
       '#required' => TRUE,
       '#title' => 'Data type',
+      '#default_value' => 'string',
       '#value' => $current_fields[$key]['type'],
       '#op' => 'format_' . $key,
       '#options' => FieldOperations::setTypeOptions(),
@@ -69,6 +70,7 @@ class FieldEditCreation {
       '#type' => 'select',
       '#required' => TRUE,
       '#title' => 'Format',
+      '#default_value' => 'default',
       '#description' => FieldOperations::generateFormatDescription($current_fields[$key]['type']),
       '#value' => $value,
       '#prefix' => '<div id = field-json-metadata-' . $key . '-format>',
@@ -92,6 +94,9 @@ class FieldEditCreation {
       '#value' => $value,
       '#description' => t('A supported format'),
       '#states' => [
+        'required' => [
+          ':input[name="field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][format]"]' => ['value' => 'other'],
+        ],
         'visible' => [
           ':input[name="field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][format]"]' => ['value' => 'other'],
         ],

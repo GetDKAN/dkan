@@ -92,7 +92,6 @@ class FieldCallbacks {
 
     if ($op === 'add_new_field') {
       $add_fields = FieldAddCreation::addFields();
-
       $form_state->set('add_new_field', $add_fields);
     }
 
@@ -109,20 +108,50 @@ class FieldCallbacks {
    * Ajax callback.
    */
   public static function subformAjax(array &$form, FormStateInterface $form_state) {
-    return $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
+    $data_dictionary = FieldOperations::restoreDictionaryFieldsOnRebuild($form, $form_state);
+
+    return $data_dictionary;
   }
 
   /**
    * Widget validation callback.
    */
-  public static function customValidationCallback($element, &$form_state) {
-    $format_field = $form_state->getUserInput()['field_json_metadata'][0]['dictionary_fields']['field_collection']['group']['format'];
-    $other_format_value = $element['#value'];
+  public static function customValidationCallback($element, FormStateInterface &$form_state) {
+    $fields_to_validate = [
+      'name' => 'Name',
+      'title' => 'Title',
+      'description' => 'Description',
+      'format_other' => "Other Format"
+    ];
 
-    // Check if the 'format' field is 'other' and 'format_other' field is empty.
-    if ($format_field == 'other' && empty($other_format_value)) {
-      // Add a validation error.
-      $form_state->setError($element, t('Other format is required when "Other" is selected as the format.'));
+    $edit_fields_array = $form_state->getValues()["field_json_metadata"][0]["dictionary_fields"]["edit_fields"] ?? [];
+    $index = $edit_fields_array ? key($edit_fields_array) : null;
+
+    foreach ($fields_to_validate as $field_key => $field_label) {
+      $format = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection', 'format']);
+
+      if ($form_state->hasValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection'])) {
+        $field_value = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection', $field_key]);
+        $error_field = "field_json_metadata][0][dictionary_fields][edit_fields][$index][$field_key";
+      } elseif ($form_state->hasValue(['field_json_metadata', 0, 'dictionary_fields', 'field_collection', 'group', $field_key])) {
+        $field_value = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'field_collection', 'group', $field_key]);
+        $error_field = "field_json_metadata[0][dictionary_fields][field_collection][group][format_other";
+      }
+
+      if ($field_value === "" && $field_key !== "format_other") {
+        $form_state->setErrorByName($error_field, t('@label is required.', ['@label' => $field_label]));      
+      }
+
+      if ($field_key === "format_other" && $field_value === "" && $format === "other") {
+        $form_state->setErrorByName($error_field, t('@label is required when "Other" is selected as the format.', ['@label' => $field_label]));      
+      }
+    }
+
+    $format_field = $form_state->getUserInput()['field_json_metadata'][0]['dictionary_fields']['field_collection']['group']['format'];
+    $other_format_value = $form_state->getUserInput()['field_json_metadata'][0]['dictionary_fields']['field_collection']['group']['format_other'];
+
+    if ($format_field === 'other' && empty($other_format_value)) {
+      $form_state->setErrorByName('field_json_metadata][0][dictionary_fields][field_collection][group][format_other', t('Other format is required when "Other" is selected as the format.'));
     }
   }
 
