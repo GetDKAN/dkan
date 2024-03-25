@@ -3,7 +3,6 @@
 namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
 use Drupal\datastore\DatastoreService;
@@ -13,6 +12,7 @@ use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\ResourceMapper;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -29,11 +29,11 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   protected $configFactory;
 
   /**
-   * Logger service.
+   * Datastore logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   * @var \Psr\Log\LoggerInterface
    */
-  protected $loggerFactory;
+  protected LoggerInterface $logger;
 
   /**
    * Datastore service.
@@ -64,7 +64,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('logger.factory'),
+      $container->get('dkan.datastore.logger_channel'),
       $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.service.resource_purger'),
       $container->get('dkan.datastore.import_job_store_factory')
@@ -76,8 +76,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   A ConfigFactory service instance.
-   * @param \Drupal\Core\Logger\LoggerChannelFactory $logger_factory
-   *   LoggerChannelFactory service.
+   * @param \Psr\Log\LoggerInterface $loggerChannel
+   *   Logger channel.
    * @param \Drupal\datastore\DatastoreService $service
    *   The dkan.datastore.service service.
    * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
@@ -87,13 +87,13 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
-    LoggerChannelFactory $logger_factory,
+    LoggerInterface $loggerChannel,
     DatastoreService $service,
     ResourcePurger $resourcePurger,
     ImportJobStoreFactory $importJobStoreFactory
   ) {
     $this->configFactory = $config_factory;
-    $this->loggerFactory = $logger_factory;
+    $this->logger = $loggerChannel;
     $this->datastoreService = $service;
     $this->resourcePurger = $resourcePurger;
     $this->importJobStoreFactory = $importJobStoreFactory;
@@ -131,7 +131,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
         $this->datastoreService->import($resource->getIdentifier(), TRUE, $resource->getVersion());
       }
       catch (\Exception $e) {
-        $this->loggerFactory->get('datastore')->error($e->getMessage());
+        $this->logger->error($e->getMessage());
       }
     }
   }
@@ -168,10 +168,10 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $id = md5(str_replace(DataResource::DEFAULT_SOURCE_PERSPECTIVE, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource->getUniqueIdentifier()));
     try {
       $this->datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
-      $this->loggerFactory->get('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);
+      $this->logger->notice('Dropping datastore for @id', ['@id' => $id]);
     }
     catch (\Exception $e) {
-      $this->loggerFactory->get('datastore')->error('Failed to drop datastore for @id. @message',
+      $this->logger->error('Failed to drop datastore for @id. @message',
       [
         '@id' => $id,
         '@message' => $e->getMessage(),
@@ -181,7 +181,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       $this->importJobStoreFactory->getInstance()->remove($id);
     }
     catch (\Exception $e) {
-      $this->loggerFactory->get('datastore')->error('Failed to remove importer job. @message',
+      $this->logger->error('Failed to remove importer job. @message',
       [
         '@message' => $e->getMessage(),
       ]);

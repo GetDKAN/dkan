@@ -4,8 +4,8 @@ namespace Drupal\json_form_widget;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\SchemaRetriever;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
  * JSON form widget schema UI handler service.
@@ -27,11 +27,11 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   protected $schemaRetriever;
 
   /**
-   * Logger service.
+   * Json form widget logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   * @var \Psr\Log\LoggerInterface
    */
-  protected $loggerFactory;
+  private LoggerInterface $logger;
 
   /**
    * WidgetRotuer Service.
@@ -48,7 +48,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.metastore.schema_retriever'),
-      $container->get('logger.factory'),
+      $container->get('dkan.json_form.logger_channel'),
       $container->get('json_form.widget_router')
     );
   }
@@ -56,17 +56,21 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param Drupal\metastore\SchemaRetriever $schema_retriever
+   * @param \Drupal\metastore\SchemaRetriever $schema_retriever
    *   SchemaRetriever service.
-   * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
-   *   LoggerChannelFactory service.
+   * @param \Psr\Log\LoggerInterface $loggerChannel
+   *   Logger channel service.
    * @param WidgetRouter $widget_router
    *   WidgetRouter service.
    */
-  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, WidgetRouter $widget_router) {
+  public function __construct(
+    SchemaRetriever $schema_retriever,
+    LoggerInterface $loggerChannel,
+    WidgetRouter $widget_router
+  ) {
     $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
-    $this->loggerFactory = $logger_factory;
+    $this->logger = $loggerChannel;
     $this->widgetRouter = $widget_router;
   }
 
@@ -82,7 +86,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       $this->schemaUi = json_decode($schema_ui);
     }
     catch (\Exception $exception) {
-      $this->loggerFactory->get('json_form_widget')->notice("The UI Schema for $schema_name does not exist.");
+      $this->logger->notice("The UI Schema for $schema_name does not exist.");
     }
   }
 

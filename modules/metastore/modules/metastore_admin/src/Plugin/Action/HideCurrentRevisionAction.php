@@ -5,11 +5,10 @@ namespace Drupal\metastore_admin\Plugin\Action;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\RevisionLogInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Messenger\MessengerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -51,9 +50,9 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
   /**
    * Logger channel.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerChannelInterface $logger;
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
@@ -65,7 +64,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    *   The plugin_id for the plugin instance.
    * @param mixed $pluginDefinition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
+   * @param \Psr\Log\LoggerInterface $loggerChannel
    *   A logger channel factory instance.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger.
@@ -78,13 +77,13 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     array $configuration,
     $pluginId,
     $pluginDefinition,
-    LoggerChannelFactoryInterface $loggerFactory,
+    LoggerInterface $loggerChannel,
     MessengerInterface $messenger,
     AccountInterface $currentUser,
     TimeInterface $timeInterface
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
-    $this->logger = $loggerFactory->get('metastore_admin');
+    $this->logger = $loggerChannel;
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
     $this->timeInterface = $timeInterface;
@@ -96,14 +95,14 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
   public static function create(
     ContainerInterface $container,
     array $configuration,
-    $pluginId,
-    $pluginDefinition
+    $plugin_id,
+    $plugin_definition
   ) {
     return new static(
       $configuration,
-      $pluginId,
-      $pluginDefinition,
-      $container->get('logger.factory'),
+      $plugin_id,
+      $plugin_definition,
+      $container->get('dkan.metastore_admin.logger_channel'),
       $container->get('messenger'),
       $container->get('current_user'),
       $container->get('datetime.time'),

@@ -93,7 +93,7 @@ services:
     class: \Drupal\datastore\EventSubscriber\DatastoreSubscriber
     arguments:
       - '@config.factory'
-      - '@logger.factory'
+      - '@dkan.datastore.logger_channel'
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.resource_purger'
       - '@dkan.datastore.import_job_store_factory'

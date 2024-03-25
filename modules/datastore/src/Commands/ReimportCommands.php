@@ -3,9 +3,9 @@
 namespace Drupal\datastore\Commands;
 
 use Drupal\common\DatasetInfo;
-use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\DatastoreService;
 use Drush\Commands\DrushCommands;
+use Psr\Log\LoggerInterface;
 
 /**
  * Drush command file for data store reimportation.
@@ -13,13 +13,6 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class ReimportCommands extends DrushCommands {
-
-  /**
-   * Logger service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
-   */
-  protected $loggerFactory;
 
   /**
    * The datastore service.
@@ -42,17 +35,17 @@ class ReimportCommands extends DrushCommands {
    *   The dkan.datastore.service service.
    * @param \Drupal\common\DatasetInfo $dataset_info
    *   Dataset information service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactory $logger_factory
-   *   LoggerChannelFactory service.
+   * @param \Psr\Log\LoggerInterface $loggerChannel
+   *   Logger channel service.
    */
   public function __construct(
     DatastoreService $datastore_service,
     DatasetInfo $dataset_info,
-    LoggerChannelFactory $logger_factory
+    LoggerInterface $loggerChannel
   ) {
     $this->datastoreService = $datastore_service;
     $this->datasetInfo = $dataset_info;
-    $this->loggerFactory = $logger_factory;
+    $this->setLogger($loggerChannel);
     parent::__construct();
   }
 
@@ -79,14 +72,14 @@ class ReimportCommands extends DrushCommands {
       if ($distributions = $info['latest_revision']['distributions'] ?? FALSE) {
         // Reimport whatever distributions we found.
         $this->reimportDistributions($distributions);
-        $this->loggerFactory->get('datastore')->notice(count($info) . ' distribution(s) found for ' . $uuid);
+        $this->logger()->notice(count($info) . ' distribution(s) found for ' . $uuid);
       }
       else {
-        $this->loggerFactory->get('datastore')->error('Unable to find distributions for ' . $uuid);
+        $this->logger()->error('Unable to find distributions for ' . $uuid);
       }
     }
     else {
-      $this->loggerFactory->get('datastore')->error('Unable to find dataset info for ' . $uuid);
+      $this->logger()->error('Unable to find dataset info for ' . $uuid);
     }
   }
 
@@ -102,10 +95,10 @@ class ReimportCommands extends DrushCommands {
     foreach ($distributions as $distribution) {
       if ($resource_id = $distribution['resource_id'] ?? FALSE) {
         $this->datastoreService->drop($resource_id);
-        $this->loggerFactory->get('datastore')->notice('Reimporting distribution: ' . $resource_id);
+        $this->logger()->notice('Reimporting distribution: ' . $resource_id);
         $result = $this->datastoreService->import($resource_id);
         $status = $result['ImportService'] ? $result['ImportService']->getStatus() : 'failed, resource not found';
-        $this->loggerFactory->get('datastore')->notice("Ran import for $resource_id; status: $status");
+        $this->logger()->notice("Ran import for $resource_id; status: $status");
       }
     }
   }
