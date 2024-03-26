@@ -37,6 +37,16 @@ class FieldCreation {
     ];
     $element['dictionary_fields']['current_fields'] = $current_fields;
 
+    if (isset($field_json_metadata['data']['indexes'])) {
+      $element['indexes'] = [
+        '#type' => 'textarea',
+        '#access' => FALSE,
+        '#required' => TRUE,
+        '#title' => t('Index'),
+        '#default_value' => json_encode($field_json_metadata['data']['indexes']) ?? '',
+      ];
+    }
+
     return $element;
   }
 
