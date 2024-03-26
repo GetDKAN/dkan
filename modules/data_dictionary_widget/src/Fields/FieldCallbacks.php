@@ -139,11 +139,11 @@ class FieldCallbacks {
       }
 
       if ($field_value === "" && $field_key !== "format_other") {
-        $form_state->setErrorByName($error_field, t('@label is required.', ['@label' => $field_label]));      
+        $form_state->setErrorByName($error_field, t('@label is required.', ['@label' => $field_label]));
       }
 
       if ($field_key === "format_other" && $field_value === "" && $format === "other") {
-        $form_state->setErrorByName($error_field, t('@label is required when "Other" is selected as the format.', ['@label' => $field_label]));      
+        $form_state->setErrorByName($error_field, t('@label is required when "Other" is selected as the format.', ['@label' => $field_label]));
       }
     }
 

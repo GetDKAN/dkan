@@ -62,12 +62,6 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     }
     $element = FieldOperations::setAddFormState($form_state->get('add_new_field'), $element);
 
-    // // Storing existing indexes so they are not overwritten.
-    // // This is a temporary solution as we finish building the indexes feature.
-    // if (isset($field_json_metadata["data"]["indexes"])) {
-    //   $form_state->set('indexes', $field_json_metadata["data"]["indexes"]);
-    // }
-
     return $element;
   }
 

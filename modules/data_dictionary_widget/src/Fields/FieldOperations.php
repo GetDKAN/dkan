@@ -241,7 +241,7 @@ class FieldOperations {
   public static function restoreDictionaryFieldsOnRebuild(&$form, FormStateInterface $form_state) {
     if ($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["type"]["#value"] === "date") {
       $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"]["#options"] = FieldValues::returnDateInfo('options');
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"]["#description"] = FieldValues::returnDateInfo('description');;
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"]["#description"] = FieldValues::returnDateInfo('description');
     }
 
     if ($form_state->getValues()["field_json_metadata"][0]["dictionary_fields"]["edit_fields"]) {
@@ -255,7 +255,15 @@ class FieldOperations {
       ];
       $edit_fields_array = $form_state->getValues()["field_json_metadata"][0]["dictionary_fields"]["edit_fields"];
       $index = key($edit_fields_array);
-      $type = $form_state->getValue(["field_json_metadata", 0, "dictionary_fields", "data", $index, "field_collection", "type"]);
+      $type = $form_state->getValue([
+        "field_json_metadata",
+        0,
+        "dictionary_fields",
+        "data",
+        $index,
+        "field_collection",
+        "type"
+      ]);
 
       if ($type) {
         $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#options"] = FieldOperations::setFormatOptions($type);
@@ -263,11 +271,29 @@ class FieldOperations {
       }
 
       foreach ($dictionary_fields as $field_key) {
-        $field_value = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'edit_fields', $index, $field_key]);
-        $new_value = $form_state->getValue(["field_json_metadata", 0, "dictionary_fields", "data", $index, "field_collection", $field_key]);
+        $field_value = $form_state->getValue([
+          'field_json_metadata',
+          0,
+          'dictionary_fields',
+          'edit_fields',
+          $index,
+          $field_key
+        ]);
+
+        $new_value = $form_state->getValue([
+          "field_json_metadata",
+          0,
+          "dictionary_fields",
+          "data",
+          $index,
+          "field_collection",
+          $field_key
+        ]);
+
         if (!empty($field_value && $new_value === "")) {
           $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index][$field_key]["#value"] = "";
-        } elseif (!empty($new_value) && $new_value !== $field_value) {
+        } 
+        elseif (!empty($new_value) && $new_value !== $field_value) {
           $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index][$field_key]["#value"] = $new_value;
         }
       }
