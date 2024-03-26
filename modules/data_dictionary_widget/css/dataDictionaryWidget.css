@@ -45,3 +45,8 @@
   width: 200px;
   background-color: #ccc;
 }
+#edit-field-json-metadata-0-identifier {
+  background-color: #f4f4f4;
+  color: #666;
+  cursor: not-allowed;
+}

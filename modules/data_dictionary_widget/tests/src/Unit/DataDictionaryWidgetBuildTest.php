@@ -3,11 +3,6 @@
 namespace Drupal\Tests\data_dictionary_widget\Unit;
 
 use PHPUnit\Framework\TestCase;
-use MockChain\Chain;
-use Drupal\Core\Form\FormState;
-use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\StringTranslation\TranslationManager;
-use Drupal\metastore\SchemaRetriever;
 use Drupal\data_dictionary_widget\Fields\FieldAddCreation;
 use Drupal\data_dictionary_widget\Fields\FieldButtons;
 use Drupal\data_dictionary_widget\Fields\FieldCallbacks;
@@ -15,18 +10,12 @@ use Drupal\data_dictionary_widget\Fields\FieldCreation;
 use Drupal\data_dictionary_widget\Fields\FieldEditCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\data_dictionary_widget\Fields\FieldValues;
-use MockChain\Options;
-use Drupal\Core\Field\WidgetBase;
-use Drupal\Core\Controller\ControllerBase;
-use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget;
-
 
 /**
  * Test class for DataDictionaryWidget.

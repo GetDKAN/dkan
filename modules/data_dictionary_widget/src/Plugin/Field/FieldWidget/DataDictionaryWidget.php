@@ -39,7 +39,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     // Build the data_results array to display the rows in the data table.
     $data_results = FieldOperations::processDataResults($data_results, $current_fields, $field_values, $op);
 
-    $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $fields_being_modified);
+    $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $form_state);
 
     $element['dictionary_fields']['#pre_render'] = [
       [$this, 'preRenderForm'],
@@ -62,12 +62,6 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     }
     $element = FieldOperations::setAddFormState($form_state->get('add_new_field'), $element);
 
-    // // Storing existing indexes so they are not overwritten.
-    // // This is a temporary solution as we finish building the indexes feature.
-    // if (isset($field_json_metadata["data"]["indexes"])) {
-    //   $form_state->set('indexes', $field_json_metadata["data"]["indexes"]);
-    // }
-
     return $element;
   }
 
@@ -79,21 +73,17 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
     $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : NULL;
 
-    if (!empty($field_collection)) {
-      $data_results = [
-        [
-          "name" => $field_collection["name"],
-          "title" => $field_collection["title"],
-          "type" => $field_collection["type"],
-          "format" => $field_collection["format"],
-          "description" => $field_collection["description"],
-        ],
-      ];
-      $updated = array_merge($current_fields ?? [], $data_results);
-    }
-    else {
-      $updated = $current_fields ?? [];
-    }
+    $data_results = !empty($field_collection) ? [
+      [
+        "name" => $field_collection["name"],
+        "title" => $field_collection["title"],
+        "type" => $field_collection["type"],
+        "format" => $field_collection["format"],
+        "description" => $field_collection["description"],
+      ],
+    ] : [];
+
+    $updated = array_merge($current_fields ?? [], $data_results);
 
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',

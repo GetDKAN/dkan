@@ -27,7 +27,7 @@ class FieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => []
+      '#limit_validation_errors' => [],
     ];
   }
 
@@ -84,13 +84,23 @@ class FieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
-      '#element_validate' => [['Drupal\data_dictionary_widget\Fields\FieldCallbacks', 'customValidationCallback']],
+      '#element_validate' => [self::assembleValidation()],
     ];
 
     if ($location == 'edit') {
       $edit_button['#name'] = 'update_' . $key;
     }
+
     return $edit_button;
+  }
+
+  /**
+   * Assemble element validation property.
+   */
+  protected static function assembleValidation() {
+    return ['Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+      'customValidationCallback',
+    ];
   }
 
   /**

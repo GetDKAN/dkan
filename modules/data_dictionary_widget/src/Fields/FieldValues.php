@@ -85,7 +85,7 @@ class FieldValues {
     elseif ($type == 'description') {
       return "
         <ul>
-          <li><b>default</b>: Any valid string.</li>
+          <li><b>default</b>: Any valid string. The unsigned range is 0 to 4294967295.</li>
         </ul>";
     }
   }
