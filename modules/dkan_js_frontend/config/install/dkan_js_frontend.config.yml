@@ -10,3 +10,7 @@ routes:
   - publishers,/publishers
 minified: true
 preprocess: true
+weight: 0
+js:
+  attributes:
+    - type,module
