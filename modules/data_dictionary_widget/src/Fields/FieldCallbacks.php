@@ -121,20 +121,36 @@ class FieldCallbacks {
       'name' => 'Name',
       'title' => 'Title',
       'description' => 'Description',
-      'format_other' => "Other Format"
+      'format_other' => 'Other Format',
     ];
 
     $edit_fields_array = $form_state->getValues()["field_json_metadata"][0]["dictionary_fields"]["edit_fields"] ?? [];
-    $index = $edit_fields_array ? key($edit_fields_array) : null;
+    $index = $edit_fields_array ? key($edit_fields_array) : NULL;
 
     foreach ($fields_to_validate as $field_key => $field_label) {
-      $format = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection', 'format']);
+      $format = $form_state->getValue([
+        'field_json_metadata',
+        0,
+        'dictionary_fields',
+        'data',
+        $index,
+        'field_collection',
+        'format',
+      ]);
 
       if ($form_state->hasValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection'])) {
         $field_value = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection', $field_key]);
         $error_field = "field_json_metadata][0][dictionary_fields][edit_fields][$index][$field_key";
-      } elseif ($form_state->hasValue(['field_json_metadata', 0, 'dictionary_fields', 'field_collection', 'group', $field_key])) {
-        $field_value = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'field_collection', 'group', $field_key]);
+      } 
+      elseif ($form_state->hasValue(['field_json_metadata', 0, 'dictionary_fields', 'field_collection', 'group', $field_key])) {
+        $field_value = $form_state->getValue([
+          'field_json_metadata',
+          0,
+          'dictionary_fields',
+          'field_collection',
+          'group',
+          $field_key,
+        ]);
         $error_field = "field_json_metadata[0][dictionary_fields][field_collection][group][format_other";
       }
 

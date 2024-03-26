@@ -262,7 +262,7 @@ class FieldOperations {
         "data",
         $index,
         "field_collection",
-        "type"
+        "type",
       ]);
 
       if ($type) {
@@ -277,7 +277,7 @@ class FieldOperations {
           'dictionary_fields',
           'edit_fields',
           $index,
-          $field_key
+          $field_key,
         ]);
 
         $new_value = $form_state->getValue([
@@ -287,12 +287,12 @@ class FieldOperations {
           "data",
           $index,
           "field_collection",
-          $field_key
+          $field_key,
         ]);
 
         if (!empty($field_value && $new_value === "")) {
           $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index][$field_key]["#value"] = "";
-        } 
+        }
         elseif (!empty($new_value) && $new_value !== $field_value) {
           $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index][$field_key]["#value"] = $new_value;
         }

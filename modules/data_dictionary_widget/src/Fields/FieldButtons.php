@@ -27,7 +27,7 @@ class FieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => []
+      '#limit_validation_errors' => [],
     ];
   }
 
@@ -84,7 +84,9 @@ class FieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
-      '#element_validate' => [['Drupal\data_dictionary_widget\Fields\FieldCallbacks', 'customValidationCallback']],
+      '#element_validate' => [
+        ['Drupal\data_dictionary_widget\Fields\FieldCallbacks', 'customValidationCallback']
+      ],
     ];
 
     if ($location == 'edit') {
