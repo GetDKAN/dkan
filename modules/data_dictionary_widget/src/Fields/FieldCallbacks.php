@@ -138,10 +138,25 @@ class FieldCallbacks {
         'format',
       ]);
 
-      if ($form_state->hasValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection'])) {
-        $field_value = $form_state->getValue(['field_json_metadata', 0, 'dictionary_fields', 'data', $index, 'field_collection', $field_key]);
+      if ($form_state->hasValue([
+        'field_json_metadata',
+        0,
+        'dictionary_fields',
+        'data',
+        $index,
+        'field_collection',
+      ])) {
+        $field_value = $form_state->getValue([
+            'field_json_metadata',
+            0,
+            'dictionary_fields',
+            'data',
+            $index,
+            'field_collection',
+            $field_key,
+        ]);
         $error_field = "field_json_metadata][0][dictionary_fields][edit_fields][$index][$field_key";
-      } 
+      }
       elseif ($form_state->hasValue(['field_json_metadata', 0, 'dictionary_fields', 'field_collection', 'group', $field_key])) {
         $field_value = $form_state->getValue([
           'field_json_metadata',
