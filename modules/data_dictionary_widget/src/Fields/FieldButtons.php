@@ -86,7 +86,8 @@ class FieldButtons {
       ],
       '#element_validate' => [
         ['Drupal\data_dictionary_widget\Fields\FieldCallbacks',
-          'customValidationCallback'],
+          'customValidationCallback'
+        ],
       ],
     ];
 
