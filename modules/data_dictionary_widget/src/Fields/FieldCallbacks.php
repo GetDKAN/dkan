@@ -147,13 +147,13 @@ class FieldCallbacks {
         'field_collection',
       ])) {
         $field_value = $form_state->getValue([
-            'field_json_metadata',
-            0,
-            'dictionary_fields',
-            'data',
-            $index,
-            'field_collection',
-            $field_key,
+          'field_json_metadata',
+          0,
+          'dictionary_fields',
+          'data',
+          $index,
+          'field_collection',
+          $field_key,
         ]);
         $error_field = "field_json_metadata][0][dictionary_fields][edit_fields][$index][$field_key";
       }
