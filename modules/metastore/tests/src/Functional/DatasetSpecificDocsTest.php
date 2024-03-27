@@ -6,7 +6,9 @@ use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- *
+ * @group dkan
+ * @group metastore
+ * @group functional
  */
 class DatasetSpecificDocsTest extends ExistingSiteBase {
   use CleanUp;

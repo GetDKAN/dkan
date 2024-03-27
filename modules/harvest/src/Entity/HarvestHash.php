@@ -4,6 +4,7 @@ namespace Drupal\harvest\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\harvest\HarvestHashInterface;
 
 /**
@@ -32,7 +33,7 @@ use Drupal\harvest\HarvestHashInterface;
  *   },
  *   base_table = "harvest_hashes",
  *   entity_keys = {
- *     "id" = "data_uuid",
+ *     "id" = "id",
  *   },
  *   internal = TRUE,
  * )
@@ -45,6 +46,12 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions($entity_type) {
+    // Unique ID.
+    $fields['id'] = BaseFieldDefinition::create('integer')
+      ->setLabel(new TranslatableMarkup('ID'))
+      ->setReadOnly(TRUE)
+      ->setSetting('unsigned', TRUE);
+
     // Data node UUID. This is a UUID to a Data node, probably of type
     // 'dataset'.
     // @todo Add uuid constraint.

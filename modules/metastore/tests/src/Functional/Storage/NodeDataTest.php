@@ -13,8 +13,9 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 /**
  * NodeData Functional Tests.
  *
- * @package Drupal\Tests\dkan\Functional
  * @group dkan
+ * @group metastore
+ * @group functional
  */
 class NodeDataTest extends ExistingSiteBase {
   use CleanUp;
