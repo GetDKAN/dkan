@@ -9,9 +9,10 @@ use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * @group dkan
+ * Class OrphanCheckerTest
+ *
+ * @package Drupal\Tests\metastore\Functional
  * @group metastore
- * @group functional
  */
 class OrphanCheckerTest extends ExistingSiteBase {
   use GetDataTrait;
