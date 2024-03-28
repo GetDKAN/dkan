@@ -52,9 +52,8 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
     // Data node UUID. This is a UUID to a Data node, probably of type
     // 'dataset'.
     // Note that this is a UUID by convention, and could be any string.
-    // @see \Drupal\Core\Field\Plugin\Field\FieldType\UuidItem
     // @todo Add uuid constraint.
-    $fields['data_uuid'] = BaseFieldDefinition::create('uuid')
+    $fields['data_uuid'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Data node UUID'))
       ->setDescription(t('The Data node UUID.'))
       ->setReadOnly(FALSE)
