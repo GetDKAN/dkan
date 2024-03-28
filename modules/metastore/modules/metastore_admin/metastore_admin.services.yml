@@ -1,0 +1,4 @@
+services:
+  dkan.metastore_admin.logger_channel:
+    parent: logger.channel_base
+    arguments: [ 'metastore_admin' ]
