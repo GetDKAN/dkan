@@ -56,25 +56,9 @@ class QueryController extends AbstractQueryController {
    *   The result of a DatastoreQuery.
    */
   private function fixHeaderRow(RootedJsonData &$result) {
-    try {
-      // if (!empty($result->{'$.query.properties'})) {
-      //   $header_row = $result->{'$.query.properties'};
-      //   array_walk($header_row, function (&$header) {
-      //     if (is_array($header)) {
-      //       $header = $header['alias'] ?? $header['property'];
-      //     }
-      //   });
-      // }
-      // else {
-        $schema = $result->{'$.schema'};
-        // Query has are no explicit properties; we should assume one table.
-        $header_row = array_column(reset($schema)['fields'], 'description');
-      // }
-      if (empty($header_row) || !is_array($header_row)) {
-        throw new \DomainException("Could not generate header for CSV.");
-      }
-    }
-    catch (\Exception $e) {
+    $schema = $result->{'$.schema'};
+    $header_row = array_column(reset($schema)['fields'], 'description');
+    if (empty($header_row) || !is_array($header_row)) {
       throw new \DomainException("Could not generate header for CSV.");
     }
 
