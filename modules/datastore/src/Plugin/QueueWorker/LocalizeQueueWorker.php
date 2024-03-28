@@ -2,12 +2,11 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Procrastinator\Result;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -34,9 +33,9 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
   /**
    * Logger service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -50,7 +49,7 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
    *   A DKAN datastore service instance.
    * @param \Drupal\datastore\Service\ResourceLocalizer $resourceLocalizer
    *   Resource localizer service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
+   * @param \Psr\Log\LoggerInterface $loggerChannel
    *   A logger channel factory instance.
    */
   public function __construct(
@@ -58,11 +57,11 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
     $plugin_id,
     $plugin_definition,
     ResourceLocalizer $resourceLocalizer,
-    LoggerChannelFactoryInterface $loggerFactory
+    LoggerInterface $loggerChannel
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->resourceLocalizer = $resourceLocalizer;
-    $this->logger = $loggerFactory->get('datastore');
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -74,7 +73,7 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
       $plugin_id,
       $plugin_definition,
       $container->get('dkan.datastore.service.resource_localizer'),
-      $container->get('logger.factory')
+      $container->get('dkan.datastore.logger_channel')
     );
   }
 

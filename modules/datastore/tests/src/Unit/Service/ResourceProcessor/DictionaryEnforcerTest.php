@@ -3,30 +3,34 @@
 namespace Drupal\Tests\datastore\Unit\Service\ResourceProcessor;
 
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
+use Drupal\datastore\Service\PostImport;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-use Drupal\datastore\Service\PostImport;
-use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\metastore\ResourceMapper;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 
 /**
  * Test \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer.
+ *
+ * @coversDefaultClass \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+ *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class DictionaryEnforcerTest extends TestCase {
 
@@ -183,7 +187,7 @@ class DictionaryEnforcerTest extends TestCase {
     $options = (new Options())
       ->add('dkan.datastore.data_dictionary.alter_table_query_builder.mysql', AlterTableQueryBuilderInterface::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
-      ->add('logger.factory', LoggerChannelFactoryInterface::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
@@ -198,8 +202,7 @@ class DictionaryEnforcerTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(LoggerChannelFactoryInterface::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
+      ->add(LoggerInterface::class, 'error', NULL, 'error')
       ->add(MetastoreService::class, 'get', new RootedJsonData($json))
       ->add(AlterTableQueryBuilderInterface::class, 'setConnectionTimeout', AlterTableQueryBuilderInterface::class)
       ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
