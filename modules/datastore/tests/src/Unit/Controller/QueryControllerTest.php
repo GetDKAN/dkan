@@ -307,7 +307,7 @@ class QueryControllerTest extends TestCase {
   }
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
-    $container = $this->getQueryContainer($data, $info)->getMock();
+    $container = $this->getQueryContainer($data, $info, true)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
