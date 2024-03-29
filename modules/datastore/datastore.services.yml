@@ -50,14 +50,14 @@ services:
       - '@dkan.metastore.reference_lookup'
       - '@dkan.metastore.storage'
       - '@dkan.datastore.service'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
+      - '@dkan.datastore.logger_channel'
 
   dkan.datastore.service.factory.import:
     class: \Drupal\datastore\Service\Factory\ImportServiceFactory
     arguments:
       - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore.database_table_factory'
+      - '@dkan.datastore.logger_channel'
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base
@@ -81,6 +81,7 @@ services:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
     arguments:
       - '@dkan.datastore.database'
+      - '@dkan.datastore.logger_channel'
 
   dkan.datastore.sql_endpoint.service:
     class: \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
@@ -92,7 +93,7 @@ services:
     class: \Drupal\datastore\EventSubscriber\DatastoreSubscriber
     arguments:
       - '@config.factory'
-      - '@logger.factory'
+      - '@dkan.datastore.logger_channel'
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.resource_purger'
       - '@dkan.datastore.import_job_store_factory'

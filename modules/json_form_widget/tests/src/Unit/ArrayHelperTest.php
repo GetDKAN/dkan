@@ -19,6 +19,10 @@ use MockChain\Options;
 
 /**
  * Test class for ArrayHelper.
+ *
+ * @group dkan
+ * @group json_form_widget
+ * @group unit
  */
 class ArrayHelperTest extends TestCase {
 

@@ -11,30 +11,26 @@ use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-
-use Drupal\common\DataResource;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
-
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
  * @covers \Drupal\metastore\Reference\Referencer
@@ -119,11 +115,17 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', 'dkan://metastore/schemas/data-dictionary/items/111')
       ->getMock();
 
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
     return new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client()
+      new Client(),
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
     );
   }
 
@@ -394,11 +396,17 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', '')
       ->getMock();
 
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
     $referencer = new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
-      new Client()
+      new Client(),
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
     );
 
     // Test Mime Type detection using the resource `mediaType` property.
@@ -454,11 +462,17 @@ class ReferencerTest extends TestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
     $referencer = new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
-      $http_client
+      $http_client,
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
     );
 
     if ($describedBy instanceof \Exception) {

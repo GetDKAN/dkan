@@ -4,13 +4,12 @@ declare(strict_types = 1);
 
 namespace Drupal\metastore\Plugin\QueueWorker;
 
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\node\NodeStorageInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\metastore\ReferenceLookupInterface;
+use Drupal\node\NodeStorageInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Verifies if a dataset property reference is orphaned, then deletes it.
@@ -24,7 +23,7 @@ use Drupal\metastore\ReferenceLookupInterface;
  * @codeCoverageIgnore
  */
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-  use LoggerTrait;
+
   use EventDispatcherTrait;
 
   const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
@@ -82,7 +81,6 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
           $container->get('dkan.common.node_storage'),
           $container->get('dkan.metastore.reference_lookup')
       );
-    $me->setLoggerFactory($container->get('logger.factory'));
     return $me;
   }
 

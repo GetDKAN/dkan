@@ -3,24 +3,23 @@
 namespace Drupal\metastore\Reference;
 
 use Contracts\FactoryInterface;
-use Drupal\common\DataResource;
-use Drupal\common\LoggerTrait;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\common\DataResource;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
  * Metastore referencer service.
  */
 class Referencer {
   use HelperTrait;
-  use LoggerTrait;
 
   /**
    * Default Mime Type to use when mime type detection fails.
@@ -51,19 +50,49 @@ class Referencer {
   private Client $httpClient;
 
   /**
+   * The MIME type guesser.
+   *
+   * @var \Symfony\Component\Mime\MimeTypeGuesserInterface
+   */
+  protected $mimeTypeGuesser;
+
+  /**
+   * DKAN logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Constructor.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
+   *   Drupal config factory service.
+   * @param \Contracts\FactoryInterface $storageFactory
+   *   DKAN contracts factory.
+   * @param \Drupal\metastore\Reference\MetastoreUrlGenerator $metastoreUrlGenerator
+   *   DKAN metastore url generator.
+   * @param \GuzzleHttp\Client $httpClient
+   *   Guzzle http client.
+   * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mimeTypeGuesser
+   *   The MIME type guesser.
+   * @param \Psr\Log\LoggerInterface $loggerChannel
+   *   DKAN logger channel service.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
     FactoryInterface $storageFactory,
     MetastoreUrlGenerator $metastoreUrlGenerator,
-    Client $httpClient
+    Client $httpClient,
+    MimeTypeGuesserInterface $mimeTypeGuesser,
+    LoggerInterface $loggerChannel
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
-    $this->setLoggerFactory(\Drupal::service('logger.factory'));
     $this->metastoreUrlGenerator = $metastoreUrlGenerator;
     $this->httpClient = $httpClient;
+    $this->mimeTypeGuesser = $mimeTypeGuesser;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -159,7 +188,7 @@ class Referencer {
       return $uuid;
     }
     else {
-      $this->log(
+      $this->logger->log(
         'value_referencer',
         'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
         [
@@ -297,6 +326,8 @@ class Referencer {
 
   /**
    * Private.
+   *
+   * @todo Inject this service.
    */
   private function getFileMapper(): ResourceMapper {
     return \Drupal::service('dkan.metastore.resource_mapper');
@@ -312,27 +343,13 @@ class Referencer {
    *   The detected mime type or NULL on failure.
    */
   private function getLocalMimeType(string $downloadUrl): ?string {
-    $mime_type = NULL;
+    // Use Drupal's mime type guesser service to get the mime type.
+    $mime_type = $this->mimeTypeGuesser->guessMimeType($downloadUrl);
 
-    // Retrieve and decode the file name from the supplied download URL's path.
-    $filename = \Drupal::service('file_system')->basename($downloadUrl);
-    $filename = urldecode($filename);
-
-    // Attempt to load the file by file name.
-    /** @var \Drupal\file\FileInterface[] $files */
-    $files = \Drupal::entityTypeManager()
-      ->getStorage('file')
-      ->loadByProperties(['filename' => $filename]);
-    $file = reset($files);
-
-    // If a valid file was found for the given file name, extract the file's
-    // mime type...
-    if ($file !== FALSE) {
-      $mime_type = $file->getMimeType();
-    }
-    // Otherwise, log an error notifying the user that a file was not found.
-    else {
-      $this->log('value_referencer', 'Unable to determine mime type of file with name "@name", because no file was found with that name.', [
+    // If we couldn't find a mime type, log an error notifying the user.
+    if (is_null($mime_type)) {
+      $filename = basename($downloadUrl);
+      $this->logger->log('value_referencer', 'Unable to determine mime type of file with name "@name".', [
         '@name' => $filename,
       ]);
     }

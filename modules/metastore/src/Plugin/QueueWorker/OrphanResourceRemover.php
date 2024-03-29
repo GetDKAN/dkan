@@ -2,7 +2,6 @@
 
 namespace Drupal\metastore\Plugin\QueueWorker;
 
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\metastore\ResourceMapper;
@@ -22,7 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @codeCoverageIgnore
  */
 class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-  use LoggerTrait;
 
   /**
    * Resource mapper service.

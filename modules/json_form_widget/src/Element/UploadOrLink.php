@@ -66,9 +66,9 @@ class UploadOrLink extends ManagedFile {
     // Build element.
     $element = parent::processManagedFile($element, $form_state, $complete_form);
     $file_url_type = static::getUrlType($element);
-    $element = static::unsetFilesWhenRemoving($form_state->getTriggeringElement(), $element);
+    $element = static::unsetFilesWhenRemoving($form_state, $element);
 
-    $file_url_remote = $element['#value']['file_url_remote'] ?? $element['#uri'];
+    $file_url_remote = static::setRemoteFile($element, $form_state);
     $file_url_remote_is_valid = isset($file_url_remote) && UrlHelper::isValid($file_url_remote, TRUE);
     $is_remote = $file_url_remote_is_valid && $file_url_type == static::TYPE_REMOTE;
     if ($is_remote) {
@@ -76,6 +76,8 @@ class UploadOrLink extends ManagedFile {
     }
 
     $access_file_url_elements = (empty($element['#files']) && !$file_url_remote_is_valid) || !$file_url_type;
+    $element['#uri'] = !isset($element['#uri']) ? $file_url_remote : $element['#uri'];
+
     $file_url_type_selector = ':input[name="' . $element['#name'] . '[file_url_type]"]';
     $remote_visible = [$file_url_type_selector => ['value' => static::TYPE_REMOTE]];
 
@@ -84,6 +86,43 @@ class UploadOrLink extends ManagedFile {
     $element = static::overrideUploadSubfield($element, $file_url_type_selector);
 
     return $element;
+  }
+
+  /**
+   * Helper function to set file_url_remote variable.
+   */
+  private static function setRemoteFile($element, $form_state) {
+    $file_url_remote = '';
+    if (isset($element['#value']['file_url_remote'])) {
+      $file_url_remote = $element['#value']['file_url_remote'];
+    }
+    elseif (isset($element['#uri'])) {
+      $file_url_remote = $element['#uri'];
+    }
+
+    return static::setPreviousFormFiles($element, $form_state, $file_url_remote);
+  }
+
+  /**
+   * Helper function to previous remote files.
+   */
+  private static function setPreviousFormFiles($element, $form_state, $file_url_remote = NULL) {
+    $previous_files = $form_state->get('previous_files') ?? [];
+    $element_key = $element['#array_parents'][6];
+
+    if ($file_url_remote == NULL && isset($previous_files[$element_key])) {
+      $file_url_remote = $previous_files[$element_key];
+    }
+    elseif ($file_url_remote != NULL && !isset($previous_files[$element_key])) {
+      $previous_files[$element_key] = $file_url_remote;
+    }
+    elseif ($file_url_remote != NULL && isset($previous_files[$element_key]) && $previous_files[$element_key] != $file_url_remote) {
+      unset($previous_files[$element_key]);
+      $previous_files[$element_key] = $file_url_remote;
+    }
+    $form_state->set('previous_files', $previous_files);
+
+    return $file_url_remote != NULL ? $file_url_remote : '';
   }
 
   /**
@@ -124,13 +163,35 @@ class UploadOrLink extends ManagedFile {
   /**
    * Helper function to return element without files when removing.
    */
-  private static function unsetFilesWhenRemoving($triggering_element, $element) {
+  private static function unsetFilesWhenRemoving($form_state, $element) {
+    $triggering_element = $form_state->getTriggeringElement();
+    $previous_files = $form_state->get('previous_files') ?? [];
+    $element_key = $element['#array_parents'][6];
     $button = is_array($triggering_element) ? array_pop($triggering_element['#array_parents']) : '';
+    $count = $form_state->get('json_form_widget_info')['distribution']['count'];
+
     if ($button == 'remove_button') {
       unset($element['#files']);
+      unset($previous_files[$element_key]);
       $element = static::unsetFids($element);
     }
+
+    if ($button == 'remove' && isset($previous_files[$element_key]) &&  $element_key == $count) {
+      $previous_files = static::unsetPreviousFiles($previous_files, $element_key);
+    }
+
+    $form_state->set('previous_files', $previous_files);
     return $element;
+  }
+
+  /**
+   * Helper function to unset previous_files.
+   */
+  private static function unsetPreviousFiles($previous_files, $element_key) {
+    if (isset($previous_files[$element_key])) {
+      unset($previous_files[$element_key]);
+    }
+    return $previous_files;
   }
 
   /**
