@@ -46,8 +46,11 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions($entity_type) {
-    // Unique ID.
-    $fields['id'] = static::getBaseFieldIdForHashEntity();
+    // Unique ID. Storage class will make it auto-incrementing.
+    $fields['id'] = BaseFieldDefinition::create('integer')
+      ->setLabel(new TranslatableMarkup('ID'))
+      ->setReadOnly(TRUE)
+      ->setSetting('unsigned', TRUE);
 
     // Data node UUID. This is a UUID to a Data node, probably of type
     // 'dataset'.
@@ -86,21 +89,6 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
       ]);
 
     return $fields;
-  }
-
-  /**
-   * Define a unique key identifier field for harvest hash entities.
-   *
-   * This method is public so that an update hook can access it.
-   *
-   * @return \Drupal\Core\Field\BaseFieldDefinition
-   *   The base field defintion for the key we desire.
-   */
-  public static function getBaseFieldIdForHashEntity() {
-    return BaseFieldDefinition::create('integer')
-      ->setLabel(new TranslatableMarkup('ID'))
-      ->setReadOnly(TRUE)
-      ->setSetting('unsigned', TRUE);
   }
 
   /**
