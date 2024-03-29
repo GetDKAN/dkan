@@ -150,6 +150,7 @@ jobs:
                 command: |
                   ls -al
                   ls -al ./vendor/bin/
+                  ./vendor/bin/phpunit-finder
                   circleci test
             - run:
                 name: Run PHPUnit tests with coverage report
