@@ -4,7 +4,6 @@ namespace Drupal\harvest\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\harvest\HarvestHashInterface;
 
 /**
