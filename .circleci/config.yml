@@ -150,6 +150,7 @@ jobs:
                 command: |
                   ls -al
                   ls -al ./vendor/bin/
+                  which php
                   ./vendor/bin/phpunit-finder
                   circleci test
             - run:
