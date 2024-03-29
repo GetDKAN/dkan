@@ -30,14 +30,14 @@
         "ramsey/uuid" : "^3.8.0",
         "stolt/json-merge-patch": "^2.0",
         "getdkan/pdlt": "~0.1",
-        "symfony/polyfill-php80": "^1.27"
+        "symfony/polyfill-php80": "^1.27",
+        "previousnext/phpunit-finder": "*"
     },
     "require-dev": {
         "drush/drush": "^12@stable",
         "getdkan/mock-chain": "^1.3.6",
         "weitzman/drupal-test-traits": "^2.0.1",
-        "phpunit/phpunit": "^8.5.14 || ^9",
-        "previousnext/phpunit-finder": "*"
+        "phpunit/phpunit": "^8.5.14 || ^9"
     },
     "repositories": {
         "drupal": {
