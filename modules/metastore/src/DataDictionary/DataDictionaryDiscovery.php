@@ -101,6 +101,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
         return NULL;
       }
     }
+    return NULL;
   }
 
   /**
