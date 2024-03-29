@@ -101,45 +101,45 @@ class HarvestRunRepository {
    *   rather than needing conversion to and from the array format.
    */
   public function storeRun(array $run_data, string $plan_id, string $run_id): string {
-    $extract_status = $run_data['status']['extract'] ?? 'FAILURE';
+    $field_values = [
+      'id' => $run_id,
+      'harvest_plan_id' => $plan_id,
+    ];
+    $field_values['extract_status'] = $run_data['status']['extract'] ?? 'FAILURE';
     unset($run_data['status']['extract']);
 
-    $extracted_uuids = $run_data['status']['extracted_items_ids'] ?? [];
+    $field_values['extracted_uuid'] = $run_data['status']['extracted_items_ids'] ?? [];
     unset($run_data['status']['extracted_items_ids']);
 
-    $orphan_uuids = $run_data['status']['orphan_ids'] ?? [];
+    $field_values['orphan_uuid'] = $run_data['status']['orphan_ids'] ?? [];
     unset($run_data['status']['orphan_ids']);
 
-    $load_new_uuids = $load_updated_uuids = $load_unchanged_uuids = [];
+    $field_values['load_new_uuid'] = [];
+    $field_values['load_updated_uuid'] = [];
+    $field_values['load_unchanged_uuid'] = [];
+
     foreach ($run_data['status']['load'] ?? [] as $uuid => $status) {
       switch ($status) {
         case 'NEW':
-          $load_new_uuids[] = $uuid;
+          $field_values['load_new_uuid'][] = $uuid;
           unset($run_data['status']['load'][$uuid]);
           break;
 
         case 'UPDATED':
-          $load_updated_uuids[] = $uuid;
+          $field_values['load_updated_uuid'][] = $uuid;
           unset($run_data['status']['load'][$uuid]);
           break;
 
         case 'UNCHANGED':
-          $load_unchanged_uuids[] = $uuid;
+          $field_values['load_unchanged_uuid'][] = $uuid;
           unset($run_data['status']['load'][$uuid]);
       }
     }
 
-    return $this->writeEntity([
-      'id' => $run_id,
-      'harvest_plan_id' => $plan_id,
-      'data' => json_encode($run_data),
-      'extract_status' => $extract_status,
-      'extracted_uuid' => $extracted_uuids,
-      'orphan_uuid' => $orphan_uuids,
-      'load_new_uuid' => $load_new_uuids,
-      'load_updated_uuid' => $load_updated_uuids,
-      'load_unchanged_uuid' => $load_unchanged_uuids,
-    ], $plan_id, $run_id);
+    // JSON encode remaining run data.
+    $field_values['data'] = json_encode($run_data);
+
+    return $this->writeEntity($field_values, $plan_id, $run_id);
   }
 
   /**
@@ -265,8 +265,8 @@ class HarvestRunRepository {
   /**
    * Write a harvest_run entity, updating or saving as needed.
    *
-   * @param array $run_data
-   *   Structured data.
+   * @param array $field_values
+   *   Structured data ready to send to entity_storage->create().
    * @param string $plan_id
    *   Harvest plan identifier.
    * @param string $run_id
@@ -275,18 +275,19 @@ class HarvestRunRepository {
    * @return string
    *   Harvest plan identifier for the entity that was written.
    */
-  public function writeEntity(array $run_data, string $plan_id, string $run_id) {
+  public function writeEntity(array $field_values, string $plan_id, string $run_id) {
     /** @var \Drupal\harvest\HarvestRunInterface $entity */
     $entity = $this->loadEntity($plan_id, $run_id);
     if ($entity) {
       // Modify entity.
-      unset($run_data['id']);
-      foreach ($run_data as $key => $value) {
+      unset($field_values['id']);
+      foreach ($field_values as $key => $value) {
         $entity->set($key, $value);
       }
     }
     else {
-      $entity = $this->runStorage->create($run_data);
+      // Create new entity.
+      $entity = $this->runStorage->create($field_values);
     }
     $entity->save();
     return $entity->id();

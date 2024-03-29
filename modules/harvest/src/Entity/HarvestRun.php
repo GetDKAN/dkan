@@ -147,22 +147,22 @@ final class HarvestRun extends HarvestEntityBase implements HarvestRunInterface 
 
     $result['status']['extract'] = $this->get('extract_status')->getString();
 
-    foreach ($this->get('extracted_uuid') as $item) {
-      $result['status']['extracted_items_ids'][] = $item->getString();
+    foreach ($this->get('extracted_uuid') as $field) {
+      $result['status']['extracted_items_ids'][] = $field->getString();
     }
 
-    foreach ($this->get('orphan_uuid') as $item) {
-      $result['status']['orphan_ids'][] = $item->getString();
+    foreach ($this->get('orphan_uuid') as $field) {
+      $result['status']['orphan_ids'][] = $field->getString();
     }
 
-    foreach ($this->get('load_new_uuid') as $item) {
-      $result['status']['load'][$item->getString()] = 'NEW';
+    foreach ($this->get('load_new_uuid') as $field) {
+      $result['status']['load'][$field->getString()] = 'NEW';
     }
-    foreach ($this->get('load_updated_uuid') as $item) {
-      $result['status']['load'][$item->getString()] = 'UPDATED';
+    foreach ($this->get('load_updated_uuid') as $field) {
+      $result['status']['load'][$field->getString()] = 'UPDATED';
     }
-    foreach ($this->get('load_unchanged_uuid') as $item) {
-      $result['status']['load'][$item->getString()] = 'UNCHANGED';
+    foreach ($this->get('load_unchanged_uuid') as $field) {
+      $result['status']['load'][$field->getString()] = 'UNCHANGED';
     }
     return $result;
   }
