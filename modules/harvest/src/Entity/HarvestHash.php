@@ -46,11 +46,8 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions($entity_type) {
-    // Unique ID. Storage class will make it auto-incrementing.
-    $fields['id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(new TranslatableMarkup('ID'))
-      ->setReadOnly(TRUE)
-      ->setSetting('unsigned', TRUE);
+    // Parent will give us an 'id' field because we annotated it as the id key.
+    $fields = parent::baseFieldDefinitions($entity_type);
 
     // Data node UUID. This is a UUID to a Data node, probably of type
     // 'dataset'.
