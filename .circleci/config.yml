@@ -149,7 +149,8 @@ jobs:
                 name: Check phpunit-finder
                 command: |
                   ls -al
-                  ls -al ./vendor
+                  ls -al ./vendor/bin/phpunit-finder
+                  circleci test
             - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
