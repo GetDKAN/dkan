@@ -92,15 +92,15 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
     if (!isset($distribution->{"$.data.describedBy"})) {
       return NULL;
     }
-    if (($distribution->{"$.data.describedByType"} ?? NULL) == 'application/vnd.tableschema+json') {
-      try {
-        $uri = $this->urlGenerator->uriFromUrl($distribution->{"$.data.describedBy"});
-        return $this->urlGenerator->extractItemId($uri, "data-dictionary");
-      }
-      catch (\DomainException $e) {
-        return NULL;
-      }
+//    if (($distribution->{"$.data.describedByType"} ?? NULL) == 'application/vnd.tableschema+json') {
+    try {
+      $uri = $this->urlGenerator->uriFromUrl($distribution->{"$.data.describedBy"});
+      return $this->urlGenerator->extractItemId($uri, "data-dictionary");
     }
+    catch (\DomainException $e) {
+      return NULL;
+    }
+//    }
     return NULL;
   }
 
