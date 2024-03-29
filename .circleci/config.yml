@@ -148,8 +148,8 @@ jobs:
             - run:
                 name: Check phpunit-finder
                 command: |
-                  ls -al
                   ls -al ./vendor/bin/
+                  php --version
                   which php
                   ./vendor/bin/phpunit-finder
                   circleci test
