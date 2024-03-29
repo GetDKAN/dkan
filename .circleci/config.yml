@@ -117,6 +117,7 @@ commands:
 jobs:
   phpunit:
     executor: docker/machine
+    parallelism: 4
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
@@ -144,6 +145,11 @@ jobs:
       - when:
           condition: << parameters.report_coverage >>
           steps:
+            - run:
+                name: Check phpunit-finder
+                command: |
+                  ls -al
+                  ls -al ./vendor
             - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
