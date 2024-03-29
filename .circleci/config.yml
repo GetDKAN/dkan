@@ -116,7 +116,9 @@ commands:
 
 jobs:
   phpunit:
-    executor: docker/machine
+    # executor: docker/machine
+    machine:
+      image: default
     parallelism: 4
     parameters:
       php_version:
@@ -149,10 +151,7 @@ jobs:
                 name: Check phpunit-finder
                 command: |
                   ls -al ./vendor/bin/
-                  php --version
-                  which php
                   ./vendor/bin/phpunit-finder
-                  circleci test
             - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
