@@ -151,6 +151,13 @@ jobs:
                 name: Check phpunit-finder
                 command: |
                   ls -al ./vendor/bin/
+                  echo $PATH
+                  ls -al .ddev/php
+                  ls -al .ddev/.env
+                  php --version
+                  whereis php
+                  ls $(whereis php)
+                  /usr/bin/env php -v
                   ./vendor/bin/phpunit-finder
             - run:
                 name: Run PHPUnit tests with coverage report
