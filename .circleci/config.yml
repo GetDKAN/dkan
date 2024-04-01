@@ -151,8 +151,8 @@ jobs:
                 name: Check phpunit-finder
                 command: |
                   ls -al ./vendor/bin/
-                  sudo apt install php libapache2-mod-php -y
-                  ./vendor/bin/phpunit-finder
+                  # sudo apt install php libapache2-mod-php -y
+                  ddev ./vendor/bin/phpunit-finder
             - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
