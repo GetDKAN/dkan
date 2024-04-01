@@ -152,7 +152,7 @@ jobs:
                 command: |
                   ls -al ./vendor/bin/
                   # sudo apt install php libapache2-mod-php -y
-                  ddev ./vendor/bin/phpunit-finder
+                  ddev phpunit-finder
             - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
