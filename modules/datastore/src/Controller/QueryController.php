@@ -37,7 +37,7 @@ class QueryController extends AbstractQueryController {
   ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        $results = $this->fixHeaderRow($result);
+        $results = $this->fixHeaderRow($datastoreQuery, $result);
         $response = new CSVResponse($results, 'data.csv', ',');
         return $this->addCacheHeaders($response);
 
@@ -55,9 +55,15 @@ class QueryController extends AbstractQueryController {
    * @param \RootedData\RootedJsonData $result
    *   The result of a DatastoreQuery.
    */
-  private function fixHeaderRow(RootedJsonData &$result) {
-    $schema = $result->{'$.schema'};
-    $header_row = array_column(reset($schema)['fields'], 'description');
+  public function fixHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
+    $schema_fields = $result->{'$.schema..fields'}[0];
+
+    $header_row = [];
+    foreach ($datastoreQuery->{'$.properties'} ?? [] as $property) {
+      $normalized_prop = $this->propToString($property, $datastoreQuery);
+      $header_row[] = $schema_fields[$normalized_prop]['description'] ?? $normalized_prop;
+    }
+
     if (empty($header_row) || !is_array($header_row)) {
       throw new \DomainException("Could not generate header for CSV.");
     }
@@ -85,4 +91,28 @@ class QueryController extends AbstractQueryController {
     return $this->metastoreApiResponse->cachedJsonResponse(json_decode($schema), 200);
   }
 
+  /**
+   * Transform any property into a string for mapping to schema.
+   *
+   * @param string|array $property
+   *   A property from a DataStore Query.
+   *
+   * @return string
+   *   String version of property.
+   */
+  protected function propToString(string|array $property): string {
+    if (is_string($property)) {
+      return $property;
+    }
+    elseif (isset($property['property'])) {
+      return $property['property'];
+    }
+    elseif (isset($property['alias'])) {
+      return $property['alias'];
+    }
+    else {
+      throw new \DomainException("Invalid property: " . print_r($property, TRUE));
+    }
+  }
+ 
 }

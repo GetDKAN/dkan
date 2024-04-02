@@ -319,9 +319,6 @@ class QueryControllerTest extends TestCase {
     return $webServiceApi->queryDatasetResource($id, $index, $request);
   }
 
-  /**
-   *
-   */
   public function testResourceQueryCsv() {
     $data = json_encode([
       "properties" => [
@@ -333,8 +330,40 @@ class QueryControllerTest extends TestCase {
       "results" => TRUE,
       "format" => "csv",
     ]);
-    $result = $this->getQueryResult($data);
+    $result = $this->getQueryResult($data, "2");
     $this->assertTrue($result instanceof CsvResponse);
+    $csv = explode("\n", $result->getContent());
+    $this->assertEquals('State', $csv[0]);
+    $this->assertEquals('Alabama', $csv[1]);
+    $this->assertEquals(200, $result->getStatusCode());
+  }
+
+
+  public function testResourceExpressionQueryCsv() {
+    $data = json_encode([
+      "properties" => [
+        "state",
+        "year",
+        [
+          "expression" => [
+            "operator" => "+",
+            "operands" => [
+              "year",
+              1,
+            ],
+          ],
+          "alias" => "year_plus_1",
+        ],
+      ],
+      "results" => TRUE,
+      "format" => "csv",
+    ]);
+    $result = $this->getQueryResult($data, "2");
+    $this->assertTrue($result instanceof CsvResponse);
+
+    $csv = explode("\n", $result->getContent());
+    $this->assertEquals('State,Year,year_plus_1', $csv[0]);
+    $this->assertEquals('Alabama,2010,2011', $csv[1]);
     $this->assertEquals(200, $result->getStatusCode());
   }
 
