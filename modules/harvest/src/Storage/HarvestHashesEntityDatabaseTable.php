@@ -113,7 +113,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
       ]);
     }
     $entity->save();
-    return $entity->get($this->primaryKey())->getString();
+    return $entity->get('data_uuid')->getString();
   }
 
   /**
@@ -150,7 +150,9 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
       ->execute()
     ) {
       $entity_id = reset($ids);
-      $this->entityStorage->delete([$this->loadEntity($entity_id)]);
+      $this->entityStorage->delete([
+        $this->entityStorage->load($entity_id),
+      ]);
     }
     return $id;
   }
@@ -159,16 +161,23 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function retrieveAll(): array {
-    // Some calling code is very particular about the output being an array,
-    // both as a return value here and after json_encode(). Since the entity
-    // query returns a keyed array, json_encode() will think it's an object. We
-    // don't want that, so we use array_values() to yield an indexed array.
-    return array_values(
+    $data_uuids = [];
+    $entities = $this->entityStorage->loadMultiple(
       $this->entityStorage->getQuery()
         ->condition('harvest_plan_id', $this->planId)
         ->accessCheck(FALSE)
         ->execute()
     );
+    /** @var \Drupal\harvest\HarvestHashInterface  $entity*/
+    foreach ($entities as $entity) {
+      $uuid = $entity->get('data_uuid')->getString();
+      $data_uuids[$uuid] = $uuid;
+    }
+    // Some calling code is very particular about the output being an array,
+    // both as a return value here and after json_encode(). Since we're using a
+    // keyed array, json_encode() will think it's an object. We don't want that,
+    // so we use array_values() to yield an indexed array.
+    return array_values($data_uuids);
   }
 
   /**
@@ -205,9 +214,10 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritDoc}
    */
   public function primaryKey() {
-    // Use the primary key defined in the entity definition.
-    $definition = $this->entityTypeManager->getDefinition(static::ENTITY_TYPE);
-    return ($definition->getKeys())['id'];
+    // The primary key for entity API is 'id'. But the primary key for the
+    // database table interface is 'data_uuid'. This is mostly arbitrary for our
+    // purposes because we're not actually subclassing AbstractDatabaseTable.
+    return 'data_uuid';
   }
 
   /**
@@ -241,18 +251,18 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
   /**
    * Helper method to load an entity given an ID.
    *
-   * @param string $id
+   * @param string $data_uuid
    *   Entity ID.
    *
    * @return \Drupal\harvest\HarvestHashInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
-  protected function loadEntity(string $id): ?HarvestHashInterface {
-    if (!$id) {
+  protected function loadEntity(string $data_uuid): ?HarvestHashInterface {
+    if (!$data_uuid) {
       return NULL;
     }
     if ($ids = $this->entityStorage->getQuery()
-      ->condition($this->primaryKey(), $id)
+      ->condition('data_uuid', $data_uuid)
       ->condition('harvest_plan_id', $this->planId)
       ->range(0, 1)
       ->accessCheck(FALSE)
