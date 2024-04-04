@@ -3,8 +3,8 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\datastore\Service\DatastoreQuery;
-use RootedData\RootedJsonData;
 use Ilbee\CSVResponse\CSVResponse;
+use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -17,9 +17,9 @@ class QueryController extends AbstractQueryController {
   /**
    * Return correct JSON or CSV response.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
-   * @param RootedData\RootedJsonData $result
+   * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
    *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
@@ -52,22 +52,13 @@ class QueryController extends AbstractQueryController {
    *
    * Alters the data array.
    *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore query object.
    * @param \RootedData\RootedJsonData $result
-   *   The result of a DatastoreQuery.
+   *   The result of the datastore query.
    */
-  public function fixHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
-    $schema_fields = $result->{'$.schema..fields'}[0];
-
-    $header_row = [];
-    foreach ($datastoreQuery->{'$.properties'} ?? [] as $property) {
-      $normalized_prop = $this->propToString($property, $datastoreQuery);
-      $header_row[] = $schema_fields[$normalized_prop]['description'] ?? $normalized_prop;
-    }
-
-    if (empty($header_row) || !is_array($header_row)) {
-      throw new \DomainException("Could not generate header for CSV.");
-    }
-
+  private function fixHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
+    $header_row = $this->getHeaderRow($datastoreQuery, $result);
     $rows = $result->{"$.results"};
     $newResults = [];
     $newRows = [];
@@ -91,28 +82,4 @@ class QueryController extends AbstractQueryController {
     return $this->metastoreApiResponse->cachedJsonResponse(json_decode($schema), 200);
   }
 
-  /**
-   * Transform any property into a string for mapping to schema.
-   *
-   * @param string|array $property
-   *   A property from a DataStore Query.
-   *
-   * @return string
-   *   String version of property.
-   */
-  protected function propToString(string|array $property): string {
-    if (is_string($property)) {
-      return $property;
-    }
-    elseif (isset($property['property'])) {
-      return $property['property'];
-    }
-    elseif (isset($property['alias'])) {
-      return $property['alias'];
-    }
-    else {
-      throw new \DomainException("Invalid property: " . print_r($property, TRUE));
-    }
-  }
- 
 }

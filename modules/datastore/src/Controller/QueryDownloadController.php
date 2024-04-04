@@ -3,9 +3,9 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\datastore\Service\DatastoreQuery;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Controller providing functionality used to stream datastore queries.
@@ -73,7 +73,7 @@ class QueryDownloadController extends AbstractQueryController {
       // Wrap in try/catch so that we can still close the output buffer.
       try {
         // Send the header row.
-        $this->sendRow($handle, $this->getHeaderRow($result));
+        $this->sendRow($handle, $this->getHeaderRow($datastoreQuery, $result));
 
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE, TRUE);
@@ -116,41 +116,6 @@ class QueryDownloadController extends AbstractQueryController {
     fputcsv($handle, $row);
     ob_flush();
     flush();
-  }
-
-  /**
-   * Add the header row from specified properties or the schema.
-   *
-   * Alters the data array.
-   *
-   * @param \RootedData\RootedJsonData $result
-   *   The result of a DatastoreQuery.
-   */
-  private function getHeaderRow(RootedJsonData &$result) {
-
-    try {
-      if (!empty($result->{'$.query.properties'})) {
-        $header_row = $result->{'$.query.properties'};
-      }
-      else {
-        $schema = $result->{'$.schema'};
-        // Query has are no explicit properties; we should assume one table.
-        $header_row = array_column(reset($schema)['fields'], 'description');
-      }
-      if (empty($header_row) || !is_array($header_row)) {
-        throw new \DomainException("Could not generate header for CSV.");
-      }
-    }
-    catch (\Exception $e) {
-      throw new \DomainException("Could not generate header for CSV.");
-    }
-
-    array_walk($header_row, function (&$header) {
-      if (is_array($header)) {
-        $header = $header['alias'] ?? $header['property'];
-      }
-    });
-    return $header_row;
   }
 
 }

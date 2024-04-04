@@ -3,11 +3,11 @@
 namespace Drupal\datastore\Service;
 
 use Drupal\common\DataResource;
-use RootedData\RootedJsonData;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Storage\QueryFactory;
+use RootedData\RootedJsonData;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Datastore query service.
@@ -51,6 +51,8 @@ class Query implements ContainerInjectionInterface {
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
     $return = (object) [];
+
+    $this->fixProperties($datastoreQuery);
     if ($datastoreQuery->{"$.results"} !== FALSE) {
       $return->results = $this->runResultsQuery($datastoreQuery);
     }
@@ -132,12 +134,6 @@ class Query implements ContainerInjectionInterface {
     }
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
-    $storage = $storageMap[$primaryAlias];
-
-    if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"}) && $storage->getSchema()) {
-      $schema = $this->filterSchemaFields($storage->getSchema(), $storage->primaryKey());
-      $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
-    }
     $query = QueryFactory::create($datastoreQuery, $storageMap);
     // Get data dictionary fields.
     $meta_data = $csv != FALSE ? $this->getDatastoreService()->getDataDictionaryFields() : NULL;
@@ -218,6 +214,27 @@ class Query implements ContainerInjectionInterface {
     unset($query->limit, $query->offset);
     $query->count();
     return (int) $storageMap[$primaryAlias]->query($query, $primaryAlias)[0]->expression;
+  }
+
+  /**
+   * Under most circumstances, we want an explicit list of properties.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   Datastore query object to be modified.
+   */
+  private function fixProperties(DatastoreQuery $datastoreQuery) {
+    $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
+    if (!$primaryAlias) {
+      return [];
+    }
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+
+    $storage = $storageMap[$primaryAlias];
+
+    if (!($datastoreQuery->{"$.rowIds"} ?? FALSE) && empty($datastoreQuery->{"$.properties"}) && $storage->getSchema()) {
+      $schema = $this->filterSchemaFields($storage->getSchema(), $storage->primaryKey());
+      $datastoreQuery->{"$.properties"} = array_keys($schema['fields'] ?? []);
+    }
   }
 
 }
