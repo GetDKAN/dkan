@@ -32,7 +32,7 @@ use Drupal\harvest\HarvestHashInterface;
  *   },
  *   base_table = "harvest_hashes",
  *   entity_keys = {
- *     "id" = "data_uuid",
+ *     "id" = "id",
  *   },
  *   internal = TRUE,
  * )
@@ -45,10 +45,14 @@ class HarvestHash extends ContentEntityBase implements HarvestHashInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions($entity_type) {
+    // Parent will give us an 'id' field because we annotated it as the id key.
+    $fields = parent::baseFieldDefinitions($entity_type);
+
     // Data node UUID. This is a UUID to a Data node, probably of type
     // 'dataset'.
+    // Note that this is a UUID by convention, and could be any string.
     // @todo Add uuid constraint.
-    $fields['data_uuid'] = BaseFieldDefinition::create('uuid')
+    $fields['data_uuid'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Data node UUID'))
       ->setDescription(t('The Data node UUID.'))
       ->setReadOnly(FALSE)
