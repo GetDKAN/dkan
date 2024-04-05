@@ -150,6 +150,7 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedJoinCsv() {
     $data = [
+      "schema" => TRUE,
       "resources" => [
         [
           "id" => "2",
@@ -368,14 +369,34 @@ class QueryDownloadControllerTest extends TestCase {
     $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
 
     $schema2 = [
-      'record_number' => ['type' => 'int', 'not null' => TRUE],
-      'state' => ['type' => 'text'],
-      'year' => ['type' => 'int'],
+      'record_number' => [
+        'type' => 'int',
+        'description' => 'Record Number',
+        'not null' => TRUE,
+      ],
+      'state' => [
+        'type' => 'text',
+        'description' => 'State',
+      ],
+      'year' => [
+        'type' => 'int',
+        'description' => 'Year',
+      ],
     ];
     $schema3 = [
-      'record_number' => ['type' => 'int', 'not null' => TRUE],
-      'year' => ['type' => 'int'],
-      'color' => ['type' => 'text'],
+      'record_number' => [
+        'type' => 'int',
+        'description' => 'Record Number',
+        'not null' => TRUE,
+      ],
+      'year' => [
+        'type' => 'int',
+        'description' => 'Year',
+      ],
+      'color' => [
+        'type' => 'text',
+        'description' => 'Color',
+      ],
     ];
 
     $storage2 = $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2);
