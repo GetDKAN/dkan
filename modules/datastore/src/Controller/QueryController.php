@@ -48,7 +48,7 @@ class QueryController extends AbstractQueryController {
   }
 
   /**
-   * Use the original csv column names based on specified properties or the schema.
+   * Use csv column names based on specified properties or the schema.
    *
    * Alters the data array.
    *
