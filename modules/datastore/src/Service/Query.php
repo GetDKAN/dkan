@@ -52,7 +52,7 @@ class Query implements ContainerInjectionInterface {
   public function runQuery(DatastoreQuery $datastoreQuery) {
     $return = (object) [];
 
-    $this->fixProperties($datastoreQuery);
+    $this->getProperties($datastoreQuery);
     if ($datastoreQuery->{"$.results"} !== FALSE) {
       $return->results = $this->runResultsQuery($datastoreQuery);
     }
@@ -222,7 +222,7 @@ class Query implements ContainerInjectionInterface {
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   Datastore query object to be modified.
    */
-  private function fixProperties(DatastoreQuery $datastoreQuery) {
+  private function getProperties(DatastoreQuery $datastoreQuery) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return [];
