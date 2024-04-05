@@ -37,7 +37,7 @@ class QueryController extends AbstractQueryController {
   ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        $results = $this->fixHeaderRow($datastoreQuery, $result);
+        $results = $this->useCsvHeaders($datastoreQuery, $result);
         $response = new CSVResponse($results, 'data.csv', ',');
         return $this->addCacheHeaders($response);
 
@@ -48,7 +48,7 @@ class QueryController extends AbstractQueryController {
   }
 
   /**
-   * Add the header row from specified properties or the schema.
+   * Use the original csv column names based on specified properties or the schema.
    *
    * Alters the data array.
    *
@@ -57,7 +57,7 @@ class QueryController extends AbstractQueryController {
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    */
-  private function fixHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
+  private function useCsvHeaders(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
     $header_row = $this->getHeaderRow($datastoreQuery, $result);
     $rows = $result->{"$.results"};
     $newResults = [];
