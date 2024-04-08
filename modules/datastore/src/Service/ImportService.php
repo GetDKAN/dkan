@@ -3,14 +3,14 @@
 namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\EventDispatcherTrait;
-use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\common\EventDispatcherTrait;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Procrastinator\Result;
+use Psr\Log\LoggerInterface;
 
 /**
  * Datastore importer.
@@ -20,7 +20,7 @@ use Procrastinator\Result;
  *   as a property.
  */
 class ImportService {
-  use LoggerTrait;
+
   use EventDispatcherTrait;
 
   /**
@@ -54,11 +54,9 @@ class ImportService {
   /**
    * The jobstore factory service.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
-   *
-   * @todo Can we remove this?
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
-  private JobStoreFactory $jobStoreFactory;
+  private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory service.
@@ -76,22 +74,37 @@ class ImportService {
    *
    * @see self::getImporter()
    */
-  private ?ImportJob $importJob;
+  private ?ImportJob $importJob = NULL;
+
+  /**
+   * Logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
 
   /**
    * Create a resource service instance.
    *
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
-   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
-   *   Jobstore factory.
+   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   *   Import jobstore factory.
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
+   * @param \Psr\Log\LoggerInterface $loggerChannel
+   *   DKAN logger channel service.
    */
-  public function __construct(DataResource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(
+    DataResource $resource,
+    ImportJobStoreFactory $importJobStoreFactory,
+    DatabaseTableFactory $databaseTableFactory,
+    LoggerInterface $loggerChannel
+  ) {
     $this->resource = $resource;
-    $this->jobStoreFactory = $jobStoreFactory;
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -119,8 +132,7 @@ class ImportService {
 
     if ($result->getStatus() === Result::ERROR) {
       $datastore_resource = $this->getResource()->getDatastoreResource();
-      $this->setLoggerFactory(\Drupal::service('logger.factory'));
-      $this->error('Error importing resource id:%id path:%path message:%message', [
+      $this->logger->error('Error importing resource id:%id path:%path message:%message', [
         '%id' => $datastore_resource->getId(),
         '%path' => $datastore_resource->getFilePath(),
         '%message' => $result->getError(),
@@ -158,7 +170,7 @@ class ImportService {
 
     $this->importJob = call_user_func([$this->importerClass, 'get'],
       $datastore_resource->getId(),
-      $this->jobStoreFactory->getInstance(ImportJob::class),
+      $this->importJobStoreFactory->getInstance(),
       [
         "storage" => $this->getStorage(),
         "parser" => $this->getNonRecordingParser($delimiter),

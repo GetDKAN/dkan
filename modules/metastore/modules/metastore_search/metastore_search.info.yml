@@ -1,9 +1,10 @@
 name: Search
 description: Provides an endpoint to perform searches against DKAN's metadata.
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^10
 dependencies:
-  - metastore
-  - search_api
-  - search_api_db
+  - dkan:metastore
+  - drupal:search_api
+  - drupal:views
+  - search_api:search_api_db
 package: DKAN

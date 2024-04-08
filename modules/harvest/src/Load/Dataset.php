@@ -20,7 +20,13 @@ class Dataset extends Load {
   }
 
   /**
-   * Private.
+   * Save a harvested dataset item into our metastore.
+   *
+   * @param object $item
+   *   An object representing the dataset. This object should comport to
+   *   DCAT-US Schema v1.1 once JSON-encoded.
+   *
+   * @see schema/collections/dataset.json
    */
   protected function saveItem($item) {
     $service = $this->getMetastoreService();
@@ -43,8 +49,6 @@ class Dataset extends Load {
    *
    * @return \Drupal\metastore\MetastoreService
    *   Metastore service.
-   *
-   * @codeCoverageIgnore
    */
   protected function getMetastoreService(): MetastoreService {
     $service = \Drupal::service('dkan.metastore.service');

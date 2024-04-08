@@ -2,21 +2,24 @@
 
 namespace Drupal\Tests\datastore\Storage;
 
-use Drupal\datastore\DatastoreResource;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
-use Drupal\mysql\Driver\Database\mysql\Schema;
 use Drupal\Core\Database\StatementWrapper;
 use Drupal\common\Storage\Query;
+use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\mysql\Driver\Database\mysql\Schema;
 use MockChain\Chain;
 use MockChain\Sequence;
-use Drupal\datastore\Storage\DatabaseTable;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
- *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class DatabaseTableTest extends TestCase {
 
@@ -27,7 +30,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertTrue(is_object($databaseTable));
   }
@@ -40,7 +44,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
 
     $schema = $databaseTable->getSchema();
@@ -105,7 +110,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connection,
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertEquals([], $databaseTable->retrieveAll());
   }
@@ -127,7 +133,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]', "1"));
   }
@@ -149,7 +156,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $this->expectExceptionMessageMatches("/The number of fields and data given do not match:/");
     $this->assertEquals("1", $databaseTable->store('["Foobar"]', "1"));
@@ -172,7 +180,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $data = [
       '["Gerardo", "Gonzalez"]',
@@ -199,7 +208,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $data = [
       '["One"]',
@@ -223,7 +233,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $this->assertEquals(1, $databaseTable->count());
   }
@@ -241,7 +252,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
 
     $actual = json_decode(json_encode(
@@ -262,7 +274,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $databaseTable->destruct();
     $this->assertTrue(TRUE);
@@ -286,7 +299,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $this->expectExceptionMessage('Import for 1 returned an error when preparing table header: {"foo":"bar"}');
     $this->assertEquals("1", $databaseTable->store('{"foo":"bar"}', "1"));
@@ -309,7 +323,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
     $this->expectExceptionMessage("Import for 1 error when decoding foobar");
     $this->assertEquals("1", $databaseTable->store("foobar", "1"));
@@ -330,7 +345,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->assertEquals([], $databaseTable->query($query));
@@ -350,7 +366,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectExceptionMessage("Database internal error.");
@@ -371,7 +388,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectExceptionMessage("Column not found");
@@ -392,7 +410,8 @@ class DatabaseTableTest extends TestCase {
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
-      $this->getResource()
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectExceptionMessage("You have attempted a fulltext match against a column that is not indexed for fulltext searching");
@@ -405,17 +424,17 @@ class DatabaseTableTest extends TestCase {
   private function getConnectionChain() {
     $fieldInfo = [
       (object) [
-        'Field' => "record_number", 
+        'Field' => "record_number",
         'Type' => "int(10)",
         'Extra' => "auto_increment",
       ],
       (object) [
-        'Field' => "first_name", 
+        'Field' => "first_name",
         'Type' => "varchar(10)"
       ],
       (object) [
-        'Field' => 
-        "last_name", 
+        'Field' =>
+        "last_name",
         'Type' => 'text'
       ]
     ];

@@ -50,8 +50,9 @@ class ImportServiceTest extends KernelTestBase {
       ->onlyMethods(['getImporter'])
       ->setConstructorArgs([
         new DataResource('abc.txt', 'text/csv'),
-        $this->container->get('dkan.common.job_store'),
+        $this->container->get('dkan.datastore.import_job_store_factory'),
         $this->container->get('dkan.datastore.database_table_factory'),
+        $this->container->get('dkan.datastore.logger_channel')
       ])
       ->getMock();
     $import_service->method('getImporter')
@@ -83,7 +84,7 @@ class ImportServiceTest extends KernelTestBase {
     $logger_factory = $this->createMock(LoggerChannelFactory::class);
     $logger_factory->expects($this->once())
       ->method('get')
-      ->with('dkan')
+      ->with('datastore')
       ->willReturn($logger);
     $this->container->set('logger.factory', $logger_factory);
 

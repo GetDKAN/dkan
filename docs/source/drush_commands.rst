@@ -45,6 +45,24 @@ dkan:datastore:import
 
 ~~~~~~
 
+dkan:datastore:localize
+-----------------------
+
+    You can manually 'localize' the source files for a distribution, by fetching a
+    copy to the local file system.
+    There are two main ways to get the distribution uuid:
+
+    1. Use the `API <https://demo.getdkan.org/api/1/metastore/schemas/dataset/items?show-reference-ids>`_ to get the identifier of the file you want to import.
+       The identifier will be at ``distribution.0.data.%Ref:downloadURL.0.data.identifier``
+    2. Use ``dkan:dataset-info``
+
+    **Arguments**
+
+    - **uuid** The uuid of a resource.
+    - **deferred** Whether or not the process should be deferred to a queue.
+
+~~~~~~
+
 dkan:datastore:list
 --------------------
 

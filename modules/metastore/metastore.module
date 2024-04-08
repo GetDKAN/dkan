@@ -119,7 +119,7 @@ function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     // TODO: use an actual schema id.
     $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
-    $object = \Drupal\metastore\MetastoreService::removeReferences($object);
+    $object = MetastoreService::removeReferences($object);
     $form[$fieldName]['widget'][0]['value']['#default_value'] = json_encode($object);
   }
 }

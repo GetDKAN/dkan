@@ -3,8 +3,8 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\datastore\Service\DatastoreQuery;
+use Ilbee\CSVResponse\CSVResponse;
 use RootedData\RootedJsonData;
-use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -17,9 +17,9 @@ class QueryController extends AbstractQueryController {
   /**
    * Return correct JSON or CSV response.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
-   * @param RootedData\RootedJsonData $result
+   * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
    *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
@@ -37,13 +37,36 @@ class QueryController extends AbstractQueryController {
   ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        $response = new CsvResponse($result->{"$.results"}, 'data', ',');
+        $results = $this->useCsvHeaders($datastoreQuery, $result);
+        $response = new CSVResponse($results, 'data.csv', ',');
         return $this->addCacheHeaders($response);
 
       case 'json':
       default:
         return $this->metastoreApiResponse->cachedJsonResponse($result->{"$"}, 200, $dependencies, $params);
     }
+  }
+
+  /**
+   * Use csv column names based on specified properties or the schema.
+   *
+   * Alters the data array.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore query object.
+   * @param \RootedData\RootedJsonData $result
+   *   The result of the datastore query.
+   */
+  private function useCsvHeaders(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
+    $header_row = $this->getHeaderRow($datastoreQuery, $result);
+    $rows = $result->{"$.results"};
+    $newResults = [];
+    $newRows = [];
+    foreach ($rows as $row) {
+      $newRows = array_combine($header_row, array_values($row));
+      array_push($newResults, $newRows);
+    }
+    return $newResults;
   }
 
   /**

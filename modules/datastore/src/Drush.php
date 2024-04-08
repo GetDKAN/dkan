@@ -4,12 +4,14 @@ namespace Drupal\datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
+use Drupal\common\DataResource;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
+use Procrastinator\Result;
 
 /**
  * Drush commands for controlling the datastore.
@@ -54,6 +56,13 @@ class Drush extends DrushCommands {
   protected ResourceMapper $resourceMapper;
 
   /**
+   * Import info list service.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfoList
+   */
+  private ImportInfoList $importInfoList;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -61,13 +70,16 @@ class Drush extends DrushCommands {
     DatastoreService $datastoreService,
     PostImport $postImport,
     ResourceLocalizer $resourceLocalizer,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
+    ImportInfoList $importInfoList
   ) {
+    parent::__construct();
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
     $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->resourceMapper = $resourceMapper;
+    $this->importInfoList = $importInfoList;
   }
 
   /**
@@ -85,6 +97,8 @@ class Drush extends DrushCommands {
    *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   * @param array $options
+   *   Command line options.
    *
    * @option deferred
    *   Add the import to the datastore_import queue, rather than importing now.
@@ -94,14 +108,17 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:import
    */
   public function import(string $identifier, array $options = ['deferred' => FALSE]) {
-    $deferred = $options['deferred'] ? TRUE : FALSE;
+    $deferred = (bool) $options['deferred'];
 
     try {
-      $result = $this->datastoreService->import($identifier, $deferred);
       if ($deferred) {
-        $this->logger->notice('Queued import for ' . $identifier);
+        $results = $this->datastoreService->importDeferred($identifier);
+        foreach ($results as $result) {
+          $this->logger->notice($result);
+        }
       }
       else {
+        $result = $this->datastoreService->import($identifier, $deferred);
         $this->logger->notice('Ran import for ' . $identifier);
         foreach ($result as $jobname => $result_object) {
           /** @var \Procrastinator\Result $result_object */
@@ -110,7 +127,7 @@ class Drush extends DrushCommands {
       }
     }
     catch (\Exception $e) {
-      $this->logger->error("No resource found to import with identifier {$identifier}");
+      $this->logger->error('No resource found to import with identifier ' . $identifier);
       $this->logger->debug($e->getMessage());
     }
   }
@@ -140,7 +157,7 @@ class Drush extends DrushCommands {
     $status = $options['status'];
     $uuid_only = $options['uuid-only'];
 
-    $list = $this->datastoreService->list();
+    $list = $this->importInfoList->buildList();
     $rows = [];
     foreach ($list as $uuid => $item) {
       $rows[] = $this->createRow($uuid, $item);
@@ -206,10 +223,18 @@ class Drush extends DrushCommands {
    */
   public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
     $local_resource = $options['keep-local'] ? FALSE : TRUE;
-    $this->datastoreService->drop($identifier, NULL, $local_resource);
-    $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
+    try {
+      $this->datastoreService->drop($identifier, NULL, $local_resource);
+      $this->logger->notice('Successfully dropped the datastore for resource ' . $identifier);
+    }
+    catch (\InvalidArgumentException $e) {
+      // We get an invalid argument exception when the datastore does not exist.
+      // This can be because it was never imported, or because the resource
+      // is a type that will never be imported, such as a ZIP file.
+      $this->logger->warning('Unable to drop datastore for ' . $identifier);
+    }
     $this->postImport->removeJobStatus($identifier);
-    $this->logger->notice("Successfully removed the post import job status for resource {$identifier}");
+    $this->logger->notice('Successfully removed the post import job status for resource ' . $identifier);
   }
 
   /**
@@ -218,9 +243,11 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:drop-all
    */
   public function dropAll() {
+    /** @var \RootedData\RootedJsonData $distribution*/
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      $uuid = $distribution->data->{'%Ref:downloadURL'}[0]->data->identifier;
-      $this->drop($uuid);
+      if ($uuid = $distribution->get('$[data]["%Ref:downloadURL"][0][data][identifier]') ?? FALSE) {
+        $this->drop($uuid);
+      }
     }
   }
 
@@ -237,37 +264,45 @@ class Drush extends DrushCommands {
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
    *
    * @command dkan:datastore:prepare-localized
-   *
-   * @todo Move all this to the ResourceLocalizer so we're responsible for test
-   *   coverage.
    */
   public function prepareLocalized(string $identifier) {
-    if ($resource = $this->resourceMapper->get($identifier)) {
-      // ResourceLocalizer will create the public directory here.
-      $public_dir = $this->resourceLocalizer->getPublicLocalizedDirectory($resource);
-      $localized_filepath = $this->resourceLocalizer->localizeFilePath($resource);
-      $localized_resource = $resource->createNewPerspective(
-        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $localized_filepath
-      );
-      try {
-        $this->resourceMapper->registerNewPerspective($localized_resource);
-      }
-      catch (AlreadyRegistered $e) {
-        // Catch the already-registered exception so we can continue to show
-        // the file info to the user.
-        $this->logger()->warning($e->getMessage());
-      }
-      // @todo inject file system service.
-      $file_system = $this->resourceLocalizer->getFileSystem();
-      $info = [
-        'source' => $resource->getFilePath(),
-        'path_uri' => $public_dir,
-        'path' => $file_system->realpath($public_dir),
-        'file_uri' => $localized_filepath,
-        'file' => $file_system->realpath($localized_filepath),
-      ];
+    $info = $this->resourceLocalizer->prepareLocalized($identifier);
+    if ($info) {
       $this->output()->writeln(json_encode($info, JSON_PRETTY_PRINT));
       return DrushCommands::EXIT_SUCCESS;
+    }
+    $this->output()->writeln('No resource for identifier: ' . $identifier);
+    return DrushCommands::EXIT_FAILURE;
+  }
+
+  /**
+   * Localize a resource (copy from source to the local file system).
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   * @param string $version
+   *   (Optional) The version to localize. If not supplied, will use the latest
+   *   version.
+   * @param array $options
+   *   Command options.
+   *
+   * @command dkan:datastore:localize
+   *
+   * @option deferred
+   *   Add the localization to the  queue, rather than localizing now.
+   */
+  public function localize(string $identifier, $version = NULL, array $options = ['deferred' => FALSE]) {
+    $deferred = $options['deferred'] ? TRUE : FALSE;
+
+    if ($this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version) !== NULL) {
+      $result = $this->resourceLocalizer->localizeTask($identifier, $version, $deferred);
+
+      if ($result->getStatus() === Result::DONE) {
+        $this->output()->writeln($result->getError());
+        return DrushCommands::EXIT_SUCCESS;
+      }
+      $this->output()->writeln($result->getError());
+      return DrushCommands::EXIT_FAILURE;
     }
     $this->output()->writeln('No resource for identifier: ' . $identifier);
     return DrushCommands::EXIT_FAILURE;

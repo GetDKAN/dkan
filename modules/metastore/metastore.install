@@ -114,3 +114,16 @@ function metastore_update_8007() {
   $config = \Drupal::service('config.factory')->getEditable('node.type.data');
   $config->set('preview_mode', 1)->save();
 }
+
+/**
+ * Ensure the entity manager knows about resource_mapping entities.
+ *
+ * Note: The dkan_metastore_resource_mapper table might already exist in your
+ * database. The resource_mapping entity is designed to use it without
+ * modification.
+ */
+function metastore_update_8008(&$sandbox) {
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+  \Drupal::entityDefinitionUpdateManager()
+    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('resource_mapping'));
+}

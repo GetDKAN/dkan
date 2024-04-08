@@ -23,9 +23,16 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   /**
    * The DKAN metastore service.
    *
-   * @var Drupal\metastore\Service
+   * @var \Drupal\metastore\Service
    */
   private $metastore;
+
+  /**
+   * Import info service.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfo
+   */
+  private ImportInfo $importInfo;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -42,7 +49,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\metastore\MetastoreService $metastore
    *   The module handler service.
-   * @param Drupal\datastore\Service\Info\ImportInfo $importInfo
+   * @param \Drupal\datastore\Service\Info\ImportInfo $importInfo
    *   Import info datastoer service.
    */
   public function __construct(
@@ -62,7 +69,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -100,7 +107,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     // Reformat definitions.
     foreach ($querySchema["definitions"] as $key => $def) {
       $schemaName = "datastoreQuery" . ucfirst($key);
-      $def["title"] = "Datastore Query: " . (isset($def["title"]) ? $def["title"] : $key);
+      $def["title"] = "Datastore Query: " . ($def["title"] ?? $key);
       $spec["components"]["schemas"][$schemaName] = $def;
     }
     unset($querySchema["definitions"]);

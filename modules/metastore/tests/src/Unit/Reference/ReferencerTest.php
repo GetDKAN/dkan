@@ -11,30 +11,35 @@ use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-
-use Drupal\common\DataResource;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
-
-use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Client;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
+/**
+ * @covers \Drupal\metastore\Reference\Referencer
+ * @coversDefaultClass \Drupal\metastore\Reference\Referencer
+ *
+ * @group dkan
+ * @group metastore
+ * @group unit
+ */
 class ReferencerTest extends TestCase {
 
   /**
@@ -110,8 +115,18 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', 'dkan://metastore/schemas/data-dictionary/items/111')
       ->getMock();
 
-    $referencer = new Referencer($configService, $storageFactory, $urlGenerator);
-    return $referencer;
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
+    return new Referencer(
+      $configService,
+      $storageFactory,
+      $urlGenerator,
+      new Client(),
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
+    );
   }
 
   private function getContainer() {
@@ -228,72 +243,19 @@ class ReferencerTest extends TestCase {
     $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
   }
 
-  /**
-   * Test that CSV format translates to correct mediatype if mediatype not supplied
-   */
-  public function testChangeMediaType() {
-    $options = (new Options())
-      ->add('stream_wrapper_manager', StreamWrapperManager::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('request_stack', RequestStack::class)
-      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->add('dkan.metastore.resource_mapper_database_table', ResourceMapperDatabaseTable::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
-      ->add('file_system', FileSystem::class)
-      ->index(0);
-
-    $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
-    $resource = new DataResource($downloadUrl, 'application/octet-stream');
-
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getHost', 'test.test')
-      ->add(ResourceMapper::class, 'getStore', ResourceMapperDatabaseTable::class)
-      ->add(ResourceMapper::class, 'validateNewVersion', TRUE)
-      ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ResourceMapperDatabaseTable::class, 'query', [
-        [
-          'identifier' => '123',
-          'perspective' => DataResource::DEFAULT_SOURCE_PERSPECTIVE,
-        ],
-      ])
-      ->add(ResourceMapperDatabaseTable::class, 'store', '123', 'resource')
-      ->add(FileSystem::class, 'getTempDirectory', '/tmp');
-
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
-    $referencer = $this->mockReferencer();
-
-    $json = '
-    {
-      "title": "Test Dataset No Format",
-      "description": "Hi",
-      "identifier": "12345",
-      "accessLevel": "public",
-      "modified": "06-04-2020",
-      "keyword": ["hello"],
-        "distribution": [
-          {
-            "title": "blah",
-            "downloadURL": "' . $downloadUrl . '",
-            "format": "csv"
-          }
-        ]
-    }';
-    $data = json_decode($json);
-    $referencer->reference($data);
-    $storedResource = DataResource::createFromRecord(json_decode($container_chain->getStoredInput('resource')[0]));
-    // A new resource should have been stored, with the mimetype set to text/csv
-    $this->assertEquals('text/csv', $storedResource->getMimeType());
+  public function formatProvider() {
+    return [
+      'tsv' => ['tsv', 'text/tab-separated-values'],
+      'csv' => ['csv', 'text/csv'],
+    ];
   }
 
-
-
   /**
-   * Test that TSV format translates to correct mediatype if mediatype not supplied
+   * Test that format translates to correct mediatype if mediatype not supplied.
+   *
+   * @dataProvider formatProvider
    */
-  public function testNoMediaTypeWithTsvFormat() {
+  public function testNoMediaTypeWithFormat($format, $expected_mime) {
     $container_chain = $this->getContainer();
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
@@ -312,13 +274,13 @@ class ReferencerTest extends TestCase {
           {
             "title": "blah",
             "downloadURL": "' . $downloadUrl . '",
-            "format": "tsv"
+            "format": "' . $format . '"
           }
         ]
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $this->assertEquals('text/tab-separated-values', $container_chain->getStoredInput('resource')[0]->getMimeType());
+    $this->assertEquals($expected_mime, $container_chain->getStoredInput('resource')[0]->getMimeType());
   }
 
   /**
@@ -375,6 +337,10 @@ class ReferencerTest extends TestCase {
 
   /**
    * Test the remote/local file mime type detection logic.
+   *
+   * @covers ::getLocalMimeType
+   * @covers ::getMimeType
+   * @covers ::getRemoteMimeType
    */
   public function testMimeTypeDetection(): void {
     // Initialize mock node class.
@@ -430,7 +396,18 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', '')
       ->getMock();
 
-    $referencer = new Referencer($configService, $storageFactory, $urlGenerator);
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
+    $referencer = new Referencer(
+      $configService,
+      $storageFactory,
+      $urlGenerator,
+      new Client(),
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
+    );
 
     // Test Mime Type detection using the resource `mediaType` property.
     $data = $this->getData(self::HOST . '/' . self::FILE_PATH, self::MIME_TYPE);
@@ -444,10 +421,11 @@ class ReferencerTest extends TestCase {
     $data = $this->getData('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv');
     $referencer->reference($data);
     $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
-    // Test Mime Type detection on a invalid remote file path.
+    // Test Mime Type detection on a invalid remote file path. Defaults to
+    // text/plain.
     $data = $this->getData('http://invalid');
-    $this->expectException(ConnectException::class);
     $referencer->reference($data);
+    $this->assertEquals(Referencer::DEFAULT_MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Did not use default MIME type for inaccessible remote file.');
   }
 
   /**
@@ -480,7 +458,22 @@ class ReferencerTest extends TestCase {
       )
       ->getMock();
 
-    $referencer = new Referencer($configService, $storageFactory, $urlGenerator);
+    $http_client = $this->getMockBuilder(Client::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mimeTypeGuesser = (new Chain($this))
+      ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
+      ->getMock();
+
+    $referencer = new Referencer(
+      $configService,
+      $storageFactory,
+      $urlGenerator,
+      $http_client,
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
+    );
 
     if ($describedBy instanceof \Exception) {
       $this->expectException(get_class($describedBy));

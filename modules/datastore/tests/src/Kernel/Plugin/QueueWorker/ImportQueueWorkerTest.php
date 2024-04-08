@@ -2,18 +2,19 @@
 
 namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
 
-use Drupal\common\Storage\ImportedItemInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\KernelTests\KernelTestBase;
+use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker;
-use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker
  * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker
  *
+ * @group dkan
  * @group datastore
  * @group kernel
  */
@@ -29,6 +30,8 @@ class ImportQueueWorkerTest extends KernelTestBase {
   ];
 
   public function testErrorPath() {
+    $this->installEntitySchema('resource_mapping');
+
     // The result we'll mock to come from the datastore service.
     $result = new Result();
     $result->setStatus(Result::ERROR);
@@ -41,8 +44,9 @@ class ImportQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.datastore.service.resource_localizer'),
         $this->container->get('dkan.datastore.service.factory.import'),
         $this->container->get('queue'),
-        $this->container->get('dkan.common.job_store'),
+        $this->container->get('dkan.datastore.import_job_store_factory'),
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
+        $this->container->get('dkan.metastore.resource_mapper'),
       ])
       ->onlyMethods(['import'])
       ->getMock();
@@ -53,18 +57,14 @@ class ImportQueueWorkerTest extends KernelTestBase {
     $this->container->set('dkan.datastore.service', $datastore_service);
 
     // Mock the logger so we can tell when the error occurs.
-    $logger = $this->getMockForAbstractClass(LoggerChannelInterface::class);
+    $logger = $this->getMockForAbstractClass(LoggerInterface::class);
     // We expect an error to be logged.
     $logger->expects($this->once())
       ->method('error');
     // We don't expect a notice to be logged.
     $logger->expects($this->never())
       ->method('notice');
-    $logger_factory = $this->getMockForAbstractClass(LoggerChannelFactoryInterface::class);
-    $logger_factory->method('get')
-      ->willReturn($logger);
-    // Add our log factory mock to the container.
-    $this->container->set('logger.factory', $logger_factory);
+    $this->container->set('dkan.datastore.logger_channel', $logger);
 
     $queue_worker = ImportQueueWorker::create(
       $this->container,
@@ -78,6 +78,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
   }
 
   public function testRequeue() {
+    $this->installEntitySchema('resource_mapping');
     // The result we'll mock to come from the datastore service.
     $result = new Result();
     $result->setStatus(Result::STOPPED);
@@ -89,8 +90,9 @@ class ImportQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.datastore.service.resource_localizer'),
         $this->container->get('dkan.datastore.service.factory.import'),
         $this->container->get('queue'),
-        $this->container->get('dkan.common.job_store'),
+        $this->container->get('dkan.datastore.import_job_store_factory'),
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
+        $this->container->get('dkan.metastore.resource_mapper'),
       ])
       ->onlyMethods(['import'])
       ->getMock();
@@ -108,11 +110,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
     // We expect a notice to be logged.
     $logger->expects($this->once())
       ->method('notice');
-    $logger_factory = $this->getMockForAbstractClass(LoggerChannelFactoryInterface::class);
-    $logger_factory->method('get')
-      ->willReturn($logger);
-    // Add our log factory mock to the container.
-    $this->container->set('logger.factory', $logger_factory);
+    $this->container->set('dkan.datastore.logger_channel', $logger);
 
     $queue_worker = ImportQueueWorker::create(
       $this->container,
@@ -149,7 +147,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
       ['cron' => ['lease_time' => 10]],
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('logger.factory'),
+      $this->container->get('dkan.datastore.logger_channel'),
       $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.common.database_connection_factory'),
       $this->container->get('dkan.datastore.database_connection_factory')
@@ -164,6 +162,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
    * @covers ::processItem
    */
   public function testProcessItemImportException() {
+    $this->installEntitySchema('resource_mapping');
     // Mock the logger so we can tell when the error occurs.
     $logger = $this->getMockForAbstractClass(LoggerChannelInterface::class);
     // We expect an error to be logged, and we set an expectation for the message.
@@ -173,11 +172,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
     // We don't expect a notice to be logged.
     $logger->expects($this->never())
       ->method('notice');
-    $logger_factory = $this->getMockForAbstractClass(LoggerChannelFactoryInterface::class);
-    $logger_factory->method('get')
-      ->willReturn($logger);
-    // Add our log factory mock to the container.
-    $this->container->set('logger.factory', $logger_factory);
+    $this->container->set('dkan.datastore.logger_channel', $logger);
 
     $queue_worker = $this->createPartialMock(
       ImportQueueWorker::class,
@@ -194,7 +189,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
       ['cron' => ['lease_time' => 10]],
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('logger.factory'),
+      $this->container->get('dkan.datastore.logger_channel'),
       $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.common.database_connection_factory'),
       $this->container->get('dkan.datastore.database_connection_factory')
@@ -227,8 +222,9 @@ class ImportQueueWorkerTest extends KernelTestBase {
         $this->container->get('dkan.datastore.service.resource_localizer'),
         $this->container->get('dkan.datastore.service.factory.import'),
         $this->container->get('queue'),
-        $this->container->get('dkan.common.job_store'),
+        $this->container->get('dkan.datastore.import_job_store_factory'),
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
+        $this->container->get('dkan.metastore.resource_mapper'),
       ])
       ->onlyMethods(['getStorage'])
       ->getMock();

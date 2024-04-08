@@ -11,6 +11,7 @@
 ## Documentation
 DKAN's documentation can be found at https://dkan.readthedocs.io/en/latest
 
+Requirements: https://dkan.readthedocs.io/en/latest/installation/index.html#requirements
 
 ---
 
