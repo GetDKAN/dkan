@@ -115,6 +115,7 @@ function metastore_update_8007() {
   $config->set('preview_mode', 1)->save();
 }
 
+/**
  * Ensure the entity manager knows about resource_mapping entities.
  *
  * Note: The dkan_metastore_resource_mapper table might already exist in your
