@@ -12,6 +12,7 @@ use Drupal\common\Events\Event;
 use Drupal\common\Storage\JobStore;
 use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
 use Drupal\metastore\MetastoreService;
+use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\ResourceMapper;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
@@ -125,6 +126,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
       ->add('database', Connection::class)
       ->index(0);
     $chain = (new Chain($this))
@@ -133,6 +135,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(MetastoreService::class, 'getAll', [$distribution])
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \Exception($removal_message))
+      ->add(ReferenceLookupInterface::class, 'getReferencers', [$distribution->{'$.identifier'}])
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
@@ -173,6 +176,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
       ->add('database', Connection::class)
       ->index(0);
 
@@ -182,6 +186,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(MetastoreService::class, 'getAll', [$distribution_1, $distribution_2])
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \LogicException('Erroneous attempt to remove resource which is in use elsewhere'))
+      ->add(ReferenceLookupInterface::class, 'getReferencers', [$distribution_1->{'$.identifier'}, $distribution_2->{'$.identifier'}])
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 

@@ -258,8 +258,10 @@ class ImportJob extends AbstractPersistentJob {
    *   Updated result object.
    */
   protected function setResultError($message): Result {
-    $this->getResult()->setError($message);
-    $this->setStatus(Result::ERROR);
+    // Use these two different call methods so that we only write the status to
+    // the storage once.
+    $this->getResult()->setStatus(Result::ERROR);
+    $this->setError($message);
     return $this->getResult();
   }
 
@@ -313,7 +315,7 @@ class ImportJob extends AbstractPersistentJob {
     foreach ($results as $id => $data) {
       $this->dataStorage->remove($id);
     }
-    $this->getResult()->setStatus(Result::STOPPED);
+    $this->setStatus(Result::STOPPED);
   }
 
   /**

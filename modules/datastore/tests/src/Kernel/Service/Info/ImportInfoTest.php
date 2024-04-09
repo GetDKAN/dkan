@@ -31,7 +31,12 @@ class ImportInfoTest extends KernelTestBase {
    */
   const HOST = 'http://example.com';
 
-  const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+  protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+
+  protected function setUp() : void {
+    parent::setUp();
+    $this->installEntitySchema('resource_mapping');
+  }
 
   public function testFileSize() {
     $source_resource = new DataResource(
@@ -61,7 +66,7 @@ class ImportInfoTest extends KernelTestBase {
       $source_resource->getVersion()
     );
     // Not done, and bytes are zero.
-    $this->assertEquals('waiting', $import_info_item->fileFetcherStatus);
+    $this->assertEquals(Result::WAITING, $import_info_item->fileFetcherStatus);
     // Fair to say there are no bytes yet since we haven't localized.
     $this->assertEquals(0, $import_info_item->fileFetcherBytes);
 
@@ -71,7 +76,7 @@ class ImportInfoTest extends KernelTestBase {
     // Try to localize.
     $this->assertInstanceOf(
       Result::class,
-      $result = $resource_localizer->localize($source_resource->getIdentifier())
+      $result = $resource_localizer->localizeTask($source_resource->getIdentifier(), NULL, FALSE)
     );
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getData());
 
@@ -101,15 +106,18 @@ class ImportInfoTest extends KernelTestBase {
       $ff_state['total_bytes_copied']
     );
 
-    // Let's now examine the import job
+    // Let's now examine the import job. It should be waiting, since we haven't
+    // performed the import yet.
     /** @var \Drupal\datastore\DatastoreService $datastore_service */
     $datastore_service = $this->container->get('dkan.datastore.service');
     /** @var \Drupal\datastore\Service\ImportService $import_service */
     $import_service = $datastore_service->getImportService($local_resource);
     /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_service->getImporter();
-    $import_result = $import_job->getResult()->getStatus();
-    $this->assertEquals(Result::WAITING, $import_result);
+    $this->assertEquals(
+      Result::WAITING,
+      $import_job->getResult()->getStatus()
+    );
 
     // ImportInfo::getItem() ultimately calls
     // ResourceLocalizer::getFileFetcher() just like we did above. Do its

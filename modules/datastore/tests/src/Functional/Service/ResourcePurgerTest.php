@@ -110,7 +110,7 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
     $this->metastore->post('dataset', $dataset);
     $this->assertNotEmpty($this->datasetStorage->retrieve(123));
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['retirements_0.csv']), 'dataset');
     $this->metastore->patch('dataset', 123, $dataset);
     $this->assertNotEmpty($this->datasetStorage->retrieve(123));
@@ -118,7 +118,7 @@ class ResourcePurgerTest extends ExistingSiteBase {
     $dataset2 = $this->validMetadataFactory->get($this->getDataset(456, 'Test #2', ['district_centerpoints_small.csv']), 'dataset');
     $this->metastore->post('dataset', $dataset2);
     $this->assertNotEmpty($this->datasetStorage->retrieve(456));
-    $this->runQueues(['datastore_import']);
+    $this->runQueues(['localize_import', 'datastore_import']);
 
     // Ensure calling the resource purger on the updated dataset does not delete
     // the previously shared resource.

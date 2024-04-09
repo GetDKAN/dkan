@@ -11,5 +11,9 @@
   title: 'Harvest: API: Info'
   description: 'See the info about harvest plan runs through the API.'
 'dkan.harvest.dashboard':
-  title: 'DKAN: Harvest Dashaboard'
+  title: 'DKAN: Harvest Dashboard'
   description: 'See information about DKAN harvests.'
+
+administer harvest plan:
+  title: 'Administer harvest plan settings'
+  restrict access: true

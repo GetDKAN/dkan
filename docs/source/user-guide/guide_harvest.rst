@@ -4,7 +4,7 @@ How to create a harvest
 Use drush commands to :term:`Harvest` data into your catalog.
 
 Create a harvest JSON file
-__________________________
+--------------------------
 
 Normally you would use the data.json provided by another data catalog and "harvest" the datasets into your catalog.
 But harvests can also be used for bulk management of datasets from a manually generated data.json file.
@@ -81,10 +81,36 @@ Run the harvest
 
 View the status of the harvest
 ------------------------------
-Navigate to *admin/dkan/harvest* to view the status of the extraction,
+
+  .. prompt:: bash $
+
+    drush dkan:harvest:status myHarvestId
+
+You can also navigate to *admin/dkan/harvest* to view the status of the extraction,
 the date the harvest was run, and the number of datasets that were added
 by the harvest. By clicking on the harvest ID, you will also see specific
 information about each dataset, and the status of the datastore import.
+
+Revert a harvest
+----------------
+
+  .. prompt:: bash $
+
+    drush dkan:harvest:revert myHarvestId
+
+This will delete all of the datasets listed in the specified harvest ID. Any referenced
+terms will be set to the orphaned state. Any distributions from the harvest will be unpublished.
+Alternatively you could run `dkan:harvest:archive` to unpublish the datasets without
+deleting them from your catalog.
+
+Deregister a harvest
+--------------------
+
+  .. prompt:: bash $
+
+    drush dkan:harvest:deregister myHarvestId
+
+This will remove the harvest plan.
 
 Transforms
 ----------

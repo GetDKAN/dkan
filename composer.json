@@ -5,6 +5,7 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
+        "drupal/facets": "^3.0@beta",
         "drupal/moderated_content_bulk_publish": "~2.0.20",
         "drupal/search_api": "^1.15",
         "drupal/select_or_other": "^4.1.0",
@@ -13,14 +14,14 @@
         "ext-json": "*",
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.1",
-        "getdkan/contracts": "^1.0.0",
-        "getdkan/csv-parser": "^1.3.0",
-        "getdkan/file-fetcher" : "^5.0.2",
-        "getdkan/harvest": "^1.0.0",
+        "getdkan/contracts": "^1.1.2",
+        "getdkan/csv-parser": "^1.3.1",
+        "getdkan/file-fetcher" : "^5.0.3",
+        "getdkan/harvest": "^1.0.3",
         "getdkan/procrastinator": "^5.0.0",
-        "getdkan/rooted-json-data": "^0.2.0",
+        "getdkan/rooted-json-data": "^0.2.1",
         "guzzlehttp/guzzle" : "^6.5.8 || ^7.4.5",
-        "ilbee/csv-response": "^1.1.1",
+        "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
         "fylax/forceutf8": "~3.0",
@@ -32,7 +33,8 @@
         "symfony/polyfill-php80": "^1.27"
     },
     "require-dev": {
-        "getdkan/mock-chain": "^1.3.0",
+        "drush/drush": "^12@stable",
+        "getdkan/mock-chain": "^1.3.6",
         "weitzman/drupal-test-traits": "^2.0.1",
         "phpunit/phpunit": "^8.5.14 || ^9"
     },

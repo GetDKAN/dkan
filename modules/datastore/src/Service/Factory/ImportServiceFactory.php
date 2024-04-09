@@ -2,9 +2,10 @@
 
 namespace Drupal\datastore\Service\Factory;
 
-use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Service\ImportService;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * Create an importer object for a given resource.
@@ -14,9 +15,9 @@ class ImportServiceFactory implements ImportFactoryInterface {
   /**
    * Job store factory.
    *
-   * @var \Drupal\common\Storage\JobStoreFactory
+   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
-  private $jobStoreFactory;
+  private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory.
@@ -26,18 +27,23 @@ class ImportServiceFactory implements ImportFactoryInterface {
   private $databaseTableFactory;
 
   /**
-   * Import services.
+   * DKAN logger channel service.
    *
-   * @var \Drupal\datastore\Service\ImportService[]
+   * @var \Psr\Log\LoggerInterface
    */
-  private $services = [];
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->jobStoreFactory = $jobStoreFactory;
+  public function __construct(
+    ImportJobStoreFactory $importJobStoreFactory,
+    DatabaseTableFactory $databaseTableFactory,
+    LoggerInterface $loggerChannel
+  ) {
+    $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -46,13 +52,15 @@ class ImportServiceFactory implements ImportFactoryInterface {
    * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
-
-    if (!isset($config['resource'])) {
-      throw new \Exception("config['resource'] is required");
+    if ($resource = $config['resource'] ?? FALSE) {
+      return new ImportService(
+        $resource,
+        $this->importJobStoreFactory,
+        $this->databaseTableFactory,
+        $this->logger
+      );
     }
-
-    $resource = $config['resource'];
-    return new ImportService($resource, $this->jobStoreFactory, $this->databaseTableFactory);
+    throw new \Exception("config['resource'] is required");
   }
 
 }

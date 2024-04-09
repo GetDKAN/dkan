@@ -148,7 +148,7 @@ class WidgetRouter implements ContainerInjectionInterface {
     $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
-      $element['#input_type'] = isset($spec->other_type) ? $spec->other_type : 'textfield';
+      $element['#input_type'] = $spec->other_type ?? 'textfield';
     }
     $element['#other_option'] = isset($element['#other_option']) ?? FALSE;
 
@@ -373,7 +373,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDateElement($spec, array $element) {
     $element['#type'] = 'date';
-    $format = isset($spec->format) ? $spec->format : 'Y-m-d';
+    $format = $spec->format ?? 'Y-m-d';
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
       $element['#default_value'] = $date->format($format);

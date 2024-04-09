@@ -3,6 +3,7 @@
 namespace Drupal\Tests\datastore\Kernel\Service\Info;
 
 use Drupal\common\DataResource;
+use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
@@ -63,10 +64,10 @@ class ImportInfoListTest extends KernelTestBase {
       ->getMock();
 
     $job_store_factory = (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', $job_store)
+      ->add(FileFetcherJobStoreFactory::class, 'getInstance', $job_store)
       ->getMock();
 
-    $this->container->set('dkan.common.job_store', $job_store_factory);
+    $this->container->set('dkan.common.filefetcher_job_store_factory', $job_store_factory);
 
     // Build the list.
     /** @var \Drupal\datastore\Service\Info\ImportInfoList $import_info_list */

@@ -1,0 +1,8 @@
+name: DKAN Metastore Facets
+description: Provides facet blocks for DKAN Metastore Search.
+type: module
+core_version_requirement: ^10
+dependencies:
+  - dkan:metastore_search
+  - facets:facets
+package: DKAN

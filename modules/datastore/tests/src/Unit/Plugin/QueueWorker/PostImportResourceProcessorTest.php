@@ -3,30 +3,34 @@
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
-use Drupal\datastore\Service\ResourceProcessorInterface;
+use Drupal\datastore\Service\PostImport;
 use Drupal\datastore\Service\ResourceProcessorCollector;
+use Drupal\datastore\Service\ResourceProcessorInterface;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-use Drupal\metastore\ResourceMapper;
-use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\MetastoreService;
-
+use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\metastore\ResourceMapper;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 
 /**
  * Test \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor.
+ *
+ * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor
+ *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class PostImportResourceProcessorTest extends TestCase {
 
@@ -74,7 +78,7 @@ class PostImportResourceProcessorTest extends TestCase {
 
     // Ensure resources were processed.
     $notices = $container_chain->getStoredInput('notice');
-    $this->assertEmpty($notices);
+    $this->assertContains('Post import job for resource @id completed.', $notices);
     // Ensure no exceptions were thrown.
     $errors = $container_chain->getStoredInput('error');
     $this->assertEmpty($errors);
@@ -230,22 +234,22 @@ class PostImportResourceProcessorTest extends TestCase {
     $options = (new Options())
       ->add('dkan.datastore.data_dictionary.alter_table_query_builder.mysql', AlterTableQueryBuilderInterface::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
-      ->add('logger.factory', LoggerChannelFactoryInterface::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(LoggerChannelFactoryInterface::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
-      ->add(LoggerChannelInterface::class, 'notice', NULL, 'notice')
+      ->add(LoggerInterface::class, 'error', NULL, 'error')
+      ->add(LoggerInterface::class, 'notice', '', 'notice')
       ->add(MetastoreService::class, 'get', new RootedJsonData($json))
       ->add(AlterTableQueryBuilderInterface::class, 'setConnectionTimeout', AlterTableQueryBuilderInterface::class)
       ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)

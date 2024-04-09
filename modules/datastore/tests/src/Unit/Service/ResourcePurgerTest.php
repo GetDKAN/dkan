@@ -6,25 +6,24 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
-use Drupal\node\NodeStorageInterface;
-
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
- * Class ResourcePurgerTest
- *
- * @package Drupal\Tests\datastore\Service
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class ResourcePurgerTest extends TestCase {
 
@@ -63,8 +62,8 @@ class ResourcePurgerTest extends TestCase {
 
     $chain = $this->getCommonChain()
       ->add(Data::class, 'getEntityIdFromUuid', 1)
-      ->add(Data::class, 'getEntityStorage', NodeStorageInterface::class)
-      ->add(NodeStorageInterface::class, 'getLatestRevisionId', 1);
+      ->add(Data::class, 'getEntityStorage', RevisionableStorageInterface::class)
+      ->add(RevisionableStorageInterface::class, 'getLatestRevisionId', 1);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
     $voidResult = $resourcePurger->schedule([1], FALSE);
@@ -78,11 +77,11 @@ class ResourcePurgerTest extends TestCase {
 
     $chain = $this->getCommonChain()
       ->add(Data::class, 'getEntityIdFromUuid', 1)
-      ->add(Data::class, 'getEntityStorage', NodeStorageInterface::class)
-      ->add(NodeStorageInterface::class, 'getQuery', QueryInterface::class)
+      ->add(Data::class, 'getEntityStorage', RevisionableStorageInterface::class)
+      ->add(RevisionableStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [1])
-      ->add(NodeStorageInterface::class, 'load', Node::class)
+      ->add(RevisionableStorageInterface::class, 'load', Node::class)
       ->add(Node::class, 'uuid', 'foo')
       ->add(ImmutableConfig::class, 'get', 0);
 
@@ -101,6 +100,7 @@ class ResourcePurgerTest extends TestCase {
       ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.service', DatastoreService::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->index(0);
 
     return (new Chain($this))

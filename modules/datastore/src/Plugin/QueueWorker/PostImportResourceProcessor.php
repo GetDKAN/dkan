@@ -2,19 +2,17 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
-use Drupal\datastore\Service\ResourceProcessorCollector;
-use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\PostImport;
+use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-
+use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\metastore\ResourceMapper;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -34,9 +32,9 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   /**
    * A logger channel for this plugin.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * The metastore resource mapper service.
@@ -67,6 +65,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   protected $dataDictionaryDiscovery;
 
   /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
+
+  /**
    * Build queue worker.
    *
    * @param array $configuration
@@ -77,7 +82,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The plugin implementation definition.
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   * @param \Psr\Log\LoggerInterface $logger_channel
    *   A logger channel factory instance.
    * @param \Drupal\metastore\ResourceMapper $resource_mapper
    *   The metastore resource mapper service.
@@ -87,20 +92,23 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The post import service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The reference lookup service.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     AlterTableQueryBuilderInterface $alter_table_query_builder,
-    LoggerChannelFactoryInterface $logger_factory,
+    LoggerInterface $logger_channel,
     ResourceMapper $resource_mapper,
     ResourceProcessorCollector $processor_collector,
     PostImport $post_import,
-    DataDictionaryDiscoveryInterface $data_dictionary_discovery
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery,
+    ReferenceLookup $referenceLookup
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->logger = $logger_factory->get('datastore');
+    $this->logger = $logger_channel;
     $this->resourceMapper = $resource_mapper;
     $this->resourceProcessorCollector = $processor_collector;
     $this->postImport = $post_import;
@@ -110,6 +118,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
     $alter_table_query_builder->setConnectionTimeout($timeout);
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -121,11 +130,12 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $plugin_id,
       $plugin_definition,
       $container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql'),
-      $container->get('logger.factory'),
+      $container->get('dkan.datastore.logger_channel'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.datastore.service.resource_processor_collector'),
       $container->get('dkan.datastore.service.post_import'),
       $container->get('dkan.metastore.data_dictionary_discovery'),
+      $container->get('dkan.metastore.reference_lookup'),
     );
   }
 
@@ -134,6 +144,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    */
   public function processItem($data) {
     $postImportResult = $this->postImportProcessItem($data);
+    if ($postImportResult->getPostImportStatus() === 'done') {
+      $this->invalidateCacheTags(DataResource::buildUniqueIdentifier(
+        $data->getIdentifier(),
+        $data->getVersion(),
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE
+      ));
+    }
     // Store the results of the PostImportResult object.
     $postImportResult->storeResult();
   }
@@ -168,6 +185,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       else {
         array_map(fn ($processor) => $processor->process($resource), $processors);
         $postImportResult = $this->createPostImportResult('done', NULL, $resource);
+        $this->logger->notice('Post import job for resource @id completed.', ['@id' => (string) $resource->getIdentifier()]);
       }
     }
     catch (\Exception $e) {
@@ -176,6 +194,16 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     }
 
     return $postImportResult;
+  }
+
+  /**
+   * Invalidate all appropriate cache tags for this resource.
+   *
+   * @param mixed $resourceId
+   *   A resource ID.
+   */
+  protected function invalidateCacheTags($resourceId) {
+    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
   /**
