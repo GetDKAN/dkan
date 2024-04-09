@@ -3,14 +3,32 @@ services:
     class: Drupal\harvest\HarvestService
     arguments:
       - '@dkan.harvest.storage.database_table'
+      - '@dkan.harvest.storage.hashes_database_table'
       - '@dkan.metastore.service'
-      - '@entity_type.manager'
+      - '@dkan.harvest.harvest_plan_repository'
+      - '@dkan.harvest.logger_channel'
     calls:
-      - [ setLoggerFactory, [ '@logger.factory' ] ]
+      - [ setEntityTypeManager, [ '@entity_type.manager' ] ]
+  dkan.harvest.utility:
+    class: Drupal\harvest\HarvestUtility
+    arguments:
+      - '@dkan.harvest.service'
+      - '@dkan.harvest.storage.database_table'
+      - '@dkan.harvest.storage.hashes_database_table'
+      - '@database'
+      - '@dkan.harvest.logger_channel'
+  dkan.harvest.harvest_plan_repository:
+    class: Drupal\harvest\Entity\HarvestPlanRepository
+    arguments:
+      - '@entity_type.manager'
   dkan.harvest.storage.database_table:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:
       - '@database'
+  dkan.harvest.storage.hashes_database_table:
+    class: Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
+    arguments:
+      - '@entity_type.manager'
   dkan.harvest.logger_channel:
       parent: logger.channel_base
       arguments: ['harvest']

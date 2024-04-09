@@ -2,10 +2,11 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\Factory;
 
-use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
+use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\datastore\Storage\ImportJobStoreFactory;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \Drupal\datastore\Service\Factory\ImportServiceFactory
@@ -13,6 +14,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @group dkan
  * @group datastore
+ * @group unit
  */
 class ImportServiceFactoryTest extends TestCase {
 
@@ -21,12 +23,13 @@ class ImportServiceFactoryTest extends TestCase {
    */
   public function testGetInstanceException() {
     $factory = new ImportServiceFactory(
-      $this->getMockBuilder(JobStoreFactory::class)
+      $this->getMockBuilder(ImportJobStoreFactory::class)
         ->disableOriginalConstructor()
         ->getMock(),
       $this->getMockBuilder(DatabaseTableFactory::class)
         ->disableOriginalConstructor()
-        ->getMock()
+        ->getMock(),
+      $this->createStub(LoggerInterface::class)
     );
 
     $this->expectException(\Exception::class);

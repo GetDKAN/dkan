@@ -98,8 +98,8 @@ class JobStoreUtil {
     if ($deprecated_table_names = $this->getAllDeprecatedJobstoreTableNames()) {
       $renamed = [];
       foreach ($deprecated_table_names as $class_name => $deprecated_table_name) {
-        $job_store = new JobStoreAccessor($class_name, $this->connection);
-        $table_name = $job_store->accessTableName();
+        $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+        $table_name = $factory_accessor->accessTableName($class_name);
         $renamed[$deprecated_table_name] = $table_name;
         $this->connection->schema()->renameTable(
           $deprecated_table_name,
@@ -144,9 +144,9 @@ class JobStoreUtil {
    *   Class name identifier for the jobstore table to merge.
    */
   public function reconcileDuplicateJobstoreTable(string $class_name) {
-    $job_store_accessor = new JobStoreAccessor($class_name, $this->connection);
-    $deprecated_table_name = $job_store_accessor->accessDeprecatedTableName();
-    $table_name = $job_store_accessor->accessTableName();
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+    $deprecated_table_name = $factory_accessor->accessDeprecatedTableName($class_name);
+    $table_name = $factory_accessor->accessTableName($class_name);
 
     // Hold all this in a transaction so that we don't lose anything.
     $transaction = $this->connection->startTransaction();
@@ -235,19 +235,19 @@ class JobStoreUtil {
    *
    * NOTE: This will return FALSE if both tables exist.
    *
-   * @param string $className
+   * @param string $class_name
    *   Class name identifier to check.
    *
    * @return bool
    *   TRUE if ONLY the deprecated table exists, and NOT the non-deprecated one.
    *   FALSE otherwise.
    */
-  public function tableIsDeprecatedNameForClassname(string $className): bool {
-    $job_store = new JobStoreAccessor($className, $this->connection);
+  public function tableIsDeprecatedNameForClassname(string $class_name): bool {
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
     return $this->connection->schema()
-      ->tableExists($job_store->accessDeprecatedTableName()) &&
+      ->tableExists($factory_accessor->accessDeprecatedTableName($class_name)) &&
       !$this->connection->schema()
-        ->tableExists($job_store->accessTableName());
+        ->tableExists($factory_accessor->accessTableName($class_name));
   }
 
   /**
@@ -260,8 +260,8 @@ class JobStoreUtil {
    *   The deprecated table name.
    */
   public function getDeprecatedTableNameForClassname(string $className): string {
-    $job_store = new JobStoreAccessor($className, $this->connection);
-    return $job_store->accessDeprecatedTableName();
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+    return $factory_accessor->accessDeprecatedTableName($className);
   }
 
   /**
@@ -274,8 +274,8 @@ class JobStoreUtil {
    *   The non-deprecated table name.
    */
   public function getTableNameForClassname(string $className): string {
-    $job_store = new JobStoreAccessor($className, $this->connection);
-    return $job_store->accessTableName();
+    $factory_accessor = new JobStoreFactoryAccessor($this->connection);
+    return $factory_accessor->accessTableName($className);
   }
 
   /**

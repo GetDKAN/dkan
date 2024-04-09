@@ -212,10 +212,7 @@ class Search implements ContainerInjectionInterface {
    *   If available, return the search index.
    */
   public function getSearchIndex() {
-    if (isset($this->index)) {
-      return $this->index;
-    }
-    return NULL;
+    return $this->index ?? NULL;
   }
 
 }

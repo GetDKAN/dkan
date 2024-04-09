@@ -41,6 +41,7 @@ class MysqlImport extends ImportJob {
    *   Configuration options.
    */
   protected function __construct(string $identifier, $storage, array $config = NULL) {
+    // Ensure we can check if the data has already been imported.
     if (!($config['storage'] instanceof ImportedItemInterface)) {
       throw new \Exception('Storage must be an instance of ' . ImportedItemInterface::class);
     }
@@ -62,7 +63,7 @@ class MysqlImport extends ImportJob {
     // If the storage table already exists, we already performed an import and
     // can stop here.
     if ($this->dataStorage->hasBeenImported()) {
-      $this->getResult()->setStatus(Result::DONE);
+      $this->setStatus(Result::DONE);
       return NULL;
     }
 
@@ -101,7 +102,7 @@ class MysqlImport extends ImportJob {
 
     Database::setActiveConnection();
 
-    $this->getResult()->setStatus(Result::DONE);
+    $this->setStatus(Result::DONE);
     return NULL;
   }
 

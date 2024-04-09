@@ -4,7 +4,10 @@ namespace Drupal\metastore\LifeCycle;
 
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\DataResource;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\UrlHostTokenResolver;
+use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
@@ -120,7 +123,7 @@ class LifeCycle {
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item object.
    */
-  public function go($stage, MetastoreItemInterface $data) {
+  public function go(string $stage, MetastoreItemInterface $data): void {
     // Removed dashes from schema ID since function names can't include dashes.
     $schema_id = str_replace('-', '', $data->getSchemaId());
     $stage = ucwords($stage);
@@ -288,20 +291,95 @@ class LifeCycle {
    *
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Dataset metastore item.
+   *
+   * @throws \Exception
    */
   protected function datasetPresave(MetastoreItemInterface $data): void {
+    $this->setNodeValuesFromMetadata($data);
     $this->referenceMetadata($data);
+
+    if (!$data->isNew()) {
+      try {
+        $this->queueOrphanReferenceCleanup($data);
+      }
+      catch (InvalidPluginDefinitionException | PluginNotFoundException | DataNodeLifeCycleEntityValidationException $e) {
+        throw new \Exception($e->getMessage());
+      }
+    }
   }
 
   /**
-   * Sanitize and reference metadata.
+   * Trigger datastore import and reference metadata with uuids.
    *
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item.
+   *
+   * @throws \Exception
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
-    $metadata = $data->getMetaData();
+    $metadata = $data->getMetadata();
 
+    // Trigger datastore import if applicable.
+    // Needs to happen before updating references.
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
+      return $data instanceof MetastoreItemInterface;
+    });
+
+    // Convert references in metadata to uuids.
+    // Create new reference entities if they do not exist.
+    $metadata = $this->referencer->reference($metadata);
+
+    // Re-add metadata to data object with uuids.
+    $data->setMetadata($metadata);
+  }
+
+  /**
+   * Orphan removed references if applicable.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Metastore item.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   */
+  protected function queueOrphanReferenceCleanup(MetastoreItemInterface $data): void {
+    $metadata = $data->getMetadata();
+
+    // Check for possible orphan property references when updating a dataset.
+    // Compare with the latest revision (saved as raw metadata).
+    $raw = $data->getRawMetadata();
+    $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
+
+    // Are we publishing this new revision?
+    $state = $data->getModerationState();
+
+    // If publishing a previous draft, check for orphans
+    // from last published version.
+    if ($state == 'published') {
+      // Get last published version.
+      $published = $data->getPublishedRevision();
+
+      // Get latest revision ID.
+      $latestVid = $data->getLoadedRevisionId();
+
+      // Only proceed if latest revision was NOT the published revision.
+      if ($published && $published->getRevisionId() <> $latestVid) {
+        // Get the raw referenced metadata.
+        $published_metadata = $published->getRawMetadata();
+        $this->orphanChecker->processReferencesInUpdatedDataset($published_metadata, $metadata);
+      }
+    }
+  }
+
+  /**
+   * Set required node values based on metadata.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Data-Dictionary metastore item.
+   */
+  protected function setNodeValuesFromMetadata(MetastoreItemInterface $data): void {
+    $metadata = $data->getMetaData();
     $title = $metadata->title ?? $metadata->name;
     $data->setTitle($title);
 
@@ -313,20 +391,6 @@ class LifeCycle {
     else {
       $data->setIdentifier($metadata->identifier);
     }
-
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
-      return $data instanceof MetastoreItemInterface;
-    });
-
-    $metadata = $this->referencer->reference($metadata);
-
-    $data->setMetadata($metadata);
-
-    // Check for possible orphan property references when updating a dataset.
-    if (!$data->isNew()) {
-      $raw = $data->getRawMetadata();
-      $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
-    }
   }
 
   /**
@@ -336,14 +400,35 @@ class LifeCycle {
    *   Data-Dictionary metastore item.
    */
   protected function datadictionaryPresave(MetastoreItemInterface $data): void {
-    $this->referenceMetadata($data);
+    $this->setNodeValuesFromMetadata($data);
   }
 
   /**
-   * Private.
+   * Distribution presave.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Dataset metastore item.
    */
-  protected function distributionPresave(MetastoreItemInterface $data) {
+  protected function distributionPresave(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
+
+    // If updating an existing distribution, re-reference it.
+    if (!$data->isNew()) {
+      $distributionUuid = $data->getIdentifier();
+      $storage = $this->dataFactory->getInstance('distribution');
+      $resource = $storage->retrieve($distributionUuid);
+      $resource = json_decode($resource);
+
+      $resourceId = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
+
+      // Replace download url with the resource reference ID again.
+      if (isset($resourceId)) {
+        $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
+        $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
+        $metadata->data->downloadURL = $resourceId . '__' . $version . '__' . $perspective;
+        unset($metadata->data->{'%Ref:downloadURL'});
+      }
+    }
     $data->setMetadata($metadata);
   }
 

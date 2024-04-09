@@ -2,16 +2,19 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\common\LoggerTrait;
-use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\Core\Database\Connection;
+use Drupal\common\Storage\AbstractDatabaseTable;
 use Psr\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 
 /**
  * Database storage object.
+ *
+ * @deprecated Use resource_mapping entity type instead.
+ *
+ * @see \Drupal\metastore\Entity\ResourceMapping
  */
 class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
-  use LoggerTrait;
 
   /**
    * Resource mapper database table schema.
@@ -21,10 +24,21 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   protected $schema;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(
+    Connection $connection,
+    LoggerInterface $loggerChannel
+  ) {
     parent::__construct($connection);
+    $this->logger = $loggerChannel;
 
     $schema = [];
 
@@ -91,7 +105,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
     }
 
     if ($decoded === NULL) {
-      $this->log(
+      $this->logger->log(
         'dkan_metastore_filemapper',
         "Error decoding id:@id, data: @data.",
         ['@id' => $id, '@data' => $data],
@@ -100,7 +114,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
       throw new \Exception("Import for {$id} error when decoding {$data}");
     }
     elseif (!is_object($decoded)) {
-      $this->log(
+      $this->logger->log(
         'dkan_metastore_filemapper',
         "Object expected while decoding id:@id, data: @data.",
         ['@id' => $id, '@data' => $data],

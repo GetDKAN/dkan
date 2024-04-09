@@ -30,20 +30,54 @@ function dkan_js_frontend_library_info_build() {
   $preprocess = \Drupal::config('dkan_js_frontend.config')->get('preprocess');
   $js_path = \Drupal::config('dkan_js_frontend.config')->get('js_folder');
   $css_path = \Drupal::config('dkan_js_frontend.config')->get('css_folder');
+  $js = \Drupal::config('dkan_js_frontend.config')->get('js');
+  $css = \Drupal::config('dkan_js_frontend.config')->get('js');
 
   foreach(glob(\Drupal::root() . $js_path . '*.js') as $full_path) {
     $basename = basename($full_path);
-    $libraries['dkan_js_frontend']['js'][$js_path . $basename] = [
-      "minified" => isset($minified) ? $minified : false,
-      "preprocess" => isset($preprocess) ? $preprocess : true,
-    ];
+    if(isset($js)) {
+      // Overwrite global minified with JS specific.
+      if(isset($js['minified'])) {
+        $minified = $js['minified'];
+      }
+      // Overwrite global preprocess with JS specific.
+      if(isset($js['preprocess'])) {
+        $preprocess = $js['preprocess'];
+      }
+      // Set the weight if available.
+      if(isset($js['weight'])) {
+        $libraries['dkan_js_frontend']['js'][$js_path . $basename]['weight'] = $js['weight'];
+      }
+      // Loop through JS attributes and add to library.
+      if(isset($js['attributes'])) {
+        foreach($js['attributes'] as $attr) {
+          $exploded_attr = explode(',', $attr);
+          $js_attributes[$exploded_attr[0]] = $exploded_attr[1];
+        }
+        $libraries['dkan_js_frontend']['js'][$js_path . $basename]['attributes'] = $js_attributes;
+      }
+    }
+    $libraries['dkan_js_frontend']['js'][$js_path . $basename]['minified'] = $minified ?? false;
+    $libraries['dkan_js_frontend']['js'][$js_path . $basename]['preprocess'] = $preprocess ?? true;
   }
   foreach(glob(\Drupal::root() . $css_path . '*.css') as $full_path) {
     $basename = basename($full_path);
-    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename] = [
-      "minified" => isset($minified) ? $minified : false,
-      "preprocess" => isset($preprocess) ? $preprocess : true,
-    ];
+    if(isset($css)) {
+      // Overwrite global minified with CSS specific.
+      if(isset($css['minified'])) {
+        $minified = $css['minified'];
+      }
+      // Overwrite global preprocess with CSS specific.
+      if(isset($css['preprocess'])) {
+        $preprocess = $css['preprocess'];
+      }
+      // Set the weight if available.
+      if(isset($css['weight'])) {
+        $libraries['dkan_js_frontend']['css']['theme'][$js_pcss_pathath . $basename]['weight'] = $css['weight'];
+      }
+    }
+    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['minified'] = $minified ?? false;
+    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['preprocess'] = $preprocess ?? true;
   }
   $libraries['dkan_js_frontend']['dependencies'] = [
     'core/drupal',

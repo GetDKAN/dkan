@@ -3,10 +3,11 @@
 namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
+use FileFetcher\FileFetcher;
 use FileFetcher\Processor\Remote;
 use Procrastinator\Result;
 use RootedData\RootedJsonData;
@@ -45,11 +46,14 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
     $identifier = uniqid();
 
+    // Get mapping entity storage.
+    /** @var \Drupal\Core\Entity\EntityStorageInterface $mapping_entity_storage */
+    $mapping_entity_storage = $this->container
+      ->get('entity_type.manager')
+      ->getStorage('resource_mapping');
+
     // There should be no mapper records.
-    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
-    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
-    $mapping_store = $resource_mapper->getStore();
-    $this->assertEquals(0, $mapping_store->count());
+    $this->assertEquals(0, $this->getEntityCount($mapping_entity_storage));
 
     // Post our dataset.
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
@@ -63,7 +67,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     );
 
     // 1 mapping after posting the datastore.
-    $this->assertEquals(1, $mapping_store->count());
+    $this->assertEquals(1, $this->getEntityCount($mapping_entity_storage));
 
     // Get our resource info from the dataset info service.
     /** @var \Drupal\common\DatasetInfo $dataset_info_service */
@@ -71,17 +75,20 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     $info = $dataset_info_service->gather($identifier);
 
     // Having gotten the info, there should still only be 1 record.
-    $this->assertEquals(1, $mapping_store->count());
+    $this->assertEquals(1, $this->getEntityCount($mapping_entity_storage));
 
     // Let's interrogate it. It should be a source mapping.
-    $all_mappings = $mapping_store->retrieveAll();
-    $mapping = $mapping_store->retrieve(reset($all_mappings));
+    $all_mapping_ids = $this->getAllEntityIds($mapping_entity_storage);
+    /** @var \Drupal\Core\Entity\EntityInterface $mapping */
+    $mapping = $mapping_entity_storage->load(reset($all_mapping_ids));
     $this->assertEquals(
       DataResource::DEFAULT_SOURCE_PERSPECTIVE,
-      $mapping->perspective
+      $mapping->get('perspective')->getString()
     );
 
     // Now let's ask the mapper instead of its storage.
+    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
     $this->assertNotNull(
       $resource_id = $info['latest_revision']['distributions'][0]['resource_id'] ?? NULL
     );
@@ -90,7 +97,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
       $source_resource = $resource_mapper->get($resource_id)
     );
     // Getting the source resource should not change the record count.
-    $this->assertEquals(1, $mapping_store->count());
+    $this->assertEquals(1, $this->getEntityCount($mapping_entity_storage));
     // No local file perspective yet.
     $this->assertNull($resource_mapper->get(
       $resource_id,
@@ -102,13 +109,18 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
-    $job_data = json_decode($file_fetcher->getResult()->getData());
-    $this->assertEquals(Remote::class, $job_data->processor);
+    $ref_get_processor = new \ReflectionMethod($file_fetcher, 'getProcessor');
+    $ref_get_processor->setAccessible(TRUE);
+    // Should be Remote.
+    $this->assertInstanceOf(
+      Remote::class,
+      $ref_get_processor->invoke($file_fetcher)
+    );
     // Result should be 'waiting,' which is the default value if there is no
     // actual result object.
     $some_info = $dataset_info_service->gather($identifier);
     $this->assertEquals(
-      'waiting',
+      Result::WAITING,
       $some_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
 
@@ -123,20 +135,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     // We should get our FileFetcherRemoteUseExisting when we get another
     // file fetcher.
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
-    $this->assertInstanceOf(DkanFileFetcher::class, $file_fetcher);
-    $job_data = json_decode($file_fetcher->getResult()->getData());
-    $this->assertEquals(
-      FileFetcherRemoteUseExisting::class,
-      $job_data->processor
-    );
-
-    // Get the file fetcher again so we can test getProcessor().
-    $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
-    $this->assertInstanceOf(DkanFileFetcher::class, $file_fetcher);
-    // Access getProcessor().
-    $ref_get_processor = new \ReflectionMethod($file_fetcher, 'getProcessor');
-    $ref_get_processor->setAccessible(TRUE);
-    // Now we get our special processor.
+    $this->assertInstanceOf(FileFetcher::class, $file_fetcher);
     $this->assertInstanceOf(
       FileFetcherRemoteUseExisting::class,
       $ref_get_processor->invoke($file_fetcher)
@@ -148,37 +147,24 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
       ->set('always_use_existing_local_perspective', FALSE)
       ->save();
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
-    $job_data = json_decode($file_fetcher->getResult()->getData());
-    $this->assertEquals(
-      Remote::class,
-      $job_data->processor
-    );
     $this->assertInstanceOf(
       Remote::class,
       $ref_get_processor->invoke($file_fetcher)
     );
 
     // Perform the localization.
-    /** @var \Drupal\datastore\DatastoreService $datastore_service */
-    $datastore_service = $this->container->get('dkan.datastore.service');
-    // In order to perform the localization without importing, we have to call
-    // DatastoreService::getResource(), which is private.
-    $ref_get_resource = new \ReflectionMethod($datastore_service, 'getResource');
-    $ref_get_resource->setAccessible(TRUE);
-    $results = $ref_get_resource->invokeArgs($datastore_service, [
-      $source_resource->getIdentifier(),
-      $source_resource->getVersion(),
-    ]);
-    // First result should be a resource, second result should be result objects
-    // keyed by the localizer label.
-    $this->assertInstanceOf(DataResource::class, $results[0]);
+    $this->assertInstanceOf(
+      Result::class,
+      $result = $resource_localizer->localizeTask(
+        $source_resource->getIdentifier(), $source_resource->getVersion()
+      )
+    );
     $this->assertEquals(
-      Result::DONE,
-      $results[1]['ResourceLocalizer']->getStatus()
+      Result::DONE, $result->getStatus()
     );
 
     // Now there should be three mappings.
-    $this->assertEquals(3, $mapping_store->count());
+    $this->assertEquals(3, $this->getEntityCount($mapping_entity_storage));
     // Get the info again after localization.
     $localized_info = $dataset_info_service->gather($identifier);
     $this->assertNotEquals($localized_info, $info);
@@ -186,6 +172,37 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
       Result::DONE,
       $localized_info['latest_revision']['distributions'][0]['fetcher_status'] ?? NULL
     );
+  }
+
+  /**
+   * Count the number of entities present for the given storage.
+   *
+   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
+   *   The entity storage object.
+   *
+   * @return int
+   *   The count of arrays present in the storage.
+   */
+  protected function getEntityCount(EntityStorageInterface $storage) {
+    return $storage->getQuery()
+      ->count()
+      ->accessCheck(FALSE)
+      ->execute();
+  }
+
+  /**
+   * Get all the IDs available for the given entity storage.
+   *
+   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
+   *   The entity storage object.
+   *
+   * @return array
+   *   Array of entity IDs for all the entities in the storage.
+   */
+  protected function getAllEntityIds(EntityStorageInterface $storage) {
+    return $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->execute();
   }
 
   /**

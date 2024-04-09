@@ -9,6 +9,7 @@ use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
+ * @covers \Drupal\common\FileFetcher\FileFetcherFactory
  * @covers \Drupal\datastore\Service\ResourceLocalizer
  * @coversDefaultClass \Drupal\datastore\Service\ResourceLocalizer
  *
@@ -32,7 +33,13 @@ class ResourceLocalizerTest extends KernelTestBase {
    */
   const HOST = 'http://example.com';
 
-  const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+  protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+
+  protected function setUp() : void {
+    parent::setUp();
+    // All our tests need the resource_mapping entity.
+    $this->installEntitySchema('resource_mapping');
+  }
 
   public function testNoResourceFound() {
     $service = $this->container->get('dkan.datastore.service.resource_localizer');
@@ -66,9 +73,9 @@ class ResourceLocalizerTest extends KernelTestBase {
     // Try to localize.
     $this->assertInstanceOf(
       Result::class,
-      $result = $localizer->localize($source_resource->getIdentifier())
+      $result = $localizer->localizeTask($source_resource->getIdentifier(), NULL, FALSE)
     );
-    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getData());
+    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
 
     // What about our local perspective?
     $this->assertInstanceOf(
@@ -139,7 +146,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     // Try to localize.
     $this->assertInstanceOf(
       Result::class,
-      $result = $localizer->localize($source_resource->getIdentifier())
+      $result = $localizer->localizeTask($source_resource->getIdentifier())
     );
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getData());
 

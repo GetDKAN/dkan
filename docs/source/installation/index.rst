@@ -1,8 +1,8 @@
 Installation
-===============
+=============
 
 .. note::
-  `DKAN DDev Addon <https://getdkan.github.io/dkan-ddev-addon/>`_ is a project
+  `DKAN DDEV Add-on <https://getdkan.github.io/ddev-dkan/>`_ is a project
   containing commands and tools that `CivicActions <https://civicactions.com/dkan/>`_
   uses for our own implementations and deployments.
 
@@ -12,7 +12,7 @@ For either working on a project locally or working on the core DKAN software and
 - `Installing Docker <https://ddev.readthedocs.io/en/latest/users/install/docker-installation/>`_
 - `Installing DDEV <https://ddev.readthedocs.io/en/latest/users/install/ddev-installation/>`_
 
-Using `DDEV <https://ddev.readthedocs.io/en/stable/>`_ with the `DKAN DDev Addon <https://getdkan.github.io/dkan-ddev-addon/>`_ command-line utility will work on Mac, Linux, or Windows to create containers for the various services needed by DKAN.
+Using `DDEV <https://ddev.readthedocs.io/en/stable/>`_ with the `DKAN DDEV Add-on <https://getdkan.github.io/ddev-dkan/>`_ command-line utility will work on Mac, Linux, or Windows to create containers for the various services needed by DKAN.
 This will ensure you have the same setup as DKAN's core developers, and that your environment is very close to that of our continuous integration tools.
 
 Requirements
@@ -20,18 +20,19 @@ Requirements
 
 DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/system-requirements>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we reccomend:
 
+-  Drupal 10+
 -  MySQL: minimum version 5.7.8+ with PDO
--  PHP: minimum version 8.0 or 8.1
+-  PHP: minimum version 8.1
 -  Apache: minimum version 2.4.7
--  Drush: minimum version 10.x.
--  Node: minimum version 16 (if using the decoupled frontend)
+-  Drush: minimum version 11.x.
+-  Node: minimum version 18 (if using the decoupled frontend)
 
 Starting a new DKAN project
 ---------------------------
 
-Follow the instructions from the **DKAN DDev Addon** documentation: `Starting a new project <https://getdkan.github.io/dkan-ddev-addon/getting-started.html>`_ to generate a new Drupal site with DKAN installed on your system.
+Follow the instructions from the **DKAN DDEV Add-on** documentation: `Starting a new project <https://getdkan.github.io/ddev-dkan/getting-started.html>`_ to generate a new Drupal site with DKAN installed on your system.
 
-DKAN DDev Addon bases new projects off of a `composer project <https://github.com/GetDKAN/recommended-project>`_ that you can also use to start a project using your own toolset:
+DKAN DDEV Add-on bases new projects off of a `composer project <https://github.com/GetDKAN/recommended-project>`_ that you can also use to start a project using your own toolset:
 
   .. prompt:: bash $
 
@@ -59,6 +60,8 @@ To start with some example datasets:
       drush en sample_content -y
       drush dkan:sample-content:create
       drush cron
+
+If you have trouble with generating the sample content, check the :doc:`Troubleshooting <../user-guide/guide_dataset>` section in the user guide.
 
 .. note::
    Current DKAN development is utilizing a :ref:`decoupled frontend <decoupled_frontend>`.

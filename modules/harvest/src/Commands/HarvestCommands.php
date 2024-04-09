@@ -3,6 +3,7 @@
 namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
@@ -24,16 +25,28 @@ class HarvestCommands extends DrushCommands {
    *
    * @var \Drupal\harvest\HarvestService
    */
-  protected $harvestService;
+  protected HarvestService $harvestService;
+
+  /**
+   * Harvest utility service.
+   *
+   * @var \Drupal\harvest\HarvestUtility
+   */
+  protected HarvestUtility $harvestUtility;
 
   /**
    * Constructor.
    */
-  public function __construct(HarvestService $service, LoggerChannelInterface $logger) {
+  public function __construct(
+    HarvestService $service,
+    LoggerChannelInterface $logger,
+    HarvestUtility $harvestUtility
+  ) {
     parent::__construct();
     // @todo passing via arguments doesn't seem play well with drush.services.yml
     $this->harvestService = $service;
     $this->logger = $logger;
+    $this->harvestUtility = $harvestUtility;
   }
 
   /**
@@ -52,7 +65,11 @@ class HarvestCommands extends DrushCommands {
       },
       $this->harvestService->getAllHarvestIds()
       );
-    (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
+    if ($rows) {
+      (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
+      return;
+    }
+    $this->logger->notice('No harvests registered.');
   }
 
   /**
@@ -348,6 +365,47 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
+   * Report and cleanup harvest data which may be cluttering your database.
+   *
+   * Will print a report. Add -y or --no-interaction to automatically perform
+   * this cleanup.
+   *
+   * @command dkan:harvest:cleanup
+   *
+   * @return int
+   *   Bash status code.
+   *
+   * @bootstrap full
+   */
+  public function harvestCleanup(): int {
+    $logger = $this->logger();
+    $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
+    if ($orphaned) {
+      $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
+      if ($this->io()->confirm('Do you want to remove this data?', FALSE)) {
+        $this->cleanupHarvestDataTables($orphaned);
+      }
+    }
+    else {
+      $logger->notice('No leftover harvest data detected.');
+    }
+    return DrushCommands::EXIT_SUCCESS;
+  }
+
+  /**
+   * Perform the harvest data table cleanup.
+   *
+   * @param array $plan_ids
+   *   An array of plan identifiers to clean up.
+   */
+  protected function cleanupHarvestDataTables(array $plan_ids) : void {
+    foreach ($plan_ids as $plan_id) {
+      $this->logger()->notice('Cleaning up: ' . $plan_id);
+      $this->harvestUtility->destructOrphanTables($plan_id);
+    }
+  }
+
+  /**
    * Throw error if Harvest ID does not exist.
    *
    * @param string $harvestId
@@ -358,6 +416,31 @@ class HarvestCommands extends DrushCommands {
       $this->logger()->error("Harvest id {$harvestId} not found.");
       return DrushCommands::EXIT_FAILURE;
     }
+  }
+
+  /**
+   * Update all harvest-related database tables to the latest version.
+   *
+   * This command is meant to aid in updating databases where the update hook
+   * has already run, but the database still has old-style hash tables, with
+   * names like harvest_PLANID_hash.
+   *
+   * This will move all harvest hash information to the updated schema,
+   * including data which does not have a corresponding hash plan ID.
+   *
+   * Outdated tables will be removed.
+   *
+   * @command dkan:harvest:update
+   *
+   * @return int
+   *   Bash status code.
+   *
+   * @bootstrap full
+   */
+  public function harvestUpdate(): int {
+    $this->harvestUtility->harvestHashUpdate();
+    $this->logger()->success('Converted!');
+    return DrushCommands::EXIT_SUCCESS;
   }
 
 }

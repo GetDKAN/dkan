@@ -3,16 +3,19 @@
 namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStore;
+use Drupal\common\FileFetcher\DkanFileFetcher;
+use Drupal\common\FileFetcher\FileFetcherFactory;
+use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
-use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +24,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- *
+ * @group dkan
+ * @group datastore
  */
 class ResourceLocalizerTest extends TestCase {
   /**
@@ -35,7 +39,6 @@ class ResourceLocalizerTest extends TestCase {
    * Test removal of a local resource file.
    */
   public function testResourceLocalizerRemove(): void {
-    $this->markTestIncomplete('Convert this to a kernel test.');
     $this->callWithTmpFile([$this, 'doTestResourceLocalizerRemove']);
   }
 
@@ -54,14 +57,15 @@ class ResourceLocalizerTest extends TestCase {
       ->getMock();
 
     $fileFetcher = $this->getFileFetcherFactoryChain()
-      ->add(FileFetcher::class, 'getStateProperty', $file_path)
+      ->add(DkanFileFetcher::class, 'getStateProperty', $file_path)
       ->getMock();
 
     $service = new ResourceLocalizer(
       $fileMapper,
       $fileFetcher,
       $this->getDrupalFilesChain()->getMock(),
-      $this->getJobStoreFactoryChain()->getMock()
+      $this->getJobStoreFactoryChain()->getMock(),
+      $this->createMock(QueueFactory::class)
     );
 
     \Drupal::setContainer($this->getContainer()->getMock());
@@ -113,8 +117,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getFileFetcherFactoryChain() {
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', FileFetcher::class)
-      ->add(FileFetcher::class, 'getResult', Result::class)
+      ->add(FileFetcherFactory::class, 'getInstance', DkanFileFetcher::class)
+      ->add(DkanFileFetcher::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE);
   }
 
@@ -135,8 +139,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getJobStoreFactoryChain() {
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', NULL);
+      ->add(FileFetcherJobStoreFactory::class, 'getInstance', DatabaseTableInterface::class)
+      ->add(DatabaseTableInterface::class, 'remove', NULL);
   }
 
   /**
