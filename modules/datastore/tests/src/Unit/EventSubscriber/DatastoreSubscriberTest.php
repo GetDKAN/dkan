@@ -2,30 +2,33 @@
 
 namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
-use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
+use Drupal\common\DataResource;
+use Drupal\common\Events\Event;
+use Drupal\common\Storage\JobStore;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
+use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
+use Drupal\datastore\Service\Factory\ImportServiceFactory;
+use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\common\Events\Event;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\metastore\MetastoreItemInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Service\ImportService;
-use Drupal\common\Storage\JobStore;
-use Drupal\metastore\MetastoreItemInterface;
 
 /**
+ * @coversDefaultClass \Drupal\datastore\EventSubscriber\DatastoreSubscriber
  *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class DatastoreSubscriberTest extends TestCase {
 
@@ -93,14 +96,14 @@ class DatastoreSubscriberTest extends TestCase {
     $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
-    (new Chain($this))
+    $config = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', [])
       ->getMock();
 
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
@@ -117,9 +120,8 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
-      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
+      ->add(LoggerInterface::class, 'error', NULL, 'errors')
+      ->add(LoggerInterface::class, 'notice', NULL, 'notices');
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $subscriber->drop($event);
@@ -137,7 +139,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
@@ -153,9 +155,8 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
-      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
+      ->add(LoggerInterface::class, 'error', NULL, 'errors')
+      ->add(LoggerInterface::class, 'notice', NULL, 'notices');
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $subscriber->drop($event);
@@ -172,7 +173,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
@@ -188,9 +189,8 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', new \Exception('error'))
-      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
+      ->add(LoggerInterface::class, 'error', NULL, 'errors')
+      ->add(LoggerInterface::class, 'notice', NULL, 'notices');
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $subscriber->drop($event);
@@ -203,7 +203,7 @@ class DatastoreSubscriberTest extends TestCase {
   private function getContainerChain() {
     $options = (new Options())
       ->add('config.factory', $this->getImmutableConfigMock())
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)

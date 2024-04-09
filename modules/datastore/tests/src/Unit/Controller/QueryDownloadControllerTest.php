@@ -2,34 +2,36 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Drupal\datastore\DatastoreResource;
-use Drupal\common\DatasetInfo;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
+use Drupal\Core\Database\Query\Select;
+use Drupal\Tests\common\Unit\Connection;
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
-use MockChain\Options;
-use Drupal\datastore\DatastoreService;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use MockChain\Chain;
 use Drupal\datastore\Controller\QueryDownloadController;
+use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\Core\Database\Query\Select;
-use Drupal\Tests\common\Unit\Connection;
 
 /**
  * @group dkan
  * @group datastore
+ * @group unit
  */
 class QueryDownloadControllerTest extends TestCase {
 
@@ -91,6 +93,19 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   *
+   */
+  private function getConnection() {
+    return (new Chain($this))
+      ->add(
+        Connection::class,
+        "select",
+        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
+      )
+      ->getMock();
+  }
+
+  /**
    * Test streaming of a CSV file from database.
    */
   public function testStreamedResourceQueryCsv() {
@@ -135,6 +150,7 @@ class QueryDownloadControllerTest extends TestCase {
    */
   public function testStreamedJoinCsv() {
     $data = [
+      "schema" => TRUE,
       "resources" => [
         [
           "id" => "2",
@@ -353,14 +369,34 @@ class QueryDownloadControllerTest extends TestCase {
     $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
 
     $schema2 = [
-      'record_number' => ['type' => 'int', 'not null' => TRUE],
-      'state' => ['type' => 'text'],
-      'year' => ['type' => 'int'],
+      'record_number' => [
+        'type' => 'int',
+        'description' => 'Record Number',
+        'not null' => TRUE,
+      ],
+      'state' => [
+        'type' => 'text',
+        'description' => 'State',
+      ],
+      'year' => [
+        'type' => 'int',
+        'description' => 'Year',
+      ],
     ];
     $schema3 = [
-      'record_number' => ['type' => 'int', 'not null' => TRUE],
-      'year' => ['type' => 'int'],
-      'color' => ['type' => 'text'],
+      'record_number' => [
+        'type' => 'int',
+        'description' => 'Record Number',
+        'not null' => TRUE,
+      ],
+      'year' => [
+        'type' => 'int',
+        'description' => 'Year',
+      ],
+      'color' => [
+        'type' => 'text',
+        'description' => 'Color',
+      ],
     ];
 
     $storage2 = $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2);
@@ -441,7 +477,11 @@ class QueryDownloadControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_$id` VALUES ($valuesStr);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new DatastoreResource($id, "data-$id.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable(
+      $connection,
+      new DatastoreResource($id, "data-$id.csv", "text/csv"),
+      $this->createStub(LoggerInterface::class)
+    );
     $storage->setSchema([
       'fields' => $fields,
     ]);

@@ -7,6 +7,12 @@ use Drupal\common\Storage\AbstractDatabaseTable;
 
 /**
  * Harvest database table storage.
+ *
+ * Currently handles these tables: harvest_[id]_runs, harvest_[id]_items,
+ * harvest_[id]_hashes.
+ *
+ * @see \Drupal\harvest\Storage\DatabaseTableFactory::getDatabaseTable()
+ * @see \Drupal\harvest\Entity\HarvestPlanRepository
  */
 class DatabaseTable extends AbstractDatabaseTable {
 

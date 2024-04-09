@@ -21,7 +21,7 @@ class RouteProviderJSTest extends TestCase {
   public function testCRA() {
     $possible_routes = ["/home", "/about"];
     /* Test CRA Routes */
-    (new Chain($this))
+    $queryFactory = (new Chain($this))
       ->add(QueryFactoryInterface::class, "get", QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [])
@@ -42,6 +42,7 @@ class RouteProviderJSTest extends TestCase {
 
     $reactAppProvider = new RouteProvider($configFactory);
 
+    /** @var \Symfony\Component\Routing\RouteCollection $routes */
     $reactappRoutes = $reactAppProvider->routes();
 
     /** @var \Symfony\Component\Routing\Route $route */

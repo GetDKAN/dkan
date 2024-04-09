@@ -3,15 +3,15 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\common\DatasetInfo;
+use Drupal\common\JsonResponseTrait;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Query as QueryService;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\JsonResponseTrait;
-use RootedData\RootedJsonData;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
+use RootedData\RootedJsonData;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -170,9 +170,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *
    * Abstract method; override in specific implementations.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
-   * @param RootedData\RootedJsonData $result
+   * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
    *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
@@ -225,6 +225,10 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
       $data->resources = [$resource];
+    }
+    // Force schema if CSV.
+    if (($data->format ?? NULL) == 'csv') {
+      $data->schema = TRUE;
     }
     return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
   }
@@ -294,7 +298,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public static function getPayloadJson(Request $request, $schema = NULL) {
     $schema ??= file_get_contents(__DIR__ . "/../../docs/query.json");
     $payloadJson = static::getJson($request);
-    return static::fixTypes($payloadJson, $schema);
+    $payloadJson = static::fixTypes($payloadJson, $schema);
+    return $payloadJson;
   }
 
   /**
@@ -341,6 +346,59 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     $validator = new Validator();
     $validator->coerce($data, json_decode($schema));
     return json_encode($data, JSON_PRETTY_PRINT);
+  }
+
+  /**
+   * Build a CSV header row based on a query and result.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore query object.
+   * @param \RootedData\RootedJsonData $result
+   *   The result of the datastore query.
+   *
+   * @return array
+   *   Array of strings for a CSV header row.
+   */
+  protected function getHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
+    $schema_fields = $result->{'$.schema..fields'}[0] ?? [];
+    if (empty($schema_fields)) {
+      throw new \DomainException("Could not generate header for CSV.");
+    }
+    if (empty($datastoreQuery->{'$.properties'})) {
+      return array_keys($schema_fields);
+    }
+
+    $header_row = [];
+    foreach ($datastoreQuery->{'$.properties'} ?? [] as $property) {
+      $normalized_prop = $this->propToString($property, $datastoreQuery);
+      $header_row[] = $schema_fields[$normalized_prop]['description'] ?? $normalized_prop;
+    }
+
+    return $header_row;
+  }
+
+  /**
+   * Transform any property into a string for mapping to schema.
+   *
+   * @param string|array $property
+   *   A property from a DataStore Query.
+   *
+   * @return string
+   *   String version of property.
+   */
+  protected function propToString(string|array $property): string {
+    if (is_string($property)) {
+      return $property;
+    }
+    elseif (isset($property['property'])) {
+      return $property['property'];
+    }
+    elseif (isset($property['alias'])) {
+      return $property['alias'];
+    }
+    else {
+      throw new \DomainException("Invalid property: " . print_r($property, TRUE));
+    }
   }
 
 }

@@ -125,7 +125,8 @@ class ImportController implements ContainerInjectionInterface {
     else {
       $distributions = [];
     }
-    return empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
+    $dependencies = empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
+    return $dependencies;
   }
 
   /**

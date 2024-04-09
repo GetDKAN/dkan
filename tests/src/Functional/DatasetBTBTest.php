@@ -455,7 +455,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues(['localize_import', 'datastore_import']);
 
     $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
-    $this->queryResource($queryString);
+    $this->queryResource($resource, $queryString);
   }
 
   private function getResourceDatastoreTable(object $resource) {
@@ -609,7 +609,7 @@ class DatasetBTBTest extends BrowserTestBase {
     return $filenames;
   }
 
-  private function queryResource(string $queryString) {
+  private function queryResource(object $resource, string $queryString) {
     /** @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);

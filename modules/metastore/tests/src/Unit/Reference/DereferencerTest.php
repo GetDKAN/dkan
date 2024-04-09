@@ -13,9 +13,12 @@ use Drupal\metastore\Storage\NodeData;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
- *
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class DereferencerTest extends TestCase {
 
@@ -38,11 +41,11 @@ class DereferencerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', ['publisher'])
       ->getMock();
 
-    (new Chain($this))
+    $queueService = (new Chain($this))
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory);
+    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerInterface::class));
     $referenced = $valueReferencer->dereference((object) ['publisher' => $uuid]);
 
     $this->assertTrue(is_object($referenced));
@@ -63,7 +66,7 @@ class DereferencerTest extends TestCase {
     $uuidService = new Uuid5();
     $uuid = $uuidService->generate('dataset', "some value");
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory);
+    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerInterface::class));
     $referenced = $valueReferencer->dereference((object) ['distribution' => $uuid]);
 
     $this->assertEmpty((array) $referenced);
@@ -85,18 +88,18 @@ class DereferencerTest extends TestCase {
       ->add(NodeData::class, 'retrieve', $keywords)
       ->getMock();
 
-    new Uuid5();
+    $uuidService = new Uuid5();
 
     $configService = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', ['keyword'])
       ->getMock();
 
-    (new Chain($this))
+    $queueService = (new Chain($this))
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory);
+    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerInterface::class));
     $referenced = $valueReferencer->dereference((object) ['keyword' => ['123456789', '987654321']]);
 
     $this->assertTrue(is_object($referenced));

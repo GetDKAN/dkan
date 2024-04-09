@@ -7,6 +7,8 @@ use Psr\Log\LogLevel;
 
 /**
  * DKAN logger channel trait.
+ *
+ * @deprecated Use an injected logger service instead.
  */
 trait LoggerTrait {
 

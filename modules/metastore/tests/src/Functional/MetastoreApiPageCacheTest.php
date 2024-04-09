@@ -36,6 +36,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
   protected $httpClient;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
   public function setUp(): void {
     parent::setUp();

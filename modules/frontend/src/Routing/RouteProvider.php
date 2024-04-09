@@ -20,6 +20,13 @@ class RouteProvider {
   private $appRoot;
 
   /**
+   * Query factory service.
+   *
+   * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
+   */
+  private QueryFactoryInterface $entityQuery;
+
+  /**
    * Build folder config.
    *
    * @var string
@@ -49,6 +56,7 @@ class RouteProvider {
     ConfigFactoryInterface $configFactory
   ) {
     $this->appRoot = $appRoot;
+    $this->entityQuery = $entityQuery;
     $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');
     $this->frontendPath = $configFactory->get('frontend.config')->get('frontend_path');
     $this->routes = $configFactory->get('frontend.config')->get('routes');

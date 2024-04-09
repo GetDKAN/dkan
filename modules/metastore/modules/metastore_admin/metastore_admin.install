@@ -23,7 +23,7 @@ function metastore_admin_update_8003() {
     'source' => $config_path,
     'partial' => true
   ];
-  $drush_import->import(NULL, $options);
+  $result = $drush_import->import(NULL, $options);
 }
 
 /**

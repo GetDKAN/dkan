@@ -40,6 +40,7 @@ class RouteProvider2Test extends TestCase {
 
     $gatsbyProvider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory, $configFactory);
 
+    /** @var \Symfony\Component\Routing\RouteCollection $routes */
     $gatsbyRoutes = $gatsbyProvider->routes();
 
     /** @var \Symfony\Component\Routing\Route $route */
@@ -83,6 +84,7 @@ class RouteProvider2Test extends TestCase {
 
     $reactAppProvider = new RouteProvider(__DIR__ . "/../../../cra", $queryFactory, $configFactory);
 
+    /** @var \Symfony\Component\Routing\RouteCollection $routes */
     $reactappRoutes = $reactAppProvider->routes();
 
     /** @var \Symfony\Component\Routing\Route $route */

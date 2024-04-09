@@ -79,6 +79,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function runQueryGet() {
 
+    $query = NULL;
     $query = $this->requestStack->getCurrentRequest()->get('query');
 
     // @todo Deprecate parameter show-db-columns in favor of show_db_columns.

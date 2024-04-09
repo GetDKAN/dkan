@@ -2,15 +2,14 @@
 
 namespace Drupal\harvest;
 
-use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
-use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\common\LoggerTrait;
+use Drupal\harvest\Entity\HarvestPlanRepository;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Harvest\ETL\Factory;
-use Harvest\Harvester as DkanHarvester;
+use Harvest\Harvester;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -21,29 +20,44 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class HarvestService implements ContainerInjectionInterface {
 
-  use LoggerTrait;
   use OrphanDatasetsProcessor;
 
   /**
    * Service to instantiate storage objects for Harvest plan storage.
    *
    * @var \Contracts\FactoryInterface
+   *
+   * @see \Drupal\harvest\Storage\DatabaseTableFactory
    */
   private $storeFactory;
+
+  /**
+   * Harvest hash database table factory service.
+   *
+   * @var \Contracts\FactoryInterface
+   */
+  private HarvestHashesDatabaseTableFactory $hashesStoreFactory;
 
   /**
    * DKAN metastore service.
    *
    * @var \Drupal\metastore\MetastoreService
    */
-  private $metastore;
+  private MetastoreService $metastore;
 
   /**
-   * Entity type manager.
+   * Harvest plan storage repository service.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\harvest\Entity\HarvestPlanRepository
    */
-  private $entityTypeManager;
+  private HarvestPlanRepository $harvestPlanRepository;
+
+  /**
+   * DKAN logger channel.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
 
   /**
    * Create.
@@ -53,33 +67,42 @@ class HarvestService implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new self(
       $container->get('dkan.harvest.storage.database_table'),
+      $container->get('dkan.harvest.storage.hashes_database_table'),
       $container->get('dkan.metastore.service'),
-      $container->get('entity_type.manager')
+      $container->get('dkan.harvest.harvest_plan_repository'),
+      $container->get('dkan.harvest.logger_channel')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, MetastoreService $metastore, EntityTypeManager $entityTypeManager) {
+  public function __construct(
+    FactoryInterface $storeFactory,
+    HarvestHashesDatabaseTableFactory $hashesStoreFactory,
+    MetastoreService $metastore,
+    HarvestPlanRepository $harvestPlansRepository,
+    LoggerInterface $loggerChannel
+  ) {
     $this->storeFactory = $storeFactory;
+    $this->hashesStoreFactory = $hashesStoreFactory;
     $this->metastore = $metastore;
-    $this->entityTypeManager = $entityTypeManager;
+    $this->harvestPlanRepository = $harvestPlansRepository;
+    $this->logger = $loggerChannel;
   }
 
   /**
-   * Get all available harvests.
+   * Get all available harvest identifiers.
    *
    * @return array
    *   All ids.
    */
   public function getAllHarvestIds() {
-    $store = $this->storeFactory->getInstance("harvest_plans");
-
-    if ($store instanceof BulkRetrieverInterface) {
-      return $store->retrieveAll();
-    }
-    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetrieverInterface::class}");
+    // Some calling code is very particular about the output being an array,
+    // both as a return value here and after json_encode(). Since the entity
+    // query returns a keyed array, json_encode() will think it's an object. We
+    // don't want that, so we use array_values().
+    return array_values($this->harvestPlanRepository->getAllHarvestPlanIds());
   }
 
   /**
@@ -88,25 +111,37 @@ class HarvestService implements ContainerInjectionInterface {
    * @param string $plan_id
    *   The harvest plan id.
    *
-   * @return mixed
+   * @return string|null
    *   The harvest plan, if any, or NULL.
    *
    * @throws \Exception
    */
   public function getHarvestPlan($plan_id) {
-    $store = $this->storeFactory->getInstance("harvest_plans");
+    return $this->harvestPlanRepository->getPlanJson($plan_id);
+  }
 
-    if ($store instanceof BulkRetrieverInterface) {
-      return $store->retrieve($plan_id);
-    }
-    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {RetrieverInterface::class}");
+  /**
+   * Return a harvest plan object.
+   *
+   * @param string $plan_id
+   *   The harvest plan id.
+   *
+   * @return object|null
+   *   The harvest plan, if any, or NULL.
+   *
+   * @throws \Exception
+   */
+  public function getHarvestPlanObject($plan_id): ?object {
+    return $this->harvestPlanRepository->getPlan($plan_id);
   }
 
   /**
    * Register a new harvest plan.
    *
    * @param object $plan
-   *   usually an \stdClass representation.
+   *   The plan object. Must contain an 'identifier' propoerty. See
+   *   components.schemas.harvestPlan within
+   *   modules/harvest/docs/openapi_spec.json for the schema of a plan.
    *
    * @return string
    *   Identifier.
@@ -115,15 +150,8 @@ class HarvestService implements ContainerInjectionInterface {
    *   Exceptions may be thrown if validation fails.
    */
   public function registerHarvest($plan) {
-
     $this->validateHarvestPlan($plan);
-
-    $store = $this->storeFactory->getInstance("harvest_plans");
-
-    if ($store instanceof StorerInterface) {
-      return $store->store(json_encode($plan), $plan->identifier);
-    }
-    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {StorerInterface::class}");
+    return $this->harvestPlanRepository->storePlan($plan, $plan->identifier);
   }
 
   /**
@@ -136,19 +164,20 @@ class HarvestService implements ContainerInjectionInterface {
    *   Whether this happened successfully.
    */
   public function deregisterHarvest(string $plan_id) {
-    // Remove all the support tables for this plan id.
-    foreach ([
-      'harvest_' . $plan_id . '_items',
-      'harvest_' . $plan_id . '_hashes',
-      'harvest_' . $plan_id . '_runs',
-    ] as $table_name) {
-      /** @var \Drupal\common\Storage\DatabaseTableInterface $store */
-      $store = $this->storeFactory->getInstance($table_name);
-      $store->destruct();
+    if (in_array($plan_id, $this->harvestPlanRepository->getAllHarvestPlanIds())) {
+      // Remove all the support tables for this plan id.
+      foreach ([
+        'harvest_' . $plan_id . '_items',
+        'harvest_' . $plan_id . '_runs',
+      ] as $table_name) {
+        /** @var \Drupal\common\Storage\DatabaseTableInterface $store */
+        $store = $this->storeFactory->getInstance($table_name);
+        $store->destruct();
+      }
+      // Remove the plan id from the harvest_plans table.
+      return $this->harvestPlanRepository->remove($plan_id);
     }
-    // Remove the plan id from the harvest_plans table.
-    $plan_store = $this->storeFactory->getInstance('harvest_plans');
-    return $plan_store->remove($plan_id);
+    return FALSE;
   }
 
   /**
@@ -209,7 +238,8 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function getAllHarvestRunInfo($id) {
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    return $run_store->retrieveAll();
+    $runs = $run_store->retrieveAll();
+    return $runs;
   }
 
   /**
@@ -310,7 +340,7 @@ class HarvestService implements ContainerInjectionInterface {
         $this->metastore->$method('dataset', $datasetId);
     }
     catch (\Exception $e) {
-      $this->error("Error applying method {$method} to dataset {$datasetId}: {$e->getMessage()}");
+      $this->logger->error("Error applying method {$method} to dataset {$datasetId}: {$e->getMessage()}");
       return FALSE;
     }
   }
@@ -322,36 +352,34 @@ class HarvestService implements ContainerInjectionInterface {
    *   Plan.
    *
    * @return bool
-   *   Throws exceptions instead of false it seems.
+   *   TRUE if harvest plan validates. Throws exception otherwise.
    */
-  public function validateHarvestPlan($plan) {
+  public function validateHarvestPlan($plan): bool {
     return Factory::validateHarvestPlan($plan);
   }
 
   /**
    * Get a DKAN harvester instance.
    *
-   * @param string $id
+   * @param string $plan_id
    *   Harvester ID.
    *
    * @return \Harvest\Harvester
    *   Harvester object.
    */
-  private function getHarvester(string $id) {
-    $plan_store = $this->storeFactory->getInstance("harvest_plans");
-    $harvestPlan = json_decode($plan_store->retrieve($id));
-    $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
-    $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
-    return $this->getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store);
+  private function getHarvester(string $plan_id): Harvester {
+    return $this->getDkanHarvesterInstance(
+      $this->harvestPlanRepository->getPlan($plan_id),
+      $this->storeFactory->getInstance('harvest_' . $plan_id . '_items'),
+      $this->hashesStoreFactory->getInstance($plan_id)
+    );
   }
 
   /**
-   * Protected.
-   *
-   * @codeCoverageIgnore
+   * Get the harvester from the harvester library.
    */
-  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
-    return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));
+  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store): Harvester {
+    return new Harvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 
 }

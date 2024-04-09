@@ -104,7 +104,7 @@ class MetastoreApiResponse {
       $this->addItemDependencies($cacheMetadata, $item);
     }
     elseif (is_string($item)) {
-      $this->addSchemaDependency($cacheMetadata);
+      $this->addSchemaDependency($cacheMetadata, $item);
     }
     else {
       throw new \InvalidArgumentException("Invalid cacheable dependency. " . print_r([$key => $item], TRUE));
@@ -174,8 +174,13 @@ class MetastoreApiResponse {
    *
    * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
    *   Cache metadata object to modify.
+   * @param mixed $schema
+   *   The schemaID (e.g., "dataset").
    */
-  private function addSchemaDependency(CacheableMetadata $cacheMetadata) {
+  private function addSchemaDependency(CacheableMetadata $cacheMetadata, $schema) {
+    // Silly line to make linters happy. Right now the itemFactory doesn't
+    // require a schema so it's not used.
+    $schema = $schema;
     $cacheTags = $this->getMetastoreItemFactory()->getCacheTags();
     $cacheMetadata->addCacheTags($cacheTags);
   }

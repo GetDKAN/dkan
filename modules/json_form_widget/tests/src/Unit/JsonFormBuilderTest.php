@@ -2,26 +2,29 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Drupal\json_form_widget\FormBuilder;
-use Drupal\json_form_widget\ArrayHelper;
-use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\Form\FormState;
-use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\json_form_widget\ArrayHelper;
 use Drupal\json_form_widget\FieldTypeRouter;
+use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\SchemaRetriever;
+use MockChain\Chain;
 use MockChain\Options;
-use stdClass;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * Test class for JsonFormWidget.
+ *
+ * @group dkan
+ * @group json_form_widget
+ * @group unit
  */
 class JsonFormBuilderTest extends TestCase {
 
@@ -35,7 +38,7 @@ class JsonFormBuilderTest extends TestCase {
       ->add('json_form.object_helper', ObjectHelper::class)
       ->add('json_form.array_helper', ArrayHelper::class)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('json_form.router', FieldTypeRouter::class)
       ->index(0);
 
@@ -64,7 +67,7 @@ class JsonFormBuilderTest extends TestCase {
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.router', $router)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
 
@@ -164,7 +167,7 @@ class JsonFormBuilderTest extends TestCase {
         ],
       ],
     ];
-    $default_data = new stdClass();
+    $default_data = new \stdClass();
     $default_data->test = "Some value.";
     $this->assertEquals($expected, $form_builder->getJsonForm($default_data));
 
@@ -370,7 +373,9 @@ class JsonFormBuilderTest extends TestCase {
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
-    return FieldTypeRouter::create($container);
+
+    $router = FieldTypeRouter::create($container);
+    return $router;
   }
 
 }

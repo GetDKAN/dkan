@@ -4,8 +4,8 @@ namespace Drupal\json_form_widget;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\SchemaRetriever;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
  * Form builder service.
@@ -41,11 +41,11 @@ class FormBuilder implements ContainerInjectionInterface {
   protected $router;
 
   /**
-   * Logger service.
+   * Logger channel service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   * @var \Psr\Log\LoggerInterface
    */
-  protected $loggerFactory;
+  private LoggerInterface $logger;
 
   /**
    * Inherited.
@@ -57,18 +57,23 @@ class FormBuilder implements ContainerInjectionInterface {
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('json_form.router'),
       $container->get('json_form.schema_ui_handler'),
-      $container->get('logger.factory')
+      $container->get('dkan.json_form.logger_channel')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, FieldTypeRouter $router, SchemaUiHandler $schema_ui_handler, LoggerChannelFactory $logger_factory) {
+  public function __construct(
+    SchemaRetriever $schema_retriever,
+    FieldTypeRouter $router,
+    SchemaUiHandler $schema_ui_handler,
+    LoggerInterface $loggerChannel
+  ) {
     $this->schemaRetriever = $schema_retriever;
     $this->router = $router;
     $this->schemaUiHandler = $schema_ui_handler;
-    $this->loggerFactory = $logger_factory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -85,7 +90,7 @@ class FormBuilder implements ContainerInjectionInterface {
       $this->router->setSchema($this->schema);
     }
     catch (\Exception $exception) {
-      $this->loggerFactory->get('json_form_widget')->notice("The JSON Schema for $schema_name does not exist.");
+      $this->logger->notice("The JSON Schema for $schema_name does not exist.");
     }
   }
 
@@ -113,7 +118,8 @@ class FormBuilder implements ContainerInjectionInterface {
         $form[$property] = $this->router->getFormElement($type, $definition, $value, NULL, $form_state, []);
       }
       if ($this->schemaUiHandler->getSchemaUi()) {
-        return $this->schemaUiHandler->applySchemaUi($form);
+        $form_updated = $this->schemaUiHandler->applySchemaUi($form);
+        return $form_updated;
       }
       return $form;
     }

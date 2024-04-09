@@ -256,7 +256,8 @@ class DatastoreService implements ContainerInjectionInterface {
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
-      return $storage->getSummary();
+      $data = $storage->getSummary();
+      return $data;
     }
     throw new \Exception('no storage');
   }

@@ -2,37 +2,40 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Drupal\datastore\DatastoreResource;
-use Drupal\common\DatasetInfo;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
-use MockChain\Options;
-use Drupal\datastore\DatastoreService;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use MockChain\Chain;
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
+use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class QueryControllerTest extends TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    // Set cache services
+    // Set cache services.
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->index(0);
@@ -81,7 +84,7 @@ class QueryControllerTest extends TestCase {
       ->getMock();
     \Drupal::setContainer($container);
 
-    $chain = $this->getQueryContainer([], FALSE);
+    $chain = $this->getQueryContainer($data, [], FALSE);
     $webServiceApi = QueryController::create($chain->getMock());
     $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
@@ -241,7 +244,7 @@ class QueryControllerTest extends TestCase {
       ->getMock();
     \Drupal::setContainer($container);
 
-    $chain = $this->getQueryContainer([], FALSE);
+    $chain = $this->getQueryContainer($data, [], FALSE);
     $webServiceApi = QueryController::create($chain->getMock());
     $request = $this->mockRequest($data);
     $result = $webServiceApi->queryResource("9", $request);
@@ -266,8 +269,8 @@ class QueryControllerTest extends TestCase {
             "value" => [
               "resource" => "t",
               "property" => "record_number",
-            ]
-          ]
+            ],
+          ],
         ],
       ],
     ]);
@@ -298,13 +301,13 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
 
     $csv = explode("\n", $result->getContent());
-    $this->assertEquals('state,year', $csv[0]);
+    $this->assertEquals('State,Year', $csv[0]);
     $this->assertEquals('Alabama,2010', $csv[1]);
     $this->assertStringContainsString('data.csv', $result->headers->get('Content-Disposition'));
   }
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
-    $container = $this->getQueryContainer($info)->getMock();
+    $container = $this->getQueryContainer($data, $info, true)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
@@ -316,17 +319,51 @@ class QueryControllerTest extends TestCase {
     return $webServiceApi->queryDatasetResource($id, $index, $request);
   }
 
-  /**
-   *
-   */
   public function testResourceQueryCsv() {
     $data = json_encode([
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+      ],
       "results" => TRUE,
       "format" => "csv",
     ]);
-    $result = $this->getQueryResult($data);
-
+    $result = $this->getQueryResult($data, "2");
     $this->assertTrue($result instanceof CsvResponse);
+    $csv = explode("\n", $result->getContent());
+    $this->assertEquals('State', $csv[0]);
+    $this->assertEquals('Alabama', $csv[1]);
+    $this->assertEquals(200, $result->getStatusCode());
+  }
+
+
+  public function testResourceExpressionQueryCsv() {
+    $data = json_encode([
+      "properties" => [
+        "state",
+        "year",
+        [
+          "expression" => [
+            "operator" => "+",
+            "operands" => [
+              "year",
+              1,
+            ],
+          ],
+          "alias" => "year_plus_1",
+        ],
+      ],
+      "results" => TRUE,
+      "format" => "csv",
+    ]);
+    $result = $this->getQueryResult($data, "2");
+    $this->assertTrue($result instanceof CsvResponse);
+
+    $csv = explode("\n", $result->getContent());
+    $this->assertEquals('State,Year,year_plus_1', $csv[0]);
+    $this->assertEquals('Alabama,2010,2011', $csv[1]);
     $this->assertEquals(200, $result->getStatusCode());
   }
 
@@ -399,7 +436,7 @@ class QueryControllerTest extends TestCase {
     ]);
 
     // Create a container with caching turned on.
-    $containerChain = $this->getQueryContainer()
+    $containerChain = $this->getQueryContainer($data)
       ->add(Container::class, 'has', TRUE)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 600);
@@ -433,7 +470,7 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  private function getQueryContainer(array $info = [], $mockMap = TRUE) {
+  private function getQueryContainer($data = '', array $info = [], $mockMap = TRUE) {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
@@ -498,12 +535,16 @@ class QueryControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new DatastoreResource("2", "data.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable(
+      $connection,
+      new DatastoreResource("2", "data.csv", "text/csv"),
+      $this->createStub(LoggerInterface::class)
+    );
     $storage->setSchema([
       'fields' => [
-        'record_number' => ['type' => 'int', 'not null' => TRUE],
-        'state' => ['type' => 'text'],
-        'year' => ['type' => 'int'],
+        'record_number' => ['type' => 'int', 'description' => 'Record Number', 'not null' => TRUE],
+        'state' => ['type' => 'text', 'description' => 'State'],
+        'year' => ['type' => 'int', 'description' => 'Year'],
       ],
     ]);
     return $storage;
