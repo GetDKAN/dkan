@@ -50,6 +50,7 @@ class DrupalFilesTest extends TestCase {
    * Protected.
    */
   protected function tearDown(): void {
+    parent::tearDown();
     unlink("/tmp/hello.txt");
   }
 

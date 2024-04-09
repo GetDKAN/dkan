@@ -22,23 +22,24 @@
  */
 
 declare(strict_types=1);
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 
 use DrupalFinder\DrupalFinder;
+use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
+use DrupalRector\Set\Drupal10SetList;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
+use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
+use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
+use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
-use Rector\ValueObject\PhpVersion;
-use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
-use DrupalRector\Set\Drupal10SetList;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Set\ValueObject\SetList;
-use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
+use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -47,12 +48,10 @@ return static function (RectorConfig $rectorConfig): void {
     __DIR__,
   ]);
 
-  // Our base version of PHP.
-  $rectorConfig->phpVersion(PhpVersion::PHP_81);
-
   $rectorConfig->sets([
     Drupal10SetList::DRUPAL_10,
-    SetList::DEAD_CODE,
+    SetList::PHP_80,
+//    SetList::DEAD_CODE,
   ]);
 
   $rectorConfig->skip([
@@ -75,6 +74,7 @@ return static function (RectorConfig $rectorConfig): void {
     RemoveParentCallWithoutParentRector::class,
     ClassPropertyAssignToConstructorPromotionRector::class,
     FunctionToStaticRector::class,
+    NullToStrictStringFuncCallArgRector::class,
   ]);
 
   $drupalFinder = new DrupalFinder();

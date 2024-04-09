@@ -252,7 +252,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       'Can\'t find FULLTEXT index matching the column list' => 'You have attempted a fulltext match against a column that is not indexed for fulltext searching',
     ];
     foreach ($messages as $portion => $message) {
-      if (strpos($unsanitizedMessage, $portion) !== FALSE) {
+      if (str_contains($unsanitizedMessage, $portion)) {
         return $message . '.';
       }
     }
@@ -271,7 +271,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
         try {
           $this->tableCreate($table_name, $schema);
         }
-        catch (SchemaObjectExistsException $e) {
+        catch (SchemaObjectExistsException) {
           // Table already exists, which is totally OK. Other throwables find
           // their way out to the caller.
         }

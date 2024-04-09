@@ -125,7 +125,7 @@ class OrphanChecker {
    * @param mixed $new_value
    *   The new value to replaced it with.
    */
-  private function processReferencesInUpdatedProperty($property_id, $old_value, $new_value) {
+  private function processReferencesInUpdatedProperty($property_id, mixed $old_value, mixed $new_value) {
     if (!is_array($old_value)) {
       $old_value = [$old_value];
       $new_value = [$new_value];

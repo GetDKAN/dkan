@@ -142,7 +142,7 @@ class DatasetApiDocs {
    * @return array
    *   Components object (associative array).
    */
-  private function datasetSpecificComponents($fullSpec, $identifier) {
+  private function datasetSpecificComponents(mixed $fullSpec, mixed $identifier) {
     $components = [];
     $components['parameters'] =
       $this->datasetSpecificParameters($fullSpec['components']['parameters'], $identifier);
@@ -165,7 +165,7 @@ class DatasetApiDocs {
    * @return array
    *   Path array ready to insert.
    */
-  private function getDatastoreIndexPath($fullSpec, $identifier) {
+  private function getDatastoreIndexPath(mixed $fullSpec, mixed $identifier) {
     $datastoreIndexPath = $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{datasetId}/{index}'];
     unset($datastoreIndexPath['get']['parameters'][0]);
     $datastoreIndexPath['get']['parameters'] = array_values($datastoreIndexPath['get']['parameters']);
@@ -204,7 +204,7 @@ class DatasetApiDocs {
    * @return array
    *   Filtered parameters.
    */
-  private function datasetSpecificParameters(array $parameters, $identifier) {
+  private function datasetSpecificParameters(array $parameters, mixed $identifier) {
     $newParameters = array_filter($parameters, function ($key) {
       if (in_array($key, self::SPEC_PARAMETERS)) {
         return TRUE;

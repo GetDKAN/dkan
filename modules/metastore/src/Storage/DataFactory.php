@@ -62,12 +62,9 @@ class DataFactory implements FactoryInterface {
     if (!isset($this->stores[$identifier])) {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 
-      switch ($entity_type) {
-        case 'node':
-        default:
-          $instance = $this->createNodeInstance($identifier);
-          break;
-      }
+      $instance = match ($entity_type) {
+          default => $this->createNodeInstance($identifier),
+      };
 
       $this->stores[$identifier] = $instance;
     }

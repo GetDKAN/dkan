@@ -476,7 +476,7 @@ class ReferencerTest extends TestCase {
     );
 
     if ($describedBy instanceof \Exception) {
-      $this->expectException(get_class($describedBy));
+      $this->expectException($describedBy::class);
       $this->expectExceptionMessage($describedBy->getMessage());
     }
     $referencer->distributionHandling($distribution);

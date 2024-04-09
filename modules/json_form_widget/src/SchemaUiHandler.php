@@ -80,12 +80,12 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @param mixed $schema_name
    *   The schema name.
    */
-  public function setSchemaUi($schema_name) {
+  public function setSchemaUi(mixed $schema_name) {
     try {
       $schema_ui = $this->schemaRetriever->retrieve($schema_name . '.ui');
       $this->schemaUi = json_decode($schema_ui);
     }
-    catch (\Exception $exception) {
+    catch (\Exception) {
       $this->logger->notice("The UI Schema for $schema_name does not exist.");
     }
   }
@@ -109,7 +109,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Form with Schema UI applied.
    */
-  public function applySchemaUi($form) {
+  public function applySchemaUi(mixed $form) {
     if ($this->schemaUi) {
       foreach ((array) $this->schemaUi as $property => $spec) {
         // Apply schema UI on base field.
@@ -136,7 +136,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Render array for the element with schema UI applied.
    */
-  public function handlePropertySpec($property, $spec, $element, bool $in_array = FALSE) {
+  public function handlePropertySpec(mixed $property, mixed $spec, mixed $element, bool $in_array = FALSE) {
     if ($in_array) {
       $element = $this->applyOnBaseField($spec, $element);
     }
@@ -165,7 +165,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Element with widget configuration based on UI options.
    */
-  public function applyOnBaseField($spec, array $element) {
+  public function applyOnBaseField(mixed $spec, array $element) {
     if (isset($spec->{"ui:options"})) {
       $element = $this->updateWidgets($spec->{"ui:options"}, $element);
       $element = $this->disableFields($spec->{"ui:options"}, $element);
@@ -192,7 +192,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Render array for the element with schema UI applied.
    */
-  public function applyOnObjectFields($property, $spec, $element) {
+  public function applyOnObjectFields(mixed $property, mixed $spec, mixed $element) {
     foreach ((array) $spec as $field => $sub_spec) {
       if (isset($element[$property][$field])) {
         $element[$property][$field] = $this->applyOnBaseField($sub_spec, $element[$property][$field]);
@@ -216,7 +216,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Render array for the element with schema UI applied.
    */
-  public function applyOnArrayFields($property, $spec, $element, $fields) {
+  public function applyOnArrayFields(mixed $property, mixed $spec, mixed $element, mixed $fields) {
     foreach ($fields as $field) {
       if (isset($element[$property][$field])) {
         $element[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $element[$property][$field], TRUE);
@@ -239,7 +239,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Element with configurations about widget.
    */
-  public function updateWidgets($spec, array $element) {
+  public function updateWidgets(mixed $spec, array $element) {
     if (isset($spec->widget)) {
       return $this->widgetRouter->getConfiguredWidget($spec, $element);
     }
@@ -259,7 +259,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Element with hints about whether it should be disabled.
    */
-  public function disableFields($spec, array $element) {
+  public function disableFields(mixed $spec, array $element) {
     if (isset($spec->disabled)) {
       $element['#disabled'] = TRUE;
     }
@@ -277,7 +277,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Element with placeholder info.
    */
-  public function addPlaceholders($spec, array $element) {
+  public function addPlaceholders(mixed $spec, array $element) {
     if (isset($spec->placeholder)) {
       $element['#attributes']['placeholder'] = $spec->placeholder;
     }
@@ -295,7 +295,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Element with description/help text.
    */
-  public function changeFieldDescriptions($spec, array $element) {
+  public function changeFieldDescriptions(mixed $spec, array $element) {
     if (isset($spec->description)) {
       $element['#description'] = $spec->description;
       $element['#description_display'] = 'before';
@@ -314,7 +314,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @return array
    *   Element with title overriden.
    */
-  public function changeFieldTitle($spec, array $element) {
+  public function changeFieldTitle(mixed $spec, array $element) {
     if (isset($spec->title)) {
       $element['#title'] = $spec->title;
     }

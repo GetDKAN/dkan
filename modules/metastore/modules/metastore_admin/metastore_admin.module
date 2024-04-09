@@ -17,7 +17,7 @@ function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterfac
   if (isset($form['#id']) && $form['#id'] == 'views-exposed-form-dkan-dataset-content-page-1') {
     $schemaRetriever = \Drupal::service('dkan.metastore.schema_retriever');
     $schemaIds = array_filter($schemaRetriever->getAllIds(), function ($schemaId) {
-      return substr($schemaId, -3) != '.ui';
+      return !str_ends_with($schemaId, '.ui');
     });
     $options = array_combine($schemaIds, $schemaIds);
     $options = array_merge(['' => t('- Any -')], $options);
