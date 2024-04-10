@@ -50,7 +50,7 @@ class MetastoreApiResponse {
    *   A response, ready to be returned to a route.
    */
   public function cachedJsonResponse(
-    $data,
+    mixed $data,
     int $code = 200,
     array $dependencies = [],
     ?ParameterBag $params = NULL
@@ -99,7 +99,7 @@ class MetastoreApiResponse {
    * @param mixed $item
    *   Item from dependency array.
    */
-  private function addDependency(CacheableMetadata $cacheMetadata, $key, $item) {
+  private function addDependency(CacheableMetadata $cacheMetadata, mixed $key, mixed $item) {
     if (is_string($key) && is_array($item)) {
       $this->addItemDependencies($cacheMetadata, $item);
     }
@@ -139,7 +139,7 @@ class MetastoreApiResponse {
     $metadata = $item->getMetaData();
     $ids = [];
     foreach ($metadata as $propertyId => $value) {
-      if (substr($propertyId, 0, 4) == '%Ref') {
+      if (str_starts_with($propertyId, '%Ref')) {
         $this->addReferenceIdentifier($ids, $value);
       }
     }
@@ -155,7 +155,7 @@ class MetastoreApiResponse {
    * @param mixed $value
    *   The value for the reference field.
    */
-  private function addReferenceIdentifier(array &$ids, $value) {
+  private function addReferenceIdentifier(array &$ids, mixed $value) {
     if (is_array($value)) {
       foreach ($value as $ref) {
         $ids[] = $ref->identifier ?? NULL;
@@ -177,7 +177,7 @@ class MetastoreApiResponse {
    * @param mixed $schema
    *   The schemaID (e.g., "dataset").
    */
-  private function addSchemaDependency(CacheableMetadata $cacheMetadata, $schema) {
+  private function addSchemaDependency(CacheableMetadata $cacheMetadata, mixed $schema) {
     // Silly line to make linters happy. Right now the itemFactory doesn't
     // require a schema so it's not used.
     $schema = $schema;

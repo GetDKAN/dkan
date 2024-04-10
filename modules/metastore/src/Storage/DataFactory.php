@@ -66,7 +66,6 @@ class DataFactory implements FactoryInterface {
         case 'node':
         default:
           $instance = $this->createNodeInstance($identifier);
-          break;
       }
 
       $this->stores[$identifier] = $instance;

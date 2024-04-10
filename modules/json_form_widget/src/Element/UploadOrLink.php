@@ -35,7 +35,7 @@ class UploadOrLink extends ManagedFile {
    * @codeCoverageIgnore
    */
   public function getInfo() {
-    $class = get_class($this);
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#process' => [[$class, 'processManagedFile']],

@@ -202,7 +202,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * Private.
    */
   private function getLabelFromObject($object) {
-    return substr(strrchr(get_class($object), '\\'), 1);
+    return substr(strrchr($object::class, '\\'), 1);
   }
 
   /**

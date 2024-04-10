@@ -93,7 +93,7 @@ class WebServiceApiTest extends TestCase {
   public function testEmptyIndex() {
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->index();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertEquals(JsonResponse::class, $response::class);
     $this->assertEquals($response->getContent(), json_encode([]));
   }
 
@@ -104,7 +104,7 @@ class WebServiceApiTest extends TestCase {
     $this->request = new Request();
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertEquals(JsonResponse::class, $response::class);
     $this->assertEquals($response->getContent(), json_encode(["message" => "Harvest plan must be a php object."]));
   }
 
@@ -129,11 +129,11 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertEquals(JsonResponse::class, $response::class);
     $this->assertEquals($response->getContent(), json_encode(["identifier" => "test"]));
 
     $response = $controller->index();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertEquals(JsonResponse::class, $response::class);
   }
 
   /**
@@ -159,7 +159,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($container);
     $response = $controller->run();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertEquals(JsonResponse::class, $response::class);
   }
 
   /**

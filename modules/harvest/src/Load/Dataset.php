@@ -39,7 +39,7 @@ class Dataset extends Load {
     try {
       $service->post($schema_id, $item);
     }
-    catch (ExistingObjectException $e) {
+    catch (ExistingObjectException) {
       $service->put($schema_id, $item->{"$.identifier"}, $item);
     }
   }

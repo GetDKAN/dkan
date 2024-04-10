@@ -227,7 +227,7 @@ class Drush extends DrushCommands {
       $this->datastoreService->drop($identifier, NULL, $local_resource);
       $this->logger->notice('Successfully dropped the datastore for resource ' . $identifier);
     }
-    catch (\InvalidArgumentException $e) {
+    catch (\InvalidArgumentException) {
       // We get an invalid argument exception when the datastore does not exist.
       // This can be because it was never imported, or because the resource
       // is a type that will never be imported, such as a ZIP file.

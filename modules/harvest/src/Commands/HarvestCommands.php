@@ -124,7 +124,7 @@ class HarvestCommands extends DrushCommands {
    * @return object
    *   A harvest plan PHP object.
    */
-  protected function buildPlanFromOpts($opts) {
+  protected function buildPlanFromOpts(mixed $opts) {
     return (object) [
       'identifier' => $opts['identifier'],
       'extract' => (object) [

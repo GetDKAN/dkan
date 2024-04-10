@@ -22,7 +22,6 @@
  */
 
 declare(strict_types=1);
-use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 
 use DrupalFinder\DrupalFinder;
 use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
@@ -38,8 +37,8 @@ use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Set\ValueObject\SetList;
-use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
 

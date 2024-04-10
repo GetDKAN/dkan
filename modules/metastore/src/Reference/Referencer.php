@@ -131,7 +131,7 @@ class Referencer {
    * @return string|array
    *   Single reference, or an array of references.
    */
-  private function referenceProperty(string $property_id, $data) {
+  private function referenceProperty(string $property_id, mixed $data) {
     if (is_array($data)) {
       return $this->referenceMultiple($property_id, $data);
     }
@@ -246,7 +246,7 @@ class Referencer {
       $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
     }
     // If the URL cannot be converted to a DKAN URI, pass it through.
-    catch (\DomainException $e) {
+    catch (\DomainException) {
       return $value;
     }
     // If it was converted to DKAN URI, validate it as a data dictionary.
@@ -374,7 +374,7 @@ class Referencer {
     try {
       $response = $this->httpClient->head($downloadUrl);
     }
-    catch (GuzzleException $exception) {
+    catch (GuzzleException) {
       return $mime_type;
     }
     // Extract the full value of the content type header.

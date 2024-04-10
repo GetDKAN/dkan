@@ -116,6 +116,7 @@ class SelectFactoryTest extends TestCase {
    *
    */
   public function setUp():void {
+    parent::setUp();
     $this->query = new Query();
     $this->selectFactory = $this->getSelectFactory();
   }

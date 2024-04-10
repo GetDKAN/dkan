@@ -188,7 +188,7 @@ class HarvestService implements ContainerInjectionInterface {
   public function revertHarvest($id) {
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
     if (!method_exists($run_store, "destruct")) {
-      throw new \Exception("Storage of class " . get_class($run_store) . " does not implement destruct method.");
+      throw new \Exception("Storage of class " . $run_store::class . " does not implement destruct method.");
     }
     $run_store->destruct();
     $harvester = $this->getHarvester($id);
