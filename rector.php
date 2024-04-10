@@ -17,8 +17,6 @@
  * }
  *
  * Now you can say: composer rector-dry-run, and eventually: composer rector.
- *
- * @todo Add CompleteDynamicPropertiesRector when it works.
  */
 
 declare(strict_types=1);
@@ -54,7 +52,9 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
 
   $rectorConfig->skip([
-    '*/upgrade_status/tests/modules/*',
+    // Skip this file because we want its switch/case to remain:
+    // @todo Figure out what to do about DataFactory::getInstance().
+    '*/modules/metastore/src/Storage/DataFactory.php',
     // Don't throw errors on JSON parse problems. Yet.
     // @todo Throw errors and deal with them appropriately.
     JsonThrowOnErrorRector::class,
