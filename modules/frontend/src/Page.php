@@ -18,13 +18,6 @@ class Page {
   private $appRoot;
 
   /**
-   * Node storage service.
-   *
-   * @var \Drupal\node\NodeStorageInterface
-   */
-  private $nodeStorage;
-
-  /**
    * Build folder configuration.
    *
    * @var string
@@ -47,7 +40,6 @@ class Page {
     ConfigFactoryInterface $configFactory
   ) {
     $this->appRoot = $appRoot;
-    $this->nodeStorage = $nodeStorage;
     $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');
     $this->frontendPath = $configFactory->get('frontend.config')->get('frontend_path');
   }
@@ -79,7 +71,6 @@ class Page {
    */
   public function buildDataset($name) {
     $base_dataset = $this->appRoot . $this->frontendPath . $this->buildFolder . "/dataset/index.html";
-    $node_loaded_by_uuid = $this->nodeStorage->loadByProperties(['uuid' => $name]);
     $file = $this->appRoot . $this->frontendPath . $this->buildFolder . "/dataset/{$name}/index.html";
 
     return is_file($file) ? file_get_contents($file) : file_get_contents($base_dataset);

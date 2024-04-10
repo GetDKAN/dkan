@@ -3,7 +3,6 @@ services:
       class: Drupal\frontend\Page
       arguments:
         - '%app.root%'
-        - '@dkan.common.node_storage'
         - '@config.factory'
       shared: false
   frontend.route_provider:
