@@ -80,7 +80,6 @@ class Page {
   public function buildDataset($name) {
     $base_dataset = $this->appRoot . $this->frontendPath . $this->buildFolder . "/dataset/index.html";
     $node_loaded_by_uuid = $this->nodeStorage->loadByProperties(['uuid' => $name]);
-    $node_loaded_by_uuid = reset($node_loaded_by_uuid);
     $file = $this->appRoot . $this->frontendPath . $this->buildFolder . "/dataset/{$name}/index.html";
 
     return is_file($file) ? file_get_contents($file) : file_get_contents($base_dataset);

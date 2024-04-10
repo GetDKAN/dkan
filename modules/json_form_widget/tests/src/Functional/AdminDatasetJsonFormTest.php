@@ -32,8 +32,7 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
   public function testAdminDatasetJsonForm() {
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
-    /** @var \Drupal\metastore\ValidMetadataFactory $metadata_factory */
-    $metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
+    $this->container->get('dkan.metastore.valid_metadata');
 
     $this->drupalLogin(
     // @todo Figure out least possible admin permissions.

@@ -118,8 +118,7 @@ class FormBuilder implements ContainerInjectionInterface {
         $form[$property] = $this->router->getFormElement($type, $definition, $value, NULL, $form_state, []);
       }
       if ($this->schemaUiHandler->getSchemaUi()) {
-        $form_updated = $this->schemaUiHandler->applySchemaUi($form);
-        return $form_updated;
+        return $this->schemaUiHandler->applySchemaUi($form);
       }
       return $form;
     }

@@ -50,7 +50,7 @@ return static function (RectorConfig $rectorConfig): void {
   $rectorConfig->sets([
     Drupal10SetList::DRUPAL_10,
     SetList::PHP_80,
-//    SetList::DEAD_CODE,
+    SetList::DEAD_CODE,
   ]);
 
   $rectorConfig->skip([

@@ -47,7 +47,7 @@ class ResourceMapperTest extends KernelTestBase {
       $mapper->register($this->getResource($url));
       $this->assertTrue(FALSE);
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       // When trying to register an existing url , an exception is thrown with
       // info about the original resource.
       $this->assertTrue(TRUE);

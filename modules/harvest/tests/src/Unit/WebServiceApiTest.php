@@ -71,8 +71,6 @@ class WebServiceApiTest extends TestCase {
           $this->getHarvestEntityRepositoryMock(),
           $this->createStub(LoggerInterface::class)
         );
-
-      break;
       case 'request_stack':
         $stack = $this->getMockBuilder(RequestStack::class)
           ->disableOriginalConstructor()
@@ -82,8 +80,6 @@ class WebServiceApiTest extends TestCase {
         $stack->method("getCurrentRequest")->willReturn($this->request);
 
         return $stack;
-
-      break;
     }
   }
 

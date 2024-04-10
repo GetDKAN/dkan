@@ -138,14 +138,12 @@ class ReferencerTest extends TestCase {
       ->add('file_system', FileSystem::class)
       ->index(0);
 
-    $container_chain = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'test.test')
       ->add(ResourceMapper::class, 'register', TRUE, 'resource')
       ->add(FileSystem::class, 'getTempDirectory', '/tmp');
-
-    return $container_chain;
   }
 
   /**

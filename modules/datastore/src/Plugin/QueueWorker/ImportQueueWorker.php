@@ -201,7 +201,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
     $queued = FALSE;
     foreach ($results as $label => $result) {
-      $queued = isset($result) ? $this->processResult($result, $data, $queued, $label) : FALSE;
+      $queued = isset($result) && $this->processResult($result, $data, $queued, $label);
     }
 
     // Delete local resource file if enabled in datastore settings config.

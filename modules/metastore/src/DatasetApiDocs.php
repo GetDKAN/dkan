@@ -112,7 +112,7 @@ class DatasetApiDocs {
     $datasetSpec['paths']["/api/1/metastore/schemas/dataset/items/$identifier"]['get'] = $metastorePath;
 
     $datasetSpec['paths']["/api/1/datastore/query/$identifier/{index}"]
-      = $this->getDatastoreIndexPath($fullSpec, $identifier);
+      = $this->getDatastoreIndexPath($fullSpec);
 
     $datasetSpec['paths']['/api/1/datastore/query/{distributionId}'] =
       $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{distributionId}'];
@@ -159,13 +159,11 @@ class DatasetApiDocs {
    *
    * @param mixed $fullSpec
    *   Full site spec.
-   * @param mixed $identifier
-   *   Dataset identifier.
    *
    * @return array
    *   Path array ready to insert.
    */
-  private function getDatastoreIndexPath(mixed $fullSpec, mixed $identifier) {
+  private function getDatastoreIndexPath(mixed $fullSpec) {
     $datastoreIndexPath = $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{datasetId}/{index}'];
     unset($datastoreIndexPath['get']['parameters'][0]);
     $datastoreIndexPath['get']['parameters'] = array_values($datastoreIndexPath['get']['parameters']);
@@ -184,13 +182,12 @@ class DatasetApiDocs {
    *   Filtered array.
    */
   private function datasetSpecificSchemas(array $schemas) {
-    $newSchemas = array_filter($schemas, function ($key) {
+    return array_filter($schemas, function ($key) {
       if (in_array($key, self::SPEC_SCHEMAS)) {
         return TRUE;
       }
       return FALSE;
     }, ARRAY_FILTER_USE_KEY);
-    return $newSchemas;
   }
 
   /**
@@ -225,13 +222,12 @@ class DatasetApiDocs {
    *   Filtered array.
    */
   private function datasetSpecificResponses(array $responses) {
-    $newResponses = array_filter($responses, function ($key) {
+    return array_filter($responses, function ($key) {
       if (in_array($key, self::SPEC_RESPONSES)) {
         return TRUE;
       }
       return FALSE;
     }, ARRAY_FILTER_USE_KEY);
-    return $newResponses;
   }
 
   /**

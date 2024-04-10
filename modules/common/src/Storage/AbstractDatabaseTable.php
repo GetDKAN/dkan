@@ -105,11 +105,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       return [];
     }
 
-    $result = array_map(function ($item) {
+    return array_map(function ($item) {
       return $item->{$this->primaryKey()};
     }, $result);
-
-    return $result;
   }
 
   /**

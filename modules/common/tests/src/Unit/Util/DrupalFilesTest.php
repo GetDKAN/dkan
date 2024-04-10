@@ -36,14 +36,12 @@ class DrupalFilesTest extends TestCase {
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->index(0);
 
-    $container = (new Chain($this))
+    return (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(FileSystemInterface::class, 'realpath', "/tmp")
       ->add(StreamWrapperManager::class, 'getViaUri', StreamWrapperInterface::class)
       ->add(StreamWrapperInterface::class, 'getExternalUrl', "blah")
       ->getMock();
-
-    return $container;
   }
 
   /**

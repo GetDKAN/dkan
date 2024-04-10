@@ -128,7 +128,7 @@ class MysqlImport extends ImportJob {
     $f = fopen($file_path, 'r');
 
     // Ensure the file could be successfully opened.
-    if (!isset($f) || $f === FALSE) {
+    if ($f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
 
@@ -142,7 +142,7 @@ class MysqlImport extends ImportJob {
     // Close the resource file, since it is no longer needed.
     fclose($f);
     // Ensure the columns of the resource file were successfully read.
-    if (!isset($columns) || $columns === FALSE) {
+    if ($columns === FALSE) {
       throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
     }
 
