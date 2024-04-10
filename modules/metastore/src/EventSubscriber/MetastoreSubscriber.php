@@ -75,7 +75,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @inheritdoc
    */
-  public static function getSubscribedEvents(): array {
+  public static function getSubscribedEvents() {
     $events = [];
     $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
     return $events;

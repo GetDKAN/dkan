@@ -110,9 +110,9 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
    * @param array $property_list
    *   Array we're building of schema properties.
    */
-  private function parseProperty(string $name, mixed $property, string $parent, array &$property_list) {
+  private function parseProperty(string $name, $property, string $parent, array &$property_list) {
     // Exclude properties starting with @ or that are not proper objects.
-    if (str_starts_with($name, '@') || gettype($property) != 'object' || !isset($property->type)) {
+    if (substr($name, 0, 1) == '@' || gettype($property) != 'object' || !isset($property->type)) {
       return;
     }
 

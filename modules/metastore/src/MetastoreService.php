@@ -215,7 +215,7 @@ class MetastoreService implements ContainerInjectionInterface {
             return $data instanceof RootedJsonData;
           });
         }
-        catch (\Exception) {
+        catch (\Exception $e) {
           $this->logger->log('metastore', 'A JSON string failed validation.',
             ['@schema_id' => $schema_id, '@json' => $jsonString]
           );
@@ -395,7 +395,7 @@ class MetastoreService implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function patch($schema_id, $identifier, mixed $json_data) {
+  public function patch($schema_id, $identifier, $json_data) {
     $storage = $this->getStorage($schema_id);
     if ($this->objectExists($schema_id, $identifier)) {
 
@@ -493,7 +493,7 @@ class MetastoreService implements ContainerInjectionInterface {
       $this->getStorage($schemaId)->retrieve($identifier);
       return TRUE;
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       return FALSE;
     }
   }

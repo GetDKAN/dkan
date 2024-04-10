@@ -74,7 +74,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Element with widget configuration based on UI options.
    */
-  public function getConfiguredWidget(mixed $spec, array $element) {
+  public function getConfiguredWidget($spec, array $element) {
     $widgets = $this->getWidgets();
     if (in_array($spec->widget, array_keys($widgets))) {
       $method_name = $widgets[$spec->widget];
@@ -113,7 +113,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Return flattened element without actions.
    */
-  public function flattenArrays(mixed $spec, array $element) {
+  public function flattenArrays($spec, array $element) {
     unset($element['actions']);
     $default_value = [];
     foreach ($element[$spec->child] as $key => $item) {
@@ -147,7 +147,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as a list element.
    */
-  public function handleListElement(mixed $spec, array $element) {
+  public function handleListElement($spec, array $element) {
     if (isset($spec->titleProperty)) {
       if (isset($element[$spec->titleProperty])) {
         $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
@@ -172,7 +172,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The dropdown element configured.
    */
-  public function getDropdownElement(mixed $element, mixed $spec, mixed $titleProperty = FALSE) {
+  public function getDropdownElement($element, $spec, $titleProperty = FALSE) {
     $element['#type'] = $this->getSelectType($spec);
     $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
@@ -200,7 +200,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return string
    *   The type of dropdown element to use.
    */
-  public function getSelectType(mixed $spec) {
+  public function getSelectType($spec) {
     if (isset($spec->type) && $spec->type === 'select_other') {
       return 'select_or_other_select';
     }
@@ -221,7 +221,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Array with options for the dropdown.
    */
-  public function getDropdownOptions(mixed $source, mixed $titleProperty = FALSE) {
+  public function getDropdownOptions($source, $titleProperty = FALSE) {
     $options = [];
     if (isset($source->enum)) {
       $options = $this->stringHelper->getSelectOptions($source);
@@ -243,7 +243,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Array with options from metastore for the dropdown.
    */
-  public function getOptionsFromMetastore(mixed $source, mixed $titleProperty = FALSE) {
+  public function getOptionsFromMetastore($source, $titleProperty = FALSE) {
     $options = [];
     $values = $this->metastore->getAll($source->metastoreSchema);
     foreach ($values as $value) {
@@ -281,7 +281,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as upload_or_link.
    */
-  public function handleUploadOrLinkElement(mixed $spec, array $element) {
+  public function handleUploadOrLinkElement($spec, array $element) {
     $element['#type'] = 'upload_or_link';
     $element['#upload_location'] = 'public://uploaded_resources';
     if (isset($element['#default_value'])) {
@@ -305,7 +305,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as textarea.
    */
-  public function handleTextareaElement(mixed $spec, array $element) {
+  public function handleTextareaElement($spec, array $element) {
     $element['#type'] = 'textarea';
     if (isset($spec->rows)) {
       $element['#rows'] = $spec->rows;
@@ -327,7 +327,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as hidden.
    */
-  public function handleHiddenElement(mixed $spec, array $element) {
+  public function handleHiddenElement($spec, array $element) {
     $element['#access'] = FALSE;
     return $element;
   }
@@ -343,7 +343,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as dkan_uuid.
    */
-  public function handleDkanUuidElement(mixed $spec, array $element) {
+  public function handleDkanUuidElement($spec, array $element) {
     $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
     $element['#access'] = FALSE;
     return $element;
@@ -360,7 +360,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as date.
    */
-  public function handleDateElement(mixed $spec, array $element) {
+  public function handleDateElement($spec, array $element) {
     $element['#type'] = 'date';
     $format = $spec->format ?? 'Y-m-d';
     if (isset($element['#default_value'])) {
@@ -382,7 +382,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as datetime.
    */
-  public function handleDatetimeElement(mixed $spec, array $element) {
+  public function handleDatetimeElement($spec, array $element) {
     $element['#type'] = 'flexible_datetime';
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
@@ -405,7 +405,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as date_range.
    */
-  public function handleDateRangeElement(mixed $spec, array $element) {
+  public function handleDateRangeElement($spec, array $element) {
     $element['#type'] = 'date_range';
     return $element;
   }

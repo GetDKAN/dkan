@@ -20,7 +20,7 @@ class DateRange extends Datetime {
    * Get info.
    */
   public function getInfo() {
-    $class = static::class;
+    $class = get_class($this);
     $date_format = '';
     $time_format = '';
     if (!defined('MAINTENANCE_MODE')) {
@@ -118,7 +118,7 @@ class DateRange extends Datetime {
    * @return string
    *   The date formatted.
    */
-  public static function getDateTimeElement($date, $time, $format, mixed $timezone) {
+  public static function getDateTimeElement($date, $time, $format, $timezone) {
     $input = $date . ' ' . $time;
     $date_time = DrupalDateTime::createFromFormat($format, $input, $timezone);
     return $date_time->format('c', ['timezone' => 'UTC']);
@@ -133,7 +133,7 @@ class DateRange extends Datetime {
    * @return mixed
    *   Formatted time.
    */
-  public static function getFormattedTime(mixed $time) {
+  public static function getFormattedTime($time) {
     $formatted = !empty($time) ? $time : '00:00:00';
     if (strlen($formatted) == 5) {
       $formatted = $formatted . ':00';

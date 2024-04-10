@@ -92,7 +92,7 @@ class ResourceMapperTest extends KernelTestBase {
       $mapper->register($this->getResource($localUrl));
       $this->assertTrue(FALSE);
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       $this->assertTrue(TRUE);
     }
 

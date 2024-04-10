@@ -524,7 +524,7 @@ class DashboardForm extends FormBase {
    * @return string
    *   The sanitized error message.
    */
-  private function cleanUpError(mixed $error) {
+  private function cleanUpError($error) {
     $error = (string) $error;
     $mysqlErrorPattern = '/^SQLSTATE\[[A-Z0-9]+\]: .+?: [0-9]+ (.+?): [A-Z]/';
     if (preg_match($mysqlErrorPattern, $error, $matches)) {

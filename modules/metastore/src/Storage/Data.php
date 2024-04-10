@@ -419,7 +419,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return mixed
    *   Filtered output.
    */
-  private function filterHtml(mixed $input, string $parent = 'dataset') {
+  private function filterHtml($input, string $parent = 'dataset') {
     $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
       ?: ['dataset_description', 'distribution_description'];
     switch (gettype($input)) {

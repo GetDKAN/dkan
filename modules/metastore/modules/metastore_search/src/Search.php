@@ -181,7 +181,7 @@ class Search implements ContainerInjectionInterface {
         try {
           return json_decode((string) $metastore->get('dataset', $id));
         }
-        catch (\Exception) {
+        catch (\Exception $e) {
           return NULL;
         }
       },

@@ -202,7 +202,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    * @param mixed $resourceId
    *   A resource ID.
    */
-  protected function invalidateCacheTags(mixed $resourceId) {
+  protected function invalidateCacheTags($resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 

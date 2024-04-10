@@ -63,12 +63,19 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
    */
   public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string {
     $mode = $this->getDataDictionaryMode();
-    return match ($mode) {
-        self::MODE_NONE => NULL,
-        self::MODE_SITEWIDE => $this->getSitewideDictionaryId(),
-        self::MODE_REFERENCE => $this->getReferenceDictionaryId($resourceId, $resourceIdVersion),
-        default => throw new \OutOfRangeException(sprintf('Unsupported data dictionary mode "%s"', $mode)),
-    };
+    switch ($mode) {
+      case self::MODE_NONE:
+        return NULL;
+
+      case self::MODE_SITEWIDE:
+        return $this->getSitewideDictionaryId();
+
+      case self::MODE_REFERENCE:
+        return $this->getReferenceDictionaryId($resourceId, $resourceIdVersion);
+
+      default:
+        throw new \OutOfRangeException(sprintf('Unsupported data dictionary mode "%s"', $mode));
+    }
   }
 
   /**
@@ -90,7 +97,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
         $uri = $this->urlGenerator->uriFromUrl($distribution->{"$.data.describedBy"});
         return $this->urlGenerator->extractItemId($uri, "data-dictionary");
       }
-      catch (\DomainException) {
+      catch (\DomainException $e) {
         return NULL;
       }
     }

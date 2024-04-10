@@ -135,7 +135,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     if (in_array($schemaId, ["legacy", "catalog"])) {
       return FALSE;
     }
-    if (str_ends_with($schemaId, ".ui")) {
+    if (substr($schemaId, -3) == ".ui") {
       return FALSE;
     }
     return TRUE;

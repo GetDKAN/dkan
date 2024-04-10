@@ -98,7 +98,7 @@ class DkanDataset extends DatasourcePluginBase {
         // Only index published revisions.
         $items[$id] = new Dataset($dataStorage->retrieve($id, TRUE));
       }
-      catch (MissingObjectException) {
+      catch (MissingObjectException $missingObjectException) {
         // This is thrown if there is no published revision.
         continue;
       }

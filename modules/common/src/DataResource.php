@@ -385,7 +385,7 @@ class DataResource implements \JsonSerializable {
       $parts = self::parseUniqueIdentifier($string);
       return [$parts['identifier'], $parts['version']];
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
     }
 
     // Partial identifier.
@@ -416,7 +416,7 @@ class DataResource implements \JsonSerializable {
    * @return object
    *   JSON-decoded object.
    */
-  private static function getDistribution(mixed $identifier) {
+  private static function getDistribution($identifier) {
     /** @var \Drupal\metastore\Storage\DataFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
     $storage = $factory->getInstance('distribution');
