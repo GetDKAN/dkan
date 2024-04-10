@@ -55,6 +55,9 @@ return static function (RectorConfig $rectorConfig): void {
     // Skip this file because we want its switch/case to remain:
     // @todo Figure out what to do about DataFactory::getInstance().
     '*/modules/metastore/src/Storage/DataFactory.php',
+    // Skip this file to keep the debug method.
+    // @todo Do we need the debug method?
+    '*/modules/common/tests/src/Unit/Storage/SelectFactoryTest.php',
     // Don't throw errors on JSON parse problems. Yet.
     // @todo Throw errors and deal with them appropriately.
     JsonThrowOnErrorRector::class,

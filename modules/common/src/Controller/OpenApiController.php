@@ -104,12 +104,14 @@ class OpenApiController implements ContainerInjectionInterface {
    *
    * @param string $spec
    *   OpenAPI spec encoded json response.
+   * @param int $code
+   *   HTTP response code.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   OpenAPI spec response.
    */
-  private function getYamlResponse($spec) {
-    $response = new Response(Yaml::encode($spec), 200, ['Content-type' => 'application/vnd.oai.openapi']);
+  private function getYamlResponse($spec, $code = 200) {
+    $response = new Response(Yaml::encode($spec), $code, ['Content-type' => 'application/vnd.oai.openapi']);
     return $this->addCacheHeaders($response);
   }
 

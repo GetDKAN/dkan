@@ -141,8 +141,9 @@ class MysqlImport extends ImportJob {
 
     // Close the resource file, since it is no longer needed.
     fclose($f);
-    // Ensure the columns of the resource file were successfully read.
-    if ($columns === FALSE) {
+    // Ensure the columns of the resource file were successfully read. $columns
+    // could be array, FALSE, or NULL.
+    if (!$columns) {
       throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
     }
 

@@ -58,8 +58,7 @@ class Connection extends CoreConnection {
   /**
    * {@inheritdoc}
    */
-  public function createDatabase($database)
-  {
+  public function createDatabase($database) {
   }
 
   /**
