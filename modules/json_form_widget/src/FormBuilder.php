@@ -89,7 +89,7 @@ class FormBuilder implements ContainerInjectionInterface {
       $this->schemaUiHandler->setSchemaUi($schema_name);
       $this->router->setSchema($this->schema);
     }
-    catch (\Exception) {
+    catch (\Exception $exception) {
       $this->logger->notice("The JSON Schema for $schema_name does not exist.");
     }
   }

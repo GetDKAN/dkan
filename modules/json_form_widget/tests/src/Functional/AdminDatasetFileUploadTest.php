@@ -57,7 +57,8 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
   public function testCreateDatasetWithRemoteFile() {
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
-    $this->container->get('dkan.metastore.valid_metadata');
+    /** @var \Drupal\metastore\ValidMetadataFactory $metadata_factory */
+    $metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
     $this->drupalLogin(
     // @todo Figure out least possible admin permissions.
@@ -151,7 +152,8 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
   public function testCreateDatasetWithFileUpload() {
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
-    $this->container->get('dkan.metastore.valid_metadata');
+    /** @var \Drupal\metastore\ValidMetadataFactory $metadata_factory */
+    $metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
     $this->drupalLogin(
     // @todo Figure out least possible admin permissions.
