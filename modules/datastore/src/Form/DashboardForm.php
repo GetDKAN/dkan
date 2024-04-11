@@ -407,6 +407,13 @@ class DashboardForm extends FormBase {
    *   Three-column revision row (expected to be merged with one resource row).
    */
   protected function buildRevisionRow(array $rev, int $resourceCount, string $harvestStatus) {
+    // Moderation state can be 'hidden', which is not a good CSS class if we
+    // don't want data to be hidden. We hijack the 'registered' class for use
+    // here.
+    $moderation_class = $rev['moderation_state'];
+    if ($moderation_class == 'hidden') {
+      $moderation_class = 'registered';
+    }
     return [
       [
         'rowspan' => $resourceCount,
@@ -424,7 +431,7 @@ class DashboardForm extends FormBase {
           '#theme' => 'datastore_dashboard_revision_cell',
           '#revision_id' => $rev['revision_id'],
           '#modified' => $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short'),
-          '#moderation_state' => $rev['moderation_state'],
+          '#moderation_state' => $moderation_class,
         ],
       ],
       [
