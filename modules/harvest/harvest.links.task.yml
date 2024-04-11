@@ -3,8 +3,3 @@ entity.harvest_plan.collection:
   route_name: entity.harvest_plan.collection
   base_route: system.admin_dkan
   weight: 10
-entity.harvest_run.collection:
-  title: 'Harvest Runs'
-  route_name: entity.harvest_run.collection
-  base_route: dkan.harvest.dashboard
-  weight: 10

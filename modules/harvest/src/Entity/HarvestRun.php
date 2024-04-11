@@ -36,7 +36,6 @@ use Drupal\harvest\HarvestRunInterface;
  *     plural = "@count harvest runs",
  *   ),
  *   handlers = {
- *     "list_builder" = "Drupal\harvest\HarvestRunListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
  *     "access" = "Drupal\harvest\ContentAccessControlHandler",
  *     "route_provider" = {
@@ -50,7 +49,6 @@ use Drupal\harvest\HarvestRunInterface;
  *     "label" = "id",
  *   },
  *   links = {
- *     "collection" = "/admin/dkan/harvest/runs",
  *     "canonical" = "/harvest-run/{harvest_run}",
  *   },
  * )
