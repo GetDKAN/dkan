@@ -163,14 +163,21 @@ metastore.data_dictionary:
   path: '/admin/dkan/data-dictionary'
   defaults:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
-    _title: 'Data-Dictionary'
+    _title: 'Data Dictionary'
   requirements:
     _permission: 'create data content'
 
 metastore.data_dictionary.settings:
   path: '/admin/dkan/data-dictionary/settings'
   defaults:
-    _title: 'Data-Dictionary Settings'
+    _title: 'Data Dictionary Settings'
     _form: '\Drupal\metastore\Form\DataDictionarySettingsForm'
+  requirements:
+    _permission: 'administer data dictionary settings'
+
+metastore.data_dictionary.list:
+  path: '/admin/dkan/data-dictionaries'
+  defaults:
+    _title: 'Data Dictionary List'
   requirements:
     _permission: 'administer data dictionary settings'

@@ -35,18 +35,17 @@ function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterfac
  * Implements template_preprocess_views_view_fields().
  */
 function metastore_admin_preprocess_views_view_field(&$vars) {
-  if (isset($vars['view'])
-    && ($vars['view']->id() == 'dkan_dataset_content')
-    && ($vars['view']->current_display == 'page_1')) {
+
+  if (isset($vars['view']) && ($vars['view']->id() == 'dkan_dataset_content')) {
     // To access current row entity.
     $entity = $vars['row']->_entity;
+    $entity_id = $entity->id();
+    $entity_uuid = $entity->uuid();
 
     // Nodes without field_data_type should be skipped.
     if (!isset($entity->field_json_metadata)) {
       return;
     }
-
-    $entity_id = $entity->id();
 
     // Modify data titles to display the metadata title values rather than uuids.
     $data = json_decode($entity->field_json_metadata->value);
@@ -85,26 +84,47 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
             ),
           ];
           break;
+
+        case 'data-dictionary':
+          $vars['output'] = [
+            '#markup' => Markup::create(
+              metastore_admin_create_text_link($title['data']->title, 'internal:/api/1/metastore/schemas/data-dictionary/items/' . $entity_uuid)
+            ),
+          ];
+          break;
       }
     }
   }
   // Check if the frontend module is enabled. If not, dataset titles
   // should link to the drupal node rather than the REACT frontend.
   if (isset($vars['view'])
-    && ($vars['view']->id() == 'dkan_dataset')
+    && ($vars['view']->id() == 'dkan_dataset_content')
     && ($vars['view']->current_display == 'page_1')) {
 
-    $moduleHandler = \Drupal::moduleHandler();
-    $moduleExist = $moduleHandler->moduleExists('frontend');
+    $entity = $vars['row']->_entity;
+    $entity_id = $entity->id();
+    $entity_uuid = $entity->uuid();
 
-    if ($vars['field']->field == 'title' && !$moduleExist) {
-      $entity = $vars['row']->_entity;
-      $entity_id = $entity->id();
-      $title = $entity->title->value;
+    $moduleExists = \Drupal::moduleHandler()->moduleExists('dkan_js_frontend');
+    $title = $entity->title->value;
+
+    if ($vars['field']->field == 'title'
+      && $entity->field_data_type->value == 'dataset'
+      && !$moduleExists) {
 
       $vars['output'] = [
         '#markup' => Markup::create(
           metastore_admin_create_text_link($title, 'internal:/node/' . $entity_id)
+        ),
+      ];
+    }
+    elseif ($vars['field']->field == 'title'
+      && $entity->field_data_type->value == 'dataset'
+      && $moduleExists) {
+
+      $vars['output'] = [
+        '#markup' => Markup::create(
+          metastore_admin_create_text_link($title, 'internal:/dataset/' . $entity_uuid)
         ),
       ];
     }
