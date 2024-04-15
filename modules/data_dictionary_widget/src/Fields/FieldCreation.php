@@ -57,7 +57,7 @@ class FieldCreation {
         '#type' => 'textfield',
         '#required' => TRUE,
         '#title' => t('Title'),
-        '#default_value' => $field_json_metadata['title'] ?? '',
+        '#default_value' => $field_json_metadata['data']['title'] ?? '',
       ],
       'identifier' => [
         '#name' => 'field_json_metadata[0][identifier]',

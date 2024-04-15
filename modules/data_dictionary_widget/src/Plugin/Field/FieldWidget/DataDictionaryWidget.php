@@ -87,8 +87,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
-      'title' => $values[0]['title'] ?? '',
       'data' => [
+        'title' => $values[0]['title'] ?? '',
         'fields' => $updated,
         'indexes' => $indexes ?? [],
       ],

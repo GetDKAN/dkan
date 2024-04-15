@@ -264,7 +264,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $data = json_decode($json_data, true);
 
     $this->assertEquals($data['identifier'], $user_input['field_json_metadata']['identifier']);
-    $this->assertEquals($data['title'], $user_input['field_json_metadata']['title']);
+    $this->assertEquals($data['data']['title'], $user_input['field_json_metadata']['title']);
     $this->assertEquals($data['data']['fields'][0]['name'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['name']);
     $this->assertEquals($data['data']['fields'][0]['title'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['title']);
     $this->assertEquals($data['data']['fields'][0]['type'], $user_input['field_json_metadata']['dictionary_fields']['field_collection']['group']['type']);
