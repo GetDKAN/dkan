@@ -4,7 +4,6 @@ dependencies:
   config:
     - field.storage.node.field_data_type
     - node.type.data
-    - system.menu.admin
   module:
     - content_moderation
     - node
@@ -1535,7 +1534,7 @@ display:
       display_extenders: {  }
       path: admin/dkan/datasets
       menu:
-        type: normal
+        type: none
         title: Datasets
         description: 'Administer all content in the DKAN metastore'
         weight: -10
