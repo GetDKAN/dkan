@@ -14,7 +14,9 @@ use Drupal\Core\Url;
  * Implements hook_form_FORM_ID_alter().
  */
 function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  if (isset($form['#id']) && $form['#id'] == 'views-exposed-form-dkan-dataset-content-page-1') {
+  if (isset($form['#id'])
+    && $form['#id'] == 'views-exposed-form-dkan-dataset-content-page-1'
+    || $form['#id'] == 'views-exposed-form-dkan-dataset-content-page-2') {
     $schemaRetriever = \Drupal::service('dkan.metastore.schema_retriever');
     $schemaIds = array_filter($schemaRetriever->getAllIds(), function ($schemaId) {
       return substr($schemaId, -3) != '.ui';
