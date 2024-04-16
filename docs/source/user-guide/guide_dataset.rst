@@ -90,7 +90,7 @@ GUI
 9. Pay close attention to the required fields (marked with \*).
 10. Use the Distribution *Download URL* field to enter a url to your file or upload a local file.
 11. If you are uploading a file, wait for the upload to finish before clicking the Save button. The file name will turn blue when is it complete.
-12. If you are adding more than one distribution to a dataset be sure to utilize the **File Title** field to distinguish the differences in the files to the user.
+12. If you are adding more than one file to a dataset be sure to utilize the **File Title** field to distinguish the differences in the files to the user.
 13. Click "Save".
 14. Run cron to start the import.
 
