@@ -203,7 +203,7 @@ class WebServiceApiTest extends KernelTestBase {
     $message = 'info error';
     $this->container->set(
       'dkan.harvest.service',
-      $this->getExplodingHarvestService('getAllHarvestRunIds', $message)
+      $this->getExplodingHarvestService('getRunIdsForHarvest', $message)
     );
     $this->container->get('request_stack')->push($this->getPlanRequest($plan_id));
 

@@ -77,7 +77,7 @@ trait OrphanDatasetsProcessor {
   public function getOrphanIdsFromCompleteHarvest(string $harvestId) : array {
 
     $cumulativelyRemovedIds = [];
-    $runIds = $this->getAllHarvestRunIds($harvestId);
+    $runIds = $this->getRunIdsForHarvest($harvestId);
 
     // Initialize with the first harvest run.
     if ($previousRunId = array_shift($runIds)) {

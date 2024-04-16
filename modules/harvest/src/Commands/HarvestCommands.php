@@ -218,7 +218,7 @@ class HarvestCommands extends DrushCommands {
    */
   public function info($harvestId, $runId = NULL) {
     $this->validateHarvestPlan($harvestId);
-    $runIds = $runId ? [$runId] : $this->harvestService->getAllHarvestRunIds($harvestId);
+    $runIds = $runId ? [$runId] : $this->harvestService->getRunIdsForHarvest($harvestId);
 
     foreach ($runIds as $id) {
       $run = $this->harvestService->getHarvestRunInfo($harvestId, $id);
@@ -308,7 +308,7 @@ class HarvestCommands extends DrushCommands {
 
     // No run_id provided, get the latest run_id.
     // Validate run_id.
-    $allRunIds = $this->harvestService->getAllHarvestRunIds($harvestId);
+    $allRunIds = $this->harvestService->getRunIdsForHarvest($harvestId);
 
     if (empty($allRunIds)) {
       $this->logger()->error('No Run IDs found for harvest id ' . $harvestId);

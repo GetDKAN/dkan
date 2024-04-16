@@ -107,7 +107,7 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @param bool $has_run_record
    *   If true, return only harvest IDs that have been run at least once.
-   * 
+   *
    * @return string[]
    *   Array of Harvest Plan IDs.
    */
@@ -118,8 +118,8 @@ class HarvestService implements ContainerInjectionInterface {
     // don't want that, so we use array_values().
     return array_values(
       $has_run_record ?
-        $this->harvestPlanRepository->getAllHarvestPlanIds() :
-        $this->runRepository->getUniqueHarvestPlanIds()
+        $this->runRepository->getUniqueHarvestPlanIds() :
+        $this->harvestPlanRepository->getAllHarvestPlanIds()
     );
   }
 
@@ -244,6 +244,21 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
+   * Get the results of a harvest run.
+   *
+   * @param string $plan_id
+   *   Harvest plan ID.
+   * @param string $run_id
+   *   Harvest run ID.
+   *
+   * @return array
+   *   Array of status info from the run.
+   */
+  public function getHarvestRunResult(string $plan_id, string $run_id): array {
+    return $this->runRepository->loadEntity($plan_id, $run_id)->toResult();
+  }
+
+  /**
    * Retrieve all run results for a given plan.
    *
    * @param string $plan_id
@@ -252,10 +267,10 @@ class HarvestService implements ContainerInjectionInterface {
    * @return array
    *   JSON-encoded result arrays, keyed by harvest run identifier.
    *
-   * @deprecated Gather run IDs from getAllHarvestRunIds() and access specific
+   * @deprecated Gather run IDs from getRunIdsForHarvest() and access specific
    *   information based on those IDs.
    *
-   * @see self::getAllHarvestRunIds()
+   * @see self::getRunIdsForHarvest()
    * @see self::getHarvestRunInfo()
    */
   public function getAllHarvestRunInfo(string $plan_id): array {
@@ -263,15 +278,15 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Retrieve all harvest run IDs for a given harvest plan.
+   * Retrieve harvest run IDs for a given harvest plan.
    *
    * @param string $plan_id
    *   The harvest plan identifier.
    *
    * @return array
-   *   All harvest run identifiers, keyed by identifier.
+   *   Harvest run identifiers, keyed by identifier.
    */
-  public function getAllHarvestRunIds(string $plan_id): array {
+  public function getRunIdsForHarvest(string $plan_id): array {
     return $this->runRepository->retrieveAllRunIds($plan_id);
   }
 
