@@ -103,17 +103,24 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Get all available harvest identifiers.
+   * Get harvest plan identifiers.
    *
-   * @return array
-   *   All ids.
+   * @param bool $has_run_record
+   *   If true, return only harvest IDs that have been run at least once.
+   * 
+   * @return string[]
+   *   Array of Harvest Plan IDs.
    */
-  public function getAllHarvestIds() {
+  public function getAllHarvestIds(bool $has_run_record = FALSE): array {
     // Some calling code is very particular about the output being an array,
     // both as a return value here and after json_encode(). Since the entity
     // query returns a keyed array, json_encode() will think it's an object. We
     // don't want that, so we use array_values().
-    return array_values($this->harvestPlanRepository->getAllHarvestPlanIds());
+    return array_values(
+      $has_run_record ?
+        $this->harvestPlanRepository->getAllHarvestPlanIds() :
+        $this->runRepository->getUniqueHarvestPlanIds()
+    );
   }
 
   /**
@@ -286,18 +293,6 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Get all the harvest plans which have already been run at some point.
-   *
-   * This is useful for discovering which plans have not yet run.
-   *
-   * @return string[]
-   *   All the harvest plan ids which have been run.
-   */
-  public function getAllRunHarvestIds() {
-    return $this->runRepository->getUniqueHarvestPlanIds();
-  }
-
-  /**
    * Publish a harvest.
    *
    * @param string $harvestId
@@ -308,7 +303,6 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function publish(string $harvestId): array {
     return $this->bulkUpdateStatus($harvestId, 'publish');
-
   }
 
   /**

@@ -187,10 +187,10 @@ class HarvestCommands extends DrushCommands {
    *   Runs all harvests.
    */
   public function runAll($options = ['new' => FALSE]) {
-    $plan_ids = $this->harvestService->getAllHarvestIds();
+    $plan_ids = $this->harvestService->getAllHarvestIds(FALSE);
     if ($options['new']) {
       $plan_ids = array_diff(
-        $plan_ids, $this->harvestService->getAllRunHarvestIds()
+        $plan_ids, $this->harvestService->getAllHarvestIds(TRUE)
       );
     }
     $runs_info = [];
