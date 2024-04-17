@@ -27,6 +27,7 @@ class HarvestServiceTest extends KernelTestBase {
     parent::setUp();
     $this->installEntitySchema('harvest_plan');
     $this->installEntitySchema('harvest_hash');
+    $this->installEntitySchema('harvest_run');
   }
 
   public function testGetAllHarvestIds() {

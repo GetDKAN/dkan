@@ -259,7 +259,7 @@ class DashboardForm extends FormBase {
     // If a value was supplied for the harvest ID filter, retrieve dataset UUIDs
     // belonging to the specfied harvest.
     elseif (isset($filters['harvest_id'])) {
-      $harvestLoad = $this->getHarvestLoadStatus($filters['harvest_id']);
+      $harvestLoad = iterator_to_array($this->getHarvestLoadStatus($filters['harvest_id']));
       $datasets = array_keys($harvestLoad);
       $total = count($datasets);
       $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
@@ -293,7 +293,7 @@ class DashboardForm extends FormBase {
    *   Table rows.
    */
   protected function buildDatasetRows(array $datasets): array {
-    // Fetch the status of all harvests.
+    // Fetch the dataset status of all harvests.
     $harvestLoad = iterator_to_array($this->getHarvestLoadStatuses());
 
     $rows = [];
@@ -304,7 +304,7 @@ class DashboardForm extends FormBase {
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
-      // Build a table row using it's details and harvest status.
+      // Build a table row using its details and harvest status.
       $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
     }
@@ -314,6 +314,12 @@ class DashboardForm extends FormBase {
 
   /**
    * Fetch the status of all harvests.
+   *
+   * @return \Generator
+   *   Array of all the most recent load statuses for all the datasets for all
+   *   the harvests that have been run, keyed by dataset UUID. This can
+   *   potentially be a very large array to return by value, which is why it is
+   *   structured as a generator.
    */
   protected function getHarvestLoadStatuses(): \Generator {
     foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
@@ -322,23 +328,19 @@ class DashboardForm extends FormBase {
   }
 
   /**
-   * Fetch the status of datasets belonging to the given harvest.
+   * Fetch the status of loaded datasets for the most recent harvest run.
    *
    * @param string|null $harvestId
    *   Harvest ID to search for.
    *
-   * @return string[]
-   *   Harvest statuses keyed by dataset UUIDs.
+   * @return \Generator
+   *   Array of harvest load statuses, keyed by dataset UUIDs.
    */
-  protected function getHarvestLoadStatus(?string $harvestId): array {
-    $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
-    $runId = end($runIds);
-
-    $json = $this->harvest->getHarvestRunInfo($harvestId, $runId);
-    $info = json_decode($json);
-    $loadExists = isset($info->status) && isset($info->status->load);
-
-    return $loadExists ? (array) $info->status->load : [];
+  protected function getHarvestLoadStatus(?string $harvestId): \Generator {
+    $result = $this->harvest->getHarvestRunResult(
+      $harvestId, $this->harvest->getLastHarvestRunId($harvestId)
+    );
+    yield from $result['status']['load'] ?? [];
   }
 
   /**
@@ -377,7 +379,7 @@ class DashboardForm extends FormBase {
 
     // Create a row for each dataset revision (there could be both a published
     // and latest).
-    foreach (array_values($datasetInfo) as $rev) {
+    foreach ($datasetInfo as $rev) {
       $distributions = $rev['distributions'];
       // For first distribution, combine with revision information.
       $rows[] = array_merge(
