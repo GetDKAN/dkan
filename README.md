@@ -31,6 +31,12 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 
 ---
 
+## Security
+
+If you have found a vunerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
+
+---
+
 ## History
 
 - DKAN’s initial v1.0 release was in 2014 (this code is still available on the [7.x-1.x branch](https://github.com/GetDKAN/dkan/tree/7.x-1.x), although no longer supported).
