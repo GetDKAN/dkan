@@ -88,7 +88,7 @@ context('Administration pages', () => {
     })
     cy.contains('h1', 'DKAN Metastore (Data Dictionaries)');
     cy.get('.button').contains('+ Add new data dictionary').click( { force:true })
-    cy.get('summary').contains('Data Dictionary Fields');
+    cy.get('fieldset').contains('Data Dictionary Fields');
   })
 
 })
