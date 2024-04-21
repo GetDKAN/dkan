@@ -256,4 +256,9 @@ class MysqlImport extends ImportJob {
     ]);
   }
 
+  protected function getBytesProcessed() {
+    $chunksProcessed = $this->getStateProperty('chunksProcessed', 0);
+    return $chunksProcessed * self::BYTES_PER_CHUNK;
+  }
+
 }
