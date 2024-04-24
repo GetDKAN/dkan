@@ -150,10 +150,3 @@ function metastore_update_8009() {
     modules/contrib/dkan/schema/collections/data-dictionary.json over you local
     site version before attempting to read or write any data dictionaries.");
 }
-
-/**
- * Enable data dictionary widget.
- */
-function metastore_update_8010() {
-  \Drupal::service('module_installer')->install(['data_dictionary_widget']);
-}
