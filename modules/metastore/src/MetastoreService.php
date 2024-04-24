@@ -4,13 +4,13 @@ namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\LoggerTrait;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -20,7 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class MetastoreService implements ContainerInjectionInterface {
   use EventDispatcherTrait;
-  use LoggerTrait;
 
   const EVENT_DATA_GET = 'dkan_metastore_data_get';
   const EVENT_DATA_GET_ALL = 'dkan_metastore_data_get_all';
@@ -35,7 +34,7 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * Storage factory.
    *
-   * @var \Drupal\metastore\Storage\MetastoreStorageFactoryInterface
+   * @var \Drupal\metastore\Storage\DataFactory
    */
   private $storageFactory;
 
@@ -54,25 +53,39 @@ class MetastoreService implements ContainerInjectionInterface {
   private $validMetadataFactory;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
-    return new MetastoreService(
+    return new static(
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('dkan.metastore.storage'),
-      $container->get('dkan.metastore.valid_metadata')
+      $container->get('dkan.metastore.valid_metadata'),
+      $container->get('dkan.common.logger_channel')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, ValidMetadataFactory $validMetadataFactory) {
+  public function __construct(
+    SchemaRetriever $schemaRetriever,
+    DataFactory $factory,
+    ValidMetadataFactory $validMetadataFactory,
+    LoggerInterface $loggerChannel
+  ) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
     $this->validMetadataFactory = $validMetadataFactory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -203,7 +216,7 @@ class MetastoreService implements ContainerInjectionInterface {
           });
         }
         catch (\Exception $e) {
-          $this->log('metastore', 'A JSON string failed validation.',
+          $this->logger->log('metastore', 'A JSON string failed validation.',
             ['@schema_id' => $schema_id, '@json' => $jsonString]
           );
           return NULL;
@@ -431,7 +444,7 @@ class MetastoreService implements ContainerInjectionInterface {
   public function getCatalog() {
     $catalog = $this->getSchema('catalog');
     $catalog->dataset = array_map(function ($object) {
-      $modified_object = $this->removeReferences($object);
+      $modified_object = static::removeReferences($object);
       return (object) $modified_object->get('$');
     }, $this->getAll('dataset'));
 
@@ -549,7 +562,7 @@ class MetastoreService implements ContainerInjectionInterface {
    *   Metadata. Can be a RootedJsonData object, a stdObject or JSON string.
    *
    * @return string
-   *   An md5 hash of the normalized metadata.
+   *   An MD5 hash of the normalized metadata.
    *
    * @todo This should probably be somewhere else.
    */

@@ -21,3 +21,36 @@ This is a React app that will use the [Data Catalog Components](https://github.c
 If you are setting the JS frontend as the main frontend for your site, like on the demo DKAN site, you will want to do the following:
 
 * Set the `404` and `home` paths for the site to `/home`. This will make it so whenever Drupal returns a page not found it will load the JS frontend and visiting the root url the JS site will be loaded instead of a default Drupal node.
+
+## Sample Config
+```
+// The folders for the css and js compiled files.
+css_folder: '/frontend/build/static/css/'
+js_folder: '/frontend/build/static/js/'
+// Routes to load the JS application when visited.
+routes:
+  - home,/home
+  - about,/about
+  - api,/api
+  - dataset,/dataset/{id}
+  - datasetapi,/dataset/{id}/api
+  - search,/search
+  - publishers,/publishers
+// This is applied to both the CSS and JS library.
+minified: true
+preprocess: true
+js:
+  // These will overwrite the above global if set.
+  minified: true
+  preprocess: true
+  weight: 0
+  attributes:
+    - type,module
+css:
+  // Same as above, will overwrite the global config above.
+  minified: true
+  preprocess: true
+  weight: 0
+  attributes:
+    - crossorigin,anonymous
+```

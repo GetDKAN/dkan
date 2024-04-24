@@ -168,15 +168,34 @@ More on the :doc:`harvest method can be found here <guide_harvest>`.
 Add demo site content
 ---------------------
 
-Generate the same 10 datasets that are used on the demo site.
+Generate the same 10 datasets that are used on the `DKAN demo site <https://demo.getdkan.org/>`_.
 Enable the sample content module. Run the create command to add the datasets.
-Running cron will run the queues that fetch the csv files and import them into datstore tables.
-Remove the datasets with the remove command.
+Running cron will run the queues that fetch the csv files and import them into datstore tables. You will likely need to run cron multiple times.
+When the sample content is no longer needed, remove the datasets with the remove command.
 
 .. prompt:: bash $
 
       drush en sample_content -y
       drush dkan:sample-content:create
       drush cron
-      drush dkan:sample:content:remove
+      drush cron
+      drush dkan:sample-content:remove
 
+Troubleshooting
+^^^^^^^^^^^^^^^
+
+If you see output like this (note the errors):
+
+.. code-block::
+
+   +----------------+-----------+---------+---------+--------+
+   | run_id         | processed | created | updated | errors |
+   +----------------+-----------+---------+---------+--------+
+   | sample_content | 10        | 0       | 0       | 10     |
+   +----------------+-----------+---------+---------+--------+
+
+You will need to add this line to your settings.php file, adjust as needed.
+
+.. code-block::
+
+   $settings['file_public_base_url'] = $settings['base_url'] . 'sites/default/files';

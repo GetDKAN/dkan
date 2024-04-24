@@ -5,8 +5,9 @@ services:
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.datastore.service.factory.import'
       - '@queue'
-      - '@dkan.common.job_store'
+      - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
+      - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport
@@ -25,7 +26,8 @@ services:
       - '@dkan.metastore.resource_mapper'
       - '@dkan.common.file_fetcher'
       - '@dkan.common.drupal_files'
-      - '@dkan.common.job_store'
+      - '@dkan.common.filefetcher_job_store_factory'
+      - '@queue'
 
   dkan.datastore.service.resource_processor_collector:
     class: \Drupal\datastore\Service\ResourceProcessorCollector
@@ -48,14 +50,14 @@ services:
       - '@dkan.metastore.reference_lookup'
       - '@dkan.metastore.storage'
       - '@dkan.datastore.service'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
+      - '@dkan.datastore.logger_channel'
 
   dkan.datastore.service.factory.import:
     class: \Drupal\datastore\Service\Factory\ImportServiceFactory
     arguments:
-      - '@dkan.common.job_store'
+      - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore.database_table_factory'
+      - '@dkan.datastore.logger_channel'
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base
@@ -79,6 +81,7 @@ services:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
     arguments:
       - '@dkan.datastore.database'
+      - '@dkan.datastore.logger_channel'
 
   dkan.datastore.sql_endpoint.service:
     class: \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
@@ -90,10 +93,10 @@ services:
     class: \Drupal\datastore\EventSubscriber\DatastoreSubscriber
     arguments:
       - '@config.factory'
-      - '@logger.factory'
+      - '@dkan.datastore.logger_channel'
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.resource_purger'
-      - '@dkan.common.job_store'
+      - '@dkan.datastore.import_job_store_factory'
     tags:
       - { name: event_subscriber }
 
@@ -108,8 +111,13 @@ services:
   dkan.datastore.import_info_list:
     class: \Drupal\datastore\Service\Info\ImportInfoList
     arguments:
-      - '@dkan.common.job_store'
+      - '@dkan.common.filefetcher_job_store_factory'
       - '@dkan.datastore.import_info'
+
+  dkan.datastore.import_job_store_factory:
+    class: \Drupal\datastore\Storage\ImportJobStoreFactory
+    arguments:
+      - '@database'
 
   pdlt.converter.strptime_to_mysql:
     class: \PDLT\Converter

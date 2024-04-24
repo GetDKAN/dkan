@@ -2,14 +2,12 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\common\LoggerTrait;
-use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
-use Drupal\metastore\ReferenceLookupInterface;
-
 use Contracts\FactoryInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
+use Drupal\metastore\ReferenceLookupInterface;
 use RootedData\RootedJsonData;
 
 /**
@@ -17,7 +15,6 @@ use RootedData\RootedJsonData;
  */
 class ReferenceLookup implements ReferenceLookupInterface {
   use HelperTrait;
-  use LoggerTrait;
 
   /**
    * Metastore Storage service.
@@ -32,6 +29,20 @@ class ReferenceLookup implements ReferenceLookupInterface {
    * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
    */
   protected $metastoreItemFactory;
+
+  /**
+   * Cache tags invalidator service.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  private CacheTagsInvalidatorInterface $invalidator;
+
+  /**
+   * Module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private ModuleHandlerInterface $moduleHandler;
 
   /**
    * Module Handler service.

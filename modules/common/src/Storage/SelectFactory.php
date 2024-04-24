@@ -284,7 +284,7 @@ class SelectFactory {
       $this->addMatchCondition($statementObj, $condition);
       return;
     }
-    $field = (isset($condition->collection) ? $condition->collection : $this->alias)
+    $field = ($condition->collection ?? $this->alias)
       . '.'
       . $condition->property;
     $statementObj->condition($field, $condition->value, strtoupper($condition->operator));

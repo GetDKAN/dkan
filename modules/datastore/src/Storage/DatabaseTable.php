@@ -2,10 +2,10 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\common\LoggerTrait;
-use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\Core\Database\Connection;
+use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\datastore\DatastoreResource;
+use Psr\Log\LoggerInterface;
 
 /**
  * Database storage object.
@@ -13,8 +13,6 @@ use Drupal\datastore\DatastoreResource;
  * @see \Drupal\common\Storage\DatabaseTableInterface
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
-
-  use LoggerTrait;
 
   /**
    * Datastore resource object.
@@ -24,18 +22,32 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   private $resource;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Constructor method.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
    * @param \Drupal\datastore\DatastoreResource $resource
    *   A resource.
+   * @param \Psr\Log\LoggerInterface $loggerChannel
+   *   DKAN logger channel service.
    */
-  public function __construct(Connection $connection, DatastoreResource $resource) {
+  public function __construct(
+    Connection $connection,
+    DatastoreResource $resource,
+    LoggerInterface $loggerChannel
+  ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
     $this->connection = $connection;
+    $this->logger = $loggerChannel;
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
@@ -89,7 +101,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   protected function prepareData(string $data, string $id = NULL): array {
     $decoded = json_decode($data);
     if ($decoded === NULL) {
-      $this->log(
+      $this->logger->log(
         'datastore_import',
         'Error decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
@@ -97,7 +109,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_array($decoded)) {
-      $this->log(
+      $this->logger->log(
         'datastore_import',
         'Array expected while decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
@@ -195,7 +207,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *   Drupal Schema API array.
    */
   protected function addIndexInfo(array &$schema): void {
-    if ($this->connection->getConnectionOptions()['driver'] != 'mysql') {
+    if (!str_contains($this->connection->getConnectionOptions()['driver'], 'mysql')) {
       return;
     }
 

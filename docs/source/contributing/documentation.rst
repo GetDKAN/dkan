@@ -44,6 +44,16 @@ Terminal commands
 ^^^^^^^^^^^^^^^^^
 Terminal commands should be expressed in a sphinx prompt block:
 
+  .. code-block:: restructuredtext
+
+    .. prompt:: bash $
+
+      drush cim -y
+      drush cr
+
+
+Which will render like this:
+
   .. prompt:: bash $
 
     drush cim -y
@@ -53,6 +63,16 @@ Terminal commands should be expressed in a sphinx prompt block:
 Code blocks
 ^^^^^^^^^^^^^^^^^
 Code blocks are expressed as... code blocks:
+
+  .. code-block:: restructuredtext
+
+    ..code-block:: php
+
+      /**
+       * Your php code here
+       */
+
+to produce something like this:
 
   .. code-block:: php
 

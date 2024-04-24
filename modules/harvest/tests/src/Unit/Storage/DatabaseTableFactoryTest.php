@@ -9,7 +9,9 @@ use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 
 /**
- *
+ * @group dkan
+ * @group harvest
+ * @group unit
  */
 class DatabaseTableFactoryTest extends TestCase {
 

@@ -23,10 +23,7 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
 
     public function retrieve(string $id)
     {
-        if (isset($this->storage[$id])) {
-            return $this->storage[$id];
-        }
-        return null;
+        return $this->storage[$id] ?? null;
     }
 
     public function retrieveAll(): array

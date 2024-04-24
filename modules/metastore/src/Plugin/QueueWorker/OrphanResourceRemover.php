@@ -2,7 +2,6 @@
 
 namespace Drupal\metastore\Plugin\QueueWorker;
 
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\metastore\ResourceMapper;
@@ -22,7 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @codeCoverageIgnore
  */
 class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-  use LoggerTrait;
 
   /**
    * Resource mapper service.
@@ -68,7 +66,7 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
    * {@inheritdoc}
    */
   public function processItem($data) {
-    list($id, $perspective, $version) = $data;
+    [$id, $perspective, $version] = $data;
 
     // Use the metastore resourceMapper to remove the source entry.
     $resource = $this->resourceMapper->get($id, $perspective, $version);

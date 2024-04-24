@@ -13,6 +13,11 @@ use Drupal\Core\Database\SchemaObjectExistsException;
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use EventDispatcherTrait;
 
+  /**
+   * The event name we send when we create a table.
+   *
+   * @todo This is unused.
+   */
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
 
   /**

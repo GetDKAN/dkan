@@ -14,7 +14,7 @@ as precise as the geographic boundaries or relevant time period the data applies
 Some more details of DKAN's metastore:
 
 * The data assets themselves (usually in the form of local files or URLs to data files) are referred to internally in DKAN as *resources*.
-* The structure and format of dataset metadata in DKAN are determined by a `JSON schema <https://json-schema.org/>`_. By default, DKAN provides and utilizes the `DCAT-US metadata schema <https://resources.data.gov/resources/dcat-us/>`_ to store datasets, but :ref:`custom schemas <custom_schema>` can be added to the codebase to override this.
+* The structure and format of dataset metadata in DKAN are determined by a `JSON schema <https://json-schema.org/>`_. By default, DKAN provides and utilizes the `DCAT-US metadata schema <https://resources.data.gov/resources/dcat-us/>`_ to store datasets, but :doc:`custom schemas <../user-guide/guide_custom_schemas>` can be added to the codebase to override this.
 * In DCAT-US, resources are placed in a sub-schema of the parent dataset called a *distribution*.
 
 .. image:: https://project-open-data.cio.gov/v1.1/schema-diagram.svg
@@ -26,28 +26,10 @@ Some more details of DKAN's metastore:
   Read the documentation on :doc:`How to add a Dataset <../user-guide/guide_dataset>` to get started adding information to the metastore.
 
 
-Configuration
--------------
-.. _custom_schema:
+.. note::
 
-Changing your dataset schema
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  Read the documentation on :doc:`Changing your dataset schema <../user-guide/guide_custom_schemas>` to learn how to add custom fields.
 
-Replacing the dataset schema in DKAN allows you to add fields and conform to additional specifications.
-As long as you provide a valid JSON schema, any information going into the metastore will be validated against it.
-
-To change the schema being used, copy the contents of the `schema` directory from the DKAN repo and place
-it in the root of your Drupal installation (docroot/schema). Then make any modifications necessary to the
-`dataset.json` file inside the `collections` directory. Note that even if you are only changing the
-dataset.json schema, it is important to copy ALL of the schema files as DKAN will be expecting all of the
-schema files to be in the same location.
-
-.. warning::
-
-  Warning: The schema is actively used by the catalog to verify the validity of the data.
-  Making changes to the schema after data is present in the catalog should be done with care
-  as non-backward-compatible changes to the schema could cause issues.
-  Look at ``Drupal::metastore::SchemaRetriever::findSchemaDirectory()`` for context.
 
 Data Dictionaries
 -----------------

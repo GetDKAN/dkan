@@ -13,6 +13,10 @@ use MockChain\Options;
 
 /**
  * Test class for StringHelper.
+ *
+ * @group dkan
+ * @group json_form_widget
+ * @group unit
  */
 class StringHelperTest extends TestCase {
 

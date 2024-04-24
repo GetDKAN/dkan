@@ -2,7 +2,7 @@
 
 namespace Drupal\json_form_widget;
 
-use Drupal\Component\Uuid\Php;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\MetastoreService;
@@ -16,7 +16,7 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Uuid Service.
    *
-   * @var \Drupal\Component\Uuid\Php
+   * @var \Drupal\Component\Uuid\UuidInterface
    */
   protected $uuidService;
 
@@ -50,14 +50,14 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\Component\Uuid\Php $uuid
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid
    *   Uuid service.
    * @param \Drupal\json_form_widget\StringHelper $string_helper
    *   String Helper service.
    * @param \Drupal\metastore\MetastoreService $metastore
    *   Metastore service.
    */
-  public function __construct(Php $uuid, StringHelper $string_helper, MetastoreService $metastore) {
+  public function __construct(UuidInterface $uuid, StringHelper $string_helper, MetastoreService $metastore) {
     $this->uuidService = $uuid;
     $this->stringHelper = $string_helper;
     $this->metastore = $metastore;
@@ -141,9 +141,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Handle configuration for list elements.
    *
    * @param mixed $spec
-   *   Element to convert into list element.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into list element.
    *
    * @return array
    *   The element configured as a list element.
@@ -178,7 +178,7 @@ class WidgetRouter implements ContainerInjectionInterface {
     $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
-      $element['#input_type'] = isset($spec->other_type) ? $spec->other_type : 'textfield';
+      $element['#input_type'] = $spec->other_type ?? 'textfield';
     }
     $element['#other_option'] = isset($element['#other_option']) ?? FALSE;
 
@@ -275,9 +275,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Handle configuration for upload_or_link elements.
    *
    * @param mixed $spec
-   *   Element to convert into upload_or_link.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into upload_or_link.
    *
    * @return array
    *   The element configured as upload_or_link.
@@ -299,9 +299,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a textarea element.
    *
    * @param mixed $spec
-   *   Element to convert into textarea.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into textarea.
    *
    * @return array
    *   The element configured as textarea.
@@ -321,9 +321,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for hiding an element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into hidden.
    *
    * @return array
    *   The element configured as hidden.
@@ -337,9 +337,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a dkan_uuid element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into dkan_uuid.
    *
    * @return array
    *   The element configured as dkan_uuid.
@@ -354,16 +354,16 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a date element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into date.
    *
    * @return array
    *   The element configured as date.
    */
   public function handleDateElement($spec, array $element) {
     $element['#type'] = 'date';
-    $format = isset($spec->format) ? $spec->format : 'Y-m-d';
+    $format = $spec->format ?? 'Y-m-d';
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
       $element['#default_value'] = $date->format($format);
@@ -376,12 +376,12 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a datetime element.
    *
    * @param mixed $spec
-   *   Element to convert into hidden.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into datetime.
    *
    * @return array
-   *   The element configured as date.
+   *   The element configured as datetime.
    */
   public function handleDatetimeElement($spec, array $element) {
     $element['#type'] = 'flexible_datetime';
@@ -399,9 +399,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting a date_range element.
    *
    * @param mixed $spec
-   *   Element to convert into date_range.
-   * @param array $element
    *   Object with spec for UI options.
+   * @param array $element
+   *   Element to convert into date_range.
    *
    * @return array
    *   The element configured as date_range.

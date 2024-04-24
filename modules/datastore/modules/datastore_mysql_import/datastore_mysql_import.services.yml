@@ -1,11 +1,14 @@
 services:
-  dkan.datastore.service.factory.import:
+  dkan.datastore_mysql_import.service.factory.import:
+    decorates: dkan.datastore.service.factory.import
     class: \Drupal\datastore_mysql_import\Factory\MysqlImportFactory
     arguments:
-      - '@dkan.common.job_store'
+      - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore_mysql_import.database_table_factory'
+      - '@dkan.datastore.logger_channel'
 
   dkan.datastore_mysql_import.database_table_factory:
     class: \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
     arguments:
       - '@dkan.datastore.database'
+      - '@dkan.datastore.logger_channel'

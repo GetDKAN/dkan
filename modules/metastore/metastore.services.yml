@@ -5,6 +5,7 @@ services:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
       - '@dkan.metastore.valid_metadata'
+      - '@dkan.common.logger_channel'
 
   dkan.metastore.lifecycle:
     class: \Drupal\metastore\LifeCycle\LifeCycle
@@ -34,6 +35,7 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@config.factory'
+      - '@dkan.common.logger_channel'
 
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
@@ -41,16 +43,16 @@ services:
       - '@config.factory'
       - '@dkan.metastore.storage'
       - '@dkan.metastore.url_generator'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
+      - '@http_client'
+      - '@file.mime_type.guesser.extension'
+      - '@dkan.common.logger_channel'
 
   dkan.metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
+      - '@dkan.common.logger_channel'
 
   dkan.metastore.orphan_checker:
     class: \Drupal\metastore\Reference\OrphanChecker
@@ -62,19 +64,20 @@ services:
     class: \Drupal\metastore\ResourceMapper
     arguments:
       - '@dkan.metastore.resource_mapper_database_table'
-      - '@event_dispatcher'
+      - '@entity_type.manager'
 
   dkan.metastore.resource_mapper_database_table:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
+      - '@dkan.common.logger_channel'
 
   dkan.metastore.event_subscriber:
     class: \Drupal\metastore\EventSubscriber\MetastoreSubscriber
     arguments:
-      - '@logger.factory'
       - '@dkan.metastore.service'
       - '@dkan.metastore.resource_mapper'
+      - '@dkan.metastore.reference_lookup'
     tags:
       - { name: event_subscriber }
 
@@ -87,6 +90,7 @@ services:
     class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:
       - '@entity.repository'
+      - '@entity_type.manager'
 
   dkan.metastore.dataset_api_docs:
     class: \Drupal\metastore\DatasetApiDocs

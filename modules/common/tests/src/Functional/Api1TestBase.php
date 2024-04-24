@@ -31,6 +31,7 @@ abstract class Api1TestBase extends BrowserTestBase {
     'datastore',
     'metastore',
     'node',
+    'sample_content',
   ];
 
   /**
@@ -38,7 +39,7 @@ abstract class Api1TestBase extends BrowserTestBase {
    */
   public function setUp(): void {
     parent::setUp();
-    $user = $this->createUser(["post put delete datasets through the api"], "testapiuser", FALSE);
+    $user = $this->createUser(['post put delete datasets through the api'], 'testapiuser', FALSE);
     $this->httpClient = $this->container->get('http_client_factory')
       ->fromOptions([
         'base_uri' => $this->baseUrl,
@@ -70,8 +71,10 @@ abstract class Api1TestBase extends BrowserTestBase {
   }
 
   protected function getSampleDataset(int $n = 0) {
-    $sampleJson = file_get_contents(dirname(__DIR__, 4). '/sample_content/sample_content.json');
-    $sampleDatasets = json_decode($sampleJson);
+    /** @var \Drupal\sample_content\SampleContentService $sample_content_service */
+    $sample_content_service = $this->container->get('dkan.sample_content.service');
+    $sampleJson = $sample_content_service->createDatasetJsonFileFromTemplate();
+    $sampleDatasets = json_decode(file_get_contents($sampleJson));
     return $sampleDatasets->dataset[$n];
   }
 
@@ -82,4 +85,5 @@ abstract class Api1TestBase extends BrowserTestBase {
     $defaultModerationState->set('type_settings.default_moderation_state', $state);
     $defaultModerationState->save();
   }
+
 }

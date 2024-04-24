@@ -2,12 +2,31 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+
 /**
  * Handle dataset orphaning.
  *
  * @package Drupal\harvest
  */
 trait OrphanDatasetsProcessor {
+
+  /**
+   * Entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * Setter for this trait's entity type manager service dependency.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
+   */
+  public function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) : void {
+    $this->entityTypeManager = $entityTypeManager;
+  }
 
   /**
    * Get the dataset identifiers orphaned by the harvest currently in progress.
@@ -66,21 +85,22 @@ trait OrphanDatasetsProcessor {
     $runIds = $this->getAllHarvestRunInfo($harvestId);
 
     // Initialize with the first harvest run.
-    $previousRunId = array_shift($runIds);
-    $previousExtractedIds = $this->getExtractedIds($harvestId, $previousRunId);
+    if ($previousRunId = array_shift($runIds)) {
+      $previousExtractedIds = $this->getExtractedIds($harvestId, $previousRunId);
 
-    foreach ($runIds as $runId) {
-      $extractedIds = $this->getExtractedIds($harvestId, $runId);
+      foreach ($runIds as $runId) {
+        $extractedIds = $this->getExtractedIds($harvestId, $runId);
 
-      // Find and keep track of removed identifiers.
-      $removed = array_diff($previousExtractedIds, $extractedIds);
-      $cumulativelyRemovedIds = array_unique(array_merge($cumulativelyRemovedIds, $removed));
-      // Find but do not keep track of (re-)added identifiers.
-      $added = array_diff($extractedIds, $previousExtractedIds);
-      $cumulativelyRemovedIds = array_diff($cumulativelyRemovedIds, $added);
+        // Find and keep track of removed identifiers.
+        $removed = array_diff($previousExtractedIds, $extractedIds);
+        $cumulativelyRemovedIds = array_unique(array_merge($cumulativelyRemovedIds, $removed));
+        // Find but do not keep track of (re-)added identifiers.
+        $added = array_diff($extractedIds, $previousExtractedIds);
+        $cumulativelyRemovedIds = array_diff($cumulativelyRemovedIds, $added);
 
-      // Set up the next iteration by re-using this known result.
-      $previousExtractedIds = $extractedIds;
+        // Set up the next iteration by re-using this known result.
+        $previousExtractedIds = $extractedIds;
+      }
     }
 
     return $cumulativelyRemovedIds;

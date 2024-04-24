@@ -3,9 +3,9 @@
 namespace Drupal\harvest;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\harvest\Storage\DatabaseTableFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * DKAN Harvest utility service for maintenance tasks.
@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * These methods generally exist to support a thin Drush layer. These are
  * methods that we don't need in the HarvestService object.
  */
-class HarvestUtility implements ContainerInjectionInterface {
+class HarvestUtility {
 
   /**
    * Harvest service.
@@ -37,17 +37,18 @@ class HarvestUtility implements ContainerInjectionInterface {
   private Connection $connection;
 
   /**
-   * Create.
+   * The harvest hashes database table factory service.
    *
-   * @inheritdoc
+   * @var \Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
    */
-  public static function create(ContainerInterface $container) {
-    return new self(
-      $container->get('dkan.harvest.service'),
-      $container->get('dkan.harvest.storage.database_table'),
-      $container->get('database'),
-    );
-  }
+  private HarvestHashesDatabaseTableFactory $hashesFactory;
+
+  /**
+   * Logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
@@ -55,19 +56,23 @@ class HarvestUtility implements ContainerInjectionInterface {
   public function __construct(
     HarvestService $harvestService,
     DatabaseTableFactory $storeFactory,
-    Connection $connection
+    HarvestHashesDatabaseTableFactory $hashesFactory,
+    Connection $connection,
+    LoggerInterface $loggerChannel
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;
+    $this->hashesFactory = $hashesFactory;
     $this->connection = $connection;
+    $this->logger = $loggerChannel;
   }
 
   /**
    * Get the plan ID from a given harvest table name.
    *
    * Harvest table names are assumed to look like this:
-   * harvest_ID_that_might_have_underscores_[something]. For example:
-   * 'harvest_ABC_123_runs'.
+   * harvest_planID_that_might_have_underscores_[type], where [type] is one of
+   * hashes, items, or runs. For example: 'harvest_ABC_123_runs'.
    *
    * @param string $table_name
    *   The table name.
@@ -119,11 +124,9 @@ class HarvestUtility implements ContainerInjectionInterface {
   protected function findAllHarvestDataTables(): array {
     $tables = [];
     foreach ([
-      // @todo Figure out an expression for harvest_%_thing, since underscore
-      //   is a special character.
-      'harvest%runs',
-      'harvest%items',
-      'harvest%hashes',
+      'harvest_%_runs',
+      'harvest_%_items',
+      'harvest_%_hashes',
     ] as $table_expression) {
       if ($found_tables = $this->connection->schema()->findTables($table_expression)) {
         $tables = array_merge($tables, $found_tables);
@@ -145,10 +148,46 @@ class HarvestUtility implements ContainerInjectionInterface {
       foreach ([
         'harvest_' . $plan_id . '_runs',
         'harvest_' . $plan_id . '_items',
-        'harvest_' . $plan_id . '_hashes',
       ] as $table) {
         $this->storeFactory->getInstance($table)->destruct();
       }
+    }
+  }
+
+  /**
+   * Convert a table to use the harvest_hash entity.
+   *
+   * @param string $plan_id
+   *   Harvest plan ID to convert.
+   */
+  public function convertHashTable(string $plan_id) {
+    $old_hash_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes');
+    $hash_table = $this->hashesFactory->getInstance($plan_id);
+    foreach ($old_hash_table->retrieveAll() as $id) {
+      if ($data = $old_hash_table->retrieve($id)) {
+        $hash_table->store($data, $id);
+      }
+    }
+  }
+
+  /**
+   * Update all the harvest hash tables to use entities.
+   *
+   * This will move all harvest hash information to the updated schema,
+   * including data which does not have a corresponding hash plan ID.
+   *
+   * Outdated tables will be removed.
+   */
+  public function harvestHashUpdate() {
+    $plan_ids = array_merge(
+      $this->harvestService->getAllHarvestIds(),
+      array_values($this->findOrphanedHarvestDataIds())
+    );
+    foreach ($plan_ids as $plan_id) {
+      $this->logger->notice('Converting hashes for ' . $plan_id);
+      $this->convertHashTable($plan_id);
+      $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes')
+        ->destruct();
     }
   }
 
