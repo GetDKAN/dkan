@@ -132,6 +132,7 @@ class JsonFormBuilderTest extends TestCase {
         "#default_value" => "Some value.",
         '#description_display' => 'before',
         "#required" => FALSE,
+        "#maxlength" => 256,
       ],
       "downloadURL" => [
         "#type" => "url",
