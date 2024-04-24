@@ -272,7 +272,7 @@ Look closely at the distribution property in the example below.
             "mediaType": "text\/csv",
             "format": "csv",
             "title": "Projects",
-            "describedBy": "dkan://metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
+            "describedBy": "http://mydomain.com/api/1/metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
             "describedByType": "application/vnd.tableschema+json"
           }
         ],
@@ -286,9 +286,32 @@ Look closely at the distribution property in the example below.
         "keyword":["tag1"]
       }
 
-Note the special URL used to point to the data dictionary. The full URL, e.g.
-http://mydomain.com/api/1/metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2,
-could also be used, and would be converted to an internal `dkan://` URL on save.
+The API endpoint for the data dictionary can be found at the top of the data dictionary edit form.
 
 This data dictionary will now be used to modify the datastore table after import. If we were to
 request the dataset back from the API, it would show us the absolute URL as well.
+
+
+**How to modidfy the dataset form to change the distribution describedBy property to a select field.**
+
+If you are using the distribution reference setting, and you have created many data dictionaries,
+you could customize the dataset.ui.json file (Remember you must copy ALL schema files from DKAN into your
+root directory to customize any of them). Edit the dataset.ui.json to look like this:
+
+    .. sourcecode:: json
+
+      "describedBy": {
+        "ui:options": {
+          "description": "URL to the data dictionary for the file found at the Download URL.",
+          "widget": "list",
+          "type": "select",
+          "titleProperty": "title",
+          "source": {
+            "metastoreSchema": "data-dictionary",
+            "returnValue": "url"
+          }
+        }
+      }
+
+This will allow data publishers to select from a list of existing data dictionaries rather than entering the API endpoint.
+
