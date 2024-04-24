@@ -416,9 +416,9 @@ class WidgetRouter implements ContainerInjectionInterface {
    *
    * @param object $spec
    *   Specification for UI options. Optional properties:
-   *   - step: Ensures that the number is an even multiple of step
-   *   - min: Minimum value
-   *   - max: Maximum value
+   *   - step: Ensures that the number is an even multiple of step.
+   *   - min: Minimum value.
+   *   - max: Maximum value.
    * @param array $element
    *   Element to convert into number.
    *
