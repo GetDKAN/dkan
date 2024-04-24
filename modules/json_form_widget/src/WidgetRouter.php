@@ -414,17 +414,18 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Helper function for getting a number element.
    *
-   * @param mixed $spec
-   *   Object with spec for UI options.
-   *   optional specs
-   *   - step
-   *   - min
-   *   - max
+   * @param object $spec
+   *   Specification for UI options. Optional properties:
+   *   - step: Ensures that the number is an even multiple of step
+   *   - min: Minimum value
+   *   - max: Maximum value
    * @param array $element
    *   Element to convert into number.
    *
    * @return array
    *   The element configured as number.
+   *
+   * @see \Drupal\Core\Render\Element\Number
    */
   public function handleNumberElement($spec, array $element) {
     $element['#type'] = 'number';
@@ -434,7 +435,7 @@ class WidgetRouter implements ContainerInjectionInterface {
     if (isset($spec->min)) {
       $element['#min'] = $spec->min;
     }
-    if (isset($spec->step)) {
+    if (isset($spec->max)) {
       $element['#max'] = $spec->max;
     }
     return $element;
