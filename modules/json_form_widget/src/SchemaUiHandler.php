@@ -278,6 +278,9 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       return $this->widgetRouter->getConfiguredWidget($spec, $element);
     }
     else {
+      if ($element['#type'] === 'textfield' && empty($element['#maxlength'])) {
+        $element['#maxlength'] = 256;
+      }
       return $element;
     }
   }
