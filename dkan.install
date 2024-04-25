@@ -11,3 +11,10 @@ function dkan_update_9001() {
   $modules = ['path', 'config'];
   \Drupal::service('module_installer')->install($modules);
 }
+
+/**
+ * Enable data dictionary widget.
+ */
+function dkan_update_9002() {
+  \Drupal::service('module_installer')->install(['data_dictionary_widget']);
+}
