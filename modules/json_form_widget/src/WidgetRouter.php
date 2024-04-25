@@ -80,6 +80,9 @@ class WidgetRouter implements ContainerInjectionInterface {
       $method_name = $widgets[$spec->widget];
       $element = $this->$method_name($spec, $element);
     }
+    if ($element['#type'] === 'textfield' && empty($element['#maxlength'])) {
+      $element['#maxlength'] = 256;
+    }
     return $element;
   }
 

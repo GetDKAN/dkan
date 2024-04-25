@@ -65,9 +65,6 @@ class StringHelper implements ContainerInjectionInterface {
     $element = [
       '#type' => $this->getElementType($property),
     ];
-    if ($element['#type'] === 'textfield') {
-      $element['#maxlength'] = 256;
-    }
     $element['#title'] = $property->title ?? '';
     $element['#description'] = $property->description ?? '';
     $element['#description_display'] = 'before';
