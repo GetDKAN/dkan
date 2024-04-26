@@ -8,6 +8,8 @@
 
 ---
 
+[![Getting Started with DKAN](https://img.youtube.com/vi/SnA22Lb6r_M/0.jpg)](https://youtu.be/SnA22Lb6r_M?si=WqU-FKGb1iGhc5Vz)
+
 ## Documentation
 DKAN's documentation can be found at https://dkan.readthedocs.io/en/latest
 
