@@ -30,6 +30,14 @@ function data_dictionary_widget_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'custom-index-fields-table',
     ],
+    'custom_index_table' => [
+      'variables' => [
+        'header' => [],
+        'rows' => [],
+        'attributes' => [],
+      ],
+      'template' => 'custom-index-table',
+    ],
   ];
 }
 

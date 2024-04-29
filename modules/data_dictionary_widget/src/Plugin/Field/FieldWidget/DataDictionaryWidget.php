@@ -30,13 +30,15 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $dictionary_field_values = $form_state->get("new_dictionary_fields");
+    $field_values = $form_state->get("new_dictionary_fields");
+    $index_values = $form_state->get('new_index');
     $index_field_values = $form_state->get("new_index_fields");
 
-    $current_dictionary_fields = $form_state->get('current_dictionary_fields');
+    $current_fields = $form_state->get('current_dictionary_fields');
+    $current_indexes = $form_state->get('current_index');
     $current_index_fields = $form_state->get('current_index_fields');
 
-    $dictionary_fields_being_modified = $form_state->get("dictionary_fields_being_modified") ?? NULL;
+    $fields_being_modified = $form_state->get("fields_being_modified") ?? NULL;
     $index_fields_being_modified = $form_state->get("index_fields_being_modified") ?? NULL;
 
     $op = $form_state->getTriggeringElement()['#op'] ?? NULL;
@@ -44,53 +46,60 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $op_index = isset($form_state->getTriggeringElement()['#op']) ? explode("_", $form_state->getTriggeringElement()['#op']) : NULL;
 
     $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
-    $index_data_results = $field_json_metadata ? $field_json_metadata["data"]["indexes"] : [];
+    $index_data_results = $field_json_metadata ? $field_json_metadata["data"]["indexes"][0]["fields"] : [];
 
     // Build the data_results array to display the rows in the data table.
-    $data_results = FieldOperations::processDataResults($data_results, $current_dictionary_fields, $dictionary_field_values, $op);
+    $data_results = FieldOperations::processDataResults($data_results, $current_fields, $field_values, $op);
 
-<<<<<<< HEAD
-    $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $form_state);
-=======
     // Build the index_data_results array to display the rows in the data table.
     $index_data_results = IndexFieldOperations::processIndexDataResults($index_data_results, $current_index_fields, $index_field_values, $op);
 
-<<<<<<< HEAD
-    $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $fields_being_modified);
->>>>>>> 2b5529e5a (WCMS-19106: Data-dictionary: Add index definition fields options add/remove)
-=======
-    $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_dictionary_fields, $dictionary_fields_being_modified);
->>>>>>> 69d777659 (Update some variable names to distinguish between dictionary fields and index fields, add some comments)
-
-    $element = IndexFieldCreation::createGeneralIndexFields($element, $field_json_metadata, $current_index_fields, $index_fields_being_modified);
+    $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $form_state);
+    $element = IndexFieldCreation::createGeneralIndex($element, $field_json_metadata, $current_indexes, $form_state);
+    
+    if ($index_field_values || $current_index_fields) {
+      $element = IndexFieldCreation::createGeneralIndexFields($element, $field_json_metadata, $current_index_fields, $form_state->get('add_new_index'), $form_state);
+    }
 
     $element['dictionary_fields']['#pre_render'] = [
       [$this, 'preRenderForm'],
     ];
 
-    $element['index_fields']['#pre_render'] = [
+    $element['indexes']['#pre_render'] = [
       [$this, 'preRenderIndexForm'],
     ];
 
-    $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_dictionary_fields, $data_results, $form_state);
+    $element['indexes']['index_fields']['#pre_render'] = [
+      [$this, 'preRenderIndexFieldForm'],
+    ];
 
-    $element['index_fields']['data'] = IndexFieldCreation::createIndexDataRows($current_index_fields, $index_data_results, $form_state);
+    $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_fields, $data_results, $form_state);
+    $element['indexes']['data'] = IndexFieldCreation::createIndexDataRows($current_indexes, $index_data_results, $form_state);
+    $element['indexes']['index_fields']['data'] = IndexFieldCreation::createIndexFieldsDataRows($current_index_fields, $index_data_results, $form_state);
 
     // Creating ajax buttons/fields to be placed in correct location later.
-    $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $dictionary_fields_being_modified, $element['dictionary_fields']);
-    $element['dictionary_fields']['add_row_button']['#access'] = $dictionary_fields_being_modified == NULL ? TRUE : FALSE;
-    
-    // Creating ajax buttons/fields to be placed in correct location later for index fields.
-    $element['index_fields'] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element['index_fields']);
-    $element['index_fields']['add_row_button']['#access'] = $index_fields_being_modified == NULL ? TRUE : FALSE;
+    $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element['dictionary_fields']);
+    $element['dictionary_fields']['add_row_button']['#access'] = $fields_being_modified == NULL ? TRUE : FALSE;
 
-    $form_entity = $form_state->getFormObject()->getEntity();
+    // Creating ajax buttons/fields to be placed in correct location later for index fields.
+    $element['indexes'] = IndexFieldOperations::createDictionaryIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes']);
+
+    $element["indexes"]["index_fields"] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes']['index_fields']);
+    $element['indexes']['index_fields']['add_row_button']['#access'] = $index_field_values ? TRUE : FALSE;
+
+    $form_object = $form_state->getFormObject();
+    if (!($form_object instanceof EntityFormInterface)) {
+      return;
+    }
+    $form_entity = $form_object->getEntity();
 
     if ($form_entity instanceof FieldableEntityInterface) {
       $form_entity->set('field_data_type', 'data-dictionary');
     }
     $element = FieldOperations::setAddFormState($form_state->get('add_new_field'), $element);
-    $element = IndexFieldOperations::setAddIndexFormState($form_state->get('add_new_index_field'), $element);
+    $element = IndexFieldOperations::setAddIndexFormState($form_state->get('add_new_index'), $element);
+    $element = IndexFieldOperations::setAddIndexFieldFormState($form_state->get('add_new_index_field'), $element);
+
     return $element;
   }
 
@@ -98,15 +107,14 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * {@inheritdoc}
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
-    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]["index_fields"]["data"]["#rows"];
+    $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+    $current_indexes = $form["field_json_metadata"]["widget"][0]["indexes"]["index_fields"]["data"]["#rows"];
+    //$current_indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : NULL;
 
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
-<<<<<<< HEAD
-    $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : NULL;
+    $indexes_collection = $values[0]["indexes"]["index_fields"]["field_collection"]["group"] ?? [];
 
-    $data_results = !empty($field_collection) ? [
+    $fields_input = !empty($field_collection) ? [
       [
         "name" => $field_collection["name"],
         "title" => $field_collection["title"],
@@ -116,61 +124,40 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       ],
     ] : [];
 
-    $updated = array_merge($current_fields ?? [], $data_results);
-=======
+    $index_inputs = !empty($indexes_collection) ? [
+      [
+        "name" => $indexes_collection["name"],
+        "length" => (int)$indexes_collection["length"],
+      ],
+    ] : [];
 
-    $index_field_collection = $values[0]['index_fields']["field_collection"]["group"] ?? [];
-
-    if (!empty($field_collection)) {
-      $data_results = [
-        [
-          "name" => $field_collection["name"],
-          "title" => $field_collection["title"],
-          "type" => $field_collection["type"],
-          "format" => $field_collection["format"],
-          "description" => $field_collection["description"],
-        ],
-      ];
-      $updated = array_merge($current_dictionary_fields ?? [], $data_results);
+    if (isset($fields_input)) {
+      $fields = array_merge($current_fields ?? [], $fields_input);
     }
     else {
-      $updated = $current_dictionary_fields ?? [];
+      $fields = $current_fields ?? [];
     }
->>>>>>> 9612d68e3 (WCMS-19107: Data-dictionary: Add index definition fields options table render)
 
-    if (!empty($index_field_collection)) {
-      $index_field_results = [
-        [
-          "name" => $index_field_collection["name"],
-          "length" => $index_field_collection["length"],
-        ],
-      ];
-      $updated_index_fields = array_merge($current_index_fields ?? [], $index_field_results);
-    }
-    else {
-      $updated_index_fields = $current_index_fields ?? [];
-    }
+
+    //$fields = array_merge($current_fields ?? [], $fields_input);
+    $indexes = array_merge($current_indexes ?? [], $index_inputs);
 
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
       'data' => [
         'title' => $values[0]['title'] ?? '',
-        'fields' => $updated,
-<<<<<<< HEAD
-<<<<<<< HEAD
-        'indexes' => $indexes ?? [],
-=======
-        'indexes' => [],
->>>>>>> 9612d68e3 (WCMS-19107: Data-dictionary: Add index definition fields options table render)
-=======
+        'fields' => $fields,
         'indexes' => [
-          'fields' => $updated_index_fields,
-        ],
->>>>>>> 363810a0d (Move index field edit button to in the display table)
+          [
+            'fields' => $indexes
+          ]
+          ],
       ],
     ];
 
-    return json_encode($json_data);
+    $test = json_encode($json_data);
+
+    return $test;
   }
 
   /**
@@ -187,15 +174,24 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    *
    * Moves the buttons into the table.
    */
-  public function preRenderIndexForm(array $dictionaryIndexFields) {
-    return IndexFieldOperations::setIndexAjaxElements($dictionaryIndexFields);
+  public function preRenderIndexFieldForm(array $dictionaryIndexFields) {
+    return IndexFieldOperations::setIndexFieldsAjaxElements($dictionaryIndexFields);
+  }
+
+  /**
+   * Prerender callback for the index form.
+   *
+   * Moves the buttons into the table.
+   */
+  public function preRenderIndexForm(array $dictionaryIndexes) {
+    return IndexFieldOperations::setIndexAjaxElements($dictionaryIndexes);
   }
 
   /**
    * {@inheritdoc}
    */
   public static function trustedCallbacks() {
-    return ['preRenderForm', 'preRenderIndexForm'];
+    return ['preRenderForm', 'preRenderIndexFieldForm', 'preRenderIndexForm'];
   }
 
 }
