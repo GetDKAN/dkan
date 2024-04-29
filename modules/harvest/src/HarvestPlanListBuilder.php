@@ -7,6 +7,8 @@ use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\harvest\Entity\HarvestRunRepository;
+use Harvest\ResultInterpreter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -24,11 +26,19 @@ class HarvestPlanListBuilder extends EntityListBuilder {
   protected HarvestService $harvestService;
 
   /**
+   * Harvest run repository service.
+   *
+   * @var \Drupal\harvest\Entity\HarvestRunRepository
+   */
+  protected HarvestRunRepository $harvestRunRepository;
+
+  /**
    * {@inheritDoc}
    */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     $builder = parent::createInstance($container, $entity_type);
     $builder->harvestService = $container->get('dkan.harvest.service');
+    $builder->harvestRunRepository = $container->get('dkan.harvest.storage.harvest_run_repository');
     return $builder;
   }
 
@@ -40,14 +50,6 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     // Add our styles.
     $build['table']['#attributes']['class'][] = 'dashboard-harvests';
     $build['table']['#attached']['library'][] = 'harvest/style';
-
-    $total = $this->getStorage()
-      ->getQuery()
-      ->accessCheck(FALSE)
-      ->count()
-      ->execute();
-
-    $build['summary']['#markup'] = $this->t('Total harvest plans: @total', ['@total' => $total]);
     return $build;
   }
 
@@ -71,10 +73,11 @@ class HarvestPlanListBuilder extends EntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /** @var \Drupal\harvest\HarvestPlanInterface $entity */
     $harvest_plan_id = $entity->get('id')->getString();
+    $run_entity = NULL;
 
-    if ($runId = $this->harvestService->getLastHarvestRunId($harvest_plan_id)) {
+    if ($run_id = $this->harvestService->getLastHarvestRunId($harvest_plan_id)) {
       // There is a run identifier, so we should get that info.
-      $info = json_decode($this->harvestService->getHarvestRunInfo($harvest_plan_id, $runId));
+      $run_entity = $this->harvestRunRepository->loadEntity($harvest_plan_id, $run_id);
     }
 
     // Default values for a row if there's no info.
@@ -91,13 +94,15 @@ class HarvestPlanListBuilder extends EntityListBuilder {
       'dataset_count' => 'unknown',
     ];
     // Add stats if there is info for it.
-    if ($info ?? FALSE) {
+    if ($run_entity) {
+      $extract_status = $run_entity->get('extract_status')->getString();
+      $interpreter = new ResultInterpreter($run_entity->toResult());
       $row['extract_status'] = [
-        'data' => $info->status->extract,
-        'class' => strtolower($info->status->extract),
+        'data' => $extract_status,
+        'class' => strtolower($extract_status),
       ];
-      $row['last_run'] = date('m/d/y H:m:s T', $runId);
-      $row['dataset_count'] = count(array_keys((array) $info->status->load));
+      $row['last_run'] = date('m/d/y H:m:s T', $run_id);
+      $row['dataset_count'] = $interpreter->countProcessed();
     }
     // Don't call parent::buildRow() because we don't want operations (yet).
     return $row;

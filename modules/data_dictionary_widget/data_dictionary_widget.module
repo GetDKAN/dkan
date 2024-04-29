@@ -6,8 +6,11 @@
  */
 
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\node\NodeInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Implements hook_theme().
@@ -88,11 +91,22 @@ function data_dictionary_widget__data_dictionary_data_type_checker($context) {
  */
 function data_dictionary_widget_form_alter(&$form, &$form_state, $form_id) {
   $formObject = $form_state->getFormObject();
+
   if ($formObject instanceof \Drupal\Core\Entity\EntityFormInterface) {
     $entity = $formObject->getEntity();
+    $data_type = $entity->get('field_data_type')->value;
     if (isset($form["field_json_metadata"]["widget"][0]["dictionary_fields"])) {
       if ($entity->getEntityTypeId() === 'node' && in_array($entity->bundle(), ['data'])) {
         $form['#attached']['library'][] = 'data_dictionary_widget/dataDictionaryWidget';
+      }
+    }
+
+    // If we are saving a data dictionary alter the submit.
+    foreach (array_keys($form['actions']) as $action) {
+      if ( isset($form['actions'][$action]['#type'])
+        && $form['actions'][$action]['#type'] === 'submit'
+        && $data_type == 'data-dictionary') {
+        $form['actions']['submit']['#submit'][] = 'data_dictionary_widget_form_submit';
       }
     }
   }
@@ -124,6 +138,16 @@ function data_dictionary_widget_form_alter(&$form, &$form_state, $form_id) {
       $form["field_json_metadata"]["widget"][0]["identifier"]['#description'] = t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="/api/1/metastore/schemas/data-dictionary/items/' .$uuid. '" target="_blank">URL</a>.</div>');
     }
   }
+}
+
+/**
+ * Redirect to the data dictionary view after saving a data dictionary.
+ */
+function data_dictionary_widget_form_submit($form, FormStateInterface $form_state) {
+  $url = Url::fromRoute('metastore.data_dictionary');
+  $response = new RedirectResponse($url->toString());
+  $response->send();
+  return;
 }
 
 /**

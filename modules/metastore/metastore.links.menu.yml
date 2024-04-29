@@ -6,15 +6,15 @@ dkan.metastore.config_properties:
   weight: 14
 
 metastore.data_dictionary:
-  title: Data-Dictionary
-  description: Data-Dictionary Pages
+  title: Data Dictionary
+  description: Data Dictionary List
   parent: system.admin_dkan
   route_name: metastore.data_dictionary
   weight: 13
 
 metastore.data_dictionary.create:
   title: Create
-  description: Create Data-Dictionary
+  description: Create Data Dictionary
   parent: metastore.data_dictionary
   route_name: node.add
   route_parameters:
@@ -24,7 +24,24 @@ metastore.data_dictionary.create:
 
 metastore.data_dictionary.settings_form:
   title: Settings
-  description: Data-Dictionary Settings
+  description: Data Dictionary Settings
   parent: metastore.data_dictionary
   route_name: metastore.data_dictionary.settings
-  weight: 2
+  weight: 3
+
+metastore.datasets:
+  title: Datasets
+  description: Dataset content view
+  parent: system.admin_dkan
+  route_name: metastore.datasets
+  weight: 1
+
+metastore.datasets.create:
+  title: Create
+  description: Create Dataset
+  parent: metastore.datasets
+  route_name: node.add
+  route_parameters:
+    node_type: data
+    schema: dataset
+  weight: 1
