@@ -63,8 +63,11 @@ class FieldAddCreation {
       '#options' => [
         'string' => t('String'),
         'date' => t('Date'),
+        'datetime' => t('Datetime'),
         'integer' => t('Integer'),
         'number' => t('Number'),
+        'year' => t('Year'),
+        'boolean' => t('Boolean'),
       ],
       '#ajax' => [
         'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
