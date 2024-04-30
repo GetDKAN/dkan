@@ -65,36 +65,37 @@ class FieldOperations {
    *
    * @return string
    *   Description information.
+   * 
+   * @throws \InvalidArgumentException
    */
   public static function generateFormatDescription($dataType) {
     $description = "<p>The format of the data in this field. Supported formats depend on the specified field type:</p>";
 
-    if ($dataType === 'string') {
-      $description .= FieldValues::returnStringInfo('description');
-    }
-
-    if ($dataType === 'date') {
-      $description .= FieldValues::returnDateInfo('description');
-    }
-
-    if ($dataType === 'datetime') {
-      $description .= FieldValues::returnDateTimeInfo('description');
-    }
-
-    if ($dataType === 'integer') {
-      $description .= FieldValues::returnIntegerInfo('description');
-    }
-
-    if ($dataType === 'number') {
-      $description .= FieldValues::returnNumberInfo('description');
-    }
-
-    if ($dataType === 'year') {
-      $description .= FieldValues::returnYearInfo('description');
-    }
-
-    if ($dataType === 'boolean') {
-      $description .= FieldValues::returnBooleanInfo('description');
+    switch ($dataType) {
+      case 'string':
+        $description .= FieldValues::returnStringInfo('description');
+        break;
+      case 'date':
+        $description .= FieldValues::returnDateInfo('description');
+        break;
+      case 'datetime':
+        $description .= FieldValues::returnDateTimeInfo('description');
+        break;
+      case 'integer':
+        $description .= FieldValues::returnIntegerInfo('description');
+        break;
+      case 'number':
+        $description .= FieldValues::returnNumberInfo('description');
+        break;
+      case 'year':
+        $description .= FieldValues::returnYearInfo('description');
+        break;
+      case 'boolean':
+        $description .= FieldValues::returnBooleanInfo('description');
+        break;
+      default:
+        throw new \InvalidArgumentException("Unexpected data type: $dataType");
+        break;
     }
 
     return $description;
@@ -111,35 +112,24 @@ class FieldOperations {
    */
   public static function setFormatOptions($dataType) {
 
-    if ($dataType === 'string') {
-      $options = FieldValues::returnStringInfo('options');
+    switch ($dataType) {
+      case 'string':
+        return FieldValues::returnStringInfo('options');
+      case 'date':
+        return FieldValues::returnDateInfo('options');
+      case 'datetime':
+        return FieldValues::returnDateTimeInfo('options');
+      case 'integer':
+        return FieldValues::returnIntegerInfo('options');
+      case 'number':
+        return FieldValues::returnNumberInfo('options');
+      case 'year':
+        return FieldValues::returnYearInfo('options');
+      case 'boolean':
+        return FieldValues::returnBooleanInfo('options');
+      default:
+        return NULL;
     }
-
-    if ($dataType === 'date') {
-      $options = FieldValues::returnDateInfo('options');
-    }
-
-    if ($dataType === 'datetime') {
-      $options = FieldValues::returnDateTimeInfo('options');
-    }
-
-    if ($dataType === 'integer') {
-      $options = FieldValues::returnIntegerInfo('options');
-    }
-
-    if ($dataType === 'number') {
-      $options = FieldValues::returnNumberInfo('options');
-    }
-
-    if ($dataType === 'year') {
-      $options = FieldValues::returnYearInfo('options');
-    }
-
-    if ($dataType === 'boolean') {
-      $options = FieldValues::returnBooleanInfo('options');
-    }
-
-    return $options;
 
   }
 
@@ -338,16 +328,20 @@ class FieldOperations {
    *   The form array to be modified.
    */
   public static function resetDateFormatOptions(array &$form) {
-    $data_type = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["type"]["#value"] ?? null;
+    $data_type = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["type"]["#value"] ?? NULL;
 
-    if ($data_type && ($data_type === "date" || $data_type === "datetime")) {
-        $options = $data_type === "date" ? FieldValues::returnDateInfo('options') : FieldValues::returnDateTimeInfo('options');
-        $descr = $data_type === "date" ? FieldValues::returnDateInfo('description') : FieldValues::returnDateTimeInfo('description');
-        if ($options && $descr) {
-            $formatField =& $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"];
-            $formatField["#options"] = $options;
-            $formatField["#description"] = $descr;
-        }
+    if (!$data_type || ($data_type !== "date" && $data_type !== "datetime")) {
+      return;
+    }
+
+    $options_method = ($data_type === "date") ? 'returnDateInfo' : 'returnDateTimeInfo';
+    $options = FieldValues::$options_method('options');
+    $description = FieldValues::$options_method('description');
+
+    if ($options && $description) {
+      $format_field =& $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"];
+      $format_field["#options"] = $options;
+      $format_field["#description"] = $description;
     }
   }
 
