@@ -118,7 +118,7 @@ class FieldOperations {
    */
   public static function setFormatOptions($dataType) {
 
-    $options = null;
+    $options = NULL;
 
     switch ($dataType) {
       case 'string':
