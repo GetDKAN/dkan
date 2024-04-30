@@ -65,7 +65,7 @@ class FieldOperations {
    *
    * @return string
    *   Description information.
-   * 
+   *
    * @throws \InvalidArgumentException
    */
   public static function generateFormatDescription($dataType) {
@@ -73,32 +73,38 @@ class FieldOperations {
 
     switch ($dataType) {
       case 'string':
-        $description .= FieldValues::returnStringInfo('description');
+        $info = FieldValues::returnStringInfo('description');
         break;
+
       case 'date':
-        $description .= FieldValues::returnDateInfo('description');
+        $info = FieldValues::returnDateInfo('description');
         break;
+
       case 'datetime':
-        $description .= FieldValues::returnDateTimeInfo('description');
+        $info = FieldValues::returnDateTimeInfo('description');
         break;
+
       case 'integer':
-        $description .= FieldValues::returnIntegerInfo('description');
+        $info = FieldValues::returnIntegerInfo('description');
         break;
+
       case 'number':
-        $description .= FieldValues::returnNumberInfo('description');
+        $info = FieldValues::returnNumberInfo('description');
         break;
+
       case 'year':
-        $description .= FieldValues::returnYearInfo('description');
+        $info = FieldValues::returnYearInfo('description');
         break;
+
       case 'boolean':
-        $description .= FieldValues::returnBooleanInfo('description');
+        $info = FieldValues::returnBooleanInfo('description');
         break;
+
       default:
         throw new \InvalidArgumentException("Unexpected data type: $dataType");
-        break;
     }
 
-    return $description;
+    return $description . $info;
   }
 
   /**
@@ -112,24 +118,42 @@ class FieldOperations {
    */
   public static function setFormatOptions($dataType) {
 
+    $options = null;
+
     switch ($dataType) {
       case 'string':
-        return FieldValues::returnStringInfo('options');
+        $options = FieldValues::returnStringInfo('options');
+        break;
+
       case 'date':
-        return FieldValues::returnDateInfo('options');
+        $options = FieldValues::returnDateInfo('options');
+        break;
+
       case 'datetime':
-        return FieldValues::returnDateTimeInfo('options');
+        $options = FieldValues::returnDateTimeInfo('options');
+        break;
+
       case 'integer':
-        return FieldValues::returnIntegerInfo('options');
+        $options = FieldValues::returnIntegerInfo('options');
+        break;
+
       case 'number':
-        return FieldValues::returnNumberInfo('options');
+        $options = FieldValues::returnNumberInfo('options');
+        break;
+
       case 'year':
-        return FieldValues::returnYearInfo('options');
+        $options = FieldValues::returnYearInfo('options');
+        break;
+
       case 'boolean':
-        return FieldValues::returnBooleanInfo('options');
+        $options = FieldValues::returnBooleanInfo('options');
+        break;
+
       default:
-        return NULL;
+        throw new \InvalidArgumentException("Unexpected data type: $dataType");
     }
+
+    return $options;
 
   }
 
