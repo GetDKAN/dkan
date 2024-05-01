@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest\Storage;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**

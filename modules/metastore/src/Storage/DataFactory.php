@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Storage;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Psr\Log\LoggerInterface;

@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\Info;
 
-use Contracts\Mock\Storage\Memory;
+use Drupal\Tests\common\Unit\Mocks\Storage\Memory;
 use CsvParser\Parser\Csv;
 use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\datastore\DatastoreResource;

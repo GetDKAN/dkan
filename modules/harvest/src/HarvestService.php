@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Entity\HarvestRunRepository;

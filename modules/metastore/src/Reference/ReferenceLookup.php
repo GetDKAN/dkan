@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Reference;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;

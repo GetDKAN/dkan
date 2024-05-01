@@ -2,10 +2,10 @@
 
 namespace Drupal\common\Storage;
 
-use Contracts\SorterInterface;
-use Contracts\ConditionerInterface;
-use Contracts\OffsetterInterface;
-use Contracts\LimiterInterface;
+use Drupal\common\Contracts\SorterInterface;
+use Drupal\common\Contracts\ConditionerInterface;
+use Drupal\common\Contracts\OffsetterInterface;
+use Drupal\common\Contracts\LimiterInterface;
 
 /**
  * DKAN API Query data object.

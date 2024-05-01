@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\UrlHostTokenResolver;

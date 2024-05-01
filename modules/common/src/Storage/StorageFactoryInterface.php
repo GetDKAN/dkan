@@ -2,7 +2,7 @@
 
 namespace Drupal\common\Storage;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 
 /**
  * Interface for storage factories.

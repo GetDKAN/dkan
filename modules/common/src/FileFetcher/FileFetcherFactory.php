@@ -2,7 +2,7 @@
 
 namespace Drupal\common\FileFetcher;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;

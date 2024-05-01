@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\MetastoreService;
 

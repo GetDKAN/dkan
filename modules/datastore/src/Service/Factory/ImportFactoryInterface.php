@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service\Factory;
 
-use Contracts\FactoryInterface;
+use Drupal\common\Contracts\FactoryInterface;
 
 /**
  * Interface for datastore import factories.
