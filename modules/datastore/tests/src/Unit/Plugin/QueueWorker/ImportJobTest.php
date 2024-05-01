@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
-use Drupal\common\Contracts\ParserInterface;
+use Contracts\ParserInterface;
 use CsvParser\Parser\Csv;
 use Drupal\Tests\common\Unit\Mocks\Storage\Memory;
 use Drupal\datastore\DatastoreResource;

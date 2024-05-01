@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\common\Contracts\ParserInterface;
+use Contracts\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
