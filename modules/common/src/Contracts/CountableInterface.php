@@ -2,8 +2,8 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\CountableInterface as ContractsCountableInterface;
+interface CountableInterface {
 
-interface CountableInterface extends ContractsCountableInterface {
+  public function count(): int;
 
 }

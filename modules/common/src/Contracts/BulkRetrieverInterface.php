@@ -2,7 +2,14 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\BulkRetrieverInterface as ContactsBulkRetrieverInterface;
+interface BulkRetrieverInterface {
 
-interface BulkRetrieverInterface extends ContactsBulkRetrieverInterface {
+  /**
+   * Retrieve all.
+   *
+   * @return array
+   *   An array of ids.
+   */
+  public function retrieveAll(): array;
+
 }

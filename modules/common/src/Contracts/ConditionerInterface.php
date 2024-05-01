@@ -2,7 +2,8 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\ConditionerInterface as ContractsConditionerInterface;
+interface ConditionerInterface {
 
-interface ConditionerInterface extends ContractsConditionerInterface {
+  public function conditionByIsEqualTo(string $property, string $value);
+
 }

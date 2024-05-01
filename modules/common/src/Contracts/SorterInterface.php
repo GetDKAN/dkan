@@ -2,8 +2,10 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\SorterInterface as ContractsSorterInterface;
+interface SorterInterface {
 
-interface SorterInterface extends ContractsSorterInterface {
+  public function sortByAscending(string $property);
+
+  public function sortByDescending(string $property);
 
 }

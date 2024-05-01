@@ -2,8 +2,8 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\LimiterInterface as ContractsLimiterInterface;
+interface LimiterInterface {
 
-interface LimiterInterface extends ContractsLimiterInterface {
+  public function limitTo(int $number_of_items);
 
 }

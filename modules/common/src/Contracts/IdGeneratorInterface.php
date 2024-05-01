@@ -2,8 +2,8 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\IdGeneratorInterface as ContractsIdGeneratorInterface;
+interface IdGeneratorInterface {
 
-interface IdGeneratorInterface extends ContractsIdGeneratorInterface {
+  public function generate();
 
 }

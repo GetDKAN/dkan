@@ -2,7 +2,14 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\BulkStorerInterface as ContractsBulkStorerInterface;
+interface BulkStorerInterface {
 
-interface BulkStorerInterface extends ContractsBulkStorerInterface {
+  /**
+   * Store multiple.
+   *
+   * @param array $data
+   *   An array of strings to be stored.
+   */
+  public function storeMultiple(array $data);
+
 }

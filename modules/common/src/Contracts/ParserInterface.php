@@ -1,10 +1,15 @@
 <?php
 
-
 namespace Drupal\common\Contracts;
 
-use Contracts\ParserInterface as ContractsParserInterface;
+interface ParserInterface {
 
-interface ParserInterface extends ContractsParserInterface {
+  public function feed(string $chunk);
+
+  public function getRecord();
+
+  public function reset();
+
+  public function finish();
 
 }

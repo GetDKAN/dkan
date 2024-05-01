@@ -2,7 +2,8 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\OffsetterInterface as ContractsOffsetterInterface;
+interface OffsetterInterface {
 
-interface OffsetterInterface extends ContractsOffsetterInterface {
+  public function offsetBy(int $offset);
+
 }

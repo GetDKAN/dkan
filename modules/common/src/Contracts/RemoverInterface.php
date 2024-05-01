@@ -2,8 +2,14 @@
 
 namespace Drupal\common\Contracts;
 
-use Contracts\RemoverInterface as ContractsRemoverInterface;
+interface RemoverInterface {
 
-interface RemoverInterface extends ContractsRemoverInterface {
+  /**
+   * Remove.
+   *
+   * @param string $id
+   *   The identifier for the data.
+   */
+  public function remove(string $id);
 
 }
