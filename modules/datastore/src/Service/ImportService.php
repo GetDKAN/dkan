@@ -208,7 +208,7 @@ class ImportService {
     $parserConfiguration = $this->dispatchEvent(self::EVENT_CONFIGURE_PARSER, $parserConfiguration);
 
     $parser = Csv::getParser($parserConfiguration['delimiter'], $parserConfiguration['quote'], $parserConfiguration['escape'], $parserConfiguration['record_end']);
-    if (!empty($parserConfiguration['trailing_delimiter'])) {
+    if ($parserConfiguration['trailing_delimiter'] === TRUE) {
       $parser->activateTrailingDelimiter();
     }
     $parser->machine->stopRecording();
