@@ -11,10 +11,10 @@ use Drupal\common\Contracts\LimiterInterface;
  * DKAN API Query data object.
  */
 class Query implements
-    SorterInterface,
-    ConditionerInterface,
-    OffsetterInterface,
-    LimiterInterface {
+  SorterInterface,
+  ConditionerInterface,
+  OffsetterInterface,
+  LimiterInterface {
 
   /**
    * The collection of records (usually, a database table) to query against.
@@ -135,9 +135,9 @@ class Query implements
    * @param string $value
    *   Property value to filter against.
    * @param bool $case
-   *   Case sensitive filter?
+   *   Case-sensitive filter?
    */
-  public function conditionByIsEqualTo(string $property, string $value, bool $case = FALSE) {
+  public function conditionByIsEqualTo(string $property, string $value, bool $case = FALSE): void {
     $this->conditions[] = (object) [
       'property' => $property,
       'value' => $value,
@@ -151,7 +151,7 @@ class Query implements
    * @param int $number_of_items
    *   Number of items.
    */
-  public function limitTo(int $number_of_items) {
+  public function limitTo(int $number_of_items): void {
     $this->limit = $number_of_items;
   }
 
@@ -161,7 +161,7 @@ class Query implements
    * @param int $offset
    *   Number of records to offset by before retrieving.
    */
-  public function offsetBy(int $offset) {
+  public function offsetBy(int $offset): void {
     $this->offset = $offset;
   }
 
@@ -171,7 +171,7 @@ class Query implements
    * @param string $property
    *   Property to sort by in ascending order.
    */
-  public function sortByAscending(string $property) {
+  public function sortByAscending(string $property): void {
     $this->sorts[] = (object) [
       "property" => $property,
       "order" => "asc",
@@ -184,7 +184,7 @@ class Query implements
    * @param string $property
    *   Property to sort by in descending order.
    */
-  public function sortByDescending(string $property) {
+  public function sortByDescending(string $property): void {
     $this->sorts[] = (object) [
       "property" => $property,
       "order" => "desc",

@@ -2,6 +2,9 @@
 
 namespace Drupal\common\Contracts;
 
+/**
+ * Interface for bulk retrieval of all records.
+ */
 interface BulkRetrieverInterface {
 
   /**

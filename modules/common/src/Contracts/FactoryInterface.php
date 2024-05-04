@@ -2,6 +2,9 @@
 
 namespace Drupal\common\Contracts;
 
+/**
+ * Interface for the factory pattern.
+ */
 interface FactoryInterface {
 
   /**
@@ -12,8 +15,11 @@ interface FactoryInterface {
    *
    * @param string $identifier
    *   Some way to discern between different instances of a class.
+   * @param array $config
+   *   (Optional) Arbitrary configuration passed in to the factory.
    *
    * @return mixed
+   *   The desired instance. Generally this wil be an object.
    */
   public function getInstance(string $identifier, array $config = []);
 

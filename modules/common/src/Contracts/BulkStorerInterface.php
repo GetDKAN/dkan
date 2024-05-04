@@ -2,6 +2,9 @@
 
 namespace Drupal\common\Contracts;
 
+/**
+ * Interface for storage of multiple records.
+ */
 interface BulkStorerInterface {
 
   /**
