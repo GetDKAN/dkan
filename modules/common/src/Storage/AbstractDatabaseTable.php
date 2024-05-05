@@ -190,7 +190,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * {@inheritDoc}
+   * Inherited.
+   *
+   * @inheritdoc
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();

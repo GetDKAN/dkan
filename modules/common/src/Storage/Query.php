@@ -2,19 +2,19 @@
 
 namespace Drupal\common\Storage;
 
-use Drupal\common\Contracts\SorterInterface;
 use Drupal\common\Contracts\ConditionerInterface;
-use Drupal\common\Contracts\OffsetterInterface;
 use Drupal\common\Contracts\LimiterInterface;
+use Drupal\common\Contracts\OffsetterInterface;
+use Drupal\common\Contracts\SorterInterface;
 
 /**
  * DKAN API Query data object.
  */
 class Query implements
-  SorterInterface,
   ConditionerInterface,
+  LimiterInterface,
   OffsetterInterface,
-  LimiterInterface {
+  SorterInterface {
 
   /**
    * The collection of records (usually, a database table) to query against.
