@@ -2,17 +2,22 @@
 
 namespace Drupal\common\Storage;
 
+use Drupal\common\Contracts\BulkRetrieverInterface;
+use Drupal\common\Contracts\BulkStorerInterface;
 use Drupal\common\Contracts\RemoverInterface;
 use Drupal\common\Contracts\RetrieverInterface;
 use Drupal\common\Contracts\StorerInterface;
-use Drupal\common\Contracts\BulkRetrieverInterface;
-use Drupal\common\Contracts\BulkStorerInterface;
-use Drupal\common\Contracts\CountableInterface;
 
 /**
  * Databaset table interface.
  */
-interface DatabaseTableInterface extends StorerInterface, RetrieverInterface, RemoverInterface, BulkStorerInterface, CountableInterface, BulkRetrieverInterface {
+interface DatabaseTableInterface extends
+  BulkRetrieverInterface,
+  BulkStorerInterface,
+  \Countable,
+  RemoverInterface,
+  RetrieverInterface,
+  StorerInterface {
 
   /**
    * Remove the table from the database.

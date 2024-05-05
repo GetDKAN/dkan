@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore\Unit\Commands;
 
-use Drupal\Core\Logger\LoggerChannel;
 use Drupal\metastore\Commands\MetastoreCommands;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;

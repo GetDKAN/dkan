@@ -3,7 +3,6 @@
 namespace Drupal\Tests\common\Traits;
 
 use Drupal\node\Entity\Node;
-use FileFetcher\FileFetcher;
 
 /**
  *

@@ -17,27 +17,25 @@
  * }
  *
  * Now you can say: composer rector-dry-run, and eventually: composer rector.
- *
- * @todo Add CompleteDynamicPropertiesRector when it works.
  */
 
 declare(strict_types=1);
 
-use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
 use DrupalFinder\DrupalFinder;
+use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
 use DrupalRector\Set\Drupal9SetList;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
+use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
+use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
+use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
+use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
-use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
-use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
 
@@ -94,6 +92,7 @@ return static function (RectorConfig $rectorConfig): void {
   $rectorConfig->fileExtensions([
     'php', 'module', 'theme', 'install', 'profile', 'inc', 'engine',
   ]);
+  $rectorConfig->removeUnusedImports();
   $rectorConfig->importNames(TRUE, FALSE);
   $rectorConfig->importShortClasses(FALSE);
 };
