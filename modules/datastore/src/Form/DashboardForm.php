@@ -471,7 +471,7 @@ class DashboardForm extends FormBase {
         ],
         $this->buildStatusCell($dist['fetcher_status']),
         $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
-        $this->buildPostImportStatusCell($status, NULL, $error),
+        $this->buildPostImportStatusCell($status, $error),
       ];
     }
     return ['', '', '', ''];
