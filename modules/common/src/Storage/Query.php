@@ -9,6 +9,9 @@ use Drupal\common\Contracts\SorterInterface;
 
 /**
  * DKAN API Query data object.
+ *
+ * @todo Should we remove these external interfaces and only declare
+ *   QueryInterface?
  */
 class Query implements
   ConditionerInterface,
