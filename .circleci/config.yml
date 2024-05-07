@@ -176,8 +176,8 @@ jobs:
             - run:
                 name: Run PHPUnit tests
                 command: |
-                  TEST_FILES=$(circleci tests glob "/var/www/html/docroot/modules/contrib/dkan/**/tests/**/*.php" | circleci tests split --split-by=timings)
-                  ddev dkan-phpunit $TEST_FILES \
+                  ddev composer require --dev dave-liddament/test-splitter
+                  ddev dkan-phpunit --filter \"$(ddev dkan-phpunit --list-tests | vendor/bin/tsplit 1 4)\" \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
           path: dkan/junit
