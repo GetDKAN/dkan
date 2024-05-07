@@ -117,6 +117,7 @@ commands:
 jobs:
   phpunit:
     executor: docker/machine
+    parallelism: 4
     parameters:
       php_version:
         description: 'PHP major.minor for DDev to use.'
@@ -175,7 +176,8 @@ jobs:
             - run:
                 name: Run PHPUnit tests
                 command: |
-                  ddev dkan-phpunit \
+                  TEST_FILES=$(circleci tests glob "/var/www/html/docroot/modules/contrib/dkan/**/tests/**/*.php" | circleci tests split --split-by=timings)
+                  ddev dkan-phpunit $TEST_FILES \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
           path: dkan/junit
