@@ -177,7 +177,8 @@ jobs:
                 name: Run PHPUnit tests
                 command: |
                   ddev composer require --dev dave-liddament/test-splitter
-                  ddev dkan-phpunit --filter \"$(ddev dkan-phpunit --list-tests | vendor/bin/tsplit 1 4)\" \
+                  TEST_LIST=`ddev dkan-phpunit --list-tests | ./vendor/bin/tsplit 1 4`
+                  ddev dkan-phpunit --filter=$TEST_LIST \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
           path: dkan/junit
