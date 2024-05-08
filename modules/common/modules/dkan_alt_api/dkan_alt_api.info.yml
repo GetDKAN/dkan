@@ -1,7 +1,7 @@
 name: 'Alternate API'
 description: 'Provides alternate routes to access data and allows varying permissions on an api when logged in or anonymous.'
 type: module
-core_version_requirement: ^10
+core_version_requirement: ^10.2
 package: DKAN
 dependencies:
   - metastore

@@ -1,4 +1,5 @@
 rows_limit: 500
-purge_file: 1
-purge_table: 1
+purge_file: true
+purge_table: true
 triggering_properties: []
+delete_local_resource: false

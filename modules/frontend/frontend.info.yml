@@ -1,7 +1,7 @@
 name: Front End
 description: Provides the routing connection between Drupal and a decoupled frontend.
 type: module
-core_version_requirement: ^10
+core_version_requirement: ^10.2
 dependencies:
   - drupal:field
 package: DKAN

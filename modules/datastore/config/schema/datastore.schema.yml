@@ -5,9 +5,9 @@ datastore.settings:
     rows_limit:
       type: integer
     purge_file:
-      type: integer
+      type: boolean
     purge_table:
-      type: integer
+      type: boolean
     triggering_properties:
       type: sequence
       sequence:
