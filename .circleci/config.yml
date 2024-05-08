@@ -150,15 +150,13 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
-                  if [ $CIRCLE_NODE_INDEX = 3 ]; then
-                    GROUP=unit
-                  else
-                    GROUP="functional_$(($CIRCLE_NODE_INDEX + 1))"
-                  fi
+                  BATCH=$(($CIRCLE_NODE_INDEX + 1))
+                  ddev composer require --dev dave-liddament/test-splitter
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
-                    --group $GROUP --configuration ./phpunit.xml \
+                    --filter \"$(ddev dkan-phpunit --list-tests | vendor/bin/tsplit $BATCH $CIRCLE_NODE_TOTAL)\" \
+                    --configuration ./phpunit.xml \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                     --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -182,12 +180,10 @@ jobs:
             - run:
                 name: Run PHPUnit tests
                 command: |
-                  if [ $CIRCLE_NODE_INDEX = 3 ]; then
-                    GROUP=unit
-                  else
-                    GROUP="functional_$(($CIRCLE_NODE_INDEX + 1))"
-                  fi
-                  ddev dkan-phpunit --group=$GROUP \
+                  ddev composer require --dev dave-liddament/test-splitter
+                  BATCH=$(($CIRCLE_NODE_INDEX + 1))
+                  ddev dkan-phpunit \
+                    --filter \"$(ddev dkan-phpunit --list-tests | vendor/bin/tsplit $BATCH $CIRCLE_NODE_TOTAL)\"
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
           path: dkan/junit
