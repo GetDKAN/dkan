@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit;
+namespace Drupal\Tests\common\Unit\Contracts;
 
 use Drupal\Tests\common\Unit\Mocks\IdGenerator\Sequential;
 use PHPUnit\Framework\TestCase;
