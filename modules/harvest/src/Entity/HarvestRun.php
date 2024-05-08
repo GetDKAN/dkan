@@ -149,6 +149,7 @@ final class HarvestRun extends HarvestEntityBase implements HarvestRunInterface 
       $result['status']['extracted_items_ids'][] = $field->getString();
     }
 
+    $result['status']['orphan_ids'] = [];
     foreach ($this->get('orphan_uuid') as $field) {
       $result['status']['orphan_ids'][] = $field->getString();
     }
