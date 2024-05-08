@@ -153,7 +153,7 @@ jobs:
                   if [ $CIRCLE_NODE_INDEX = 3 ]; then
                     GROUP=unit
                   else
-                    GROUP="functional_$CIRCLE_NODE_INDEX"
+                    GROUP="functional_$(($CIRCLE_NODE_INDEX + 1))"
                   fi
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
@@ -185,7 +185,7 @@ jobs:
                   if [ $CIRCLE_NODE_INDEX = 3 ]; then
                     GROUP=unit
                   else
-                    GROUP="functional_$CIRCLE_NODE_INDEX"
+                    GROUP="functional_$(($CIRCLE_NODE_INDEX + 1))"
                   fi
                   ddev dkan-phpunit --group=$GROUP \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
