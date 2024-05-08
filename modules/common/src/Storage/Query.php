@@ -14,10 +14,10 @@ use Drupal\common\Contracts\SorterInterface;
  *   QueryInterface?
  */
 class Query implements
-  ConditionerInterface,
-  LimiterInterface,
-  OffsetterInterface,
-  SorterInterface {
+    ConditionerInterface,
+    LimiterInterface,
+    OffsetterInterface,
+    SorterInterface {
 
   /**
    * The collection of records (usually, a database table) to query against.
