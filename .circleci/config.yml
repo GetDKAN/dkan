@@ -150,9 +150,12 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
+                  ddev composer require --dev previousnext/phpunit-finder
+                  TEST_LIST=`ddev exec ./vendor/bin/phpunit-finder --config-file=/var/www/html/dkan/phpunit.xml --bootstrap-file=/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php | circleci tests split --split-by=timings --timings-type=filename`
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
+                    --filter=\"$TEST_LIST\" \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                     --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -176,9 +179,8 @@ jobs:
             - run:
                 name: Run PHPUnit tests
                 command: |
-                  ddev composer require --dev dave-liddament/test-splitter
-                  PAR_RUN=$(($CIRCLE_NODE_INDEX+1))
-                  TEST_LIST=`ddev dkan-phpunit --list-tests | ddev exec ./vendor/bin/tsplit $PAR_RUN $CIRCLE_NODE_TOTAL`
+                  ddev composer require --dev previousnext/phpunit-finder
+                  TEST_LIST=`ddev exec ./vendor/bin/phpunit-finder --config-file=/var/www/html/dkan/phpunit.xml --bootstrap-file=/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php | circleci tests split --split-by=timings --timings-type=filename`
                   ddev dkan-phpunit --filter=\"$TEST_LIST\" \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
