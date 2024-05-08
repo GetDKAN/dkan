@@ -155,7 +155,7 @@ jobs:
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
-                    --filter \"$(ddev dkan-phpunit --list-tests | vendor/bin/tsplit $BATCH $CIRCLE_NODE_TOTAL)\" \
+                    --filter \"$(ddev dkan-phpunit --list-tests | ddev exec vendor/bin/tsplit $BATCH $CIRCLE_NODE_TOTAL)\" \
                     --configuration ./phpunit.xml \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                     --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
@@ -183,7 +183,7 @@ jobs:
                   ddev composer require --dev dave-liddament/test-splitter
                   BATCH=$(($CIRCLE_NODE_INDEX + 1))
                   ddev dkan-phpunit \
-                    --filter \"$(ddev dkan-phpunit --list-tests | vendor/bin/tsplit $BATCH $CIRCLE_NODE_TOTAL)\"
+                    --filter \"$(ddev dkan-phpunit --list-tests | ddev exec vendor/bin/tsplit $BATCH $CIRCLE_NODE_TOTAL)\"
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
           path: dkan/junit
