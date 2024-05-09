@@ -183,11 +183,11 @@ jobs:
                   ddev composer require --dev previousnext/phpunit-finder
                   TEST_LIST=$( \
                     ddev exec ./vendor/bin/phpunit-finder --show=names --config-file=/var/www/html/dkan/phpunit.xml --bootstrap-file=/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php \ 
-                    | sed 's;\\;\.;q' \
+                    | sed 's;\\;\.;g' \
                     | circleci tests split --split-by=timings --timings-type=classname \
                   )
                   echo $TEST_LIST
-                  FILTER=$(echo $TEST_LIST | tr -d '\n' | tr '\n' '|' | sed 's;\.;\\\\')
+                  FILTER=$(echo $TEST_LIST | tr -d '\n' | tr '\n' '|' | sed 's;\.;\\\\;g')
                   echo $FILTER
                   ddev dkan-phpunit --filter=\"$FILTER\" \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
