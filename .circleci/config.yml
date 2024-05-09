@@ -181,11 +181,7 @@ jobs:
                 command: |
                   ddev composer config repositories.phpunit-finder vcs https://github.com/dafeder/phpunit-finder.git
                   ddev composer require --dev previousnext/phpunit-finder
-                  TEST_LIST=$( \
-                    ddev exec ./vendor/bin/phpunit-finder --show=names --config-file=/var/www/html/dkan/phpunit.xml --bootstrap-file=/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php \ 
-                    | sed 's;\\;\.;g' \
-                    | circleci tests split --split-by=timings --timings-type=classname \
-                  )
+                  TEST_LIST=$(ddev exec ./vendor/bin/phpunit-finder --show=names --config-file=/var/www/html/dkan/phpunit.xml --bootstrap-file=/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php | sed 's;\\;\.;g' | circleci tests split --split-by=timings --timings-type=classname)
                   echo $TEST_LIST
                   FILTER=$(echo $TEST_LIST | tr -d '\n' | tr '\n' '|' | sed 's;\.;\\\\;g')
                   echo $FILTER
