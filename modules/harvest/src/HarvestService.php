@@ -255,7 +255,12 @@ class HarvestService implements ContainerInjectionInterface {
    *   Array of status info from the run.
    */
   public function getHarvestRunResult(string $plan_id, string $run_id): array {
-    return $this->runRepository->loadEntity($plan_id, $run_id)->toResult();
+    if ($entity = $this->runRepository->loadEntity($plan_id, $run_id)) {
+      return $entity->toResult();
+    }
+    else {
+      return [];
+    }
   }
 
   /**
