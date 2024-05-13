@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\harvest\Unit\Load;
 
-use Drupal\Tests\common\Unit\Mocks\Storage\Memory;
+use Contracts\Mock\Storage\Memory;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\Exception\ExistingObjectException;

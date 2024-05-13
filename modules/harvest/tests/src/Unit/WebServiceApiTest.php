@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\harvest\Unit;
 
-use Drupal\Tests\common\Unit\Mocks\Storage\MemoryFactory;
+use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\harvest\Entity\HarvestPlanRepository;

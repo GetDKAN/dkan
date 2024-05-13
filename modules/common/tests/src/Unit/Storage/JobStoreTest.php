@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Storage;
 
-use Drupal\common\Storage\JobStore;
+use Contracts\Mock\Storage\Memory;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Delete;
 use Drupal\Core\Database\Query\Select;
@@ -10,7 +10,7 @@ use Drupal\Core\Database\Query\Update;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\StatementWrapper;
 use Drupal\Core\Database\StatementWrapperIterator;
-use Drupal\Tests\common\Unit\Mocks\Storage\Memory;
+use Drupal\common\Storage\JobStore;
 use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Sequence;
