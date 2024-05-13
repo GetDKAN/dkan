@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
+use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
 use CsvParser\Parser\ParserInterface;
-use Drupal\Tests\common\Unit\Mocks\Storage\Memory;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;

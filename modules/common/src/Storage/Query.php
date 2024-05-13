@@ -140,7 +140,7 @@ class Query implements
    * @param bool $case
    *   Case-sensitive filter?
    */
-  public function conditionByIsEqualTo(string $property, string $value, bool $case = FALSE): void {
+  public function conditionByIsEqualTo(string $property, string $value, bool $case = FALSE) {
     $this->conditions[] = (object) [
       'property' => $property,
       'value' => $value,
@@ -154,7 +154,7 @@ class Query implements
    * @param int $number_of_items
    *   Number of items.
    */
-  public function limitTo(int $number_of_items): void {
+  public function limitTo(int $number_of_items) {
     $this->limit = $number_of_items;
   }
 
@@ -164,7 +164,7 @@ class Query implements
    * @param int $offset
    *   Number of records to offset by before retrieving.
    */
-  public function offsetBy(int $offset): void {
+  public function offsetBy(int $offset) {
     $this->offset = $offset;
   }
 
@@ -174,7 +174,7 @@ class Query implements
    * @param string $property
    *   Property to sort by in ascending order.
    */
-  public function sortByAscending(string $property): void {
+  public function sortByAscending(string $property) {
     $this->sorts[] = (object) [
       "property" => $property,
       "order" => "asc",
@@ -187,7 +187,7 @@ class Query implements
    * @param string $property
    *   Property to sort by in descending order.
    */
-  public function sortByDescending(string $property): void {
+  public function sortByDescending(string $property) {
     $this->sorts[] = (object) [
       "property" => $property,
       "order" => "desc",

@@ -22,22 +22,11 @@
 declare(strict_types=1);
 
 use DrupalFinder\DrupalFinder;
-use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
-use DrupalRector\Set\Drupal9SetList;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
-use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
-use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
-use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
-use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
-use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector;
-use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
-use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
-use Rector\Set\ValueObject\LevelSetList;
-use Rector\ValueObject\PhpVersion;
+use DrupalRector\Set\Drupal10SetList;
+use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
+use DrupalRector\Rector\PHPUnit\ShouldCallParentMethodsRector;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -46,36 +35,14 @@ return static function (RectorConfig $rectorConfig): void {
     __DIR__,
   ]);
 
-  // Our base version of PHP.
-  $rectorConfig->phpVersion(PhpVersion::PHP_74);
-
   $rectorConfig->sets([
-    Drupal9SetList::DRUPAL_94,
-    LevelSetList::UP_TO_PHP_74,
+    Drupal10SetList::DRUPAL_10,
   ]);
 
   $rectorConfig->skip([
-    '*/upgrade_status/tests/modules/*',
-    // Keep getMockBuilder() for now.
-    GetMockBuilderGetMockToCreateMockRector::class,
-    DrupalGetMockRector::class,
-    GetMockRector::class,
-    // Don't throw errors on JSON parse problems. Yet.
-    // @todo Throw errors and deal with them appropriately.
-    JsonThrowOnErrorRector::class,
-    // We like our tags. Unfortunately some other rules obliterate them anyway.
-    RemoveUselessParamTagRector::class,
-    RemoveUselessVarTagRector::class,
-    RemoveUselessReturnTagRector::class,
-    AddDoesNotPerformAssertionToNonAssertingTestRector::class,
-    ClosureToArrowFunctionRector::class,
-    // Don't automate ::class because we need some string literals that look
-    // like class names.
-    // @see \Drupal\common\Util\JobStoreUtil
-    // @see \Drupal\common\EventDispatcherTrait
-    StringClassNameToClassConstantRector::class,
-    RemoveExtraParametersRector::class,
-    PublicConstantVisibilityRector::class,
+    FunctionToStaticRector::class,
+    AddReturnTypeDeclarationRector::class,
+    ShouldCallParentMethodsRector::class,
   ]);
 
   $drupalFinder = new DrupalFinder();
