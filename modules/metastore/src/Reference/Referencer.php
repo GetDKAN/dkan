@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\common\Contracts\FactoryInterface;
+use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\common\DataResource;

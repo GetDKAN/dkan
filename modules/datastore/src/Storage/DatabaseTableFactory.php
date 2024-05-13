@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\common\Contracts\FactoryInterface;
+use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
 use Psr\Log\LoggerInterface;
 

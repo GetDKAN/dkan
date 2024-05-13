@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore;
 
-use Drupal\common\Contracts\RetrieverInterface;
+use Contracts\RetrieverInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Symfony\Component\DependencyInjection\ContainerInterface;

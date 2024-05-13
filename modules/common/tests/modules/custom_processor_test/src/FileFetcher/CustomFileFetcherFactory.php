@@ -2,7 +2,7 @@
 
 namespace Drupal\custom_processor_test\FileFetcher;
 
-use Drupal\common\Contracts\FactoryInterface;
+use Contracts\FactoryInterface;
 
 /**
  * Creates new file fetcher objects with NonProcessor as a custom processor.

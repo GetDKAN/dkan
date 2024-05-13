@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\common\Unit\Mocks\Storage;
 
-use Drupal\common\Contracts\BulkRetrieverInterface;
-use Drupal\common\Contracts\RetrieverInterface;
-use Drupal\common\Contracts\StorerInterface;
+use Contracts\BulkRetrieverInterface;
+use Contracts\RetrieverInterface;
+use Contracts\StorerInterface;
 
 class Memory implements RetrieverInterface, StorerInterface, BulkRetrieverInterface {
 

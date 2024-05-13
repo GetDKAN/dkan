@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Mocks\Storage;
 
-use Drupal\common\Contracts\FactoryInterface;
+use Contracts\FactoryInterface;
 
 class MemoryFactory implements FactoryInterface {
 

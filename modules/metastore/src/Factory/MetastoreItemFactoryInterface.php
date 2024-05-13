@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Factory;
 
-use Drupal\common\Contracts\FactoryInterface;
+use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityTypeManager;
 

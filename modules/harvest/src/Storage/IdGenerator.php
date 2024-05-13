@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest\Storage;
 
-use Drupal\common\Contracts\IdGeneratorInterface;
+use Contracts\IdGeneratorInterface;
 
 /**
  * Extracts identifiers from metastore data objects.

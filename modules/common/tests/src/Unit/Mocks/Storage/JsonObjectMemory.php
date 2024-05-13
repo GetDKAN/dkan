@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\common\Unit\Mocks\Storage;
 
-use Drupal\common\Contracts\ConditionerInterface;
-use Drupal\common\Contracts\LimiterInterface;
-use Drupal\common\Contracts\OffsetterInterface;
-use Drupal\common\Contracts\SorterInterface;
+use Contracts\ConditionerInterface;
+use Contracts\LimiterInterface;
+use Contracts\OffsetterInterface;
+use Contracts\SorterInterface;
 
 class JsonObjectMemory extends Memory implements
   SorterInterface,

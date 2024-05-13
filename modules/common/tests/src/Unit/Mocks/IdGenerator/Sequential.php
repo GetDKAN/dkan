@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Mocks\IdGenerator;
 
-use Drupal\common\Contracts\IdGeneratorInterface;
+use Contracts\IdGeneratorInterface;
 
 class Sequential implements IdGeneratorInterface {
   private int $id = 0;

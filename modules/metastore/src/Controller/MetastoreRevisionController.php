@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Controller;
 
-use Drupal\common\Contracts\FactoryInterface;
+use Contracts\FactoryInterface;
 use Drupal\common\JsonResponseTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -51,7 +51,7 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
   /**
    * Storage factory service.
    *
-   * @var \Drupal\common\Contracts\FactoryInterface
+   * @var \Contracts\FactoryInterface
    */
   private FactoryInterface $storageFactory;
 
