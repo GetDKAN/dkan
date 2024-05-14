@@ -141,7 +141,7 @@ class FieldValues {
     elseif ($type == 'description') {
       return "
         <ul>
-          <li><b>default</b>: Any valid string.</li>
+          <li><b>default</b>: 4-digit numbers in the range 1901 to 2155.</li>
         </ul>";
     }
   }
@@ -158,7 +158,7 @@ class FieldValues {
     elseif ($type == 'description') {
       return "
         <ul>
-          <li><b>default</b>: Any valid string.</li>
+          <li><b>default</b>: 1/0 values, or True/False values (not case sensitive).</li>
         </ul>";
     }
   }
