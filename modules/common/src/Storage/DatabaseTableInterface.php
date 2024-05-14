@@ -2,12 +2,12 @@
 
 namespace Drupal\common\Storage;
 
-use Contracts\RemoverInterface;
-use Contracts\RetrieverInterface;
-use Contracts\StorerInterface;
 use Contracts\BulkRetrieverInterface;
 use Contracts\BulkStorerInterface;
 use Contracts\CountableInterface;
+use Contracts\RemoverInterface;
+use Contracts\RetrieverInterface;
+use Contracts\StorerInterface;
 
 /**
  * Databaset table interface.
@@ -18,11 +18,6 @@ interface DatabaseTableInterface extends StorerInterface, RetrieverInterface, Re
    * Remove the table from the database.
    */
   public function destruct();
-
-  /**
-   * Perform a SELECT query against the table.
-   */
-  public function query(Query $query);
 
   /**
    * Return the primary key for the table.

@@ -33,7 +33,7 @@ class QueryController extends AbstractQueryController {
     DatastoreQuery $datastoreQuery,
     RootedJsonData $result,
     array $dependencies = [],
-    ?ParameterBag $params = NULL
+    ?ParameterBag $params = NULL,
   ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':

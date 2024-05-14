@@ -1,14 +1,11 @@
 <?php
 
-namespace Drupal\datastore\Storage;
-
-use Drupal\common\Storage\Query;
-use Drupal\datastore\Service\DatastoreQuery;
+namespace Drupal\datastore\Query;
 
 /**
  * Product a Query object based on a Datastore Query.
  */
-class QueryFactory {
+class QueryNormalizer {
 
   /**
    * Datastore Query object for conversion.
@@ -27,7 +24,7 @@ class QueryFactory {
   /**
    * Constructor.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   Datastore query request object.
    * @param array $storageMap
    *   Storage map array.
@@ -40,15 +37,15 @@ class QueryFactory {
   /**
    * Static factory create method.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Query\DatastoreQuery $datastoreQuery
    *   Datastore query request object.
    * @param array $storageMap
    *   Storage map array.
    *
-   * @return \Drupal\common\Storage\Query
+   * @return \Drupal\datastore\Query\NormalizedQuery
    *   DKAN query object.
    */
-  public static function create(DatastoreQuery $datastoreQuery, array $storageMap): Query {
+  public static function create(DatastoreQuery $datastoreQuery, array $storageMap): NormalizedQuery {
     $factory = new self($datastoreQuery, $storageMap);
     return $factory->populateQuery();
   }
@@ -56,11 +53,11 @@ class QueryFactory {
   /**
    * Create Query and populate with properties with DatastoreQuery object.
    *
-   * @return Drupal\common\Storage\Query
+   * @return \Drupal\datastore\Query\NormalizedQuery
    *   Query object.
    */
-  public function populateQuery(): Query {
-    $query = new Query();
+  public function populateQuery(): NormalizedQuery {
+    $query = new NormalizedQuery();
 
     $this->populateQueryProperties($query);
     $this->populateQueryConditions($query);
@@ -79,13 +76,13 @@ class QueryFactory {
   /**
    * Helper function for adding group by clauses to the given query.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   DKAN query object we're building.
    *
    * @throws \Exception
    *   When ungrouped properties are found in the datastore query.
    */
-  private function populateQueryGroupBy(Query $query): void {
+  private function populateQueryGroupBy(NormalizedQuery $query): void {
     $groupings = $this->extractPropertyNames($this->datastoreQuery->{"$.groupings"} ?? []);
     if (empty($groupings)) {
       return;
@@ -139,10 +136,10 @@ class QueryFactory {
   /**
    * Populate a query object with the queries from a datastore query payload.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   DKAN generalized query object.
    */
-  private function populateQueryProperties(Query $query) {
+  private function populateQueryProperties(NormalizedQuery $query) {
     if (empty($this->datastoreQuery->{"$.properties"})) {
       return;
     }
@@ -161,10 +158,7 @@ class QueryFactory {
    *   Standardized property object with "collection" instead of "resource."
    */
   private function propertyConvert($property) {
-    if (is_array($property) && isset($property["resource"])) {
-      $property = (object) self::resourceRename($property);
-    }
-    elseif (is_array($property) && isset($property["expression"])) {
+    if (is_array($property) && isset($property["expression"])) {
       $property["expression"] = $this->expressionConvert($property["expression"]);
       $property = (object) $property;
     }
@@ -181,7 +175,7 @@ class QueryFactory {
    *   An expression from a datastore query, including "resources".
    *
    * @return object
-   *   Standardized expression object with "collection" instead of "resource".
+   *   Standardized expression object.
    */
   private function expressionConvert(array $expression) {
     foreach ($expression["operands"] as $key => $operand) {
@@ -214,25 +208,25 @@ class QueryFactory {
   /**
    * Process both potential sorting direction.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   DKAN query object we're building.
    */
-  private function populateQuerySorts(Query $query) {
+  private function populateQuerySorts(NormalizedQuery $query) {
     if (!$this->datastoreQuery->{"$.sorts"}) {
       return;
     }
     foreach ($this->datastoreQuery->{"$.sorts"} as $sort) {
-      $query->sorts[] = (object) self::resourceRename($sort);
+      $query->sorts[] = (object) $sort;
     }
   }
 
   /**
    * Parse and normalize query conditions.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   DKAN query object we're building.
    */
-  private function populateQueryConditions(Query $query) {
+  private function populateQueryConditions(NormalizedQuery $query) {
     if (empty($this->datastoreQuery->{"$.conditions"})) {
       return;
     }
@@ -257,7 +251,7 @@ class QueryFactory {
     $primaryAlias = $this->datastoreQuery->{"$.resources[0].alias"};
     if (isset($condition["property"])) {
       $return = (object) [
-        "collection" => $condition["resource"] ?? $primaryAlias,
+        "resource" => $condition["resource"] ?? $primaryAlias,
         "property" => $condition["property"],
         "value" => $this->propertyConvert($condition["value"]),
       ];
@@ -294,10 +288,10 @@ class QueryFactory {
   /**
    * Helper function for converting joins to Query format.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   DKAN query object we're building.
    */
-  private function populateQueryJoins(Query $query) {
+  private function populateQueryJoins(NormalizedQuery $query) {
     if (empty($this->datastoreQuery->{"$.joins"}) && count($this->datastoreQuery->{"$.resources"}) <= 1) {
       return;
     }
@@ -319,33 +313,10 @@ class QueryFactory {
   private function populateQueryJoin($join) {
     $storage = $this->storageMap[$join["resource"]];
     $queryJoin = new \stdClass();
-    $queryJoin->collection = $storage->getTableName();
+    $queryJoin->resource = $storage->getTableName();
     $queryJoin->alias = $join["resource"];
     $queryJoin->condition = (object) $this->populateQueryCondition($join["condition"]);
     return $queryJoin;
-  }
-
-  /**
-   * Rename any "resource" keys to "collection" in assoc. array.
-   *
-   * @param array $input
-   *   Input array.
-   *
-   * @return array
-   *   Array with renamed keys.
-   */
-  private static function resourceRename(array $input) {
-    $return = [];
-    foreach ($input as $key => $value) {
-      if ($key == "resource") {
-        $key = "collection";
-      }
-      if (is_array($value)) {
-        $value = self::resourceRename($value);
-      }
-      $return[$key] = $value;
-    }
-    return $return;
   }
 
 }

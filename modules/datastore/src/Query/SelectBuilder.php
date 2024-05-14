@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\datastore\Query;
 
-use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Query\Select;
 
 /**
  * Class to convert a DKAN Query object into a Drupal DB API Select Object.
  */
-class SelectFactory {
+class SelectBuilder {
 
   /**
    * A database table object, which includes a database connection.
@@ -41,7 +41,7 @@ class SelectFactory {
   /**
    * Constructor function.
    *
-   * @param Drupal\Core\Database\Connection $connection
+   * @param \Drupal\Core\Database\Connection $connection
    *   A database table object, which includes a database connection.
    * @param string $alias
    *   Alias for primary table.
@@ -54,10 +54,10 @@ class SelectFactory {
   /**
    * Create Drupal select object.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   DKAN Query object.
    */
-  public function create(Query $query): Select {
+  public function create(NormalizedQuery $query): Select {
 
     $this->dbQuery = $this->connection->select($query->collection, $this->alias);
     $this->setQueryProperties($query);
@@ -81,10 +81,10 @@ class SelectFactory {
   /**
    * Specify fields on DB query.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   A DKAN query object.
    */
-  private function setQueryProperties(Query $query) {
+  private function setQueryProperties(NormalizedQuery $query) {
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
       $this->dbQuery->fields($this->alias);
@@ -97,11 +97,16 @@ class SelectFactory {
   }
 
   /**
-   * Reformatting date fields.
+   * Reformat date fields.
    *
-   *  {@inheritdoc}
+   * @param \Drupal\Core\Database\Query\Select $db_query
+   *   DB Query object.
+   * @param array $fields
+   *   Array of fields from db query.
+   * @param array $meta_data
+   *   Data dictionary fields.
    */
-  private function addDateExpressions($db_query, $fields, $meta_data) {
+  private function addDateExpressions(Select $db_query, array $fields, array $meta_data) {
     foreach ($meta_data as $definition) {
       // Confirm definition name is in the fields list.
       if ($fields[$definition['name']]['field'] && $definition['type'] == 'date') {
@@ -113,10 +118,10 @@ class SelectFactory {
   /**
    * Set a single property.
    *
-   * @param mixed $property
+   * @param object $property
    *   One property from a query properties array.
    */
-  private function setQueryProperty($property) {
+  private function setQueryProperty(object $property) {
 
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);
@@ -124,7 +129,7 @@ class SelectFactory {
     }
     else {
       $property = $this->normalizeProperty($property);
-      $this->dbQuery->addField($property->collection, $property->property, $property->alias);
+      $this->dbQuery->addField($property->resource, $property->property, $property->alias);
     }
   }
 
@@ -145,7 +150,7 @@ class SelectFactory {
         "alias" => NULL,
       ];
     }
-    if (!is_object($property) || !isset($property->property) || !isset($property->collection)) {
+    if (!is_object($property) || !isset($property->property) || !isset($property->resource)) {
       throw new \Exception("Bad query property: " . print_r($property, 1));
     }
     self::safeProperty($property->property);
@@ -256,10 +261,10 @@ class SelectFactory {
   /**
    * Set filter conditions on DB query.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   A DKAN query object.
    */
-  private function setQueryConditions(Query $query) {
+  private function setQueryConditions(NormalizedQuery $query) {
     foreach ($query->conditions as $c) {
       if (isset($c->groupOperator)) {
         $this->addConditionGroup($this->dbQuery, $c);
@@ -360,20 +365,20 @@ class SelectFactory {
   /**
    * Set fields to group by on DB query.
    *
-   * @param Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   A DKAN query object.
    */
-  private function setQueryGroupBy(Query $query) {
+  private function setQueryGroupBy(NormalizedQuery $query) {
     array_map([$this->dbQuery, 'groupBy'], $query->groupby);
   }
 
   /**
    * Set sort order on DB query.
    *
-   * @param Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   A DKAN query object.
    */
-  private function setQueryOrderBy(Query $query) {
+  private function setQueryOrderBy(NormalizedQuery $query) {
     foreach ($query->sorts as $sort) {
       $this->setQueryDirectionOrderBy($sort, $this->dbQuery);
     }
@@ -405,10 +410,10 @@ class SelectFactory {
   /**
    * Set limit and offset on DB query.
    *
-   * @param Query $query
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
    *   A DKAN query object.
    */
-  private function setQueryLimitAndOffset(Query $query) {
+  private function setQueryLimitAndOffset(NormalizedQuery $query) {
     if (isset($query->limit) && $query->limit !== NULL) {
       $this->dbQuery->range(($query->offset ?? 0), ($query->limit));
     }
@@ -420,10 +425,10 @@ class SelectFactory {
   /**
    * Add joins to the DB query.
    *
-   * @param Query $query
+   * @param Drupal\datastore\Query\NormalizedQuery $query
    *   A DKAN query object.
    */
-  private function setQueryJoins(Query $query) {
+  private function setQueryJoins(NormalizedQuery $query) {
     foreach ($query->joins as $join) {
       if (isset($join->condition)) {
         $this->dbQuery->join($join->collection, $join->alias, $this->conditionString($join->condition));

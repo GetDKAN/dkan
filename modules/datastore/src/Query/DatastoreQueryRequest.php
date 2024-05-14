@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\datastore\Query;
 
 use RootedData\RootedJsonData;
 
 /**
  * Datastore query data object.
  */
-class DatastoreQuery extends RootedJsonData {
+class DatastoreQueryRequest extends RootedJsonData {
 
   /**
    * Constructor.

@@ -9,7 +9,7 @@ use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Query;
+use Drupal\datastore\Query\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;

@@ -1,11 +1,10 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\datastore\Query;
 
 use Drupal\common\DataResource;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Storage\QueryFactory;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -43,13 +42,13 @@ class Query implements ContainerInjectionInterface {
   /**
    * Run query.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Query\DatastoreQueryRequest $datastoreQuery
    *   DKAN Datastore Query API object.
    *
    * @return \RootedData\RootedJsonData
    *   Array of row/record objects.
    */
-  public function runQuery(DatastoreQuery $datastoreQuery) {
+  public function runQuery(DatastoreQueryRequest $datastoreQuery) {
     $return = (object) [];
 
     $this->getProperties($datastoreQuery);
@@ -72,13 +71,13 @@ class Query implements ContainerInjectionInterface {
   /**
    * Get an a schema for each resource.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Query\DatastoreQueryRequest $datastoreQuery
    *   DKAN Datastore Query API object.
    *
    * @return array
    *   An assoc array containing a table schema for each resource.
    */
-  private function getSchema(DatastoreQuery $datastoreQuery) {
+  private function getSchema(DatastoreQueryRequest $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     if (!$datastoreQuery->{"$.resources"}) {
       return [];
@@ -98,13 +97,13 @@ class Query implements ContainerInjectionInterface {
   /**
    * Retrieve storage objects for all resources, and map to their aliases.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Query\DatastoreQueryRequest $datastoreQuery
    *   DatastoreQuery object.
    *
    * @return array
    *   Array of storage objects, keyed to resource aliases.
    */
-  public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
+  public function getQueryStorageMap(DatastoreQueryRequest $datastoreQuery) {
     $storageMap = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       [$identifier, $version] = DataResource::getIdentifierAndVersion($resource["id"]);
@@ -117,7 +116,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Build query object for main "results query" for datastore.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Query\DatastoreQueryRequest $datastoreQuery
    *   DatastoreQuery object.
    * @param bool $fetch
    *   Perform fetchAll and return array if true, else just statement (cursor).
@@ -127,14 +126,14 @@ class Query implements ContainerInjectionInterface {
    * @return array|\Drupal\Core\Database\StatementInterface
    *   Array of result objects or result statement of $fetch is false.
    */
-  public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE, $csv = FALSE) {
+  public function runResultsQuery(DatastoreQueryRequest $datastoreQuery, $fetch = TRUE, $csv = FALSE) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return [];
     }
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
-    $query = QueryFactory::create($datastoreQuery, $storageMap);
+    $query = QueryNormalizer::create($datastoreQuery, $storageMap);
     // Get data dictionary fields.
     $meta_data = $csv != FALSE ? $this->getDatastoreService()->getDataDictionaryFields() : NULL;
     // Pass the data dictionary metadata to the query.
@@ -199,17 +198,17 @@ class Query implements ContainerInjectionInterface {
   /**
    * Build count query object for datastore.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Query\DatastoreQueryRequest $datastoreQuery
    *   DatastoreQuery object.
    */
-  private function runCountQuery(DatastoreQuery $datastoreQuery) {
+  private function runCountQuery(DatastoreQueryRequest $datastoreQuery) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return 0;
     }
 
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $query = QueryFactory::create($datastoreQuery, $storageMap);
+    $query = QueryNormalizer::create($datastoreQuery, $storageMap);
 
     unset($query->limit, $query->offset);
     $query->count();
@@ -219,10 +218,10 @@ class Query implements ContainerInjectionInterface {
   /**
    * Under most circumstances, we want an explicit list of properties.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Query\DatastoreQueryRequest $datastoreQuery
    *   Datastore query object to be modified.
    */
-  private function getProperties(DatastoreQuery $datastoreQuery) {
+  private function getProperties(DatastoreQueryRequest $datastoreQuery) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return [];

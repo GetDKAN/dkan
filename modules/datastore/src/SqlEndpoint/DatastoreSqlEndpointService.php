@@ -5,8 +5,8 @@ namespace Drupal\datastore\SqlEndpoint;
 use Drupal\common\DataResource;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\Storage\Query;
 use Drupal\datastore\DatastoreService;
+use Drupal\datastore\Query\NormalizedQuery;
 use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
 use Drupal\datastore\SqlParser\SqlParser;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -146,10 +146,10 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
    * @param string $sqlString
    *   A string with a sql statement.
    *
-   * @return \Drupal\datastore\Storage\Query
+   * @return \Drupal\datastore\Query\NormalizedQuery
    *   A query object.
    */
-  private function getQueryObject(string $sqlString): Query {
+  private function getQueryObject(string $sqlString): NormalizedQuery {
     return $this->getQueryObjectFromStateMachine($this->validate($sqlString));
   }
 
@@ -168,14 +168,14 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Take an instantiated state machine build a query object.
    *
-   * @param Maquina\StateMachine\MachineOfMachines $state_machine
+   * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine returned from the validate() function.
    *
-   * @return Drupal\common\Storage\Query
+   * @return \Drupal\datastore\Query\NormalizedQuery
    *   A Drupal query object
    */
-  private function getQueryObjectFromStateMachine(MachineOfMachines $state_machine): Query {
-    $object = new Query();
+  private function getQueryObjectFromStateMachine(MachineOfMachines $state_machine): NormalizedQuery {
+    $object = new NormalizedQuery();
     $this->setQueryObjectSelect($object, $state_machine->gsm('select'));
     $this->setQueryObjectWhere($object, $state_machine->gsm('where'));
     $this->setQueryObjectOrderBy($object, $state_machine->gsm('order_by'));
@@ -187,12 +187,12 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Set select statements on query object.
    *
-   * @param \Drupal\common\Storage\Query $object
+   * @param \Drupal\datastore\Query\NormalizedQuery $object
    *   A drupal query object.
    * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine from validate().
    */
-  private function setQueryObjectSelect(Query $object, MachineOfMachines $state_machine) {
+  private function setQueryObjectSelect(NormalizedQuery $object, MachineOfMachines $state_machine) {
     $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_count_all'));
     if (!empty($strings)) {
       $object->count();
@@ -213,12 +213,12 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Set where conditions on query object.
    *
-   * @param \Drupal\common\Storage\Query $object
+   * @param \Drupal\datastore\Query\NormalizedQuery $object
    *   A drupal query object.
    * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine from validate().
    */
-  private function setQueryObjectWhere(Query $object, MachineOfMachines $state_machine) {
+  private function setQueryObjectWhere(NormalizedQuery $object, MachineOfMachines $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('where_column'));
     $quoted_string = $state_machine->gsm('quoted_string');
     if (!($quoted_string instanceof MachineOfMachines)) {
@@ -237,12 +237,12 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Set sorting on query object.
    *
-   * @param \Drupal\common\Storage\Query $object
+   * @param \Drupal\datastore\Query\NormalizedQuery $object
    *   A drupal query object.
    * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine from validate().
    */
-  private function setQueryObjectOrderBy(Query $object, MachineOfMachines $state_machine) {
+  private function setQueryObjectOrderBy(NormalizedQuery $object, MachineOfMachines $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('order_var'));
 
     $direction = $this->getStringsFromStringMachine($state_machine->gsm('order_asc'));
@@ -256,7 +256,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function setQueryObjectLimit(Query $object, MachineOfMachines $state_machine) {
+  private function setQueryObjectLimit(NormalizedQuery $object, MachineOfMachines $state_machine) {
     $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
 
     if (empty($limit)) {

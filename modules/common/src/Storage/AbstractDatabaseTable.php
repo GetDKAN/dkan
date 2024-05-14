@@ -2,9 +2,8 @@
 
 namespace Drupal\common\Storage;
 
-use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\SchemaObjectExistsException;
 
 /**
@@ -208,36 +207,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $this->setTable();
     $query = $this->connection->select($this->getTableName());
     return $query->countQuery()->execute()->fetchField();
-  }
-
-  /**
-   * Run a query on the database table.
-   *
-   * @param \Drupal\common\Storage\Query $query
-   *   Query object.
-   * @param string $alias
-   *   (Optional) alias for primary table.
-   * @param bool $fetch
-   *   Fetch the rows if true, just return the result statement if not.
-   *
-   * @return array|\Drupal\Core\Database\StatementInterface
-   *   Array of results if $fetch is true, otherwise result of
-   *   Select::execute() (prepared Statement object or null).
-   */
-  public function query(Query $query, string $alias = 't', $fetch = TRUE) {
-    $this->setTable();
-    $query->collection = $this->getTableName();
-    $selectFactory = new SelectFactory($this->connection, $alias);
-    $db_query = $selectFactory->create($query);
-
-    try {
-      $result = $db_query->execute();
-    }
-    catch (DatabaseExceptionWrapper $e) {
-      throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
-    }
-
-    return $fetch ? $result->fetchAll() : $result;
   }
 
   /**
