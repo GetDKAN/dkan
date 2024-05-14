@@ -2,9 +2,12 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\Query\NormalizedQuery;
+use Drupal\datastore\Query\SelectBuilder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -41,7 +44,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   public function __construct(
     Connection $connection,
     DatastoreResource $resource,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
@@ -264,6 +267,36 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       'not null' => $notNull,
       $driver . '_type' => $db_type,
     ];
+  }
+
+  /**
+   * Run a query on the database table.
+   *
+   * @param \Drupal\datastore\Query\NormalizedQuery $query
+   *   Normalized Datastore query object.
+   * @param string $alias
+   *   (Optional) alias for primary table.
+   * @param bool $fetch
+   *   Fetch the rows if true, just return the result statement if not.
+   *
+   * @return array|\Drupal\Core\Database\StatementInterface
+   *   Array of results if $fetch is true, otherwise result of
+   *   Select::execute() (prepared Statement object or null).
+   */
+  public function query(NormalizedQuery $query, string $alias = 't', $fetch = TRUE) {
+    $this->setTable();
+    $query->collection = $this->getTableName();
+    $selectFactory = new SelectBuilder($this->connection, $alias);
+    $db_query = $selectFactory->create($query);
+
+    try {
+      $result = $db_query->execute();
+    }
+    catch (DatabaseExceptionWrapper $e) {
+      throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
+    }
+
+    return $fetch ? $result->fetchAll() : $result;
   }
 
 }

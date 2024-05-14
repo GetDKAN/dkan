@@ -6,8 +6,8 @@ use Drupal\common\DatasetInfo;
 use Drupal\common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\datastore\Query\Query as QueryService;
 use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Service\Query as QueryService;
 use Drupal\metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
 use RootedData\RootedJsonData;
@@ -65,7 +65,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     QueryService $queryService,
     DatasetInfo $datasetInfo,
     MetastoreApiResponse $metastoreApiResponse,
-    ConfigFactoryInterface $configFactory
+    ConfigFactoryInterface $configFactory,
   ) {
     $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
@@ -183,7 +183,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     DatastoreQuery $datastoreQuery,
     RootedJsonData $result,
     array $dependencies = [],
-    ?ParameterBag $params = NULL
+    ?ParameterBag $params = NULL,
   );
 
   /**

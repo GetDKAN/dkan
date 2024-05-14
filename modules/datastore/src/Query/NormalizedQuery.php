@@ -1,20 +1,24 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\datastore\Query;
 
-use Contracts\SorterInterface;
 use Contracts\ConditionerInterface;
-use Contracts\OffsetterInterface;
 use Contracts\LimiterInterface;
+use Contracts\OffsetterInterface;
+use Contracts\SorterInterface;
 
 /**
- * DKAN API Query data object.
+ * Normalized datastore query object.
+ *
+ * This provides a more predictable structure for  datastore queries,
+ * allowing SelectBuilder (or other backends in the future) to use more
+ * straightforward logic to build database API queries.
  */
-class Query implements
-    SorterInterface,
-    ConditionerInterface,
-    OffsetterInterface,
-    LimiterInterface {
+class NormalizedQuery implements
+  SorterInterface,
+  ConditionerInterface,
+  OffsetterInterface,
+  LimiterInterface {
 
   /**
    * The collection of records (usually, a database table) to query against.

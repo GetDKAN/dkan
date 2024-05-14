@@ -96,7 +96,7 @@ class DatastoreService implements ContainerInjectionInterface {
     QueueFactory $queue,
     ImportJobStoreFactory $importJobStoreFactory,
     DictionaryEnforcer $dictionaryEnforcer,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
