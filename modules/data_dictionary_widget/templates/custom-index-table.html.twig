@@ -8,25 +8,26 @@
   </thead>
   <tbody  id="field-json-metadata-dictionary-edit-index">
     {% for row in rows %}
-        {% if row.field_collection %}
+      {% if row.field_collection %}
         <tr>
-          <td colspan="4">
+          <td colspan="3">
             {{ row.field_collection }}
           </td>
         </tr>
-        {% elseif  row.name %}
+        {% elseif row.description %}
         <tr>
-          <td>{{ row.name }}</td>
-          <td>{{ row.title }}</td>
+          <td>{{ row.description }}</td>
+          <td>{{ row.type }}</td>
           <td>
-            <div><b>Data Type</b>: {{ row.type }}</div>
-            <div><b>Format</b>: {{ row.format }}</div>
-              {% if row.description %}
-                <div><b>Description</b>: {{ row.description }}</div>
-              {% endif %}
+            {% for field in row.fields %}
+              <ul>
+                <li><div><b>Field Name</b>: {{ field.name }}</div>
+                <div><b>Field Length</b>: {{ field.length }}</div></li>
+              </ul>
+            {% endfor %}
           </td>
           <td>
-          {{ row.edit_button }}
+          {{ row.edit_index_button }}
           </td>
         </tr>
       {% endif %}

@@ -24,7 +24,7 @@ class IndexFieldButtons {
       ],
       '#ajax' => [
         'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
-        'wrapper' => 'field-json-metadata-dictionary-index-fields',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields-new',
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [],
@@ -104,7 +104,7 @@ class IndexFieldButtons {
       ],
       '#ajax' => [
         'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
-        'wrapper' => 'field-json-metadata-dictionary-index-fields',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields-new',
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [],
@@ -134,8 +134,8 @@ class IndexFieldButtons {
           ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
-        'wrapper' => 'field-json-metadata-dictionary-index',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::indexformAjax',
+        'wrapper' => 'field-json-metadata-dictionary-indexes',
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [],
@@ -181,7 +181,7 @@ class IndexFieldButtons {
    * Create Cancel button.
    */
   public static function cancelIndexButton($location, $indexKey) {
-    $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
+    $callbackClass = $location == 'edit' ? 'indexEditCallback' : 'indexAddCallback';
     $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel_index';
     $cancel_index_button = [
       '#type' => 'submit',
@@ -194,8 +194,8 @@ class IndexFieldButtons {
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexformAjax',
-        'wrapper' => 'field-json-metadata-dictionary-index',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::indexformAjax',
+        'wrapper' => 'field-json-metadata-dictionary-indexes',
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [],

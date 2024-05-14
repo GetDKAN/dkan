@@ -21,41 +21,43 @@ class IndexFieldAddCreation {
   ];
 
   //$add_index['group']['indexes']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
-  $add_index['group']['indexes']['index_description'] = [
-    '#name' => 'field_json_metadata[0][index][field_collection][group][index_description]',
+  $add_index['group']['indexes']['description'] = [
+    '#name' => 'field_json_metadata[0][index][field_collection][group][description]',
     '#description' => t('Description of index purpose or functionality.'),
     '#type' => 'textfield',
+    //'#required' => TRUE,
     '#title' => 'Name',
   ];
 
-  $add_index['group']['indexes']['index_type'] = [
-    '#name' => 'field_json_metadata[0][index][field_collection][group][index_type]',
+  $add_index['group']['indexes']['type'] = [
+    '#name' => 'field_json_metadata[0][index][field_collection][group][type]',
     '#type' => 'select',
     '#description' => t('Index type.'),
-    //'#required' => TRUE,
     '#title' => 'Index Type',
     '#default_value' => 'index',
     '#op' => 'index_type',
+    '#required' => TRUE,
     '#options' => [
-      'string' => t('index'),
-      'date' => t('fulltext'),
+      'index' => t('index'),
+      'fulltext' => t('fulltext'),
     ],
   ];
 
-  $add_index['group']['indexes']['index_fields'] = [
+  $add_index['group']['indexes']['fields'] = [
     '#type' => 'fieldset',
     '#title' => t('Fields'),
-    '#prefix' => '<div id = field-json-metadata-dictionary-index-fields>',
+    '#required' => TRUE,
+    '#prefix' => '<div id = field-json-metadata-dictionary-index-fields-new>',
     '#suffix' => '</div>',
-    '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
+    '#markup' => t('<div class="claro-details__description">Test One or more fields included in index. Must be keys from the fields object.</div>'),
   ];
   
-  $add_index['group']['indexes']['index_fields']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
+  $add_index['group']['indexes']['fields']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
 
   //$add_index['group']['indexes']['add_row_button'] = self::createIndexActionFields();
 
-  $add_index['group']['indexes']['save_index']['add_row_button'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
-  $add_index['group']['indexes']['cancel_index']['add_row_button'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
+  $add_index['group']['indexes']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
+  $add_index['group']['indexes']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
    
    return $add_index;
  }
@@ -68,7 +70,7 @@ class IndexFieldAddCreation {
     $add_index_fields['group'] = [
       '#type' => 'fieldset',
       '#title' => t('Add new field'),
-      '#prefix' => '<div id = field-json-metadata-dictionary-index-fields>',
+      '#prefix' => '<div id = field-json-metadata-dictionary-index-fields-new>',
       '#suffix' => '</div>',
     ];
 
@@ -77,13 +79,13 @@ class IndexFieldAddCreation {
     //   '#suffix' => '</div>',
     // ];
 
-    $add_index_fields['group']['indexes']['index_fields']['name'] = [
-      '#name' => 'field_json_metadata[0][index_fields][field_collection][group][name]',
+    $add_index_fields['group']['indexes']['fields']['name'] = [
+      '#name' => 'field_json_metadata[0][fields][field_collection][group][name]',
       '#type' => 'textfield',
       '#title' => 'Name',
     ];
-    $add_index_fields['group']['indexes']['index_fields']['length'] = self::createIndexFieldLengthField();
-    $add_index_fields['group']['indexes']['index_fields']['actions'] = self::createIndexActionFields();
+    $add_index_fields['group']['indexes']['fields']['length'] = self::createIndexFieldLengthField();
+    $add_index_fields['group']['indexes']['fields']['actions'] = self::createIndexActionFields();
     
     return $add_index_fields;
   }
@@ -93,7 +95,7 @@ class IndexFieldAddCreation {
    */
   private static function createIndexFieldLengthField() {
     return [
-      '#name' => 'field_json_metadata[0][index_fields][field_collection][group][length]',
+      '#name' => 'field_json_metadata[0][fields][field_collection][group][length]',
       '#type' => 'number',
       '#title' => 'Length',
     ];

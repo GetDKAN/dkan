@@ -10,22 +10,23 @@ class IndexFieldOperations {
    * Setting ajax elements.
    */
   public static function setIndexFieldsAjaxElements(array $dictionaryIndexFields) {
-    foreach ($dictionaryIndexFields['data']['#rows'] as $row => $data) {
-      $edit_index_button = $dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row] ?? NULL;
-      $edit_index_fields = $dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row] ?? NULL;
-      // Setting the ajax fields if they exsist.
-      if ($edit_index_button) {
-        $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
-        unset($dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row]);
+    if ($dictionaryIndexFields["data"]) {
+      foreach ($dictionaryIndexFields['data']['#rows'] as $row => $data) {
+        $edit_index_button = $dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row] ?? NULL;
+        $edit_index_fields = $dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row] ?? NULL;
+        // Setting the ajax fields if they exsist.
+        if ($edit_index_button) {
+          $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
+          unset($dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row]);
+        }
+        elseif ($edit_index_fields) {
+          unset($dictionaryIndexFields['data']['#rows']['index_field_key_' . $row]);
+          $dictionaryIndexFields['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
+          // Remove the buttons so they don't show up twice.
+          unset($dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row]);
+          ksort($dictionaryIndexFields['data']['#rows']);
+        }
       }
-      elseif ($edit_index_fields) {
-        unset($dictionaryIndexFields['data']['#rows']['index_field_key_' . $row]);
-        $dictionaryIndexFields['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
-        // Remove the buttons so they don't show up twice.
-        unset($dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row]);
-        ksort($dictionaryIndexFields['data']['#rows']);
-      }
-
     }
 
     return $dictionaryIndexFields;
@@ -36,19 +37,19 @@ class IndexFieldOperations {
    */
   public static function setIndexAjaxElements(array $dictionaryIndexes) {
     foreach ($dictionaryIndexes['data']['#rows'] as $row => $data) {
-      $edit_index_button = $dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row] ?? NULL;
-      $edit_index_fields = $dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row] ?? NULL;
+      $edit_index_button = $dictionaryIndexes['edit_index_buttons']['index_key_' . $row] ?? NULL;
+      $edit_index_fields = $dictionaryIndexes['edit_index_fields']['index_key_' . $row] ?? NULL;
       // Setting the ajax fields if they exsist.
       if ($edit_index_button) {
-        $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
-        unset($dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row]);
+        $dictionaryIndexes['data']['#rows'][$row] = array_merge($data, $edit_index_button);
+        unset($dictionaryIndexes['edit_index_buttons']['index_key_' . $row]);
       }
       elseif ($edit_index_fields) {
-        unset($dictionaryIndexFields['data']['#rows']['index_field_key_' . $row]);
-        $dictionaryIndexFields['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
+        unset($dictionaryIndexes['data']['#rows']['index_key_' . $row]);
+        $dictionaryIndexes['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
         // Remove the buttons so they don't show up twice.
-        unset($dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row]);
-        ksort($dictionaryIndexFields['data']['#rows']);
+        unset($dictionaryIndexes['edit_index_fields']['index_key_' . $row]);
+        ksort($dictionaryIndexes['data']['#rows']);
       }
 
     }
@@ -59,13 +60,13 @@ class IndexFieldOperations {
   /**
    * Cleaning the data up.
    */
-  public static function processIndexDataResults($index_data_results, $current_index_fields, $index_field_values, $op) {
+  public static function processIndexFieldsDataResults($index_data_results, $current_index_fields, $index_field_values, $op) {
     if (isset($current_index_fields)) {
       $index_data_results = $current_index_fields;
     }
 
-    if (isset($index_field_values["field_json_metadata"][0]["index_fields"]["field_collection"])) {
-      $index_field_group = $index_field_values["field_json_metadata"][0]["index_fields"]["field_collection"]["group"];
+    if (isset($index_field_values["field_json_metadata"][0]["fields"]["field_collection"])) {
+      $index_field_group = $index_field_values["field_json_metadata"][0]["fields"]["field_collection"]["group"];
 
       $data_index_fields_pre = [
         [
@@ -80,6 +81,33 @@ class IndexFieldOperations {
     }
 
     return $index_data_results;
+  }
+
+  /**
+   * Cleaning the data up.
+   */
+  public static function processIndexDataResults($index_results, $current_index, $index_values, $index_fields_data_results, $op) {
+    if (isset($current_index)) {
+      $index_results = $current_index;
+    }
+
+    if (isset($index_values["field_json_metadata"][0]["index"]["field_collection"])) {
+      $index_group = $index_values["field_json_metadata"][0]["index"]["field_collection"]["group"];
+
+      $data_index_pre = [
+        [
+          "description" => $index_group["description"],
+          "type" => $index_group["type"],
+          "fields" => $index_fields_data_results,
+        ],
+      ];
+    }
+
+    if (isset($data_index_pre) && $op === "add_index") {
+      $index_results = isset($current_index) ? array_merge($current_index, $data_index_pre) : $data_index_pre;
+    }
+
+    return $index_results;
   }
 
   /**
@@ -98,15 +126,21 @@ class IndexFieldOperations {
   /**
    * Set the elements associated with adding a new field.
    */
-  public static function setAddIndexFieldFormState($add_new_index_field, $element) {
+  public static function setAddIndexFieldFormState($add_new_index_field, $new_index_field, $element) {
     if ($add_new_index_field) {
 
-      $element['indexes']['index_fields']['field_collection'] = $add_new_index_field;
-      $element['indexes']['index_fields']['field_collection']['#access'] = TRUE;
-      $element['indexes']['index_fields']['add_row_button']['#access'] = FALSE;
+      $element['indexes']['fields']['#access'] = FALSE;
+      $element['indexes']['fields']['field_collection'] = $add_new_index_field;
+      $element['indexes']['fields']['field_collection']['#access'] = TRUE;
+      $element['indexes']['fields']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
-    }
+    } 
+
+
+    // else{
+    //   $element['indexes']['fields']['#access'] = FALSE;
+    // }
     return $element;
   }
 
@@ -116,6 +150,7 @@ class IndexFieldOperations {
   public static function setAddIndexFormState($add_new_index, $element) {
     if ($add_new_index) {
 
+      //$element['indexes']['#access'] = FALSE;
       $element['indexes']['field_collection'] = $add_new_index;
       $element['indexes']['field_collection']['#access'] = TRUE;
       $element['indexes']['add_row_button']['#access'] = FALSE;
@@ -151,11 +186,11 @@ class IndexFieldOperations {
     $current_indexes = $element['current_index'];
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($index_data_results as $indexKey => $data) {
-      if (self::checkIndexEditingField('index_field_key_' . $indexKey, $op_index, $index_fields_being_modified)) {
-        $element['edit_index_fields']['index_field_key_' . $indexKey] = IndexFieldEditCreation::editIndexFields('index_field_key_' . $indexKey, $current_indexes, $index_fields_being_modified);
+      if (self::checkIndexEditingField('index_key_' . $indexKey, $op_index, $index_fields_being_modified)) {
+        $element['edit_index']['index_key_' . $indexKey] = IndexFieldEditCreation::editIndex('index_key_' . $indexKey, $current_indexes, $index_fields_being_modified);
       }
       else {
-        $element['edit_index_buttons']['index_field_key_' . $indexKey]['edit_index_button'] = IndexFieldButtons::editIndexButtons('index_field_key_' . $indexKey);
+        $element['edit_index_buttons']['index_key_' . $indexKey]['edit_index_button'] = IndexFieldButtons::editIndexButtons('index_key_' . $indexKey);
       }
     }
     $element['add_row_button'] = IndexFieldButtons::addIndexButton();
