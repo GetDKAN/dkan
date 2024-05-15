@@ -454,6 +454,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->runQueues(['localize_import', 'datastore_import']);
 
+    // Assert dataset info shows 100%
+    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $metadata = $datasetInfoService->gather($dataset->identifier);
+    $dist = array_shift($metadata['latest_revision']['distributions']);
+    $this->assertEquals(100, $dist['fetcher_percent_done']);
+
     $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
     $this->queryResource($queryString);
   }

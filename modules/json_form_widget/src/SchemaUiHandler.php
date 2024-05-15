@@ -173,10 +173,44 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       $element = $this->changeFieldDescriptions($spec->{"ui:options"}, $element);
       $element = $this->changeFieldTitle($spec->{"ui:options"}, $element);
       if (isset($spec->{"ui:options"}->hideActions)) {
-        $element = $this->widgetRouter->flattenArrays($spec->{"ui:options"}, $element);
+        $element = $this->flattenArrays($spec->{"ui:options"}, $element);
       }
     }
     return $element;
+  }
+
+  /**
+   * Flatten array elements and unset actions if hideActions is set.
+   *
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param array $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Return flattened element without actions.
+   */
+  public function flattenArrays($spec, array $element) {
+    unset($element['actions']);
+    $default_value = [];
+    foreach ($element[$spec->child] as $key => $item) {
+      $default_value = array_merge($default_value, $this->formatArrayDefaultValue($item));
+      if ($key != 0) {
+        unset($element[$spec->child][$key]);
+      }
+    }
+    $element[$spec->child][0]['#default_value'] = $default_value;
+    return $element;
+  }
+
+  /**
+   * Format default values for arrays (flattened).
+   */
+  private function formatArrayDefaultValue($item) {
+    if (!empty($item['#default_value'])) {
+      return [$item['#default_value'] => $item['#default_value']];
+    }
+    return [];
   }
 
   /**

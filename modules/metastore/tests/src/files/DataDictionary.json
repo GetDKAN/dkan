@@ -1,6 +1,6 @@
 {
-    "title": "Bike lanes data dictionary",
     "data": {
+        "title": "Bike lanes data dictionary",
         "fields": [
             {
                 "name": "objectid",

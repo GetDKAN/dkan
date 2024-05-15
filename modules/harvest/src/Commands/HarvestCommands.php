@@ -64,7 +64,7 @@ class HarvestCommands extends DrushCommands {
         return [$id];
       },
       $this->harvestService->getAllHarvestIds()
-      );
+    );
     if ($rows) {
       (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
       return;
@@ -163,7 +163,7 @@ class HarvestCommands extends DrushCommands {
   /**
    * Run a harvest.
    *
-   * @param string $id
+   * @param string $plan_id
    *   The harvest id.
    *
    * @command dkan:harvest:run
@@ -171,35 +171,39 @@ class HarvestCommands extends DrushCommands {
    * @usage dkan:harvest:run
    *   Runs a harvest.
    */
-  public function run($id) {
-    $result = $this->harvestService
-      ->runHarvest($id);
-
-    // Fetch run_id from the harvest service.
-    $run_ids = $this->harvestService
-      ->getAllHarvestRunInfo($id);
-
-    $this->renderHarvestRunsInfo([
-      [end($run_ids), $result],
-    ]);
+  public function run($plan_id) {
+    $result = $this->harvestService->runHarvest($plan_id);
+    $this->renderHarvestRunsInfo([$result]);
   }
 
   /**
-   * Run all pending harvests.
+   * Run all harvests.
+   *
+   * @option new Run only harvests which haven't run before.
    *
    * @command dkan:harvest:run-all
    *
    * @usage dkan:harvest:run-all
-   *   Runs all pending harvests.
+   *   Runs all harvests.
    */
-  public function runAll() {
-
-    $ids = $this->harvestService
-      ->getAllHarvestIds();
-
-    foreach ($ids as $id) {
-      $this->run($id);
+  public function runAll($options = ['new' => FALSE]) {
+    $plan_ids = $this->harvestService->getAllHarvestIds(FALSE);
+    if ($options['new']) {
+      $plan_ids = array_diff(
+        $plan_ids, $this->harvestService->getAllHarvestIds(TRUE)
+      );
     }
+    $runs_info = [];
+    foreach ($plan_ids as $plan_id) {
+      $result = $this->harvestService->runHarvest($plan_id);
+      $runs_info[] = $result;
+      // Since run IDs are also one-second-resolution timestamps, we must wait
+      // one second before running the next harvest.
+      // @todo Remove this sleep when we've switched to a better system for
+      //   timestamps.
+      sleep(1);
+    }
+    $this->renderHarvestRunsInfo($runs_info);
   }
 
   /**
@@ -213,14 +217,12 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:info
    */
   public function info($harvestId, $runId = NULL) {
-    $this->validateHarvestId($harvestId);
-    $runIds = $runId ? [$runId] : $this->harvestService->getAllHarvestRunInfo($harvestId);
+    $this->validateHarvestPlan($harvestId);
+    $runIds = $runId ? [$runId] : $this->harvestService->getRunIdsForHarvest($harvestId);
 
     foreach ($runIds as $id) {
       $run = $this->harvestService->getHarvestRunInfo($harvestId, $id);
-      $result = json_decode($run, TRUE);
-
-      $runs[] = [$id, $result];
+      $runs[] = json_decode($run, TRUE);
     }
 
     $this->renderHarvestRunsInfo($runs ?? []);
@@ -238,7 +240,7 @@ class HarvestCommands extends DrushCommands {
    *   Removes harvested entities.
    */
   public function revert($harvestId) {
-    $this->validateHarvestId($harvestId);
+    $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
     (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
   }
@@ -255,7 +257,7 @@ class HarvestCommands extends DrushCommands {
    *   Archives harvested entities.
    */
   public function archive($harvestId) {
-    $this->validateHarvestId($harvestId);
+    $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->archive($harvestId);
     if (empty($result)) {
       (new ConsoleOutput())->write("No items available to archive for the '{$harvestId}' harvest plan." . PHP_EOL);
@@ -277,7 +279,7 @@ class HarvestCommands extends DrushCommands {
    *   Publishes harvested entities.
    */
   public function publish($harvestId) {
-    $this->validateHarvestId($harvestId);
+    $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->publish($harvestId);
     if (empty($result)) {
       (new ConsoleOutput())->write("No items available to publish for the '{$harvestId}' harvest plan." . PHP_EOL);
@@ -302,14 +304,14 @@ class HarvestCommands extends DrushCommands {
    *   test 1599157120
    */
   public function status($harvestId, $runId = NULL) {
-    $this->validateHarvestId($harvestId);
+    $this->validateHarvestPlan($harvestId);
 
     // No run_id provided, get the latest run_id.
     // Validate run_id.
-    $allRunIds = $this->harvestService->getAllHarvestRunInfo($harvestId);
+    $allRunIds = $this->harvestService->getRunIdsForHarvest($harvestId);
 
     if (empty($allRunIds)) {
-      (new ConsoleOutput())->writeln("<error>No Run IDs found for harvest id $harvestId</error>");
+      $this->logger()->error('No Run IDs found for harvest id ' . $harvestId);
       return DrushCommands::EXIT_FAILURE;
     }
 
@@ -320,18 +322,19 @@ class HarvestCommands extends DrushCommands {
     }
 
     if (array_search($runId, $allRunIds) === FALSE) {
-      (new ConsoleOutput())->writeln("<error>Run ID $runId not found for harvest id $harvestId</error>");
+      $this->logger()->error("Run ID $runId not found for harvest id $harvestId");
       return DrushCommands::EXIT_FAILURE;
     }
 
     $run = $this->harvestService->getHarvestRunInfo($harvestId, $runId);
 
     if (empty($run)) {
-      (new ConsoleOutput())->writeln("<error>No status found for harvest id $harvestId and run id $runId</error>");
+      $this->logger()->error("No status found for harvest id $harvestId and run id $runId");
       return DrushCommands::EXIT_FAILURE;
     }
 
     $this->renderStatusTable($harvestId, $runId, json_decode($run, TRUE));
+    return DrushCommands::EXIT_SUCCESS;
   }
 
   /**
@@ -347,7 +350,7 @@ class HarvestCommands extends DrushCommands {
    * @alias dkan:harvest:orphan
    */
   public function orphanDatasets(string $harvestId) : int {
-    $this->validateHarvestId($harvestId);
+    $this->validateHarvestPlan($harvestId);
 
     try {
       $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
@@ -408,13 +411,12 @@ class HarvestCommands extends DrushCommands {
   /**
    * Throw error if Harvest ID does not exist.
    *
-   * @param string $harvestId
+   * @param string $harvest_plan_id
    *   The Harvest ID.
    */
-  private function validateHarvestId($harvestId) {
-    if (!in_array($harvestId, $this->harvestService->getAllHarvestIds())) {
-      $this->logger()->error("Harvest id {$harvestId} not found.");
-      return DrushCommands::EXIT_FAILURE;
+  private function validateHarvestPlan($harvest_plan_id) {
+    if (!in_array($harvest_plan_id, $this->harvestService->getAllHarvestIds())) {
+      throw new \InvalidArgumentException('Harvest id ' . $harvest_plan_id . ' not found.');
     }
   }
 
@@ -439,6 +441,7 @@ class HarvestCommands extends DrushCommands {
    */
   public function harvestUpdate(): int {
     $this->harvestUtility->harvestHashUpdate();
+    $this->harvestUtility->harvestRunsUpdate();
     $this->logger()->success('Converted!');
     return DrushCommands::EXIT_SUCCESS;
   }

@@ -4,15 +4,11 @@
   "type": "object",
   "required": [
     "identifier",
-    "title"
+    "data"
   ],
   "properties": {
     "identifier": {
       "title": "Identifier",
-      "type": "string"
-    },
-    "title": {
-      "title": "Title",
       "type": "string"
     },
     "data": {
@@ -20,9 +16,13 @@
       "description": "A data dictionary for this resource, compliant with the [Table Schema](https://specs.frictionlessdata.io/table-schema/) specification.",
       "type": "object",
       "required": [
-        "fields"
+        "title"
       ],
       "properties": {
+		    "title": {
+   			  "title": "Title",
+    	  	"type": "string"
+		    },
         "fields": {
           "title": "Dictionary Fields",
           "type": "array",

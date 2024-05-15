@@ -6,6 +6,7 @@ use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\harvest\Entity\HarvestPlanRepository;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\harvest\WebServiceApi;
@@ -69,6 +70,7 @@ class WebServiceApiTest extends TestCase {
           $this->createStub(HarvestHashesDatabaseTableFactory::class),
           $this->getMetastoreMockChain(),
           $this->getHarvestEntityRepositoryMock(),
+          $this->createStub(HarvestRunRepository::class),
           $this->createStub(LoggerInterface::class)
         );
       case 'request_stack':

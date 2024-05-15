@@ -144,10 +144,14 @@ class ImportInfo {
    * @param \Procrastinator\Job\Job $job
    *   Either a FileFetcher or Importer object.
    *
-   * @return float
+   * @return float|null
    *   Percentage.
    */
-  private function getPercentDone(Job $job): float {
+  private function getPercentDone(Job $job): ?float {
+    // If the job is done, but precent < 100, NULL.
+    if ($job->getResult()->getStatus() == Result::DONE) {
+      return 100;
+    }
     $bytes = $this->getBytesProcessed($job);
     $filesize = $this->getFileSize($job);
     return ($filesize > 0) ? round($bytes / $filesize * 100) : 0;

@@ -10,6 +10,7 @@ dependencies:
   - dkan:datastore
   - dkan:harvest
   - dkan:json_form_widget
+  - dkan:data_dictionary_widget
   - drupal:config
   - drupal:field
   - drupal:file

@@ -113,3 +113,13 @@ function metastore_admin_update_8011() {
 
   drupal_flush_all_caches();
 }
+
+/**
+ * Reinstall DKAN Metastore Admin configuration to include new dkan menu items.
+ */
+function metastore_admin_update_8012() {
+  \Drupal::service('config.installer')
+    ->installDefaultConfig('module', 'metastore_admin');
+
+  drupal_flush_all_caches();
+}

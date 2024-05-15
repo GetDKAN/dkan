@@ -33,6 +33,7 @@ class WebServiceApiTest extends KernelTestBase {
     parent::setUp();
     $this->installEntitySchema('harvest_plan');
     $this->installEntitySchema('harvest_hash');
+    $this->installEntitySchema('harvest_run');
   }
 
   protected function getHarvestPlan(string $plan_identifier): object {
@@ -202,7 +203,7 @@ class WebServiceApiTest extends KernelTestBase {
     $message = 'info error';
     $this->container->set(
       'dkan.harvest.service',
-      $this->getExplodingHarvestService('getAllHarvestRunInfo', $message)
+      $this->getExplodingHarvestService('getRunIdsForHarvest', $message)
     );
     $this->container->get('request_stack')->push($this->getPlanRequest($plan_id));
 
