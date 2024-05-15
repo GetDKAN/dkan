@@ -147,7 +147,7 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
         throw new MissingObjectException("This $schema_id $identifier has no revision with that identifier.");
       }
       $output = (object) [
-        'identifier' => $revision_id,
+        'identifier' => (string) $revision_id,
         'published' => $revision_id == $entity->getRevisionId(),
         'message' => $revision->get('revision_log')->getString(),
         'modified' => date('c', $revision->get('changed')->getString()),

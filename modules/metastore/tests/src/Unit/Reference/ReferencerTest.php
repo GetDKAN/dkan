@@ -138,12 +138,14 @@ class ReferencerTest extends TestCase {
       ->add('file_system', FileSystem::class)
       ->index(0);
 
-    return (new Chain($this))
+    $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'test.test')
       ->add(ResourceMapper::class, 'register', TRUE, 'resource')
       ->add(FileSystem::class, 'getTempDirectory', '/tmp');
+
+    return $container_chain;
   }
 
   /**
@@ -474,7 +476,7 @@ class ReferencerTest extends TestCase {
     );
 
     if ($describedBy instanceof \Exception) {
-      $this->expectException($describedBy::class);
+      $this->expectException(get_class($describedBy));
       $this->expectExceptionMessage($describedBy->getMessage());
     }
     $referencer->distributionHandling($distribution);

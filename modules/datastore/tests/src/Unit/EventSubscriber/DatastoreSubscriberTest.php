@@ -96,7 +96,7 @@ class DatastoreSubscriberTest extends TestCase {
     $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
-    (new Chain($this))
+    $config = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', [])
       ->getMock();

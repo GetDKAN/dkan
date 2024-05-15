@@ -229,7 +229,7 @@ class DatasetInfo implements ContainerInjectionInterface {
     try {
       $storage = $this->datastore->getStorage($identifier, $version);
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       $storage = NULL;
     }
     return $storage;

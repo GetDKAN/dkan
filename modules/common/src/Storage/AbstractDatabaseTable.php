@@ -105,9 +105,11 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       return [];
     }
 
-    return array_map(function ($item) {
+    $result = array_map(function ($item) {
       return $item->{$this->primaryKey()};
     }, $result);
+
+    return $result;
   }
 
   /**
@@ -250,7 +252,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       'Can\'t find FULLTEXT index matching the column list' => 'You have attempted a fulltext match against a column that is not indexed for fulltext searching',
     ];
     foreach ($messages as $portion => $message) {
-      if (str_contains($unsanitizedMessage, $portion)) {
+      if (strpos($unsanitizedMessage, $portion) !== FALSE) {
         return $message . '.';
       }
     }
@@ -269,7 +271,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
         try {
           $this->tableCreate($table_name, $schema);
         }
-        catch (SchemaObjectExistsException) {
+        catch (SchemaObjectExistsException $e) {
           // Table already exists, which is totally OK. Other throwables find
           // their way out to the caller.
         }

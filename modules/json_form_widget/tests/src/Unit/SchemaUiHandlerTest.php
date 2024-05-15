@@ -207,7 +207,7 @@ class SchemaUiHandlerTest extends TestCase {
         "#required" => FALSE,
       ],
     ];
-    new DrupalDateTime('2020-05-11T15:06:39.000Z');
+    $date = new DrupalDateTime('2020-05-11T15:06:39.000Z');
     $expected = [
       "temporal" => [
         "#type" => "date_range",
@@ -924,7 +924,9 @@ class SchemaUiHandlerTest extends TestCase {
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
-    return WidgetRouter::create($container);
+
+    $router = WidgetRouter::create($container);
+    return $router;
   }
 
   /**

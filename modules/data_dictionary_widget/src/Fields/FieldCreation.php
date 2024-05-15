@@ -49,7 +49,8 @@ class FieldCreation {
    *   Field array structure.
    */
   protected static function createField(string $field, array $field_json_metadata, FormStateInterface &$form_state) {
-    $identifier_uuid = $field_json_metadata['identifier'] ?? $form_state->getUserInput()["field_json_metadata"][0]["identifier"] ?? NULL;
+    $identifier_uuid = $field_json_metadata['identifier'] ??
+      $form_state->getUserInput()['field_json_metadata'][0]['identifier'] ?? NULL;
 
     $fieldMappings = [
       'title' => [
@@ -64,7 +65,6 @@ class FieldCreation {
         '#type' => 'textfield',
         '#required' => TRUE,
         '#title' => t('Identifier'),
-        '#default_value' => $field_json_metadata['identifier'] ?? '',
         '#attributes' => ['readonly' => 'readonly'],
         '#default_value' => $identifier_uuid ?? '',
         '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),

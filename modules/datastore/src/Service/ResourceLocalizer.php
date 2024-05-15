@@ -199,7 +199,7 @@ class ResourceLocalizer {
     try {
       $this->resourceMapper->registerNewPerspective($new);
     }
-    catch (AlreadyRegistered) {
+    catch (AlreadyRegistered $e) {
     }
 
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
@@ -207,7 +207,7 @@ class ResourceLocalizer {
     try {
       $this->resourceMapper->registerNewPerspective($localUrlPerspective);
     }
-    catch (AlreadyRegistered) {
+    catch (AlreadyRegistered $e) {
     }
   }
 
@@ -355,7 +355,7 @@ class ResourceLocalizer {
       try {
         $this->resourceMapper->registerNewPerspective($localized_resource);
       }
-      catch (AlreadyRegistered) {
+      catch (AlreadyRegistered $e) {
         // Catch the already-registered exception.
       }
       $file_system = $this->getFileSystem();

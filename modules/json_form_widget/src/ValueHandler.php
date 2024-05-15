@@ -117,7 +117,7 @@ class ValueHandler {
    * @return bool
    *   TRUE if the value is empty, FALSE if it is not.
    */
-  private function isValueEmpty(mixed $value): bool {
+  private function isValueEmpty($value): bool {
     if (is_scalar($value)) {
       return empty($value);
     }
@@ -169,7 +169,7 @@ class ValueHandler {
    *   String without $ID:.
    */
   private function cleanSelectId($value) {
-    if (str_starts_with($value, "\$ID:")) {
+    if (substr($value, 0, 4) === "\$ID:") {
       return substr($value, 4);
     }
     return $value;

@@ -73,6 +73,8 @@ class WebServiceApiTest extends TestCase {
           $this->createStub(HarvestRunRepository::class),
           $this->createStub(LoggerInterface::class)
         );
+
+      break;
       case 'request_stack':
         $stack = $this->getMockBuilder(RequestStack::class)
           ->disableOriginalConstructor()
@@ -82,6 +84,8 @@ class WebServiceApiTest extends TestCase {
         $stack->method("getCurrentRequest")->willReturn($this->request);
 
         return $stack;
+
+      break;
     }
   }
 
@@ -91,7 +95,7 @@ class WebServiceApiTest extends TestCase {
   public function testEmptyIndex() {
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->index();
-    $this->assertEquals(JsonResponse::class, $response::class);
+    $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode([]));
   }
 
@@ -102,7 +106,7 @@ class WebServiceApiTest extends TestCase {
     $this->request = new Request();
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
-    $this->assertEquals(JsonResponse::class, $response::class);
+    $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode(["message" => "Harvest plan must be a php object."]));
   }
 
@@ -127,11 +131,11 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
-    $this->assertEquals(JsonResponse::class, $response::class);
+    $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode(["identifier" => "test"]));
 
     $response = $controller->index();
-    $this->assertEquals(JsonResponse::class, $response::class);
+    $this->assertInstanceOf(JsonResponse::class, $response);
   }
 
   /**
@@ -157,7 +161,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($container);
     $response = $controller->run();
-    $this->assertEquals(JsonResponse::class, $response::class);
+    $this->assertInstanceOf(JsonResponse::class, $response);
   }
 
   /**

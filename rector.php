@@ -58,6 +58,10 @@ return static function (RectorConfig $rectorConfig): void {
     // Skip this file to keep the debug method.
     // @todo Do we need the debug method?
     '*/modules/common/tests/src/Unit/Storage/SelectFactoryTest.php',
+    // Don't change the signature of these service classes.
+    // @todo Unskip these later.
+    '*/modules/datastore/src/Service/Info/ImportInfo.php',
+    '*/modules/frontend/src/Routing/RouteProvider.php',
     // Don't throw errors on JSON parse problems. Yet.
     // @todo Throw errors and deal with them appropriately.
     JsonThrowOnErrorRector::class,

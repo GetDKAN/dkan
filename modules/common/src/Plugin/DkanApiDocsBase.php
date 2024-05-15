@@ -119,7 +119,7 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
    *   Filtered schema.
    */
   protected static function filterJsonSchemaUnsupported(array $schema) {
-    return self::nestedFilterKeys($schema, function ($prop) {
+    $filteredSchema = self::nestedFilterKeys($schema, function ($prop) {
       $notSupported = [
         '$schema',
         'additionalItems',
@@ -139,6 +139,8 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
       }
       return TRUE;
     });
+
+    return $filteredSchema;
   }
 
   /**

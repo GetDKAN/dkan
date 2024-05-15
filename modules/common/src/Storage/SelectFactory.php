@@ -116,7 +116,7 @@ class SelectFactory {
    * @param mixed $property
    *   One property from a query properties array.
    */
-  private function setQueryProperty(mixed $property) {
+  private function setQueryProperty($property) {
 
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);
@@ -137,7 +137,7 @@ class SelectFactory {
    * @return object
    *   Normalized property for conversion to field in select object.
    */
-  private function normalizeProperty(mixed $property): object {
+  private function normalizeProperty($property): object {
     if (is_string($property) && self::safeProperty($property)) {
       return (object) [
         "collection" => $this->alias,
@@ -227,7 +227,7 @@ class SelectFactory {
    * @return mixed
    *   String or numeric operand for expression.
    */
-  private function normalizeOperand(mixed $operand) {
+  private function normalizeOperand($operand) {
     if (is_numeric($operand)) {
       return $operand;
     }
@@ -248,7 +248,7 @@ class SelectFactory {
    * @return string
    *   Property name with alias prefix.
    */
-  private function propertyToString(mixed $property) {
+  private function propertyToString($property) {
     $property = $this->normalizeProperty($property);
     return "{$property->collection}.{$property->property}";
   }

@@ -74,13 +74,14 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
+    $me = new static(
           $configuration,
           $plugin_id,
           $plugin_definition,
           $container->get('dkan.common.node_storage'),
           $container->get('dkan.metastore.reference_lookup')
       );
+    return $me;
   }
 
   /**

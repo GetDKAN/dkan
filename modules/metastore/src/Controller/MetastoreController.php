@@ -377,7 +377,7 @@ class MetastoreController implements ContainerInjectionInterface {
    * @throws \Drupal\metastore\Exception\CannotChangeUuidException
    *   Thrown when the identifiers are different.
    */
-  private function checkIdentifier(string $data, mixed $identifier = NULL) {
+  private function checkIdentifier(string $data, $identifier = NULL) {
     $obj = json_decode($data);
     if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");

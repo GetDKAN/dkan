@@ -112,7 +112,7 @@ class DatasetApiDocs {
     $datasetSpec['paths']["/api/1/metastore/schemas/dataset/items/$identifier"]['get'] = $metastorePath;
 
     $datasetSpec['paths']["/api/1/datastore/query/$identifier/{index}"]
-      = $this->getDatastoreIndexPath($fullSpec);
+      = $this->getDatastoreIndexPath($fullSpec, $identifier);
 
     $datasetSpec['paths']['/api/1/datastore/query/{distributionId}'] =
       $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{distributionId}'];
@@ -142,7 +142,7 @@ class DatasetApiDocs {
    * @return array
    *   Components object (associative array).
    */
-  private function datasetSpecificComponents(mixed $fullSpec, mixed $identifier) {
+  private function datasetSpecificComponents($fullSpec, $identifier) {
     $components = [];
     $components['parameters'] =
       $this->datasetSpecificParameters($fullSpec['components']['parameters'], $identifier);
@@ -159,11 +159,13 @@ class DatasetApiDocs {
    *
    * @param mixed $fullSpec
    *   Full site spec.
+   * @param mixed $identifier
+   *   Dataset identifier.
    *
    * @return array
    *   Path array ready to insert.
    */
-  private function getDatastoreIndexPath(mixed $fullSpec) {
+  private function getDatastoreIndexPath($fullSpec, $identifier) {
     $datastoreIndexPath = $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{datasetId}/{index}'];
     unset($datastoreIndexPath['get']['parameters'][0]);
     $datastoreIndexPath['get']['parameters'] = array_values($datastoreIndexPath['get']['parameters']);
@@ -182,12 +184,13 @@ class DatasetApiDocs {
    *   Filtered array.
    */
   private function datasetSpecificSchemas(array $schemas) {
-    return array_filter($schemas, function ($key) {
+    $newSchemas = array_filter($schemas, function ($key) {
       if (in_array($key, self::SPEC_SCHEMAS)) {
         return TRUE;
       }
       return FALSE;
     }, ARRAY_FILTER_USE_KEY);
+    return $newSchemas;
   }
 
   /**
@@ -201,7 +204,7 @@ class DatasetApiDocs {
    * @return array
    *   Filtered parameters.
    */
-  private function datasetSpecificParameters(array $parameters, mixed $identifier) {
+  private function datasetSpecificParameters(array $parameters, $identifier) {
     $newParameters = array_filter($parameters, function ($key) {
       if (in_array($key, self::SPEC_PARAMETERS)) {
         return TRUE;
@@ -222,12 +225,13 @@ class DatasetApiDocs {
    *   Filtered array.
    */
   private function datasetSpecificResponses(array $responses) {
-    return array_filter($responses, function ($key) {
+    $newResponses = array_filter($responses, function ($key) {
       if (in_array($key, self::SPEC_RESPONSES)) {
         return TRUE;
       }
       return FALSE;
     }, ARRAY_FILTER_USE_KEY);
+    return $newResponses;
   }
 
   /**

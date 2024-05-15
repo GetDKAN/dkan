@@ -36,19 +36,20 @@ class DrupalFilesTest extends TestCase {
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->index(0);
 
-    return (new Chain($this))
+    $container = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(FileSystemInterface::class, 'realpath', "/tmp")
       ->add(StreamWrapperManager::class, 'getViaUri', StreamWrapperInterface::class)
       ->add(StreamWrapperInterface::class, 'getExternalUrl', "blah")
       ->getMock();
+
+    return $container;
   }
 
   /**
    * Protected.
    */
   protected function tearDown(): void {
-    parent::tearDown();
     unlink("/tmp/hello.txt");
   }
 

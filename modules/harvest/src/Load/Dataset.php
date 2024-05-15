@@ -39,7 +39,7 @@ class Dataset extends Load {
     try {
       $service->post($schema_id, $item);
     }
-    catch (ExistingObjectException) {
+    catch (ExistingObjectException $e) {
       $service->put($schema_id, $item->{"$.identifier"}, $item);
     }
   }
@@ -51,7 +51,8 @@ class Dataset extends Load {
    *   Metastore service.
    */
   protected function getMetastoreService(): MetastoreService {
-    return \Drupal::service('dkan.metastore.service');
+    $service = \Drupal::service('dkan.metastore.service');
+    return $service;
   }
 
 }

@@ -26,9 +26,10 @@ trait EventDispatcherTrait {
    * @throws \Exception
    *   If any of the subscribers registered and Exception it is thrown.
    */
-  private function dispatchEvent(mixed $eventName, mixed $data, mixed $validator = NULL) {
+  private function dispatchEvent($eventName, $data, $validator = NULL) {
     if ($this->useLegacyDispatcher()) {
-      return $this->legacyDispatchEvent($eventName, $data, $validator);
+      $data = $this->legacyDispatchEvent($eventName, $data, $validator);
+      return $data;
     }
     $dispatcher = \Drupal::service('event_dispatcher');
 
@@ -72,7 +73,7 @@ trait EventDispatcherTrait {
    * @throws \Exception
    *   If any of the subscribers registered and Exception it is thrown.
    */
-  private function legacyDispatchEvent(mixed $eventName, mixed $data, mixed $validator = NULL) {
+  private function legacyDispatchEvent($eventName, $data, $validator = NULL) {
     $dispatcher = \Drupal::service('event_dispatcher');
 
     if ($event = $dispatcher->dispatch($eventName, new Event($data, $validator))) {

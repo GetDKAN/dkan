@@ -82,7 +82,7 @@ class DataResourceTest extends TestCase {
     $expectedMessage = "Could not find identifier and version for {$id}";
 
     $this->expectExceptionMessage($expectedMessage);
-    DataResource::getIdentifierAndVersion($id);
+    $result = DataResource::getIdentifierAndVersion($id);
   }
 
   /**

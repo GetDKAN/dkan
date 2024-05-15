@@ -19,7 +19,7 @@ function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterfac
     || $form['#id'] == 'views-exposed-form-dkan-dataset-content-page-2') {
     $schemaRetriever = \Drupal::service('dkan.metastore.schema_retriever');
     $schemaIds = array_filter($schemaRetriever->getAllIds(), function ($schemaId) {
-      return !str_ends_with($schemaId, '.ui');
+      return substr($schemaId, -3) != '.ui';
     });
     $options = array_combine($schemaIds, $schemaIds);
     $options = array_merge(['' => t('- Any -')], $options);
@@ -156,6 +156,7 @@ function metastore_admin_form_alter(&$form, FormStateInterface $form_state, $for
  */
 function metastore_admin_form_submit($form, FormStateInterface &$form_state) {
   $form_state->setRedirect('view.dkan_dataset_content.page_1');
+  return;
 }
 
 /*

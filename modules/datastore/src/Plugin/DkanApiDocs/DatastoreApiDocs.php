@@ -397,7 +397,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     try {
       $import = $this->importInfo->getItem($parts[0], $parts[1]);
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       return FALSE;
     }
     if (isset($import->importerPercentDone) && ($import->importerPercentDone == 100)) {

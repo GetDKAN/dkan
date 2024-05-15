@@ -84,7 +84,7 @@ class QueryControllerTest extends TestCase {
       ->getMock();
     \Drupal::setContainer($container);
 
-    $chain = $this->getQueryContainer([], FALSE);
+    $chain = $this->getQueryContainer($data, [], FALSE);
     $webServiceApi = QueryController::create($chain->getMock());
     $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
@@ -244,7 +244,7 @@ class QueryControllerTest extends TestCase {
       ->getMock();
     \Drupal::setContainer($container);
 
-    $chain = $this->getQueryContainer([], FALSE);
+    $chain = $this->getQueryContainer($data, [], FALSE);
     $webServiceApi = QueryController::create($chain->getMock());
     $request = $this->mockRequest($data);
     $result = $webServiceApi->queryResource("9", $request);
@@ -307,7 +307,7 @@ class QueryControllerTest extends TestCase {
   }
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
-    $container = $this->getQueryContainer($info, true)->getMock();
+    $container = $this->getQueryContainer($data, $info, true)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
@@ -436,7 +436,7 @@ class QueryControllerTest extends TestCase {
     ]);
 
     // Create a container with caching turned on.
-    $containerChain = $this->getQueryContainer()
+    $containerChain = $this->getQueryContainer($data)
       ->add(Container::class, 'has', TRUE)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 600);
@@ -470,7 +470,7 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  private function getQueryContainer(array $info = [], $mockMap = TRUE) {
+  private function getQueryContainer($data = '', array $info = [], $mockMap = TRUE) {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)

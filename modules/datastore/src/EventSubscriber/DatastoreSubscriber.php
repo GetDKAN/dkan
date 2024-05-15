@@ -105,7 +105,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * @codeCoverageIgnore
    * @inheritdoc
    */
-  public static function getSubscribedEvents(): array {
+  public static function getSubscribedEvents() {
     $events = [];
     $events[ResourceMapper::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE][] = ['drop'];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];

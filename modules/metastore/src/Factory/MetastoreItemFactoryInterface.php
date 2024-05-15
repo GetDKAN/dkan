@@ -47,7 +47,7 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @return Drupal\metastore\MetastoreItemInterface
    *   A metastore item interface compliant object.
    */
-  public function wrap(mixed $input);
+  public function wrap($input);
 
   /**
    * Return list cache tags for metastore items.

@@ -48,7 +48,7 @@ trait HelperTrait {
    * @return array|string
    *   Either the empty string or an empty array.
    */
-  private function emptyPropertyOfSameType(mixed $data) {
+  private function emptyPropertyOfSameType($data) {
     if (is_array($data)) {
       return [];
     }

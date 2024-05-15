@@ -291,6 +291,7 @@ class MetastoreControllerTest extends TestCase {
    *
    */
   public function testPutWithEquivalentData() {
+    $existing = '{"identifier":"1","title":"Foo"}';
     $updating = <<<EOF
       {
         "title": "Foo",
@@ -502,7 +503,7 @@ EOF;
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->index(0);
 
-    return (new Chain($this))
+    $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(MetastoreService::class, 'getSchemas', ['dataset'])
       ->add(MetastoreService::class, 'getSchema', (object) ["id" => "http://schema"])
@@ -514,6 +515,8 @@ EOF;
       ->add(NodeWrapperData::class, 'getCacheContexts', ['url'])
       ->add(NodeWrapperData::class, 'getCacheTags', ['node:1'])
       ->add(NodeWrapperData::class, 'getCacheMaxAge', 0);
+
+    return $mockChain;
   }
 
   private function request($method = 'GET', $body = '') {

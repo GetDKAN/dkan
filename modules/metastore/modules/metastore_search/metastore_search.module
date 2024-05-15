@@ -19,7 +19,7 @@ function _metastore_search_is_dataset(EntityInterface $entity): bool {
     // Attempt to check this entity's data type.
     return (new Data($entity, \Drupal::entityTypeManager()))->getDataType() === 'dataset';
   }
-  catch (DataNodeLifeCycleEntityValidationException) {
+  catch (DataNodeLifeCycleEntityValidationException $e) {
     // If the data object fails validation, the given entity is not a dataset.
     return FALSE;
   }

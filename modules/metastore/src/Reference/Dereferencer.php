@@ -157,7 +157,7 @@ class Dereferencer {
     try {
       $value = $storage->retrieve($uuid);
     }
-    catch (MissingObjectException) {
+    catch (MissingObjectException $exception) {
       $value = FALSE;
     }
 

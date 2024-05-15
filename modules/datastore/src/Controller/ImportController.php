@@ -95,7 +95,7 @@ class ImportController implements ContainerInjectionInterface {
       $dependencies = $this->getDependencies($identifier);
       return $this->metastoreApiResponse->cachedJsonResponse($data, 200, $dependencies, $request->query);
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       $exception = new \Exception("A datastore for resource {$identifier} does not exist.");
       return $this->getResponseFromException($exception, 404);
     }
@@ -125,7 +125,8 @@ class ImportController implements ContainerInjectionInterface {
     else {
       $distributions = [];
     }
-    return empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
+    $dependencies = empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
+    return $dependencies;
   }
 
   /**

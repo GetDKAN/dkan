@@ -202,7 +202,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * Private.
    */
   private function getLabelFromObject($object) {
-    return substr(strrchr($object::class, '\\'), 1);
+    return substr(strrchr(get_class($object), '\\'), 1);
   }
 
   /**
@@ -256,7 +256,8 @@ class DatastoreService implements ContainerInjectionInterface {
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
-      return $storage->getSummary();
+      $data = $storage->getSummary();
+      return $data;
     }
     throw new \Exception('no storage');
   }

@@ -107,7 +107,7 @@ class OpenApiController implements ContainerInjectionInterface {
    * @param int $code
    *   HTTP response code.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return \Symfony\Component\HttpFoundation\Response
    *   OpenAPI spec response.
    */
   private function getYamlResponse($spec, $code = 200) {

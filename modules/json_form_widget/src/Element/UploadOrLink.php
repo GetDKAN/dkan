@@ -35,7 +35,7 @@ class UploadOrLink extends ManagedFile {
    * @codeCoverageIgnore
    */
   public function getInfo() {
-    $class = static::class;
+    $class = get_class($this);
     return [
       '#input' => TRUE,
       '#process' => [[$class, 'processManagedFile']],
@@ -295,7 +295,8 @@ class UploadOrLink extends ManagedFile {
       return static::getLocalFileUrl($element);
     }
     elseif (!empty($element['#value']['file_url_remote'])) {
-      return $element['#value']['file_url_remote'];
+      $uri = $element['#value']['file_url_remote'];
+      return $uri;
     }
 
     return $element['#uri'] ?? NULL;

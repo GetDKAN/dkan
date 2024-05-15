@@ -47,8 +47,9 @@ class DatabaseTableFactory implements FactoryInterface {
     }
 
     $resource = $config['resource'];
+    $databaseTable = $this->getDatabaseTable($resource);
 
-    return $this->getDatabaseTable($resource);
+    return $databaseTable;
   }
 
   /**

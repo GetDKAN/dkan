@@ -109,7 +109,7 @@ class HarvestTest extends BrowserTestBase {
     // Auth user can run this harvest.
     $post_user = $this->createUser(['harvest_api_run'], 'harvest_post_user', FALSE);
     $response = $this->getApiClient($post_user)->post('/api/1/harvest/runs', [
-      RequestOptions::JSON => (object) ['plan_id' => $identifier],
+      RequestOptions::JSON => (object) ['plan_id' => (string) $identifier],
     ]);
     $this->assertEquals(200, $response->getStatusCode());
     $result = json_decode($response->getBody()->getContents(), TRUE);

@@ -32,9 +32,6 @@ class HarvestUtilityTest extends KernelTestBase {
     $entity_orphan_plan_id = 'entityorphanplanid';
     $table_orphan_plan_id = 'tableorphanplanid';
 
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
-    $harvest_service = $this->container->get('dkan.harvest.service');
-
     // Use a database table to store a fake plan. The plan entity is the same
     // schema as the old table management.
     /** @var \Drupal\harvest\Entity\HarvestPlanRepository $plan_repository */
