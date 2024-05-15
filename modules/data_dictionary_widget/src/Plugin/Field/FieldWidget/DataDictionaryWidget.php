@@ -60,9 +60,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     if ($form_entity instanceof FieldableEntityInterface) {
       $form_entity->set('field_data_type', 'data-dictionary');
     }
-    $element = FieldOperations::setAddFormState($form_state->get('add_new_field'), $element);
 
-    return $element;
+    return FieldOperations::setAddFormState($form_state->get('add_new_field'), $element);
   }
 
   /**

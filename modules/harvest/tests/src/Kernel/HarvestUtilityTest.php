@@ -175,7 +175,6 @@ class HarvestUtilityTest extends KernelTestBase {
       ],
       'identifier' => $orphaned_id,
     ];
-    /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
     $orphaned_table = $this->container
       ->get('dkan.harvest.storage.database_table')
       ->getInstance('harvest_' . $orphaned_plan_id . '_runs');

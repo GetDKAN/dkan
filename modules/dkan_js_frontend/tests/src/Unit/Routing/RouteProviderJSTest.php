@@ -35,7 +35,6 @@ class RouteProviderJSTest extends TestCase {
 
     $reactAppProvider = new RouteProvider($configFactory);
 
-    /** @var \Symfony\Component\Routing\RouteCollection $routes */
     $reactappRoutes = $reactAppProvider->routes();
 
     /** @var \Symfony\Component\Routing\Route $route */

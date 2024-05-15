@@ -70,7 +70,7 @@ class DkanDatasetTest extends TestCase {
     $this->assertEquals(json_encode(['xyz', 'xyz']), json_encode($ids));
 
     $items = $plugin->loadMultiple($ids);
-    $this->assertEquals(Dataset::class, get_class($items['xyz']));
+    $this->assertEquals(Dataset::class, $items['xyz']::class);
   }
 
   /**

@@ -74,7 +74,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Element with widget configuration based on UI options.
    */
-  public function getConfiguredWidget($spec, array $element) {
+  public function getConfiguredWidget(mixed $spec, array $element) {
     $widgets = $this->getWidgets();
     if (in_array($spec->widget, array_keys($widgets))) {
       $method_name = $widgets[$spec->widget];
@@ -113,7 +113,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as a list element.
    */
-  public function handleListElement($spec, array $element) {
+  public function handleListElement(mixed $spec, array $element) {
     $title_property = ($spec->titleProperty ?? FALSE);
 
     if (isset($title_property, $element[$title_property])) {
@@ -143,7 +143,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The dropdown element configured.
    */
-  public function getDropdownElement($element, $spec, $titleProperty = FALSE) {
+  public function getDropdownElement(mixed $element, mixed $spec, mixed $titleProperty = FALSE) {
     $element['#type'] = $this->getSelectType($spec);
     $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
@@ -171,7 +171,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return string
    *   The type of dropdown element to use.
    */
-  public function getSelectType($spec) {
+  public function getSelectType(mixed $spec) {
     if (isset($spec->type) && $spec->type === 'select_other') {
       return 'select_or_other_select';
     }
@@ -192,7 +192,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Array with options for the dropdown.
    */
-  public function getDropdownOptions($source, $titleProperty = FALSE) {
+  public function getDropdownOptions(mixed $source, mixed $titleProperty = FALSE) {
     $options = [];
     if (isset($source->enum)) {
       $options = $this->stringHelper->getSelectOptions($source);
@@ -214,12 +214,12 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Array with options from metastore for the dropdown.
    */
-  public function getOptionsFromMetastore($source, $titleProperty = FALSE) {
+  public function getOptionsFromMetastore(mixed $source, mixed $titleProperty = FALSE) {
     $options = [];
     $metastore_items = $this->metastore->getAll($source->metastoreSchema);
     foreach ($metastore_items as $item) {
       $item = json_decode($item);
-      $title = $this->metastoreOptionTitle($item, $source, $titleProperty);
+      $title = $this->metastoreOptionTitle($item, $titleProperty);
       $value = $this->metastoreOptionValue($item, $source, $titleProperty);
       $options[$value] = $title;
     }
@@ -231,15 +231,12 @@ class WidgetRouter implements ContainerInjectionInterface {
    *
    * @param object|string $item
    *   Single item from Metastore::getAll()
-   * @param object $source
-   *   Source defintion from UI schema.
    * @param string|false $titleProperty
    *   Title property defined in UI schema.
-   *
    * @return string
    *   String to be used in title.
    */
-  private function metastoreOptionTitle($item, object $source, $titleProperty): string {
+  private function metastoreOptionTitle($item, $titleProperty): string {
     if ($titleProperty) {
       return is_object($item) ? $item->data->$titleProperty : $item;
     }
@@ -292,7 +289,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as upload_or_link.
    */
-  public function handleUploadOrLinkElement($spec, array $element) {
+  public function handleUploadOrLinkElement(mixed $spec, array $element) {
     $element['#type'] = 'upload_or_link';
     $element['#upload_location'] = 'public://uploaded_resources';
     if (isset($element['#default_value'])) {
@@ -316,7 +313,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as textarea.
    */
-  public function handleTextareaElement($spec, array $element) {
+  public function handleTextareaElement(mixed $spec, array $element) {
     $element['#type'] = 'textarea';
     if (isset($spec->rows)) {
       $element['#rows'] = $spec->rows;
@@ -338,7 +335,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as hidden.
    */
-  public function handleHiddenElement($spec, array $element) {
+  public function handleHiddenElement(mixed $spec, array $element) {
     $element['#access'] = FALSE;
     return $element;
   }
@@ -354,7 +351,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as dkan_uuid.
    */
-  public function handleDkanUuidElement($spec, array $element) {
+  public function handleDkanUuidElement(mixed $spec, array $element) {
     $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
     $element['#access'] = FALSE;
     return $element;
@@ -371,7 +368,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as date.
    */
-  public function handleDateElement($spec, array $element) {
+  public function handleDateElement(mixed $spec, array $element) {
     $element['#type'] = 'date';
     $format = $spec->format ?? 'Y-m-d';
     if (isset($element['#default_value'])) {
@@ -393,7 +390,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as datetime.
    */
-  public function handleDatetimeElement($spec, array $element) {
+  public function handleDatetimeElement(mixed $spec, array $element) {
     $element['#type'] = 'flexible_datetime';
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
@@ -416,7 +413,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   The element configured as date_range.
    */
-  public function handleDateRangeElement($spec, array $element) {
+  public function handleDateRangeElement(mixed $spec, array $element) {
     $element['#type'] = 'date_range';
     return $element;
   }

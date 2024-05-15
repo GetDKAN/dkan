@@ -27,6 +27,7 @@ class MySQLQueryTest extends TestCase {
    * Prepare for tests.
    */
   public function setUp(): void {
+    parent::setUp();
     // Build container with 'state' service for testing.
     $container_options = (new Options())
       ->add('state', (new MemoryStorage('test_storage')))
