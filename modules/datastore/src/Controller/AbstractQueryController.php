@@ -304,21 +304,21 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   /**
    * Just get the JSON string from the request.
    *
-   * @param Symfony\Component\HttpFoundation\Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $request
    *   Symfony HTTP request object.
    *
    * @return string
    *   JSON string.
    *
-   * @throws UnexpectedValueException
+   * @throws \UnexpectedValueException
    *   When an unsupported HTTP method is passed.
    */
   public static function getJson(Request $request) {
     $method = $request->getRealMethod();
     return match ($method) {
-        "POST", "PUT", "PATCH" => $request->getContent(),
-        "GET" => json_encode((object) $request->query->all()),
-        default => throw new \UnexpectedValueException("Only POST, PUT, PATCH and GET requests can be normalized."),
+      'POST', 'PUT', 'PATCH' => $request->getContent(),
+      'GET' => json_encode((object) $request->query->all()),
+      default => throw new \UnexpectedValueException('Only POST, PUT, PATCH and GET requests can be normalized.'),
     };
   }
 

@@ -64,10 +64,10 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
   public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string {
     $mode = $this->getDataDictionaryMode();
     return match ($mode) {
-        self::MODE_NONE => NULL,
-        self::MODE_SITEWIDE => $this->getSitewideDictionaryId(),
-        self::MODE_REFERENCE => $this->getReferenceDictionaryId($resourceId, $resourceIdVersion),
-        default => throw new \OutOfRangeException(sprintf('Unsupported data dictionary mode "%s"', $mode)),
+      self::MODE_NONE => NULL,
+      self::MODE_SITEWIDE => $this->getSitewideDictionaryId(),
+      self::MODE_REFERENCE => $this->getReferenceDictionaryId($resourceId, $resourceIdVersion),
+      default => throw new \OutOfRangeException(sprintf('Unsupported data dictionary mode "%s"', $mode)),
     };
   }
 

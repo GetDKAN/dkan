@@ -62,6 +62,7 @@ return static function (RectorConfig $rectorConfig): void {
     // @todo Unskip these later.
     '*/modules/datastore/src/Service/Info/ImportInfo.php',
     '*/modules/frontend/src/Routing/RouteProvider.php',
+    '*/modules/frontend/src/Page.php',
     // Don't throw errors on JSON parse problems. Yet.
     // @todo Throw errors and deal with them appropriately.
     JsonThrowOnErrorRector::class,
@@ -97,6 +98,8 @@ return static function (RectorConfig $rectorConfig): void {
   $rectorConfig->fileExtensions([
     'php', 'module', 'theme', 'install', 'profile', 'inc', 'engine',
   ]);
+
+  // @todo Add removeUnusedImports().
   $rectorConfig->importNames(TRUE, FALSE);
   $rectorConfig->importShortClasses(FALSE);
 };

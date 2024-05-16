@@ -24,11 +24,11 @@ class QueryDownloadController extends AbstractQueryController {
     ?ParameterBag $params = NULL
   ) {
     return match ($datastoreQuery->{"$.format"}) {
-        'csv' => $this->streamCsvResponse($datastoreQuery, $result),
-        default => $this->getResponseFromException(
-          new \UnexpectedValueException("Streaming not currently available for JSON responses"),
-          400
-        ),
+      'csv' => $this->streamCsvResponse($datastoreQuery, $result),
+      default => $this->getResponseFromException(
+        new \UnexpectedValueException('Streaming not currently available for JSON responses'),
+        400
+      ),
     };
   }
 

@@ -233,6 +233,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   Single item from Metastore::getAll()
    * @param string|false $titleProperty
    *   Title property defined in UI schema.
+   *
    * @return string
    *   String to be used in title.
    */

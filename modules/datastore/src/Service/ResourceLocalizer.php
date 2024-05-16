@@ -199,7 +199,7 @@ class ResourceLocalizer {
     try {
       $this->resourceMapper->registerNewPerspective($new);
     }
-    catch (AlreadyRegistered $e) {
+    catch (AlreadyRegistered) {
     }
 
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
