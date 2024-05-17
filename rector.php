@@ -52,6 +52,9 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
 
   $rectorConfig->skip([
+    // Skip data_dictionary_widget to avoid merge conflicts.
+    // @todo Add this back.
+    '*/modules/data_dictionary_widget',
     // Skip this file because we want its switch/case to remain:
     // @todo Figure out what to do about DataFactory::getInstance().
     '*/modules/metastore/src/Storage/DataFactory.php',

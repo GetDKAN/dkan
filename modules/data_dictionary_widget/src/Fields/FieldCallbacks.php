@@ -107,7 +107,9 @@ class FieldCallbacks {
    * Ajax callback.
    */
   public static function subformAjax(array &$form, FormStateInterface $form_state) {
-    return FieldOperations::restoreDictionaryFieldsOnRebuild($form, $form_state);
+    $data_dictionary = FieldOperations::restoreDictionaryFieldsOnRebuild($form, $form_state);
+
+    return $data_dictionary;
   }
 
   /**
