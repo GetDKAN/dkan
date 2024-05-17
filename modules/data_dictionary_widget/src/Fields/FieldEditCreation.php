@@ -63,15 +63,15 @@ class FieldEditCreation {
    * Create Format field.
    */
   private static function createFormat($key, $current_fields) {
-    $format_options = FieldOperations::setFormatOptions($current_fields[$key]['type']);
-    $value = in_array($current_fields[$key]['format'], $format_options) ? $current_fields[$key]['format'] : 'other';
+    $format_options = FieldOperations::generateFormats($current_fields[$key]['type'], "options");
+    $value = in_array($current_fields[$key]['format'], $format_options, true) ? $current_fields[$key]['format'] : 'other';
     return [
       '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][format]',
       '#type' => 'select',
       '#required' => TRUE,
       '#title' => 'Format',
       '#default_value' => 'default',
-      '#description' => FieldOperations::generateFormatDescription($current_fields[$key]['type']),
+      '#description' => FieldOperations::generateFormats($current_fields[$key]['type'], "description"),
       '#value' => $value,
       '#prefix' => '<div id = field-json-metadata-' . $key . '-format>',
       '#suffix' => '</div>',
@@ -84,7 +84,7 @@ class FieldEditCreation {
    * Create Format Other field.
    */
   private static function createFormatOther($key, $current_fields) {
-    $format_options = FieldOperations::setFormatOptions($current_fields[$key]['type']);
+    $format_options = FieldOperations::generateFormats($current_fields[$key]['type'], "options");
     $value = !in_array($current_fields[$key]['format'], $format_options) ? $current_fields[$key]['format'] : NULL;
 
     return [

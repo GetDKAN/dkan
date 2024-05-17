@@ -86,7 +86,7 @@ class FieldAddCreation {
       '#type' => 'select',
       '#required' => TRUE,
       '#title' => 'Format',
-      '#description' => FieldOperations::generateFormatDescription("string"),
+      '#description' => FieldOperations::generateFormats("string", "description"),
       '#default_value' => 'default',
       '#prefix' => '<div id = field-json-metadata-format>',
       '#suffix' => '</div>',

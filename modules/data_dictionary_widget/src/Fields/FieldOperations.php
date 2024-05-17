@@ -63,98 +63,48 @@ class FieldOperations {
    * @param string $dataType
    *   Field data type.
    *
-   * @return string
-   *   Description information.
+   * @return string|array
+   *   Description information or options list.
    *
    * @throws \InvalidArgumentException
    */
-  public static function generateFormatDescription($dataType) {
+  public static function generateFormats($dataType, $property) {
     $description = "<p>The format of the data in this field. Supported formats depend on the specified field type:</p>";
 
     switch ($dataType) {
       case 'string':
-        $info = FieldValues::returnStringInfo('description');
+        $info = FieldValues::returnStringInfo($property);
         break;
 
       case 'date':
-        $info = FieldValues::returnDateInfo('description');
+        $info = FieldValues::returnDateInfo($property);
         break;
 
       case 'datetime':
-        $info = FieldValues::returnDateTimeInfo('description');
+        $info = FieldValues::returnDateTimeInfo($property);
         break;
 
       case 'integer':
-        $info = FieldValues::returnIntegerInfo('description');
+        $info = FieldValues::returnIntegerInfo($property);
         break;
 
       case 'number':
-        $info = FieldValues::returnNumberInfo('description');
+        $info = FieldValues::returnNumberInfo($property);
         break;
 
       case 'year':
-        $info = FieldValues::returnYearInfo('description');
+        $info = FieldValues::returnYearInfo($property);
         break;
 
       case 'boolean':
-        $info = FieldValues::returnBooleanInfo('description');
+        $info = FieldValues::returnBooleanInfo($property);
         break;
 
       default:
         throw new \InvalidArgumentException("Unexpected data type: $dataType");
     }
 
-    return $description . $info;
-  }
-
-  /**
-   * Function to generate the options for the "Format" field.
-   *
-   * @param string $dataType
-   *   Field data type.
-   *
-   * @return array
-   *   List of format options.
-   */
-  public static function setFormatOptions($dataType) {
-
-    $options = NULL;
-
-    switch ($dataType) {
-      case 'string':
-        $options = FieldValues::returnStringInfo('options');
-        break;
-
-      case 'date':
-        $options = FieldValues::returnDateInfo('options');
-        break;
-
-      case 'datetime':
-        $options = FieldValues::returnDateTimeInfo('options');
-        break;
-
-      case 'integer':
-        $options = FieldValues::returnIntegerInfo('options');
-        break;
-
-      case 'number':
-        $options = FieldValues::returnNumberInfo('options');
-        break;
-
-      case 'year':
-        $options = FieldValues::returnYearInfo('options');
-        break;
-
-      case 'boolean':
-        $options = FieldValues::returnBooleanInfo('options');
-        break;
-
-      default:
-        throw new \InvalidArgumentException("Unexpected data type: $dataType");
-    }
-
-    return $options;
-
+    return ($property === "description") ? ($description . $info) : $info;
   }
 
   /**
@@ -332,8 +282,8 @@ class FieldOperations {
     ]);
 
     if ($type) {
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#options"] = FieldOperations::setFormatOptions($type);
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#description"] = FieldOperations::generateFormatDescription($type);
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#options"] = FieldOperations::generateFormats($type, "options");
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#description"] = FieldOperations::generateFormats($type, "description");
     }
   }
 
