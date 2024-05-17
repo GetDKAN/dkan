@@ -62,10 +62,9 @@ class FieldOperations {
    *
    * @param string $dataType
    *   Field data type.
-   *
    * @param string $property
    *   Property of array.
-   * 
+   *
    * @return string|array
    *   Description information or options list.
    *
