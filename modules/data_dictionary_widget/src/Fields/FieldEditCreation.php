@@ -64,7 +64,7 @@ class FieldEditCreation {
    */
   private static function createFormat($key, $current_fields) {
     $format_options = FieldOperations::generateFormats($current_fields[$key]['type'], "options");
-    $value = in_array($current_fields[$key]['format'], $format_options, true) ? $current_fields[$key]['format'] : 'other';
+    $value = in_array($current_fields[$key]['format'], $format_options, TRUE) ? $current_fields[$key]['format'] : 'other';
     return [
       '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][format]',
       '#type' => 'select',
