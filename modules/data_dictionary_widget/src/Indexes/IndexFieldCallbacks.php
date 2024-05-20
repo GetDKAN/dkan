@@ -15,13 +15,8 @@ class IndexFieldCallbacks {
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    //$form_state->set('add_index_field', '');
-    //$form_state->set('add_new_index_field', '');
-    //$form_state->set('new_index_fields', '');
-    // $fields_being_added = $form_state->set('fields_being_added', '');
     $current_index = $form["field_json_metadata"]["widget"][0]['indexes']["data"]["#rows"];
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? NULL;
-    //$existing_index_fields = $current_index[0]["fields"];
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"];
 
     if ($current_index_fields) {
       $form_state->set('current_index_fields', $current_index_fields);
@@ -33,7 +28,7 @@ class IndexFieldCallbacks {
 
     if ($op === 'add_new_index_field') {
       $form_state->set('add_index_field', '');
-      $add_index_fields = IndexFieldAddCreation::addIndexFields();
+      $add_index_fields = IndexFieldAddCreation::addIndexFields($current_index_fields);
       $form_state->set('add_new_index_field', $add_index_fields);
       $form_state->set('index_added', FALSE);
       $form_state->set('adding_new_index_fields', TRUE);
@@ -63,16 +58,12 @@ class IndexFieldCallbacks {
     $form_state->set('add_new_index_field', '');
     $form_state->set('new_index_fields', '');
     $form_state->set('add_new_index', '');
-    //$form_state->set('new_index', '');
-    //$form_state->set('current_index_fields', '');
-    // $fields_being_added = $form_state->set('fields_being_added', '');
     $form_state->set('adding_new_index_fields', FALSE);
     $current_index = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"];
     $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? NULL;
 
     if ($current_index) {
       $form_state->set('current_index', $current_index);
-      //$form_state->set('current_index_fields', '');
     }
 
     if ($op === 'cancel_index') {
@@ -82,7 +73,6 @@ class IndexFieldCallbacks {
     if ($op === 'add_new_index') {
       $add_new_index = IndexFieldAddCreation::addIndex();
       $form_state->set('new_index', '');
-      //$form_state->set('current_index_fields', $current_index_fields);
       $form_state->set('add_new_index', $add_new_index);
     }
 
@@ -141,16 +131,31 @@ class IndexFieldCallbacks {
   }
 
   /**
-   * Ajax callback.
+   * Ajax callback to return index fields.
    */
-  public static function subIndexformAjax(array &$form, FormStateInterface $form_state) {
+  public static function subIndexFormAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["indexes"]["fields"];
   }
 
   /**
-   * Ajax callback.
+   * Ajax callback to return indexes.
    */
-  public static function indexformAjax(array &$form, FormStateInterface $form_state) {
+  public static function indexFormAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["indexes"];
+  }
+
+  /**
+   * Ajax callback to return index fields fieldset with Add Field button.
+   */
+  public static function subIndexFormFieldAjax(array &$form, FormStateInterface $form_state) {
+    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["indexes"]["fields"];
+  }
+
+  /**
+   * Ajax callback to return index fields fieldset with existing fields and Add Field button.
+   */
+  public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
+    $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["indexes"]["fields"]["add_row_button"]['#access'] = TRUE;
+    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["indexes"]["fields"]["add_row_button"];  
   }
 }
