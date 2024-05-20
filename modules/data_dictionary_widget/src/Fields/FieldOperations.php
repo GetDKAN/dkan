@@ -182,18 +182,6 @@ class FieldOperations {
   }
 
   /**
-   * Return true if field collection is present.
-   */
-  public static function checkFieldCollection($data_pre, $op) {
-    if (isset($data_pre) && $op === "add") {
-      return TRUE;
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  /**
    * Set the elements associated with adding a new field.
    */
   public static function setAddFormState($add_new_field, $element) {

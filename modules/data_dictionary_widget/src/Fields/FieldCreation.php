@@ -13,9 +13,7 @@ class FieldCreation {
    * Create basic widget.
    */
   public static function createGeneralFields($element, $field_json_metadata, $current_dictionary_fields, $form_state) {
-
     $element['identifier'] = self::createField('identifier', $field_json_metadata, $form_state);
-
     $element['title'] = self::createField('title', $field_json_metadata, $form_state);
 
     $element['dictionary_fields'] = [
