@@ -137,10 +137,6 @@ class IndexFieldOperations {
       $element['title']['#required'] = FALSE;
     } 
 
-
-    // else{
-    //   $element['indexes']['fields']['#access'] = FALSE;
-    // }
     return $element;
   }
 
@@ -149,14 +145,13 @@ class IndexFieldOperations {
    */
   public static function setAddIndexFormState($add_new_index, $element) {
     if ($add_new_index) {
-
-      //$element['indexes']['#access'] = FALSE;
       $element['indexes']['field_collection'] = $add_new_index;
       $element['indexes']['field_collection']['#access'] = TRUE;
       $element['indexes']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
     }
+
     return $element;
   }
 
