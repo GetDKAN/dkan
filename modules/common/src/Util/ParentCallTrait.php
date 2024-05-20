@@ -27,7 +27,7 @@ trait ParentCallTrait {
    * @return mixed
    *   Return of parent.
    */
-  protected function parentCall($method, ...$args) {
+  protected function parentCall($method, mixed ...$args) {
     return parent::$method(...$args);
   }
 

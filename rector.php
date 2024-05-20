@@ -17,29 +17,26 @@
  * }
  *
  * Now you can say: composer rector-dry-run, and eventually: composer rector.
- *
- * @todo Add CompleteDynamicPropertiesRector when it works.
  */
 
 declare(strict_types=1);
 
-use DrupalRector\Drupal8\Rector\Deprecation\GetMockRector as DrupalGetMockRector;
 use DrupalFinder\DrupalFinder;
-use DrupalRector\Set\Drupal9SetList;
+use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
+use DrupalRector\Set\Drupal10SetList;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
-use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector;
-use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
-use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\PHPUnit\PHPUnit60\Rector\MethodCall\GetMockBuilderGetMockToCreateMockRector;
-use Rector\PHPUnit\PHPUnit50\Rector\StaticCall\GetMockRector;
+use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
+use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
-use Rector\Set\ValueObject\LevelSetList;
-use Rector\ValueObject\PhpVersion;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
+use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
+use Rector\Set\ValueObject\SetList;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -48,20 +45,27 @@ return static function (RectorConfig $rectorConfig): void {
     __DIR__,
   ]);
 
-  // Our base version of PHP.
-  $rectorConfig->phpVersion(PhpVersion::PHP_74);
-
   $rectorConfig->sets([
-    Drupal9SetList::DRUPAL_94,
-    LevelSetList::UP_TO_PHP_74,
+    Drupal10SetList::DRUPAL_10,
+    SetList::PHP_80,
+    SetList::DEAD_CODE,
   ]);
 
   $rectorConfig->skip([
-    '*/upgrade_status/tests/modules/*',
-    // Keep getMockBuilder() for now.
-    GetMockBuilderGetMockToCreateMockRector::class,
-    DrupalGetMockRector::class,
-    GetMockRector::class,
+    // Skip data_dictionary_widget to avoid merge conflicts.
+    // @todo Add this back.
+    '*/modules/data_dictionary_widget',
+    // Skip this file because we want its switch/case to remain:
+    // @todo Figure out what to do about DataFactory::getInstance().
+    '*/modules/metastore/src/Storage/DataFactory.php',
+    // Skip this file to keep the debug method.
+    // @todo Do we need the debug method?
+    '*/modules/common/tests/src/Unit/Storage/SelectFactoryTest.php',
+    // Don't change the signature of these service classes.
+    // @todo Unskip these later.
+    '*/modules/datastore/src/Service/Info/ImportInfo.php',
+    '*/modules/frontend/src/Routing/RouteProvider.php',
+    '*/modules/frontend/src/Page.php',
     // Don't throw errors on JSON parse problems. Yet.
     // @todo Throw errors and deal with them appropriately.
     JsonThrowOnErrorRector::class,
@@ -77,7 +81,10 @@ return static function (RectorConfig $rectorConfig): void {
     // @see \Drupal\common\EventDispatcherTrait
     StringClassNameToClassConstantRector::class,
     RemoveExtraParametersRector::class,
-    PublicConstantVisibilityRector::class,
+    RemoveParentCallWithoutParentRector::class,
+    ClassPropertyAssignToConstructorPromotionRector::class,
+    FunctionToStaticRector::class,
+    NullToStrictStringFuncCallArgRector::class,
   ]);
 
   $drupalFinder = new DrupalFinder();
@@ -94,6 +101,8 @@ return static function (RectorConfig $rectorConfig): void {
   $rectorConfig->fileExtensions([
     'php', 'module', 'theme', 'install', 'profile', 'inc', 'engine',
   ]);
+
+  // @todo Add removeUnusedImports().
   $rectorConfig->importNames(TRUE, FALSE);
   $rectorConfig->importShortClasses(FALSE);
 };

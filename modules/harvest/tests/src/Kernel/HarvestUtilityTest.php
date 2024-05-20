@@ -32,9 +32,6 @@ class HarvestUtilityTest extends KernelTestBase {
     $entity_orphan_plan_id = 'entityorphanplanid';
     $table_orphan_plan_id = 'tableorphanplanid';
 
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
-    $harvest_service = $this->container->get('dkan.harvest.service');
-
     // Use a database table to store a fake plan. The plan entity is the same
     // schema as the old table management.
     /** @var \Drupal\harvest\Entity\HarvestPlanRepository $plan_repository */
@@ -178,7 +175,6 @@ class HarvestUtilityTest extends KernelTestBase {
       ],
       'identifier' => $orphaned_id,
     ];
-    /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
     $orphaned_table = $this->container
       ->get('dkan.harvest.storage.database_table')
       ->getInstance('harvest_' . $orphaned_plan_id . '_runs');

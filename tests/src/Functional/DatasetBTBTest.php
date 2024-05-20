@@ -461,7 +461,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertEquals(100, $dist['fetcher_percent_done']);
 
     $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
-    $this->queryResource($resource, $queryString);
+    $this->queryResource($queryString);
   }
 
   private function getResourceDatastoreTable(object $resource) {
@@ -615,7 +615,7 @@ class DatasetBTBTest extends BrowserTestBase {
     return $filenames;
   }
 
-  private function queryResource(object $resource, string $queryString) {
+  private function queryResource(string $queryString) {
     /** @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);

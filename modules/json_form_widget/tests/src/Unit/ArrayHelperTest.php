@@ -87,7 +87,7 @@ class ArrayHelperTest extends TestCase {
    * Helper function to get schema to test.
    */
   private function getSchema() {
-    $schema = '{
+    return '{
       "title": "Distribution",
       "description": "Description.",
       "type": "array",
@@ -131,7 +131,6 @@ class ArrayHelperTest extends TestCase {
         }
       }
     }';
-    return $schema;
   }
 
   /**
