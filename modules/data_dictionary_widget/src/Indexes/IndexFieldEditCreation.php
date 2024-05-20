@@ -25,7 +25,6 @@ class IndexFieldEditCreation {
       '#title' => 'Length',
     ];
 
-
     $edit_index_fields['update_index_field']['actions'] = self::createIndexActionFields($indexKey);
     return $edit_index_fields;
 
