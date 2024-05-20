@@ -10,8 +10,8 @@ use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Fields\FieldCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Entity\EntityFormInterface;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldCreation;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
+use Drupal\data_dictionary_widget\Indexes\IndexCreation;
+use Drupal\data_dictionary_widget\Indexes\IndexOperations;
 use PHPUnit\Framework\Constraint\IsTrue;
 
 /**
@@ -42,6 +42,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $current_index_fields = $form_state->get('current_index_fields');
 
     $fields_being_modified = $form_state->get("dictionary_fields_being_modified") ?? NULL;
+    $index_being_modified = $form_state->get("index_being_modified") ?? NULL;
     $index_fields_being_modified = $form_state->get("index_fields_being_modified") ?? NULL;
 
     $op = $form_state->getTriggeringElement()['#op'] ?? NULL;
@@ -59,20 +60,20 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $data_results = FieldOperations::processDataResults($data_results, $current_fields, $field_values, $op);
 
     // Build the index_field_data_results array to display the rows in the data table.
-    $index_fields_data_results = IndexFieldOperations::processIndexFieldsDataResults($index_fields_results, $current_index_fields, $index_field_values, $op);
+    $index_fields_data_results = IndexOperations::processIndexFieldsDataResults($index_fields_results, $current_index_fields, $index_field_values, $op);
 
     // Build the index_data_results array to display the rows in the data table.
-    $index_data_results = IndexFieldOperations::processIndexDataResults($index_results, $current_indexes, $index_values, $index_fields_data_results, $op);
+    $index_data_results = IndexOperations::processIndexDataResults($index_results, $current_indexes, $index_values, $index_fields_data_results, $op);
 
     // if ($index_data_results) {
     //   unset($current_index_fields);
     // }
 
     $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $form_state);
-    $element = IndexFieldCreation::createGeneralIndex($element, $field_json_metadata, $current_indexes, $form_state);
+    $element = IndexCreation::createGeneralIndex($element, $field_json_metadata, $current_indexes, $form_state);
     
     if ($index_field_values || $current_index_fields) {
-      $element = IndexFieldCreation::createGeneralIndexFields($element, $field_json_metadata, $current_index_fields, $form_state->get('add_new_index'), $form_state);
+      $element = IndexCreation::createGeneralIndexFields($element, $field_json_metadata, $current_index_fields, $form_state->get('add_new_index'), $form_state);
     }
 
     $element['dictionary_fields']['#pre_render'] = [
@@ -90,18 +91,18 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_fields, $data_results, $form_state);
     //$element["indexes"]["data"]["#rows"][0]["index_fields"];
     //$element['indexes'][] = $index_data_results;
-    $element['indexes']['data'] = IndexFieldCreation::createIndexDataRows($current_indexes, $index_data_results, $form_state);
-    $element['indexes']['fields']['data'] = IndexFieldCreation::createIndexFieldsDataRows($index_added, $adding_new_index_fields, $index_field_values, $index_values, $current_index_fields, $index_fields_data_results, $index_data_results, $form_state);
+    $element['indexes']['data'] = IndexCreation::createIndexDataRows($current_indexes, $index_data_results, $form_state);
+    $element['indexes']['fields']['data'] = IndexCreation::createIndexFieldsDataRows($index_added, $adding_new_index_fields, $index_field_values, $index_values, $current_index_fields, $index_fields_data_results, $index_data_results, $form_state);
 
     // Creating ajax buttons/fields to be placed in correct location later.
     $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element['dictionary_fields']);
     $element['dictionary_fields']['add_row_button']['#access'] = $fields_being_modified == NULL ? TRUE : FALSE;
 
     // Creating ajax buttons/fields to be placed in correct location later for index fields.
-    $element['indexes'] = IndexFieldOperations::createDictionaryIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes']);
+    $element['indexes'] = IndexOperations::createDictionaryIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes']);
 
     if ($index_field_values || $current_index_fields) {
-      $element["indexes"]["fields"] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
+      $element["indexes"]["fields"] = IndexOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
     }
     $element['indexes']['fields']['add_row_button']['#access'] = $index_field_values ? TRUE : FALSE;
     
@@ -117,10 +118,10 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element = FieldOperations::setAddFormState($form_state->get('add_new_field'), $element);
     
     
-    $element = IndexFieldOperations::setAddIndexFormState($form_state->get('add_new_index'), $element);
+    $element = IndexOperations::setAddIndexFormState($form_state->get('add_new_index'), $element);
 
     //if (empty($element['indexes'])) {
-      $element = IndexFieldOperations::setAddIndexFieldFormState($form_state->get('add_new_index_field'), $form_state->get('add_index_field'), $element);
+      $element = IndexOperations::setAddIndexFieldFormState($form_state->get('add_new_index_field'), $form_state->get('add_index_field'), $element);
     //}
 
     // if ($form_state->get('add_new_index_field') || $form_state->get('new_index_fields')) {
@@ -209,12 +210,12 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
   }
 
   /**
-   * Prerender callback for the index form.
+   * Prerender callback for the index Field form.
    *
    * Moves the buttons into the table.
    */
   public function preRenderIndexFieldForm(array $dictionaryIndexFields) {
-    return IndexFieldOperations::setIndexFieldsAjaxElements($dictionaryIndexFields);
+    return IndexOperations::setIndexFieldsAjaxElements($dictionaryIndexFields);
   }
 
   /**
@@ -223,7 +224,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * Moves the buttons into the table.
    */
   public function preRenderIndexForm(array $dictionaryIndexes) {
-    return IndexFieldOperations::setIndexAjaxElements($dictionaryIndexes);
+    return IndexOperations::setIndexAjaxElements($dictionaryIndexes);
   }
 
   /**

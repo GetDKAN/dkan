@@ -5,7 +5,7 @@ namespace Drupal\data_dictionary_widget\Indexes;
 /**
  * Various operations for creating Data Dictionary Widget add fields.
  */
-class IndexFieldAddCreation {
+class IndexAddCreation {
 
  /**
   * Create add fields for Data Dictionary Widget.
@@ -20,7 +20,7 @@ class IndexFieldAddCreation {
     '#suffix' => '</div>',
   ];
 
-  //$add_index['group']['indexes']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
+  //$add_index['group']['indexes']['add_row_button'] = IndexButtons::addIndexFieldButton();
   $add_index['group']['indexes']['description'] = [
     '#name' => 'field_json_metadata[0][index][field_collection][group][description]',
     '#description' => t('Description of index purpose or functionality.'),
@@ -52,12 +52,12 @@ class IndexFieldAddCreation {
     '#markup' => t('<div class="claro-details__description">Test One or more fields included in index. Must be keys from the fields object.</div>'),
   ];
   
-  $add_index['group']['indexes']['fields']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
+  $add_index['group']['indexes']['fields']['add_row_button'] = IndexButtons::addIndexFieldButton();
 
   //$add_index['group']['indexes']['add_row_button'] = self::createIndexActionFields();
 
-  $add_index['group']['indexes']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
-  $add_index['group']['indexes']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
+  $add_index['group']['indexes']['save_index'] = IndexButtons::submitIndexButton('add_index', NULL);
+  $add_index['group']['indexes']['cancel_index'] = IndexButtons::cancelIndexButton('cancel_index', NULL);
    
    return $add_index;
  }
@@ -107,8 +107,8 @@ class IndexFieldAddCreation {
   private static function createIndexActionFields() {
     return [
       '#type' => 'actions',
-      'save_index_settings' => IndexFieldButtons::submitIndexFieldButton('add', NULL),
-      'cancel_index_settings' => IndexFieldButtons::cancelIndexFieldButton('cancel', NULL),
+      'save_index_settings' => IndexButtons::submitIndexFieldButton('add', NULL),
+      'cancel_index_settings' => IndexButtons::cancelIndexFieldButton('cancel', NULL),
     ];
   }
 }
