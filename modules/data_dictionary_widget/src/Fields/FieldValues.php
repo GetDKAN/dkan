@@ -124,7 +124,7 @@ class FieldValues {
     elseif ($type == 'description') {
       return "
         <ul>
-          <li><b>default</b>: Any valid string.</li>
+          <li><b>default</b>: An exact fixed-point number. No non-numeric characters allowed other than the decimal.</li>
         </ul>";
     }
   }
