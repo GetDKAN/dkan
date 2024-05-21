@@ -26,7 +26,7 @@ class FieldValues {
   }
 
   /**
-   * Retrun information about the string field option.
+   * Return information about the string field option.
    */
   public static function returnStringInfo($type) {
     if ($type == 'options') {
@@ -52,7 +52,7 @@ class FieldValues {
   }
 
   /**
-   * Retrun information about the date field option.
+   * Return information about the date field option.
    */
   public static function returnDateInfo($type) {
     if ($type == 'options') {
@@ -74,7 +74,29 @@ class FieldValues {
   }
 
   /**
-   * Retrun information about the integer field option.
+   * Return information about the datetime field option.
+   */
+  public static function returnDateTimeInfo($type) {
+    if ($type == 'options') {
+      return [
+        'default' => 'default',
+        'any' => 'any',
+        'other' => 'other',
+      ];
+    }
+    elseif ($type == 'description') {
+      return "
+        <ul>
+          <li><b>default</b>: An ISO8601 format string of datetime.</li>
+          <li><b>any</b>: Any parsable representation of a date. The implementing library can attept to parse the datetime via a range of strategies.</li>
+          <li><b>other</b>: If your date values follow a collective but non-ISO8601 pattern, select this option and define the incoming format using the syntax of <a href='https://strftime.org/'>C / Python strftime</a>.
+            For example, if your data had dates formatted as MM/DD/YYYY, you would enter %m/%d/%Y into the Other format field.</li>
+        </ul>";
+    }
+  }
+
+  /**
+   * Return information about the integer field option.
    */
   public static function returnIntegerInfo($type) {
     if ($type == 'options') {
@@ -91,7 +113,7 @@ class FieldValues {
   }
 
   /**
-   * Retrun information about the number field option.
+   * Return information about the number field option.
    */
   public static function returnNumberInfo($type) {
     if ($type == 'options') {
@@ -102,7 +124,41 @@ class FieldValues {
     elseif ($type == 'description') {
       return "
         <ul>
-          <li><b>default</b>: Any valid string.</li>
+          <li><b>default</b>: An exact fixed-point number. No non-numeric characters allowed other than the decimal.</li>
+        </ul>";
+    }
+  }
+
+  /**
+   * Return information about the year field option.
+   */
+  public static function returnYearInfo($type) {
+    if ($type == 'options') {
+      return [
+        'default' => 'default',
+      ];
+    }
+    elseif ($type == 'description') {
+      return "
+        <ul>
+          <li><b>default</b>: 4-digit numbers in the range 1901 to 2155.</li>
+        </ul>";
+    }
+  }
+
+  /**
+   * Return information about the year field option.
+   */
+  public static function returnBooleanInfo($type) {
+    if ($type == 'options') {
+      return [
+        'default' => 'default',
+      ];
+    }
+    elseif ($type == 'description') {
+      return "
+        <ul>
+          <li><b>default</b>: 1/0 values, or True/False values (not case sensitive).</li>
         </ul>";
     }
   }
