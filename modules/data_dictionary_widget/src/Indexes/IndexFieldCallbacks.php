@@ -141,6 +141,14 @@ class IndexFieldCallbacks {
    * Ajax callback to return indexes.
    */
   public static function indexFormAjax(array &$form, FormStateInterface $form_state) {
+    $index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"];
+
+    // Validation errors skip submit callbacks, this will set the index fields in the correct location.
+    if ($index_fields["data"]) {
+      $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"] = $index_fields;
+      $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]['#access'] = FALSE;
+    }
+
     return $form["field_json_metadata"]["widget"][0]["indexes"];
   }
 
@@ -148,14 +156,14 @@ class IndexFieldCallbacks {
    * Ajax callback to return index fields fieldset with Add Field button.
    */
   public static function subIndexFormFieldAjax(array &$form, FormStateInterface $form_state) {
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["indexes"]["fields"];
+    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"];
   }
 
   /**
    * Ajax callback to return index fields fieldset with existing fields and Add Field button.
    */
   public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
-    $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["indexes"]["fields"]["add_row_button"]['#access'] = TRUE;
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["indexes"]["fields"]["add_row_button"];  
+    $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"]['#access'] = TRUE;
+    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"];  
   }
 }

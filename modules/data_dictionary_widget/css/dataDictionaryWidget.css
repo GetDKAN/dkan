@@ -1,3 +1,8 @@
+.index-fields-form.error {
+  border-width: var(--input--error-border-size);
+  border-color: var(--input--error-border-color);
+}
+
 .table {
   display: table;
   width: auto;
