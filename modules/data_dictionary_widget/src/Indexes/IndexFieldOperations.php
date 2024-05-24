@@ -65,13 +65,13 @@ class IndexFieldOperations {
       $index_data_results = $current_index_fields;
     }
 
-    if (isset($index_field_values["field_json_metadata"][0]["fields"]["field_collection"])) {
-      $index_field_group = $index_field_values["field_json_metadata"][0]["fields"]["field_collection"]["group"];
+    if (isset($index_field_values["field_json_metadata"][0]["indexes"]["fields"]["field_collection"])) {
+      $index_field_group = $index_field_values["field_json_metadata"][0]["indexes"]["fields"]["field_collection"]["group"];
 
       $data_index_fields_pre = [
         [
-          "name" => $index_field_group["name"],
-          "length" => (int)$index_field_group["length"],
+          "name" => $index_field_group['index']['fields']["name"],
+          "length" => (int)$index_field_group['index']['fields']["length"],
         ],
       ];
     }
@@ -86,25 +86,25 @@ class IndexFieldOperations {
   /**
    * Cleaning the data up.
    */
-  public static function processIndexDataResults($index_results, $current_index, $index_values, $index_fields_data_results, $op) {
-    if (isset($current_index)) {
-      $index_results = $current_index;
+  public static function processIndexDataResults($index_results, $current_indexes, $index_values, $index_fields_data_results, $op) {
+    if (isset($current_indexes)) {
+      $index_results = $current_indexes;
     }
 
-    if (isset($index_values["field_json_metadata"][0]["index"]["field_collection"])) {
-      $index_group = $index_values["field_json_metadata"][0]["index"]["field_collection"]["group"];
+    if (isset($index_values["field_json_metadata"][0]["indexes"]["field_collection"])) {
+      $index_group = $index_values["field_json_metadata"][0]["indexes"]["field_collection"]["group"];
 
       $data_index_pre = [
         [
-          "description" => $index_group["description"],
-          "type" => $index_group["type"],
+          "description" => $index_group['index']["description"],
+          "type" => $index_group['index']["type"],
           "fields" => $index_fields_data_results,
         ],
       ];
     }
 
     if (isset($data_index_pre) && $op === "add_index") {
-      $index_results = isset($current_index) ? array_merge($current_index, $data_index_pre) : $data_index_pre;
+      $index_results = isset($current_indexes) ? array_merge($current_indexes, $data_index_pre) : $data_index_pre;
     }
 
     return $index_results;
@@ -126,7 +126,7 @@ class IndexFieldOperations {
   /**
    * Set the elements associated with adding a new field.
    */
-  public static function setAddIndexFieldFormState($add_new_index_field, $new_index_field, $element) {
+  public static function setAddIndexFieldFormState($add_new_index_field, $element) {
     if ($add_new_index_field) {
 
       $element['indexes']['fields']['#access'] = FALSE;
@@ -135,6 +135,7 @@ class IndexFieldOperations {
       $element['indexes']['fields']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
+      //$element["indexes"]["field_collection"]["group"]["index"]["description"]['#required'] = FALSE;
     } 
 
     return $element;
@@ -150,6 +151,7 @@ class IndexFieldOperations {
       $element['indexes']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
+      //$element["indexes"]["field_collection"]["group"]["index"]["description"]['#required'] = FALSE;
     }
 
     return $element;

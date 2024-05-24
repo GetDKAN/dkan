@@ -151,6 +151,16 @@ class DataDictionaryWidgetBuildTest extends TestCase {
               'data' => [
                 '#rows' => null
               ]
+              ],
+            'indexes' => [
+              'data' => [
+                '#rows' => null
+              ],
+              'fields' => [
+                'data' => [
+                  '#rows' => null
+                ]
+              ]
             ]
           ]
         ]
@@ -209,8 +219,6 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ]
     ];
 
-    
-
     $dataDictionaryWidget = new DataDictionaryWidget (
       $plugin_id,
       $plugin_definition,
@@ -240,13 +248,15 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ->method('getTriggeringElement')
       ->willReturn($trigger);
 
-    $formState->expects($this->exactly(4))
+    $formState->expects($this->exactly(6))
       ->method('set')
       ->willReturnOnConsecutiveCalls (
         '',
         $this->equalTo($user_input),
         TRUE,
-        FALSE
+        FALSE,
+        '',
+        ''
       );
 
     FieldCallbacks::addSubformCallback($form, $formState);
@@ -310,9 +320,9 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
-    $formState->expects($this->exactly(5))
+    $formState->expects($this->exactly(13))
       ->method('get')
-      ->willReturnOnConsecutiveCalls([], $current_fields, NULL, FALSE, NULL);
+      ->willReturnOnConsecutiveCalls(NULL, NULL, NULL, FALSE, NULL, NULL, $current_fields);
 
     $dataDictionaryWidget = new DataDictionaryWidget (
       $plugin_id,
@@ -394,7 +404,29 @@ class DataDictionaryWidgetBuildTest extends TestCase {
           'identifier' => 'test_identifier',
           'title' => 'test_title',
           'dictionary_fields' => [
-            'data' => [
+            'field_collection' => [
+              'group' => [
+                'name' => 'test_edit',
+                'title' => 'test_edit',
+                'type' => 'string',
+                'format' => 'default',
+                'format_other' => '',
+                'description' => 'test_edit',
+              ]
+            ],
+            "data" => [
+              '#rows' => [
+                0 => [
+                  'field_collection' => [
+                      'name' => 'test_edit',
+                      'title' => 'test_edit',
+                      'type' => 'string',
+                      'format' => 'default',
+                      'format_other' => '',
+                      'description' => 'test_edit',
+                  ],
+                ],
+              ],
               0 => [
                 'field_collection' => [
                     'name' => 'test_edit',
@@ -403,10 +435,15 @@ class DataDictionaryWidgetBuildTest extends TestCase {
                     'format' => 'default',
                     'format_other' => '',
                     'description' => 'test_edit',
-                ]
-              ]
+                ],
+              ],
+            ],
+          ],
+          'indexes' => [
+            'data' => [
+              0 => [],
             ]
-          ]
+          ],
         ]
       ]
     ];
@@ -423,9 +460,9 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
-    $formState->expects($this->exactly(12))
+    $formState->expects($this->exactly(28))
       ->method('get')
-      ->willReturnOnConsecutiveCalls([], $current_fields, $fields_being_modified, FALSE, NULL, $fields_being_modified, $fields_being_modified, [], $updated_current_fields, $fields_being_modified, FALSE, NULL);
+      ->willReturnOnConsecutiveCalls($user_input, [], [], [], [], $updated_current_fields, $current_fields, [], [], $fields_being_modified, [], FALSE, FALSE);
 
     $formState->expects($this->exactly(11))
       ->method('getTriggeringElement')
@@ -461,15 +498,33 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $this->assertArrayHasKey('description', $element["dictionary_fields"]["edit_fields"][0]);
     $this->assertArrayHasKey('update_field', $element["dictionary_fields"]["edit_fields"][0]);
 
-    $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"][0] = [
-      'name' => 'test_edit',
-      'title' => 'test_edit',
-      'type' => 'string',
-      'format' => 'default',
-      'format_other' => '',
-      'description' => 'test_edit',
+    $form["field_json_metadata"]["widget"][0] = [
+      "dictionary_fields" => [
+        "data" => [
+          "#rows" => [
+            0 => [
+              'name' => 'test_edit',
+              'title' => 'test_edit',
+              'type' => 'string',
+              'format' => 'default',
+              'format_other' => '',
+              'description' => 'test_edit',
+            ],
+          ],
+        ],
+      ],
+      'indexes' => [
+        'fields' => [
+          'data' => [
+            "#rows" => [
+              0 => [],
+            ],
+          ],
+        ]
+      ],
     ];
 
+        
     // Trigger callback function to save the edited fields. 
     FieldCallbacks::editSubformCallback($form, $formState);
 
