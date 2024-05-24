@@ -11,6 +11,7 @@ class IndexFieldEditCreation {
    * Create edit fields for Data Dictionary Widget.
    */
   public static function editIndexFields($indexKey, $current_index_fields) {
+    $id = $current_index_fields ? "field-json-metadata-dictionary-index-fields-new" : "field-json-metadata-dictionary-index-fields";
     $indexKeyExplode = explode("_", $indexKey);
     $edit_index_fields['name'] = [
       '#name' => 'field_json_metadata[0][fields][data][' . $indexKeyExplode[3] . '][field_collection][name]',
@@ -25,7 +26,7 @@ class IndexFieldEditCreation {
       '#title' => 'Length',
     ];
 
-    $edit_index_fields['update_index_field']['actions'] = self::createIndexActionFields($indexKey);
+    $edit_index_fields['update_index_field']['actions'] = self::createIndexActionFields($indexKey, $id);
     return $edit_index_fields;
 
   }
@@ -34,6 +35,7 @@ class IndexFieldEditCreation {
    * Create edit fields for Data Dictionary Widget.
    */
   public static function editIndex($indexKey, $current_index) {
+    $id = $current_index ? "field-json-metadata-dictionary-index-fields-new" : "field-json-metadata-dictionary-index-fields";
     $indexKeyExplode = explode("_", $indexKey);
     $edit_index['name'] = [
       '#name' => 'field_json_metadata[0][index][data][' . $indexKeyExplode[3] . '][field_collection][name]',
@@ -48,8 +50,7 @@ class IndexFieldEditCreation {
       '#title' => 'Length',
     ];
 
-
-    $edit_index['update_index_field']['actions'] = self::createIndexActionFields($indexKey);
+    $edit_index['update_index_field']['actions'] = self::createIndexActionFields($indexKey, $id );
     return $edit_index;
 
   }
@@ -57,11 +58,11 @@ class IndexFieldEditCreation {
   /**
    * Create Action buttons.
    */
-  private static function createIndexActionFields($indexKey) {
+  private static function createIndexActionFields($indexKey, $id) {
     return [
       '#type' => 'actions',
       'save_update' => IndexFieldButtons::submitIndexFieldButton('edit', $indexKey),
-      'cancel_updates' => IndexFieldButtons::cancelIndexFieldButton('edit', $indexKey),
+      'cancel_updates' => IndexFieldButtons::cancelIndexFieldButton('edit', $indexKey, $id),
       'delete_field' => IndexFieldButtons::deleteIndexButton($indexKey),
     ];
   }
