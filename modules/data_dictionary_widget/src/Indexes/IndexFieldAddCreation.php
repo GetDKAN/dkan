@@ -18,17 +18,21 @@ class IndexFieldAddCreation {
     '#open' => TRUE,
     '#prefix' => '<div id = field-json-metadata-dictionary-index>',
     '#suffix' => '</div>',
+    '#element_validate' => [
+      ['\Drupal\data_dictionary_widget\Indexes\IndexValidation', 'indexFieldsValidation']
+    ],
   ];
 
-  $add_index['group']['indexes']['description'] = [
-    '#name' => 'field_json_metadata[0][index][field_collection][group][description]',
+  $add_index['group']['index']['description'] = [
+    '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][description]',    
     '#description' => t('Description of index purpose or functionality.'),
     '#type' => 'textfield',
     '#title' => 'Name',
+    '#required' => TRUE,
   ];
 
-  $add_index['group']['indexes']['type'] = [
-    '#name' => 'field_json_metadata[0][index][field_collection][group][type]',
+  $add_index['group']['index']['type'] = [
+    '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][type]',
     '#type' => 'select',
     '#description' => t('Index type.'),
     '#title' => 'Index Type',
@@ -41,19 +45,22 @@ class IndexFieldAddCreation {
     ],
   ];
 
-  $add_index['group']['indexes']['fields'] = [
+  $add_index['group']['index']['fields'] = [
     '#type' => 'fieldset',
     '#title' => t('Fields'),
     '#required' => TRUE,
     '#prefix' => '<div id = field-json-metadata-dictionary-index-fields>',
     '#suffix' => '</div>',
     '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
+    '#attributes' => [
+      'class' => ['index-fields-form'],
+    ],
   ];
   
-  $add_index['group']['indexes']['fields']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
+  $add_index['group']['index']['fields']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
 
-  $add_index['group']['indexes']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
-  $add_index['group']['indexes']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
+  $add_index['group']['index']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
+  $add_index['group']['index']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
    
    return $add_index;
  }
@@ -72,14 +79,15 @@ class IndexFieldAddCreation {
       '#markup' => t('<div class="claro-details__description">Add a single index field. Must be keys from the fields object.</div>'),
     ];
 
-    $add_index_fields['group']['indexes']['fields']['name'] = [
-      '#name' => 'field_json_metadata[0][fields][field_collection][group][name]',
+    $add_index_fields['group']['index']['fields']['name'] = [
+      '#name' => 'field_json_metadata[0][indexes][fields][field_collection][group][index][fields][name]',
       '#type' => 'textfield',
       '#title' => 'Name',
+      '#required' => TRUE,
     ];
 
-    $add_index_fields['group']['indexes']['fields']['length'] = self::createIndexFieldLengthField();
-    $add_index_fields['group']['indexes']['fields']['actions'] = self::createIndexActionFields($id);
+    $add_index_fields['group']['index']['fields']['length'] = self::createIndexFieldLengthField();
+    $add_index_fields['group']['index']['fields']['actions'] = self::createIndexActionFields($id);
     
     return $add_index_fields;
   }
@@ -89,9 +97,10 @@ class IndexFieldAddCreation {
    */
   private static function createIndexFieldLengthField() {
     return [
-      '#name' => 'field_json_metadata[0][fields][field_collection][group][length]',
+      '#name' => 'field_json_metadata[0][indexes][fields][field_collection][group][index][fields][length]',
       '#type' => 'number',
       '#title' => 'Length',
+      '#required' => TRUE,
     ];
   }
 

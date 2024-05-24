@@ -2,6 +2,7 @@
 
 namespace Drupal\data_dictionary_widget\Indexes;
 
+use Drupal\Core\Form\FormStateInterface;
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
@@ -81,7 +82,9 @@ class IndexFieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => [],
+      '#limit_validation_errors' => [
+        ['field_json_metadata', 0, 'indexes', 'field_collection', 'group', 'index', 'type'],
+      ],
     ];
   }
 
@@ -107,7 +110,10 @@ class IndexFieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => [],
+      '#limit_validation_errors' => [
+        ['field_json_metadata', 0, 'indexes', 'fields', 'field_collection', 'group', 'index', 'fields', 'name'],
+        ['field_json_metadata', 0, 'indexes', 'fields', 'field_collection', 'group', 'index', 'fields', 'length'],
+      ],
     ];
 
     if ($location == 'edit') {
@@ -120,6 +126,7 @@ class IndexFieldButtons {
    * Create Submit buttons.
    */
   public static function submitIndexButton($location, $indexKey) {
+    $class = static::class;
     $callbackClass = $location == 'edit' ? 'indexEditCallback' : 'indexAddCallback';
     $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index';
     $value = $location == 'edit' ? 'Save' : 'Submit Index';
@@ -138,7 +145,10 @@ class IndexFieldButtons {
         'wrapper' => 'field-json-metadata-dictionary-indexes',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => [],
+      '#limit_validation_errors' => [
+        ['field_json_metadata', 0, 'indexes', 'field_collection', 'group', 'index', 'description'],
+        ['field_json_metadata', 0, 'indexes', 'field_collection', 'group', 'index', 'fields'],
+      ],
     ];
 
     if ($location == 'edit') {
