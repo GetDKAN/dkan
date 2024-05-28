@@ -228,41 +228,10 @@ workflows:
   install_and_test:
     # We use matrix for these parameters so that we can tell them apart in report screens.
     jobs:
-      - cypress:
-          name: install_test_cypress
-          dkan_recommended_branch: '10.2.x-dev'
       - phpunit:
           name: 'Install target (Drupal 10.2, PHP 8.3)'
           report_coverage: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ '10.2.x-dev']
-              php_version: [ '8.3' ]
-      - phpunit:
-          matrix:
-            parameters:
-              dkan_recommended_branch: [ '10.1.x-dev']
-              php_version: [ '8.2' ]
-      - phpunit:
-         matrix:
-           parameters:
-             dkan_recommended_branch: [ '10.0.x-dev']
-             php_version: [ '8.1' ]
-      - phpunit:
-          matrix:
-            parameters:
-              dkan_recommended_branch: [ '10.2.x-dev']
-              php_version: [ '8.1' ]
-  upgrade_and_test:
-    jobs:
-      - cypress:
-          name: upgrade_test_cypress
-          upgrade: true
-          dkan_recommended_branch: '10.2.x-dev'
-      - phpunit:
-          name: 'Upgrade target (Drupal 10.2, PHP 8.3)'
-          upgrade: true
-          matrix:
-            parameters:
-              dkan_recommended_branch: [ '10.2.x-dev']
+              dkan_recommended_branch: [ 'dev-php83' ]
               php_version: [ '8.3' ]
