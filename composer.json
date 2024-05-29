@@ -19,7 +19,7 @@
         "getdkan/file-fetcher" : "dev-php83",
         "getdkan/harvest": "dev-php83",
         "getdkan/procrastinator": "dev-php83",
-        "getdkan/rooted-json-data": "dev-php83",
+        "getdkan/rooted-json-data": "^0.2",
         "guzzlehttp/guzzle" : "^6.5.8 || ^7.4.5",
         "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2",
