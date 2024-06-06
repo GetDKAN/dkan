@@ -9,6 +9,7 @@ use Drupal\datastore\SqlParser\SqlParser;
  * @group dkan
  * @group datastore
  * @group sqlparser
+ * @group unit
  *
  * @covers \Drupal\datastore\SqlParser\SqlParser
  * @coversDefaultClass \Drupal\datastore\SqlParser\SqlParser

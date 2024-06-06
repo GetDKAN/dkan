@@ -14,6 +14,11 @@ use MockChain\Chain;
 use PDLT\ConverterInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group dkan
+ * @group datastore
+ * @group unit
+ */
 class TestQuery extends AlterTableQueryBase {
   public function getTable(): string {
     return $this->table;
