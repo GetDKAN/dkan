@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
-class IndexFieldButtons {
+class IndexButtons {
 
   /**
    * Returns the add index field button.
@@ -19,12 +19,12 @@ class IndexFieldButtons {
       '#op' => 'add_new_index_field',
       '#submit' => [
       [
-        '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
-        'indexAddSubformCallback',
+        '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
+        'indexFieldAddSubformCallback',
       ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexFormAjax',
+        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks::subIndexFormAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
@@ -43,12 +43,12 @@ class IndexFieldButtons {
       '#op' => 'add_new_index',
       '#submit' => [
         [
-          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
           'indexAddCallback',
         ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::indexFormAjax',
+        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks::indexFormAjax',
         'wrapper' => 'field-json-metadata-dictionary-indexes',
         'effect' => 'fade',
       ],
@@ -73,12 +73,12 @@ class IndexFieldButtons {
       ],
       '#submit' => [
           [
-            '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+            '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
             'indexEditSubformCallback',
           ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexFormAjax',
+        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks::subIndexFormAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
@@ -89,24 +89,58 @@ class IndexFieldButtons {
   }
 
   /**
+   * Returns the edit Index Field Buttons.
+   */
+  public static function editIndexFieldButtons($indexFieldKey) {
+    return [
+      '#type' => 'image_button',
+      // '#name' => 'edit_index_field' . $indexKey . '_' .  $indexFieldKey,
+      // '#id' => 'edit_index_field' . $indexKey . '_' . $indexFieldKey,
+      // '#access' => TRUE,
+      // '#op' => 'index_field_edit_' . $indexKey . '_' . $indexFieldKey,
+      '#name' => 'edit_index_field' . $indexFieldKey,
+      '#id' => 'edit_index_field' . $indexFieldKey,
+      '#access' => TRUE,
+      '#op' => 'index_field_edit_' . $indexFieldKey,
+      '#src' => 'core/misc/icons/787878/cog.svg',
+      '#attributes' => [
+        'class' => ['index-field-plugin-settings-edit'],
+        'alt' => t('Edit index field'),
+      ],
+      '#submit' => [
+          [
+            '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
+            'indexFieldEditSubformCallback',
+          ],
+      ],
+      '#ajax' => [
+        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks::subIndexformAjax',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields',
+        'effect' => 'fade',
+      ],
+      '#limit_validation_errors' => [],
+    ];
+  }
+
+  /**
    * Create Submit buttons.
    */
-  public static function submitIndexFieldButton($location, $indexKey) {
+  public static function submitIndexFieldButton($location, $indexFieldKey) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index_field';
+    $op = !empty($indexFieldKey) ? 'update_' . $indexFieldKey : 'add_index_field';
     $value = $location == 'edit' ? 'Save' : 'Add ';
-    $edit_index_button = [
+    $edit_index_field_button = [
       '#type' => 'submit',
       '#value' => $value,
       '#op' => $op,
       '#submit' => [
         [
-          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
           $callbackClass,
         ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexFormAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexCallbacks::subIndexFormAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],
@@ -117,9 +151,9 @@ class IndexFieldButtons {
     ];
 
     if ($location == 'edit') {
-      $edit_index_button['#name'] = 'update_' . $indexKey;
+      $edit_index_button['#name'] = 'update_' . $indexFieldKey;
     }
-    return $edit_index_button;
+    return $edit_index__field_button;
   }
 
   /**
@@ -136,12 +170,12 @@ class IndexFieldButtons {
       '#op' => $op,
       '#submit' => [
         [
-          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
           $callbackClass,
         ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::indexFormAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexCallbacks::indexFormAjax',
         'wrapper' => 'field-json-metadata-dictionary-indexes',
         'effect' => 'fade',
       ],
@@ -160,22 +194,22 @@ class IndexFieldButtons {
   /**
    * Create Cancel button.
    */
-  public static function cancelIndexFieldButton($location, $indexKey, $id) {
+  public static function cancelIndexFieldButton($location, $indexFieldKey, $id) {
     $callbackId = ($id === 'field-json-metadata-dictionary-index-fields-new') ? 'subIndexFormExistingFieldAjax' : 'subIndexFormFieldAjax';
-    $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel_index_field';
+    $callbackClass = $location == 'edit' ? 'indexFieldEditSubformCallback' : 'indexFieldAddSubformCallback';
+    $op = $location == 'edit' && $indexFieldKey ? 'abort_' . $indexFieldKey : 'cancel_index_field';
     $cancel_index_button = [
       '#type' => 'submit',
       '#value' => t('Cancel'),
       '#op' => $op,
       '#submit' => [
         [
-          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
           $callbackClass,
         ],
       ],
       '#ajax' => [
-        'callback' => "Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::$callbackId",
+        'callback' => "Drupal\data_dictionary_widget\Indexes\IndexCallbacks::$callbackId",
         'wrapper' => $id,
         'effect' => 'fade',
       ],
@@ -183,7 +217,7 @@ class IndexFieldButtons {
     ];
 
     if ($location == 'edit') {
-      $cancel_index_button['#name'] = 'cancel_update_' . $indexKey;
+      $cancel_index_button['#name'] = 'cancel_update_' . $indexFieldKey;
     }
     return $cancel_index_button;
   }
@@ -200,12 +234,12 @@ class IndexFieldButtons {
       '#op' => $op,
       '#submit' => [
         [
-          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
           $callbackClass,
         ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::indexFormAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexCallbacks::indexFormAjax',
         'wrapper' => 'field-json-metadata-dictionary-indexes',
         'effect' => 'fade',
       ],
@@ -229,12 +263,36 @@ class IndexFieldButtons {
       '#op' => 'delete_' . $indexKey,
       '#submit' => [
         [
-          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
           'indexEditSubformCallback',
         ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexFormAjax',
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexCallbacks::subIndexFormAjax',
+        'wrapper' => 'field-json-metadata-dictionary-index-fields',
+        'effect' => 'fade',
+      ],
+      '#limit_validation_errors' => [],
+    ];
+  }
+
+  /**
+   * Create Delete Index Field button.
+   */
+  public static function deleteIndexFieldButton($indexFieldKey) {
+    return [
+      '#type' => 'submit',
+      '#name' => 'index_delete_' . $indexFieldKey,
+      '#value' => t('Delete index field'),
+      '#op' => 'delete_' . $indexFieldKey,
+      '#submit' => [
+            [
+              '\Drupal\data_dictionary_widget\Indexes\IndexCallbacks',
+              'indexFieldEditSubformCallback',
+            ],
+      ],
+      '#ajax' => [
+        'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexCallbacks::subIndexformAjax',
         'wrapper' => 'field-json-metadata-dictionary-index-fields',
         'effect' => 'fade',
       ],

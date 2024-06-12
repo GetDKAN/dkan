@@ -6,27 +6,27 @@ namespace Drupal\data_dictionary_widget\Indexes;
  * Various operations for creating Data Dictionary Widget add fields.
  */
 
-class IndexFieldEditCreation {
+class IndexEditCreation {
   /**
    * Create edit fields for Data Dictionary Widget.
    */
-  public static function editIndexFields($indexKey, $current_index_fields) {
+  public static function editIndexFields($indexFieldKey, $current_index_fields) {
     $id = $current_index_fields ? "field-json-metadata-dictionary-index-fields-new" : "field-json-metadata-dictionary-index-fields";
-    $indexKeyExplode = explode("_", $indexKey);
+    $indexFieldKeyExplode = explode("_", $indexFieldKey);
     $edit_index_fields['name'] = [
-      '#name' => 'field_json_metadata[0][fields][data][' . $indexKeyExplode[3] . '][field_collection][name]',
+      '#name' => 'field_json_metadata[0][fields][data][' . $indexFieldKeyExplode[3] . '][field_collection][name]',
       '#type' => 'textfield',
-      '#value' => $current_index_fields[$indexKeyExplode[3]]['name'],
+      '#value' => $current_index_fields[$indexFieldKeyExplode[3]]['name'],
       '#title' => 'Name',
     ];
     $edit_index_fields['length'] = [
-      '#name' => 'field_json_metadata[0][fields][data]['. $indexKeyExplode[3] .'][field_collection][length]',
+      '#name' => 'field_json_metadata[0][fields][data]['. $indexFieldKeyExplode[3] .'][field_collection][length]',
       '#type' => 'number',
-      '#value' => $current_index_fields[$indexKeyExplode[3]]['length'],
+      '#value' => $current_index_fields[$indexFieldKeyExplode[3]]['length'],
       '#title' => 'Length',
     ];
 
-    $edit_index_fields['update_index_field']['actions'] = self::createIndexActionFields($indexKey, $id);
+    $edit_index_fields['update_index_field']['actions'] = self::createIndexActionFields($indexFieldKey, $id);
     return $edit_index_fields;
 
   }
@@ -61,9 +61,21 @@ class IndexFieldEditCreation {
   private static function createIndexActionFields($indexKey, $id) {
     return [
       '#type' => 'actions',
-      'save_update' => IndexFieldButtons::submitIndexFieldButton('edit', $indexKey),
-      'cancel_updates' => IndexFieldButtons::cancelIndexFieldButton('edit', $indexKey, $id),
-      'delete_field' => IndexFieldButtons::deleteIndexButton($indexKey),
+      'save_update' => IndexButtons::submitIndexFieldButton('edit', $indexKey),
+      'cancel_updates' => IndexButtons::cancelIndexFieldButton('edit', $indexKey, $id),
+      'delete_field' => IndexButtons::deleteIndexButton($indexKey),
+    ];
+  }
+
+  /**
+   * Create Index Field Action buttons.
+   */
+  private static function createIndexFieldActionFields($indexFieldKey) {
+    return [
+      '#type' => 'actions',
+      'save_update_index_field' => IndexButtons::submitIndexFieldButton('edit', $indexFieldKey),
+      'cancel_update_index_field' => IndexButtons::cancelIndexFieldButton('edit', $indexFieldKey),
+      'delete_index_field' => IndexButtons::deleteIndexFieldButton($indexFieldKey),
     ];
   }
 

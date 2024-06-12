@@ -5,7 +5,7 @@ namespace Drupal\data_dictionary_widget\Indexes;
 /**
  * Various operations for creating Data Dictionary Widget add fields.
  */
-class IndexFieldAddCreation {
+class IndexAddCreation {
 
  /**
   * Create add fields for Data Dictionary Widget.
@@ -57,10 +57,10 @@ class IndexFieldAddCreation {
     ],
   ];
   
-  $add_index['group']['index']['fields']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
+  $add_index['group']['index']['fields']['add_row_button'] = IndexButtons::addIndexFieldButton();
 
-  $add_index['group']['index']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
-  $add_index['group']['index']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
+  $add_index['group']['index']['save_index'] = IndexButtons::submitIndexButton('add_index', NULL);
+  $add_index['group']['index']['cancel_index'] = IndexButtons::cancelIndexButton('cancel_index', NULL);
    
    return $add_index;
  }
@@ -110,8 +110,8 @@ class IndexFieldAddCreation {
   private static function createIndexActionFields($id) {
     return [
       '#type' => 'actions',
-      'save_index_settings' => IndexFieldButtons::submitIndexFieldButton('add', NULL),
-      'cancel_index_settings' => IndexFieldButtons::cancelIndexFieldButton('cancel', NULL, $id),
+      'save_index_settings' => IndexButtons::submitIndexFieldButton('add', NULL),
+      'cancel_index_settings' => IndexButtons::cancelIndexFieldButton('cancel', NULL, $id),
     ];
   }
 }
