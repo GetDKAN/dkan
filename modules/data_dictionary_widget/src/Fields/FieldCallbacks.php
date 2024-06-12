@@ -27,8 +27,8 @@ class FieldCallbacks {
       $data_type = $field[0]["dictionary_fields"]["data"][$field_index]["field_collection"]["type"] ?? 'string';
     }
 
-    $format_field['#description'] = FieldOperations::generateFormatDescription($data_type);
-    $options = FieldOperations::setFormatOptions($data_type);
+    $format_field['#description'] = FieldOperations::generateFormats($data_type, "description");
+    $options = FieldOperations::generateFormats($data_type, "options");
 
     $format_field["#options"] = $options;
 

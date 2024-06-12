@@ -170,7 +170,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *
    * @todo Add more status logic as needed.
    */
-  protected function alreadyImported($data): bool {
+  protected function alreadyImported(mixed $data): bool {
     try {
       $storage = $this->datastore->getStorage(
         $data['identifier'] ?? FALSE,
@@ -180,7 +180,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
         return $storage->hasBeenImported();
       }
     }
-    catch (\InvalidArgumentException $e) {
+    catch (\InvalidArgumentException) {
       // DatastoreService->getStorage() throws \InvalidArgumentException if no
       // storage could be found. That helpfully answers our question of whether
       // the storage has already been imported.
@@ -201,7 +201,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
     $queued = FALSE;
     foreach ($results as $label => $result) {
-      $queued = isset($result) ? $this->processResult($result, $data, $queued, $label) : FALSE;
+      $queued = isset($result) && $this->processResult($result, $data, $queued, $label);
     }
 
     // Delete local resource file if enabled in datastore settings config.
@@ -225,7 +225,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * @return bool
    *   The updated value for $queued.
    */
-  protected function processResult(Result $result, $data, bool $queued = FALSE, string $label = 'Import') {
+  protected function processResult(Result $result, mixed $data, bool $queued = FALSE, string $label = 'Import') {
     $uid = $data['identifier'] . '__' . $data['version'];
     $status = $result->getStatus();
     switch ($status) {
@@ -257,7 +257,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * @param mixed $resourceId
    *   A resource ID.
    */
-  protected function invalidateCacheTags($resourceId) {
+  protected function invalidateCacheTags(mixed $resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 

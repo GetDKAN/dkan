@@ -53,7 +53,7 @@ class SqlParser {
       $this->feedFeeder($sql, $machine);
       return TRUE;
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }

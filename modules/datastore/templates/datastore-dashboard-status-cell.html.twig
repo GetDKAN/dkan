@@ -1,1 +1,1 @@
-{{ status }} (<span class="datastore-status-details">{{ error|default(percent ~ '%') }}</span>)
+{{ status }} {% if percent is not null %}(<span class="datastore-status-details">{{ error|default(percent ~ '%') }}</span>){% endif %}

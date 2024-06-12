@@ -160,7 +160,7 @@ class QueryFactory {
    * @return object
    *   Standardized property object with "collection" instead of "resource."
    */
-  private function propertyConvert($property) {
+  private function propertyConvert(mixed $property) {
     if (is_array($property) && isset($property["resource"])) {
       $property = (object) self::resourceRename($property);
     }
@@ -199,7 +199,7 @@ class QueryFactory {
    * @return mixed
    *   Operand ready for query.
    */
-  private function operandConvert($operand) {
+  private function operandConvert(mixed $operand) {
     if (is_array($operand) && isset($operand["operator"])) {
       return $this->expressionConvert($operand);
     }
@@ -253,7 +253,7 @@ class QueryFactory {
    * @return object
    *   Valid condition object for use in a DKAN query.
    */
-  private function populateQueryCondition($condition) {
+  private function populateQueryCondition(mixed $condition) {
     $primaryAlias = $this->datastoreQuery->{"$.resources[0].alias"};
     if (isset($condition["property"])) {
       $return = (object) [
@@ -281,7 +281,7 @@ class QueryFactory {
    * @return object
    *   Valid condition group object for use in a DKAN query.
    */
-  private function populateQueryGroup($conditionGroup) {
+  private function populateQueryGroup(mixed $conditionGroup) {
     foreach ($conditionGroup["conditions"] as $c) {
       $conditions[] = $this->populateQueryCondition($c);
     }
