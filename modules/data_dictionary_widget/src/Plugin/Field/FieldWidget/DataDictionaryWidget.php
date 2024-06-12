@@ -10,8 +10,8 @@ use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Fields\FieldCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Entity\EntityFormInterface;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldCreation;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
+use Drupal\data_dictionary_widget\Indexes\IndexCreation;
+use Drupal\data_dictionary_widget\Indexes\IndexOperations;
 
 /**
  * A data-dictionary widget.
@@ -54,13 +54,13 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     // Process data results
     $data_results = FieldOperations::processDataResults($data_results, $current_dictionary_fields, $dictionary_field_values, $op);
-    $index_fields_data_results = IndexFieldOperations::processIndexFieldsDataResults($index_fields_results, $current_index_fields, $index_field_values, $op);
-    $index_data_results = IndexFieldOperations::processIndexDataResults($index_results, $current_indexes, $index_values, $index_fields_data_results, $op);
+    $index_fields_data_results = IndexOperations::processIndexFieldsDataResults($index_fields_results, $current_index_fields, $index_field_values, $op);
+    $index_data_results = IndexOperations::processIndexDataResults($index_results, $current_indexes, $index_values, $index_fields_data_results, $op);
 
     // Create form elements
     $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_dictionary_fields, $form_state);
-    $element = IndexFieldCreation::createGeneralIndex($element, $current_indexes);
-    $element = IndexFieldCreation::createGeneralIndexFields($element);
+    $element = IndexCreation::createGeneralIndex($element, $current_indexes);
+    $element = IndexCreation::createGeneralIndexFields($element);
 
     // Add pre-render functions
     $element['dictionary_fields']['#pre_render'] = [[$this, 'preRenderForm']];
@@ -69,17 +69,17 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     // Add data rows to display in tables
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_dictionary_fields, $data_results, $form_state);
-    $element['indexes']['data'] = IndexFieldCreation::createIndexDataRows($current_indexes, $index_data_results, $form_state);
-    $element['indexes']['fields']['data'] = IndexFieldCreation::createIndexFieldsDataRows($index_field_values, $current_index_fields, $index_fields_data_results, $form_state);
+    $element['indexes']['data'] = IndexCreation::createIndexDataRows($current_indexes, $index_data_results, $form_state);
+    $element['indexes']['fields']['data'] = IndexCreation::createIndexFieldsDataRows($index_field_values, $current_index_fields, $index_fields_data_results, $form_state);
 
     // Create dictionary fields/buttons for editing
     $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $dictionary_fields_being_modified, $element['dictionary_fields']);
     $element['dictionary_fields']['add_row_button']['#access'] = $dictionary_fields_being_modified == NULL ? TRUE : FALSE;
     
     // Create index fields/buttons for editing
-    $element['indexes'] = IndexFieldOperations::createDictionaryIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes']);
+    $element['indexes'] = IndexOperations::createDictionaryIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes']);
     if ($index_field_values || $current_index_fields) {
-      $element["indexes"]["fields"] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
+      $element["indexes"]["fields"] = IndexOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
     }
     $element['indexes']['fields']['add_row_button']['#access'] = $index_field_values ? TRUE : FALSE;
     
@@ -97,8 +97,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     // Set form state for adding fields and indexes
     $element = FieldOperations::setAddFormState($add_new_dictionary_field, $element);
-    $element = IndexFieldOperations::setAddIndexFormState($add_new_index, $element);
-    $element = IndexFieldOperations::setAddIndexFieldFormState($add_index_field, $element);
+    $element = IndexOperations::setAddIndexFormState($add_new_index, $element);
+    $element = IndexOperations::setAddIndexFieldFormState($add_index_field, $element);
 
     // Display index fields only when new index fields are being created.
     if ($add_index_field || $index_field_values) {
@@ -172,7 +172,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * Moves the buttons into the table.
    */
   public function preRenderIndexFieldForm(array $indexFields) {
-    return IndexFieldOperations::setIndexFieldsAjaxElements($indexFields);
+    return IndexOperations::setIndexFieldsAjaxElements($indexFields);
   }
 
   /**
@@ -181,7 +181,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * Moves the buttons into the table.
    */
   public function preRenderIndexForm(array $indexes) {
-    return IndexFieldOperations::setIndexAjaxElements($indexes);
+    return IndexOperations::setIndexAjaxElements($indexes);
   }
 
   /**

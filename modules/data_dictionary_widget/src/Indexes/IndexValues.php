@@ -5,7 +5,7 @@ namespace Drupal\data_dictionary_widget\Indexes;
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
-class IndexFieldValues {
+class IndexValues {
   /**
    * Return updated index field values after edit.
    */

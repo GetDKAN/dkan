@@ -5,19 +5,19 @@ namespace Drupal\data_dictionary_widget\Indexes;
 /**
  * Various operations for the Data Dictionary Widget.
  */
-class IndexFieldOperations {
+class IndexOperations {
   /**
    * Setting ajax elements.
    */
   public static function setIndexFieldsAjaxElements(array $dictionaryIndexFields) {
     if ($dictionaryIndexFields["data"]) {
       foreach ($dictionaryIndexFields['data']['#rows'] as $row => $data) {
-        $edit_index_button = $dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row] ?? NULL;
+        $edit_index_field_button = $dictionaryIndexFields['edit_index__field_buttons']['index_field_key_' . $row] ?? NULL;
         $edit_index_fields = $dictionaryIndexFields['edit_index_fields']['index_field_key_' . $row] ?? NULL;
         // Setting the ajax fields if they exsist.
-        if ($edit_index_button) {
-          $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
-          unset($dictionaryIndexFields['edit_index_buttons']['index_field_key_' . $row]);
+        if ($edit_index_field_button) {
+          $dictionaryIndexFields['data']['#rows'][$row] = array_merge($data, $edit_index_field_button);
+          unset($dictionaryIndexFields['edit_index_field_buttons']['index_field_key_' . $row]);
         }
         elseif ($edit_index_fields) {
           unset($dictionaryIndexFields['data']['#rows']['index_field_key_' . $row]);
@@ -160,37 +160,37 @@ class IndexFieldOperations {
   /**
    * Create edit and update fields where needed.
    */
-  public static function createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element) {
-    $current_index_fields = $element['current_index_fields'] ?? NULL;
-    // Creating ajax buttons/fields to be placed in correct location later.
-    foreach ($index_data_results as $indexKey => $data) {
-      if (self::checkIndexEditingField('index_field_key_' . $indexKey, $op_index, $index_fields_being_modified)) {
-        $element['edit_index_fields']['index_field_key_' . $indexKey] = IndexFieldEditCreation::editIndexFields('index_field_key_' . $indexKey, $current_index_fields, $index_fields_being_modified);
-      }
-      else {
-        $element['edit_index_buttons']['index_field_key_' . $indexKey]['edit_index_button'] = IndexFieldButtons::editIndexButtons('index_field_key_' . $indexKey);
-      }
-    }
-    $element['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
-
-    return $element;
-  }
-
-  /**
-   * Create edit and update fields where needed.
-   */
   public static function createDictionaryIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element) {
     $current_indexes = $element['current_index'];
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($index_data_results as $indexKey => $data) {
       if (self::checkIndexEditingField('index_key_' . $indexKey, $op_index, $index_fields_being_modified)) {
-        $element['edit_index']['index_key_' . $indexKey] = IndexFieldEditCreation::editIndex('index_key_' . $indexKey, $current_indexes, $index_fields_being_modified);
+        $element['edit_index']['index_key_' . $indexKey] = IndexEditCreation::editIndex('index_key_' . $indexKey, $current_indexes, $index_fields_being_modified);
       }
       else {
-        $element['edit_index_buttons']['index_key_' . $indexKey]['edit_index_button'] = IndexFieldButtons::editIndexButtons('index_key_' . $indexKey);
+        $element['edit_index_buttons']['index_key_' . $indexKey]['edit_index_button'] = IndexButtons::editIndexButtons('index_key_' . $indexKey);
       }
     }
-    $element['add_row_button'] = IndexFieldButtons::addIndexButton();
+    $element['add_row_button'] = IndexButtons::addIndexButton();
+
+    return $element;
+  }
+
+  /**
+   * Create edit and update fields for index fields (children) where needed.
+   */
+  public static function createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element) {
+    $current_index_fields = $element['current_index_fields'] ?? NULL;
+    // Creating ajax buttons/fields to be placed in correct location later.
+    foreach ($index_data_results as $indexFieldKey => $data) {
+      if (self::checkIndexFieldEditingField('index_field_key_' . $indexFieldKey, $op_index, $index_fields_being_modified)) {
+        $element['edit_index_fields']['index_field_key_' . $indexFieldKey] = IndexEditCreation::editIndexFields('index_field_key_' . $indexFieldKey, $current_index_fields, $index_fields_being_modified);
+      }
+      else {
+        $element['edit_index_field_buttons']['index_field_key_' . $indexFieldKey]['edit_index_field_button'] = IndexButtons::editIndexFieldButtons('index_field_key_' . $indexFieldKey);
+      }
+    }
+    $element['add_row_button'] = IndexButtons::addIndexFieldButton();
 
     return $element;
   }
@@ -199,9 +199,23 @@ class IndexFieldOperations {
    * Return true if field is being edited.
    */
   public static function checkIndexEditingField($indexKey, $op_index, $index_fields_being_modified) {
-    $action_list = IndexFieldOperations::editIndexActions();
+    $action_list = IndexOperations::editIndexActions();
     $indexKeyExplode = explode("_", $indexKey); 
     if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[3], $index_fields_being_modified)) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Return true if field is being edited.
+   */
+  public static function checkIndexFieldEditingField($indexFieldKey, $op_index, $index_fields_being_modified) {
+    $action_list = IndexOperations::editIndexActions();
+    $indexFieldKeyExplode = explode("_", $indexFieldKey); 
+    if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexFieldKeyExplode[3], $index_fields_being_modified)) {
       return TRUE;
     }
     else {
