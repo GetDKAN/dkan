@@ -232,7 +232,7 @@ workflows:
           name: install_test_cypress
           dkan_recommended_branch: '10.2.x-dev'
       - phpunit:
-          name: 'Install target (Drupal 10.2, PHP 8.2)'
+          name: 'Install target (Drupal 10.2, PHP 8.3)'
           report_coverage: true
           matrix:
             parameters:
