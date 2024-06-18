@@ -234,6 +234,7 @@ class QueryDownloadControllerTest extends TestCase {
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start([self::class, 'getBuffer']);
+    /** @var \Symfony\Component\HttpFoundation\StreamedResponse $streamResponse */
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
@@ -243,6 +244,10 @@ class QueryDownloadControllerTest extends TestCase {
     $this->assertEquals(($queryLimit + 2), count(explode("\n", $streamedCsv)));
     // Check that the max-age header is correct.
     $this->assertEquals(3600, $streamResponse->getMaxAge());
+    $this->assertStringContainsString(
+      'public',
+      $streamResponse->headers->get('cache-control') ?? ''
+    );
   }
 
   /**
