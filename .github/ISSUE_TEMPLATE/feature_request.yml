@@ -1,0 +1,60 @@
+name: 💡 Feature Request
+description: Suggest a new feature or enhancement for the project.
+title: "[Feature] <Short Feature Description>"
+labels: [💡 Feature Request]
+
+body:
+  - type: textarea
+    attributes:
+      label: Feature Description
+      description: "Briefly describe the feature you would like to see added to the project."
+      placeholder: "Provide a brief overview of the feature..."
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Detailed Feature Description
+      description: "Provide a detailed explanation of the feature, including how it should work and its intended use."
+      placeholder: "Describe the feature in detail here..."
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Problem and Motivation
+      description: "Explain the problem that this feature addresses and why it is important."
+      placeholder: "What problem does this feature solve? Why is it needed?"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Potential Benefits
+      description: "Outline the potential benefits of this feature for the project or its users."
+      placeholder: "How will this feature benefit the project or its users?"
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Target Audience
+      description: "Who will benefit from this feature? Select all that apply."
+      options:
+        - label: End Users
+        - label: Developers
+        - label: Administrators
+        - label: Other
+
+  - type: textarea
+    attributes:
+      label: Possible Implementation
+      description: "Suggest how this feature might be implemented, if you have ideas."
+      placeholder: "Describe any ideas you have about how this feature could be implemented."
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: "Provide any additional context, such as similar features in other projects, screenshots, or mockups."
+    validations:
+      required: false
