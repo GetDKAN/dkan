@@ -296,6 +296,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
           ],
         ],
         '400' => ['$ref' => '#/components/responses/400BadJson'],
+        '409' => ['$ref' => '#/components/responses/409MetadataAlreadyExists'],
       ],
     ];
   }
@@ -365,6 +366,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         "200" => ['$ref' => '#/components/responses/200MetadataUpdated'],
         "201" => ['$ref' => '#/components/responses/201MetadataCreated'],
         '400' => ['$ref' => '#/components/responses/400BadJson'],
+        '409' => ['$ref' => '#/components/responses/409MetadataAlreadyExists'],
         "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
       ],
     ];

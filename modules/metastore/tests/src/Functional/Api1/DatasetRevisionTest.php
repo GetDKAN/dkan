@@ -20,10 +20,7 @@ class DatasetRevisionTest extends Api1TestBase {
     ]);
 
     // Test individual item endpoint.
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
-
-    $responseBody = json_decode($response->getBody());
-    $this->assertJsonIsValid($responseSchema, $responseBody);
+    $this->validator->validate($response, "api/1/metastore/schemas/dataset/items", 'post');
 
     $response = $this->httpClient->get($this->endpoint, [
       RequestOptions::AUTH => $this->auth,
@@ -115,7 +112,6 @@ class DatasetRevisionTest extends Api1TestBase {
       'archived' => FALSE,
       'hidden' => TRUE,
     ];
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $count = 1;
     foreach ($states as $state => $public) {
@@ -126,7 +122,7 @@ class DatasetRevisionTest extends Api1TestBase {
 
       // Validate response object.
       $responseBody = json_decode($response->getBody());
-      $this->assertJsonIsValid($responseSchema, $responseBody);
+      $this->validator->validate($response, $this->endpoint, 'post');
 
       // Validate URL and contents of response object.
       $response = $this->httpClient->get($responseBody->endpoint, [

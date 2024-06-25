@@ -45,6 +45,19 @@
                     }
                 }
             },
+            "409MetadataAlreadyExists": {
+                "description": "Conflict; tried to create a record using an existing ID, or metadata contains identifier that doesn't match the request path.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/errorResponse" },
+                        "example": {
+                            "message": "dataset/00000000-0000-0000-0000-000000000000 already exists.",
+                            "status": 409,
+                            "timestamp": "2021-06-14T13:46:06+00:00"
+                        }
+                    }
+                }
+            },
             "412MetadataObjectNotFound": {
                 "description": "Missing object, usually due to incorrect identifier.",
                 "content": {
