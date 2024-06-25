@@ -236,29 +236,29 @@ workflows:
           report_coverage: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi-10-2']
+              dkan_recommended_branch: [ 'osteel-openapi-10-2-dev']
               php_version: [ '8.3' ]
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi-10-2']
+              dkan_recommended_branch: [ 'osteel-openapi-10-2-dev']
               php_version: [ '8.1', '8.2' ]
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi']
+              dkan_recommended_branch: [ 'osteel-openapi-dev']
               php_version: [ '8.2' ]
       - phpunit:
          matrix:
            parameters:
-             dkan_recommended_branch: [ 'osteel-openapi-10-0']
+             dkan_recommended_branch: [ 'osteel-openapi-10-0-dev']
              php_version: [ '8.1' ]
   upgrade_and_test:
     jobs:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          dkan_recommended_branch: 'osteel-openapi-10-2'
+          dkan_recommended_branch: 'osteel-openapi-10-2-dev'
       - phpunit:
           name: 'Upgrade target (Drupal 10.2, PHP 8.2)'
           upgrade: true
