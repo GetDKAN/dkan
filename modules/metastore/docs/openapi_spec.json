@@ -25,22 +25,22 @@
             }
         },
         "responses": {
+            "200MetadataUpdated": {
+                "description": "Metadata update successful.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/metastoreWriteResponse"
+                        }
+                    }
+                }
+            },
             "201MetadataCreated": {
                 "description": "Metadata creation successful.",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "endpoint": {
-                                    "type": "string",
-                                    "description": "Path to the metadata from the API."
-                                },
-                                "identifier": {
-                                    "type": "string",
-                                    "description": "Identifier for metadata just created or modified."
-                                }
-                            }
+                            "$ref": "#/components/schemas/metastoreWriteResponse"
                         }
                     }
                 }
@@ -61,6 +61,20 @@
 
         },
         "schemas": {
+            "metastoreWriteResponse": {
+                "type": "object",
+                "properties": {
+                    "endpoint": {
+                        "type": "string",
+                        "description": "Path to the metadata from the API."
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "description": "Identifier for metadata just created or modified."
+                    }
+                },
+                "additionalProperties": false
+            },
             "metastoreRevision": {
                 "type": "object",
                 "properties": {
@@ -181,7 +195,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Ok",
+                        "description": "Full list of all items for the given schema",
                         "content": {
                             "application/json": {
                                 "schema": {
