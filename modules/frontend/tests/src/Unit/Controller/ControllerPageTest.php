@@ -1,6 +1,8 @@
 <?php
 
-use \Drupal\Core\Config\ConfigFactory;
+namespace Drupal\Tests\frontend\Unit\Controller;
+
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\frontend\Controller\Page as PageController;
 use Drupal\frontend\Page;
@@ -8,7 +10,11 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @coversDefaultClass Drupal\frontend\Controller\Page
+ * @coversDefaultClass \Drupal\frontend\Controller\Page
+ *
+ * @group dkan
+ * @group frontend
+ * @group unit
  */
 class ControllerPageTest extends TestCase {
 

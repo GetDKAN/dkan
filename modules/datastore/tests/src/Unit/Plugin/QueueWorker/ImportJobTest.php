@@ -17,8 +17,10 @@ use PHPUnit\Framework\TestCase;
  * @covers \Drupal\datastore\Plugin\QueueWorker\ImportJob
  * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\ImportJob
  *
- * @group datastore
+ * @group dkan
  * @group dkan-core
+ * @group datastore
+ * @group unit
  */
 class ImportJobTest extends TestCase {
 
