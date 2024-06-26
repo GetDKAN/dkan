@@ -246,7 +246,7 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi-dev']
+              dkan_recommended_branch: [ 'osteel-openapi-10-1-dev']
               php_version: [ '8.2' ]
       - phpunit:
          matrix:
