@@ -217,8 +217,8 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Returns the Data Dictionary fields.
    */
-  public function getDataDictionaryFields() {
-    return $this->dictionaryEnforcer->returnDataDictionaryFields();
+  public function getDataDictionaryFields($id = NULL) {
+    return $this->dictionaryEnforcer->returnDataDictionaryFields($id);
   }
 
   /**
