@@ -122,9 +122,10 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Returning data dictionary fields from schema.
    *
-   *  {@inheritdoc}
+   * @param string $identifier
+   *   A resource's identifier. Used when in reference mode.
    */
-  public function returnDataDictionaryFields($id = NULL) {
+  public function returnDataDictionaryFields($identifier = NULL) {
     // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.
@@ -134,7 +135,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
         break;
 
       case "reference":
-        $resource = DataResource::getIdentifierAndVersion($id);
+        $resource = DataResource::getIdentifierAndVersion($identifier);
         $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource[0]);
         break;
 
