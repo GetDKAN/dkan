@@ -29,7 +29,7 @@ class IndexFieldCreation {
     $element['indexes'] = [
       '#type' => 'fieldset',
       '#title' => t('Data Dictionary Indexes'),
-      '#prefix' => '<div id = field-json-metadata-dictionary-indexes>',
+      '#prefix' => '<div id = field-json-metadata-dictionary-index>',
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">Adding indexes to your datastore tables can improve response times from common queries.</div>'),
     ];

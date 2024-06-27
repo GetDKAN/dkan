@@ -161,7 +161,7 @@ class IndexFieldOperations {
    * Create edit and update fields where needed.
    */
   public static function createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element) {
-    $current_index_fields = $element['current_index_fields'] ?? NULL;
+    $current_index_fields = $index_data_results ?? NULL;
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($index_data_results as $indexKey => $data) {
       if (self::checkIndexEditingField('index_field_key_' . $indexKey, $op_index, $index_fields_being_modified)) {
