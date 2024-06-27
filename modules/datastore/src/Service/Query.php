@@ -129,6 +129,7 @@ class Query implements ContainerInjectionInterface {
    */
   public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE, $csv = FALSE) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
+    $resourceId = $datastoreQuery->{"$.resources[0].id"} ?? '';
     if (!$primaryAlias) {
       return [];
     }
@@ -136,7 +137,7 @@ class Query implements ContainerInjectionInterface {
 
     $query = QueryFactory::create($datastoreQuery, $storageMap);
     // Get data dictionary fields.
-    $meta_data = $csv != FALSE ? $this->getDatastoreService()->getDataDictionaryFields() : NULL;
+    $meta_data = $csv != FALSE ? $this->getDatastoreService()->getDataDictionaryFields($resourceId) : NULL;
     // Pass the data dictionary metadata to the query.
     $query->dataDictionaryFields = $csv && $meta_data ? $meta_data : NULL;
 

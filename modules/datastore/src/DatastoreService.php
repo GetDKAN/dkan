@@ -216,9 +216,12 @@ class DatastoreService implements ContainerInjectionInterface {
 
   /**
    * Returns the Data Dictionary fields.
+   *
+   * @param string $identifier
+   *   A resource's identifier. Used when in reference mode.
    */
-  public function getDataDictionaryFields() {
-    return $this->dictionaryEnforcer->returnDataDictionaryFields();
+  public function getDataDictionaryFields(string $identifier = NULL) {
+    return $this->dictionaryEnforcer->returnDataDictionaryFields($identifier);
   }
 
   /**
