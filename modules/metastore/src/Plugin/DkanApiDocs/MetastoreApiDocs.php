@@ -49,7 +49,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
-    MetastoreService $metastore
+    MetastoreService $metastore,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
     $this->metastore = $metastore;
@@ -73,7 +73,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     ContainerInterface $container,
     array $configuration,
     $pluginId,
-    $pluginDefinition
+    $pluginDefinition,
   ) {
     return new static(
       $configuration,
@@ -296,6 +296,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
           ],
         ],
         '400' => ['$ref' => '#/components/responses/400BadJson'],
+        '409' => ['$ref' => '#/components/responses/409MetadataAlreadyExists'],
       ],
     ];
   }
@@ -347,7 +348,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return [
       "operationId" => "$schemaId-put",
       "summary" => $this->t("Replace a :schemaId", $tSchema),
-      "description" => $this->t("Object will be completely replaced; optional properties not included in the request will be deleted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, and pasting to test.", $tSchema),
+      "description" => $this->t("Object will be completely replaced; optional properties not included in the request will be deleted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, and pasting to test. If no item exists with the provided identifier, it will be created.", $tSchema),
       "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
       "security" => [
         ['basic_auth' => []],
@@ -362,9 +363,10 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         ],
       ],
       "responses" => [
-        "200" => [
-          "description" => "Ok.",
-        ],
+        "200" => ['$ref' => '#/components/responses/200MetadataUpdated'],
+        "201" => ['$ref' => '#/components/responses/201MetadataCreated'],
+        '400' => ['$ref' => '#/components/responses/400BadJson'],
+        '409' => ['$ref' => '#/components/responses/409MetadataAlreadyExists'],
         "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
       ],
     ];
@@ -401,9 +403,8 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         ],
       ],
       "responses" => [
-        "200" => [
-          "description" => "Ok.",
-        ],
+        "200" => ['$ref' => '#/components/responses/200MetadataUpdated'],
+        '400' => ['$ref' => '#/components/responses/400BadJson'],
         "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
       ],
     ];
