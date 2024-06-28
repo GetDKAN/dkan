@@ -122,16 +122,28 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Returning data dictionary fields from schema.
    *
-   *  {@inheritdoc}
+   * @param string $identifier
+   *   A resource's identifier. Used when in reference mode.
    */
-  public function returnDataDictionaryFields() {
-    // Get DD is mode.
+  public function returnDataDictionaryFields($identifier = NULL) {
+    // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.
-    if ($dd_mode == "sitewide") {
-      $dict_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
-      return $this->metastore->get('data-dictionary', $dict_id)->{"$.data.fields"};
+    switch ($dd_mode) {
+      case "sitewide":
+        $dictionary_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
+        break;
+
+      case "reference":
+        $resource = DataResource::getIdentifierAndVersion($identifier);
+        $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource[0]);
+        break;
+
+      default:
+        return;
     }
+
+    return $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"};
   }
 
 }
