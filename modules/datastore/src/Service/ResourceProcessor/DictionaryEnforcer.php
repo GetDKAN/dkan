@@ -143,7 +143,12 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
         return;
     }
 
-    return $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"};
+    if ($dictionary_id) {
+      return $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"};
+    }
+    else {
+      return;
+    }
   }
 
 }
