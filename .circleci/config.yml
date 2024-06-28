@@ -236,18 +236,23 @@ workflows:
           report_coverage: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi-10-2-dev']
+              dkan_recommended_branch: [ '10.2.x-dev']
               php_version: [ '8.3' ]
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi-10-2-dev']
+              dkan_recommended_branch: [ '10.2.x-dev']
               php_version: [ '8.1', '8.2' ]
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi-10-1-dev']
+              dkan_recommended_branch: [ '10.1.x-dev']
               php_version: [ '8.2' ]
+      - phpunit:
+         matrix:
+           parameters:
+             dkan_recommended_branch: [ '10.0.x-dev']
+             php_version: [ '8.1' ]
   upgrade_and_test:
     jobs:
       - cypress:
@@ -259,5 +264,5 @@ workflows:
           upgrade: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ 'osteel-openapi-10-2-dev']
+              dkan_recommended_branch: [ '10.2.x-dev']
               php_version: [ '8.2' ]
