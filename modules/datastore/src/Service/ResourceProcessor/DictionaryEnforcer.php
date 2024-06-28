@@ -124,8 +124,11 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *
    * @param string $identifier
    *   A resource's identifier. Used when in reference mode.
+   *
+   * @return array|null
+   *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function returnDataDictionaryFields($identifier = NULL) {
+  public function returnDataDictionaryFields(string $identifier = NULL): ?array {
     // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.
@@ -140,15 +143,10 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
         break;
 
       default:
-        return;
+        return NULL;
     }
 
-    if ($dictionary_id) {
-      return $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"};
-    }
-    else {
-      return;
-    }
+    return $dictionary_id ? $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"} : NULL;
   }
 
 }
