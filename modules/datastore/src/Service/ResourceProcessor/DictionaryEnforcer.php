@@ -95,12 +95,12 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   protected function getDataDictionaryForResource(DataResource $resource): RootedJsonData {
     $resource_id = $resource->getIdentifier();
     $resource_version = $resource->getVersion();
-    $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
+    $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
 
-    if (!isset($dict_id)) {
+    if (!isset($dictionary_id)) {
       throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
     }
-    return $this->metastore->get('data-dictionary', $dict_id);
+    return $this->metastore->get('data-dictionary', $dictionary_id);
   }
 
   /**
