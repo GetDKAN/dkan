@@ -155,7 +155,7 @@ dkan.metastore.config_properties:
     _form: '\Drupal\metastore\Form\DkanDataSettingsForm'
     _title: 'Metastore settings'
   requirements:
-    _permission: 'access administration pages'
+    _permission: 'administer metastore settings'
   options:
     _admin_route: TRUE
 
