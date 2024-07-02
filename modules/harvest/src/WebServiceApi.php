@@ -134,7 +134,7 @@ class WebServiceApi implements ContainerInjectionInterface {
         $result, $status, static::DEFAULT_HEADERS
       );
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       // Send a new exception through so that SQL errors and the like will not
       // be given to users.
       return $this->exceptionJsonResponse(
@@ -187,8 +187,12 @@ class WebServiceApi implements ContainerInjectionInterface {
         return $this->missingParameterJsonResponse('plan');
       }
 
-      $response = $this->harvester
-        ->getAllHarvestRunInfo($id);
+      // Harvester->getRunIdsForHarvest() returns a keyed array, which
+      // json_encode() turns into an object. Therefore, we use array_values() to
+      // get rid of those keys.
+      $response = array_values(
+        $this->harvester->getRunIdsForHarvest($id)
+      );
 
       return new JsonResponse(
         $response,

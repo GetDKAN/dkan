@@ -1,0 +1,52 @@
+.table {
+  display: table;
+  width: auto;
+  background-color: #eee;
+  border: 1px solid #666666;
+  border-spacing: 5px; /* cellspacing:poor IE support for  this */
+}
+
+.sticky-header {
+  min-width: 0;
+}
+.caption {
+  text-align: left; /* LTR */
+}
+.thead {
+  display: table-header-group;
+  vertical-align: middle;
+  border-color: inherit;
+}
+.thead .tr {
+  border: 0;
+}
+
+.th {
+  position: relative;
+  box-sizing: border-box;
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  text-align: left; /* LTR */
+  color: #292323;
+  background: #f3f4f9;
+  line-height: 1.25rem; /* 20px */
+}
+[dir="rtl"] .th {
+  text-align: right;
+}
+.row {
+  display: table-row;
+  width: auto;
+  clear: both;
+}
+.td {
+  float: left; /* fix for  buggy browsers */
+  display: table-column;
+  width: 200px;
+  background-color: #ccc;
+}
+#edit-field-json-metadata-0-identifier {
+  background-color: #f4f4f4;
+  color: #666;
+  cursor: not-allowed;
+}

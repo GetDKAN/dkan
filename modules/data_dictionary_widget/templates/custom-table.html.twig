@@ -1,0 +1,35 @@
+<table>
+  <thead>
+    <tr>
+      <th>{{ header[0] }}</th>
+      <th>{{ header[1] }}</th>
+      <th colspan="2">{{ header[2] }}</th>
+    </tr>
+  </thead>
+  <tbody  id="field-json-metadata-dictionary-edit-field">
+    {% for row in rows %}
+        {% if row.field_collection %}
+        <tr>
+          <td colspan="4">
+            {{ row.field_collection }}
+          </td>
+        </tr>
+        {% elseif  row.name %}
+        <tr>
+          <td>{{ row.name }}</td>
+          <td>{{ row.title }}</td>
+          <td>
+            <div><b>Data Type</b>: {{ row.type }}</div>
+            <div><b>Format</b>: {{ row.format }}</div>
+              {% if row.description %}
+                <div><b>Description</b>: {{ row.description }}</div>
+              {% endif %}
+          </td>
+          <td>
+          {{ row.edit_button }}
+          </td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>

@@ -1,0 +1,156 @@
+<?php
+
+/**
+ * @file
+ * Module for creating Data Dictionary Widget.
+ */
+
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\data_dictionary_widget\Fields\FieldOperations;
+use Drupal\node\NodeInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Implements hook_theme().
+ */
+function data_dictionary_widget_theme($existing, $type, $theme, $path) {
+  return [
+    'custom_table' => [
+      'variables' => [
+        'header' => [],
+        'rows' => [],
+        'attributes' => [],
+      ],
+      'template' => 'custom-table',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_entity_form_display_alter().
+ *
+ * Dynamically set the widget type for the field_json_metadata field.
+ */
+function data_dictionary_widget_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
+  if (data_dictionary_widget__data_dictionary_data_type_checker($context) === 'data-dictionary') {
+    $form_display->setComponent('field_json_metadata', [
+      'type' => 'data_dictionary_widget',
+    ]);
+  }
+}
+
+/**
+ * Find entity field_data_type or schema based on the context.
+ *
+ * @param array $context
+ *   An associative array containing entity_type, bundle and form_mode.
+ *
+ * @return string
+ *   Schema/field_data_type value depending on form_mode.
+ */
+function data_dictionary_widget__data_dictionary_data_type_checker($context) {
+
+  if ($context['form_mode'] === "edit") {
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if ($node instanceof NodeInterface && $node->hasField('field_data_type')) {
+      return $node->get('field_data_type')->value;
+    }
+  }
+
+  if ($context['form_mode'] === "default") {
+    return \Drupal::request()->query->get('schema');
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Setting form validation for unique identifier.
+ *
+ * Modifying current_fields array structure to prevent errors in element render array.
+ *
+ * Attaching module library to render theme changes.
+ */
+function data_dictionary_widget_form_alter(&$form, &$form_state, $form_id) {
+  $formObject = $form_state->getFormObject();
+  $target_form_ids = ['node_data_edit_form', 'node_data_form'];
+
+  if ($formObject instanceof \Drupal\Core\Entity\EntityFormInterface && in_array($form_id, $target_form_ids)) {
+    $entity = $formObject->getEntity();
+    $data_type = $entity->get('field_data_type')->value;
+    if (isset($form["field_json_metadata"]["widget"][0]["dictionary_fields"])) {
+      if ($entity->getEntityTypeId() === 'node' && in_array($entity->bundle(), ['data'])) {
+        $form['#attached']['library'][] = 'data_dictionary_widget/dataDictionaryWidget';
+      }
+    }
+
+    // If we are saving a data dictionary alter the submit.
+    foreach (array_keys($form['actions']) as $action) {
+      if ( isset($form['actions'][$action]['#type'])
+        && $form['actions'][$action]['#type'] === 'submit'
+        && $data_type == 'data-dictionary') {
+        $form['actions']['submit']['#submit'][] = 'data_dictionary_widget_form_submit';
+      }
+    }
+
+    $form['#validate'][] = 'data_dictionary_widget_validate_unique_identifier';
+    $current_fields = !empty($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_fields"]) ? $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_fields"] : NULL;
+
+    // The form element render array prefers child keys to be stored as arrays with a #value property.
+    if ($current_fields) {
+      foreach ($current_fields as $key => $value) {
+          $keys = array_keys($value);
+          $formatted_current_fields[$key] = [];
+
+          foreach ($keys as $attr) {
+            $formatted_current_fields[$key][$attr] = [
+                  '#value' => $value[$attr]
+              ];
+          }
+      }
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_fields"] = $formatted_current_fields;
+    }
+
+    // Set the default value of the identifier field to a randomly generated uuid.
+    $identifier_uuid = $form["field_json_metadata"]["widget"][0]["identifier"]["#default_value"] ?? NULL;
+    if (!$identifier_uuid) {
+      $uuid = \Drupal::service('uuid')->generate();
+      $form["field_json_metadata"]["widget"][0]["identifier"]['#default_value'] = $uuid;
+      $form["field_json_metadata"]["widget"][0]["identifier"]['#description'] = t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="/api/1/metastore/schemas/data-dictionary/items/' .$uuid. '" target="_blank">URL</a>.</div>');
+    }
+  }
+}
+
+/**
+ * Redirect to the data dictionary view after saving a data dictionary.
+ */
+function data_dictionary_widget_form_submit($form, FormStateInterface $form_state) {
+  $url = Url::fromRoute('metastore.data_dictionary');
+  $response = new RedirectResponse($url->toString());
+  $response->send();
+  return;
+}
+
+/**
+ * Checking if identifier is already used.
+ */
+function data_dictionary_widget_validate_unique_identifier($form, &$form_state) {
+  $op = $form_state->getFormObject()->getOperation();
+  $current_nid = ($op != "default") ? \Drupal::routeMatch()->getParameter('node')->id() : false;
+  $existing_data_dictionary_nodes = FieldOperations::getDataDictionaries();
+
+  if (isset($form["field_json_metadata"]["widget"][0]["identifier"]["#value"])) {
+    $submitted_identifier = $form["field_json_metadata"]["widget"][0]["identifier"]["#value"];
+
+    foreach ($existing_data_dictionary_nodes as $node) {
+      if ($current_nid !== $node["nid"] && strtolower($submitted_identifier) === strtolower($node["identifier"])) {
+        $form_state->setError($form["field_json_metadata"]["widget"][0]["identifier"], 'The identifier you entered is taken. Please choose another one.');
+        return $form_state;
+      }
+    }
+  }
+
+  return;
+}

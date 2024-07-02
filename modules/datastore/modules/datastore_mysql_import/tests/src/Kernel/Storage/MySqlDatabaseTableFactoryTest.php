@@ -29,7 +29,7 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
     $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
     $this->expectException(\Exception::class);
     $this->expectExceptionMessage("config['resource'] is required");
-    $table = $factory->getInstance('id', []);
+    $factory->getInstance('id', []);
   }
 
   public function testFactoryService() {

@@ -23,7 +23,7 @@ function metastore_admin_update_8003() {
     'source' => $config_path,
     'partial' => true
   ];
-  $result = $drush_import->import(NULL, $options);
+  $drush_import->import(NULL, $options);
 }
 
 /**
@@ -108,6 +108,16 @@ function metastore_admin_update_8010() {
  * Reinstall DKAN Metastore Admin configuration.
  */
 function metastore_admin_update_8011() {
+  \Drupal::service('config.installer')
+    ->installDefaultConfig('module', 'metastore_admin');
+
+  drupal_flush_all_caches();
+}
+
+/**
+ * Reinstall DKAN Metastore Admin configuration to include new dkan menu items.
+ */
+function metastore_admin_update_8012() {
   \Drupal::service('config.installer')
     ->installDefaultConfig('module', 'metastore_admin');
 

@@ -5,7 +5,6 @@ namespace Drupal\datastore\Commands;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\DatastoreService;
 use Drush\Commands\DrushCommands;
-use Psr\Log\LoggerInterface;
 
 /**
  * Drush command file for data store reimportation.
@@ -35,17 +34,13 @@ class ReimportCommands extends DrushCommands {
    *   The dkan.datastore.service service.
    * @param \Drupal\common\DatasetInfo $dataset_info
    *   Dataset information service.
-   * @param \Psr\Log\LoggerInterface $loggerChannel
-   *   Logger channel service.
    */
   public function __construct(
     DatastoreService $datastore_service,
-    DatasetInfo $dataset_info,
-    LoggerInterface $loggerChannel
+    DatasetInfo $dataset_info
   ) {
     $this->datastoreService = $datastore_service;
     $this->datasetInfo = $dataset_info;
-    $this->setLogger($loggerChannel);
     parent::__construct();
   }
 

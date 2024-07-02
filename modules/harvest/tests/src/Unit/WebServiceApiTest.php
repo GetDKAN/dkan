@@ -6,6 +6,7 @@ use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\harvest\Entity\HarvestPlanRepository;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\harvest\WebServiceApi;
@@ -69,10 +70,9 @@ class WebServiceApiTest extends TestCase {
           $this->createStub(HarvestHashesDatabaseTableFactory::class),
           $this->getMetastoreMockChain(),
           $this->getHarvestEntityRepositoryMock(),
+          $this->createStub(HarvestRunRepository::class),
           $this->createStub(LoggerInterface::class)
         );
-
-      break;
       case 'request_stack':
         $stack = $this->getMockBuilder(RequestStack::class)
           ->disableOriginalConstructor()
@@ -82,8 +82,6 @@ class WebServiceApiTest extends TestCase {
         $stack->method("getCurrentRequest")->willReturn($this->request);
 
         return $stack;
-
-      break;
     }
   }
 
@@ -93,7 +91,7 @@ class WebServiceApiTest extends TestCase {
   public function testEmptyIndex() {
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->index();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode([]));
   }
 
@@ -104,7 +102,7 @@ class WebServiceApiTest extends TestCase {
     $this->request = new Request();
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode(["message" => "Harvest plan must be a php object."]));
   }
 
@@ -129,11 +127,11 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode(["identifier" => "test"]));
 
     $response = $controller->index();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertInstanceOf(JsonResponse::class, $response);
   }
 
   /**
@@ -159,7 +157,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($container);
     $response = $controller->run();
-    $this->assertEquals(JsonResponse::class, get_class($response));
+    $this->assertInstanceOf(JsonResponse::class, $response);
   }
 
   /**

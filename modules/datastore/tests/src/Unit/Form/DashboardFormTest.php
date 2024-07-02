@@ -2,25 +2,25 @@
 
 namespace Drupal\Tests\datastore\Unit\Form;
 
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Form\FormState;
-use Drupal\common\DatasetInfo;
-use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Pager\Pager;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\Path\PathValidator;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Form\DashboardForm;
+use Drupal\datastore\Service\PostImport;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-use Drupal\datastore\Service\PostImport;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -366,6 +366,7 @@ class DashboardFormTest extends TestCase {
   private function buildContainerChain(): Chain {
     $options = (new Options())
       ->add('dkan.harvest.service', HarvestService::class)
+      ->add('dkan.harvest.storage.harvest_run_repository', HarvestRunRepository::class)
       ->add('dkan.common.dataset_info', DatasetInfo::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('pager.manager', PagerManagerInterface::class)
@@ -375,28 +376,33 @@ class DashboardFormTest extends TestCase {
       ->add('path.validator', PathValidator::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
+      ->add('dkan.harvest.storage.harvest_run_repository', HarvestRunRepository::class)
       ->index(0);
 
+    $runStatus = [
+      'status' => [
+        'extract' => 'SUCCESS',
+        'load' => [
+          'dataset-1' => 'NEW',
+        ],
+      ],
+    ];
+
     $runInfo = (new Options())
-      ->add(['dataset-1', 'test'], json_encode([
-        'status' => [
-          'extract' => 'SUCCESS',
-          'load' => [
-            'dataset-1' => 'NEW'
-          ]
-        ]
-      ]))
+      ->add(['dataset-1', 'test'], json_encode($runStatus))
       ->add(['test', 'test'], json_encode([]));
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(DatasetInfo::class, 'gather', ['notice' => 'Not found'])
       ->add(HarvestService::class, 'getAllHarvestIds', ['test', 'dataset-1'])
-      ->add(HarvestService::class,'getAllHarvestRunInfo', ['test'])
-      ->add(HarvestService::class,'getHarvestRunInfo', $runInfo)
+      ->add(HarvestService::class, 'getRunIdsForHarvest', ['test'])
+      ->add(HarvestService::class, 'getHarvestRunInfo', $runInfo)
+      ->add(HarvestService::class, 'getLastHarvestRunId', 'huh')
+      ->add(HarvestService::class, 'getHarvestRunResult', $runStatus)
       ->add(MetastoreService::class, 'count', 0)
       ->add(MetastoreService::class, 'getIdentifiers', [])
-      ->add(PagerManagerInterface::class,'createPager', Pager::class)
+      ->add(PagerManagerInterface::class, 'createPager', Pager::class)
       ->add(DateFormatter::class, 'format', '12/31/2021')
       ->add(PathValidator::class, 'getUrlIfValidWithoutAccessCheck', NULL)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
