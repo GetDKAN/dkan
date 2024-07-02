@@ -117,11 +117,6 @@ class IndexFieldCallbacks {
       unset($currently_modifying_index_fields[$op_index[4]]);
       unset($current_index_fields[$op_index[4]]);
       $current_index_fields[$op_index[4]] = IndexFieldValues::updateIndexFieldValues($op_index[4], $update_values, $current_index_fields );
-      // $value = $update_values["field_json_metadata"][0]["indexes"]["fields"]["edit_index_fields"][0]["name"];
-      // if ($value === "") {
-      //   $field = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]["edit_index_fields"]["index_field_key_0"]["name"];
-      //   $form_state->setError($field, t(' testone index field is required.'));
-      // }
       ksort($current_index_fields );
 
     }
