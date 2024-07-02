@@ -79,9 +79,14 @@ class JsonFormBuilderTest extends TestCase {
           "accessLevel"
         ],
         "properties":{
+          "title":{
+            "type":"string",
+            "title":"Title field"
+          },
           "test":{
             "type":"string",
-            "title":"Test field"
+            "title":"Test field",
+            "maxLength":400
           },
           "downloadURL":{
             "title":"Download URL",
@@ -125,6 +130,15 @@ class JsonFormBuilderTest extends TestCase {
     $form_builder->setSchema('dataset');
     $this->assertIsObject($form_builder->getSchema());
     $expected = [
+      "title" => [
+        "#type" => "textfield",
+        "#title" => "Title field",
+        "#description" => "",
+        "#default_value" => NULL,
+        '#description_display' => 'before',
+        "#required" => FALSE,
+        "#maxlength" => 256,
+      ],
       "test" => [
         "#type" => "textfield",
         "#title" => "Test field",
@@ -132,6 +146,7 @@ class JsonFormBuilderTest extends TestCase {
         "#default_value" => "Some value.",
         '#description_display' => 'before',
         "#required" => FALSE,
+        "#maxlength" => 400,
       ],
       "downloadURL" => [
         "#type" => "url",
@@ -242,6 +257,7 @@ class JsonFormBuilderTest extends TestCase {
             '#description_display' => 'before',
             "#default_value" => "org:Organization",
             "#required" => FALSE,
+            '#maxlength' => 256,
           ],
           "name" => [
             "#type" => "textfield",
@@ -250,6 +266,7 @@ class JsonFormBuilderTest extends TestCase {
             '#description_display' => 'before',
             "#default_value" => NULL,
             "#required" => TRUE,
+            '#maxlength' => 256,
           ],
         ],
       ],

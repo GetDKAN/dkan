@@ -127,6 +127,8 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element = $this->getDropdownElement($element, $spec);
     }
 
+    // If a maxlength was set earlier, remove it as it is not allowed here.
+    unset($element['#maxlength']);
     return $element;
   }
 
@@ -371,6 +373,8 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDateElement(mixed $spec, array $element) {
     $element['#type'] = 'date';
+    // If a maxlength was set earlier, remove it as it is not allowed here.
+    unset($element['#maxlength']);
     $format = $spec->format ?? 'Y-m-d';
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
@@ -393,6 +397,8 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDatetimeElement(mixed $spec, array $element) {
     $element['#type'] = 'flexible_datetime';
+    // If a maxlength was set earlier, remove it as it is not allowed here.
+    unset($element['#maxlength']);
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
       $element['#default_value'] = $date;
@@ -416,6 +422,8 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDateRangeElement(mixed $spec, array $element) {
     $element['#type'] = 'date_range';
+    // If a maxlength was set earlier, remove it as it is not allowed here.
+    unset($element['#maxlength']);
     return $element;
   }
 
