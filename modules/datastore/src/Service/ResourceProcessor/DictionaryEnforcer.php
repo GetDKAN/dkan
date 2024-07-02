@@ -95,12 +95,12 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   protected function getDataDictionaryForResource(DataResource $resource): RootedJsonData {
     $resource_id = $resource->getIdentifier();
     $resource_version = $resource->getVersion();
-    $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
+    $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
 
-    if (!isset($dict_id)) {
+    if (!isset($dictionary_id)) {
       throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
     }
-    return $this->metastore->get('data-dictionary', $dict_id);
+    return $this->metastore->get('data-dictionary', $dictionary_id);
   }
 
   /**
@@ -124,8 +124,11 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *
    * @param string $identifier
    *   A resource's identifier. Used when in reference mode.
+   *
+   * @return array|null
+   *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function returnDataDictionaryFields($identifier = NULL) {
+  public function returnDataDictionaryFields(string $identifier = NULL): ?array {
     // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.
@@ -140,10 +143,10 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
         break;
 
       default:
-        return;
+        return NULL;
     }
 
-    return $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"};
+    return $dictionary_id ? $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"} : NULL;
   }
 
 }
