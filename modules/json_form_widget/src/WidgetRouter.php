@@ -99,6 +99,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       'date' => 'handleDateElement',
       'flexible_datetime' => 'handleDatetimeElement',
       'date_range' => 'handleDateRangeElement',
+      'number' => 'handleNumberElement',
     ];
   }
 
@@ -424,6 +425,36 @@ class WidgetRouter implements ContainerInjectionInterface {
     $element['#type'] = 'date_range';
     // If a maxlength was set earlier, remove it as it is not allowed here.
     unset($element['#maxlength']);
+    return $element;
+  }
+
+  /**
+   * Helper function for getting a number element.
+   *
+   * @param object $spec
+   *   Specification for UI options. Optional properties:
+   *   - step: Ensures that the number is an even multiple of step.
+   *   - min: Minimum value.
+   *   - max: Maximum value.
+   * @param array $element
+   *   Element to convert into number.
+   *
+   * @return array
+   *   The element configured as number.
+   *
+   * @see \Drupal\Core\Render\Element\Number
+   */
+  public function handleNumberElement($spec, array $element) {
+    $element['#type'] = 'number';
+    if (isset($spec->step)) {
+      $element['#step'] = $spec->step;
+    }
+    if (isset($spec->min)) {
+      $element['#min'] = $spec->min;
+    }
+    if (isset($spec->max)) {
+      $element['#max'] = $spec->max;
+    }
     return $element;
   }
 

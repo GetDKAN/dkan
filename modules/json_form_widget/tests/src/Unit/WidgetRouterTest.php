@@ -71,6 +71,26 @@ class WidgetRouterTest extends TestCase {
           '#target_type' => 'node',
         ],
       ],
+      // Number field includes constraints and a "step" for up/down controlls.
+      'numberField' => [
+        (object) [
+          'widget' => 'number',
+          'step' => '10',
+          'min' => '10',
+          'max' => '100',
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'number',
+        ],
+        [
+          '#type' => 'number',
+          '#title' => 'number',
+          '#step' => '10',
+          '#min' => '10',
+          '#max' => '100',
+        ],
+      ],
       // Format is a simple select field with values defined in UI schema.
       'formatField' => [
         (object) [
