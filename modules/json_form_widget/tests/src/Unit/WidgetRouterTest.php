@@ -71,7 +71,7 @@ class WidgetRouterTest extends TestCase {
           '#target_type' => 'node',
         ],
       ],
-      // Tag field is a free-tagging autocomplete that populates from metastore.
+      // Number field includes constraints and a "step" for up/down controlls.
       'numberField' => [
         (object) [
           'widget' => 'number',
