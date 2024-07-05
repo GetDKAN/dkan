@@ -391,7 +391,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Get the schema for this table.
    *
    * @return array
-   *   A schema array.
+   *   A Drupal Schema API array, or an empty array if none found.
    */
   public function getSchema(): array {
     return $this->schema ?? [];
