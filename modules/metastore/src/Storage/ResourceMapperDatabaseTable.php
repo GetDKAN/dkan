@@ -4,7 +4,6 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 
 /**
