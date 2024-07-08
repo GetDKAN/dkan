@@ -175,7 +175,6 @@ class Referencer {
    *   The Uuid reference, or NULL on failure.
    */
   private function referenceSingle(string $property_id, $value) {
-
     if ($property_id == 'distribution') {
       $value = $this->distributionHandling($value);
     }
@@ -188,14 +187,12 @@ class Referencer {
       return $uuid;
     }
     else {
-      $this->logger->log(
-        'value_referencer',
-        'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
-        [
-          '@property_id' => $property_id,
-          '@value' => var_export($value, TRUE),
-        ]
-      );
+      // @todo Based on the fact that we can't make a test hit these lines, it
+      //   seems that they are dead code.
+      $this->logger->error('Neither found an existing nor could create a new reference for property_id: @property_id with value: @value', [
+        '@property_id' => $property_id,
+        '@value' => var_export($value, TRUE),
+      ]);
       return NULL;
     }
   }
@@ -349,7 +346,7 @@ class Referencer {
     // If we couldn't find a mime type, log an error notifying the user.
     if (is_null($mime_type)) {
       $filename = basename($downloadUrl);
-      $this->logger->log('value_referencer', 'Unable to determine mime type of file with name "@name".', [
+      $this->logger->error('Unable to determine mime type of file with name "@name".', [
         '@name' => $filename,
       ]);
     }
