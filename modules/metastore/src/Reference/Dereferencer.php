@@ -103,11 +103,10 @@ class Dereferencer {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      $this->logger->log('value_referencer', 'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
-        [
-          '@property_id' => $property_id,
-          '@uuid' => var_export($uuid, TRUE),
-        ]);
+      $this->logger->error('Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid', [
+        '@property_id' => $property_id,
+        '@uuid' => var_export($uuid, TRUE),
+      ]);
       return NULL;
     }
   }
@@ -168,8 +167,7 @@ class Dereferencer {
 
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    $this->logger->log(
-      'value_referencer',
+    $this->logger->error(
       'Property @property_id reference @uuid not found',
       [
         '@property_id' => $property_id,
