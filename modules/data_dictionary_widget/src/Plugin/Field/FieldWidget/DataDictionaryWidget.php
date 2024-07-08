@@ -81,7 +81,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     if ($index_field_values || $current_index_fields) {
       $element["indexes"]["fields"] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
     }
-    $element['indexes']['fields']['add_row_button']['#access'] = $index_field_values ? TRUE : FALSE;
+    $element['indexes']['fields']['add_row_button']['#access'] = $index_fields_being_modified == NULL ? TRUE : FALSE;
     
     // Get form entity
     $form_object = $form_state->getFormObject();

@@ -128,14 +128,12 @@ class IndexFieldOperations {
    */
   public static function setAddIndexFieldFormState($add_new_index_field, $element) {
     if ($add_new_index_field) {
-
       $element['indexes']['fields']['#access'] = FALSE;
       $element['indexes']['fields']['field_collection'] = $add_new_index_field;
       $element['indexes']['fields']['field_collection']['#access'] = TRUE;
       $element['indexes']['fields']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
-      //$element["indexes"]["field_collection"]["group"]["index"]["description"]['#required'] = FALSE;
     } 
 
     return $element;
@@ -151,7 +149,6 @@ class IndexFieldOperations {
       $element['indexes']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
-      //$element["indexes"]["field_collection"]["group"]["index"]["description"]['#required'] = FALSE;
     }
 
     return $element;
@@ -161,7 +158,7 @@ class IndexFieldOperations {
    * Create edit and update fields where needed.
    */
   public static function createDictionaryIndexFieldOptions($op_index, $index_data_results, $index_fields_being_modified, $element) {
-    $current_index_fields = $element['current_index_fields'] ?? NULL;
+    $current_index_fields = $index_data_results ?? NULL;
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($index_data_results as $indexKey => $data) {
       if (self::checkIndexEditingField('index_field_key_' . $indexKey, $op_index, $index_fields_being_modified)) {

@@ -123,6 +123,7 @@ class FieldCallbacks {
       $form_state->set('add', TRUE);
       $form_state->set('cancel', FALSE);
     }
+
     $form_state->set('current_index_fields', $current_index_fields);
     $form_state->set('current_index', $current_index);
     $form_state->setRebuild();

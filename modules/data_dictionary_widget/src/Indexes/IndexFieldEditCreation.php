@@ -10,28 +10,30 @@ class IndexFieldEditCreation {
   /**
    * Create edit fields for Data Dictionary Widget.
    */
-  public static function editIndexFields($indexKey, $current_index_fields) {
-    $id = $current_index_fields ? "field-json-metadata-dictionary-index-fields-new" : "field-json-metadata-dictionary-index-fields";
+  public static function editIndexFields($indexKey, $current_index_fields, $index_fields_being_modified) {
+    $id = $current_index_fields ? "field-json-metadata-dictionary-index-fields" : "field-json-metadata-dictionary-index-fields-new";
     $indexKeyExplode = explode("_", $indexKey);
     $edit_index_fields['name'] = [
-      '#name' => 'field_json_metadata[0][fields][data][' . $indexKeyExplode[3] . '][field_collection][name]',
+      '#name' => 'field_json_metadata[0][indexes][fields][edit_index_fields][' . $indexKeyExplode[3] . '][name]',
       '#type' => 'textfield',
       '#value' => $current_index_fields[$indexKeyExplode[3]]['name'],
       '#title' => 'Name',
+      '#required' => TRUE,
     ];
     $edit_index_fields['length'] = [
-      '#name' => 'field_json_metadata[0][fields][data]['. $indexKeyExplode[3] .'][field_collection][length]',
+      '#name' => 'field_json_metadata[0][indexes][fields][edit_index_fields][' . $indexKeyExplode[3] . '][length]',
       '#type' => 'number',
       '#value' => $current_index_fields[$indexKeyExplode[3]]['length'],
       '#title' => 'Length',
+      '#required' => TRUE,
     ];
 
     $edit_index_fields['update_index_field']['actions'] = self::createIndexActionFields($indexKey, $id);
-    return $edit_index_fields;
 
+    return $edit_index_fields;
   }
 
-    /**
+  /**
    * Create edit fields for Data Dictionary Widget.
    */
   public static function editIndex($indexKey, $current_index) {
@@ -51,8 +53,8 @@ class IndexFieldEditCreation {
     ];
 
     $edit_index['update_index_field']['actions'] = self::createIndexActionFields($indexKey, $id );
-    return $edit_index;
 
+    return $edit_index;
   }
 
   /**
