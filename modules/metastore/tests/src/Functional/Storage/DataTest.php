@@ -82,7 +82,7 @@ class DataTest extends BrowserTestBase {
     ]));
 
     // We stored a node.
-    $this->assertEquals($uuid, $identifier);
+    $this->assertSame($uuid, $identifier);
     // We logged that the cache directory was not created.
     $this->assertTrue(
       $logger->hasErrorThatContains('Failed to create cache directory for HTML purifier')

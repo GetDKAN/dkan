@@ -167,13 +167,10 @@ class Dereferencer {
 
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    $this->logger->error(
-      'Property @property_id reference @uuid not found',
-      [
-        '@property_id' => $property_id,
-        '@uuid' => var_export($uuid, TRUE),
-      ]
-    );
+    $this->logger->error('Property @property_id reference @uuid not found', [
+      '@property_id' => $property_id,
+      '@uuid' => var_export($uuid, TRUE),
+    ]);
 
     return [NULL, NULL];
   }

@@ -105,22 +105,18 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
     }
 
     if ($decoded === NULL) {
-      $this->logger->log(
-        'dkan_metastore_filemapper',
-        "Error decoding id:@id, data: @data.",
-        ['@id' => $id, '@data' => $data],
-        LogLevel::ERROR
-      );
-      throw new \Exception("Import for {$id} error when decoding {$data}");
+      $this->logger->error('Error decoding id:@id, data: @data.', [
+        '@id' => $id,
+        '@data' => $data,
+      ]);
+      throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_object($decoded)) {
-      $this->logger->log(
-        'dkan_metastore_filemapper',
-        "Object expected while decoding id:@id, data: @data.",
-        ['@id' => $id, '@data' => $data],
-        LogLevel::ERROR
-      );
-      throw new \Exception("Import for {$id} returned an error when preparing table header: {$data}");
+      $this->logger->error('Object expected while decoding id:@id, data: @data.', [
+        '@id' => $id,
+        '@data' => $data,
+      ]);
+      throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return (array) $decoded;
   }
