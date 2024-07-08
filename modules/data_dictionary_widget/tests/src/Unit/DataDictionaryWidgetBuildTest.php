@@ -241,7 +241,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $element = FieldOperations::setAddFormState($add_fields, $element);
 
     // Set up a triggering element with '#op' set to 'add'.
-    $trigger= ['#op' => 'add'];
+    $trigger = ['#op' => 'add'];
 
     // Expect that getTriggeringElement will be called once and return the add.
     $formState->expects($this->any())

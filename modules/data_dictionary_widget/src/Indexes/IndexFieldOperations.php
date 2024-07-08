@@ -128,14 +128,12 @@ class IndexFieldOperations {
    */
   public static function setAddIndexFieldFormState($add_new_index_field, $element) {
     if ($add_new_index_field) {
-
       $element['indexes']['fields']['#access'] = FALSE;
       $element['indexes']['fields']['field_collection'] = $add_new_index_field;
       $element['indexes']['fields']['field_collection']['#access'] = TRUE;
       $element['indexes']['fields']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
-      //$element["indexes"]["field_collection"]["group"]["index"]["description"]['#required'] = FALSE;
     } 
 
     return $element;
@@ -151,7 +149,6 @@ class IndexFieldOperations {
       $element['indexes']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
-      //$element["indexes"]["field_collection"]["group"]["index"]["description"]['#required'] = FALSE;
     }
 
     return $element;

@@ -28,7 +28,7 @@ class IndexFieldCreation {
   public static function createGeneralIndex($element, $current_indexes) {
     $element['indexes'] = [
       '#type' => 'fieldset',
-      '#title' => t('Data Dictionary Indexes'),
+      '#title' => t('Indexes'),
       '#prefix' => '<div id = field-json-metadata-dictionary-index>',
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">Adding indexes to your datastore tables can improve response times from common queries.</div>'),

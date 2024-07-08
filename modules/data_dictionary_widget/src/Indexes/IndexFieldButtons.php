@@ -2,7 +2,6 @@
 
 namespace Drupal\data_dictionary_widget\Indexes;
 
-use Drupal\Core\Form\FormStateInterface;
 /**
  * Various operations for creating Data Dictionary Widget fields.
  */
@@ -15,6 +14,7 @@ class IndexFieldButtons {
     return [
       '#type' => 'submit',
       '#value' => 'Add field',
+      '#name' => 'add_index_field',
       '#access' => TRUE,
       '#op' => 'add_new_index_field',
       '#submit' => [
@@ -39,6 +39,7 @@ class IndexFieldButtons {
     return [
       '#type' => 'submit',
       '#value' => 'Add index',
+      '#name' => 'add_index',
       '#access' => TRUE,
       '#op' => 'add_new_index',
       '#submit' => [
@@ -175,6 +176,7 @@ class IndexFieldButtons {
     $cancel_index_button = [
       '#type' => 'submit',
       '#value' => t('Cancel'),
+      '#name' => 'cancel_index_field',
       '#op' => $op,
       '#submit' => [
         [
@@ -205,6 +207,7 @@ class IndexFieldButtons {
     $cancel_index_button = [
       '#type' => 'submit',
       '#value' => t('Cancel Index'),
+      '#name' => 'cancel_index',
       '#op' => $op,
       '#submit' => [
         [
