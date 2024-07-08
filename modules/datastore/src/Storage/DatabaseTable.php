@@ -101,16 +101,14 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   protected function prepareData(string $data, string $id = NULL): array {
     $decoded = json_decode($data);
     if ($decoded === NULL) {
-      $this->logger->log(
-        'datastore_import',
+      $this->logger->error(
         'Error decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
       );
       throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_array($decoded)) {
-      $this->logger->log(
-        'datastore_import',
+      $this->logger->error(
         'Array expected while decoding id:@id, data: @data.',
         ['@id' => $id, '@data' => $data]
       );

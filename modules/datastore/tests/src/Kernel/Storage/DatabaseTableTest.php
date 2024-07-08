@@ -2,12 +2,15 @@
 
 namespace Drupal\Tests\datastore\Kernel\Storage;
 
+use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\ImportedItemInterface;
+use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\common\Unit\Connection;
 use Procrastinator\Result;
 
 /**
@@ -59,6 +62,60 @@ class DatabaseTableTest extends KernelTestBase {
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
     $this->assertEquals(2, $import_job->getStorage()->count());
+  }
+
+  public function providePrepareData() {
+    return [
+      // Bad JSON results in a NULL on decode.
+      [
+        'Error decoding id:@id, data: @data.',
+        'Import for  error when decoding "badjson""',
+        '"badjson""',
+      ],
+      // The decoded JSON is supposed to be an array.
+      [
+        'Array expected while decoding id:@id, data: @data.',
+        'Import for  returned an error when preparing table header: {"this_is": "an_object"}',
+        '{"this_is": "an_object"}',
+      ],
+    ];
+  }
+
+  /**
+   * @covers ::prepareData
+   * @dataProvider providePrepareData
+   */
+  public function testPrepareDataLogging($expected_log, $expected_exception, $data) {
+    // Get a logger that we can assert against.
+    $logger = new TestLogger();
+
+    // We have to mock tableExist() because otherwise it tries to talk to the
+    // database, which we don't actually have right now.
+    $database_table = $this->getMockBuilder(DatabaseTable::class)
+      ->onlyMethods(['tableExist'])
+      ->setConstructorArgs([
+        $this->createStub(Connection::class),
+        $this->createStub(DatastoreResource::class),
+        $logger,
+      ])
+      ->getMock();
+    $database_table->expects($this->any())
+      ->method('tableExist')
+      ->willReturn(FALSE);
+
+    $ref_prepare_data = new \ReflectionMethod($database_table, 'prepareData');
+    $ref_prepare_data->setAccessible(TRUE);
+
+    // We can't use expectException() because we also want to look at the log.
+    try {
+      $ref_prepare_data->invokeArgs($database_table, [$data]);
+    }
+    catch (\Exception $e) {
+      $this->assertSame($e->getMessage(), $expected_exception);
+      $this->assertTrue(
+        $logger->hasErrorThatContains($expected_log)
+      );
+    }
   }
 
 }
