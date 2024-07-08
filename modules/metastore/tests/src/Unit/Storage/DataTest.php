@@ -15,6 +15,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
+ * @coversDefaultClass \Drupal\metastore\Storage\Data
+ *
  * @group dkan
  * @group metastore
  * @group unit
@@ -116,6 +118,8 @@ class DataTest extends TestCase {
 
   /**
    * Test \Drupal\metastore\Storage\Data::count() method.
+   *
+   * @covers ::count
    */
   public function testCount(): void {
     // Set constant which should be returned by the ::count() method.
@@ -140,6 +144,8 @@ class DataTest extends TestCase {
 
   /**
    * Test \Drupal\metastore\Storage\Data::retrieveIds() method.
+   *
+   * @covers ::retrieveIds
    */
   public function testRetrieveRangeUuids(): void {
     // Generate dataset nodes for testing ::retrieveIds().
