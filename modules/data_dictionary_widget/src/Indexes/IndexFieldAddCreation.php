@@ -48,7 +48,6 @@ class IndexFieldAddCreation {
   $add_index['group']['index']['fields'] = [
     '#type' => 'fieldset',
     '#title' => t('Fields'),
-    '#required' => TRUE,
     '#prefix' => '<div id = field-json-metadata-dictionary-index-fields>',
     '#suffix' => '</div>',
     '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
@@ -58,7 +57,6 @@ class IndexFieldAddCreation {
   ];
   
   $add_index['group']['index']['fields']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
-
   $add_index['group']['index']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
   $add_index['group']['index']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
    
@@ -69,7 +67,7 @@ class IndexFieldAddCreation {
    * Create add fields for Data Dictionary Widget.
    */
   public static function addIndexFields($current_index_fields) {
-    $id = $current_index_fields ? "field-json-metadata-dictionary-index-fields-new" : "field-json-metadata-dictionary-index-fields";
+    $id = "field-json-metadata-dictionary-index-fields-new";
     $add_index_fields['#access'] = FALSE;
     $add_index_fields['group'] = [
       '#type' => 'fieldset',

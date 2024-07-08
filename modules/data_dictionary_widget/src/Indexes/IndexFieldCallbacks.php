@@ -24,6 +24,7 @@ class IndexFieldCallbacks {
 
     if ($op === 'cancel_index_field') {
       $form_state->set('cancel_index_field', TRUE);
+      $form_state->set('add_new_index_field', '');
     }
 
     if ($op === 'add_new_index_field') {
@@ -117,6 +118,7 @@ class IndexFieldCallbacks {
       unset($current_index_fields[$op_index[4]]);
       $current_index_fields[$op_index[4]] = IndexFieldValues::updateIndexFieldValues($op_index[4], $update_values, $current_index_fields );
       ksort($current_index_fields );
+
     }
 
     if (str_contains($op, 'edit')) {
@@ -165,5 +167,19 @@ class IndexFieldCallbacks {
   public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
     $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"]['#access'] = TRUE;
     return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"];  
+  }
+
+  /**
+   * Widget validation callback.
+   */
+  public static function indexFieldVal($element, FormStateInterface &$form_state, array &$form) {
+    $fields_to_validate = [
+      'name' => 'Name',
+      'length' => 'Length',
+    ];
+
+    foreach ($fields_to_validate as $field_key => $field_label) {
+      IndexValidation::indexFieldVal($form_state, $field_key, $field_label, $form);
+    }
   }
 }
