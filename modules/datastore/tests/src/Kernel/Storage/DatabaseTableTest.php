@@ -109,6 +109,7 @@ class DatabaseTableTest extends KernelTestBase {
     // We can't use expectException() because we also want to look at the log.
     try {
       $ref_prepare_data->invokeArgs($database_table, [$data]);
+      $this->assertTrue(FALSE, 'We expected this call to throw an exception.');
     }
     catch (\Exception $e) {
       $this->assertSame($e->getMessage(), $expected_exception);
