@@ -44,9 +44,47 @@ class WidgetRouterTest extends TestCase {
       ->add(MetastoreService::class, 'getAll', $metastoreGetAllOptions);
   }
 
+  /**
+   * Data provider.
+   *
+   * Each dataset gets is an array with three elements:
+   * 1. The spec object.
+   * 2. The element array.
+   * 3. The expected handled element array.
+   */
   public static function dataProvider(): array {
     return [
-      // Tag field is a free-tagging autocomplete that populates from metastore.
+      // Ensure regular textfield with maxlength comes through.
+      'textField' => [
+        (object) [
+          'widget' => 'textfield',
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'textField',
+          '#maxlength' => 256,
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'textField',
+          '#maxlength' => 256,
+        ],
+      ],
+      // Textarea should not have maxlength after being handled.
+      'textArea' => [
+        (object) [
+          'widget' => 'textarea',
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'textArea',
+          '#maxlength' => 256,
+        ],
+        [
+          '#type' => 'textarea',
+          '#title' => 'textArea',
+        ],
+      ],
       'tagField' => [
         (object) [
           'widget' => 'list',

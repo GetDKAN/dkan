@@ -319,6 +319,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleTextareaElement(mixed $spec, array $element) {
     $element['#type'] = 'textarea';
+    unset($element['#maxlength']);
     if (isset($spec->rows)) {
       $element['#rows'] = $spec->rows;
     }
