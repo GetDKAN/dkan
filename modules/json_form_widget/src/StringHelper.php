@@ -16,6 +16,8 @@ class StringHelper implements ContainerInjectionInterface {
   use StringTranslationTrait;
   use DependencySerializationTrait;
 
+  const TEXTFIELD_MAXLENGTH = 256;
+
   /**
    * Builder object.
    *
@@ -77,6 +79,13 @@ class StringHelper implements ContainerInjectionInterface {
     // Add options if element type is select.
     if ($element['#type'] === 'select') {
       $element['#options'] = $this->getSelectOptions($property);
+      if (!$this->checkIfRequired($field_name, $element_schema)) {
+        $element['#empty_value'] = '';
+      }
+    }
+
+    if ($element['#type'] == 'textfield') {
+      $element['#maxlength'] = $property->maxLength ?? self::TEXTFIELD_MAXLENGTH;
     }
 
     // Add extra validate if element type is email.

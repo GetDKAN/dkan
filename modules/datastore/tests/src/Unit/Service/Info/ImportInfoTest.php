@@ -15,8 +15,10 @@ use Procrastinator\Job\Job;
 /**
  * @coversDefaultClass \Drupal\datastore\Service\Info\ImportInfo
  *
- * @group datastore
+ * @group dkan
  * @group dkan-core
+ * @group datastore
+ * @group unit
  */
 class ImportInfoTest extends TestCase {
 

@@ -26,7 +26,7 @@ trait DeprecatedJobStoreFactoryTrait {
   protected function getTableName(string $identifier): string {
     // Check for either \ or class_exists() because not all class names will
     // contain a backslash.
-    if ((strpos($identifier, '\\') !== FALSE) || class_exists($identifier)) {
+    if ((str_contains($identifier, '\\')) || class_exists($identifier)) {
       $deprecatedTableName = $this->getDeprecatedTableName($identifier);
       if ($this->connection->schema()->tableExists($deprecatedTableName)) {
         return $deprecatedTableName;
@@ -48,12 +48,11 @@ trait DeprecatedJobStoreFactoryTrait {
     // Avoid table-name-too-long errors by hashing the FQN of the identifier,
     // assuming it's a class name.
     $exploded_class = explode('\\', $identifier);
-    $table_name = strtolower(implode('_', [
+    return strtolower(implode('_', [
       'jobstore',
       crc32($identifier),
       array_pop($exploded_class),
     ]));
-    return $table_name;
   }
 
   /**

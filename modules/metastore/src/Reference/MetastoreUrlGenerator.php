@@ -151,7 +151,7 @@ class MetastoreUrlGenerator {
       $this->metastore()->get($parts[2], $parts[4]);
       return TRUE;
     }
-    catch (MissingObjectException $e) {
+    catch (MissingObjectException) {
       return FALSE;
     }
 

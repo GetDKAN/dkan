@@ -15,6 +15,7 @@ function metastore_preprocess_node__data(&$variables) {
   $json = $variables['node']->get('field_json_metadata')->value;
   $rows = [];
   $metadata = json_decode($json);
+  $variables['metastore'] = $metadata;
   if (property_exists($metadata, 'description')) {
     $variables['dataset']['description'] = $metadata->description;
   }
@@ -98,7 +99,7 @@ function metastore_preprocess_node__data(&$variables) {
         }
       }
       // Fallback to display file path for link title.
-      if ($rows['downloadURL'] && !property_exists($d, 'title')) {
+      if (isset($rows['downloadURL']) && !property_exists($d, 'title')) {
         $rows['title'] = $rows['downloadURL'];
       }
       $variables['dataset']['distributions'][] = $rows;

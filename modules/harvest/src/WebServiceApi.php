@@ -134,7 +134,7 @@ class WebServiceApi implements ContainerInjectionInterface {
         $result, $status, static::DEFAULT_HEADERS
       );
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       // Send a new exception through so that SQL errors and the like will not
       // be given to users.
       return $this->exceptionJsonResponse(

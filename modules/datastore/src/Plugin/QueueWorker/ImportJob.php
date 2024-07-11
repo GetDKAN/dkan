@@ -257,7 +257,7 @@ class ImportJob extends AbstractPersistentJob {
    * @return \Procrastinator\Result
    *   Updated result object.
    */
-  protected function setResultError($message): Result {
+  protected function setResultError(mixed $message): Result {
     // Use these two different call methods so that we only write the status to
     // the storage once.
     $this->getResult()->setStatus(Result::ERROR);
@@ -284,7 +284,7 @@ class ImportJob extends AbstractPersistentJob {
    * @param mixed $maximumExecutionTime
    *   Maximum time to parse for before exiting.
    */
-  protected function parseAndStore($filename, $maximumExecutionTime) {
+  protected function parseAndStore($filename, mixed $maximumExecutionTime) {
     $h = fopen($filename, 'r');
     fseek($h, $this->getBytesProcessed());
 

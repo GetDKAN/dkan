@@ -44,9 +44,47 @@ class WidgetRouterTest extends TestCase {
       ->add(MetastoreService::class, 'getAll', $metastoreGetAllOptions);
   }
 
+  /**
+   * Data provider.
+   *
+   * Each dataset gets is an array with three elements:
+   * 1. The spec object.
+   * 2. The element array.
+   * 3. The expected handled element array.
+   */
   public static function dataProvider(): array {
     return [
-      // Tag field is a free-tagging autocomplete that populates from metastore.
+      // Ensure regular textfield with maxlength comes through.
+      'textField' => [
+        (object) [
+          'widget' => 'textfield',
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'textField',
+          '#maxlength' => 256,
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'textField',
+          '#maxlength' => 256,
+        ],
+      ],
+      // Textarea should not have maxlength after being handled.
+      'textArea' => [
+        (object) [
+          'widget' => 'textarea',
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'textArea',
+          '#maxlength' => 256,
+        ],
+        [
+          '#type' => 'textarea',
+          '#title' => 'textArea',
+        ],
+      ],
       'tagField' => [
         (object) [
           'widget' => 'list',
@@ -69,6 +107,26 @@ class WidgetRouterTest extends TestCase {
           '#multiple' => TRUE,
           '#autocreate' => FALSE,
           '#target_type' => 'node',
+        ],
+      ],
+      // Number field includes constraints and a "step" for up/down controlls.
+      'numberField' => [
+        (object) [
+          'widget' => 'number',
+          'step' => '10',
+          'min' => '10',
+          'max' => '100',
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'number',
+        ],
+        [
+          '#type' => 'number',
+          '#title' => 'number',
+          '#step' => '10',
+          '#min' => '10',
+          '#max' => '100',
         ],
       ],
       // Format is a simple select field with values defined in UI schema.

@@ -5,7 +5,7 @@ namespace Drupal\common\Util;
 /**
  * Timer utility object.
  */
-class Timer {
+class Timer implements \Stringable {
 
   /**
    * Start times in microseconds.
@@ -52,7 +52,7 @@ class Timer {
   /**
    * {@inheritdoc}
    */
-  public function __toString() {
+  public function __toString(): string {
     $strings = [];
     foreach ($this->ends as $id => $data) {
       $strings[] = "{$id} AVG: {$this->average($id)}";

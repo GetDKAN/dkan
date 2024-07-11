@@ -105,7 +105,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $result = $this->queryService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
       return $this->getResponseFromException($e, $code);
     }
 
@@ -135,7 +135,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $result = $this->queryService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
       return $this->getResponseFromException($e, $code);
     }
 
@@ -218,7 +218,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param mixed $identifier
    *   Resource identifier to query against, if supplied via path.
    */
-  protected function buildDatastoreQuery(Request $request, $identifier = NULL) {
+  protected function buildDatastoreQuery(Request $request, mixed $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
     $this->additionalPayloadValidation($data, $identifier);
@@ -241,7 +241,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param mixed $identifier
    *   Resource identifier.
    */
-  protected function additionalPayloadValidation($data, $identifier = NULL) {
+  protected function additionalPayloadValidation($data, mixed $identifier = NULL) {
     $this->checkForRowIdProperty($data);
     if (!empty($data->properties) && !empty($data->rowIds)) {
       throw new \Exception('The rowIds property cannot be set to true if you are requesting specific properties.');
@@ -298,36 +298,28 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public static function getPayloadJson(Request $request, $schema = NULL) {
     $schema ??= file_get_contents(__DIR__ . "/../../docs/query.json");
     $payloadJson = static::getJson($request);
-    $payloadJson = static::fixTypes($payloadJson, $schema);
-    return $payloadJson;
+    return static::fixTypes($payloadJson, $schema);
   }
 
   /**
    * Just get the JSON string from the request.
    *
-   * @param Symfony\Component\HttpFoundation\Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $request
    *   Symfony HTTP request object.
    *
    * @return string
    *   JSON string.
    *
-   * @throws UnexpectedValueException
+   * @throws \UnexpectedValueException
    *   When an unsupported HTTP method is passed.
    */
   public static function getJson(Request $request) {
     $method = $request->getRealMethod();
-    switch ($method) {
-      case "POST":
-      case "PUT":
-      case "PATCH":
-        return $request->getContent();
-
-      case "GET":
-        return json_encode((object) $request->query->all());
-
-      default:
-        throw new \UnexpectedValueException("Only POST, PUT, PATCH and GET requests can be normalized.");
-    }
+    return match ($method) {
+      'POST', 'PUT', 'PATCH' => $request->getContent(),
+      'GET' => json_encode((object) $request->query->all()),
+      default => throw new \UnexpectedValueException('Only POST, PUT, PATCH and GET requests can be normalized.'),
+    };
   }
 
   /**

@@ -27,7 +27,7 @@ class Uuid5 {
    * @return string
    *   The uuid.
    */
-  public function generate($schema_id, $value) {
+  public function generate($schema_id, mixed $value) {
     if (!is_string($value)) {
       $value = json_encode($value, JSON_UNESCAPED_SLASHES);
     }

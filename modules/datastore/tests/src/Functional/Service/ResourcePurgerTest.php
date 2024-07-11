@@ -11,8 +11,9 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 /**
  * Test ResourcePurger service.
  *
- * @package Drupal\Tests\datastore\Functional
+ * @group dkan
  * @group datastore
+ * @group functional
  */
 class ResourcePurgerTest extends ExistingSiteBase {
   use GetDataTrait;

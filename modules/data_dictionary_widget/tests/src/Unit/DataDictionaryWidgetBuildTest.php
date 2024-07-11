@@ -209,6 +209,8 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ]
     ];
 
+    
+
     $dataDictionaryWidget = new DataDictionaryWidget (
       $plugin_id,
       $plugin_definition,
@@ -389,8 +391,8 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $user_input = [
       'field_json_metadata' => [
         0 => [
-          'identifier' => 'Kaise',
-          'title' => 'Kaise',
+          'identifier' => 'test_identifier',
+          'title' => 'test_title',
           'dictionary_fields' => [
             'data' => [
               0 => [

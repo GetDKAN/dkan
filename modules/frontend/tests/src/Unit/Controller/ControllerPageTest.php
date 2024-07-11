@@ -1,6 +1,8 @@
 <?php
 
-use \Drupal\Core\Config\ConfigFactory;
+namespace Drupal\Tests\frontend\Unit\Controller;
+
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\frontend\Controller\Page as PageController;
 use Drupal\frontend\Page;
@@ -8,7 +10,11 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @coversDefaultClass Drupal\frontend\Controller\Page
+ * @coversDefaultClass \Drupal\frontend\Controller\Page
+ *
+ * @group dkan
+ * @group frontend
+ * @group unit
  */
 class ControllerPageTest extends TestCase {
 
@@ -62,8 +68,6 @@ class ControllerPageTest extends TestCase {
           ->getMock();
         $pageBuilder->method('build')->willReturn("<h1>Hello World!!!</h1>\n");
         return $pageBuilder;
-
-        break;
       case 'config.factory':
         $immutableConfig = $this->getMockBuilder(ImmutableConfig::class)
           ->disableOriginalConstructor()
@@ -77,8 +81,6 @@ class ControllerPageTest extends TestCase {
           ->getMock();
         $configFactory->method('get')->willReturn($immutableConfig);
         return $configFactory;
-
-        break;
     }
   }
 

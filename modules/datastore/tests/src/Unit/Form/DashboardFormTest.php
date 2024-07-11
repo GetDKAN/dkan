@@ -24,6 +24,11 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * @group dkan
+ * @group datastore
+ * @group unit
+ */
 class DashboardFormTest extends TestCase {
 
   /**

@@ -6,8 +6,6 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Database\Query\Select;
-use Drupal\Tests\common\Unit\Connection;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\Controller\QueryDownloadController;
@@ -90,19 +88,6 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
-  }
-
-  /**
-   *
-   */
-  private function getConnection() {
-    return (new Chain($this))
-      ->add(
-        Connection::class,
-        "select",
-        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
-      )
-      ->getMock();
   }
 
   /**
@@ -249,6 +234,7 @@ class QueryDownloadControllerTest extends TestCase {
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start([self::class, 'getBuffer']);
+    /** @var \Symfony\Component\HttpFoundation\StreamedResponse $streamResponse */
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
@@ -256,7 +242,12 @@ class QueryDownloadControllerTest extends TestCase {
     $streamedCsv = $this->buffer;
     // Check that the CSV has the full queryLimit number of lines, plus header and final newline.
     $this->assertEquals(($queryLimit + 2), count(explode("\n", $streamedCsv)));
-
+    // Check that the max-age header is correct.
+    $this->assertEquals(3600, $streamResponse->getMaxAge());
+    $this->assertStringContainsString(
+      'public',
+      $streamResponse->headers->get('cache-control') ?? ''
+    );
   }
 
   /**
