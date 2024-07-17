@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Drupal\Tests\common\Unit\Connection;
 
 /**
- *
+ * @coversDefaultClass \Drupal\common\Storage\SelectFactory
  */
 class SelectFactoryTest extends TestCase {
   private $query;
@@ -21,6 +21,12 @@ class SelectFactoryTest extends TestCase {
    * @var \Drupal\common\Storage\SelectFactory
    */
   private $selectFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->query = new Query();
+    $this->selectFactory = $this->getSelectFactory();
+  }
 
   /**
    * @test
@@ -41,7 +47,7 @@ class SelectFactoryTest extends TestCase {
       }
     }
   }
-  
+
   /**
    * Test two variations of Query::testConditionByIsEqualTo()
    */
@@ -78,6 +84,18 @@ class SelectFactoryTest extends TestCase {
   }
 
   /**
+   * @covers ::safeJoinOperator
+   */
+  public function testSafeJoinOperator() {
+    foreach (['=', '!=', '<>', '>', '>=', '<', '<=', 'LIKE'] as $operator) {
+      $this->assertTrue(SelectFactory::safeJoinOperator($operator));
+    }
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Invalid join operator: foo');
+    SelectFactory::safeJoinOperator('foo');
+  }
+
+  /**
    *
    */
   private function getSelectFactory() {
@@ -110,14 +128,6 @@ class SelectFactoryTest extends TestCase {
   private function queryDebug() {
     print_r($this->query);
     print "\n" . $this->selectToString($this->selectFactory->create($this->query));
-  }
-
-  /**
-   *
-   */
-  public function setUp():void {
-    $this->query = new Query();
-    $this->selectFactory = $this->getSelectFactory();
   }
 
 }
