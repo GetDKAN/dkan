@@ -4,7 +4,6 @@ namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Select;
-use Exception;
 
 /**
  * Class to convert a DKAN Query object into a Drupal DB API Select Object.
