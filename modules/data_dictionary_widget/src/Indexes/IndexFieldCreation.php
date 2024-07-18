@@ -43,7 +43,7 @@ class IndexFieldCreation {
    * Create data index data rows.
    */
   public static function createIndexFieldsDataRows($index_field_values, $current_index_fields, $index_fields_data_results, $form_state) {
-    if ($index_field_values) {
+    //if ($index_field_values || $current_index_fields) {
       return [
         '#access' => ((bool) $current_index_fields || (bool) $index_fields_data_results),
         '#type' => 'table',
@@ -52,8 +52,24 @@ class IndexFieldCreation {
         '#tree' => TRUE,
         '#theme' => 'custom_index_fields_table',
       ];
-    }
+    //}
   }
+
+  //   /**
+  //  * Create data index data rows.
+  //  */
+  // public static function createIndexFieldsEditDataRows($index_field_values, $current_index_fields, $index_fields_data_results, $form_state) {
+  //   if ($index_fields_data_results) {
+  //     return [
+  //       '#access' => ((bool) $current_index_fields || (bool) $index_fields_data_results),
+  //       '#type' => 'table',
+  //       '#header' => ['NAME', 'LENGTH'],
+  //       '#rows' => $form_state->get('cancel_index_field') ? $current_index_fields : ($index_fields_data_results ?? []),
+  //       '#tree' => TRUE,
+  //       '#theme' => 'custom_index_fields_table',
+  //     ];
+  //   }
+  // }
 
   /**
    * Create data index data rows.

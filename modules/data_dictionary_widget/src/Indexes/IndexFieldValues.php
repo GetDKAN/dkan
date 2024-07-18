@@ -18,4 +18,19 @@ class IndexFieldValues {
       'length' => (int)$length,
     ];
   }
+
+  /**
+   * Return updated index field values after edit.
+   */
+  public static function updateIndexValues($field_index, $update_values, $current_index) {
+    $description = $update_values["field_json_metadata"][0]["indexes"]["edit_index"]['index_key_' . $field_index]["description"];
+    $type = $update_values["field_json_metadata"][0]["indexes"]["edit_index"]['index_key_' . $field_index]["type"];
+    $fields = $current_index[$field_index]['fields'];
+
+    return [
+      'description' => $description,
+      'type' => $type,
+      'fields' => $fields,
+    ];
+  }
 }

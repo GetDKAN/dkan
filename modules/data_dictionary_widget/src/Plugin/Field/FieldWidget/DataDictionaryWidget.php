@@ -42,6 +42,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $current_index_fields = $form_state->get('current_index_fields');
     $dictionary_fields_being_modified = $form_state->get("dictionary_fields_being_modified") ?? NULL;
     $index_fields_being_modified = $form_state->get("index_fields_being_modified") ?? NULL;
+    $index_being_modified = $form_state->get("index_being_modified") ?? NULL;
 
     $op = $form_state->getTriggeringElement()['#op'] ?? NULL;
     $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, TRUE) : [];
@@ -52,7 +53,6 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $index_fields_results = $field_json_metadata["data"]["indexes"][0]["fields"] ?? [];
     $index_results = $field_json_metadata["data"]["indexes"] ?? [];
 
-    // Process data results
     $data_results = FieldOperations::processDataResults($data_results, $current_dictionary_fields, $dictionary_field_values, $op);
     $index_fields_data_results = IndexFieldOperations::processIndexFieldsDataResults($index_fields_results, $current_index_fields, $index_field_values, $op);
     $index_data_results = IndexFieldOperations::processIndexDataResults($index_results, $current_indexes, $index_values, $index_fields_data_results, $op);
@@ -64,7 +64,10 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     // Add pre-render functions
     $element['dictionary_fields']['#pre_render'] = [[$this, 'preRenderForm']];
-    $element['indexes']['#pre_render'] = [[$this, 'preRenderIndexForm']];
+    $element['indexes']['#pre_render'] = [
+      [$this, 'preRenderIndexForm'],
+      [$this, 'preRenderIndexFieldForm'],
+    ];
     $element['indexes']['fields']['#pre_render'] = [[$this, 'preRenderIndexFieldForm']];
 
     // Add data rows to display in tables
@@ -77,12 +80,20 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element['dictionary_fields']['add_row_button']['#access'] = $dictionary_fields_being_modified == NULL ? TRUE : FALSE;
     
     // Create index fields/buttons for editing
-    $element['indexes'] = IndexFieldOperations::createDictionaryIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes']);
-    if ($index_field_values || $current_index_fields) {
+    $element['indexes'] = IndexFieldOperations::createDictionaryIndexOptions($op_index, $index_data_results, $index_being_modified, $element['indexes']);
+    //$element["indexes"]["fields"] = IndexFieldOperations::createDictionaryIndexFieldEditOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element["indexes"]["fields"]);
+
+    if ($index_field_values || $current_index_fields || $index_being_modified) {
       $element["indexes"]["fields"] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
     }
+
+    // if ($index_being_modified) {
+    //   $element['indexes']['fields']['data'] = IndexFieldCreation::createIndexFieldsEditDataRows($index_field_values, $current_index_fields, $index_fields_data_results, $form_state);
+    // }
+
     $element['indexes']['fields']['add_row_button']['#access'] = $index_fields_being_modified == NULL ? TRUE : FALSE;
-    
+    $element['indexes']['add_row_button']['#access'] = $index_being_modified == NULL ? TRUE : FALSE;
+
     // Get form entity
     $form_object = $form_state->getFormObject();
     if (!($form_object instanceof EntityFormInterface)) {
@@ -176,6 +187,15 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
   }
 
   /**
+   * Prerender callback for the index field form.
+   *
+   * Moves the buttons into the table.
+   */
+  public function preRenderIndexFieldEditForm(array $indexFields) {
+    return IndexFieldOperations::setIndexFieldsEditAjaxElements($indexFields);
+  }
+
+  /**
    * Prerender callback for the index form.
    *
    * Moves the buttons into the table.
@@ -188,7 +208,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * {@inheritdoc}
    */
   public static function trustedCallbacks() {
-    return ['preRenderForm', 'preRenderIndexFieldForm', 'preRenderIndexForm'];
+    return ['preRenderForm', 'preRenderIndexFieldForm', 'preRenderIndexForm', 'preRenderIndexFieldEditForm'];
   }
 
 }
