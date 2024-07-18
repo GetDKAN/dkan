@@ -240,7 +240,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return string
    *   String to be used in title.
    */
-  private function metastoreOptionTitle($item, $titleProperty): string {
+  protected function metastoreOptionTitle($item, $titleProperty): string {
     if ($titleProperty) {
       return is_object($item) ? $item->data->$titleProperty : $item;
     }
@@ -260,7 +260,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return string
    *   String to be used as option value.
    */
-  private function metastoreOptionValue($item, object $source, $titleProperty): string {
+  protected function metastoreOptionValue($item, object $source, $titleProperty): string {
     if (($source->returnValue ?? NULL) == 'url') {
       return 'dkan://metastore/schemas/' . $source->metastoreSchema . '/items/' . $item->identifier;
     }
@@ -273,7 +273,7 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Helper function to add the value of other to current list of options.
    */
-  private function handleSelectOtherDefaultValue($element, $options) {
+  protected function handleSelectOtherDefaultValue($element, $options) {
     if (!empty($element['#default_value'])) {
       if (!array_key_exists($element['#default_value'], $options)) {
         $element['#options'][$element['#default_value']] = $element['#default_value'];
