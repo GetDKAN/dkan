@@ -91,6 +91,9 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *
    * @return \RootedData\RootedJsonData
    *   Data-dictionary metadata.
+   *
+   * @throws \Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
+   *   Thrown when the resource does not have an associated data dictionary.
    */
   protected function getDataDictionaryForResource(DataResource $resource): RootedJsonData {
     $resource_id = $resource->getIdentifier();
@@ -98,7 +101,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
     $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
 
     if (!isset($dictionary_id)) {
-      throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
+      throw new ResourceDoesNotHaveDictionary($resource_id, $resource_version);
     }
     return $this->metastore->get('data-dictionary', $dictionary_id);
   }

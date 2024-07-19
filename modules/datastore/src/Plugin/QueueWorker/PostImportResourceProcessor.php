@@ -8,6 +8,7 @@ use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\PostImport;
+use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\Reference\ReferenceLookup;
@@ -188,7 +189,17 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
         $this->logger->notice('Post import job for resource @id completed.', ['@id' => (string) $resource->getIdentifier()]);
       }
     }
+    catch (ResourceDoesNotHaveDictionary $e) {
+      // ResourceDoesNotHaveDictionary means there was no data dictionary for
+      // the given resource. This is not an error because not all resources have
+      // data dictionaries, but we should tell the user in case they think the
+      // resource should have one.
+      // @see \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer::getDataDictionaryForResource()
+      $this->logger->notice($e->getMessage());
+      $postImportResult = $this->createPostImportResult('done', 'Resource ' . $e->getResourceId() . ' does not have a data dictionary.', $resource);
+    }
     catch (\Exception $e) {
+      // General catch-all for errors.
       $this->logger->error($e->getMessage());
       $postImportResult = $this->createPostImportResult('error', $e->getMessage(), $resource);
     }
