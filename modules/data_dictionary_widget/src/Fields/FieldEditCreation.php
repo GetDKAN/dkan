@@ -122,7 +122,7 @@ class FieldEditCreation {
   private static function createDescriptionField($key, $current_fields) {
     return [
       '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][description]',
-      '#type' => 'textfield',
+      '#type' => 'textarea',
       '#value' => $current_fields[$key]['description'],
       '#required' => TRUE,
       '#title' => 'Description',
