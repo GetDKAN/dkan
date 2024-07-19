@@ -104,8 +104,10 @@ class SelectFactory {
   private function addDateExpressions($db_query, $fields, $meta_data) {
     foreach ($meta_data as $definition) {
       // Confirm definition name is in the fields list.
-      if ($fields[$definition['name']]['field'] && $definition['type'] == 'date') {
-        $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
+      $name = $this->dbQuery->escapeField($definition['name']);
+      $sanitizedName = $fields[$name]['field'];
+      if ($sanitizedName && $definition['type'] == 'date') {
+        $db_query->addExpression("DATE_FORMAT(" . $sanitizedName . ", '" . $definition['format'] . "')", $sanitizedName);
       }
     }
   }
