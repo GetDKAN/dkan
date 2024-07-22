@@ -3,28 +3,39 @@
 namespace Drupal\datastore\Service\ResourceProcessor;
 
 /**
- * Thrown when the DictionaryEnforcer can't find a dictionary for a resource.
+ * Thrown when a resource does not have an associated data dictionary.
  *
  * @see Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer::getDataDictionaryForResource()
  */
 class ResourceDoesNotHaveDictionary extends \RuntimeException {
 
+  /**
+   * The resource ID.
+   *
+   * @var string
+   */
   private string $resourceId;
 
-  private int $resourceVersion;
-
+  /**
+   * Constructor.
+   *
+   * @param string $resource_id
+   *   Resource ID.
+   * @param int $resource_version
+   *   Resource version.
+   */
   public function __construct(string $resource_id, int $resource_version) {
     $this->resourceId = $resource_id;
-    $this->resourceVersion = $resource_version;
     parent::__construct(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
   }
 
+  /**
+   * Get the resource ID.
+   *
+   * @return string
+   */
   public function getResourceId(): string {
     return $this->resourceId;
-  }
-
-  public function getResourceVersion(): int {
-    return $this->resourceVersion;
   }
 
 }
