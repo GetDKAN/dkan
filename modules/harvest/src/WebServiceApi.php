@@ -5,6 +5,7 @@ namespace Drupal\harvest;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -18,13 +19,6 @@ class WebServiceApi implements ContainerInjectionInterface {
   private const DEFAULT_HEADERS = ['Access-Control-Allow-Origin' => '*'];
 
   /**
-   * Request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  private $requestStack;
-
-  /**
    * Harvest.
    *
    * @var \Drupal\harvest\HarvestService
@@ -36,7 +30,6 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('request_stack'),
       $container->get('dkan.harvest.service')
     );
   }
@@ -44,8 +37,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(RequestStack $requestStack, HarvestService $service) {
-    $this->requestStack = $requestStack;
+  public function __construct(HarvestService $service) {
     $this->harvester = $service;
   }
 
@@ -101,9 +93,9 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Register a new harvest.
    */
-  public function register() {
+  public function register(Request $request) {
     try {
-      $harvest_plan = $this->requestStack->getCurrentRequest()->getContent();
+      $harvest_plan = $request->getContent();
       $plan = json_decode($harvest_plan);
       $identifier = $this->harvester
         ->registerHarvest($plan);
@@ -146,9 +138,9 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Runs harvest.
    */
-  public function run() {
+  public function run(Request $request) {
     try {
-      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+      $payloadJson = $request->getContent();
       $payload = json_decode($payloadJson);
       if (!isset($payload->plan_id)) {
         $return = [
@@ -179,10 +171,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Gives list of previous runs for a harvest id.
    */
-  public function info() {
+  public function info(Request $request) {
 
     try {
-      $id = $this->requestStack->getCurrentRequest()->get('plan');
+      $id = $request->get('plan');
       if (empty($id)) {
         return $this->missingParameterJsonResponse('plan');
       }
@@ -211,9 +203,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @param string $identifier
    *   The harvest run identifier.
    */
-  public function infoRun($identifier) {
+  public function infoRun($identifier, Request $request) {
 
-    $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
+    $plan_id = $request->get('plan');
+
     if (empty($plan_id)) {
       return $this->missingParameterJsonResponse('plan');
     }
@@ -236,9 +229,9 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Reverts harvest.
    */
-  public function revert() {
+  public function revert(Request $request) {
     try {
-      $plan_id = $this->requestStack->getCurrentRequest()->get('plan');
+      $plan_id = $request->get('plan');
       if (empty($plan_id)) {
         return $this->missingParameterJsonResponse('plan');
       }
