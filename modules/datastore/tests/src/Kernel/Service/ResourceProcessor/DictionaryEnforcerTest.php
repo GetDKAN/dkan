@@ -3,6 +3,7 @@
 namespace Drupal\Tests\datastore\Kernel\Service\ResourceProcessor;
 
 use Drupal\common\DataResource;
+use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
@@ -48,6 +49,34 @@ class DictionaryEnforcerTest extends KernelTestBase {
     $this->expectException(ResourceDoesNotHaveDictionary::class);
     $this->expectExceptionMessage('No data-dictionary found for resource with id');
     $ref_get->invokeArgs($enforcer, [$resource]);
+  }
+
+  /**
+   * @covers ::process
+   */
+  public function testProcessModeNone() {
+    // Explicitly set to none.
+    $this->config('metastore.settings')
+      ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_NONE)
+      ->save();
+
+    // Mock a DictionaryEnforcer so that we can set expectations on its methods.
+    $dictionary_enforcer = $this->getMockBuilder(DictionaryEnforcer::class)
+      ->setConstructorArgs([
+        $this->container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql'),
+        $this->container->get('dkan.metastore.service'),
+        $this->container->get('dkan.metastore.data_dictionary_discovery'),
+      ])
+      ->onlyMethods(['getDataDictionaryForResource', 'applyDictionary'])
+      ->getMock();
+    // We expect that these methods will never be called.
+    $dictionary_enforcer->expects($this->never())
+      ->method('getDataDictionaryForResource');
+    $dictionary_enforcer->expects($this->never())
+      ->method('applyDictionary');
+
+    // We can't assert against the return value because process() returns void.
+    $dictionary_enforcer->process(new DataResource('test.csv', 'text/csv'));
   }
 
 }
