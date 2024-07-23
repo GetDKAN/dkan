@@ -33,6 +33,7 @@ class ResourceDoesNotHaveDictionary extends \RuntimeException {
    * Get the resource ID.
    *
    * @return string
+   *   The resource ID.
    */
   public function getResourceId(): string {
     return $this->resourceId;
