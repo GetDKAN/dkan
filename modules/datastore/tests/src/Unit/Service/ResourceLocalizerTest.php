@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * @group dkan
  * @group datastore
+ * @group unit
  */
 class ResourceLocalizerTest extends TestCase {
   /**
@@ -154,14 +155,12 @@ class ResourceLocalizerTest extends TestCase {
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->index(0);
 
-    $container = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', self::HOST);
-
-    return $container;
   }
 
 }

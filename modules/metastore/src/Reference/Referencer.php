@@ -3,17 +3,16 @@
 namespace Drupal\metastore\Reference;
 
 use Contracts\FactoryInterface;
-use Drupal\common\DataResource;
-use Drupal\common\LoggerTrait;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\common\DataResource;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
@@ -21,7 +20,6 @@ use Symfony\Component\Mime\MimeTypeGuesserInterface;
  */
 class Referencer {
   use HelperTrait;
-  use LoggerTrait;
 
   /**
    * Default Mime Type to use when mime type detection fails.
@@ -59,6 +57,13 @@ class Referencer {
   protected $mimeTypeGuesser;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
@@ -71,20 +76,23 @@ class Referencer {
    *   Guzzle http client.
    * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mimeTypeGuesser
    *   The MIME type guesser.
+   * @param \Psr\Log\LoggerInterface $loggerChannel
+   *   DKAN logger channel service.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
     FactoryInterface $storageFactory,
     MetastoreUrlGenerator $metastoreUrlGenerator,
     Client $httpClient,
-    MimeTypeGuesserInterface $mimeTypeGuesser
+    MimeTypeGuesserInterface $mimeTypeGuesser,
+    LoggerInterface $loggerChannel
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
-    $this->setLoggerFactory(\Drupal::service('logger.factory'));
     $this->metastoreUrlGenerator = $metastoreUrlGenerator;
     $this->httpClient = $httpClient;
     $this->mimeTypeGuesser = $mimeTypeGuesser;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -123,7 +131,7 @@ class Referencer {
    * @return string|array
    *   Single reference, or an array of references.
    */
-  private function referenceProperty(string $property_id, $data) {
+  private function referenceProperty(string $property_id, mixed $data) {
     if (is_array($data)) {
       return $this->referenceMultiple($property_id, $data);
     }
@@ -167,7 +175,6 @@ class Referencer {
    *   The Uuid reference, or NULL on failure.
    */
   private function referenceSingle(string $property_id, $value) {
-
     if ($property_id == 'distribution') {
       $value = $this->distributionHandling($value);
     }
@@ -180,14 +187,12 @@ class Referencer {
       return $uuid;
     }
     else {
-      $this->log(
-        'value_referencer',
-        'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
-        [
-          '@property_id' => $property_id,
-          '@value' => var_export($value, TRUE),
-        ]
-      );
+      // @todo Based on the fact that we can't make a test hit these lines, it
+      //   seems that they are dead code.
+      $this->logger->error('Neither found an existing nor could create a new reference for property_id: @property_id with value: @value', [
+        '@property_id' => $property_id,
+        '@value' => var_export($value, TRUE),
+      ]);
       return NULL;
     }
   }
@@ -238,7 +243,7 @@ class Referencer {
       $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
     }
     // If the URL cannot be converted to a DKAN URI, pass it through.
-    catch (\DomainException $e) {
+    catch (\DomainException) {
       return $value;
     }
     // If it was converted to DKAN URI, validate it as a data dictionary.
@@ -318,6 +323,8 @@ class Referencer {
 
   /**
    * Private.
+   *
+   * @todo Inject this service.
    */
   private function getFileMapper(): ResourceMapper {
     return \Drupal::service('dkan.metastore.resource_mapper');
@@ -339,7 +346,7 @@ class Referencer {
     // If we couldn't find a mime type, log an error notifying the user.
     if (is_null($mime_type)) {
       $filename = basename($downloadUrl);
-      $this->log('value_referencer', 'Unable to determine mime type of file with name "@name".', [
+      $this->logger->error('Unable to determine mime type of file with name "@name".', [
         '@name' => $filename,
       ]);
     }
@@ -364,7 +371,7 @@ class Referencer {
     try {
       $response = $this->httpClient->head($downloadUrl);
     }
-    catch (GuzzleException $exception) {
+    catch (GuzzleException) {
       return $mime_type;
     }
     // Extract the full value of the content type header.
@@ -474,8 +481,7 @@ class Referencer {
 
     // Create node to store this reference.
     $storage = $this->storageFactory->getInstance($property_id);
-    $entity_uuid = $storage->store($json, $data->identifier);
-    return $entity_uuid;
+    return $storage->store($json, $data->identifier);
   }
 
 }

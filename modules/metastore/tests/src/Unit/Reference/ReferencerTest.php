@@ -8,30 +8,24 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
-use Drupal\Core\File\MimeType\ExtensionMimeTypeGuesser;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-
-use Drupal\common\DataResource;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
-
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -130,7 +124,8 @@ class ReferencerTest extends TestCase {
       $storageFactory,
       $urlGenerator,
       new Client(),
-      $mimeTypeGuesser
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
     );
   }
 
@@ -143,14 +138,12 @@ class ReferencerTest extends TestCase {
       ->add('file_system', FileSystem::class)
       ->index(0);
 
-    $container_chain = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'test.test')
       ->add(ResourceMapper::class, 'register', TRUE, 'resource')
       ->add(FileSystem::class, 'getTempDirectory', '/tmp');
-
-    return $container_chain;
   }
 
   /**
@@ -410,7 +403,8 @@ class ReferencerTest extends TestCase {
       $storageFactory,
       $urlGenerator,
       new Client(),
-      $mimeTypeGuesser
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
     );
 
     // Test Mime Type detection using the resource `mediaType` property.
@@ -475,11 +469,12 @@ class ReferencerTest extends TestCase {
       $storageFactory,
       $urlGenerator,
       $http_client,
-      $mimeTypeGuesser
+      $mimeTypeGuesser,
+      $this->createStub(LoggerInterface::class)
     );
 
     if ($describedBy instanceof \Exception) {
-      $this->expectException(get_class($describedBy));
+      $this->expectException($describedBy::class);
       $this->expectExceptionMessage($describedBy->getMessage());
     }
     $referencer->distributionHandling($distribution);

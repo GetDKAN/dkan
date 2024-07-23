@@ -5,7 +5,6 @@ namespace Drupal\datastore\Service;
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\LoggerTrait;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
@@ -21,7 +20,6 @@ use Procrastinator\Result;
  */
 class ResourceLocalizer {
 
-  use LoggerTrait;
   use EventDispatcherTrait;
 
   /**
@@ -201,7 +199,7 @@ class ResourceLocalizer {
     try {
       $this->resourceMapper->registerNewPerspective($new);
     }
-    catch (AlreadyRegistered $e) {
+    catch (AlreadyRegistered) {
     }
 
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
@@ -209,7 +207,7 @@ class ResourceLocalizer {
     try {
       $this->resourceMapper->registerNewPerspective($localUrlPerspective);
     }
-    catch (AlreadyRegistered $e) {
+    catch (AlreadyRegistered) {
     }
   }
 
@@ -357,7 +355,7 @@ class ResourceLocalizer {
       try {
         $this->resourceMapper->registerNewPerspective($localized_resource);
       }
-      catch (AlreadyRegistered $e) {
+      catch (AlreadyRegistered) {
         // Catch the already-registered exception.
       }
       $file_system = $this->getFileSystem();

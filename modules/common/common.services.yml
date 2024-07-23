@@ -43,6 +43,10 @@ services:
       - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
       - [setImportInfo, ['@?dkan.datastore.import_info']]
 
+  dkan.common.logger_channel:
+    parent: logger.channel_base
+    arguments: [ 'dkan' ]
+
   plugin.manager.dkan_api_docs:
     class: \Drupal\common\Plugin\DkanApiDocsPluginManager
     parent: default_plugin_manager

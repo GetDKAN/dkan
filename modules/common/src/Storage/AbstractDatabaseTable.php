@@ -13,6 +13,11 @@ use Drupal\Core\Database\SchemaObjectExistsException;
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use EventDispatcherTrait;
 
+  /**
+   * The event name we send when we create a table.
+   *
+   * @todo This is unused.
+   */
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
 
   /**
@@ -100,11 +105,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       return [];
     }
 
-    $result = array_map(function ($item) {
+    return array_map(function ($item) {
       return $item->{$this->primaryKey()};
     }, $result);
-
-    return $result;
   }
 
   /**
@@ -247,7 +250,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       'Can\'t find FULLTEXT index matching the column list' => 'You have attempted a fulltext match against a column that is not indexed for fulltext searching',
     ];
     foreach ($messages as $portion => $message) {
-      if (strpos($unsanitizedMessage, $portion) !== FALSE) {
+      if (str_contains($unsanitizedMessage, $portion)) {
         return $message . '.';
       }
     }
@@ -266,7 +269,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
         try {
           $this->tableCreate($table_name, $schema);
         }
-        catch (SchemaObjectExistsException $e) {
+        catch (SchemaObjectExistsException) {
           // Table already exists, which is totally OK. Other throwables find
           // their way out to the caller.
         }
@@ -388,10 +391,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Get the schema for this table.
    *
    * @return array
-   *   A schema array.
+   *   A Drupal Schema API array, or an empty array if none found.
    */
   public function getSchema(): array {
-    return $this->schema;
+    return $this->schema ?? [];
   }
 
   /**

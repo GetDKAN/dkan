@@ -8,6 +8,8 @@
 
 ---
 
+[![Getting Started with DKAN](https://img.youtube.com/vi/SnA22Lb6r_M/0.jpg)](https://youtu.be/SnA22Lb6r_M?si=WqU-FKGb1iGhc5Vz)
+
 ## Documentation
 DKAN's documentation can be found at https://dkan.readthedocs.io/en/latest
 
@@ -28,6 +30,12 @@ Requirements: https://dkan.readthedocs.io/en/latest/installation/index.html#requ
 ## License
 
 DKAN and related modules are freely-available under the ["GNU General Public License, version 2 or any later version"](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) license.
+
+---
+
+## Security
+
+If you have found a vunerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
 
 ---
 

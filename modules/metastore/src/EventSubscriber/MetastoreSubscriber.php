@@ -4,7 +4,6 @@ namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
-use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\metastore\ReferenceLookupInterface;
@@ -16,13 +15,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Event subscriber for Metastore.
  */
 class MetastoreSubscriber implements EventSubscriberInterface {
-
-  /**
-   * Logger service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
-   */
-  protected LoggerChannelFactory $loggerFactory;
 
   /**
    * Metastore service.
@@ -52,7 +44,6 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('logger.factory'),
       $container->get('dkan.metastore.service'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.metastore.reference_lookup')
@@ -62,8 +53,6 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   /**
    * Constructor.
    *
-   * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
-   *   LoggerChannelFactory service.
    * @param \Drupal\metastore\MetastoreService $service
    *   The dkan.metastore.service service.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
@@ -71,8 +60,11 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
    *   The dkan.metastore.reference_lookup service.
    */
-  public function __construct(LoggerChannelFactory $logger_factory, MetastoreService $service, ResourceMapper $resourceMapper, ReferenceLookupInterface $referenceLookup) {
-    $this->loggerFactory = $logger_factory;
+  public function __construct(
+    MetastoreService $service,
+    ResourceMapper $resourceMapper,
+    ReferenceLookupInterface $referenceLookup
+  ) {
     $this->service = $service;
     $this->resourceMapper = $resourceMapper;
     $this->referenceLookup = $referenceLookup;
@@ -83,7 +75,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @inheritdoc
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events = [];
     $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
     return $events;

@@ -155,22 +155,37 @@ dkan.metastore.config_properties:
     _form: '\Drupal\metastore\Form\DkanDataSettingsForm'
     _title: 'Metastore settings'
   requirements:
-    _permission: 'access administration pages'
+    _permission: 'administer metastore settings'
   options:
     _admin_route: TRUE
 
 metastore.data_dictionary:
-  path: '/admin/dkan/data-dictionary'
+  path: '/admin/dkan/data-dictionaries'
   defaults:
-    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
-    _title: 'Data-Dictionary'
+    _title: 'Data Dictionary List'
   requirements:
     _permission: 'create data content'
 
 metastore.data_dictionary.settings:
   path: '/admin/dkan/data-dictionary/settings'
   defaults:
-    _title: 'Data-Dictionary Settings'
+    _title: 'Data Dictionary Settings'
     _form: '\Drupal\metastore\Form\DataDictionarySettingsForm'
   requirements:
     _permission: 'administer data dictionary settings'
+
+metastore.datasets:
+  path: '/admin/dkan/datasets'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Datasets'
+  requirements:
+    _permission: 'create data content'
+
+metastore.datasets.create:
+  path: '/admin/dkan/datasets'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Create Dataset'
+  requirements:
+    _permission: 'create data content'

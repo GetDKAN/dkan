@@ -3,17 +3,14 @@
 namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
-
 use Procrastinator\Result;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -68,9 +65,9 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
   /**
    * Logger service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -85,7 +82,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *   A config factory instance.
    * @param \Drupal\datastore\DatastoreService $datastore
    *   A DKAN datastore service instance.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
+   * @param \Psr\Log\LoggerInterface $loggerChannel
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
@@ -100,7 +97,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
     $plugin_definition,
     ConfigFactoryInterface $configFactory,
     DatastoreService $datastore,
-    LoggerChannelFactoryInterface $loggerFactory,
+    LoggerInterface $loggerChannel,
     ReferenceLookup $referenceLookup,
     DatabaseConnectionFactoryInterface $defaultConnectionFactory,
     DatabaseConnectionFactoryInterface $datastoreConnectionFactory
@@ -111,7 +108,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
     $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
     $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
-    $this->logger = $loggerFactory->get('datastore');
+    $this->logger = $loggerChannel;
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
@@ -130,7 +127,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
       $plugin_definition,
       $container->get('config.factory'),
       $container->get('dkan.datastore.service'),
-      $container->get('logger.factory'),
+      $container->get('dkan.datastore.logger_channel'),
       $container->get('dkan.metastore.reference_lookup'),
       $container->get('dkan.common.database_connection_factory'),
       $container->get('dkan.datastore.database_connection_factory')
@@ -173,7 +170,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *
    * @todo Add more status logic as needed.
    */
-  protected function alreadyImported($data): bool {
+  protected function alreadyImported(mixed $data): bool {
     try {
       $storage = $this->datastore->getStorage(
         $data['identifier'] ?? FALSE,
@@ -183,7 +180,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
         return $storage->hasBeenImported();
       }
     }
-    catch (\InvalidArgumentException $e) {
+    catch (\InvalidArgumentException) {
       // DatastoreService->getStorage() throws \InvalidArgumentException if no
       // storage could be found. That helpfully answers our question of whether
       // the storage has already been imported.
@@ -204,7 +201,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
     $queued = FALSE;
     foreach ($results as $label => $result) {
-      $queued = isset($result) ? $this->processResult($result, $data, $queued, $label) : FALSE;
+      $queued = isset($result) && $this->processResult($result, $data, $queued, $label);
     }
 
     // Delete local resource file if enabled in datastore settings config.
@@ -228,7 +225,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * @return bool
    *   The updated value for $queued.
    */
-  protected function processResult(Result $result, $data, bool $queued = FALSE, string $label = 'Import') {
+  protected function processResult(Result $result, mixed $data, bool $queued = FALSE, string $label = 'Import') {
     $uid = $data['identifier'] . '__' . $data['version'];
     $status = $result->getStatus();
     switch ($status) {
@@ -260,7 +257,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * @param mixed $resourceId
    *   A resource ID.
    */
-  protected function invalidateCacheTags($resourceId) {
+  protected function invalidateCacheTags(mixed $resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 

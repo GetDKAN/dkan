@@ -95,12 +95,12 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   protected function getDataDictionaryForResource(DataResource $resource): RootedJsonData {
     $resource_id = $resource->getIdentifier();
     $resource_version = $resource->getVersion();
-    $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
+    $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
 
-    if (!isset($dict_id)) {
+    if (!isset($dictionary_id)) {
       throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
     }
-    return $this->metastore->get('data-dictionary', $dict_id);
+    return $this->metastore->get('data-dictionary', $dictionary_id);
   }
 
   /**
@@ -122,17 +122,31 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Returning data dictionary fields from schema.
    *
-   *  {@inheritdoc}
+   * @param string $identifier
+   *   A resource's identifier. Used when in reference mode.
+   *
+   * @return array|null
+   *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function returnDataDictionaryFields() {
-    // Get DD is mode.
+  public function returnDataDictionaryFields(string $identifier = NULL): ?array {
+    // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.
-    if ($dd_mode == "sitewide") {
-      $dict_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
-      $metaData = $this->metastore->get('data-dictionary', $dict_id)->{"$.data.fields"};
-      return $metaData;
+    switch ($dd_mode) {
+      case "sitewide":
+        $dictionary_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
+        break;
+
+      case "reference":
+        $resource = DataResource::getIdentifierAndVersion($identifier);
+        $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource[0]);
+        break;
+
+      default:
+        return NULL;
     }
+
+    return $dictionary_id ? $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"} : NULL;
   }
 
 }

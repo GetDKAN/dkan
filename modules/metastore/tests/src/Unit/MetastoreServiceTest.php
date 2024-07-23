@@ -2,27 +2,32 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
-use Drupal\common\Events\Event;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\Component\DependencyInjection\Container;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\common\Events\Event;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Drupal\metastore\Storage\NodeData;
-
+use Drupal\metastore\ValidMetadataFactory;
 use MockChain\Chain;
+use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
-use MockChain\Options;
 use RootedData\RootedJsonData;
 
 /**
- * @coversDefaultClass Drupal\metastore\MetastoreService
+ * @coversDefaultClass \Drupal\metastore\MetastoreService
+ *
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class MetastoreServiceTest extends TestCase {
 
@@ -118,18 +123,25 @@ class MetastoreServiceTest extends TestCase {
       ->add($event)
       ->add($event2);
 
-    $container = self::getCommonMockChain($this)
+    // Add a logger we can assert against.
+    $logger = new TestLogger();
+
+    $container = self::getCommonMockChain($this, NULL, $logger)
       ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
       ->add(ValidMetadataFactory::class, 'get', $data)
-      ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence);
+      ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence)
+      ->getMock();
 
-    \Drupal::setContainer($container->getMock());
-
-    $service = MetastoreService::create($container->getMock());
+    \Drupal::setContainer($container);
+    $service = MetastoreService::create($container);
 
     $this->assertEquals(
       json_encode([$data]),
-      json_encode($service->getAll("dataset"))
+      json_encode($service->getAll('dataset'))
+    );
+
+    $this->assertTrue(
+      $logger->hasErrorThatContains('A JSON string failed validation.')
     );
   }
 
@@ -397,16 +409,21 @@ EOF;
   }
 
   /**
-   * @return \Drupal\common\Tests\Mock\Chain
+   * @return \MockChain\Chain
    */
-  public static function getCommonMockChain(TestCase $case, Options $services = null) {
+  public static function getCommonMockChain(TestCase $case, Options $services = NULL, $logger = NULL) {
 
     $options = (new Options)
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
+      ->add('dkan.common.logger_channel', LoggerChannelInterface::class)
       ->index(0);
+
+    if ($logger) {
+      $options->add('dkan.common.logger_channel', $logger);
+    }
 
     return (new Chain($case))
       ->add(Container::class, "get", $options)

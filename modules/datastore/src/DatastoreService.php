@@ -202,7 +202,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * Private.
    */
   private function getLabelFromObject($object) {
-    return substr(strrchr(get_class($object), '\\'), 1);
+    return substr(strrchr($object::class, '\\'), 1);
   }
 
   /**
@@ -216,9 +216,15 @@ class DatastoreService implements ContainerInjectionInterface {
 
   /**
    * Returns the Data Dictionary fields.
+   *
+   * @param string $identifier
+   *   A resource's identifier. Used when in reference mode.
+   *
+   * @return array|null
+   *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function getDataDictionaryFields() {
-    return $this->dictionaryEnforcer->returnDataDictionaryFields();
+  public function getDataDictionaryFields(string $identifier = NULL): ?array {
+    return $this->dictionaryEnforcer->returnDataDictionaryFields($identifier);
   }
 
   /**
@@ -256,8 +262,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
-      $data = $storage->getSummary();
-      return $data;
+      return $storage->getSummary();
     }
     throw new \Exception('no storage');
   }

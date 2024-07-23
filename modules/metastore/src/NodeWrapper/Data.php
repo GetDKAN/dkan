@@ -2,10 +2,9 @@
 
 namespace Drupal\metastore\NodeWrapper;
 
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
@@ -13,7 +12,6 @@ use Drupal\node\Entity\Node;
  * MetastoreItem object that wraps a data node, provides additional methods.
  */
 class Data implements MetastoreItemInterface {
-  use LoggerTrait;
 
   /**
    * Node.
@@ -32,14 +30,14 @@ class Data implements MetastoreItemInterface {
   /**
    * Entity Type Manager.
    *
-   * @var Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
   private $entityTypeManager;
 
   /**
    * Entity Node Storage.
    *
-   * @var Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   private $nodeStorage;
 
@@ -71,8 +69,7 @@ class Data implements MetastoreItemInterface {
    * {@inheritdoc}
    */
   public function getCacheTags() {
-    $cacheTags = $this->node->getCacheTags();
-    return $cacheTags;
+    return $this->node->getCacheTags();
   }
 
   /**
@@ -193,8 +190,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getSchemaId() {
     $this->fix();
-    $schemaId = $this->node->get('field_data_type')->getString();
-    return $schemaId;
+    return $this->node->get('field_data_type')->getString();
   }
 
   /**
@@ -289,6 +285,16 @@ class Data implements MetastoreItemInterface {
     if (isset($this->node->original)) {
       return new Data($this->node->original);
     }
+  }
+
+  /**
+   * Save the "wrapped" node.
+   *
+   * Useful for some operations - usually recommended to use the metastore
+   * service's POST and PUT functions rather than saving the node directly.
+   */
+  public function save() {
+    $this->node->save();
   }
 
 }

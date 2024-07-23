@@ -65,7 +65,7 @@ class PostImport {
 
       return TRUE;
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }
@@ -91,7 +91,7 @@ class PostImport {
         ->execute()
         ->fetchAssoc();
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }
@@ -113,7 +113,7 @@ class PostImport {
 
       return TRUE;
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }

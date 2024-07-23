@@ -17,8 +17,10 @@ use PHPUnit\Framework\TestCase;
  * @covers \Drupal\datastore\Plugin\QueueWorker\ImportJob
  * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\ImportJob
  *
- * @group datastore
+ * @group dkan
  * @group dkan-core
+ * @group datastore
+ * @group unit
  */
 class ImportJobTest extends TestCase {
 
@@ -33,6 +35,7 @@ class ImportJobTest extends TestCase {
    * This method is called before each test.
    */
   protected function setUp(): void {
+    parent::setUp();
     $this->database = new TestMemStorage();
     $this->assertTrue($this->database instanceof DatabaseTableInterface);
   }

@@ -4,7 +4,9 @@
 'administer data dictionary settings':
   title: 'Metastore: Administer Data Dictionary Settings'
   description: 'Administer data dictionary settings'
-
+'administer metastore settings':
+  title: 'Metastore: Administer Metastore Settings'
+  description: 'Administer metastore settings'
 
 
 administer resource mapping:

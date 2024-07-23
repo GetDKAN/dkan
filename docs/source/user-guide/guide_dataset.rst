@@ -90,7 +90,7 @@ GUI
 9. Pay close attention to the required fields (marked with \*).
 10. Use the Distribution *Download URL* field to enter a url to your file or upload a local file.
 11. If you are uploading a file, wait for the upload to finish before clicking the Save button. The file name will turn blue when is it complete.
-12. If you are adding more than one distribution to a dataset be sure to utilize the **File Title** field to distinguish the differences in the files to the user.
+12. If you are adding more than one file to a dataset be sure to utilize the **File Title** field to distinguish the differences in the files to the user.
 13. Click "Save".
 14. Run cron to start the import.
 
@@ -179,12 +179,12 @@ When the sample content is no longer needed, remove the datasets with the remove
       drush dkan:sample-content:create
       drush cron
       drush cron
-      drush dkan:sample:content:remove
+      drush dkan:sample-content:remove
 
 Troubleshooting
 ^^^^^^^^^^^^^^^
 
-If you see output like this:
+If you see output like this (note the errors):
 
 .. code-block::
 

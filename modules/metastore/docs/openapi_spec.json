@@ -25,22 +25,35 @@
             }
         },
         "responses": {
+            "200MetadataUpdated": {
+                "description": "Metadata update successful.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/metastoreWriteResponse"
+                        }
+                    }
+                }
+            },
             "201MetadataCreated": {
                 "description": "Metadata creation successful.",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "endpoint": {
-                                    "type": "string",
-                                    "description": "Path to the metadata from the API."
-                                },
-                                "identifier": {
-                                    "type": "string",
-                                    "description": "Identifier for metadata just created or modified."
-                                }
-                            }
+                            "$ref": "#/components/schemas/metastoreWriteResponse"
+                        }
+                    }
+                }
+            },
+            "409MetadataAlreadyExists": {
+                "description": "Conflict; tried to create a record using an existing ID, or metadata contains identifier that doesn't match the request path.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/errorResponse" },
+                        "example": {
+                            "message": "dataset/00000000-0000-0000-0000-000000000000 already exists.",
+                            "status": 409,
+                            "timestamp": "2021-06-14T13:46:06+00:00"
                         }
                     }
                 }
@@ -61,6 +74,20 @@
 
         },
         "schemas": {
+            "metastoreWriteResponse": {
+                "type": "object",
+                "properties": {
+                    "endpoint": {
+                        "type": "string",
+                        "description": "Path to the metadata from the API."
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "description": "Identifier for metadata just created or modified."
+                    }
+                },
+                "additionalProperties": false
+            },
             "metastoreRevision": {
                 "type": "object",
                 "properties": {
@@ -181,7 +208,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Ok",
+                        "description": "Full list of all items for the given schema",
                         "content": {
                             "application/json": {
                                 "schema": {

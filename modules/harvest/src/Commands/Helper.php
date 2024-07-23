@@ -2,9 +2,6 @@
 
 namespace Drupal\harvest\Commands;
 
-use Drupal\harvest\Storage\DatabaseTable;
-use Harvest\ETL\Factory;
-use Harvest\Harvester;
 use Harvest\ResultInterpreter;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -17,39 +14,9 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 trait Helper {
 
   /**
-   * Private..
-   */
-  private function getHarvester($id) {
-
-    if (!method_exists($this, 'getHarvestPlan')) {
-      throw new \Exception("Drupal\harvest\Commands\Helper requires the host to implement the getHarvestPlan method.");
-    }
-
-    return new Harvester(new Factory($this->getHarvestPlan($id),
-      $this->getStorage($id, "item"),
-      $this->getStorage($id, "hash")));
-  }
-
-  /**
-   * Private..
-   */
-  private function getPlanStorage() {
-    $connection = \Drupal::service('database');
-    return new DatabaseTable($connection, "harvest_plans");
-  }
-
-  /**
-   * Private..
-   */
-  private function getStorage($id, $type) {
-    $connection = \Drupal::service('database');
-    return new DatabaseTable($connection, "harvest_{$id}_{$type}");
-  }
-
-  /**
    * Return Processed, Created, Updated, Failed counts from Harvest Run Result.
    */
-  private function getResultCounts($result) {
+  private function getResultCounts(array $result) {
     $interpreter = new ResultInterpreter($result);
 
     return [
@@ -61,27 +28,50 @@ trait Helper {
   }
 
   /**
-   * Display a list of [runIds, runInfo].
+   * Display a list of run IDs and run info.
    *
    * @param array $runInfos
-   *   Array of run Ids and HarvesterRunInfo association.
+   *   Array of harvest run results, as returned from Harvester::harvest().
+   *
+   * @see Harvester::harvest()
    */
   private function renderHarvestRunsInfo(array $runInfos) {
     $table = new Table(new ConsoleOutput());
     $table->setHeaders(['run_id', 'processed', 'created', 'updated', 'errors']);
+    $errors = [];
 
     foreach ($runInfos as $runInfo) {
-      [$run_id, $result] = $runInfo;
-
+      $run_id = $runInfo['identifier'] ?? NULL;
       $row = array_merge(
         [$run_id],
-        $this->getResultCounts($result)
+        $this->getResultCounts($runInfo)
       );
-
       $table->addRow($row);
+      // Store error messages if we have them.
+      $errors[$run_id] = $runInfo['errors'] ?? NULL;
     }
-
     $table->render();
+    $this->renderHarvestRunsErrors($errors);
+  }
+
+  /**
+   * Display errors.
+   *
+   * @param array $errors
+   *   Nested array of error messages and the systems they belong to.
+   *
+   * @see self::renderHarvestRunsInfo()
+   */
+  private function renderHarvestRunsErrors(array $errors) {
+    if ($errors) {
+      foreach ($errors ?? [] as $run_id => $run_errors) {
+        foreach ($run_errors ?? [] as $type => $messages) {
+          foreach ($messages ?? [] as $id => $message) {
+            $this->logger()->error('[' . $run_id . '][' . $type . '][' . $id . '] ' . $message);
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -93,24 +83,23 @@ trait Helper {
     if (empty($run['status']['extracted_items_ids'])) {
       $extract_status = $run['status']['extract'];
 
-      $consoleOutput->writeln(
-        ["<warning>harvest id $harvest_id and run id $run_id extract status is $extract_status</warning>",
-          "<warning>No items were extracted.</warning>",
-        ]
-      );
+      $consoleOutput->writeln([
+        '<warning>harvest id ' . $harvest_id . ' and run id ' . $run_id . ' extract status is ' . $extract_status . '</warning>',
+        '<warning>No items were extracted.</warning>',
+      ]);
     }
     else {
       $table = new Table($consoleOutput);
-      $table->setHeaders(["item_id", "extract", "transform", "load"]);
+      $table->setHeaders(['item_id', 'extract', 'transform', 'load']);
 
       foreach ($run['status']['extracted_items_ids'] as $item_id) {
         $row = $this->generateItemStatusRow($item_id, $run['status'], $run['errors'] ?? []);
         $table->addRow($row);
       }
 
-      $consoleOutput->writeln(
-        ["<info>$harvest_id run id $run_id status </info>"]
-      );
+      $consoleOutput->writeln([
+        '<info>' . $harvest_id . ' run id ' . $run_id . ' status </info>',
+      ]);
       $table->render();
     }
   }
@@ -124,7 +113,7 @@ trait Helper {
     $row['item_id'] = $item_id;
 
     /* Extract */
-    $row['extract'] = "[" . $status['extract'] . "]";
+    $row['extract'] = '[' . $status['extract'] . ']';
 
     /* transform */
 

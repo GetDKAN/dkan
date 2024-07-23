@@ -6,8 +6,6 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
-use function PHPUnit\Framework\assertEquals;
-
 class DistributionHandlingTest extends Api1TestBase {
 
   public function getEndpoint():string {
@@ -97,11 +95,9 @@ class DistributionHandlingTest extends Api1TestBase {
     $this->assertEquals(201, $response->getStatusCode());
 
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
-    $this->assertJsonIsValid($responseSchema, $responseBody);
     // Unless JSON changes, we should always get same id back.
-    assertEquals($responseBody->identifier, "5a0a82d9-9a91-5165-b948-927387029590");
+    $this->assertEquals("47f1d697-f469-5b41-a613-80cdfac7a326", $responseBody->identifier);
 
     return $responseBody->identifier;
   }

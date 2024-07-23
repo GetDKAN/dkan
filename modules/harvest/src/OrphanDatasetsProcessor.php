@@ -2,6 +2,8 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+
 /**
  * Handle dataset orphaning.
  *
@@ -10,26 +12,38 @@ namespace Drupal\harvest;
 trait OrphanDatasetsProcessor {
 
   /**
+   * Entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * Setter for this trait's entity type manager service dependency.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
+   */
+  public function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) : void {
+    $this->entityTypeManager = $entityTypeManager;
+  }
+
+  /**
    * Get the dataset identifiers orphaned by the harvest currently in progress.
    */
   private function getOrphanIdsFromResult(string $harvestId, array $extractedIds) : array {
-
-    $lastRunId = $this->getLastHarvestRunId($harvestId);
-    if (!$lastRunId) {
-      return [];
+    if ($lastRunId = $this->getLastHarvestRunId($harvestId)) {
+      $previouslyExtractedIds = $this->getExtractedIds($harvestId, $lastRunId);
+      return array_values(array_diff($previouslyExtractedIds, $extractedIds));
     }
-
-    $previouslyExtractedIds = $this->getExtractedIds($harvestId, $lastRunId);
-
-    return array_values(array_diff($previouslyExtractedIds, $extractedIds));
+    return [];
   }
 
   /**
    * Get ids extracted by a specific harvest run.
    */
   private function getExtractedIds(string $harvestId, string $runId) : array {
-    $runInfo = json_decode($this->getHarvestRunInfo($harvestId, $runId));
-    return $runInfo->status->extracted_items_ids ?? [];
+    return $this->runRepository->getExtractedUuids($harvestId, $runId);
   }
 
   /**
@@ -63,24 +77,25 @@ trait OrphanDatasetsProcessor {
   public function getOrphanIdsFromCompleteHarvest(string $harvestId) : array {
 
     $cumulativelyRemovedIds = [];
-    $runIds = $this->getAllHarvestRunInfo($harvestId);
+    $runIds = $this->getRunIdsForHarvest($harvestId);
 
     // Initialize with the first harvest run.
-    $previousRunId = array_shift($runIds);
-    $previousExtractedIds = $this->getExtractedIds($harvestId, $previousRunId);
+    if ($previousRunId = array_shift($runIds)) {
+      $previousExtractedIds = $this->getExtractedIds($harvestId, $previousRunId);
 
-    foreach ($runIds as $runId) {
-      $extractedIds = $this->getExtractedIds($harvestId, $runId);
+      foreach ($runIds as $runId) {
+        $extractedIds = $this->getExtractedIds($harvestId, $runId);
 
-      // Find and keep track of removed identifiers.
-      $removed = array_diff($previousExtractedIds, $extractedIds);
-      $cumulativelyRemovedIds = array_unique(array_merge($cumulativelyRemovedIds, $removed));
-      // Find but do not keep track of (re-)added identifiers.
-      $added = array_diff($extractedIds, $previousExtractedIds);
-      $cumulativelyRemovedIds = array_diff($cumulativelyRemovedIds, $added);
+        // Find and keep track of removed identifiers.
+        $removed = array_diff($previousExtractedIds, $extractedIds);
+        $cumulativelyRemovedIds = array_unique(array_merge($cumulativelyRemovedIds, $removed));
+        // Find but do not keep track of (re-)added identifiers.
+        $added = array_diff($extractedIds, $previousExtractedIds);
+        $cumulativelyRemovedIds = array_diff($cumulativelyRemovedIds, $added);
 
-      // Set up the next iteration by re-using this known result.
-      $previousExtractedIds = $extractedIds;
+        // Set up the next iteration by re-using this known result.
+        $previousExtractedIds = $extractedIds;
+      }
     }
 
     return $cumulativelyRemovedIds;

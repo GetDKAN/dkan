@@ -3,31 +3,58 @@
 namespace Drupal\sample_content;
 
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Drupal\harvest\Commands\Helper;
+use Drupal\harvest\HarvestService;
+use Drush\Commands\DrushCommands;
 
 /**
- * Class.
+ * Drush commands for the sample content module.
+ *
+ * @codeCoverageIgnore
+ *
+ * @todo Figure out why DrushTestTraits don't count as coverage for commands.
  */
 class Drush extends DrushCommands {
   use Helper;
+
+  protected const HARVEST_ID = 'sample_content';
 
   /**
    * The core extension module list service.
    *
    * @var \Drupal\Core\Extension\ModuleExtensionList
    */
-  protected $extensionListModule;
+  protected ModuleExtensionList $moduleExtensionList;
+
+  /**
+   * Harvest service.
+   *
+   * @var \Drupal\harvest\HarvestService
+   */
+  private HarvestService $harvestService;
+
+  /**
+   * Sample content service.
+   *
+   * @var \Drupal\sample_content\SampleContentService
+   */
+  private SampleContentService $sampleContentService;
 
   /**
    * Constructor for the Sample Content commands.
    *
-   * @param \Drupal\Core\Extension\ModuleExtensionList $extension_list_module
-   *   Extension list.
+   * @param \Drupal\sample_content\SampleContentService $sampleContentService
+   *   Sample content service.
+   * @param \Drupal\harvest\HarvestService $harvestService
+   *   Harvest service.
    */
-  public function __construct(ModuleExtensionList $extension_list_module) {
-    $this->extensionListModule = $extension_list_module;
+  public function __construct(
+    SampleContentService $sampleContentService,
+    HarvestService $harvestService
+  ) {
+    parent::__construct();
+    $this->sampleContentService = $sampleContentService;
+    $this->harvestService = $harvestService;
   }
 
   /**
@@ -36,11 +63,12 @@ class Drush extends DrushCommands {
    * @command dkan:sample-content:create
    */
   public function create() {
-    $this->createJson();
-    $harvester = $this->getHarvester("sample_content");
-    $result = $harvester->harvest();
-
-    $this->renderHarvestRunsInfo([['sample_content', $result]]);
+    $this->logger()->notice('Setting up harvest: ' . static::HARVEST_ID);
+    $this->sampleContentService->registerSampleContentHarvest(static::HARVEST_ID);
+    $this->renderHarvestRunsInfo([
+      $this->harvestService->runHarvest(static::HARVEST_ID),
+    ]);
+    $this->logger()->notice('Run cron a few times to finish the import of this data.');
   }
 
   /**
@@ -49,47 +77,16 @@ class Drush extends DrushCommands {
    * @command dkan:sample-content:remove
    */
   public function remove() {
-    $harvester = $this->getHarvester("sample_content");
-    $result = $harvester->revert();
-
-    $count = $result;
-
-    $output = new ConsoleOutput();
-    $output->write("{$count} items reverted for the 'sample_content' harvest plan.");
-  }
-
-  /**
-   * Protected.
-   */
-  protected function getHarvestPlan() {
-    $module_path = DRUPAL_ROOT . "/" . $this->extensionListModule->getPath('sample_content');
-
-    $plan_path = $module_path . "/harvest_plan.json";
-    $json = file_get_contents($plan_path);
-    $plan = json_decode($json);
-
-    $plan->extract->uri = "file://" . $module_path . $plan->extract->uri;
-
-    return $plan;
-  }
-
-  /**
-   * Private.
-   */
-  private function createJson() {
-    $sample_content_path = $this->extensionListModule->getPath('sample_content');
-    $sample_content_template = DRUPAL_ROOT . "/" . $sample_content_path . "/sample_content.template.json";
-    $content = file_get_contents($sample_content_template);
-    $new = $this->detokenize($content);
-    file_put_contents(DRUPAL_ROOT . "/" . $sample_content_path . "/sample_content.json", $new);
-  }
-
-  /**
-   * Private.
-   */
-  private function detokenize($content) {
-    $absolute_module_path = DRUPAL_ROOT . "/" . $this->extensionListModule->getPath('sample_content') . "/files";
-    return str_replace("<!*path*!>", $absolute_module_path, $content);
+    if (!$this->harvestService->getHarvestPlanObject(static::HARVEST_ID)) {
+      $this->logger()->notice('Harvest plan ' . static::HARVEST_ID . ' is not available. Re-registering it so we can revert it.');
+      $this->sampleContentService->registerSampleContentHarvest(static::HARVEST_ID);
+      $this->harvestService->runHarvest(static::HARVEST_ID);
+    }
+    $this->logger()->notice('Reverting harvest plan: ' . static::HARVEST_ID);
+    $count = $this->harvestService->revertHarvest(static::HARVEST_ID);
+    $this->logger()->notice($count . " items reverted for the 'sample_content' harvest plan.");
+    $this->logger()->notice('Deregistering harvest plan: ' . static::HARVEST_ID);
+    $this->harvestService->deregisterHarvest(static::HARVEST_ID);
   }
 
 }

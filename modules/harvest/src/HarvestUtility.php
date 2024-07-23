@@ -3,9 +3,10 @@
 namespace Drupal\harvest;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\Storage\DatabaseTableFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * DKAN Harvest utility service for maintenance tasks.
@@ -13,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * These methods generally exist to support a thin Drush layer. These are
  * methods that we don't need in the HarvestService object.
  */
-class HarvestUtility implements ContainerInjectionInterface {
+class HarvestUtility {
 
   /**
    * Harvest service.
@@ -23,7 +24,7 @@ class HarvestUtility implements ContainerInjectionInterface {
   private HarvestService $harvestService;
 
   /**
-   * Service to instantiate storage objects for Harvest plan storage.
+   * Service to instantiate storage objects for Harvest tables.
    *
    * @var \Drupal\harvest\Storage\DatabaseTableFactory
    */
@@ -37,17 +38,25 @@ class HarvestUtility implements ContainerInjectionInterface {
   private Connection $connection;
 
   /**
-   * Create.
+   * Harvest run entity repository service.
    *
-   * @inheritdoc
+   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
-  public static function create(ContainerInterface $container) {
-    return new self(
-      $container->get('dkan.harvest.service'),
-      $container->get('dkan.harvest.storage.database_table'),
-      $container->get('database'),
-    );
-  }
+  private HarvestRunRepository $runRepository;
+
+  /**
+   * The harvest hashes database table factory service.
+   *
+   * @var \Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
+   */
+  private HarvestHashesDatabaseTableFactory $hashesFactory;
+
+  /**
+   * Logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
 
   /**
    * Constructor.
@@ -55,19 +64,25 @@ class HarvestUtility implements ContainerInjectionInterface {
   public function __construct(
     HarvestService $harvestService,
     DatabaseTableFactory $storeFactory,
-    Connection $connection
+    HarvestHashesDatabaseTableFactory $hashesFactory,
+    HarvestRunRepository $runRepository,
+    Connection $connection,
+    LoggerInterface $loggerChannel
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;
+    $this->hashesFactory = $hashesFactory;
+    $this->runRepository = $runRepository;
     $this->connection = $connection;
+    $this->logger = $loggerChannel;
   }
 
   /**
    * Get the plan ID from a given harvest table name.
    *
    * Harvest table names are assumed to look like this:
-   * harvest_ID_that_might_have_underscores_[something]. For example:
-   * 'harvest_ABC_123_runs'.
+   * harvest_planID_that_might_have_underscores_[type], where [type] is one of
+   * hashes, items, or runs. For example: 'harvest_ABC_123_runs'.
    *
    * @param string $table_name
    *   The table name.
@@ -95,13 +110,20 @@ class HarvestUtility implements ContainerInjectionInterface {
    *   orphaned plan ids.
    */
   public function findOrphanedHarvestDataIds(): array {
+    $orphan_ids = [];
+
+    // Plan IDs from the plans table.
     $existing_plans = $this->harvestService->getAllHarvestIds();
 
-    $table_names = $this->findAllHarvestDataTables();
+    // Potential orphan plan IDs in the runs table.
+    $run_ids = $this->runRepository->getUniqueHarvestPlanIds();
+    foreach (array_diff($run_ids, $existing_plans) as $run_id) {
+      $orphan_ids[$run_id] = $run_id;
+    }
 
-    $orphan_ids = [];
-    // Find IDs that are not in the existing plans.
-    foreach ($table_names as $table_name) {
+    // Use harvest data table names to glean more potential orphan harvest plan
+    // ids.
+    foreach ($this->findAllHarvestDataTables() as $table_name) {
       $plan_id = static::planIdFromTableName($table_name);
       if (!in_array($plan_id, $existing_plans)) {
         $orphan_ids[$plan_id] = $plan_id;
@@ -119,11 +141,9 @@ class HarvestUtility implements ContainerInjectionInterface {
   protected function findAllHarvestDataTables(): array {
     $tables = [];
     foreach ([
-      // @todo Figure out an expression for harvest_%_thing, since underscore
-      //   is a special character.
-      'harvest%runs',
-      'harvest%items',
-      'harvest%hashes',
+      'harvest_%_runs',
+      'harvest_%_items',
+      'harvest_%_hashes',
     ] as $table_expression) {
       if ($found_tables = $this->connection->schema()->findTables($table_expression)) {
         $tables = array_merge($tables, $found_tables);
@@ -149,6 +169,77 @@ class HarvestUtility implements ContainerInjectionInterface {
       ] as $table) {
         $this->storeFactory->getInstance($table)->destruct();
       }
+    }
+  }
+
+  /**
+   * Convert a table to use the harvest_hash entity.
+   *
+   * @param string $plan_id
+   *   Harvest plan ID to convert.
+   */
+  public function convertHashTable(string $plan_id) {
+    $old_hash_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes');
+    $hash_table = $this->hashesFactory->getInstance($plan_id);
+    foreach ($old_hash_table->retrieveAll() as $id) {
+      if ($data = $old_hash_table->retrieve($id)) {
+        $hash_table->store($data, $id);
+      }
+    }
+  }
+
+  /**
+   * Update all the harvest hash tables to use entities.
+   *
+   * This will move all harvest hash information to the updated schema,
+   * including data which does not have a corresponding hash plan ID.
+   *
+   * Outdated tables will be removed.
+   */
+  public function harvestHashUpdate() {
+    $plan_ids = array_merge(
+      $this->harvestService->getAllHarvestIds(),
+      array_values($this->findOrphanedHarvestDataIds())
+    );
+    foreach ($plan_ids as $plan_id) {
+      $this->logger->notice('Converting hashes for ' . $plan_id);
+      $this->convertHashTable($plan_id);
+      $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes')
+        ->destruct();
+    }
+  }
+
+  /**
+   * Convert a table to use the harvest_run entity.
+   *
+   * @param string $plan_id
+   *   Harvest plan ID to convert.
+   */
+  public function convertRunTable(string $plan_id) {
+    $old_runs_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs');
+    foreach ($old_runs_table->retrieveAll() as $id) {
+      if ($data = $old_runs_table->retrieve($id)) {
+        // Explicitly decode the data as an array.
+        $this->runRepository->storeRun(json_decode($data, TRUE), $plan_id, $id);
+      }
+    }
+  }
+
+  /**
+   * Update all the harvest run tables to use entities.
+   *
+   * Outdated tables will be removed.
+   */
+  public function harvestRunsUpdate() {
+    $plan_ids = array_merge(
+      $this->harvestService->getAllHarvestIds(),
+      array_values($this->findOrphanedHarvestDataIds())
+    );
+    foreach ($plan_ids as $plan_id) {
+      $this->logger->notice('Converting runs for ' . $plan_id);
+      $this->convertRunTable($plan_id);
+      $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs')
+        ->destruct();
     }
   }
 

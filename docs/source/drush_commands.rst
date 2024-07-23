@@ -202,7 +202,17 @@ dkan:harvest:revert
 dkan:harvest:run-all
 --------------------
 
-    Run all pending harvests.
+    Run all harvests.
+
+    Optionally, only run harvests which haven't been run before.
+
+    **Options**
+
+    - **new** Only run harvests which have not been run before.
+
+    **Usage**
+
+        ``drush dkan:harvest:run-all --new``
 
 ~~~~~~
 

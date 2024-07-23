@@ -19,7 +19,11 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery.
  *
- * @coversDefaultClass Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ * @coversDefaultClass \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class MySQLQueryTest extends TestCase {
 
@@ -27,6 +31,7 @@ class MySQLQueryTest extends TestCase {
    * Prepare for tests.
    */
   public function setUp(): void {
+    parent::setUp();
     // Build container with 'state' service for testing.
     $container_options = (new Options())
       ->add('state', (new MemoryStorage('test_storage')))

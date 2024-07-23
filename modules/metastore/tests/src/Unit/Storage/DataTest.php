@@ -12,11 +12,14 @@ use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
- * Class DataTest
+ * @coversDefaultClass \Drupal\metastore\Storage\Data
  *
- * @package Drupal\Tests\metastore\Storage
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class DataTest extends TestCase {
 
@@ -40,7 +43,7 @@ class DataTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $data = new NodeData('dataset', $this->getEtmChain()->getMock(), $configFactoryMock);
+    $data = new NodeData('dataset', $this->getEtmChain()->getMock(), $configFactoryMock, $this->createStub(LoggerInterface::class));
     $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
   }
 
@@ -57,7 +60,7 @@ class DataTest extends TestCase {
       ->getMock();
 
     $this->expectExceptionMessage('Error: 1 not found.');
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(LoggerInterface::class));
     $nodeData->publish('1');
   }
 
@@ -76,7 +79,7 @@ class DataTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(LoggerInterface::class));
     $result = $nodeData->publish('1');
     $this->assertEquals(TRUE, $result);
   }
@@ -94,7 +97,7 @@ class DataTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(LoggerInterface::class));
     $result = $nodeData->publish('1');
     $this->assertEquals(FALSE, $result);
   }
@@ -115,6 +118,8 @@ class DataTest extends TestCase {
 
   /**
    * Test \Drupal\metastore\Storage\Data::count() method.
+   *
+   * @covers ::count
    */
   public function testCount(): void {
     // Set constant which should be returned by the ::count() method.
@@ -132,13 +137,15 @@ class DataTest extends TestCase {
       ->getMock();
 
     // Create Data object.
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(LoggerInterface::class));
     // Ensure count matches return value.
     $this->assertEquals($count, $nodeData->count());
   }
 
   /**
    * Test \Drupal\metastore\Storage\Data::retrieveIds() method.
+   *
+   * @covers ::retrieveIds
    */
   public function testRetrieveRangeUuids(): void {
     // Generate dataset nodes for testing ::retrieveIds().
@@ -167,7 +174,7 @@ class DataTest extends TestCase {
       ->getMock();
 
     // Create Data object.
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock);
+    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(LoggerInterface::class));
     // Ensure the returned uuids match those belonging to the generated nodes.
     $this->assertEquals($uuids, $nodeData->retrieveIds(1, 5));
   }

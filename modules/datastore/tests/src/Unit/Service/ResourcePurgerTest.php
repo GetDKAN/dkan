@@ -18,11 +18,12 @@ use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
- * Class ResourcePurgerTest
- *
- * @package Drupal\Tests\datastore\Service
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class ResourcePurgerTest extends TestCase {
 
@@ -99,6 +100,7 @@ class ResourcePurgerTest extends TestCase {
       ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.service', DatastoreService::class)
+      ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->index(0);
 
     return (new Chain($this))

@@ -2,17 +2,39 @@
 
 namespace Drupal\datastore\Controller;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Drupal\datastore\Service\Query as QueryService;
+use Drupal\metastore\MetastoreApiResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Controller providing functionality used to stream datastore queries.
  *
- * @package Drupal\datastore
+ * This generally supports CSV download of filtered datasets.
  */
 class QueryDownloadController extends AbstractQueryController {
+
+  /**
+   * Max-age cache control header value in seconds.
+   */
+  private const RESPONSE_STREAM_MAX_AGE = 3600;
+
+  /**
+   * {@inheritDoc}
+   */
+  public function __construct(QueryService $queryService, DatasetInfo $datasetInfo, MetastoreApiResponse $metastoreApiResponse, ConfigFactoryInterface $configFactory) {
+    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory);
+    // We do not want to cache streaming CSV content internally in Drupal,
+    // because datasets can be very large. However, we do want CDNs to be able
+    // to cache the CSV stream for a reasonable amount of time.
+    // @todo Replace this constant with some form of customizable caching
+    //   strategy.
+    $this->cacheMaxAge = static::RESPONSE_STREAM_MAX_AGE;
+  }
 
   /**
    * {@inheritdoc}
@@ -23,17 +45,13 @@ class QueryDownloadController extends AbstractQueryController {
     array $dependencies = [],
     ?ParameterBag $params = NULL
   ) {
-    switch ($datastoreQuery->{"$.format"}) {
-      case 'csv':
-        return $this->streamCsvResponse($datastoreQuery, $result);
-
-      case 'json':
-      default:
-        return $this->getResponseFromException(
-          new \UnexpectedValueException("Streaming not currently available for JSON responses"),
-          400
-        );
-    }
+    return match ($datastoreQuery->{"$.format"}) {
+      'csv' => $this->streamCsvResponse($datastoreQuery, $result),
+      default => $this->getResponseFromException(
+        new \UnexpectedValueException('Streaming not currently available for JSON responses'),
+        400
+      ),
+    };
   }
 
   /**
@@ -73,7 +91,7 @@ class QueryDownloadController extends AbstractQueryController {
       // Wrap in try/catch so that we can still close the output buffer.
       try {
         // Send the header row.
-        $this->sendRow($handle, $this->getHeaderRow($result));
+        $this->sendRow($handle, $this->getHeaderRow($datastoreQuery, $result));
 
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE, TRUE);
@@ -93,7 +111,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Create initial streamed response object.
    *
-   * @return Symfony\Component\HttpFoundation\StreamedResponse
+   * @return \Symfony\Component\HttpFoundation\StreamedResponse
    *   A streamed response object set up for data.csv file.
    */
   private function initStreamedCsvResponse($filename = "data.csv") {
@@ -101,7 +119,8 @@ class QueryDownloadController extends AbstractQueryController {
     $response->headers->set('Content-Type', 'text/csv');
     $response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
     $response->headers->set('X-Accel-Buffering', 'no');
-    return $response;
+    // Ensure one hour max-age plus public status.
+    return $this->addCacheHeaders($response);
   }
 
   /**
@@ -116,41 +135,6 @@ class QueryDownloadController extends AbstractQueryController {
     fputcsv($handle, $row);
     ob_flush();
     flush();
-  }
-
-  /**
-   * Add the header row from specified properties or the schema.
-   *
-   * Alters the data array.
-   *
-   * @param \RootedData\RootedJsonData $result
-   *   The result of a DatastoreQuery.
-   */
-  private function getHeaderRow(RootedJsonData &$result) {
-
-    try {
-      if (!empty($result->{'$.query.properties'})) {
-        $header_row = $result->{'$.query.properties'};
-      }
-      else {
-        $schema = $result->{'$.schema'};
-        // Query has are no explicit properties; we should assume one table.
-        $header_row = array_keys(reset($schema)['fields']);
-      }
-      if (empty($header_row) || !is_array($header_row)) {
-        throw new \DomainException("Could not generate header for CSV.");
-      }
-    }
-    catch (\Exception $e) {
-      throw new \DomainException("Could not generate header for CSV.");
-    }
-
-    array_walk($header_row, function (&$header) {
-      if (is_array($header)) {
-        $header = $header['alias'] ?? $header['property'];
-      }
-    });
-    return $header_row;
   }
 
 }

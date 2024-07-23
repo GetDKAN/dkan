@@ -2,7 +2,6 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
@@ -12,6 +11,7 @@ use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Abstract metastore storage class, for using Drupal entities.
@@ -19,8 +19,6 @@ use Drupal\workflows\WorkflowInterface;
  * @todo Separate workflow management and storage into separate classes.
  */
 abstract class Data implements MetastoreEntityStorageInterface {
-
-  use LoggerTrait;
 
   /**
    * Entity type manager.
@@ -93,13 +91,26 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $configFactory;
 
   /**
+   * DKAN logger channel service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  private LoggerInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory) {
+  public function __construct(
+    string $schemaId,
+    EntityTypeManagerInterface $entityTypeManager,
+    ConfigFactoryInterface $config_factory,
+    LoggerInterface $loggerChannel
+  ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->schemaId = $schemaId;
     $this->configFactory = $config_factory;
+    $this->logger = $loggerChannel;
   }
 
   /**
@@ -408,7 +419,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return mixed
    *   Filtered output.
    */
-  private function filterHtml($input, string $parent = 'dataset') {
+  private function filterHtml(mixed $input, string $parent = 'dataset') {
     $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
       ?: ['dataset_description', 'distribution_description'];
     switch (gettype($input)) {
@@ -445,21 +456,20 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * @return string
    *   Filtered string.
-   *
-   * @codeCoverageIgnore
    */
   private function htmlPurifier(string $input) {
     // Initialize HTML Purifier cache config settings array.
     $config = [];
 
     // Determine path to tmp directory.
+    // @todo Inject this service.
     $tmp_path = \Drupal::service('file_system')->getTempDirectory();
     // Specify custom location in tmp directory for storing HTML Purifier cache.
     $cache_dir = rtrim($tmp_path, '/') . '/html_purifier_cache';
 
     // Ensure the tmp cache directory exists.
     if (!is_dir($cache_dir) && !mkdir($cache_dir)) {
-      $this->log('metastore', 'Failed to create cache directory for HTML purifier');
+      $this->logger->error('Failed to create cache directory for HTML purifier');
     }
     else {
       $config['Cache.SerializerPath'] = $cache_dir;

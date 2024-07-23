@@ -5,32 +5,34 @@ namespace Drupal\Tests\metastore\Unit;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\metastore\Controller\MetastoreController;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\ValidMetadataFactory;
-use Drupal\metastore\Storage\Data;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Controller\MetastoreController;
 use Drupal\metastore\MetastoreApiResponse;
+use Drupal\metastore\MetastoreService;
 use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Query\QueryInterface;
-
+use Drupal\metastore\ValidMetadataFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- *
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class MetastoreControllerTest extends TestCase {
 
@@ -131,7 +133,7 @@ class MetastoreControllerTest extends TestCase {
     $configFactoryMock = (new Chain($this))
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
-    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock, $configFactoryMock);
+    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock, $configFactoryMock, $this->createStub(LoggerInterface::class));
     $container = $this->getCommonMockChain()
       ->add(MetastoreService::class, 'getStorage', $nodeDataMock)
       ->getMock();
@@ -289,7 +291,6 @@ class MetastoreControllerTest extends TestCase {
    *
    */
   public function testPutWithEquivalentData() {
-    $existing = '{"identifier":"1","title":"Foo"}';
     $updating = <<<EOF
       {
         "title": "Foo",
@@ -501,7 +502,7 @@ EOF;
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->index(0);
 
-    $mockChain = (new Chain($this))
+    return (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(MetastoreService::class, 'getSchemas', ['dataset'])
       ->add(MetastoreService::class, 'getSchema', (object) ["id" => "http://schema"])
@@ -513,8 +514,6 @@ EOF;
       ->add(NodeWrapperData::class, 'getCacheContexts', ['url'])
       ->add(NodeWrapperData::class, 'getCacheTags', ['node:1'])
       ->add(NodeWrapperData::class, 'getCacheMaxAge', 0);
-
-    return $mockChain;
   }
 
   private function request($method = 'GET', $body = '') {

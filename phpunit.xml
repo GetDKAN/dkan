@@ -19,10 +19,11 @@
       <directory>modules/frontend/tests</directory>
       <directory>modules/harvest/tests</directory>
       <directory>modules/json_form_widget/tests</directory>
+      <directory>modules/data_dictionary_widget/tests</directory>
       <directory>modules/metastore/tests</directory>
       <directory>modules/metastore/modules/metastore_admin/tests</directory>
       <directory>modules/metastore/modules/metastore_search/tests</directory>
-      <directory>modules/sample_content</directory>
+      <directory>modules/sample_content/tests</directory>
       <directory suffix="TestBase.php">./</directory>
     </exclude>
   </coverage>
