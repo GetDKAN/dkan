@@ -5,7 +5,7 @@ namespace Drupal\data_dictionary_widget\Indexes;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Various operations for the Data Dictionary Widget callbacks.
+ * Various operations for the Index callbacks.
  */
 class IndexFieldCallbacks {
   /**
@@ -92,7 +92,7 @@ class IndexFieldCallbacks {
   }
 
   /**
-   * Submit callback for the Index Edit button.
+   * Submit callback for the Index Field Edit button.
    */
   public static function indexEditSubformCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
@@ -121,7 +121,11 @@ class IndexFieldCallbacks {
 
     }
 
-    if (str_contains($op, 'edit')) {
+    if (str_contains($op, 'edit_index_key')) {
+      $currently_modifying_index_fields[$op_index[4]] = $current_index_fields[$op_index[4]];
+    }
+
+    if (str_contains($op, 'edit_index_field')) {
       $currently_modifying_index_fields[$op_index[4]] = $current_index_fields[$op_index[4]];
     }
 
@@ -133,10 +137,71 @@ class IndexFieldCallbacks {
   }
 
   /**
+   * Submit callback for the Index Edit button.
+   */
+  public static function indexEditCallback(array &$form, FormStateInterface $form_state) {
+    $trigger = $form_state->getTriggeringElement();
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]["data"]["#rows"];
+    $current_index = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"];
+    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+    $op = $trigger['#op'];
+    $op_index = explode("_", $trigger['#op']);
+    $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+    $currently_modifying_index = $form_state->get('index_being_modified') != NULL ? $form_state->get('index_being_modified') : [];
+    $currently_modifying_dictionary_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
+
+    if (str_contains($op, 'abort_index_key')) {
+      unset($currently_modifying_index[$op_index[3]]);
+    }
+
+    if (str_contains($op, 'abort_index_field_key')) {
+      unset($currently_modifying_index_fields[$op_index[4]]);
+    }
+
+    if (str_contains($op, 'delete_index_key')) {
+      unset($currently_modifying_index[$op_index[3]]);
+      unset($current_index[$op_index[3]]);
+    }
+
+    if (str_contains($op, 'delete_index_field_key')) {
+      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($current_index_fields[$op_index[4]]);
+    }
+
+    if (str_contains($op, 'update')) {
+      $update_values = $form_state->getUserInput();
+      $current_index[$op_index[3]] = IndexFieldValues::updateIndexValues($op_index[3], $update_values, $current_index);
+      unset($currently_modifying_index[$op_index[3]]);
+      //unset($current_index[$op_index[3]]);
+      ksort($current_index);
+    }
+
+    if (str_contains($op, 'edit')) {
+      $currently_modifying_index[$op_index[3]] = $current_index[$op_index[3]];
+    }
+
+    $form_state->set('dictionary_fields_being_modified', $currently_modifying_dictionary_fields);
+    $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
+    $form_state->set('index_being_modified', $currently_modifying_index);
+    $form_state->set('current_index_fields', $current_index_fields );
+    $form_state->set('current_index', $current_index);
+    $form_state->set('current_dictionary_fields', $current_dictionary_fields);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Ajax callback to return index fields.
+   */
+  public static function subIndexEditFormAjax(array &$form, FormStateInterface $form_state) {
+    return $form["field_json_metadata"]["widget"][0]["indexes"]["edit_index"]["index_key_0"]["group"]["fields"]["fields"];
+  }
+
+  /**
    * Ajax callback to return index fields.
    */
   public static function subIndexFormAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["indexes"]["fields"];
+    //return $form["field_json_metadata"]["widget"][0]["indexes"]["edit_index"]["index_key_0"]["group"]["fields"]["fields"];
   }
 
   /**

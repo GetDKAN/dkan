@@ -3,17 +3,17 @@
 namespace Drupal\data_dictionary_widget\Indexes;
 
 /**
- * Various operations for creating Data Dictionary Widget fields.
+ * Various operations for creating Index fields.
  */
 class IndexFieldCreation {
   /**
-   * Create basic widget.
+   * Create basic index fields fieldset.
    */
   public static function createGeneralIndexFields($element) {
     $element['indexes']['fields'] = [
       '#type' => 'fieldset',
       '#title' => t('Fields'),
-      '#prefix' => '<div id = field-json-metadata-dictionary-index-fields>',
+      '#prefix' => '<div id = field-json-metadata-index-fields>',
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
       '#required' => TRUE,
@@ -23,13 +23,13 @@ class IndexFieldCreation {
   }
 
   /**
-   * Create basic widget.
+   * Create basic indexes fieldset.
    */
   public static function createGeneralIndex($element, $current_indexes) {
     $element['indexes'] = [
       '#type' => 'fieldset',
       '#title' => t('Indexes'),
-      '#prefix' => '<div id = field-json-metadata-dictionary-index>',
+      '#prefix' => '<div id = field-json-metadata-index>',
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">Adding indexes to your datastore tables can improve response times from common queries.</div>'),
     ];
@@ -63,7 +63,7 @@ class IndexFieldCreation {
       '#access' => ((bool) $current_indexes || (bool) $index_data_results),
       '#type' => 'table',
       '#header' => ['NAME', 'TYPE', 'FIELDS'],
-      '#prefix' => '<div id = field-json-metadata-dictionary-indexes>',
+      '#prefix' => '<div id = field-json-metadata-indexes>',
       '#suffix' => '</div>',
       '#rows' => $form_state->get('cancel_index') ? $current_indexes : ($index_data_results ?? []),
       '#tree' => TRUE,

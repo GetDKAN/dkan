@@ -320,7 +320,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
-    $formState->expects($this->exactly(13))
+    $formState->expects($this->exactly(14))
       ->method('get')
       ->willReturnOnConsecutiveCalls(NULL, NULL, NULL, FALSE, NULL, NULL, $current_fields);
 

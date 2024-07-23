@@ -103,7 +103,7 @@ class FieldCallbacks {
     $form_state->set('add_new_field', '');
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $current_index = $form["field_json_metadata"]["widget"][0]['indexes']["data"]["#rows"];
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"];
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? [];
 
     if ($current_dictionary_fields) {
       $form_state->set('current_dictionary_fields', $current_dictionary_fields);
