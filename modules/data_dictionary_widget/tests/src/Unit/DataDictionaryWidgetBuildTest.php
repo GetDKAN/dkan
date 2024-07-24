@@ -322,7 +322,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     $formState->expects($this->exactly(14))
       ->method('get')
-      ->willReturnOnConsecutiveCalls(NULL, NULL, NULL, FALSE, NULL, NULL, $current_fields);
+      ->willReturnOnConsecutiveCalls(NULL, NULL, $current_fields, FALSE, NULL, NULL, NULL);
 
     $dataDictionaryWidget = new DataDictionaryWidget (
       $plugin_id,
@@ -472,15 +472,41 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $formState->expects($this->any())
       ->method('get')
       ->willReturnOnConsecutiveCalls(
-        [], [], $user_input, [], [], [], [], [], $current_dictionary_fields, [], [], $current_dictionary_fields, [],
-        [], [], $user_input, [], [], [], [], [], [], [], [], $updated_dictionary_fields, [], [], $current_dictionary_fields, [],
+        [], 
+        $current_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        $current_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        [], 
+        [], 
+        [], 
+        [],
+        [], 
+        [], 
+        $user_input, 
+        [],
+        $current_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        [], 
+        $updated_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        [], 
+        []
       );
 
     $formState->expects($this->any())
       ->method('getTriggeringElement')
       ->willReturnOnConsecutiveCalls(
-        ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op],
-        ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'],
+        ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op],
+        ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'],
       );
 
     $formState->expects($this->any())
