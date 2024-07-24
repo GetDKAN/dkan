@@ -26,9 +26,6 @@ class PostImportResourceProcessorTest extends KernelTestBase {
     'common',
     'datastore',
     'metastore',
-    'node',
-    'system',
-    'user',
   ];
 
   protected $strictConfigSchema = FALSE;
@@ -54,7 +51,8 @@ class PostImportResourceProcessorTest extends KernelTestBase {
       ->willReturn($resource);
     $this->container->set('dkan.metastore.resource_mapper', $resource_mapper);
 
-    // Mock the dictionary enforcer so we can avoid node type dependenies.
+    // Mock the dictionary enforcer to throw an exception so that we can avoid
+    // node type dependenies.
     $no_dictionary_exception = new ResourceDoesNotHaveDictionary('test', 123);
     $enforcer = $this->getMockBuilder(DictionaryEnforcer::class)
       ->disableOriginalConstructor()
@@ -79,6 +77,8 @@ class PostImportResourceProcessorTest extends KernelTestBase {
       ]
     );
 
+    // The results of post import processing should reflect that the resource
+    // does not have a data dictionary.
     $result = $processor->postImportProcessItem($resource);
     $this->assertEquals(
       'Resource test does not have a data dictionary.',
