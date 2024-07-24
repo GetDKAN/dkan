@@ -112,7 +112,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     $add_fields = FieldAddCreation::addFields();
 
-    $element = FieldOperations::setAddFormState($add_fields, $element);
+    $element = FieldOperations::setAddDictionaryFieldFormState($add_fields, $element);
 
     $this->assertNotNull($element);
     $this->assertNotNull($element["dictionary_fields"]["field_collection"]);
@@ -238,7 +238,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     $add_fields = FieldAddCreation::addFields();
 
-    $element = FieldOperations::setAddFormState($add_fields, $element);
+    $element = FieldOperations::setAddDictionaryFieldFormState($add_fields, $element);
 
     // Set up a triggering element with '#op' set to 'add'.
     $trigger = ['#op' => 'add'];

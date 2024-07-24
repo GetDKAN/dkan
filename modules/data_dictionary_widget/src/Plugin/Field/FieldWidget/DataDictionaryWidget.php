@@ -96,7 +96,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     }
 
     // Set access to index fields Add button when index fields being modified.
-    $element['indexes']['fields']['add_row_button']['#access'] = $index_fields_being_modified == NULL ? TRUE : FALSE;
+    $element['indexes']['add_row_button']['#access'] = $index_being_modified == NULL ? TRUE : FALSE;
 
     // if ($index_field_values || $current_index_fields || $index_being_modified || $index_fields_being_modified) {
     //   $element["indexes"]["edit_index"]["index_key_0"]["group"]["fields"]["fields"] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
@@ -117,7 +117,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     }
 
     // Set form state for adding fields and indexes
-    $element = FieldOperations::setAddFormState($add_new_dictionary_field, $element);
+    $element = FieldOperations::setAddDictionaryFieldFormState($add_new_dictionary_field, $element);
+    $element = FieldOperations::editDictionaryFieldFormState($dictionary_fields_being_modified, $element);
     $element = IndexFieldOperations::setAddIndexFormState($add_new_index, $element);
     $element = IndexFieldOperations::setAddIndexFieldFormState($add_index_field, $element);
     $element = IndexFieldOperations::editIndexFormState($index_being_modified, $element);
