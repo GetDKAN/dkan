@@ -137,12 +137,16 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * {@inheritdoc}
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
-    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $current_indexes = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"];
+    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
+    $current_indexes = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"] ?? [];
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
-    $indexes_collection = isset($values[0]["indexes"]["fields"]["field_collection"]["group"]) ? $values[0]["indexes"]["fields"]["field_collection"]["group"] : [];
+    $indexes_collection = $values[0]["indexes"]["fields"]["field_collection"]["group"] ?? [];
 
-    $fields_input = !empty($field_collection) ? [
+    if (!empty($indexes_collection) && !empty($indexes_collection["indexes"]["fields"])) {
+      $index_fields = $indexes_collection["indexes"]["fields"];
+    }
+
+    $dictionary_fields_input = !empty($field_collection) ? [
       [
         "name" => $field_collection["name"] ?? '',
         "title" => $field_collection["title"] ?? '',
@@ -154,25 +158,19 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     $index_inputs = !empty($indexes_collection) ? [
       [
-        "name" => $indexes_collection["indexes"]["fields"]["name"] ?? '',
-        "length" => (int)$indexes_collection["indexes"]["fields"]["length"] ?? 0,
+        "name" => $index_fields["name"] ?? '',
+        "length" => isset($index_fields["length"]) ? (int)$index_fields["length"] : 0,
       ],
     ] : [];
 
-    if (isset($fields_input)) {
-      $fields = array_merge($current_dictionary_fields ?? [], $fields_input);
-    }
-    else {
-      $fields = $current_dictionary_fields ?? [];
-    }
-
+    $dictionary_fields = array_merge($current_dictionary_fields ?? [], $dictionary_fields_input);
     $indexes = array_merge($current_indexes ?? [], $index_inputs);
 
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
       'data' => [
         'title' => $values[0]['title'] ?? '',
-        'fields' => $fields,
+        'fields' => $dictionary_fields,
         'indexes' => $indexes,
       ],
     ];

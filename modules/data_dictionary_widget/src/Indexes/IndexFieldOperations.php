@@ -252,14 +252,14 @@ class IndexFieldOperations {
    */
   public static function checkIndexEditing($indexKey, $op_index, $index_being_modified) {
     if (isset($op_index)) {
-        $op_index_string = implode('_', $op_index);
-        if (str_contains($op_index_string, 'edit_index_key')) {
-            $action_list = IndexFieldOperations::editIndexActions();
-            $indexKeyExplode = explode("_", $indexKey); 
-            if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[2], $index_being_modified)) {
-                return TRUE;
-            }
+      $op_index_string = implode('_', $op_index);
+      if (str_contains($op_index_string, 'edit_index_key')) {
+        $action_list = IndexFieldOperations::editIndexActions();
+        $indexKeyExplode = explode("_", $indexKey); 
+        if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[2], $index_being_modified)) {
+          return TRUE;
         }
+      }
     }
 
     return FALSE;
