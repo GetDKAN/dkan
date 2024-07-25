@@ -8,7 +8,6 @@ use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use RootedData\RootedJsonData;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @group dkan
@@ -53,6 +52,11 @@ class QueryDownloadControllerTest extends BrowserTestBase {
    * Test application of data dictionary schema to CSV generated for download.
    */
   public function testDownloadWithDataDictionary() {
+    // Set per-reference data-dictinary in metastore config.
+    $this->config('metastore.settings')
+      ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
+      ->save();
+
     // Dependencies.
     $uuid = $this->container->get('uuid');
     $validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
@@ -67,11 +71,6 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $resourceUrl = $this->container->get('stream_wrapper_manager')
       ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
       ->getExternalUrl();
-
-    // Set per-reference data-dictinary in metastore config.
-    $this->config('metastore.settings')
-      ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
-      ->save();
 
     // Build data-dictionary.
     $dict_id = $uuid->generate();
@@ -91,29 +90,47 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     );
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($metastore->publish('data-dictionary', $dict_id));
+    $this->assertEquals(
+      '%Y/%d/%m',
+      $metastore->get('data-dictionary', $dict_id)->{'$.data.fields[0].format'}
+    );
 
     // Build dataset.
     $dataset_id = $uuid->generate();
     $this->assertInstanceOf(
       RootedJsonData::class,
       $dataset = $validMetadataFactory->get(
-        $this->getDataset($dataset_id, 'Test ' . $dataset_id, [$resourceUrl], TRUE, 'dkan://metastore/schemas/data-dictionary/items/' . $dict_id),
+        $this->getDataset(
+          $dataset_id,
+          'Test ' . $dataset_id,
+          [$resourceUrl],
+          TRUE,
+          'dkan://metastore/schemas/data-dictionary/items/' . $dict_id
+        ),
         'dataset'
       )
     );
     // Create dataset.
-    $this->assertEquals($dataset_id, $metastore->post('dataset', $dataset));
+    $this->assertEquals(
+      $dataset_id,
+      $metastore->post('dataset', $dataset)
+    );
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($metastore->publish('dataset', $dataset_id));
-
-    // Run queue items to perform the import.
-    $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
 
     // Retrieve dataset distribution ID.
     $this->assertInstanceOf(
       RootedJsonData::class,
       $dataset = $metastore->get('dataset', $dataset_id)
     );
+    // The dataset references the dictionary.
+    $this->assertStringContainsString(
+      $dict_id,
+      $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
+    );
+
+    // Run queue items to perform the import.
+    $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
 
     $client = $this->getHttpClient();
     $response = $client->request(
@@ -143,15 +160,5 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       }
     }
   }
-
-  // Create a data dictionary.
-
-
-
-  // Create a dataset, linked to the data dictionary.
-
-  // Ask the endpoint for a download.
-
-  // Check the format of the date column.
 
 }

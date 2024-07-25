@@ -26,12 +26,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * {@inheritDoc}
    */
-  public function __construct(
-    QueryService $queryService,
-    DatasetInfo $datasetInfo,
-    MetastoreApiResponse $metastoreApiResponse,
-    ConfigFactoryInterface $configFactory
-  ) {
+  public function __construct(QueryService $queryService, DatasetInfo $datasetInfo, MetastoreApiResponse $metastoreApiResponse, ConfigFactoryInterface $configFactory) {
     parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory);
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
