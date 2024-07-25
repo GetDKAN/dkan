@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datastore\Functional\Controller;
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
@@ -31,7 +32,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected const TEST_DATA_PATH = __DIR__ . '/../../data/';
+  protected const TEST_DATA_PATH = __DIR__ . '/../../../data/';
 
   /**
    * Resource file name.
@@ -55,7 +56,14 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     // Dependencies.
     $uuid = $this->container->get('uuid');
     $validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    /** @var \Drupal\metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
+    // Copy resource file to uploads directory.
+    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+    $file_system = $this->container->get('file_system');
+    $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
+    $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
+    $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path, FileSystemInterface::EXISTS_REPLACE);
     $resourceUrl = $this->container->get('stream_wrapper_manager')
       ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
       ->getExternalUrl();
@@ -69,10 +77,10 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $dict_id = $uuid->generate();
     $fields = [
       [
-        'name' => 'the_date',
-        'title' => 'The Date',
+        'name' => 'b',
+        'title' => 'b',
         'type' => 'date',
-        'format' => '%m/%d/%Y',
+        'format' => '%Y/%d/%m',
       ],
     ];
     $data_dict = $validMetadataFactory->get($this->getDataDictionary($fields, [], $dict_id), 'data-dictionary');
@@ -89,7 +97,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->assertInstanceOf(
       RootedJsonData::class,
       $dataset = $validMetadataFactory->get(
-        $this->getDataset($dataset_id, 'Test ' . $dataset_id, [$resourceUrl], TRUE),
+        $this->getDataset($dataset_id, 'Test ' . $dataset_id, [$resourceUrl], TRUE, 'dkan://metastore/schemas/data-dictionary/items/' . $dict_id),
         'dataset'
       )
     );
@@ -106,16 +114,16 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       RootedJsonData::class,
       $dataset = $metastore->get('dataset', $dataset_id)
     );
-    $this->assertNotEmpty(
-      $dist_id = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL
+
+    $client = $this->getHttpClient();
+    $response = $client->request(
+      'GET',
+      $this->baseUrl . '/api/1/datastore/query/' . $dataset_id . '/0/download',
+      ['query' => ['format' => 'csv']]
     );
-    // Retrieve schema for dataset resource.
-    $response = $this->importController->summary(
-      $dist_id,
-      Request::create('http://blah/api')
-    );
-    $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
-    $result = json_decode($response->getContent(), TRUE);
+
+    $lines = explode("\n", $response->getBody()->getContents());
+    $this->assertEquals('1,1978/02/23,9.07,efghijk,0', $lines[1]);
   }
 
   /**
