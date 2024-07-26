@@ -59,7 +59,8 @@ class QueryDownloadControllerTest extends BrowserTestBase {
 
     // Dependencies.
     $uuid = $this->container->get('uuid');
-    $validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
+    $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
     /** @var \Drupal\metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
     // Copy resource file to uploads directory.
@@ -82,7 +83,10 @@ class QueryDownloadControllerTest extends BrowserTestBase {
         'format' => '%Y/%d/%m',
       ],
     ];
-    $data_dict = $validMetadataFactory->get($this->getDataDictionary($fields, [], $dict_id), 'data-dictionary');
+    $data_dict = $validMetadataFactory->get(
+      $this->getDataDictionary($fields, [], $dict_id),
+      'data-dictionary'
+    );
     // Create data-dictionary.
     $this->assertEquals(
       $dict_id,
