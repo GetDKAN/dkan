@@ -5,7 +5,6 @@ namespace Drupal\Tests\datastore\Functional\Controller;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use RootedData\RootedJsonData;
 
@@ -122,7 +121,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($metastore->publish('dataset', $dataset_id));
 
-    // Retrieve dataset distribution ID.
+    // Retrieve dataset.
     $this->assertInstanceOf(
       RootedJsonData::class,
       $dataset = $metastore->get('dataset', $dataset_id)
@@ -132,10 +131,22 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       $dict_id,
       $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
     );
+    // Get the distribution ID.
+    $distribution_id = $dataset->{'$["%Ref:distribution"][0].identifier'};
+
+    // Dictionary fields are applied to the dataset.
+    /** @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
+    $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
+    $this->assertCount(
+      1,
+      $dictionary_fields = $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
+    );
+    $this->assertEquals('%Y/%d/%m', $dictionary_fields[0]['format'] ?? 'not found');
 
     // Run queue items to perform the import.
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
 
+    // Query for the dataset, as a streaming CSV.
     $client = $this->getHttpClient();
     $response = $client->request(
       'GET',
