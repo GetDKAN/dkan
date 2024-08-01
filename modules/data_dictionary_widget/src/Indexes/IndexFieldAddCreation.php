@@ -3,12 +3,12 @@
 namespace Drupal\data_dictionary_widget\Indexes;
 
 /**
- * Various operations for creating Data Dictionary Widget add fields.
+ * Various operations for creating Index fields.
  */
 class IndexFieldAddCreation {
 
  /**
-  * Create add fields for Data Dictionary Widget.
+  * Create fields for adding an index.
   */
  public static function addIndex() {
   $add_index['#access'] = FALSE;
@@ -16,7 +16,7 @@ class IndexFieldAddCreation {
     '#type' => 'fieldset',
     '#title' => t('Index'),
     '#open' => TRUE,
-    '#prefix' => '<div id = field-json-metadata-dictionary-index>',
+    '#prefix' => '<div id = field-json-metadata-index>',
     '#suffix' => '</div>',
     '#element_validate' => [
       ['\Drupal\data_dictionary_widget\Indexes\IndexValidation', 'indexFieldsValidation']
@@ -48,7 +48,7 @@ class IndexFieldAddCreation {
   $add_index['group']['index']['fields'] = [
     '#type' => 'fieldset',
     '#title' => t('Fields'),
-    '#prefix' => '<div id = field-json-metadata-dictionary-index-fields>',
+    '#prefix' => '<div id = field-json-metadata-index-fields>',
     '#suffix' => '</div>',
     '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
     '#attributes' => [
@@ -64,10 +64,10 @@ class IndexFieldAddCreation {
  }
 
   /**
-   * Create add fields for Data Dictionary Widget.
+   * Create fields for adding an index field.
    */
   public static function addIndexFields($current_index_fields) {
-    $id = "field-json-metadata-dictionary-index-fields-new";
+    $id = "field-json-metadata-index-fields-new";
     $add_index_fields['#access'] = FALSE;
     $add_index_fields['group'] = [
       '#type' => 'fieldset',

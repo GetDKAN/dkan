@@ -112,7 +112,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     $add_fields = FieldAddCreation::addFields();
 
-    $element = FieldOperations::setAddFormState($add_fields, $element);
+    $element = FieldOperations::setAddDictionaryFieldFormState($add_fields, $element);
 
     $this->assertNotNull($element);
     $this->assertNotNull($element["dictionary_fields"]["field_collection"]);
@@ -238,7 +238,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     $add_fields = FieldAddCreation::addFields();
 
-    $element = FieldOperations::setAddFormState($add_fields, $element);
+    $element = FieldOperations::setAddDictionaryFieldFormState($add_fields, $element);
 
     // Set up a triggering element with '#op' set to 'add'.
     $trigger = ['#op' => 'add'];
@@ -320,9 +320,9 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
-    $formState->expects($this->exactly(13))
+    $formState->expects($this->exactly(14))
       ->method('get')
-      ->willReturnOnConsecutiveCalls(NULL, NULL, NULL, FALSE, NULL, NULL, $current_fields);
+      ->willReturnOnConsecutiveCalls(NULL, NULL, $current_fields, FALSE, NULL, NULL, NULL);
 
     $dataDictionaryWidget = new DataDictionaryWidget (
       $plugin_id,
@@ -472,15 +472,41 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $formState->expects($this->any())
       ->method('get')
       ->willReturnOnConsecutiveCalls(
-        [], [], $user_input, [], [], [], [], [], $current_dictionary_fields, [], [], $current_dictionary_fields, [],
-        [], [], $user_input, [], [], [], [], [], [], [], [], $updated_dictionary_fields, [], [], $current_dictionary_fields, [],
+        [], 
+        $current_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        $current_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        [], 
+        [], 
+        [], 
+        [],
+        [], 
+        [], 
+        $user_input, 
+        [],
+        $current_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        [], 
+        $updated_dictionary_fields, 
+        [], 
+        [], 
+        [], 
+        [], 
+        []
       );
 
     $formState->expects($this->any())
       ->method('getTriggeringElement')
       ->willReturnOnConsecutiveCalls(
-        ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op],
-        ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'],
+        ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op],
+        ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'], ['#op' => 'update_0'],
       );
 
     $formState->expects($this->any())
