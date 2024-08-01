@@ -13,7 +13,7 @@ trait QueueRunnerTrait {
   /**
    * Run queues in a predictable order.
    *
-   * @param string[] $relevantQueues
+   * @param string[] $relevant_queues
    *   Names of queues to run, in order.
    * @param \Drupal\Core\Queue\QueueWorkerManagerInterface|null $queue_worker_manager
    *   (Optional) The plugin.manager.queue_worker service.
@@ -21,7 +21,7 @@ trait QueueRunnerTrait {
    *   (Optional) The queue service.
    */
   public function runQueues(
-    array $relevantQueues = [],
+    array $relevant_queues = [],
     QueueWorkerManagerInterface $queue_worker_manager = NULL,
     QueueFactoryInterface $queue_factory = NULL
   ): void {
@@ -31,9 +31,9 @@ trait QueueRunnerTrait {
     if (empty($queue_factory)) {
       $queue_factory = \Drupal::service('queue');
     }
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queue_worker_manager->createInstance($queueName);
-      $queue = $queue_factory->get($queueName);
+    foreach ($relevant_queues as $queue_name) {
+      $worker = $queue_worker_manager->createInstance($queue_name);
+      $queue = $queue_factory->get($queue_name);
       while ($item = $queue->claimItem()) {
         $worker->processItem($item->data);
         $queue->deleteItem($item);
