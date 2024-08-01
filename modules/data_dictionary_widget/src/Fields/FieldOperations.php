@@ -196,14 +196,26 @@ class FieldOperations {
   /**
    * Set the elements associated with adding a new field.
    */
-  public static function setAddFormState($add_new_field, $element) {
+  public static function setAddDictionaryFieldFormState($add_new_field, $element) {
     if ($add_new_field) {
+      unset($element['dictionary_fields']["edit_buttons"]);
       $element['dictionary_fields']['field_collection'] = $add_new_field;
       $element['dictionary_fields']['field_collection']['#access'] = TRUE;
       $element['dictionary_fields']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
     }
+    return $element;
+  }
+
+  /**
+   * Set the elements associated with editing a dictionary field.
+   */
+  public static function editDictionaryFieldFormState($edit_dictionary_field, $element) {
+    if ($edit_dictionary_field) {
+      unset($element['dictionary_fields']["edit_buttons"]);
+    } 
+
     return $element;
   }
 
