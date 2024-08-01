@@ -4,6 +4,7 @@ namespace Drupal\json_form_widget\Tests\Functional;
 
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 
 /**
  * Test the json form widget.
@@ -17,6 +18,8 @@ use Drupal\Tests\BrowserTestBase;
  */
 class AdminDatasetFileUploadTest extends BrowserTestBase {
 
+  use QueueRunnerTrait;
+
   protected static $modules = [
     'dkan',
     'json_form_widget',
@@ -29,24 +32,6 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
    * @todo Remove this when we drop support for Drupal 10.0.
    */
   protected $strictConfigSchema = FALSE;
-
-  /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = $this->container->get('plugin.manager.queue_worker');
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = $this->container->get('queue');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queueFactory->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
-  }
 
   /**
    * Test creating datasets.

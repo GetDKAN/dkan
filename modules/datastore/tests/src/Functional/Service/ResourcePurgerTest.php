@@ -4,6 +4,7 @@ namespace Drupal\Tests\datastore\Functional\Service;
 
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -18,6 +19,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 class ResourcePurgerTest extends ExistingSiteBase {
   use GetDataTrait;
   use CleanUp;
+  use QueueRunnerTrait;
 
   /**
    * DKAN dataset storage service.
@@ -159,20 +161,4 @@ class ResourcePurgerTest extends ExistingSiteBase {
     return $resources;
   }
 
-  /**
-   * Process the supplied queue list.
-   *
-   * @param string[] $relevant_queues
-   *   A list of queues to process.
-   */
-  protected function runQueues(array $relevant_queues = []): void {
-    foreach ($relevant_queues as $queue_name) {
-      $worker = $this->queueWorkerManager->createInstance($queue_name);
-      $queue = $this->queue->get($queue_name);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
-  }
 }

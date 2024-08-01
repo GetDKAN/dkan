@@ -5,6 +5,7 @@ namespace Drupal\Tests\metastore\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -17,6 +18,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 class OrphanCheckerTest extends ExistingSiteBase {
   use GetDataTrait;
   use CleanUp;
+  use QueueRunnerTrait;
 
   /**
    * The ValidMetadataFactory class used for testing.
@@ -50,20 +52,4 @@ class OrphanCheckerTest extends ExistingSiteBase {
     $this->assertNull($success);
   }
 
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $this->getQueueService()->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
-  }
-
-  private function getQueueService() : QueueFactory {
-    return \Drupal::service('queue');
-  }
 }
