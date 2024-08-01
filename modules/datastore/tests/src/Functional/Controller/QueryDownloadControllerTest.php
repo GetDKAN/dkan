@@ -55,6 +55,10 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->config('metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
       ->save();
+    $this->assertEquals(
+      DataDictionaryDiscovery::MODE_REFERENCE,
+      $this->config('metastore.settings')->get('data_dictionary_mode')
+    );
 
     // Dependencies.
     $uuid = $this->container->get('uuid');
@@ -74,12 +78,13 @@ class QueryDownloadControllerTest extends BrowserTestBase {
 
     // Build data-dictionary.
     $dict_id = $uuid->generate();
+    $date_format = '%m/%d/%Y';
     $fields = [
       [
         'name' => 'b',
         'title' => 'b',
         'type' => 'date',
-        'format' => '%Y/%d/%m',
+        'format' => $date_format,
       ],
     ];
     $data_dict = $validMetadataFactory->get(
@@ -94,7 +99,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($metastore->publish('data-dictionary', $dict_id));
     $this->assertEquals(
-      '%Y/%d/%m',
+      $date_format,
       $metastore->get('data-dictionary', $dict_id)->{'$.data.fields[0].format'}
     );
 
@@ -141,7 +146,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       1,
       $dictionary_fields = $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
     );
-    $this->assertEquals('%Y/%d/%m', $dictionary_fields[0]['format'] ?? 'not found');
+    $this->assertEquals($date_format, $dictionary_fields[0]['format'] ?? 'not found');
 
     // Run queue items to perform the import.
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
@@ -155,7 +160,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     );
 
     $lines = explode("\n", $response->getBody()->getContents());
-    $this->assertEquals('1,1978/02/23,9.07,efghijk,0', $lines[1]);
+    $this->assertEquals('1,02/23/1978,9.07,efghijk,0', $lines[1]);
   }
 
   /**
