@@ -9,6 +9,7 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use RootedData\RootedJsonData;
 
 /**
@@ -19,7 +20,7 @@ use RootedData\RootedJsonData;
  */
 class QueryDownloadControllerTest extends BrowserTestBase {
 
-  use GetDataTrait;
+  use GetDataTrait, QueueRunnerTrait;
 
   /**
    * Uploaded resource file destination.
@@ -180,24 +181,6 @@ class QueryDownloadControllerTest extends BrowserTestBase {
 
     $lines = explode("\n", $response->getBody()->getContents());
     $this->assertEquals('1,02/23/1978,9.07,efghijk,0', $lines[1]);
-  }
-
-  /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = $this->container->get('queue');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queueFactory->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
   }
 
 }
