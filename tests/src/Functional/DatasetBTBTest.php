@@ -11,6 +11,7 @@ use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
@@ -21,6 +22,8 @@ use RootedData\RootedJsonData;
  * @group functional
  */
 class DatasetBTBTest extends BrowserTestBase {
+
+  use QueueRunnerTrait;
 
   /**
    * {@inheritdoc}
@@ -572,22 +575,6 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Simulate a cron on queues relevant to this scenario.
     $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
-  }
-
-  /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = $this->container->get('plugin.manager.queue_worker');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $this->getQueueService()->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
   }
 
   private function countTables() {
