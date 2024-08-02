@@ -82,17 +82,15 @@ class OpenApiControllerTest extends BrowserTestBase {
   }
 
   private function getController(array $params = []) {
-    $requestStack = \Drupal::service('request_stack');
+    /** @var \Symfony\Component\HttpFoundation\RequestStack $requestStack */
+    $requestStack = $this->container->get('request_stack');
 
     if (!empty($params)) {
       $request = $requestStack->pop()->duplicate($params);
       $requestStack->push($request);
     }
 
-    return new OpenApiController(
-      $requestStack,
-      \Drupal::service('dkan.common.docs_generator')
-    );
+    return OpenApiController::create($this->container);
   }
 
 }
