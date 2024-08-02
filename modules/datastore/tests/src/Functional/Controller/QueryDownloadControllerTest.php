@@ -2,7 +2,10 @@
 
 namespace Drupal\Tests\datastore\Functional\Controller;
 
+use Drupal\common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\datastore\DatastoreResource;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
@@ -75,6 +78,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $resourceUrl = $this->container->get('stream_wrapper_manager')
       ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
       ->getExternalUrl();
+    $real_file_path = $file_system->realpath(self::UPLOAD_LOCATION . self::RESOURCE_FILE);
 
     // Build data-dictionary.
     $dict_id = $uuid->generate();
@@ -98,6 +102,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     );
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($metastore->publish('data-dictionary', $dict_id));
+    // Assert the date format is stored correctly.
     $this->assertEquals(
       $date_format,
       $metastore->get('data-dictionary', $dict_id)->{'$.data.fields[0].format'}
@@ -131,7 +136,8 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       RootedJsonData::class,
       $dataset = $metastore->get('dataset', $dataset_id)
     );
-    // The dataset references the dictionary.
+    // The dataset references the dictionary. DescribedBy will contain the https
+    // URL-style reference.
     $this->assertStringContainsString(
       $dict_id,
       $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
@@ -150,6 +156,19 @@ class QueryDownloadControllerTest extends BrowserTestBase {
 
     // Run queue items to perform the import.
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
+
+    // Look at the datastore table schema.
+//    $datastore_resource = (
+//      new DataResource($real_file_path, 'text/csv', ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
+//    )->getDatastoreResource();
+//
+//    /** @var \Drupal\datastore\Storage\DatabaseTableFactory $table_factory */
+//    $table_factory = $this->container->get('dkan.datastore.database_table_factory');
+//    $table = $table_factory->getInstance(
+//      $datastore_resource->getId(),
+//      ['resource' => $datastore_resource]
+//    );
+//    $this->assertEquals('asdf', print_r($table->getSummary(), true));
 
     // Query for the dataset, as a streaming CSV.
     $client = $this->getHttpClient();
