@@ -82,10 +82,9 @@ class OpenApiControllerTest extends BrowserTestBase {
   }
 
   private function getController(array $params = []) {
-    /** @var \Symfony\Component\HttpFoundation\RequestStack $requestStack */
-    $requestStack = $this->container->get('request_stack');
-
-    if (!empty($params)) {
+    if ($params) {
+      /** @var \Symfony\Component\HttpFoundation\RequestStack $requestStack */
+      $requestStack = $this->container->get('request_stack');
       $request = $requestStack->pop()->duplicate($params);
       $requestStack->push($request);
     }
