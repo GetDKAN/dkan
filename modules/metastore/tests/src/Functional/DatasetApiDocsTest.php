@@ -2,20 +2,28 @@
 
 namespace Drupal\Tests\metastore\Functional;
 
-use Drupal\Tests\common\Traits\CleanUp;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
+ * @coversDefaultClass \Drupal\metastore\DatasetApiDocs
  *
+ * @group dkan
+ * @group metastore
+ * @group functional
+ * @group btb
  */
-class DatasetSpecificDocsTest extends ExistingSiteBase {
-  use CleanUp;
+class DatasetApiDocsTest extends BrowserTestBase {
 
-  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+  protected static $modules = [
+    'datastore',
+    'metastore',
+    'node',
+  ];
 
-  /**
-   *
-   */
+  protected $defaultTheme = 'stark';
+
+  private $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+
   private function getData($downloadUrl) {
     return '
     {
@@ -35,11 +43,7 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     }';
   }
 
-  /**
-   *
-   */
   public function test() {
-
     // Test posting a dataset to the metastore.
     $dataset = $this->getData($this->downloadUrl);
 
@@ -48,23 +52,11 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     $dataset = $metastore->getValidMetadataFactory()->get($dataset, 'dataset');
     $metastore->post('dataset', $dataset);
 
+    /** @var \Drupal\metastore\DatasetApiDocs $docService */
     $docService = \Drupal::service('dkan.metastore.dataset_api_docs');
     $spec = $docService->getDatasetSpecific('123');
-    $this->assertTrue(is_array($spec));
-    $this->assertEquals("123", $spec['components']['parameters']['datasetUuid']['example']);
-  }
-
-  /**
-   *
-   */
-  public function tearDown(): void {
-    parent::tearDown();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
+    $this->assertIsArray($spec);
+    $this->assertEquals('123', $spec['components']['parameters']['datasetUuid']['example']);
   }
 
 }
