@@ -2,22 +2,26 @@
 
 namespace Drupal\Tests\metastore\Functional;
 
-use Drupal\Tests\common\Traits\CleanUp;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
- * Run tests in separate processes, since they rely on the value of
- *   drupal_static().
- * @runTestsInSeparateProcesses
+ * @group dkan
+ * @group metastore
+ * @group functional
+ * @group btb
  */
-class OnPreReferenceTest extends ExistingSiteBase {
-  use CleanUp;
+class OnPreReferenceTest extends BrowserTestBase {
 
-  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+  protected static $modules = [
+    'datastore',
+    'metastore',
+    'node',
+  ];
 
-  /**
-   *
-   */
+  protected $defaultTheme = 'stark';
+
+  private $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+
   private function getData($downloadUrl) {
     return '
     {
@@ -37,21 +41,16 @@ class OnPreReferenceTest extends ExistingSiteBase {
     }';
   }
 
-  /**
-   *
-   */
   public function test() {
-    /** @var \Drupal\Core\Config\ConfigFactory $config_factory */
-    $config_factory = \Drupal::service('config.factory');
     // Ensure the proper triggering properties are set for datastore comparison.
-    $datastore_settings = $config_factory->getEditable('datastore.settings');
-    $datastore_settings->set('triggering_properties', ['modified']);
-    $datastore_settings->save();
+    $this->config('datastore.settings')
+      ->set('triggering_properties', ['modified'])
+      ->save();
 
     // Test posting a dataset to the metastore.
     $data = $this->getData($this->downloadUrl);
     /** @var \Drupal\metastore\MetastoreService $metastore */
-    $metastore = \Drupal::service('dkan.metastore.service');
+    $metastore = $this->container->get('dkan.metastore.service');
     $dataset = $metastore->getValidMetadataFactory()->get($data, 'dataset');
     $metastore->post('dataset', $dataset);
 
@@ -66,16 +65,4 @@ class OnPreReferenceTest extends ExistingSiteBase {
     $this->assertEquals(1, $rev);
   }
 
-  /**
-   *
-   */
-  public function tearDown(): void {
-    parent::tearDown();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-  }
 }
