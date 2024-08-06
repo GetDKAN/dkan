@@ -30,8 +30,8 @@ The structure of your data dictionary should follow `Frictionless Standards tabl
 .. code-block:: json
 
     {
-      "title": "A human readable label",
       "data": {
+       "title": "A human readable label",
        "fields": [
         {
           "name": "(REQUIRED) machine name of the field that matches the datastore column header.",
