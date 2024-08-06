@@ -46,7 +46,7 @@ The structure of your data dictionary should follow `Frictionless Standards tabl
 
 name
 ^^^^
-The "name" should match the datastore column name. Spaces will be converted to underscores, uppercase will convert to lowercase, special characters will be dropped, and there is a 64 char limit, anything longer will be truncated and given a unique 4 digit hash at the end. It is the machine name that users will use when running queries on the datastore API so it is helpful to not use overly long name values. To view the column names of the datastore table, visit `/api/1/datastore/query/{dataset-uuid}/0?results=false&schema=true&keys=true&format=json&rowIds=false` and check the "properties" section.
+The "name" should match the datastore column name. These are derived from the column headings of the data file, spaces will be converted to underscores, uppercase will convert to lowercase, special characters will be dropped, and there is a 64 char limit, anything longer will be truncated and given a unique 4 digit hash at the end. It is the machine name that users will use when running queries on the datastore API so it is helpful to not use overly long column headings in your data file. To view the column names of the datastore table, visit `/api/1/datastore/query/{dataset-uuid}/0?results=false&schema=true&keys=true&format=json&rowIds=false` and check the "properties" section.
 
 title
 ^^^^^
@@ -300,4 +300,4 @@ This data dictionary will now be used to modify the datastore table after import
 request the dataset back from the API, it would show us the absolute URL as well.
 
 .. NOTE::
-  If you have set the dictionary mode to _distribution reference_, any time you update the data file in the distribution, the datastore will be dropped, re-imported, and any data typing defined in the data dictionary will be applied to the table. If you have set the dictionary mode to _sitewide_, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the siteswide data dictionary, the data typing will also be applied to the datastore table.
+  If you have set the dictionary mode to _distribution reference_, any time you update the data file in the distribution, the datastore will be dropped, re-imported, and any data typing defined in the data dictionary will be applied to the table. If you have set the dictionary mode to _sitewide_, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the sitewide data dictionary, the data typing will also be applied to the datastore table.
