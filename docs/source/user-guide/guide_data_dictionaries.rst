@@ -30,12 +30,12 @@ The structure of your data dictionary should follow `Frictionless Standards tabl
 .. code-block:: json
 
     {
-      "title": "A human readable label",
       "data": {
+       "title": "A human readable label",
        "fields": [
         {
-          "name": "(REQUIRED) machine name of field (e.g. column name)",
-          "title": "(optional) A nicer human readable label or title for the field",
+          "name": "(REQUIRED) machine name of the field that matches the datastore column header.",
+          "title": "(optional) A human readable label (usually the column header from the data file.)",
           "type": "(REQUIRED) A string specifying the type",
           "format": "(only required if NOT using default) A string specifying a format",
           "description": "(optional) A description for the field"
@@ -46,7 +46,11 @@ The structure of your data dictionary should follow `Frictionless Standards tabl
 
 name
 ^^^^
-The "name" should match name of the column header. Spaces will be converted to underscores, uppercase will convert to lowercase, special characters will be dropped, and there is a 64 char limit, anything longer will be truncated and given a unique 4 digit hash at the end. It is the machine name that users will use when running queries on the datastore API so it is helpful to not use overly long name values.
+The "name" should match the datastore column name. These are derived from the column headings of the data file: spaces will be converted to underscores, uppercase will convert to lowercase, special characters will be dropped, and there is a 64 char limit, anything longer will be truncated and given a unique 4 digit hash at the end. It is the machine name that users will use when running queries on the datastore API so it is helpful to not use overly long column headings in your data file. To view the column names of the datastore table, visit `/api/1/datastore/query/{dataset-uuid}/0?results=false&schema=true&keys=true&format=json&rowIds=false` and check the "properties" section.
+
+title
+^^^^^
+This is usually the column header from the data file, but if the data file uses abbreviated column headings, this is where you can supply a more human readable and clear display title. This value will also be used for column headings when users export a filtered subset of results as a csv file.
 
 type
 ^^^^
@@ -90,6 +94,9 @@ format
 This property is important for fields where you need to specify the format of the values. See `Types & Formats <https://specs.frictionlessdata.io/table-schema/#types-and-formats>`_ for details.
 
 If your date values are not in ISO8601 format, use this property to define the format being used so that the data will import into the datastore correctly. Month and day values must be zero-padded. Follow the date formatting syntax of C / Python `strftime <http://strftime.org/>`_ to determine the pattern to use in your format property. For example, if your dates are in mm/dd/YYYY format, use "format": "%m/%d/%Y".
+
+.. Note::
+  The "Download full dataset (CSV)" button will download the original source file. The "Download filtered data (CSV)" button will generate a new file, using the data dictioinary title values (if present) for the column headings, otherwise the column headings from the source file will be used.
 
 How to create a data dictionary
 -------------------------------
@@ -187,15 +194,14 @@ Creating a data dictionary via the UI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 1. Log in as a user with the *Data: Create new content* permission.
 2. From the DKAN menu, select Data Dictionary -> Create.
-3. Enter a UUID for your data dictionary that will serve as its identifier.
-4. Enter a human readable title for your data dictionary.
-5. In the **Dictionary Fields** section, click the "Add one" button.
-6. Fill the form to define your field. Reference the Table Schema section above if needed.
-7. Repeat steps 5 and 6 for each field you want in your data dictionary.
-8. Click the "Save" button.
-9. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`
-10. Edit your data dictionary by going to `/admin/dkan/datasets`, then select "data-dictionary" from the data type filter, and click "Filter".
-11. Click the "Edit" link in the right-hand column.
+3. Enter a human readable title for your data dictionary.
+4. In the **Dictionary Fields** section, click the "Add one" button.
+5. Fill the form to define your field. Reference the Table Schema section above if needed.
+6. Repeat steps 4 and 5 for each field you want in your data dictionary.
+7. Click the "Save" button.
+8. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`
+9. Edit your data dictionary by going to `/admin/dkan/data-dictionaries`.
+10. Click the "Edit" link in the right-hand column next to the data dictionary you want to edit.
 
 
 Adding indexes
@@ -231,8 +237,8 @@ To set the data dictionary mode to **sitewide**:
 Distribution reference
 ^^^^^^^^^^^^^^^^^^^^^^
 Datasets can reference specific data dictionaries in this mode. Distribution reference mode means that DKAN will look for links to data dictionaries in the
-`describedBy` field of the distribution that a data file is described in. It will look for a URL to a data dictionary
-in the metastore. The `describedByType` must also be `application/vnd.tableschema+json` to signal correct data
+"Data Dictionary" (describedBy) field of the distribution that a data file is described in. It will look for a URL to a data dictionary
+in the metastore. The "Data Dictionary Type" (describedByType) must also be *application/vnd.tableschema+json* to signal the correct data
 dictionary format.
 
 To set the data dictionary mode to **distribution reference**:
@@ -240,11 +246,11 @@ To set the data dictionary mode to **distribution reference**:
 1. Go to admin/dkan/data-dictionary/settings
 2. Set "Dictionary Mode" to "Distribution reference".
 
-.. note:: Note
-   Assigning data dictionaries to datasets through the UI is still a work in progress!
+.. NOTE::
+   Assigning data dictionaries to datasets can be done on the dataset form. Enter the API endpoint of the data dictionary into the "Data Dictionary" field of the distribution section. Set the "Data Dictionary Type" field to *application/vnd.tableschema+json*.
 
-Now let's use the API to link a new dataset to the data dictionay we created above.
-Look closely at the distribution property in the example below.
+Or, use the API to link a new dataset to the data dictionay.
+Look closely at the distribution property in the example below, this is using the data dictionary uuid from the example above.
 
 .. http:post:: /api/1/metastore/schemas/dataset/items
 
@@ -292,3 +298,8 @@ could also be used, and would be converted to an internal `dkan://` URL on save.
 
 This data dictionary will now be used to modify the datastore table after import. If we were to
 request the dataset back from the API, it would show us the absolute URL as well.
+
+.. NOTE::
+  If you have set the dictionary mode to *distribution reference*, any time you update the data file in the distribution, the datastore will be dropped, re-imported, and any data typing defined in the data dictionary will be applied to the table.
+
+  If you have set the dictionary mode to *sitewide*, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the sitewide data dictionary, the data typing will also be applied to the datastore table.
