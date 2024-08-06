@@ -2,24 +2,34 @@
 
 namespace Drupal\Tests\datastore\Functional\Service;
 
+use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
-use weitzman\DrupalTestTraits\ExistingSiteBase;
-
 /**
  * Test ResourcePurger service.
+ *
+ * @coversDefaultClass \Drupal\datastore\Service\ResourcePurger
  *
  * @group dkan
  * @group datastore
  * @group functional
+ * @group btb
  */
-class ResourcePurgerTest extends ExistingSiteBase {
+class ResourcePurgerTest extends BrowserTestBase {
   use GetDataTrait;
   use CleanUp;
   use QueueRunnerTrait;
+
+  protected static $modules = [
+    'datastore',
+    'metastore',
+    'node',
+  ];
+
+  protected $defaultTheme = 'stark';
 
   /**
    * DKAN dataset storage service.
@@ -29,39 +39,11 @@ class ResourcePurgerTest extends ExistingSiteBase {
   protected $datasetStorage;
 
   /**
-   * DKAN datastore service.
-   *
-   * @var \Drupal\datastore\DatastoreService
-   */
-  protected $datastore;
-
-  /**
    * DKAN metastore service.
    *
    * @var \Drupal\metastore\MetastoreService
    */
   protected $metastore;
-
-  /**
-   * The Drupal Core Queue service.
-   *
-   * @var \Drupal\Core\Queue\QueueFactory
-   */
-  protected $queue;
-
-  /**
-   * The Drupal Core queue worker manager service.
-   *
-   * @var \Drupal\Core\Queue\QueueWorkerManager
-   */
-  protected $queueWorkerManager;
-
-  /**
-   * DKAN resource purger service.
-   *
-   * @var \Drupal\datastore\Service\ResourcePurger
-   */
-  protected $resourcePurger;
 
   /**
    * The ValidMetadataFactory class used for testing.
@@ -70,34 +52,12 @@ class ResourcePurgerTest extends ExistingSiteBase {
    */
   protected $validMetadataFactory;
 
-  /**
-   * The Config Factory
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
-   */
-  protected $config;
-
   public function setUp(): void {
     parent::setUp();
-
-    // Prepare environment.
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-
     // Initialize services.
-    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
-    $this->datastore = \Drupal::service('dkan.datastore.service');
-    $this->metastore = \Drupal::service('dkan.metastore.service');
-    $this->queue = \Drupal::service('queue');
-    $this->queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    $this->resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
+    $this->datasetStorage = $this->container->get('dkan.metastore.storage')->getInstance('dataset');
+    $this->metastore = $this->container->get('dkan.metastore.service');
     $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
-    $this->config = \Drupal::service('config.factory');
   }
 
   /**
@@ -105,9 +65,9 @@ class ResourcePurgerTest extends ExistingSiteBase {
    */
   public function testDatasetsWithSharedResourcesAreNotDeletedPrematurely(): void {
     // Make sure the default moderation state is "published".
-    $workflowConfig = $this->config->getEditable('workflows.workflow.dkan_publishing');
-    $defaultModerationState = $workflowConfig->get('type_settings.default_moderation_state');
-    $workflowConfig->set('type_settings.default_moderation_state', 'published')->save();
+    $this->config('workflows.workflow.dkan_publishing')
+      ->set('type_settings.default_moderation_state', 'published')
+      ->save();
 
     // Create 2 datasets with the same resource, and change the resource of one.
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
@@ -125,13 +85,14 @@ class ResourcePurgerTest extends ExistingSiteBase {
 
     // Ensure calling the resource purger on the updated dataset does not delete
     // the previously shared resource.
-    $this->resourcePurger->schedule([123], FALSE);
+    $this->container->get('dkan.datastore.service.resource_purger')
+      ->schedule([123], FALSE);
     $resources = $this->getResourcesForDataset(456);
     $resource = reset($resources);
-    $this->assertNotEmpty($this->datastore->getStorage($resource->identifier, $resource->version));
-
-    // Set default moderation state back to default.
-    $workflowConfig->set('type_settings.default_moderation_state', $defaultModerationState)->save();
+    $this->assertNotEmpty(
+      $this->container->get('dkan.datastore.service')
+        ->getStorage($resource->identifier, $resource->version)
+    );
   }
 
   /**
