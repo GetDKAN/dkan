@@ -237,8 +237,8 @@ To set the data dictionary mode to **sitewide**:
 Distribution reference
 ^^^^^^^^^^^^^^^^^^^^^^
 Datasets can reference specific data dictionaries in this mode. Distribution reference mode means that DKAN will look for links to data dictionaries in the
-`describedBy` field of the distribution that a data file is described in. It will look for a URL to a data dictionary
-in the metastore. The `describedByType` must also be `application/vnd.tableschema+json` to signal correct data
+"Data Dictionary" (describedBy) field of the distribution that a data file is described in. It will look for a URL to a data dictionary
+in the metastore. The "Data Dictionary Type" (describedByType) must also be *application/vnd.tableschema+json* to signal the correct data
 dictionary format.
 
 To set the data dictionary mode to **distribution reference**:
@@ -246,8 +246,8 @@ To set the data dictionary mode to **distribution reference**:
 1. Go to admin/dkan/data-dictionary/settings
 2. Set "Dictionary Mode" to "Distribution reference".
 
-.. note:: Note
-   Assigning data dictionaries to datasets can be done on the dataset form. Enter the API endpoint of the data dictionary into the "Data Dictionary" field of the distribution section. Set the "Data Dictionary Type" field to _application_.
+.. NOTE::
+   Assigning data dictionaries to datasets can be done on the dataset form. Enter the API endpoint of the data dictionary into the "Data Dictionary" field of the distribution section. Set the "Data Dictionary Type" field to *application/vnd.tableschema+json*.
 
 Or, use the API to link a new dataset to the data dictionay.
 Look closely at the distribution property in the example below, this is using the data dictionary uuid from the example above.
