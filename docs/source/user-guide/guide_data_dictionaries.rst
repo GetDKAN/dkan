@@ -300,4 +300,6 @@ This data dictionary will now be used to modify the datastore table after import
 request the dataset back from the API, it would show us the absolute URL as well.
 
 .. NOTE::
-  If you have set the dictionary mode to *distribution reference*, any time you update the data file in the distribution, the datastore will be dropped, re-imported, and any data typing defined in the data dictionary will be applied to the table. If you have set the dictionary mode to _sitewide_, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the sitewide data dictionary, the data typing will also be applied to the datastore table.
+  If you have set the dictionary mode to *distribution reference*, any time you update the data file in the distribution, the datastore will be dropped, re-imported, and any data typing defined in the data dictionary will be applied to the table.
+
+  If you have set the dictionary mode to *sitewide*, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the sitewide data dictionary, the data typing will also be applied to the datastore table.
