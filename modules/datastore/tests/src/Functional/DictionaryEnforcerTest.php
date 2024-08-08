@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait, CleanUp, QueueRunnerTrait;
+  use GetDataTrait, QueueRunnerTrait;
 
   protected $defaultTheme = 'stark';
 
