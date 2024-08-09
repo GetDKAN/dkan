@@ -26,7 +26,7 @@ Example data.json with a single dataset:
             "modified": "2023-10-01",
             "accessLevel": "public",
             "title": "Example Dataset Title",
-            "description": "<p>Example dataset description text.</p>",
+            "description": "Example dataset description text.",
             "keyword": [
                "Example keyword"
             ]
@@ -58,7 +58,7 @@ Register a harvest
 
   Register a new :term:`Harvest Plan`.
 
-  - Create a unique name as the **identifier** of your harvest. Do not use a hyphen in the identifier.
+  - Create a unique name as the **identifier** of your harvest that will help you distinguish it from other harvest plans. Do not use spaces or hyphens in the name, underscores are allowed.
   - Provide the full URI for the data source
 
   **Example**
