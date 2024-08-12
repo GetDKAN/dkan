@@ -186,6 +186,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $metastore_config = $this->config('metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
       ->set('data_dictionary_sitewide', $dict_id)
+      ->set('csv_headers_mode', 'dictionary_titles')
       ->save();
 
     // Build dataset.

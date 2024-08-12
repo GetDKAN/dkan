@@ -16,13 +16,17 @@ class MySQLQueryBuilder extends AlterTableQueryBuilderBase implements AlterTable
    * {@inheritdoc}
    */
   public function getQuery(): AlterTableQueryInterface {
-    return new MySQLQuery(
+
+    $query = new MySQLQuery(
       $this->databaseConnectionFactory->getConnection(),
       $this->dateFormatConverter,
       $this->table,
       $this->fields,
       $this->indexes,
     );
+
+    $query->setCsvHeaderMode($this->configFactory->get('metastore.settings')->get('csv_headers_mode'));
+    return $query;
   }
 
 }
