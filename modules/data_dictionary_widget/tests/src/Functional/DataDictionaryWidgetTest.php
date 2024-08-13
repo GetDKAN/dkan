@@ -51,6 +51,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     $session->elementExists('css', '#edit-field-json-metadata-0-identifier');
     $session->elementExists('css', '#edit-field-json-metadata-0-title');
     $session->elementExists('css', '#edit-field-json-metadata-0-dictionary-fields-add-row-button');
+    $session->elementExists('css', '#edit-field-json-metadata-0-indexes-add-row-button');
 
   }
 
