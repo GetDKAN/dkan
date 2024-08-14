@@ -85,7 +85,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     // Create dictionary fields/buttons for editing.
     $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $dictionary_fields_being_modified, $element['dictionary_fields']);
     $element['dictionary_fields']['add_row_button']['#access'] = $dictionary_fields_being_modified == NULL ? TRUE : FALSE;
-
+    
     // Create index fields/buttons for editing.
     $element['indexes'] = IndexFieldOperations::createIndexOptions($op_index, $index_data_results, $index_being_modified, $index_fields_being_modified, $element['indexes'], $form_state);
     //$element['indexes'] = IndexFieldOperations::createIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes'], $form_state);
@@ -140,11 +140,10 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
     $current_indexes = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"] ?? [];
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
-    $indexes_collection =  $values[0]["indexes"]["field_collection"]["group"] ?? [];
-    $indexes_fields_collection = $values[0]["indexes"]["fields"]["field_collection"]["group"] ?? [];
+    $indexes_collection = $values[0]["indexes"]["fields"]["field_collection"]["group"] ?? [];
 
-    if (!empty($indexes_fields_collection) && !empty($indexes_fields_collection["indexes"]["fields"])) {
-      $index_fields = $indexes_fields_collection["indexes"]["fields"];
+    if (!empty($indexes_collection) && !empty($indexes_collection["indexes"]["fields"])) {
+      $index_fields = $indexes_collection["indexes"]["fields"];
     }
 
     $dictionary_fields_input = !empty($field_collection) ? [
@@ -157,30 +156,22 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
       ],
     ] : [];
 
-    $index_fields_inputs = !empty($indexes_fields_collection) ? [
+    $index_inputs = !empty($indexes_collection) ? [
       [
         "name" => $index_fields["name"] ?? '',
         "length" => isset($index_fields["length"]) ? (int)$index_fields["length"] : 0,
       ],
     ] : [];
-    $indexes = array_merge($current_indexes ?? [], $index_fields_inputs);
-
-    $index_inputs = !empty($indexes_collection) ? [
-      [
-        "description" => $indexes_collection["index"]["description"] ?? '',
-        "type" => $indexes_collection["index"]["type"] ?? '',
-        "fields" => $indexes,
-      ],
-    ] : [];
 
     $dictionary_fields = array_merge($current_dictionary_fields ?? [], $dictionary_fields_input);
+    $indexes = array_merge($current_indexes ?? [], $index_inputs);
 
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
       'data' => [
         'title' => $values[0]['title'] ?? '',
         'fields' => $dictionary_fields,
-        'indexes' => $index_inputs,
+        'indexes' => $indexes,
       ],
     ];
 
