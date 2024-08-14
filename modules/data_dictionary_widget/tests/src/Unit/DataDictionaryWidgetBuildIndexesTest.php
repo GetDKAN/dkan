@@ -26,7 +26,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
    * Test collecting indexes field information.
    */
   public function testIndexesFieldCollectionDictionaryWidget() {
-    // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
     $fieldItemList = $this->createMock(FieldItemListInterface::class);
     $field_definition = $this->createMock(FieldDefinitionInterface::class);
@@ -44,7 +43,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       $third_party_settings
     );
 
-    // Call the method under test.
     $element = $dataDictionaryWidget->formElement(
       $fieldItemList,
       0,
@@ -53,12 +51,10 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       $formState
     );
 
+    // After creating the widget and building it call the index functions to update $element with the index fields.
     $add_fields = IndexFieldAddCreation::addIndex();
-
     $element = IndexFieldOperations::setAddIndexFormState($add_fields, $element);
-
     $add_index_fields = IndexFieldAddCreation::addIndexFields(null);
-
     $element = IndexFieldOperations::setAddIndexFieldFormState($add_index_fields, $element);
 
     $this->assertNotNull($element);
@@ -83,7 +79,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
    * Test creating a new dictionary with indexes and adding it to the dictionary table.
    */
   public function testAddNewIndexesDictionaryWidget() {
-    // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
     $formObject = $this->createMock(EntityFormInterface::class);
     $entity = $this->createMock(FieldableEntityInterface::class);
@@ -124,6 +119,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
+    // The gets are happening in formElement and function calls in it that use the formState variable.
+    // Set the value for $form_state->get("new_index").
     $formState->expects($this->exactly(14))
       ->method('get')
       ->willReturnOnConsecutiveCalls(
@@ -158,7 +155,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       $third_party_settings
     );
 
-    // Call the method under test.
     $element = $dataDictionaryWidget->formElement(
       $fieldItemList,
       0,
@@ -175,7 +171,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
    * Test creating a new dictionary with indexes with index fields and adding it to the dictionary table.
    */
   public function testAddNewIndexesWithFieldsDictionaryWidget() {
-    // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
     $formObject = $this->createMock(EntityFormInterface::class);
     $entity = $this->createMock(FieldableEntityInterface::class);
@@ -220,6 +215,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
+    // The gets are happening in formElement and function calls in it that use the formState variable.
+    // Set the value for $form_state->get("new_index_fields").
     $formState->expects($this->exactly(15))
       ->method('get')
       ->willReturnOnConsecutiveCalls(
@@ -254,7 +251,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       $third_party_settings
     );
 
-    // Call the method under test.
     $element = $dataDictionaryWidget->formElement(
       $fieldItemList,
       0,
@@ -271,7 +267,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
    * Test the creation of the edit buttons for a data dictionary indexes field.
    */
   public function testEditIndexesButtonsCreationDictionaryWidget() {
-    // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
     $formObject = $this->createMock(EntityFormInterface::class);
     $entity = $this->createMock(FieldableEntityInterface::class);
@@ -283,7 +278,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
     $plugin_id = '';
     $plugin_definition = [];
 
-    $current_fields = [
+    $current_index = [
       [
         'description' => 'test',
         'type' => 'index',
@@ -302,6 +297,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
+    // The gets are happening in formElement and function calls in it that use the formState variable.
+    // Set the value for $form_state->get("current_index").
     $formState->expects($this->exactly(14))
       ->method('get')
       ->willReturnOnConsecutiveCalls(
@@ -309,7 +306,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
         NULL,
         NULL,
         NULL,
-        $current_fields,
+        $current_index,
         NULL,
         NULL,
         NULL,
@@ -347,8 +344,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
    * Test edit a data dictionary index field and save it.
    */
   public function testEditDataDictionaryIndexDictionaryWidget() {
-
-    // Create mock objects.
     $formState = $this->createMock(FormStateInterface::class);
     $formObject = $this->createMock(EntityFormInterface::class);
     $entity = $this->createMock(FieldableEntityInterface::class);
@@ -373,8 +368,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
         'type' => 'fulltext',
       ]
     ];
-
-    $op = "edit_index_key_0";
 
     $user_input = [
       'field_json_metadata' => [
@@ -433,6 +426,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       ->method('set')
       ->with('field_data_type', 'data-dictionary');
 
+    // The gets are happening in indexEditCallback and formElement and function calls in it that use the formState variable.
+    // Set the value for various $form_state calls that use the current index and then are updated when we pass the updated index value.
     $formState->expects($this->any())
       ->method('get')
       ->willReturnOnConsecutiveCalls(
@@ -473,7 +468,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
     $formState->expects($this->any())
       ->method('getTriggeringElement')
       ->willReturnOnConsecutiveCalls(
-        ['#op' => $op], ['#op' => $op],
+        ['#op' => 'edit_index_key_0'], ['#op' => 'edit_index_key_0'],
         ['#op' => 'update_index_key_0'], ['#op' => 'update_index_key_0'],
       );
 
