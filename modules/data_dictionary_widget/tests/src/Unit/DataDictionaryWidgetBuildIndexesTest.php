@@ -187,23 +187,6 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
     $plugin_id = '';
     $plugin_definition = [];
 
-    $new_index = [
-      'field_json_metadata' => [
-        [
-          'indexes' => [
-            'field_collection' => [
-              'group' => [
-                'index' => [
-                  'description' => 'test',
-                  'type' => 'index',
-                ]
-              ]
-            ]
-          ]
-        ]
-      ]
-    ];
-
     $new_index_fields = [
       'field_json_metadata' => [
         [
@@ -398,29 +381,13 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
         0 => [
           'identifier' => 'test_identifier',
           'title' => 'test_title',
-          'dictionary_fields' => [
-            'field_collection' => [
-              'group' => [
-                'name' => 'test_edit',
-                'title' => 'test_edit',
-                'type' => 'string',
-                'format' => 'default',
-                'format_other' => '',
+          'indexes' => [
+            'edit_index' => [
+              'index_key_0' => [
                 'description' => 'test_edit',
+                'type' => 'fulltext',
               ]
-            ],
-            'data' => [
-              [
-                'field_collection' => [
-                  'name' => 'test_edit',
-                  'title' => 'test_edit',
-                  'type' => 'string',
-                  'format' => 'default',
-                  'format_other' => '',
-                  'description' => 'test_edit',
-                ],
-              ],
-            ],
+            ]
           ],
         ],
       ],
@@ -440,6 +407,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
             [
               'description' => 'test',
               'type' => 'index',
+              'fields' => [],
             ],
           ],
         ],
@@ -505,8 +473,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
     $formState->expects($this->any())
       ->method('getTriggeringElement')
       ->willReturnOnConsecutiveCalls(
-        ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op], ['#op' => $op],
-        ['#op' => 'update'], ['#op' => 'update'], ['#op' => 'update'], ['#op' => 'update'], ['#op' => 'update'],
+        ['#op' => $op], ['#op' => $op],
+        ['#op' => 'update_index_key_0'], ['#op' => 'update_index_key_0'],
       );
 
     $formState->expects($this->any())
@@ -535,8 +503,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
 
     // Assert edit feature loads form with the current field values.
     $this->assertNotNull($element);
-    $this->assertEquals($element["indexes"]["data"]["#rows"][0]["description"], $current_index[0]["description"]);
-    $this->assertEquals($element["indexes"]["data"]["#rows"][0]["type"], $current_index[0]["type"]);
+    $this->assertEquals($current_index[0]["description"], $element["indexes"]["data"]["#rows"][0]["description"]);
+    $this->assertEquals($current_index[0]["type"], $element["indexes"]["data"]["#rows"][0]["type"]);
 
     // Trigger callback function to save the edited fields.
     IndexFieldCallbacks::indexEditCallback($form, $formState);
@@ -552,8 +520,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
 
     // Assert update feature loads form with the edited field values.
     $this->assertNotNull($element);
-    $this->assertEquals($element["indexes"]["data"]["#rows"][0]["description"], $updated_index[0]["description"]);
-    $this->assertEquals($element["indexes"]["data"]["#rows"][0]["type"], $updated_index[0]["type"]);
+    $this->assertEquals($updated_index[0]["description"], $element["indexes"]["data"]["#rows"][0]["description"]);
+    $this->assertEquals($updated_index[0]["type"], $element["indexes"]["data"]["#rows"][0]["type"]);
   }
 
 }
