@@ -5,7 +5,6 @@ namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
-use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
 
 /**
  * MySQL alter table query builder.

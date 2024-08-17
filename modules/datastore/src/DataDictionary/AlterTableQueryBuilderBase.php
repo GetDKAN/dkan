@@ -3,10 +3,7 @@
 namespace Drupal\datastore\DataDictionary;
 
 use Drupal\Component\Uuid\UuidInterface;
-
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
-
 use PDLT\ConverterInterface;
 use RootedData\RootedJsonData;
 
