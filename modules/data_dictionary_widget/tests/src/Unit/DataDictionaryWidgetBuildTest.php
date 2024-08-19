@@ -15,7 +15,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget;
 
 /**
- * Test class for DataDictionaryWidget.
+ * Test class for DataDictionaryWidget focus on Data Dictionary Fields.
  *
  * @group dkan
  * @group data_dictionary_widget
@@ -76,6 +76,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $this->assertArrayHasKey('identifier', $element, 'Identifier Field Does Not Exist On The Data Dictionary Form');
     $this->assertArrayHasKey('title', $element, 'Identifier Field Does Not Exist On The Data Dictionary Form');
     $this->assertArrayHasKey('dictionary_fields', $element, 'Identifier Field Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('indexes', $element, 'Identifier Field Does Not Exist On The Data Dictionary Form');
   }
 
   /**
@@ -261,7 +262,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     FieldCallbacks::addSubformCallback($form, $formState);
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows([], $data_results, $formState);
-    
+
     // Call the method under test.
     $json_data = $dataDictionaryWidget->massageFormValues(
       $values,
@@ -349,7 +350,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $this->assertArrayHasKey('#op', $element["dictionary_fields"]["edit_buttons"][0]["edit_button"]);
   }
 
-    /**
+  /**
    * Test edit a data dictionary field and save it.
    */
   public function testEditDataDictionaryField() {
@@ -472,33 +473,33 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $formState->expects($this->any())
       ->method('get')
       ->willReturnOnConsecutiveCalls(
-        [], 
-        $current_dictionary_fields, 
-        [], 
-        [], 
-        [], 
-        $current_dictionary_fields, 
-        [], 
-        [], 
-        [], 
-        [], 
-        [], 
-        [], 
         [],
-        [], 
-        [], 
-        $user_input, 
+        $current_dictionary_fields,
         [],
-        $current_dictionary_fields, 
-        [], 
-        [], 
-        [], 
-        [], 
-        $updated_dictionary_fields, 
-        [], 
-        [], 
-        [], 
-        [], 
+        [],
+        [],
+        $current_dictionary_fields,
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        $user_input,
+        [],
+        $current_dictionary_fields,
+        [],
+        [],
+        [],
+        [],
+        $updated_dictionary_fields,
+        [],
+        [],
+        [],
+        [],
         []
       );
 
@@ -521,9 +522,9 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       $third_party_settings
     );
 
-    // Trigger callback function to edit fields. 
+    // Trigger callback function to edit fields.
     FieldCallbacks::editSubformCallback($form, $formState);
-    
+
     // First call to re-create data dictionary form with the editable fields.
     $element = $dataDictionaryWidget->formElement(
       $fieldItemList,
@@ -542,7 +543,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $this->assertEquals($element["dictionary_fields"]["data"]["#rows"][0]["description"], $current_dictionary_fields[0]["description"]);
 
 
-    // Trigger callback function to save the edited fields. 
+    // Trigger callback function to save the edited fields.
     FieldCallbacks::editSubformCallback($form, $formState);
 
     // Second call to re-create data dictionary and apply the edits made to the fields.
