@@ -1,3 +1,4 @@
+csv_headers_mode: resource_headers
 property_list:
   'theme': 'theme'
   'keyword': 'keyword'

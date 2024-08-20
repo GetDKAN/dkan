@@ -102,7 +102,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * Assign the csvHeaderMode based on the config setting.
    */
   public function setCsvHeaderMode($mode) {
-    $this->csvHeadersMode = $mode;
+    $this->csvHeadersMode = $mode ?? 'resource_headers';
   }
 
   /**
