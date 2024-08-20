@@ -460,7 +460,6 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    */
   protected function buildModifyColumnOptions(array $fields, array $type_map, string $table): array {
     $modify_column_options = [];
-    $table_cols = $this->getTableColsAndComments($table);
 
     foreach ($fields as ['name' => $field, 'title' => $title]) {
       $column_type = $type_map[$field];
@@ -473,6 +472,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
         $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$comment}'";
       }
       else {
+        $table_cols = $this->getTableColsAndComments($table);
         $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$table_cols[$field]}'";
       }
     }
