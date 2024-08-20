@@ -39,13 +39,11 @@ class HarvestCommands extends DrushCommands {
    */
   public function __construct(
     HarvestService $service,
-    LoggerChannelInterface $logger,
     HarvestUtility $harvestUtility
   ) {
     parent::__construct();
     // @todo passing via arguments doesn't seem play well with drush.services.yml
     $this->harvestService = $service;
-    $this->logger = $logger;
     $this->harvestUtility = $harvestUtility;
   }
 
@@ -144,20 +142,22 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:deregister
    */
   public function deregister($id) {
-    $message = 'Could not deregister the ' . $id . ' harvest.';
-    $this->logger->warning(
-      'If you deregister a harvest with published datasets, you will
-       not be able to bulk revert the datasets connected to this harvest.');
-    if ($this->io()->confirm("Deregister harvest {$id}")) {
+    // Short circuit if the plan doesn't exist.
+    if (empty($this->harvestService->getHarvestPlanObject($id))) {
+      $this->logger()->error('Invalid harvest plan identifier: ' . $id);
+      return DrushCommands::EXIT_FAILURE;
+    }
+    $this->logger()->warning('If you deregister a harvest with published datasets, you will not be able to bulk revert the datasets connected to this harvest.');
+    if ($this->io()->confirm('Deregister harvest ' . $id . '?')) {
       if ($this->harvestService->deregisterHarvest($id)) {
-        $message = 'Successfully deregistered the ' . $id . ' harvest.';
+        $this->logger()->success('Successfully deregistered harvest plan: ' . $id);
+        return DrushCommands::EXIT_SUCCESS;
+      }
+      else {
+        $this->logger()->error('Could not deregister harvest plan: ' . $id);
       }
     }
-    else {
-      throw new UserAbortException();
-    }
-
-    $this->logger->notice($message);
+    return DrushCommands::EXIT_FAILURE;
   }
 
   /**
@@ -381,16 +381,15 @@ class HarvestCommands extends DrushCommands {
    * @bootstrap full
    */
   public function harvestCleanup(): int {
-    $logger = $this->logger();
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
-      $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
+      $this->logger()->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
       if ($this->io()->confirm('Do you want to remove this data?', FALSE)) {
         $this->cleanupHarvestDataTables($orphaned);
       }
     }
     else {
-      $logger->notice('No leftover harvest data detected.');
+      $this->logger()->notice('No leftover harvest data detected.');
     }
     return DrushCommands::EXIT_SUCCESS;
   }
