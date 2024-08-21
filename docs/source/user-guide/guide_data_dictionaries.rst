@@ -50,7 +50,7 @@ The "name" should match the datastore column name. These are derived from the co
 
 title
 ^^^^^
-This is usually the column header from the data file, but if the data file uses abbreviated column headings, this is where you can supply a more human readable and clear display title. Depending on your :ref:`configuration<_guide_data_dictionary_config>`, this value may also be used for column headings when users export a filtered subset of results as a csv file.
+This is usually the column header from the data file, but if the data file uses abbreviated column headings, this is where you can supply a more human readable and clear display title. Depending on your :ref:`configuration <guide_data_dictionary_config>`, this value may also be used for column headings when users export a filtered subset of results as a csv file.
 
 type
 ^^^^
