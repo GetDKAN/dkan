@@ -20,7 +20,6 @@ use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
  */
 class ResourcePurgerTest extends BrowserTestBase {
   use GetDataTrait;
-  use CleanUp;
   use QueueRunnerTrait;
 
   protected static $modules = [
