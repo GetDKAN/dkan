@@ -2,12 +2,10 @@
 
 namespace Drupal\harvest\Commands;
 
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
-use Drush\Exceptions\UserAbortException;
 use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -67,7 +65,7 @@ class HarvestCommands extends DrushCommands {
       (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
       return;
     }
-    $this->logger->notice('No harvests registered.');
+    $this->logger()->notice('No harvests registered.');
   }
 
   /**
@@ -105,11 +103,11 @@ class HarvestCommands extends DrushCommands {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);
-      $this->logger->notice('Successfully registered the ' . $identifier . ' harvest.');
+      $this->logger()->notice('Successfully registered the ' . $identifier . ' harvest.');
     }
     catch (\Exception $e) {
-      $this->logger->error($e->getMessage());
-      $this->logger->debug($e->getTraceAsString());
+      $this->logger()->error($e->getMessage());
+      $this->logger()->debug($e->getTraceAsString());
     }
   }
 
@@ -140,13 +138,20 @@ class HarvestCommands extends DrushCommands {
    * Deregister a harvest.
    *
    * @command dkan:harvest:deregister
+   *
+   * @option revert Revert the harvest plan before deregistering it.
    */
-  public function deregister($id) {
+  public function deregister($id, $options = ['revert' => FALSE]) {
     // Short circuit if the plan doesn't exist.
-    if (empty($this->harvestService->getHarvestPlanObject($id))) {
-      $this->logger()->error('Invalid harvest plan identifier: ' . $id);
-      return DrushCommands::EXIT_FAILURE;
+    $this->validateHarvestPlan($id);
+
+    if ($options['revert'] ?? FALSE) {
+      // If the revert command fails, fail here, too.
+      if ($this->revert($id) === DrushCommands::EXIT_FAILURE) {
+        return DrushCommands::EXIT_FAILURE;
+      }
     }
+
     $this->logger()->warning('If you deregister a harvest with published datasets, you will not be able to bulk revert the datasets connected to this harvest.');
     if ($this->io()->confirm('Deregister harvest ' . $id . '?')) {
       if ($this->harvestService->deregisterHarvest($id)) {
@@ -229,20 +234,19 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Revert a harvest, i.e. remove all of its harvested entities.
+   * Queue the removal of all entities for a harvest.
    *
    * @param string $harvestId
-   *   The source to revert.
+   *   The harvest plan to revert.
    *
    * @command dkan:harvest:revert
    *
-   * @usage dkan:harvest:revert
-   *   Removes harvested entities.
+   * @usage dkan:harvest:revert HARVEST_PLAN_ID
    */
   public function revert($harvestId) {
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
-    (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
+    $this->logger()->success($result . ' items reverted for the \'' . $harvestId . '\' harvest plan.');
   }
 
   /**
