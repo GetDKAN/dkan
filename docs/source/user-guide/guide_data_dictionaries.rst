@@ -209,7 +209,7 @@ Adding indexes
 Data dictionaries can be used to describe indexes that should be applied when importing to a database.
 Learn more about this on :doc:`guide_indexes`
 
-How to set the data dictionary mode
+How to set the Dictionary Mode
 -----------------------------------
 
 In the section above we created a data dictionary
@@ -318,4 +318,5 @@ Visit `/admin/dkan/data-dictionary/settings` to make a selection.
 - Use data dictionary titles
 - Use the datastore machine names
 
-If you are changing this setting after data has been imported, you will need to re-import the data for the change to take effect.
+.. NOTE::
+  If you are changing this setting after data has been imported, you will need to re-import the data for the change to take effect.
