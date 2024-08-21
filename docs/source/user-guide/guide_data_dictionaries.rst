@@ -31,7 +31,7 @@ The structure of your data dictionary should follow `Frictionless Standards tabl
 
     {
       "data": {
-       "title": "A human readable label",
+       "title": "A human readable label for the dictionary",
        "fields": [
         {
           "name": "(REQUIRED) machine name of the field that matches the datastore column header.",
@@ -50,7 +50,7 @@ The "name" should match the datastore column name. These are derived from the co
 
 title
 ^^^^^
-This is usually the column header from the data file, but if the data file uses abbreviated column headings, this is where you can supply a more human readable and clear display title. This value will also be used for column headings when users export a filtered subset of results as a csv file.
+This is usually the column header from the data file, but if the data file uses abbreviated column headings, this is where you can supply a more human readable and clear display title. Depending on your :ref:`configuration<_guide_data_dictionary_config>`, this value may also be used for column headings when users export a filtered subset of results as a csv file.
 
 type
 ^^^^
@@ -303,3 +303,19 @@ request the dataset back from the API, it would show us the absolute URL as well
   If you have set the dictionary mode to *distribution reference*, any time you update the data file in the distribution, the datastore will be dropped, re-imported, and any data typing defined in the data dictionary will be applied to the table.
 
   If you have set the dictionary mode to *sitewide*, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the sitewide data dictionary, the data typing will also be applied to the datastore table.
+
+
+.. _guide_data_dictionary_config:
+
+How to set the CSV Headers Mode
+-------------------------------
+
+Users can run queries against the datastore API and download the results to a CSV file. The **CSV Headers Mode** will determine what values to use for the column headers when the CSV file is generated. The default setting will simply use the same column headings that exist in the original resource file. If your site is using data dictionaries, you could change this setting to use the titles defined in the data dictionary. And there is a third option to use the converted machine name headers that are used in the datastore table.
+
+Visit `/admin/dkan/data-dictionary/settings` to make a selection.
+
+- Use the column names from the resource file
+- Use data dictionary titles
+- Use the datastore machine names
+
+If you are changing this setting after data has been imported, you will need to re-import the data for the change to take effect.
