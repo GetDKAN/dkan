@@ -2,39 +2,45 @@
 
 namespace Drupal\Tests\metastore_search\Functional;
 
+use Drupal\Tests\BrowserTestBase;
 use Drupal\metastore_search\Commands\RebuildTrackerCommands;
 use Drupal\metastore_search\Controller\SearchController;
+use Drush\TestTraits\DrushTestTrait;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Request;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * Class SearchTest.
- *
- * @package Drupal\Tests\metastore_search\Functional
+ * @group dkan
  * @group metastore_search
+ * @group functional
+ * @group btb
  */
-class SearchTest extends ExistingSiteBase {
+class SearchTest extends BrowserTestBase {
 
-  /**
-   *
-   */
+  use DrushTestTrait;
+
+  protected static $modules = [
+    'datastore',
+    'metastore_search',
+    'node',
+  ];
+
+  protected $defaultTheme = 'stark';
+
   public function testDrushCommands() {
-    $output = NULL;
-    $return = NULL;
-    exec('drush dkan:metastore-search:rebuild-tracker', $output, $return);
-    $this->assertEquals(0, $return);
+    // Drush() defaults to expecting a 0 response code.
+    $this->drush('dkan:metastore-search:rebuild-tracker');
 
     $command = new RebuildTrackerCommands();
     $command->rebuildTracker();
   }
 
-  /**
-   *
-   */
   public function testControllers() {
+    $base_uri = $this->container->get('request_stack')
+      ->getCurrentRequest()
+      ->getSchemeAndHttpHost();
     $client = new Client([
-      'base_uri' => \Drupal::request()->getSchemeAndHttpHost(),
+      'base_uri' => $base_uri,
       'timeout'  => 2.0,
       'http_errors' => FALSE,
     ]);
@@ -52,8 +58,8 @@ class SearchTest extends ExistingSiteBase {
       $this->assertEquals('400', $response->getStatusCode());
     }
 
-    $controller = SearchController::create(\Drupal::getContainer());
-    $request = Request::create("http://blah/api");
+    $controller = SearchController::create($this->container);
+    $request = Request::create($base_uri . '/api');
 
     $response = $controller->search($request);
     $this->assertEquals('200', $response->getStatusCode());
@@ -62,11 +68,11 @@ class SearchTest extends ExistingSiteBase {
     $this->assertEquals('200', $response->getStatusCode());
 
     // Now test with errors.
-    $requestStack = \Drupal::service('request_stack');
-    $params = ['page-size' => 'foo'];
-    $request = $requestStack->pop()->duplicate($params);
-    $requestStack->push($request);
-
+    $request = Request::create(
+      $base_uri . '/api',
+      'GET',
+      ['page-size' => 'foo']
+    );
     $response = $controller->search($request);
     $this->assertEquals('400', $response->getStatusCode());
 
@@ -74,13 +80,17 @@ class SearchTest extends ExistingSiteBase {
     $this->assertEquals('400', $response->getStatusCode());
 
     // Test past max page size
-    $requestStack = \Drupal::service('request_stack');
-    $params = ['page-size' => 200];
-    $request = $requestStack->pop()->duplicate($params);
-    $requestStack->push($request);
+    $request = Request::create(
+      $base_uri . '/api',
+      'GET',
+      ['page-size' => 200]
+    );
     $response = $controller->search($request);
-    // @todo Better assertion.
     $this->assertEquals('200', $response->getStatusCode());
+    $this->assertEquals(
+      '{"total":"0","results":[],"facets":[]}',
+      $response->getContent()
+    );
   }
 
 }

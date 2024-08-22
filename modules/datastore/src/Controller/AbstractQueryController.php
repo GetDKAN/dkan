@@ -352,6 +352,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   Array of strings for a CSV header row.
    */
   protected function getHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
+    $config = $this->configFactory->get('metastore.settings')->get('csv_headers_mode');
     $schema_fields = $result->{'$.schema..fields'}[0] ?? [];
     if (empty($schema_fields)) {
       throw new \DomainException("Could not generate header for CSV.");
@@ -363,7 +364,12 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     $header_row = [];
     foreach ($datastoreQuery->{'$.properties'} ?? [] as $property) {
       $normalized_prop = $this->propToString($property, $datastoreQuery);
-      $header_row[] = $schema_fields[$normalized_prop]['description'] ?? $normalized_prop;
+      if ($config == "machine_names") {
+        $header_row[] = $normalized_prop ?? ($schema_fields[$normalized_prop]['description'] ?? FALSE);
+      }
+      else {
+        $header_row[] = $schema_fields[$normalized_prop]['description'] ?? $normalized_prop;
+      }
     }
 
     return $header_row;
