@@ -53,15 +53,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
     /** @var \Drupal\metastore\MetastoreService $metastoreService */
     $metastoreService = $this->container->get('dkan.metastore.service');
-    // Copy resource file to uploads directory.
-    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-    $file_system = $this->container->get('file_system');
-    $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
-    $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
-    $file_system->copy(self::TEST_DATA_PATH . $resourceFile, $upload_path, FileSystemInterface::EXISTS_REPLACE);
-    $resourceUrl = $this->container->get('stream_wrapper_manager')
-      ->getViaUri(self::UPLOAD_LOCATION . $resourceFile)
-      ->getExternalUrl();
+    $resourceUrl = $this->setUpResourceFile($resourceFile);
 
     // Set up dataset.
     $dataset_id = $uuid->generate();
@@ -154,16 +146,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
     /** @var \Drupal\metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
-    // Copy resource file to uploads directory.
-    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-    $file_system = $this->container->get('file_system');
-    $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
-    $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
-    $file_system->copy(self::TEST_DATA_PATH . $resourceFile, $upload_path, FileSystemInterface::EXISTS_REPLACE);
-    $resourceUrl = $this->container->get('stream_wrapper_manager')
-      ->getViaUri(self::UPLOAD_LOCATION . $resourceFile)
-      ->getExternalUrl();
-    $real_file_path = $file_system->realpath(self::UPLOAD_LOCATION . $resourceFile);
+    $resourceUrl = $this->setUpResourceFile($resourceFile);
 
     // Build data-dictionary.
     $dict_id = $uuid->generate();
@@ -171,7 +154,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $fields = [
       [
         'name' => 'b',
-        'title' => 'b',
+        'title' => 'b_title',
         'type' => 'date',
         'format' => $date_format,
       ],
@@ -239,21 +222,13 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     );
     $this->assertEquals($date_format, $dictionary_fields[0]['format'] ?? 'not found');
 
+    // Set the dictionary CSV header mode before the import.
+    $this->config('metastore.settings')
+      ->set('csv_headers_mode', 'dictionary_titles')
+      ->save();
+
     // Run queue items to perform the import.
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
-
-    // Look at the datastore table schema.
-    //    $datastore_resource = (
-    //      new DataResource($real_file_path, 'text/csv', ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
-    //    )->getDatastoreResource();
-    //
-    //    /** @var \Drupal\datastore\Storage\DatabaseTableFactory $table_factory */
-    //    $table_factory = $this->container->get('dkan.datastore.database_table_factory');
-    //    $table = $table_factory->getInstance(
-    //      $datastore_resource->getId(),
-    //      ['resource' => $datastore_resource]
-    //    );
-    //    $this->assertEquals('asdf', print_r($table->getSummary(), true));
 
     // Query for the dataset, as a streaming CSV.
     $client = $this->getHttpClient();
@@ -264,8 +239,48 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     );
 
     $lines = explode("\n", $response->getBody()->getContents());
+    // Header should be using the dictionary title.
+    $this->assertEquals('a,b_title,c,d,e', $lines[0]);
+
+    // Set the machine name CSV header mode before the import.
+    $this->config('metastore.settings')
+      ->set('csv_headers_mode', 'machine_names')
+      ->save();
+
+    // Make another request.
+    $response = $client->request(
+      'GET',
+      $this->baseUrl . '/api/1/datastore/query/' . $dataset_id . '/0/download',
+      ['query' => ['format' => 'csv']]
+    );
+    $lines = explode("\n", $response->getBody()->getContents());
+    // Header should be using the machine name title.
+    $this->assertEquals('a,b,c,d,e', $lines[0]);
+    // Date value should use the dictionary format.
     $this->assertEquals('1,02/23/1978,9.07,efghijk,0', $lines[1]);
   }
 
+  /**
+   * Move a data test file to the public:// directory.
+   *
+   * @param string $resourceFile
+   *   The file name only of the data resource file.
+   *
+   * @return string
+   *   The resource URL of the moved resource.
+   *
+   * @todo Turn this into a trait or add it to a base class.
+   */
+  protected function setUpResourceFile(string $resourceFile) : string {
+    // Copy resource file to uploads directory.
+    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+    $file_system = $this->container->get('file_system');
+    $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
+    $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
+    $file_system->copy(self::TEST_DATA_PATH . $resourceFile, $upload_path, FileSystemInterface::EXISTS_REPLACE);
+    return $this->container->get('stream_wrapper_manager')
+      ->getViaUri(self::UPLOAD_LOCATION . $resourceFile)
+      ->getExternalUrl();
+  }
 
 }
