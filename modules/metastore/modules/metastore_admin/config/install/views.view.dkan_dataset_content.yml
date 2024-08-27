@@ -11,7 +11,7 @@ dependencies:
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
-description: 'Find and manage content.'
+description: 'Administer DKAN metastore content.'
 tag: default
 base_table: node_field_data
 base_field: nid
@@ -1536,7 +1536,7 @@ display:
       menu:
         type: none
         title: Datasets
-        description: 'Administer all content in the DKAN metastore'
+        description: 'Administer DKAN metastore content.'
         weight: -10
         expanded: false
         menu_name: admin

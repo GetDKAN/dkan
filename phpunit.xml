@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
-  bootstrap="/var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
   colors="true"
   verbose="true">
   <coverage>

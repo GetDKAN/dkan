@@ -17,7 +17,7 @@ Some more details of DKAN's metastore:
 * The structure and format of dataset metadata in DKAN are determined by a `JSON schema <https://json-schema.org/>`_. By default, DKAN provides and utilizes the `DCAT-US metadata schema <https://resources.data.gov/resources/dcat-us/>`_ to store datasets, but :doc:`custom schemas <../user-guide/guide_custom_schemas>` can be added to the codebase to override this.
 * In DCAT-US, resources are placed in a sub-schema of the parent dataset called a *distribution*.
 
-.. image:: https://project-open-data.cio.gov/v1.1/schema-diagram.svg
+.. image:: https://resources.data.gov/schemas/dcat-us/v1.1/schema-diagram.svg
   :width: 400
   :alt: Dataset Structure
 

@@ -138,7 +138,7 @@ class FieldAddCreation {
   private static function createDescriptionField() {
     return [
       '#name' => 'field_json_metadata[0][dictionary_fields][field_collection][group][description]',
-      '#type' => 'textfield',
+      '#type' => 'textarea',
       '#required' => TRUE,
       '#title' => 'Description',
       '#description' => t('Information about the field data.'),

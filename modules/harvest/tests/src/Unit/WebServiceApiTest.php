@@ -101,7 +101,7 @@ class WebServiceApiTest extends TestCase {
   public function testBadPlan() {
     $this->request = new Request();
     $controller = WebServiceApi::create($this->getContainer());
-    $response = $controller->register();
+    $response = $controller->register($this->request);
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode(["message" => "Harvest plan must be a php object."]));
   }
@@ -126,7 +126,7 @@ class WebServiceApiTest extends TestCase {
     $this->request = $request;
 
     $controller = WebServiceApi::create($this->getContainer());
-    $response = $controller->register();
+    $response = $controller->register($request);
     $this->assertInstanceOf(JsonResponse::class, $response);
     $this->assertEquals($response->getContent(), json_encode(["identifier" => "test"]));
 
@@ -139,7 +139,6 @@ class WebServiceApiTest extends TestCase {
    */
   public function testRun() {
     $options = (new Options())
-      ->add("request_stack", RequestStack::class)
       ->add("dkan.harvest.service", HarvestService::class)
       ->index(0);
 
@@ -150,13 +149,15 @@ class WebServiceApiTest extends TestCase {
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getContent', json_encode((object) ['plan_id' => 'test']))
       ->add(HarvestService::class, "runHarvest", Result::class)
       ->getMock();
 
+    $request = new Request([], [], [], [], [], [],
+      json_encode((object) ['plan_id' => 'test'])
+    );
+
     $controller = WebServiceApi::create($container);
-    $response = $controller->run();
+    $response = $controller->run($request);
     $this->assertInstanceOf(JsonResponse::class, $response);
   }
 

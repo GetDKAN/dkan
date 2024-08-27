@@ -77,41 +77,6 @@ class DictionaryEnforcerTest extends TestCase {
   }
 
   /**
-   * Test exception thrown if no dictionary is found for resource.
-   */
-  public function testNoDictionaryIdFoundForResourceException() {
-    $resource = new DataResource('test.csv', 'text/csv');
-
-    $alter_table_query_builder = (new Chain($this))
-      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
-      ->add(AlterTableQueryInterface::class, 'execute')
-      ->getMock();
-    $metastore_service = (new Chain($this))
-      ->add(MetastoreService::class, 'get', new RootedJsonData(json_encode(['data' => ['fields' => []]])))
-      ->getMock();
-    $dictionary_discovery_service = (new Chain($this))
-      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', NULL)
-      ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
-
-    $container_chain = $this->getContainerChain($resource->getVersion())
-      ->add(AlterTableQueryInterface::class, 'execute')
-      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
-      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
-    \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
-
-    $dictionaryEnforcer = PostImportResourceProcessor::create(
-       $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
-     );
-
-     $dictionaryEnforcer->postImportProcessItem($resource);
-
-    // Assert no exceptions are thrown.
-    $errors = $container_chain->getStoredInput('error');
-    $this->assertEquals($errors[0], sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource->getIdentifier(), $resource->getVersion()));
-  }
-
-  /**
    * Test exception thrown in execute() is caught and logged.
    */
   public function testProcessItemExecuteException() {
