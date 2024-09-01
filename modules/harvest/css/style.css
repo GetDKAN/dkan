@@ -10,6 +10,15 @@ table.dashboard-datasets td.done
 }
 
 /**
+ * Hidden.
+ */
+table.dashboard-datasets td.published-hidden
+{
+  color: #325e1c;
+  background-color: #edf3e8;
+}
+
+/**
  * Waiting.
  */
 table.dashboard-harvests td.registered
