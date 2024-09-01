@@ -203,9 +203,16 @@ class HarvestUtility {
     );
     foreach ($plan_ids as $plan_id) {
       $this->logger->notice('Converting hashes for ' . $plan_id);
-      $this->convertHashTable($plan_id);
-      $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes')
-        ->destruct();
+      try {
+        $this->convertHashTable($plan_id);
+        $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes')
+          ->destruct();
+      }
+      catch (\Exception $e) {
+        $this->logger->error('Unable to convert hashes for ' . $plan_id);
+        $this->logger->error($e->getMessage());
+        $this->logger->debug($e->getTraceAsString());
+      }
     }
   }
 
@@ -237,9 +244,16 @@ class HarvestUtility {
     );
     foreach ($plan_ids as $plan_id) {
       $this->logger->notice('Converting runs for ' . $plan_id);
-      $this->convertRunTable($plan_id);
-      $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs')
-        ->destruct();
+      try {
+        $this->convertRunTable($plan_id);
+        $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs')
+          ->destruct();
+      }
+      catch (\Exception $e) {
+        $this->logger->error('Unable to convert runs for ' . $plan_id);
+        $this->logger->error($e->getMessage());
+        $this->logger->debug($e->getTraceAsString());
+      }
     }
   }
 
