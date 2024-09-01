@@ -2,10 +2,9 @@
 
 namespace Drupal\harvest\Commands;
 
-use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\HarvestService;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Harvest\ETL\Extract\DataJson;
@@ -39,13 +38,10 @@ class HarvestCommands extends DrushCommands {
    */
   public function __construct(
     HarvestService $service,
-    LoggerChannelInterface $logger,
     HarvestUtility $harvestUtility
   ) {
     parent::__construct();
-    // @todo passing via arguments doesn't seem play well with drush.services.yml
     $this->harvestService = $service;
-    $this->logger = $logger;
     $this->harvestUtility = $harvestUtility;
   }
 
@@ -69,7 +65,7 @@ class HarvestCommands extends DrushCommands {
       (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
       return;
     }
-    $this->logger->notice('No harvests registered.');
+    $this->logger()->notice('No harvests registered.');
   }
 
   /**
@@ -107,11 +103,11 @@ class HarvestCommands extends DrushCommands {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);
-      $this->logger->notice('Successfully registered the ' . $identifier . ' harvest.');
+      $this->logger()->notice('Successfully registered the ' . $identifier . ' harvest.');
     }
     catch (\Exception $e) {
-      $this->logger->error($e->getMessage());
-      $this->logger->debug($e->getTraceAsString());
+      $this->logger()->error($e->getMessage());
+      $this->logger()->debug($e->getTraceAsString());
     }
   }
 
@@ -144,20 +140,18 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:deregister
    */
   public function deregister($id) {
-    $message = 'Could not deregister the ' . $id . ' harvest.';
-    $this->logger->warning(
-      'If you deregister a harvest with published datasets, you will
-       not be able to bulk revert the datasets connected to this harvest.');
-    if ($this->io()->confirm("Deregister harvest {$id}")) {
+    $this->logger()->warning('If you deregister a harvest with published datasets, you will not be able to bulk revert the datasets connected to this harvest.');
+    if ($this->io()->confirm('Deregister harvest ' . $id)) {
       if ($this->harvestService->deregisterHarvest($id)) {
-        $message = 'Successfully deregistered the ' . $id . ' harvest.';
+        $this->logger()->notice('Successfully deregistered the ' . $id . ' harvest.');
+        return DrushCommands::EXIT_SUCCESS;
       }
     }
     else {
       throw new UserAbortException();
     }
-
-    $this->logger->notice($message);
+    $this->logger()->error('Could not deregister the ' . $id . ' harvest.');
+    return DrushCommands::EXIT_FAILURE;
   }
 
   /**
@@ -242,7 +236,7 @@ class HarvestCommands extends DrushCommands {
   public function revert($harvestId) {
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
-    (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
+    $this->logger()->notice($result . ' items reverted for the \'' . $harvestId . '\' harvest plan.');
   }
 
   /**
@@ -260,10 +254,10 @@ class HarvestCommands extends DrushCommands {
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->archive($harvestId);
     if (empty($result)) {
-      (new ConsoleOutput())->write("No items available to archive for the '{$harvestId}' harvest plan." . PHP_EOL);
+      $this->logger()->notice('No items available to archive for the \'' . $harvestId . '\' harvest plan.');
     }
     foreach ($result as $id) {
-      (new ConsoleOutput())->write("Archived dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+      $this->logger()->notice('Archived dataset ' . $id . " from harvest '" . $harvestId . "'.");
     }
   }
 
@@ -282,10 +276,10 @@ class HarvestCommands extends DrushCommands {
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->publish($harvestId);
     if (empty($result)) {
-      (new ConsoleOutput())->write("No items available to publish for the '{$harvestId}' harvest plan." . PHP_EOL);
+      $this->logger()->notice("No items available to publish for the '" . $harvestId . "' harvest plan.");
     }
     foreach ($result as $id) {
-      (new ConsoleOutput())->write("Published dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+      $this->logger()->notice('Published dataset ' . $id . " from harvest '" . $harvestId . "'.");
     }
   }
 
@@ -322,14 +316,14 @@ class HarvestCommands extends DrushCommands {
     }
 
     if (array_search($runId, $allRunIds) === FALSE) {
-      $this->logger()->error("Run ID $runId not found for harvest id $harvestId");
+      $this->logger()->error('Run ID ' . $runId . ' not found for harvest id ' . $harvestId);
       return DrushCommands::EXIT_FAILURE;
     }
 
     $run = $this->harvestService->getHarvestRunInfo($harvestId, $runId);
 
     if (empty($run)) {
-      $this->logger()->error("No status found for harvest id $harvestId and run id $runId");
+      $this->logger()->error('No status found for harvest id ' . $harvestId . ' and run id ' . $runId);
       return DrushCommands::EXIT_FAILURE;
     }
 
@@ -355,7 +349,7 @@ class HarvestCommands extends DrushCommands {
     try {
       $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
       $this->harvestService->processOrphanIds($orphans);
-      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(', ', $orphans));
+      $this->logger()->notice('Orphaned ids from harvest ' . $harvestId . ': ' . implode(', ', $orphans));
       return DrushCommands::EXIT_SUCCESS;
     }
     catch (\Exception $e) {
@@ -381,16 +375,15 @@ class HarvestCommands extends DrushCommands {
    * @bootstrap full
    */
   public function harvestCleanup(): int {
-    $logger = $this->logger();
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
-      $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
+      $this->logger()->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
       if ($this->io()->confirm('Do you want to remove this data?', FALSE)) {
         $this->cleanupHarvestDataTables($orphaned);
       }
     }
     else {
-      $logger->notice('No leftover harvest data detected.');
+      $this->logger()->notice('No leftover harvest data detected.');
     }
     return DrushCommands::EXIT_SUCCESS;
   }

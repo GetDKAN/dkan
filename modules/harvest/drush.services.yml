@@ -3,7 +3,6 @@ services:
     class: \Drupal\harvest\Commands\HarvestCommands
     arguments:
       - '@dkan.harvest.service'
-      - '@dkan.harvest.logger_channel'
       - '@dkan.harvest.utility'
     tags:
       - { name: drush.command }
