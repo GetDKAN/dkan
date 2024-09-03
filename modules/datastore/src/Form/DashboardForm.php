@@ -17,10 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Datastore Import Dashboard form.
- *
- * @package Drupal\datastore
  */
-class  DashboardForm extends FormBase {
+class DashboardForm extends FormBase {
   use StringTranslationTrait;
 
   /**
