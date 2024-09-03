@@ -195,13 +195,18 @@ Creating a data dictionary via the UI
 1. Log in as a user with the *Data: Create new content* permission.
 2. From the DKAN menu, select Data Dictionary -> Create.
 3. Enter a human readable title for your data dictionary.
-4. In the **Dictionary Fields** section, click the "Add one" button.
-5. Fill the form to define your field. Reference the Table Schema section above if needed.
-6. Repeat steps 4 and 5 for each field you want in your data dictionary.
-7. Click the "Save" button.
-8. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`
-9. Edit your data dictionary by going to `/admin/dkan/data-dictionaries`.
-10. Click the "Edit" link in the right-hand column next to the data dictionary you want to edit.
+4. To define a "Data Dictionary field" start by clicking "Add field".
+5. An "Add new field" editable form box will appear. Complete the required form fields here, reference the Table Schema section above if needed.
+6. Click "Add" to save the field temporarily. Remember that the Data Dictionary and it's respective fields are not completely saved until the form is submitted in it's entirety by clicking "Save".
+7. Alternatively you can click "Cancel" to stop creating the Data Dictionary field, at which point all the information you entered will be removed and the "Add new Field" box will close.
+8. Note that after saving, an informational table will appear listing the data dictionary fields you have created thus far and their names, titles, and details (data types, formats and descriptions).
+  1. You also have the ability to edit or modify the data dictionary fields you've created so far by clicking the gear icon on the right-hand side of this table.
+  2. Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: save (retain the modifications), cancel (close the editable form box without retaining any modifications) or delete (remove the respective Data Dictionary field entirely).
+9. You can enter any additional data dictionary fields by repeating steps 4-6. 
+10. Click the "Save" button.
+11. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`
+12. Edit your data dictionary by going to `/admin/dkan/data-dictionaries`.
+13. Click the "Edit" link in the right-hand column next to the data dictionary you want to edit.
 
 
 Adding indexes
