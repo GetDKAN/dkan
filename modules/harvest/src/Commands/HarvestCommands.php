@@ -137,20 +137,23 @@ class HarvestCommands extends DrushCommands {
   /**
    * Deregister a harvest.
    *
+   * @param string $plan_id
+   *   Harvest plan identifier.
+   *
    * @command dkan:harvest:deregister
    */
-  public function deregister($id) {
+  public function deregister($plan_id) {
     $this->logger()->warning('If you deregister a harvest with published datasets, you will not be able to bulk revert the datasets connected to this harvest.');
-    if ($this->io()->confirm('Deregister harvest ' . $id)) {
-      if ($this->harvestService->deregisterHarvest($id)) {
-        $this->logger()->notice('Successfully deregistered the ' . $id . ' harvest.');
+    if ($this->io()->confirm('Deregister harvest ' . $plan_id)) {
+      if ($this->harvestService->deregisterHarvest($plan_id)) {
+        $this->logger()->notice('Successfully deregistered the ' . $plan_id . ' harvest.');
         return DrushCommands::EXIT_SUCCESS;
       }
     }
     else {
       throw new UserAbortException();
     }
-    $this->logger()->error('Could not deregister the ' . $id . ' harvest.');
+    $this->logger()->error('Could not deregister the ' . $plan_id . ' harvest.');
     return DrushCommands::EXIT_FAILURE;
   }
 
