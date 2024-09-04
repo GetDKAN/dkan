@@ -72,6 +72,11 @@ class MysqlImport extends ImportJob {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
+    $size = @filesize($file_path);
+    if (!$size) {
+      return $this->setResultError("Can't get size from file {$file_path}");
+    }
+
     // Read the columns and EOL character sequence from the CSV file.
     $delimiter = $this->resource->getMimeType() == 'text/tab-separated-values' ? "\t" : ',';
     try {
