@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest\Commands;
 
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
@@ -66,7 +67,7 @@ class HarvestCommands extends DrushCommands {
       (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
       return;
     }
-    $this->logger()->notice('No harvests registered.');
+    $this->logger->notice('No harvests registered.');
   }
 
   /**
@@ -104,11 +105,11 @@ class HarvestCommands extends DrushCommands {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);
-      $this->logger()->notice('Successfully registered the ' . $identifier . ' harvest.');
+      $this->logger->notice('Successfully registered the ' . $identifier . ' harvest.');
     }
     catch (\Exception $e) {
-      $this->logger()->error($e->getMessage());
-      $this->logger()->debug($e->getTraceAsString());
+      $this->logger->error($e->getMessage());
+      $this->logger->debug($e->getTraceAsString());
     }
   }
 
@@ -254,19 +255,20 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Queue the removal of all entities for a harvest.
+   * Revert a harvest, i.e. remove all of its harvested entities.
    *
    * @param string $harvestId
-   *   The harvest plan to revert.
+   *   The source to revert.
    *
    * @command dkan:harvest:revert
    *
-   * @usage dkan:harvest:revert HARVEST_PLAN_ID
+   * @usage dkan:harvest:revert
+   *   Removes harvested entities.
    */
   public function revert($harvestId) {
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
-    $this->logger()->success($result . ' items reverted for the \'' . $harvestId . '\' harvest plan.');
+    (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
   }
 
   /**
@@ -405,15 +407,16 @@ class HarvestCommands extends DrushCommands {
    * @bootstrap full
    */
   public function harvestCleanup(): int {
+    $logger = $this->logger();
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
-      $this->logger()->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
+      $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
       if ($this->io()->confirm('Do you want to remove this data?', FALSE)) {
         $this->cleanupHarvestDataTables($orphaned);
       }
     }
     else {
-      $this->logger()->notice('No leftover harvest data detected.');
+      $logger->notice('No leftover harvest data detected.');
     }
     return DrushCommands::EXIT_SUCCESS;
   }
