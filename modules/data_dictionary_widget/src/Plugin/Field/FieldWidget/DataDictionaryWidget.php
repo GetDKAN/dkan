@@ -30,7 +30,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    // Retrieve data-dictionary form_state values to be used for various operations.
+    // Retrieve data-dictionary form_state values to be used for various
+    // operations.
     $dictionary_field_values = $form_state->get("new_dictionary_fields");
     $add_new_dictionary_field = $form_state->get('add_new_field');
     $current_dictionary_fields = $form_state->get('current_dictionary_fields');
@@ -42,7 +43,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $add_new_index = $form_state->get('add_new_index');
     $index_being_modified = $form_state->get("index_being_modified") ?? NULL;
 
-    // Retrieve index fields form_state values to be used for various operations.
+    // Retrieve index fields form_state values to be used for various
+    // operations.
     $current_index_fields = $form_state->get('current_index_fields');
     $index_field_values = $form_state->get("new_index_fields");
     $add_index_field = $form_state->get('add_new_index_field');

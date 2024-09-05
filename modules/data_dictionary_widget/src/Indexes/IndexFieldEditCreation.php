@@ -74,7 +74,7 @@ class IndexFieldEditCreation {
 
     $edit_index['group']['fields']['data'] = IndexFieldCreation::createIndexFieldsDataRows($current_index[$indexKeyExplode[2]]['fields'], $current_index[$indexKeyExplode[2]]['fields'], $current_index[$indexKeyExplode[2]]['fields'], $form_state);
 
-    $edit_index['update_index']['actions'] = self::createIndexActionFields($indexKey, $id );
+    $edit_index['update_index']['actions'] = self::createIndexActionFields($indexKey, $id);
 
     return $edit_index;
   }
