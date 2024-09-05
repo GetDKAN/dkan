@@ -116,7 +116,7 @@ Index Fields
       1. Note here that it is not possible to modify index fields in this manner at this time. If you must change an index field, the current work around is to delete the associated index entirely and re-create it and it's fields again.
 
   9. Finally, make sure you click "Save" and then "Yes" to "Are you sure you want to publish this item?" in order to submit the form in it's entirety, saving the data dictionary.
-  10. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`
+  10. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`.
   11. Edit your data dictionary by going to `/admin/dkan/data-dictionaries`.
   12. Click the "Edit" link in the right-hand column next to the data dictionary you want to edit.
 

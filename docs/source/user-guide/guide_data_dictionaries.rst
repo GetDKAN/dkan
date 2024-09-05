@@ -196,17 +196,26 @@ Creating a data dictionary via the UI
 2. From the DKAN menu, select Data Dictionary -> Create.
 3. Enter a human readable title for your data dictionary.
 4. To define a "Data Dictionary field" start by clicking "Add field".
+.. image:: images/fields/add-data-field.png
+  :alt: A portion of the data dictionary creation admin page with a focus on the "Add field" button.
 5. An "Add new field" editable form box will appear. Complete the required form fields here, reference the Table Schema section above if needed.
+.. image:: images/fields/add-data-field-editable-form-box.png
+  :alt: A portion of the data dictionary creation admin page with a focus on the "Add new field" section.
 6. Click "Add" to save the field temporarily. Remember that the Data Dictionary and it's respective fields are not completely saved until the form is submitted in it's entirety by clicking "Save".
 7. Alternatively you can click "Cancel" to stop creating the Data Dictionary field, at which point all the information you entered will be removed and the "Add new Field" box will close.
 8. Note that after saving, an informational table will appear listing the data dictionary fields you have created thus far and their names, titles, and details (data types, formats and descriptions).
-
+.. image:: images/fields/edit-data-field-informational-table.png
+  :alt: A portion of the data dictionary creation admin page with a focus on the informational table that appears.
   a. You also have the ability to edit or modify the data dictionary fields you've created so far by clicking the gear icon on the right-hand side of this table.
   b. Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: save (retain the modifications), cancel (close the editable form box without retaining any modifications) or delete (remove the respective Data Dictionary field entirely).
+  .. image:: images/fields/edit-data-field.png
+    :alt: A portion of the data dictionary creation admin page with a focus on the editable form that appears in order to modify the data dictionary field.
   
 9. You can enter any additional data dictionary fields by repeating steps 4-6. 
 10. Click the "Save" button.
-11. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`
+.. image:: images/fields/data-field-save-data-dictionary.png
+    :alt: A portion of the data dictionary creation admin page with a focus on the save button at the bottom of the form.
+11. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`.
 12. Edit your data dictionary by going to `/admin/dkan/data-dictionaries`.
 13. Click the "Edit" link in the right-hand column next to the data dictionary you want to edit.
 
