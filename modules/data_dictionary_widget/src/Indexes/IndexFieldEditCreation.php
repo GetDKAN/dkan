@@ -5,8 +5,8 @@ namespace Drupal\data_dictionary_widget\Indexes;
 /**
  * Various operations for creating edit fields for indexes.
  */
-
 class IndexFieldEditCreation {
+
   /**
    * Create edit index fields.
    */
@@ -69,7 +69,7 @@ class IndexFieldEditCreation {
       '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
       '#attributes' => [
         'class' => ['index-fields-form'],
-      ],    
+      ],
     ];
 
     $edit_index['group']['fields']['data'] = IndexFieldCreation::createIndexFieldsDataRows($current_index[$indexKeyExplode[2]]['fields'], $current_index[$indexKeyExplode[2]]['fields'], $current_index[$indexKeyExplode[2]]['fields'], $form_state);

@@ -39,16 +39,16 @@ class FieldCallbacks {
    * Submit callback for the Edit button.
    */
   public static function editSubformCallback(array &$form, FormStateInterface $form_state) {
-    // Get the current fields data
+    // Get the current fields data.
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
     $current_index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]["data"]["#rows"] ?? [];
     // Get the field index from the triggering op attribute
-    // so we can use it to store the respective field later
+    // so we can use it to store the respective field later.
     $op_index = explode("_", $form_state->getTriggeringElement()['#op']);
-    // Get the fields we're currently modifying
+    // Get the fields we're currently modifying.
     $dictionary_fields_being_modified = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
     $index_fields_being_modified = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
-    // If the op (trigger) containes abort,
+    // If the op (trigger) contains abort,
     // we're canceling the field we're currently modifying so unset it.
     if (str_contains($form_state->getTriggeringElement()['#op'], 'abort')) {
       unset($dictionary_fields_being_modified[$op_index[1]]);
@@ -86,10 +86,10 @@ class FieldCallbacks {
     // Let's retain the fields that are being modified.
     $form_state->set('index_fields_being_modified', $index_fields_being_modified);
     $form_state->set('dictionary_fields_being_modified', $dictionary_fields_being_modified);
-    // Let's retain the fields that are already stored on the form, 
+    // Let's retain the fields that are already stored on the form,
     // but aren't currently being modified.
     $form_state->set('current_dictionary_fields', $current_dictionary_fields);
-    $form_state->set('current_index_fields', $current_index_fields );
+    $form_state->set('current_index_fields', $current_index_fields);
     // Let's rebuild the form.
     $form_state->setRebuild();
   }

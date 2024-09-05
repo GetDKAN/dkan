@@ -6,6 +6,7 @@ namespace Drupal\data_dictionary_widget\Indexes;
  * Various operations for creating Index fields.
  */
 class IndexFieldCreation {
+
   /**
    * Create basic index fields fieldset.
    */
@@ -33,7 +34,7 @@ class IndexFieldCreation {
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">Adding indexes to your datastore tables can improve response times from common queries.</div>'),
     ];
-        
+
     $element['indexes']['current_index'] = $current_indexes;
 
     return $element;
@@ -70,4 +71,5 @@ class IndexFieldCreation {
       '#theme' => 'custom_index_table',
     ];
   }
+
 }

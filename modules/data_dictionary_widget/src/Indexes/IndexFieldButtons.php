@@ -18,10 +18,10 @@ class IndexFieldButtons {
       '#access' => TRUE,
       '#op' => 'add_new_index_field',
       '#submit' => [
-      [
-        '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
-        'indexAddSubformCallback',
-      ],
+        [
+          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          'indexAddSubformCallback',
+        ],
       ],
       '#ajax' => [
         'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexFormAjax',
@@ -65,7 +65,8 @@ class IndexFieldButtons {
       $callback = 'indexEditSubformCallback';
       $id = 'field-json-metadata-index-fields';
       $function = 'subIndexFormAjax';
-    } else {
+    }
+    else {
       $callback = 'indexEditCallback';
       $id = 'field-json-metadata-index';
       $function = 'indexFormAjax';
@@ -82,10 +83,10 @@ class IndexFieldButtons {
         'alt' => t('Edit index'),
       ],
       '#submit' => [
-          [
-            '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
-            $callback,
-          ],
+        [
+          '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          $callback,
+        ],
       ],
       '#ajax' => [
         'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::' . $function,
@@ -93,7 +94,15 @@ class IndexFieldButtons {
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [
-        ['field_json_metadata', 0, 'indexes', 'field_collection', 'group', 'index', 'type'],
+        [
+          'field_json_metadata',
+          0,
+          'indexes',
+          'field_collection',
+          'group',
+          'index',
+          'type',
+        ],
       ],
     ];
   }
@@ -122,11 +131,34 @@ class IndexFieldButtons {
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [
-        ['field_json_metadata', 0, 'indexes', 'fields', 'field_collection', 'group', 'index', 'fields', 'name'],
-        ['field_json_metadata', 0, 'indexes', 'fields', 'field_collection', 'group', 'index', 'fields', 'length'],
+        [
+          'field_json_metadata',
+          0,
+          'indexes',
+          'fields',
+          'field_collection',
+          'group',
+          'index',
+          'fields',
+          'name',
+        ],
+        [
+          'field_json_metadata',
+          0,
+          'indexes',
+          'fields',
+          'field_collection',
+          'group',
+          'index',
+          'fields',
+          'length',
+        ],
       ],
       '#element_validate' => [
-        ['Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks', 'indexFieldVal'],
+        [
+          'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
+          'indexFieldVal',
+        ],
       ],
     ];
 
@@ -134,8 +166,24 @@ class IndexFieldButtons {
       $indexKeyExplode = explode("_", $indexKey);
       $edit_index_button['#name'] = 'update_' . $indexKey;
       $edit_index_button['#limit_validation_errors'] = [
-        ['field_json_metadata', 0, 'indexes', 'fields', 'edit_index_fields', $indexKeyExplode[3], 'name'],
-        ['field_json_metadata', 0, 'indexes', 'fields', 'edit_index_fields', $indexKeyExplode[3], 'length'],
+        [
+          'field_json_metadata',
+          0,
+          'indexes',
+          'fields',
+          'edit_index_fields',
+          $indexKeyExplode[3],
+          'name',
+        ],
+        [
+          'field_json_metadata',
+          0,
+          'indexes',
+          'fields',
+          'edit_index_fields',
+          $indexKeyExplode[3],
+          'length',
+        ],
       ];
     }
     return $edit_index_button;
@@ -145,7 +193,6 @@ class IndexFieldButtons {
    * Create Submit buttons.
    */
   public static function submitIndexButton($location, $indexKey) {
-    $class = static::class;
     $callbackClass = $location == 'edit' ? 'indexEditCallback' : 'indexAddCallback';
     $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index';
     $value = $location == 'edit' ? 'Save' : 'Submit Index';
@@ -165,8 +212,24 @@ class IndexFieldButtons {
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [
-        ['field_json_metadata', 0, 'indexes', 'field_collection', 'group', 'index', 'description'],
-        ['field_json_metadata', 0, 'indexes', 'field_collection', 'group', 'index', 'fields'],
+        [
+          'field_json_metadata',
+          0,
+          'indexes',
+          'field_collection',
+          'group',
+          'index',
+          'description',
+        ],
+        [
+          'field_json_metadata',
+          0,
+          'indexes',
+          'field_collection',
+          'group',
+          'index',
+          'fields',
+        ],
       ],
     ];
 
@@ -286,4 +349,5 @@ class IndexFieldButtons {
       '#limit_validation_errors' => [],
     ];
   }
+
 }

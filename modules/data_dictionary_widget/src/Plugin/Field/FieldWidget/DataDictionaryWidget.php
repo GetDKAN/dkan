@@ -75,7 +75,12 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     // Add pre-render functions.
     $element['dictionary_fields']['#pre_render'] = [[$this, 'preRenderForm']];
     $element['indexes']['#pre_render'] = [[$this, 'preRenderIndexForm']];
-    $element['indexes']['fields']['#pre_render'] = [[$this, 'preRenderIndexFieldFormOnAdd']];
+    $element['indexes']['fields']['#pre_render'] = [
+      [
+        $this,
+        'preRenderIndexFieldFormOnAdd',
+      ],
+    ];
 
     // Add data rows to display in tables.
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_dictionary_fields, $data_results, $form_state);
@@ -85,10 +90,9 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     // Create dictionary fields/buttons for editing.
     $element['dictionary_fields'] = FieldOperations::createDictionaryFieldOptions($op_index, $data_results, $dictionary_fields_being_modified, $element['dictionary_fields']);
     $element['dictionary_fields']['add_row_button']['#access'] = $dictionary_fields_being_modified == NULL ? TRUE : FALSE;
-    
+
     // Create index fields/buttons for editing.
     $element['indexes'] = IndexFieldOperations::createIndexOptions($op_index, $index_data_results, $index_being_modified, $index_fields_being_modified, $element['indexes'], $form_state);
-    //$element['indexes'] = IndexFieldOperations::createIndexOptions($op_index, $index_data_results, $index_fields_being_modified, $element['indexes'], $form_state);
 
     // Create edit buttons and fields for index fields.
     if ($index_field_values || $current_index_fields) {
@@ -98,25 +102,19 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     // Set access to index fields Add button when index fields being modified.
     $element['indexes']['add_row_button']['#access'] = $index_being_modified == NULL ? TRUE : FALSE;
 
-    // if ($index_field_values || $current_index_fields || $index_being_modified || $index_fields_being_modified) {
-    //   $element["indexes"]["edit_index"]["index_key_0"]["group"]["fields"]["fields"] = IndexFieldOperations::createDictionaryIndexFieldOptions($op_index, $index_fields_data_results, $index_fields_being_modified, $element['indexes']['fields']);
-    //   $element["indexes"]["edit_index"]["index_key_0"]["group"]["fields"]['#pre_render'] = [[$this, 'preRenderIndexFieldForm']];
-    //   //$element["indexes"]['edit_index_fields']["index_field_key_0"]['#pre_render'] = [[$this, 'preRenderIndexFieldForm']];
-    // }
-
-    // Get form entity
+    // Get form entity.
     $form_object = $form_state->getFormObject();
     if (!($form_object instanceof EntityFormInterface)) {
       return;
     }
     $form_entity = $form_object->getEntity();
 
-    // Set form entity data type
+    // Set form entity data type.
     if ($form_entity instanceof FieldableEntityInterface) {
       $form_entity->set('field_data_type', 'data-dictionary');
     }
 
-    // Set form state for adding fields and indexes
+    // Set form state for adding fields and indexes.
     $element = FieldOperations::setAddDictionaryFieldFormState($add_new_dictionary_field, $element);
     $element = FieldOperations::editDictionaryFieldFormState($dictionary_fields_being_modified, $element);
     $element = IndexFieldOperations::setAddIndexFormState($add_new_index, $element);
@@ -126,7 +124,8 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     // Display index fields only when new index fields are being created.
     if ($add_index_field || $index_field_values) {
       $element['indexes']['fields']['#access'] = TRUE;
-    } else {
+    }
+    else {
       $element['indexes']['fields']['#access'] = FALSE;
     }
 
@@ -159,7 +158,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $index_inputs = !empty($indexes_collection) ? [
       [
         "name" => $index_fields["name"] ?? '',
-        "length" => isset($index_fields["length"]) ? (int)$index_fields["length"] : 0,
+        "length" => isset($index_fields["length"]) ? (int) $index_fields["length"] : 0,
       ],
     ] : [];
 
@@ -218,7 +217,12 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
    * {@inheritdoc}
    */
   public static function trustedCallbacks() {
-    return ['preRenderForm', 'preRenderIndexFieldFormOnAdd', 'preRenderIndexFieldForm', 'preRenderIndexForm'];
+    return [
+      'preRenderForm',
+      'preRenderIndexFieldFormOnAdd',
+      'preRenderIndexFieldForm',
+      'preRenderIndexForm',
+    ];
   }
 
 }
