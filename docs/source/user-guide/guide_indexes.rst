@@ -137,7 +137,7 @@ Index Fields
 
 9. Finally, make sure you click "Save" and then "Yes" to "Are you sure you want to publish this item?" in order to submit the form in it's entirety, saving the data dictionary.
 
-  .. image:: images/indexes/indexes-save-dataset.png
+  .. image:: images/indexes/indexes-save-data-dictionary.png
     :alt: A portion of the data dictionary creation admin page with a focus on the save button at the bottom of the form.
 
 10. See a list of your data dictionaries at `/api/1/metastore/schemas/data-dictionary/items/`.
