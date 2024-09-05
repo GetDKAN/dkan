@@ -214,7 +214,7 @@ class FieldOperations {
   public static function editDictionaryFieldFormState($edit_dictionary_field, $element) {
     if ($edit_dictionary_field) {
       unset($element['dictionary_fields']["edit_buttons"]);
-    } 
+    }
 
     return $element;
   }

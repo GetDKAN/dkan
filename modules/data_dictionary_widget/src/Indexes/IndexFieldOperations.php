@@ -6,6 +6,7 @@ namespace Drupal\data_dictionary_widget\Indexes;
  * Various operations for structuring indexes and fields before rendering.
  */
 class IndexFieldOperations {
+
   /**
    * Setting ajax elements when editing newly added index fields.
    */
@@ -14,7 +15,7 @@ class IndexFieldOperations {
       foreach ($indexFields['data']['#rows'] as $row => $data) {
         $edit_index_button = $indexFields['edit_index_buttons']['index_field_key_' . $row] ?? NULL;
         $edit_index_fields = $indexFields['edit_index_fields']['index_field_key_' . $row] ?? NULL;
-        // Setting the ajax fields if they exsist.
+        // Setting the ajax fields if they exist.
         if ($edit_index_button) {
           $indexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
           unset($indexFields['edit_index_buttons']['index_field_key_' . $row]);
@@ -40,9 +41,8 @@ class IndexFieldOperations {
       foreach ($indexFields['data']['#rows'] as $row => $data) {
         $edit_index_fields_button = $indexFields['fields']['edit_index_fields_buttons']['index_field_key_' . $row] ?? NULL;
         $edit_index_fields = $indexFields['fields']['edit_index_fields']['index_field_key_' . $row] ?? NULL;
-        // Setting the ajax fields if they exsist.
+        // Setting the ajax fields if they exist.
         if ($edit_index_fields_button) {
-          //$indexFields["data"]["#rows"][0] = array_merge($data, $edit_index_fields_button);
           $indexFields["data"]["#rows"][$row] = array_merge($data, $edit_index_fields_button);
           unset($indexFields["fields"]["edit_index_fields_buttons"]['index_field_key_' . $row]);
         }
@@ -66,7 +66,7 @@ class IndexFieldOperations {
     foreach ($indexes['data']['#rows'] as $row => $data) {
       $edit_index_button = $indexes['edit_index_buttons']['index_key_' . $row] ?? NULL;
       $edit_index = $indexes['edit_index']['index_key_' . $row] ?? NULL;
-      // Setting the ajax fields if they exsist.
+      // Setting the ajax fields if they exist.
       if ($edit_index_button) {
         $indexes['data']['#rows'][$row] = array_merge($data, $edit_index_button);
         unset($indexes['edit_index_buttons']['index_key_' . $row]);
@@ -98,7 +98,7 @@ class IndexFieldOperations {
       $data_index_fields_pre = [
         [
           "name" => $index_field_group['index']['fields']["name"],
-          "length" => (int)$index_field_group['index']['fields']["length"],
+          "length" => (int) $index_field_group['index']['fields']["length"],
         ],
       ];
     }
@@ -156,7 +156,7 @@ class IndexFieldOperations {
   public static function editIndexFormState($edit_index, $element) {
     if ($edit_index) {
       unset($element["indexes"]["edit_index_buttons"]);
-    } 
+    }
 
     return $element;
   }
@@ -172,13 +172,13 @@ class IndexFieldOperations {
       $element['indexes']['fields']['add_row_button']['#access'] = FALSE;
       $element['identifier']['#required'] = FALSE;
       $element['title']['#required'] = FALSE;
-    } 
+    }
 
     return $element;
   }
 
   /**
-   * Set the elements associated with adding a new index
+   * Set the elements associated with adding a new index.
    */
   public static function setAddIndexFormState($add_new_index, $element) {
     if ($add_new_index) {
@@ -204,7 +204,6 @@ class IndexFieldOperations {
         $element['edit_index_fields']['index_field_key_' . $indexKey] = IndexFieldEditCreation::editIndexFields('index_field_key_' . $indexKey, $current_index_fields, $index_fields_being_modified);
       }
       else {
-        //$element['edit_index_fields_buttons']['index_field_key_' . $indexKey]['edit_index_fields_button'] = IndexFieldButtons::editIndexButtons('index_field_key_' . $indexKey);
         $element['edit_index_buttons']['index_field_key_' . $indexKey]['edit_index_button'] = IndexFieldButtons::editIndexButtons('index_field_key_' . $indexKey);
       }
     }
@@ -238,7 +237,7 @@ class IndexFieldOperations {
    */
   public static function checkIndexEditingField($indexKey, $op_index, $index_fields_being_modified) {
     $action_list = IndexFieldOperations::editIndexActions();
-    $indexKeyExplode = explode("_", $indexKey); 
+    $indexKeyExplode = explode("_", $indexKey);
     if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[3], $index_fields_being_modified)) {
       return TRUE;
     }
@@ -255,7 +254,7 @@ class IndexFieldOperations {
       $op_index_string = implode('_', $op_index);
       if (str_contains($op_index_string, 'edit_index_key')) {
         $action_list = IndexFieldOperations::editIndexActions();
-        $indexKeyExplode = explode("_", $indexKey); 
+        $indexKeyExplode = explode("_", $indexKey);
         if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[2], $index_being_modified)) {
           return TRUE;
         }
@@ -264,4 +263,5 @@ class IndexFieldOperations {
 
     return FALSE;
   }
+
 }

@@ -116,8 +116,8 @@ class IndexFieldCallbacks {
       $update_values = $form_state->getUserInput();
       unset($currently_modifying_index_fields[$op_index[4]]);
       unset($current_index_fields[$op_index[4]]);
-      $current_index_fields[$op_index[4]] = IndexFieldValues::updateIndexFieldValues($op_index[4], $update_values, $current_index_fields );
-      ksort($current_index_fields );
+      $current_index_fields[$op_index[4]] = IndexFieldValues::updateIndexFieldValues($op_index[4], $update_values, $current_index_fields);
+      ksort($current_index_fields);
 
     }
 
@@ -131,8 +131,8 @@ class IndexFieldCallbacks {
 
     $form_state->set('dictionary_fields_being_modified', $currently_modifying);
     $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
-    $form_state->set('current_index_fields', $current_index_fields );
-    $form_state->set('current_dictionary_fields', $current_dictionary_fields );
+    $form_state->set('current_index_fields', $current_index_fields);
+    $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->setRebuild();
   }
 
@@ -172,7 +172,6 @@ class IndexFieldCallbacks {
       $update_values = $form_state->getUserInput();
       $current_index[$op_index[3]] = IndexFieldValues::updateIndexValues($op_index[3], $update_values, $current_index);
       unset($currently_modifying_index[$op_index[3]]);
-      //unset($current_index[$op_index[3]]);
       ksort($current_index);
     }
 
@@ -183,7 +182,7 @@ class IndexFieldCallbacks {
     $form_state->set('dictionary_fields_being_modified', $currently_modifying_dictionary_fields);
     $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
     $form_state->set('index_being_modified', $currently_modifying_index);
-    $form_state->set('current_index_fields', $current_index_fields );
+    $form_state->set('current_index_fields', $current_index_fields);
     $form_state->set('current_index', $current_index);
     $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->setRebuild();
@@ -201,7 +200,6 @@ class IndexFieldCallbacks {
    */
   public static function subIndexFormAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["indexes"]["fields"];
-    //return $form["field_json_metadata"]["widget"][0]["indexes"]["edit_index"]["index_key_0"]["group"]["fields"]["fields"];
   }
 
   /**
@@ -210,7 +208,8 @@ class IndexFieldCallbacks {
   public static function indexFormAjax(array &$form, FormStateInterface $form_state) {
     $index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"];
 
-    // Validation errors skip submit callbacks, this will set the index fields in the correct location.
+    // Validation errors skip submit callbacks, this will set the index fields
+    // in the correct location.
     if ($index_fields["data"]) {
       $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"] = $index_fields;
       $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]['#access'] = FALSE;
@@ -227,11 +226,12 @@ class IndexFieldCallbacks {
   }
 
   /**
-   * Ajax callback to return index fields fieldset with existing fields and Add Field button.
+   * Ajax callback to return index fields fieldset with existing fields and Add
+   * Field button.
    */
   public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
     $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"]['#access'] = TRUE;
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"];  
+    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"];
   }
 
   /**
@@ -244,7 +244,8 @@ class IndexFieldCallbacks {
     ];
 
     foreach ($fields_to_validate as $field_key => $field_label) {
-      IndexValidation::indexFieldVal($form_state, $field_key, $field_label, $form);
+      IndexValidation::indexFieldVal($form_state, $field_key, $field_label);
     }
   }
+
 }
