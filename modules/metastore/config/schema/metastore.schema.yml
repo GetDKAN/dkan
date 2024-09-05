@@ -8,6 +8,9 @@ metastore.settings:
     data_dictionary_sitewide:
       type: string
       label: 'Sitewide Dictionary ID'
+    csv_headers_mode:
+      type: string
+      label: 'CSV Headers Mode'
     property_list:
       type: sequence
       label: 'Property List'
