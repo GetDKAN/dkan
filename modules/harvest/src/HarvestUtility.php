@@ -197,23 +197,7 @@ class HarvestUtility {
    * Outdated tables will be removed.
    */
   public function harvestHashUpdate() {
-    $plan_ids = array_merge(
-      $this->harvestService->getAllHarvestIds(),
-      array_values($this->findOrphanedHarvestDataIds())
-    );
-    foreach ($plan_ids as $plan_id) {
-      $this->logger->notice('Converting hashes for ' . $plan_id);
-      try {
-        $this->convertHashTable($plan_id);
-        $this->storeFactory->getInstance('harvest_' . $plan_id . '_hashes')
-          ->destruct();
-      }
-      catch (\Exception $e) {
-        $this->logger->error('Unable to convert hashes for ' . $plan_id);
-        $this->logger->error($e->getMessage());
-        $this->logger->debug($e->getTraceAsString());
-      }
-    }
+    $this->convertTables('hashes');
   }
 
   /**
@@ -238,19 +222,39 @@ class HarvestUtility {
    * Outdated tables will be removed.
    */
   public function harvestRunsUpdate() {
+    $this->convertTables('runs');
+  }
+
+  /**
+   * Update all the harvest run tables to use entities.
+   *
+   * Outdated tables will be removed.
+   *
+   * @param string $type
+   *   The type of table to convert. Must be one of 'hashes' or 'runs'.
+   */
+  protected function convertTables(string $type) {
+    if (!in_array($type, ['hashes', 'runs'])) {
+      throw new \InvalidArgumentException('Must be the right thing.');
+    }
     $plan_ids = array_merge(
       $this->harvestService->getAllHarvestIds(),
       array_values($this->findOrphanedHarvestDataIds())
     );
     foreach ($plan_ids as $plan_id) {
-      $this->logger->notice('Converting runs for ' . $plan_id);
+      $this->logger->notice('Converting ' . $type . ' for ' . $plan_id);
       try {
-        $this->convertRunTable($plan_id);
-        $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs')
+        if ($type === 'hashes') {
+          $this->convertHashTable($plan_id);
+        }
+        if ($type === 'runs') {
+          $this->convertRunTable($plan_id);
+        }
+        $this->storeFactory->getInstance('harvest_' . $plan_id . '_' . $type)
           ->destruct();
       }
       catch (\Exception $e) {
-        $this->logger->error('Unable to convert runs for ' . $plan_id);
+        $this->logger->error('Unable to convert ' . $type . ' for ' . $plan_id);
         $this->logger->error($e->getMessage());
         $this->logger->debug($e->getTraceAsString());
       }
