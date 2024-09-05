@@ -275,24 +275,24 @@ class HarvestCommands extends DrushCommands {
   /**
    * Perform the act of archiving or publishing a harvest plan.
    *
-   * @param $harvestId
+   * @param string $plan_id
    *   The harvest id.
-   * @param $operation
+   * @param string $operation
    *   (optional) The operation to perform. Either 'archive' or 'publish.'
    *   Defaults to 'archive'.
    */
-  protected function archiveOrPublish($harvestId, $operation = 'archive') {
+  protected function archiveOrPublish($plan_id, $operation = 'archive') {
     $verb = 'Archived';
     if ($operation === 'publish') {
       $verb = 'Published';
     }
-    $this->validateHarvestPlan($harvestId);
-    $result = $this->harvestService->$operation($harvestId);
+    $this->validateHarvestPlan($plan_id);
+    $result = $this->harvestService->$operation($plan_id);
     if (empty($result)) {
-      $this->logger()->notice('No items available to ' . $operation . ' for the \'' . $harvestId . '\' harvest plan.');
+      $this->logger()->notice('No items available to ' . $operation . ' for the \'' . $plan_id . '\' harvest plan.');
     }
     foreach ($result as $id) {
-      $this->logger()->notice($verb . ' dataset ' . $id . ' from harvest \'' . $harvestId . '\'.');
+      $this->logger()->notice($verb . ' dataset ' . $id . ' from harvest \'' . $plan_id . '\'.');
     }
   }
 
