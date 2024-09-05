@@ -64,7 +64,7 @@ class HarvestCommands extends DrushCommands {
       (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
       return;
     }
-    $this->logger->notice('No harvests registered.');
+    $this->logger()->notice('No harvests registered.');
   }
 
   /**
@@ -102,11 +102,11 @@ class HarvestCommands extends DrushCommands {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);
-      $this->logger->notice('Successfully registered the ' . $identifier . ' harvest.');
+      $this->logger()->notice('Successfully registered the ' . $identifier . ' harvest.');
     }
     catch (\Exception $e) {
-      $this->logger->error($e->getMessage());
-      $this->logger->debug($e->getTraceAsString());
+      $this->logger()->error($e->getMessage());
+      $this->logger()->debug($e->getTraceAsString());
     }
   }
 
@@ -266,7 +266,7 @@ class HarvestCommands extends DrushCommands {
   public function revert($harvestId) {
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
-    (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
+    $this->logger()->notice($result . ' items reverted for the \'' . $harvestId . '\' harvest plan.');
   }
 
   /**
@@ -281,14 +281,7 @@ class HarvestCommands extends DrushCommands {
    *   Archives harvested entities.
    */
   public function archive($harvestId) {
-    $this->validateHarvestPlan($harvestId);
-    $result = $this->harvestService->archive($harvestId);
-    if (empty($result)) {
-      (new ConsoleOutput())->write("No items available to archive for the '{$harvestId}' harvest plan." . PHP_EOL);
-    }
-    foreach ($result as $id) {
-      (new ConsoleOutput())->write("Archived dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
-    }
+    $this->archiveOrPublish($harvestId, 'archive');
   }
 
   /**
@@ -303,13 +296,30 @@ class HarvestCommands extends DrushCommands {
    *   Publishes harvested entities.
    */
   public function publish($harvestId) {
-    $this->validateHarvestPlan($harvestId);
-    $result = $this->harvestService->publish($harvestId);
+    $this->archiveOrPublish($harvestId, 'publish');
+  }
+
+  /**
+   * Perform the act of archiving or publishing a harvest plan.
+   *
+   * @param string $plan_id
+   *   The harvest id.
+   * @param string $operation
+   *   (optional) The operation to perform. Either 'archive' or 'publish.'
+   *   Defaults to 'archive'.
+   */
+  protected function archiveOrPublish($plan_id, $operation = 'archive') {
+    $verb = 'Archived';
+    if ($operation === 'publish') {
+      $verb = 'Published';
+    }
+    $this->validateHarvestPlan($plan_id);
+    $result = $this->harvestService->$operation($plan_id);
     if (empty($result)) {
-      (new ConsoleOutput())->write("No items available to publish for the '{$harvestId}' harvest plan." . PHP_EOL);
+      $this->logger()->notice('No items available to ' . $operation . ' for the \'' . $plan_id . '\' harvest plan.');
     }
     foreach ($result as $id) {
-      (new ConsoleOutput())->write("Published dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+      $this->logger()->notice($verb . ' dataset ' . $id . ' from harvest \'' . $plan_id . '\'.');
     }
   }
 
@@ -346,14 +356,14 @@ class HarvestCommands extends DrushCommands {
     }
 
     if (array_search($runId, $allRunIds) === FALSE) {
-      $this->logger()->error("Run ID $runId not found for harvest id $harvestId");
+      $this->logger()->error('Run ID ' . $runId . ' not found for harvest id ' . $harvestId);
       return DrushCommands::EXIT_FAILURE;
     }
 
     $run = $this->harvestService->getHarvestRunInfo($harvestId, $runId);
 
     if (empty($run)) {
-      $this->logger()->error("No status found for harvest id $harvestId and run id $runId");
+      $this->logger()->error('No status found for harvest id ' . $harvestId . ' and run id ' . $runId);
       return DrushCommands::EXIT_FAILURE;
     }
 
@@ -379,7 +389,7 @@ class HarvestCommands extends DrushCommands {
     try {
       $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
       $this->harvestService->processOrphanIds($orphans);
-      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(', ', $orphans));
+      $this->logger()->notice('Orphaned ids from harvest ' . $harvestId . ': ' . implode(', ', $orphans));
       return DrushCommands::EXIT_SUCCESS;
     }
     catch (\Exception $e) {
@@ -405,16 +415,15 @@ class HarvestCommands extends DrushCommands {
    * @bootstrap full
    */
   public function harvestCleanup(): int {
-    $logger = $this->logger();
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
-      $logger->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
+      $this->logger()->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));
       if ($this->io()->confirm('Do you want to remove this data?', FALSE)) {
         $this->cleanupHarvestDataTables($orphaned);
       }
     }
     else {
-      $logger->notice('No leftover harvest data detected.');
+      $this->logger()->notice('No leftover harvest data detected.');
     }
     return DrushCommands::EXIT_SUCCESS;
   }
