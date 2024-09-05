@@ -3,12 +3,11 @@
 namespace Drupal\harvest\Transform;
 
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\common\Util\DrupalFiles;
 use Harvest\ETL\Transform\Transform;
 
 /**
  * Moves local files to public:// and alters the downloadUrl field.
- *
- * @codeCoverageIgnore
  */
 class ResourceImporter extends Transform {
 
@@ -17,7 +16,7 @@ class ResourceImporter extends Transform {
    *
    * @var \Drupal\common\Util\DrupalFiles
    */
-  private $drupalFiles;
+  private DrupalFiles $drupalFiles;
 
   /**
    * Constructor.

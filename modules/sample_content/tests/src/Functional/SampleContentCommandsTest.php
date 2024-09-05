@@ -3,7 +3,10 @@
 namespace Drupal\Tests\sample_content\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\user\Entity\User;
 use Drush\TestTraits\DrushTestTrait;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 
 /**
  * @coversDefaultClass \Drupal\sample_content\Drush
@@ -25,17 +28,52 @@ class SampleContentCommandsTest extends BrowserTestBase {
     'sample_content',
   ];
 
+  /**
+   * Get a Guzzle Client object ready for sending HTTP requests.
+   *
+   * @param \Drupal\user\Entity\User|null $authUser
+   *   (Optional) A user object to use for authentication.
+   * @param bool $http_errors
+   *   (Optional) Whether 4xx or 5xx response codes should throw an exception.
+   *   Defaults to FALSE.
+   *
+   * @return \GuzzleHttp\Client
+   *   Client ready for HTTP requests.
+   *
+   * @todo Move this to a trait or base class.
+   */
+  protected function getApiClient(?User $authUser = NULL, $http_errors = FALSE): Client {
+    $options = [
+      'base_uri' => $this->baseUrl,
+      RequestOptions::HTTP_ERRORS => $http_errors,
+    ];
+    if ($authUser) {
+      $options[RequestOptions::AUTH] = [$authUser->getAccountName(), $authUser->pass_raw];
+    }
+    return $this->container->get('http_client_factory')->fromOptions($options);
+  }
+
   public function test() {
+    // No errors thrown on --help.
+    foreach ([
+      'dkan:sample-content:create',
+      'dkan:sample-content:remove',
+    ] as $command) {
+      $this->drush($command . ' --help');
+      $this->assertEmpty(
+        $this->getSimplifiedErrorOutput()
+      );
+    }
+
     $harvest_plan_name = 'sample_content';
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    $harvest_service = $this->container->get('dkan.harvest.service');
 
     // Run the create command.
     $this->drush('dkan:sample-content:create');
     $output = $this->getOutput();
 
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
-    $harvest_service = $this->container->get('dkan.harvest.service');
-
-    // Start asserting.
+    // Start asserting. Admittedly, not the best set of assertions.
     foreach ([
       'run_id',
       'processed',
@@ -59,6 +97,11 @@ class SampleContentCommandsTest extends BrowserTestBase {
     $this->assertCount(10, $run_info['status']['extracted_items_ids'] ?? []);
     $this->assertEmpty($run_info['error'] ?? []);
 
+    // What does the RESTful API say?
+    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items');
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertCount(10, json_decode($response->getBody()->getContents()));
+
     // Run the remove command.
     $this->drush('dkan:sample-content:remove');
 
@@ -71,6 +114,10 @@ class SampleContentCommandsTest extends BrowserTestBase {
     ] as $expected) {
       $this->assertStringContainsString($expected, $output);
     }
+
+    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items');
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertCount(0, json_decode($response->getBody()->getContents()));
   }
 
 }
