@@ -2,12 +2,10 @@
 
 namespace Drupal\harvest\Commands;
 
-use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\HarvestService;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\HarvestService;
 use Drush\Commands\DrushCommands;
-use Drush\Exceptions\UserAbortException;
 use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -42,7 +40,6 @@ class HarvestCommands extends DrushCommands {
     HarvestUtility $harvestUtility
   ) {
     parent::__construct();
-    // @todo passing via arguments doesn't seem play well with drush.services.yml
     $this->harvestService = $service;
     $this->harvestUtility = $harvestUtility;
   }
@@ -147,9 +144,10 @@ class HarvestCommands extends DrushCommands {
    * @command dkan:harvest:deregister
    * @option revert Revert the harvest plan before deregistering it.
    * @usage dkan:harvest:deregister --revert PLAN_ID
-   *   Deregister the PLAN_ID plan, after reverting all the data resources associated with it.
+   *   Deregister the PLAN_ID plan, after reverting all the data resources
+   *   associated with it.
    */
-  public function deregister($plan_id, $options = ['revert' => FALSE]) {
+  public function deregister($plan_id, array $options = ['revert' => FALSE]) {
     // Short circuit if the plan doesn't exist.
     try {
       $this->validateHarvestPlan($plan_id);
