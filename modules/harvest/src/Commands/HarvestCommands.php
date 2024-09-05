@@ -254,14 +254,7 @@ class HarvestCommands extends DrushCommands {
    *   Archives harvested entities.
    */
   public function archive($harvestId) {
-    $this->validateHarvestPlan($harvestId);
-    $result = $this->harvestService->archive($harvestId);
-    if (empty($result)) {
-      $this->logger()->notice('No items available to archive for the \'' . $harvestId . '\' harvest plan.');
-    }
-    foreach ($result as $id) {
-      $this->logger()->notice('Archived dataset ' . $id . " from harvest '" . $harvestId . "'.");
-    }
+    $this->archiveOrPublish($harvestId, 'archive');
   }
 
   /**
@@ -276,13 +269,30 @@ class HarvestCommands extends DrushCommands {
    *   Publishes harvested entities.
    */
   public function publish($harvestId) {
+    $this->archiveOrPublish($harvestId, 'publish');
+  }
+
+  /**
+   * Perform the act of archiving or publishing a harvest plan.
+   *
+   * @param $harvestId
+   *   The harvest id.
+   * @param $operation
+   *   (optional) The operation to perform. Either 'archive' or 'publish.'
+   *   Defaults to 'archive'.
+   */
+  protected function archiveOrPublish($harvestId, $operation = 'archive') {
+    $verb = 'Archived';
+    if ($operation === 'publish') {
+      $verb = 'Published';
+    }
     $this->validateHarvestPlan($harvestId);
-    $result = $this->harvestService->publish($harvestId);
+    $result = $this->harvestService->$operation($harvestId);
     if (empty($result)) {
-      $this->logger()->notice("No items available to publish for the '" . $harvestId . "' harvest plan.");
+      $this->logger()->notice('No items available to ' . $operation . ' for the \'' . $harvestId . '\' harvest plan.');
     }
     foreach ($result as $id) {
-      $this->logger()->notice('Published dataset ' . $id . " from harvest '" . $harvestId . "'.");
+      $this->logger()->notice($verb . ' dataset ' . $id . ' from harvest \'' . $harvestId . '\'.');
     }
   }
 
