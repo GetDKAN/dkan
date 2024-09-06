@@ -102,9 +102,20 @@ class SampleContentCommandsTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertCount(10, json_decode($response->getBody()->getContents()));
 
+    // Do the import.
+    $this->drush('queue:run localize_import');
+    $this->assertStringContainsString(
+      'Processed 10 items from the localize_import queue',
+      $this->getSimplifiedErrorOutput()
+    );
+    $this->drush('queue:run datastore_import');
+    $this->assertStringContainsString(
+      'Processed 10 items from the datastore_import queue',
+      $this->getSimplifiedErrorOutput()
+    );
+
     // Run the remove command.
     $this->drush('dkan:sample-content:remove');
-
     // Logged output counts as an error, even if it's not an error.
     $output = $this->getErrorOutput();
     // Assert the output.
