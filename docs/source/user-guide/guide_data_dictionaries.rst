@@ -200,7 +200,7 @@ Creating a data dictionary via the UI
   .. image:: images/fields/add-data-field.png
     :alt: A portion of the data dictionary creation admin page with a focus on the "Add field" button.
 
-5. An "Add new field" editable form box will appear. Complete the required form fields here, reference the Table Schema section above if needed.
+5. An "Add new field" editable form box will appear. Complete the required form fields here, reference the :ref:`Table Schema` section above if needed.
 
   .. image:: images/fields/add-data-field-editable-form-box.png
     :alt: A portion of the data dictionary creation admin page with a focus on the "Add new field" section.
@@ -213,7 +213,8 @@ Creating a data dictionary via the UI
     :alt: A portion of the data dictionary creation admin page with a focus on the informational table that appears.
 
 9. You also have the ability to edit or modify the data dictionary fields you've created so far by clicking the gear icon on the right-hand side of this table.
-10.  Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: save (retain the modifications), cancel (close the editable form box without retaining any modifications) or delete (remove the respective Data Dictionary field entirely).
+10.  Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: save (retain the modifications), "Cancel"
+ (close the editable form box without retaining any modifications) or "Delete" (remove the respective Data Dictionary field entirely).
 
   .. image:: images/fields/edit-data-field.png
     :alt: A portion of the data dictionary creation admin page with a focus on the editable form that appears in order to modify the data dictionary field.
