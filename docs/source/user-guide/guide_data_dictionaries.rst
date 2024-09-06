@@ -200,7 +200,7 @@ Creating a data dictionary via the UI
   .. image:: images/fields/add-data-field.png
     :alt: A portion of the data dictionary creation admin page with a focus on the "Add field" button.
 
-5. An "Add new field" editable form box will appear. Complete the required form fields here, reference the `Table Schema <#table-schema>` section above if needed.
+5. An "Add new field" editable form box will appear. Complete the required form fields here, reference the `Table Schema <#table-schema>`_ section above if needed.
 
   .. image:: images/fields/add-data-field-editable-form-box.png
     :alt: A portion of the data dictionary creation admin page with a focus on the "Add new field" section.
