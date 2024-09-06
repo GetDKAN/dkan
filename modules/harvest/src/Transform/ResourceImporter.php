@@ -3,11 +3,16 @@
 namespace Drupal\harvest\Transform;
 
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\common\Util\DrupalFiles;
 use Harvest\ETL\Transform\Transform;
 
 /**
  * Moves local files to public:// and alters the downloadUrl field.
+ *
+ * Used by the sample_content harvest.
+ *
+ * @see modules/sample_content/harvest_plan.json
  */
 class ResourceImporter extends Transform {
 
@@ -19,11 +24,19 @@ class ResourceImporter extends Transform {
   private DrupalFiles $drupalFiles;
 
   /**
+   * File URL generator service.
+   *
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
+   */
+  private FileUrlGeneratorInterface $fileUrlGenerator;
+
+  /**
    * Constructor.
    */
   public function __construct($harvest_plan) {
     parent::__construct($harvest_plan);
     $this->drupalFiles = \Drupal::service('dkan.common.drupal_files');
+    $this->fileUrlGenerator = \Drupal::service('file_url_generator');
   }
 
   /**
@@ -99,6 +112,8 @@ class ResourceImporter extends Transform {
    * `$settings['file_public_base_url']` must be configured in `settings.php`,
    * otherwise 'default' will be used as the hostname in the new URL.
    *
+   * @todo Is the above comment true?
+   *
    * @param string $url
    *   External file URL.
    * @param string $dataset_id
@@ -121,7 +136,7 @@ class ResourceImporter extends Transform {
     }
 
     if (is_object($path)) {
-      return \Drupal::service('file_url_generator')->generateAbsoluteString($path->uri->value);
+      return $this->fileUrlGenerator->generateAbsoluteString($path->uri->value);
     }
     else {
       return $this->drupalFiles->fileCreateUrl($path);
