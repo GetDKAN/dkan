@@ -213,8 +213,7 @@ Creating a data dictionary via the UI
     :alt: A portion of the data dictionary creation admin page with a focus on the informational table that appears.
 
 9. You also have the ability to edit or modify the data dictionary fields you've created so far by clicking the gear icon on the right-hand side of this table.
-10.  Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: save (retain the modifications), "Cancel"
- (close the editable form box without retaining any modifications) or "Delete" (remove the respective Data Dictionary field entirely).
+10.  Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: "Save" (retain the modifications), "Cancel" (close the editable form box without retaining any modifications) or "Delete" (remove the respective Data Dictionary field entirely).
 
   .. image:: images/fields/edit-data-field.png
     :alt: A portion of the data dictionary creation admin page with a focus on the editable form that appears in order to modify the data dictionary field.
