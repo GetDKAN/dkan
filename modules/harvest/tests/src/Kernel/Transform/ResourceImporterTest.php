@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\harvest\Kernel\Transform;
 
+use Drupal\common\Util\DrupalFiles;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\harvest\Transform\ResourceImporter;
 
@@ -73,6 +74,28 @@ class ResourceImporterTest extends KernelTestBase {
       'my_url_saved',
       $result->distribution[0]->downloadURL ?? 'nope'
     );
+  }
+
+  /**
+   * @covers ::saveFile
+   */
+  public function testSaveFile() {
+    // When DrupalFiles::retrieveFile fails, saveFile will return FALSE.
+    $drupal_files = $this->getMockBuilder(DrupalFiles::class)
+      ->setConstructorArgs([
+        $this->container->get('file_system'),
+        $this->container->get('stream_wrapper_manager'),
+      ])
+      ->onlyMethods(['retrieveFile'])
+      ->getMock();
+    $drupal_files->expects($this->once())
+      ->method('retrieveFile')
+      ->willReturn(FALSE);
+
+    $this->container->set('dkan.common.drupal_files', $drupal_files);
+
+    $importer = new ResourceImporter('harvest_plan_id');
+    $this->assertFalse($importer->saveFile('any_url', 'any_dataset'));
   }
 
 }
