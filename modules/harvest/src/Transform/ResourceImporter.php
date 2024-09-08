@@ -17,7 +17,7 @@ use Harvest\ETL\Transform\Transform;
 class ResourceImporter extends Transform {
 
   /**
-   * Drupal files.
+   * DKAN's Drupal files service.
    *
    * @var \Drupal\common\Util\DrupalFiles
    */
@@ -31,12 +31,20 @@ class ResourceImporter extends Transform {
   private FileUrlGeneratorInterface $fileUrlGenerator;
 
   /**
+   * Drupal's file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  private FileSystemInterface $fileSystem;
+
+  /**
    * Constructor.
    */
   public function __construct($harvest_plan) {
     parent::__construct($harvest_plan);
     $this->drupalFiles = \Drupal::service('dkan.common.drupal_files');
     $this->fileUrlGenerator = \Drupal::service('file_url_generator');
+    $this->fileSystem = \Drupal::service('file_system');
   }
 
   /**
@@ -122,12 +130,10 @@ class ResourceImporter extends Transform {
    * @return string|bool
    *   The URL for the newly created file, or FALSE if failure occurs.
    */
-  public function saveFile($url, $dataset_id) {
-
+  public function saveFile(string $url, string $dataset_id) {
     $targetDir = 'public://distribution/' . $dataset_id;
 
-    $this->drupalFiles
-      ->getFilesystem()
+    $this->fileSystem
       ->prepareDirectory($targetDir, FileSystemInterface::CREATE_DIRECTORY);
 
     // Abort if file can't be saved locally.
@@ -138,9 +144,7 @@ class ResourceImporter extends Transform {
     if (is_object($path)) {
       return $this->fileUrlGenerator->generateAbsoluteString($path->uri->value);
     }
-    else {
-      return $this->drupalFiles->fileCreateUrl($path);
-    }
+    return $this->drupalFiles->fileCreateUrl($path);
   }
 
 }
