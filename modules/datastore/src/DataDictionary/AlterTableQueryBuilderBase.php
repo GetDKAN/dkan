@@ -3,7 +3,9 @@
 namespace Drupal\datastore\DataDictionary;
 
 use Drupal\Component\Uuid\UuidInterface;
+
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
+use Drupal\Core\Config\ConfigFactory;
 use PDLT\ConverterInterface;
 use RootedData\RootedJsonData;
 
@@ -94,6 +96,13 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
   protected array $indexes = [];
 
   /**
+   * ConfigFactory object.
+   *
+   * @var \Drupal\Core\Config\ConfigFactory
+   */
+  protected $configFactory;
+
+  /**
    * Create an alter table query factory.
    *
    * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $database_connection_factory
@@ -102,15 +111,19 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
    *   PHP Date Language Tool Converter.
    * @param \Drupal\Component\Uuid\UuidInterface $uuid
    *   Uuid generator service.
+   * @param \Drupal\Core\Config\ConfigFactory $configFactory
+   *   ConfigFactory service.
    */
   public function __construct(
     DatabaseConnectionFactoryInterface $database_connection_factory,
     ConverterInterface $date_format_converter,
-    UuidInterface $uuid
+    UuidInterface $uuid,
+    ConfigFactory $configFactory
   ) {
     $this->databaseConnectionFactory = $database_connection_factory;
     $this->dateFormatConverter = $date_format_converter;
     $this->uuid = $uuid;
+    $this->configFactory = $configFactory;
   }
 
   /**
