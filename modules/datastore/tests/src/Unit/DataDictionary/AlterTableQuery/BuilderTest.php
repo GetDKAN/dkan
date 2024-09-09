@@ -5,6 +5,7 @@ namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\Component\Uuid\UuidInterface;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
@@ -70,8 +71,11 @@ class BuilderTest extends TestCase {
     $uuid = (new Chain($this))
       ->add(UuidInterface::class)
       ->getMock();
+    $configFactory = (new Chain($this))
+      ->add(ConfigFactory::class)
+      ->getMock();
 
-    $builder = new TestBuilder($connection, $converter, $uuid);
+    $builder = new TestBuilder($connection, $converter, $uuid, $configFactory);
 
     // Test Builder's setConnectionTimeout() returns what's expected.
     $result = $builder->setConnectionTimeout(1);

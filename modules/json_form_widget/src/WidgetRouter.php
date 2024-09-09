@@ -303,6 +303,8 @@ class WidgetRouter implements ContainerInjectionInterface {
     if (isset($spec->extensions)) {
       $element['#upload_validators']['file_validate_extensions'][] = $spec->extensions;
     }
+    // If a maxlength was set earlier, remove it as it is not allowed here.
+    unset($element['#maxlength']);
     return $element;
   }
 
