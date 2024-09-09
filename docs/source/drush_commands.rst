@@ -123,6 +123,11 @@ dkan:harvest:deregister
     **Arguments**
 
     - **harvestId** The harvest id
+    - **revert** Perform a revert before deregistering.
+
+    **Usage**
+
+        ``drush dkan:harvest:deregister --revert myHarvestId``
 
 ~~~~~~
 
