@@ -167,11 +167,11 @@ class HarvestCommands extends DrushCommands {
     }
 
     // Try to revert if the user wants to.
-    if ($options['revert'] ?? FALSE) {
-      // If the revert command fails, fail here, too.
-      if ($this->revert($plan_id) === DrushCommands::EXIT_FAILURE) {
-        return DrushCommands::EXIT_FAILURE;
-      }
+    if (
+      ($options['revert'] ?? FALSE) &&
+      ($this->revert($plan_id) === DrushCommands::EXIT_FAILURE)
+    ) {
+      return DrushCommands::EXIT_FAILURE;
     }
 
     // Do the deregister.
