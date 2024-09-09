@@ -226,7 +226,7 @@ class HarvestUtility {
   }
 
   /**
-   * Update all the harvest run tables to use entities.
+   * Convert the hashes or runs tables to use entities.
    *
    * Outdated tables will be removed.
    *
@@ -234,8 +234,13 @@ class HarvestUtility {
    *   The type of table to convert. Must be one of 'hashes' or 'runs'.
    */
   protected function convertTables(string $type) {
-    if (!in_array($type, ['hashes', 'runs'])) {
-      throw new \InvalidArgumentException('Must be the right thing.');
+    // Types mapped to conversion methods.
+    $types = [
+      'hashes' => 'convertHashTable',
+      'runs' => 'convertRunTable',
+    ];
+    if (!in_array($type, array_keys($types))) {
+      throw new \InvalidArgumentException('Type must be one of: ' . implode(', ', array_keys($types)));
     }
     $plan_ids = array_merge(
       $this->harvestService->getAllHarvestIds(),
@@ -244,12 +249,7 @@ class HarvestUtility {
     foreach ($plan_ids as $plan_id) {
       $this->logger->notice('Converting ' . $type . ' for ' . $plan_id);
       try {
-        if ($type === 'hashes') {
-          $this->convertHashTable($plan_id);
-        }
-        if ($type === 'runs') {
-          $this->convertRunTable($plan_id);
-        }
+        $this->{$types[$type]}($plan_id);
         $this->storeFactory->getInstance('harvest_' . $plan_id . '_' . $type)
           ->destruct();
       }
