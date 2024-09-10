@@ -73,7 +73,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
     $this->drush('dkan:sample-content:create');
     $output = $this->getOutput();
 
-    // Start asserting. Admittedly, not the best set of assertions.
+    // Start asserting.
     foreach ([
       'run_id',
       'processed',
