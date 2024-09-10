@@ -24,6 +24,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
+    'datastore',
     'node',
     'sample_content',
   ];
@@ -113,6 +114,36 @@ class SampleContentCommandsTest extends BrowserTestBase {
       'Processed 10 items from the datastore_import queue',
       $this->getSimplifiedErrorOutput()
     );
+
+    // What does the RESTful API say?
+    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items');
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertCount(10, json_decode($response->getBody()->getContents()));
+
+    // Find the bike lanes dataset.
+    $identifier = 'cedcd327-4e5d-43f9-8eb1-c11850fa7c55';
+    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertIsObject($payload = json_decode($response->getBody()->getContents()));
+    $this->assertEquals($identifier, $payload->identifier ?? 'nope');
+
+    // There is a download URL.
+    $this->assertNotEmpty(
+      $download_url = $payload->distribution[0]->downloadURL ?? ''
+    );
+    // Ensure the server is not 'default'.
+    $this->assertStringNotContainsString('default', $download_url);
+
+    // We can reach the download URL. Roll our own Guzzle client since we don't
+    // want a base URL option.
+    /** @var \GuzzleHttp\Client $client */
+    $client = $this->container->get('http_client_factory')->fromOptions([
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    // HEAD request since we don't want to actually transfer the file right
+    // now.
+    $this->assertNotEmpty($response = $client->head($download_url));
+    $this->assertEquals(200, $response->getStatusCode());
 
     // Run the remove command.
     $this->drush('dkan:sample-content:remove');
