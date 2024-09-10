@@ -20,6 +20,7 @@ use Drupal\Tests\BrowserTestBase;
 class ResourceImporterTest extends BrowserTestBase {
 
   protected static $modules = [
+    'datastore',
     'metastore',
   ];
 
