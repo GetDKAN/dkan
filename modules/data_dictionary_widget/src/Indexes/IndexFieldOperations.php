@@ -239,13 +239,13 @@ class IndexFieldOperations {
    */
   public static function checkIndexEditingField($indexKey, $op_index, $index_fields_being_modified) {
     $action_list = IndexFieldOperations::editIndexActions();
-    if (isset($op_index[0]) && in_array($op_index[0], $action_list)) {
-      $indexKeyExplode = explode('_', $indexKey);
-      if (array_key_exists($indexKeyExplode[3], $index_fields_being_modified)) {
-        return TRUE;
-      }
+    $indexKeyExplode = explode("_", $indexKey);
+    if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[3], $index_fields_being_modified)) {
+      return TRUE;
     }
-    return FALSE;
+    else {
+      return FALSE;
+    }
   }
 
   /**
@@ -256,11 +256,9 @@ class IndexFieldOperations {
       $op_index_string = implode('_', $op_index);
       if (str_contains($op_index_string, 'edit_index_key')) {
         $action_list = IndexFieldOperations::editIndexActions();
-        if (isset($op_index[0]) && in_array($op_index[0], $action_list)) {
-          $indexKeyExplode = explode('_', $indexKey);
-          if (array_key_exists($indexKeyExplode[2], $index_being_modified)) {
-            return TRUE;
-          }
+        $indexKeyExplode = explode("_", $indexKey);
+        if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[2], $index_being_modified)) {
+          return TRUE;
         }
       }
     }
