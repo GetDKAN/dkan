@@ -116,12 +116,6 @@ class ResourceImporter extends Transform {
   /**
    * Pulls down external file and saves it locally.
    *
-   * If this method is called when PHP is running on the CLI (e.g. via drush),
-   * `$settings['file_public_base_url']` must be configured in `settings.php`,
-   * otherwise 'default' will be used as the hostname in the new URL.
-   *
-   * @todo Is the above comment true?
-   *
    * @param string $url
    *   External file URL.
    * @param string $dataset_id
