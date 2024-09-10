@@ -20,3 +20,4 @@ services:
       - '@dkan.datastore.database_connection_factory'
       - '@pdlt.converter.strptime_to_mysql'
       - '@uuid'
+      - '@config.factory'
