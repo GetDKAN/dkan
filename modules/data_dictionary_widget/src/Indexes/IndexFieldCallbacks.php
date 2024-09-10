@@ -142,11 +142,11 @@ class IndexFieldCallbacks {
    */
   public static function indexEditCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]["data"]["#rows"] ?? [];
-    $current_index = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"] ?? [];
-    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
+    $current_index_fields = $form['field_json_metadata']['widget'][0]['indexes']['fields']['data']['#rows'] ?? [];
+    $current_index = $form['field_json_metadata']['widget'][0]['indexes']['data']['#rows'] ?? [];
+    $current_dictionary_fields = $form['field_json_metadata']['widget'][0]['dictionary_fields']['data']['#rows'] ?? [];
     $op = $trigger['#op'];
-    $op_index = explode("_", $trigger['#op']);
+    $op_index = explode('_', $trigger['#op']);
     $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
     $currently_modifying_index = $form_state->get('index_being_modified') != NULL ? $form_state->get('index_being_modified') : [];
     $currently_modifying_dictionary_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
