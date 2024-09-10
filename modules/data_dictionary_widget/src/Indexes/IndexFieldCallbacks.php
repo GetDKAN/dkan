@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Various operations for the Index callbacks.
  */
 class IndexFieldCallbacks {
+
   /**
    * Submit callback for the Index Add button.
    */
@@ -141,11 +142,11 @@ class IndexFieldCallbacks {
    */
   public static function indexEditCallback(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]["data"]["#rows"] ?? [];
-    $current_index = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"] ?? [];
-    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
+    $current_index_fields = $form['field_json_metadata']['widget'][0]['indexes']['fields']['data']['#rows'] ?? [];
+    $current_index = $form['field_json_metadata']['widget'][0]['indexes']['data']['#rows'] ?? [];
+    $current_dictionary_fields = $form['field_json_metadata']['widget'][0]['dictionary_fields']['data']['#rows'] ?? [];
     $op = $trigger['#op'];
-    $op_index = explode("_", $trigger['#op']);
+    $op_index = explode('_', $trigger['#op']);
     $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
     $currently_modifying_index = $form_state->get('index_being_modified') != NULL ? $form_state->get('index_being_modified') : [];
     $currently_modifying_dictionary_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
@@ -226,8 +227,8 @@ class IndexFieldCallbacks {
   }
 
   /**
-   * Ajax callback to return index fields fieldset with existing fields and Add
-   * Field button.
+   * Ajax callback to return index fields fieldset with existing fields and
+   * Add Field button.
    */
   public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
     $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"]['#access'] = TRUE;
