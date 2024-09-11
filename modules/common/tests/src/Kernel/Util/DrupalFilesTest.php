@@ -60,6 +60,8 @@ class DrupalFilesTest extends KernelTestBase {
       ->setConstructorArgs([
         $this->container->get('file_system'),
         $this->container->get('stream_wrapper_manager'),
+        $this->container->get('http_client_factory'),
+        $this->container->get('messenger'),
       ])
       ->onlyMethods(['systemRetrieveFile'])
       ->getMock();

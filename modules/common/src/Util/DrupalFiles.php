@@ -3,8 +3,13 @@
 namespace Drupal\common\Util;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\File\Exception\FileException;
+use Drupal\Core\File\Exception\InvalidStreamWrapperException;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Http\ClientFactory;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use GuzzleHttp\Exception\TransferException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -33,6 +38,20 @@ class DrupalFiles implements ContainerInjectionInterface {
   private $streamWrapperManager;
 
   /**
+   * HTTP client factory service.
+   *
+   * @var \Drupal\Core\Http\ClientFactory
+   */
+  private ClientFactory $httpClientFactory;
+
+  /**
+   * Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  private MessengerInterface $messenger;
+
+  /**
    * Inherited.
    *
    * @inheritdoc
@@ -40,16 +59,25 @@ class DrupalFiles implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('file_system'),
-      $container->get('stream_wrapper_manager')
+      $container->get('stream_wrapper_manager'),
+      $container->get('http_client_factory'),
+      $container->get('messenger')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FileSystemInterface $filesystem, StreamWrapperManager $streamWrapperManager) {
+  public function __construct(
+    FileSystemInterface $filesystem,
+    StreamWrapperManager $streamWrapperManager,
+    ClientFactory $httpClientFactory,
+    MessengerInterface $messenger
+  ) {
     $this->filesystem = $filesystem;
     $this->streamWrapperManager = $streamWrapperManager;
+    $this->httpClientFactory = $httpClientFactory;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -119,9 +147,23 @@ class DrupalFiles implements ContainerInjectionInterface {
    *   - If it fails, FALSE.
    *
    * @see \system_retrieve_file()
+   * @see https://www.drupal.org/node/3223362
    */
   protected function systemRetrieveFile($url, $destination = NULL) {
-    return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);
+    try {
+      $data = (string) $this->httpClientFactory
+        ->fromOptions()
+        ->get($url)
+        ->getBody();
+      return $this->filesystem->saveData($data, $destination, FileSystemInterface::EXISTS_REPLACE);
+    }
+    catch (TransferException $exception) {
+      $this->messenger->addError(t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
+    }
+    catch (FileException | InvalidStreamWrapperException $e) {
+      $this->messenger->addError(t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
+    }
+    return FALSE;
   }
 
   /**
