@@ -118,7 +118,13 @@ dkan:harvest:archive
 dkan:harvest:deregister
 -----------------------
 
-    Deregister a harvest.
+    Deregister a harvest. This action removes the harvest plan from the system,
+    but will leave the datasets in place. This is good if you are using harvest
+    to migrate content and you do not plan on using the harvest feature to
+    update the datasets.
+
+    If you want to remove the harvest plan AND the datasets associated with it,
+    use the --revert option.
 
     **Arguments**
 
@@ -192,7 +198,9 @@ dkan:harvest:register
 dkan:harvest:revert
 --------------------
 
-    Revert a harvest, i.e. remove harvested entities and unpublish orhpaned keywords, themes, and distributions.
+    Revert a harvest, i.e. remove harvested entities and unpublish orhpaned
+    keywords, themes, and distributions. The harvest plan will remain and can
+    be run again to generate the datasets after any issues have been resolved.
 
     **Arguments**
 
