@@ -8,6 +8,7 @@ class NoStrictMySQLQueryTest extends BrowserTestBase {
 
   protected static $modules = [
     'datastore_mysql_import',
+    'node',
   ];
 
   protected $defaultTheme = 'stark';

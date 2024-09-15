@@ -13,13 +13,15 @@ use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 class NoStrictMySQLQueryBuilder extends MySQLQueryBuilder {
 
   public function getQuery(): AlterTableQueryInterface {
-    return new NoStrictMySQLQuery(
+    $query = new NoStrictMySQLQuery(
       $this->databaseConnectionFactory->getConnection(),
       $this->dateFormatConverter,
       $this->table,
       $this->fields,
       $this->indexes,
     );
+    $query->setCsvHeaderMode($this->configFactory->get('metastore.settings')->get('csv_headers_mode'));
+    return $query;
   }
 
 }
