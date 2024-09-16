@@ -518,14 +518,35 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
         $add_index_options[] = "ADD {$mysql_index_type} INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}'";
       }
       if ($index_type == 'fulltext') {
-        // Innodb only allows adding one fulltext index at a time.
-        $command = $this->connection->prepareStatement("ALTER TABLE {$table} ADD {$mysql_index_type} INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}';", []);
-        // Execute alter command.
-        $command->execute();
+        $this->executeFulltextAlter($table, $name, $formatted_field_options, $comment);
       }
     }
 
     return $add_index_options;
+  }
+
+  /**
+   * Execute fulltext index table alters.
+   *
+   * @param string $table
+   *   Table name.
+   * @param string $name
+   *   Index name.
+   * @param string $formatted_field_options
+   *   Fields to be indexed.
+   * @param string $comment
+   *   Description of the index.
+   */
+  protected function executeFulltextAlter(string $table, string $name, string $formatted_field_options, string $comment): void {
+    try {
+      // Innodb only allows adding one fulltext index at a time.
+      $command = $this->connection->prepareStatement("ALTER TABLE {$table} ADD FULLTEXT INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}';", []);
+      // Execute alter command.
+      $command->execute();
+    }
+    catch (\Throwable $e) {
+      throw $e;
+    }
   }
 
   /**
