@@ -113,8 +113,12 @@ class IndexFieldButtons {
   public static function submitIndexFieldButton($location, $indexKey) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
     $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index_field';
+    // @TODO fix the 'Add ' to drop the space, this will need the test to be
+    // updated as well.
     $value = $location == 'edit' ? 'Save' : 'Add ';
-    $function = $location == 'edit' ? 'subIndexFormAjax' : 'subIndexFormAjax';
+    // Index fields cannot be edited once submitted so we use the same function
+    // for both add and edit.
+    $function = 'subIndexFormAjax';
     $edit_index_button = [
       '#type' => 'submit',
       '#value' => $value,
