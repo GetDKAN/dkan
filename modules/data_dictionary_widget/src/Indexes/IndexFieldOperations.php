@@ -18,6 +18,7 @@ class IndexFieldOperations {
         // Setting the ajax fields if they exist.
         if ($edit_index_button) {
           $indexFields['data']['#rows'][$row] = array_merge($data, $edit_index_button);
+          // Remove the buttons so they don't show up twice.
           unset($indexFields['edit_index_buttons']['index_field_key_' . $row]);
         }
         elseif ($edit_index_fields) {
@@ -25,6 +26,7 @@ class IndexFieldOperations {
           $indexFields['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
           // Remove the buttons so they don't show up twice.
           unset($indexFields['edit_index_fields']['index_field_key_' . $row]);
+          // Sort the current index data.
           ksort($indexFields['data']['#rows']);
         }
       }
@@ -46,6 +48,7 @@ class IndexFieldOperations {
         // Setting the ajax fields if they exist.
         if ($edit_index_fields_button) {
           $indexFields['data']['#rows'][$row] = array_merge($data, $edit_index_fields_button);
+          // Remove the buttons so they don't show up twice.
           unset($indexFields['fields']['edit_index_fields_buttons']['index_field_key_' . $row]);
         }
         elseif ($edit_index_fields) {
@@ -53,6 +56,7 @@ class IndexFieldOperations {
           $indexFields['data']['#rows'][$row]['field_collection'] = $edit_index_fields;
           // Remove the buttons so they don't show up twice.
           unset($indexFields['edit_index_fields']['index_field_key_' . $row]);
+          // Sort the current index fields data.
           ksort($indexFields['data']['#rows']);
         }
       }
@@ -71,6 +75,7 @@ class IndexFieldOperations {
       // Setting the ajax fields if they exist.
       if ($edit_index_button) {
         $indexes['data']['#rows'][$row] = array_merge($data, $edit_index_button);
+        // Remove the buttons so they don't show up twice.
         unset($indexes['edit_index_buttons']['index_key_' . $row]);
       }
       elseif ($edit_index) {
@@ -78,6 +83,7 @@ class IndexFieldOperations {
         $indexes['data']['#rows'][$row]['field_collection'] = $edit_index;
         // Remove the buttons so they don't show up twice.
         unset($indexes['edit_index']['index_key_' . $row]);
+        // Sort the current index data.
         ksort($indexes['data']['#rows']);
       }
 
@@ -203,7 +209,7 @@ class IndexFieldOperations {
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($index_data_results as $indexKey => $data) {
       if (self::checkIndexEditingField('index_field_key_' . $indexKey, $op_index, $index_fields_being_modified)) {
-        $element['edit_index_fields']['index_field_key_' . $indexKey] = IndexFieldEditCreation::editIndexFields('index_field_key_' . $indexKey, $current_index_fields, $index_fields_being_modified);
+        $element['edit_index_fields']['index_field_key_' . $indexKey] = IndexFieldEditCreation::editIndexFields('index_field_key_' . $indexKey, $current_index_fields);
       }
       else {
         $element['edit_index_buttons']['index_field_key_' . $indexKey]['edit_index_button'] = IndexFieldButtons::editIndexButtons('index_field_key_' . $indexKey);
@@ -223,7 +229,7 @@ class IndexFieldOperations {
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($index_data_results as $indexKey => $data) {
       if (self::checkIndexEditing('index_key_' . $indexKey, $op_index, $index_being_modified)) {
-        $element['edit_index']['index_key_' . $indexKey] = IndexFieldEditCreation::editIndex('index_key_' . $indexKey, $current_indexes, $index_being_modified, $form_state);
+        $element['edit_index']['index_key_' . $indexKey] = IndexFieldEditCreation::editIndex('index_key_' . $indexKey, $current_indexes, $form_state);
       }
       else {
         $element['edit_index_buttons']['index_key_' . $indexKey]['edit_index_button'] = IndexFieldButtons::editIndexButtons('index_key_' . $indexKey);
@@ -239,7 +245,8 @@ class IndexFieldOperations {
    */
   public static function checkIndexEditingField($indexKey, $op_index, $index_fields_being_modified) {
     $action_list = IndexFieldOperations::editIndexActions();
-    $indexKeyExplode = explode("_", $indexKey);
+    // We split the key to get the index field location.
+    $indexKeyExplode = explode('_', $indexKey);
     if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[3], $index_fields_being_modified)) {
       return TRUE;
     }
@@ -256,7 +263,8 @@ class IndexFieldOperations {
       $op_index_string = implode('_', $op_index);
       if (str_contains($op_index_string, 'edit_index_key')) {
         $action_list = IndexFieldOperations::editIndexActions();
-        $indexKeyExplode = explode("_", $indexKey);
+        // We split the key to get the index location.
+        $indexKeyExplode = explode('_', $indexKey);
         if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($indexKeyExplode[2], $index_being_modified)) {
           return TRUE;
         }

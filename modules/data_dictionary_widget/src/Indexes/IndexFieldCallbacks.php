@@ -305,15 +305,15 @@ class IndexFieldCallbacks {
   }
 
   /**
-   * Ajax callback to return index fields fieldset with Add Field button.
+   * Ajax callback to return index fields fieldset with 'Add Field' button.
    */
   public static function subIndexFormFieldAjax(array &$form, FormStateInterface $form_state) {
     return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"];
   }
 
   /**
-   * Ajax callback to return index fields fieldset with existing fields and Add
-   * Field button.
+   * Ajax callback to return index fields fieldset with existing fields and 'Add
+   * Field' button.
    */
   public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
     $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"]['#access'] = TRUE;

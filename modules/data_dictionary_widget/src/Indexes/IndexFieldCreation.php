@@ -41,7 +41,7 @@ class IndexFieldCreation {
   }
 
   /**
-   * Create data index data rows.
+   * Create data index fields data rows.
    */
   public static function createIndexFieldsDataRows($index_field_values, $current_index_fields, $index_fields_data_results, $form_state) {
     if ($index_field_values) {

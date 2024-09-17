@@ -45,7 +45,8 @@ class IndexValidation {
   public static function indexFieldVal(FormStateInterface $form_state, string $field_key, string $field_label) {
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
-    $op_index = explode("_", $op);
+    // We split the key to get the index field location.
+    $op_index = explode('_', $op);
 
     // Perform validation for update operation.
     if (str_contains($op, 'update')) {
