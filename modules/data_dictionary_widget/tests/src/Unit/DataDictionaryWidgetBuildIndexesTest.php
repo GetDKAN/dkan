@@ -539,14 +539,13 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
         ]
       ]
     ];
-    $index_being_modified = $current_index;
     $formState = $this->createMock(FormStateInterface::class);
     $formState->expects($this->any())
       ->method('get')
       ->willReturnOnConsecutiveCalls(FALSE);
 
     // Act
-    $edit_index = IndexFieldEditCreation::editIndex($indexKey, $current_index, $index_being_modified, $formState);
+    $edit_index = IndexFieldEditCreation::editIndex($indexKey, $current_index, $formState);
 
     // Assert
     $this->assertNotNull($edit_index);
@@ -572,7 +571,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
     ];
 
     // Act
-    $edit_index_fields = IndexFieldEditCreation::editIndexFields($indexKey, $current_index_fields, null);
+    $edit_index_fields = IndexFieldEditCreation::editIndexFields($indexKey, $current_index_fields);
 
     // Assert
     $this->assertNotNull($edit_index_fields);

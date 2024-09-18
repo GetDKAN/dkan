@@ -10,8 +10,9 @@ class IndexFieldEditCreation {
   /**
    * Create edit index fields.
    */
-  public static function editIndexFields($indexKey, $current_index_fields, $index_fields_being_modified) {
-    $id = $current_index_fields ? "field-json-metadata-index-fields" : "field-json-metadata-index-fields-new";
+  public static function editIndexFields($indexKey, $current_index_fields) {
+    $id = $current_index_fields ? 'field-json-metadata-index-fields' : 'field-json-metadata-index-fields-new';
+    // We split the key to get the index field location.
     $indexKeyExplode = explode("_", $indexKey);
     $edit_index_fields['name'] = [
       '#name' => 'field_json_metadata[0][indexes][fields][edit_index_fields][' . $indexKeyExplode[3] . '][name]',
@@ -36,7 +37,7 @@ class IndexFieldEditCreation {
   /**
    * Create edit index.
    */
-  public static function editIndex($indexKey, $current_index, $index_being_modified, $form_state) {
+  public static function editIndex($indexKey, $current_index, $form_state) {
     $id = $current_index ? "field-json-metadata-index-new" : "field-json-metadata-index";
     $indexKeyExplode = explode("_", $indexKey);
 
