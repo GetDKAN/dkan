@@ -101,6 +101,7 @@ class FieldCallbacks {
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
     $form_state->set('add_new_field', '');
+    // Get the current fields data.
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $current_index = $form["field_json_metadata"]["widget"][0]['indexes']["data"]["#rows"];
     $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? [];

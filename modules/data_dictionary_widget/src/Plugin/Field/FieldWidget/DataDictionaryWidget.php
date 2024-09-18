@@ -52,6 +52,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
 
     // Retrieve triggered element to be used for various operations.
     $op = $form_state->getTriggeringElement()['#op'] ?? NULL;
+    // We split the key to get the index field location.
     $op_index = isset($op) ? explode('_', $op) : NULL;
 
     // Retrieve form element item values.
