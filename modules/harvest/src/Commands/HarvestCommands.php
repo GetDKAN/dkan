@@ -6,7 +6,6 @@ use Drupal\harvest\HarvestService;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
 use Drush\Commands\DrushCommands;
-use Drush\Exceptions\UserAbortException;
 use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -135,24 +134,52 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Deregister a harvest.
+   * Deregister a harvest plan, optionally reverting it.
    *
    * @param string $plan_id
-   *   Harvest plan identifier.
+   *   The harvest plan ID to deregister.
+   * @param array $options
+   *   Options.
    *
    * @command dkan:harvest:deregister
+   * @option revert Revert the harvest plan before deregistering it.
+   * @usage dkan:harvest:deregister --revert PLAN_ID
+   *   Deregister the PLAN_ID plan, after reverting all the data resources
+   *   associated with it.
    */
-  public function deregister($plan_id) {
-    $this->logger()->warning('If you deregister a harvest with published datasets, you will not be able to bulk revert the datasets connected to this harvest.');
-    if ($this->io()->confirm('Deregister harvest ' . $plan_id)) {
-      if ($this->harvestService->deregisterHarvest($plan_id)) {
-        $this->logger()->notice('Successfully deregistered the ' . $plan_id . ' harvest.');
-        return DrushCommands::EXIT_SUCCESS;
-      }
+  public function deregister($plan_id, array $options = ['revert' => FALSE]) {
+    // Short circuit if the plan doesn't exist.
+    try {
+      $this->validateHarvestPlan($plan_id);
     }
-    else {
-      throw new UserAbortException();
+    catch (\InvalidArgumentException $exception) {
+      $this->logger()->error($exception->getMessage());
+      return DrushCommands::EXIT_FAILURE;
     }
+
+    // Are You Sure?
+    $message = 'Are you sure you want to deregister ' . $plan_id;
+    if ($options['revert'] ?? FALSE) {
+      $message = 'Are you sure you want to revert and deregister ' . $plan_id;
+    }
+    if (!$this->io()->confirm($message)) {
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    // Try to revert if the user wants to.
+    if (
+      ($options['revert'] ?? FALSE) &&
+      ($this->revert($plan_id) === DrushCommands::EXIT_FAILURE)
+    ) {
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    // Do the deregister.
+    if ($this->harvestService->deregisterHarvest($plan_id)) {
+      $this->logger()->notice('Successfully deregistered the ' . $plan_id . ' harvest.');
+      return DrushCommands::EXIT_SUCCESS;
+    }
+
     $this->logger()->error('Could not deregister the ' . $plan_id . ' harvest.');
     return DrushCommands::EXIT_FAILURE;
   }

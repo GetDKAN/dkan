@@ -88,3 +88,15 @@ function harvest_update_8007(&$sandbox) {
   $harvest_utility = \Drupal::service('dkan.harvest.utility');
   $harvest_utility->harvestHashUpdate();
 }
+
+/**
+ * Move entries from harvest_[ID]_runs to harvest_runs.
+ *
+ * This finishes the process started by harvest_update_8007.
+*/
+function harvest_update_8008(&$sandbox) {
+  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+  $harvest_utility = \Drupal::service('dkan.harvest.utility');
+  $harvest_utility->harvestRunsUpdate();
+  return 'Harvest runs coalesced into table harvest_runs.';
+}
