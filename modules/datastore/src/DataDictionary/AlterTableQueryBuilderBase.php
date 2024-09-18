@@ -6,6 +6,8 @@ use Drupal\Component\Uuid\UuidInterface;
 
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\Core\Config\ConfigFactory;
+use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
+
 use PDLT\ConverterInterface;
 use RootedData\RootedJsonData;
 
