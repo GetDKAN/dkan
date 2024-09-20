@@ -174,6 +174,33 @@ class MysqlImportTest extends KernelTestBase {
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
   }
 
+  /**
+   * Test MysqlImport importer with an empty CSV file.
+   */
+  public function testMysqlImporterWithEmptyCSVFile() {
+    $identifier = 'my_id';
+    $file_path = dirname(__FILE__, 7) . '/tests/data/empty.csv';
+    $data_resource = new DataResource($file_path, 'text/csv');
+
+    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
+    $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
+
+    $import_service = $import_factory->getInstance(
+      $identifier,
+      ['resource' => $data_resource]
+    );
+    $this->assertInstanceOf(ImportService::class, $import_service);
+    $import_service->setImporterClass(MockQueryVisibilityImport::class);
+    $mysql_import = $import_service->getImporter();
+    $this->assertInstanceOf(MockQueryVisibilityImport::class, $mysql_import);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $mysql_import->getStorage());
+
+    // Run the import and confirm result is valid albeit an error.
+    $result = $mysql_import->run();
+    $this->assertEquals(Result::ERROR, $result->getStatus());
+    $this->assertStringStartsWith("Can't get size from file", $result->getError());
+  }
+
 }
 
 class MockQueryVisibilityImport extends MysqlImport {
