@@ -132,7 +132,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
       $download_url = $payload->distribution[0]->downloadURL ?? ''
     );
     // Ensure the server is not 'default'.
-    $this->assertStringNotContainsString('default', $download_url);
+    $this->assertStringNotContainsString('default', parse_url($download_url, PHP_URL_HOST));
 
     // We can reach the download URL. Roll our own Guzzle client since we don't
     // want a base URL option.
