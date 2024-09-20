@@ -9,6 +9,7 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 use RootedData\RootedJsonData;
@@ -24,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait, CleanUp;
+  use GetDataTrait, QueueRunnerTrait;
 
   protected $defaultTheme = 'stark';
 
@@ -185,6 +186,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $metastore_config = $this->config('metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
       ->set('data_dictionary_sitewide', $dict_id)
+      ->set('csv_headers_mode', 'dictionary_titles')
       ->save();
 
     // Build dataset.
@@ -273,24 +275,6 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       ],
       'numOfRows' => 3,
     ], $result);
-  }
-
-  /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = $this->container->get('queue');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queueFactory->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
   }
 
 }

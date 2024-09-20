@@ -17,8 +17,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Datastore Import Dashboard form.
- *
- * @package Drupal\datastore
  */
 class DashboardForm extends FormBase {
   use StringTranslationTrait;
@@ -414,7 +412,7 @@ class DashboardForm extends FormBase {
     // here.
     $moderation_class = $rev['moderation_state'];
     if ($moderation_class == 'hidden') {
-      $moderation_class = 'registered';
+      $moderation_class = 'published-hidden';
     }
     return [
       [
@@ -428,12 +426,12 @@ class DashboardForm extends FormBase {
       ],
       [
         'rowspan' => $resourceCount,
-        'class' => $rev['moderation_state'],
+        'class' => $moderation_class,
         'data' => [
           '#theme' => 'datastore_dashboard_revision_cell',
           '#revision_id' => $rev['revision_id'],
           '#modified' => $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short'),
-          '#moderation_state' => $moderation_class,
+          '#moderation_state' => $rev['moderation_state'],
         ],
       ],
       [

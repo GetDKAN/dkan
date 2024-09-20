@@ -181,11 +181,3 @@ metastore.datasets:
     _title: 'Datasets'
   requirements:
     _permission: 'create data content'
-
-metastore.datasets.create:
-  path: '/admin/dkan/datasets'
-  defaults:
-    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
-    _title: 'Create Dataset'
-  requirements:
-    _permission: 'create data content'

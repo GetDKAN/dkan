@@ -25,13 +25,6 @@ class SearchController implements ContainerInjectionInterface {
   private $service;
 
   /**
-   * Request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  private $requestStack;
-
-  /**
    * Metastore API response service.
    *
    * @var \Drupal\metastore\MetastoreApiResponse
