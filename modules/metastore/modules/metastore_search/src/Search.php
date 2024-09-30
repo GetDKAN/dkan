@@ -3,7 +3,7 @@
 namespace Drupal\metastore_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\metastore\MetastoreService;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
@@ -45,7 +45,7 @@ class Search implements ContainerInjectionInterface {
   /**
    * Entity Type Manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private $entityTypeManager;
 
@@ -61,14 +61,14 @@ class Search implements ContainerInjectionInterface {
    *
    * @param \Drupal\metastore\MetastoreService $metastoreService
    *   Metastore service.
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager.
    * @param \Drupal\search_api\Utility\QueryHelperInterface $queryHelper
    *   Query helper.
    */
   public function __construct(
     MetastoreService $metastoreService,
-    EntityTypeManager $entityTypeManager,
+    EntityTypeManagerInterface $entityTypeManager,
     QueryHelperInterface $queryHelper
   ) {
     $this->metastoreService = $metastoreService;

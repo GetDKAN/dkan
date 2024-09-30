@@ -4,7 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,7 +22,7 @@ class DataFactory implements FactoryInterface {
   /**
    * Entity type manager service.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private $entityTypeManager;
 
@@ -44,7 +44,7 @@ class DataFactory implements FactoryInterface {
    * Constructor.
    */
   public function __construct(
-    EntityTypeManager $entityTypeManager,
+    EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
     LoggerInterface $loggerChannel
   ) {

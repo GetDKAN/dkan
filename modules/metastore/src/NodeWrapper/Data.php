@@ -3,8 +3,8 @@
 namespace Drupal\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
@@ -30,7 +30,7 @@ class Data implements MetastoreItemInterface {
   /**
    * Entity Type Manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private $entityTypeManager;
 
@@ -46,12 +46,12 @@ class Data implements MetastoreItemInterface {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   A Drupal entity.
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity Type Manager service.
    *
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    */
-  public function __construct(EntityInterface $entity, EntityTypeManager $entityTypeManager) {
+  public function __construct(EntityInterface $entity, EntityTypeManagerInterface $entityTypeManager) {
     $this->validate($entity);
     $this->node = $entity;
     $this->entityTypeManager = $entityTypeManager;
