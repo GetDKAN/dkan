@@ -94,8 +94,34 @@ class DrupalFiles implements ContainerInjectionInterface {
       return $this->fileCreateUrl("{$destination}/{$filename}");
     }
     else {
-      return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);
+      return $this->systemRetrieveFile($url, $destination);
     }
+  }
+
+  /**
+   * Attempts to get a file using Guzzle HTTP client and to store it locally.
+   *
+   * The destination file will never be a managed file.
+   *
+   * @param string $url
+   *   The URL of the file to grab.
+   * @param string $destination
+   *   Stream wrapper URI specifying where the file should be placed. If a
+   *   directory path is provided, the file is saved into that directory under
+   *   its original name. If the path contains a filename as well, that one will
+   *   be used instead.
+   *   If this value is omitted, the site's default files scheme will be used,
+   *   usually "public://".
+   *
+   * @return mixed
+   *   One of these possibilities:
+   *   - If it succeeds the location where the file was saved.
+   *   - If it fails, FALSE.
+   *
+   * @see \system_retrieve_file()
+   */
+  protected function systemRetrieveFile($url, $destination = NULL) {
+    return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);
   }
 
   /**
