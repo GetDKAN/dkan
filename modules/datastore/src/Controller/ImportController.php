@@ -69,8 +69,8 @@ class ImportController implements ContainerInjectionInterface {
   /**
    * Create controller object from dependency injection container.
    */
-  public static function create(ContainerInterface $container) {
-    return new ImportController(
+  public static function create(ContainerInterface $container): static {
+    return new static(
       $container->get('dkan.datastore.service'),
       $container->get('dkan.metastore.api_response'),
       $container->get('dkan.metastore.reference_lookup'),
