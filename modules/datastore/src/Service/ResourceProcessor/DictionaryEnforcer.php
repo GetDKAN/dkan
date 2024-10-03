@@ -114,7 +114,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    * @param string $datastore_table
    *   SQL datastore table name.
    */
-  public function applyDictionary(RootedJsonData $dictionary, string $datastore_table): void {
+  protected function applyDictionary(RootedJsonData $dictionary, string $datastore_table): void {
     $this->alterTableQueryBuilder
       ->setTable($datastore_table)
       ->addDataDictionary($dictionary)

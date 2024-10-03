@@ -2,27 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore_mysql_import\Functional\DataDictionary\AlterTableQuery;
+namespace Drupal\Tests\datastore_mysql_import\Functional\Storage;
 
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\datastore\Controller\ImportController;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\datastore\Controller\ImportController;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Ensure we can apply a data dictionary to a MySQL dataset.
- *
  * @group dkan
  * @group datastore_mysql_import
  * @group functional
- *
- * @see \Drupal\Tests\datastore_mysql_import\Functional\Storage\MySqlDatabaseTableTest
  */
-class NoStrictMySQLQueryTest extends BrowserTestBase {
+class MySqlDatabaseTableTest extends BrowserTestBase {
 
   use GetDataTrait, QueueRunnerTrait;
 
@@ -38,7 +33,7 @@ class NoStrictMySQLQueryTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected const TEST_DATA_PATH = __DIR__ . '/../../../../data/';
+  protected const TEST_DATA_PATH = __DIR__ . '/../../../data/';
 
   protected static $modules = [
     'datastore_mysql_import',
@@ -47,9 +42,9 @@ class NoStrictMySQLQueryTest extends BrowserTestBase {
 
   protected $defaultTheme = 'stark';
 
-  public function testPostImport() {
+  public function testImport() {
     // Dependencies.
-    $resourceFile = 'research.csv';
+    $resourceFile = 'wide_table.csv';
     $uuid = $this->container->get('uuid');
     /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
@@ -58,48 +53,7 @@ class NoStrictMySQLQueryTest extends BrowserTestBase {
     $resourceUrl = $this->setUpResourceFile($resourceFile);
     $importController = ImportController::create(\Drupal::getContainer());
 
-    // Set per-reference data-dictinary in metastore config.
-    $this->config('metastore.settings')
-      ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
-      ->save();
-    $this->assertEquals(
-      DataDictionaryDiscovery::MODE_REFERENCE,
-      $this->config('metastore.settings')->get('data_dictionary_mode')
-    );
-
-    // Create a data dictionary for research.csv. (Columns are numeric.)
-    // Build data-dictionary.
-    $dict_id = $uuid->generate();
-    $dict_fields = [
-      [
-        'name' => 'related_product_indicator',
-        'title' => 'rpi',
-        'type' => 'boolean',
-      ],
-      [
-        'name' => 'total_amount_of_payment_usdollars',
-        'title' => 'taopu',
-        'type' => 'number',
-      ],
-      [
-        'name' => 'date_of_payment',
-        'title' => 'dop',
-        'type' => 'date',
-      ],
-    ];
-    $data_dict = $validMetadataFactory->get(
-      $this->getDataDictionary($dict_fields, [], $dict_id),
-      'data-dictionary'
-    );
-    // Create data-dictionary.
-    $this->assertEquals(
-      $dict_id,
-      $metastore->post('data-dictionary', $data_dict)
-    );
-    // Publish should return FALSE, because the node was already published.
-    $this->assertFalse($metastore->publish('data-dictionary', $dict_id));
-
-    // Create a dataset node with our data dictionary.
+    // Create the data.
     $dataset_id = $uuid->generate();
     $this->assertInstanceOf(
       RootedJsonData::class,
@@ -108,8 +62,7 @@ class NoStrictMySQLQueryTest extends BrowserTestBase {
           $dataset_id,
           'Test ' . $dataset_id,
           [$resourceUrl],
-          TRUE,
-          'dkan://metastore/schemas/data-dictionary/items/' . $dict_id
+          TRUE
         ),
         'dataset'
       )
@@ -127,71 +80,40 @@ class NoStrictMySQLQueryTest extends BrowserTestBase {
       RootedJsonData::class,
       $dataset = $metastore->get('dataset', $dataset_id)
     );
-    // The dataset references the dictionary. DescribedBy will contain the https
-    // URL-style reference.
-    $this->assertStringContainsString(
-      $dict_id,
-      $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
-    );
     // Get the distribution ID.
     $this->assertNotEmpty(
       $distribution_id = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL
     );
 
-    // Dictionary fields are applied to the dataset.
-    /** @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
-    $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
-    $this->assertCount(
-      count($dict_fields),
-      $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
-    );
-
     // Run queue items to perform the import.
-    // @todo Use the dictionary enforcer to do the post import, so we can
-    //   see exceptions and the like.
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
 
     // Retrieve schema for dataset resource.
     $response = $importController->summary(
       $distribution_id,
-      Request::create('http://blah/api')
+      Request::create('https://example.com')
     );
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $result = json_decode($response->getContent(), TRUE);
 
-    // 252 columns + record_number.
+    // 252 + record_number.
     $this->assertCount(
       253,
       $columns = $result['columns']
     );
-
+    // Column names will be truncated.
+    $this->assertArrayNotHasKey('column_heading_that_grossly_exceeds_the_sixty_four_character_limit_1', $columns);
+    $this->assertArrayNotHasKey('column_heading_that_grossly_exceeds_the_sixty_four_character_limit_252', $columns);
+    // Since we should always have the same hash in the name, we can assert the
+    // array key here.
     $this->assertEquals(
-      'Related_Product_Indicator',
-      $columns['related_product_indicator']['description'] ?? NULL
+      'column_heading_that_grossly_exceeds_the_sixty_four_character_limit_252',
+      $columns['column_heading_that_grossly_exceeds_the_sixty_four_characte_7431']['description'] ?? NULL
     );
     $this->assertEquals(
-      'boolean',
-      $columns['related_product_indicator']['type'] ?? NULL
+      'text',
+      $columns['column_heading_that_grossly_exceeds_the_sixty_four_characte_7431']['type'] ?? NULL
     );
-
-    $this->assertEquals(
-      'Total_Amount_of_Payment_USDollars',
-      $columns['total_amount_of_payment_usdollars']['description'] ?? NULL
-    );
-    $this->assertEquals(
-      'numeric',
-      $columns['total_amount_of_payment_usdollars']['type'] ?? NULL
-    );
-
-    $this->assertEquals(
-      'Date_of_Payment',
-      $columns['date_of_payment']['description'] ?? NULL
-    );
-    $this->assertEquals(
-      'numeric',
-      $columns['date_of_payment']['type'] ?? NULL
-    );
-    // @todo Look at the DB and see if it's right.
   }
 
   /**
