@@ -14,6 +14,8 @@ use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @coversDefaultClass \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ *
  * @group dkan
  * @group datastore
  * @group functional
