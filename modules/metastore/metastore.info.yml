@@ -7,3 +7,4 @@ dependencies:
   - dkan:common
   - drupal:basic_auth
   - drupal:content_moderation
+  - drupal:node
