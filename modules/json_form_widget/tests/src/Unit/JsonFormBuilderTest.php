@@ -375,7 +375,7 @@ class JsonFormBuilderTest extends TestCase {
     $email_validator = new EmailValidator();
     $string_helper = new StringHelper($email_validator);
     $object_helper = new ObjectHelper();
-    $array_helper = new ArrayHelper($object_helper);
+    $array_helper = new ArrayHelper($object_helper, $string_helper);
     $integer_helper = new IntegerHelper();
 
     $options = (new Options())
