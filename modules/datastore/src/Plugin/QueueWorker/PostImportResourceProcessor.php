@@ -37,7 +37,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *
    * @var \Drupal\Core\Config\ImmutableConfig
    */
-  private $config;
+  protected $config;
 
   /**
    * A logger channel for this plugin.

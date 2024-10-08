@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\ResourceProcessor;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
@@ -9,6 +10,7 @@ use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\PostImport;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
@@ -150,6 +152,7 @@ class DictionaryEnforcerTest extends TestCase {
   protected function getContainerChain(int $resource_version) {
 
     $options = (new Options())
+      ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.datastore.data_dictionary.alter_table_query_builder.mysql', AlterTableQueryBuilderInterface::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
       ->add('dkan.datastore.logger_channel', LoggerInterface::class)
@@ -157,6 +160,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
@@ -177,7 +181,9 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
       ->add(ResourceMapper::class, 'get', DataResource::class)
-      ->add(DataResource::class, 'getVersion', $resource_version);
+      ->add(DataResource::class, 'getVersion', $resource_version)
+      ->add(ConfigFactoryInterface::class, 'get', FALSE)
+      ->add(DatastoreService::class, 'drop');
   }
 
 }
