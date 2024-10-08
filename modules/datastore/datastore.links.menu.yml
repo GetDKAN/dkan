@@ -6,7 +6,7 @@ datastore.settings_form:
   weight: 12
 
 datastore.dkan_resource_settings:
-  title: Resource Settings
+  title: Resource settings
   description: Resource options.
   parent: system.admin_dkan
   route_name: datastore.dkan_resource_settings

@@ -14,7 +14,7 @@ context('Administration pages', () => {
       'Data Dictionary',
       'Harvests',
       'Metastore settings',
-      'Resources'
+      'Resource settings'
     ]
 
     cy.visit(`${baseurl}/admin`)
