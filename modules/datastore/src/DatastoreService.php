@@ -3,6 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\common\DataResource;
+use Drupal\common\EventDispatcherTrait;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
@@ -17,6 +18,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Main services for the datastore.
  */
 class DatastoreService implements ContainerInjectionInterface {
+
+  use EventDispatcherTrait;
+
+  /**
+   * This event is triggered when the datastore is about to be dropped.
+   *
+   * The event data is a keyed array, identifier and version.
+   */
+  const EVENT_DATASTORE_PRE_DROP = 'dkan_datastore_pre_drop';
+
+  /**
+   * This event is triggered when the datastore is dropped.
+   *
+   * The event data is a keyed array, identifier and version.
+   */
+  const EVENT_DATASTORE_DROPPED = 'dkan_datastore_dropped';
 
   /**
    * Resource localizer for handling remote resource URLs.
@@ -242,9 +259,15 @@ class DatastoreService implements ContainerInjectionInterface {
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
     if ($storage = $this->getStorage($identifier, $version)) {
+      $data = [
+        'identifier' => $identifier,
+        'version' => $version,
+      ];
+      $this->dispatchEvent(self::EVENT_DATASTORE_PRE_DROP, $data);
       $storage->destruct();
       $this->importJobStoreFactory->getInstance()
         ->remove(md5($resource->getUniqueIdentifier()));
+      $this->dispatchEvent(self::EVENT_DATASTORE_DROPPED, $data);
     }
 
     if ($remove_local_resource) {

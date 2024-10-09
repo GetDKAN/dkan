@@ -5,6 +5,7 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\datastore\DatastoreService;
@@ -26,6 +27,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+
+  use EventDispatcherTrait;
+
+  /**
+   * This event is when the datastore has successfully been imported.
+   *
+   * @todo This also happens in ImportJob. We should consolidate.
+   */
+  const EVENT_DATASTORE_IMPORTED = 'dkan_datastore_imported';
 
   /**
    * This queue worker's corresponding database queue instance.
@@ -244,6 +254,9 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
       case Result::DONE:
         $this->logger->notice($label . ' for ' . $uid . ' completed.');
+        // @todo This is not the best place to dispatch the event. It can be
+        //   sent twice, once after localization and once after import.
+        $this->dispatchEvent(self::EVENT_DATASTORE_IMPORTED, ['identifier' => $data['identifier'], 'version' => $data['version']]);
         $this->invalidateCacheTags($uid . '__source');
         break;
     }

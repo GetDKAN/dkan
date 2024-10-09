@@ -167,6 +167,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $resource = $event->getData();
     $id = md5(str_replace(DataResource::DEFAULT_SOURCE_PERSPECTIVE, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource->getUniqueIdentifier()));
     try {
+      // @todo Check if the datastore exists before dropping. Don't log an
+      //   error if it wasn't there to begin with.
       $this->datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
       $this->logger->notice('Dropping datastore for @id', ['@id' => $id]);
     }
