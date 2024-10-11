@@ -31,6 +31,12 @@ class ImportService {
   public const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
 
   /**
+   * Event name for when the datastore has been successfully imported.
+   */
+  public const EVENT_DATASTORE_IMPORTED = 'dkan_datastore_imported';
+
+
+  /**
    * Time-limit used for standard import service.
    *
    * @var int
@@ -129,9 +135,10 @@ class ImportService {
    */
   public function import() {
     $result = $this->getImporter()->run();
+    $data_resource = $this->getResource();
 
     if ($result->getStatus() === Result::ERROR) {
-      $datastore_resource = $this->getResource()->getDatastoreResource();
+      $datastore_resource = $data_resource->getDatastoreResource();
       $this->logger->error('Error importing resource id:%id path:%path message:%message', [
         '%id' => $datastore_resource->getId(),
         '%path' => $datastore_resource->getFilePath(),
@@ -139,12 +146,15 @@ class ImportService {
       ]);
     }
     // If the import job finished successfully...
-    // @todo This should be an event that is emitted, and then processed
-    //   elsewhere.
     elseif ($result->getStatus() === Result::DONE) {
+      $this->dispatchEvent(self::EVENT_DATASTORE_IMPORTED, [
+        'identifier' => $data_resource->getIdentifier(),
+        'version' => $data_resource->getVersion(),
+      ]);
+
       // Queue the imported resource for post-import processing.
       $post_import_queue = \Drupal::service('queue')->get('post_import');
-      $post_import_queue->createItem($this->getResource());
+      $post_import_queue->createItem($data_resource);
     }
   }
 
