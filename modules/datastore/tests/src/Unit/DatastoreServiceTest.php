@@ -72,7 +72,10 @@ class DatastoreServiceTest extends TestCase {
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', TRUE);
 
-    $service = DatastoreService::create($mockChain->getMock());
+    // Workaround for DatastoreService using EventDispatcherTrait.
+    \Drupal::setContainer($container = $mockChain->getMock());
+
+    $service = DatastoreService::create($container);
     // These are all valid ways to call drop().
     $this->assertNull($service->drop('foo'));
     $this->assertNull($service->drop('foo', '123152'));
@@ -97,6 +100,7 @@ class DatastoreServiceTest extends TestCase {
 
   private function getCommonChain() {
     $options = (new Options())
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
