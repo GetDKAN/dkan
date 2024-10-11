@@ -14,6 +14,9 @@ use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
  */
 class NoStrictMySQLQuery extends MySQLQuery implements AlterTableQueryInterface {
 
+  /**
+   * {@inheritDoc}
+   */
   public function execute(): void {
     // Keep track of DB configuration.
     $active_db = Database::setActiveConnection();

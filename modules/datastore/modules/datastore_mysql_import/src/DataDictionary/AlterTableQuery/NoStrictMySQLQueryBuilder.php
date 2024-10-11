@@ -12,6 +12,9 @@ use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
  */
 class NoStrictMySQLQueryBuilder extends MySQLQueryBuilder {
 
+  /**
+   * {@inheritDoc}
+   */
   public function getQuery(): AlterTableQueryInterface {
     $query = new NoStrictMySQLQuery(
       $this->databaseConnectionFactory->getConnection(),
