@@ -28,13 +28,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
-   * This event is when the datastore has successfully been imported.
-   *
-   * @todo This also happens in ImportJob. We should consolidate.
-   */
-  const EVENT_DATASTORE_IMPORTED = 'dkan_datastore_imported';
-
-  /**
    * This queue worker's corresponding database queue instance.
    *
    * @var \Drupal\Core\Queue\DatabaseQueue
