@@ -154,8 +154,6 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
 
     foreach ($this->events as $event) {
       $this->assertIsArray($data = $event->getData());
-      // We don't know what the identifier or version actually will be, so we
-      // check that the data has the correct keys.
       $this->assertEquals('id', $data['identifier']);
       $this->assertEquals('ver', $data['version']);
     }
