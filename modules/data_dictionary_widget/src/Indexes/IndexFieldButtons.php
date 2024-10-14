@@ -282,7 +282,7 @@ class IndexFieldButtons {
     $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel_index';
     $cancel_index_button = [
       '#type' => 'submit',
-      '#value' => t('Cancel index edit'),
+      '#value' => t('Cancel adding index'),
       '#name' => 'cancel_index',
       '#op' => $op,
       '#submit' => [
@@ -301,6 +301,8 @@ class IndexFieldButtons {
 
     if ($location == 'edit') {
       $cancel_index_button['#name'] = 'cancel_update_' . $indexKey;
+      $cancel_index_button['#value'] = t('Cancel index edit');
+      
     }
     return $cancel_index_button;
   }
