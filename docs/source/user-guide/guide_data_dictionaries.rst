@@ -205,15 +205,15 @@ Creating a data dictionary via the UI
   .. image:: images/fields/add-data-field-editable-form-box.png
     :alt: A portion of the data dictionary creation admin page with a focus on the "Add new field" section.
 
-6. Click "Add" to save the field temporarily. Remember that the Data Dictionary and it's respective fields are not completely saved until the form is submitted in it's entirety by clicking "Save".
-7. Alternatively you can click "Cancel" to stop creating the Data Dictionary field, at which point all the information you entered will be removed and the "Add new Field" box will close.
+6. Click "Save field" to save the field temporarily. Remember that the Data Dictionary and it's respective fields are not completely saved until the form is submitted in it's entirety by clicking "Save".
+7. Alternatively you can click "Cancel adding field" to stop creating the Data Dictionary field, at which point all the information you entered will be removed and the "Add new Field" box will close.
 8. Note that after saving, an informational table will appear listing the data dictionary fields you have created thus far and their names, titles, and details (data types, formats and descriptions).
 
   .. image:: images/fields/edit-data-field-informational-table.png
     :alt: A portion of the data dictionary creation admin page with a focus on the informational table that appears.
 
 9. You also have the ability to edit or modify the data dictionary fields you've created so far by clicking the gear icon on the right-hand side of this table.
-10.  Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: "Save" (retain the modifications), "Cancel" (close the editable form box without retaining any modifications) or "Delete" (remove the respective Data Dictionary field entirely).
+10.  Clicking the gear icon will open an editable form that will show the previously entered information for the respective data dictionary field. You can then modify this information and either: "Save field edit" (retain the modifications), "Cancel field edit" (close the editable form box without retaining any modifications) or "Remove field" (remove the respective Data Dictionary field entirely).
 
   .. image:: images/fields/edit-data-field.png
     :alt: A portion of the data dictionary creation admin page with a focus on the editable form that appears in order to modify the data dictionary field.

@@ -77,7 +77,7 @@ class IndexFieldAddCreation {
       '#title' => t('Add new field'),
       '#prefix' => "<div id = $id>",
       '#suffix' => '</div>',
-      '#markup' => t('<div class="claro-details__description">Add a single index field. Must be keys from the fields object.</div>'),
+      '#markup' => t('<div class="claro-details__description">Must be keys from the fields object.</div>'),
     ];
 
     $add_index_fields['group']['index']['fields']['name'] = [
