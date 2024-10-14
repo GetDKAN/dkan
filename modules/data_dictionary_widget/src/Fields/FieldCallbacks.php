@@ -39,37 +39,58 @@ class FieldCallbacks {
    * Submit callback for the Edit button.
    */
   public static function editSubformCallback(array &$form, FormStateInterface $form_state) {
-    $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+    // Get the current fields data.
+    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]["data"]["#rows"] ?? [];
+    // Get the field index from the triggering op attribute
+    // so we can use it to store the respective field later.
     $op_index = explode("_", $form_state->getTriggeringElement()['#op']);
-    $currently_modifying = $form_state->get('fields_being_modified') != NULL ? $form_state->get('fields_being_modified') : [];
-
+    // Get the fields we're currently modifying.
+    $dictionary_fields_being_modified = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
+    $index_fields_being_modified = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+    // If the op (trigger) contains abort,
+    // we're canceling the field we're currently modifying so unset it.
     if (str_contains($form_state->getTriggeringElement()['#op'], 'abort')) {
-      unset($currently_modifying[$op_index[1]]);
+      unset($dictionary_fields_being_modified[$op_index[1]]);
     }
-
+    // If the op (trigger) contains delete,
+    // we're deleting the field we're editing so...
     if (str_contains($form_state->getTriggeringElement()['#op'], 'delete')) {
-      unset($currently_modifying[$op_index[1]]);
-      unset($current_fields[$op_index[1]]);
+      // Unset it from being currently modified.
+      unset($dictionary_fields_being_modified[$op_index[1]]);
+      // Remove the respective field/data from the form.
+      unset($current_dictionary_fields[$op_index[1]]);
     }
-
+    // If the op (trigger) contains update,
+    // We're saving the field we're editing so...
     if (str_contains($form_state->getTriggeringElement()['#op'], 'update')) {
-      unset($currently_modifying[$op_index[1]]);
-      unset($current_fields[$op_index[1]]);
-      $current_fields[$op_index[1]] = FieldValues::updateValues($op_index[1], $form_state->getUserInput(), $current_fields);
-      ksort($current_fields);
+      // Unset the respective currently modifying field.
+      unset($dictionary_fields_being_modified[$op_index[1]]);
+      // Unset the respective field/data from the form.
+      unset($current_dictionary_fields[$op_index[1]]);
+      // Update the respective current field data with our new input data.
+      $current_dictionary_fields[$op_index[1]] = FieldValues::updateValues($op_index[1], $form_state->getUserInput(), $current_dictionary_fields);
+      // Sort the current fields data.
+      ksort($current_dictionary_fields);
     }
-
+    // If the op (trigger) contains edit
+    // We're editing a specific field so...
     if (str_contains($form_state->getTriggeringElement()['#op'], 'edit')) {
-      $currently_modifying[$op_index[1]] = $current_fields[$op_index[1]];
+      // Set the field we're modifying to that field.
+      $dictionary_fields_being_modified[$op_index[1]] = $current_dictionary_fields[$op_index[1]];
     }
-
-    // Re-index the current_fields array.
-    if ($current_fields) {
-      $current_fields = array_values($current_fields);
+    // Reindex the current_dictionary_fields array.
+    if ($current_dictionary_fields) {
+      $current_dictionary_fields = array_values($current_dictionary_fields);
     }
-
-    $form_state->set('fields_being_modified', $currently_modifying);
-    $form_state->set('current_fields', $current_fields);
+    // Let's retain the fields that are being modified.
+    $form_state->set('index_fields_being_modified', $index_fields_being_modified);
+    $form_state->set('dictionary_fields_being_modified', $dictionary_fields_being_modified);
+    // Let's retain the fields that are already stored on the form,
+    // but aren't currently being modified.
+    $form_state->set('current_dictionary_fields', $current_dictionary_fields);
+    $form_state->set('current_index_fields', $current_index_fields);
+    // Let's rebuild the form.
     $form_state->setRebuild();
   }
 
@@ -80,9 +101,13 @@ class FieldCallbacks {
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
     $form_state->set('add_new_field', '');
-    $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    if ($current_fields) {
-      $form_state->set('current_fields', $current_fields);
+    // Get the current fields data.
+    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+    $current_index = $form["field_json_metadata"]["widget"][0]['indexes']["data"]["#rows"];
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? [];
+
+    if ($current_dictionary_fields) {
+      $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     }
 
     if ($op === 'cancel') {
@@ -95,11 +120,13 @@ class FieldCallbacks {
     }
 
     if ($op === 'add') {
-      $form_state->set('new_fields', $form_state->getUserInput());
+      $form_state->set('new_dictionary_fields', $form_state->getUserInput());
       $form_state->set('add', TRUE);
       $form_state->set('cancel', FALSE);
     }
 
+    $form_state->set('current_index_fields', $current_index_fields);
+    $form_state->set('current_index', $current_index);
     $form_state->setRebuild();
   }
 

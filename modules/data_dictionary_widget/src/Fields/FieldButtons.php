@@ -14,13 +14,14 @@ class FieldButtons {
     return [
       '#type' => 'submit',
       '#value' => 'Add field',
+      '#name' => 'add_dictionary_field',
       '#access' => TRUE,
       '#op' => 'add_new_field',
       '#submit' => [
-      [
-        '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
-        'addSubformCallback',
-      ],
+        [
+          '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+          'addSubformCallback',
+        ],
       ],
       '#ajax' => [
         'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
@@ -112,6 +113,7 @@ class FieldButtons {
     $cancel_button = [
       '#type' => 'submit',
       '#value' => t('Cancel'),
+      '#name' => 'cancel_dictionary_field',
       '#op' => $op,
       '#submit' => [
             [
