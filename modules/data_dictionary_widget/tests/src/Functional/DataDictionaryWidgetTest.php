@@ -74,7 +74,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     $page->selectFieldOption('field_json_metadata[0][dictionary_fields][field_collection][group][type]', $test_data_dictionary_field_type);
     $page->selectFieldOption('field_json_metadata[0][dictionary_fields][field_collection][group][format]', $test_data_dictionary_field_format);
     $page->fillField('field_json_metadata[0][dictionary_fields][field_collection][group][description]', $test_data_dictionary_field_description);
-    $page->pressButton('Add');
+    $page->pressButton('Save field');
 
     // Assert the values are being displayed.
     $session->pageTextContains($test_data_dictionary_field_name);
@@ -90,7 +90,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     $session->fieldValueEquals('field_json_metadata[0][dictionary_fields][data][0][field_collection][type]', $test_data_dictionary_field_type);
     $session->fieldValueEquals('field_json_metadata[0][dictionary_fields][data][0][field_collection][format]', $test_data_dictionary_field_format);
     $session->elementTextContains('css', 'textarea[name="field_json_metadata[0][dictionary_fields][data][0][field_collection][description]"]', $test_data_dictionary_field_description);
-    $page->pressButton('Cancel');
+    $page->pressButton('Cancel field edit');
 
     // Fill the indexes fields.
     $page->pressButton('Add index');
@@ -107,7 +107,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     $page->fillField('field_json_metadata[0][indexes][fields][field_collection][group][index][fields][length]', $test_index_length);
     // Need to distinguish the add button on the index fields vs the one for data dictionary fields.
     $page->pressButton('Save field to index');
-    $page->pressButton('Submit Index');
+    $page->pressButton('Save index');
 
     // Assert the values are being displayed.
     $session->pageTextContains($test_index_title);
@@ -121,7 +121,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     $session->fieldValueEquals('field_json_metadata[0][indexes][edit_index][index_key_0][type]', $test_index_type);
     $session->pageTextContains($test_index_name);
     $session->pageTextContains($test_index_length);
-    $page->pressButton('Cancel Index');
+    $page->pressButton('Cancel index edit');
 
     // Save the data dictionary.
     $page->pressButton('Save');
