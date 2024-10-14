@@ -69,7 +69,7 @@ class FieldButtons {
   public static function submitButton($location, $key) {
     $callbackClass = $location == 'edit' ? 'editSubformCallback' : 'addSubformCallback';
     $op = is_int($key) ? 'update_' . $key : 'add';
-    $value = $location == 'edit' ? 'Save' : 'Add';
+    $value = $location == 'edit' ? 'Save field edit' : 'Save field';
     $edit_button = [
       '#type' => 'submit',
       '#value' => $value,
@@ -110,9 +110,10 @@ class FieldButtons {
   public static function cancelButton($location, $key) {
     $callbackClass = $location == 'edit' ? 'editSubformCallback' : 'addSubformCallback';
     $op = $location == 'edit' && is_int($key) ? 'abort_' . $key : 'cancel';
+
     $cancel_button = [
       '#type' => 'submit',
-      '#value' => t('Cancel'),
+      '#value' => t('Cancel adding field'),
       '#name' => 'cancel_dictionary_field',
       '#op' => $op,
       '#submit' => [
@@ -131,6 +132,7 @@ class FieldButtons {
 
     if ($location == 'edit') {
       $cancel_button['#name'] = 'cancel_update_' . $key;
+      $cancel_button['#value'] = t('Cancel field edit');
     }
     return $cancel_button;
   }
@@ -142,7 +144,7 @@ class FieldButtons {
     return [
       '#type' => 'submit',
       '#name' => 'delete_' . $key,
-      '#value' => t('Delete'),
+      '#value' => t('Remove field'),
       '#op' => 'delete_' . $key,
       '#submit' => [
             [
