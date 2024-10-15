@@ -242,7 +242,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     // Header should be using the dictionary title.
     $this->assertEquals('a,b_title,c,d,e', $lines[0]);
 
-    // Set the machine name CSV header mode.
+    // Set the machine name CSV header mode before the import.
     $this->config('metastore.settings')
       ->set('csv_headers_mode', 'machine_names')
       ->save();
