@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Drupal\Tests\datastore\Kernel\Service;
 
 use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\datastore\Events\DatastoreImportedEvent;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\ImportService;
 use Drupal\KernelTests\KernelTestBase;
@@ -22,6 +22,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @group kernel
  */
 class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberInterface {
+
+  protected static $modules = [
+    'common',
+    'datastore',
+    'metastore',
+  ];
 
   /**
    * Store the events we receive.
@@ -43,7 +49,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
    * @param \Drupal\common\Events\Event $event
    *   The event.
    */
-  public function catchImportEvent(Event $event) {
+  public function catchImportEvent(DatastoreImportedEvent $event) {
     $this->events[] = $event;
   }
 
@@ -77,7 +83,13 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
     // Mock an ImportService object to test. We'll mock a number of methods
     // so that we can isolate the event dispatch.
     $import_service = $this->getMockBuilder(ImportService::class)
-      ->disableOriginalConstructor()
+      ->setConstructorArgs([
+        $this->createStub(DataResource::class),
+        $this->container->get('dkan.datastore.import_job_store_factory'),
+        $this->container->get('dkan.datastore.database_table_factory'),
+        $this->container->get('dkan.datastore.logger_channel'),
+        $this->container->get('event_dispatcher'),
+      ])
       ->onlyMethods(['getImporter', 'getResource'])
       ->getMock();
     // getImporter returns the import job and thus the result.
@@ -94,13 +106,10 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
     $this->assertCount(0, $this->events);
     $import_service->import();
     $this->assertCount(1, $this->events);
-    /** @var \Drupal\common\Events\Event $event */
+    /** @var \Drupal\datastore\Events\DatastoreImportedEvent $event */
     $event = reset($this->events);
-    $this->assertIsArray($data = $event->getData());
-    // We don't know what the identifier or version actually will be, so we
-    // check that the data has the correct keys.
-    $this->assertArrayHasKey('identifier', $data);
-    $this->assertArrayHasKey('version', $data);
+    $this->assertNotEmpty($event->getIdentifier());
+    $this->assertNotEmpty($event->getVersion());
   }
 
 }

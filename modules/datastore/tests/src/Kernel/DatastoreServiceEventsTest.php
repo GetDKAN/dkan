@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Drupal\Tests\datastore\Kernel;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\datastore\Events\DatastoreDroppedEvent;
+use Drupal\datastore\Events\DatastorePreDropEvent;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -54,7 +55,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
    * @param \Drupal\common\Events\Event $event
    *   The event.
    */
-  public function catchPreDropEvent(Event $event) {
+  public function catchPreDropEvent(DatastorePreDropEvent $event) {
     $this->events[DatastoreService::EVENT_DATASTORE_PRE_DROP] = $event;
   }
 
@@ -64,7 +65,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
    * @param \Drupal\common\Events\Event $event
    *   The event.
    */
-  public function catchDroppedEvent(Event $event) {
+  public function catchDroppedEvent(DatastoreDroppedEvent $event) {
     $this->events[DatastoreService::EVENT_DATASTORE_DROPPED] = $event;
   }
 
@@ -132,6 +133,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
         $job_store_factory,
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
         $this->container->get('dkan.metastore.resource_mapper'),
+        $this->container->get('event_dispatcher'),
       ])
       ->onlyMethods(['getStorage'])
       ->getMock();
@@ -152,10 +154,12 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
       array_keys($this->events)
     );
 
+    // Both events will be DatastoreEventBase, so we can use getters for our
+    // values.
+    /** @var \Drupal\datastore\Events\DatastoreEventBase $event */
     foreach ($this->events as $event) {
-      $this->assertIsArray($data = $event->getData());
-      $this->assertEquals('id', $data['identifier']);
-      $this->assertEquals('ver', $data['version']);
+      $this->assertEquals('id', $event->getIdentifier());
+      $this->assertEquals('ver', $event->getVersion());
     }
   }
 

@@ -2,10 +2,11 @@
 
 namespace Drupal\datastore;
 
-use Drupal\common\DataResource;
-use Drupal\common\EventDispatcherTrait;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\common\DataResource;
+use Drupal\datastore\Events\DatastoreDroppedEvent;
+use Drupal\datastore\Events\DatastorePreDropEvent;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -13,13 +14,12 @@ use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Main services for the datastore.
  */
 class DatastoreService implements ContainerInjectionInterface {
-
-  use EventDispatcherTrait;
 
   /**
    * This event is triggered when the datastore is about to be dropped.
@@ -78,6 +78,13 @@ class DatastoreService implements ContainerInjectionInterface {
   private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -87,7 +94,8 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('queue'),
       $container->get('dkan.datastore.import_job_store_factory'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
-      $container->get('dkan.metastore.resource_mapper')
+      $container->get('dkan.metastore.resource_mapper'),
+      $container->get('event_dispatcher')
     );
   }
 
@@ -106,6 +114,8 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Dictionary Enforcer object.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   Event dispatcher service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
@@ -113,7 +123,8 @@ class DatastoreService implements ContainerInjectionInterface {
     QueueFactory $queue,
     ImportJobStoreFactory $importJobStoreFactory,
     DictionaryEnforcer $dictionaryEnforcer,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
@@ -121,6 +132,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
     $this->resourceMapper = $resourceMapper;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -240,7 +252,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * @return array|null
    *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function getDataDictionaryFields(string $identifier = NULL): ?array {
+  public function getDataDictionaryFields(?string $identifier = NULL): ?array {
     return $this->dictionaryEnforcer->returnDataDictionaryFields($identifier);
   }
 
@@ -259,15 +271,17 @@ class DatastoreService implements ContainerInjectionInterface {
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
     if ($storage = $this->getStorage($identifier, $version)) {
-      $data = [
-        'identifier' => $identifier,
-        'version' => $version,
-      ];
-      $this->dispatchEvent(self::EVENT_DATASTORE_PRE_DROP, $data);
+      $this->eventDispatcher->dispatch(
+        new DatastorePreDropEvent($identifier, $version),
+        self::EVENT_DATASTORE_PRE_DROP
+      );
       $storage->destruct();
       $this->importJobStoreFactory->getInstance()
         ->remove(md5($resource->getUniqueIdentifier()));
-      $this->dispatchEvent(self::EVENT_DATASTORE_DROPPED, $data);
+      $this->eventDispatcher->dispatch(
+        new DatastoreDroppedEvent($identifier, $version),
+        self::EVENT_DATASTORE_DROPPED
+      );
     }
 
     if ($remove_local_resource) {
