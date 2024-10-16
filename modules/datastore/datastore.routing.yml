@@ -150,7 +150,7 @@ datastore.sql_endpoint.post.api:
 datastore.dkan_resource_settings:
   path: '/admin/dkan/resources'
   defaults:
-    _title: 'Resources'
+    _title: 'Resource Settings'
     _form: 'Drupal\datastore\Form\ResourceSettingsForm'
   requirements:
     _permission: 'administer site configuration'

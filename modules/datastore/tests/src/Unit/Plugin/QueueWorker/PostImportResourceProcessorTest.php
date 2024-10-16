@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
@@ -9,6 +10,7 @@ use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\PostImport;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessorInterface;
@@ -232,6 +234,7 @@ class PostImportResourceProcessorTest extends TestCase {
   protected function getContainerChain() {
 
     $options = (new Options())
+      ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.datastore.data_dictionary.alter_table_query_builder.mysql', AlterTableQueryBuilderInterface::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
       ->add('dkan.datastore.logger_channel', LoggerInterface::class)
@@ -239,6 +242,7 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
@@ -256,7 +260,9 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
-      ->add(ResourceMapper::class, 'get', DataResource::class);
+      ->add(ResourceMapper::class, 'get', DataResource::class)
+      ->add(ConfigFactoryInterface::class, 'get', FALSE)
+      ->add(DatastoreService::class, 'drop');
   }
 
 }
