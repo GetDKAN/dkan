@@ -51,8 +51,7 @@ class PostImportResourceProcessorTest extends KernelTestBase {
       ->willReturn($resource);
     $this->container->set('dkan.metastore.resource_mapper', $resource_mapper);
 
-    // Mock the dictionary enforcer to throw an exception so that we can avoid
-    // node type dependenies.
+    // Mock the dictionary enforcer to throw an exception to avoid node type dependencies.
     $no_dictionary_exception = new ResourceDoesNotHaveDictionary('test', 123);
     $enforcer = $this->getMockBuilder(DictionaryEnforcer::class)
       ->disableOriginalConstructor()
@@ -64,7 +63,6 @@ class PostImportResourceProcessorTest extends KernelTestBase {
     $this->container->set('dkan.datastore.service.resource_processor.dictionary_enforcer', $enforcer);
 
     // Create a post import processor.
-    /** @var \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor $processor */
     $processor = PostImportResourceProcessor::create(
       $this->container,
       [],
