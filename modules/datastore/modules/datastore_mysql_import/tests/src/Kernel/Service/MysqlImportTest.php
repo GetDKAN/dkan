@@ -30,6 +30,14 @@ class MysqlImportTest extends KernelTestBase {
     'metastore',
   ];
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    // This setUp method is used so we have access to $this->config.
+    parent::setUp();
+  }
+
   public function testTableDuplicateException() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
@@ -68,7 +76,6 @@ class MysqlImportTest extends KernelTestBase {
    * Test MysqlImport importer.
    */
   public function testMysqlImporter() {
-
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 7) . '/tests/data/countries.csv';
     $data_resource = new DataResource($file_path, 'text/csv');
@@ -172,6 +179,80 @@ class MysqlImportTest extends KernelTestBase {
     // Re-run the import.
     $result = $mysql_import->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
+  }
+
+  /**
+   * Test MysqlImport with a CSV file with multiple empty rows and removes.
+   */
+  public function testMysqlImporterWithRemoveMultipleEmptyRows() {
+    $identifier = 'my_id';
+    $file_path = dirname(__FILE__, 7) . '/modules/datastore_mysql_import/tests/data/multiple_empty_rows.csv';
+    $data_resource = new DataResource($file_path, 'text/csv');
+
+    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
+    $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
+
+    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    $import_service = $import_factory->getInstance(
+      $identifier,
+      ['resource' => $data_resource]
+    );
+    $this->assertInstanceOf(ImportService::class, $import_service);
+    $import_service->setImporterClass(MockQueryVisibilityImport::class);
+    $mysql_import = $import_service->getImporter();
+    $this->assertInstanceOf(MockQueryVisibilityImport::class, $mysql_import);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $mysql_import->getStorage());
+    $this->toggleEmptyRowRemoval(TRUE);
+
+    // Store the table.
+    $result = $mysql_import->run();
+    // The row cleaner runs as part of run().
+    // Set the config back to off.
+    $this->toggleEmptyRowRemoval(FALSE);
+    $sql_row_count = $mysql_import->getStorage()->count();
+
+    $this->assertEquals(2, $sql_row_count, "There should be only 2 rows.");
+  }
+
+  /**
+   * Test MysqlImport with a CSV file with multiple empty rows no removal.
+   */
+  public function testMysqlImporterWithoutRemoveMultipleEmptyRows() {
+    $identifier = 'my_id';
+    $file_path = dirname(__FILE__, 7) . '/modules/datastore_mysql_import/tests/data/multiple_empty_rows.csv';
+    $data_resource = new DataResource($file_path, 'text/csv');
+
+    $import_factory = $this->container->get('dkan.datastore.service.factory.import');
+    $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
+
+    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    $import_service = $import_factory->getInstance(
+      $identifier,
+      ['resource' => $data_resource]
+    );
+    $this->assertInstanceOf(ImportService::class, $import_service);
+    $import_service->setImporterClass(MockQueryVisibilityImport::class);
+    $mysql_import = $import_service->getImporter();
+    $this->assertInstanceOf(MockQueryVisibilityImport::class, $mysql_import);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $mysql_import->getStorage());
+    $this->toggleEmptyRowRemoval(FALSE);
+    // Store the table.
+    $result = $mysql_import->run();
+    $sql_row_count = $mysql_import->getStorage()->count();
+
+    $this->assertEquals(5, $sql_row_count, "There should be 5 rows.");
+  }
+
+  /**
+   * Toggle the empty row remover setting on or off.
+   *
+   * @param bool $on
+   * The value TRUE or FALSE. TRUE to enable the row removal.
+   */
+  protected function toggleEmptyRowRemoval(bool $on):void {
+    $config = $this->config('datastore_mysql_import.settings');
+    $config->set('remove_empty_rows', $on);
+    $config->save();
   }
 
   /**

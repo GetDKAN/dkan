@@ -1,0 +1,7 @@
+datastore.mysql_import.settings:
+  path: '/admin/dkan/datastore/mysql_import'
+  defaults:
+    _title: 'MySQL Import Settings'
+    _form: 'Drupal\datastore_mysql_import\Form\DatastoreMysqlImportSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
