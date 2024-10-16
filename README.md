@@ -44,7 +44,7 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 
 ## Security
 
-If you have found a vunerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
+If you have found a vulnerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
 
 ---
 

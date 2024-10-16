@@ -11,6 +11,7 @@ use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
 use Drupal\datastore\DatastoreService;
+use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\PostImport;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessorInterface;
@@ -42,6 +43,29 @@ class PostImportResourceProcessorTest extends TestCase {
    * @var string
    */
   protected const HOST = 'http://example.com';
+
+  protected DatastoreService $datastoreService;
+  protected PostImportResourceProcessor $processor;
+  protected LoggerInterface $logger;
+  protected ConfigFactoryInterface $configFactory;
+
+  /**
+   * Set up the required dependencies before each test.
+   */
+  protected function setUp(): void {
+    parent::setUp();
+
+    // Create mock instances for dependencies.
+    $this->datastoreService = $this->createMock(DatastoreService::class);
+    $this->logger = $this->createMock(LoggerInterface::class);
+    $this->configFactory = $this->createMock(ConfigFactoryInterface::class);
+
+    // Initialize the processor with mocked dependencies.
+    $this->processor = new PostImportResourceProcessor(
+      [], '', '', $this->configFactory, null, $this->logger, null, null,
+      $this->datastoreService, null, null, null
+    );
+  }
 
   /**
    * Test postImportProcessItem() succeeds.
@@ -158,9 +182,9 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  // /**
-  //  * Test postImportProcessItem() halts and logs a message if a resource has changed.
-  //  */
+   /**
+    * Test postImportProcessItem() halts and logs a message if a resource has changed.
+    */
   public function testPostImportProcessItemResourceChanged() {
     $resource_a = new DataResource('test.csv', 'text/csv');
 
@@ -194,9 +218,9 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  // /**
-  //  * Test postImportProcessItem() logs errors encountered in processors.
-  //  */
+   /**
+    * Test postImportProcessItem() logs errors encountered in processors.
+    */
   public function testPostImportProcessItemProcessorError() {
     $resource = new DataResource('test.csv', 'text/csv');
 
@@ -263,6 +287,82 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add(ResourceMapper::class, 'get', DataResource::class)
       ->add(ConfigFactoryInterface::class, 'get', FALSE)
       ->add(DatastoreService::class, 'drop');
+  }
+
+  /**
+   * Tests that the datastore is dropped successfully on error.
+   * @throws \Exception
+   */
+  public function testPostImportProcessItemDropsDatastoreOnError(): void {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $postImportResult = $this->createMock(PostImportResult::class);
+    $postImportResult->method('getPostImportStatus')->willReturn('error');
+
+    $this->datastoreService
+      ->expects($this->once())
+      ->method('drop')
+      ->with($resource->getIdentifier(), null, false);
+
+    $this->logger
+      ->expects($this->once())
+      ->method('notice')
+      ->with(
+        'Successfully dropped the datastore for resource @identifier due to a post import error. Visit the Datastore Import Status dashboard for details.',
+        ['@identifier' => $resource->getIdentifier()]
+      );
+
+    $this->processor->processItem($resource);
+  }
+
+  /**
+   * Test that the logger logs errors if an exception occurs during drop.
+   * @throws \Exception
+   */
+  public function testLoggerLogsErrorOnDropException(): void {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $postImportResult = $this->createMock(PostImportResult::class);
+    $postImportResult->method('getPostImportStatus')->willReturn('error');
+
+    $this->datastoreService
+      ->method('drop')
+      ->will($this->throwException(new \Exception('Test exception')));
+
+    $this->logger
+      ->expects($this->once())
+      ->method('error')
+      ->with('Test exception');
+
+    $this->processor->processItem($resource, $postImportResult, true);
+  }
+
+  /**
+   * Tests that no action is taken if status is not 'error'.
+   * @throws \Exception
+   */
+  public function testNoActionOnNonErrorStatus(): void {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $postImportResult = $this->createMock(PostImportResult::class);
+    $postImportResult->method('getPostImportStatus')->willReturn('done');
+
+    $this->datastoreService->expects($this->never())->method('drop');
+    $this->logger->expects($this->never())->method('notice');
+
+    $this->processor->processItem($resource, $postImportResult, true);
+  }
+
+  /**
+   * Test that no action is taken if $drop_config is false.
+   * @throws \Exception
+   */
+  public function testNoActionWhenDropConfigIsFalse(): void {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $postImportResult = $this->createMock(PostImportResult::class);
+    $postImportResult->method('getPostImportStatus')->willReturn('error');
+
+    $this->datastoreService->expects($this->never())->method('drop');
+    $this->logger->expects($this->never())->method('notice');
+
+    $this->processor->processItem($resource);
   }
 
 }

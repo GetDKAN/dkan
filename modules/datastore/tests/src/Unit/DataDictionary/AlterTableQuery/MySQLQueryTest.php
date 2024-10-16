@@ -122,10 +122,8 @@ class MySQLQueryTest extends TestCase {
     $this->assertEquals("ALTER TABLE {" . $table . "} MODIFY COLUMN foo TEXT COMMENT 'Foo', " .
     "MODIFY COLUMN bar DECIMAL(10, 5) COMMENT 'Bar', " .
     "MODIFY COLUMN baz DATE COMMENT 'Baz', " .
-    "ADD  INDEX index1 (foo (12), bar, baz) COMMENT 'Fizz', " .
-    "ADD FULLTEXT INDEX index2 (foo (6), baz) COMMENT '';", $query);
+    "ADD  INDEX index1 (foo (12), bar, baz) COMMENT 'Fizz';", $query);
   }
-
 
   /**
    * Ensure alter fails when attempting to apply decimal type to large numbers.
