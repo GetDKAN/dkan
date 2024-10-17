@@ -2,19 +2,22 @@
 
 namespace Drupal\common\Storage;
 
-use Contracts\SorterInterface;
 use Contracts\ConditionerInterface;
-use Contracts\OffsetterInterface;
 use Contracts\LimiterInterface;
+use Contracts\OffsetterInterface;
+use Contracts\SorterInterface;
 
 /**
  * DKAN API Query data object.
+ *
+ * @todo Should we remove these external interfaces and only declare
+ *   QueryInterface?
  */
 class Query implements
-    SorterInterface,
     ConditionerInterface,
+    LimiterInterface,
     OffsetterInterface,
-    LimiterInterface {
+    SorterInterface {
 
   /**
    * The collection of records (usually, a database table) to query against.
@@ -135,7 +138,7 @@ class Query implements
    * @param string $value
    *   Property value to filter against.
    * @param bool $case
-   *   Case sensitive filter?
+   *   Case-sensitive filter?
    */
   public function conditionByIsEqualTo(string $property, string $value, bool $case = FALSE) {
     $this->conditions[] = (object) [

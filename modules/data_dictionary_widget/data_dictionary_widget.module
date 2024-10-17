@@ -4,7 +4,7 @@
  * @file
  * Module for creating Data Dictionary Widget.
  */
-
+use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -77,7 +77,7 @@ function data_dictionary_widget_form_alter(&$form, &$form_state, $form_id) {
   $formObject = $form_state->getFormObject();
   $target_form_ids = ['node_data_edit_form', 'node_data_form'];
 
-  if ($formObject instanceof \Drupal\Core\Entity\EntityFormInterface && in_array($form_id, $target_form_ids)) {
+  if ($formObject instanceof EntityFormInterface && in_array($form_id, $target_form_ids)) {
     $entity = $formObject->getEntity();
     $data_type = $entity->get('field_data_type')->value;
     if (isset($form["field_json_metadata"]["widget"][0]["dictionary_fields"])) {

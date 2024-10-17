@@ -6,7 +6,6 @@ use Drupal\common\DataResource;
 use Drupal\common\Storage\FileFetcherJobStoreFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStore;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\ResourceMapper;

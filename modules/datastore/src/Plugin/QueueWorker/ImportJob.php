@@ -2,11 +2,11 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Contracts\ParserInterface;
+use CsvParser\Parser\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
+use ForceUTF8\Encoding;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
-use ForceUTF8\Encoding;
 
 /**
  * Procrastinator job for importing to the datastore.
@@ -82,7 +82,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Parser object.
    *
-   * @var \Contracts\ParserInterface
+   * @var \CsvParser\Parser\ParserInterface
    */
   protected $parser;
 
@@ -378,7 +378,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Get the parser object.
    *
-   * @return \Contracts\ParserInterface
+   * @return \CsvParser\Parser\ParserInterface
    *   Parser object.
    */
   public function getParser(): ParserInterface {
