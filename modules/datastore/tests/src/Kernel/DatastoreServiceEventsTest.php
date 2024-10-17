@@ -154,9 +154,9 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
       array_keys($this->events)
     );
 
-    // Both events will be DatastoreEventBase, so we can use getters for our
-    // values.
-    /** @var \Drupal\datastore\Events\DatastoreEventBase $event */
+    // Both events will be DatastoreEventInterface, so we can use getters for
+    // our values.
+    /** @var \Drupal\datastore\Events\DatastoreEventInterface $event */
     foreach ($this->events as $event) {
       $this->assertEquals('id', $event->getIdentifier());
       $this->assertEquals('ver', $event->getVersion());

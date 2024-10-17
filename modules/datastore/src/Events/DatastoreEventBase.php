@@ -7,7 +7,7 @@ use Drupal\Component\EventDispatcher\Event;
 /**
  * Event base class for the datastore module.
  */
-class DatastoreEventBase extends Event {
+class DatastoreEventBase extends Event implements DatastoreEventInterface {
 
   /**
    * The datastore identifier.
@@ -37,20 +37,14 @@ class DatastoreEventBase extends Event {
   }
 
   /**
-   * Get the datastore identifier.
-   *
-   * @return string
-   *   The datastore identifier.
+   * {@inheritDoc}
    */
   public function getIdentifier(): string {
     return $this->identifier;
   }
 
   /**
-   * Get the datastore version.
-   *
-   * @return string|null
-   *   The datastore version, or NULL if none was provided.
+   * {@inheritDoc}
    */
   public function getVersion(): ?string {
     return $this->version;
