@@ -302,6 +302,15 @@ class DashboardForm extends FormBase {
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
+
+      $datasetInfo['latest_revision']['distributions'] = array_filter($datasetInfo['latest_revision']['distributions'], function ($v) {
+        return !isset($v['mime_type']) || in_array($v['mime_type'], ['text/csv', 'text/tab-separated-values']);
+      });
+
+      if (empty($datasetInfo['latest_revision']['distributions'])) {
+        continue;
+      }
+
       // Build a table row using its details and harvest status.
       $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
