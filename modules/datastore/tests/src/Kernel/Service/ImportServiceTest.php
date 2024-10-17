@@ -52,7 +52,8 @@ class ImportServiceTest extends KernelTestBase {
         new DataResource('abc.txt', 'text/csv'),
         $this->container->get('dkan.datastore.import_job_store_factory'),
         $this->container->get('dkan.datastore.database_table_factory'),
-        $this->container->get('dkan.datastore.logger_channel')
+        $this->container->get('dkan.datastore.logger_channel'),
+        $this->container->get('event_dispatcher'),
       ])
       ->getMock();
     $import_service->method('getImporter')

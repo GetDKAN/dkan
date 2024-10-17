@@ -6,6 +6,7 @@ use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Create an importer object for a given resource.
@@ -34,22 +35,29 @@ class ImportServiceFactory implements ImportFactoryInterface {
   private LoggerInterface $logger;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Constructor.
    */
   public function __construct(
     ImportJobStoreFactory $importJobStoreFactory,
     DatabaseTableFactory $databaseTableFactory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
     $this->logger = $loggerChannel;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     if ($resource = $config['resource'] ?? FALSE) {
@@ -57,7 +65,8 @@ class ImportServiceFactory implements ImportFactoryInterface {
         $resource,
         $this->importJobStoreFactory,
         $this->databaseTableFactory,
-        $this->logger
+        $this->logger,
+        $this->eventDispatcher,
       );
     }
     throw new \Exception("config['resource'] is required");

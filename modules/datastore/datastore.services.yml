@@ -8,6 +8,7 @@ services:
       - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
       - '@dkan.metastore.resource_mapper'
+      - '@event_dispatcher'
 
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport
@@ -58,6 +59,7 @@ services:
       - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore.database_table_factory'
       - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base
