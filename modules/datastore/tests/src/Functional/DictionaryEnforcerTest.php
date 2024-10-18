@@ -1,24 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
-
-use Drupal\datastore\Controller\ImportController;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-
+use Drupal\datastore\Controller\ImportController;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * DictionaryEnforcer QueueWorker test.
  *
- * @package Drupal\Tests\datastore\Functional
  * @group datastore
  * @group functional
  * @group btb
