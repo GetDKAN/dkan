@@ -1,5 +1,5 @@
 datastore_mysql_import.settings_form:
-  title: MySQl Import settings
+  title: MySQL Import settings
   description: Setting for the MySQL Importer.
   parent: system.admin_dkan
   route_name: datastore.mysql_import.settings

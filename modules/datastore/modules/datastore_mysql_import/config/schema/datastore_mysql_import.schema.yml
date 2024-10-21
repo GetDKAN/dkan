@@ -4,4 +4,4 @@ datastore_mysql_import.settings:
   mapping:
     remove_empty_rows:
       type: boolean
-      label: 'Remove empty rows in dataset'
+      label: 'Remove empty rows from the datastore table'

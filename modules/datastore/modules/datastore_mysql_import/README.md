@@ -7,6 +7,6 @@ To use, simply enable _datastore_mysql_import_ and clear your cache.
 
 ## Differences in behavior with the default DKAN importer.
 
-* Any "blank" rows in your data file, including carriage returns, will be imported into the datastore as empty rows. The default importer ignores any blank rows.  To have the Mysql Importer behave the same as default importer and ignore empty rows, enable the option on this page /admin/dkan/datastore/mysql_import
+* Any "blank" rows in your data file, including carriage returns, will be imported into the datastore as empty rows. The default importer ignores any blank rows.  To have the Mysql Importer behave the same as the default importer and ignore empty rows, enable the option on this page /admin/dkan/datastore/mysql_import
 * If you have column headings exceeding 64 characters in your data file, these headings will be truncated to a max of 64 characters with the last 4 characters containing a hash value to insure uniqueness. This is the same for both importers as the character limit is from MySQL. However, if you already have imported data with one importer, and switch to the other importer, the hash values will be different. This may disrupt established queries depending on the previous header values.
 * If your data includes a field containing the literal word NULL, it will be interpreted as empty unless you enclose it with quotes to be interpreted as a string.
