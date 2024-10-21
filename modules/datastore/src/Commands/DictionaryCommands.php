@@ -9,6 +9,11 @@ use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
 use Drush\Psysh\DrushCommand;
 
+/**
+ * Dictionary Drush commands.
+ *
+ * @codeCoverageIgnore
+ */
 class DictionaryCommands extends DrushCommands {
 
   /**
