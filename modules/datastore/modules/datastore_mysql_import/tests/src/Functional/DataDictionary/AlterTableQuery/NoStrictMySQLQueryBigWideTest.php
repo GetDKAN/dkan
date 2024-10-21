@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\datastore_mysql_import\Functional\DataDictionary\AlterTableQuery;
 
+use Drupal\common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Controller\ImportController;
 use Drupal\Tests\BrowserTestBase;
@@ -146,10 +147,20 @@ class NoStrictMySQLQueryBigWideTest extends BrowserTestBase {
       $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
     );
 
+//            $this->assertEquals('asdf', print_r($dataset, true));
+    $distribution_id = $dataset->{'$["%Ref:distribution"][0].data'} ?? NULL;
+//    $data_resource_id = $dataset->{'$["%Ref:distribution"][0].data.%Ref:downloadURL'};
+    $this->assertEquals('asdf', print_r($distribution_id, true));
+    //    ][0]['data']['%Ref:downloadURL'][0]['identifier']);
+
+
     // Run queue items to perform the import.
     // @todo Use the dictionary enforcer to do the post import, so we can
     //   see exceptions and the like.
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
+
+
+//    $dictionary_enforcer->process($dataset->);
 
     // Retrieve schema for dataset resource.
     $response = $importController->summary(
@@ -165,15 +176,21 @@ class NoStrictMySQLQueryBigWideTest extends BrowserTestBase {
       $columns = $result['columns']
     );
 
-    // $this->assertEquals(
-    //      'Related_Product_Indicator',
-    //      $columns['related_product_indicator']['description'] ?? NULL
-    //    );
-    //    $this->assertEquals(
-    //      'boolean',
-    //      $columns['related_product_indicator']['type'] ?? NULL
-    //    );
+    // Bool is int and tinyint.
+    $this->assertEquals(
+        'Related_Product_Indicator',
+        $columns['related_product_indicator']['description'] ?? NULL
+      );
+    $this->assertEquals(
+        'int',
+        $columns['related_product_indicator']['type'] ?? NULL
+      );
+    $this->assertEquals(
+      'tinyint',
+      $columns['related_product_indicator']['mysql_type'] ?? NULL
+    );
 
+    // Check numeric.
     $this->assertEquals(
       'Total_Amount_of_Payment_USDollars',
       $columns['total_amount_of_payment_usdollars']['description'] ?? NULL

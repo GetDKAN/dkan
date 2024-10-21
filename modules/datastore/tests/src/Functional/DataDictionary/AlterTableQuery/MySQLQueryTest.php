@@ -45,6 +45,9 @@ class MySQLQueryTest extends BrowserTestBase {
 
   protected $defaultTheme = 'stark';
 
+  /**
+   * @see \Drupal\Tests\datastore_mysql_import\Functional\DataDictionary\AlterTableQuery\NoStrictMySQLQueryTest::testPostImport()
+   */
   public function testPostImport() {
     // Dependencies.
     $resourceFile = 'longcolumn.csv';

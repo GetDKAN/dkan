@@ -122,6 +122,8 @@ class DictionaryEnforcerTest extends BrowserTestBase {
 
   /**
    * Test dictionary enforcement.
+   *
+   * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest::testDictionaryEnforcement()
    */
   public function testDictionaryEnforcement(): void {
     // Build data-dictionary.
