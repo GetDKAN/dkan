@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Form;
 
+use Drupal\common\DataResource;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Form\FormBase;
@@ -303,10 +304,8 @@ class DashboardForm extends FormBase {
         continue;
       }
 
-      $datasetInfo['latest_revision']['distributions'] = array_filter($datasetInfo['latest_revision']['distributions'], function ($v) {
-        return !isset($v['mime_type']) || in_array($v['mime_type'], ['text/csv', 'text/tab-separated-values']);
-      });
-
+      // Remove distrubutions and datasets with only non-importable rescourcs.
+      $datasetInfo['latest_revision']['distributions'] = $this->filterDistributions($datasetInfo['latest_revision']['distributions']);
       if (empty($datasetInfo['latest_revision']['distributions'])) {
         continue;
       }
@@ -547,6 +546,21 @@ class DashboardForm extends FormBase {
       return $matches[1];
     }
     return $error;
+  }
+
+  /**
+   * Filter out distributions with resources that aren't importable.
+   *
+   * @param array $distributions
+   *   An array of distribution structures.
+   *
+   * @return array
+   *   The same array, with non-importable resource distributions removed.
+   */
+  protected function filterDistributions(array $distributions): array {
+    return $distributions = array_filter($distributions, function ($v) {
+      return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
+    });
   }
 
 }

@@ -140,10 +140,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * Private.
    */
   private function isDataStorable(DataResource $resource) : bool {
-    return in_array($resource->getMimeType(), [
-      'text/csv',
-      'text/tab-separated-values',
-    ]);
+    return in_array($resource->getMimeType(), DataResource::IMPORTABLE_FILE_TYPES);
   }
 
   /**
