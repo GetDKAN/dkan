@@ -1,0 +1,7 @@
+datastore_mysql_import.settings:
+  type: config_object
+  label: 'Datastore Mysql Import settings'
+  mapping:
+    remove_empty_rows:
+      type: boolean
+      label: 'Remove empty rows from the datastore table'
