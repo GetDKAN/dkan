@@ -108,6 +108,7 @@ class MysqlImport extends ImportJob {
     Database::setActiveConnection();
 
     $this->setStatus(Result::DONE);
+    $this->runOptionalPostImportCleanup($this->dataStorage->getTableName(), $spec);
     return NULL;
   }
 
@@ -260,6 +261,43 @@ class MysqlImport extends ImportJob {
       '(' . implode(',', $headers) . ')',
       'SET record_number = NULL;',
     ]);
+  }
+
+  /**
+   * Performs optional cleanup steps on imported data.
+   *
+   * @param string $table_name
+   *   The name of the table to clean.
+   * @param array $spec
+   *   The sanitized headers for the imported data.
+   */
+  protected function runOptionalPostImportCleanup(string $table_name, array $spec): void {
+    // @todo this should use dependency injection, but this is not a service.
+    $config = \Drupal::config('datastore_mysql_import.settings');
+    if ($config->get('remove_empty_rows')) {
+      $this->removeEmptyRows($table_name, $spec);
+    }
+  }
+
+  /**
+   * Remove empty rows from the imported data.
+   *
+   * @param string $table_name
+   *   The name of the table to remove empty rows from.
+   * @param array $fields
+   *   The sanitized headers for the imported data.
+   */
+  protected function removeEmptyRows(string $table_name, array $fields): void {
+    $connection = \Drupal::database();
+    $query = $connection->delete($table_name);
+    foreach ($fields as $field) {
+      // Build query to look for records with all empty values for all fields.
+      $query->condition($field['description'], '', '=');
+    }
+    $num_deleted = $query->execute();
+    if ($num_deleted > 0) {
+      // @todo We should log how many were deleted... no logger :(
+    }
   }
 
 }
