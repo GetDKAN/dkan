@@ -304,12 +304,6 @@ class DashboardForm extends FormBase {
         continue;
       }
 
-      // Remove distrubutions and datasets with only non-importable rescourcs.
-      $datasetInfo['latest_revision']['distributions'] = $this->filterDistributions($datasetInfo['latest_revision']['distributions']);
-      if (empty($datasetInfo['latest_revision']['distributions'])) {
-        continue;
-      }
-
       // Build a table row using its details and harvest status.
       $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
@@ -386,7 +380,11 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach ($datasetInfo as $rev) {
-      $distributions = $rev['distributions'];
+      // Filter out distributions whose resources are not csv or tsv.
+      $distributions = array_filter($rev['distributions'], function ($v) {
+        return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
+      });
+
       // For first distribution, combine with revision information.
       $rows[] = array_merge(
         $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
@@ -546,21 +544,6 @@ class DashboardForm extends FormBase {
       return $matches[1];
     }
     return $error;
-  }
-
-  /**
-   * Filter out distributions with resources that aren't importable.
-   *
-   * @param array $distributions
-   *   An array of distribution structures.
-   *
-   * @return array
-   *   The same array, with non-importable resource distributions removed.
-   */
-  protected function filterDistributions(array $distributions): array {
-    return $distributions = array_filter($distributions, function ($v) {
-      return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
-    });
   }
 
 }
