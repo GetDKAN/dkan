@@ -5,12 +5,14 @@ namespace Drupal\datastore\Service;
 use CsvParser\Parser\Csv;
 use Drupal\common\DataResource;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\datastore\Events\DatastoreImportedEvent;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Datastore importer.
@@ -29,6 +31,12 @@ class ImportService {
    * @var string
    */
   public const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
+
+  /**
+   * Event name for when the datastore has been successfully imported.
+   */
+  public const EVENT_DATASTORE_IMPORTED = 'dkan_datastore_imported';
+
 
   /**
    * Time-limit used for standard import service.
@@ -84,6 +92,13 @@ class ImportService {
   private LoggerInterface $logger;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Create a resource service instance.
    *
    * @param \Drupal\common\DataResource $resource
@@ -94,17 +109,21 @@ class ImportService {
    *   Database Table factory.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   Event dispatcher service.
    */
   public function __construct(
     DataResource $resource,
     ImportJobStoreFactory $importJobStoreFactory,
     DatabaseTableFactory $databaseTableFactory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->resource = $resource;
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
     $this->logger = $loggerChannel;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -129,9 +148,10 @@ class ImportService {
    */
   public function import() {
     $result = $this->getImporter()->run();
+    $data_resource = $this->getResource();
 
     if ($result->getStatus() === Result::ERROR) {
-      $datastore_resource = $this->getResource()->getDatastoreResource();
+      $datastore_resource = $data_resource->getDatastoreResource();
       $this->logger->error('Error importing resource id:%id path:%path message:%message', [
         '%id' => $datastore_resource->getId(),
         '%path' => $datastore_resource->getFilePath(),
@@ -139,12 +159,15 @@ class ImportService {
       ]);
     }
     // If the import job finished successfully...
-    // @todo This should be an event that is emitted, and then processed
-    //   elsewhere.
     elseif ($result->getStatus() === Result::DONE) {
+      // Dispatch the import event.
+      $this->eventDispatcher->dispatch(
+        new DatastoreImportedEvent($data_resource->getIdentifier(), $data_resource->getVersion()),
+        self::EVENT_DATASTORE_IMPORTED
+      );
       // Queue the imported resource for post-import processing.
       $post_import_queue = \Drupal::service('queue')->get('post_import');
-      $post_import_queue->createItem($this->getResource());
+      $post_import_queue->createItem($data_resource);
     }
   }
 
