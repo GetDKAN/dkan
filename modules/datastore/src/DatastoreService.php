@@ -246,7 +246,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Returns the Data Dictionary fields.
    *
-   * @param string $identifier
+   * @param string|null $identifier
    *   A resource's identifier. Used when in reference mode.
    *
    * @return array|null
