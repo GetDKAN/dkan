@@ -72,10 +72,7 @@ class DatastoreServiceTest extends TestCase {
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', TRUE);
 
-    // Workaround for DatastoreService using EventDispatcherTrait.
-    \Drupal::setContainer($container = $mockChain->getMock());
-
-    $service = DatastoreService::create($container);
+    $service = DatastoreService::create($mockChain->getMock());
     // These are all valid ways to call drop().
     $this->assertNull($service->drop('foo'));
     $this->assertNull($service->drop('foo', '123152'));
