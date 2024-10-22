@@ -6,6 +6,7 @@ namespace Drupal\Tests\datastore\Functional\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Controller\ImportController;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
@@ -141,8 +142,23 @@ class MySQLQueryTest extends BrowserTestBase {
       $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
     );
 
-    // Run queue items to perform the import.
-    $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
+    // Run queue items to perform the import, but not the post_import.
+    $this->runQueues(['localize_import', 'datastore_import']);
+
+    // Use the dictionary enforcer to do the post import, so we can see
+    // exceptions and the like.
+    $distribution_data = $dataset->{'$["%Ref:distribution"][0].data'} ?? NULL;
+    $resource_identifier = $distribution_data['%Ref:downloadURL'][0]['data']['identifier'] ?? NULL;
+    $resource_version = $distribution_data['%Ref:downloadURL'][0]['data']['version'] ?? NULL;
+    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $dictionary_enforcer->process(
+      $resource_mapper->get(
+        $resource_identifier,
+        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
+        $resource_version
+      )
+    );
 
     // Retrieve schema for dataset resource.
     $response = $importController->summary(

@@ -23,8 +23,8 @@ class NoStrictMySQLQueryTest extends MySQLQueryTest {
   public function testPostImport() {
     // Get the datastore module's service name, but it should be our class.
     $this->assertInstanceOf(
-    NoStrictMySQLQueryBuilder::class,
-    $this->container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql')
+      NoStrictMySQLQueryBuilder::class,
+      $this->container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql')
     );
     parent::testPostImport();
   }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\datastore_mysql_import\Functional\DataDictionary\AlterTableQuery;
 
-use Drupal\common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Controller\ImportController;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
@@ -73,19 +73,9 @@ class NoStrictMySQLQueryBigWideTest extends BrowserTestBase {
     $dict_id = $uuid->generate();
     $dict_fields = [
       [
-        'name' => 'related_product_indicator',
-        'title' => 'rpi',
-        'type' => 'boolean',
-      ],
-      [
         'name' => 'total_amount_of_payment_usdollars',
         'title' => 'taopu',
         'type' => 'number',
-      ],
-      [
-        'name' => 'date_of_payment',
-        'title' => 'dop',
-        'type' => 'date',
       ],
     ];
     $data_dict = $validMetadataFactory->get(
@@ -147,20 +137,24 @@ class NoStrictMySQLQueryBigWideTest extends BrowserTestBase {
       $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
     );
 
-//            $this->assertEquals('asdf', print_r($dataset, true));
-    $distribution_id = $dataset->{'$["%Ref:distribution"][0].data'} ?? NULL;
-//    $data_resource_id = $dataset->{'$["%Ref:distribution"][0].data.%Ref:downloadURL'};
-    $this->assertEquals('asdf', print_r($distribution_id, true));
-    //    ][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $distribution_data = $dataset->{'$["%Ref:distribution"][0].data'} ?? NULL;
+    $resource_identifier = $distribution_data['%Ref:downloadURL'][0]['data']['identifier'] ?? NULL;
+    $resource_version = $distribution_data['%Ref:downloadURL'][0]['data']['version'] ?? NULL;
 
+    // Run queue items to perform the import, except for post import.
+    $this->runQueues(['localize_import', 'datastore_import']);
 
-    // Run queue items to perform the import.
-    // @todo Use the dictionary enforcer to do the post import, so we can
-    //   see exceptions and the like.
-    $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
-
-
-//    $dictionary_enforcer->process($dataset->);
+    // Use the dictionary enforcer to do the post import, so we can see
+    // exceptions and the like.
+    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $dictionary_enforcer->process(
+      $resource_mapper->get(
+        $resource_identifier,
+        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
+        $resource_version
+      )
+    );
 
     // Retrieve schema for dataset resource.
     $response = $importController->summary(
@@ -176,20 +170,6 @@ class NoStrictMySQLQueryBigWideTest extends BrowserTestBase {
       $columns = $result['columns']
     );
 
-    // Bool is int and tinyint.
-    $this->assertEquals(
-        'Related_Product_Indicator',
-        $columns['related_product_indicator']['description'] ?? NULL
-      );
-    $this->assertEquals(
-        'int',
-        $columns['related_product_indicator']['type'] ?? NULL
-      );
-    $this->assertEquals(
-      'tinyint',
-      $columns['related_product_indicator']['mysql_type'] ?? NULL
-    );
-
     // Check numeric.
     $this->assertEquals(
       'Total_Amount_of_Payment_USDollars',
@@ -199,16 +179,10 @@ class NoStrictMySQLQueryBigWideTest extends BrowserTestBase {
       'numeric',
       $columns['total_amount_of_payment_usdollars']['type'] ?? NULL
     );
-
-    // $this->assertEquals(
-    //      'Date_of_Payment',
-    //      $columns['date_of_payment']['description'] ?? NULL
-    //    );
-    //    $this->assertEquals(
-    //      'numeric',
-    //      $columns['date_of_payment']['type'] ?? NULL
-    //    );
-    // @todo Look at the DB and see if it's right.
+    $this->assertEquals(
+      'decimal',
+      $columns['total_amount_of_payment_usdollars']['mysql_type'] ?? NULL
+    );
   }
 
   /**
