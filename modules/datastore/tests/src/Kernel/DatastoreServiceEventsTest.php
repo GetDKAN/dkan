@@ -17,7 +17,6 @@ use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
  *
  * @group dkan
@@ -79,9 +78,6 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
     $container->set('testing.datastore_drop_subscriber', $this);
   }
 
-  /**
-   * @covers ::drop
-   */
   public function testEvents() {
     // Mock a data resource.
     $data_resource = $this->getMockBuilder(DataResource::class)
