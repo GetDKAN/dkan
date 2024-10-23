@@ -275,6 +275,7 @@ class DatasetInfoTest extends TestCase {
       'fetcher_status',
       'fetcher_percent_done',
       'file_path',
+      'mime_type',
       'source_path',
       'importer_percent_done',
       'importer_status',

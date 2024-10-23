@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Form;
 
+use Drupal\common\DataResource;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Form\FormBase;
@@ -302,6 +303,7 @@ class DashboardForm extends FormBase {
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
+
       // Build a table row using its details and harvest status.
       $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
@@ -378,12 +380,18 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach ($datasetInfo as $rev) {
-      $distributions = $rev['distributions'];
-      // For first distribution, combine with revision information.
-      $rows[] = array_merge(
-        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
-        $this->buildResourcesRow(array_shift($distributions))
-      );
+      // Filter out distributions whose resources are not csv or tsv.
+      $distributions = array_filter($rev['distributions'], function ($v) {
+        return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
+      });
+
+      if (!empty($distributions)) {
+        // For first distribution, combine with revision information.
+        $rows[] = array_merge(
+          $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+          $this->buildResourcesRow(array_shift($distributions))
+        );
+      }
       // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
