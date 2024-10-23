@@ -111,6 +111,10 @@ function metastore_entity_is_valid_item(EntityInterface $entity) {
  * Implements hook_form_alter().
  */
 function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'node_data_form') {
+    $datatype = \Drupal::request()->get('schema') ?? 'dataset';
+    $form['#title'] = t('Create @datatype', ['@datatype' => $datatype]);
+  }
   $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
   if (isset($form[$fieldName]['widget'][0]['value']['#default_value'])) {
     $json = $form[$fieldName]['widget'][0]['value']['#default_value'];

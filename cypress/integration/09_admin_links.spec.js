@@ -69,7 +69,7 @@ context('Administration pages', () => {
     cy.contains('h1', 'Datasets');
 
     cy.get('.button').contains('+ Add new dataset').click( { force:true })
-    cy.contains('h1', 'Create Data');
+    cy.contains('h1', 'Create dataset');
   })
 
   it('DKAN menu contains link to create a dataset.', () => {
@@ -78,7 +78,7 @@ context('Administration pages', () => {
       cy.wrap($el).contains('Datasets').parent().within(() => {
         cy.get('li.menu-item a').contains('Create').click({ force:true })
       })
-      cy.contains('h1', 'Create Data')
+      cy.contains('h1', 'Create dataset')
     })
   })
 
@@ -89,6 +89,7 @@ context('Administration pages', () => {
     cy.contains('h1', 'DKAN Metastore (Data Dictionaries)');
     cy.get('.button').contains('+ Add new data dictionary').click( { force:true })
     cy.get('fieldset').contains('Data Dictionary Fields');
+    cy.contains('h1', 'Create data-dictionary')
   })
 
 })

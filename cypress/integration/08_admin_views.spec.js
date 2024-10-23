@@ -22,7 +22,7 @@ context('Admin content and dataset views', () => {
         cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
         // There is an "Add new dataset" button that takes user to the dataset json form.
         cy.get('.view-header > .form-actions > .button').should('contain', 'Add new dataset').click({ force:true })
-        cy.contains('h1', 'Create Data');
+        cy.contains('h1', 'Create dataset');
     })
 
     it('User can create a dataset with the UI.', () => {
