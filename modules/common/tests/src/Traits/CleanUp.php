@@ -3,7 +3,6 @@
 namespace Drupal\Tests\common\Traits;
 
 use Drupal\node\Entity\Node;
-use FileFetcher\FileFetcher;
 
 /**
  * @deprecated Will be removed in a future version of DKAN.

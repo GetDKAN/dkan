@@ -122,7 +122,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * @param string $id
    *   Dataset node UUID.
    *
-   * @return \Contracts\HydratableInterface|string|null
+   * @return \Procrastinator\HydratableInterface
    *   JSON-encoded result of query.
    */
   public function retrieve(string $id) {
