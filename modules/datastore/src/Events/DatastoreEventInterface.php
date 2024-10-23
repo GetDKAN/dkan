@@ -2,25 +2,19 @@
 
 namespace Drupal\datastore\Events;
 
+use Drupal\common\DataResource;
+
 /**
  * Event base class for the datastore module.
  */
 interface DatastoreEventInterface {
 
   /**
-   * Get the datastore identifier.
+   * Get the DataResource object for the event.
    *
-   * @return string
-   *   The datastore identifier.
+   * @return \Drupal\common\DataResource
+   *   DataResource object related to the datastore in question.
    */
-  public function getIdentifier(): string;
-
-  /**
-   * Get the datastore version.
-   *
-   * @return string|null
-   *   The datastore version, or NULL if none was provided.
-   */
-  public function getVersion(): ?string;
+  public function getDataResource(): DataResource;
 
 }

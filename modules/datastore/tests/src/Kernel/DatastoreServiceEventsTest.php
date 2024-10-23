@@ -17,7 +17,6 @@ use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
  *
  * @group dkan
@@ -79,9 +78,6 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
     $container->set('testing.datastore_drop_subscriber', $this);
   }
 
-  /**
-   * @covers ::drop
-   */
   public function testEvents() {
     // Mock a data resource.
     $data_resource = $this->getMockBuilder(DataResource::class)
@@ -154,12 +150,12 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
       array_keys($this->events)
     );
 
-    // Both events will be DatastoreEventInterface, so we can use getters for
-    // our values.
+    // Assert that all of our events can return a DataResource object. We
+    // can't assert against the id or version because our datastore doesn't
+    // exist, so the mapper can't find it.
     /** @var \Drupal\datastore\Events\DatastoreEventInterface $event */
     foreach ($this->events as $event) {
-      $this->assertEquals('id', $event->getIdentifier());
-      $this->assertEquals('ver', $event->getVersion());
+      $this->assertInstanceOf(DataResource::class, $event->getDataResource());
     }
   }
 

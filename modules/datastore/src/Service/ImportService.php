@@ -162,7 +162,7 @@ class ImportService {
     elseif ($result->getStatus() === Result::DONE) {
       // Dispatch the import event.
       $this->eventDispatcher->dispatch(
-        new DatastoreImportedEvent($data_resource->getIdentifier(), $data_resource->getVersion()),
+        new DatastoreImportedEvent($data_resource),
         self::EVENT_DATASTORE_IMPORTED
       );
       // Queue the imported resource for post-import processing.
