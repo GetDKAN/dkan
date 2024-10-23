@@ -3,7 +3,6 @@
 namespace Drupal\datastore\DataDictionary;
 
 use Drupal\Core\Database\Connection;
-
 use PDLT\ConverterInterface;
 
 /**
@@ -12,6 +11,13 @@ use PDLT\ConverterInterface;
  * Provides ability to alter schema of existing datastore tables.
  */
 abstract class AlterTableQueryBase implements AlterTableQueryInterface {
+
+  /**
+   * Keep track of whether this query has already been executed or not.
+   *
+   * @var bool
+   */
+  private bool $executed = FALSE;
 
   /**
    * Database connection.
@@ -77,14 +83,18 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
   }
 
   /**
-   * Apply types and indexes to the given table.
+   * {@inheritDoc}
    */
   public function execute(): void {
+    if ($this->executed) {
+      throw new \Exception('already executed. Use the query builder to build a new query rather than executing the same one twice.');
+    }
     // Ensure either fields or indexes are present before attempting to run
     // this command.
     if (!empty($this->fields) || !empty($this->indexes)) {
       $this->doExecute();
     }
+    $this->executed = TRUE;
   }
 
   /**

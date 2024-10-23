@@ -159,6 +159,10 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   /**
    * Pass along new resource to resource processors.
    *
+   * @todo This method should not contain references to data dictionary
+   *   behavior. Put all the dictionary-related logic into
+   *   DictionaryEnforcer::process().
+   *
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
    */

@@ -13,3 +13,12 @@ services:
     arguments:
       - '@dkan.datastore.database'
       - '@dkan.datastore.logger_channel'
+
+  dkan.datastore_mysql_import.data_dictionary.alter_table_query_builder.mysql:
+    class: \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQueryBuilder
+    decorates: dkan.datastore.data_dictionary.alter_table_query_builder.mysql
+    arguments:
+      - '@dkan.datastore.database_connection_factory'
+      - '@pdlt.converter.strptime_to_mysql'
+      - '@uuid'
+      - '@config.factory'
