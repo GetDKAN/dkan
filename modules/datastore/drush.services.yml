@@ -24,3 +24,11 @@ services:
       - '@dkan.datastore.logger_channel'
     tags:
       - { name: drush.command }
+  datastore.dictionary.commands:
+    class: \Drupal\datastore\Commands\DictionaryCommands
+    arguments:
+      - '@dkan.metastore.resource_mapper'
+      - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
+      - '@dkan.metastore.data_dictionary_discovery'
+    tags:
+      - { name: drush.command }

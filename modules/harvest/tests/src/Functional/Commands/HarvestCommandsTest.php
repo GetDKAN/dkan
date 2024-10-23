@@ -49,7 +49,7 @@ class HarvestCommandsTest extends BrowserTestBase {
       $this->assertErrorOutputEquals('');
     }
 
-    // Run the commands with no arguments, assert the response code.
+    // Run the commands with no arguments, assert the result.
     foreach ([
       'dkan:harvest:list' => 0,
       'dkan:harvest:register' => 0,

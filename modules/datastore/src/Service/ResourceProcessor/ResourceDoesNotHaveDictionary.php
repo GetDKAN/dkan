@@ -5,7 +5,7 @@ namespace Drupal\datastore\Service\ResourceProcessor;
 /**
  * Thrown when a resource does not have an associated data dictionary.
  *
- * @see Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer::getDataDictionaryForResource()
+ * @see \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer::getDataDictionaryForResource()
  */
 class ResourceDoesNotHaveDictionary extends \RuntimeException {
 
