@@ -268,18 +268,21 @@ class DatastoreService implements ContainerInjectionInterface {
    *   localized files for this resource. Defaults to TRUE.
    */
   public function drop(string $identifier, ?string $version = NULL, bool $remove_local_resource = TRUE) {
-    $resource = $this->resourceLocalizer->get($identifier, $version);
-
     if ($storage = $this->getStorage($identifier, $version)) {
+      $resource = $this->resourceLocalizer->get($identifier, $version);
+      // Dispatch the pre-drop event.
       $this->eventDispatcher->dispatch(
-        new DatastorePreDropEvent($identifier, $version),
+        new DatastorePreDropEvent($resource),
         self::EVENT_DATASTORE_PRE_DROP
       );
+      // Drop.
       $storage->destruct();
+      // Remove the info from the job store.
       $this->importJobStoreFactory->getInstance()
         ->remove(md5($resource->getUniqueIdentifier()));
+      // Dispatch the dropped event.
       $this->eventDispatcher->dispatch(
-        new DatastoreDroppedEvent($identifier, $version),
+        new DatastoreDroppedEvent($resource),
         self::EVENT_DATASTORE_DROPPED
       );
     }

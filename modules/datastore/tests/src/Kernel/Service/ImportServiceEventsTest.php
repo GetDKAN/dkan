@@ -108,8 +108,12 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
     $this->assertCount(1, $this->events);
     /** @var \Drupal\datastore\Events\DatastoreImportedEvent $event */
     $event = reset($this->events);
-    $this->assertNotEmpty($event->getIdentifier());
-    $this->assertNotEmpty($event->getVersion());
+    $this->assertInstanceOf(
+      DataResource::class,
+      $data_resource = $event->getDataResource()
+    );
+    $this->assertNotEmpty($data_resource->getIdentifier());
+    $this->assertNotEmpty($data_resource->getVersion());
   }
 
 }
