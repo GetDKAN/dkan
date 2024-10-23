@@ -385,11 +385,13 @@ class DashboardForm extends FormBase {
         return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
       });
 
-      // For first distribution, combine with revision information.
-      $rows[] = array_merge(
-        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
-        $this->buildResourcesRow(array_shift($distributions))
-      );
+      if (!empty($distributions)) {
+        // For first distribution, combine with revision information.
+        $rows[] = array_merge(
+          $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+          $this->buildResourcesRow(array_shift($distributions))
+        );
+      }
       // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
