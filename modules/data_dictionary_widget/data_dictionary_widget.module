@@ -25,6 +25,22 @@ function data_dictionary_widget_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'custom-table',
     ],
+    'custom_index_fields_table' => [
+      'variables' => [
+        'header' => [],
+        'rows' => [],
+        'attributes' => [],
+      ],
+      'template' => 'custom-index-fields-table',
+    ],
+    'custom_index_table' => [
+      'variables' => [
+        'header' => [],
+        'rows' => [],
+        'attributes' => [],
+      ],
+      'template' => 'custom-index-table',
+    ],
   ];
 }
 
@@ -86,7 +102,7 @@ function data_dictionary_widget_form_alter(&$form, &$form_state, $form_id) {
       }
     }
 
-    // If we are saving a data dictionary alter the submit.
+    // If we are saving a data dictionary alter the submit action.
     foreach (array_keys($form['actions']) as $action) {
       if ( isset($form['actions'][$action]['#type'])
         && $form['actions'][$action]['#type'] === 'submit'
@@ -96,21 +112,50 @@ function data_dictionary_widget_form_alter(&$form, &$form_state, $form_id) {
     }
 
     $form['#validate'][] = 'data_dictionary_widget_validate_unique_identifier';
-    $current_fields = !empty($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_fields"]) ? $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_fields"] : NULL;
+    // Check for existing dictionary and index fields.
+    $current_dictionary_fields = !empty($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_dictionary_fields"]) ? $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_dictionary_fields"] : NULL;
+    $current_index_fields = !empty($form["field_json_metadata"]["widget"][0]["indexes"]["current_index"]) ? $form["field_json_metadata"]["widget"][0]["indexes"]["current_index"] : NULL;
 
     // The form element render array prefers child keys to be stored as arrays with a #value property.
-    if ($current_fields) {
-      foreach ($current_fields as $key => $value) {
-          $keys = array_keys($value);
-          $formatted_current_fields[$key] = [];
+    if ($current_dictionary_fields) {
+      // Create an array to copy the formatted array structure.
+      $formatted_current_fields = [];
 
-          foreach ($keys as $attr) {
-            $formatted_current_fields[$key][$attr] = [
-                  '#value' => $value[$attr]
-              ];
-          }
+      foreach ($current_dictionary_fields as $key => $value) {
+        $keys = array_keys($value);
+        $formatted_current_fields[$key] = [];
+
+        foreach ($keys as $attr) {
+          $formatted_current_fields[$key][$attr] = [
+            '#value' => $value[$attr]
+          ];
+        }
       }
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_fields"] = $formatted_current_fields;
+
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["current_dictionary_fields"] = $formatted_current_fields;
+    }
+
+    // The form element render array prefers child keys to be stored as arrays with a #value property.
+    if ($current_index_fields) {
+      foreach ($current_index_fields as &$item) {
+        foreach ($item as $key => &$value) {
+          if ($key === 'fields' && is_array($value)) {
+            foreach ($value as &$field) {
+              foreach ($field as $fieldKey => &$fieldValue) {
+                // Add '#value' key to each field
+                $fieldValue = ['#value' => $fieldValue];
+              }
+            }
+          }
+          else {
+            // For non-'fields' keys, add '#value' key to the value
+            $value = ['#value' => $value];
+          }
+        }
+      }
+
+      // Note the current_index_fields was modified in memory instead of copying the array.
+      $form["field_json_metadata"]["widget"][0]["indexes"]["current_index"] = $current_index_fields;
     }
 
     // Set the default value of the identifier field to a randomly generated uuid.
