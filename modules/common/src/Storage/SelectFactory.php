@@ -104,10 +104,8 @@ class SelectFactory {
   private function addDateExpressions($db_query, $fields, $meta_data) {
     foreach ($meta_data as $definition) {
       // Confirm definition name is in the fields list.
-      $name = $this->dbQuery->escapeField($definition['name']);
-      $sanitizedName = $fields[$name]['field'];
-      if ($sanitizedName && $definition['type'] == 'date') {
-        $db_query->addExpression("DATE_FORMAT(" . $sanitizedName . ", '" . $definition['format'] . "')", $sanitizedName);
+      if ($fields[$definition['name']]['field'] && $definition['type'] == 'date') {
+        $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
       }
     }
   }
@@ -143,7 +141,7 @@ class SelectFactory {
     if (is_string($property) && self::safeProperty($property)) {
       return (object) [
         "collection" => $this->alias,
-        "property" => $this->dbQuery->escapeField($property),
+        "property" => $property,
         "alias" => NULL,
       ];
     }
@@ -152,6 +150,10 @@ class SelectFactory {
     }
     // Throw exception if obviously unsafe property name.
     self::safeProperty($property->property);
+    return $property;
+  }
+
+  private function sanitizeProperty(object $property) {
     // Sanitize the property name.
     $property->property = $this->dbQuery->escapeField($property->property);
     $property->alias = isset($property->alias) ? $this->connection->escapeAlias($property->alias) : NULL;
@@ -254,6 +256,7 @@ class SelectFactory {
    */
   private function propertyToString(mixed $property) {
     $property = $this->normalizeProperty($property);
+    $property = $this->sanitizeProperty($property);
     return "{$property->collection}.{$property->property}";
   }
 
