@@ -133,7 +133,7 @@ Index Fields
     .. image:: images/indexes/edit-index.png
       :alt: A portion of the data dictionary creation admin page with a focus on the edit index box.
 
-   1. Note here that it is not possible to modify index fields in this manner at this time. If you must change an index field, the current work around is to delete the associated index entirely and re-create it and it's fields again.
+   1. Note that once you have saved an index, it is not possible to edit the fields within the index at this time. If you must change an index field, the current work around is to delete the associated index entirely and re-create it and it's fields again.
 
 9. Finally, make sure you click "Save" and then "Yes" to "Are you sure you want to publish this item?" in order to submit the form in it's entirety, saving the data dictionary.
 
