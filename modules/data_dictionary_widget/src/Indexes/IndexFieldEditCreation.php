@@ -99,7 +99,7 @@ class IndexFieldEditCreation {
     return [
       '#type' => 'actions',
       'save_update' => IndexFieldButtons::submitIndexFieldButton('edit', $indexKey),
-      'cancel_updates' => IndexFieldButtons::cancelIndexButton('edit', $indexKey, $id),
+      'cancel_updates' => IndexFieldButtons::cancelIndexFieldButton('edit', $indexKey, $id),
       'delete_field' => IndexFieldButtons::deleteIndexFieldButton($indexKey),
     ];
   }

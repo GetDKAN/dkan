@@ -13,7 +13,7 @@ class IndexFieldButtons {
   public static function addIndexFieldButton() {
     return [
       '#type' => 'submit',
-      '#value' => 'Add field',
+      '#value' => 'Add field to index',
       '#name' => 'add_index_field',
       '#access' => TRUE,
       '#op' => 'add_new_index_field',
@@ -113,9 +113,7 @@ class IndexFieldButtons {
   public static function submitIndexFieldButton($location, $indexKey) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
     $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index_field';
-    // @TODO fix the 'Add ' to drop the space, this will need the test to be
-    // updated as well.
-    $value = $location == 'edit' ? 'Save' : 'Add ';
+    $value = $location == 'edit' ? 'Save index field edit' : 'Save field to index';
     // Index fields cannot be edited once submitted so we use the same function
     // for both add and edit.
     $function = 'subIndexFormAjax';
@@ -199,7 +197,7 @@ class IndexFieldButtons {
   public static function submitIndexButton($location, $indexKey) {
     $callbackClass = $location == 'edit' ? 'indexEditCallback' : 'indexAddCallback';
     $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index';
-    $value = $location == 'edit' ? 'Save' : 'Submit Index';
+    $value = $location == 'edit' ? 'Save index edit' : 'Save index';
     $edit_index_button = [
       '#type' => 'submit',
       '#value' => $value,
@@ -244,7 +242,7 @@ class IndexFieldButtons {
   }
 
   /**
-   * Create Cancel button.
+   * Create Cancel adding index field button.
    */
   public static function cancelIndexFieldButton($location, $indexKey, $id) {
     $callbackId = ($id === 'field-json-metadata-index-fields-new') ? 'subIndexFormExistingFieldAjax' : 'subIndexFormAjax';
@@ -252,7 +250,7 @@ class IndexFieldButtons {
     $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel_index_field';
     $cancel_index_button = [
       '#type' => 'submit',
-      '#value' => t('Cancel'),
+      '#value' => t('Cancel adding field to index'),
       '#name' => 'cancel_index_field',
       '#op' => $op,
       '#submit' => [
@@ -271,19 +269,20 @@ class IndexFieldButtons {
 
     if ($location == 'edit') {
       $cancel_index_button['#name'] = 'cancel_update_' . $indexKey;
+      $cancel_index_button['#value'] = t('Cancel index field edit');
     }
     return $cancel_index_button;
   }
 
   /**
-   * Create Cancel button.
+   * Create Cancel adding index button.
    */
   public static function cancelIndexButton($location, $indexKey) {
     $callbackClass = $location == 'edit' ? 'indexEditCallback' : 'indexAddCallback';
     $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel_index';
     $cancel_index_button = [
       '#type' => 'submit',
-      '#value' => t('Cancel Index'),
+      '#value' => t('Cancel adding index'),
       '#name' => 'cancel_index',
       '#op' => $op,
       '#submit' => [
@@ -302,6 +301,8 @@ class IndexFieldButtons {
 
     if ($location == 'edit') {
       $cancel_index_button['#name'] = 'cancel_update_' . $indexKey;
+      $cancel_index_button['#value'] = t('Cancel index edit');
+      
     }
     return $cancel_index_button;
   }
@@ -313,7 +314,7 @@ class IndexFieldButtons {
     return [
       '#type' => 'submit',
       '#name' => 'index_delete_' . $indexKey,
-      '#value' => t('Delete index field'),
+      '#value' => t('Remove field from index'),
       '#op' => 'delete_' . $indexKey,
       '#submit' => [
         [
@@ -337,7 +338,7 @@ class IndexFieldButtons {
     return [
       '#type' => 'submit',
       '#name' => 'index_delete_' . $indexKey,
-      '#value' => t('Delete index'),
+      '#value' => t('Remove index'),
       '#op' => 'delete_' . $indexKey,
       '#submit' => [
         [
