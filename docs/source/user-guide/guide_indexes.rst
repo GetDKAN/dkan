@@ -101,7 +101,7 @@ Index Fields
     :alt: A portion of the data dictionary creation admin page with a focus on the editable form that appears after clicking the "Add field to index" button.
 
  a. Name: Enter a name, this must be a key from the dictionary fields object as created previously (see step 4 in the ‘Prerequisites’ section above for reference).
- b. Length: how many characters long this field can be.
+ b. Length: The number of characters of the column you want to index. Indexing only a prefix of column values in this way can make the index file much smaller.
 
 3. Click "Save field to index" to save the field temporarily. Remember that the Data Dictionary and it's respective fields and indexes are not completely saved until the form is submitted by clicking "Save" at the bottom of the screen.
 4. Alternatively you can click "Cancel adding field to index" to stop creating the index field, at which point all the information you entered will be removed and the editable "Add new field" form box will close.
