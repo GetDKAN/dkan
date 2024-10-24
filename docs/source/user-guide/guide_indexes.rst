@@ -103,7 +103,7 @@ Index Fields
  a. Name: Enter a name, this must be a key from the dictionary fields object as created previously (see step 4 in the ‘Prerequisites’ section above for reference).
  b. Length: how many characters long this field can be.
 
-3. Click "Save field to index" to save the field temporarily. Remember that the Data Dictionary and it's respective fields and indexes are not completely saved until the form is submitted by clicking "Save".
+3. Click "Save field to index" to save the field temporarily. Remember that the Data Dictionary and it's respective fields and indexes are not completely saved until the form is submitted by clicking "Save" at the bottom of the screen.
 4. Alternatively you can click "Cancel adding field to index" to stop creating the index field, at which point all the information you entered will be removed and the editable "Add new field" form box will close.
 5. Note that after saving an index field, an informational table will appear listing the index fields you have created thus far and their names and length.
 
@@ -117,12 +117,12 @@ Index Fields
       :alt: A portion of the data dictionary creation admin page with a focus on editable form that appears after you click the gear icon to edit a specific index field.
 
 6. You can enter additional index fields by clicking "Add field to index" (in this index section) and repeating steps 2-3 in this Index Fields section again.
-7. After defining the index fields, click "Save index" to save the index temporarily. Remember that the Data Dictionary and it's respective fields and indexes are not completely saved until the form is submitted by clicking "Save".
+7. After defining the index fields, click "Save index" to save the index temporarily. Remember that the Data Dictionary and it's respective fields and indexes are not completely saved until the form is submitted by clicking "Save" at the bottom of the screen.
    
   .. image:: images/indexes/edit-index-box.png
     :alt: A portion of the data dictionary creation admin page with a focus on the indexes box, specifically meant to reference the "Save index" button.
 
-8. Note that after submitting, an informational table will appear listing the indexes you have created thus far and their names, types, and fields (field name and field length).
+8. Note that after saving the index, an informational table will appear listing the indexes you have created thus far and their names, types, and fields (field name and field length).
 
   .. image:: images/indexes/add-index-informational-table.png
     :alt: A portion of the data dictionary creation admin page with a focus on informational table that appears after saving an index.
