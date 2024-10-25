@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore_mysql_import\Functional\Storage;
+namespace Drupal\Tests\datastore_mysql_import\Functional\Plugin\QueueWorker;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
@@ -13,11 +13,13 @@ use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * Test import and column name truncation.
+ *
  * @group dkan
  * @group datastore_mysql_import
  * @group functional
  */
-class MySqlDatabaseTableTest extends BrowserTestBase {
+class ImportJobTest extends BrowserTestBase {
 
   use GetDataTrait, QueueRunnerTrait;
 
@@ -33,7 +35,7 @@ class MySqlDatabaseTableTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected const TEST_DATA_PATH = __DIR__ . '/../../../data/';
+  protected const TEST_DATA_PATH = __DIR__ . '/../../../../data/';
 
   protected static $modules = [
     'datastore_mysql_import',
@@ -51,7 +53,7 @@ class MySqlDatabaseTableTest extends BrowserTestBase {
     /** @var \Drupal\metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
     $resourceUrl = $this->setUpResourceFile($resourceFile);
-    $importController = ImportController::create(\Drupal::getContainer());
+    $importController = ImportController::create($this->container);
 
     // Create the data.
     $dataset_id = $uuid->generate();

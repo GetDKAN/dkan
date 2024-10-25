@@ -56,7 +56,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   public function __construct(
     AlterTableQueryBuilderInterface $alter_table_query_builder,
     MetastoreService $metastore,
-    DataDictionaryDiscoveryInterface $data_dictionary_discovery
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery,
   ) {
     $this->metastore = $metastore;
     $this->dataDictionaryDiscovery = $data_dictionary_discovery;
@@ -125,13 +125,13 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Returning data dictionary fields from schema.
    *
-   * @param string $identifier
-   *   A resource's identifier. Used when in reference mode.
+   * @param string|null $identifier
+   *   (Optional) A resource's identifier. Used when in reference mode.
    *
    * @return array|null
    *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function returnDataDictionaryFields(string $identifier = NULL): ?array {
+  public function returnDataDictionaryFields(?string $identifier = NULL): ?array {
     // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.
