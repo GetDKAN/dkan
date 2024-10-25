@@ -171,7 +171,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    */
   public function processItem($data) {
     $postImportResult = $this->postImportProcessItem($data);
-    $drop_config = $this->config->get('datastore.settings')->get('drop_datastore_on_post_import_error');
+    $drop_config = $this->config->get('drop_datastore_on_post_import_error');
+
     if ($postImportResult->getPostImportStatus() === 'done') {
       $this->invalidateCacheTags(DataResource::buildUniqueIdentifier(
         $data->getIdentifier(),

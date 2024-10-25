@@ -158,9 +158,9 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  // /**
-  //  * Test postImportProcessItem() halts and logs a message if a resource has changed.
-  //  */
+   /**
+    * Test postImportProcessItem() halts and logs a message if a resource has changed.
+    */
   public function testPostImportProcessItemResourceChanged() {
     $resource_a = new DataResource('test.csv', 'text/csv');
 
@@ -194,9 +194,9 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  // /**
-  //  * Test postImportProcessItem() logs errors encountered in processors.
-  //  */
+   /**
+    * Test postImportProcessItem() logs errors encountered in processors.
+    */
   public function testPostImportProcessItemProcessorError() {
     $resource = new DataResource('test.csv', 'text/csv');
 
@@ -226,6 +226,107 @@ class PostImportResourceProcessorTest extends TestCase {
     // Ensure test error was caught.
     $errors = $container_chain->getStoredInput('error');
     $this->assertEquals($errors[0], 'Test Error');
+  }
+
+  /**
+   * Verify Datastore Drop on Post-Import Error (with drop_config enabled)
+   */
+  public function testDatastoreDropOnPostImportError() {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process', new \Exception('Test Error'))
+      ->getMock();
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource);
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+      $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('error', $postImportResult->getPostImportStatus());
+    $this->assertEquals('Test Error', $postImportResult->getPostImportMessage());
+  }
+
+  /**
+   *  Verify Logging on Successful Datastore Drop
+   */
+  public function testLoggingOnSuccessfulDatastoreDrop() {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process')
+      ->getMock();
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource);
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+      $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+  }
+
+  /**
+   * Verify Exception Handling When Datastore Drop Fails
+   */
+  public function testExceptionHandlingWhenDatastoreDropFails() {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process', new \Exception('Test Error'))
+      ->getMock();
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource);
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+      $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('error', $postImportResult->getPostImportStatus());
+    $this->assertEquals('Test Error', $postImportResult->getPostImportMessage());
+  }
+
+  /**
+   *   Verify No Datastore Drop When drop_config is Disabled
+   */
+  public function testNoDatastoreDropWhenDropConfigIsDisabled() {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process')
+      ->getMock();
+
+    $datastoreService = $this->createMock(DatastoreService::class);
+    $datastoreService->expects($this->never())
+      ->method('drop');
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource);
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+      $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals('done', $postImportResult->getPostImportStatus());
+    $this->assertEquals(NULL, $postImportResult->getPostImportMessage());
   }
 
   /**
