@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Events;
 
+use Drupal\common\DataResource;
 use Drupal\Component\EventDispatcher\Event;
 
 /**
@@ -10,44 +11,27 @@ use Drupal\Component\EventDispatcher\Event;
 class DatastoreEventBase extends Event implements DatastoreEventInterface {
 
   /**
-   * The datastore identifier.
+   * The DataResource object for the event.
    *
-   * @var string
+   * @var \Drupal\common\DataResource
    */
-  private string $identifier;
-
-  /**
-   * The datastore version.
-   *
-   * @var string|null
-   */
-  private ?string $version;
+  protected DataResource $dataResource;
 
   /**
    * Constructor.
    *
-   * @param string $identifier
-   *   The datastore identifier.
-   * @param string|null $version
-   *   (Optional) The datastore version.
+   * @param \Drupal\common\DataResource $data_resource
+   *   The DataResource object for the event.
    */
-  public function __construct(string $identifier, ?string $version) {
-    $this->identifier = $identifier;
-    $this->version = $version;
+  public function __construct(DataResource $data_resource) {
+    $this->dataResource = $data_resource;
   }
 
   /**
    * {@inheritDoc}
    */
-  public function getIdentifier(): string {
-    return $this->identifier;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public function getVersion(): ?string {
-    return $this->version;
+  public function getDataResource(): DataResource {
+    return $this->dataResource;
   }
 
 }

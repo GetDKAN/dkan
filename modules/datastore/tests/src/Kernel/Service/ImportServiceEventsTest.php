@@ -14,7 +14,6 @@ use Procrastinator\Result;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @covers \Drupal\datastore\Service\ImportService
  * @coversDefaultClass \Drupal\datastore\Service\ImportService
  *
  * @group dkan
@@ -63,9 +62,6 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
     $container->set('testing.datastore_imported_subscriber', $this);
   }
 
-  /**
-   * @covers ::import
-   */
   public function testEvents() {
     // Our result will be DONE.
     $result = new Result();
@@ -108,8 +104,12 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
     $this->assertCount(1, $this->events);
     /** @var \Drupal\datastore\Events\DatastoreImportedEvent $event */
     $event = reset($this->events);
-    $this->assertNotEmpty($event->getIdentifier());
-    $this->assertNotEmpty($event->getVersion());
+    $this->assertInstanceOf(
+      DataResource::class,
+      $data_resource = $event->getDataResource()
+    );
+    $this->assertNotEmpty($data_resource->getIdentifier());
+    $this->assertNotEmpty($data_resource->getVersion());
   }
 
 }

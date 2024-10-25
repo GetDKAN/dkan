@@ -53,6 +53,14 @@ class DataResource implements \JsonSerializable {
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
   /**
+   * Mime types of files that contain importable data.
+   */
+  const IMPORTABLE_FILE_TYPES = [
+    'text/csv',
+    'text/tab-separated-values',
+  ];
+
+  /**
    * The file path or URL for the resource.
    *
    * @var string
