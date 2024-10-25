@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Functional\DataDictionary\AlterTableQuery;
+namespace Drupal\Tests\datastore_mysql_import\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Controller\ImportController;
@@ -15,13 +15,15 @@ use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @coversDefaultClass \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ * Ensure we can apply a data dictionary to a dataset with too many columns.
  *
  * @group dkan
- * @group datastore
+ * @group datastore_mysql_import
  * @group functional
+ *
+ * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
  */
-class MySQLQueryTest extends BrowserTestBase {
+class NoStrictDictionaryEnforcerTest extends BrowserTestBase {
 
   use GetDataTrait, QueueRunnerTrait;
 
@@ -37,21 +39,18 @@ class MySQLQueryTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected const TEST_DATA_PATH = __DIR__ . '/../../../../data/';
+  protected const TEST_DATA_PATH = __DIR__ . '/../../data/';
 
   protected static $modules = [
-    'datastore',
+    'datastore_mysql_import',
     'node',
   ];
 
   protected $defaultTheme = 'stark';
 
-  /**
-   * @see \Drupal\Tests\datastore_mysql_import\Functional\DataDictionary\AlterTableQuery\NoStrictMySQLQueryTest::testPostImport()
-   */
   public function testPostImport() {
     // Dependencies.
-    $resourceFile = 'longcolumn.csv';
+    $resourceFile = 'research.csv';
     $uuid = $this->container->get('uuid');
     /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
@@ -60,7 +59,7 @@ class MySQLQueryTest extends BrowserTestBase {
     $resourceUrl = $this->setUpResourceFile($resourceFile);
     $importController = ImportController::create(\Drupal::getContainer());
 
-    // Set per-reference data-dictinary in metastore config.
+    // Set per-reference data dictionary in metastore config.
     $this->config('metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
       ->save();
@@ -69,17 +68,13 @@ class MySQLQueryTest extends BrowserTestBase {
       $this->config('metastore.settings')->get('data_dictionary_mode')
     );
 
-    // Create a data dictionary for wide_table.csv. (Columns are numeric.)
-    // Build data-dictionary.
+    // Create a data dictionary for research.csv.
     $dict_id = $uuid->generate();
     $dict_fields = [
       [
-        'name' => 'extra_long_column_name_with_tons_of_characters_that_will_ne_e872',
+        'name' => 'total_amount_of_payment_usdollars',
+        'title' => 'taopu',
         'type' => 'number',
-      ],
-      [
-        'name' => 'extra_long_column_name_with_tons_of_characters_that_will_ne_5127',
-        'type' => 'integer',
       ],
     ];
     $data_dict = $validMetadataFactory->get(
@@ -94,7 +89,7 @@ class MySQLQueryTest extends BrowserTestBase {
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($metastore->publish('data-dictionary', $dict_id));
 
-    // Import wide_table.csv. First create the data.
+    // Create a dataset node with our data dictionary.
     $dataset_id = $uuid->generate();
     $this->assertInstanceOf(
       RootedJsonData::class,
@@ -122,8 +117,8 @@ class MySQLQueryTest extends BrowserTestBase {
       RootedJsonData::class,
       $dataset = $metastore->get('dataset', $dataset_id)
     );
-    // The dataset references the dictionary. DescribedBy will contain the https
-    // URL-style reference.
+    // The dataset references the dictionary. DescribedBy will contain the
+    // https URL-style reference.
     $this->assertStringContainsString(
       $dict_id,
       $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
@@ -136,20 +131,20 @@ class MySQLQueryTest extends BrowserTestBase {
     // Dictionary fields are applied to the dataset.
     /** @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
     $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
-    // We defined two fields in our data dictionary.
     $this->assertCount(
-      2,
+      count($dict_fields),
       $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
     );
 
-    // Run queue items to perform the import, but not the post_import.
+    $distribution_data = $dataset->{'$["%Ref:distribution"][0].data'} ?? NULL;
+    $resource_identifier = $distribution_data['%Ref:downloadURL'][0]['data']['identifier'] ?? NULL;
+    $resource_version = $distribution_data['%Ref:downloadURL'][0]['data']['version'] ?? NULL;
+
+    // Run queue items to perform the import, except for post import.
     $this->runQueues(['localize_import', 'datastore_import']);
 
     // Use the dictionary enforcer to do the post import, so we can see
     // exceptions and the like.
-    $distribution_data = $dataset->{'$["%Ref:distribution"][0].data'} ?? NULL;
-    $resource_identifier = $distribution_data['%Ref:downloadURL'][0]['data']['identifier'] ?? NULL;
-    $resource_version = $distribution_data['%Ref:downloadURL'][0]['data']['version'] ?? NULL;
     /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
     $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
     $dictionary_enforcer->process(
@@ -168,24 +163,25 @@ class MySQLQueryTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $result = json_decode($response->getContent(), TRUE);
 
+    // 252 columns + record_number.
+    $this->assertCount(
+      253,
+      $columns = $result['columns']
+    );
+
+    // Check numeric.
+    $this->assertEquals(
+      'Total_Amount_of_Payment_USDollars',
+      $columns['total_amount_of_payment_usdollars']['description'] ?? NULL
+    );
     $this->assertEquals(
       'numeric',
-      $result['columns']['extra_long_column_name_with_tons_of_characters_that_will_ne_e872']['type'] ?? NULL
+      $columns['total_amount_of_payment_usdollars']['type'] ?? NULL
     );
     $this->assertEquals(
       'decimal',
-      $result['columns']['extra_long_column_name_with_tons_of_characters_that_will_ne_e872']['mysql_type'] ?? NULL
+      $columns['total_amount_of_payment_usdollars']['mysql_type'] ?? NULL
     );
-
-    $this->assertEquals(
-      'int',
-      $result['columns']['extra_long_column_name_with_tons_of_characters_that_will_ne_5127']['type'] ?? NULL
-    );
-    $this->assertEquals(
-      'int',
-      $result['columns']['extra_long_column_name_with_tons_of_characters_that_will_ne_5127']['mysql_type'] ?? NULL
-    );
-    // @todo Look at the DB and see if it's right.
   }
 
   /**
