@@ -8,7 +8,7 @@ use Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQu
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * Test DictionaryEnforcer with datastore_mysql_import module added.
+ * Test that our service decorator is set up properly.
  *
  * @coversDefaultClass \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQueryBuilder
  *
