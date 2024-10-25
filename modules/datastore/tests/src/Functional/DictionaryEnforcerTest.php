@@ -8,7 +8,6 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use RootedData\RootedJsonData;
@@ -20,6 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @group datastore
  * @group functional
  * @group btb
+ *
+ * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
@@ -104,7 +105,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     // Initialize services.
     $this->metastore = $this->container->get('dkan.metastore.service');
     $this->uuid = $this->container->get('uuid');
-    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
     $this->importController = ImportController::create(\Drupal::getContainer());
     $this->datasetStorage = $this->container->get('dkan.metastore.storage')
       ->getInstance('dataset');
@@ -122,8 +123,6 @@ class DictionaryEnforcerTest extends BrowserTestBase {
 
   /**
    * Test dictionary enforcement.
-   *
-   * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest::testDictionaryEnforcement()
    */
   public function testDictionaryEnforcement(): void {
     // Build data-dictionary.

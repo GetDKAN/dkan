@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\datastore_mysql_import\Kernel\DataDictionary\AlterTableQuery;
 
 use Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQueryBuilder;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * Test DictionaryEnforcer with mysql import module added.
+ * Test DictionaryEnforcer with datastore_mysql_import module added.
  *
  * @coversDefaultClass \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQueryBuilder
- * @covers \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQueryBuilder
  *
  * @group dkan
  * @group datastore_mysql_import
@@ -24,8 +25,12 @@ class NoStrictMySQLQueryBuilderTest extends KernelTestBase {
     'metastore',
   ];
 
+  /**
+   * Ensure the query builder service decoration is defined properly.
+   */
   public function testServiceDecorator() {
-    // Get the datastore module's service name, but it should be our class.
+    // Get the datastore module's service name, but it should be our decorator
+    // class.
     $this->assertInstanceOf(
       NoStrictMySQLQueryBuilder::class,
       $this->container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql')
