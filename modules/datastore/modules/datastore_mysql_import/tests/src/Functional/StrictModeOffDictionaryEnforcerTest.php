@@ -50,7 +50,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
   public function testPostImport() {
     // Dependencies.
-    $resourceFile = 'research.csv';
+    $resourceFile = 'very_wide.csv';
     $uuid = $this->container->get('uuid');
     /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
@@ -68,13 +68,14 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       $this->config('metastore.settings')->get('data_dictionary_mode')
     );
 
-    // Create a data dictionary for research.csv.
+    // Create a data dictionary for very_wide.csv. The 300th (!) column will be
+    // a datetime.
     $dictionary_id = $uuid->generate();
     $dictionary_fields = [
       [
-        'name' => 'total_amount_of_payment_usdollars',
-        'title' => 'taopu',
-        'type' => 'number',
+        'name' => 'name_at_the_sixty_four_character_limit_including_the_number_300',
+        'title' => 'Date Column',
+        'type' => 'datetime',
       ],
     ];
     $data_dict = $validMetadataFactory->get(
@@ -163,24 +164,24 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $result = json_decode($response->getContent(), TRUE);
 
-    // 252 columns + record_number.
+    // 300 columns + record_number.
     $this->assertCount(
-      253,
+      301,
       $columns = $result['columns']
     );
 
     // Check numeric.
     $this->assertEquals(
-      'Total_Amount_of_Payment_USDollars',
-      $columns['total_amount_of_payment_usdollars']['description'] ?? NULL
+      'name_at_the_sixty_four_character_limit_including_the_number_300',
+      $columns['name_at_the_sixty_four_character_limit_including_the_number_300']['description'] ?? NULL
     );
     $this->assertEquals(
-      'numeric',
-      $columns['total_amount_of_payment_usdollars']['type'] ?? NULL
+      'varchar',
+      $columns['name_at_the_sixty_four_character_limit_including_the_number_300']['type'] ?? NULL
     );
     $this->assertEquals(
-      'decimal',
-      $columns['total_amount_of_payment_usdollars']['mysql_type'] ?? NULL
+      'datetime',
+      $columns['name_at_the_sixty_four_character_limit_including_the_number_300']['mysql_type'] ?? NULL
     );
   }
 
