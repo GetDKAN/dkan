@@ -12,7 +12,7 @@ use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
  * This class overrides the execute() method so that we can create a special
  * database session with innodb_strict_mode turned off.
  */
-class StrictModeOfMySQLQuery extends MySQLQuery implements AlterTableQueryInterface {
+class StrictModeOffMySQLQuery extends MySQLQuery implements AlterTableQueryInterface {
 
   /**
    * {@inheritDoc}

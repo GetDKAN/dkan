@@ -16,7 +16,7 @@ class StrictModeOffMySQLQueryBuilder extends MySQLQueryBuilder {
    * {@inheritDoc}
    */
   public function getQuery(): AlterTableQueryInterface {
-    $query = new StrictModeOfMySQLQuery(
+    $query = new StrictModeOffMySQLQuery(
       $this->databaseConnectionFactory->getConnection(),
       $this->dateFormatConverter,
       $this->table,
