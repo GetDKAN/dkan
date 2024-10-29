@@ -26,8 +26,6 @@ use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 
 /**
- * Test \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor.
- *
  * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor
  *
  * @group dkan
@@ -45,6 +43,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Test postImportProcessItem() succeeds.
+   *
+   * @covers ::postImportProcessItem
    */
   public function testPostImportProcessItem() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -88,6 +88,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Test postImportProcessItem() DataDictionary disabled.
+   *
+   * @covers ::postImportProcessItem
    */
   public function testPostImportProcessItemDataDictionaryDisabled() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -126,6 +128,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Test postImportProcessItem() halts and logs a message if a resource no longer exists.
+   *
+   * @covers ::postImportProcessItem
    */
   public function testPostImportProcessItemResourceNoLongerExists() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -160,6 +164,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
    /**
     * Test postImportProcessItem() halts and logs a message if a resource has changed.
+    *
+    * @covers ::postImportProcessItem
     */
   public function testPostImportProcessItemResourceChanged() {
     $resource_a = new DataResource('test.csv', 'text/csv');
@@ -196,6 +202,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
    /**
     * Test postImportProcessItem() logs errors encountered in processors.
+    *
+    * @covers ::postImportProcessItem
     */
   public function testPostImportProcessItemProcessorError() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -230,6 +238,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Verify Datastore Drop on Post-Import Error (with drop_config enabled)
+   *
+   * @covers ::postImportProcessItem
    */
   public function testDatastoreDropOnPostImportError() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -255,6 +265,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    *  Verify Logging on Successful Datastore Drop
+   *
+   * @covers ::postImportProcessItem
    */
   public function testLoggingOnSuccessfulDatastoreDrop() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -278,6 +290,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Verify Exception Handling When Datastore Drop Fails
+   *
+   * @covers ::postImportProcessItem
    */
   public function testExceptionHandlingWhenDatastoreDropFails() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -302,7 +316,9 @@ class PostImportResourceProcessorTest extends TestCase {
   }
 
   /**
-   *   Verify No Datastore Drop When drop_config is Disabled
+   * Verify No Datastore Drop When drop_config is Disabled.
+   *
+   * @covers ::postImportProcessItem
    */
   public function testNoDatastoreDropWhenDropConfigIsDisabled() {
     $resource = new DataResource('test.csv', 'text/csv');
