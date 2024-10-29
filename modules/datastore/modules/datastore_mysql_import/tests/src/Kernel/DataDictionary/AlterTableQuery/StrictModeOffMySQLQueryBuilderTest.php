@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\datastore_mysql_import\Kernel\DataDictionary\AlterTableQuery;
 
-use Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQueryBuilder;
+use Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Test that our service decorator is set up properly.
  *
- * @coversDefaultClass \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\NoStrictMySQLQueryBuilder
+ * @coversDefaultClass \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder
  *
  * @group dkan
  * @group datastore_mysql_import
  * @group kernel
  */
-class NoStrictMySQLQueryBuilderTest extends KernelTestBase {
+class StrictModeOffMySQLQueryBuilderTest extends KernelTestBase {
 
   protected static $modules = [
     'common',
@@ -32,7 +32,7 @@ class NoStrictMySQLQueryBuilderTest extends KernelTestBase {
     // Get the datastore module's service name, but it should be our decorator
     // class.
     $this->assertInstanceOf(
-      NoStrictMySQLQueryBuilder::class,
+      StrictModeOffMySQLQueryBuilder::class,
       $this->container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql')
     );
   }

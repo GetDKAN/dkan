@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
  */
-class NoStrictDictionaryEnforcerTest extends BrowserTestBase {
+class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
   use GetDataTrait, QueueRunnerTrait;
 
@@ -69,8 +69,8 @@ class NoStrictDictionaryEnforcerTest extends BrowserTestBase {
     );
 
     // Create a data dictionary for research.csv.
-    $dict_id = $uuid->generate();
-    $dict_fields = [
+    $dictionary_id = $uuid->generate();
+    $dictionary_fields = [
       [
         'name' => 'total_amount_of_payment_usdollars',
         'title' => 'taopu',
@@ -78,16 +78,16 @@ class NoStrictDictionaryEnforcerTest extends BrowserTestBase {
       ],
     ];
     $data_dict = $validMetadataFactory->get(
-      $this->getDataDictionary($dict_fields, [], $dict_id),
+      $this->getDataDictionary($dictionary_fields, [], $dictionary_id),
       'data-dictionary'
     );
     // Create data-dictionary.
     $this->assertEquals(
-      $dict_id,
+      $dictionary_id,
       $metastore->post('data-dictionary', $data_dict)
     );
     // Publish should return FALSE, because the node was already published.
-    $this->assertFalse($metastore->publish('data-dictionary', $dict_id));
+    $this->assertFalse($metastore->publish('data-dictionary', $dictionary_id));
 
     // Create a dataset node with our data dictionary.
     $dataset_id = $uuid->generate();
@@ -99,7 +99,7 @@ class NoStrictDictionaryEnforcerTest extends BrowserTestBase {
           'Test ' . $dataset_id,
           [$resourceUrl],
           TRUE,
-          'dkan://metastore/schemas/data-dictionary/items/' . $dict_id
+          'dkan://metastore/schemas/data-dictionary/items/' . $dictionary_id
         ),
         'dataset'
       )
@@ -120,7 +120,7 @@ class NoStrictDictionaryEnforcerTest extends BrowserTestBase {
     // The dataset references the dictionary. DescribedBy will contain the
     // https URL-style reference.
     $this->assertStringContainsString(
-      $dict_id,
+      $dictionary_id,
       $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
     );
     // Get the distribution ID.
@@ -132,7 +132,7 @@ class NoStrictDictionaryEnforcerTest extends BrowserTestBase {
     /** @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
     $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
     $this->assertCount(
-      count($dict_fields),
+      count($dictionary_fields),
       $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
     );
 

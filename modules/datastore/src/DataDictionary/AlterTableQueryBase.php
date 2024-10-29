@@ -87,7 +87,7 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
    */
   public function execute(): void {
     if ($this->executed) {
-      throw new \Exception('already executed. Use the query builder to build a new query rather than executing the same one twice.');
+      throw new \Exception('Already executed. Use the query builder to build a new query rather than executing the same one twice.');
     }
     // Ensure either fields or indexes are present before attempting to run
     // this command.

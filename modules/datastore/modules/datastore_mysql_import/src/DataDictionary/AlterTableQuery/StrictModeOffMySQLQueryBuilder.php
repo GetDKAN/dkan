@@ -10,13 +10,13 @@ use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
  *
  * @see \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder
  */
-class NoStrictMySQLQueryBuilder extends MySQLQueryBuilder {
+class StrictModeOffMySQLQueryBuilder extends MySQLQueryBuilder {
 
   /**
    * {@inheritDoc}
    */
   public function getQuery(): AlterTableQueryInterface {
-    $query = new NoStrictMySQLQuery(
+    $query = new StrictModeOfMySQLQuery(
       $this->databaseConnectionFactory->getConnection(),
       $this->dateFormatConverter,
       $this->table,
