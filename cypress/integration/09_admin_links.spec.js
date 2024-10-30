@@ -10,11 +10,11 @@ context('Administration pages', () => {
     const links = [
       'Datasets',
       'Datastore Import Status',
-      'Datastore settings',
+      'Datastore Settings',
       'Data Dictionary',
       'Harvests',
-      'Metastore settings',
-      'Resource settings'
+      'Metastore Settings',
+      'Resource Settings'
     ]
 
     cy.visit(`${baseurl}/admin`)
@@ -25,19 +25,19 @@ context('Administration pages', () => {
     })
   })
 
-  it('Admin can access the Metastore settings.', () => {
+  it('Admin can access the Metastore Settings.', () => {
     cy.get('.toolbar-icon-system-admin-dkan').contains('DKAN').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
-        cy.wrap($el).contains('Metastore settings')
+        cy.wrap($el).contains('Metastore Settings')
     })
     cy.visit(baseurl + "/admin/dkan/properties")
     cy.get('.option').should('contain.text', 'Distribution (distribution)')
   })
 
-  it('Admin can access the Datastore settings.', () => {
+  it('Admin can access the Datastore Settings.', () => {
     cy.get('.toolbar-icon-system-admin-dkan').contains('DKAN').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
-        cy.wrap($el).contains('Datastore settings')
+        cy.wrap($el).contains('Datastore Settings')
     })
     cy.visit(baseurl + "/admin/dkan/datastore")
     cy.get('label[for="edit-rows-limit"]').should('have.text', 'Rows limit')
