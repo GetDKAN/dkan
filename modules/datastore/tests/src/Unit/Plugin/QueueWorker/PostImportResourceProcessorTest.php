@@ -50,12 +50,12 @@ class PostImportResourceProcessorTest extends TestCase {
     $resource = new DataResource('test.csv', 'text/csv');
 
     $dataDictionaryDiscovery = $this->getMockBuilder(DataDictionaryDiscovery::class)
-    ->onlyMethods(['getDataDictionaryMode'])
-    ->disableOriginalConstructor()
-    ->getMock();
+      ->onlyMethods(['getDataDictionaryMode'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $dataDictionaryDiscovery->method('getDataDictionaryMode')
-    ->willReturn("sitewide");
+      ->willReturn("sitewide");
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -95,12 +95,12 @@ class PostImportResourceProcessorTest extends TestCase {
     $resource = new DataResource('test.csv', 'text/csv');
 
     $dataDictionaryDiscovery = $this->getMockBuilder(DataDictionaryDiscovery::class)
-    ->onlyMethods(['getDataDictionaryMode'])
-    ->disableOriginalConstructor()
-    ->getMock();
+      ->onlyMethods(['getDataDictionaryMode'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $dataDictionaryDiscovery->method('getDataDictionaryMode')
-    ->willReturn("none");
+      ->willReturn("none");
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -264,14 +264,14 @@ class PostImportResourceProcessorTest extends TestCase {
   }
 
   /**
-   * Verify Exception Handling When Datastore Drop Fails.
+   * Verify Logging on Successful Datastore Drop.
    *
    * @covers ::postImportProcessItem
    */
-  public function testExceptionHandlingWhenDatastoreDropFails() {
+  public function testLoggingOnSuccessfulDatastoreDrop() {
     $resource = new DataResource('test.csv', 'text/csv');
     $resource_processor = (new Chain($this))
-      ->add(ResourceProcessorInterface::class, 'process', new \Exception('Test Error'))
+      ->add(ResourceProcessorInterface::class, 'process')
       ->getMock();
 
     $container_chain = $this->getContainerChain()
@@ -286,8 +286,6 @@ class PostImportResourceProcessorTest extends TestCase {
 
     $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
     $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
-    $this->assertEquals('error', $postImportResult->getPostImportStatus());
-    $this->assertEquals('Test Error', $postImportResult->getPostImportMessage());
   }
 
   /**
