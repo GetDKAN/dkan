@@ -17,3 +17,4 @@ tagfile
 /web
 .phpunit.result.cache
 docs/build
+docs/.venv

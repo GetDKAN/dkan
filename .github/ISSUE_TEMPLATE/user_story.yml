@@ -1,0 +1,18 @@
+name: User Story
+description: User stories are short descriptions of a feature told from the perspective of the person who desires the new functionality, usually a user of the system.
+title: ""
+labels: [user story]
+
+body:
+  - type: textarea
+    attributes:
+     label: Why
+     description: As a [user], I want [goal] so that [some reason].
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      description: Set up the scenario. Given [x] When [y] Then [z].
+    validations:
+     required: true
