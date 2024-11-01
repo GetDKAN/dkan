@@ -1,6 +1,5 @@
 name: Task
 description: A workitem that needs to be done while developing a story, feature, addressing tech debt, documentation, etc.
-title: ""
 labels: [task]
 
 body:
@@ -8,11 +7,10 @@ body:
     attributes:
      label: Description
      description: A concise description of the task or suggested implementation.
-    validations:
-      required: true
+     render: markdown
   - type: textarea
     attributes:
       label: Acceptance Criteria
       description: Tell us what should happen, how will we know when we're done.
-    validations:
-     required: true
+      render: markdown
+
