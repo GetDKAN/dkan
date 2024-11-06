@@ -20,6 +20,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
   protected static $modules = [
     'node',
     'data_dictionary_widget',
+    'metastore',
   ];
 
   /**
@@ -46,7 +47,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     $this->drupalGet('node/add/data', ['query' => ['schema' => 'data-dictionary']]);
     $this->assertSession()->statusCodeEquals(200);
     $session->addressEquals('node/add/data?schema=data-dictionary');
-    $session->elementTextContains('css', '.page-title', 'Create Data');
+    $session->elementTextContains('css', 'h1', 'Create data-dictionary');
     $session->elementExists('css', '.field--widget-data-dictionary-widget');
     $session->elementExists('css', '#edit-field-json-metadata-0-identifier');
     $session->elementExists('css', '#edit-field-json-metadata-0-title');

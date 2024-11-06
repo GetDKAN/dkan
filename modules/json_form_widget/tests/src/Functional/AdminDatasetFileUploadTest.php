@@ -97,7 +97,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-remote' => 'remote',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote' => $file_url,
-    ], 'Save');
+    ], 'edit-submit');
     $assert->statusCodeEquals(200);
     $assert->pageTextContains('Data ' . $dataset_title . ' has been created.');
 
@@ -194,7 +194,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'distribution description test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-upload' => 'upload',
-    ], 'Save');
+    ], 'edit-submit');
     $assert->statusCodeEquals(200);
     $assert->pageTextContains('Data ' . $dataset_title . ' has been created.');
 
