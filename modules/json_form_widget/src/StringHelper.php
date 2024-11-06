@@ -86,11 +86,7 @@ class StringHelper implements ContainerInjectionInterface {
     }
 
     if ($element['#type'] == 'textfield') {
-      $element['#maxlength'] = $property->maxLength ?? self::TEXTFIELD_MAXLENGTH;
-      if (!empty($definition['schema']->pattern)) {
-        $element['#pattern'] = $definition['schema']->pattern;
-        $element['#element_validate'][] = [$this, 'validatePattern'];
-      }
+      $this->addTextFieldAttributes($element, $property);
     }
 
     // Add extra validate if element type is email.
@@ -175,6 +171,17 @@ class StringHelper implements ContainerInjectionInterface {
    */
   public function validatePattern(&$element, FormStateInterface $form_state, &$complete_form) {
     FormElement::validatePattern($element, $form_state, $complete_form);
+  }
+
+  /**
+   * Add maxlength and regex pattern, if any, to text field.
+   */
+  public function addTextFieldAttributes(array &$element, \stdClass $property) {
+    $element['#maxlength'] = $property->maxLength ?? self::TEXTFIELD_MAXLENGTH;
+    if (!empty($property->pattern)) {
+      $element['#pattern'] = $property->pattern;
+      $element['#element_validate'][] = [$this, 'validatePattern'];
+    }
   }
 
 }
