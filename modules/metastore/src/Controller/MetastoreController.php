@@ -36,7 +36,7 @@ class MetastoreController implements ContainerInjectionInterface {
    *
    * @var \Drupal\metastore\MetastoreService
    */
-  private MetastoreService $service;
+  private MetastoreService $metastoreService;
 
   /**
    * Metastore dataset docs service.
@@ -68,9 +68,13 @@ class MetastoreController implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(MetastoreApiResponse $apiResponse, MetastoreService $service, DatasetApiDocs $docs) {
+  public function __construct(
+    MetastoreApiResponse $apiResponse,
+    MetastoreService $metastoreService,
+    DatasetApiDocs $docs,
+  ) {
     $this->apiResponse = $apiResponse;
-    $this->service = $service;
+    $this->metastoreService = $metastoreService;
     $this->docs = $docs;
   }
 
@@ -78,7 +82,7 @@ class MetastoreController implements ContainerInjectionInterface {
    * Get schemas.
    */
   public function getSchemas() {
-    return $this->apiResponse->cachedJsonResponse($this->service->getSchemas());
+    return $this->apiResponse->cachedJsonResponse($this->metastoreService->getSchemas());
   }
 
   /**
@@ -86,7 +90,7 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   public function getSchema(string $identifier) {
     try {
-      return $this->apiResponse->cachedJsonResponse($this->service->getSchema($identifier));
+      return $this->apiResponse->cachedJsonResponse($this->metastoreService->getSchema($identifier));
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 404);
@@ -109,10 +113,10 @@ class MetastoreController implements ContainerInjectionInterface {
 
     $output = array_map(function ($object) use ($keepRefs) {
       $modified_object = $keepRefs
-        ? $this->service->swapReferences($object)
-        : $this->service->removeReferences($object);
+        ? $this->metastoreService->swapReferences($object)
+        : $this->metastoreService->removeReferences($object);
       return (object) $modified_object->get('$');
-    }, $this->service->getAll($schema_id));
+    }, $this->metastoreService->getAll($schema_id));
 
     $output = array_values($output);
     return $this->apiResponse->cachedJsonResponse($output, 200, [$schema_id], $request->query);
@@ -136,9 +140,9 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   public function get(string $schema_id, string $identifier, Request $request) {
     try {
-      $object = $this->service->get($schema_id, $identifier);
+      $object = $this->metastoreService->get($schema_id, $identifier);
       if ($this->wantObjectWithReferences($request)) {
-        $object = $this->service->swapReferences($object);
+        $object = $this->metastoreService->swapReferences($object);
       }
       else {
         $object = MetastoreService::removeReferences($object);
@@ -184,8 +188,8 @@ class MetastoreController implements ContainerInjectionInterface {
     try {
       $data = $request->getContent();
       $this->checkIdentifier($data);
-      $data = $this->service->getValidMetadataFactory()->get($data, $schema_id, ['method' => 'POST']);
-      $identifier = $this->service->post($schema_id, $data);
+      $data = $this->metastoreService->getValidMetadataFactory()->get($data, $schema_id, ['method' => 'POST']);
+      $identifier = $this->metastoreService->post($schema_id, $data);
       return $this->apiResponse->cachedJsonResponse([
         "endpoint" => "{$request->getRequestUri()}/{$identifier}",
         "identifier" => $identifier,
@@ -214,7 +218,7 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   public function publish(string $schema_id, string $identifier, Request $request) {
     try {
-      $this->service->publish($schema_id, $identifier);
+      $this->metastoreService->publish($schema_id, $identifier);
       return $this->apiResponse->cachedJsonResponse((object) [
         "endpoint" => "{$request->getRequestUri()}/publish",
         "identifier" => $identifier,
@@ -245,8 +249,8 @@ class MetastoreController implements ContainerInjectionInterface {
     try {
       $data = $request->getContent();
       $this->checkIdentifier($data, $identifier);
-      $data = $this->service->getValidMetadataFactory()->get($data, $schema_id);
-      $info = $this->service->put($schema_id, $identifier, $data);
+      $data = $this->metastoreService->getValidMetadataFactory()->get($data, $schema_id);
+      $info = $this->metastoreService->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->apiResponse->cachedJsonResponse(
         [
@@ -291,7 +295,7 @@ class MetastoreController implements ContainerInjectionInterface {
       }
       $this->checkIdentifier($data, $identifier);
 
-      $this->service->patch($schema_id, $identifier, $data);
+      $this->metastoreService->patch($schema_id, $identifier, $data);
       return $this->apiResponse->cachedJsonResponse((object) [
         "endpoint" => $request->getRequestUri(),
         "identifier" => $identifier,
@@ -318,7 +322,7 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   public function delete($schema_id, $identifier) {
     try {
-      $this->service->delete($schema_id, $identifier);
+      $this->metastoreService->delete($schema_id, $identifier);
       return $this->apiResponse->cachedJsonResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
     }
     catch (\Exception $e) {
@@ -334,7 +338,7 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   public function getCatalog() : JsonResponse {
     try {
-      return $this->apiResponse->cachedJsonResponse($this->service->getCatalog());
+      return $this->apiResponse->cachedJsonResponse($this->metastoreService->getCatalog());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);

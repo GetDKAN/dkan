@@ -357,11 +357,14 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $entity->{$this->metadataField} = $new_data;
 
     // Dkan publishing's default moderation state.
+    // @todo Honor existing entity's moderation state:
+    //   https://github.com/GetDKAN/dkan/issues/4337
     $entity->set('moderation_state', $this->getDefaultModerationState());
 
     if ($entity instanceof RevisionLogInterface) {
-      $entity->setRevisionLogMessage("Updated on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
-      $entity->setRevisionCreationTime(time());
+      $time = new \DateTimeImmutable();
+      $entity->setRevisionLogMessage("Updated on " . $time->format(\DateTimeImmutable::ATOM));
+      $entity->setRevisionCreationTime($time->getTimestamp());
     }
     $entity->save();
 

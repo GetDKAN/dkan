@@ -17,9 +17,15 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
- * Testing the NodeWrapper.
+ * @coversDefaultClass \Drupal\metastore\NodeWrapper\Data
+ * @covers \Drupal\metastore\NodeWrapper\Data
+ *
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class DataTest extends TestCase {
+
   public function testGetLatestRevisionGetUsAWrapper() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')

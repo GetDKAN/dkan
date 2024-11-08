@@ -10,9 +10,9 @@ use Drupal\metastore\MetastoreItemInterface;
 /**
  * Interface MetastoreItemFactoryInterface.
  *
- * Used for service dkan.metastore.metastore_item_factory. Override the service
+ * Used for service dkan.metastore.metastore_item_factory. Decorate the service
  * to use different logic for producing a MetastoreItemInterface object from
- * just an indentifier.
+ * just an identifier.
  */
 interface MetastoreItemFactoryInterface extends FactoryInterface {
 
@@ -37,7 +37,7 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @return \Drupal\metastore\MetastoreItemInterface
    *   A metastore item object.
    */
-  public function getInstance(string $identifier, array $config = []);
+  public function getInstance(string $identifier, array $config = []): MetastoreItemInterface;
 
   /**
    * Wrap an arbitrary object as a metastore item interface compliant object.

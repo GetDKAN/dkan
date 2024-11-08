@@ -81,6 +81,8 @@ class Data implements MetastoreItemInterface {
 
   /**
    * Private.
+   *
+   * @todo Needing to call fix() on every method seems like a code smell.
    */
   private function fix() {
     $this->fixDataType();
