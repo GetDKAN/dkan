@@ -5,6 +5,7 @@ namespace Drupal\metastore\Factory;
 use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\metastore\MetastoreItemInterface;
 
 /**
  * Interface MetastoreItemFactoryInterface.
@@ -44,10 +45,10 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @param mixed $input
    *   Any object that can be wrapped as a metastore item. For instance, a node.
    *
-   * @return Drupal\metastore\MetastoreItemInterface
+   * @return \Drupal\metastore\MetastoreItemInterface
    *   A metastore item interface compliant object.
    */
-  public function wrap(mixed $input);
+  public function wrap(mixed $input): MetastoreItemInterface;
 
   /**
    * Return list cache tags for metastore items.

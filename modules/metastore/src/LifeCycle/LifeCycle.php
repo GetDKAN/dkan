@@ -122,6 +122,8 @@ class LifeCycle {
    *   Stage or hook name for execution.
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item object.
+   *
+   * @todo Just call the methods from the hooks instead of this.
    */
   public function go(string $stage, MetastoreItemInterface $data): void {
     // Removed dashes from schema ID since function names can't include dashes.
@@ -149,6 +151,12 @@ class LifeCycle {
 
   /**
    * Dataset load.
+   *
+   * @todo The sheer overhead here has struck me. This happens on every dataset
+   *   node entity in $node_storage->loadMultiple() whether it needs to or not,
+   *   via metastore_entity_load().
+   *
+   * @see \metastore_entity_load()
    */
   protected function datasetLoad(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
@@ -179,6 +187,12 @@ class LifeCycle {
    * @todo For consistency, this should either be abstracted so that it is not
    * so tightly coupled with the distribution schema, or we should better
    * document that DKAN only supports DCAT standard.
+   *
+   * @todo Make this method actually responsive to hook_entity_load(), so that
+   *   we can benefit from loading multiple entities simultaneously in fewer
+   *   queries.
+   *
+   * @see metastore_entity_load()
    */
   protected function distributionLoad(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();

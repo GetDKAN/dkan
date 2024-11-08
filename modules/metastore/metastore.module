@@ -13,8 +13,13 @@ use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 
 /**
  * Implements hook_entity_load().
+ *
+ * @see Drupal\metastore\LifeCycle\LifeCycle::datasetLoad()
+ * @see Drupal\metastore\LifeCycle\LifeCycle::distributionLoad()
  */
 function metastore_entity_load(array $entities) {
+  // @todo Being able to process multiple entities at once is a tremendous
+  //   benefit since it allows you to reduce the number of DB queries involved.
   foreach($entities as $entity) {
     metastore_data_lifecycle($entity, "load");
   }
@@ -63,19 +68,14 @@ function resource_mapper_new_revision() {
  * Create a LifeCycle object.
  *
  * @param Drupal\Core\Entity\ContentEntityInterface $entity
- *
- * @return Drupal\metastore\LifeCycle\Data
- *   LifeCycle object.
  */
-function metastore_data_lifecycle(EntityInterface $entity, string $stage) {
-
+function metastore_data_lifecycle(EntityInterface $entity, string $stage): void {
   if (metastore_entity_is_valid_item($entity)) {
+    /** @var \Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface $itemFactory */
     $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
     $metastoreItem = $itemFactory->wrap($entity);
     \Drupal::service('dkan.metastore.lifecycle')->go($stage, $metastoreItem);
   }
-
-  return FALSE;
 }
 
 /**
@@ -91,6 +91,7 @@ function metastore_entity_is_valid_item(EntityInterface $entity) {
   $storageClass = \Drupal::service('dkan.metastore.storage')::getStorageClass();
 
   // If the storage class used implements the entity storage interface, continue.
+  // @todo Should we look at the entity's storage class instead?
   if (!is_a($storageClass, MetastoreEntityStorageInterface::class, true)) {
     return FALSE;
   }
@@ -105,6 +106,7 @@ function metastore_entity_is_valid_item(EntityInterface $entity) {
   if (in_array($entity->bundle(), $storageBundles)) {
     return TRUE;
   }
+  return FALSE;
 }
 
 /**
