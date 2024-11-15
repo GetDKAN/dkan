@@ -339,7 +339,19 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
-   * Create a mock object for the main container passed to the controller.
+   * Make sure we get what we expect with invalid JSON.
+   */
+  public function testInvalidJson() {
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Invalid JSON');
+    $sampleJson = $this->getBadJson();
+    $schema = $this->getSampleSchema();
+    $request = $this->mockRequest($sampleJson);
+    QueryDownloadController::getPayloadJson($request, $schema);
+  }
+
+  /**
+   * Create a mock chain for the main container passed to the controller.
    *
    * @param int $rowLimit
    *    The row limit for a query.
@@ -491,6 +503,14 @@ class QueryDownloadControllerTest extends TestCase {
    */
   protected function getBuffer($buffer) {
     $this->buffer .= $buffer;
+  }
+
+  private function getBadJson() {
+    return file_get_contents(__DIR__ . "/../../../data/query/invalidJson.json");
+  }
+
+  private function getSampleSchema() {
+    return file_get_contents(__DIR__ . "/../../../data/querySchema.json");
   }
 
 }

@@ -329,6 +329,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     $data = json_decode($json);
     $validator = new Validator();
     $validator->coerce($data, json_decode($schema));
+
+    if ($data === NULL) {
+      throw new \InvalidArgumentException("Invalid JSON");
+    }
+
     return json_encode($data, JSON_PRETTY_PRINT);
   }
 
