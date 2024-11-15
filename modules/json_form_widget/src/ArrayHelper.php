@@ -31,9 +31,7 @@ class ArrayHelper implements ContainerInjectionInterface {
   public FieldTypeRouter $builder;
 
   /**
-   * Inherited.
-   *
-   * @{inheritdocs}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -55,10 +53,6 @@ class ArrayHelper implements ContainerInjectionInterface {
     $this->builder = $builder;
     $this->objectHelper->setBuilder($builder);
   }
-
-  // public function removeButtonCallback(array &$form, FormStateInterface $form_state): array {
-
-  // }
 
   /**
    * Update wrapper element of the triggering button after build.
@@ -278,7 +272,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       // Attempt to build a complex element, otherwise...
       $this->buildComplexArrayElement($definition, $data, $form_state, $context) :
       // Build a simple element.
-      $this->buildSimpleArrayElement($definition, $data);
+      $this->buildSimpleArrayElement($definition, $data, $context);
 
     // Set element requirement.
     $element['#required'] = $required;
@@ -289,11 +283,12 @@ class ArrayHelper implements ContainerInjectionInterface {
   /**
    * Returns single simple element from array.
    */
-  protected function buildSimpleArrayElement(array $definition, $data): array {
+  protected function buildSimpleArrayElement(array $definition, $data, array $context): array {
     return array_filter([
       '#type'          => 'textfield',
       '#title'         => $definition['schema']->items->title ?? NULL,
       '#default_value' => $data,
+      'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context))
     ]);
   }
 
