@@ -35,7 +35,7 @@ function json_form_widget_remove_one(array &$form, FormStateInterface $form_stat
 /**
  * Update count property by the given offset.
  *
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   Form state.
  * @param int $offset
  *   Offset to change count by.

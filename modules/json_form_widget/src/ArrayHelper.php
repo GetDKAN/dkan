@@ -2,6 +2,7 @@
 
 namespace Drupal\json_form_widget;
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
@@ -55,6 +56,10 @@ class ArrayHelper implements ContainerInjectionInterface {
     $this->objectHelper->setBuilder($builder);
   }
 
+  // public function removeButtonCallback(array &$form, FormStateInterface $form_state): array {
+
+  // }
+
   /**
    * Update wrapper element of the triggering button after build.
    *
@@ -96,37 +101,72 @@ class ArrayHelper implements ContainerInjectionInterface {
    * Handle form element for an array.
    */
   public function handleArrayElement(array $definition, ?array $data, FormStateInterface $form_state, array $context): array {
-    // Extract field name from field definition and min items from field schema
-    // for later reference.
+    // Extract field name from field definition and min items from field schema.
     $field_name = $definition['name'];
     $min_items = $definition['schema']->minItems ?? 0;
-    // Build context name.
-    $context_name = self::buildContextName($context);
-    // Determine number of form items to generate.
-    $item_count = $this->getItemCount($context_name, count($data ?? []), $min_items, $form_state);
 
-    // Determine if this field is required.
-    $required_fields = $this->builder->getSchema()->required ?? [];
-    $field_required = in_array($field_name, $required_fields);
+    $context_name = self::buildContextName($context);
+    $item_count = $this->getItemCount($context_name, count($data ?? []), $min_items, $form_state);
+    $is_required = in_array($field_name, $this->builder->getSchema()->required ?? []);
+
     // Build the specified number of field item elements.
-    $field_properties = [];
+    $items = [];
     for ($i = 0; $i < $item_count; $i++) {
-      $property_required = $field_required && ($i < $min_items);
-      $field_properties[] = $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
+      $property_required = $is_required && ($i < $min_items);
+      $items[] = $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
     }
+
+    // $this->itemsAlter($items, $context_name, $item_count, $form_state);
 
     // Build field element.
     return [
-      '#type'                => 'fieldset',
-      '#title'               => ($definition['schema']->title ?? $field_name),
-      '#description'         => ($definition['schema']->description ?? ''),
+      '#type' => 'fieldset',
+      '#title' => ($definition['schema']->title ?? $field_name),
+      '#description' => ($definition['schema']->description ?? ''),
       '#description_display' => 'before',
-      '#prefix'              => '<div id="' . self::buildWrapperIdentifier($context_name) . '">',
-      '#suffix'              => '</div>',
-      '#tree'                => TRUE,
-      'actions'              => $this->buildActions($item_count, $min_items, $field_name, $context_name),
-      $field_name            => $field_properties,
+      '#prefix' => '<div id="' . self::buildWrapperIdentifier($context_name) . '">',
+      '#suffix' => '</div>',
+      '#tree' => TRUE,
+      'actions' => [
+        '#type'   => 'actions',
+        'actions' => [
+          'add' => $this->buildAction($this->t('Add one'), 'addOne', $field_name, $context_name),
+        ],
+      ],
+      $field_name => $items,
     ];
+  }
+
+  /**
+   * Alter the array of elements based on a form action (e.g. remove).
+   *
+   * @param array &$items
+   *   The array of form elements being added to the parent fieldset.
+   * @param string $context_name
+   *   Field context to target.
+   * @param int $min_items
+   *   Minimum number of items required.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   */
+  protected function itemsAlter(array &$items, string $context_name, int $item_count, FormStateInterface $form_state): void {
+    $alter_index_property = self::buildAlterProperty($context_name);
+    $count_property = self::buildCountProperty($context_name);
+
+    // $alter_index = $form_state->get($alter_index_property) ?? NULL;
+    // if ((!isset($alter_index) || !is_array($alter_index))) {
+    //   $form_state->set($alter_index_property, array_keys($items));
+    //   return;
+    // }
+    // $altered_items = [];
+    // foreach ($alter_index as $index) {
+    //   if (isset($items[$index])) {
+    //     $altered_items[] = $items[$index];
+    //   }
+    // }
+    // // $items = $altered_items;
+    // $form_state->set($alter_index_property, array_keys($items));
+    // $form_state->set($count_property, count($items));
   }
 
   /**
@@ -200,43 +240,64 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Helper function to build form field actions.
+   * Build count property.
+   *
+   * @param string $context_name
+   *   Field element context name.
+   *
+   * @return string[]
+   *   Full count property array.
    */
-  protected function buildActions(int $item_count, int $min_items, string $parent, string $context_name): array {
-    $actions = [];
-
-    // Build add action.
-    $actions['add'] = $this->buildAction($this->t('Add one'), 'json_form_widget_add_one', $parent, $context_name);
-    // Build remove action if there are more than the minimum required elements
-    // in this field array.
-    if ($item_count > $min_items) {
-      $actions['remove'] = $this->buildAction($this->t('Remove one'), 'json_form_widget_remove_one', $parent, $context_name);
-    }
-
-    return [
-      '#type'   => 'actions',
-      'actions' => $actions,
-    ];
+  public static function buildAlterProperty(string $context_name): array {
+    return ['json_form_widget_info', $context_name, 'alter'];
   }
 
   /**
-   * Helper function to get action.
+   * Helper function to build an action button.
+   *
+   * @param string $title
+   *   Button title.
+   * @param string $method
+   *   Button submit method; should be a static method from this class.
+   * @param string $parent
+   *   The parent element for the action; usually the current field name.
+   * @param string $context_name
+   *   The context name, output of ::buildContextName().
    */
-  protected function buildAction(string $title, string $function, string $parent, string $context_name): array {
+  protected function buildAction(string $title, string $method, string $parent, string $context_name): array {
     return [
       '#type'   => 'submit',
       '#name'   => $context_name,
       '#value'  => $title,
-      '#submit' => [$function],
+      '#submit' => [self::class . '::' . $method],
       '#ajax'   => [
         'callback' => [$this, 'addOrRemoveButtonCallback'],
-        'wrapper'  => self::buildWrapperIdentifier($context_name),
+        'wrapper'  => self::buildWrapperIdentifier($parent),
       ],
       '#attributes' => [
         'data-parent'  => $parent,
-        'data-context' => $context_name,
       ],
       '#limit_validation_errors' => [],
+    ];
+  }
+
+  /**
+   * Build the remove/reorder actions for a single element.
+   *
+   * @param string $parent
+   *   Parent element name.
+   * @param string $context_name
+   *   Data context.
+   *
+   * @return array{#type: string, remove: array}
+   *   Actions render array.
+   */
+  protected function buildElementActions(string $parent, string $context_name) {
+    return [
+      '#type' => 'actions',
+      'remove' => $this->buildAction($this->t('Remove'), 'remove', $parent, $context_name),
+      'move_up' => $this->buildAction($this->t('Move Up'), 'moveUp', $parent, $context_name),
+      'move_d' => $this->buildAction($this->t('Move Down'), 'moveDown', $parent, $context_name),
     ];
   }
 
@@ -278,7 +339,112 @@ class ArrayHelper implements ContainerInjectionInterface {
       'name'   => $definition['name'],
       'schema' => $definition['schema']->items,
     ];
-    return $this->objectHelper->handleObjectElement($subdefinition, $data, $form_state, $context, $this->builder);
+    $element = $this->objectHelper->handleObjectElement($subdefinition, $data, $form_state, $context, $this->builder);
+    $element[$definition['name']]['actions'] = $this->buildElementActions($definition['name'], self::buildContextName($context));
+    return $element;
+  }
+
+  public static function remove(array &$form, FormStateInterface $form_state) {
+    $button_element = $form_state->getTriggeringElement();
+    $parent = $button_element['#attributes']['data-parent'];
+    $parents = $button_element['#parents'];
+    $element_index = str_replace("{$parent}-", '', $button_element['#name']);
+    $alter_property = self::buildAlterProperty($parent);
+    $count_property = self::buildCountProperty($parent);
+
+    $items_alter_index = $form_state->get($alter_property) ?? [];
+    $user_input = $form_state->getUserInput();
+
+    // Remove the specific element from the alter index.
+    if (isset($items_alter_index[$element_index])) {
+      unset($items_alter_index[$element_index]);
+      $form_state->set($alter_property, array_values($items_alter_index));
+    }
+
+    // Update the user input to remove the specific element.
+    $key_exists = NULL;
+    // We actually want the parent container of all elements. Hopefully going
+    // back 4 levels will work in all situations.
+    array_splice($parents, -4);
+    $distributions = &NestedArray::getValue($user_input, $parents, $key_exists);
+    if ($key_exists) {
+      unset($distributions[$element_index]);
+      // Re-index the array to maintain proper keys.
+      $distributions = \array_values($distributions);
+    }
+
+    $form_state->setUserInput($user_input);
+
+    // Modify stored item count. The form rebuilds before the alter, so it needs
+    // to be one more than the current item count to avoid removing twice.
+    $item_count = count($items_alter_index);
+    $form_state->set($count_property, $item_count);
+
+    $form_state->setRebuild();
+  }
+
+  public static function moveUp(array &$form, FormStateInterface $form_state) {
+    return static::moveElement($form_state, -1);
+  }
+
+  public static function moveDown(array &$form, FormStateInterface $form_state) {
+    return static::moveElement($form_state, 1);
+  }
+
+  protected static function moveElement(FormStateInterface $form_state, int $offset) {
+    $button_element = $form_state->getTriggeringElement();
+    $parent = $button_element['#attributes']['data-parent'];
+    $parents = $button_element['#parents'];
+    $element_index = str_replace("{$parent}-", '', $button_element['#name']);
+    $alter_property = self::buildAlterProperty($parent);
+
+    $items_alter_index = $form_state->get($alter_property) ?? [];
+    $user_input = $form_state->getUserInput();
+
+    // Move the specific element up in the alter index.
+    if (isset($items_alter_index[$element_index])) {
+      $moved_element = array_splice($items_alter_index, $element_index, 1);
+      array_splice($items_alter_index, $element_index + $offset, 0, $moved_element);
+      $form_state->set($alter_property, array_values($items_alter_index));
+    }
+
+    // Update the user input to change the order.
+    $key_exists = NULL;
+    // We actually want the parent container of all elements. Hopefully going
+    // back 4 levels will work in all situations.
+    array_splice($parents, -4);
+    $distributions = &NestedArray::getValue($user_input, $parents, $key_exists);
+    if ($key_exists) {
+      $moved_element = array_splice($distributions, $element_index, 1);
+      array_splice($distributions, $element_index + $offset, 0, $moved_element);
+      // Re-index the array to maintain proper keys.
+      $distributions = \array_values($distributions);
+    }
+
+    $form_state->setUserInput($user_input);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Update count property by the given offset.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   */
+  public static function addOne(array &$form, FormStateInterface $form_state) {
+    $button_element = $form_state->getTriggeringElement();
+    $alter_property = self::buildAlterProperty($button_element['#name']);
+    $items_alter_index = $form_state->get($alter_property) ?? [];
+    $items_alter_index[] = count($items_alter_index);
+
+    $count_property = static::buildCountProperty($button_element['#name']);
+    // Modify stored item count.
+    $item_count = $form_state->get($count_property) ?? 0;
+    $item_count++;
+    $form_state->set($count_property, $item_count);
+
+    $form_state->set($alter_property, $items_alter_index);
+    $form_state->setRebuild();
   }
 
 }
