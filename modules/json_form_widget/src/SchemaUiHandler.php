@@ -64,7 +64,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public function __construct(
     SchemaRetriever $schema_retriever,
     LoggerInterface $loggerChannel,
-    WidgetRouter $widget_router
+    WidgetRouter $widget_router,
   ) {
     $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
@@ -197,7 +197,13 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         unset($element[$spec->child][$key]);
       }
     }
-    $element[$spec->child][0]['#default_value'] = $default_value;
+
+    if (isset($element[$spec->child][0]['field'])) {
+      $element[$spec->child][0]['field']['#default_value'] = $default_value;
+    }
+    else {
+      $element[$spec->child][0]['#default_value'] = $default_value;
+    }
     return $element;
   }
 
@@ -207,6 +213,9 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   private function formatArrayDefaultValue($item) {
     if (!empty($item['#default_value'])) {
       return [$item['#default_value'] => $item['#default_value']];
+    }
+    if (!empty($item['field']['#default_value'])) {
+      return [$item['field']['#default_value'] => $item['field']['#default_value']];
     }
     return [];
   }
