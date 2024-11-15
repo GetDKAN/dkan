@@ -116,8 +116,6 @@ class ArrayHelper implements ContainerInjectionInterface {
       $items[] = $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
     }
 
-    // $this->itemsAlter($items, $context_name, $item_count, $form_state);
-
     // Build field element.
     return [
       '#type' => 'fieldset',
@@ -135,38 +133,6 @@ class ArrayHelper implements ContainerInjectionInterface {
       ],
       $field_name => $items,
     ];
-  }
-
-  /**
-   * Alter the array of elements based on a form action (e.g. remove).
-   *
-   * @param array &$items
-   *   The array of form elements being added to the parent fieldset.
-   * @param string $context_name
-   *   Field context to target.
-   * @param int $min_items
-   *   Minimum number of items required.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Form state.
-   */
-  protected function itemsAlter(array &$items, string $context_name, int $item_count, FormStateInterface $form_state): void {
-    $alter_index_property = self::buildAlterProperty($context_name);
-    $count_property = self::buildCountProperty($context_name);
-
-    // $alter_index = $form_state->get($alter_index_property) ?? NULL;
-    // if ((!isset($alter_index) || !is_array($alter_index))) {
-    //   $form_state->set($alter_index_property, array_keys($items));
-    //   return;
-    // }
-    // $altered_items = [];
-    // foreach ($alter_index as $index) {
-    //   if (isset($items[$index])) {
-    //     $altered_items[] = $items[$index];
-    //   }
-    // }
-    // // $items = $altered_items;
-    // $form_state->set($alter_index_property, array_keys($items));
-    // $form_state->set($count_property, count($items));
   }
 
   /**
@@ -349,17 +315,8 @@ class ArrayHelper implements ContainerInjectionInterface {
     $parent = $button_element['#attributes']['data-parent'];
     $parents = $button_element['#parents'];
     $element_index = str_replace("{$parent}-", '', $button_element['#name']);
-    $alter_property = self::buildAlterProperty($parent);
     $count_property = self::buildCountProperty($parent);
-
-    $items_alter_index = $form_state->get($alter_property) ?? [];
     $user_input = $form_state->getUserInput();
-
-    // Remove the specific element from the alter index.
-    if (isset($items_alter_index[$element_index])) {
-      unset($items_alter_index[$element_index]);
-      $form_state->set($alter_property, array_values($items_alter_index));
-    }
 
     // Update the user input to remove the specific element.
     $key_exists = NULL;
@@ -377,7 +334,7 @@ class ArrayHelper implements ContainerInjectionInterface {
 
     // Modify stored item count. The form rebuilds before the alter, so it needs
     // to be one more than the current item count to avoid removing twice.
-    $item_count = count($items_alter_index);
+    $item_count = count($distributions);
     $form_state->set($count_property, $item_count);
 
     $form_state->setRebuild();
@@ -396,17 +353,7 @@ class ArrayHelper implements ContainerInjectionInterface {
     $parent = $button_element['#attributes']['data-parent'];
     $parents = $button_element['#parents'];
     $element_index = str_replace("{$parent}-", '', $button_element['#name']);
-    $alter_property = self::buildAlterProperty($parent);
-
-    $items_alter_index = $form_state->get($alter_property) ?? [];
     $user_input = $form_state->getUserInput();
-
-    // Move the specific element up in the alter index.
-    if (isset($items_alter_index[$element_index])) {
-      $moved_element = array_splice($items_alter_index, $element_index, 1);
-      array_splice($items_alter_index, $element_index + $offset, 0, $moved_element);
-      $form_state->set($alter_property, array_values($items_alter_index));
-    }
 
     // Update the user input to change the order.
     $key_exists = NULL;
