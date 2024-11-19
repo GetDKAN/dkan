@@ -313,6 +313,7 @@
       "title": "Related Documents",
       "description": "Related documents such as technical information about a dataset, developer documentation, etc.",
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "string",
         "format": "uri"

@@ -111,7 +111,7 @@ class ArrayHelper implements ContainerInjectionInterface {
     }
 
     // Build field element.
-    return [
+    $element = [
       '#type' => 'fieldset',
       '#title' => ($definition['schema']->title ?? $field_name),
       '#description' => ($definition['schema']->description ?? ''),
@@ -127,6 +127,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       ],
       $field_name => $items,
     ];
+    return $element;
   }
 
   /**
@@ -225,7 +226,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    *   The context name, output of ::buildContextName().
    */
   protected function buildAction(string $title, string $method, string $parent, string $context_name): array {
-    return [
+    $action = [
       '#type'   => 'submit',
       '#name'   => $context_name,
       '#value'  => $title,
@@ -239,6 +240,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       ],
       '#limit_validation_errors' => [],
     ];
+    return $action;
   }
 
   /**
@@ -257,7 +259,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#type' => 'actions',
       'remove' => $this->buildAction($this->t('Remove'), 'remove', $parent, $context_name),
       'move_up' => $this->buildAction($this->t('Move Up'), 'moveUp', $parent, $context_name),
-      'move_d' => $this->buildAction($this->t('Move Down'), 'moveDown', $parent, $context_name),
+      'move_down' => $this->buildAction($this->t('Move Down'), 'moveDown', $parent, $context_name),
     ];
   }
 
@@ -284,12 +286,19 @@ class ArrayHelper implements ContainerInjectionInterface {
    * Returns single simple element from array.
    */
   protected function buildSimpleArrayElement(array $definition, $data, array $context): array {
-    return array_filter([
-      '#type'          => 'textfield',
-      '#title'         => $definition['schema']->items->title ?? NULL,
-      '#default_value' => $data,
-      'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context))
-    ]);
+    return [
+      '#type' => 'container',
+      '#attributes' => [
+        'data-parent' => $definition['name'],
+        'class' => ['json-form-widget-array-item'],
+      ],
+      'field' => array_filter([
+        '#type'          => 'textfield',
+        '#title'         => $definition['schema']->items->title ?? NULL,
+        '#default_value' => $data,
+      ]),
+      'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context)),
+    ];
   }
 
   /**
@@ -315,24 +324,33 @@ class ArrayHelper implements ContainerInjectionInterface {
 
     // Update the user input to remove the specific element.
     $key_exists = NULL;
-    // We actually want the parent container of all elements. Hopefully going
-    // back 4 levels will work in all situations.
-    array_splice($parents, -4);
-    $distributions = &NestedArray::getValue($user_input, $parents, $key_exists);
+    static::trimParents($parents, $element_index);
+    $input_values = &NestedArray::getValue($user_input, $parents, $key_exists);
     if ($key_exists) {
-      unset($distributions[$element_index]);
+      unset($input_values[$element_index]);
       // Re-index the array to maintain proper keys.
-      $distributions = \array_values($distributions);
+      $input_values = \array_values($input_values);
     }
 
     $form_state->setUserInput($user_input);
 
     // Modify stored item count. The form rebuilds before the alter, so it needs
     // to be one more than the current item count to avoid removing twice.
-    $item_count = count($distributions);
+    $item_count = count($input_values);
     $form_state->set($count_property, $item_count);
 
     $form_state->setRebuild();
+  }
+
+  public static function trimParents(array &$parents, int $element_index): void {
+    for ($i = count($parents) - 1; $i >= 0; $i--) {
+      if ($parents[$i] == $element_index) {
+        $ei_position = $i;
+        break;
+      }
+    }
+    $offset = 0 - (count($parents) - $ei_position);
+    \array_splice($parents, $offset);
   }
 
   public static function moveUp(array &$form, FormStateInterface $form_state) {
@@ -352,9 +370,7 @@ class ArrayHelper implements ContainerInjectionInterface {
 
     // Update the user input to change the order.
     $key_exists = NULL;
-    // We actually want the parent container of all elements. Hopefully going
-    // back 4 levels will work in all situations.
-    array_splice($parents, -4);
+    static::trimParents($parents, $element_index);
     $distributions = &NestedArray::getValue($user_input, $parents, $key_exists);
     if ($key_exists) {
       $moved_element = array_splice($distributions, $element_index, 1);
