@@ -286,7 +286,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       $element = $this->buildComplexArrayElement($definition, $data, $form_state, $context);
     }
     else {
-      $this->buildSimpleArrayElement($definition, $data, $context);
+      $element = $this->buildSimpleArrayElement($definition, $data, $context);
     }
     // If we show the element on the form, it's required.
     $element['#required'] = $required;
