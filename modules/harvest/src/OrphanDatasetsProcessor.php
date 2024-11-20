@@ -30,7 +30,7 @@ trait OrphanDatasetsProcessor {
    * Get the dataset identifiers orphaned by the harvest currently in progress.
    */
   private function getOrphanIdsFromResult(string $harvestId, array $extractedIds) : array {
-    if ($lastRunId = $this->getLastHarvestRunId($harvestId)) {
+    if ($lastRunId = $this->runRepository->getLastHarvestRunId($harvestId)) {
       $previouslyExtractedIds = $this->getExtractedIds($harvestId, $lastRunId);
       return array_values(array_diff($previouslyExtractedIds, $extractedIds));
     }

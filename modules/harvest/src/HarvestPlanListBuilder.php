@@ -70,9 +70,9 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     $harvest_plan_id = $entity->get('id')->getString();
     $run_entity = NULL;
 
-    if ($run_id = $this->harvestService->getLastHarvestRunId($harvest_plan_id)) {
+    if ($run_id = $this->harvestService->runRepository->getLastHarvestRunId($harvest_plan_id)) {
       // There is a run identifier, so we should get that info.
-      $run_entity = $this->harvestRunRepository->loadEntity($harvest_plan_id, $run_id);
+      $run_entity = $this->harvestRunRepository->runStorage->load($run_id);
     }
 
     // Default values for a row if there's no info.

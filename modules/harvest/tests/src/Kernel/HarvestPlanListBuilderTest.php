@@ -101,9 +101,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $this->registerHarvestPlan($harvest_service, $plan_id);
     $run_result = $harvest_service->runHarvest($plan_id);
     $this->assertEquals('SUCCESS', $run_result['status']['extract'] ?? 'not_a_successful_run');
-    // Get the actual run ID because it happens to be a timestamp for the last
-    // run, and it could be the next second by the time we assert against it.
-    $run_id = $harvest_service->getLastHarvestRunId($plan_id);
+    $run_id = $harvest_service->runRepository->getLastHarvestRunId($plan_id);
 
     $response = $list_builder->render();
 
