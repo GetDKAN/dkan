@@ -5,6 +5,7 @@ namespace Drupal\datastore\Service\Factory;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -42,6 +43,13 @@ class ImportServiceFactory implements ImportFactoryInterface {
   private EventDispatcherInterface $eventDispatcher;
 
   /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -49,11 +57,13 @@ class ImportServiceFactory implements ImportFactoryInterface {
     DatabaseTableFactory $databaseTableFactory,
     LoggerInterface $loggerChannel,
     EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
     $this->logger = $loggerChannel;
     $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -67,6 +77,7 @@ class ImportServiceFactory implements ImportFactoryInterface {
         $this->databaseTableFactory,
         $this->logger,
         $this->eventDispatcher,
+        $this->referenceLookup,
       );
     }
     throw new \Exception("config['resource'] is required");
