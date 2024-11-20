@@ -270,7 +270,7 @@ class DatastoreService implements ContainerInjectionInterface {
   public function drop(string $identifier, ?string $version = NULL, bool $remove_local_resource = TRUE) {
     if ($storage = $this->getStorage($identifier, $version)) {
       $resource = NULL;
-      // If there is no resource from the localizer, we can't send this event.
+      // Check for the resource before sending the pre-drop event.
       if ($resource = $this->resourceLocalizer->get($identifier, $version)) {
         // Dispatch the pre-drop event.
         $this->eventDispatcher->dispatch(
@@ -280,8 +280,8 @@ class DatastoreService implements ContainerInjectionInterface {
       }
       // Drop.
       $storage->destruct();
-      // If there is no resource we can't remove the jobstore or send the
-      // event.
+      // Check for the resource before removing the job store or sending the
+      // dropped event.
       if ($resource) {
         // Remove the info from the job store.
         $this->importJobStoreFactory->getInstance()
