@@ -54,11 +54,11 @@ No configuration is currently provided for this module.
 
 If we look closely at the provided DKAN dataset form, schema and schema UI we can see some examples of how different field types are converted into form elements utilizing both the dataset.json (schema file) as well as the dataset.ui.json (schema UI file) which in turn create the form @ /node/add/data?schema=dataset.
 
-[!TIP] Please additionally see the Schema UI Handler class as well as the Element folder and it's included class files for how different UI options are managed in code.
+> **_TIP:_** Please additionally see the Schema UI Handler class as well as the Element folder and it's included class files for how different UI options are managed in code.
 
 The following are some examples of Field types and associated options and how they appear as a form element respectively. Newly introduced schema UI options will be described only the first time they appear. The length of some JSON objects may be trimmed as compared to the provided dataset.json/ui.json files in order to keep this page's length to a minimum, but the functionality they are showcasing will remain unchanged.
 
-[!TIP] You can make fields required on the form using a JSON property array in your schema file similarly to how it is done in the example from the dataset.json file below:
+> **_TIP:_** You can make fields required on the form using a JSON property array in your schema file similarly to how it is done in the example from the dataset.json file below:
 
 ```
 "required": [
@@ -168,11 +168,11 @@ UI options:
 },
 ```
 
-[!NOTE] The enum (values) and enumNames (labels) property arrays.
+> **_NOTE:_** The enum (values) and enumNames (labels) property arrays.
 
 #### Schema UI File Example:
 
-[!TIP] A corresponding object within a schema UI file is not required for each object within the schema file if UI options for that object are not needed/wanted.
+> **_TIP:_** A corresponding object within a schema UI file is not required for each object within the schema file if UI options for that object are not needed/wanted.
 
 
 #### Form Element:
