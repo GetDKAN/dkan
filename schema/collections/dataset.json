@@ -57,21 +57,7 @@
         "R/P1Y",
         "R/P2M",
         "R/P3.5D",
-        "R/P1D",
-        "R/P2W",
-        "R/P6M",
-        "R/P2Y",
-        "R/P3Y",
-        "R/P0.33W",
-        "R/P0.33M",
-        "R/PT1S",
-        "R/P1M",
-        "R/P3M",
-        "R/P0.5M",
-        "R/P4M",
-        "R/P1W",
-        "R/PT1H",
-        "irregular"
+        "R/P1D"
       ],
       "enumNames": [
         "Decennial",
@@ -79,21 +65,7 @@
         "Annual",
         "Bimonthly",
         "Semiweekly",
-        "Daily",
-        "Biweekly",
-        "Semiannual",
-        "Biennial",
-        "Triennial",
-        "Three times a week",
-        "Three times a month",
-        "Continuously updated",
-        "Monthly",
-        "Quarterly",
-        "Semimonthly",
-        "Three times a year",
-        "Weekly",
-        "Hourly",
-        "Irregular"
+        "Daily"
       ]
     },
     "describedBy": {
