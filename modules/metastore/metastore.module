@@ -65,9 +65,12 @@ function resource_mapper_new_revision() {
 }
 
 /**
- * Create a LifeCycle object.
+ * Send the hook off to the lifecycle service.
  *
  * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ *   The entity in question.
+ * @param string $stage
+ *   The entity hook stage, such as 'load' or 'update'.
  */
 function metastore_data_lifecycle(EntityInterface $entity, string $stage): void {
   if (metastore_entity_is_valid_item($entity)) {
