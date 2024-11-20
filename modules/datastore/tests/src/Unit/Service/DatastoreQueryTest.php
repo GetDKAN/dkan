@@ -15,6 +15,7 @@ use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\datastore\Service\DatastoreQuery;
@@ -190,6 +191,7 @@ class DatastoreQueryTest extends TestCase {
   public function getCommonMockChain() {
 
     $options = (new Options())
+      ->add('event_dispatcher', EventDispatcherInterface::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.datastore.service", DatastoreService::class)

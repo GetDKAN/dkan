@@ -6,9 +6,19 @@ services:
       - '@dkan.datastore.import_job_store_factory'
       - '@dkan.datastore_mysql_import.database_table_factory'
       - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
 
   dkan.datastore_mysql_import.database_table_factory:
     class: \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
     arguments:
       - '@dkan.datastore.database'
       - '@dkan.datastore.logger_channel'
+
+  dkan.datastore_mysql_import.data_dictionary.alter_table_query_builder.mysql:
+    class: \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder
+    decorates: dkan.datastore.data_dictionary.alter_table_query_builder.mysql
+    arguments:
+      - '@dkan.datastore.database_connection_factory'
+      - '@pdlt.converter.strptime_to_mysql'
+      - '@uuid'
+      - '@config.factory'

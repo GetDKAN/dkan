@@ -1,12 +1,12 @@
 datastore.settings_form:
-  title: Datastore settings
+  title: Datastore Settings
   description: Datastore settings.
   parent: system.admin_dkan
   route_name: datastore.settings
   weight: 12
 
 datastore.dkan_resource_settings:
-  title: Resources
+  title: Resource Settings
   description: Resource options.
   parent: system.admin_dkan
   route_name: datastore.dkan_resource_settings

@@ -3,7 +3,7 @@
 namespace Drupal\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityRepository;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
 
 /**
@@ -16,14 +16,14 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
   /**
    * EntityRepository object.
    *
-   * @var Drupal\Core\Entity\EntityRepository
+   * @var \Drupal\Core\Entity\EntityRepository
    */
   private $entityRepository;
 
   /**
    * Entity Type Manager.
    *
-   * @var Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private $entityTypeManager;
 
@@ -32,10 +32,10 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    *
    * @param \Drupal\Core\Entity\EntityRepository $entityRepository
    *   The entity repository service.
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity Type Manager service.
    */
-  public function __construct(EntityRepository $entityRepository, EntityTypeManager $entityTypeManager) {
+  public function __construct(EntityRepository $entityRepository, EntityTypeManagerInterface $entityTypeManager) {
     $this->entityRepository = $entityRepository;
     $this->entityTypeManager = $entityTypeManager;
   }
