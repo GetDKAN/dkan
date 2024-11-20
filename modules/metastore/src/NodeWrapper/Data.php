@@ -3,53 +3,53 @@
 namespace Drupal\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\MetastoreItemInterface;
-use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 
 /**
  * MetastoreItem object that wraps a data node, provides additional methods.
+ *
+ * Generate these objects using the factory:
+ * dkan.metastore.metastore_item_factory.
+ *
+ * @see \Drupal\metastore\NodeWrapper\NodeDataFactory::getInstance()
  */
 class Data implements MetastoreItemInterface {
 
   /**
    * Node.
    *
-   * @var \Drupal\node\Entity\Node
+   * @var \Drupal\Core\Entity\EntityInterface
    */
-  protected $node;
-
-  /**
-   * Referenced raw metadata string.
-   *
-   * @var string
-   */
-  protected $rawMetadata;
+  protected EntityInterface $node;
 
   /**
    * Entity Type Manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  private $entityTypeManager;
+  private EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Entity Node Storage.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  private $nodeStorage;
+  private EntityStorageInterface $nodeStorage;
 
   /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   A Drupal entity.
+   *   A Drupal entity. Must be a Data node.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity Type Manager service.
    *
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   *   Thrown when the entity is not a Data node.
    */
   public function __construct(EntityInterface $entity, EntityTypeManagerInterface $entityTypeManager) {
     $this->validate($entity);
@@ -169,7 +169,7 @@ class Data implements MetastoreItemInterface {
    * Private.
    */
   private function validate(EntityInterface $entity) {
-    if (!($entity instanceof Node)) {
+    if (!($entity instanceof NodeInterface)) {
       throw new DataNodeLifeCycleEntityValidationException("We only work with nodes.");
     }
 
@@ -197,6 +197,8 @@ class Data implements MetastoreItemInterface {
 
   /**
    * Private.
+   *
+   * @todo Why do we do this?
    */
   private function saveRawMetadata() {
     // Temporarily save the raw json metadata, for later use.

@@ -152,11 +152,11 @@ class LifeCycle {
   /**
    * Dataset load.
    *
-   * @todo The sheer overhead here has struck me. This happens on every dataset
-   *   node entity in $node_storage->loadMultiple() whether it needs to or not,
-   *   via metastore_entity_load().
+   * @todo This behavior should be on-demand instead of always happening when
+   *   the node loads, since not all dataset nodes will need to be
+   *   dereferenced.
    *
-   * @see \metastore_entity_load()
+   * @see \metastore_node_load()
    */
   protected function datasetLoad(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
@@ -188,11 +188,11 @@ class LifeCycle {
    * so tightly coupled with the distribution schema, or we should better
    * document that DKAN only supports DCAT standard.
    *
-   * @todo Make this method actually responsive to hook_entity_load(), so that
-   *   we can benefit from loading multiple entities simultaneously in fewer
-   *   queries.
+   * @todo This behavior should be on-demand instead of always happening when
+   *   the node loads, since not all node loads will need dereferenced download
+   *   URLs.
    *
-   * @see metastore_entity_load()
+   * @see \metastore_node_load()
    */
   protected function distributionLoad(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
