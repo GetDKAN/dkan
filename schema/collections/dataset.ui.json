@@ -133,32 +133,58 @@
       },
       "description": {
         "ui:options": {
-          "widget": "hidden"
-        }
-      },
-      "accessURL": {
-        "ui:options": {
-          "widget": "hidden"
+          "widget": "textarea",
+          "rows": 5,
+          "title": "File Description",
+          "description": ""
         }
       },
       "format": {
         "ui:options": {
-          "widget": "hidden"
+          "title": "File Format",
+          "widget": "list",
+          "type": "select_other",
+          "other_type": "textfield",
+          "description": "CSV files must be encoded in UTF-8 format to be imported correctly. UTF-8 encoding is an established standard that provides optimal compatibility between applications and operating systems. Note that Excel provides a <strong>CSV UTF-8</strong> option when saving data files.",
+          "source": {
+            "enum": [
+              "arcgis",
+              "csv",
+              "esri rest",
+              "geojson",
+              "json",
+              "kml",
+              "pdf",
+              "tsv",
+              "xls",
+              "xlsx",
+              "xml",
+              "zip"
+            ]
+          }
         }
       },
-      "conformsTo": {
+      "downloadURL": {
         "ui:options": {
-          "widget": "hidden"
+          "widget": "upload_or_link",
+          "extensions": "csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp",
+          "progress_indicator": "bar",
+          "description": "URL providing direct access to a downloadable file."
+        }
+      },
+      "accessURL": {
+        "ui:options": {
+          "description": "URL providing indirect access to the data, for example via API or a graphical interface."
         }
       },
       "describedBy": {
         "ui:options": {
-          "widget": "hidden"
+          "description": "URL to the data dictionary for the file found at the Download URL."
         }
       },
       "describedByType": {
         "ui:options": {
-          "widget": "hidden"
+          "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s Data Dictionary URL."
         }
       }
     }
