@@ -3,9 +3,9 @@
 namespace Drupal\json_form_widget;
 
 use Drupal\Component\Utility\NestedArray;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -264,26 +264,47 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Handle single element from array.
+   * Build a single element from an array.
    *
-   * Chooses whether element is simple or complex.
+   * @param array $definition
+   *   Field definition.
+   * @param mixed $data
+   *   Field data.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   * @param string[] $context
+   *   Field context.
+   * @param bool $required
+   *   Whether the field is required.
+   *
+   * @return array
+   *   Render array for the array element.
    */
   protected function buildArrayElement(array $definition, $data, FormStateInterface $form_state, array $context, bool $required): array {
-    // If this element's definition has properties defined...
-    $element = isset($definition['schema']->items->properties) ?
-      // Attempt to build a complex element, otherwise...
-      $this->buildComplexArrayElement($definition, $data, $form_state, $context) :
-      // Build a simple element.
+    // Use the simple or complex method depending on whether items are objects.
+    if (isset($definition['schema']->items->properties)) {
+      $element = $this->buildComplexArrayElement($definition, $data, $form_state, $context);
+    }
+    else {
       $this->buildSimpleArrayElement($definition, $data, $context);
-
-    // Set element requirement.
+    }
+    // If we show the element on the form, it's required.
     $element['#required'] = $required;
-
     return $element;
   }
 
   /**
    * Returns single simple element from array.
+   *
+   * @param array $definition
+   *   Field definition.
+   * @param mixed $data
+   *   Field data.
+   * @param string[] $context
+   *   Field context.
+   *
+   * @return array
+   *   Render array for the simple array element.
    */
   protected function buildSimpleArrayElement(array $definition, $data, array $context): array {
     return [
@@ -303,6 +324,18 @@ class ArrayHelper implements ContainerInjectionInterface {
 
   /**
    * Returns single complex element from array.
+   *
+   * @param array $definition
+   *   Field definition.
+   * @param mixed $data
+   *   Field data.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   * @param string[] $context
+   *   Field context.
+   *
+   * @return array
+   *   Render array for the complex array element.
    */
   protected function buildComplexArrayElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
     $subdefinition = [
@@ -314,6 +347,14 @@ class ArrayHelper implements ContainerInjectionInterface {
     return $element;
   }
 
+  /**
+   * Submit function for element "remove" button.
+   *
+   * @param array $form
+   *   Form render array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   */
   public static function remove(array &$form, FormStateInterface $form_state) {
     $button_element = $form_state->getTriggeringElement();
     $parent = $button_element['#attributes']['data-parent'];
@@ -342,6 +383,16 @@ class ArrayHelper implements ContainerInjectionInterface {
     $form_state->setRebuild();
   }
 
+  /**
+   * Utility function to trim the triggering element's parents array.
+   *
+   * Used to get the correct position in the user input array for modifications.
+   *
+   * @param array $parents
+   *   Parents array.
+   * @param int $element_index
+   *   Element index.
+   */
   public static function trimParents(array &$parents, int $element_index): void {
     for ($i = count($parents) - 1; $i >= 0; $i--) {
       if ($parents[$i] == $element_index) {
@@ -353,14 +404,38 @@ class ArrayHelper implements ContainerInjectionInterface {
     \array_splice($parents, $offset);
   }
 
+  /**
+   * Submit function for element "move up" button.
+   *
+   * @param array $form
+   *   Form render array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   */
   public static function moveUp(array &$form, FormStateInterface $form_state) {
     return static::moveElement($form_state, -1);
   }
 
+  /**
+   * Submit function for element "move down" button.
+   *
+   * @param array $form
+   *   Form render array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   */
   public static function moveDown(array &$form, FormStateInterface $form_state) {
     return static::moveElement($form_state, 1);
   }
 
+  /**
+   * Common function to move element within array by the given offset.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   * @param int $offset
+   *   Offset to move the element by.
+   */
   protected static function moveElement(FormStateInterface $form_state, int $offset) {
     $button_element = $form_state->getTriggeringElement();
     $parent = $button_element['#attributes']['data-parent'];
@@ -371,12 +446,12 @@ class ArrayHelper implements ContainerInjectionInterface {
     // Update the user input to change the order.
     $key_exists = NULL;
     static::trimParents($parents, $element_index);
-    $distributions = &NestedArray::getValue($user_input, $parents, $key_exists);
+    $input_values = &NestedArray::getValue($user_input, $parents, $key_exists);
     if ($key_exists) {
-      $moved_element = array_splice($distributions, $element_index, 1);
-      array_splice($distributions, $element_index + $offset, 0, $moved_element);
+      $moved_element = array_splice($input_values, $element_index, 1);
+      array_splice($input_values, $element_index + $offset, 0, $moved_element);
       // Re-index the array to maintain proper keys.
-      $distributions = \array_values($distributions);
+      $input_values = \array_values($input_values);
     }
 
     $form_state->setUserInput($user_input);
@@ -384,8 +459,10 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Update count property by the given offset.
+   * Submit function for array "add one" button.
    *
+   * @param array $form
+   *   Form render array.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   Form state.
    */
