@@ -8,7 +8,6 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\common\Storage\ImportedItemInterface;
 use Drupal\datastore\DatastoreService;
-use Drupal\metastore\Reference\ReferenceLookup;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -40,13 +39,6 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    * @var \Drupal\datastore\DatastoreService
    */
   protected $datastore;
-
-  /**
-   * Reference lookup service.
-   *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
-   */
-  protected $referenceLookup;
 
   /**
    * Datastore config settings.
@@ -84,8 +76,6 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *   A DKAN datastore service instance.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   A logger channel factory instance.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
-   *   The reference lookup service.
    * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $defaultConnectionFactory
    *   Default database connection factory.
    * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $datastoreConnectionFactory
@@ -98,13 +88,11 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
     ConfigFactoryInterface $configFactory,
     DatastoreService $datastore,
     LoggerInterface $loggerChannel,
-    ReferenceLookup $referenceLookup,
     DatabaseConnectionFactoryInterface $defaultConnectionFactory,
     DatabaseConnectionFactoryInterface $datastoreConnectionFactory
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->datastore = $datastore;
-    $this->referenceLookup = $referenceLookup;
     $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
     $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
@@ -128,7 +116,6 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
       $container->get('config.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.logger_channel'),
-      $container->get('dkan.metastore.reference_lookup'),
       $container->get('dkan.common.database_connection_factory'),
       $container->get('dkan.datastore.database_connection_factory')
     );
@@ -244,21 +231,10 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
       case Result::DONE:
         $this->logger->notice($label . ' for ' . $uid . ' completed.');
-        $this->invalidateCacheTags($uid . '__source');
         break;
     }
 
     return $queued;
-  }
-
-  /**
-   * Invalidate all appropriate cache tags for this resource.
-   *
-   * @param mixed $resourceId
-   *   A resource ID.
-   */
-  protected function invalidateCacheTags(mixed $resourceId) {
-    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
   /**

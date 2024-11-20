@@ -60,6 +60,7 @@ services:
       - '@dkan.datastore.database_table_factory'
       - '@dkan.datastore.logger_channel'
       - '@event_dispatcher'
+      - '@dkan.metastore.reference_lookup'
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base

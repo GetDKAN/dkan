@@ -150,7 +150,6 @@ class ImportQueueWorkerTest extends KernelTestBase {
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.service'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.common.database_connection_factory'),
       $this->container->get('dkan.datastore.database_connection_factory')
     );
@@ -192,7 +191,6 @@ class ImportQueueWorkerTest extends KernelTestBase {
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.service'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.common.database_connection_factory'),
       $this->container->get('dkan.datastore.database_connection_factory')
     );
