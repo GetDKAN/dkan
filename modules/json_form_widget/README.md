@@ -180,7 +180,7 @@ UI options:
 ![Screenshot of a "Frequency" Drupal Webform field with a description of "Frequency with which dataset is published." used to show how a "select" field can be created using the JSON Form Widget module.](string-select.png)
 
 
-### Flexible Date Time (String)
+### Date and Time (String)
 
 #### Schema File Example:
 
@@ -192,10 +192,6 @@ UI options:
 },
 ```
 
-UI options:
-- widget: flexible_datetime
-  - Creates a date and time field (see FlexibleDateTime.php)
-
 #### Schema UI File Example:
 
 ```
@@ -206,9 +202,123 @@ UI options:
   },
 ```
 
+UI options:
+- widget: flexible_datetime
+  - Creates a date and time field (see FlexibleDateTime.php)
+
 #### Form Element:
 
-![Screenshot of a "Description" Drupal Webform field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](string-textarea.png)
+![Screenshot of a "Release Date" Drupal Webform field with a description of "Date of formal issuance." used to show how a "date and time" field can be created using the JSON Form Widget module.](string-datetime.png)
+
+### Date Range (String)
+
+#### Schema File Example:
+
+```
+"temporal": {
+  "title": "Temporal",
+  "description": "The <a href=\"https://project-open-data.cio.gov/v1.1/schema/#temporal\">start and end dates</a> for which the dataset is applicable, separated by a \"/\" (i.e., 2000-01-15T00:45:00Z/2010-01-15T00:06:00Z).",
+  "type": "string"
+},
+```
+
+#### Schema UI File Example:
+
+```
+"temporal": {
+    "ui:options": {
+      "description": "The <a href=\"https://project-open-data.cio.gov/v1.1/schema/#temporal\">start and end dates</a> for which the dataset is applicable.",
+      "widget": "date_range"
+    }
+  },
+```
+
+UI options:
+- widget: date_range
+  - Creates a date and time range field with a Start Date and End Date input (see DateRange.php)
+
+#### Form Element:
+
+![Screenshot of a "Temporal" Drupal Webform field with a description of "The start and end dates for which the dataset is applicable." used to show how a "date range" field can be created using the JSON Form Widget module.](string-daterange.png)
+
+### Expandable dropdown "details" box with autocomplete  (String)
+
+#### Schema File Example:
+
+```
+ "publisher": {
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
+  "title": "Organization",
+  "description": "A Dataset Publisher Organization.",
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "@type": {
+      "title": "Metadata Context",
+      "description": "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
+      "type": "string",
+      "default": "org:Organization"
+    },
+    "name": {
+      "title": "Publisher Name",
+      "description": "",
+      "type": "string",
+      "minLength": 1
+    },
+    "subOrganizationOf": {
+      "title": "Parent Organization",
+      "type": "string"
+    }
+  }
+},
+```
+
+> **_NOTE:_** The nested nature of this scheme object "Publisher".
+
+#### Schema UI File Example:
+
+```
+"publisher": {
+  "ui:options": {
+    "widget": "list",
+    "type": "autocomplete",
+    "allowCreate": "true",
+    "titleProperty": "name",
+    "source": {
+      "metastoreSchema": "publisher"
+    }
+  },
+  "properties": {
+    "@type": {
+      "ui:options": {
+        "widget": "hidden"
+      }
+    },
+    "subOrganizationOf": {
+      "ui:options": {
+        "widget": "hidden"
+      }
+    }
+  }
+},
+```
+
+> **_NOTE:_** The 'widget: hidden' properties in this schema UI object and how they hide their respective fields from appearing on the final form.
+
+UI options:
+- widget: list
+- type: autocomplete
+- allowCreate: true
+- source
+  - metestoreSchema: publisher
+  - Creates a date and time range field with a Start Date and End Date input (see DateRange.php)
+
+#### Form Element:
+
+![Screenshot of an "Organization" Drupal Webform dropdown box with a description of "A Dataset Publisher Organization." used to show how a "Dropdown" box with an autocomplete field can be created using the JSON Form Widget module.](dropdown-autocomplete.png)
 
 ## Maintainers
 
