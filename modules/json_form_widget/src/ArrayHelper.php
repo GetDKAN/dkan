@@ -55,7 +55,7 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Update wrapper element of the triggering button after build.
+   * Shared AJAX callback function for all array buttons.
    *
    * @param array $form
    *   Newly built form render array.
@@ -65,7 +65,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @return array
    *   Field wrapper render array.
    */
-  public function addOrRemoveButtonCallback(array &$form, FormStateInterface $form_state): array {
+  public function arrayActionButtonCallback(array &$form, FormStateInterface $form_state): array {
     // Retrieve triggering button element.
     $button = $form_state->getTriggeringElement();
     // Extract full heritage for the triggered button.
@@ -107,7 +107,7 @@ class ArrayHelper implements ContainerInjectionInterface {
     $items = [];
     for ($i = 0; $i < $item_count; $i++) {
       $property_required = $is_required && ($i < $min_items);
-      $items[] = $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
+      $items[] = $this->buildArrayItemElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
     }
 
     // Build field element.
@@ -119,6 +119,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#prefix' => '<div id="' . self::buildWrapperIdentifier($context_name) . '">',
       '#suffix' => '</div>',
       '#tree' => TRUE,
+      '#required' => $is_required,
       'actions' => [
         '#type'   => 'actions',
         'actions' => [
@@ -127,6 +128,90 @@ class ArrayHelper implements ContainerInjectionInterface {
       ],
       $field_name => $items,
     ];
+    return $element;
+  }
+
+  /**
+   * Build a single element from an array.
+   *
+   * @param array $definition
+   *   Field definition.
+   * @param mixed $data
+   *   Field data.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   * @param string[] $context
+   *   Field context.
+   * @param bool $required
+   *   Whether the field is required.
+   *
+   * @return array
+   *   Render array for the array element.
+   */
+  protected function buildArrayItemElement(array $definition, $data, FormStateInterface $form_state, array $context, bool $required): array {
+    // Use the simple or complex method depending on whether items are objects.
+    if (isset($definition['schema']->items->properties)) {
+      $element = $this->buildComplexArrayElement($definition, $data, $form_state, $context);
+    }
+    else {
+      $element = $this->buildSimpleArrayElement($definition, $data, $context);
+    }
+    // If we show the element on the form, it's required.
+    $element['#required'] = $required;
+    return $element;
+  }
+
+  /**
+   * Returns single simple element from array.
+   *
+   * @param array $definition
+   *   Field definition.
+   * @param mixed $data
+   *   Field data.
+   * @param string[] $context
+   *   Field context.
+   *
+   * @return array
+   *   Render array for the simple array element.
+   */
+  protected function buildSimpleArrayElement(array $definition, $data, array $context): array {
+    return [
+      '#type' => 'fieldset',
+      '#attributes' => [
+        'data-parent' => $definition['name'],
+        'class' => ['json-form-widget-array-item'],
+      ],
+      'field' => array_filter([
+        '#type'          => 'textfield',
+        '#title'         => $definition['schema']->items->title ?? NULL,
+        '#default_value' => $data,
+      ]),
+      'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context)),
+    ];
+  }
+
+  /**
+   * Returns single complex element from array.
+   *
+   * @param array $definition
+   *   Field definition.
+   * @param mixed $data
+   *   Field data.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   * @param string[] $context
+   *   Field context.
+   *
+   * @return array
+   *   Render array for the complex array element.
+   */
+  protected function buildComplexArrayElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
+    $subdefinition = [
+      'name'   => $definition['name'],
+      'schema' => $definition['schema']->items,
+    ];
+    $element = $this->objectHelper->handleObjectElement($subdefinition, $data, $form_state, $context, $this->builder);
+    $element[$definition['name']]['actions'] = $this->buildElementActions($definition['name'], self::buildContextName($context));
     return $element;
   }
 
@@ -201,19 +286,6 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Build count property.
-   *
-   * @param string $context_name
-   *   Field element context name.
-   *
-   * @return string[]
-   *   Full count property array.
-   */
-  public static function buildAlterProperty(string $context_name): array {
-    return ['json_form_widget_info', $context_name, 'alter'];
-  }
-
-  /**
    * Helper function to build an action button.
    *
    * @param string $title
@@ -232,7 +304,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#value'  => $title,
       '#submit' => [self::class . '::' . $method],
       '#ajax'   => [
-        'callback' => [$this, 'addOrRemoveButtonCallback'],
+        'callback' => [$this, 'arrayActionButtonCallback'],
         'wrapper'  => self::buildWrapperIdentifier($parent),
       ],
       '#attributes' => [
@@ -261,90 +333,6 @@ class ArrayHelper implements ContainerInjectionInterface {
       'move_up' => $this->buildAction($this->t('Move Up'), 'moveUp', $parent, $context_name),
       'move_down' => $this->buildAction($this->t('Move Down'), 'moveDown', $parent, $context_name),
     ];
-  }
-
-  /**
-   * Build a single element from an array.
-   *
-   * @param array $definition
-   *   Field definition.
-   * @param mixed $data
-   *   Field data.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Form state.
-   * @param string[] $context
-   *   Field context.
-   * @param bool $required
-   *   Whether the field is required.
-   *
-   * @return array
-   *   Render array for the array element.
-   */
-  protected function buildArrayElement(array $definition, $data, FormStateInterface $form_state, array $context, bool $required): array {
-    // Use the simple or complex method depending on whether items are objects.
-    if (isset($definition['schema']->items->properties)) {
-      $element = $this->buildComplexArrayElement($definition, $data, $form_state, $context);
-    }
-    else {
-      $element = $this->buildSimpleArrayElement($definition, $data, $context);
-    }
-    // If we show the element on the form, it's required.
-    $element['#required'] = $required;
-    return $element;
-  }
-
-  /**
-   * Returns single simple element from array.
-   *
-   * @param array $definition
-   *   Field definition.
-   * @param mixed $data
-   *   Field data.
-   * @param string[] $context
-   *   Field context.
-   *
-   * @return array
-   *   Render array for the simple array element.
-   */
-  protected function buildSimpleArrayElement(array $definition, $data, array $context): array {
-    return [
-      '#type' => 'container',
-      '#attributes' => [
-        'data-parent' => $definition['name'],
-        'class' => ['json-form-widget-array-item'],
-      ],
-      'field' => array_filter([
-        '#type'          => 'textfield',
-        '#title'         => $definition['schema']->items->title ?? NULL,
-        '#default_value' => $data,
-      ]),
-      'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context)),
-    ];
-  }
-
-  /**
-   * Returns single complex element from array.
-   *
-   * @param array $definition
-   *   Field definition.
-   * @param mixed $data
-   *   Field data.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Form state.
-   * @param string[] $context
-   *   Field context.
-   *
-   * @return array
-   *   Render array for the complex array element.
-   */
-  protected function buildComplexArrayElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
-    $subdefinition = [
-      'name'   => $definition['name'],
-      'schema' => $definition['schema']->items,
-    ];
-    $element = $this->objectHelper->handleObjectElement($subdefinition, $data, $form_state, $context, $this->builder);
-    $element[$definition['name']]['actions'] = $this->buildElementActions($definition['name'], self::buildContextName($context));
-    return $element;
   }
 
   /**
@@ -381,27 +369,6 @@ class ArrayHelper implements ContainerInjectionInterface {
     $form_state->set($count_property, $item_count);
 
     $form_state->setRebuild();
-  }
-
-  /**
-   * Utility function to trim the triggering element's parents array.
-   *
-   * Used to get the correct position in the user input array for modifications.
-   *
-   * @param array $parents
-   *   Parents array.
-   * @param int $element_index
-   *   Element index.
-   */
-  public static function trimParents(array &$parents, int $element_index): void {
-    for ($i = count($parents) - 1; $i >= 0; $i--) {
-      if ($parents[$i] == $element_index) {
-        $ei_position = $i;
-        break;
-      }
-    }
-    $offset = 0 - (count($parents) - $ei_position);
-    \array_splice($parents, $offset);
   }
 
   /**
@@ -468,18 +435,32 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   public static function addOne(array &$form, FormStateInterface $form_state) {
     $button_element = $form_state->getTriggeringElement();
-    $alter_property = self::buildAlterProperty($button_element['#name']);
-    $items_alter_index = $form_state->get($alter_property) ?? [];
-    $items_alter_index[] = count($items_alter_index);
-
     $count_property = static::buildCountProperty($button_element['#name']);
     // Modify stored item count.
     $item_count = $form_state->get($count_property) ?? 0;
     $item_count++;
     $form_state->set($count_property, $item_count);
-
-    $form_state->set($alter_property, $items_alter_index);
     $form_state->setRebuild();
   }
 
+  /**
+   * Utility function to trim the triggering element's parents array.
+   *
+   * Used to get the correct position in the user input array for modifications.
+   *
+   * @param array $parents
+   *   Parents array.
+   * @param int $element_index
+   *   Element index.
+   */
+  public static function trimParents(array &$parents, int $element_index): void {
+    for ($i = count($parents) - 1; $i >= 0; $i--) {
+      if ($parents[$i] == $element_index) {
+        $ei_position = $i;
+        break;
+      }
+    }
+    $offset = 0 - (count($parents) - $ei_position);
+    \array_splice($parents, $offset);
+  }
 }

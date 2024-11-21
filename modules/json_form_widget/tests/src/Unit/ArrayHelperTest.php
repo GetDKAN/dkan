@@ -2,20 +2,20 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Drupal\json_form_widget\ArrayHelper;
-use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\json_form_widget\ArrayHelper;
 use Drupal\json_form_widget\FieldTypeRouter;
 use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\SchemaRetriever;
+use MockChain\Chain;
 use MockChain\Options;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for ArrayHelper.
@@ -79,7 +79,7 @@ class ArrayHelperTest extends TestCase {
     $result = $array_helper->handleArrayElement($definition, [], $form_state, $context);
     $expected = $this->getExpectedComplexArrayElement();
     unset($result['actions']);
-    unset($result['distribution'][0]['distribution']['schema']['schema']['fields']['actions']);
+    unset($result['distribution'][0]['distribution']['actions']);
     $this->assertEquals($expected, $result);
   }
 
@@ -182,10 +182,10 @@ class ArrayHelperTest extends TestCase {
                       "#required" => FALSE,
                     ],
                   ],
-                ]
+                ],
               ],
             ],
-          ]
+          ],
         ],
       ],
       "#required" => FALSE,

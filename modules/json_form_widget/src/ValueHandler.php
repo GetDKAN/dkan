@@ -153,7 +153,7 @@ class ValueHandler {
     }
     if (is_array($value)) {
       foreach ($value as $item) {
-        $data[] = $this->flattenArraysInArrays($item);
+        $data[] = is_array($item) ? $this->flattenArraysInArrays($item) : $this->cleanSelectId($item);
       }
     }
     elseif (!empty($value)) {
