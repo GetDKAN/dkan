@@ -191,6 +191,18 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
+   * Flatten array element fieldset w/buttons for processing.
+   *
+   * @param array $element
+   *   A form element.
+   */
+  public static function flattenArrayElementFieldset(array &$element): void {
+    if (isset($element['field']) && $element['#type'] == 'fieldset') {
+      $element = ['#required' => ($element['#required'] ?? FALSE)] + $element['field'];
+    }
+  }
+
+  /**
    * Returns single complex element from array.
    *
    * @param array $definition

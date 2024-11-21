@@ -147,11 +147,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The dropdown element configured.
    */
   public function getDropdownElement(mixed $element, mixed $spec, mixed $titleProperty = FALSE) {
-    // Array elements may be fieldsets, since by default they are simple array
-    // elements with Remove/Up/Down buttons.
-    if (isset($element['field']) && $element['#type'] == 'fieldset') {
-      $element = ['#required' => ($element['#required'] ?? FALSE)] + $element['field'];
-    }
+    ArrayHelper::flattenArrayElementFieldset($element);
     $element['#type'] = $this->getSelectType($spec);
     $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {

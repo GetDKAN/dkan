@@ -173,7 +173,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       $element = $this->changeFieldDescriptions($spec->{"ui:options"}, $element);
       $element = $this->changeFieldTitle($spec->{"ui:options"}, $element);
       if (isset($spec->{"ui:options"}->hideActions)) {
-        $element = $this->flattenArrays($spec->{"ui:options"}, $element);
+        // $element = $this->flattenArrays($spec->{"ui:options"}, $element);
       }
     }
     return $element;
@@ -194,6 +194,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     unset($element['actions']);
     $default_value = [];
     foreach ($element[$spec->child] as $key => $item) {
+      ArrayHelper::flattenArrayElementFieldset($item);
       $default_value = array_merge($default_value, $this->formatArrayDefaultValue($item));
       if ($key != 0) {
         unset($element[$spec->child][$key]);
