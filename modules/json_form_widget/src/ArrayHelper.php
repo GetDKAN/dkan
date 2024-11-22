@@ -475,4 +475,5 @@ class ArrayHelper implements ContainerInjectionInterface {
     $offset = 0 - (count($parents) - $ei_position);
     \array_splice($parents, $offset);
   }
+
 }
