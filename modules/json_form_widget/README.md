@@ -1,6 +1,6 @@
 # JSON Form Widget
 
-This module provides a versatile way to create Drupal form elements, and by extension, a functional and submittable Drupal webform from a JSON file. For the purpose of DKAN, this allows for schema adherent data to be submitted and saved to the database without the need to create a seperate, new Drupal webform any time new schema is introduced.  
+This module provides a versatile way to create Drupal form elements, and by extension, a functional and submittable Drupal form from a JSON file. For the purpose of DKAN, this allows for schema adherent data to be submitted and saved to the database without the need to create a seperate, new Drupal form any time new schema is introduced.  
 
 Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and it's contained methods for more information about UI options).
 
@@ -18,8 +18,8 @@ The examples section of this readme can be used to understand how different fiel
 
 ## Features
 
-- Create submittable Drupal webforms from JSON files.
-- Modify webform element options created from JSON files with specialized schema.ui JSON files.
+- Create submittable Drupal forms from JSON files.
+- Modify form element options created from JSON files with specialized schema.ui JSON files.
 
 ## Requirements
 
@@ -71,7 +71,7 @@ The following are some examples of Field types and associated options and how th
 ],
 ```
 
-In the above example the listed fields (which would follow in the rest of the JSON file) would be required fields in the Drupal webform that is created.
+In the above example the listed fields (which would follow in the rest of the JSON file) would be required fields in the Drupal form that is created.
 
 ### Text Box (String)
 
@@ -102,7 +102,7 @@ UI Options:
 
 #### Form Element:
 
-![Screenshot of a "Title" Drupal Webform field with a description of "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery." used to show how a "textbox" field can be created using the JSON Form Widget module.](string-textbox.png)
+![Screenshot of a "Title" Drupal form field with a description of "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery." used to show how a "textbox" field can be created using the JSON Form Widget module.](string-textbox.png)
 
 ### Text Area (String)
 
@@ -138,7 +138,7 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Description" Drupal Webform field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](string-textarea.png)
+![Screenshot of a "Description" Drupal form field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](string-textarea.png)
 
 ### Select (String)
 
@@ -177,7 +177,7 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Frequency" Drupal Webform field with a description of "Frequency with which dataset is published." used to show how a "select" field can be created using the JSON Form Widget module.](string-select.png)
+![Screenshot of a "Frequency" Drupal form field with a description of "Frequency with which dataset is published." used to show how a "select" field can be created using the JSON Form Widget module.](string-select.png)
 
 
 ### Date and Time (String)
@@ -208,7 +208,7 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Release Date" Drupal Webform field with a description of "Date of formal issuance." used to show how a "date and time" field can be created using the JSON Form Widget module.](string-datetime.png)
+![Screenshot of a "Release Date" Drupal form field with a description of "Date of formal issuance." used to show how a "date and time" field can be created using the JSON Form Widget module.](string-datetime.png)
 
 ### Date Range (String)
 
@@ -239,9 +239,9 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Temporal" Drupal Webform field with a description of "The start and end dates for which the dataset is applicable." used to show how a "date range" field can be created using the JSON Form Widget module.](string-daterange.png)
+![Screenshot of a "Temporal" Drupal form field with a description of "The start and end dates for which the dataset is applicable." used to show how a "date range" field can be created using the JSON Form Widget module.](string-daterange.png)
 
-### Expandable dropdown "details" box with autocomplete  (String)
+### Expandable dropdown "details" box with autocomplete
 
 #### Schema File Example:
 
@@ -318,7 +318,7 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of an "Organization" Drupal Webform dropdown box with a description of "A Dataset Publisher Organization." used to show how a "Dropdown" box with an autocomplete field can be created using the JSON Form Widget module.](dropdown-autocomplete.png)
+![Screenshot of an "Organization" Drupal form dropdown box with a description of "A Dataset Publisher Organization." used to show how a "Dropdown" box with an autocomplete field can be created using the JSON Form Widget module.](dropdown-autocomplete.png)
 
 ## Maintainers
 
