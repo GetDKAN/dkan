@@ -18,8 +18,8 @@ The examples section of this readme can be used to understand how different fiel
 
 ## Features
 
-- Create submittable Drupal forms from JSON files.
-- Modify form element options created from JSON files with specialized schema.ui JSON files.
+- Create submittable Drupal forms from JSON schema.
+- Modify form element options created from JSON schema with specialized schema.ui JSON.
 
 ## Requirements
 
