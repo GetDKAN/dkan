@@ -4,7 +4,7 @@ This module provides a versatile way to create Drupal form elements, and by exte
 
 Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and it's contained methods for more information about UI options).
 
-The examples section of this readme can be used to understand how different field types translate directly to Drupal form elements and subsequently, how they would look within the Drupal user interface.
+The examples section of this readme can be used to understand how different field types translate directly to Drupal form elements and subsequently, how they would look within the Drupal user interface. They are provided under the presumption that the form is for creating a new entity (in this case a dataset) not editing a previous one.
 
 
 ## Table of contents
@@ -241,7 +241,7 @@ UI options:
 
 ![Screenshot of a "Temporal" Drupal form field with a description of "The start and end dates for which the dataset is applicable." used to show how a "date range" field can be created using the JSON Form Widget module.](string-daterange.png)
 
-### Expandable dropdown "details" box with autocomplete
+### Expandable dropdown "details" box with autocomplete select list
 
 #### Schema File Example:
 
@@ -276,7 +276,7 @@ UI options:
 },
 ```
 
-> **_NOTE:_** The nested nature of this scheme object "Publisher".
+> **_NOTE:_** The nested nature of this schema object "Publisher".
 
 #### Schema UI File Example:
 
@@ -306,15 +306,20 @@ UI options:
 },
 ```
 
-> **_NOTE:_** The 'widget: hidden' properties in this schema UI object and how they hide their respective fields from appearing on the final form.
+> **_NOTE:_** The 'widget: hidden' properties in this schema UI object and how they hide their respective fields from appearing on the final form. It's worth noting that in this example, out of the entire "Publisher" schema object, only the "Name" field is directly shown on the form due to the schema UI options.
 
 UI options:
 - widget: list
+  - Signifies that this will be a list of items
 - type: autocomplete
+  - the list will show with an autocomplete function
+    - The person filling out the form will type selections and enter them with previous options possibly showing below
 - allowCreate: true
+  - The user can create list items by typing them, rather than only being able to select predetermined options.
 - source
   - metestoreSchema: publisher
-  - Creates a date and time range field with a Start Date and End Date input (see DateRange.php)
+    - Where the predetermined options for the select list come from 
+      - In this instance they would be sourced from the "publisher" metastore. Note if you do not have any datasets saved, no suggestions will show here as it would not have any information to derive the suggestions from.
 
 #### Form Element:
 
