@@ -1,8 +1,10 @@
 # JSON Form Widget
 
-This module provides a versatile way to create Drupal form elements, and by extension, a functional and submittable Drupal form from a JSON file. For the purpose of DKAN, this allows for schema adherent data to be submitted and saved to the database without the need to create a seperate, new Drupal form any time new schema is introduced.  
+This module provides a versatile way to create Drupal form elements, and by extension, a functional and submittable Drupal form from JSON schema. For the purpose of DKAN, this allows for schema adherent data to be submitted and saved to the database without the need to create a seperate, new Drupal form any time new schema is introduced.  
 
 Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and it's contained methods for more information about UI options).
+
+> **_TIP:_** A good way to visualize what this module is doing is to use [RJSF](https://github.com/rjsf-team) team's [react-jsonschema-form playground](https://rjsf-team.github.io/react-jsonschema-form/) as this modules functionality is largely similar in regards to how the schema translates to different form fields/structure.
 
 The examples section of this readme can be used to understand how different field types translate directly to Drupal form elements and subsequently, how they would look within the Drupal user interface. They are provided under the presumption that the form is for creating a new entity (in this case a dataset) not editing a previous one.
 
@@ -71,7 +73,7 @@ The following are some examples of Field types and associated options and how th
 ],
 ```
 
-In the above example the listed fields (which would follow in the rest of the JSON file) would be required fields in the Drupal form that is created.
+In the above example the listed fields (which would appear later as objects in the JSON) would be required fields in the Drupal form that is created.
 
 ### Text Box (String)
 
@@ -102,7 +104,7 @@ UI Options:
 
 #### Form Element:
 
-![Screenshot of a "Title" Drupal form field with a description of "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery." used to show how a "textbox" field can be created using the JSON Form Widget module.](string-textbox.png)
+![Screenshot of a "Title" Drupal form field with a description of "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery." used to show how a "textbox" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-textbox.png)
 
 ### Text Area (String)
 
@@ -138,7 +140,7 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Description" Drupal form field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](string-textarea.png)
+![Screenshot of a "Description" Drupal form field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-textarea.png)
 
 ### Select (String)
 
@@ -177,7 +179,7 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Frequency" Drupal form field with a description of "Frequency with which dataset is published." used to show how a "select" field can be created using the JSON Form Widget module.](string-select.png)
+![Screenshot of a "Frequency" Drupal form field with a description of "Frequency with which dataset is published." used to show how a "select" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-select.png)
 
 
 ### Date and Time (String)
@@ -208,7 +210,7 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Release Date" Drupal form field with a description of "Date of formal issuance." used to show how a "date and time" field can be created using the JSON Form Widget module.](string-datetime.png)
+![Screenshot of a "Release Date" Drupal form field with a description of "Date of formal issuance." used to show how a "date and time" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-datetime.png)
 
 ### Date Range (String)
 
@@ -239,9 +241,9 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of a "Temporal" Drupal form field with a description of "The start and end dates for which the dataset is applicable." used to show how a "date range" field can be created using the JSON Form Widget module.](string-daterange.png)
+![Screenshot of a "Temporal" Drupal form field with a description of "The start and end dates for which the dataset is applicable." used to show how a "date range" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-daterange.png)
 
-### Expandable dropdown "details" box with autocomplete select list
+### Expandable dropdown "details" box with autocomplete select list (Object)
 
 #### Schema File Example:
 
@@ -276,7 +278,7 @@ UI options:
 },
 ```
 
-> **_NOTE:_** The nested nature of this schema object "Publisher".
+> **_NOTE:_** The nested nature of this schema object "Publisher" and how it translates to a Drupal "details" form element box with fields within it.
 
 #### Schema UI File Example:
 
@@ -313,7 +315,7 @@ UI options:
   - Signifies that this will be a list of items
 - type: autocomplete
   - the list will show with an autocomplete function
-    - The person filling out the form will type selections and enter them with previous options possibly showing below
+    - The person filling out the form will type selections and enter them with previous options possibly showing below.
 - allowCreate: true
   - The user can create list items by typing them, rather than only being able to select predetermined options.
 - source
@@ -323,7 +325,219 @@ UI options:
 
 #### Form Element:
 
-![Screenshot of an "Organization" Drupal form dropdown box with a description of "A Dataset Publisher Organization." used to show how a "Dropdown" box with an autocomplete field can be created using the JSON Form Widget module.](dropdown-autocomplete.png)
+![Screenshot of an "Organization" Drupal form dropdown box with a description of "A Dataset Publisher Organization." used to show how a "Dropdown" box with an autocomplete field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/object-dropdown-autocomplete.png)
+
+### Fieldset with select other and upload or link fields (Object)
+
+Includes (of note):
+- Expandable details box
+- Upload or Link
+- Add one (Create more than one) functionality
+
+#### Schema File Example:
+
+```
+"distribution": {
+  "title": "Distribution",
+  "description": "A distribution is a container for the metadata specific to the data resource being shared. Each distribution should contain one <strong>Access URL</strong> or <strong>Download URL</strong>. When providing a Download URL, also include the format of the file. A distribution containing a Download URL to a csv or tsv file will generate queues that will import the data into a database table, this is referred to as a datastore. The datastore provides an API endpoint for users to run queries against the data.",
+  "type": "array",
+  "items": {
+    "title": "Data File",
+    "type": "object",
+    "properties": {
+      "@type": {
+        "title": "Metadata Context",
+        "description": "IRI for the JSON-LD data type. This should be dcat:Distribution for each Distribution.",
+        "default": "dcat:Distribution",
+        "type": "string",
+        "readOnly": true
+      },
+      "title": {
+        "title": "Title",
+        "description": "Human-readable name of the file.",
+        "type": "string",
+        "minLength": 1
+      },
+      "description": {
+        "title": "Description",
+        "description": "Human-readable description of the file.",
+        "type": "string",
+        "minLength": 1
+      },
+      "format": {
+        "title": "Format",
+        "description": "A human-readable description of the file format of a distribution (i.e. csv, pdf, xml, kml, etc.).",
+        "type": "string",
+        "examples": [
+          "arcgis",
+          "csv",
+          "esri rest",
+          "geojson",
+          "json",
+          "kml",
+          "pdf",
+          "tsv",
+          "xls",
+          "xlsx",
+          "xml",
+          "zip"
+        ]
+      },
+      "mediaType": {
+        "title": "Media Type",
+        "description": "The machine-readable file format (<a href=\"https://www.iana.org/assignments/media-types/media-types.xhtml\">IANA Media Type or MIME Type</a>) of the distribution’s downloadURL.",
+        "type": "string"
+      },
+      "downloadURL": {
+        "title": "Download URL",
+        "description": "URL providing direct access to a downloadable file of a dataset.",
+        "type": "string",
+        "format": "uri"
+      },
+      "accessURL": {
+        "title": "Access URL",
+        "description": "URL providing indirect access to a dataset.",
+        "type": "string",
+        "format": "uri"
+      },
+      "conformsTo": {
+        "title": "Data Standard",
+        "description": "URI used to identify a standardized specification the distribution conforms to.",
+        "type": "string",
+        "format": "uri"
+      },
+      "describedBy": {
+        "title": "Data Dictionary",
+        "description": "URL to the data dictionary for the distribution found at the downloadURL.",
+        "type": "string",
+        "format": "uri"
+      },
+      "describedByType": {
+        "title": "Data Dictionary Type",
+        "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL.",
+        "pattern": "^[a-z\\/\\.\\+]+?$",
+        "type": "string"
+      }
+    },
+    "uniqueItems": true
+  },
+  "minItems": 1
+},
+```
+
+> **_NOTE:_** The "items" property of this nested JSON object and how it translates to allowing for more than one of it's included objects to be created on the form.
+
+#### Schema UI File Example:
+
+```
+"distribution": {
+  "ui:options": {
+    "description": "A distribution is a container for the metadata specific to the data resource being shared. Each distribution should contain one <strong>Access URL</strong> or <strong>Download URL</strong>. When providing a Download URL, also include the format of the file. A distribution containing a Download URL to a csv or tsv file will generate queues that will import the data into a database table, this is referred to as a datastore. The datastore provides an API endpoint for users to run queries against the data."
+  },
+  "items": {
+    "@type": {
+      "ui:options": {
+        "widget": "hidden"
+      }
+    },
+    "title":  {
+      "ui:options": {
+        "title": "File Title",
+        "description": ""
+      }
+    },
+    "mediaType": {
+      "ui:options": {
+        "widget": "hidden"
+      }
+    },
+    "description": {
+      "ui:options": {
+        "widget": "textarea",
+        "rows": 5,
+        "title": "File Description",
+        "description": ""
+      }
+    },
+    "format": {
+      "ui:options": {
+        "title": "File Format",
+        "widget": "list",
+        "type": "select_other",
+        "other_type": "textfield",
+        "description": "CSV files must be encoded in UTF-8 format to be imported correctly. UTF-8 encoding is an established standard that provides optimal compatibility between applications and operating systems. Note that Excel provides a <strong>CSV UTF-8</strong> option when saving data files.",
+        "source": {
+          "enum": [
+            "arcgis",
+            "csv",
+            "esri rest",
+            "geojson",
+            "json",
+            "kml",
+            "pdf",
+            "tsv",
+            "xls",
+            "xlsx",
+            "xml",
+            "zip"
+          ]
+        }
+      }
+    },
+    "downloadURL": {
+      "ui:options": {
+        "widget": "upload_or_link",
+        "extensions": "csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp",
+        "progress_indicator": "bar",
+        "description": "URL providing direct access to a downloadable file."
+      }
+    },
+    "accessURL": {
+      "ui:options": {
+        "description": "URL providing indirect access to the data, for example via API or a graphical interface."
+      }
+    },
+    "describedBy": {
+      "ui:options": {
+        "description": "URL to the data dictionary for the file found at the Download URL."
+      }
+    },
+    "describedByType": {
+      "ui:options": {
+        "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s Data Dictionary URL."
+      }
+    }
+  }
+},
+```
+
+UI options:
+- Description
+- widget: hidden
+- title: "File Title"
+  - Overrides the title for the field in the schema file and displays the value of the JSON property in the schema ui file instead.
+- widget: textarea 
+- rows: 5
+- widget: list
+- type: select_other
+  - Creates a dropdown select (list) field with an "other" option
+- other_type: textfield
+  - The "other" option in the above mentioned select_other list, when chosen by the person filling out the form, appears as a text area.
+- source
+- widget: upload_or_link
+  - Signifies that this will be a field that allows for the upload of a file or a link to a file (URL)
+- extensions: csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp
+  - the allowed file extensions/types
+- progress_indicator: bar
+  - The UI element that will show how long t is taking to upload the file, alternates are
+- source
+  - metestoreSchema: publisher
+    - Where the predetermined options for the select list come from 
+      - In this instance they would be sourced from the "publisher" metastore. Note if you do not have any datasets saved, no suggestions will show here as it would not have any information to derive the suggestions from.
+
+#### Form Element:
+
+![Screenshot of a "Distribution" Drupal form dropdown box with multiple fields used to show how a "fieldset" box with a select list with an other option and an upload or link field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/object-fieldset-select-other-upload-link.png)
 
 ## Maintainers
 
