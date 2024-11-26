@@ -413,11 +413,8 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Query::class, "getQueryStorageMap", $storageMap)
       ->add(Query::class, 'getDatastoreService',  DatastoreService::class)
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
-      ->add(ImmutableConfig::class, 'get', function ($key) use ($rowLimit) {
-          if ($key === 'response_stream_max_age') {
-              return 3600; // Correct value for the test.
-          }
-          return $rowLimit;
+      ->add(ImmutableConfig::class, 'get', function ($key) {
+          return $key === 'response_stream_max_age' ? 3600 : 50;
       });
 
     return $chain->getMock();
