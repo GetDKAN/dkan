@@ -75,8 +75,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Response Stream Max-Age'),
       '#default_value' => $this->config('datastore.settings')->get('response_stream_max_age'),
       '#min' => 0,
-      '#description' => $this->t('Set the cache max-age for streaming CSV responses, in seconds.
-       Default: 3600 (1 hour).'),
+      '#description' => $this->t('Set the cache max-age for streaming CSV responses, in seconds. Default: 3600 (1 hour).'),
     ];
 
     $form['triggering_properties'] = [
