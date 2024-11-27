@@ -15,6 +15,7 @@ use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
@@ -69,8 +70,10 @@ class DatastoreServiceTest extends TestCase {
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(JobStore::class, 'remove', TRUE)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', TRUE);
+      ->add(ReferenceLookup::class, 'getReferencers', [$resource->getIdentifier()])
+      ->add(ReferenceLookup::class, 'invalidateReferencerCacheTags');
 
     $service = DatastoreService::create($mockChain->getMock());
     // These are all valid ways to call drop().
@@ -106,6 +109,7 @@ class DatastoreServiceTest extends TestCase {
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->index(0);
 
     return (new Chain($this))

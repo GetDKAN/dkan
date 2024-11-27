@@ -9,6 +9,7 @@ services:
       - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
       - '@dkan.metastore.resource_mapper'
       - '@event_dispatcher'
+      - '@dkan.metastore.reference_lookup'
 
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport
