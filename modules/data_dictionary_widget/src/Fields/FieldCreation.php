@@ -12,10 +12,8 @@ class FieldCreation {
   /**
    * Create basic widget.
    */
-  public static function createGeneralFields($element, $field_json_metadata, $current_fields, $form_state) {
-
+  public static function createGeneralFields($element, $field_json_metadata, $current_dictionary_fields, $form_state) {
     $element['identifier'] = self::createField('identifier', $field_json_metadata, $form_state);
-
     $element['title'] = self::createField('title', $field_json_metadata, $form_state);
 
     $element['dictionary_fields'] = [
@@ -25,8 +23,7 @@ class FieldCreation {
       '#suffix' => '</div>',
       '#markup' => t('<div class="claro-details__description">A data dictionary for this resource, compliant with the <a href="https://specs.frictionlessdata.io/table-schema/" target="_blank">Table Schema</a> specification.</div>'),
     ];
-
-    $element['dictionary_fields']['current_fields'] = $current_fields;
+    $element['dictionary_fields']['current_dictionary_fields'] = $current_dictionary_fields;
 
     if (isset($field_json_metadata['data']['indexes'])) {
       $element['indexes'] = self::createField('indexes', $field_json_metadata, $form_state);
@@ -64,7 +61,6 @@ class FieldCreation {
         '#type' => 'textfield',
         '#required' => TRUE,
         '#title' => t('Identifier'),
-        '#default_value' => $field_json_metadata['identifier'] ?? '',
         '#attributes' => ['readonly' => 'readonly'],
         '#default_value' => $identifier_uuid ?? '',
         '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),
@@ -84,13 +80,13 @@ class FieldCreation {
   /**
    * Create data dictionary data rows.
    */
-  public static function createDictionaryDataRows($current_fields, $data_results, $form_state) {
+  public static function createDictionaryDataRows($current_dictionary_fields, $data_results, $form_state) {
 
     return [
-      '#access' => ((bool) $current_fields || (bool) $data_results),
+      '#access' => ((bool) $current_dictionary_fields || (bool) $data_results),
       '#type' => 'table',
       '#header' => ['NAME', 'TITLE', 'DETAILS'],
-      '#rows' => $form_state->get('cancel') ? $current_fields : ($data_results ?? []),
+      '#rows' => $form_state->get('cancel') ? $current_dictionary_fields : ($data_results ?? []),
       '#tree' => TRUE,
       '#theme' => 'custom_table',
     ];

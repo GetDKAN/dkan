@@ -1,0 +1,36 @@
+<table>
+  <thead>
+    <tr>
+      <th>{{ header[0] }}</th>
+      <th>{{ header[1] }}</th>
+      <th colspan="2">{{ header[2] }}</th>
+    </tr>
+  </thead>
+  <tbody  id="field-json-metadata-edit-index">
+    {% for row in rows %}
+      {% if row.field_collection %}
+        <tr>
+          <td colspan="3">
+            {{ row.field_collection }}
+          </td>
+        </tr>
+        {% elseif row.description %}
+        <tr>
+          <td>{{ row.description }}</td>
+          <td>{{ row.type }}</td>
+          <td>
+            {% for field in row.fields %}
+              <ul>
+                <li><div><b>Field Name</b>: {{ field.name }}</div>
+                <div><b>Field Length</b>: {{ field.length }}</div></li>
+              </ul>
+            {% endfor %}
+          </td>
+          <td>
+          {{ row.edit_index_button }}
+          </td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
