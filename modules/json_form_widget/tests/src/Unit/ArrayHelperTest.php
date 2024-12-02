@@ -207,6 +207,7 @@ class ArrayHelperTest extends TestCase {
       'distribution' => [
         0 => $this->getExpectedObject(),
       ],
+      '#required' => FALSE,
     ];
   }
 
