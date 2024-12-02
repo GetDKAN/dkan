@@ -96,24 +96,43 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   public function handleArrayElement(array $definition, ?array $data, FormStateInterface $form_state, array $context): array {
     // Extract field name from field definition and min items from field schema.
-    $field_name = $definition['name'];
     $min_items = $definition['schema']->minItems ?? 0;
 
     $context_name = self::buildContextName($context);
     $item_count = $this->getItemCount($context_name, count($data ?? []), $min_items, $form_state);
-    $is_required = in_array($field_name, $this->builder->getSchema()->required ?? []);
+    $is_required = in_array($definition['name'], $this->builder->getSchema()->required ?? []);
+
+    // Build the parent fieldset.
+    $element = $this->buildArrayParentElement($definition, $is_required, $context_name);
 
     // Build the specified number of field item elements.
     $items = [];
     for ($i = 0; $i < $item_count; $i++) {
-      $property_required = $is_required && ($i < $min_items);
-      $items[] = $this->buildArrayItemElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
+      $item = $this->buildArrayItemElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]));
+      $item['#required'] = $is_required && ($i < $min_items);
+      $items[] = $item;
     }
+    $element[$definition['name']] = $items;
+    return $element;
+  }
 
-    // Build field element.
+  /**
+   * Build the parent fieldset for an array.
+   *
+   * @param array $definition
+   *   Field definition.
+   * @param bool $is_required
+   *   Whether the field is required.
+   * @param string $context_name
+   *   Field context name.
+   *
+   * @return array
+   *   Render array for the array parent element.
+   */
+  protected function buildArrayParentElement($definition, $is_required, $context_name) {
     $element = [
       '#type' => 'fieldset',
-      '#title' => ($definition['schema']->title ?? $field_name),
+      '#title' => ($definition['schema']->title ?? $definition['name']),
       '#description' => ($definition['schema']->description ?? ''),
       '#description_display' => 'before',
       '#prefix' => '<div id="' . self::buildWrapperIdentifier($context_name) . '">',
@@ -123,10 +142,9 @@ class ArrayHelper implements ContainerInjectionInterface {
       'actions' => [
         '#type'   => 'actions',
         'actions' => [
-          'add' => $this->buildAction($this->t('Add one'), 'addOne', $field_name, $context_name),
+          'add' => $this->buildAction($this->t('Add one'), 'addOne', $definition['name'], $context_name),
         ],
       ],
-      $field_name => $items,
     ];
     return $element;
   }
@@ -142,13 +160,11 @@ class ArrayHelper implements ContainerInjectionInterface {
    *   Form state.
    * @param string[] $context
    *   Field context.
-   * @param bool $required
-   *   Whether the field is required.
    *
    * @return array
    *   Render array for the array element.
    */
-  protected function buildArrayItemElement(array $definition, $data, FormStateInterface $form_state, array $context, bool $required): array {
+  protected function buildArrayItemElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
     // Use the simple or complex method depending on whether items are objects.
     if (isset($definition['schema']->items->properties)) {
       $element = $this->buildComplexArrayElement($definition, $data, $form_state, $context);
@@ -156,8 +172,6 @@ class ArrayHelper implements ContainerInjectionInterface {
     else {
       $element = $this->buildSimpleArrayElement($definition, $data, $context);
     }
-    // If we show the element on the form, it's required.
-    $element['#required'] = $required;
     return $element;
   }
 
@@ -335,10 +349,10 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @param string $context_name
    *   Data context.
    *
-   * @return array{#type: string, remove: array}
+   * @return array
    *   Actions render array.
    */
-  protected function buildElementActions(string $parent, string $context_name) {
+  protected function buildElementActions(string $parent, string $context_name):array {
     return [
       '#type' => 'actions',
       'remove' => $this->buildAction($this->t('Remove'), 'remove', $parent, $context_name),
