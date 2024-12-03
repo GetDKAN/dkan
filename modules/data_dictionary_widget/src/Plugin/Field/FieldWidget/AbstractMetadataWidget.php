@@ -7,11 +7,8 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
-use Drupal\data_dictionary_widget\Fields\FieldCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Entity\EntityFormInterface;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldCreation;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
 
 /**
  * A data-dictionary widget.
@@ -37,7 +34,7 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
     $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, TRUE) : [];
 
     // Retrieve initial data results from field JSON metadata.
-    $data_results = $this->getFieldResults($field_json_metadata);
+    $data_results = $field_json_metadata['data']['fields'] ?? [];
 
     // Process data results.
     $data_results = $this->processDataResults($data_results, $current_fields, $field_values, $op);
@@ -49,10 +46,10 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
     $element['dictionary_fields']['#pre_render'] = [[$this, 'preRenderForm']];
 
     // Add data rows to display in tables.
-    $element['dictionary_fields']['data'] = $this->createDictionaryDataRows($current_fields, $data_results, $form_state);
+    $element['dictionary_fields']['data'] = $this->createDataRows($current_fields, $data_results, $form_state);
 
     // Create dictionary fields/buttons for editing.
-    $element['dictionary_fields'] = $this->createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element['dictionary_fields']);
+    $element['dictionary_fields'] = $this->createFieldOptions($op_index, $data_results, $fields_being_modified, $element['dictionary_fields']);
     $element['dictionary_fields']['add_row_button']['#access'] = $fields_being_modified == NULL;
 
     // Get form entity.
@@ -67,23 +64,12 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
       $form_entity->set('field_data_type', 'data-dictionary');
     }
 
-    // Set form state for adding fields and indexes.
+    // Set form state for adding and editing fields.
     $element = $this->setAddDictionaryFieldFormState($add_new_field, $element);
     $element = $this->editDictionaryFieldFormState($fields_being_modified, $element);
 
     return $element;
   }
-
-  /**
-   * Get field array from json metadata
-   *
-   * @param array $field_json_metadata
-   *   The json metadata array
-   *
-   * @return array
-   *   Array asociative array of field names and field values.
-   */
-  abstract protected function getFieldResults(array $field_json_metadata) : array;
 
   /**
    * Cleaning the data up.
@@ -181,6 +167,6 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
     }
   }
 
-  abstract protected static function createDictionaryDataRows($current_dictionary_fields, $data_results, $form_state);
+  abstract protected static function createDataRows($current_dictionary_fields, $data_results, $form_state);
 
 }

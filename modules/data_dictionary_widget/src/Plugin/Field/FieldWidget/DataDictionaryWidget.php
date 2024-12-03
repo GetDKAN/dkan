@@ -9,12 +9,8 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Fields\FieldButtons;
-use Drupal\data_dictionary_widget\Fields\FieldCreation;
 use Drupal\data_dictionary_widget\Fields\FieldEditCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
-use Drupal\Core\Entity\EntityFormInterface;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldCreation;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
 
 /**
  * A data-dictionary widget.
@@ -28,13 +24,6 @@ use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
  * )
  */
 class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCallbackInterface {
-
-  /**
-   * @inheritDoc
-   */
-  protected function getFieldResults(array $field_json_metadata) : array {
-    return $field_json_metadata['data']['fields'] ?? [];
-  }
 
   protected function processDataResults($data_results, $current_fields, $field_values, $op) {
     if (isset($current_fields)) {
@@ -257,18 +246,6 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
   /**
    * {@inheritdoc}
    */
-  public static function trustedCallbacks() {
-    return [
-      'preRenderForm',
-//      'preRenderIndexFieldFormOnAdd',
-//      'preRenderIndexFieldForm',
-//      'preRenderIndexForm',
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function createGeneralFields($element, $field_json_metadata, $current_fields, $form_state) {
     $element['identifier'] = self::createField('identifier', $field_json_metadata, $form_state);
     $element['title'] = self::createField('title', $field_json_metadata, $form_state);
@@ -292,7 +269,7 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
   /**
    * @inheritDoc
    */
-  protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
+  protected function createFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
     // Creating ajax buttons/fields to be placed in correct location later.
     foreach ($data_results as $key => $data) {
       if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
@@ -336,7 +313,7 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
-    $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : NULL;
+    $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : [];
 
     $data_results = !empty($field_collection) ? [
       [
@@ -355,14 +332,14 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
       'data' => [
         'title' => $values[0]['title'] ?? '',
         'fields' => $updated,
-        'indexes' => $indexes ?? [],
+        'indexes' => $indexes,
       ],
     ];
 
     return json_encode($json_data);
   }
 
-  protected static function createDictionaryDataRows($current_dictionary_fields, $data_results, $form_state) {
+  protected static function createDataRows($current_dictionary_fields, $data_results, $form_state) {
 
     return [
       '#access' => ((bool) $current_dictionary_fields || (bool) $data_results),
@@ -373,6 +350,25 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
       '#theme' => 'custom_table',
     ];
 
+  }
+
+  /**
+   * @inheritDoc
+   */
+  protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
+    $current_fields = $element['current_dictionary_fields'];
+    // Creating ajax buttons/fields to be placed in correct location later.
+    foreach ($data_results as $key => $data) {
+      if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
+        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_fields, $fields_being_modified);
+      }
+      else {
+        $element['edit_buttons'][$key]['edit_button'] = FieldButtons::editButtons($key);
+      }
+    }
+    $element['add_row_button'] = FieldButtons::addButton();
+
+    return $element;
   }
 
 }
