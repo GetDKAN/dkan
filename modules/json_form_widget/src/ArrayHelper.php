@@ -129,7 +129,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @return array
    *   Render array for the array parent element.
    */
-  protected function buildArrayParentElement(array $definition, bool $is_required, string $context_name) {
+  protected function buildArrayParentElement($definition, $is_required, $context_name) {
     $element = [
       '#type' => 'fieldset',
       '#title' => ($definition['schema']->title ?? $definition['name']),
@@ -202,6 +202,18 @@ class ArrayHelper implements ContainerInjectionInterface {
       ]),
       'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context)),
     ];
+  }
+
+  /**
+   * Flatten array element fieldset w/buttons for processing.
+   *
+   * @param array $element
+   *   A form element.
+   */
+  public static function flattenArrayElementFieldset(array &$element): void {
+    if (isset($element['field']) && $element['#type'] == 'fieldset') {
+      $element = ['#required' => ($element['#required'] ?? FALSE)] + $element['field'];
+    }
   }
 
   /**
