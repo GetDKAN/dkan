@@ -129,7 +129,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @return array
    *   Render array for the array parent element.
    */
-  protected function buildArrayParentElement($definition, $is_required, $context_name) {
+  protected function buildArrayParentElement(array $definition, bool $is_required, string $context_name) {
     $element = [
       '#type' => 'fieldset',
       '#title' => ($definition['schema']->title ?? $definition['name']),
