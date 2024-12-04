@@ -15,7 +15,7 @@
         "drupal/moderated_content_bulk_publish": "~2.0.20",
         "drupal/search_api": "^1.15",
         "drupal/select2": "^1.13",
-        "drupal/select_or_other": "^4.1.0",
+        "drupal/select_or_other": "^4.2.0",
         "drupal/views_bulk_operations": "^4.0",
         "ezyang/htmlpurifier": "^4.11",
         "fmizzell/maquina": "^1.1.1",
