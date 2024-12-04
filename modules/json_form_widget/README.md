@@ -2,7 +2,9 @@
 
 This module provides a versatile way to create Drupal form elements from a JSON schema. Why would you need to create a form from JSON? This allows for a wide range of flexibility when customizing a content type without hard coding every field. Data publishers can use DKAN to create and edit custom dataset properties without the need to create patches, or hard-to-maintain overrides any time new schema is introduced. By saving field properties in JSON format, the input and output of the metadata structure remains the same. This also speeds up the performance when creating or updating hundreds of datasets at a time, this can happen in seconds rather than hours.
 
-Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route based on the data type (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and it's contained methods for more information about UI options).
+Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route based on the data type (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and its contained methods for more information about UI options). 
+
+The inspiration for this module and the syntax for the UI Schema come from react-jsonschema-form. While the UI schemas are not actually interoperable at this time, and RJSF supports more features of JSON-Schema than this module is currently able to, we hope to close that gap over time.
 
 ---
 
@@ -153,6 +155,44 @@ UI options:
 
 ![Screenshot of a "Description" Drupal form field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-textarea.png)
 
+### URI 
+
+**Schema File Example:**
+
+    "references": {
+      "title": "Related Documents",
+      "description": "Related documents such as technical information about a dataset, developer documentation, etc.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    }
+
+**UI Schema File Example:**
+
+    "references": {
+    "items": {
+      "ui:options": {
+        "placeholder": "http://"
+      }
+    }
+  },
+
+UI options:
+- placeholder: http://
+  - Text that will show slightly grayed out inside of the input box to serve as an example of or to relay information on what could be typed in.
+
+---
+
+ > **_NOTE:_**
+ > The "items" property of this JSON object and how it translates to allowing for more than one of it's included objects to be created on the form.
+
+---
+
+**Form Element:**
+![Screenshot of a "Related Documents" Drupal form field with a description of "Related documents such as technical information about a dataset, developer documentation, etc." used to show how a "URI" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-uri.png)
+
 ### Select Field
 
 **Schema File Example:**
@@ -253,7 +293,7 @@ UI options:
 
 ![Screenshot of a "Temporal" Drupal form field with a description of "The start and end dates for which the dataset is applicable." used to show how a "date range" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-daterange.png)
 
-### Expandable dropdown "details" box with autocomplete select list (Object)
+### Expandable dropdown "details" box with autocomplete select list
 
 **Schema File Example:**
 
@@ -343,7 +383,7 @@ UI options:
 
 ![Screenshot of an "Organization" Drupal form dropdown box with a description of "A Dataset Publisher Organization." used to show how a "Dropdown" box with an autocomplete field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/object-dropdown-autocomplete.png)
 
-### Fieldset with select other and upload or link fields (Object)
+### Fieldset with select other and upload or link fields
 
 Includes (of note):
 - Expandable details box
@@ -438,13 +478,6 @@ Includes (of note):
       },
       "minItems": 1
     },
-
----
-
- > **_NOTE:_**
- > The "items" property of this nested JSON object and how it translates to allowing for more than one of it's included objects to be created on the form.
-
----
 
 **UI Schema File Example:**
 
