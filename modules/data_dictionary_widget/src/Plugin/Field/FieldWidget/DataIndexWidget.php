@@ -10,7 +10,9 @@ use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Fields\FieldCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\data_dictionary_widget\Indexes\IndexFieldButtons;
 use Drupal\data_dictionary_widget\Indexes\IndexFieldCreation;
+use Drupal\data_dictionary_widget\Indexes\IndexFieldEditCreation;
 use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
 
 /**
@@ -26,6 +28,10 @@ use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
  */
 class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackInterface {
 
+  protected function getDelta() {
+    return \Drupal::request()->query->get('index');
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -33,6 +39,7 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
     $field_collection = $values[0]["indexes"]["fields"]["field_collection"]["group"] ?? [];
     $dictionary_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
+    $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : [];
 
     $data_results = !empty($field_collection) ? [
       [
@@ -42,13 +49,13 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     ] : [];
 
     $updated = array_merge($current_fields ?? [], $data_results);
-
+// @todo Add updates
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
       'data' => [
         'title' => $values[0]['title'] ?? '',
         'fields' => $dictionary_collection,
-        'indexes' => $updated,
+        'indexes' => $indexes,
       ],
     ];
 
@@ -90,13 +97,11 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
    * @inheritDoc
    */
   protected function processDataResults($data_results, $current_fields, $field_values, $op) {
+    $index_fields_results = $data_results['indexes'][$this->getDelta()]['fields'] ?? [];
     return IndexFieldOperations::processIndexFieldsDataResults($data_results, $current_fields, $field_values, $op);
   }
 
   protected function createGeneralFields($element, $field_json_metadata, $current_fields, $form_state) {
-    $element['identifier'] = self::createField('identifier', $field_json_metadata, $form_state);
-    $element['title'] = self::createField('title', $field_json_metadata, $form_state);
-
     $element['dictionary_fields'] = [
       '#type' => 'fieldset',
       '#title' => t('Fields'),
@@ -105,6 +110,7 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
       '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
       '#required' => TRUE,
     ];
+
     $element['dictionary_fields']['current_dictionary_fields'] = $current_fields;
 
     return $element;
@@ -114,22 +120,37 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
    * @inheritDoc
    */
   protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
-    // TODO: Implement createDictionaryFieldOptions() method.
-  }
+    $current_fields = $element['current_dictionary_fields'];
+    // Creating ajax buttons/fields to be placed in correct location later.
+    foreach ($data_results as $key => $data) {
+      if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
+        $element['edit_fields'][$key] = IndexFieldEditCreation::editIndexFields($key, $current_fields, $fields_being_modified);
+      }
+      else {
+        $element['edit_buttons'][$key]['edit_button'] = IndexFieldButtons::editIndexButtons($key);
+      }
+    }
+    $element['add_row_button'] = IndexFieldButtons::addIndexButton();
 
-  protected function setAddDictionaryFieldFormState($add_new_field, $element) {
-    // TODO: Implement setAddDictionaryFieldFormState() method.
+    return $element;
   }
 
   /**
    * @inheritDoc
    */
-  protected function editDictionaryFieldFormState($fields_being_modified, $element) {
-    // TODO: Implement editDictionaryFieldFormState() method.
-  }
+  protected function createFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
+    // Creating ajax buttons/fields to be placed in correct location later.
+    foreach ($data_results as $key => $data) {
+      if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
+        $element['edit_fields'][$key] = IndexFieldEditCreation::editIndexFields($key, $fields_being_modified);
+      }
+      else {
+        $element['edit_buttons'][$key]['edit_button'] = IndexFieldButtons::editIndexButtons($key);
+      }
+    }
+    $element['add_row_button'] = IndexFieldButtons::addIndexButton();
 
-  protected static function createDataRows($current_dictionary_fields, $data_results, $form_state) {
-    // TODO: Implement createDataRows() method.
+    return $element;
   }
 
 }
