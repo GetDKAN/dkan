@@ -34,7 +34,7 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
     $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, TRUE) : [];
 
     // Retrieve initial data results from field JSON metadata.
-    $data_results = $field_json_metadata['data']['fields'] ?? [];
+    $data_results = $field_json_metadata['data'] ?? [];
 
     // Process data results.
     $data_results = $this->processDataResults($data_results, $current_fields, $field_values, $op);
@@ -66,8 +66,9 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
 
     // Set form state for adding and editing fields.
     $element = $this->setAddDictionaryFieldFormState($add_new_field, $element);
-    $element = $this->editDictionaryFieldFormState($fields_being_modified, $element);
-
+    if ($fields_being_modified) {
+      unset($element['dictionary_fields']["edit_buttons"]);
+    }
     return $element;
   }
 
@@ -86,12 +87,17 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
    */
   abstract protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element);
 
-  abstract protected function setAddDictionaryFieldFormState($add_new_field, $element);
-
-  /**
-   * Set the elements associated with editing a dictionary field.
-   */
-  abstract protected function editDictionaryFieldFormState($fields_being_modified, $element);
+  protected function setAddDictionaryFieldFormState($add_new_field, $element) {
+    if ($add_new_field) {
+      unset($element['dictionary_fields']["edit_buttons"]);
+      $element['dictionary_fields']['field_collection'] = $add_new_field;
+      $element['dictionary_fields']['field_collection']['#access'] = TRUE;
+      $element['dictionary_fields']['add_row_button']['#access'] = FALSE;
+      $element['identifier']['#required'] = FALSE;
+      $element['title']['#required'] = FALSE;
+    }
+    return $element;
+  }
 
   /**
    * Prerender callback for the dictionary form.
@@ -167,6 +173,19 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
     }
   }
 
-  abstract protected static function createDataRows($current_dictionary_fields, $data_results, $form_state);
+  protected static function createDataRows($current_dictionary_fields, $data_results, $form_state) {
+
+    return [
+      '#access' => ((bool) $current_dictionary_fields || (bool) $data_results),
+      '#type' => 'table',
+      '#header' => ['NAME', 'TITLE', 'DETAILS'],
+      '#rows' => $form_state->get('cancel') ? $current_dictionary_fields : ($data_results ?? []),
+      '#tree' => TRUE,
+      '#theme' => 'custom_table',
+    ];
+
+  }
+
+  abstract protected function createFieldOptions($op_index, $data_results, $fields_being_modified, $element);
 
 }

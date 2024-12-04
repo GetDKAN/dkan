@@ -26,6 +26,7 @@ use Drupal\data_dictionary_widget\Fields\FieldOperations;
 class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCallbackInterface {
 
   protected function processDataResults($data_results, $current_fields, $field_values, $op) {
+    $data_results = $data_results['fields'] ?? [];
     if (isset($current_fields)) {
       $data_results = $current_fields;
     }
@@ -285,29 +286,6 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
   }
 
   /**
-   * @inheritDoc
-   */
-  protected function setAddDictionaryFieldFormState($add_new_field, $element) {
-    if ($add_new_field) {
-      unset($element['dictionary_fields']["edit_buttons"]);
-      $element['dictionary_fields']['field_collection'] = $add_new_field;
-      $element['dictionary_fields']['field_collection']['#access'] = TRUE;
-      $element['dictionary_fields']['add_row_button']['#access'] = FALSE;
-      $element['identifier']['#required'] = FALSE;
-      $element['title']['#required'] = FALSE;
-    }
-    return $element;
-  }
-
-  protected function editDictionaryFieldFormState($fields_being_modified, $element) {
-    if ($fields_being_modified) {
-      unset($element['dictionary_fields']["edit_buttons"]);
-    }
-
-    return $element;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
@@ -339,36 +317,18 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
     return json_encode($json_data);
   }
 
-  protected static function createDataRows($current_dictionary_fields, $data_results, $form_state) {
-
-    return [
-      '#access' => ((bool) $current_dictionary_fields || (bool) $data_results),
-      '#type' => 'table',
-      '#header' => ['NAME', 'TITLE', 'DETAILS'],
-      '#rows' => $form_state->get('cancel') ? $current_dictionary_fields : ($data_results ?? []),
-      '#tree' => TRUE,
-      '#theme' => 'custom_table',
-    ];
-
+  /**
+   * @inheritDoc
+   */
+  protected function editDictionaryFieldFormState($fields_being_modified, $element) {
+    // TODO: Implement editDictionaryFieldFormState() method.
   }
 
   /**
    * @inheritDoc
    */
   protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
-    $current_fields = $element['current_dictionary_fields'];
-    // Creating ajax buttons/fields to be placed in correct location later.
-    foreach ($data_results as $key => $data) {
-      if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
-        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_fields, $fields_being_modified);
-      }
-      else {
-        $element['edit_buttons'][$key]['edit_button'] = FieldButtons::editButtons($key);
-      }
-    }
-    $element['add_row_button'] = FieldButtons::addButton();
-
-    return $element;
+    // TODO: Implement createDictionaryFieldOptions() method.
   }
 
 }
