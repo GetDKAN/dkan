@@ -328,7 +328,7 @@ UI options:
       }
     },
 
-> **_TIP:_**
+> **_NOTE:_**
 > The 'widget: hidden' properties in this schema UI object and how they hide their respective fields from appearing on the final form. It's worth noting that in this example, out of the entire "Publisher" schema object, only the "Name" field is directly shown on the form due to the schema UI options.
 
 UI options:
