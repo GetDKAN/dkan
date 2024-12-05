@@ -6,12 +6,8 @@ Using a combination of "router", "helper", and "handler" classes, as well as som
 
 The inspiration for this module and the syntax for the UI Schema come from react-jsonschema-form. While the UI schemas are not actually interoperable at this time, and RJSF supports more features of JSON-Schema than this module is currently able to, we hope to close that gap over time.
 
----
-
 > **_TIP:_**
 > A good way to visualize what this module is doing is to use [RJSF](https://github.com/rjsf-team) team's [react-jsonschema-form playground](https://rjsf-team.github.io/react-jsonschema-form/) as this modules functionality is largely similar in regards to how the schema translates to different form fields/structure.
-
----
 
 The examples section of this readme can be used to understand how different field types translate directly to Drupal form elements and subsequently, how they would look within the Drupal user interface. They are provided under the presumption that the form is for creating a new data node (in this case a dataset).
 
@@ -49,7 +45,6 @@ Drupal Core:
 - Content Moderation (content_moderation)
 - Workflows (workflows)
 
-
 ## Installation
 
 The forms that the JSON Form Widget creates utilize the DKAN metastore for schema discovery and subsequently create nodes as the "data" content type. This module therefore is currently packaged with DKAN and as of now cannot be installed independantly.
@@ -58,31 +53,21 @@ The forms that the JSON Form Widget creates utilize the DKAN metastore for schem
 
 DKAN includes schema files that follow the [Project Open Data DCAT-US schema standards](https://resources.data.gov/resources/dcat-us/). If you need to add additional metadata fields, or wish to remove fields, simply create a new schema/collection/ directory in the root of your site (usually docroot), and add your new schema files to it.
 
----
-
 > **_NOTE:_**
 > Read the documentation on [Changing your dataset schema](https://dkan.readthedocs.io/en/latest/user-guide/guide_custom_schemas.html) to learn how to add custom fields.
-
----
 
 ## Field Type UI Examples
 
 If we look closely at the provided DKAN [dataset schema](https://github.com/GetDKAN/dkan/blob/2.x/schema/collections/dataset.json), and [dataset UI schema](https://github.com/GetDKAN/dkan/blob/2.x/schema/collections/dataset.ui.json), we can see some examples of how different field types are converted into form elements utilizing both the dataset.json (schema file) as well as the dataset.ui.json (schema UI file) which in turn create the form @ /node/add/data?schema=dataset.
 
----
-
 > **_TIP:_**
 > See the Schema UI Handler class as well as the Element folder and it's included class files for how different UI options are managed in code.
 
----
-
 The following are some examples of Field types and associated options and how they appear as a form element respectively. Newly introduced schema UI options will be described only the first time they appear. The length of some JSON objects may be trimmed as compared to the provided dataset.json/ui.json files in order to keep this page's length to a minimum, but the functionality they are showcasing will remain unchanged.
 
----
 > **_TIP:_**
 > You can make fields required on the form using a JSON property array in your schema file similarly to how it is done in the example from the dataset.json file below:
 
----
 
     "required": [
       "title",
@@ -183,12 +168,8 @@ UI options:
 - placeholder: http://
   - Text that will show slightly grayed out inside of the input box to serve as an example of or to relay information on what could be typed in.
 
----
-
  > **_NOTE:_**
  > The "items" property of this JSON object and how it translates to allowing for more than one of it's included objects to be created on the form.
-
----
 
 **Form Element:**
 ![Screenshot of a "Related Documents" Drupal form field with a description of "Related documents such as technical information about a dataset, developer documentation, etc." used to show how a "URI" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-uri.png)
@@ -219,21 +200,13 @@ UI options:
       ]
     },
 
----
-
 > **_NOTE:_**
 > The enum (values) and enumNames (labels) property arrays.
 
----
-
 **Schema File Example:**
-
----
 
 > **_TIP:_**
 > A corresponding object within a schema UI file is not required for each object within the schema file if UI options for that object are not needed/wanted.
-
----
 
 **Form Element:**
 
@@ -326,12 +299,8 @@ UI options:
       }
     },
 
----
-
 > **_NOTE:_**
 > The nested nature of this schema object "Publisher" and how it translates to a Drupal "details" form element box with fields within it.
-
----
 
 **UI Schema File Example:**
 
@@ -359,12 +328,8 @@ UI options:
       }
     },
 
----
-
 > **_TIP:_**
 > The 'widget: hidden' properties in this schema UI object and how they hide their respective fields from appearing on the final form. It's worth noting that in this example, out of the entire "Publisher" schema object, only the "Name" field is directly shown on the form due to the schema UI options.
-
----
 
 UI options:
 - widget: list
