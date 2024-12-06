@@ -7,7 +7,9 @@ use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Mysql importer factory.
@@ -19,21 +21,35 @@ class MysqlImportFactory implements ImportFactoryInterface {
    *
    * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
-  private ImportJobStoreFactory $importJobStoreFactory;
+  protected ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory service.
    *
    * @var \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
    */
-  private $databaseTableFactory;
+  protected $databaseTableFactory;
 
   /**
    * DKAN logger channel service.
    *
    * @var \Psr\Log\LoggerInterface
    */
-  private LoggerInterface $logger;
+  protected LoggerInterface $logger;
+
+  /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
 
   /**
    * Constructor.
@@ -41,17 +57,19 @@ class MysqlImportFactory implements ImportFactoryInterface {
   public function __construct(
     ImportJobStoreFactory $importJobStoreFactory,
     MySqlDatabaseTableFactory $databaseTableFactory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
     $this->logger = $loggerChannel;
+    $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     $resource = $config['resource'] ?? FALSE;
@@ -63,7 +81,9 @@ class MysqlImportFactory implements ImportFactoryInterface {
       $resource,
       $this->importJobStoreFactory,
       $this->databaseTableFactory,
-      $this->logger
+      $this->logger,
+      $this->eventDispatcher,
+      $this->referenceLookup
     );
     $importer->setImporterClass(MysqlImport::class);
     return $importer;

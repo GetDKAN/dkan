@@ -10,11 +10,11 @@ context('Administration pages', () => {
     const links = [
       'Datasets',
       'Datastore Import Status',
-      'Datastore settings',
+      'Datastore Settings',
       'Data Dictionary',
       'Harvests',
-      'Metastore settings',
-      'Resources'
+      'Metastore Settings',
+      'Resource Settings'
     ]
 
     cy.visit(`${baseurl}/admin`)
@@ -25,19 +25,19 @@ context('Administration pages', () => {
     })
   })
 
-  it('Admin can access the Metastore settings.', () => {
+  it('Admin can access the Metastore Settings.', () => {
     cy.get('.toolbar-icon-system-admin-dkan').contains('DKAN').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
-        cy.wrap($el).contains('Metastore settings')
+        cy.wrap($el).contains('Metastore Settings')
     })
     cy.visit(baseurl + "/admin/dkan/properties")
     cy.get('.option').should('contain.text', 'Distribution (distribution)')
   })
 
-  it('Admin can access the Datastore settings.', () => {
+  it('Admin can access the Datastore Settings.', () => {
     cy.get('.toolbar-icon-system-admin-dkan').contains('DKAN').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
-        cy.wrap($el).contains('Datastore settings')
+        cy.wrap($el).contains('Datastore Settings')
     })
     cy.visit(baseurl + "/admin/dkan/datastore")
     cy.get('label[for="edit-rows-limit"]').should('have.text', 'Rows limit')
@@ -69,7 +69,7 @@ context('Administration pages', () => {
     cy.contains('h1', 'Datasets');
 
     cy.get('.button').contains('+ Add new dataset').click( { force:true })
-    cy.contains('h1', 'Create Data');
+    cy.contains('h1', 'Create dataset');
   })
 
   it('DKAN menu contains link to create a dataset.', () => {
@@ -78,7 +78,7 @@ context('Administration pages', () => {
       cy.wrap($el).contains('Datasets').parent().within(() => {
         cy.get('li.menu-item a').contains('Create').click({ force:true })
       })
-      cy.contains('h1', 'Create Data')
+      cy.contains('h1', 'Create dataset')
     })
   })
 
@@ -89,6 +89,7 @@ context('Administration pages', () => {
     cy.contains('h1', 'DKAN Metastore (Data Dictionaries)');
     cy.get('.button').contains('+ Add new data dictionary').click( { force:true })
     cy.get('fieldset').contains('Data Dictionary Fields');
+    cy.contains('h1', 'Create data-dictionary')
   })
 
 })

@@ -39,6 +39,7 @@
           "description": "A human-readable description of the file format of a distribution (i.e. csv, pdf, xml, kml, etc.).",
           "type": "string",
           "examples": [
+            "",
             "arcgis",
             "csv",
             "esri rest",
