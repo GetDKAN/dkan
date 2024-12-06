@@ -48,7 +48,7 @@ Drupal Core:
 
 ## Installation
 
-The forms that the JSON Form Widget creates utilize the DKAN metastore for schema discovery and subsequently create nodes as the "data" content type. This module therefore is currently packaged with DKAN and as of now cannot be installed independantly.
+The forms that the JSON Form Widget creates utilize the DKAN metastore for schema discovery and subsequently create nodes as the "data" content type. This module therefore is currently packaged with DKAN and as of now cannot be installed independantly. CivicActions plans to develop this module as a standalone Drupal module eventually.
 
 ## Configuration
 

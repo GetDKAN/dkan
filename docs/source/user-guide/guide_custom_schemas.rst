@@ -19,20 +19,22 @@ Then make any modifications necessary to the `dataset.json` file inside the `col
 
   }
 
-.. warning::
+.. note::
 
-  Warning: You can remove metadata fields with the exception of the *distribution* property, this one must remain present in the dataset.json file in order to take advantage of the datastore feature.
-
-Note that even if you are only changing the dataset.json schema, it is important to copy ALL of the schema files as DKAN will be expecting all of the
-schema files to be in the same location.
+  Note that even if you are only changing the dataset.json schema, it is important to copy ALL of the schema files as DKAN will be expecting all of the
+  schema files to be in the same location.
 
 .. warning::
 
-  Warning: The schema is actively used by the catalog to verify the validity of the data.
+  You can remove metadata fields with the exception of the *distribution* property, this one must remain present in the dataset.json file in order to take advantage of the datastore feature.
+
+.. warning::
+
+  The schema is actively used by the catalog to verify the validity of the data.
   Making changes to the schema after data is present in the catalog should be done with care
   as non-backward-compatible changes to the schema could cause issues.
   Look at ``Drupal::metastore::SchemaRetriever::findSchemaDirectory()`` for context.
 
-.. Note::
+.. note::
 
-  Note: For more information on how forms are generated from schema files, see :doc:`JSON Form Widget <../../../modules/json_form_widget/README.md>`.
+  For more information on how forms are generated from schema files, see `JSON Form Widget <https://dkan.readthedocs.io/en/latest/json_form_widget.html>`_.
