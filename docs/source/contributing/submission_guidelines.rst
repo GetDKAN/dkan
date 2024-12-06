@@ -22,7 +22,7 @@ Setting up a local development sandbox
 --------------------------------------
 
 We recomend using DDEV with the DDEV-DKAN add-on as there are many helpful commands that will make it easier to get started.
-Once you have composer, docker, and DDEV installed, head over to `Getting Started with DDEV-DKAN <https://getdkan.github.io/ddev-dkan/getting-started.html>`_
+Once you have composer, docker, and DDEV `installed <https://dkan.readthedocs.io/en/latest/installation/index.html>`_, head over to `Getting Started with DDEV-DKAN <https://getdkan.github.io/ddev-dkan/getting-started.html>`_
 
 Issues tagged Good First Issue
 ------------------------------

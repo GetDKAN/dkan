@@ -11,7 +11,7 @@ Please seek support in the following ways:
   #. Search for answers and ask questions on `DKAN Discussions <https://github.com/GetDKAN/dkan/discussions>`_. This is the most appropriate place for debugging issues specific to your use of the project, or figuring out how to use the project in a specific way. Please clearly explain what you are trying to do, and list what you have already attempted to solve the problem. Provide code samples, but do not attach your entire project for someone else to debug.
   #. Come back and tell the community if a particular solution worked for you or not. You will help people who come after you.
 
-Be patient. DKAN maintainers are fully booked on projects that support the development of the module and may be slow to respond to discussions depending on work loads.
+Be patient. DKAN maintainers work full time on projects that support the development of the module and may be slow to respond to discussions depending on work loads.
 
 Reporting a security issue
 --------------------------
