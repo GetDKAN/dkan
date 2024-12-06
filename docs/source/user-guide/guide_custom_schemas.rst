@@ -21,7 +21,7 @@ Then make any modifications necessary to the `dataset.json` file inside the `col
 
 .. warning::
 
-You can remove metadata fields with the exception of the *distribution* property, this one must remain present in the dataset.json file in order to take advantage of the datastore feature.
+  Warning: You can remove metadata fields with the exception of the *distribution* property, this one must remain present in the dataset.json file in order to take advantage of the datastore feature.
 
 Note that even if you are only changing the dataset.json schema, it is important to copy ALL of the schema files as DKAN will be expecting all of the
 schema files to be in the same location.
@@ -35,4 +35,4 @@ schema files to be in the same location.
 
 .. Note::
 
-For more information on how forms are generated from schema files, see :doc:`JSON Form Widget <../../../modules/json_form_widget/README.md>`.
+  Note: For more information on how forms are generated from schema files, see :doc:`JSON Form Widget <../../../modules/json_form_widget/README.md>`.
