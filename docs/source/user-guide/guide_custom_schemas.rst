@@ -37,4 +37,4 @@ Then make any modifications necessary to the `dataset.json` file inside the `col
 
 .. note::
 
-  For more information on how forms are generated from schema files, see `JSON Form Widget <https://dkan.readthedocs.io/en/latest/json_form_widget.html>`_.
+  For more information on how forms are generated from schema files, see :doc:`JSON Form Widget <../components/json_form_widget>`.

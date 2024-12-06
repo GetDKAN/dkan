@@ -36,6 +36,7 @@ extensions = [
   'myst_parser',
   'sphinx.ext.autosectionlabel',
   'sphinxcontrib.httpdomain',
+  'sphinxcontrib.mermaid',
   'sphinx_rtd_theme',
   'sphinx_prompt'
 ]

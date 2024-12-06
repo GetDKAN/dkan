@@ -2,7 +2,7 @@
 
 This module provides a versatile way to create Drupal form elements from a JSON schema. Why would you need to create a form from JSON? This allows for a wide range of flexibility when customizing a content type without hard coding every field. Data publishers can use DKAN to create and edit custom dataset properties without the need to create patches, or hard-to-maintain overrides any time new schema is introduced. By saving field properties in JSON format, the input and output of the metadata structure remains the same. This also speeds up the performance when creating or updating hundreds of datasets at a time, this can happen in seconds rather than hours.
 
-Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route based on the data type (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and its contained methods for more information about UI options). 
+Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route based on the data type (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and its contained methods for more information about UI options).
 
 The inspiration for this module and the syntax for the UI Schema come from react-jsonschema-form. While the UI schemas are not actually interoperable at this time, and RJSF supports more features of JSON-Schema than this module is currently able to, we hope to close that gap over time.
 
@@ -141,7 +141,7 @@ UI options:
 
 ![Screenshot of a "Description" Drupal form field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-textarea.png)
 
-### URI 
+### URI
 
 **Schema File Example:**
 
@@ -559,7 +559,7 @@ UI options:
 
 ### High level
 
-```mermaid 
+```{mermaid}
 sequenceDiagram
   participant FormBuilder
   participant FieldTypeRouter
@@ -572,7 +572,7 @@ sequenceDiagram
     Note over FieldTypeRouter, Element Handlers: See "Initial Build" diagram<br />for handler details
     Element Handlers ->> FormBuilder: Return default element for $property
   end
-  
+
   FormBuilder ->> SchemaUiHandler: applySchemaUi()
   Note over FormBuilder, SchemaUiHandler: Now apply SchemaUi to full $form
   loop each $property
@@ -585,13 +585,13 @@ sequenceDiagram
 
 ### The initial build
 
-```mermaid
+```{mermaid}
 graph TD
   getForm["FormBuilder::getJsonForm()"] --> eachProp["foreach $properties"]
   eachProp --> getElement["FieldTypeRouter::getFormElement()"]
   getElement --> switch[Switch $type]
   switch --> object{object}
-  
+
   object -- true --> handleObject["ObjectHelper::handleObjectElement()"]
   handleObject --> generateObject["ObjectHelper::generateObjectElement()"]
   generateObject --> generateProperties["ObjectHelper::generateProperties()"]
@@ -615,7 +615,7 @@ graph TD
 
 ### Customizing widgets w/SchemaUI
 
-```mermaid
+```{mermaid}
 flowchart-elk TD
     getForm["FormBuilder::getJsonForm()"] --> applySchemaUi["SchemaUiHandler::applySchemaUi()"]
     applySchemaUi --> eachProp2["foreach schemaUI property"]
@@ -625,7 +625,7 @@ flowchart-elk TD
         handlePropertySpec["SchemaUiHandler::handlePropertySpec()"] --> what{"what is it"}
         what -- array --> eachArrayElement
         eachArrayElement --> applyOnArrayFields
-        
+
         applyOnArrayFields --> eachArrayElementField
         eachArrayElementField --> inSpec{"Does SchemaUI<br>contain config for<br>this field?"}
         inSpec -- yes --> handlePropertySpec
@@ -633,7 +633,7 @@ flowchart-elk TD
 
         what -- object --> applyOnObjectFields
         applyOnObjectFields --> eachObjField["foreach object property in the SchemaUi spec"]
-        eachObjField --> applyOnBaseFieldRec        
+        eachObjField --> applyOnBaseFieldRec
     end
     subgraph s1["applyOnBaseField()"]
         applyOnBaseField --> updateWidgets["SchemaUiHandler::updatewidgets()"]
