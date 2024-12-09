@@ -214,7 +214,25 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
    * Moves the buttons into the table.
    */
   public function preRenderForm(array $dictionaryFields) {
-    return FieldOperations::setAjaxElements($dictionaryFields);
+    foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
+      $edit_button = $dictionaryFields['edit_buttons'][$row] ?? NULL;
+      $edit_fields = $dictionaryFields['edit_fields'][$row] ?? NULL;
+      // Setting the ajax fields if they exsist.
+      if ($edit_button) {
+        $dictionaryFields['data']['#rows'][$row] = array_merge($data, $edit_button);
+        unset($dictionaryFields['edit_buttons'][$row]);
+      }
+      elseif ($edit_fields) {
+        unset($dictionaryFields['data']['#rows'][$row]);
+        $dictionaryFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
+        // Remove the buttons so they don't show up twice.
+        unset($dictionaryFields['edit_fields'][$row]);
+        ksort($dictionaryFields['data']['#rows']);
+      }
+
+    }
+
+    return $dictionaryFields;
   }
 //
 //  /**

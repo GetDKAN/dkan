@@ -144,9 +144,8 @@ class IndexFieldCallbacks {
     // We split the key to get the index field location.
     $op_index = explode('_', $trigger['#op']);
     // Get the current fields data.
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]["data"]["#rows"];
-    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+    $current_index_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+    $currently_modifying_index_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
     $currently_modifying = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
 
     // If the op (trigger) contains abort,

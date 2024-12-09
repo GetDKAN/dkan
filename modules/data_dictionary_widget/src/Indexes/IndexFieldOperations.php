@@ -95,9 +95,9 @@ class IndexFieldOperations {
   /**
    * Prepare index field data results.
    */
-  public static function processIndexFieldsDataResults($index_data_results, $current_index_fields, $index_field_values, $op) {
-    if (isset($current_index_fields)) {
-      $index_data_results = $current_index_fields;
+  public static function processIndexFieldsDataResults($index_data_results, $current_fields, $index_field_values, $op) {
+    if (isset($current_fields)) {
+      $index_data_results = $current_fields;
     }
 
     if (isset($index_field_values["field_json_metadata"][0]["indexes"]["fields"]["field_collection"])) {

@@ -11,25 +11,25 @@ class IndexFieldEditCreation {
    * Create edit index fields.
    */
   public static function editIndexFields($indexKey, $current_index_fields) {
-    $id = $current_index_fields ? 'field-json-metadata-index-fields' : 'field-json-metadata-index-fields-new';
-    // We split the key to get the index field location.
-    $indexKeyExplode = explode("_", $indexKey);
+    $id = $current_index_fields ? 'field-json-metadata-fields' : 'field-json-metadata-fields-new';
+
     $edit_index_fields['name'] = [
-      '#name' => 'field_json_metadata[0][indexes][fields][edit_index_fields][' . $indexKeyExplode[3] . '][name]',
+      '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $indexKey
+        . '][field_collection][name]',
       '#type' => 'textfield',
-      '#value' => $current_index_fields[$indexKeyExplode[3]]['name'],
+      '#value' => $current_index_fields[$indexKey]['name'],
       '#title' => 'Name',
       '#required' => TRUE,
     ];
     $edit_index_fields['length'] = [
-      '#name' => 'field_json_metadata[0][indexes][fields][edit_index_fields][' . $indexKeyExplode[3] . '][length]',
+      '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $indexKey . '][field_collection][length]',
       '#type' => 'number',
-      '#value' => $current_index_fields[$indexKeyExplode[3]]['length'],
+      '#value' => $current_index_fields[$indexKey]['length'],
       '#title' => 'Length',
       '#required' => TRUE,
     ];
 
-    $edit_index_fields['update_index_field']['actions'] = self::createIndexFieldsActionFields($indexKey, $id);
+    $edit_index_fields['update_field']['actions'] = self::createIndexFieldsActionFields($indexKey, $id);
 
     return $edit_index_fields;
   }

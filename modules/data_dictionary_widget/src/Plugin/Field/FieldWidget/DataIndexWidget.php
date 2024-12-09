@@ -7,7 +7,9 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
+use Drupal\data_dictionary_widget\Fields\FieldButtons;
 use Drupal\data_dictionary_widget\Fields\FieldCreation;
+use Drupal\data_dictionary_widget\Fields\FieldEditCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\data_dictionary_widget\Indexes\IndexFieldButtons;
@@ -68,7 +70,27 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
    * Moves the buttons into the table.
    */
   public function preRenderForm(array $dictionaryFields) {
-    return IndexFieldOperations::setIndexFieldsAjaxElements($dictionaryFields);
+    if ($dictionaryFields['data']) {
+      foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
+        $edit_button = $dictionaryFields['edit_buttons'][$row] ?? NULL;
+        $edit_fields = $dictionaryFields['edit_fields'][$row] ?? NULL;
+        if ($edit_button) {
+          $dictionaryFields['data']['#rows'][$row] = array_merge($data, $edit_button);
+          // Remove the buttons so they don't show up twice.
+          unset($dictionaryFields['edit_buttons'][$row]);
+        }
+        elseif ($edit_fields) {
+          unset($dictionaryFields['data']['#rows']['index_field_key_' . $row]);
+          $dictionaryFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
+          // Remove the buttons so they don't show up twice.
+          unset($dictionaryFields['edit_fields'][$row]);
+          // Sort the current index fields data.
+          ksort($dictionaryFields['data']['#rows']);
+        }
+      }
+    }
+
+    return $dictionaryFields;
   }
 
 //  /**
@@ -97,8 +119,28 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
    * @inheritDoc
    */
   protected function processDataResults($data_results, $current_fields, $field_values, $op) {
-    $index_fields_results = $data_results['indexes'][$this->getDelta()]['fields'] ?? [];
-    return IndexFieldOperations::processIndexFieldsDataResults($data_results, $current_fields, $field_values, $op);
+    $index_data_results = $data_results['indexes'][$this->getDelta()]['fields'] ?? [];
+
+    if (isset($current_fields)) {
+      $index_data_results = $current_fields;
+    }
+
+    if (isset($field_values["field_json_metadata"][0]["indexes"]["fields"]["field_collection"])) {
+      $index_field_group = $field_values["field_json_metadata"][0]["indexes"]["fields"]["field_collection"]["group"];
+
+      $data_index_fields_pre = [
+        [
+          "name" => $index_field_group['index']['fields']["name"],
+          "length" => (int) $index_field_group['index']['fields']["length"],
+        ],
+      ];
+    }
+
+    if (isset($data_index_fields_pre) && $op === "add_field") {
+      $index_data_results = isset($current_fields) ? array_merge($current_fields, $data_index_fields_pre) : $data_index_fields_pre;
+    }
+
+    return $index_data_results;
   }
 
   protected function createGeneralFields($element, $field_json_metadata, $current_fields, $form_state) {

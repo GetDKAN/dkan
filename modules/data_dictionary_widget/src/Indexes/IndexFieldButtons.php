@@ -61,16 +61,9 @@ class IndexFieldButtons {
    * Returns the edit buttons.
    */
   public static function editIndexButtons($indexKey) {
-    if (str_contains($indexKey, 'field')) {
       $callback = 'indexEditSubformCallback';
       $id = 'field-json-metadata-index-fields';
       $function = 'subIndexFormAjax';
-    }
-    else {
-      $callback = 'indexEditCallback';
-      $id = 'field-json-metadata-index';
-      $function = 'indexFormAjax';
-    }
     return [
       '#type' => 'image_button',
       '#name' => 'edit_' . $indexKey,
@@ -85,12 +78,12 @@ class IndexFieldButtons {
       '#submit' => [
         [
           '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
-          $callback,
+          'indexEditSubformCallback',
         ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::' . $function,
-        'wrapper' => $id,
+        'callback' => '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::subIndexFormAjax',
+        'wrapper' => 'field-json-metadata-index-fields',
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [
@@ -302,7 +295,7 @@ class IndexFieldButtons {
     if ($location == 'edit') {
       $cancel_index_button['#name'] = 'cancel_update_' . $indexKey;
       $cancel_index_button['#value'] = t('Cancel index edit');
-      
+
     }
     return $cancel_index_button;
   }
