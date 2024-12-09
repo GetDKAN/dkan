@@ -2,15 +2,11 @@
 
 namespace Drupal\data_dictionary_widget\Plugin\Field\FieldWidget;
 
-use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\Annotation\FieldWidget;
-use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Fields\FieldButtons;
 use Drupal\data_dictionary_widget\Fields\FieldEditCreation;
-use Drupal\data_dictionary_widget\Fields\FieldOperations;
 
 /**
  * A data-dictionary widget.
@@ -278,9 +274,9 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
     ];
     $element['dictionary_fields']['current_dictionary_fields'] = $current_fields;
 
-//    if (isset($field_json_metadata['data']['indexes'])) {
-//      $element['indexes'] = self::createField('indexes', $field_json_metadata, $form_state);
-//    }
+    if (isset($field_json_metadata['data']['indexes'])) {
+      $element['indexes'] = self::createField('indexes', $field_json_metadata, $form_state);
+    }
 
     return $element;
   }
@@ -333,20 +329,6 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
     ];
 
     return json_encode($json_data);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  protected function editDictionaryFieldFormState($fields_being_modified, $element) {
-    // TODO: Implement editDictionaryFieldFormState() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
-    // TODO: Implement createDictionaryFieldOptions() method.
   }
 
 }

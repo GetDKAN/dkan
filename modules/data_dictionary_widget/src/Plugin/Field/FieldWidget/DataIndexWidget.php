@@ -2,20 +2,11 @@
 
 namespace Drupal\data_dictionary_widget\Plugin\Field\FieldWidget;
 
-use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\WidgetBase;
+use Drupal\Core\Field\Annotation\FieldWidget;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
-use Drupal\data_dictionary_widget\Fields\FieldButtons;
-use Drupal\data_dictionary_widget\Fields\FieldCreation;
-use Drupal\data_dictionary_widget\Fields\FieldEditCreation;
-use Drupal\data_dictionary_widget\Fields\FieldOperations;
-use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\data_dictionary_widget\Indexes\IndexFieldButtons;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldCreation;
 use Drupal\data_dictionary_widget\Indexes\IndexFieldEditCreation;
-use Drupal\data_dictionary_widget\Indexes\IndexFieldOperations;
 
 /**
  * A data-dictionary widget.
@@ -154,30 +145,13 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     ];
 
     $element['dictionary_fields']['current_dictionary_fields'] = $current_fields;
+    $element['dd_fields']['indexes'] = self::createField('indexes', $field_json_metadata, $form_state);
+
 
     return $element;
   }
 
-  /**
-   * @inheritDoc
-   */
-  protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
-    $current_fields = $element['current_dictionary_fields'];
-    // Creating ajax buttons/fields to be placed in correct location later.
-    foreach ($data_results as $key => $data) {
-      if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
-        $element['edit_fields'][$key] = IndexFieldEditCreation::editIndexFields($key, $current_fields, $fields_being_modified);
-      }
-      else {
-        $element['edit_buttons'][$key]['edit_button'] = IndexFieldButtons::editIndexButtons($key);
-      }
-    }
-    $element['add_row_button'] = IndexFieldButtons::addIndexButton();
-
-    return $element;
-  }
-
-  /**
+    /**
    * @inheritDoc
    */
   protected function createFieldOptions($op_index, $data_results, $fields_being_modified, $element) {

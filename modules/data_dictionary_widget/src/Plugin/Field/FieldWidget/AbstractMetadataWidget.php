@@ -79,14 +79,6 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
 
   abstract protected function createGeneralFields($element, $field_json_metadata, $current_fields, $form_state);
 
-  /**
-   * Create edit and update fields where needed.
-   */
-  /**
-   * Set the elements associated with adding a new field.
-   */
-  abstract protected function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element);
-
   protected function setAddDictionaryFieldFormState($add_new_field, $element) {
     if ($add_new_field) {
       unset($element['dictionary_fields']["edit_buttons"]);
