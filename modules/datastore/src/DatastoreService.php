@@ -312,8 +312,7 @@ class DatastoreService implements ContainerInjectionInterface {
     }
 
     // Invalidate cache tag.
-    $uid = $resource->getIdentifier() . '__' . $resource->getVersion();
-    $this->invalidateCacheTags($uid . '__source');
+    $this->invalidateCacheTags($identifier . '__' . $version . '__source');
   }
 
   /**
