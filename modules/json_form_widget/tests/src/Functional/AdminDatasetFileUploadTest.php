@@ -94,7 +94,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'distribution title test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'distribution description test',
-      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format' => 'csv',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-remote' => 'remote',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote' => $file_url,
     ], 'Save');
@@ -192,7 +192,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'distribution title test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'distribution description test',
-      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format' => 'csv',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-upload' => 'upload',
     ], 'Save');
     $assert->statusCodeEquals(200);

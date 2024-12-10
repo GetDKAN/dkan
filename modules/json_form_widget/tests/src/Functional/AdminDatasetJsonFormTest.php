@@ -62,12 +62,11 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
       );
     }
 
-    // 07_admin_dataset_json_form.spec.js : License and format fields are
+    // 07_admin_dataset_json_form.spec.js : License field is
     // select_or_other elements in dataset form.
     // These select elements have an '- Other -' option.
     foreach ([
       "#edit-field-json-metadata-0-value-license-select option[value='select_or_other']",
-      "#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select option[value='select_or_other']",
     ] as $locator) {
       $item = $page->find('css', $locator);
       $this->assertEquals('select_or_other', $item->getValue());
@@ -76,9 +75,24 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     // fields.
     foreach ([
       '#edit-field-json-metadata-0-value-license-other.form-url',
-      '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-other.form-text',
     ] as $locator) {
       $this->assertNotNull($page->find('css', $locator));
+    }
+
+    // 07_admin_dataset_json_form.spec.js : format field is select elements in dataset form.
+    // These select elements have options, but do not have an '- Other -' option.
+    foreach ([
+      "#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format option",
+    ] as $locator) {
+      $item = $page->find('css', $locator);
+      $this->assertNotEquals('select', $item->getValue());
+    }
+    // Assert the nonexistence of the 'other' text element for select_or_other
+    // fields.
+    foreach ([
+      '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format.form-text',
+    ] as $locator) {
+      $this->assertNull($page->find('css', $locator));
     }
 
     // 07_admin_dataset_json_form.spec.js : User can create and edit a dataset
@@ -145,7 +159,7 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-accrualperiodicity' => 'R/P1Y',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'DKANTEST distribution title text',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'DKANTEST distribution description text',
-      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format' => 'csv',
     ], 'Save');
     $assert->statusCodeEquals(200);
     $assert->pageTextContains('Data ' . $dataset_new_title . ' has been updated.');

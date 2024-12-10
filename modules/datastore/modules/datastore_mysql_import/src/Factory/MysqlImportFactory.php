@@ -7,6 +7,7 @@ use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -44,6 +45,13 @@ class MysqlImportFactory implements ImportFactoryInterface {
   protected EventDispatcherInterface $eventDispatcher;
 
   /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -51,11 +59,13 @@ class MysqlImportFactory implements ImportFactoryInterface {
     MySqlDatabaseTableFactory $databaseTableFactory,
     LoggerInterface $loggerChannel,
     EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
     $this->logger = $loggerChannel;
     $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -72,7 +82,8 @@ class MysqlImportFactory implements ImportFactoryInterface {
       $this->importJobStoreFactory,
       $this->databaseTableFactory,
       $this->logger,
-      $this->eventDispatcher
+      $this->eventDispatcher,
+      $this->referenceLookup
     );
     $importer->setImporterClass(MysqlImport::class);
     return $importer;
