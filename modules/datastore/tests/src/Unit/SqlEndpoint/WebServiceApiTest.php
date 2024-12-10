@@ -110,11 +110,15 @@ class WebServiceApiTest extends TestCase {
 
     $row = (object) ['column_1' => "hello", 'column_2' => "goodbye"];
 
+    $request = $this->getMockBuilder(Request::class)
+      ->onlyMethods(['get', 'getContent'])
+      ->getMock();
+    $request->method('get')->willReturn($query);
+    $request->method('getContent')->willReturn($body);
+
     return (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'get', $query)
-      ->add(Request::class, 'getContent', $body)
+      ->add(RequestStack::class, 'getCurrentRequest', $request)
       ->add(ConfigFactory::class, 'get', Config::class)
       ->add(Config::class, 'get', 1000)
       ->add(DatastoreSqlEndpointService::class, 'runQuery', [$row])
