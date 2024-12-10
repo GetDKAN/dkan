@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\datastore\Unit;
 
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
@@ -25,6 +24,7 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @covers \Drupal\datastore\DatastoreService
@@ -52,7 +52,7 @@ class DatastoreServiceTest extends TestCase {
       ->add(ImportService::class, 'getImporter', ImportJob::class)
       ->add(ImportJob::class, 'getResult', new Result())
       ->add(QueueFactory::class, "get", NULL)
-      ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
+      ->add(EventDispatcher::class, "dispatch", NULL);
 
     $service = DatastoreService::create($chain->getMock());
     $result = $service->import("1");
@@ -100,7 +100,7 @@ class DatastoreServiceTest extends TestCase {
 
   private function getCommonChain() {
     $options = (new Options())
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('event_dispatcher', EventDispatcher::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
