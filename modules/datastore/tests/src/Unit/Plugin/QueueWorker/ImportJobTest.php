@@ -336,7 +336,7 @@ class ImportJobTest extends TestCase {
    * @dataProvider sanitizeHeaderProvider
    * @covers ::sanitizeHeader
    */
-  public function testSanitizeHeader($column, $expected) {
+  public static function testSanitizeHeader($column, $expected) {
     $this->assertEquals($expected, ImportJob::sanitizeHeader($column));
   }
 

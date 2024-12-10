@@ -16,10 +16,10 @@ use PHPUnit\Framework\TestCase;
  */
 class HarvestHashesEntityDatabaseTableTest extends TestCase {
 
-  public function providerNotImplementedMethods() {
+  public static function providerNotImplementedMethods() {
     return [
       ['storeMultiple', [[]]],
-      ['query', [$this->createStub(Query::class)]],
+      ['query', [static::createStub(Query::class)]],
       ['setSchema', [[]]],
       ['getSchema', []],
     ];

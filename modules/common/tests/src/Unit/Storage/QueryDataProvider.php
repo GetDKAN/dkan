@@ -24,7 +24,7 @@ class QueryDataProvider {
   /**
    *
    */
-  public function getAllData($return): array {
+  public static function getAllData(): array {
     $tests = [
       'noPropertiesQuery',
       'propertiesQuery',
