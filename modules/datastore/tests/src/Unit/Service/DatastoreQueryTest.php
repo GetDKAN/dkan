@@ -28,6 +28,7 @@ use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\metastore\Reference\ReferenceLookup;
 
 /**
  * @group dkan
@@ -204,6 +205,7 @@ class DatastoreQueryTest extends TestCase {
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->index(0);
 
     $resource_metadata = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';
@@ -223,7 +225,9 @@ class DatastoreQueryTest extends TestCase {
       ->add(DatabaseTable::class, "query", $queryResult, 'DatabaseTableQuery')
       ->add(DatabaseTable::class, "getSchema", ["fields" => ["a" => "a", "b" => "b"]])
       ->add(DatabaseTable::class, "getTableName", "table2")
-      ->add(DatabaseTable::class, "primaryKey", "record_number");
+      ->add(DatabaseTable::class, "primaryKey", "record_number")
+      ->add(ReferenceLookup::class, 'getReferencers', [$resource->getIdentifier()])
+      ->add(ReferenceLookup::class, 'invalidateReferencerCacheTags');
 
   }
 
