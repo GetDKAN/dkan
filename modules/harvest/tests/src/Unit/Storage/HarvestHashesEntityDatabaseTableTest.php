@@ -33,7 +33,8 @@ class HarvestHashesEntityDatabaseTableTest extends TestCase {
   public function testNotImplementedMethods($method, $arguments) {
     $table = $this->getMockBuilder(HarvestHashesEntityDatabaseTable::class)
       ->disableOriginalConstructor()
-      ->getMockForAbstractClass();
+      ->onlyMethods([])
+      ->getMock();
 
     $this->expectException(\RuntimeException::class);
     $this->expectExceptionMessage(HarvestHashesEntityDatabaseTable::class . '::' . $method . ' not yet implemented.');
