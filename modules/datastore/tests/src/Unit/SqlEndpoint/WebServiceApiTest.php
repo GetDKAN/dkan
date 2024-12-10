@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\datastore\Unit\SqlEndpoint;
 
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
@@ -18,6 +17,7 @@ use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -37,7 +37,7 @@ class WebServiceApiTest extends TestCase {
     // Set cache services
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('event_dispatcher', EventDispatcher::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
@@ -102,7 +102,7 @@ class WebServiceApiTest extends TestCase {
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->add("database", Connection::class)
       ->add('request_stack', RequestStack::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('event_dispatcher', EventDispatcher::class)
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->index(0);
 
