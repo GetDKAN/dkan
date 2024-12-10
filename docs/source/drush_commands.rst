@@ -45,6 +45,19 @@ dkan:datastore:import
 
 ~~~~~~
 
+dkan:datastore:apply-dictionary
+-----------------------
+
+    Apply the configured data dictionary to a datastore resource.
+
+    This will apply the dictionary in the describedBy field of the resource.
+
+    **Arguments**
+
+    - **resource_identifier** The identifier for the resource.
+
+~~~~~~
+
 dkan:datastore:localize
 -----------------------
 
