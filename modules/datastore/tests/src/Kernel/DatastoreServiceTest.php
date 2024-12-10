@@ -32,7 +32,7 @@ class DatastoreServiceTest extends KernelTestBase {
    * It's possible for drop() to receive an id and version that yield a null
    * resource object from the resource localizer, even though there is a valid
    * storage object. Therefore, we have to test that drop() can deal with that
-   * scenario.
+   * situation.
    */
   public function testNullResource() {
     $this->installEntitySchema('resource_mapping');
