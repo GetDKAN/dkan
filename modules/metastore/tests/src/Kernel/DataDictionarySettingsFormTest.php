@@ -222,7 +222,12 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     $this->metastore->post('data-dictionary', $data_dict);
     $this->metastore->publish('data-dictionary', $dict_id);
 
-    $this->form = new DataDictionarySettingsForm($this->container->get('config.factory'), $this->container->get('messenger'), $this->container->get('dkan.metastore.service'));
+    $this->form = new DataDictionarySettingsForm(
+      $this->container->get('config.factory'),
+      $this->container->get('messenger'),
+      $this->container->get('dkan.metastore.service'),
+      $this->container->get('config.typed')
+    );
   }
 
 }

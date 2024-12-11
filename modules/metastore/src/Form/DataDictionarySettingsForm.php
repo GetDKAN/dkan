@@ -3,6 +3,7 @@
 namespace Drupal\metastore\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -39,8 +40,13 @@ class DataDictionarySettingsForm extends ConfigFormBase {
    * @param \Drupal\metastore\MetastoreService $metastore
    *   The metastore service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger, MetastoreService $metastore) {
-    parent::__construct($config_factory);
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    MessengerInterface $messenger,
+    MetastoreService $metastore,
+    TypedConfigManagerInterface $typed_config,
+  ) {
+    parent::__construct($config_factory, $typed_config);
     $this->messenger = $messenger;
     $this->metastore = $metastore;
   }
@@ -57,7 +63,8 @@ class DataDictionarySettingsForm extends ConfigFormBase {
     return new static(
       $container->get('config.factory'),
       $container->get('messenger'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('config.typed')
     );
   }
 
