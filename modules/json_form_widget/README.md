@@ -562,4 +562,4 @@ UI options:
 
 
 ## Diagrams
-[View code diagrams](https://github.com/GetDKAN/dkan/blob/d05b1ffa27b065ad96f86141de4fdfb51a6a73be/modules/json_form_widget/CodeFlowDiagrams.md)
+[View code diagrams](https://github.com/GetDKAN/dkan/blob/json-widget-readme/modules/json_form_widget/CodeFlowDiagrams.md)
