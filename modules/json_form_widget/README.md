@@ -4,7 +4,7 @@ This module provides a versatile way to create Drupal form elements from a JSON 
 
 Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route based on the data type (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and its contained methods for more information about UI options).
 
-The inspiration for this module and the syntax for the UI Schema come from react-jsonschema-form. While the UI schemas are not actually interoperable at this time, and RJSF supports more features of JSON-Schema than this module is currently able to, we hope to close that gap over time.
+The inspiration for this module and the syntax for the UI Schema come from [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/docs/). While the UI schemas are not actually interoperable at this time, and RJSF supports more features of JSON-Schema than this module is currently able to, we hope to close that gap over time.
 
 > **_TIP:_**
 > A good way to visualize what this module is doing is to use [RJSF](https://github.com/rjsf-team) team's [react-jsonschema-form playground](https://rjsf-team.github.io/react-jsonschema-form/) as this modules functionality is largely similar in regards to how the schema translates to different form fields/structure.
@@ -47,7 +47,7 @@ Drupal Core:
 
 ## Installation
 
-The forms that the JSON Form Widget creates utilize the DKAN metastore for schema discovery and subsequently create nodes as the "data" content type. This module therefore is currently packaged with DKAN and as of now cannot be installed independantly. CivicActions plans to develop this module as a standalone Drupal module eventually.
+The forms that the JSON Form Widget creates utilize the DKAN metastore for schema discovery and subsequently create nodes as the "data" content type. This module therefore is currently packaged with DKAN and as of now cannot be installed independantly. CivicActions plans to develop this module as a standalone Drupal module in the future.
 
 ## Configuration
 
@@ -527,24 +527,30 @@ Includes (of note):
     },
 
 UI options:
-- Description
+- description
+  - Overrides the description from dataset.json.
 - widget: hidden
+  - Keeps the property from displaying in the form.
 - title: "File Title"
   - Overrides the title for the field in the schema file and displays the value of the JSON property in the schema ui file instead.
 - widget: textarea
+  - Provide a textarea.
 - rows: 5
+  - The textarea will have a hight of 5 rows.
 - widget: list
+  - Create a list element.
 - type: select_other
   - Creates a dropdown select (list) field with an "other" option
 - other_type: textfield
   - The "other" option in the above mentioned select_other list, when chosen by the person filling out the form, appears as a text area.
 - source
+  - Provide a source for list options.
 - widget: upload_or_link
   - Signifies that this will be a field that allows for the upload of a file or a link to a file (URL)
-- extensions: csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp
-  - the allowed file extensions/types
+- extensions:
+  - The allowed file extensions/types.
 - progress_indicator: bar
-  - The UI element that will show how long t is taking to upload the file, alternates are
+  - The UI element that will show how long it is taking to upload the file.
 - source
   - metestoreSchema: publisher
     - Where the predetermined options for the select list come from
@@ -553,3 +559,93 @@ UI options:
 **Form Element:**
 
 ![Screenshot of a "Distribution" Drupal form dropdown box with multiple fields used to show how a "fieldset" box with a select list with an other option and an upload or link field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/object-fieldset-select-other-upload-link.png)
+
+
+## Code flow diagrams
+
+### High level
+
+```mermaid
+sequenceDiagram
+  participant FormBuilder
+  participant FieldTypeRouter
+  participant Element Handlers
+  participant SchemaUiHandler
+
+  loop each $property in $form
+    FormBuilder ->> FieldTypeRouter: getFormElement()
+    FieldTypeRouter ->> Element Handlers: handler methods<br />on helper classes
+    Note over FieldTypeRouter, Element Handlers: See "Initial Build" diagram<br />for handler details
+    Element Handlers ->> FormBuilder: Return default element for $property
+  end
+
+  FormBuilder ->> SchemaUiHandler: applySchemaUi()
+  Note over FormBuilder, SchemaUiHandler: Now apply SchemaUi to full $form
+  loop each $property
+    SchemaUiHandler ->> SchemaUiHandler: applyOnBaseField()
+    SchemaUiHandler ->> SchemaUiHandler: handlePropertySpec()
+    Note over SchemaUiHandler, SchemaUiHandler: See "Customizing widgets"<br />diagram
+  end
+  SchemaUiHandler ->> FormBuilder: Return $form with SchemaUi alterations
+```
+
+### The initial build
+
+```mermaid
+graph TD
+  getForm["FormBuilder::getJsonForm()"] --> eachProp["foreach $properties"]
+  eachProp --> getElement["FieldTypeRouter::getFormElement()"]
+  getElement --> switch[Switch $type]
+  switch --> object{object}
+
+  object -- true --> handleObject["ObjectHelper::handleObjectElement()"]
+  handleObject --> generateObject["ObjectHelper::generateObjectElement()"]
+  generateObject --> generateProperties["ObjectHelper::generateProperties()"]
+  generateProperties -- recursion --> eachProp
+
+
+  object -- false --> array{array}
+  array -- true --> handleArray["ArrayHelper::handleArrayElement()"]
+  handleArray --> complex{Items are objects?}
+  complex -- no --> buildSimple["ArrayHelper::buildSimpleArrayElement()"]
+  complex -- yes --> buildComplex["ArrayHelper::buildComplexArrayElement()"]
+  buildComplex --> handleObject
+
+  array -- false --> string["string"]
+  string -- true --> handleString["StringHelper::handleStringElement()"]
+  string -- false --> integer["integer"]
+  integer -- true --> handleInteger["IntegerHelper::handleIntegerElement()"]
+  switch --> eachProp
+  eachProp --> getForm
+```
+
+### Customizing widgets w/SchemaUI
+
+```mermaid
+flowchart-elk TD
+    getForm["FormBuilder::getJsonForm()"] --> applySchemaUi["SchemaUiHandler::applySchemaUi()"]
+    applySchemaUi --> eachProp2["foreach schemaUI property"]
+    eachProp2 --> applyOnBaseField["SchemaUiHandler::applyOnBaseField()"]
+    eachProp2 --> handlePropertySpec
+    subgraph s2["handlePropertySpec"]
+        handlePropertySpec["SchemaUiHandler::handlePropertySpec()"] --> what{"what is it"}
+        what -- array --> eachArrayElement
+        eachArrayElement --> applyOnArrayFields
+
+        applyOnArrayFields --> eachArrayElementField
+        eachArrayElementField --> inSpec{"Does SchemaUI<br>contain config for<br>this field?"}
+        inSpec -- yes --> handlePropertySpec
+        inSpec -- no --> applyOnBaseFieldRec["SchemaUiHandler::applyOnBaseField()"]
+
+        what -- object --> applyOnObjectFields
+        applyOnObjectFields --> eachObjField["foreach object property in the SchemaUi spec"]
+        eachObjField --> applyOnBaseFieldRec
+    end
+    subgraph s1["applyOnBaseField()"]
+        applyOnBaseField --> updateWidgets["SchemaUiHandler::updatewidgets()"]
+        updateWidgets --> disableFields["SchemaUiHandler::disableFields()"]
+        disableFields --> addPlaceholders["SchemaUiHandler::addPlaceholders()"]
+        addPlaceholders --> changeFieldDescriptions["SchemaUiHandler::changeFieldDescriptions()"]
+        changeFieldDescriptions --> changeFieldTitle["SchemaUiHandler::changeFieldTitle()"]
+    end
+```
