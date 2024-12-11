@@ -26,7 +26,7 @@ Then make any modifications necessary to the `dataset.json` file inside the `col
 
 .. warning::
 
-  You can remove metadata fields with the exception of the *distribution* property, this one must remain present in the dataset.json file in order to take advantage of the datastore feature.
+  You can change or remove metadata fields from the dataset schema without causing issues, with the exception of the *distribution* property. If there is no array of objects called ``distribution``, each containing a ``downloadURL`` field, the :doc:`datastore <../components/dkan_datastore>` will not detect resource for import. This may or may not be an issue, depending on your use case. We hope to improve this in the future so that the datastore is not dependent on a particular metadata schema.
 
 .. warning::
 
