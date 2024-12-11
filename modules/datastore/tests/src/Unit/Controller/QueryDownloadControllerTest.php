@@ -24,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -54,7 +55,7 @@ class QueryDownloadControllerTest extends TestCase {
     // Set cache services
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('event_dispatcher', EventDispatcher::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
