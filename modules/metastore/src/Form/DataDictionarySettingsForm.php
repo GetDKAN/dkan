@@ -33,12 +33,17 @@ class DataDictionarySettingsForm extends ConfigFormBase {
   /**
    * Constructs a \Drupal\Core\Form\ConfigFormBase object.
    *
+   * Arg order a little weird because TypedConfigManagerInterface was not
+   * required when this was first done.
+   *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger.
    * @param \Drupal\metastore\MetastoreService $metastore
    *   The metastore service.
+   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typed_config
+   *   The typed config manager.
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
