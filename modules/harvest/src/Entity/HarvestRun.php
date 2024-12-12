@@ -46,7 +46,7 @@ use Drupal\harvest\HarvestRunInterface;
  *   admin_permission = "administer harvest_run",
  *   entity_keys = {
  *     "id" = "id",
- *     "label" = "ID",
+ *     "label" = "id",
  *   },
  *   links = {
  *     "canonical" = "/harvest-run/{harvest_run}",
