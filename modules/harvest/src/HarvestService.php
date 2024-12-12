@@ -207,7 +207,7 @@ class HarvestService implements ContainerInjectionInterface {
     $result['status']['orphan_ids'] =
       $this->getOrphanIdsFromResult($plan_id, $result['status']['extracted_items_ids']);
     $this->processOrphanIds($result['status']['orphan_ids']);
-
+    // For legacy reasons, the identifier is the timestamp.
     $result['identifier'] = $timestamp;
     $this->runRepository->storeRun($result, $plan_id, $timestamp);
 

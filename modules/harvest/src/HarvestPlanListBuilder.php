@@ -4,6 +4,7 @@ namespace Drupal\harvest;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
@@ -29,12 +30,19 @@ class HarvestPlanListBuilder extends EntityListBuilder {
   protected HarvestRunRepository $harvestRunRepository;
 
   /**
+   * Entity storage service for the harvest_run entity type.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected EntityStorageInterface $harvestRunStorage;
+
+  /**
    * {@inheritDoc}
    */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     $builder = parent::createInstance($container, $entity_type);
-    $builder->harvestService = $container->get('dkan.harvest.service');
     $builder->harvestRunRepository = $container->get('dkan.harvest.storage.harvest_run_repository');
+    $builder->harvestRunStorage = $container->get('entity_type.manager')->getStorage('harvest_run');
     return $builder;
   }
 
@@ -70,9 +78,10 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     $harvest_plan_id = $entity->get('id')->getString();
     $run_entity = NULL;
 
-    if ($run_id = $this->harvestService->runRepository->getLastHarvestRunId($harvest_plan_id)) {
+    if ($run_id = $this->harvestRunRepository->getLastHarvestRunId($harvest_plan_id)) {
       // There is a run identifier, so we should get that info.
-      $run_entity = $this->harvestRunRepository->runStorage->load($run_id);
+      /** @var \Drupal\harvest\HarvestRunInterface $run_entity */
+      $run_entity = $this->harvestRunStorage->load($run_id);
     }
 
     // Default values for a row if there's no info.
@@ -96,7 +105,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
         'data' => $extract_status,
         'class' => strtolower($extract_status),
       ];
-      $row['last_run'] = date('m/d/y H:m:s T', $run_id);
+      $row['last_run'] = date('m/d/y H:m:s T', $run_entity->get('timestamp')->value);
       $row['dataset_count'] = $interpreter->countProcessed();
     }
     // Don't call parent::buildRow() because we don't want operations (yet).

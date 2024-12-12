@@ -22,7 +22,7 @@ class HarvestRunRepository {
   /**
    * Entity storage service for the harvest_run entity type.
    */
-  public EntityStorageInterface $runStorage;
+  protected EntityStorageInterface $runStorage;
 
   /**
    * Database connection service.

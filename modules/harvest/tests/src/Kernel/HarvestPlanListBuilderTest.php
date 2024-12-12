@@ -101,7 +101,6 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $this->registerHarvestPlan($harvest_service, $plan_id);
     $run_result = $harvest_service->runHarvest($plan_id);
     $this->assertEquals('SUCCESS', $run_result['status']['extract'] ?? 'not_a_successful_run');
-    $run_id = $harvest_service->runRepository->getLastHarvestRunId($plan_id);
 
     $response = $list_builder->render();
 
@@ -109,7 +108,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $strings = array_merge(self::HARVEST_HEADERS, [
       'harvest_link',
       'SUCCESS',
-      json_encode(date('m/d/y H:m:s T', $run_id)),
+      json_encode(date('m/d/y H:m:s T', $run_result['identifier'])),
       '2',
     ]);
     foreach ($strings as $string) {
