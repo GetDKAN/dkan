@@ -239,7 +239,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
       );
 
     // Set up a triggering element with '#op' set to 'add_index'.
-    $trigger = ['#op' => 'add_index_field'];
+    $trigger = ['#op' => 'add_field'];
     // Expect that getTriggeringElement will be called once and return the add.
     $formState->expects($this->any())
       ->method('getTriggeringElement')
@@ -562,7 +562,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
    */
   public function testEditDataDictionaryIndexEditFields() {
     // Arrange
-    $indexKey = 'index_field_key_0';
+    $indexKey = '0';
     $current_index_fields = [
       [
         'name' => 'test',
@@ -575,9 +575,9 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
 
     // Assert
     $this->assertNotNull($edit_index_fields);
-    $this->assertEquals('field_json_metadata[0][indexes][fields][edit_index_fields][0][name]', $edit_index_fields['name']['#name']);
+    $this->assertEquals('field_json_metadata[0][indexes][fields][edit_fields][0][name]', $edit_index_fields['name']['#name']);
     $this->assertEquals($current_index_fields[0]['name'], $edit_index_fields['name']['#value']);
-    $this->assertEquals('field_json_metadata[0][indexes][fields][edit_index_fields][0][length]', $edit_index_fields['length']['#name']);
+    $this->assertEquals('field_json_metadata[0][indexes][fields][edit_fields][0][length]', $edit_index_fields['length']['#name']);
     $this->assertEquals($current_index_fields[0]['length'], $edit_index_fields['length']['#value']);
   }
 
@@ -623,7 +623,7 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
               ]
             ],
             'fields' => [
-              'edit_index_fields' => [
+              'edit_fields' => [
                 [
                   'name' => 'test',
                   'length' => 20,
@@ -724,8 +724,8 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
     $formState->expects($this->any())
       ->method('getTriggeringElement')
       ->willReturnOnConsecutiveCalls(
-        ['#op' => 'edit_index_field_key_0'], ['#op' => 'edit_index_field_key_0'],
-        ['#op' => 'update_index_field_key_0'], ['#op' => 'update_index_field_key_0'],
+        ['#op' => 'edit_0'], ['#op' => 'edit_0'],
+        ['#op' => 'update_0'], ['#op' => 'update_0'],
       );
 
     $formState->expects($this->any())

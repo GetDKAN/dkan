@@ -2,6 +2,8 @@
 
 namespace Drupal\data_dictionary_widget\Indexes;
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Various operations for creating Index fields.
  */
@@ -71,5 +73,45 @@ class IndexFieldCreation {
       '#theme' => 'custom_index_table',
     ];
   }
+
+  protected static function createField(string $field, array $field_json_metadata, FormStateInterface &$form_state) {
+    $identifier_uuid = $field_json_metadata['identifier'] ?? $form_state->getUserInput()["field_json_metadata"][0]["identifier"] ?? NULL;
+
+    $fieldMappings = [
+      'title' => [
+        '#name' => 'field_json_metadata[0][title]',
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#title' => t('Title'),
+        '#default_value' => $field_json_metadata['title'] ?? ($field_json_metadata['data']['title'] ?? ''),
+      ],
+      'identifier' => [
+        '#name' => 'field_json_metadata[0][identifier]',
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#title' => t('Identifier'),
+        '#attributes' => ['readonly' => 'readonly'],
+        '#default_value' => $identifier_uuid ?? '',
+        '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),
+      ],
+      'indexes' => [
+        '#type' => 'textarea',
+        '#access' => FALSE,
+        '#required' => TRUE,
+        '#title' => t('Index'),
+        '#default_value' => isset($field_json_metadata['data']['indexes']) ? json_encode($field_json_metadata['data']['indexes']) : '',
+      ],
+      'dd_fields' => [
+        '#type' => 'textarea',
+        '#access' => FALSE,
+        '#required' => TRUE,
+        '#title' => t('DD Fields'),
+        '#default_value' => isset($field_json_metadata['data']['fields']) ? json_encode($field_json_metadata['data']['fields']) : '',
+      ],
+    ];
+
+    return $fieldMappings[$field] ?? [];
+  }
+
 
 }

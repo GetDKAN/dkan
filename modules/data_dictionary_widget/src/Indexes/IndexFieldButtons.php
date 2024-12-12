@@ -14,9 +14,9 @@ class IndexFieldButtons {
     return [
       '#type' => 'submit',
       '#value' => 'Add field to index',
-      '#name' => 'add_index_field',
+      '#name' => 'add_field',
       '#access' => TRUE,
-      '#op' => 'add_new_index_field',
+      '#op' => 'add_new_field',
       '#submit' => [
         [
           '\Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks',
@@ -105,7 +105,7 @@ class IndexFieldButtons {
    */
   public static function submitIndexFieldButton($location, $indexKey) {
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = !empty($indexKey) ? 'update_' . $indexKey : 'add_index_field';
+    $op = is_int($indexKey) ? 'update_' . $indexKey : 'add_field';
     $value = $location == 'edit' ? 'Save index field edit' : 'Save field to index';
     // Index fields cannot be edited once submitted so we use the same function
     // for both add and edit.
@@ -166,7 +166,7 @@ class IndexFieldButtons {
           0,
           'indexes',
           'fields',
-          'edit_index_fields',
+          'edit_fields',
           $indexKeyExplode[3],
           'name',
         ],
@@ -175,7 +175,7 @@ class IndexFieldButtons {
           0,
           'indexes',
           'fields',
-          'edit_index_fields',
+          'edit_fields',
           $indexKeyExplode[3],
           'length',
         ],

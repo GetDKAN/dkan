@@ -22,7 +22,7 @@ class IndexFieldCallbacks {
     $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? [];
 
     if ($current_index_fields) {
-      $form_state->set('current_index_fields', $current_index_fields);
+      $form_state->set('current_dictionary_fields', $current_index_fields);
     }
 
     // If cancelling index field.
@@ -30,18 +30,18 @@ class IndexFieldCallbacks {
       // Set the display to show the current index fields values.
       $form_state->set('cancel_index_field', TRUE);
       // Hide the field collection.
-      $form_state->set('add_new_index_field', '');
+      $form_state->set('add_new_field', '');
     }
 
     // If adding new index field, this is triggered when you click the button to
     // 'Add'
-    if ($op === 'add_new_index_field') {
+    if ($op === 'add_new_field') {
       // @TODO not being used so maybe removable or update the comment.
-      $form_state->set('add_index_field', '');
+      $form_state->set('add_field', '');
       // Get the form fields for adding new index fields.
       $add_index_fields = IndexFieldAddCreation::addIndexFields($current_index_fields);
       // Set the fields in the field collection.
-      $form_state->set('add_new_index_field', $add_index_fields);
+      $form_state->set('add_new_field', $add_index_fields);
       // @TODO not being used so maybe removable or update the comment.
       $form_state->set('index_added', FALSE);
       // @TODO not being used so maybe removable or update the comment.
@@ -49,9 +49,9 @@ class IndexFieldCallbacks {
     }
 
     // If saving new index field.
-    if ($op === 'add_index_field') {
+    if ($op === 'add_field') {
       // @TODO not being used so maybe removable or update the comment.
-      $form_state->set('add_new_index_field', '');
+      $form_state->set('add_new_field', '');
       // Get and save the entered values.
       $form_state->set('new_index_fields', $form_state->getUserInput());
       // @TODO not being used so maybe removable or update the comment.
@@ -66,7 +66,7 @@ class IndexFieldCallbacks {
     // but aren't currently being modified.
     $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->set('current_index', $current_index);
-    $form_state->set('current_index_fields', $current_index_fields);
+    $form_state->set('current_dictionary_fields', $current_index_fields);
     // Let's rebuild the form.
     $form_state->setRebuild();
   }
@@ -81,31 +81,29 @@ class IndexFieldCallbacks {
     // Get the current fields data.
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $current_index = $form["field_json_metadata"]["widget"][0]["indexes"]["data"]["#rows"];
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? NULL;
+//    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? NULL;
     // Initialize the various field storage values.
-    $form_state->set('add_new_index_field', '');
-    $form_state->set('new_index_fields', '');
-    $form_state->set('add_new_index', '');
-    // @TODO not being used so maybe removable or update the comment.
-    $form_state->set('adding_new_index_fields', FALSE);
+//    $form_state->set('add_new_index_field', '');
+//    $form_state->set('new_index_fields', '');
+//    $form_state->set('add_new_index', '');
+//    // @TODO not being used so maybe removable or update the comment.
+//    $form_state->set('adding_new_index_fields', FALSE);
 
-    if ($current_index) {
-      $form_state->set('current_index', $current_index);
+    if ($current_dictionary_fields) {
+      $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     }
 
-    // If cancelling index.
-    if ($op === 'cancel_index') {
-      // Set the display to show the current index values.
-      $form_state->set('cancel_index', TRUE);
+    if ($op === 'cancel') {
+      $form_state->set('cancel', TRUE);
     }
 
     // If adding new index, this is triggered when you click the button to
     // 'Add index'
-    if ($op === 'add_new_index') {
+    if ($op === 'add_new_field') {
       // Get the form fields for adding new index.
       $add_new_index = IndexFieldAddCreation::addIndex();
       // Set the new_index values to empty.
-      $form_state->set('new_index', '');
+      $form_state->set('add_new_field', '');
       // Set the fields in the field collection.
       $form_state->set('add_new_index', $add_new_index);
     }
@@ -128,7 +126,7 @@ class IndexFieldCallbacks {
     // but aren't currently being modified.
     $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->set('current_index', $current_index);
-    $form_state->set('current_index_fields', $current_index_fields);
+    $form_state->set('current_dictionary_fields', $current_index_fields);
     // Let's rebuild the form.
     $form_state->setRebuild();
   }
@@ -145,22 +143,22 @@ class IndexFieldCallbacks {
     $op_index = explode('_', $trigger['#op']);
     // Get the current fields data.
     $current_index_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $currently_modifying_index_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
-    $currently_modifying = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
+    $currently_modifying_index_fields = $form_state->get('dictionary_fields_being_modified') ?? [];
+//    $currently_modifying = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
 
     // If the op (trigger) contains abort,
     // We're canceling the field we're currently modifying so unset it.
     if (str_contains($op, 'abort')) {
-      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
     }
 
     // If the op (trigger) contains delete,
     // We're deleting the field we're editing so...
     if (str_contains($op, 'delete')) {
       // Unset it from being currently modified.
-      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
       // Remove the respective field/data from the form.
-      unset($current_index_fields[$op_index[4]]);
+      unset($current_index_fields[$op_index[1]]);
     }
 
     // If the op (trigger) contains update,
@@ -169,29 +167,27 @@ class IndexFieldCallbacks {
       // Get the entered data.
       $update_values = $form_state->getUserInput();
       // Unset the respective currently modifying field.
-      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
       // Unset the respective field/data from the form.
-      unset($current_index_fields[$op_index[4]]);
+      unset($current_index_fields[$op_index[1]]);
       // Update the respective current field data with our new input data.
-      $current_index_fields[$op_index[4]] = IndexFieldValues::updateIndexFieldValues($op_index[4], $update_values, $current_index_fields);
+      $current_index_fields[$op_index[1]] = IndexFieldValues::updateIndexFieldValues($op_index[1], $update_values, $current_index_fields);
       // Sort the current index fields data.
       ksort($current_index_fields);
     }
 
     // If the op (trigger) contains edit
     // We're editing a specific field so...
-    if (str_contains($op, 'edit_index_field')) {
+    if (str_contains($op, 'edit')) {
       // Set the field we're modifying to that field.
-      $currently_modifying_index_fields[$op_index[4]] = $current_index_fields[$op_index[4]];
+      $currently_modifying_index_fields[$op_index[1]] = $current_index_fields[$op_index[1]];
     }
 
     // Let's retain the fields that are being modified.
-    $form_state->set('dictionary_fields_being_modified', $currently_modifying);
-    $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
+    $form_state->set('dictionary_fields_being_modified', $currently_modifying_index_fields);
     // Let's retain the fields that are already stored on the form,
     // but aren't currently being modified.
-    $form_state->set('current_index_fields', $current_index_fields);
-    $form_state->set('current_dictionary_fields', $current_dictionary_fields);
+    $form_state->set('current_dictionary_fields', $current_index_fields);
     // Let's rebuild the form.
     $form_state->setRebuild();
   }
@@ -207,12 +203,12 @@ class IndexFieldCallbacks {
     // We split the key to get the index location.
     $op_index = explode('_', $trigger['#op']);
     // Get the current fields data.
-    $current_index_fields = $form['field_json_metadata']['widget'][0]['indexes']['fields']['data']['#rows'] ?? [];
+//    $current_index_fields = $form['field_json_metadata']['widget'][0]['indexes']['fields']['data']['#rows'] ?? [];
     $current_index = $form['field_json_metadata']['widget'][0]['indexes']['data']['#rows'] ?? [];
-    $current_dictionary_fields = $form['field_json_metadata']['widget'][0]['dictionary_fields']['data']['#rows'] ?? [];
-    $currently_modifying_index_fields = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+    $current_index_fields = $form['field_json_metadata']['widget'][0]['dictionary_fields']['data']['#rows'] ?? [];
+    $currently_modifying_index_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
     $currently_modifying_index = $form_state->get('index_being_modified') != NULL ? $form_state->get('index_being_modified') : [];
-    $currently_modifying_dictionary_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
+//    $currently_modifying_dictionary_fields = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
 
     // If the op (trigger) contains abort,
     // We're canceling the index we're currently modifying so unset it.
@@ -221,7 +217,7 @@ class IndexFieldCallbacks {
     }
     // We're canceling the index field we're currently modifying so unset it.
     if (str_contains($op, 'abort_index_field_key')) {
-      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
     }
 
     // If the op (trigger) contains delete,
@@ -235,9 +231,9 @@ class IndexFieldCallbacks {
     // We're deleting the index field we're editing so...
     if (str_contains($op, 'delete_index_field_key')) {
       // Unset it from being currently modified.
-      unset($currently_modifying_index_fields[$op_index[4]]);
+      unset($currently_modifying_index_fields[$op_index[1]]);
       // Remove the respective field/data from the form.
-      unset($current_index_fields[$op_index[4]]);
+      unset($current_index_fields[$op_index[1]]);
     }
 
     // If the op (trigger) contains update,
@@ -261,14 +257,14 @@ class IndexFieldCallbacks {
     }
 
     // Let's retain the fields that are being modified.
-    $form_state->set('dictionary_fields_being_modified', $currently_modifying_dictionary_fields);
-    $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
+    $form_state->set('dictionary_fields_being_modified', $currently_modifying_index_fields);
+//    $form_state->set('index_fields_being_modified', $currently_modifying_index_fields);
     $form_state->set('index_being_modified', $currently_modifying_index);
     // Let's retain the fields that are already stored on the form,
     // but aren't currently being modified.
-    $form_state->set('current_index_fields', $current_index_fields);
+//    $form_state->set('current_index_fields', $current_index_fields);
     $form_state->set('current_index', $current_index);
-    $form_state->set('current_dictionary_fields', $current_dictionary_fields);
+    $form_state->set('current_dictionary_fields', $current_index_fields);
     // Let's rebuild the form.
     $form_state->setRebuild();
   }
@@ -284,20 +280,20 @@ class IndexFieldCallbacks {
    * Ajax callback to return index fields.
    */
   public static function subIndexFormAjax(array &$form, FormStateInterface $form_state) {
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["fields"];
+    return $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
   }
 
   /**
    * Ajax callback to return indexes.
    */
   public static function indexFormAjax(array &$form, FormStateInterface $form_state) {
-    $index_fields = $form["field_json_metadata"]["widget"][0]["indexes"]["fields"];
+    $index_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
 
     // Validation errors skip submit callbacks, this will set the index fields
     // in the correct location.
     if ($index_fields["data"]) {
       $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"] = $index_fields;
-      $form["field_json_metadata"]["widget"][0]["indexes"]["fields"]['#access'] = FALSE;
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]['#access'] = FALSE;
     }
 
     return $form["field_json_metadata"]["widget"][0]["indexes"];

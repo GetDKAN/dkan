@@ -120,37 +120,7 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
    * @return array
    *   Field array structure.
    */
-  protected static function createField(string $field, array $field_json_metadata, FormStateInterface &$form_state) {
-    $identifier_uuid = $field_json_metadata['identifier'] ?? $form_state->getUserInput()["field_json_metadata"][0]["identifier"] ?? NULL;
-
-    $fieldMappings = [
-      'title' => [
-        '#name' => 'field_json_metadata[0][title]',
-        '#type' => 'textfield',
-        '#required' => TRUE,
-        '#title' => t('Title'),
-        '#default_value' => $field_json_metadata['title'] ?? ($field_json_metadata['data']['title'] ?? ''),
-      ],
-      'identifier' => [
-        '#name' => 'field_json_metadata[0][identifier]',
-        '#type' => 'textfield',
-        '#required' => TRUE,
-        '#title' => t('Identifier'),
-        '#attributes' => ['readonly' => 'readonly'],
-        '#default_value' => $identifier_uuid ?? '',
-        '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),
-      ],
-      'indexes' => [
-        '#type' => 'textarea',
-        '#access' => FALSE,
-        '#required' => TRUE,
-        '#title' => t('Index'),
-        '#default_value' => isset($field_json_metadata['data']['indexes']) ? json_encode($field_json_metadata['data']['indexes']) : '',
-      ],
-    ];
-
-    return $fieldMappings[$field] ?? [];
-  }
+  abstract protected function createField(string $field, array $field_json_metadata, FormStateInterface &$form_state);
 
   /**
    * Return true if field is being edited.
@@ -165,18 +135,7 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
     }
   }
 
-  protected static function createDataRows($current_dictionary_fields, $data_results, $form_state) {
-
-    return [
-      '#access' => ((bool) $current_dictionary_fields || (bool) $data_results),
-      '#type' => 'table',
-      '#header' => ['NAME', 'TITLE', 'DETAILS'],
-      '#rows' => $form_state->get('cancel') ? $current_dictionary_fields : ($data_results ?? []),
-      '#tree' => TRUE,
-      '#theme' => 'custom_table',
-    ];
-
-  }
+  abstract protected static function createDataRows($current_dictionary_fields, $data_results, $form_state);
 
   abstract protected function createFieldOptions($op_index, $data_results, $fields_being_modified, $element);
 

@@ -35,7 +35,7 @@ class FieldValidation {
       ['data', $index, 'field_collection']))) {
       $field_value = $form_state->getValue(array_merge($path,
       ['data', $index, 'field_collection', $field_key]));
-      $error_field = "field_json_metadata][0][dictionary_fields][edit_fields][$index][$field_key";
+      $error_field = "field_json_metadata][0][dictionary_fields][edit_fields][$index][$field_key]";
     }
     elseif ($form_state->hasValue(array_merge($path,
       ['field_collection', 'group', $field_key]))) {
