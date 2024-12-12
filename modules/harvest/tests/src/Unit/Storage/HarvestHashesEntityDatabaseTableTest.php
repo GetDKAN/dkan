@@ -19,7 +19,7 @@ class HarvestHashesEntityDatabaseTableTest extends TestCase {
   public static function providerNotImplementedMethods() {
     return [
       ['storeMultiple', [[]]],
-      ['query', [static::createStub(Query::class)]],
+      ['query', [new Query()]],
       ['setSchema', [[]]],
       ['getSchema', []],
     ];
