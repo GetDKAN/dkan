@@ -1,8 +1,5 @@
 <?php
 
-use Drupal\Component\Render\FormattableMarkup;
-use Drupal\Core\Database\Database;
-use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestUtility;
 
 /**
@@ -31,63 +28,6 @@ function harvest_requirements($phase): array {
     }
   }
   return $requirements;
-}
-
-/**
- * Get the ids from the temp harvest run table.
- *
- * @param mixed $table_name_temp
- *   The name of the temp table.
- *
- * @return array
- *   The ids of all the harvest runs in the table sorted oldest to newest.
- */
-function harvest_get_temp_run_ids($table_name_temp) : array {
-  $connection = Database::getConnection();
-  //- Step one get all referenced nids
-  $query = $connection->select($table_name_temp, 'hrt')
-    ->fields('hrt', ['id']);
-  $query->orderBy('id', 'ASC');
-  $result = $query->execute()->fetchCol(0);
-  // Can't do orderBy as the sort end up natural, not numeric.
-  asort($result, SORT_NUMERIC);
-
-  return $result ?? [];
-}
-
-/**
- * Reads a single harvest row from the temp table.
- *
- * @param string $table_name_temp
- *   Name of the table to read from.
- *
- * @param string $time_id
- *  The id to read from, which was also the timestamp.
- *
- * @return array
- *   Elements from the row ['id', 'harvest_plan_id', 'data', 'extract_status'].
- */
-function harvest_read_harvest_run(string $table_name_temp, string $time_id): array {
-  $connection = Database::getConnection();
-  $query = $connection->select($table_name_temp, 'hrt')
-    ->fields('hrt', ['id', 'harvest_plan_id', 'data', 'extract_status'])
-    ->condition('id', $time_id, '=')
-    ->orderBy('id', 'ASC');
-  $result = $query->execute()->fetchAll(PDO::FETCH_ASSOC);
-  return reset($result);
-}
-
-function harvest_write_harvest_run(string $id, string $harvest_plan_id, string $data, string $extract_status) {
-  /** @var \Drupal\Core\Database\Connection $connection */
-  $connection = \Drupal::service('database');
-  $result = $connection->insert('harvest_runs')
-    ->fields([
-      'timestamp' => (int) $id,
-      'harvest_plan_id' => $harvest_plan_id,
-      'data' => $data,
-      'extract_status' => $extract_status,
-    ])
-    ->execute();
 }
 
 /**
@@ -202,10 +142,12 @@ function harvest_update_8010(&$sandbox) {
   $table_name_temp = "{$table_name}_temp";
   $messages = '';
   $schema = \Drupal::database()->schema();
+  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+  $harvest_utility = \Drupal::service('dkan.harvest.utility');
 
   if (!isset($sandbox['total'])) {
     // Sandbox has not been initiated, so initiate it.
-    $sandbox['items_to_process'] = harvest_get_temp_run_ids($table_name_temp);
+    $sandbox['items_to_process'] = $harvest_utility->getTempRunIdsForUpdate($table_name_temp);
     $sandbox['total'] = count($sandbox['items_to_process']);
     $sandbox['current'] = 0;
   }
@@ -214,9 +156,9 @@ function harvest_update_8010(&$sandbox) {
   // Loop through all the entries in temp table and save them new.
   foreach ($harvest_runs_batch as $key => $time_id) {
     // Load the old row.
-    $row = harvest_read_harvest_run($table_name_temp, $time_id);
+    $row = $harvest_utility->readTempHarvestRunForUpdate($table_name_temp, $time_id);
     // Write the new harvest run.
-    harvest_write_harvest_run($row['id'], $row['harvest_plan_id'], $row['data'], $row['extract_status']);
+    $harvest_utility->writeHarvestRunFromUpdate($row['id'], $row['harvest_plan_id'], $row['data'], $row['extract_status']);
     // The item has been processed, remove it from the array.
     unset($sandbox['items_to_process'][$key]);
   }

@@ -19,6 +19,7 @@ services:
       - '@dkan.harvest.storage.harvest_run_repository'
       - '@database'
       - '@dkan.harvest.logger_channel'
+      - '@uuid'
   dkan.harvest.harvest_plan_repository:
     class: Drupal\harvest\Entity\HarvestPlanRepository
     arguments:
