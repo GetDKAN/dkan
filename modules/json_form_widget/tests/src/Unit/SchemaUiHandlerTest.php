@@ -523,7 +523,7 @@ class SchemaUiHandlerTest extends TestCase {
         '#uri' => 'https://url.to.api.or.file',
         '#upload_location' => 'public://uploaded_resources',
         '#upload_validators' => [
-          'FileExtension' => ['jpg pdf png csv'],
+          'FileExtension' => ['extensions' => 'jpg pdf png csv'],
         ],
       ],
     ];
