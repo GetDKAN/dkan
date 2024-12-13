@@ -16,4 +16,5 @@ tagfile
 /tests/reports
 /web
 .phpunit.result.cache
+.phpunit.cache
 docs/build
