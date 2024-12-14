@@ -198,7 +198,7 @@ dkan:harvest:register
 dkan:harvest:revert
 --------------------
 
-    Revert a harvest. Removes harvested entities and unpublishes orhpaned
+    Revert a harvest. Removes harvested entities and unpublishes orphaned
     keywords, themes, and distributions. The harvest plan will remain and can
     be run again to generate the datasets after any issues have been resolved.
 

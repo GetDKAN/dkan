@@ -96,7 +96,7 @@ This property is important for fields where you need to specify the format of th
 If your date values are not in ISO8601 format, use this property to define the format being used so that the data will import into the datastore correctly. Month and day values must be zero-padded. Follow the date formatting syntax of C / Python `strftime <http://strftime.org/>`_ to determine the pattern to use in your format property. For example, if your dates are in mm/dd/YYYY format, use "format": "%m/%d/%Y".
 
 .. Note::
-  The "Download full dataset (CSV)" button will download the original source file. The "Download filtered data (CSV)" button will generate a new file, using the data dictioinary title values (if present) for the column headings, otherwise the column headings from the source file will be used.
+  The "Download full dataset (CSV)" button will download the original source file. The "Download filtered data (CSV)" button will generate a new file, using the data dictionary title values (if present) for the column headings, otherwise the column headings from the source file will be used.
 
 How to create a data dictionary
 -------------------------------
@@ -230,7 +230,7 @@ To set the data dictionary mode to **sitewide**:
 4. Click "Save configuration".
 
 .. image:: images/dictionary-settings.png
-  :alt: Data dictionay settings admin page, with select input for "Dictionary Mode" set to "Sitewide" and text
+  :alt: Data dictionary settings admin page, with select input for "Dictionary Mode" set to "Sitewide" and text
         input for Sitewide Dictionary ID containing the identifier 7fd6bb1f-2752-54de-9a33-81ce2ea0feb2.
 
 
@@ -249,7 +249,7 @@ To set the data dictionary mode to **distribution reference**:
 .. NOTE::
    Assigning data dictionaries to datasets can be done on the dataset form. Enter the API endpoint of the data dictionary into the "Data Dictionary" field of the distribution section. Set the "Data Dictionary Type" field to *application/vnd.tableschema+json*.
 
-Or, use the API to link a new dataset to the data dictionay.
+Or, use the API to link a new dataset to the data dictionary.
 Look closely at the distribution property in the example below, this is using the data dictionary uuid from the example above.
 
 .. http:post:: /api/1/metastore/schemas/dataset/items
