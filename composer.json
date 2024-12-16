@@ -25,7 +25,7 @@
         "getdkan/file-fetcher": "dev-no-contracts",
         "getdkan/harvest": "dev-no-contracts",
         "getdkan/pdlt": "^0.1.7",
-        "getdkan/procrastinator": "dev-no-contracts",
+        "getdkan/procrastinator": "^5.0.3",
         "getdkan/rooted-json-data": "^0.2.2",
         "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5",
         "ilbee/csv-response": "^1.2.0",
