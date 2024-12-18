@@ -49,6 +49,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @var int
    */
   protected const DEFAULT_ROWS_LIMIT = 500;
+  protected const DEFAULT_RESPONSE_STREAM_MAX_AGE = 3600;
 
   /**
    * Api constructor.

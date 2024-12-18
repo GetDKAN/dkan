@@ -73,7 +73,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
     $form['response_stream_max_age'] = [
       '#type' => 'number',
       '#title' => $this->t('Response Stream Max-Age'),
-      '#default_value' => $this->config('datastore.settings')->get('response_stream_max_age'),
+      '#default_value' => $this->config('datastore.settings')->get('response_stream_max_age') ?: QueryController::DEFAULT_RESPONSE_STREAM_MAX_AGE,
       '#min' => 0,
       '#description' => $this->t('Set the cache max-age for streaming CSV responses, in seconds. Default: 3600 (1 hour).'),
     ];
@@ -95,7 +95,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('datastore.settings')
       ->set('rows_limit', $form_state->getValue('rows_limit') ?: QueryController::DEFAULT_ROWS_LIMIT)
-      ->set('response_stream_max_age', $form_state->getValue('response_stream_max_age') ?: 3600)
+      ->set('response_stream_max_age', $form_state->getValue('response_stream_max_age') ?: QueryController::DEFAULT_RESPONSE_STREAM_MAX_AGE)
       ->set('triggering_properties', $form_state->getValue('triggering_properties'))
       ->save();
     parent::submitForm($form, $form_state);

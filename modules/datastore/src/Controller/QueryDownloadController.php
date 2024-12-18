@@ -27,7 +27,7 @@ class QueryDownloadController extends AbstractQueryController {
     // because datasets can be very large. However, we do want CDNs to be able
     // to cache the CSV stream for a reasonable amount of time.
     $config = $configFactory->get('datastore.settings');
-    $this->cacheMaxAge = $config->get('response_stream_max_age') ?? 3600;
+    $this->cacheMaxAge = $config->get('response_stream_max_age') ?: self::DEFAULT_RESPONSE_STREAM_MAX_AGE;
   }
 
   /**
