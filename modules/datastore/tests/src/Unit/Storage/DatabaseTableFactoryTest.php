@@ -6,6 +6,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\common\DataResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
