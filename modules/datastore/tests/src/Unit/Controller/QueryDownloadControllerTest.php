@@ -219,7 +219,6 @@ class QueryDownloadControllerTest extends TestCase {
   public function testStreamedLimit() {
     $queryLimit = 75;
     $pageLimit = 50;
-    $responseStreamMaxAge = 3600;
     $data = json_encode([
       "resources" => [
         [
@@ -231,7 +230,7 @@ class QueryDownloadControllerTest extends TestCase {
       "limit" => $queryLimit,
     ]);
     // Set the row limit to 50 even though we're requesting 1000.
-    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge);
+    $container = $this->getQueryContainer($pageLimit);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start([self::class, 'getBuffer']);
@@ -347,7 +346,7 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \MockChain\Chain
    *   MockChain chain object.
    */
-  private function getQueryContainer(int $rowLimit, int $responseStreamMaxAge) {
+  private function getQueryContainer(int $rowLimit) {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
@@ -414,8 +413,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Query::class, "getQueryStorageMap", $storageMap)
       ->add(Query::class, 'getDatastoreService',  DatastoreService::class)
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
-      ->add(ImmutableConfig::class, 'get', $rowLimit)
-      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge);
+      ->add(ImmutableConfig::class, 'get', $rowLimit);
 
     return $chain->getMock();
   }
