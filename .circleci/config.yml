@@ -182,7 +182,7 @@ jobs:
 
   cypress:
     machine:
-      image: default
+      image: ubuntu-2204:current
     parallelism: 4
     parameters:
       php_version:
