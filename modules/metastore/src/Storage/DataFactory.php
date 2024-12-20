@@ -44,7 +44,7 @@ class DataFactory implements FactoryInterface {
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
@@ -61,7 +61,7 @@ class DataFactory implements FactoryInterface {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 
       $instance = match ($entity_type) {
-          default => $this->createNodeInstance($identifier),
+        default => $this->createNodeInstance($identifier),
       };
 
       $this->stores[$identifier] = $instance;

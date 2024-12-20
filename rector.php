@@ -21,22 +21,10 @@
 
 declare(strict_types=1);
 
-use DrupalFinder\DrupalFinder;
 use DrupalFinder\DrupalFinderComposerRuntime;
-use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
 use DrupalRector\Set\Drupal10SetList;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
-use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
-use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
-use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
-use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
-use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
-use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Set\ValueObject\SetList;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -58,13 +46,7 @@ return static function (RectorConfig $rectorConfig): void {
     '*/modules/datastore/src/Service/Info/ImportInfo.php',
     '*/modules/frontend/src/Routing/RouteProvider.php',
     '*/modules/frontend/src/Page.php',
-    // Don't automate ::class because we need some string literals that look
-    // like class names.
-    // @see \Drupal\common\Util\JobStoreUtil
-    // @see \Drupal\common\EventDispatcherTrait
-    RemoveParentCallWithoutParentRector::class,
     ClassPropertyAssignToConstructorPromotionRector::class,
-    FunctionToStaticRector::class,
   ]);
 
   $drupalFinder = new DrupalFinderComposerRuntime(__DIR__);

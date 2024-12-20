@@ -61,7 +61,7 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
     ConverterInterface $date_format_converter,
     string $table,
     array $fields,
-    array $indexes
+    array $indexes,
   ) {
     $this->connection = $connection;
     $this->dateFormatConverter = $date_format_converter;
