@@ -73,38 +73,16 @@ class FieldOperations {
   public static function generateFormats($dataType, $property) {
     $description = "<p>The format of the data in this field. Supported formats depend on the specified field type:</p>";
 
-    switch ($dataType) {
-      case 'string':
-        $info = FieldValues::returnStringInfo($property);
-        break;
-
-      case 'date':
-        $info = FieldValues::returnDateInfo($property);
-        break;
-
-      case 'datetime':
-        $info = FieldValues::returnDateTimeInfo($property);
-        break;
-
-      case 'integer':
-        $info = FieldValues::returnIntegerInfo($property);
-        break;
-
-      case 'number':
-        $info = FieldValues::returnNumberInfo($property);
-        break;
-
-      case 'year':
-        $info = FieldValues::returnYearInfo($property);
-        break;
-
-      case 'boolean':
-        $info = FieldValues::returnBooleanInfo($property);
-        break;
-
-      default:
-        throw new \InvalidArgumentException("Unexpected data type: $dataType");
-    }
+    $info = match ($dataType) {
+        'string' => FieldValues::returnStringInfo($property),
+        'date' => FieldValues::returnDateInfo($property),
+        'datetime' => FieldValues::returnDateTimeInfo($property),
+        'integer' => FieldValues::returnIntegerInfo($property),
+        'number' => FieldValues::returnNumberInfo($property),
+        'year' => FieldValues::returnYearInfo($property),
+        'boolean' => FieldValues::returnBooleanInfo($property),
+        default => throw new \InvalidArgumentException("Unexpected data type: $dataType"),
+    };
 
     return ($property === "description") ? ($description . $info) : $info;
   }

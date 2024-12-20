@@ -45,7 +45,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
   /**
    * {@inheritDoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [ImportService::EVENT_DATASTORE_IMPORTED => 'catchImportEvent'];
   }
 

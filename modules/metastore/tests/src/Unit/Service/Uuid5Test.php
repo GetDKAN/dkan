@@ -40,7 +40,7 @@ class Uuid5Test extends TestCase {
    * @return array
    *   Schema id, value and expected.
    */
-  public function generateProvider() {
+  public static function generateProvider() {
     return [
       'string' => [
         'foo',

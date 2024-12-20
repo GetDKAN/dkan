@@ -22,6 +22,7 @@
 declare(strict_types=1);
 
 use DrupalFinder\DrupalFinder;
+use DrupalFinder\DrupalFinderComposerRuntime;
 use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
 use DrupalRector\Set\Drupal10SetList;
 use Rector\Config\RectorConfig;
@@ -52,9 +53,6 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
 
   $rectorConfig->skip([
-    // Skip data_dictionary_widget to avoid merge conflicts.
-    // @todo Add this back.
-    '*/modules/data_dictionary_widget',
     // Skip this file because we want its switch/case to remain:
     // @todo Figure out what to do about DataFactory::getInstance().
     '*/modules/metastore/src/Storage/DataFactory.php',
@@ -68,27 +66,20 @@ return static function (RectorConfig $rectorConfig): void {
     '*/modules/frontend/src/Page.php',
     // Don't throw errors on JSON parse problems. Yet.
     // @todo Throw errors and deal with them appropriately.
-    JsonThrowOnErrorRector::class,
     // We like our tags. Unfortunately some other rules obliterate them anyway.
     RemoveUselessParamTagRector::class,
     RemoveUselessVarTagRector::class,
     RemoveUselessReturnTagRector::class,
-    AddDoesNotPerformAssertionToNonAssertingTestRector::class,
-    ClosureToArrowFunctionRector::class,
     // Don't automate ::class because we need some string literals that look
     // like class names.
     // @see \Drupal\common\Util\JobStoreUtil
     // @see \Drupal\common\EventDispatcherTrait
-    StringClassNameToClassConstantRector::class,
-    RemoveExtraParametersRector::class,
     RemoveParentCallWithoutParentRector::class,
     ClassPropertyAssignToConstructorPromotionRector::class,
     FunctionToStaticRector::class,
-    NullToStrictStringFuncCallArgRector::class,
   ]);
 
-  $drupalFinder = new DrupalFinder();
-  $drupalFinder->locateRoot(__DIR__);
+  $drupalFinder = new DrupalFinderComposerRuntime(__DIR__);
   $drupalRoot = $drupalFinder->getDrupalRoot();
 
   $rectorConfig->autoloadPaths([

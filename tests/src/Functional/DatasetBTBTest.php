@@ -624,10 +624,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $identifier;
   }
 
-  private function getQueueService() : QueueFactory {
-    return $this->container->get('queue');
-  }
-
   private function getHarvester() : HarvestService {
     return $this->container->get('dkan.harvest.service');
   }

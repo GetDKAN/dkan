@@ -130,7 +130,6 @@ function data_dictionary_widget_form_submit($form, FormStateInterface $form_stat
   $url = Url::fromRoute('metastore.data_dictionary');
   $response = new RedirectResponse($url->toString());
   $response->send();
-  return;
 }
 
 /**
@@ -151,6 +150,4 @@ function data_dictionary_widget_validate_unique_identifier($form, &$form_state) 
       }
     }
   }
-
-  return;
 }

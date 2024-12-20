@@ -139,7 +139,7 @@ class MySQLQueryTest extends TestCase {
     $mysql_query->execute();
   }
 
-  public function baseTypeProvider() {
+  public static function baseTypeProvider() {
     return [
       'string' => ['string', 'TEXT'],
       'getBaseType-does-no-error-checking' => ['not-a-frictionless-type', NULL],

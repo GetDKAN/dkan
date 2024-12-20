@@ -289,7 +289,7 @@ class ImportJobTest extends TestCase {
     ]);
   }
 
-  public function sanitizeDescriptionProvider(): array {
+  public static function sanitizeDescriptionProvider(): array {
     return [
       'multiline' => ["Multi\nLine", 'Multi Line'],
     ];
@@ -303,7 +303,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, ImportJob::sanitizeDescription($column));
   }
 
-  public function sanitizeHeaderProvider() {
+  public static function sanitizeHeaderProvider() {
     return [
       'reserved_word' => ['accessible', '_accessible'],
       'numeric' => [1, '_1'],
@@ -318,7 +318,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, ImportJob::sanitizeHeader($column));
   }
 
-  public function truncateHeaderProvider(): array {
+  public static function truncateHeaderProvider(): array {
     $max_length = 64;
     return [
       'max_length' => [

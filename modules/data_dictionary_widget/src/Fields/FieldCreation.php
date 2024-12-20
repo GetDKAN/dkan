@@ -64,7 +64,6 @@ class FieldCreation {
         '#type' => 'textfield',
         '#required' => TRUE,
         '#title' => t('Identifier'),
-        '#default_value' => $field_json_metadata['identifier'] ?? '',
         '#attributes' => ['readonly' => 'readonly'],
         '#default_value' => $identifier_uuid ?? '',
         '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),

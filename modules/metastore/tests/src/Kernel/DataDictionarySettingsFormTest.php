@@ -47,7 +47,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
   /**
    * {@inheritdoc}
    */
-  public function provideFormData(): array {
+  public static function provideFormData(): array {
     return [
       [
         [
