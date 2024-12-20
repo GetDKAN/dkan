@@ -51,7 +51,6 @@ class ResourceLocalizer {
   /**
    * DKAN resource file fetcher factory.
    *
-   *
    * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
   private FactoryInterface $fileFetcherFactory;
@@ -79,7 +78,7 @@ class ResourceLocalizer {
     FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
     FileFetcherJobStoreFactory $fileFetcherJobStoreFactory,
-    QueueFactory $queueFactory
+    QueueFactory $queueFactory,
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;

@@ -73,7 +73,6 @@ class ImportService {
    *
    * Access using self::getImporter().
    *
-   *
    * @see self::getImporter()
    */
   private ?ImportJob $importJob = NULL;
