@@ -11,15 +11,11 @@ class JobStore extends AbstractDatabaseTable {
 
   /**
    * The table name for this job store.
-   *
-   * @var string
    */
   protected string $tableName;
 
   /**
    * A deprecated table name for this job store, if applicable.
-   *
-   * @var string
    */
   protected string $deprecatedTableName;
 

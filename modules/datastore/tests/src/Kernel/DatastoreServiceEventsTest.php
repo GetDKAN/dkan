@@ -40,8 +40,6 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
 
   /**
    * Store the events we receive.
-   *
-   * @var array
    */
   protected array $events = [];
 

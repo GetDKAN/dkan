@@ -12,8 +12,6 @@ class DatastoreEventBase extends Event implements DatastoreEventInterface {
 
   /**
    * The DataResource object for the event.
-   *
-   * @var \Drupal\common\DataResource
    */
   protected DataResource $dataResource;
 

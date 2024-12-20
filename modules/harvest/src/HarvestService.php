@@ -34,36 +34,26 @@ class HarvestService implements ContainerInjectionInterface {
 
   /**
    * Harvest hash database table factory service.
-   *
-   * @var \Contracts\FactoryInterface
    */
   private HarvestHashesDatabaseTableFactory $hashesStoreFactory;
 
   /**
    * DKAN metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $metastore;
 
   /**
    * Harvest plan storage repository service.
-   *
-   * @var \Drupal\harvest\Entity\HarvestPlanRepository
    */
   private HarvestPlanRepository $harvestPlanRepository;
 
   /**
    * Harvest run entity repository service.
-   *
-   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
   private HarvestRunRepository $runRepository;
 
   /**
    * DKAN logger channel.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

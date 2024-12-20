@@ -632,9 +632,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
-  /**
-   * @return \Drupal\metastore\MetastoreService
-   */
   private function getMetastore(): MetastoreService {
     return $this->container->get('dkan.metastore.service');
   }

@@ -93,8 +93,6 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
   /**
    * Config for which column heading values to use for csv downloads.
-   *
-   * @var string
    */
   protected string $csvHeadersMode = 'resource_headers';
 

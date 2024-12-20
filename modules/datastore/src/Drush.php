@@ -36,29 +36,21 @@ class Drush extends DrushCommands {
 
   /**
    * The PostImport service.
-   *
-   * @var \Drupal\datastore\Service\PostImport
    */
   protected PostImport $postImport;
 
   /**
    * The datastore resource localizer.
-   *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
    */
   protected ResourceLocalizer $resourceLocalizer;
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 
   /**
    * Import info list service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
    */
   private ImportInfoList $importInfoList;
 

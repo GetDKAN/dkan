@@ -37,8 +37,6 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
 
   /**
    * Store the events we receive.
-   *
-   * @var array
    */
   protected array $events = [];
 

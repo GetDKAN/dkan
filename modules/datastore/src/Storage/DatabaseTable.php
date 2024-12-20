@@ -23,8 +23,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

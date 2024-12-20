@@ -56,8 +56,6 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
   /**
    * Logger service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 

@@ -20,8 +20,6 @@ class DatabaseTableFactory implements FactoryInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 

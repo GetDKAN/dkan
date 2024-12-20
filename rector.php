@@ -53,23 +53,11 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
 
   $rectorConfig->skip([
-    // Skip this file because we want its switch/case to remain:
-    // @todo Figure out what to do about DataFactory::getInstance().
-    '*/modules/metastore/src/Storage/DataFactory.php',
-    // Skip this file to keep the debug method.
-    // @todo Do we need the debug method?
-    '*/modules/common/tests/src/Unit/Storage/SelectFactoryTest.php',
     // Don't change the signature of these service classes.
     // @todo Unskip these later.
     '*/modules/datastore/src/Service/Info/ImportInfo.php',
     '*/modules/frontend/src/Routing/RouteProvider.php',
     '*/modules/frontend/src/Page.php',
-    // Don't throw errors on JSON parse problems. Yet.
-    // @todo Throw errors and deal with them appropriately.
-    // We like our tags. Unfortunately some other rules obliterate them anyway.
-    RemoveUselessParamTagRector::class,
-    RemoveUselessVarTagRector::class,
-    RemoveUselessReturnTagRector::class,
     // Don't automate ::class because we need some string literals that look
     // like class names.
     // @see \Drupal\common\Util\JobStoreUtil

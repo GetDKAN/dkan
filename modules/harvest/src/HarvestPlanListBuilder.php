@@ -20,15 +20,11 @@ class HarvestPlanListBuilder extends EntityListBuilder {
 
   /**
    * Harvest service.
-   *
-   * @var \Drupal\harvest\HarvestService
    */
   protected HarvestService $harvestService;
 
   /**
    * Harvest run repository service.
-   *
-   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
   protected HarvestRunRepository $harvestRunRepository;
 

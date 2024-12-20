@@ -36,8 +36,6 @@ class ResourceMapper {
 
   /**
    * Entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private EntityTypeManagerInterface $entityTypeManager;
 
@@ -46,7 +44,6 @@ class ResourceMapper {
    *
    * The data used by the ResourceMapper is stored in resource_mapping entities.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
    *
    * @see \Drupal\metastore\Entity\ResourceMapping
    */
