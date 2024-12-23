@@ -41,21 +41,25 @@ class ValueHandler {
    * Flatten values for string properties.
    */
   public function handleStringValues($formValues, $property) {
+    $return = FALSE;
     if (isset($formValues[$property]) && $formValues[$property] instanceof DrupalDateTime) {
-      return $formValues[$property]->format('c', ['timezone' => 'UTC']);
+      $return = $formValues[$property]->format('c', ['timezone' => 'UTC']);
     }
-    if (!empty($formValues[$property]) && isset($formValues[$property]['date_range'])) {
-      return $formValues[$property]['date_range'];
+    elseif (!empty($formValues[$property]) && isset($formValues[$property]['date_range'])) {
+      $return = $formValues[$property]['date_range'];
     }
     // Handle select_or_other_select.
-    if (isset($formValues[$property]['select'])) {
-      return $formValues[$property][0] ?? NULL;
+    elseif (isset($formValues[$property]['select'])) {
+      $return = $formValues[$property][0] ?? NULL;
     }
     // Handle text_format.
-    if (isset($formValues[$property]['value'])) {
-      return $formValues[$property]['value'];
+    elseif (isset($formValues[$property]['value'])) {
+      $return = $formValues[$property]['value'];
     }
-    return !empty($formValues[$property]) && is_string($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
+    elseif (!empty($formValues[$property]) && is_string($formValues[$property])) {
+      $return = $this->cleanSelectId($formValues[$property]);
+    }
+    return $return;
   }
 
   /**
