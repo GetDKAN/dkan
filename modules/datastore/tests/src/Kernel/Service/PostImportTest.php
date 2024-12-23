@@ -191,7 +191,7 @@ class PostImportTest extends KernelTestBase {
       ->getMock();
     $datastore_service->expects($this->once())
       ->method('drop')
-      ->willThrowException(new \Exception('our test message'));
+      ->willThrowException(new \Exception('drop error'));
     $this->container->set('dkan.datastore.service', $datastore_service);
 
     $post_import = new PostImport(
@@ -208,7 +208,7 @@ class PostImportTest extends KernelTestBase {
     $result = $post_import->processResource($resource);
 
     $this->assertEquals(
-      'our test message',
+      'Attempted to retrieve a sitewide data dictionary, but none was set.',
       $result->getPostImportMessage()
     );
     $this->assertEquals(
