@@ -37,6 +37,8 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
 
   /**
    * Store the events we receive.
+   *
+   * @var \Drupal\datastore\Events\DatastoreEventBase[]
    */
   protected array $events = [];
 
