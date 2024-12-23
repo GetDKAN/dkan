@@ -9,7 +9,7 @@ use Drupal\datastore\Service\PostImport;
 /**
  * PostImportResult class to create PostImportResult objects.
  *
- * Contains the results of the PostImportResourceProcessor.
+ * Contains the results of the PostImport.
  */
 class PostImportResult {
 
@@ -66,14 +66,12 @@ class PostImportResult {
    */
   public function __construct(
     $postImportResult,
-    ResourceMapper $resourceMapper,
     PostImport $postImport
     ) {
     $this->resourceIdentifier = $postImportResult['resource_identifier'];
     $this->resourceVersion = $postImportResult['resourceVersion'];
     $this->postImportStatus = $postImportResult['postImportStatus'];
     $this->postImportMessage = $postImportResult['postImportMessage'];
-    $this->resourceMapper = $resourceMapper;
     $this->postImport = $postImport;
   }
 
