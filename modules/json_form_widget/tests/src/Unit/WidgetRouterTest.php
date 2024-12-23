@@ -70,6 +70,26 @@ class WidgetRouterTest extends TestCase {
           '#maxlength' => 256,
         ],
       ],
+      'selectFieldAutocomplete' => [
+        (object) [
+          'widget' => 'list',
+          'type' => 'autocomplete',
+        ],
+        [
+          '#type' => 'select',
+          '#options' => ['option1', 'option2'],
+          '#title' => 'selectField',
+        ],
+        [
+          '#type' => 'select2',
+          '#title' => 'selectField',
+          '#options' => ['option1', 'option2'],
+          '#other_option' => FALSE,
+          '#multiple' => FALSE,
+          '#autocreate' => FALSE,
+          '#target_type' => 'node',
+        ],
+      ],
       // Textarea should not have maxlength after being handled.
       'textArea' => [
         (object) [
