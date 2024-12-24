@@ -6,7 +6,6 @@ use Drupal\Core\Database\Connection;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\indexer\IndexManager;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

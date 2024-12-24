@@ -64,7 +64,7 @@ class DatabaseTableTest extends KernelTestBase {
     $this->assertEquals(2, $import_job->getStorage()->count());
   }
 
-  public function providePrepareData() {
+  public static function providePrepareData() {
     return [
       // Bad JSON results in a NULL on decode.
       [

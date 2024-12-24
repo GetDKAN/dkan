@@ -16,8 +16,6 @@ class ImportServiceFactory implements ImportFactoryInterface {
 
   /**
    * Job store factory.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
@@ -30,15 +28,11 @@ class ImportServiceFactory implements ImportFactoryInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
   /**
    * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   private EventDispatcherInterface $eventDispatcher;
 

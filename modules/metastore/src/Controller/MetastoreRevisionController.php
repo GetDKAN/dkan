@@ -2,14 +2,14 @@
 
 namespace Drupal\metastore\Controller;
 
-use Contracts\FactoryInterface as ContractsFactoryInterface;
-use Drupal\common\JsonResponseTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Contracts\FactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
+use Drupal\common\JsonResponseTrait;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,17 +43,13 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
 
   /**
    * Metastore API response service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   private MetastoreApiResponse $apiResponse;
 
   /**
    * Storage factory service.
-   *
-   * @var \Contracts\FactoryInterface
    */
-  private ContractsFactoryInterface $storageFactory;
+  private FactoryInterface $storageFactory;
 
   /**
    * Inherited.
@@ -72,7 +68,7 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
    */
   public function __construct(
     MetastoreApiResponse $apiResponse,
-    ContractsFactoryInterface $storageFactory
+    FactoryInterface $storageFactory
   ) {
     $this->apiResponse = $apiResponse;
     $this->storageFactory = $storageFactory;

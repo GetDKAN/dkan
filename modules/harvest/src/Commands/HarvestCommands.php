@@ -20,15 +20,11 @@ class HarvestCommands extends DrushCommands {
 
   /**
    * Harvest.
-   *
-   * @var \Drupal\harvest\HarvestService
    */
   protected HarvestService $harvestService;
 
   /**
    * Harvest utility service.
-   *
-   * @var \Drupal\harvest\HarvestUtility
    */
   protected HarvestUtility $harvestUtility;
 

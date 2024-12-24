@@ -18,15 +18,11 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
 
   /**
    * Database connection factory.
-   *
-   * @var \Drupal\common\Storage\DatabaseConnectionFactoryInterface
    */
   protected DatabaseConnectionFactoryInterface $databaseConnectionFactory;
 
   /**
    * Internal to SQL date format converter.
-   *
-   * @var \PDLT\ConverterInterface
    */
   protected ConverterInterface $dateFormatConverter;
 
@@ -39,15 +35,11 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
 
   /**
    * Alter query class name.
-   *
-   * @var string
    */
   protected string $queryClass;
 
   /**
    * Alter query table name.
-   *
-   * @var string
    */
   protected string $table;
 

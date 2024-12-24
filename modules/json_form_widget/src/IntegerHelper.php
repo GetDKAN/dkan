@@ -12,8 +12,6 @@ class IntegerHelper {
 
   /**
    * Field type router.
-   *
-   * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   protected FieldTypeRouter $builder;
 

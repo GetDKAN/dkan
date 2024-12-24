@@ -13,8 +13,6 @@ class ImportInfoList implements ContainerInjectionInterface {
 
   /**
    * File fetcher job store factory.
-   *
-   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
   private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 

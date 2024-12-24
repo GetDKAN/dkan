@@ -13,8 +13,6 @@ use Drupal\Tests\common\Unit\Connection;
  * @coversDefaultClass \Drupal\common\Storage\SelectFactory
  */
 class SelectFactoryTest extends TestCase {
-  private $query;
-
   /**
    * SelectFactory object.
    *
@@ -24,7 +22,6 @@ class SelectFactoryTest extends TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    $this->query = new Query();
     $this->selectFactory = $this->getSelectFactory();
   }
 
@@ -120,14 +117,6 @@ class SelectFactoryTest extends TestCase {
    */
   private function selectToString(Select $select): string {
     return preg_replace("/\n/", " ", "$select");
-  }
-
-  /**
-   *
-   */
-  private function queryDebug() {
-    print_r($this->query);
-    print "\n" . $this->selectToString($this->selectFactory->create($this->query));
   }
 
 }
