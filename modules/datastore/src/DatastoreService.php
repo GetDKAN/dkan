@@ -66,22 +66,16 @@ class DatastoreService implements ContainerInjectionInterface {
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
 
   /**
    * Import job store factory.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   private EventDispatcherInterface $eventDispatcher;
 
@@ -312,8 +306,7 @@ class DatastoreService implements ContainerInjectionInterface {
     }
 
     // Invalidate cache tag.
-    $uid = $resource->getIdentifier() . '__' . $resource->getVersion();
-    $this->invalidateCacheTags($uid . '__source');
+    $this->invalidateCacheTags($identifier . '__' . $version . '__source');
   }
 
   /**

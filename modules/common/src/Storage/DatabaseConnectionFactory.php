@@ -15,22 +15,16 @@ class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
 
   /**
    * Timeout for built database connections in seconds.
-   *
-   * @var int
    */
   protected int $timeout;
 
   /**
    * Database connection target name.
-   *
-   * @var string
    */
   protected string $target = 'default';
 
   /**
    * Database connection key.
-   *
-   * @var string
    */
   protected string $key = 'default';
 

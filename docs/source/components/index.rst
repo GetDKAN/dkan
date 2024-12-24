@@ -8,3 +8,4 @@ Components
    dkan_datastore
    dkan_harvest
    dkan_api
+   json_form_widget

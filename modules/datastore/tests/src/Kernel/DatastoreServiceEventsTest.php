@@ -41,14 +41,14 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
   /**
    * Store the events we receive.
    *
-   * @var array
+   * @var \Drupal\datastore\Events\DatastoreEventBase[]
    */
   protected array $events = [];
 
   /**
    * {@inheritDoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       DatastoreService::EVENT_DATASTORE_PRE_DROP => 'catchPreDropEvent',
       DatastoreService::EVENT_DATASTORE_DROPPED => 'catchDroppedEvent',

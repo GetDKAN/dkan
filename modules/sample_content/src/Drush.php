@@ -21,22 +21,16 @@ class Drush extends DrushCommands {
 
   /**
    * The core extension module list service.
-   *
-   * @var \Drupal\Core\Extension\ModuleExtensionList
    */
   protected ModuleExtensionList $moduleExtensionList;
 
   /**
    * Harvest service.
-   *
-   * @var \Drupal\harvest\HarvestService
    */
   private HarvestService $harvestService;
 
   /**
    * Sample content service.
-   *
-   * @var \Drupal\sample_content\SampleContentService
    */
   private SampleContentService $sampleContentService;
 

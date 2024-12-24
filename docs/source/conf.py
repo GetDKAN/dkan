@@ -36,6 +36,7 @@ extensions = [
   'myst_parser',
   'sphinx.ext.autosectionlabel',
   'sphinxcontrib.httpdomain',
+  'sphinxcontrib.mermaid',
   'sphinx_rtd_theme',
   'sphinx_prompt'
 ]
@@ -76,6 +77,7 @@ source_suffix = {
     '.md': 'markdown',
 }
 source_parsers = {'.md': 'myst_parser.sphinx_'}
+myst_fence_as_directive = ["mermaid"]
 
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth=None

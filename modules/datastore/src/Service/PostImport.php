@@ -19,8 +19,6 @@ class PostImport {
 
   /**
    * The metastore resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 

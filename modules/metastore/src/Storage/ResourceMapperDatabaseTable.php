@@ -24,8 +24,6 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

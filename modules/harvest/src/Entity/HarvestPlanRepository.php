@@ -15,8 +15,6 @@ class HarvestPlanRepository {
 
   /**
    * Storage service for harvest_plan entities.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   private EntityStorageInterface $planStorage;
 

@@ -68,7 +68,7 @@ class ImportInfo {
     ResourceLocalizer $resourceLocalizer,
     ImportFactoryInterface $importServiceFactory,
     ResourceMapper $resourceMapper,
-    DatastoreService $datastoreService
+    DatastoreService $datastoreService,
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;

@@ -1,4 +1,4 @@
-version: 2
+version: "2"
 plugins:
   phpcodesniffer:
     enabled: true
@@ -13,6 +13,8 @@ plugins:
       Drupal Semantics FunctionTriggerError TriggerErrorTextLayoutRelaxed:
         enabled: false
       Drupal Commenting Deprecated DeprecatedWrongSeeUrlFormat:
+        enabled: false
+      Drupal Commenting VariableComment MissingVar:
         enabled: false
 
 exclude_patterns:

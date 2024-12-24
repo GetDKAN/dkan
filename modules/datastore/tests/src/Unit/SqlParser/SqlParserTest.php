@@ -19,7 +19,7 @@ class SqlParserTest extends TestCase {
   /**
    * Data provider.
    */
-  public function dataTestSqlParser(): array {
+  public static function dataTestSqlParser(): array {
     return [
           ['foo', FALSE],
           ['[SELECT * FROM abc];', TRUE],

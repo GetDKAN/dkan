@@ -28,8 +28,6 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Json form widget logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

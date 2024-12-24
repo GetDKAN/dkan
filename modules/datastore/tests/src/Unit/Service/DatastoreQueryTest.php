@@ -167,7 +167,7 @@ class DatastoreQueryTest extends TestCase {
   /**
    * Data provider for query compare tests.
    */
-  public function queryCompareProvider() {
+  public static function queryCompareProvider() {
     return [
       ['propertiesQuery'],
       ['expressionQuery'],

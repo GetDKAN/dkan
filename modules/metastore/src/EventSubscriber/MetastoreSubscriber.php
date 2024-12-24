@@ -18,15 +18,11 @@ class MetastoreSubscriber implements EventSubscriberInterface {
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   protected MetastoreService $service;
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 

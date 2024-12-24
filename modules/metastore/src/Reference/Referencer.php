@@ -37,15 +37,11 @@ class Referencer {
 
   /**
    * Metastore URL Generator service.
-   *
-   * @var \Drupal\metastore\Reference\MetastoreUrlGenerator
    */
   public MetastoreUrlGenerator $metastoreUrlGenerator;
 
   /**
    * Guzzle HTTP client.
-   *
-   * @var \GuzzleHttp\Client
    */
   private Client $httpClient;
 
@@ -58,8 +54,6 @@ class Referencer {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

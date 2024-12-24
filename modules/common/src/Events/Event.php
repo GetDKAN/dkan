@@ -29,8 +29,6 @@ class Event extends DrupalEvent {
 
   /**
    * Exception.
-   *
-   * @var \Exception|null
    */
   private ?\Exception $exception;
 

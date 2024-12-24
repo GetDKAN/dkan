@@ -42,8 +42,6 @@ class WebServiceApi implements ContainerInjectionInterface {
 
   /**
    * Metastore API response service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   private MetastoreApiResponse $metastoreApiResponse;
 
