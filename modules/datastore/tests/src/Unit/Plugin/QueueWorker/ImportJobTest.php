@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
-use Contracts\ParserInterface;
-use CsvParser\Parser\Csv;
 use Contracts\Mock\Storage\Memory;
+use CsvParser\Parser\Csv;
+use CsvParser\Parser\ParserInterface;
+use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\DatabaseTableInterface;
-use Procrastinator\Result;
 use PHPUnit\Framework\TestCase;
+use Procrastinator\Result;
 
 /**
  * Unit tests for Importer class.
@@ -289,7 +289,7 @@ class ImportJobTest extends TestCase {
     ]);
   }
 
-  public function sanitizeDescriptionProvider(): array {
+  public static function sanitizeDescriptionProvider(): array {
     return [
       'multiline' => ["Multi\nLine", 'Multi Line'],
     ];
@@ -303,7 +303,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, ImportJob::sanitizeDescription($column));
   }
 
-  public function sanitizeHeaderProvider() {
+  public static function sanitizeHeaderProvider() {
     return [
       'reserved_word' => ['accessible', '_accessible'],
       'numeric' => [1, '_1'],
@@ -318,7 +318,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, ImportJob::sanitizeHeader($column));
   }
 
-  public function truncateHeaderProvider(): array {
+  public static function truncateHeaderProvider(): array {
     $max_length = 64;
     return [
       'max_length' => [

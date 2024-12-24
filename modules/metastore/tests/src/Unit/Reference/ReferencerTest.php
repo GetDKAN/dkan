@@ -241,7 +241,7 @@ class ReferencerTest extends TestCase {
     $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
   }
 
-  public function formatProvider() {
+  public static function formatProvider() {
     return [
       'tsv' => ['tsv', 'text/tab-separated-values'],
       'csv' => ['csv', 'text/csv'],
@@ -481,7 +481,7 @@ class ReferencerTest extends TestCase {
     $this->assertSame($describedBy, $distribution->describedBy);
   }
 
-  public function provideDataDictionaryData() {
+  public static function provideDataDictionaryData() {
     return [
       [
         (object) ["describedBy" => "http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],

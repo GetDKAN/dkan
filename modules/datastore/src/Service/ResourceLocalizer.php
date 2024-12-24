@@ -45,15 +45,11 @@ class ResourceLocalizer {
 
   /**
    * DKAN resource file mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
 
   /**
    * DKAN resource file fetcher factory.
-   *
-   * @var \Contracts\FactoryInterface
    *
    * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
@@ -61,22 +57,16 @@ class ResourceLocalizer {
 
   /**
    * Drupal files utility service.
-   *
-   * @var \Drupal\common\Util\DrupalFiles
    */
   private DrupalFiles $drupalFiles;
 
   /**
    * File fetcher job store factory.
-   *
-   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
   private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
    * Drupal queue.
-   *
-   * @var \Drupal\Core\Queue\QueueFactory
    */
   private QueueFactory $queueFactory;
 
@@ -88,7 +78,7 @@ class ResourceLocalizer {
     FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
     FileFetcherJobStoreFactory $fileFetcherJobStoreFactory,
-    QueueFactory $queueFactory
+    QueueFactory $queueFactory,
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;

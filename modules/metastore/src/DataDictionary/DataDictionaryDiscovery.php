@@ -17,29 +17,21 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
 
   /**
    * Metastore settings config object.
-   *
-   * @var \Drupal\Core\Config\Config
    */
   protected Config $config;
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   protected MetastoreService $metastore;
 
   /**
    * Reference lookup service.
-   *
-   * @var \Drupal\metastore\ReferenceLookupInterface
    */
   protected ReferenceLookupInterface $lookup;
 
   /**
    * URL generator service.
-   *
-   * @var \Drupal\metastore\Reference\MetastoreUrlGenerator
    */
   protected MetastoreUrlGenerator $urlGenerator;
 

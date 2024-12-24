@@ -56,22 +56,16 @@ class ImportService {
 
   /**
    * The DKAN Resource to import.
-   *
-   * @var \Drupal\common\DataResource|null
    */
   private ?DataResource $resource;
 
   /**
    * The jobstore factory service.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory service.
-   *
-   * @var \Drupal\datastore\Storage\DatabaseTableFactory
    */
   private DatabaseTableFactory $databaseTableFactory;
 
@@ -80,23 +74,17 @@ class ImportService {
    *
    * Access using self::getImporter().
    *
-   * @var \Drupal\datastore\Plugin\QueueWorker\ImportJob|null
-   *
    * @see self::getImporter()
    */
   private ?ImportJob $importJob = NULL;
 
   /**
    * Logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
   /**
    * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   private EventDispatcherInterface $eventDispatcher;
 

@@ -90,7 +90,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     $this->assertNotEmpty(file_get_contents($local_resource->getFilePath()));
   }
 
-  public function provideUseExisting() {
+  public static function provideUseExisting() {
     return [
       'Use existing localized file' => [TRUE],
       'Do not use existing localized file' => [FALSE],

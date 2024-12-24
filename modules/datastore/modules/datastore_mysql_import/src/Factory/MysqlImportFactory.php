@@ -18,8 +18,6 @@ class MysqlImportFactory implements ImportFactoryInterface {
 
   /**
    * The JobStore Factory service.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   protected ImportJobStoreFactory $importJobStoreFactory;
 
@@ -32,15 +30,11 @@ class MysqlImportFactory implements ImportFactoryInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 
   /**
    * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   protected EventDispatcherInterface $eventDispatcher;
 

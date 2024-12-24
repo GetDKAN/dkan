@@ -18,7 +18,7 @@ This will ensure you have the same setup as DKAN's core developers, and that you
 Requirements
 ------------
 
-DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/system-requirements>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we reccomend:
+DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/system-requirements>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we recommend:
 
 -  Drupal 10+
 -  MySQL: minimum version 5.7.8+ with PDO

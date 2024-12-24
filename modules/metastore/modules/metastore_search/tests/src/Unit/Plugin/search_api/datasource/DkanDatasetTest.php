@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore_search\Unit\Plugin\search_api\datasource;
 
-use _PHPStan_7d6f0f6a4\Psr\Container\ContainerInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;

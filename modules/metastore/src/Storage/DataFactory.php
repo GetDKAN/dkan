@@ -35,8 +35,6 @@ class DataFactory implements FactoryInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -46,7 +44,7 @@ class DataFactory implements FactoryInterface {
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
@@ -62,12 +60,9 @@ class DataFactory implements FactoryInterface {
     if (!isset($this->stores[$identifier])) {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 
-      switch ($entity_type) {
-        case 'node':
-        default:
-          $instance = $this->createNodeInstance($identifier);
-          break;
-      }
+      $instance = match ($entity_type) {
+        default => $this->createNodeInstance($identifier),
+      };
 
       $this->stores[$identifier] = $instance;
     }

@@ -41,36 +41,26 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
 
   /**
    * A logger channel for this plugin.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 
   /**
    * The metastore resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 
   /**
    * The resource processor collector service.
-   *
-   * @var \Drupal\datastore\Service\ResourceProcessorCollector
    */
   protected ResourceProcessorCollector $resourceProcessorCollector;
 
   /**
    * The datastore service.
-   *
-   * @var \Drupal\datastore\DatastoreService
    */
   protected DatastoreService $datastoreService;
 
   /**
    * The PostImport service.
-   *
-   * @var \Drupal\datastore\Service\PostImport
    */
   protected PostImport $postImport;
 

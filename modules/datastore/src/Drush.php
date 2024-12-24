@@ -2,6 +2,8 @@
 
 namespace Drupal\datastore;
 
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\common\DataResource;
@@ -36,29 +38,21 @@ class Drush extends DrushCommands {
 
   /**
    * The PostImport service.
-   *
-   * @var \Drupal\datastore\Service\PostImport
    */
   protected PostImport $postImport;
 
   /**
    * The datastore resource localizer.
-   *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
    */
   protected ResourceLocalizer $resourceLocalizer;
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 
   /**
    * Import info list service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
    */
   private ImportInfoList $importInfoList;
 
@@ -71,7 +65,7 @@ class Drush extends DrushCommands {
     PostImport $postImport,
     ResourceLocalizer $resourceLocalizer,
     ResourceMapper $resourceMapper,
-    ImportInfoList $importInfoList
+    ImportInfoList $importInfoList,
   ) {
     parent::__construct();
     $this->metastoreService = $metastoreService;
@@ -149,11 +143,13 @@ class Drush extends DrushCommands {
    *
    * @command dkan:datastore:list
    */
-  public function list($options = [
-    'format' => 'table',
-    'status' => NULL,
-    'uuid-only' => FALSE,
-  ]) {
+  public function list(
+    $options = [
+      'format' => 'table',
+      'status' => NULL,
+      'uuid-only' => FALSE,
+    ],
+  ) {
     $status = $options['status'];
     $uuid_only = $options['uuid-only'];
 
@@ -186,13 +182,23 @@ class Drush extends DrushCommands {
    * Private.
    */
   private function createRow($uuid, $item) {
+    // Using deprecation helper.
     return [
       'uuid' => $uuid,
       'fileName' => $item->fileName,
       'fileFetcherStatus' => $item->fileFetcherStatus,
-      'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
+      'fileFetcherBytes' => DeprecationHelper::backwardsCompatibleCall(
+        \Drupal::VERSION,
+        '10.2.0',
+        fn() => ByteSizeMarkup::create($item->fileFetcherBytes),
+        fn() => \format_size($item->fileFetcherBytes)
+      ) . " ($item->fileFetcherPercentDone%)",
       'importerStatus' => $item->importerStatus,
-      'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
+      'importerBytes' => DeprecationHelper::backwardsCompatibleCall(
+        \Drupal::VERSION, '10.2.0',
+        fn() => ByteSizeMarkup::create($item->importerBytes),
+        fn() => \format_size($item->importerBytes)
+      ) . " ($item->importerPercentDone%)",
     ];
   }
 
@@ -215,6 +221,8 @@ class Drush extends DrushCommands {
    *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   * @param array $options
+   *   Options array.
    *
    * @option keep-local
    *   Do not remove localized resource, only datastore.
