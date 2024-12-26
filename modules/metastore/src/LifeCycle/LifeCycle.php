@@ -2,18 +2,17 @@
 
 namespace Drupal\metastore\LifeCycle;
 
-use Drupal\common\EventDispatcherTrait;
-use Drupal\common\DataResource;
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\common\DataResource;
+use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
@@ -128,9 +127,11 @@ class LifeCycle {
    *   Returns true if the entity is used by the metastore.
    */
   public function entityIsValidItem(ContentEntityInterface $entity) {
+    // @todo Inject this.
     $storageClass = \Drupal::service('dkan.metastore.storage')::getStorageClass();
 
-    // If the storage class used implements the entity storage interface, continue.
+    // If the storage class used implements the entity storage interface,
+    // continue.
     // @todo Should we look at the entity's storage class instead?
     if (!is_a($storageClass, MetastoreEntityStorageInterface::class, TRUE)) {
       return FALSE;
