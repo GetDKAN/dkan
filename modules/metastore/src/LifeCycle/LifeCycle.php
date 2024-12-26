@@ -10,6 +10,8 @@ use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\metastore\MetastoreItemInterface;
@@ -19,6 +21,7 @@ use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 
 /**
  * Abstraction of logic used in entity hooks.
@@ -103,7 +106,7 @@ class LifeCycle {
     DateFormatter $dateFormatter,
     DataFactory $dataFactory,
     QueueFactory $queueFactory,
-    ConfigFactory $configFactory
+    ConfigFactory $configFactory,
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
@@ -116,25 +119,62 @@ class LifeCycle {
   }
 
   /**
+   * Check if the entity is part of the metastore.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   A Drupal content entity.
+   *
+   * @return bool
+   *   Returns true if the entity is used by the metastore.
+   */
+  public function entityIsValidItem(ContentEntityInterface $entity) {
+    $storageClass = \Drupal::service('dkan.metastore.storage')::getStorageClass();
+
+    // If the storage class used implements the entity storage interface, continue.
+    // @todo Should we look at the entity's storage class instead?
+    if (!is_a($storageClass, MetastoreEntityStorageInterface::class, TRUE)) {
+      return FALSE;
+    }
+
+    // @todo Inject these.
+    $storageEntityType = \Drupal::service('dkan.metastore.metastore_item_factory')::getEntityType();
+    $storageBundles = \Drupal::service('dkan.metastore.metastore_item_factory')::getBundles();
+
+    // If the type and bundle are correct, return true.
+    if ($entity->getEntityTypeId() != $storageEntityType) {
+      return FALSE;
+    }
+    if (in_array($entity->bundle(), $storageBundles)) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
    * Entry point for LifeCycle functions.
+   *
+   * Based on the schema of the $data object and the $stage, we generate a
+   * method name. If that method name exists on this class, we call it.
+   * Example: Stage 'load' for a dataset metastore item becomes 'datasetLoad'.
+   *
+   * Currently, this method handles hook implementations for Data nodes via
+   * wrappers, but might be expected to handle arbitrary entities in the
+   * future.
    *
    * @param string $stage
    *   Stage or hook name for execution.
    * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item object.
-   *
-   * @todo Just call the methods from the hooks instead of this.
    */
   public function go(string $stage, MetastoreItemInterface $data): void {
     // Removed dashes from schema ID since function names can't include dashes.
     $schema_id = str_replace('-', '', $data->getSchemaId());
-    $stage = ucwords($stage);
     // Build method name from schema ID and stage.
-    $method = "{$schema_id}{$stage}";
+    $method = $schema_id . ucwords($stage);
     // Ensure a method exists for this life cycle stage.
     if (method_exists($this, $method)) {
       // Call life cycle method on metastore item.
-      $this->{$method}($data);
+      $this->$method($data);
     }
   }
 

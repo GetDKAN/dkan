@@ -42,13 +42,13 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
   /**
    * Wrap an arbitrary object as a metastore item interface compliant object.
    *
-   * @param mixed $input
+   * @param object $input
    *   Any object that can be wrapped as a metastore item. For instance, a node.
    *
    * @return \Drupal\metastore\MetastoreItemInterface
-   *   A metastore item interface compliant object.
+   *   A wrapper that implements MetastoreItemInterface.
    */
-  public function wrap(mixed $input): MetastoreItemInterface;
+  public function wrap(object $input): MetastoreItemInterface;
 
   /**
    * Return list cache tags for metastore items.

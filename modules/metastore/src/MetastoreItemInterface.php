@@ -25,7 +25,10 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function getRawMetadata();
 
   /**
-   * Protected.
+   * Get the node schema identifier.
+   *
+   * @return string
+   *   The Data node schema identifier, such as 'dataset' or 'distribution'.
    */
   public function getSchemaId();
 
