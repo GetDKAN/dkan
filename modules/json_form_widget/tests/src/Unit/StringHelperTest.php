@@ -8,6 +8,8 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\field\Plugin\migrate\source\d6\Field;
+use Drupal\json_form_widget\FieldTypeRouter;
 use Drupal\json_form_widget\StringHelper;
 use MockChain\Options;
 
@@ -71,6 +73,46 @@ class StringHelperTest extends TestCase {
     $element["#value"] = "test@test.com";
     $string_helper->validateEmail($element, $form_state, $form);
     $this->assertEmpty($form_state->getErrors());
+  }
+
+  /**
+   * Test that StringHelper::handleStringElement correctly reemoves mailto:.
+   */
+  public function testHandleStringElement() {
+    $definition = [
+      'schema' => (object) [
+        'title' => 'Email',
+        'description' => 'Email address for the contact name.',
+        'type' => 'string',
+        "pattern" => "^mailto:[\\w\\_\\~\\!\\$\\&\\'\\(\\)\\*\\+\\,\\;\\=\\:.-]+@[\\w.-]+\\.[\\w.-]+?$|[\\w\\_\\~\\!\\$\\&\\'\\(\\)\\*\\+\\,\\;\\=\\:.-]+@[\\w.-]+\\.[\\w.-]+?$",
+      ],
+      'name' => 'hasEmail',
+    ];
+
+    $options = (new Options())
+      ->add('string_translation', TranslationManager::class)
+      ->add('email.validator', EmailValidator::class)
+      ->index(0);
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(EmailValidator::class, 'isValid', TRUE);
+
+    $string_helper = StringHelper::create($container_chain->getMock());
+    $field_type_router = $this->createMock(FieldTypeRouter::class);
+    $field_type_router->method('getSchema')->willReturn((object) [
+      'type' => 'object',
+      'properties' => [
+        'hasEmail' => $definition['schema'],
+      ],
+    ]);
+    $string_helper->setBuilder($field_type_router);
+
+    $data = 'mailto:john@doe.com';
+
+    $result = $string_helper->handleStringElement($definition, $data);
+    print_r($result['#default_value']);
+    $this->assertEquals('john@doe.com', $result['#default_value']);
   }
 
 }
