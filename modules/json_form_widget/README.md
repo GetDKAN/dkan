@@ -162,7 +162,9 @@ UI options:
 - textFormat: html
   - This can be the machine name of any Drupal text format you have configured in your system
 
-Note that using the `textFormat` property will not affect how the field is rendered; you must handle this in your decoupled frontend or by overriding the node--data twig template or `metastore_preprocess_node__data()` method in metastore.theme.inc. See the [Theming Drupal](https://www.drupal.org/docs/develop/theming-drupal) guide for more information.
+You can use `textFormat` to add a WYSIWYG or other Drupal text editor plugin to your dataset form. Just enable the modules you need and assign the editor to your text format in Drupal at /admin/config/content/formats.
+
+ Note that using the `textFormat` property will not affect how the field is rendered; you must handle this in your decoupled frontend or by overriding the node--data twig template or `metastore_preprocess_node__data()` method in metastore.theme.inc. See the [Theming Drupal](https://www.drupal.org/docs/develop/theming-drupal) guide for more information.
 
 **Form Element:**
 
