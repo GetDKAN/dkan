@@ -89,16 +89,7 @@ class StringHelperTest extends TestCase {
       'name' => 'hasEmail',
     ];
 
-    $options = (new Options())
-      ->add('string_translation', TranslationManager::class)
-      ->add('email.validator', EmailValidator::class)
-      ->index(0);
-
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(EmailValidator::class, 'isValid', TRUE);
-
-    $string_helper = StringHelper::create($container_chain->getMock());
+    $string_helper = new StringHelper(new EmailValidator());
     $field_type_router = $this->createMock(FieldTypeRouter::class);
     $field_type_router->method('getSchema')->willReturn((object) [
       'type' => 'object',
