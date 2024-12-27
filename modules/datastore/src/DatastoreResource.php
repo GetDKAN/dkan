@@ -43,6 +43,8 @@ class DatastoreResource implements \JsonSerializable {
 
   /**
    * Get the resource ID.
+   *
+   * Note: duplicates Drupal\common\DataResource::getUniqueIdentifier().
    */
   public function getId(): string {
     return $this->id;
@@ -50,6 +52,8 @@ class DatastoreResource implements \JsonSerializable {
 
   /**
    * Get the file path.
+   *
+   * Note: duplicates Drupal\common\DataResource::getFilePath(TRUE).
    */
   public function getFilePath(): string {
     return $this->filePath;
@@ -57,6 +61,8 @@ class DatastoreResource implements \JsonSerializable {
 
   /**
    * Get the mimeType.
+   *
+   * Note: duplicates Drupal\common\DataResource::getMimeType().
    */
   public function getMimeType(): string {
     return $this->mimeType;
@@ -65,8 +71,7 @@ class DatastoreResource implements \JsonSerializable {
   /**
    * {@inheritdoc}
    */
-  #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
+  public function jsonSerialize(): mixed {
     return (object) [
       'filePath' => $this->getFilePath(),
       'id' => $this->getId(),

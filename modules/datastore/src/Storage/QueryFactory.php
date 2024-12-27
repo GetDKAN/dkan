@@ -40,7 +40,7 @@ class QueryFactory {
   /**
    * Static factory create method.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   Datastore query request object.
    * @param array $storageMap
    *   Storage map array.
