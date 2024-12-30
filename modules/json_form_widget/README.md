@@ -154,7 +154,7 @@ UI options:
         "widget": "textarea",
         "rows": 5,
         "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
-        "textFormat": "html
+        "textFormat": "html"
       }
     },
 
