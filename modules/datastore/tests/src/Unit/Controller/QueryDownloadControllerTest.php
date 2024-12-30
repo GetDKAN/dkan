@@ -339,13 +339,17 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
-   * Create a mock chain for the main container passed to the controller.
+   * Create a mock object for the main container passed to the controller.
    *
+   * @param int $rowLimit
+   *    The row limit for a query.
+   * @param int|null $responseStreamMaxAge
+   *    The max age for the response stream in cache, or NULL to use the default.
    * @param array $info
    *   Dataset info array mock to be returned by DatasetInfo::gather().
    *
-   * @return \MockChain\Chain
-   *   MockChain chain object.
+   * @return \PHPUnit\Framework\MockObject\MockObject
+   *   MockChain mock object.
    */
   private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
     $options = (new Options())
