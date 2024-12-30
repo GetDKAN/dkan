@@ -42,6 +42,7 @@ services:
       - '@dkan.datastore.data_dictionary.alter_table_query_builder.mysql'
       - '@dkan.metastore.service'
       - '@dkan.metastore.data_dictionary_discovery'
+      - '@dkan.datastore.database_table_factory'
     tags:
       - { name: resource_processor, priority: 25 }
 

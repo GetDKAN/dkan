@@ -235,6 +235,8 @@ class DataResource implements \JsonSerializable {
    *
    * @return \Drupal\datastore\DatastoreResource
    *   Datastore Resource.
+   *
+   * @deprecated
    */
   public function getDatastoreResource(): DatastoreResource {
     return new DatastoreResource(
@@ -329,6 +331,8 @@ class DataResource implements \JsonSerializable {
 
   /**
    * Retrieve datastore table name for resource.
+   *
+   * @deprecated
    */
   public function getTableName() {
     return 'datastore_' . md5($this->getUniqueIdentifier());

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
+use Drupal\common\DataResource;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -475,7 +476,7 @@ class QueryDownloadControllerTest extends TestCase {
 
     $storage = new SqliteDatabaseTable(
       $connection,
-      new DatastoreResource($id, "data-$id.csv", "text/csv"),
+      new DataResource("data-$id.csv", "text/csv"),
       $this->createStub(LoggerInterface::class)
     );
     $storage->setSchema([
