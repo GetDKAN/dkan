@@ -345,8 +345,6 @@ class QueryDownloadControllerTest extends TestCase {
    *    The row limit for a query.
    * @param int|null $responseStreamMaxAge
    *    The max age for the response stream in cache, or NULL to use the default.
-   * @param array $info
-   *   Dataset info array mock to be returned by DatasetInfo::gather().
    *
    * @return \PHPUnit\Framework\MockObject\MockObject
    *   MockChain mock object.
