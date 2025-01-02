@@ -30,23 +30,32 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
+    $field_collection = $values[0]['dictionary_fields']["data"][0]["field_collection"] ?? [];
     $dd_fields = isset($values[0]["dd_fields"]) ? json_decode($values[0]["dd_fields"]) : [];
+    $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : [];
 
-    $data_results = !empty($field_collection) ? [
+    $field_results = !empty($field_collection) ? [
       [
-        "name" => $index_fields["name"] ?? '',
-        "length" => isset($index_fields["length"]) ? (int) $index_fields["length"] : 0,
+        "name" => $field_collection["name"] ?? '',
+        "length" => isset($field_collection["length"]) ? (int) $field_collection["length"] : 0,
       ],
     ] : [];
 
-    $updated = array_merge($current_fields ?? [], $data_results);
+    $updated_fields = array_merge($current_fields ?? [], $field_results);
+    $current_index = [
+      $this->getDelta() => [
+        'description' => $values[0]['description'],
+        'type' => $values[0]['type'],
+        'fields' => $updated_fields,
+      ]
+    ];
+
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
       'data' => [
         'title' => $values[0]['title'] ?? '',
         'fields' => $dd_fields,
-        'indexes' => $updated,
+        'indexes' => array_merge($indexes, $current_index),
       ],
     ];
 
@@ -131,8 +140,10 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
 
   protected function createGeneralFields($element, $field_json_metadata, $current_fields, $form_state) {
     $element['identifier'] = $this->createField('identifier', $field_json_metadata, $form_state);
-    $element['dictionary_title'] = $this->createField('dictionary_title', $field_json_metadata, $form_state);
     $element['title'] = $this->createField('title', $field_json_metadata, $form_state);
+    $element['description'] = $this->createField('description', $field_json_metadata, $form_state);
+    $element['type'] = $this->createField('type', $field_json_metadata, $form_state);
+    $element['indexes'] = $this->createField('indexes', $field_json_metadata, $form_state);
 
     $element['dictionary_fields'] = [
       '#type' => 'fieldset',
@@ -185,49 +196,6 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     else {
       return [];
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function createField(string $field, array $field_json_metadata, FormStateInterface &$form_state) {
-    $identifier_uuid = $field_json_metadata['identifier'] ?? $form_state->getUserInput()["field_json_metadata"][0]["identifier"] ?? NULL;
-
-    $fieldMappings = [
-      'dictionary_title' => [
-        '#name' => 'field_json_metadata[0][title]',
-        '#type' => 'textfield',
-        '#required' => TRUE,
-        '#title' => t('Data Dictionary Title'),
-        '#attributes' => ['readonly' => 'readonly'],
-        '#default_value' => $field_json_metadata['title'] ?? ($field_json_metadata['data']['title'] ?? ''),
-      ],
-      'identifier' => [
-        '#name' => 'field_json_metadata[0][identifier]',
-        '#type' => 'textfield',
-        '#required' => TRUE,
-        '#title' => t('Identifier'),
-        '#attributes' => ['readonly' => 'readonly'],
-        '#default_value' => $identifier_uuid ?? '',
-        '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),
-      ],
-      'title' => [
-        '#name' => $field_json_metadata['data']['indexes'][$this->getDelta()]['description'],
-        '#type' => 'textfield',
-        '#required' => TRUE,
-        '#title' => t('Title'),
-        '#default_value' => $field_json_metadata['data']['indexes'][$this->getDelta()]['description'] ?? '',
-      ],
-      'dd_fields' => [
-        '#type' => 'textarea',
-        '#access' => FALSE,
-        '#required' => TRUE,
-        '#title' => t('DD Fields'),
-        '#default_value' => isset($field_json_metadata['data']['fields']) ? json_encode($field_json_metadata['data']['fields']) : '',
-      ],
-    ];
-
-    return $fieldMappings[$field] ?? [];
   }
 
 }
