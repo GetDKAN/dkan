@@ -16,3 +16,5 @@ datastore.settings:
       type: boolean
     drop_datastore_on_post_import_error:
       type: boolean
+    response_stream_max_age:
+      type: integer

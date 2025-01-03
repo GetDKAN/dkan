@@ -19,11 +19,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class QueryDownloadController extends AbstractQueryController {
 
   /**
-   * Max-age cache control header value in seconds.
-   */
-  protected const RESPONSE_STREAM_MAX_AGE = 3600;
-
-  /**
    * {@inheritDoc}
    */
   public function __construct(QueryService $queryService, DatasetInfo $datasetInfo, MetastoreApiResponse $metastoreApiResponse, ConfigFactoryInterface $configFactory) {
@@ -31,9 +26,8 @@ class QueryDownloadController extends AbstractQueryController {
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
     // to cache the CSV stream for a reasonable amount of time.
-    // @todo Replace this constant with some form of customizable caching
-    //   strategy.
-    $this->cacheMaxAge = static::RESPONSE_STREAM_MAX_AGE;
+    $config = $configFactory->get('datastore.settings');
+    $this->cacheMaxAge = $config->get('response_stream_max_age');
   }
 
   /**

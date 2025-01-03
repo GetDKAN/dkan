@@ -61,6 +61,16 @@ function datastore_update_9001(&$sandbox) {
 }
 
 /**
+ * Set the default value for the response stream max age.
+ */
+function datastore_update_9002(&$sandbox) {
+  $config = \Drupal::service('config.factory')->getEditable('datastore.settings');
+  if ($config->get('response_stream_max_age') === NULL) {
+    $config->set('response_stream_max_age', 3600)->save();
+  }
+}
+
+/**
  * Implements hook_schema().
  */
 function datastore_schema() {

@@ -204,6 +204,20 @@ class ValueHandlerTest extends TestCase {
   }
 
   /**
+   * Test mailto: fix.
+   */
+  public function testFlattenValuesMailto() {
+    $value_handler = new ValueHandler();
+
+    $schema = json_decode('{"type":"string"}');
+    $formValues = [
+      'hasEmail' => 'john@doe.com',
+    ];
+    $result = $value_handler->flattenValues($formValues, "hasEmail", $schema);
+    $this->assertEquals('mailto:john@doe.com', $result);
+  }
+
+  /**
    * Test values for datetime elements.
    */
   public function testDatetimeValues() {
@@ -226,7 +240,7 @@ class ValueHandlerTest extends TestCase {
     ];
     $expected = $date->format('c', ['timezone' => 'UTC']);
     $result = $value_handler->handleStringValues($formValues, 'modified');
-    $this->assertEquals($result, $expected);
+    $this->assertEquals($expected, $result);
 
     // Test date_range.
     $date = new DrupalDateTime('2020-05-11T15:06:39.000Z');
@@ -240,7 +254,38 @@ class ValueHandlerTest extends TestCase {
     ];
     $expected = '2020-05-11T15:06:39.000Z/2020-05-15T15:00:00.000Z';
     $result = $value_handler->handleStringValues($formValues, 'temporal');
-    $this->assertEquals($result, $expected);
+    $this->assertEquals($expected, $result);
+  }
+
+  /**
+   * Test textFormat handling.
+   */
+  public function testTextFormat() {
+    $value_handler = new ValueHandler();
+
+    // Test textFormat.
+    $formValues = [
+      'description' => [
+        'value' => 'This is a description',
+        'format' => 'basic_html',
+      ],
+    ];
+    $expected = 'This is a description';
+    $result = $value_handler->handleStringValues($formValues, 'description');
+    $this->assertEquals($expected, $result);
+  }
+
+  public function testIntegerValues() {
+    $value_handler = new ValueHandler();
+
+    // Test integer.
+    $formValues = [
+      'integer' => "1",
+    ];
+    $expected = 1;
+    $result = $value_handler->handleIntegerValues($formValues, 'integer');
+    $this->assertIsInt($result);
+    $this->assertEquals($expected, $result);
   }
 
   /**
