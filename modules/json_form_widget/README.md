@@ -136,6 +136,36 @@ UI options:
   - The text area has a height of 5 rows
 - description
 
+### Formatted Text Area
+
+**Schema File Example:**
+
+    "description": {
+      "title": "Description",
+      "description": "Human-readable description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
+      "type": "string",
+      "minLength": 1
+    },
+
+**UI Schema File Example:**
+
+    "description": {
+      "ui:options": {
+        "widget": "textarea",
+        "rows": 5,
+        "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
+        "textFormat": "html"
+      }
+    },
+
+UI options:
+- textFormat: html
+  - This can be the machine name of any Drupal text format you have configured in your system
+
+You can use `textFormat` to add a WYSIWYG or other Drupal text editor plugin to your dataset form. Just enable the modules you need and assign the editor to your text format in Drupal at /admin/config/content/formats.
+
+ Note that using the `textFormat` property will not affect how the field is rendered; you must handle this in your decoupled frontend or by overriding the node--data twig template or `metastore_preprocess_node__data()` method in metastore.theme.inc. See the [Theming Drupal](https://www.drupal.org/docs/develop/theming-drupal) guide for more information.
+
 **Form Element:**
 
 ![Screenshot of a "Description" Drupal form field with a description of "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest." used to show how a "textarea" field can be created using the JSON Form Widget module.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/string-textarea.png)
