@@ -23,8 +23,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -101,19 +99,17 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   protected function prepareData(string $data, string $id = NULL): array {
     $decoded = json_decode($data);
     if ($decoded === NULL) {
-      $this->logger->log(
-        'datastore_import',
-        'Error decoding id:@id, data: @data.',
-        ['@id' => $id, '@data' => $data]
-      );
+      $this->logger->error('Error decoding id:@id, data: @data.', [
+        '@id' => $id,
+        '@data' => $data,
+      ]);
       throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_array($decoded)) {
-      $this->logger->log(
-        'datastore_import',
-        'Array expected while decoding id:@id, data: @data.',
-        ['@id' => $id, '@data' => $data]
-      );
+      $this->logger->error('Array expected while decoding id:@id, data: @data.', [
+        '@id' => $id,
+        '@data' => $data,
+      ]);
       throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return $decoded;
@@ -237,7 +233,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @see https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/9.2.x
    */
-  protected function translateType(string $type, $extra = NULL) {
+  protected function translateType(string $type, mixed $extra = NULL) {
     // Clean up things like "int(10) unsigned".
     $db_type = strtok($type, '(');
     $driver = $this->connection->driver() ?? 'mysql';

@@ -20,15 +20,11 @@ class HarvestPlanListBuilder extends EntityListBuilder {
 
   /**
    * Harvest service.
-   *
-   * @var \Drupal\harvest\HarvestService
    */
   protected HarvestService $harvestService;
 
   /**
    * Harvest run repository service.
-   *
-   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
   protected HarvestRunRepository $harvestRunRepository;
 
@@ -57,14 +53,13 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header = [
+    // Don't call parent::buildHeader() because we don't want operations (yet).
+    return [
       'harvest_link' => $this->t('Harvest ID'),
       'extract_status' => $this->t('Extract Status'),
       'last_run' => $this->t('Last Run'),
       'dataset_count' => $this->t('# of Datasets'),
     ];
-    // Don't call parent::buildHeader() because we don't want operations (yet).
-    return $header;
   }
 
   /**

@@ -25,15 +25,11 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
 
   /**
    * Resource localizer service.
-   *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
    */
   protected ResourceLocalizer $resourceLocalizer;
 
   /**
    * Logger service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 

@@ -10,7 +10,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityTypeRepository;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
-
+use Drupal\Core\Session\AccountProxy;
 use Drupal\dkan_js_frontend\Routing\RouteProvider;
 use Drupal\metastore\MetastoreService;
 
@@ -51,6 +51,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('simple_sitemap.settings', SimpleSitemapSettingsInterface::class)
+      ->add('current_user', AccountProxy::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)

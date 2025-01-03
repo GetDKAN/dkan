@@ -10,7 +10,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests the PostImport service.
  *
+ * @group dkan
  * @group datastore
+ * @group unit
  */
 class PostImportTest extends TestCase {
 

@@ -193,7 +193,7 @@ class WebServiceApiTest extends KernelTestBase {
    */
   public function testInfoErrors() {
     $controller = WebServiceApi::create($this->container);
-    $response = $controller->info();
+    $response = $controller->info(new Request());
     $this->assertEquals(400, $response->getStatusCode(), $response->getContent());
     $payload = json_decode($response->getContent(), TRUE);
     $this->assertEquals("Missing 'plan' query parameter value", $payload['message']);
@@ -205,10 +205,10 @@ class WebServiceApiTest extends KernelTestBase {
       'dkan.harvest.service',
       $this->getExplodingHarvestService('getRunIdsForHarvest', $message)
     );
-    $this->container->get('request_stack')->push($this->getPlanRequest($plan_id));
+    $request = $this->getPlanRequest($plan_id);
 
     $controller = WebServiceApi::create($this->container);
-    $this->assertInstanceOf(Response::class, $response = $controller->info());
+    $this->assertInstanceOf(Response::class, $response = $controller->info($request));
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals($message, $payload->message);
@@ -229,11 +229,10 @@ class WebServiceApiTest extends KernelTestBase {
     // @todo Modify the controller so that we pass in a Request object to the
     //   method instead of using the stack.
     $request = $this->getPlanRequest($plan_identifier);
-    $this->container->get('request_stack')->push($request);
 
     // Get the info before running. This should result in an empty list.
     $controller = WebServiceApi::create($this->container);
-    $response = $controller->info();
+    $response = $controller->info($request);
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $this->assertCount(0, json_decode($response->getContent()));
 
@@ -243,8 +242,7 @@ class WebServiceApiTest extends KernelTestBase {
     $this->assertArrayNotHasKey('errors', $result);
 
     // Get info again, now with results.
-    $this->container->get('request_stack')->push($request);
-    $response = $controller->info();
+    $response = $controller->info($request);
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $this->assertCount(1, json_decode($response->getContent()));
   }
@@ -254,14 +252,14 @@ class WebServiceApiTest extends KernelTestBase {
    */
   public function testInfoRunErrors() {
     $controller = WebServiceApi::create($this->container);
-    $response = $controller->infoRun('no_run');
+    $response = $controller->infoRun('no_run', new Request());
     $this->assertEquals(400, $response->getStatusCode(), $response->getContent());
     $payload = json_decode($response->getContent(), TRUE);
     $this->assertEquals("Missing 'plan' query parameter value", $payload['message']);
 
     // Add non-existent plan to our request.
-    $this->container->get('request_stack')->push($this->getPlanRequest('no_such_plan'));
-    $response = $controller->infoRun('no_run');
+    $request = $this->getPlanRequest('no_such_plan');
+    $response = $controller->infoRun('no_run', $request);
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $payload = json_decode($response->getContent());
     $this->assertIsObject($payload);
@@ -276,7 +274,10 @@ class WebServiceApiTest extends KernelTestBase {
     );
 
     $controller = WebServiceApi::create($this->container);
-    $this->assertInstanceOf(Response::class, $response = $controller->infoRun($plan_id));
+    $this->assertInstanceOf(
+      Response::class,
+      $response = $controller->infoRun($plan_id, $this->getPlanRequest('no_such_plan'))
+    );
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals($message, $payload->message);
@@ -295,11 +296,10 @@ class WebServiceApiTest extends KernelTestBase {
 
     // Add plan to our request.
     $request = $this->getPlanRequest($plan_identifier);
-    $this->container->get('request_stack')->push($request);
 
     // Plan exists but run ID does not.
     $controller = WebServiceApi::create($this->container);
-    $response = $controller->infoRun('no_run');
+    $response = $controller->infoRun('no_run', $request);
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     $payload = json_decode($response->getContent());
     $this->assertIsObject($payload);
@@ -311,12 +311,10 @@ class WebServiceApiTest extends KernelTestBase {
     $this->assertArrayNotHasKey('errors', $result);
 
     // Get the run ID. Method runHarvest does not return this information.
-    $this->container->get('request_stack')->push($request);
-    $run_ids = json_decode($controller->info()->getContent());
+    $run_ids = json_decode($controller->info($request)->getContent());
 
     // Call infoRun() with both plan and run IDs.
-    $this->container->get('request_stack')->push($request);
-    $response = $controller->infoRun(reset($run_ids));
+    $response = $controller->infoRun(reset($run_ids), $request);
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     // Response is an object.
     $this->assertIsObject(json_decode($response->getContent()));
@@ -331,7 +329,7 @@ class WebServiceApiTest extends KernelTestBase {
   public function testRevertErrors() {
     $controller = WebServiceApi::create($this->container);
     // Call revert() without supplying a plan as a request parameter.
-    $response = $controller->revert();
+    $response = $controller->revert(new Request());
     $this->assertEquals(400, $response->getStatusCode(), $response->getContent());
     $payload = json_decode($response->getContent(), TRUE);
     $this->assertEquals("Missing 'plan' query parameter value", $payload['message']);
@@ -343,10 +341,10 @@ class WebServiceApiTest extends KernelTestBase {
       'dkan.harvest.service',
       $this->getExplodingHarvestService('revertHarvest', $message)
     );
-    $this->container->get('request_stack')->push($this->getPlanRequest('our_plan'));
+    $request = $this->getPlanRequest($plan_id);
 
     $controller = WebServiceApi::create($this->container);
-    $this->assertInstanceOf(Response::class, $response = $controller->revert($plan_id));
+    $this->assertInstanceOf(Response::class, $response = $controller->revert($request));
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals($message, $payload->message);
@@ -367,9 +365,8 @@ class WebServiceApiTest extends KernelTestBase {
     $request = $this->getPlanRequest($plan_identifier);
 
     // Revert the plan before it's been run.
-    $this->container->get('request_stack')->push($request);
     $controller = WebServiceApi::create($this->container);
-    $this->assertInstanceOf(Response::class, $response = $controller->revert());
+    $this->assertInstanceOf(Response::class, $response = $controller->revert($request));
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals($plan_identifier, $payload->identifier);
     $this->assertEquals(0, $payload->result);
@@ -379,9 +376,8 @@ class WebServiceApiTest extends KernelTestBase {
     $this->assertEquals('SUCCESS', $run_status['status']['extract'] ?? 'no success');
 
     // Revert the plan again.
-    $this->container->get('request_stack')->push($request);
     $controller = WebServiceApi::create($this->container);
-    $this->assertInstanceOf(Response::class, $response = $controller->revert());
+    $this->assertInstanceOf(Response::class, $response = $controller->revert($request));
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals($plan_identifier, $payload->identifier);
     $this->assertEquals(2, $payload->result);
@@ -391,8 +387,9 @@ class WebServiceApiTest extends KernelTestBase {
    * @covers ::run
    */
   public function testRunErrors() {
+    // Request with no payload.
     $controller = WebServiceApi::create($this->container);
-    $this->assertInstanceOf(Response::class, $response = $controller->run());
+    $this->assertInstanceOf(Response::class, $response = $controller->run(new Request()));
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals('Invalid payload.', $payload->message);
@@ -405,14 +402,14 @@ class WebServiceApiTest extends KernelTestBase {
       'dkan.harvest.service',
       $this->getExplodingHarvestService('runHarvest', $message)
     );
-    $this->container->get('request_stack')->push(Request::create(
+    $request = Request::create(
       'https://example.com',
       'POST', [], [], [], [],
       json_encode((object) ['plan_id' => $plan_id])
-    ));
+    );
 
     $controller = WebServiceApi::create($this->container);
-    $this->assertInstanceOf(Response::class, $response = $controller->run());
+    $this->assertInstanceOf(Response::class, $response = $controller->run($request));
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getContent()));
     $this->assertEquals($message, $payload->message);

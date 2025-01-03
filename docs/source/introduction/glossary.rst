@@ -17,7 +17,7 @@ Glossary
     This refers to the actual data, usually provided as a file (csv, xls, xlsx, dat, zip, tar, pdf, etc.) but may also be a URL that provides access to the data. CSV is one of the most widely used data file formats and can be opened and edited by almost any simple text editor as well as Microsoft Excel, Apple Numbers, or Google Spreadsheets.
 
   Dataset
-    A dataset is an identifiable collection of structured data objects unified by some criteria (authorship, subject, scope, spatial or temporal extent…) this unifiying criteria is called metadata. In DKAN, the term **dataset** refers to the metadata plus the data resource(s). A dataset can have multiple data resources and these are listed under the metadata property called **distribution**.
+    A dataset is an identifiable collection of structured data objects unified by some criteria (authorship, subject, scope, spatial or temporal extent…) this unifying criteria is called metadata. In DKAN, the term **dataset** refers to the metadata plus the data resource(s). A dataset can have multiple data resources and these are listed under the metadata property called **distribution**.
 
   Datastore
     A datastore is the data resource stored in a database. DKAN will import data from a UTF-8 encoded csv file into a database table and provide an API endpoint from which other applications can run queries on that data.

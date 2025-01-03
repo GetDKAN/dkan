@@ -31,7 +31,7 @@ class DatabaseTableLimitsTest extends KernelTestBase {
     'metastore',
   ];
 
-  public function provideColumns() {
+  public static function provideColumns() {
     $columns = 197;
     $values = [];
 

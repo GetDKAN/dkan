@@ -14,8 +14,6 @@ class SqlParser {
 
   /**
    * State machine.
-   *
-   * @var \Maquina\StateMachine\IStateMachine|null
    */
   private ?IStateMachine $stateMachine = NULL;
 
@@ -53,7 +51,7 @@ class SqlParser {
       $this->feedFeeder($sql, $machine);
       return TRUE;
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }

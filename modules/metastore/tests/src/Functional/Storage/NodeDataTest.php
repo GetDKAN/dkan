@@ -5,19 +5,25 @@ namespace Drupal\Tests\metastore\Functional\Storage;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ValidMetadataFactory;
-use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use RootedData\RootedJsonData;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * NodeData Functional Tests.
- *
- * @package Drupal\Tests\dkan\Functional
  * @group dkan
+ * @group metastore
+ * @group functional
+ * @group btb
  */
-class NodeDataTest extends ExistingSiteBase {
-  use CleanUp;
+class NodeDataTest extends BrowserTestBase {
+
+  protected static $modules = [
+    'datastore',
+    'metastore',
+    'node',
+  ];
+
+  protected $defaultTheme = 'stark';
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
 
@@ -25,14 +31,7 @@ class NodeDataTest extends ExistingSiteBase {
 
   public function setUp(): void {
     parent::setUp();
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-    $this->setDefaultModerationState("draft");
+    $this->setDefaultModerationState('draft');
 
     $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
@@ -51,7 +50,7 @@ class NodeDataTest extends ExistingSiteBase {
 
     $allPublished = $datasetStorage->retrieveAll();
     $datasetData = json_decode($allPublished[0]);
-    $this->assertEquals("123", $datasetData->identifier);
+    $this->assertEquals('123', $datasetData->identifier);
     $this->assertEquals(1, count($allPublished));
 
     $all = $datasetStorage->retrieveAll(NULL, NULL, TRUE);
@@ -62,7 +61,7 @@ class NodeDataTest extends ExistingSiteBase {
 
     $allIds = $datasetStorage->retrieveIds(NULL, NULL, TRUE);
     $this->assertEquals(2, count($allIds));
-    $this->assertEquals("456", $allIds[1]);
+    $this->assertEquals('456', $allIds[1]);
 
     $this->expectException(MissingObjectException::class);
     $datasetStorage->retrieve('abc');
@@ -76,11 +75,11 @@ class NodeDataTest extends ExistingSiteBase {
     $this->datasetPostTwoAndUnpublishOne();
     $datasetStorage = $this->getStorage('dataset');
 
-    $result = $datasetStorage->publish("123");
+    $result = $datasetStorage->publish('123');
     $this->assertFalse($result);
 
     $this->expectException(MissingObjectException::class);
-    $datasetStorage->publish("abc");
+    $datasetStorage->publish('abc');
   }
 
   /**
@@ -98,20 +97,19 @@ class NodeDataTest extends ExistingSiteBase {
   }
 
   private function datasetPostTwoAndUnpublishOne() {
-    $datasetRootedJsonData = $this->getData("123", 'Test Published', []);
+    $metastore_service = $this->container->get('dkan.metastore.service');
+    $datasetRootedJsonData = $this->getData('123', 'Test Published', []);
     $dataset = json_decode($datasetRootedJsonData);
 
-    $uuid = $this->getMetastore()->post('dataset', $datasetRootedJsonData);
-    $this->getMetastore()->publish('dataset', $uuid);
+    $uuid = $metastore_service->post('dataset', $datasetRootedJsonData);
+    $metastore_service->publish('dataset', $uuid);
 
     $this->assertEquals(
       $dataset->identifier,
       $uuid
     );
 
-    $datasetRootedJsonData = $this->getMetastore()->get('dataset', $uuid);
-    $this->assertIsString("$datasetRootedJsonData");
-
+    $datasetRootedJsonData = $metastore_service->get('dataset', $uuid);
     $retrievedDataset = json_decode($datasetRootedJsonData);
 
     $this->assertEquals(
@@ -119,8 +117,8 @@ class NodeDataTest extends ExistingSiteBase {
       $uuid
     );
 
-    $datasetRootedJsonData = $this->getData("456", 'Test Unpublished', []);
-    $this->getMetastore()->post('dataset', $datasetRootedJsonData);
+    $datasetRootedJsonData = $this->getData('456', 'Test Unpublished', []);
+    $metastore_service->post('dataset', $datasetRootedJsonData);
   }
 
   /**
@@ -140,18 +138,18 @@ class NodeDataTest extends ExistingSiteBase {
 
     $data = new \stdClass();
     $data->title = $title;
-    $data->description = "Some description.";
+    $data->description = 'Some description.';
     $data->identifier = $identifier;
-    $data->accessLevel = "public";
-    $data->modified = "06-04-2020";
-    $data->keyword = ["some keyword"];
+    $data->accessLevel = 'public';
+    $data->modified = '06-04-2020';
+    $data->keyword = ['some keyword'];
     $data->distribution = [];
 
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();
-      $distribution->title = "Distribution #{$key} for {$identifier}";
+      $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->mediaType = "text/csv";
+      $distribution->mediaType = 'text/csv';
 
       $data->distribution[] = $distribution;
     }
@@ -159,20 +157,14 @@ class NodeDataTest extends ExistingSiteBase {
     return $this->validMetadataFactory->get(json_encode($data), 'dataset');
   }
 
-  private function getMetastore(): MetastoreService {
-    return \Drupal::service('dkan.metastore.service');
-  }
-
   private function getStorage($schemaId) {
-    return \Drupal::service('dkan.metastore.storage')->getInstance($schemaId);
+    return $this->container->get('dkan.metastore.storage')->getInstance($schemaId);
   }
 
   private function setDefaultModerationState($state = 'published') {
-    /** @var \Drupal\Core\Config\ConfigFactory $config */
-    $config = \Drupal::service('config.factory');
-    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
-    $defaultModerationState->set('type_settings.default_moderation_state', $state);
-    $defaultModerationState->save();
+    $this->config('workflows.workflow.dkan_publishing')
+      ->set('type_settings.default_moderation_state', $state)
+      ->save();
   }
 
   private function getDownloadUrl(string $filename) {

@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Form;
 
+use Drupal\common\DataResource;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Form\FormBase;
@@ -17,8 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Datastore Import Dashboard form.
- *
- * @package Drupal\datastore
  */
 class DashboardForm extends FormBase {
   use StringTranslationTrait;
@@ -304,6 +303,7 @@ class DashboardForm extends FormBase {
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
+
       // Build a table row using its details and harvest status.
       $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
@@ -380,12 +380,18 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach ($datasetInfo as $rev) {
-      $distributions = $rev['distributions'];
-      // For first distribution, combine with revision information.
-      $rows[] = array_merge(
-        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
-        $this->buildResourcesRow(array_shift($distributions))
-      );
+      // Filter out distributions whose resources are not csv or tsv.
+      $distributions = array_filter($rev['distributions'], function ($v) {
+        return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
+      });
+
+      if (!empty($distributions)) {
+        // For first distribution, combine with revision information.
+        $rows[] = array_merge(
+          $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+          $this->buildResourcesRow(array_shift($distributions))
+        );
+      }
       // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
@@ -414,7 +420,7 @@ class DashboardForm extends FormBase {
     // here.
     $moderation_class = $rev['moderation_state'];
     if ($moderation_class == 'hidden') {
-      $moderation_class = 'registered';
+      $moderation_class = 'published-hidden';
     }
     return [
       [
@@ -428,12 +434,12 @@ class DashboardForm extends FormBase {
       ],
       [
         'rowspan' => $resourceCount,
-        'class' => $rev['moderation_state'],
+        'class' => $moderation_class,
         'data' => [
           '#theme' => 'datastore_dashboard_revision_cell',
           '#revision_id' => $rev['revision_id'],
           '#modified' => $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short'),
-          '#moderation_state' => $moderation_class,
+          '#moderation_state' => $rev['moderation_state'],
         ],
       ],
       [
@@ -533,7 +539,7 @@ class DashboardForm extends FormBase {
    * @return string
    *   The sanitized error message.
    */
-  private function cleanUpError($error) {
+  private function cleanUpError(mixed $error) {
     $error = (string) $error;
     $mysqlErrorPattern = '/^SQLSTATE\[[A-Z0-9]+\]: .+?: [0-9]+ (.+?): [A-Z]/';
     if (preg_match($mysqlErrorPattern, $error, $matches)) {

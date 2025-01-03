@@ -42,8 +42,6 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   }
 
   public function testNoHarvests() {
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
-    $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->container->get('entity_type.manager');
 

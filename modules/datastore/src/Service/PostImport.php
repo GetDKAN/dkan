@@ -19,8 +19,6 @@ class PostImport {
 
   /**
    * The metastore resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 
@@ -65,7 +63,7 @@ class PostImport {
 
       return TRUE;
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }
@@ -91,7 +89,7 @@ class PostImport {
         ->execute()
         ->fetchAssoc();
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }
@@ -113,7 +111,7 @@ class PostImport {
 
       return TRUE;
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }

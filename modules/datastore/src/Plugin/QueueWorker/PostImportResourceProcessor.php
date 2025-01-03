@@ -2,12 +2,15 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\PostImportResult;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\PostImport;
+use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\Reference\ReferenceLookup;
@@ -30,30 +33,34 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
-   * A logger channel for this plugin.
+   * The datastore.settings config.
    *
-   * @var \Psr\Log\LoggerInterface
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
+   * A logger channel for this plugin.
    */
   protected LoggerInterface $logger;
 
   /**
    * The metastore resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 
   /**
    * The resource processor collector service.
-   *
-   * @var \Drupal\datastore\Service\ResourceProcessorCollector
    */
   protected ResourceProcessorCollector $resourceProcessorCollector;
 
   /**
+   * The datastore service.
+   */
+  protected DatastoreService $datastoreService;
+
+  /**
    * The PostImport service.
-   *
-   * @var \Drupal\datastore\Service\PostImport
    */
   protected PostImport $postImport;
 
@@ -80,6 +87,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   The config.factory service.
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
    * @param \Psr\Log\LoggerInterface $logger_channel
@@ -88,6 +97,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The metastore resource mapper service.
    * @param \Drupal\datastore\Service\ResourceProcessorCollector $processor_collector
    *   The resource processor collector service.
+   * @param \Drupal\datastore\DatastoreService $datastoreService
+   *   The resource datastore service.
    * @param \Drupal\datastore\Service\PostImport $post_import
    *   The post import service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
@@ -99,18 +110,22 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
     array $configuration,
     $plugin_id,
     $plugin_definition,
+    ConfigFactoryInterface $configFactory,
     AlterTableQueryBuilderInterface $alter_table_query_builder,
     LoggerInterface $logger_channel,
     ResourceMapper $resource_mapper,
     ResourceProcessorCollector $processor_collector,
+    DatastoreService $datastoreService,
     PostImport $post_import,
     DataDictionaryDiscoveryInterface $data_dictionary_discovery,
     ReferenceLookup $referenceLookup
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->config = $configFactory;
     $this->logger = $logger_channel;
     $this->resourceMapper = $resource_mapper;
     $this->resourceProcessorCollector = $processor_collector;
+    $this->datastoreService = $datastoreService;
     $this->postImport = $post_import;
     $this->dataDictionaryDiscovery = $data_dictionary_discovery;
     // Set the timeout for database connections to the queue lease time.
@@ -129,10 +144,12 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $configuration,
       $plugin_id,
       $plugin_definition,
+      $container->get('config.factory'),
       $container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql'),
       $container->get('dkan.datastore.logger_channel'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('dkan.datastore.service.resource_processor_collector'),
+      $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.service.post_import'),
       $container->get('dkan.metastore.data_dictionary_discovery'),
       $container->get('dkan.metastore.reference_lookup'),
@@ -144,6 +161,9 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    */
   public function processItem($data) {
     $postImportResult = $this->postImportProcessItem($data);
+    $drop_config = $this->config->get('datastore.settings')
+      ->get('drop_datastore_on_post_import_error');
+
     if ($postImportResult->getPostImportStatus() === 'done') {
       $this->invalidateCacheTags(DataResource::buildUniqueIdentifier(
         $data->getIdentifier(),
@@ -151,12 +171,28 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
         DataResource::DEFAULT_SOURCE_PERSPECTIVE
       ));
     }
+    if ($postImportResult->getPostImportStatus() === 'error' && $drop_config) {
+      $identifier = $data->getIdentifier();
+      try {
+        $this->datastoreService->drop($identifier, NULL, FALSE);
+        $this->logger->notice('Successfully dropped the datastore for resource @identifier due to a post import error. Visit the Datastore Import Status dashboard for details.', [
+          '@identifier' => $identifier,
+        ]);
+      }
+      catch (\Exception $e) {
+        $this->logger->error($e->getMessage());
+      }
+    }
     // Store the results of the PostImportResult object.
     $postImportResult->storeResult();
   }
 
   /**
    * Pass along new resource to resource processors.
+   *
+   * @todo This method should not contain references to data dictionary
+   *   behavior. Put all the dictionary-related logic into
+   *   DictionaryEnforcer::process().
    *
    * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
@@ -188,7 +224,17 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
         $this->logger->notice('Post import job for resource @id completed.', ['@id' => (string) $resource->getIdentifier()]);
       }
     }
+    catch (ResourceDoesNotHaveDictionary $e) {
+      // ResourceDoesNotHaveDictionary means there was no data dictionary for
+      // the given resource. This is not an error because not all resources have
+      // data dictionaries, but we should tell the user in case they think the
+      // resource should have one.
+      // @see \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer::getDataDictionaryForResource()
+      $this->logger->notice($e->getMessage());
+      $postImportResult = $this->createPostImportResult('done', 'Resource ' . $e->getResourceId() . ' does not have a data dictionary.', $resource);
+    }
     catch (\Exception $e) {
+      // General catch-all for errors.
       $this->logger->error($e->getMessage());
       $postImportResult = $this->createPostImportResult('error', $e->getMessage(), $resource);
     }
@@ -202,7 +248,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    * @param mixed $resourceId
    *   A resource ID.
    */
-  protected function invalidateCacheTags($resourceId) {
+  protected function invalidateCacheTags(mixed $resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 

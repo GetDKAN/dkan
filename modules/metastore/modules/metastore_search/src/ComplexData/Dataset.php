@@ -52,6 +52,8 @@ class Dataset extends ComplexDataFacade {
     }
     else {
       $defs[$property_name] = self::getDefinitionObject($type);
+      $defs[$property_name]->setLabel($object->properties->{$property_name}->title ?? $property_name);
+      $defs[$property_name]->setDescription($object->properties->{$property_name}->description ?? '');
     }
     return $defs;
   }
@@ -79,6 +81,8 @@ class Dataset extends ComplexDataFacade {
 
     foreach ($child_properties as $child) {
       $definitions[$prefix . $child] = self::getDefinitionObject($type);
+      $definitions[$prefix . $child]->setLabel($props->{$child}->title ?? $property_name);
+      $definitions[$prefix . $child]->setDescription($props->{$child}->description ?? '');
     }
     return $definitions;
   }

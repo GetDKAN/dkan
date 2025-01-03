@@ -138,14 +138,12 @@ class ReferencerTest extends TestCase {
       ->add('file_system', FileSystem::class)
       ->index(0);
 
-    $container_chain = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'test.test')
       ->add(ResourceMapper::class, 'register', TRUE, 'resource')
       ->add(FileSystem::class, 'getTempDirectory', '/tmp');
-
-    return $container_chain;
   }
 
   /**
@@ -243,7 +241,7 @@ class ReferencerTest extends TestCase {
     $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
   }
 
-  public function formatProvider() {
+  public static function formatProvider() {
     return [
       'tsv' => ['tsv', 'text/tab-separated-values'],
       'csv' => ['csv', 'text/csv'],
@@ -476,14 +474,14 @@ class ReferencerTest extends TestCase {
     );
 
     if ($describedBy instanceof \Exception) {
-      $this->expectException(get_class($describedBy));
+      $this->expectException($describedBy::class);
       $this->expectExceptionMessage($describedBy->getMessage());
     }
     $referencer->distributionHandling($distribution);
     $this->assertSame($describedBy, $distribution->describedBy);
   }
 
-  public function provideDataDictionaryData() {
+  public static function provideDataDictionaryData() {
     return [
       [
         (object) ["describedBy" => "http://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111"],

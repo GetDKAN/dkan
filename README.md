@@ -27,6 +27,15 @@ Requirements: https://dkan.readthedocs.io/en/latest/installation/index.html#requ
 
 ---
 
+## Contributing
+
+- [Code of conduct](https://dkan.readthedocs.io/en/latest/contributing/code_of_conduct.html)
+- [Submission guidelines](https://dkan.readthedocs.io/en/latest/contributing/submission_guidelines.html)
+- [Create an issue](https://github.com/GetDKAN/dkan/issues/new/choose)
+- [Set up local sandbox with DDEV](https://getdkan.github.io/ddev-dkan/getting-started.html)
+
+---
+
 ## License
 
 DKAN and related modules are freely-available under the ["GNU General Public License, version 2 or any later version"](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) license.
@@ -35,7 +44,7 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 
 ## Security
 
-If you have found a vunerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
+If you have found a vulnerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
 
 ---
 

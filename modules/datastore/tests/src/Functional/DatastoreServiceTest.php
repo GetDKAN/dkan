@@ -20,6 +20,7 @@ use Procrastinator\Result;
  *
  * @group datastore
  * @group btb
+ * @group functional
  */
 class DatastoreServiceTest extends BrowserTestBase {
 
@@ -37,7 +38,7 @@ class DatastoreServiceTest extends BrowserTestBase {
 
   protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
-  public function provideUseExisting() {
+  public static function provideUseExisting() {
     return [
       'Use existing localized file' => [TRUE],
       'Do not use existing localized file' => [FALSE],

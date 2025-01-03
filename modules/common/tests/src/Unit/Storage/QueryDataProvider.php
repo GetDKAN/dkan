@@ -11,8 +11,8 @@ use Drupal\common\Storage\Query;
  * messages. Methods are public static so that other tests can easily pull them
  * in individually.
  *
- * @see Drupal\Tests\common\Storage\SelectFactoryTest
- * @see Drupal\Tests\datastore\Service\QueryTest
+ * @see \Drupal\Tests\common\Storage\SelectFactoryTest
+ * @see \Drupal\Tests\datastore\Service\QueryTest
  */
 class QueryDataProvider {
 
@@ -31,6 +31,7 @@ class QueryDataProvider {
       'badPropertyQuery',
       'unsafePropertyQuery',
       'expressionQuery',
+      'expressionQueryWithInjection',
       'nestedExpressionQuery',
       'badExpressionOperandQuery',
       'conditionQuery',
@@ -38,6 +39,8 @@ class QueryDataProvider {
       'containsConditionQuery',
       'startsWithConditionQuery',
       'matchConditionQuery',
+      'matchConditionQueryWithSqlInjection',
+      'matchConditionQueryNested',
       'arrayConditionQuery',
       'nestedConditionGroupQuery',
       'sortQuery',
@@ -45,6 +48,8 @@ class QueryDataProvider {
       'offsetQuery',
       'limitOffsetQuery',
       'joinsQuery',
+      'joinsQueryWithInjection',
+      'joinsQueryWithInvalidOperator',
       'joinWithPropertiesFromBothQuery',
       'countQuery',
       'groupByQuery',
@@ -67,8 +72,7 @@ class QueryDataProvider {
   public static function noPropertiesQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
-        $query = new Query();
-        return $query;
+        return new Query();
 
       case self::SQL:
         return "SELECT t.* FROM {table} t";
@@ -96,10 +100,10 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
-      
+
       case self::VALUES:
         return [];
-  
+
     }
   }
 
@@ -118,7 +122,7 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Bad query property";
-      
+
       case self::VALUES:
         return [];
     }
@@ -198,6 +202,36 @@ class QueryDataProvider {
           return [];
     }
   }
+
+ /**
+   *
+   */
+  public static function expressionQueryWithInjection($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->properties = [
+          (object) [
+            "alias" => "add_one",
+            "expression" => (object) [
+              "operator" => "+",
+              "operands" => ["field1 + 1) AS add_one, USER() as user, (1 ", 1],
+            ],
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "SELECT (t.field11ASadd_oneUSERasuser1 + 1) AS add_one";
+
+      case self::EXCEPTION:
+        return '';
+
+        case self::VALUES:
+          return [];
+    }
+  }
+
 
   /**
    *
@@ -411,6 +445,70 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   * SQL strings with user input, ensure no injection possible.
+   */
+  public static function matchConditionQueryWithSqlInjection($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1) AGAINST (:words0 IN BOOLEAN MODE))) AND OTHER SQL INJECTION",
+            "value" => "value",
+            "operator" => "match",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE (MATCH(t.field1AGAINSTwords0INBOOLEANMODEANDOTHERSQLINJECTION)";
+
+      case self::EXCEPTION:
+        return '';
+
+      case self::VALUES:
+        return ['value'];
+    }
+  }
+
+  /**
+   * SQL strings with user input, ensure no injection possible.
+   */
+  public static function matchConditionQueryNested($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "groupOperator" => "or",
+            "conditions" => [
+              (object) [
+                "property" => "field1",
+                "value" => "value1",
+                "operator" => "match",
+              ],
+              (object) [
+                "property" => "field2",
+                "value" => "value2",
+                "operator" => "match",
+              ],
+            ],
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE ((MATCH(t.field1) AGAINST (:words0 IN BOOLEAN MODE))) OR ((MATCH(t.field2) AGAINST (:words1 IN BOOLEAN MODE)))";
+
+      case self::EXCEPTION:
+        return '';
+
+      case self::VALUES:
+        return ['value1', 'value2'];
+    }
+  }
 
   /**
    *
@@ -487,7 +585,7 @@ class QueryDataProvider {
       case self::VALUES:
         return ['value1', 'value2', 'value3'];
     }
-  
+
   }
 
   /**
@@ -619,6 +717,69 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
+    }
+  }
+
+  public static function joinsQueryWithInjection($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->joins = [
+          (object) [
+            "collection" => "table2(this)",
+            "alias" => "l(antyt)",
+            "condition" => (object) [
+              "collection" => "t",
+              "property" => "field1(ON WHAT)",
+              "value" => (object) [
+                "collection" => "l((((",
+                "property" => "field1(TTT)",
+              ],
+            ],
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "SELECT t.*, lantyt.* FROM {table} t INNER JOIN {table2this} lantyt ON t.field1ONWHAT = l.field1TTT";
+
+      case self::EXCEPTION:
+        return '';
+
+      case self::VALUES:
+        return [];
+    }
+  }
+
+  public static function joinsQueryWithInvalidOperator($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->joins = [
+          (object) [
+            "collection" => "table2",
+            "alias" => "l",
+            "condition" => (object) [
+              "collection" => "t",
+              "property" => "field1",
+              "value" => (object) [
+                "collection" => "l",
+                "property" => "field1",
+              ],
+              "operator" => ") OR 1=1 --",
+            ],
+          ],
+        ];
+        return $query;
+
+      case self::EXCEPTION:
+        return 'Invalid join operator';
+
+      case self::SQL:
+        return "SELECT t.field2 AS field2, l.field3 AS field3 FROM {table} t INNER JOIN {table2} l";
 
       case self::VALUES:
         return [];

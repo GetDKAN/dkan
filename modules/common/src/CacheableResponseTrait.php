@@ -50,7 +50,8 @@ trait CacheableResponseTrait {
     if (!isset($this->cacheMaxAge)) {
       // A hack to bypass the controllers' tests.
       if (\Drupal::hasService('config.factory')) {
-        $this->cacheMaxAge = \Drupal::config('system.performance')->get('cache.page.max_age');
+        // Use null coalesce because it's possible this config has not been set.
+        $this->cacheMaxAge = \Drupal::config('system.performance')->get('cache.page.max_age') ?? 0;
       }
       else {
         $this->cacheMaxAge = 0;

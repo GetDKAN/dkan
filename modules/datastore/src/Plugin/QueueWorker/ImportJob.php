@@ -2,11 +2,11 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Contracts\ParserInterface;
+use CsvParser\Parser\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
+use ForceUTF8\Encoding;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
-use ForceUTF8\Encoding;
 
 /**
  * Procrastinator job for importing to the datastore.
@@ -82,7 +82,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Parser object.
    *
-   * @var \Contracts\ParserInterface
+   * @var \CsvParser\Parser\ParserInterface
    */
   protected $parser;
 
@@ -257,7 +257,7 @@ class ImportJob extends AbstractPersistentJob {
    * @return \Procrastinator\Result
    *   Updated result object.
    */
-  protected function setResultError($message): Result {
+  protected function setResultError(mixed $message): Result {
     // Use these two different call methods so that we only write the status to
     // the storage once.
     $this->getResult()->setStatus(Result::ERROR);
@@ -284,7 +284,7 @@ class ImportJob extends AbstractPersistentJob {
    * @param mixed $maximumExecutionTime
    *   Maximum time to parse for before exiting.
    */
-  protected function parseAndStore($filename, $maximumExecutionTime) {
+  protected function parseAndStore($filename, mixed $maximumExecutionTime) {
     $h = fopen($filename, 'r');
     fseek($h, $this->getBytesProcessed());
 
@@ -378,7 +378,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Get the parser object.
    *
-   * @return \Contracts\ParserInterface
+   * @return \CsvParser\Parser\ParserInterface
    *   Parser object.
    */
   public function getParser(): ParserInterface {

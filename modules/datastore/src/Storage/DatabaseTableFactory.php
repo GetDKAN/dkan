@@ -20,8 +20,6 @@ class DatabaseTableFactory implements FactoryInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 
@@ -47,9 +45,8 @@ class DatabaseTableFactory implements FactoryInterface {
     }
 
     $resource = $config['resource'];
-    $databaseTable = $this->getDatabaseTable($resource);
 
-    return $databaseTable;
+    return $this->getDatabaseTable($resource);
   }
 
   /**

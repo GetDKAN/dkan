@@ -23,8 +23,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @coversDefaultClass \Drupal\datastore\WebServiceApi
+ * @coversDefaultClass \Drupal\datastore\SqlEndpoint\WebServiceApi
+ *
  * @group dkan
+ * @group datastore
+ * @group unit
  */
 class WebServiceApiTest extends TestCase {
   use TestHelperTrait;

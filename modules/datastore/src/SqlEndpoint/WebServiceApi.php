@@ -42,8 +42,6 @@ class WebServiceApi implements ContainerInjectionInterface {
 
   /**
    * Metastore API response service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   private MetastoreApiResponse $metastoreApiResponse;
 
@@ -79,7 +77,6 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function runQueryGet() {
 
-    $query = NULL;
     $query = $this->requestStack->getCurrentRequest()->get('query');
 
     // @todo Deprecate parameter show-db-columns in favor of show_db_columns.

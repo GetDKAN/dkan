@@ -34,36 +34,26 @@ class HarvestService implements ContainerInjectionInterface {
 
   /**
    * Harvest hash database table factory service.
-   *
-   * @var \Contracts\FactoryInterface
    */
   private HarvestHashesDatabaseTableFactory $hashesStoreFactory;
 
   /**
    * DKAN metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $metastore;
 
   /**
    * Harvest plan storage repository service.
-   *
-   * @var \Drupal\harvest\Entity\HarvestPlanRepository
    */
   private HarvestPlanRepository $harvestPlanRepository;
 
   /**
    * Harvest run entity repository service.
-   *
-   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
   private HarvestRunRepository $runRepository;
 
   /**
    * DKAN logger channel.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -255,7 +245,12 @@ class HarvestService implements ContainerInjectionInterface {
    *   Array of status info from the run.
    */
   public function getHarvestRunResult(string $plan_id, string $run_id): array {
-    return $this->runRepository->loadEntity($plan_id, $run_id)->toResult();
+    if ($entity = $this->runRepository->loadEntity($plan_id, $run_id)) {
+      return $entity->toResult();
+    }
+    else {
+      return [];
+    }
   }
 
   /**

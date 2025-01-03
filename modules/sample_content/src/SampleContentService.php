@@ -12,15 +12,11 @@ class SampleContentService {
 
   /**
    * Harvest service.
-   *
-   * @var \Drupal\harvest\HarvestService
    */
   private HarvestService $harvestService;
 
   /**
    * Absolute path to the sample_content module.
-   *
-   * @var string
    */
   private string $modulePath;
 

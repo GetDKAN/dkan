@@ -4,12 +4,9 @@ namespace Drupal\Tests\data_dictionary_widget\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Drupal\data_dictionary_widget\Fields\FieldAddCreation;
-use Drupal\data_dictionary_widget\Fields\FieldButtons;
 use Drupal\data_dictionary_widget\Fields\FieldCallbacks;
 use Drupal\data_dictionary_widget\Fields\FieldCreation;
-use Drupal\data_dictionary_widget\Fields\FieldEditCreation;
 use Drupal\data_dictionary_widget\Fields\FieldOperations;
-use Drupal\data_dictionary_widget\Fields\FieldValues;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityFormInterface;
@@ -212,6 +209,8 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ]
     ];
 
+    
+
     $dataDictionaryWidget = new DataDictionaryWidget (
       $plugin_id,
       $plugin_definition,
@@ -392,8 +391,8 @@ class DataDictionaryWidgetBuildTest extends TestCase {
     $user_input = [
       'field_json_metadata' => [
         0 => [
-          'identifier' => 'Kaise',
-          'title' => 'Kaise',
+          'identifier' => 'test_identifier',
+          'title' => 'test_title',
           'dictionary_fields' => [
             'data' => [
               0 => [

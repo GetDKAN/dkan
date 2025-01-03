@@ -92,8 +92,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -419,7 +417,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return mixed
    *   Filtered output.
    */
-  private function filterHtml($input, string $parent = 'dataset') {
+  private function filterHtml(mixed $input, string $parent = 'dataset') {
     $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
       ?: ['dataset_description', 'distribution_description'];
     switch (gettype($input)) {
@@ -456,21 +454,20 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * @return string
    *   Filtered string.
-   *
-   * @codeCoverageIgnore
    */
   private function htmlPurifier(string $input) {
     // Initialize HTML Purifier cache config settings array.
     $config = [];
 
     // Determine path to tmp directory.
+    // @todo Inject this service.
     $tmp_path = \Drupal::service('file_system')->getTempDirectory();
     // Specify custom location in tmp directory for storing HTML Purifier cache.
     $cache_dir = rtrim($tmp_path, '/') . '/html_purifier_cache';
 
     // Ensure the tmp cache directory exists.
     if (!is_dir($cache_dir) && !mkdir($cache_dir)) {
-      $this->logger->log('metastore', 'Failed to create cache directory for HTML purifier');
+      $this->logger->error('Failed to create cache directory for HTML purifier');
     }
     else {
       $config['Cache.SerializerPath'] = $cache_dir;

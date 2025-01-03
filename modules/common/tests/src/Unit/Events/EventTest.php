@@ -30,7 +30,7 @@ class EventTest extends TestCase
 
     \Drupal::setContainer($container);
 
-    $result = $this->dispatchEvent('test_event', 'hello', function($data) {
+    $this->dispatchEvent('test_event', 'hello', function($data) {
       return is_string($data);
     });
   }

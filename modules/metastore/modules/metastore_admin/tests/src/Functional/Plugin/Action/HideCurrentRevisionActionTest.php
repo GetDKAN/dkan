@@ -6,12 +6,10 @@ use Drupal\Core\Session\AccountProxy;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
-use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\user\Entity\User;
 use RootedData\RootedJsonData;
-use weitzman\DrupalTestTraits\Entity\UserCreationTrait;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
  * NodeData Functional Tests.
@@ -19,9 +17,15 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
  */
-class HideCurrentRevisionActionTest extends ExistingSiteBase {
-  use CleanUp;
-  use UserCreationTrait;
+class HideCurrentRevisionActionTest extends BrowserTestBase {
+
+  protected static $modules = [
+    'datastore',
+    'metastore_admin',
+    'node',
+  ];
+
+  protected $defaultTheme = 'stark';
 
   protected ValidMetadataFactory $validMetadataFactory;
   protected User $testUser;
@@ -31,17 +35,10 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
 
   public function setUp(): void {
     parent::setUp();
-    $this->removeHarvests();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
-    $this->setDefaultModerationState("published");
+    $this->setDefaultModerationState('published');
 
-    $this->testUser = $this->createUser([], "testadmin", TRUE, ['mail' => 'testadmin@test.com']);
-    $this->testApiUser = $this->createUser([], "testapiuser", FALSE, ['roles' => ['api_user'], 'mail' => 'testapiuser@test.com']);
+    $this->testUser = $this->createUser([], 'testadmin', TRUE, ['mail' => 'testadmin@test.com']);
+    $this->testApiUser = $this->createUser([], 'testapiuser', FALSE, ['roles' => ['api_user'], 'mail' => 'testapiuser@test.com']);
 
     $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
   }
@@ -50,20 +47,20 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
    * Test resource removal on distribution deleting.
    */
   public function testHide() {
-    $datasetRootedJsonData = $this->getData("456", 'Test Published', []);
+    $node_storage = $this->container->get('entity_type.manager')->getStorage('node');
+    $datasetRootedJsonData = $this->getData('456', 'Test Published', []);
     $this->getMetastore()->post('dataset', $datasetRootedJsonData);
-    $result = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => '456']);
+    $result = $node_storage->loadByProperties(['uuid' => '456']);
     $node = current($result);
-    $container = \Drupal::getContainer();
 
-    $accountProxy = new AccountProxy($container->get('event_dispatcher'));
+    $accountProxy = new AccountProxy($this->container->get('event_dispatcher'));
     $accountProxy->setAccount($this->testUser);
-    $container->set('current_user', $accountProxy);
+    $this->container->set('current_user', $accountProxy);
 
     $hideCurrentRevisionAction = HideCurrentRevisionAction::create(
-      $container,
+      $this->container,
       [],
-      "hide_current_revision_action",
+      'hide_current_revision_action',
       [
         'type' => 'node',
         'class' => HideCurrentRevisionAction::class,
@@ -78,28 +75,28 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
 
     $this->assertEquals('hidden', $node->get('moderation_state')->getString());
 
-    $this->setDefaultModerationState("draft");
-    $datasetRootedJsonData = $this->getData("457", 'Test Unpublished', []);
+    $this->setDefaultModerationState('draft');
+    $datasetRootedJsonData = $this->getData('457', 'Test Unpublished', []);
     $this->getMetastore()->post('dataset', $datasetRootedJsonData);
-    $result = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => '457']);
+    $result = $node_storage->loadByProperties(['uuid' => '457']);
     $node = current($result);
     $this->assertEquals('draft', $node->get('moderation_state')->getString());
     $hideCurrentRevisionAction->execute($node);
     $this->assertEquals('hidden', $node->get('moderation_state')->getString());
 
-    $this->setDefaultModerationState("published");
-    $datasetRootedJsonData = $this->getData("458", 'Test Published no access', []);
+    $this->setDefaultModerationState('published');
+    $datasetRootedJsonData = $this->getData('458', 'Test Published no access', []);
     $this->getMetastore()->post('dataset', $datasetRootedJsonData);
-    $result = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => '458']);
+    $result = $node_storage->loadByProperties(['uuid' => '458']);
     $node = current($result);
 
-    $accountProxy = new AccountProxy($container->get('event_dispatcher'));
+    $accountProxy = new AccountProxy($this->container->get('event_dispatcher'));
     $accountProxy->setAccount($this->testApiUser);
-    $container->set('current_user', $accountProxy);
+    $this->container->set('current_user', $accountProxy);
     $hideCurrentRevisionAction = HideCurrentRevisionAction::create(
-      $container,
+      $this->container,
       [],
-      "hide_current_revision_action",
+      'hide_current_revision_action',
       [
         'type' => 'node',
         'class' => HideCurrentRevisionAction::class,
@@ -131,18 +128,18 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
 
     $data = new \stdClass();
     $data->title = $title;
-    $data->description = "Some description.";
+    $data->description = 'Some description.';
     $data->identifier = $identifier;
-    $data->accessLevel = "public";
-    $data->modified = "06-04-2020";
-    $data->keyword = ["some keyword"];
+    $data->accessLevel = 'public';
+    $data->modified = '06-04-2020';
+    $data->keyword = ['some keyword'];
     $data->distribution = [];
 
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();
-      $distribution->title = "Distribution #{$key} for {$identifier}";
+      $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->mediaType = "text/csv";
+      $distribution->mediaType = 'text/csv';
 
       $data->distribution[] = $distribution;
     }
@@ -155,11 +152,9 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
   }
 
   private function setDefaultModerationState($state = 'published') {
-    /** @var \Drupal\Core\Config\ConfigFactory $config */
-    $config = \Drupal::service('config.factory');
-    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
-    $defaultModerationState->set('type_settings.default_moderation_state', $state);
-    $defaultModerationState->save();
+    $this->config('workflows.workflow.dkan_publishing')
+      ->set('type_settings.default_moderation_state', $state)
+      ->save();
   }
 
   private function getDownloadUrl(string $filename) {

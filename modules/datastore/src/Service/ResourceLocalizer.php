@@ -45,15 +45,11 @@ class ResourceLocalizer {
 
   /**
    * DKAN resource file mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
 
   /**
    * DKAN resource file fetcher factory.
-   *
-   * @var \Contracts\FactoryInterface
    *
    * @see \Drupal\common\FileFetcher\FileFetcherFactory
    */
@@ -61,22 +57,16 @@ class ResourceLocalizer {
 
   /**
    * Drupal files utility service.
-   *
-   * @var \Drupal\common\Util\DrupalFiles
    */
   private DrupalFiles $drupalFiles;
 
   /**
    * File fetcher job store factory.
-   *
-   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
   private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
    * Drupal queue.
-   *
-   * @var \Drupal\Core\Queue\QueueFactory
    */
   private QueueFactory $queueFactory;
 
@@ -88,7 +78,7 @@ class ResourceLocalizer {
     FactoryInterface $fileFetcherFactory,
     DrupalFiles $drupalFiles,
     FileFetcherJobStoreFactory $fileFetcherJobStoreFactory,
-    QueueFactory $queueFactory
+    QueueFactory $queueFactory,
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
@@ -199,7 +189,7 @@ class ResourceLocalizer {
     try {
       $this->resourceMapper->registerNewPerspective($new);
     }
-    catch (AlreadyRegistered $e) {
+    catch (AlreadyRegistered) {
     }
 
     $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
@@ -207,7 +197,7 @@ class ResourceLocalizer {
     try {
       $this->resourceMapper->registerNewPerspective($localUrlPerspective);
     }
-    catch (AlreadyRegistered $e) {
+    catch (AlreadyRegistered) {
     }
   }
 
@@ -355,7 +345,7 @@ class ResourceLocalizer {
       try {
         $this->resourceMapper->registerNewPerspective($localized_resource);
       }
-      catch (AlreadyRegistered $e) {
+      catch (AlreadyRegistered) {
         // Catch the already-registered exception.
       }
       $file_system = $this->getFileSystem();

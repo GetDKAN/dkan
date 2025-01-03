@@ -19,13 +19,13 @@ class DatasetItemTest extends Api1TestBase {
 
     $this->post($this->getSampleDataset(1));
 
-    $responseSchema = $this->spec->paths->{'/api/1/metastore/schemas/{schema_id}/items'}
-      ->get->responses->{"200"}->content->{"application/json"}->schema;
     $response = $this->httpClient->request('GET', $this->endpoint);
     $responseBody = json_decode($response->getBody());
     $this->assertEquals(2, count($responseBody));
     $this->assertTrue(is_object($responseBody[1]));
-    $this->assertJsonIsValid($responseSchema, $responseBody);
+    // Have to use this path because the endpoint as added is not in the spec.
+    // @todo Simplify dataset vs {schema_id} items in the spec.
+    $this->validator->validate($response, "api/1/metastore/schemas/{schema_id}/items", 'get');
 
     $datasetId = 'abc-123';
     $response = $this->httpClient->get("$this->endpoint/$datasetId", [
@@ -33,9 +33,7 @@ class DatasetItemTest extends Api1TestBase {
     ]);
     $this->assertEquals(404, $response->getStatusCode());
 
-    $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"404IdNotFound"};
-    $this->assertJsonIsValid($responseSchema, $responseBody);
+    $this->validator->validate($response, "$this->endpoint/$datasetId", 'get');
   }
 
   public function testPost() {
@@ -43,16 +41,13 @@ class DatasetItemTest extends Api1TestBase {
     $response = $this->post($dataset);
     $this->assertEquals(201, $response->getStatusCode());
 
-    $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
-
-    $this->assertJsonIsValid($responseSchema, $responseBody);
+    $this->validator->validate($response, $this->endpoint, 'post');
     $this->assertDatasetGet($dataset);
 
     // Now try a duplicate.
     $response = $this->post($dataset, FALSE);
     $this->assertEquals(409, $response->getStatusCode());
-    // @todo Fuly validate response once documented.
+    $this->validator->validate($response, $this->endpoint, 'post');
   }
 
   public function testPatch() {
@@ -68,9 +63,7 @@ class DatasetItemTest extends Api1TestBase {
 
     $this->assertEquals(200, $response->getStatusCode());
 
-    $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
-    $this->assertJsonIsValid($responseSchema, $responseBody);
+    $this->validator->validate($response, "$this->endpoint/$datasetId", 'patch');
 
     $dataset->title = $newTitle->title;
     $this->assertDatasetGet($dataset);
@@ -86,10 +79,8 @@ class DatasetItemTest extends Api1TestBase {
     ]);
 
     $this->assertEquals(412, $response->getStatusCode());
+    $this->validator->validate($response, "$this->endpoint/$datasetId", 'patch');
 
-    $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"412MetadataObjectNotFound"};
-    $this->assertJsonIsValid($responseSchema, $responseBody);
   }
 
   public function testPut() {
@@ -105,9 +96,7 @@ class DatasetItemTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
-    $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
-    $this->assertJsonIsValid($responseSchema, $responseBody);
+    $this->validator->validate($response, "$this->endpoint/$datasetId", 'put');
     $this->assertDatasetGet($newDataset);
 
     // Now try with mismatched identifiers.
@@ -118,15 +107,15 @@ class DatasetItemTest extends Api1TestBase {
       RequestOptions::HTTP_ERRORS => FALSE,
     ]);
     $this->assertEquals(409, $response->getStatusCode());
+    $this->validator->validate($response, "$this->endpoint/$datasetId", 'put');
   }
 
   private function assertDatasetGet($dataset) {
     $id = $dataset->identifier;
-    $responseSchema = $this->spec->components->schemas->dataset;
     $response = $this->httpClient->get("$this->endpoint/$id");
     $responseBody = json_decode($response->getBody());
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertJsonIsValid($responseSchema, $responseBody);
+    $this->validator->validate($response, "$this->endpoint/$id", 'get');
     $this->assertEquals($dataset, $responseBody);
   }
 

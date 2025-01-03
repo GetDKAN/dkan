@@ -153,9 +153,9 @@ dkan.metastore.config_properties:
   path: '/admin/dkan/properties'
   defaults:
     _form: '\Drupal\metastore\Form\DkanDataSettingsForm'
-    _title: 'Metastore settings'
+    _title: 'Metastore Settings'
   requirements:
-    _permission: 'access administration pages'
+    _permission: 'administer metastore settings'
   options:
     _admin_route: TRUE
 
@@ -179,13 +179,5 @@ metastore.datasets:
   defaults:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
     _title: 'Datasets'
-  requirements:
-    _permission: 'create data content'
-
-metastore.datasets.create:
-  path: '/admin/dkan/datasets'
-  defaults:
-    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
-    _title: 'Create Dataset'
   requirements:
     _permission: 'create data content'

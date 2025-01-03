@@ -50,3 +50,7 @@
   color: #666;
   cursor: not-allowed;
 }
+
+#field-json-metadata-dictionary-edit-field {
+  overflow-wrap: anywhere;
+}

@@ -2,21 +2,39 @@
 
 namespace Drupal\datastore;
 
-use Drupal\common\DataResource;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\common\DataResource;
+use Drupal\datastore\Events\DatastoreDroppedEvent;
+use Drupal\datastore\Events\DatastorePreDropEvent;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Main services for the datastore.
  */
 class DatastoreService implements ContainerInjectionInterface {
+
+  /**
+   * This event is triggered when the datastore is about to be dropped.
+   *
+   * The event data is a keyed array, identifier and version.
+   */
+  const EVENT_DATASTORE_PRE_DROP = 'dkan_datastore_pre_drop';
+
+  /**
+   * This event is triggered when the datastore is dropped.
+   *
+   * The event data is a keyed array, identifier and version.
+   */
+  const EVENT_DATASTORE_DROPPED = 'dkan_datastore_dropped';
 
   /**
    * Resource localizer for handling remote resource URLs.
@@ -48,17 +66,25 @@ class DatastoreService implements ContainerInjectionInterface {
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
 
   /**
    * Import job store factory.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
+
+  /**
+   * Event dispatcher service.
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
 
   /**
    * {@inheritdoc}
@@ -70,7 +96,9 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('queue'),
       $container->get('dkan.datastore.import_job_store_factory'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
-      $container->get('dkan.metastore.resource_mapper')
+      $container->get('dkan.metastore.resource_mapper'),
+      $container->get('event_dispatcher'),
+      $container->get('dkan.metastore.reference_lookup')
     );
   }
 
@@ -89,6 +117,10 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Dictionary Enforcer object.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   Event dispatcher service.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The reference lookup service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
@@ -96,7 +128,9 @@ class DatastoreService implements ContainerInjectionInterface {
     QueueFactory $queue,
     ImportJobStoreFactory $importJobStoreFactory,
     DictionaryEnforcer $dictionaryEnforcer,
-    ResourceMapper $resourceMapper
+    ResourceMapper $resourceMapper,
+    EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
@@ -104,6 +138,8 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->dictionaryEnforcer = $dictionaryEnforcer;
     $this->resourceMapper = $resourceMapper;
+    $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -202,7 +238,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * Private.
    */
   private function getLabelFromObject($object) {
-    return substr(strrchr(get_class($object), '\\'), 1);
+    return substr(strrchr($object::class, '\\'), 1);
   }
 
   /**
@@ -216,9 +252,15 @@ class DatastoreService implements ContainerInjectionInterface {
 
   /**
    * Returns the Data Dictionary fields.
+   *
+   * @param string|null $identifier
+   *   A resource's identifier. Used when in reference mode.
+   *
+   * @return array|null
+   *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function getDataDictionaryFields() {
-    return $this->dictionaryEnforcer->returnDataDictionaryFields();
+  public function getDataDictionaryFields(?string $identifier = NULL): ?array {
+    return $this->dictionaryEnforcer->returnDataDictionaryFields($identifier);
   }
 
   /**
@@ -233,17 +275,38 @@ class DatastoreService implements ContainerInjectionInterface {
    *   localized files for this resource. Defaults to TRUE.
    */
   public function drop(string $identifier, ?string $version = NULL, bool $remove_local_resource = TRUE) {
-    $resource = $this->resourceLocalizer->get($identifier, $version);
-
     if ($storage = $this->getStorage($identifier, $version)) {
+      $resource = NULL;
+      // Check for the resource before sending the pre-drop event.
+      if ($resource = $this->resourceLocalizer->get($identifier, $version)) {
+        // Dispatch the pre-drop event.
+        $this->eventDispatcher->dispatch(
+          new DatastorePreDropEvent($resource),
+          self::EVENT_DATASTORE_PRE_DROP
+        );
+      }
+      // Drop.
       $storage->destruct();
-      $this->importJobStoreFactory->getInstance()
-        ->remove(md5($resource->getUniqueIdentifier()));
+      // Check for the resource before removing the job store or sending the
+      // dropped event.
+      if ($resource) {
+        // Remove the info from the job store.
+        $this->importJobStoreFactory->getInstance()
+          ->remove(md5($resource->getUniqueIdentifier()));
+        // Dispatch the dropped event.
+        $this->eventDispatcher->dispatch(
+          new DatastoreDroppedEvent($resource),
+          self::EVENT_DATASTORE_DROPPED
+        );
+      }
     }
 
     if ($remove_local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
     }
+
+    // Invalidate cache tag.
+    $this->invalidateCacheTags($identifier . '__' . $version . '__source');
   }
 
   /**
@@ -256,8 +319,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
-      $data = $storage->getSummary();
-      return $data;
+      return $storage->getSummary();
     }
     throw new \Exception('no storage');
   }
@@ -306,6 +368,16 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   public function getQueueFactory(): QueueFactory {
     return $this->queue;
+  }
+
+  /**
+   * Invalidate all appropriate cache tags for this resource.
+   *
+   * @param mixed $resourceId
+   *   A resource ID.
+   */
+  protected function invalidateCacheTags(mixed $resourceId) {
+    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
 }

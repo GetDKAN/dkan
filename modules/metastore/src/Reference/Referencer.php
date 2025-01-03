@@ -37,15 +37,11 @@ class Referencer {
 
   /**
    * Metastore URL Generator service.
-   *
-   * @var \Drupal\metastore\Reference\MetastoreUrlGenerator
    */
   public MetastoreUrlGenerator $metastoreUrlGenerator;
 
   /**
    * Guzzle HTTP client.
-   *
-   * @var \GuzzleHttp\Client
    */
   private Client $httpClient;
 
@@ -58,8 +54,6 @@ class Referencer {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -131,7 +125,7 @@ class Referencer {
    * @return string|array
    *   Single reference, or an array of references.
    */
-  private function referenceProperty(string $property_id, $data) {
+  private function referenceProperty(string $property_id, mixed $data) {
     if (is_array($data)) {
       return $this->referenceMultiple($property_id, $data);
     }
@@ -175,7 +169,6 @@ class Referencer {
    *   The Uuid reference, or NULL on failure.
    */
   private function referenceSingle(string $property_id, $value) {
-
     if ($property_id == 'distribution') {
       $value = $this->distributionHandling($value);
     }
@@ -188,14 +181,12 @@ class Referencer {
       return $uuid;
     }
     else {
-      $this->logger->log(
-        'value_referencer',
-        'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
-        [
-          '@property_id' => $property_id,
-          '@value' => var_export($value, TRUE),
-        ]
-      );
+      // @todo Based on the fact that we can't make a test hit these lines, it
+      //   seems that they are dead code.
+      $this->logger->error('Neither found an existing nor could create a new reference for property_id: @property_id with value: @value', [
+        '@property_id' => $property_id,
+        '@value' => var_export($value, TRUE),
+      ]);
       return NULL;
     }
   }
@@ -246,7 +237,7 @@ class Referencer {
       $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
     }
     // If the URL cannot be converted to a DKAN URI, pass it through.
-    catch (\DomainException $e) {
+    catch (\DomainException) {
       return $value;
     }
     // If it was converted to DKAN URI, validate it as a data dictionary.
@@ -349,7 +340,7 @@ class Referencer {
     // If we couldn't find a mime type, log an error notifying the user.
     if (is_null($mime_type)) {
       $filename = basename($downloadUrl);
-      $this->logger->log('value_referencer', 'Unable to determine mime type of file with name "@name".', [
+      $this->logger->error('Unable to determine mime type of file with name "@name".', [
         '@name' => $filename,
       ]);
     }
@@ -374,7 +365,7 @@ class Referencer {
     try {
       $response = $this->httpClient->head($downloadUrl);
     }
-    catch (GuzzleException $exception) {
+    catch (GuzzleException) {
       return $mime_type;
     }
     // Extract the full value of the content type header.
@@ -484,8 +475,7 @@ class Referencer {
 
     // Create node to store this reference.
     $storage = $this->storageFactory->getInstance($property_id);
-    $entity_uuid = $storage->store($json, $data->identifier);
-    return $entity_uuid;
+    return $storage->store($json, $data->identifier);
   }
 
 }

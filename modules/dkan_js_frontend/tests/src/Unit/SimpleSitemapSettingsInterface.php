@@ -18,6 +18,6 @@ interface SimpleSitemapSettingsInterface {
    * @return mixed
    *   The current setting from configuration or a default value.
    */
-  public function get(string $name, $default = NULL);
+  public function get(string $name, mixed $default = NULL);
 
 }

@@ -3,7 +3,6 @@
 namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\StatementInterface;
-
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
@@ -93,6 +92,18 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   ];
 
   /**
+   * Config for which column heading values to use for csv downloads.
+   */
+  protected string $csvHeadersMode = 'resource_headers';
+
+  /**
+   * Assign the csvHeaderMode based on the config setting.
+   */
+  public function setCsvHeaderMode($mode) {
+    $this->csvHeadersMode = $mode ?? 'resource_headers';
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function doExecute(): void {
@@ -100,7 +111,6 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
     $this->fields = $this->sanitizeFields($this->fields);
     // Filter out fields which are not present in the database table.
     $this->fields = $this->mergeFields($this->fields, $this->table);
-
     // Sanitize index field names to match database field names.
     $this->indexes = $this->sanitizeIndexes($this->indexes);
     // Filter out indexes with fields which are not present in the table.
@@ -177,7 +187,6 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   protected function mergeFields(array $fields, string $table): array {
     $table_cols = $this->getTableColsAndComments($table);
     $column_names = array_keys($table_cols);
-
     // Filter out un-applicable query fields.
     $filtered_fields = array_filter($fields, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
     // Fill missing field titles.
@@ -405,7 +414,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
     $mysql_type_map = $this->buildDatabaseTypeMap($fields, $table);
     // Build alter options.
     $alter_options = array_merge(
-      $this->buildModifyColumnOptions($fields, $mysql_type_map),
+      $this->buildModifyColumnOptions($fields, $mysql_type_map, $table),
       $this->buildAddIndexOptions($indexes, $table, $mysql_type_map)
     );
 
@@ -441,21 +450,29 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Query fields.
    * @param string[] $type_map
    *   Field -> MySQL type map.
+   * @param string $table
+   *   Mysql table name.
    *
    * @return string[]
    *   Modify column options.
    */
-  protected function buildModifyColumnOptions(array $fields, array $type_map): array {
+  protected function buildModifyColumnOptions(array $fields, array $type_map, string $table): array {
     $modify_column_options = [];
 
     foreach ($fields as ['name' => $field, 'title' => $title]) {
       $column_type = $type_map[$field];
-      // Escape characters in column title in preparation for it being used as
-      // a MySQL comment.
-      $comment = addslashes($title);
-      // Build modify line for alter command and add the appropriate arguments
-      // to the args list.
-      $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$comment}'";
+      if ($this->csvHeadersMode == 'dictionary_titles') {
+        // Escape characters in column title in preparation for it being used as
+        // a MySQL comment.
+        $comment = addslashes($title);
+        // Build modify line for alter command and add the appropriate arguments
+        // to the args list.
+        $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$comment}'";
+      }
+      else {
+        $table_cols = $this->getTableColsAndComments($table);
+        $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$table_cols[$field]}'";
+      }
     }
 
     return $modify_column_options;
@@ -495,10 +512,39 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       $comment = addslashes($description);
 
       // Build add index option list.
-      $add_index_options[] = "ADD {$mysql_index_type} INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}'";
+      if ($index_type == 'index') {
+        $add_index_options[] = "ADD {$mysql_index_type} INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}'";
+      }
+      if ($index_type == 'fulltext') {
+        $this->executeFulltextAlter($table, $name, $formatted_field_options, $comment);
+      }
     }
 
     return $add_index_options;
+  }
+
+  /**
+   * Execute fulltext index table alters.
+   *
+   * @param string $table
+   *   Table name.
+   * @param string $name
+   *   Index name.
+   * @param string $formatted_field_options
+   *   Fields to be indexed.
+   * @param string $comment
+   *   Description of the index.
+   */
+  protected function executeFulltextAlter(string $table, string $name, string $formatted_field_options, string $comment): void {
+    try {
+      // Innodb only allows adding one fulltext index at a time.
+      $command = $this->connection->prepareStatement("ALTER TABLE {{$table}} ADD FULLTEXT INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}';", []);
+      // Execute alter command.
+      $command->execute();
+    }
+    catch (\Exception) {
+      \Drupal::logger('Data Dictionary')->error("Error applying fulltext index to dataset {$comment}");
+    }
   }
 
   /**

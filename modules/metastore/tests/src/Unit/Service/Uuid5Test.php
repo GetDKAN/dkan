@@ -28,7 +28,7 @@ class Uuid5Test extends TestCase {
    *
    * @dataProvider generateProvider
    */
-  public function testGenerate(string $schema_id, $value, $expected) {
+  public function testGenerate(string $schema_id, mixed $value, $expected) {
     // Assert.
     $actual = (new Uuid5())->generate($schema_id, $value);
     $this->assertEquals($expected, $actual);
@@ -40,7 +40,7 @@ class Uuid5Test extends TestCase {
    * @return array
    *   Schema id, value and expected.
    */
-  public function generateProvider() {
+  public static function generateProvider() {
     return [
       'string' => [
         'foo',

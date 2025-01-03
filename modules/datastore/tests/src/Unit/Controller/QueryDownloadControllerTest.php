@@ -6,8 +6,6 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Database\Query\Select;
-use Drupal\Tests\common\Unit\Connection;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\Controller\QueryDownloadController;
@@ -90,19 +88,6 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
-  }
-
-  /**
-   *
-   */
-  private function getConnection() {
-    return (new Chain($this))
-      ->add(
-        Connection::class,
-        "select",
-        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
-      )
-      ->getMock();
   }
 
   /**
@@ -234,6 +219,7 @@ class QueryDownloadControllerTest extends TestCase {
   public function testStreamedLimit() {
     $queryLimit = 75;
     $pageLimit = 50;
+    $responseStreamMaxAge = 3600;
     $data = json_encode([
       "resources" => [
         [
@@ -245,10 +231,11 @@ class QueryDownloadControllerTest extends TestCase {
       "limit" => $queryLimit,
     ]);
     // Set the row limit to 50 even though we're requesting 1000.
-    $container = $this->getQueryContainer($pageLimit);
+    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start([self::class, 'getBuffer']);
+    /** @var \Symfony\Component\HttpFoundation\StreamedResponse $streamResponse */
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
@@ -256,7 +243,12 @@ class QueryDownloadControllerTest extends TestCase {
     $streamedCsv = $this->buffer;
     // Check that the CSV has the full queryLimit number of lines, plus header and final newline.
     $this->assertEquals(($queryLimit + 2), count(explode("\n", $streamedCsv)));
-
+    // Check that the max-age header is correct.
+    $this->assertEquals(3600, $streamResponse->getMaxAge());
+    $this->assertStringContainsString(
+      'public',
+      $streamResponse->headers->get('cache-control') ?? ''
+    );
   }
 
   /**
@@ -347,15 +339,17 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
-   * Create a mock chain for the main container passed to the controller.
+   * Create a mock object for the main container passed to the controller.
    *
-   * @param array $info
-   *   Dataset info array mock to be returned by DatasetInfo::gather().
+   * @param int $rowLimit
+   *    The row limit for a query.
+   * @param int|null $responseStreamMaxAge
+   *    The max age for the response stream in cache, or NULL to use the default.
    *
-   * @return \MockChain\Chain
-   *   MockChain chain object.
+   * @return \PHPUnit\Framework\MockObject\MockObject
+   *   MockChain mock object.
    */
-  private function getQueryContainer(int $rowLimit) {
+  private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
@@ -422,7 +416,9 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Query::class, "getQueryStorageMap", $storageMap)
       ->add(Query::class, 'getDatastoreService',  DatastoreService::class)
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
-      ->add(ImmutableConfig::class, 'get', $rowLimit);
+      // @todo Use an Options or Sequence return here; this will only work for one arg at a time.
+      ->add(ImmutableConfig::class, 'get', $rowLimit)
+      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge);
 
     return $chain->getMock();
   }

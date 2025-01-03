@@ -457,7 +457,7 @@ class DatabaseTableTest extends TestCase {
       ],
     ];
 
-    $chain = (new Chain($this))
+    return (new Chain($this))
       // Construction.
       ->add(Connection::class, "schema", Schema::class)
       ->add(Connection::class, 'query', StatementWrapper::class)
@@ -470,8 +470,6 @@ class DatabaseTableTest extends TestCase {
         (new Sequence())->add(NULL)->add('First Name')->add('lAST nAME')
       )
       ->add(Schema::class, 'dropTable', NULL);
-
-    return $chain;
   }
 
   /**

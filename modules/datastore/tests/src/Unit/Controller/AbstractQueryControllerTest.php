@@ -7,7 +7,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class AbstractQueryControllerTest extends TestCase {
 

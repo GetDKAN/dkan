@@ -3,6 +3,7 @@
 namespace Drupal\data_dictionary_widget\Fields;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Various operations for the Data Dictionary Widget.
@@ -62,60 +63,29 @@ class FieldOperations {
    *
    * @param string $dataType
    *   Field data type.
+   * @param string $property
+   *   Property of array.
    *
-   * @return string
-   *   Description information.
+   * @return string|array
+   *   Description information or options list.
+   *
+   * @throws \InvalidArgumentException
    */
-  public static function generateFormatDescription($dataType) {
+  public static function generateFormats($dataType, $property) {
     $description = "<p>The format of the data in this field. Supported formats depend on the specified field type:</p>";
 
-    if ($dataType === 'string') {
-      $description .= FieldValues::returnStringInfo('description');
-    }
+    $info = match ($dataType) {
+      'string' => FieldValues::returnStringInfo($property),
+      'date' => FieldValues::returnDateInfo($property),
+      'datetime' => FieldValues::returnDateTimeInfo($property),
+      'integer' => FieldValues::returnIntegerInfo($property),
+      'number' => FieldValues::returnNumberInfo($property),
+      'year' => FieldValues::returnYearInfo($property),
+      'boolean' => FieldValues::returnBooleanInfo($property),
+      default => throw new \InvalidArgumentException("Unexpected data type: $dataType"),
+    };
 
-    if ($dataType === 'date') {
-      $description = FieldValues::returnDateInfo('description');
-    }
-
-    if ($dataType === 'integer') {
-      $description .= FieldValues::returnIntegerInfo('description');
-    }
-
-    if ($dataType === 'number') {
-      $description .= FieldValues::returnNumberInfo('description');
-    }
-    return $description;
-  }
-
-  /**
-   * Function to generate the options for the "Format" field.
-   *
-   * @param string $dataType
-   *   Field data type.
-   *
-   * @return array
-   *   List of format options.
-   */
-  public static function setFormatOptions($dataType) {
-
-    if ($dataType === 'string') {
-      $options = FieldValues::returnStringInfo('options');
-    }
-
-    if ($dataType === 'date') {
-      $options = FieldValues::returnDateInfo('options');
-    }
-
-    if ($dataType === 'integer') {
-      $options = FieldValues::returnIntegerInfo('options');
-    }
-
-    if ($dataType === 'number') {
-      $options = FieldValues::returnNumberInfo('options');
-    }
-
-    return $options;
-
+    return ($property === "description") ? ($description . $info) : $info;
   }
 
   /**
@@ -167,10 +137,13 @@ class FieldOperations {
    */
   public static function setTypeOptions() {
     return [
-      'string' => t('String'),
-      'date' => t('Date'),
-      'integer' => t('Integer'),
-      'number' => t('Number'),
+      'string' => new TranslatableMarkup('String'),
+      'date' => new TranslatableMarkup('Date'),
+      'datetime' => new TranslatableMarkup('Datetime'),
+      'integer' => new TranslatableMarkup('Integer'),
+      'number' => new TranslatableMarkup('Number'),
+      'year' => new TranslatableMarkup('Year'),
+      'boolean' => new TranslatableMarkup('Boolean'),
     ];
   }
 
@@ -290,8 +263,8 @@ class FieldOperations {
     ]);
 
     if ($type) {
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#options"] = FieldOperations::setFormatOptions($type);
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#description"] = FieldOperations::generateFormatDescription($type);
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#options"] = FieldOperations::generateFormats($type, "options");
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$index]["format"]["#description"] = FieldOperations::generateFormats($type, "description");
     }
   }
 
@@ -310,10 +283,20 @@ class FieldOperations {
    *   The form array to be modified.
    */
   public static function resetDateFormatOptions(array &$form) {
-    $field_collection = isset($form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]);
-    if ($field_collection && $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["type"]["#value"] === "date") {
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"]["#options"] = FieldValues::returnDateInfo('options');
-      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"]["#description"] = FieldValues::returnDateInfo('description');
+    $data_type = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["type"]["#value"] ?? NULL;
+
+    if (!$data_type || ($data_type !== "date" && $data_type !== "datetime")) {
+      return;
+    }
+
+    $options_method = ($data_type === "date") ? 'returnDateInfo' : 'returnDateTimeInfo';
+    $options = FieldValues::$options_method('options');
+    $description = FieldValues::$options_method('description');
+
+    if ($options && $description) {
+      $format_field =& $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"]["format"];
+      $format_field["#options"] = $options;
+      $format_field["#description"] = $description;
     }
   }
 

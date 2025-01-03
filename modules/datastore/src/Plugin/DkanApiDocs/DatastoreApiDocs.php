@@ -29,8 +29,6 @@ class DatastoreApiDocs extends DkanApiDocsBase {
 
   /**
    * Import info service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfo
    */
   private ImportInfo $importInfo;
 
@@ -397,7 +395,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     try {
       $import = $this->importInfo->getItem($parts[0], $parts[1]);
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
     if (isset($import->importerPercentDone) && ($import->importerPercentDone == 100)) {

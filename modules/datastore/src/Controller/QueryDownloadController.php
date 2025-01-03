@@ -2,7 +2,11 @@
 
 namespace Drupal\datastore\Controller;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
+use Drupal\datastore\Service\Query as QueryService;
+use Drupal\metastore\MetastoreApiResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -10,9 +14,21 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 /**
  * Controller providing functionality used to stream datastore queries.
  *
- * @package Drupal\datastore
+ * This generally supports CSV download of filtered datasets.
  */
 class QueryDownloadController extends AbstractQueryController {
+
+  /**
+   * {@inheritDoc}
+   */
+  public function __construct(QueryService $queryService, DatasetInfo $datasetInfo, MetastoreApiResponse $metastoreApiResponse, ConfigFactoryInterface $configFactory) {
+    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory);
+    // We do not want to cache streaming CSV content internally in Drupal,
+    // because datasets can be very large. However, we do want CDNs to be able
+    // to cache the CSV stream for a reasonable amount of time.
+    $config = $configFactory->get('datastore.settings');
+    $this->cacheMaxAge = $config->get('response_stream_max_age');
+  }
 
   /**
    * {@inheritdoc}
@@ -23,17 +39,13 @@ class QueryDownloadController extends AbstractQueryController {
     array $dependencies = [],
     ?ParameterBag $params = NULL
   ) {
-    switch ($datastoreQuery->{"$.format"}) {
-      case 'csv':
-        return $this->streamCsvResponse($datastoreQuery, $result);
-
-      case 'json':
-      default:
-        return $this->getResponseFromException(
-          new \UnexpectedValueException("Streaming not currently available for JSON responses"),
-          400
-        );
-    }
+    return match ($datastoreQuery->{"$.format"}) {
+      'csv' => $this->streamCsvResponse($datastoreQuery, $result),
+      default => $this->getResponseFromException(
+        new \UnexpectedValueException('Streaming not currently available for JSON responses'),
+        400
+      ),
+    };
   }
 
   /**
@@ -93,7 +105,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Create initial streamed response object.
    *
-   * @return Symfony\Component\HttpFoundation\StreamedResponse
+   * @return \Symfony\Component\HttpFoundation\StreamedResponse
    *   A streamed response object set up for data.csv file.
    */
   private function initStreamedCsvResponse($filename = "data.csv") {
@@ -101,7 +113,8 @@ class QueryDownloadController extends AbstractQueryController {
     $response->headers->set('Content-Type', 'text/csv');
     $response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
     $response->headers->set('X-Accel-Buffering', 'no');
-    return $response;
+    // Ensure one hour max-age plus public status.
+    return $this->addCacheHeaders($response);
   }
 
   /**

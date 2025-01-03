@@ -112,7 +112,7 @@
   },
   "distribution": {
     "ui:options": {
-      "description": "A distribution is a container for the metadata specific to the data resource being shared. Each distribution should contain one <strong>Access URL</strong> or <strong>Download URL</strong>. When providing a Download URL, also include the format of the file."
+      "description": "A distribution is a container for the metadata specific to the data resource being shared. Each distribution should contain one <strong>Access URL</strong> or <strong>Download URL</strong>. When providing a Download URL, also include the format of the file. A distribution containing a Download URL to a csv or tsv file will generate queues that will import the data into a database table, this is referred to as a datastore. The datastore provides an API endpoint for users to run queries against the data."
     },
     "items": {
       "@type": {
@@ -143,11 +143,12 @@
         "ui:options": {
           "title": "File Format",
           "widget": "list",
-          "type": "select_other",
+          "type": "select",
           "other_type": "textfield",
           "description": "CSV files must be encoded in UTF-8 format to be imported correctly. UTF-8 encoding is an established standard that provides optimal compatibility between applications and operating systems. Note that Excel provides a <strong>CSV UTF-8</strong> option when saving data files.",
           "source": {
             "enum": [
+              "",
               "arcgis",
               "csv",
               "esri rest",

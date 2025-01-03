@@ -63,8 +63,11 @@ class FieldAddCreation {
       '#options' => [
         'string' => t('String'),
         'date' => t('Date'),
+        'datetime' => t('Datetime'),
         'integer' => t('Integer'),
         'number' => t('Number'),
+        'year' => t('Year'),
+        'boolean' => t('Boolean'),
       ],
       '#ajax' => [
         'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
@@ -83,7 +86,7 @@ class FieldAddCreation {
       '#type' => 'select',
       '#required' => TRUE,
       '#title' => 'Format',
-      '#description' => FieldOperations::generateFormatDescription("string"),
+      '#description' => FieldOperations::generateFormats("string", "description"),
       '#default_value' => 'default',
       '#prefix' => '<div id = field-json-metadata-format>',
       '#suffix' => '</div>',
@@ -135,7 +138,7 @@ class FieldAddCreation {
   private static function createDescriptionField() {
     return [
       '#name' => 'field_json_metadata[0][dictionary_fields][field_collection][group][description]',
-      '#type' => 'textfield',
+      '#type' => 'textarea',
       '#required' => TRUE,
       '#title' => 'Description',
       '#description' => t('Information about the field data.'),
