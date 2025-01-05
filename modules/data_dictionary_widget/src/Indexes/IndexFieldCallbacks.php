@@ -126,7 +126,6 @@ class IndexFieldCallbacks {
     // but aren't currently being modified.
     $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->set('current_index', $current_index);
-    $form_state->set('current_dictionary_fields', $current_index_fields);
     // Let's rebuild the form.
     $form_state->setRebuild();
   }

@@ -30,7 +30,13 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $field_collection = $values[0]['dictionary_fields']["data"][0]["field_collection"] ?? [];
+    if (is_array($values[0]['dictionary_fields']["data"])) {
+      $field_num = array_key_first($values[0]['dictionary_fields']["data"]);
+      $field_collection = $values[0]['dictionary_fields']["data"][$field_num]["field_collection"] ?? [];
+    }
+    else {
+      $field_collection = [];
+    }
     $dd_fields = isset($values[0]["dd_fields"]) ? json_decode($values[0]["dd_fields"]) : [];
     $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : [];
 
@@ -41,7 +47,11 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
       ],
     ] : [];
 
-    $updated_fields = array_merge($current_fields ?? [], $field_results);
+    $updated_fields = $current_fields ?? [];
+    if (!empty($field_results)) {
+      $updated_fields[$field_num] = reset($field_results);
+    }
+
     $current_index = [
       $this->getDelta() => [
         'description' => $values[0]['description'],
@@ -50,12 +60,16 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
       ]
     ];
 
+    $updated_indexes = $indexes;
+    $updated_indexes[array_key_first($current_index)] = reset($current_index);
+
+
     $json_data = [
       'identifier' => $values[0]['identifier'] ?? '',
       'data' => [
         'title' => $values[0]['title'] ?? '',
         'fields' => $dd_fields,
-        'indexes' => array_merge($indexes, $current_index),
+        'indexes' => $updated_indexes,
       ],
     ];
 
@@ -197,5 +211,44 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
       return [];
     }
   }
+
+  protected function createField(string $field, array $field_json_metadata, FormStateInterface &$form_state) {
+    $field_object = parent::createField($field, $field_json_metadata, $form_state);
+    if (empty($field_object)) {
+      $fieldMappings = [
+        'description' => [
+          '#name' => 'field_json_metadata[0]["description"]',
+          '#type' => 'textfield',
+          '#required' => TRUE,
+          '#title' => t('Title'),
+          '#default_value' => $field_json_metadata['data']['indexes'][$this->getDelta()]['description'] ?? '',
+        ],
+        'type' => [
+          '#name' => 'field_json_metadata[0]["type"]',
+          '#type' => 'select',
+          '#description' => t('Index type.'),
+          '#title' => 'Index Type',
+          '#default_value' => $field_json_metadata['data']['indexes'][$this->getDelta()]['type'] ?? 'index',
+          '#op' => 'index_type',
+          '#required' => TRUE,
+          '#options' => [
+            'index' => t('index'),
+            'fulltext' => t('fulltext'),
+          ],
+        ],
+        'dd_fields' => [
+          '#type' => 'textarea',
+          '#access' => FALSE,
+          '#required' => TRUE,
+          '#title' => t('DD Fields'),
+          '#default_value' => isset($field_json_metadata['data']['fields']) ? json_encode($field_json_metadata['data']['fields']) : '',
+        ],
+      ];
+      $field_object = $fieldMappings[$field] ?? [];
+    }
+
+    return $field_object;
+  }
+
 
 }

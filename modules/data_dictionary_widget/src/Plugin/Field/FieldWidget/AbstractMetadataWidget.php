@@ -148,35 +148,7 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
         '#default_value' => $identifier_uuid ?? '',
         '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),
       ],
-      'description' => [
-        '#name' => $field_json_metadata['data']['indexes'][$this->getDelta()]['description'],
-        '#type' => 'textfield',
-        '#required' => TRUE,
-        '#title' => t('Title'),
-        '#default_value' => $field_json_metadata['data']['indexes'][$this->getDelta()]['description'] ?? '',
-      ],
-      'type' => [
-        '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][type]',
-        '#type' => 'select',
-        '#description' => t('Index type.'),
-        '#title' => 'Index Type',
-        '#default_value' => 'index',
-        '#op' => 'index_type',
-        '#required' => TRUE,
-        '#options' => [
-          'index' => t('index'),
-          'fulltext' => t('fulltext'),
-        ],
-      ],
-      'dd_fields' => [
-        '#type' => 'textarea',
-        '#access' => FALSE,
-        '#required' => TRUE,
-        '#title' => t('DD Fields'),
-        '#default_value' => isset($field_json_metadata['data']['fields']) ? json_encode($field_json_metadata['data']['fields']) : '',
-      ],
     ];
-
     return $fieldMappings[$field] ?? [];
   }
 
