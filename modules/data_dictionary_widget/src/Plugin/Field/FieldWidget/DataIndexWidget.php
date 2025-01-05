@@ -135,12 +135,12 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     }
 
     if (isset($field_values["field_json_metadata"][0]["dictionary_fields"]["field_collection"])) {
-      $index_field_group = $field_values["field_json_metadata"][0]["dictionary_fields"]["field_collection"]["group"];
+      $index_field_group = $field_values["field_json_metadata"][0]["indexes"]["fields"]["field_collection"]["group"];
 
       $data_index_fields_pre = [
         [
-          "name" => $index_field_group['index']['fields']["name"],
-          "length" => (int) $index_field_group['index']['fields']["length"],
+          "name" => $index_field_group["name"],
+          "length" => (int) $index_field_group["length"],
         ],
       ];
     }
@@ -202,7 +202,7 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
         '#access' => ((bool) $current_dictionary_fields || (bool) $data_results),
         '#type' => 'table',
         '#header' => ['NAME', 'LENGTH'],
-        '#rows' => $form_state->get('cancel_index_field') ? $current_dictionary_fields : ($data_results ?? []),
+        '#rows' => $form_state->get('cancel_dictionary_field') ? $current_dictionary_fields : ($data_results ?? []),
         '#tree' => TRUE,
         '#theme' => 'custom_index_fields_table',
       ];

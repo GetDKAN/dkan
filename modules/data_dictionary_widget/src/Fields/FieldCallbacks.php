@@ -102,12 +102,12 @@ class FieldCallbacks {
     $op = $trigger['#op'];
     $form_state->set('add_new_field', '');
     // Get the current fields data.
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
+    $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $current_index = $form["field_json_metadata"]["widget"][0]['indexes']["data"]["#rows"];
 //    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? [];
 
-    if ($current_index_fields) {
-      $form_state->set('current_dictionary_fields', $current_index_fields);
+    if ($current_dictionary_fields) {
+      $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     }
 
     if ($op === 'cancel') {
@@ -125,7 +125,7 @@ class FieldCallbacks {
       $form_state->set('cancel', FALSE);
     }
 
-    $form_state->set('current_dictionary_fields', $current_index_fields);
+    $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->set('current_index', $current_index);
     $form_state->setRebuild();
   }

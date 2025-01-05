@@ -22,7 +22,7 @@ class IndexValidation {
    *   The complete form structure.
    */
   public static function indexFieldsValidation(array $element, FormStateInterface $form_state, array &$form) {
-    $index_fields_fieldset = $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"] ?? NULL;
+    $index_fields_fieldset = $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"] ?? NULL;
     $fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? NULL;
 
     if ($index_fields_fieldset && !$fields) {

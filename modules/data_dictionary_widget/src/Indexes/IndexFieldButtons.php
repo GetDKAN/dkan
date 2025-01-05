@@ -176,7 +176,7 @@ class IndexFieldButtons {
           'indexes',
           'fields',
           'edit_fields',
-          $indexKeyExplode[3],
+          $indexKeyExplode[1],
           'length',
         ],
       ];
@@ -240,11 +240,11 @@ class IndexFieldButtons {
   public static function cancelIndexFieldButton($location, $indexKey, $id) {
     $callbackId = ($id === 'field-json-metadata-index-fields-new') ? 'subIndexFormExistingFieldAjax' : 'subIndexFormAjax';
     $callbackClass = $location == 'edit' ? 'indexEditSubformCallback' : 'indexAddSubformCallback';
-    $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel_index_field';
+    $op = $location == 'edit' && $indexKey ? 'abort_' . $indexKey : 'cancel';
     $cancel_index_button = [
       '#type' => 'submit',
       '#value' => t('Cancel adding field to index'),
-      '#name' => 'cancel_index_field',
+      '#name' => 'cancel_dictionary_field',
       '#op' => $op,
       '#submit' => [
         [
@@ -254,7 +254,7 @@ class IndexFieldButtons {
       ],
       '#ajax' => [
         'callback' => "Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::$callbackId",
-        'wrapper' => $id,
+        'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
       '#limit_validation_errors' => [],

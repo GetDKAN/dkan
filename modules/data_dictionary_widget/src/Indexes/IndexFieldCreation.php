@@ -51,7 +51,7 @@ class IndexFieldCreation {
         '#access' => ((bool) $current_index_fields || (bool) $index_fields_data_results),
         '#type' => 'table',
         '#header' => ['NAME', 'LENGTH'],
-        '#rows' => $form_state->get('cancel_index_field') ? $current_index_fields : ($index_fields_data_results ?? []),
+        '#rows' => $form_state->get('cancel_dictionary_field') ? $current_index_fields : ($index_fields_data_results ?? []),
         '#tree' => TRUE,
         '#theme' => 'custom_index_fields_table',
       ];
@@ -68,7 +68,7 @@ class IndexFieldCreation {
       '#header' => ['NAME', 'TYPE', 'FIELDS'],
       '#prefix' => '<div id = field-json-metadata-indexes>',
       '#suffix' => '</div>',
-      '#rows' => $form_state->get('cancel_index') ? $current_indexes : ($index_data_results ?? []),
+      '#rows' => $form_state->get('cancel_update') ? $current_indexes : ($index_data_results ?? []),
       '#tree' => TRUE,
       '#theme' => 'custom_index_table',
     ];

@@ -19,16 +19,15 @@ class IndexFieldCallbacks {
     // Get the current fields data.
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
     $current_index = $form["field_json_metadata"]["widget"][0]['indexes']["data"]["#rows"] ?? [];
-    $current_index_fields = $form["field_json_metadata"]["widget"][0]['indexes']["fields"]["data"]["#rows"] ?? [];
 
-    if ($current_index_fields) {
-      $form_state->set('current_dictionary_fields', $current_index_fields);
+    if ($current_dictionary_fields) {
+      $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     }
 
     // If cancelling index field.
-    if ($op === 'cancel_index_field') {
+    if ($op === 'cancel_dictionary_field') {
       // Set the display to show the current index fields values.
-      $form_state->set('cancel_index_field', TRUE);
+      $form_state->set('cancel_dictionary_field', TRUE);
       // Hide the field collection.
       $form_state->set('add_new_field', '');
     }
@@ -39,13 +38,13 @@ class IndexFieldCallbacks {
       // @TODO not being used so maybe removable or update the comment.
       $form_state->set('add_field', '');
       // Get the form fields for adding new index fields.
-      $add_index_fields = IndexFieldAddCreation::addIndexFields($current_index_fields);
+      $add_index_fields = IndexFieldAddCreation::addIndexFields($current_dictionary_fields);
       // Set the fields in the field collection.
       $form_state->set('add_new_field', $add_index_fields);
       // @TODO not being used so maybe removable or update the comment.
       $form_state->set('index_added', FALSE);
       // @TODO not being used so maybe removable or update the comment.
-      $form_state->set('adding_new_index_fields', TRUE);
+//      $form_state->set('adding_new_index_fields', TRUE);
     }
 
     // If saving new index field.
@@ -53,20 +52,19 @@ class IndexFieldCallbacks {
       // @TODO not being used so maybe removable or update the comment.
       $form_state->set('add_new_field', '');
       // Get and save the entered values.
-      $form_state->set('new_index_fields', $form_state->getUserInput());
+      $form_state->set('new_dictionary_fields', $form_state->getUserInput());
       // @TODO not being used so maybe removable or update the comment.
       $form_state->set('add', TRUE);
       // Set the display to show the entered values.
       $form_state->set('cancel_index_field', FALSE);
       // @TODO not being used so maybe removable or update the comment.
-      $form_state->set('adding_new_index_fields', FALSE);
+//      $form_state->set('adding_new_index_fields', FALSE);
     }
 
     // Let's retain the fields that are already stored on the form,
     // but aren't currently being modified.
     $form_state->set('current_dictionary_fields', $current_dictionary_fields);
     $form_state->set('current_index', $current_index);
-    $form_state->set('current_dictionary_fields', $current_index_fields);
     // Let's rebuild the form.
     $form_state->setRebuild();
   }
@@ -101,7 +99,7 @@ class IndexFieldCallbacks {
     // 'Add index'
     if ($op === 'add_new_field') {
       // Get the form fields for adding new index.
-      $add_new_index = IndexFieldAddCreation::addIndex();
+      $add_new_index = IndexFieldAddCreation::addIndexFields();
       // Set the new_index values to empty.
       $form_state->set('add_new_field', '');
       // Set the fields in the field collection.
@@ -113,13 +111,13 @@ class IndexFieldCallbacks {
       // Empty the fields in the field collection.
       $form_state->set('add_new_index', '');
       // Get and save the entered values.
-      $form_state->set('new_index', $form_state->getUserInput());
+      $form_state->set('new_dictionary_fields', $form_state->getUserInput());
       // @TODO not being used so maybe removable or update the comment.
       $form_state->set('add', TRUE);
       // @TODO not being used so maybe removable or update the comment.
       $form_state->set('index_added', TRUE);
       // Set the display to show the entered values.
-      $form_state->set('cancel_index', FALSE);
+      $form_state->set('cancel_update', FALSE);
     }
 
     // Let's retain the fields that are already stored on the form,
@@ -291,18 +289,11 @@ class IndexFieldCallbacks {
     // Validation errors skip submit callbacks, this will set the index fields
     // in the correct location.
     if ($index_fields["data"]) {
-      $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"] = $index_fields;
+      $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["field_collection"]["group"] = $index_fields;
       $form["field_json_metadata"]["widget"][0]["dictionary_fields"]['#access'] = FALSE;
     }
 
-    return $form["field_json_metadata"]["widget"][0]["indexes"];
-  }
-
-  /**
-   * Ajax callback to return index fields fieldset with 'Add Field' button.
-   */
-  public static function subIndexFormFieldAjax(array &$form, FormStateInterface $form_state) {
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"];
+    return $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
   }
 
   /**
@@ -310,8 +301,8 @@ class IndexFieldCallbacks {
    * Field' button.
    */
   public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
-    $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"]['#access'] = TRUE;
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["index"]["fields"]["add_row_button"];
+    $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["add_row_button"]['#access'] = TRUE;
+    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["add_row_button"];
   }
 
   /**

@@ -103,8 +103,8 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     // Add an index field.
     // Use the name to distinguish the button from the data dictionary fields.
     $page->pressButton('add_field');
-    $page->fillField('field_json_metadata[0][indexes][fields][field_collection][group][index][fields][name]', $test_index_name);
-    $page->fillField('field_json_metadata[0][indexes][fields][field_collection][group][index][fields][length]', $test_index_length);
+    $page->fillField('field_json_metadata[0][indexes][fields][field_collection][group][name]', $test_index_name);
+    $page->fillField('field_json_metadata[0][indexes][fields][field_collection][group][length]', $test_index_length);
     // Need to distinguish the add button on the index fields vs the one for data dictionary fields.
     $page->pressButton('Save field to index');
     $page->pressButton('Save index');

@@ -105,8 +105,8 @@ class IndexFieldOperations {
 
       $data_index_fields_pre = [
         [
-          "name" => $index_field_group['index']['fields']["name"],
-          "length" => (int) $index_field_group['index']['fields']["length"],
+          "name" => $index_field_group["name"],
+          "length" => (int) $index_field_group["length"],
         ],
       ];
     }

@@ -68,13 +68,13 @@ class DataDictionaryWidgetBuildIndexesTest extends TestCase {
 
     $this->assertNotNull($element["indexes"]["fields"]["field_collection"]);
     $this->assertArrayHasKey('group', $element["indexes"]["fields"]["field_collection"], 'Indexes Fields Group Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('name', $element["indexes"]["fields"]["field_collection"]["group"]["index"]["fields"], 'Indexes Fields Name Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('length', $element["indexes"]["fields"]["field_collection"]["group"]["index"]["fields"], 'Indexes Fields Length Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('save_index_settings', $element["indexes"]["fields"]["field_collection"]["group"]["index"]["fields"]["actions"], 'Add button Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('cancel_index_settings', $element["indexes"]["fields"]["field_collection"]["group"]["index"]["fields"]["actions"], 'Cancel button Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('name', $element["indexes"]["fields"]["field_collection"]["group"], 'Indexes Fields Name Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('length', $element["indexes"]["fields"]["field_collection"]["group"], 'Indexes Fields Length Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('save_index_settings', $element["indexes"]["fields"]["field_collection"]["group"]["actions"], 'Add button Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('cancel_index_settings', $element["indexes"]["fields"]["field_collection"]["group"]["actions"], 'Cancel button Does Not Exist On The Data Dictionary Form');
 
     $this->assertArrayHasKey('save_index', $element["indexes"]["field_collection"]["group"]["index"], 'Submit Index button Does Not Exist On The Data Dictionary Form');
-    $this->assertArrayHasKey('cancel_index', $element["indexes"]["field_collection"]["group"]["index"], 'Cancel Index button Does Not Exist On The Data Dictionary Form');
+    $this->assertArrayHasKey('cancel_update', $element["indexes"]["field_collection"]["group"]["index"], 'Cancel Index button Does Not Exist On The Data Dictionary Form');
   }
 
   /**
