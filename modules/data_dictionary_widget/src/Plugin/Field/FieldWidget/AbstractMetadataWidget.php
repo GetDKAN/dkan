@@ -96,7 +96,28 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
    *
    * Moves the buttons into the table.
    */
-  abstract public function preRenderForm(array $dictionaryFields);
+  public function preRenderForm(array $dictionaryFields) {
+    foreach ($dictionaryFields['data']['#rows'] ?? [] as $row => $data) {
+      $edit_button = $dictionaryFields['edit_buttons'][$row] ?? NULL;
+      $edit_fields = $dictionaryFields['edit_fields'][$row] ?? NULL;
+      // Setting the ajax fields if they exsist.
+      if ($edit_button) {
+        $dictionaryFields['data']['#rows'][$row] = array_merge($data, $edit_button);
+        unset($dictionaryFields['edit_buttons'][$row]);
+      }
+      elseif ($edit_fields) {
+        unset($dictionaryFields['data']['#rows'][$row]);
+        $dictionaryFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
+        // Remove the buttons so they don't show up twice.
+        unset($dictionaryFields['edit_fields'][$row]);
+        ksort($dictionaryFields['data']['#rows']);
+      }
+
+    }
+
+    return $dictionaryFields;
+  }
+
 
   /**
    * {@inheritdoc}
@@ -129,7 +150,6 @@ abstract class AbstractMetadataWidget extends WidgetBase implements TrustedCallb
         '#type' => 'textfield',
         '#required' => TRUE,
         '#title' => t('Data Dictionary Title'),
-        '#attributes' => ['readonly' => 'readonly'],
         '#default_value' => $field_json_metadata['title'] ?? ($field_json_metadata['data']['title'] ?? ''),
       ],
       'indexes' => [

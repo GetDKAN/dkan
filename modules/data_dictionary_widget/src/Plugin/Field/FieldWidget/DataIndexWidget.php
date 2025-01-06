@@ -3,6 +3,7 @@
 namespace Drupal\data_dictionary_widget\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Field\Annotation\FieldWidget;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\data_dictionary_widget\Indexes\IndexFieldButtons;
@@ -20,6 +21,17 @@ use Drupal\data_dictionary_widget\Indexes\IndexFieldEditCreation;
  * )
  */
 class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackInterface {
+
+  /**
+   * The delta of the index in indexex for this data dictionary.
+   */
+  protected $indexNumber;
+
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings) {
+    $this->indexNumber =  \Drupal::request()->query->get('index');
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
+  }
+
 
   protected function getDelta() {
     return \Drupal::request()->query->get('index');
@@ -47,7 +59,7 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     }
 
     $current_index = [
-      $this->getDelta() => [
+      $this->indexNumber => [
         'description' => $values[0]['description'],
         'type' => $values[0]['type'],
         'fields' => $updated_fields,
@@ -71,58 +83,10 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
   }
 
   /**
-   * Prerender callback for the index field form.
-   *
-   * Moves the buttons into the table.
-   */
-  public function preRenderForm(array $dictionaryFields) {
-    foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
-      $edit_button = $dictionaryFields['edit_buttons'][$row] ?? NULL;
-      $edit_fields = $dictionaryFields['edit_fields'][$row] ?? NULL;
-      // Setting the ajax fields if they exsist.
-      if ($edit_button) {
-        $dictionaryFields['data']['#rows'][$row] = array_merge($data, $edit_button);
-        unset($dictionaryFields['edit_buttons'][$row]);
-      }
-      elseif ($edit_fields) {
-        unset($dictionaryFields['data']['#rows'][$row]);
-        $dictionaryFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
-        // Remove the buttons so they don't show up twice.
-        unset($dictionaryFields['edit_fields'][$row]);
-        ksort($dictionaryFields['data']['#rows']);
-      }
-    }
-
-    return $dictionaryFields;
-  }
-
-//  /**
-//   * Prerender callback for the index field form.
-//   *
-//   * Moves the buttons into the table.
-//   */
-//  public function preRenderIndexFieldFormOnAdd(array $indexFields) {
-//    return IndexFieldOperations::setIndexFieldsAjaxElementsOnAdd($indexFields);
-//  }
-//
-//  /**
-//   * {@inheritdoc}
-//   */
-//  public static function trustedCallbacks() {
-//    return [
-//      'preRenderForm',
-//      'preRenderIndexFieldFormOnAdd',
-//      'preRenderIndexFieldForm',
-//      'preRenderIndexForm',
-//    ];
-//  }
-
-
-  /**
    * @inheritDoc
    */
   protected function processDataResults($data_results, $current_fields, $field_values, $op) {
-    $index_data_results = $data_results['indexes'][$this->getDelta()]['fields'] ?? [];
+    $index_data_results = $data_results['indexes'][$this->indexNumber]['fields'] ?? [];
 
     if (isset($current_fields)) {
       $index_data_results = $current_fields;
@@ -152,6 +116,13 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     $element['description'] = $this->createField('description', $field_json_metadata, $form_state);
     $element['type'] = $this->createField('type', $field_json_metadata, $form_state);
     $element['indexes'] = $this->createField('indexes', $field_json_metadata, $form_state);
+    $element['foob'] = [
+      '#name' => 'field_json_metadata[0][foob]',
+      '#type' => 'textfield',
+      '#required' => FALSE,
+      '#title' => t('Data Dictionary Foobar'),
+      '#default_value' => $field_json_metadata['foob'] ?? ($field_json_metadata['data']['description'] ?? ''),
+    ];
 
     $element['dictionary_fields'] = [
       '#type' => 'fieldset',
@@ -208,21 +179,26 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
 
   protected function createField(string $field, array $field_json_metadata, FormStateInterface &$form_state) {
     $field_object = parent::createField($field, $field_json_metadata, $form_state);
+
+    if ($field === 'title') {
+      $field_object['#attributes'] = ['readonly' => 'readonly'];
+    }
+
     if (empty($field_object)) {
       $fieldMappings = [
         'description' => [
           '#name' => 'field_json_metadata[0]["description"]',
           '#type' => 'textfield',
           '#required' => TRUE,
-          '#title' => t('Title'),
-          '#default_value' => $field_json_metadata['data']['indexes'][$this->getDelta()]['description'] ?? '',
+          '#title' => t('Index Title'),
+          '#default_value' => $field_json_metadata['data']['indexes'][$this->indexNumber]['description'] ?? '',
         ],
         'type' => [
           '#name' => 'field_json_metadata[0]["type"]',
           '#type' => 'select',
           '#description' => t('Index type.'),
           '#title' => 'Index Type',
-          '#default_value' => $field_json_metadata['data']['indexes'][$this->getDelta()]['type'] ?? 'index',
+          '#default_value' => $field_json_metadata['data']['indexes'][$this->indexNumber]['type'] ?? 'index',
           '#op' => 'index_type',
           '#required' => TRUE,
           '#options' => [

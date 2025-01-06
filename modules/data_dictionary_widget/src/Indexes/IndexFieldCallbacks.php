@@ -296,10 +296,10 @@ class IndexFieldCallbacks {
    * Ajax callback to return index fields fieldset with existing fields and 'Add
    * Field' button.
    */
-  public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
-    $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["add_row_button"]['#access'] = TRUE;
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["add_row_button"];
-  }
+//  public static function subIndexFormExistingFieldAjax(array &$form, FormStateInterface $form_state) {
+//    $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["add_row_button"]['#access'] = TRUE;
+//    return $form["field_json_metadata"]["widget"][0]["indexes"]["field_collection"]["group"]["add_row_button"];
+//  }
 
   /**
    * Widget validation callback.
@@ -309,6 +309,12 @@ class IndexFieldCallbacks {
       'name' => 'Name',
       'length' => 'Length',
     ];
+
+    $op = $form_state->getTriggeringElement()['#op'];
+    $op_index = explode('_', $op);
+    if ($op === 'cancel' || $op_index[0] == 'abort') {
+      return;
+    }
 
     $edit_fields_array = $form_state->getValues()["field_json_metadata"][0]["dictionary_fields"]["data"];
     $delta = $edit_fields_array ? key($edit_fields_array) : NULL;

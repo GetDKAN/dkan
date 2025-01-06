@@ -10,61 +10,61 @@ class IndexFieldAddCreation {
   /**
    * Create fields for adding an index.
    */
-  public static function addIndex() {
-    $add_index['#access'] = FALSE;
-    $add_index['group'] = [
-      '#type' => 'fieldset',
-      '#title' => t('Add new field'),
-      '#open' => TRUE,
-      '#prefix' => '<div id = field-json-metadata-index>',
-      '#suffix' => '</div>',
-      '#element_validate' => [
-        [
-          '\Drupal\data_dictionary_widget\Indexes\IndexValidation',
-          'indexFieldsValidation',
-        ],
-      ],
-    ];
-
-    $add_index['group']['description'] = [
-      '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][description]',
-      '#description' => t('Description of index purpose or functionality.'),
-      '#type' => 'textfield',
-      '#title' => 'Name',
-      '#required' => TRUE,
-    ];
-
-    $add_index['group']['type'] = [
-      '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][type]',
-      '#type' => 'select',
-      '#description' => t('Index type.'),
-      '#title' => 'Index Type',
-      '#default_value' => 'index',
-      '#op' => 'index_type',
-      '#required' => TRUE,
-      '#options' => [
-        'index' => t('index'),
-        'fulltext' => t('fulltext'),
-      ],
-    ];
-
+//  public static function addIndex() {
+//    $add_index['#access'] = FALSE;
 //    $add_index['group'] = [
 //      '#type' => 'fieldset',
-//      '#title' => t('Fields'),
-//      '#prefix' => '<div id = field-json-metadata-index-fields>',
+//      '#title' => t('Add new field'),
+//      '#open' => TRUE,
+//      '#prefix' => '<div id = field-json-metadata-index>',
 //      '#suffix' => '</div>',
-//      '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
-//      '#attributes' => [
-//        'class' => ['index-fields-form'],
+//      '#element_validate' => [
+//        [
+//          '\Drupal\data_dictionary_widget\Indexes\IndexValidation',
+//          'indexFieldsValidation',
+//        ],
 //      ],
 //    ];
-
-//    $add_index['group']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
-    $add_index['group']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
-    $add_index['group']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
-
-    return $add_index;
-  }
+//
+//    $add_index['group']['description'] = [
+//      '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][description]',
+//      '#description' => t('Description of index purpose or functionality.'),
+//      '#type' => 'textfield',
+//      '#title' => 'Name',
+//      '#required' => TRUE,
+//    ];
+//
+//    $add_index['group']['type'] = [
+//      '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][type]',
+//      '#type' => 'select',
+//      '#description' => t('Index type.'),
+//      '#title' => 'Index Type',
+//      '#default_value' => 'index',
+//      '#op' => 'index_type',
+//      '#required' => TRUE,
+//      '#options' => [
+//        'index' => t('index'),
+//        'fulltext' => t('fulltext'),
+//      ],
+//    ];
+//
+////    $add_index['group'] = [
+////      '#type' => 'fieldset',
+////      '#title' => t('Fields'),
+////      '#prefix' => '<div id = field-json-metadata-index-fields>',
+////      '#suffix' => '</div>',
+////      '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
+////      '#attributes' => [
+////        'class' => ['index-fields-form'],
+////      ],
+////    ];
+//
+////    $add_index['group']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
+//    $add_index['group']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
+//    $add_index['group']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
+//
+//    return $add_index;
+//  }
 
   /**
    * Create fields for adding an index field.

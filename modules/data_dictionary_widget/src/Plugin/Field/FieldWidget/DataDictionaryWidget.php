@@ -204,32 +204,6 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
 //    return json_encode($json_data);
 //  }
 
-  /**
-   * Prerender callback for the dictionary form.
-   *
-   * Moves the buttons into the table.
-   */
-  public function preRenderForm(array $dictionaryFields) {
-    foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
-      $edit_button = $dictionaryFields['edit_buttons'][$row] ?? NULL;
-      $edit_fields = $dictionaryFields['edit_fields'][$row] ?? NULL;
-      // Setting the ajax fields if they exsist.
-      if ($edit_button) {
-        $dictionaryFields['data']['#rows'][$row] = array_merge($data, $edit_button);
-        unset($dictionaryFields['edit_buttons'][$row]);
-      }
-      elseif ($edit_fields) {
-        unset($dictionaryFields['data']['#rows'][$row]);
-        $dictionaryFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
-        // Remove the buttons so they don't show up twice.
-        unset($dictionaryFields['edit_fields'][$row]);
-        ksort($dictionaryFields['data']['#rows']);
-      }
-
-    }
-
-    return $dictionaryFields;
-  }
 //
 //  /**
 //   * Prerender callback for the index field form.
@@ -264,7 +238,6 @@ class DataDictionaryWidget extends AbstractMetadataWidget implements TrustedCall
   protected function createGeneralFields($element, $field_json_metadata, $current_fields, $form_state) {
     $element['identifier'] = self::createField('identifier', $field_json_metadata, $form_state);
     $element['title'] = self::createField('title', $field_json_metadata, $form_state);
-
     $element['dictionary_fields'] = [
       '#type' => 'fieldset',
       '#title' => t('Data Dictionary Fields'),
