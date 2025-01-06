@@ -199,25 +199,6 @@ class FieldOperations {
   }
 
   /**
-   * Create edit and update fields where needed.
-   */
-  public static function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
-    $current_fields = $element['current_dictionary_fields'];
-    // Creating ajax buttons/fields to be placed in correct location later.
-    foreach ($data_results as $key => $data) {
-      if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
-        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_fields, $fields_being_modified);
-      }
-      else {
-        $element['edit_buttons'][$key]['edit_button'] = FieldButtons::editButtons($key);
-      }
-    }
-    $element['add_row_button'] = FieldButtons::addButton();
-
-    return $element;
-  }
-
-  /**
    * Restore the data dictionary fields after a form_state rebuild.
    */
   public static function restoreDictionaryFieldsOnRebuild(&$form, FormStateInterface $form_state) {

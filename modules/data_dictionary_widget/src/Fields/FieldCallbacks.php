@@ -39,23 +39,26 @@ class FieldCallbacks {
    * Submit callback for the Edit button.
    */
   public static function editSubformCallback(array &$form, FormStateInterface $form_state) {
+    // Get the button's trigger value.
+    $op = $form_state->getTriggeringElement()['#op'];
+    // Get the field index from the triggering op attribute
+    // so we can use it to store the respective field later.
+    $op_index = explode("_", $op);
+
     // Get the current fields data.
     $current_dictionary_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
 //    $current_index_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"] ?? [];
-    // Get the field index from the triggering op attribute
-    // so we can use it to store the respective field later.
-    $op_index = explode("_", $form_state->getTriggeringElement()['#op']);
     // Get the fields we're currently modifying.
-    $dictionary_fields_being_modified = $form_state->get('dictionary_fields_being_modified') != NULL ? $form_state->get('dictionary_fields_being_modified') : [];
-    $index_fields_being_modified = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
+    $dictionary_fields_being_modified = $form_state->get('dictionary_fields_being_modified') ?? [];
+//    $index_fields_being_modified = $form_state->get('index_fields_being_modified') != NULL ? $form_state->get('index_fields_being_modified') : [];
     // If the op (trigger) contains abort,
     // we're canceling the field we're currently modifying so unset it.
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'abort')) {
+    if (str_contains($op, 'abort')) {
       unset($dictionary_fields_being_modified[$op_index[1]]);
     }
     // If the op (trigger) contains delete,
     // we're deleting the field we're editing so...
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'delete')) {
+    if (str_contains($op, 'delete')) {
       // Unset it from being currently modified.
       unset($dictionary_fields_being_modified[$op_index[1]]);
       // Remove the respective field/data from the form.
@@ -63,7 +66,7 @@ class FieldCallbacks {
     }
     // If the op (trigger) contains update,
     // We're saving the field we're editing so...
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'update')) {
+    if (str_contains($op, 'update')) {
       // Unset the respective currently modifying field.
       unset($dictionary_fields_being_modified[$op_index[1]]);
       // Unset the respective field/data from the form.
@@ -75,7 +78,7 @@ class FieldCallbacks {
     }
     // If the op (trigger) contains edit
     // We're editing a specific field so...
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'edit')) {
+    if (str_contains($op, 'edit')) {
       // Set the field we're modifying to that field.
       $dictionary_fields_being_modified[$op_index[1]] = $current_dictionary_fields[$op_index[1]];
     }
@@ -84,7 +87,7 @@ class FieldCallbacks {
       $current_dictionary_fields = array_values($current_dictionary_fields);
     }
     // Let's retain the fields that are being modified.
-    $form_state->set('index_fields_being_modified', $index_fields_being_modified);
+//    $form_state->set('index_fields_being_modified', $index_fields_being_modified);
     $form_state->set('dictionary_fields_being_modified', $dictionary_fields_being_modified);
     // Let's retain the fields that are already stored on the form,
     // but aren't currently being modified.
