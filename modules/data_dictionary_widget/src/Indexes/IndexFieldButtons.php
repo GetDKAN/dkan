@@ -86,17 +86,6 @@ class IndexFieldButtons {
         'wrapper' => 'field-json-metadata-index-fields',
         'effect' => 'fade',
       ],
-      '#limit_validation_errors' => [
-        [
-          'field_json_metadata',
-          0,
-          'indexes',
-          'field_collection',
-          'group',
-          'index',
-          'type',
-        ],
-      ],
     ];
   }
 
@@ -133,8 +122,6 @@ class IndexFieldButtons {
           'fields',
           'field_collection',
           'group',
-          'index',
-          'fields',
           'name',
         ],
         [
@@ -144,8 +131,6 @@ class IndexFieldButtons {
           'fields',
           'field_collection',
           'group',
-          'index',
-          'fields',
           'length',
         ],
       ],
@@ -160,26 +145,6 @@ class IndexFieldButtons {
     if ($location == 'edit') {
       $indexKeyExplode = explode("_", $indexKey);
       $edit_index_button['#name'] = 'update_' . $indexKey;
-      $edit_index_button['#limit_validation_errors'] = [
-        [
-          'field_json_metadata',
-          0,
-          'indexes',
-          'fields',
-          'edit_fields',
-          $indexKeyExplode[3],
-          'name',
-        ],
-        [
-          'field_json_metadata',
-          0,
-          'indexes',
-          'fields',
-          'edit_fields',
-          $indexKeyExplode[1],
-          'length',
-        ],
-      ];
     }
     return $edit_index_button;
   }
@@ -205,26 +170,6 @@ class IndexFieldButtons {
         'callback' => 'Drupal\data_dictionary_widget\Indexes\IndexFieldCallbacks::indexFormAjax',
         'wrapper' => 'field-json-metadata-index',
         'effect' => 'fade',
-      ],
-      '#limit_validation_errors' => [
-        [
-          'field_json_metadata',
-          0,
-          'indexes',
-          'field_collection',
-          'group',
-          'index',
-          'description',
-        ],
-        [
-          'field_json_metadata',
-          0,
-          'indexes',
-          'field_collection',
-          'group',
-          'index',
-          'fields',
-        ],
       ],
     ];
 

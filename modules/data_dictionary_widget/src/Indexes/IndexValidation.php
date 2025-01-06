@@ -51,7 +51,7 @@ class IndexValidation {
     // Perform validation for update operation.
     if (str_contains($op, 'update')) {
       $update_values = $form_state->getUserInput();
-      $value = $update_values["field_json_metadata"][0]["dictionary_fields"]["edit_fields"][$op_index[1]][$field_key];
+      $value = $update_values["field_json_metadata"][0]["dictionary_fields"]["data"][$op_index[1]]["field_collection"][$field_key];
       if ($value === "") {
         $field = "field_json_metadata][0][indexes][fields][edit_fields][$op_index[1]][$field_key";
         $form_state->setErrorByName($field, t(':field_label field is required.', [

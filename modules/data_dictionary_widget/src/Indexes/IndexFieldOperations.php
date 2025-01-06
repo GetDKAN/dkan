@@ -2,6 +2,9 @@
 
 namespace Drupal\data_dictionary_widget\Indexes;
 
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\data_dictionary_widget\Fields\FieldOperations;
+
 /**
  * Various operations for structuring indexes and fields before rendering.
  */
@@ -223,22 +226,22 @@ class IndexFieldOperations {
   /**
    * Create edit and update fields for indexes.
    */
-  public static function createIndexOptions($op_index, $index_data_results, $index_being_modified, $element, $form_state) {
-    $current_indexes = $element['current_index'];
-
-    // Creating ajax buttons/fields to be placed in correct location later.
-    foreach ($index_data_results as $indexKey => $data) {
-      if (self::checkIndexEditing($indexKey, $op_index, $index_being_modified)) {
-        $element['edit_index'][$indexKey] = IndexFieldEditCreation::editIndex($indexKey, $current_indexes, $form_state);
-      }
-      else {
-        $element['edit_buttons'][$indexKey]['edit_button'] = IndexFieldButtons::editIndexButtons($indexKey);
-      }
-    }
-    $element['add_row_button'] = IndexFieldButtons::addIndexButton();
-
-    return $element;
-  }
+//  public static function createIndexOptions($op_index, $index_data_results, $index_being_modified, $element, $form_state) {
+//    $current_indexes = $element['current_index'];
+//
+//    // Creating ajax buttons/fields to be placed in correct location later.
+//    foreach ($index_data_results as $indexKey => $data) {
+//      if (self::checkIndexEditing($indexKey, $op_index, $index_being_modified)) {
+//        $element['edit_index'][$indexKey] = IndexFieldEditCreation::editIndex($indexKey, $current_indexes, $form_state);
+//      }
+//      else {
+//        $element['edit_buttons'][$indexKey]['edit_button'] = IndexFieldButtons::editIndexButtons($indexKey);
+//      }
+//    }
+//    $element['add_row_button'] = IndexFieldButtons::addIndexButton();
+//
+//    return $element;
+//  }
 
   /**
    * Return true if index field is being edited.
@@ -272,6 +275,26 @@ class IndexFieldOperations {
     }
 
     return FALSE;
+  }
+
+  /**
+   * Restore the data dictionary fields after a form_state rebuild.
+   */
+  public static function restoreDictionaryFieldsOnRebuild(&$form, FormStateInterface $form_state) {
+    $edit_fields_array = $form_state->getValues()["field_json_metadata"][0]["dictionary_fields"]["edit_fields"];
+
+    if (isset($edit_fields_array)) {
+      $dictionary_fields = [
+        'name',
+        'length',
+      ];
+      $index = key($edit_fields_array);
+
+      foreach ($dictionary_fields as $field_key) {
+        // Resets field values when validation fails.
+        FieldOperations::resetFieldValues($form, $form_state, $index, $field_key);
+      }
+    }
   }
 
 }

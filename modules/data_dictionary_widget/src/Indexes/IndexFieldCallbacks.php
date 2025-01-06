@@ -3,6 +3,7 @@
 namespace Drupal\data_dictionary_widget\Indexes;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\data_dictionary_widget\Fields\FieldValidation;
 
 /**
  * Various operations for the Index callbacks.
@@ -138,6 +139,7 @@ class IndexFieldCallbacks {
     // The location of the index field is stored in the operation key.
     // We split the key to get the index field location.
     $op_index = explode('_', $trigger['#op']);
+
     // Get the current fields data.
     $current_index_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $currently_modifying_index_fields = $form_state->get('dictionary_fields_being_modified') ?? [];
@@ -210,7 +212,7 @@ class IndexFieldCallbacks {
     // If the op (trigger) contains abort,
     // We're canceling the index we're currently modifying so unset it.
     if (str_contains($op, 'abort_index_key')) {
-      unset($currently_modifying_index[$op_index[3]]);
+      unset($currently_modifying_index[$op_index[1]]);
     }
     // We're canceling the index field we're currently modifying so unset it.
     if (str_contains($op, 'abort_index_field_key')) {
@@ -269,14 +271,8 @@ class IndexFieldCallbacks {
   /**
    * Ajax callback to return index fields.
    */
-  public static function subIndexEditFormAjax(array &$form, FormStateInterface $form_state) {
-    return $form["field_json_metadata"]["widget"][0]["indexes"]["edit_index"]["index_key_0"]["group"]["fields"]["fields"];
-  }
-
-  /**
-   * Ajax callback to return index fields.
-   */
   public static function subIndexFormAjax(array &$form, FormStateInterface $form_state) {
+    IndexFieldOperations::restoreDictionaryFieldsOnRebuild($form, $form_state);
     return $form["field_json_metadata"]["widget"][0]["dictionary_fields"];
   }
 
@@ -314,8 +310,11 @@ class IndexFieldCallbacks {
       'length' => 'Length',
     ];
 
+    $edit_fields_array = $form_state->getValues()["field_json_metadata"][0]["dictionary_fields"]["data"];
+    $delta = $edit_fields_array ? key($edit_fields_array) : NULL;
     foreach ($fields_to_validate as $field_key => $field_label) {
-      IndexValidation::indexFieldVal($form_state, $field_key, $field_label);
+      FieldValidation::validateField($form_state, $field_key, $field_label, $delta);
+//      IndexValidation::indexFieldVal($form_state, $field_key, $field_label, $delta);
     }
   }
 

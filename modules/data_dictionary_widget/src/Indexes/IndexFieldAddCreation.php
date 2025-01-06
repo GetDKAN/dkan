@@ -14,7 +14,7 @@ class IndexFieldAddCreation {
     $add_index['#access'] = FALSE;
     $add_index['group'] = [
       '#type' => 'fieldset',
-      '#title' => t('Index'),
+      '#title' => t('Add new field'),
       '#open' => TRUE,
       '#prefix' => '<div id = field-json-metadata-index>',
       '#suffix' => '</div>',
@@ -26,7 +26,7 @@ class IndexFieldAddCreation {
       ],
     ];
 
-    $add_index['group']['index']['description'] = [
+    $add_index['group']['description'] = [
       '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][description]',
       '#description' => t('Description of index purpose or functionality.'),
       '#type' => 'textfield',
@@ -34,7 +34,7 @@ class IndexFieldAddCreation {
       '#required' => TRUE,
     ];
 
-    $add_index['group']['index']['type'] = [
+    $add_index['group']['type'] = [
       '#name' => 'field_json_metadata[0][indexes][field_collection][group][index][type]',
       '#type' => 'select',
       '#description' => t('Index type.'),
@@ -48,20 +48,20 @@ class IndexFieldAddCreation {
       ],
     ];
 
-    $add_index['group'] = [
-      '#type' => 'fieldset',
-      '#title' => t('Fields'),
-      '#prefix' => '<div id = field-json-metadata-index-fields>',
-      '#suffix' => '</div>',
-      '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
-      '#attributes' => [
-        'class' => ['index-fields-form'],
-      ],
-    ];
+//    $add_index['group'] = [
+//      '#type' => 'fieldset',
+//      '#title' => t('Fields'),
+//      '#prefix' => '<div id = field-json-metadata-index-fields>',
+//      '#suffix' => '</div>',
+//      '#markup' => t('<div class="claro-details__description">One or more fields included in index. Must be keys from the fields object.</div>'),
+//      '#attributes' => [
+//        'class' => ['index-fields-form'],
+//      ],
+//    ];
 
-    $add_index['group']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
-    $add_index['group']['index']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
-    $add_index['group']['index']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
+//    $add_index['group']['add_row_button'] = IndexFieldButtons::addIndexFieldButton();
+    $add_index['group']['save_index'] = IndexFieldButtons::submitIndexButton('add_index', NULL);
+    $add_index['group']['cancel_index'] = IndexFieldButtons::cancelIndexButton('cancel_index', NULL);
 
     return $add_index;
   }

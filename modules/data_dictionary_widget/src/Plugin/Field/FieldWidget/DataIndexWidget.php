@@ -30,13 +30,7 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    if (is_array($values[0]['dictionary_fields']["data"])) {
-      $field_num = array_key_first($values[0]['dictionary_fields']["data"]);
-      $field_collection = $values[0]['dictionary_fields']["data"][$field_num]["field_collection"] ?? [];
-    }
-    else {
-      $field_collection = [];
-    }
+    $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
     $dd_fields = isset($values[0]["dd_fields"]) ? json_decode($values[0]["dd_fields"]) : [];
     $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : [];
 
@@ -49,7 +43,7 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
 
     $updated_fields = $current_fields ?? [];
     if (!empty($field_results)) {
-      $updated_fields[$field_num] = reset($field_results);
+      $updated_fields = reset($field_results);
     }
 
     $current_index = [
