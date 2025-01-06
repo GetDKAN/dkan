@@ -116,13 +116,7 @@ class DataIndexWidget extends AbstractMetadataWidget implements TrustedCallbackI
     $element['description'] = $this->createField('description', $field_json_metadata, $form_state);
     $element['type'] = $this->createField('type', $field_json_metadata, $form_state);
     $element['indexes'] = $this->createField('indexes', $field_json_metadata, $form_state);
-    $element['foob'] = [
-      '#name' => 'field_json_metadata[0][foob]',
-      '#type' => 'textfield',
-      '#required' => FALSE,
-      '#title' => t('Data Dictionary Foobar'),
-      '#default_value' => $field_json_metadata['foob'] ?? ($field_json_metadata['data']['description'] ?? ''),
-    ];
+
 
     $element['dictionary_fields'] = [
       '#type' => 'fieldset',

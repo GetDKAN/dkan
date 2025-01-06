@@ -26,7 +26,7 @@ class IndexFieldEditCreation {
       '#type' => 'number',
       '#value' => $current_index_fields[$indexKey]['length'],
       '#title' => 'Length',
-      '#required' => TRUE,
+      '#required' => FALSE,
     ];
 
     $edit_index_fields['update_field']['actions'] = self::createIndexFieldsActionFields($indexKey, $id);
