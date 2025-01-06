@@ -34,7 +34,16 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class QueryDownloadControllerTest extends TestCase {
 
+  const FILE_DIR = __DIR__ . "/../../../data/";
+
   private $buffer;
+
+  /**
+   * Resources to be used in tests.
+   *
+   * @var \Drupal\common\DataResource[]
+   */
+  private array $resources;
 
   protected function setUp(): void {
     parent::setUp();
@@ -47,6 +56,11 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
+
+    $this->resources = [
+      '2' => new DataResource(self::FILE_DIR . 'states_with_dupes.csv', 'text/csv'),
+      '3' => new DataResource(self::FILE_DIR . 'years_colors.csv', 'text/csv'),
+    ];
   }
 
   protected function tearDown(): void {
@@ -61,13 +75,13 @@ class QueryDownloadControllerTest extends TestCase {
     $request = $this->mockRequest($data);
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
-    $csv = $response->getContent();
+    $csv = $response->getContent() ?? '';
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
     ob_start([self::class, 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
-    $streamedCsv = $this->buffer;
+    $streamedCsv = $this->buffer ?? '';
     ob_get_clean();
 
     $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
@@ -81,7 +95,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -109,7 +123,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -139,11 +153,11 @@ class QueryDownloadControllerTest extends TestCase {
       "schema" => TRUE,
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
         [
-          "id" => "3",
+          "id" => $this->resources[3]->getIdentifier(),
           "alias" => "j",
         ],
       ],
@@ -201,7 +215,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = json_encode([
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -224,7 +238,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = json_encode([
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -259,7 +273,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -276,7 +290,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -304,7 +318,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -322,7 +336,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "tx",
         ],
       ],
@@ -394,13 +408,13 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ];
 
-    $storage2 = $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2);
+    $storage2 = $this->mockDatastoreTable($connection, $this->resources[2], $schema2);
     $storage2x = clone($storage2);
     $storage2x->setSchema(['fields' => []]);
     $storageMap = [
       't' => $storage2,
       'tx' => $storage2x,
-      'j' => $this->mockDatastoreTable($connection, "3", 'years_colors.csv', $schema3
+      'j' => $this->mockDatastoreTable($connection, $this->resources[3], $schema3
       ),
     ];
 
@@ -415,7 +429,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
-      ->add(Query::class, 'getDatastoreService',  DatastoreService::class)
+      ->add(Query::class, 'getDatastoreService', DatastoreService::class)
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
       // @todo Use an Options or Sequence return here; this will only work for one arg at a time.
       ->add(ImmutableConfig::class, 'get', $rowLimit)
@@ -451,37 +465,38 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \Drupal\common\Storage\DatabaseTableInterface
    *   A database table storage class useable for datastore queries.
    */
-  public function mockDatastoreTable($connection, $id, $csvFile, $fields) {
-    foreach ($fields as $name => $field) {
-      $types[] = $field['type'];
-      $notNull = $field['not null'] ?? FALSE;
-      $createFields[] = "`$name` " . strtoupper($field['type']) . (($notNull) ? ' NOT NULL' : '');
-    }
-    $createFieldsStr = implode(", ", $createFields);
-    $connection->query("CREATE TABLE `datastore_$id` ($createFieldsStr);");
+  public function mockDatastoreTable($connection, DataResource $resource, $fields) {
+    $storage = new SqliteDatabaseTable(
+      $connection,
+      $resource,
+      $this->createStub(LoggerInterface::class)
+    );
+    $storage->setSchema([
+      'fields' => $fields,
+    ]);
+    $storage->setTable();
 
+    foreach ($fields as $field) {
+      $types[] = $field['type'];
+    }
+    
+    $fp = fopen($resource->getFilePath(), 'rb');
     $sampleData = [];
-    $fp = fopen(__DIR__ . "/../../../data/$csvFile", 'rb');
     while (!feof($fp)) {
       $sampleData[] = fgetcsv($fp);
     }
+    fclose($fp);
+
+    $table_name = $storage->getTableName();
     foreach ($sampleData as $row) {
       $values = [];
       foreach ($row as $key => $value) {
         $values[] = $types[$key] == "int" ? $value : "'$value'";
         $valuesStr = implode(", ", $values);
       }
-      $connection->query("INSERT INTO `datastore_$id` VALUES ($valuesStr);");
+      $connection->query("INSERT INTO `$table_name` VALUES ($valuesStr);");
     }
 
-    $storage = new SqliteDatabaseTable(
-      $connection,
-      new DataResource("data-$id.csv", "text/csv"),
-      $this->createStub(LoggerInterface::class)
-    );
-    $storage->setSchema([
-      'fields' => $fields,
-    ]);
     return $storage;
   }
 
