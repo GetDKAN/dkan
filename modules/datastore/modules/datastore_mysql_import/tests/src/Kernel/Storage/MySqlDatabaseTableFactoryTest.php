@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
 
-use Drupal\datastore\DatastoreResource;
+use Drupal\common\DataResource;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -11,6 +11,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @coversDefaultClass \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
  *
  * @group datastore_mysql_import
+ * @group kernel
  */
 class MySqlDatabaseTableFactoryTest extends KernelTestBase {
 
@@ -33,10 +34,8 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
   }
 
   public function testFactoryService() {
-    $identifier = 'identifier';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
-    $datastore_resource = new DatastoreResource(
-      $identifier,
+    $datastore_resource = new DataResource(
       $file_path,
       'text/csv'
     );
