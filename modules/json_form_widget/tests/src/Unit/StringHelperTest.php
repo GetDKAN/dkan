@@ -102,7 +102,6 @@ class StringHelperTest extends TestCase {
     $data = 'mailto:john@doe.com';
 
     $result = $string_helper->handleStringElement($definition, $data);
-    print_r($result['#default_value']);
     $this->assertEquals('john@doe.com', $result['#default_value']);
   }
 
