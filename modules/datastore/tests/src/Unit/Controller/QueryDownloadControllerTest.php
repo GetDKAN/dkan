@@ -10,7 +10,6 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\Controller\QueryDownloadController;
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
@@ -65,12 +64,15 @@ class QueryDownloadControllerTest extends TestCase {
     $this->resources = [
       '2' => new DataResource(self::FILE_DIR . 'states_with_dupes.csv', 'text/csv'),
       '3' => new DataResource(self::FILE_DIR . 'years_colors.csv', 'text/csv'),
+      '4' => new DataResource(self::FILE_DIR . 'states_with_dupes_link.csv', 'text/csv'),
     ];
+
+    $this->buffer = '';
   }
 
   protected function tearDown(): void {
     parent::tearDown();
-    $this->buffer = NULL;
+    $this->buffer = '';
   }
 
   /**
@@ -362,14 +364,15 @@ class QueryDownloadControllerTest extends TestCase {
    * Create a mock object for the main container passed to the controller.
    *
    * @param int $rowLimit
-   *    The row limit for a query.
+   *   The row limit for a query.
    * @param int|null $responseStreamMaxAge
-   *    The max age for the response stream in cache, or NULL to use the default.
+   *   The max age for the response stream in cache, or NULL to use the default.
    *
    * @return \PHPUnit\Framework\MockObject\MockObject
    *   MockChain mock object.
    */
   private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
+    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
@@ -411,14 +414,14 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ];
 
-    $storage2 = $this->mockDatastoreTable($this->resources[2], $schema2);
-    $storage2x = clone($storage2);
+    $storage2 = $this->mockDatastoreTable($this->resources[2], $schema2, $connection);
+    $storage2x = $this->mockDatastoreTable($this->resources[4], $schema2, $connection);
     $storage2x->setSchema(['fields' => []]);
+    $storage3 = $this->mockDatastoreTable($this->resources[3], $schema3, $connection);
     $storageMap = [
       't' => $storage2,
       'tx' => $storage2x,
-      'j' => $this->mockDatastoreTable($this->resources[3], $schema3
-      ),
+      'j' => $storage3,
     ];
 
     $chain = (new Chain($this))
@@ -468,9 +471,8 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \Drupal\common\Storage\DatabaseTableInterface
    *   A database table storage class useable for datastore queries.
    */
-  public function mockDatastoreTable(DataResource $resource, $fields) {
-    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
-
+  public function mockDatastoreTable(DataResource $resource, $fields, $connection) {
+    
     $storage = new SqliteDatabaseTable(
       $connection,
       $resource,

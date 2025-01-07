@@ -19,12 +19,12 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @var \Drupal\common\DataResource
    */
-  private $resource;
+  protected $resource;
 
   /**
    * DKAN logger channel service.
    */
-  private LoggerInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Constructor method.
@@ -49,6 +49,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
+      $this->tableName = $this->getTableName();
     }
   }
 

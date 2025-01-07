@@ -21,6 +21,11 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
 
   /**
+   * Real table name.
+   */
+  protected string $tableName;
+
+  /**
    * A schema. Should be a drupal schema array.
    *
    * @var array
@@ -40,7 +45,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @return string
    *   Table name.
    */
-  abstract protected function getTableName();
+  abstract public function getTableName();
 
   /**
    * Prepare data.
@@ -68,6 +73,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
+      $this->tableName = $this->getTableName();
     }
   }
 
@@ -268,6 +274,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       if ($schema = $this->schema) {
         try {
           $this->tableCreate($table_name, $schema);
+          $this->tableName = $table_name;
         }
         catch (SchemaObjectExistsException) {
           // Table already exists, which is totally OK. Other throwables find
