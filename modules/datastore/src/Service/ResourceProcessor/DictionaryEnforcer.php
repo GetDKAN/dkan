@@ -138,7 +138,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Returning data dictionary fields from schema.
    *
-   * @param string $identifier
+   * @param string|null $identifier
    *   A resource's identifier. Used when in reference mode.
    *
    * @return array|null
