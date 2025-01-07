@@ -60,6 +60,8 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *   The metastore service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
+   * @param \Drupal\datastore\Storage\DatabaseTableFactory $table_factory
+   *   The datastore database table factory service.
    */
   public function __construct(
     AlterTableQueryBuilderInterface $alter_table_query_builder,
@@ -142,7 +144,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    * @return array|null
    *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function returnDataDictionaryFields(string $identifier = NULL): ?array {
+  public function returnDataDictionaryFields(?string $identifier = NULL): ?array {
     // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.

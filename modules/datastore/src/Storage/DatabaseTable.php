@@ -72,8 +72,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
    */
   #[\ReturnTypeWillChange]
@@ -97,7 +95,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Protected.
    */
-  protected function prepareData(string $data, string $id = NULL): array {
+  protected function prepareData(string $data, ?string $id = NULL): array {
     $decoded = json_decode($data);
     if ($decoded === NULL) {
       $this->logger->error('Error decoding id:@id, data: @data.', [

@@ -135,7 +135,8 @@ class DataResource implements \JsonSerializable {
    * @return \Drupal\common\DataResource
    *   DataResource object.
    *
-   * @deprecated in dkan:2.17.1 and is removed from dkan:2.20.0. Use DataResource::createFromEntity() instead.
+   * @deprecated in dkan:8.x-2.17 and is removed from dkan:8.x-2.21. Use
+   *   DataResource::createFromEntity() instead.
    * @see https://github.com/GetDKAN/dkan/pull/4027
    */
   public static function createFromRecord(object $record): DataResource {
@@ -236,7 +237,10 @@ class DataResource implements \JsonSerializable {
    * @return \Drupal\datastore\DatastoreResource
    *   Datastore Resource.
    *
-   * @deprecated
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use storage
+   *   classes like DatabaseTable::getTableName() to determine correct table
+   *   names, and pass true to ::getFilePath to get the resolved URL.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getDatastoreResource(): DatastoreResource {
     return new DatastoreResource(
@@ -332,7 +336,10 @@ class DataResource implements \JsonSerializable {
   /**
    * Retrieve datastore table name for resource.
    *
-   * @deprecated
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use storage
+   *  classes like DatabaseTable::getTableName() to determine correct table
+   *  names.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getTableName() {
     return 'datastore_' . md5($this->getUniqueIdentifier());
