@@ -36,7 +36,12 @@ class QueryDownloadControllerTest extends TestCase {
 
   const FILE_DIR = __DIR__ . "/../../../data/";
 
-  private $buffer;
+  /**
+   * Output buffer.
+   *
+   * @var string
+   */
+  private string $buffer;
 
   /**
    * Resources to be used in tests.
@@ -375,8 +380,6 @@ class QueryDownloadControllerTest extends TestCase {
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->index(0);
 
-    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
-
     $schema2 = [
       'record_number' => [
         'type' => 'int',
@@ -408,13 +411,13 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ];
 
-    $storage2 = $this->mockDatastoreTable($connection, $this->resources[2], $schema2);
+    $storage2 = $this->mockDatastoreTable($this->resources[2], $schema2);
     $storage2x = clone($storage2);
     $storage2x->setSchema(['fields' => []]);
     $storageMap = [
       't' => $storage2,
       'tx' => $storage2x,
-      'j' => $this->mockDatastoreTable($connection, $this->resources[3], $schema3
+      'j' => $this->mockDatastoreTable($this->resources[3], $schema3
       ),
     ];
 
@@ -465,7 +468,9 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \Drupal\common\Storage\DatabaseTableInterface
    *   A database table storage class useable for datastore queries.
    */
-  public function mockDatastoreTable($connection, DataResource $resource, $fields) {
+  public function mockDatastoreTable(DataResource $resource, $fields) {
+    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
+
     $storage = new SqliteDatabaseTable(
       $connection,
       $resource,
@@ -503,9 +508,10 @@ class QueryDownloadControllerTest extends TestCase {
   /**
    * Callback to get output buffer.
    *
-   * @param $buffer
+   * @param string $buffer
+   *   A buffer to be appended to existing buffer in memory.
    */
-  protected function getBuffer($buffer) {
+  protected function getBuffer(string $buffer) {
     $this->buffer .= $buffer;
   }
 
