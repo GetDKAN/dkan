@@ -5,9 +5,9 @@ namespace Drupal\datastore;
 /**
  * Basic datastore resource class.
  *
- * Always generate this object using DataResource::getDatastoreResource().
- *
- * @see \Drupal\common\DataResource::getDatastoreResource()
+ * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+ *   \Drupal\common\DataResource instead.
+ * @see https://github.com/GetDKAN/dkan/pull/4372
  */
 class DatastoreResource implements \JsonSerializable {
 
