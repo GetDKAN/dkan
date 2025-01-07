@@ -9,6 +9,7 @@ use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\common\Unit\Connection;
 use Procrastinator\Result;
@@ -95,8 +96,9 @@ class DatabaseTableTest extends KernelTestBase {
       ->onlyMethods(['tableExist'])
       ->setConstructorArgs([
         $this->createStub(Connection::class),
-        $this->createStub(DatastoreResource::class),
+        $this->createStub(DataResource::class),
         $logger,
+        $this->createStub(DatabaseTableFactory::class),
       ])
       ->getMock();
     $database_table->expects($this->any())
