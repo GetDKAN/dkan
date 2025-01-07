@@ -21,11 +21,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
 
   /**
-   * Real table name.
-   */
-  protected string $tableName;
-
-  /**
    * A schema. Should be a drupal schema array.
    *
    * @var array
@@ -45,7 +40,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Transform the string data given into what should be use by the insert
    * query.
    */
-  abstract protected function prepareData(string $data, string $id = NULL): array;
+  abstract protected function prepareData(string $data, ?string $id = NULL): array;
 
   /**
    * Get the primary key used in the table.
@@ -110,7 +105,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Store data.
    */
-  public function store($data, string $id = NULL): string {
+  public function store($data, ?string $id = NULL): string {
     $this->setTable();
 
     $existing = (isset($id)) ? $this->retrieve($id) : NULL;

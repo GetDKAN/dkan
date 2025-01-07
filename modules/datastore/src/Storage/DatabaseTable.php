@@ -49,7 +49,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
-      $this->tableName = $this->getTableName();
     }
   }
 
