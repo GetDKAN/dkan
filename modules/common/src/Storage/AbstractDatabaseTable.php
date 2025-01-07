@@ -40,14 +40,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   protected $connection;
 
   /**
-   * Get the full name of datastore db table.
-   *
-   * @return string
-   *   Table name.
-   */
-  abstract public function getTableName();
-
-  /**
    * Prepare data.
    *
    * Transform the string data given into what should be use by the insert
@@ -73,7 +65,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
-      $this->tableName = $this->getTableName();
     }
   }
 
@@ -274,7 +265,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       if ($schema = $this->schema) {
         try {
           $this->tableCreate($table_name, $schema);
-          $this->tableName = $table_name;
         }
         catch (SchemaObjectExistsException) {
           // Table already exists, which is totally OK. Other throwables find
