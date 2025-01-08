@@ -9,7 +9,6 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\common\DatasetInfo;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\datastore\Controller\QueryController;
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;

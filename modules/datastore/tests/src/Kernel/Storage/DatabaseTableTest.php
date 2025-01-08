@@ -5,7 +5,6 @@ namespace Drupal\Tests\datastore\Kernel\Storage;
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\ImportedItemInterface;
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
