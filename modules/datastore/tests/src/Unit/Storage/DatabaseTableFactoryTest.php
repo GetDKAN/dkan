@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\datastore\DatastoreResource;
+use Drupal\common\DataResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use MockChain\Chain;
@@ -39,8 +39,8 @@ class DatabaseTableFactoryTest extends TestCase {
 
     $factory->method("getDatabaseTable")->willReturn($databaseTable);
 
-    $resource = new DatastoreResource("blah", "", "text/csv");
-    $object = $factory->getInstance($resource->getId(), ['resource' => $resource]);
+    $resource = new DataResource("", "text/csv");
+    $object = $factory->getInstance($resource->getUniqueIdentifier(), ['resource' => $resource]);
     $this->assertTrue($object instanceof DatabaseTable);
   }
 
