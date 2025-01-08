@@ -29,6 +29,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Drupal\Core\Database\Connection;
+use Drupal\datastore\PostImportResultFactory;
+use Drupal\datastore\PostImportResult;
 
 /**
  * Test \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer.
@@ -83,10 +85,10 @@ class DictionaryEnforcerTest extends TestCase {
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
-      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
+      ->add(PostImportResultFactory::class, 'createPostImportResult', PostImportResult::class);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
 
-    // Test with no errors
     $mocks = $this->getMockDependencies($resource, '', $dictionary_enforcer);
 
     $post_import = new PostImport(
@@ -94,10 +96,14 @@ class DictionaryEnforcerTest extends TestCase {
     );
 
     $post_import_resource_processor = new PostImportResourceProcessor(
-      [], '', ['cron' => ['lease_time' => 10800]], $post_import, $this->createMock(ConfigFactoryInterface::class)
+      [], '', ['cron' => ['lease_time' => 10800]], $post_import
     );
 
     $post_import_resource_processor->processItem($resource);
+
+    $result = $post_import->processResource($resource);
+
+    $this->assertSame("done", $result->getPostImportStatus(), "The postImportStatus is not 'done'");
   }
 
   /**
@@ -132,10 +138,10 @@ class DictionaryEnforcerTest extends TestCase {
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
-      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer]);
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
+      ->add(PostImportResultFactory::class, 'createPostImportResult', PostImportResult::class);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
 
-    // Test with error
     $mocks = $this->getMockDependencies($resource, 'error', $dictionary_enforcer);
 
     $post_import = new PostImport(
@@ -143,10 +149,14 @@ class DictionaryEnforcerTest extends TestCase {
     );
 
     $post_import_resource_processor = new PostImportResourceProcessor(
-      [], '', ['cron' => ['lease_time' => 10800]], $post_import, $this->createMock(ConfigFactoryInterface::class)
+      [], '', ['cron' => ['lease_time' => 10800]], $post_import
     );
 
     $post_import_resource_processor->processItem($resource);
+
+    $result = $post_import->processResource($resource);
+
+    $this->assertSame("error", $result->getPostImportStatus(), "The postImportStatus should produce an 'error'");
   }
 
   /**
@@ -218,6 +228,11 @@ class DictionaryEnforcerTest extends TestCase {
       ->method('getResourceProcessors')
       ->willReturn([$dictionary_enforcer]);
 
+    $datastoreServiceMock = $this->createMock(DatastoreService::class);
+    $datastoreServiceMock->expects($this->any())
+      ->method('getResourceMapper')
+      ->willReturn($resourceMapperMock);
+
     $queryMock = $this->getMockBuilder('stdClass')
       ->addMethods(['fields', 'execute'])
       ->getMock();
@@ -242,15 +257,22 @@ class DictionaryEnforcerTest extends TestCase {
       ->with('dkan_post_import_job_status')
       ->willReturn($queryMock);
 
+    $postImportResultMock = $this->createMock(PostImportResult::class);
+
+    $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
+
+    $postImportResultFactoryMock = $this->createMock(PostImportResultFactory::class);
+    $postImportResultFactoryMock->expects($this->any())
+      ->method('createPostImportResult')
+      ->willReturn($postImportResultMock);
+
     return [
       'configFactory' => $configFactoryMock ,
       'logger' => $this->createMock(LoggerInterface::class),
-      'resourceMapper' => $resourceMapperMock,
       'resourceProcessorCollector' => $resourceProcessorMock,
       'dataDictionaryDiscovery' => $this->createMock(DataDictionaryDiscoveryInterface::class),
-      'referenceLookup' => $this->createMock(ReferenceLookup::class),
-      'datastoreService' => $this->createMock(DatastoreService::class),
-      'connection' => $connectionMock,
+      'datastoreService' => $datastoreServiceMock,
+      'postImportResultFactory' => $postImportResultFactory,
     ];
   }
 
@@ -273,6 +295,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
+      ->add('dkan.datastore.post_import_result_factory', PostImportResultFactory::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';

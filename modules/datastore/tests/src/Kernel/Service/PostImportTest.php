@@ -12,7 +12,6 @@ use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\Service\PostImport;
-use Drupal\Core\Database\Connection;
 
 /**
  * Tests the PostImport service.
@@ -69,12 +68,10 @@ class PostImportTest extends KernelTestBase {
     $post_import = new PostImport(
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
       $this->container->get('dkan.datastore.service.resource_processor_collector'),
       $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('database'),
+      $this->container->get('dkan.datastore.post_import_result_factory'),
     );
 
     $result = $post_import->processResource($resource_b);
@@ -123,12 +120,10 @@ class PostImportTest extends KernelTestBase {
     $post_import = new PostImport(
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
       $this->container->get('dkan.datastore.service.resource_processor_collector'),
       $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('database'),
+      $this->container->get('dkan.datastore.post_import_result_factory'),
     );
 
     $result = $post_import->processResource($resource);
@@ -187,22 +182,23 @@ class PostImportTest extends KernelTestBase {
     // Datastore service rigged to explode.
     $datastore_service = $this->getMockBuilder(DatastoreService::class)
       ->disableOriginalConstructor()
-      ->onlyMethods(['drop'])
+      ->onlyMethods(['drop', 'getResourceMapper'])
       ->getMock();
     $datastore_service->expects($this->once())
       ->method('drop')
       ->willThrowException(new \Exception('drop error'));
+    $datastore_service->expects($this->any())
+      ->method('getResourceMapper')
+      ->willReturn($resource_mapper);
     $this->container->set('dkan.datastore.service', $datastore_service);
 
     $post_import = new PostImport(
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
       $this->container->get('dkan.datastore.service.resource_processor_collector'),
       $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('database'),
+      $this->container->get('dkan.datastore.post_import_result_factory'),
     );
 
     $result = $post_import->processResource($resource);
@@ -264,12 +260,10 @@ class PostImportTest extends KernelTestBase {
     $post_import = new PostImport(
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
       $this->container->get('dkan.datastore.service.resource_processor_collector'),
       $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('database'),
+      $this->container->get('dkan.datastore.post_import_result_factory'),
     );
 
     $result = $post_import->processResource($resource);
@@ -330,25 +324,25 @@ class PostImportTest extends KernelTestBase {
       );
     $this->container->set('dkan.datastore.logger_channel', $logger);
 
-    // Datastore service will always succeed. Mocked so we don't have to deal
-    // with dropping an actual datastore.
+    // Datastore service rigged to explode.
     $datastore_service = $this->getMockBuilder(DatastoreService::class)
       ->disableOriginalConstructor()
-      ->onlyMethods(['drop'])
+      ->onlyMethods(['drop', 'getResourceMapper'])
       ->getMock();
     $datastore_service->expects($this->once())
       ->method('drop');
+    $datastore_service->expects($this->any())
+      ->method('getResourceMapper')
+      ->willReturn($resource_mapper);
     $this->container->set('dkan.datastore.service', $datastore_service);
 
     $post_import = new PostImport(
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
       $this->container->get('dkan.datastore.service.resource_processor_collector'),
       $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('database'),
+      $this->container->get('dkan.datastore.post_import_result_factory'),
     );
 
     $result = $post_import->processResource($resource);
@@ -384,12 +378,10 @@ class PostImportTest extends KernelTestBase {
     $post_import = new PostImport(
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
       $this->container->get('dkan.datastore.service.resource_processor_collector'),
       $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('database'),
+      $this->container->get('dkan.datastore.post_import_result_factory'),
     );
 
     $result = $post_import->processResource($resource);
@@ -438,12 +430,10 @@ class PostImportTest extends KernelTestBase {
     $post_import = new PostImport(
       $this->container->get('config.factory'),
       $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
       $this->container->get('dkan.datastore.service.resource_processor_collector'),
       $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
       $this->container->get('dkan.datastore.service'),
-      $this->container->get('database'),
+      $this->container->get('dkan.datastore.post_import_result_factory'),
     );
 
     $result = $post_import->processResource($resource);
@@ -456,87 +446,6 @@ class PostImportTest extends KernelTestBase {
       'done',
       $result->getPostImportStatus()
     );
-  }
-
-  /**
-   * @covers ::retrieveJobStatus
-   */
-  public function testRetrieveJobStatusException() {
-    // Mock a connection to explode.
-    $connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['select'])
-      ->getMockForAbstractClass();
-    $connection->expects($this->any())
-      ->method('select')
-      ->willThrowException(new \Exception());
-
-    $post_import = new PostImport(
-      $this->container->get('config.factory'),
-      $this->container->get('dkan.datastore.logger_channel'),
-      $this->container->get('dkan.metastore.resource_mapper'),
-      $this->container->get('dkan.datastore.service.resource_processor_collector'),
-      $this->container->get('dkan.metastore.data_dictionary_discovery'),
-      $this->container->get('dkan.metastore.reference_lookup'),
-      $this->container->get('dkan.datastore.service'),
-      $connection,
-    );
-
-    $this->assertFalse($post_import->retrieveJobStatus('id', '123'));
-  }
-
-  /**
-   * @covers ::removeJobStatus
-   */
-  public function testRemoveJobStatusException() {
-    // Mock a connection to explode.
-    $connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['delete'])
-      ->getMockForAbstractClass();
-    $connection->expects($this->any())
-      ->method('delete')
-      ->willThrowException(new \Exception());
-
-      $post_import = new PostImport(
-        $this->container->get('config.factory'),
-        $this->container->get('dkan.datastore.logger_channel'),
-        $this->container->get('dkan.metastore.resource_mapper'),
-        $this->container->get('dkan.datastore.service.resource_processor_collector'),
-        $this->container->get('dkan.metastore.data_dictionary_discovery'),
-        $this->container->get('dkan.metastore.reference_lookup'),
-        $this->container->get('dkan.datastore.service'),
-        $connection,
-      );
-
-    $this->assertFalse($post_import->removeJobStatus('id', '123'));
-  }
-
-  /**
-   * @covers ::storeJobStatus
-   */
-  public function testStoreJobStatusException() {
-    // Mock a connection to explode.
-    $connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['insert'])
-      ->getMockForAbstractClass();
-    $connection->expects($this->any())
-      ->method('insert')
-      ->willThrowException(new \Exception());
-
-      $post_import = new PostImport(
-        $this->container->get('config.factory'),
-        $this->container->get('dkan.datastore.logger_channel'),
-        $this->container->get('dkan.metastore.resource_mapper'),
-        $this->container->get('dkan.datastore.service.resource_processor_collector'),
-        $this->container->get('dkan.metastore.data_dictionary_discovery'),
-        $this->container->get('dkan.metastore.reference_lookup'),
-        $this->container->get('dkan.datastore.service'),
-        $connection,
-      );
-
-    $this->assertFalse($post_import->storeJobStatus('id', '123', 'done', 'done'));
   }
 
 }

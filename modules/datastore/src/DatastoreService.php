@@ -376,8 +376,12 @@ class DatastoreService implements ContainerInjectionInterface {
    * @param mixed $resourceId
    *   A resource ID.
    */
-  protected function invalidateCacheTags(mixed $resourceId) {
+  public function invalidateCacheTags(mixed $resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
+  }
+
+  public function getResourceMapper(): ResourceMapper {
+    return $this->resourceMapper;
   }
 
 }

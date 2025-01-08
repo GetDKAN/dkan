@@ -2,7 +2,6 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\datastore\Service\PostImport;
@@ -47,19 +46,15 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The plugin implementation definition.
    * @param \Drupal\datastore\Service\PostImport $post_import
    *   The PostImport service.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config.factory service.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     PostImport $post_import,
-    ConfigFactoryInterface $config_factory,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->postImport = $post_import;
-    $this->configFactory = $config_factory;
   }
 
   /**
@@ -71,7 +66,6 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
       $plugin_id,
       $plugin_definition,
       $container->get('dkan.datastore.service.post_import'),
-      $container->get('config.factory'),
     );
   }
 
@@ -80,7 +74,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    */
   public function processItem($data) {
     $result = $this->postImport->processResource($data);
-    $result->storeResult();
+    $result->storeJobStatus();
   }
 
 }

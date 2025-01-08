@@ -4,10 +4,9 @@ namespace Drupal\datastore;
 
 use Drupal\metastore\ResourceMapper;
 use Drupal\Core\Database\Connection;
-use Drupal\datastore\Service\PostImport;
 
 /**
- * PostImportResult class to create PostImportResult objects.
+ * PostImportResult class to insert,retrieve,remove post import jobs.
  *
  * Contains the results of the PostImport.
  */
@@ -52,34 +51,85 @@ class PostImportResult {
   protected ResourceMapper $resourceMapper;
 
   /**
-   * The PostImport service.
-   */
-  protected PostImport $postImport;
-
-  /**
    * The PostImportResult.
    */
   protected array $postImportResult;
 
   /**
-   * PostImportResource constructor.
+   * PostImportResult constructor.
    */
   public function __construct(
     $postImportResult,
-    PostImport $postImport
+    Connection $connection,
+    ResourceMapper $resourceMapper,
     ) {
-    $this->resourceIdentifier = $postImportResult['resource_identifier'];
-    $this->resourceVersion = $postImportResult['resourceVersion'];
-    $this->postImportStatus = $postImportResult['postImportStatus'];
-    $this->postImportMessage = $postImportResult['postImportMessage'];
-    $this->postImport = $postImport;
+    $this->resourceIdentifier = $postImportResult['resource_id'];
+    $this->resourceVersion = $postImportResult['resource_version'] ?? NULL;
+    $this->postImportStatus = $postImportResult['postImportStatus'] ?? NULL;
+    $this->postImportMessage = $postImportResult['postImportMessage'] ?? NULL;
+    $this->connection = $connection;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
-   * Calls PostImport service to execute database insert transaction.
+   * Store row.
    */
-  public function storeResult() {
-    return $this->postImport->storeJobStatus($this->resourceIdentifier, $this->resourceVersion, $this->postImportStatus, $this->postImportMessage);
+  public function storeJobStatus(): bool {
+    try {
+      $this->connection->insert('dkan_post_import_job_status')
+        ->fields([
+          'resource_identifier' => $this->getResourceIdentifier(),
+          'resource_version' => $this->getResourceVersion(),
+          'post_import_status' => $this->getPostImportStatus(),
+          'post_import_error' => $this->getPostImportMessage(),
+        ])
+        ->execute();
+
+      return TRUE;
+    }
+    catch (\Exception) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Retrieve row.
+   */
+  public function retrieveJobStatus() {
+    try {
+      return $this->connection->select('dkan_post_import_job_status')
+        ->condition('resource_identifier', $this->getResourceIdentifier(), '=')
+        ->condition('resource_version', $this->getResourceVersion(), '=')
+        ->fields('dkan_post_import_job_status', [
+          'resource_version',
+          'post_import_status',
+          'post_import_error',
+        ])
+        ->execute()
+        ->fetchAssoc();
+    }
+    catch (\Exception) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Remove row.
+   */
+  public function removeJobStatus(): bool {
+    try {
+      $latest_resource = $this->resourceMapper->get($this->getResourceIdentifier());
+      $latest_version = $latest_resource->getVersion();
+      $this->connection->delete('dkan_post_import_job_status')
+        ->condition('resource_identifier', $this->getResourceIdentifier(), '=')
+        ->condition('resource_version', $latest_version, '=')
+        ->execute();
+
+      return TRUE;
+    }
+    catch (\Exception) {
+      return FALSE;
+    }
   }
 
   /**

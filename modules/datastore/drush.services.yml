@@ -4,10 +4,10 @@ services:
     arguments:
       - '@dkan.metastore.service'
       - '@dkan.datastore.service'
-      - '@dkan.datastore.service.post_import'
       - '@dkan.datastore.service.resource_localizer'
       - '@dkan.metastore.resource_mapper'
       - '@dkan.datastore.import_info_list'
+      - '@dkan.datastore.post_import_result_factory'
     tags:
       - { name: drush.command }
   datastore.purger.commands:
