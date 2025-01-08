@@ -35,9 +35,15 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   * Inherited.
+   * Get a DatabaseTable instance.
    *
-   * @inheritdoc
+   * @param string $identifier
+   *   Some way to discern between different instances of a class.
+   * @param array $config
+   *   Must contain a 'resource' key, which is a DataResource object.
+   *
+   * @return \Drupal\datastore\Storage\DatabaseTable
+   *   A DatabaseTable object.
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($config['resource'])) {
@@ -50,7 +56,13 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   * Protected.
+   * Get a DatabaseTable object from a DataResource object.
+   *
+   * @param \Drupal\common\DataResource $resource
+   *   A resource.
+   *
+   * @return \Drupal\datastore\Storage\DatabaseTable
+   *   A DatabaseTable object.
    */
   protected function getDatabaseTable($resource) {
     return new DatabaseTable($this->connection, $resource, $this->logger);
