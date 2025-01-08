@@ -3,6 +3,7 @@
 namespace Drupal\datastore\Storage;
 
 use Contracts\FactoryInterface;
+use Drupal\common\DataResource;
 use Drupal\Core\Database\Connection;
 use Psr\Log\LoggerInterface;
 
@@ -64,7 +65,7 @@ class DatabaseTableFactory implements FactoryInterface {
    * @return \Drupal\datastore\Storage\DatabaseTable
    *   A DatabaseTable object.
    */
-  protected function getDatabaseTable($resource) {
+  protected function getDatabaseTable(DataResource $resource) {
     return new DatabaseTable($this->connection, $resource, $this->logger);
   }
 
