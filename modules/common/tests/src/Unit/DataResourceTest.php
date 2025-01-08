@@ -19,6 +19,21 @@ use PHPUnit\Framework\TestCase;
 class DataResourceTest extends TestCase {
 
   /**
+   * Test getTableName().
+   */
+  public function testGetTableName() {
+
+    $resource = new DataResource(
+      '/foo/bar',
+      'txt',
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE
+    );
+    $tableName = $resource->getTableName();
+
+    $this->assertStringStartsWith('datastore_', $tableName);
+  }
+
+  /**
    * Test getFolder().
    */
   public function testGetFolder() {
