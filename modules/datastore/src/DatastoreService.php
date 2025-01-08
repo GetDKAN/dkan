@@ -380,6 +380,12 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
+  /**
+   * Return the resource mapper.
+   *
+   * @return \Drupal\metastore\ResourceMapper
+   *   Resource mapper.
+   */
   public function getResourceMapper(): ResourceMapper {
     return $this->resourceMapper;
   }

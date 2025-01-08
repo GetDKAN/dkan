@@ -57,8 +57,8 @@ class PostImportResultFactory {
       'resource_version' => $resource->getVersion(),
       'postImportStatus' => $status,
       'postImportMessage' => $message,
-    ], 
-    $this->connection, 
+    ],
+    $this->connection,
     $this->resourceMapper);
   }
 
@@ -78,4 +78,5 @@ class PostImportResultFactory {
       $this->resourceMapper
     );
   }
+
 }
