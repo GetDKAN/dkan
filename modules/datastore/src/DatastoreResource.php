@@ -44,7 +44,9 @@ class DatastoreResource implements \JsonSerializable {
   /**
    * Get the resource ID.
    *
-   * Note: duplicates Drupal\common\DataResource::getUniqueIdentifier().
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+   *   \Drupal\common\DataResource::getUniqueIdentifier() instead.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getId(): string {
     return $this->id;
@@ -53,7 +55,12 @@ class DatastoreResource implements \JsonSerializable {
   /**
    * Get the file path.
    *
-   * Note: duplicates Drupal\common\DataResource::getFilePath(TRUE).
+   * @return string
+   *   The file path.
+   *
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+   *   \Drupal\common\DataResource::getUniqueIdentifier() instead.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getFilePath(): string {
     return $this->filePath;
@@ -62,7 +69,12 @@ class DatastoreResource implements \JsonSerializable {
   /**
    * Get the mimeType.
    *
-   * Note: duplicates Drupal\common\DataResource::getMimeType().
+   * @return string
+   *   The mimeType.
+   *
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+   *   \Drupal\common\DataResource::getMimeType() instead.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getMimeType(): string {
     return $this->mimeType;
