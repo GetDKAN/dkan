@@ -412,9 +412,7 @@ class DashboardForm extends FormBase {
    *   Array of harvest load statuses, keyed by dataset UUIDs.
    */
   protected function getHarvestLoadStatus(?string $harvestId): \Generator {
-    $result = $this->harvest->getHarvestRunResult(
-      $harvestId, $this->harvest->getLastHarvestRunId($harvestId)
-    );
+    $result = $this->harvest->getHarvestRunResult($harvestId);
     yield from $result['status']['load'] ?? [];
   }
 

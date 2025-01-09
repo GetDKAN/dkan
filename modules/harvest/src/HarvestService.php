@@ -39,21 +39,29 @@ class HarvestService implements ContainerInjectionInterface {
 
   /**
    * DKAN metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $metastore;
 
   /**
    * Harvest plan storage repository service.
+   *
+   * @var \Drupal\harvest\Entity\HarvestPlanRepository
    */
   private HarvestPlanRepository $harvestPlanRepository;
 
   /**
    * Harvest run entity repository service.
+   *
+   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
   public HarvestRunRepository $runRepository;
 
   /**
    * DKAN logger channel.
+   *
+   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -238,21 +246,23 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @param string $plan_id
    *   Harvest plan ID.
-   * @param string $timestamp
+   * @param string|null $timestamp
    *   Harvest run timestamp.
    *
    * @return array
    *   Array of status info from the run.
    */
-  public function getHarvestRunResult(string $plan_id, string $timestamp): array {
-    // This one has to keep using the loadEntity method as it may be looking up
-    // more than the most recent run.
-    if ($entity = $this->runRepository->loadEntity($plan_id, $timestamp)) {
-      return $entity->toResult();
+  public function getHarvestRunResult(string $plan_id, string $timestamp = NULL): array {
+    if (!is_null($timestamp)) {
+      // This one has to keep using the loadEntity method as it may be looking
+      // up something other than the most recent run.
+      $entity = $this->runRepository->loadEntity($plan_id, $timestamp);
     }
     else {
-      return [];
+      $entity = $this->runRepository->loadRunByPlan($plan_id);
     }
+
+    return (!empty($entity)) ? $entity->toResult() : [];
   }
 
   /**

@@ -21,16 +21,22 @@ class HarvestRunRepository {
 
   /**
    * Entity storage service for the harvest_run entity type.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected EntityStorageInterface $runStorage;
 
   /**
    * Database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
    */
   private Connection $connection;
 
   /**
    * Harvest run entity definition service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeInterface
    */
   private EntityTypeInterface $entityTypeDefinition;
 
@@ -236,7 +242,7 @@ class HarvestRunRepository {
   }
 
   /**
-   * Helper method to load a harvest_run entity given an ID and plan ID.
+   * Helper method to load a harvest_run entity given an Plan ID and timestamp.
    *
    * @param string $plan_id
    *   Plan ID.
