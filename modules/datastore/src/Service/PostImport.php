@@ -7,7 +7,6 @@ use Drupal\datastore\DatastoreService;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
-use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Psr\Log\LoggerInterface;
 use Drupal\datastore\PostImportResultFactory;

@@ -2,18 +2,17 @@
 
 namespace Drupal\datastore;
 
-use Drupal\Component\Utility\DeprecationHelper;
-use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\common\DataResource;
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
 use Procrastinator\Result;
-use Drupal\datastore\PostImportResultFactory;
 
 /**
  * Drush commands for controlling the datastore.

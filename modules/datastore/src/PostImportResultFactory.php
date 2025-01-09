@@ -65,15 +65,15 @@ class PostImportResultFactory {
   /**
    * Creates a PostImportResult instance.
    *
-   * @param array $postImportResult
-   *   The post import result data.
+   * @param array $data
+   *   The resource/distribution data.
    *
    * @return \Drupal\datastore\PostImportResult
    *   The PostImportResult object.
    */
-  public function create(array $postImportResult): PostImportResult {
+  public function create(array $data): PostImportResult {
     return new PostImportResult(
-      $postImportResult,
+      $data,
       $this->connection,
       $this->resourceMapper
     );
