@@ -25,7 +25,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     'common',
   ];
 
-  public function provideUseExisting() {
+  public static function provideUseExisting() {
     return [
       'use existing' => [TRUE, FileFetcherRemoteUseExisting::class],
       'do not use existing' => [FALSE, Remote::class],
@@ -96,7 +96,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     }
   }
 
-  public function provideFetcherUseExisting() {
+  public static function provideFetcherUseExisting() {
     return [
       'Use existing localized file' => [TRUE, FileFetcherRemoteUseExisting::class],
       'Do not use existing localized file' => [FALSE, Remote::class],

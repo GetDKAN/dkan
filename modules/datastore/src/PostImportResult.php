@@ -43,29 +43,21 @@ class PostImportResult {
 
   /**
    * The database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   protected Connection $connection;
 
   /**
    * The metastore resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 
   /**
    * The PostImport service.
-   *
-   * @var \Drupal\datastore\Service\PostImport
    */
   protected PostImport $postImport;
 
   /**
    * The PostImportResult.
-   *
-   * @var array
    */
   protected array $postImportResult;
 

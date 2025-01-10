@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
@@ -9,6 +10,7 @@ use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
+use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\PostImport;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessorInterface;
@@ -24,8 +26,6 @@ use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 
 /**
- * Test \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor.
- *
  * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor
  *
  * @group dkan
@@ -43,17 +43,19 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Test postImportProcessItem() succeeds.
+   *
+   * @covers ::postImportProcessItem
    */
   public function testPostImportProcessItem() {
     $resource = new DataResource('test.csv', 'text/csv');
 
     $dataDictionaryDiscovery = $this->getMockBuilder(DataDictionaryDiscovery::class)
-    ->onlyMethods(['getDataDictionaryMode'])
-    ->disableOriginalConstructor()
-    ->getMock();
+      ->onlyMethods(['getDataDictionaryMode'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $dataDictionaryDiscovery->method('getDataDictionaryMode')
-    ->willReturn("sitewide");
+      ->willReturn("sitewide");
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -86,17 +88,19 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Test postImportProcessItem() DataDictionary disabled.
+   *
+   * @covers ::postImportProcessItem
    */
   public function testPostImportProcessItemDataDictionaryDisabled() {
     $resource = new DataResource('test.csv', 'text/csv');
 
     $dataDictionaryDiscovery = $this->getMockBuilder(DataDictionaryDiscovery::class)
-    ->onlyMethods(['getDataDictionaryMode'])
-    ->disableOriginalConstructor()
-    ->getMock();
+      ->onlyMethods(['getDataDictionaryMode'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $dataDictionaryDiscovery->method('getDataDictionaryMode')
-    ->willReturn("none");
+      ->willReturn("none");
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -124,6 +128,8 @@ class PostImportResourceProcessorTest extends TestCase {
 
   /**
    * Test postImportProcessItem() halts and logs a message if a resource no longer exists.
+   *
+   * @covers ::postImportProcessItem
    */
   public function testPostImportProcessItemResourceNoLongerExists() {
     $resource = new DataResource('test.csv', 'text/csv');
@@ -156,9 +162,11 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  // /**
-  //  * Test postImportProcessItem() halts and logs a message if a resource has changed.
-  //  */
+  /**
+   * Test postImportProcessItem() halts, logs message if resource has changed.
+   *
+   * @covers ::postImportProcessItem
+   */
   public function testPostImportProcessItemResourceChanged() {
     $resource_a = new DataResource('test.csv', 'text/csv');
 
@@ -192,9 +200,11 @@ class PostImportResourceProcessorTest extends TestCase {
     $this->assertEmpty($errors);
   }
 
-  // /**
-  //  * Test postImportProcessItem() logs errors encountered in processors.
-  //  */
+  /**
+   * Test postImportProcessItem() logs errors encountered in processors.
+   *
+   * @covers ::postImportProcessItem
+   */
   public function testPostImportProcessItemProcessorError() {
     $resource = new DataResource('test.csv', 'text/csv');
 
@@ -227,11 +237,94 @@ class PostImportResourceProcessorTest extends TestCase {
   }
 
   /**
+   * Verify Datastore Drop on Post-Import Error (with drop_config enabled)
+   *
+   * @covers ::postImportProcessItem
+   */
+  public function testDatastoreDropOnPostImportError() {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process', new \Exception('Test Error'))
+      ->getMock();
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource);
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+      $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+    $this->assertEquals('error', $postImportResult->getPostImportStatus());
+    $this->assertEquals('Test Error', $postImportResult->getPostImportMessage());
+  }
+
+  /**
+   * Verify Logging on Successful Datastore Drop.
+   *
+   * @covers ::postImportProcessItem
+   */
+  public function testLoggingOnSuccessfulDatastoreDrop() {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process')
+      ->getMock();
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource);
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+      $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals($resource->getIdentifier(), $postImportResult->getResourceIdentifier());
+    $this->assertEquals($resource->getVersion(), $postImportResult->getResourceVersion());
+  }
+
+  /**
+   * Verify No Datastore Drop When drop_config is Disabled.
+   *
+   * @covers ::postImportProcessItem
+   */
+  public function testNoDatastoreDropWhenDropConfigIsDisabled() {
+    $resource = new DataResource('test.csv', 'text/csv');
+    $resource_processor = (new Chain($this))
+      ->add(ResourceProcessorInterface::class, 'process')
+      ->getMock();
+
+    $datastoreService = $this->createMock(DatastoreService::class);
+    $datastoreService->expects($this->never())
+      ->method('drop');
+
+    $container_chain = $this->getContainerChain()
+      ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$resource_processor])
+      ->add(ResourceMapper::class, 'get', $resource);
+    \Drupal::setContainer($container_chain->getMock());
+
+    $dictionaryEnforcer = PostImportResourceProcessor::create(
+      $container_chain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+
+    $postImportResult = $dictionaryEnforcer->postImportProcessItem($resource);
+
+    $this->assertEquals('done', $postImportResult->getPostImportStatus());
+    $this->assertEquals(NULL, $postImportResult->getPostImportMessage());
+  }
+
+  /**
    * Get container chain.
    */
   protected function getContainerChain() {
 
     $options = (new Options())
+      ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.datastore.data_dictionary.alter_table_query_builder.mysql', AlterTableQueryBuilderInterface::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
       ->add('dkan.datastore.logger_channel', LoggerInterface::class)
@@ -239,6 +332,7 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_processor_collector', ResourceProcessorCollector::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
@@ -256,7 +350,9 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
-      ->add(ResourceMapper::class, 'get', DataResource::class);
+      ->add(ResourceMapper::class, 'get', DataResource::class)
+      ->add(ConfigFactoryInterface::class, 'get', FALSE)
+      ->add(DatastoreService::class, 'drop');
   }
 
 }

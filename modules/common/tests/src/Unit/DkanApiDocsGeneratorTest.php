@@ -6,7 +6,6 @@ use Drupal\Core\Site\Settings;
 use Drupal\common\DkanApiDocsGenerator;
 use Drupal\common\Plugin\DkanApiDocsBase;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;
-use Drupal\common\Plugin\OpenApiSpec;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 

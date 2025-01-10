@@ -18,43 +18,31 @@ class HarvestUtility {
 
   /**
    * Harvest service.
-   *
-   * @var \Drupal\harvest\HarvestService
    */
   private HarvestService $harvestService;
 
   /**
    * Service to instantiate storage objects for Harvest tables.
-   *
-   * @var \Drupal\harvest\Storage\DatabaseTableFactory
    */
   private DatabaseTableFactory $storeFactory;
 
   /**
    * Database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   private Connection $connection;
 
   /**
    * Harvest run entity repository service.
-   *
-   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
   private HarvestRunRepository $runRepository;
 
   /**
    * The harvest hashes database table factory service.
-   *
-   * @var \Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
    */
   private HarvestHashesDatabaseTableFactory $hashesFactory;
 
   /**
    * Logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

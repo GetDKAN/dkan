@@ -7,7 +7,6 @@ use Drupal\common\FileFetcher\DkanFileFetcher;
 use Drupal\common\FileFetcher\FileFetcherFactory;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\FileFetcherJobStoreFactory;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;

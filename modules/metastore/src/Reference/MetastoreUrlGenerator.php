@@ -18,15 +18,11 @@ class MetastoreUrlGenerator {
 
   /**
    * DKAN Stream Wrapper.
-   *
-   * @var \Drupal\Core\StreamWrapper\StreamWrapperManager
    */
   protected StreamWrapperManager $streamWrapperManager;
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   protected MetastoreService $metastore;
 

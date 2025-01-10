@@ -37,8 +37,6 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
 
   /**
    * Reference lookup service.
-   *
-   * @var \Drupal\metastore\ReferenceLookupInterface
    */
   private ReferenceLookupInterface $referenceLookup;
 

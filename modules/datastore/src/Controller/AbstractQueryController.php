@@ -25,29 +25,21 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
 
   /**
    * Datastore query service.
-   *
-   * @var \Drupal\datastore\Service\Query
    */
   protected QueryService $queryService;
 
   /**
    * DatasetInfo Service.
-   *
-   * @var \Drupal\common\DatasetInfo
    */
   protected DatasetInfo $datasetInfo;
 
   /**
    * ConfigFactory object.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected ConfigFactoryInterface $configFactory;
 
   /**
    * Metastore API response.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   protected MetastoreApiResponse $metastoreApiResponse;
 

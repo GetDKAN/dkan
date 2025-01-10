@@ -3,7 +3,7 @@ Importing very large files
 
 Very large datasets can present challenges for the datastore import process. What "very large" means will depend on your server infrastructure, but it's safe to say that when dealing with multi-gigabyte CSV files you may start to encounter broken file transfers or timeouts.
 
-Because DKAN will make a local copy of a remote file in order to import it, it can help to prepare the import by transfering the files to the web server manually (or with shell scripts). Then you can instruct DKAN to use that already-existing local copy for processing into the database.
+Because DKAN will make a local copy of a remote file in order to import it, it can help to prepare the import by transferring the files to the web server manually (or with shell scripts). Then you can instruct DKAN to use that already-existing local copy for processing into the database.
 
 These instructions assume you've already created a dataset (through the the UI, a harvest or the API) that contains a distribution pointing to a remote CSV file, and that this CSV file has not yet been imported to the datastore. We'll need the ID of the existing dataset.
 

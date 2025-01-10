@@ -1,4 +1,4 @@
-Submission guidelines
+Submission Guidelines
 =====================
 
 Submitting an issue

@@ -85,6 +85,23 @@ class WidgetRouterTest extends TestCase {
           '#title' => 'textArea',
         ],
       ],
+      // A textformat property converts it to a text_format element.
+      'textFormat' => [
+        (object) [
+          'widget' => 'textarea',
+          'textFormat' => 'html',
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'textFormat',
+        ],
+        [
+          '#type' => 'text_format',
+          '#title' => 'textFormat',
+          '#format' => 'html',
+          '#allowed_formats' => ['html'],
+        ],
+      ],
       'tagField' => [
         (object) [
           'widget' => 'list',

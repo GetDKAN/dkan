@@ -17,8 +17,6 @@ class ArrayHelper implements ContainerInjectionInterface {
 
   /**
    * Object Helper.
-   *
-   * @var \Drupal\json_form_widget\ObjectHelper
    */
   protected ObjectHelper $objectHelper;
 
@@ -32,8 +30,6 @@ class ArrayHelper implements ContainerInjectionInterface {
 
   /**
    * Builder object.
-   *
-   * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   public FieldTypeRouter $builder;
 
