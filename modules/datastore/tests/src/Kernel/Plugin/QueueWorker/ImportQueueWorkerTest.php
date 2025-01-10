@@ -133,7 +133,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
   public function testProcessItemAlreadyImported() {
     $this->installEntitySchema('resource_mapping');
 
-    // Mock the logger so we can tell the notice occurs.
+    // Mock the logger so we can tell when the notice occurs.
     $logger = $this->getMockForAbstractClass(LoggerInterface::class);
     // We expect a notice to be logged.
     $logger->expects($this->once())
