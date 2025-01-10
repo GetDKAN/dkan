@@ -86,7 +86,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
-      ->add(PostImportResultFactory::class, 'createPostImportResult', PostImportResult::class);
+      ->add(PostImportResultFactory::class, 'initializeFromResource', PostImportResult::class);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
 
     $mocks = $this->getMockDependencies($resource, '', $dictionary_enforcer);
@@ -139,7 +139,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryInterface::class, 'execute')
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(ResourceProcessorCollector::class, 'getResourceProcessors', [$dictionary_enforcer])
-      ->add(PostImportResultFactory::class, 'createPostImportResult', PostImportResult::class);
+      ->add(PostImportResultFactory::class, 'initializeFromResource', PostImportResult::class);
     \Drupal::setContainer($container_chain->getMock($resource->getVersion()));
 
     $mocks = $this->getMockDependencies($resource, 'error', $dictionary_enforcer);
@@ -263,7 +263,7 @@ class DictionaryEnforcerTest extends TestCase {
 
     $postImportResultFactoryMock = $this->createMock(PostImportResultFactory::class);
     $postImportResultFactoryMock->expects($this->any())
-      ->method('createPostImportResult')
+      ->method('initializeFromResource')
       ->willReturn($postImportResultMock);
 
     return [

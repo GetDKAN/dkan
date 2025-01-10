@@ -461,8 +461,8 @@ class DashboardForm extends FormBase {
    */
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
-      $result = $this->postImportResultFactory->create($dist);
-      $postImportInfo = $result->retrieveJobStatus();
+      $postImportResult = $this->postImportResultFactory->initializeFromDatasetInfo($dist);
+      $postImportInfo = $postImportResult->retrieveJobStatus();
       $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
 

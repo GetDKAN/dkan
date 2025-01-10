@@ -209,7 +209,7 @@ class PostImport {
    *   The post import result service.
    */
   protected function createPostImportResult($status, $message, DataResource $resource): PostImportResult {
-    return $this->postImportResultFactory->createPostImportResult($status, $message, $resource);
+    return $this->postImportResultFactory->initializeFromResource($status, $message, $resource);
   }
 
   /**

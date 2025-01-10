@@ -22,7 +22,7 @@ class PostImportResultTest extends TestCase {
    * Test storeJobStatus() succeeds.
    *
    * @covers ::storeJobStatus
-   */  
+   */
   public function testStoreJobStatus() {
     $resource = new DataResource('test.csv', 'text/csv');
 
@@ -63,7 +63,7 @@ class PostImportResultTest extends TestCase {
 
     $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
 
-    $postImportResult = $postImportResultFactory->createPostImportResult('done', '', $resource);
+    $postImportResult = $postImportResultFactory->initializeFromResource('done', '', $resource);
 
     $result_store = $postImportResult->storeJobStatus();
 
@@ -74,7 +74,7 @@ class PostImportResultTest extends TestCase {
    * Test retrieveJobStatus() succeeds.
    *
    * @covers ::retrieveJobStatus
-   */  
+   */
   public function testRetrieveJobStatus() {
     $import_info = [
       '#resource_version' => 'test_version',
@@ -107,7 +107,7 @@ class PostImportResultTest extends TestCase {
       ->addMethods(['condition', 'fields', 'execute'])
       ->getMock();
 
-      $queryMock->expects($this->exactly(2))
+    $queryMock->expects($this->exactly(2))
       ->method('condition')
       ->willReturnSelf();
 
@@ -132,7 +132,7 @@ class PostImportResultTest extends TestCase {
 
     $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
 
-    $postImportResult = $postImportResultFactory->createPostImportResult('test_status', 'test_error', $resource);
+    $postImportResult = $postImportResultFactory->initializeFromResource('test_status', 'test_error', $resource);
 
     $result_store = $postImportResult->retrieveJobStatus();
 
@@ -143,7 +143,7 @@ class PostImportResultTest extends TestCase {
    * Test removeJobStatus() succeeds.
    *
    * @covers ::removeJobStatus
-   */  
+   */
   public function testRemoveJobStatus() {
     $resource = new DataResource('test.csv', 'text/csv');
 
@@ -159,8 +159,8 @@ class PostImportResultTest extends TestCase {
       ->willReturn($resourceMapperMock);
 
     $queryMock = $this->getMockBuilder('stdClass')
-    ->addMethods(['condition', 'execute'])
-    ->getMock();
+      ->addMethods(['condition', 'execute'])
+      ->getMock();
 
     $queryMock->expects($this->exactly(2))
       ->method('condition')
@@ -178,7 +178,7 @@ class PostImportResultTest extends TestCase {
 
     $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
 
-    $postImportResult = $postImportResultFactory->createPostImportResult('test_status', 'test_error', $resource);
+    $postImportResult = $postImportResultFactory->initializeFromResource('test_status', 'test_error', $resource);
 
     $result_store = $postImportResult->removeJobStatus();
 

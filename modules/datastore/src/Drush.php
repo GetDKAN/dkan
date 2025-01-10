@@ -242,7 +242,7 @@ class Drush extends DrushCommands {
       // is a type that will never be imported, such as a ZIP file.
       $this->logger->warning('Unable to drop datastore for ' . $identifier);
     }
-    $post_import_result = $this->postImportResultFactory->create(['resource_id' => $identifier]);
+    $post_import_result = $this->postImportResultFactory->InitializeFromDatasetInfo(['resource_id' => $identifier]);
     $post_import_result->removeJobStatus();
     $this->logger->notice('Successfully removed the post import job status for resource ' . $identifier);
   }

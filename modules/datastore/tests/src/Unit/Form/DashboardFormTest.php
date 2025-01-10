@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\PostImportResultFactory;
+use Drupal\common\DataResource;
 
 /**
  * @group dkan
@@ -126,17 +127,18 @@ class DashboardFormTest extends TestCase {
 
     $connectionMock = $this->createMock(Connection::class);
     $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs([$distribution, $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
-    
+
     $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
 
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['harvest_id' => 'dataset-1']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
-      ->add(PostImportResultFactory::class, 'create', $postImportResultMock)
+      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -181,17 +183,18 @@ class DashboardFormTest extends TestCase {
 
     $connectionMock = $this->createMock(Connection::class);
     $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs([$distribution, $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
-    
+
     $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
 
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
-      ->add(PostImportResultFactory::class, 'create', $postImportResultMock)
+      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -263,14 +266,15 @@ class DashboardFormTest extends TestCase {
       'post_import_status' => 'error',
       'post_import_error' => "SQLSTATE[HY000]: General error: 1411 Incorrect datetime value: '09/07/2017 12:00:00 AM' for function str_to_date: UPDATE 'datastore_7c3d88c04bb011fa80d6b4612978c9b1' SET 'reactivation_date'=STR_TO_DATE(reactivation_date, :date_format); Array ( [:date_format] => %m/%d/%Y %H:%i:%s %p )",
     ];
-    
+
     $connectionMock = $this->createMock(Connection::class);
     $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs([$nonHarvestDatasetInfo['latest_revision']['distributions'][0], $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
-    
+
     $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
 
     $datasetInfoOptions = (new Options())
@@ -281,7 +285,7 @@ class DashboardFormTest extends TestCase {
       ->add(MetastoreService::class, 'count', 2)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid'], $nonHarvestDatasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfoOptions)
-      ->add(PostImportResultFactory::class, 'create', $postImportResultMock);
+      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock);
 
     \Drupal::setContainer($container->getMock());
     $form = DashboardForm::create($container->getMock())->buildForm([], new FormState());
@@ -376,18 +380,19 @@ class DashboardFormTest extends TestCase {
 
     $connectionMock = $this->createMock(Connection::class);
     $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs([$datasetInfo['latest_revision']['distributions'][0], $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
-    
+
     $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
 
     $container = $this->buildContainerChain()
       ->add(MetastoreService::class, 'count', 1)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfo)
-      ->add(PostImportResultFactory::class, 'create', $postImportResultMock)
+      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
 

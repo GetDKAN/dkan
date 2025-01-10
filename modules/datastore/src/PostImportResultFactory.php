@@ -41,41 +41,45 @@ class PostImportResultFactory {
   /**
    * Creates a PostImportResult instance.
    *
+   * Passes status, message and the resource when initialized.
+   *
    * @param string $status
    *   Status of the post import process.
    * @param string $message
-   *   Error messages retrieved during the post import process.
+   *   Messages retrieved during the post import process.
    * @param \Drupal\common\DataResource $resource
    *   The DKAN resource being imported.
    *
    * @return \Drupal\datastore\PostImportResult
-   *   The post import result service.
+   *   The PostImportResult object.
    */
-  public function createPostImportResult($status, $message, DataResource $resource): PostImportResult {
-    return new PostImportResult([
-      'resource_id' => $resource->getIdentifier(),
-      'resource_version' => $resource->getVersion(),
-      'postImportStatus' => $status,
-      'postImportMessage' => $message,
-    ],
-    $this->connection,
-    $this->resourceMapper);
+  public function initializeFromResource($status, $message, DataResource $resource): PostImportResult {
+    return new PostImportResult(
+      $status,
+      $message,
+      $resource,
+      $this->connection,
+    );
   }
 
   /**
    * Creates a PostImportResult instance.
    *
-   * @param array $data
-   *   The resource/distribution data.
+   * Passes the dataset info when initialized.
+   *
+   * @param array $datasetInfo
+   *   The dataset info.
    *
    * @return \Drupal\datastore\PostImportResult
    *   The PostImportResult object.
    */
-  public function create(array $data): PostImportResult {
+  public function initializeFromDatasetInfo(array $datasetInfo): PostImportResult {
+    $resource = $this->resourceMapper->get($datasetInfo['resource_id']);
     return new PostImportResult(
-      $data,
+      '',
+      '',
+      $resource,
       $this->connection,
-      $this->resourceMapper
     );
   }
 

@@ -2,8 +2,8 @@
 
 namespace Drupal\datastore;
 
-use Drupal\metastore\ResourceMapper;
 use Drupal\Core\Database\Connection;
+use Drupal\common\DataResource;
 
 /**
  * PostImportResult class to insert,retrieve,remove post import jobs.
@@ -46,29 +46,24 @@ class PostImportResult {
   protected Connection $connection;
 
   /**
-   * The metastore resource mapper service.
+   * The Data Resource.
    */
-  protected ResourceMapper $resourceMapper;
-
-  /**
-   * The PostImportResult.
-   */
-  protected array $postImportResult;
+  protected DataResource $resource;
 
   /**
    * PostImportResult constructor.
    */
   public function __construct(
-    $postImportResult,
+    ?string $status,
+    ?string $message,
+    DataResource $resource,
     Connection $connection,
-    ResourceMapper $resourceMapper,
     ) {
-    $this->resourceIdentifier = $postImportResult['resource_id'];
-    $this->resourceVersion = $postImportResult['resource_version'] ?? NULL;
-    $this->postImportStatus = $postImportResult['postImportStatus'] ?? NULL;
-    $this->postImportMessage = $postImportResult['postImportMessage'] ?? NULL;
+    $this->resourceIdentifier = $resource->getIdentifier();
+    $this->resourceVersion = $resource->getVersion() ?? NULL;
+    $this->postImportStatus = $status ?? '';
+    $this->postImportMessage = $message ?? '';
     $this->connection = $connection;
-    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -118,11 +113,9 @@ class PostImportResult {
    */
   public function removeJobStatus(): bool {
     try {
-      $latest_resource = $this->resourceMapper->get($this->getResourceIdentifier());
-      $latest_version = $latest_resource->getVersion();
       $this->connection->delete('dkan_post_import_job_status')
         ->condition('resource_identifier', $this->getResourceIdentifier(), '=')
-        ->condition('resource_version', $latest_version, '=')
+        ->condition('resource_version', $this->getResourceVersion(), '=')
         ->execute();
 
       return TRUE;
