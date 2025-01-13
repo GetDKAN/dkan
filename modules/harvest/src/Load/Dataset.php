@@ -50,4 +50,14 @@ class Dataset extends Load {
     }
   }
 
+  /**
+   * Remove dataset item from storage.
+   *
+   * @param string $identifier
+   *   Identifier.
+   */
+  public function removeItem($identifier): void {
+    $this->metastoreService->delete('dataset', $identifier);
+  }
+
 }
