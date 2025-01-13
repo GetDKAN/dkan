@@ -129,6 +129,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
 
     // Can we short-circuit this task?
     if ($this->alreadyImported($data)) {
+      $this->logger->notice('Dataset with identifier ' . $data['identifier'] . ' and version ' . $data['version'] . ' already exists and will not be re-imported.');
       return;
     }
 
