@@ -2,10 +2,6 @@ action.configuration.hide_current_revision_action:
   type: action_configuration_default
   label: 'Remove latest revision from search index'
 
-metastore_admin.settings:
-  type: config_object
-  label: 'Metastore Admin Settings'
-  mapping:
-    redirect_to_datasets:
-      type: boolean
-      label: 'Redirect to datasets view after form submit'
+redirect_to_datasets:
+  type: boolean
+  label: 'Redirect to datasets view after form submit'
