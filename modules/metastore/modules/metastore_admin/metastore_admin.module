@@ -158,6 +158,31 @@ function metastore_admin_form_submit($form, FormStateInterface &$form_state) {
   $form_state->setRedirect('view.dkan_dataset_content.page_1');
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function metastore_admin_form_system_config_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id === 'system_config_form') {
+    $config = \Drupal::config('metastore_admin.settings');
+
+    // Add checkbox to control redirect
+    $form['redirect_to_datasets'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Redirect to datasets view after form submit'),
+      '#default_value' => $config->get('redirect_to_datasets'),
+      '#description' => t('Uncheck to disable automatic redirect to datasets view on form submit.'),
+    ];
+
+    $form['submit'][] = 'metastore_admin_system_config_form_submit';
+  }
+}
+
+function metastore_admin_system_confid_form_submit($form, FormStateInterface $form_state) {
+  \Drupal::configFactory()->getEditable('metastore_admin.settings')
+    ->set('redirect_to_datasets', $form_state->getValue('redirect_to_datasets'))
+    ->save();
+}
+
 /*
  * Implements hook_toolbar_alter()
  */
