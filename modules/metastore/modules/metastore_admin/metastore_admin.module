@@ -177,7 +177,7 @@ function metastore_admin_form_system_config_form_alter(&$form, FormStateInterfac
   }
 }
 
-function metastore_admin_system_confid_form_submit($form, FormStateInterface $form_state) {
+function metastore_admin_system_config_form_submit($form, FormStateInterface $form_state) {
   \Drupal::configFactory()->getEditable('metastore_admin.settings')
     ->set('redirect_to_datasets', $form_state->getValue('redirect_to_datasets'))
     ->save();
