@@ -326,15 +326,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   JSON string with type coercion applied.
    */
   public static function fixTypes($json, $schema) {
-    $data = json_decode($json);
-    $validator = new Validator();
-    $validator->coerce($data, json_decode($schema));
-
-    if ($data === NULL) {
-      throw new \InvalidArgumentException("Invalid JSON");
+    if ($data = json_decode($json) !== NULL) {
+      $validator = new Validator();
+      $validator->coerce($data, json_decode($schema));
+      return json_encode($data, JSON_PRETTY_PRINT);
     }
 
-    return json_encode($data, JSON_PRETTY_PRINT);
+    throw new \InvalidArgumentException("Invalid JSON");
   }
 
   /**
