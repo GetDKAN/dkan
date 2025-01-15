@@ -138,7 +138,7 @@ class DashboardFormTest extends TestCase {
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['harvest_id' => 'dataset-1']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
-      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock)
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -194,7 +194,7 @@ class DashboardFormTest extends TestCase {
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
-      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock)
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -285,7 +285,7 @@ class DashboardFormTest extends TestCase {
       ->add(MetastoreService::class, 'count', 2)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid'], $nonHarvestDatasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfoOptions)
-      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock);
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock);
 
     \Drupal::setContainer($container->getMock());
     $form = DashboardForm::create($container->getMock())->buildForm([], new FormState());
@@ -392,7 +392,7 @@ class DashboardFormTest extends TestCase {
       ->add(MetastoreService::class, 'count', 1)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfo)
-      ->add(PostImportResultFactory::class, 'initializeFromDatasetInfo', $postImportResultMock)
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
 

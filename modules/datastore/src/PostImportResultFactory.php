@@ -65,19 +65,20 @@ class PostImportResultFactory {
   /**
    * Creates a PostImportResult instance.
    *
-   * Passes the dataset info when initialized.
+   * Passes the distribution when initialized.
    *
-   * @param array $datasetInfo
-   *   The dataset info.
+   * @param array $distribution
+   *   The distribution.
    *
    * @return \Drupal\datastore\PostImportResult
    *   The PostImportResult object.
    */
-  public function initializeFromDatasetInfo(array $datasetInfo): PostImportResult {
-    $resource = $this->resourceMapper->get($datasetInfo['resource_id']);
+  public function initializeFromDistribution(array $distribution): PostImportResult {
+    // Retrieve the data resource object.
+    $resource = $this->resourceMapper->get($distribution['resource_id']);
     return new PostImportResult(
-      '',
-      '',
+      NULL,
+      NULL,
       $resource,
       $this->connection,
     );
