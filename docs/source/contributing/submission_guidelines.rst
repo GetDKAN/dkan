@@ -22,7 +22,7 @@ Setting up a local development sandbox
 --------------------------------------
 
 We recomend using DDEV with the DDEV-DKAN add-on as there are many helpful commands that will make it easier to get started.
-Once you have composer, docker, and DDEV `installed <https://dkan.readthedocs.io/en/latest/installation/index.html>`_, head over to `Getting Started with DDEV-DKAN <https://getdkan.github.io/ddev-dkan/getting-started.html>`_
+Once you have composer, docker, and DDEV `installed <https://dkan.readthedocs.io/en/latest/installation/index.html>`_, head over to `Getting Started with DDEV-DKAN <https://getdkan.github.io/ddev-dkan/getting-started.html>`_.
 
 Issues tagged Good First Issue
 ------------------------------
@@ -49,4 +49,4 @@ After your PR is merged, you can safely delete your branch and pull the changes 
 Coding Standards
 ----------------
 
-`Coder <http://drupal.org/project/coder>`_ is a tool to help write code for Drupal modules. It can detect and automatically fix coding standard errors. The project provides a coding standard for PHP_CodeSniffer based on the `Drupal coding standard <https://www.drupal.org/docs/develop/standards/php/php-coding-standards>`_
+`Coder <http://drupal.org/project/coder>`_ is a tool to help write code for Drupal modules. It can detect and automatically fix coding standard errors. The project provides a coding standard for PHP_CodeSniffer based on the `Drupal coding standard <https://www.drupal.org/docs/develop/standards/php/php-coding-standards>`_.
