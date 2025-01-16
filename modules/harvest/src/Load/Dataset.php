@@ -27,6 +27,16 @@ class Dataset extends Load {
   }
 
   /**
+   * Remove dataset item from storage.
+   *
+   * @param string $identifier
+   *   Identifier.
+   */
+  public function removeItem($identifier): void {
+    $this->metastoreService->delete('dataset', $identifier);
+  }
+
+  /**
    * Save a harvested dataset item into our metastore.
    *
    * @param object $item
@@ -48,16 +58,6 @@ class Dataset extends Load {
     catch (ExistingObjectException) {
       $this->metastoreService->put($schema_id, $item->{"$.identifier"}, $item);
     }
-  }
-
-  /**
-   * Remove dataset item from storage.
-   *
-   * @param string $identifier
-   *   Identifier.
-   */
-  public function removeItem($identifier): void {
-    $this->metastoreService->delete('dataset', $identifier);
   }
 
 }
