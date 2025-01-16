@@ -14,6 +14,9 @@ use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\PostImport;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\jsonapi\JsonApiResource\Data;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\MetastoreService;
@@ -59,7 +62,17 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'dictionary-id')
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
+    $database_table_factory = (new Chain($this))
+      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
+      ->add(DatabaseTable::class, 'getTableName', 'datastore_table')
+      ->getMock();
+
+    $dictionary_enforcer = new DictionaryEnforcer(
+      $alter_table_query_builder,
+      $metastore_service,
+      $dictionary_discovery_service,
+      $database_table_factory
+    );
 
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'execute')
@@ -96,7 +109,16 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'data-dictionary')
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
+    $database_table_factory = (new Chain($this))
+      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
+      ->add(DatabaseTable::class, 'getTableName', 'datastore_table')
+      ->getMock();
+    $dictionary_enforcer = new DictionaryEnforcer(
+      $alter_table_query_builder,
+      $metastore_service,
+      $dictionary_discovery_service,
+      $database_table_factory
+    );
 
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'execute')
@@ -133,7 +155,17 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
       ->add(DataDictionaryDiscoveryInterface::class, 'getSitewideDictionaryId','2')
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
+    $database_table_factory = (new Chain($this))
+      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
+      ->add(DatabaseTable::class, 'getTableName', 'datastore_table')
+      ->getMock();
+
+    $dictionary_enforcer = new DictionaryEnforcer(
+      $alter_table_query_builder,
+      $metastore_service,
+      $dictionary_discovery_service,
+      $database_table_factory
+    );
 
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'execute')

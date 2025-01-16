@@ -21,7 +21,7 @@ class SampleContentService {
   private string $modulePath;
 
   /**
-   * Constructor for the Sample Content commands.
+   * Constructor for the Sample Content service.
    *
    * @param \Drupal\Core\Extension\ModuleExtensionList $moduleExtensionList
    *   Extension list.
