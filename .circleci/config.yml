@@ -28,6 +28,10 @@ commands:
         description: 'PHP major.minor for DDev to use.'
         default: '8.2'
         type: string
+      database_version:
+        description: 'Database version for DDev to use.'
+        default: 'mysql:5.7'
+        type: string
       addon_branch:
         description: 'Repo branch name for the DKAN DDev add-on you want to test against.'
         default: 'main'
