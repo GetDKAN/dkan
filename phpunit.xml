@@ -36,7 +36,7 @@
       <directory>modules/datastore/tests/src/Unit</directory>
       <directory>modules/datastore/modules/datastore_mysql_import/tests/src/Unit</directory>
       <directory>modules/frontend/tests/src/Unit</directory>
-      <directory>modules/dkan_js_frontend/tests/src</directory>
+      <directory>modules/dkan_js_frontend/tests/src/Unit</directory>
       <directory>modules/harvest/tests/src/Unit</directory>
       <directory>modules/json_form_widget/tests/src/Unit</directory>
     </testsuite>
@@ -46,7 +46,7 @@
       <directory>modules/metastore/modules/metastore_search/tests/src/Functional</directory>
       <directory>modules/metastore/modules/metastore_admin/tests/src/Functional</directory>
       <directory>modules/datastore/tests/src/Functional</directory>
-      <directory>modules/dkan_js_frontend/tests/src</directory>
+      <directory>modules/dkan_js_frontend/tests/src/Functional</directory>
       <directory>tests/src/Functional</directory>
     </testsuite>
   </testsuites>
