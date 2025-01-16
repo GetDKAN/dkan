@@ -10,6 +10,12 @@ class DatasetControllerTest extends BrowserTestBase {
 
   protected $defaultTheme = 'stark';
 
+  protected static $modules = [
+    'dkan_js_frontend',
+  ];
+
+
+
   /**
    * {@inheritdoc}
    */
