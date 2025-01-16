@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\datastore\Unit\Storage;
 
-use Drupal\Core\Database\Connection;
 use Drupal\common\DataResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
