@@ -12,9 +12,9 @@ class DatasetControllerTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan_js_frontend',
+    'metastore',
+    'node'
   ];
-
-
 
   /**
    * {@inheritdoc}
