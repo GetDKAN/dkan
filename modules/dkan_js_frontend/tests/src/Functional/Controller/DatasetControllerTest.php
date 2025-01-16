@@ -13,7 +13,8 @@ class DatasetControllerTest extends BrowserTestBase {
   protected static $modules = [
     'dkan_js_frontend',
     'metastore',
-    'node'
+    'node',
+    'field'
   ];
 
   /**
@@ -27,6 +28,15 @@ class DatasetControllerTest extends BrowserTestBase {
         'base_uri' => $this->baseUrl,
         'http_errors' => FALSE,
       ]);
+  }
+
+  /**
+   * Tests that /home exists and is accessible. Verifies
+   */
+  public function testHomeExists() {
+    $url = Url::fromUri('base:/home');
+    $response = $this->httpClient->request('GET', $url->toString(), []);
+    $this->assertEquals(200, $response->getStatusCode());
   }
 
   /**
