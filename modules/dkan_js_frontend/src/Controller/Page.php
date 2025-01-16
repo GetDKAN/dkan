@@ -24,7 +24,7 @@ class Page extends ControllerBase {
    *
    * @var \Drupal\Core\Path\CurrentPathStack
    */
-  protected $currentPath;
+  protected CurrentPathStack $currentPath;
 
   /**
    * Inherited.
@@ -50,6 +50,8 @@ class Page extends ControllerBase {
    * Returns a render-able array.
    */
   public function content() {
+    // Path should always have leading slash.
+    // @see \Symfony\Component\HttpFoundation\Request::getPathInfo()
     $path_parts = explode('/', $this->currentPath->getPath());
 
     if (is_array($path_parts) && count($path_parts) === 3 && $path_parts[1] === 'dataset') {
