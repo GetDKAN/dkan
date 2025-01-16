@@ -29,7 +29,7 @@ commands:
         default: '8.2'
         type: string
       addon_branch:
-        description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
+        description: 'Repo branch name for the DKAN DDev add-on you want to test against.'
         default: 'main'
         type: string
       dkan_recommended_branch:

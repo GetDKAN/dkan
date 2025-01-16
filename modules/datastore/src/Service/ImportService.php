@@ -151,10 +151,9 @@ class ImportService {
     $data_resource = $this->getResource();
 
     if ($result->getStatus() === Result::ERROR) {
-      $datastore_resource = $data_resource->getDatastoreResource();
       $this->logger->error('Error importing resource id:%id path:%path message:%message', [
-        '%id' => $datastore_resource->getId(),
-        '%path' => $datastore_resource->getFilePath(),
+        '%id' => $data_resource->getUniqueIdentifier(),
+        '%path' => $data_resource->getFilePath(TRUE),
         '%message' => $result->getError(),
       ]);
     }
@@ -188,20 +187,20 @@ class ImportService {
     if ($this->importJob ?? FALSE) {
       return $this->importJob;
     }
-    $datastore_resource = $this->getResource()->getDatastoreResource();
+    $data_resource = $this->getResource();
 
     $delimiter = ",";
-    if ($datastore_resource->getMimeType() == 'text/tab-separated-values') {
+    if ($data_resource->getMimeType() == 'text/tab-separated-values') {
       $delimiter = "\t";
     }
 
     $this->importJob = call_user_func([$this->importerClass, 'get'],
-      $datastore_resource->getId(),
+      $data_resource->getUniqueIdentifier(),
       $this->importJobStoreFactory->getInstance(),
       [
         "storage" => $this->getStorage(),
         "parser" => $this->getNonRecordingParser($delimiter),
-        "resource" => $datastore_resource,
+        "resource" => $data_resource,
       ]
     );
 
@@ -245,8 +244,8 @@ class ImportService {
    *   DatabaseTable storage object.
    */
   public function getStorage(): DatabaseTable {
-    $datastore_resource = $this->getResource()->getDatastoreResource();
-    return $this->databaseTableFactory->getInstance($datastore_resource->getId(), ['resource' => $datastore_resource]);
+    $data_resource = $this->getResource();
+    return $this->databaseTableFactory->getInstance($data_resource->getUniqueIdentifier(), ['resource' => $data_resource]);
   }
 
   /**

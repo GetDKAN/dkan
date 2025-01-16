@@ -28,6 +28,13 @@ use Psr\Log\LoggerInterface;
  */
 class JsonFormBuilderTest extends TestCase {
 
+  protected FieldTypeRouter $router;
+
+  public function setUp(): void {
+    parent::setUp();
+    $this->router = $this->getRouter();
+  }
+
   /**
    * Test.
    */
@@ -58,21 +65,11 @@ class JsonFormBuilderTest extends TestCase {
   }
 
   /**
-   * Test.
+   * Basic schema test.
    */
   public function testSchema() {
-    $router = $this->getRouter();
 
-    $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
-      ->add('json_form.router', $router)
-      ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
-      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
-      ->add('string_translation', TranslationManager::class)
-      ->index(0);
-
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
+    $container_chain = $this->getDetaultContainerChain()
       ->add(SchemaRetriever::class, 'retrieve', '
       {
         "required": [
@@ -120,8 +117,7 @@ class JsonFormBuilderTest extends TestCase {
           }
         },
         "type":"object"
-      }')
-      ->add(SchemaUiHandler::class, 'setSchemaUi');
+      }');
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
@@ -186,10 +182,11 @@ class JsonFormBuilderTest extends TestCase {
     $default_data = new \stdClass();
     $default_data->test = "Some value.";
     $this->assertEquals($expected, $form_builder->getJsonForm($default_data));
+  }
 
+  public function testSchemaWithEmail() {
     // Test email.
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
+    $container_chain = $this->getDetaultContainerChain()
       ->add(SchemaRetriever::class, 'retrieve', '
       {
         "properties":{
@@ -206,6 +203,9 @@ class JsonFormBuilderTest extends TestCase {
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
+
+    $default_data = new \stdClass();
+    $default_data->test = "Some value.";
 
     $form_builder = FormBuilder::create($container);
     $form_builder->setSchema('dataset');
@@ -273,23 +273,29 @@ class JsonFormBuilderTest extends TestCase {
       ],
     ];
     $this->assertEquals($expected, $form_builder->getJsonForm([]));
+  }
 
-    // Test array.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '
-    {
-      "properties":{
-        "keyword": {
-          "title": "Tags",
-          "description": "Tags (or keywords).",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "title": "Tag"
-          }
-        }
-      },
-      "type":"object"
-    }');
+  /**
+   * Test array with integer.
+   */
+  public function testSchemaWithArray() {
+    $container_chain = $this->getDetaultContainerChain()
+      ->add(SchemaRetriever::class, 'retrieve', '
+        {
+          "properties":{
+            "keyword": {
+              "title": "Tags",
+              "description": "Tags (or keywords).",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "title": "Tag"
+              }
+            }
+          },
+          "type":"object"
+        }'
+      );
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
 
@@ -318,8 +324,13 @@ class JsonFormBuilderTest extends TestCase {
     $result = $form_builder->getJsonForm([], $form_state);
     unset($result['keyword']['actions']);
     $this->assertEquals($expected, $result);
+  }
 
-    // Test array required.
+  /**
+   * Test array required.
+   */
+  public function testArrayRequired() {
+    $container_chain = $this->getDetaultContainerChain();
     $container_chain->add(SchemaRetriever::class, 'retrieve', '
     {
       "required": [
@@ -369,13 +380,95 @@ class JsonFormBuilderTest extends TestCase {
   }
 
   /**
+   * Test schema with array of objects.
+   */
+  public function testSchemaWithArrayOfObjects() {
+    $container_chain = $this->getDetaultContainerChain()
+      ->add(SchemaRetriever::class, 'retrieve', '
+      {
+        "properties": {
+          "contributors": {
+            "title": "Resources",
+            "description": "List of links.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "title": "Name"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "title": "URL",
+                  "default": "http://example.com"
+                }
+              }
+            }
+          }
+        },
+        "type": "object"
+      }');
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+
+    $form_builder = FormBuilder::create($container);
+    $form_builder->setSchema('dataset');
+    $expected = [
+      "contributors" => [
+        "#type" => "fieldset",
+        "#title" => "Resources",
+        "#description" => "List of links.",
+        "#tree" => TRUE,
+        "#description_display" => "before",
+        "#prefix" => '<div id="contributors-fieldset-wrapper">',
+        "#suffix" => '</div>',
+        "contributors" => [
+          0 => [
+            'contributors' => [
+              "#type" => "details",
+              "#open" => TRUE,
+              '#description_display' => 'before',
+              "name" => [
+                "#type" => "textfield",
+                "#title" => "Name",
+                "#required" => FALSE,
+                "#description" => "",
+                '#description_display' => 'before',
+                '#default_value' => NULL,
+                '#maxlength' => 256,
+              ],
+              "url" => [
+                "#type" => "url",
+                "#title" => "URL",
+                "#required" => FALSE,
+                "#description" => "",
+                '#description_display' => 'before',
+                '#default_value' => "http://example.com",
+              ],
+            ],
+            '#required' => FALSE,
+          ],
+        ],
+      ],
+    ];
+    $form_state = new FormState();
+    $form_state->set(ArrayHelper::buildCountProperty('contributors'), 1);
+    $result = $form_builder->getJsonForm([], $form_state);
+    unset($result['contributors']['actions']);
+    $this->assertEquals($expected, $result);
+  }
+
+  /**
    * Return FieldTypeRouter object.
    */
   private function getRouter() {
     $email_validator = new EmailValidator();
     $string_helper = new StringHelper($email_validator);
     $object_helper = new ObjectHelper();
-    $array_helper = new ArrayHelper($object_helper);
+    $array_helper = new ArrayHelper($object_helper, $string_helper);
     $integer_helper = new IntegerHelper();
 
     $options = (new Options())
@@ -394,4 +487,20 @@ class JsonFormBuilderTest extends TestCase {
     return FieldTypeRouter::create($container);
   }
 
+  /**
+   * Get the default container chain.
+   */
+  protected function getDetaultContainerChain(): Chain {
+    $options = (new Options())
+      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('json_form.router', $this->getRouter())
+      ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
+      ->add('string_translation', TranslationManager::class)
+      ->index(0);
+
+    return (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(SchemaUiHandler::class, 'setSchemaUi');
+  }
 }

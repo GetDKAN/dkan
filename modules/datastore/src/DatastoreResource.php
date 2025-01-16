@@ -5,9 +5,9 @@ namespace Drupal\datastore;
 /**
  * Basic datastore resource class.
  *
- * Always generate this object using DataResource::getDatastoreResource().
- *
- * @see \Drupal\common\DataResource::getDatastoreResource()
+ * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+ *   \Drupal\common\DataResource instead.
+ * @see https://github.com/GetDKAN/dkan/pull/4372
  */
 class DatastoreResource implements \JsonSerializable {
 
@@ -43,6 +43,10 @@ class DatastoreResource implements \JsonSerializable {
 
   /**
    * Get the resource ID.
+   *
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+   *   \Drupal\common\DataResource::getUniqueIdentifier() instead.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getId(): string {
     return $this->id;
@@ -50,6 +54,13 @@ class DatastoreResource implements \JsonSerializable {
 
   /**
    * Get the file path.
+   *
+   * @return string
+   *   The file path.
+   *
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+   *   \Drupal\common\DataResource::getUniqueIdentifier() instead.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getFilePath(): string {
     return $this->filePath;
@@ -57,6 +68,13 @@ class DatastoreResource implements \JsonSerializable {
 
   /**
    * Get the mimeType.
+   *
+   * @return string
+   *   The mimeType.
+   *
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use
+   *   \Drupal\common\DataResource::getMimeType() instead.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getMimeType(): string {
     return $this->mimeType;
@@ -65,8 +83,7 @@ class DatastoreResource implements \JsonSerializable {
   /**
    * {@inheritdoc}
    */
-  #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
+  public function jsonSerialize(): mixed {
     return (object) [
       'filePath' => $this->getFilePath(),
       'id' => $this->getId(),

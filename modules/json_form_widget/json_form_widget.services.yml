@@ -16,7 +16,7 @@ services:
     class: \Drupal\json_form_widget\ObjectHelper
   json_form.array_helper:
     class: \Drupal\json_form_widget\ArrayHelper
-    arguments: ['@json_form.object_helper']
+    arguments: ['@json_form.object_helper', '@json_form.string_helper']
   json_form.widget_router:
     class: \Drupal\json_form_widget\WidgetRouter
     arguments: ['@uuid','@json_form.string_helper', '@dkan.metastore.service']
