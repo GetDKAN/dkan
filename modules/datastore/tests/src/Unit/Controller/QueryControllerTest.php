@@ -2,12 +2,13 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
+use Drupal\common\DataResource;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\common\DatasetInfo;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\datastore\Controller\QueryController;
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
@@ -33,23 +34,33 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class QueryControllerTest extends TestCase {
 
+  const FILE_DIR = __DIR__ . "/../../../data/";
+
+  /**
+   * Resources to be used in tests.
+   */
+  private DataResource $resource;
+
   protected function setUp(): void {
     parent::setUp();
     // Set cache services.
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
+
+    $this->resource = new DataResource(self::FILE_DIR . 'states_with_dupes.csv', 'text/csv');
   }
 
   public function testQueryJson() {
     $data = json_encode([
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resource->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -98,7 +109,7 @@ class QueryControllerTest extends TestCase {
     // Try simple string properties:
     $data = json_encode(["properties" => ["record_number", "state"]]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
@@ -106,7 +117,7 @@ class QueryControllerTest extends TestCase {
     // Now try with rowIds plus an arbitrary property:
     $data = json_encode(["properties" => ["state"], "rowIds" => TRUE]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The rowIds property cannot be set to true', $result->getContent());
@@ -125,7 +136,7 @@ class QueryControllerTest extends TestCase {
       ],
     ]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
@@ -147,7 +158,7 @@ class QueryControllerTest extends TestCase {
       ],
     ]);
 
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -195,7 +206,7 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "conditions" => "nope",
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -208,7 +219,7 @@ class QueryControllerTest extends TestCase {
         "condition" => "t.field1 = s.field1",
       ],
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -221,7 +232,7 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "results" => TRUE,
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -274,7 +285,7 @@ class QueryControllerTest extends TestCase {
         ],
       ],
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -288,7 +299,7 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resource->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -330,7 +341,7 @@ class QueryControllerTest extends TestCase {
       "results" => TRUE,
       "format" => "csv",
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
     $this->assertTrue($result instanceof CsvResponse);
     $csv = explode("\n", $result->getContent());
     $this->assertEquals('State', $csv[0]);
@@ -358,7 +369,7 @@ class QueryControllerTest extends TestCase {
       "results" => TRUE,
       "format" => "csv",
     ]);
-    $result = $this->getQueryResult($data, "2");
+    $result = $this->getQueryResult($data, $this->resource->getIdentifier());
     $this->assertTrue($result instanceof CsvResponse);
 
     $csv = explode("\n", $result->getContent());
@@ -428,7 +439,7 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resource->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -524,20 +535,10 @@ class QueryControllerTest extends TestCase {
    */
   public function mockDatastoreTable() {
     $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
-    $connection->query('CREATE TABLE `datastore_2` (`record_number` INTEGER NOT NULL, state TEXT, year INT);');
-
-    $sampleData = [];
-    $fp = fopen(__DIR__ . '/../../../data/states_with_dupes.csv', 'rb');
-    while (!feof($fp)) {
-      $sampleData[] = fgetcsv($fp);
-    }
-    foreach ($sampleData as $row) {
-      $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
-    }
-
+    // $connection->query('CREATE TABLE `datastore_2` (`record_number` INTEGER NOT NULL, state TEXT, year INT);');
     $storage = new SqliteDatabaseTable(
       $connection,
-      new DatastoreResource("2", "data.csv", "text/csv"),
+      $this->resource,
       $this->createStub(LoggerInterface::class)
     );
     $storage->setSchema([
@@ -547,6 +548,20 @@ class QueryControllerTest extends TestCase {
         'year' => ['type' => 'int', 'description' => 'Year'],
       ],
     ]);
+    $storage->setTable();
+
+    $fp = fopen($this->resource->getFilePath(), 'rb');
+    $sampleData = [];
+    while (!feof($fp)) {
+      $sampleData[] = fgetcsv($fp);
+    }
+    fclose($fp);
+
+    $table_name = $storage->getTableName();
+    foreach ($sampleData as $row) {
+      $connection->query("INSERT INTO `$table_name` VALUES ($row[0], '$row[1]', $row[2]);");
+    }
+
     return $storage;
   }
 

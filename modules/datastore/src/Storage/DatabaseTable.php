@@ -3,8 +3,8 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Drupal\datastore\DatastoreResource;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -17,29 +17,29 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Datastore resource object.
    *
-   * @var \Drupal\datastore\DatastoreResource
+   * @var \Drupal\common\DataResource
    */
-  private $resource;
+  protected $resource;
 
   /**
    * DKAN logger channel service.
    */
-  private LoggerInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Constructor method.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
-   * @param \Drupal\datastore\DatastoreResource $resource
+   * @param \Drupal\common\DataResource $resource
    *   A resource.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
    */
   public function __construct(
     Connection $connection,
-    DatastoreResource $resource,
-    LoggerInterface $loggerChannel
+    DataResource $resource,
+    LoggerInterface $loggerChannel,
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
@@ -71,12 +71,10 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
    */
   #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
+  public function jsonSerialize(): mixed {
     return (object) ['resource' => $this->resource];
   }
 
@@ -88,7 +86,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public function getTableName() {
     if ($this->resource) {
-      return 'datastore_' . $this->resource->getId();
+      return 'datastore_' . md5($this->resource->getUniqueIdentifier());
     }
     return 'datastore_does_not_exist';
   }
@@ -96,7 +94,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Protected.
    */
-  protected function prepareData(string $data, string $id = NULL): array {
+  protected function prepareData(string $data, ?string $id = NULL): array {
     $decoded = json_decode($data);
     if ($decoded === NULL) {
       $this->logger->error('Error decoding id:@id, data: @data.', [

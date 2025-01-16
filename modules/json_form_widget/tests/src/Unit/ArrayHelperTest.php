@@ -34,10 +34,12 @@ class ArrayHelperTest extends TestCase {
 
     $options = (new Options())
       ->add('json_form.object_helper', ObjectHelper::class)
+      ->add('json_form.string_helper', StringHelper::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(ObjectHelper::class, 'handleObjectElement', $object)
+      ->add(StringHelper::class, 'handleStringElement', $object)
       ->getMock();
 
     $array_helper = ArrayHelper::create($chain);
@@ -59,7 +61,9 @@ class ArrayHelperTest extends TestCase {
       ->add(SchemaRetriever::class, 'retrieve', $distribution_schema)
       ->add(SchemaUiHandler::class, 'setSchemaUi')
       ->add(ObjectHelper::class, 'handleObjectElement', $object)
-      ->add(ObjectHelper::class, 'setBuilder');
+      ->add(ObjectHelper::class, 'setBuilder')
+      ->add(StringHelper::class, 'handleStringElement', $object)
+      ->add(StringHelper::class, 'setBuilder');
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);

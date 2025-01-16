@@ -4,7 +4,7 @@ namespace Drupal\Tests\datastore\Unit\Service\Info;
 
 use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
-use Drupal\datastore\DatastoreResource;
+use Drupal\common\DataResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\Tests\datastore\Unit\Plugin\QueueWorker\TestMemStorage;
@@ -56,7 +56,7 @@ class ImportInfoTest extends TestCase {
     // Make a FileFetcher object.
     $storage = new Memory();
     $config = [
-      "resource" => (new DatastoreResource('id', 'path', 'mime')),
+      "resource" => (new DataResource('path', 'mime')),
       "storage" => new TestMemStorage(),
       "parser" => Csv::getParser(),
       "filePath" => 'test',
@@ -87,7 +87,7 @@ class ImportInfoTest extends TestCase {
     // Make an ImportJob object.
     $storage = new Memory();
     $config = [
-      "resource" => (new DatastoreResource('id', 'path', 'mime')),
+      "resource" => (new DataResource('path', 'mime')),
       "storage" => new TestMemStorage(),
       "parser" => Csv::getParser(),
     ];
