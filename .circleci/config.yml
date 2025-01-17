@@ -54,11 +54,12 @@ commands:
             which ddev
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
-            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            ddev add-on get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
             bash -c 'echo COMPOSER_AUTH=$COMPOSER_AUTH' > .ddev/.env
             # Modify config to use our PHP version and database.
             yq '.database.version ="<< parameters.database_version >>"' -i .ddev/config.dkan.yaml
             yq '.php_version ="<< parameters.php_version >>"' -i .ddev/config.dkan.yaml
+            cat .ddev/config.dkan.yaml
             ddev restart
             ddev status
             ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
