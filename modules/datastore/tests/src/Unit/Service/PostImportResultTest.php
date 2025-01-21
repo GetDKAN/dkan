@@ -10,7 +10,8 @@ use Drupal\common\DataResource;
 use Drupal\datastore\PostImportResultFactory;
 
 /**
- * Tests the PostImportResult class.
+ * @covers \Drupal\datastore\PostImportResult
+ * @coversDefaultClass \Drupal\datastore\PostImportResult
  *
  * @group dkan
  * @group datastore
