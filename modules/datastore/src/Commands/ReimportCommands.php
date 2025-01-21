@@ -9,7 +9,7 @@ use Drush\Commands\DrushCommands;
 /**
  * Drush command file for data store reimportation.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class ReimportCommands extends DrushCommands {
 

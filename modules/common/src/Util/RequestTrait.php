@@ -13,7 +13,7 @@ trait RequestTrait {
    * @return \Symfony\Component\HttpFoundation\Request
    *   Request.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   protected function getCurrentRequest() {
     return \Drupal::request();
@@ -25,7 +25,7 @@ trait RequestTrait {
    * @return string
    *   String.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   protected function getCurrentRequestUri() {
     return $this->getCurrentRequest()
@@ -38,7 +38,7 @@ trait RequestTrait {
    * @return string|resource
    *   String or resource.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   protected function getCurrentRequestContent() {
     return $this->getCurrentRequest()

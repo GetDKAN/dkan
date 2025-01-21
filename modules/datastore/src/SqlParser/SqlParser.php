@@ -24,7 +24,7 @@ class SqlParser {
   /**
    * Static call for backward compatibility.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   public static function __callStatic($name, $arguments) {
     $instance = new static();
@@ -236,7 +236,7 @@ class SqlParser {
    *
    * @throws \Exception
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   protected function feedFeeder(string $sql, IStateMachine $machine) {
     return Feeder::feed($sql, $machine);

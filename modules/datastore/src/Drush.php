@@ -17,7 +17,7 @@ use Procrastinator\Result;
 /**
  * Drush commands for controlling the datastore.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class Drush extends DrushCommands {
 

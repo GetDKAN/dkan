@@ -7,7 +7,7 @@ use Contracts\IdGeneratorInterface;
 /**
  * Extracts identifiers from metastore data objects.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  *
  * @deprecated Is this dead code?
  */

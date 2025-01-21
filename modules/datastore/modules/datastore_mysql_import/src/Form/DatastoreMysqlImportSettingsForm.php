@@ -9,7 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Datastore MySQL Import settings form.
  *
  * @package Drupal\datastore\Form
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class DatastoreMysqlImportSettingsForm extends ConfigFormBase {
 

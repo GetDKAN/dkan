@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @see \Drupal\metastore\LifeCycle\LifeCycle::distributionPredelete()
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 

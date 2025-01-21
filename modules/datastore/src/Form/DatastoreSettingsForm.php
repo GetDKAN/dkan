@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Datastore settings form.
  *
  * @package Drupal\datastore\Form
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class DatastoreSettingsForm extends ConfigFormBase {
 

@@ -9,7 +9,7 @@ use Drush\Commands\DrushCommands;
 /**
  * JobStore-related commands.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class JobStoreCommands extends DrushCommands {
 

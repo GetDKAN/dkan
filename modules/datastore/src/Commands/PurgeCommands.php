@@ -9,7 +9,7 @@ use Drush\Utils\StringUtils;
 /**
  * Datastore-related Drush commands.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class PurgeCommands extends DrushCommands {
 

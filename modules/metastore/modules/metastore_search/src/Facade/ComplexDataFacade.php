@@ -8,7 +8,7 @@ use Drupal\Core\TypedData\TraversableTypedDataInterface;
 /**
  * Base complex data facade class.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
 

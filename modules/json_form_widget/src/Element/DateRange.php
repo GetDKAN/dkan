@@ -12,7 +12,7 @@ use Drupal\Component\Utility\NestedArray;
  * Provides a date_range element.
  *
  * @FormElement("date_range")
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class DateRange extends Datetime {
 

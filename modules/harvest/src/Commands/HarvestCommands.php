@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 /**
  * Class.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class HarvestCommands extends DrushCommands {
   use Helper;

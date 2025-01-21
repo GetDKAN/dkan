@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 /**
  * Commands helper trait.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 trait Helper {
 

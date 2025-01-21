@@ -11,7 +11,7 @@ use Drupal\datastore\Service\ResourceLocalizer;
  * DKAN resource settings form.
  *
  * @package Drupal\datastore\Form
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class ResourceSettingsForm extends ConfigFormBase {
 

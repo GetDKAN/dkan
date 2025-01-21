@@ -13,7 +13,7 @@ use Drupal\json_form_widget\Entity\RemoteFile;
  * Provides a new Element for uploading or linking to files.
  *
  * @FormElement("upload_or_link")
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class UploadOrLink extends ManagedFile {
 
@@ -32,7 +32,7 @@ class UploadOrLink extends ManagedFile {
    *
    * {@inheritDoc}
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   public function getInfo() {
     $class = static::class;

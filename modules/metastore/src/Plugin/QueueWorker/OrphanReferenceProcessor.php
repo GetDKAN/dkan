@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   cron = {"time" = 15}
  * )
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 

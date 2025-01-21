@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Metastore data settings form.
  *
  * @package Drupal\metastore\Form
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  */
 class DkanDataSettingsForm extends ConfigFormBase {
 

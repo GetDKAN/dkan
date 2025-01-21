@@ -94,7 +94,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Inherited.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    * @inheritdoc
    */
   public static function getSubscribedEvents(): array {

@@ -22,7 +22,7 @@ trait ParentCallTrait {
    * @param mixed $args
    *   Arguments to pass to parent.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    *
    * @return mixed
    *   Return of parent.

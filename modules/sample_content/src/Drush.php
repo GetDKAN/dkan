@@ -10,7 +10,7 @@ use Drush\Commands\DrushCommands;
 /**
  * Drush commands for the sample content module.
  *
- * @codeCoverageIgnore
+ * @_codeCoverageIgnore
  *
  * @todo Figure out why DrushTestTraits don't count as coverage for commands.
  */

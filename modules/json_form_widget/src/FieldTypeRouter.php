@@ -79,7 +79,7 @@ class FieldTypeRouter implements ContainerInjectionInterface {
   /**
    * Set schema.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   public function setSchema($schema) {
     $this->schema = $schema;

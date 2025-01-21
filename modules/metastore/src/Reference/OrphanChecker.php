@@ -105,7 +105,7 @@ class OrphanChecker {
    * @param string $uuid
    *   The uuid to queue for removal.
    *
-   * @codeCoverageIgnore
+   * @_codeCoverageIgnore
    */
   private function queueReferenceForRemoval($property_id, $uuid) {
     $this->queueService->get('orphan_reference_processor')

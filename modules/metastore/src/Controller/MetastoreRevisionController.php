@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Revision API for metastore items.
  *
- * @codeCoverageIgnore.
+ * @_codeCoverageIgnore.
  */
 class MetastoreRevisionController implements ContainerInjectionInterface {
   use JsonResponseTrait;
