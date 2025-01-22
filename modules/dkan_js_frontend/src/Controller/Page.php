@@ -52,11 +52,19 @@ class Page extends ControllerBase {
   public function content() {
     // Path should always have leading slash.
     // @see \Symfony\Component\HttpFoundation\Request::getPathInfo()
-    $path_parts = explode('/', $this->currentPath->getPath());
 
-    if (is_array($path_parts) && count($path_parts) === 3 && $path_parts[1] === 'dataset') {
+    // Dataset path is /dataset/[ID]/data.
+    $dataset_data_path_match = '/^\/dataset\/(?P<id>[^\/]+)\/data$/';
+    // Dataset path is /dataset/[ID].
+    $dataset_path_match = '/^\/dataset\/(?P<id>[^\/]+)$/';
+
+    $path = $this->currentPath->getPath();
+
+    if (preg_match($dataset_data_path_match, $path,$matches)
+      || preg_match($dataset_path_match, $path, $matches)) {
+
       try {
-        $this->service->get('dataset', $path_parts[2]);
+        $this->service->get('dataset', $matches['id']);
       }
       catch (MissingObjectException $exception) {
         throw new NotFoundHttpException();
