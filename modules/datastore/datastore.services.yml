@@ -14,8 +14,18 @@ services:
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport
     arguments:
-     - '@database'
-     - '@dkan.metastore.resource_mapper'
+     - '@config.factory'
+     - '@dkan.datastore.logger_channel'
+     - '@dkan.datastore.service.resource_processor_collector'
+     - '@dkan.metastore.data_dictionary_discovery'
+     - '@dkan.datastore.service'
+     - '@dkan.datastore.post_import_result_factory'
+
+  dkan.datastore.post_import_result_factory:
+    class: Drupal\datastore\PostImportResultFactory
+    arguments:
+      - '@database'
+      - '@dkan.metastore.resource_mapper'
 
   dkan.datastore.query:
     class: \Drupal\datastore\Service\Query
