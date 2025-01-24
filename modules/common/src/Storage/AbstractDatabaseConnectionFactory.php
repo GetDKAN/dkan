@@ -37,8 +37,8 @@ abstract class AbstractDatabaseConnectionFactory {
   public function __construct() {
     $source_key = 'default';
     $source_target = 'default';
-    // Add a new connection key/target based on default/default if this class
-    // has overridden the key or the target.
+    // Add a new connection key/target based on default/default if the key or
+    // the target have been overridden.
     if ($source_key !== $this->key || $source_target !== $this->target) {
       Database::addConnectionInfo(
         $this->key,
