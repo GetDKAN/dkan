@@ -6,6 +6,11 @@ use Drupal\Core\Database\Connection;
 
 /**
  * Database connection factory that can set a connection timeout.
+ *
+ * This is the dkan.common.database_connection_factory service.
+ *
+ * @todo Services should not contain state, such as the timeout property here.
+ *   We should have a way to set the timeout as an argument to getConnection().
  */
 class DatabaseConnectionFactory extends AbstractDatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
 
