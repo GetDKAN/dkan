@@ -32,7 +32,7 @@ class DatabaseConnectionFactoryTest extends KernelTestBase {
     // Just getting this service should have created the special connection
     // info target.
     $this->assertNotEmpty(
-      $connection_info = Database::getConnectionInfo('default')['unbuffered_datastore'] ?? []
+      $connection_info = Database::getConnectionInfo('default')['datastore'] ?? []
     );
     $this->assertArrayHasKey('pdo', $connection_info);
     // Should be unbuffered for MySQL.
@@ -41,7 +41,7 @@ class DatabaseConnectionFactoryTest extends KernelTestBase {
     // Verify that the connection itself is the correct key and target.
     $connection = $factory->getConnection();
     $this->assertEquals('default', $connection->getKey());
-    $this->assertEquals('unbuffered_datastore', $connection->getTarget());
+    $this->assertEquals('datastore', $connection->getTarget());
     // Since this is a kernel test, the two targets should have the same test
     // prefix.
     $this->assertNotEmpty($connection->getPrefix());

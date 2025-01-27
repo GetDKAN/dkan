@@ -8,16 +8,22 @@ use Drupal\Core\Database\Database;
 /**
  * A factory for making database connections with special connection info.
  *
- * Subclass this class. Override $this->key and/or $this->target to specify a
- * new set of connection info.
+ * This class is meant to be subclassed, and that the subclass is probably a
+ * factory service for a given module's special connection needs.
+ *
+ * - Override $this->key and/or $this->target to specify a new set of
+ *   connection info.
+ * - Call getConnection() to get a new connection from the key/target
+ *   specified.
+ * - Override buildConnectionInfo() to add special connection info to the new
+ *   target.
+ * - Override prepareConnection() to modify any connection created by the
+ *   factory.
  *
  * It is assumed that the database target we are creating is not already
  * set up in settings.php, other than default/default.
- *
- * We do this mainly so that we can add new session configuration and timeout
- * values.
  */
-abstract class AbstractDatabaseConnectionFactory {
+abstract class AbstractDatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
 
   /**
    * Database connection info key.
@@ -54,6 +60,8 @@ abstract class AbstractDatabaseConnectionFactory {
    * Override this method in your subclass and call the parent method to modify
    * the connection info.
    *
+   * This method is called once when the service is initialized.
+   *
    * @param string $source_key
    *   Source key to copy.
    * @param string $source_target
@@ -78,6 +86,9 @@ abstract class AbstractDatabaseConnectionFactory {
 
   /**
    * Modify the given database connection instance.
+   *
+   * This method is called when a new connection object is created by the
+   * factory service.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   The connection instance to modify.

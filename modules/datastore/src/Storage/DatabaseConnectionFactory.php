@@ -13,7 +13,7 @@ class DatabaseConnectionFactory extends CommonDatabaseConnectionFactory implemen
   /**
    * {@inheritdoc}
    */
-  protected string $target = 'unbuffered_datastore';
+  protected string $target = 'datastore';
 
   /**
    * {@inheritdoc}

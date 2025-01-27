@@ -12,7 +12,7 @@ use Drupal\Core\Database\Connection;
  * @todo Services should not contain state, such as the timeout property here.
  *   We should have a way to set the timeout as an argument to getConnection().
  */
-class DatabaseConnectionFactory extends AbstractDatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
+class DatabaseConnectionFactory extends AbstractDatabaseConnectionFactory {
 
   /**
    * Timeout for database connections in seconds.
