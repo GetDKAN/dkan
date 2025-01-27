@@ -24,6 +24,7 @@ class DatabaseConnectionFactory extends AbstractDatabaseConnectionFactory implem
    */
   protected function prepareConnection(Connection $connection): void {
     if (isset($this->timeout)) {
+      // @see https://github.com/GetDKAN/dkan/pull/3764
       $connection->query('SET SESSION wait_timeout = ' . $this->timeout);
     }
   }
