@@ -195,7 +195,7 @@ class ImportService {
     }
 
     $this->importJob = call_user_func([$this->importerClass, 'get'],
-      $data_resource->getUniqueIdentifier(),
+      md5($data_resource->getUniqueIdentifier()),
       $this->importJobStoreFactory->getInstance(),
       [
         "storage" => $this->getStorage(),
