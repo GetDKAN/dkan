@@ -72,9 +72,11 @@ class CommonCommands extends DrushCommands {
       // Establish DB connection
       $connection = \Drupal::database();
 
-      // Build the query
+      // Build the query to get the
+      // Resource identifier
       $query = $connection->select('dkan_metastore_resource_mapper', 'dm')
-        ->fields('dm', ['id', 'identifier', 'version', 'perspective']);
+        //->fields('dm', ['id', 'identifier', 'version', 'perspective']);
+        ->fields('dm', ['identifier']);
 
         // Add the condition using a raw SQL expression.
         $query->where(
@@ -86,8 +88,15 @@ class CommonCommands extends DrushCommands {
         $results = $query->execute();
 
         // Fetch the results as an array.
-        $data = $results->fetchAll(\PDO::FETCH_ASSOC);
-        return $data;
+        $resource_id = $results->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Now we have our associated resource id so
+        // Use it to find the dataset UUID
+
+        //$dataset_query = 
+
+        
+        return $resource_id;
     }
     if ($data) {
       $this->output()->writeln('Dataset Info: ' . $data);
