@@ -3,3 +3,11 @@ services:
       class: Drupal\dkan_js_frontend\Routing\RouteProvider
       arguments:
         - '@config.factory'
+  dkan_js_frontend.controller:
+      class: \Drupal\dkan_js_frontend\Controller\Page
+      arguments:
+        - '@dkan.metastore.service'
+        - '@path.current'
+        - '@request_stack'
+
+
