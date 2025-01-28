@@ -262,12 +262,6 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: [ '11.0.x-dev']
-              php_version: [ '8.3' ]
-              database_version: [ '8.0' ]
-      - phpunit:
-          matrix:
-            parameters:
               dkan_recommended_branch: [ '10.3.x-dev']
               php_version: [ '8.1', '8.2' ]
       - phpunit:
