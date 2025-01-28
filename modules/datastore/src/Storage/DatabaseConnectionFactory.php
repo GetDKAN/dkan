@@ -2,13 +2,12 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\common\Storage\DatabaseConnectionFactory as CommonDatabaseConnectionFactory;
 
 /**
  * Database connection factory for connections with unbuffered queries.
  */
-class DatabaseConnectionFactory extends CommonDatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
+class DatabaseConnectionFactory extends CommonDatabaseConnectionFactory {
 
   /**
    * {@inheritdoc}
