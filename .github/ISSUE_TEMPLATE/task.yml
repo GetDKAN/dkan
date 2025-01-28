@@ -1,4 +1,4 @@
-name: Task
+name: 🛠️ Task
 description: A workitem that needs to be done while developing a story, feature, addressing tech debt, documentation, etc.
 title: ""
 labels: [task]
