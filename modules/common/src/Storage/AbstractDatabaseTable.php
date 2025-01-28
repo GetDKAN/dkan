@@ -35,20 +35,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   protected $connection;
 
   /**
-   * Get the full name of datastore db table.
-   *
-   * @return string
-   *   Table name.
-   */
-  abstract protected function getTableName();
-
-  /**
    * Prepare data.
    *
    * Transform the string data given into what should be use by the insert
    * query.
    */
-  abstract protected function prepareData(string $data, string $id = NULL): array;
+  abstract protected function prepareData(string $data, ?string $id = NULL): array;
 
   /**
    * Get the primary key used in the table.
@@ -113,7 +105,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Store data.
    */
-  public function store($data, string $id = NULL): string {
+  public function store($data, ?string $id = NULL): string {
     $this->setTable();
 
     $existing = (isset($id)) ? $this->retrieve($id) : NULL;
@@ -263,7 +255,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @throws \Exception
    *   Throws an exception if the schema was not already set.
    */
-  protected function setTable() {
+  public function setTable() {
     if (!$this->tableExist($table_name = $this->getTableName())) {
       if ($schema = $this->schema) {
         try {

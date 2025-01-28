@@ -53,7 +53,10 @@ class DrupalFiles implements ContainerInjectionInterface {
   }
 
   /**
-   * Getter.
+   * Get the Drupal file_system service.
+   *
+   * @returns FileSystemInterface
+   *   The file_system service.
    */
   public function getFilesystem(): FileSystemInterface {
     return $this->filesystem;
@@ -84,6 +87,7 @@ class DrupalFiles implements ContainerInjectionInterface {
       throw new \Exception("Only moving files to Drupal's public directory (public://) is supported");
     }
 
+    // Handle file:// URIs.
     if (substr_count($url, "file://") > 0) {
 
       $src = str_replace("file://", "", $url);
@@ -93,15 +97,17 @@ class DrupalFiles implements ContainerInjectionInterface {
 
       return $this->fileCreateUrl("{$destination}/{$filename}");
     }
-    else {
-      return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);
-    }
+    // Handle http(s):// URIs.
+    return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);
   }
 
   /**
-   * Given a URI like public:// retrieve the URL.
+   * Given a URI like public://, retrieve the http URL.
+   *
+   * @returns string
+   *   The URL.
    */
-  public function fileCreateUrl($uri) {
+  public function fileCreateUrl($uri) : string {
     if (substr_count($uri, 'http') > 0) {
       return $uri;
     }

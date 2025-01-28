@@ -131,6 +131,18 @@ class ImportQueueWorkerTest extends KernelTestBase {
    * @covers ::processItem
    */
   public function testProcessItemAlreadyImported() {
+    $this->installEntitySchema('resource_mapping');
+
+    // Mock the logger so we can tell when the notice occurs.
+    $logger = $this->getMockForAbstractClass(LoggerInterface::class);
+    // We expect a notice to be logged.
+    $logger->expects($this->once())
+      ->method('notice');
+    // We don't expect an error to be logged.
+    $logger->expects($this->never())
+      ->method('error');
+    $this->container->set('dkan.datastore.logger_channel', $logger);
+
     $queue_worker = $this->createPartialMock(
       ImportQueueWorker::class,
       ['alreadyImported', 'importData']
