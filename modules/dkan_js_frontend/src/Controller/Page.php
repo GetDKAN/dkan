@@ -21,6 +21,9 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
    */
   private MetastoreService $metastoreService;
 
+  /**
+   * The request stack.
+   */
   protected RequestStack $requestStack;
 
   /**
@@ -56,6 +59,20 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
    * Returns a render-able array.
    */
   public function content() {
+    // Checking for 404 prevents an infinite loop.
+    if ($this->requestStack->getCurrentRequest()->query->get('_exception_statuscode') !== 404) {
+      $this->handleInvalidDatasetId();
+    }
+
+    return [
+      '#theme' => 'page__dkan_js_frontend',
+    ];
+  }
+
+  /**
+   * If a dataset with an invalid ID is being requested, throw a 404 error.
+   */
+  protected function handleInvalidDatasetId() {
     // Path should always have leading slash.
     // @see \Symfony\Component\HttpFoundation\Request::getPathInfo()
     // Dataset path is /dataset/[ID]/data.
@@ -65,23 +82,15 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
 
     $path = $this->currentPath->getPath();
 
-
-   if ($this->requestStack->getCurrentRequest()->query->get('_exception_statuscode') !== 404) {
-
-     if (preg_match($dataset_data_path_match, $path, $matches)
-       || preg_match($dataset_path_match, $path, $matches)) {
-
-       try {
-         $this->metastoreService->get('dataset', $matches['id']);
-       } catch (MissingObjectException $exception) {
-         throw new NotFoundHttpException();
-       }
-     }
-   }
-
-    return [
-      '#theme' => 'page__dkan_js_frontend',
-    ];
+    if (preg_match($dataset_data_path_match, $path, $matches)
+      || preg_match($dataset_path_match, $path, $matches)) {
+      try {
+        $this->metastoreService->get('dataset', $matches['id']);
+      }
+      catch (MissingObjectException $exception) {
+        throw new NotFoundHttpException();
+      }
+    }
   }
 
 }
