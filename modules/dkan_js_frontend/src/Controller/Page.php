@@ -75,15 +75,12 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
   protected function handleInvalidDatasetId() {
     // Path should always have leading slash.
     // @see \Symfony\Component\HttpFoundation\Request::getPathInfo()
-    // Dataset path is /dataset/[ID]/data.
-    $dataset_data_path_match = '/^\/dataset\/(?P<id>[^\/]+)\/data$/';
-    // Dataset path is /dataset/[ID].
-    $dataset_path_match = '/^\/dataset\/(?P<id>[^\/]+)$/';
+    // Match any path that equals or begins with /dataset/[ID].
+    $dataset_path_match = '/^\/dataset\/(?P<id>[^\/]+)/';
 
     $path = $this->currentPath->getPath();
 
-    if (preg_match($dataset_data_path_match, $path, $matches)
-      || preg_match($dataset_path_match, $path, $matches)) {
+    if (preg_match($dataset_path_match, $path, $matches)) {
       try {
         $this->metastoreService->get('dataset', $matches['id']);
       }
