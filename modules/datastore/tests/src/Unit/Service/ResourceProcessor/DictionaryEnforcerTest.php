@@ -221,7 +221,7 @@ class DictionaryEnforcerTest extends TestCase {
     $configMock
       ->method('get')
       ->with('drop_datastore_on_post_import_error')
-      ->willReturn(false); 
+      ->willReturn(false);
 
     $resourceProcessorMock = $this->createMock(ResourceProcessorCollector::class);
     $resourceProcessorMock->expects($this->any())
@@ -244,6 +244,7 @@ class DictionaryEnforcerTest extends TestCase {
         'resource_version' => $resource->getVersion(),
         'post_import_status' => ($expectation === "error") ? 'error' : 'done',
         'post_import_error' => ($expectation === "error") ? 'Test Error' : '',
+        'timestamp' => time(),
       ])
       ->willReturnSelf();
 

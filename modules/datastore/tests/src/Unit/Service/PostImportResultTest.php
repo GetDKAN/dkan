@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Drupal\datastore\DatastoreService;
 use Drupal\common\DataResource;
 use Drupal\datastore\PostImportResultFactory;
+use Drupal\datastore\PostImportResult;
 
 /**
  * @covers \Drupal\datastore\PostImportResult
@@ -25,13 +26,20 @@ class PostImportResultTest extends TestCase {
    * @covers ::storeJobStatus
    */
   public function testStoreJobStatus() {
-    $resource = new DataResource('test.csv', 'text/csv');
+    $dataResourceMock = $this->getMockBuilder(DataResource::class)
+      ->setConstructorArgs(['test.csv', 'text/csv'])
+      ->onlyMethods(['getCurrentTime'])
+      ->getMock();
+
+    $dataResourceMock->expects($this->any())
+      ->method('getCurrentTime')
+      ->willReturn(1700000000);
 
     $resourceMapperMock = $this->createMock(ResourceMapper::class);
     $resourceMapperMock->expects($this->any())
       ->method('get')
       ->withAnyParameters()
-      ->willReturn($resource);
+      ->willReturn($dataResourceMock);
 
     $datastoreServiceMock = $this->createMock(DatastoreService::class);
     $datastoreServiceMock->expects($this->any())
@@ -42,33 +50,55 @@ class PostImportResultTest extends TestCase {
       ->addMethods(['fields', 'execute'])
       ->getMock();
 
-    $queryMock->expects($this->once())
+    $queryMock->expects($this->any())
       ->method('fields')
       ->with([
-        'resource_identifier' => $resource->getIdentifier(),
-        'resource_version' => $resource->getVersion(),
+        'resource_identifier' => $dataResourceMock->getIdentifier(),
+        'resource_version' => $dataResourceMock->getVersion(),
         'post_import_status' => 'done',
-        'post_import_error' => '',
+        'post_import_error' => 'N/A',
+        'timestamp' => 1700000000,
       ])
       ->willReturnSelf();
 
-    $queryMock->expects($this->once())
+    $queryMock->expects($this->any())
+      ->method('execute')
+      ->willReturn(TRUE);
+
+    $queryMockSecondAttempt = $this->getMockBuilder('stdClass')
+      ->addMethods(['fields', 'execute'])
+      ->getMock();
+
+    $queryMockSecondAttempt->expects($this->any())
+      ->method('fields')
+      ->with([
+        'resource_identifier' => $dataResourceMock->getIdentifier(),
+        'resource_version' => $dataResourceMock->getVersion(),
+        'post_import_status' => 'done',
+        'post_import_error' => '',
+        'timestamp' => 1700000000,
+      ])
+      ->willReturnSelf();
+
+    $queryMockSecondAttempt->expects($this->any())
       ->method('execute')
       ->willReturn(TRUE);
 
     $connectionMock = $this->createMock(Connection::class);
-    $connectionMock ->expects($this->once())
+    $connectionMock->expects($this->any())
       ->method('insert')
       ->with('dkan_post_import_job_status')
-      ->willReturn($queryMock);
+      ->willReturnOnConsecutiveCalls($queryMock, $queryMockSecondAttempt);
 
     $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
+    $postImportResult = $postImportResultFactory->initializeFromResource('done', 'N/A', $dataResourceMock);
+    $resultStore = $postImportResult->storeJobStatus();
+    $this->assertTrue($resultStore);
 
-    $postImportResult = $postImportResultFactory->initializeFromResource('done', '', $resource);
-
-    $result_store = $postImportResult->storeJobStatus();
-
-    $this->assertTrue($result_store);
+    $postImportResultFactorySecondAttempt = new PostImportResultFactory($connectionMock, $resourceMapperMock);
+    $postImportResultSecondAttempt = $postImportResultFactorySecondAttempt->initializeFromResource('done', '', $dataResourceMock);
+    $resultStoreSecondAttempt = $postImportResultSecondAttempt->storeJobStatus();
+    $this->assertTrue($resultStoreSecondAttempt);
   }
 
   /**
@@ -105,11 +135,21 @@ class PostImportResultTest extends TestCase {
       ->willReturn($import_info);
 
     $queryMock = $this->getMockBuilder('stdClass')
-      ->addMethods(['condition', 'fields', 'execute'])
+      ->addMethods(['condition', 'fields', 'orderBy', 'range', 'execute'])
       ->getMock();
 
     $queryMock->expects($this->exactly(2))
       ->method('condition')
+      ->willReturnSelf();
+
+    $queryMock->expects($this->exactly(1))
+      ->method('orderBy')
+      ->with('timestamp', 'DESC')
+      ->willReturnSelf();
+
+    $queryMock->expects($this->exactly(1))
+      ->method('range')
+      ->with(0, 1)
       ->willReturnSelf();
 
     $queryMock->expects($this->once())

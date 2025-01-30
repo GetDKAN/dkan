@@ -102,3 +102,21 @@ function datastore_schema() {
 
   return $schema;
 }
+
+/**
+ * Add 'row_number' and 'timestamp' to the dkan_post_import_job_status table.
+ */
+function datastore_update_9013(&$sandbox) {
+  $schema = \Drupal::database()->schema();
+  $table_name = 'dkan_post_import_job_status';
+
+  // Drop the current primary keys.
+  $schema->dropPrimaryKey($table_name);
+
+  $query = "
+      ALTER TABLE {$table_name}
+      ADD COLUMN row_number INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      ADD COLUMN timestamp INT NOT NULL DEFAULT 0
+  ";
+  \Drupal::database()->query($query);
+}

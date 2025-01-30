@@ -472,4 +472,11 @@ class DataResource implements \JsonSerializable {
     }
   }
 
+  /**
+   * Return current Unix timestamp.
+   */
+  public function getCurrentTime() {
+    return time();
+  }
+
 }
