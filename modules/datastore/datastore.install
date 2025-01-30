@@ -106,7 +106,7 @@ function datastore_schema() {
 /**
  * Add 'row_number' and 'timestamp' to the dkan_post_import_job_status table.
  */
-function datastore_update_9013(&$sandbox) {
+function datastore_update_9003(&$sandbox) {
   $schema = \Drupal::database()->schema();
   $table_name = 'dkan_post_import_job_status';
 
