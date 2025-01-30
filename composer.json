@@ -27,7 +27,7 @@
         "getdkan/pdlt": "^0.1.7",
         "getdkan/procrastinator": "^5.0.3",
         "getdkan/rooted-json-data": "^0.2.2",
-        "guzzlehttp/guzzle": "^6.5.8 || ^7",
+        "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5",
         "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
