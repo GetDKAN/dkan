@@ -54,7 +54,21 @@ class DictionaryEnforcerTest extends TestCase {
    * Test process() succeeds.
    */
   public function testProcess() {
-    $resource = new DataResource('test.csv', 'text/csv');
+    $resource = $this->getMockBuilder(DataResource::class)
+      ->setConstructorArgs(['test.csv', 'text/csv'])
+      ->getMock();
+
+    $resource->expects($this->any())
+      ->method('getCurrentTime')
+      ->willReturn(1700000000);
+
+    $resource->expects($this->any())
+      ->method('getVersion')
+      ->willReturn(1700000000);
+
+    $resource->expects($this->any())
+      ->method('getIdentifier')
+      ->willReturn('abc123');
 
     $alter_table_query_builder = (new Chain($this))
       ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
@@ -110,7 +124,21 @@ class DictionaryEnforcerTest extends TestCase {
    * Test exception thrown in execute() is caught and logged.
    */
   public function testProcessItemExecuteException() {
-    $resource = new DataResource('test.csv', 'text/csv');
+    $resource = $this->getMockBuilder(DataResource::class)
+      ->setConstructorArgs(['test.csv', 'text/csv'])
+      ->getMock();
+
+    $resource->expects($this->any())
+      ->method('getCurrentTime')
+      ->willReturn(1700000000);
+
+    $resource->expects($this->any())
+      ->method('getVersion')
+      ->willReturn(1700000000);
+
+    $resource->expects($this->any())
+      ->method('getIdentifier')
+      ->willReturn('abc123');
 
     $alter_table_query_builder = (new Chain($this))
       ->add(AlterTableQueryBuilderInterface::class, 'setTable', AlterTableQueryBuilderInterface::class)
@@ -244,7 +272,7 @@ class DictionaryEnforcerTest extends TestCase {
         'resource_version' => $resource->getVersion(),
         'post_import_status' => ($expectation === "error") ? 'error' : 'done',
         'post_import_error' => ($expectation === "error") ? 'Test Error' : '',
-        'timestamp' => time(),
+        'timestamp' => $resource->getCurrentTime(),
       ])
       ->willReturnSelf();
 
