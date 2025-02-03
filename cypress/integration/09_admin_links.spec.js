@@ -41,6 +41,7 @@ context('Administration pages', () => {
     })
     cy.visit(baseurl + "/admin/dkan/datastore")
     cy.get('label[for="edit-rows-limit"]').should('have.text', 'Rows limit')
+    cy.get('label[for="edit-response-stream-max-age"]').should('have.text', 'Response Stream Max-Age')
   })
 
   it('Admin can access the Datastore import status dashboard.', () => {

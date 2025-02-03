@@ -22,23 +22,30 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberInterface {
 
+  protected $strictConfigSchema = FALSE;
+
   protected static $modules = [
     'common',
     'datastore',
     'metastore',
+    'node',
+    'user',
+    'field',
+    'text',
+    'system',
   ];
 
   /**
    * Store the events we receive.
    *
-   * @var array
+   * @var \Drupal\datastore\Events\DatastoreEventBase[]
    */
   protected array $events = [];
 
   /**
    * {@inheritDoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [ImportService::EVENT_DATASTORE_IMPORTED => 'catchImportEvent'];
   }
 
@@ -63,6 +70,9 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
   }
 
   public function testEvents() {
+    $this->installEntitySchema('node');
+    $this->installConfig(['node']);
+    $this->installConfig(['metastore']);
     // Our result will be DONE.
     $result = new Result();
     $result->setStatus(Result::DONE);
@@ -85,6 +95,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
         $this->container->get('dkan.datastore.database_table_factory'),
         $this->container->get('dkan.datastore.logger_channel'),
         $this->container->get('event_dispatcher'),
+        $this->container->get('dkan.metastore.reference_lookup'),
       ])
       ->onlyMethods(['getImporter', 'getResource'])
       ->getMock();

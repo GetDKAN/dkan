@@ -20,8 +20,6 @@ class JobStoreFactory implements StorageFactoryInterface {
 
   /**
    * Drupal database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   protected Connection $connection;
 

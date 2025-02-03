@@ -13,6 +13,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\Database\Connection;
 use Drupal\datastore\Form\DashboardForm;
 use Drupal\datastore\Service\PostImport;
 use Drupal\harvest\Entity\HarvestRunRepository;
@@ -23,6 +24,10 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Drupal\metastore\ResourceMapper;
+use Drupal\datastore\PostImportResult;
+use Drupal\datastore\PostImportResultFactory;
+use Drupal\common\DataResource;
 
 /**
  * @group dkan
@@ -115,15 +120,25 @@ class DashboardFormTest extends TestCase {
     ];
 
     $postImportInfo = [
-      'resource_version' => '1679508885',
+      'resource_version' => '1679508886',
       'post_import_status' => 'done',
       'post_import_error' => NULL,
     ];
 
+    $connectionMock = $this->createMock(Connection::class);
+    $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
+    $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->onlyMethods(['retrieveJobStatus'])
+      ->getMock();
+
+    $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
+
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['harvest_id' => 'dataset-1']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
-      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo)
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -166,10 +181,20 @@ class DashboardFormTest extends TestCase {
       'post_import_error' => 'Data-Dictionary Disabled',
     ];
 
+    $connectionMock = $this->createMock(Connection::class);
+    $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
+    $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->onlyMethods(['retrieveJobStatus'])
+      ->getMock();
+
+    $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
+
     $container = $this->buildContainerChain()
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
-      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo)
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -242,6 +267,16 @@ class DashboardFormTest extends TestCase {
       'post_import_error' => "SQLSTATE[HY000]: General error: 1411 Incorrect datetime value: '09/07/2017 12:00:00 AM' for function str_to_date: UPDATE 'datastore_7c3d88c04bb011fa80d6b4612978c9b1' SET 'reactivation_date'=STR_TO_DATE(reactivation_date, :date_format); Array ( [:date_format] => %m/%d/%Y %H:%i:%s %p )",
     ];
 
+    $connectionMock = $this->createMock(Connection::class);
+    $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
+    $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->onlyMethods(['retrieveJobStatus'])
+      ->getMock();
+
+    $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
+
     $datasetInfoOptions = (new Options())
       ->add('dataset-1', $datasetInfo)
       ->add('non-harvest-dataset', $nonHarvestDatasetInfo);
@@ -250,7 +285,7 @@ class DashboardFormTest extends TestCase {
       ->add(MetastoreService::class, 'count', 2)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid'], $nonHarvestDatasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfoOptions)
-      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo);
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock);
 
     \Drupal::setContainer($container->getMock());
     $form = DashboardForm::create($container->getMock())->buildForm([], new FormState());
@@ -343,11 +378,21 @@ class DashboardFormTest extends TestCase {
       'post_import_error' => NULL,
     ];
 
+    $connectionMock = $this->createMock(Connection::class);
+    $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
+    $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->onlyMethods(['retrieveJobStatus'])
+      ->getMock();
+
+    $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
+
     $container = $this->buildContainerChain()
       ->add(MetastoreService::class, 'count', 1)
       ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfo)
-      ->add(PostImport::class, 'retrieveJobStatus', $postImportInfo)
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
     \Drupal::setContainer($container);
 
@@ -382,6 +427,8 @@ class DashboardFormTest extends TestCase {
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('dkan.datastore.service.post_import', PostImport::class)
       ->add('dkan.harvest.storage.harvest_run_repository', HarvestRunRepository::class)
+      ->add('database', Connection::class)
+      ->add('dkan.datastore.post_import_result_factory', PostImportResultFactory::class)
       ->index(0);
 
     $runStatus = [

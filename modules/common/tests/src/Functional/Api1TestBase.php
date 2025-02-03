@@ -15,8 +15,6 @@ abstract class Api1TestBase extends BrowserTestBase {
 
   /**
    * HTTP Client.
-   *
-   * @var \GuzzleHttp\Client
    */
   protected Client $httpClient;
 

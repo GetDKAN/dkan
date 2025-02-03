@@ -29,7 +29,7 @@ commands:
         default: '8.2'
         type: string
       addon_branch:
-        description: 'Repo branch name for the dkan-ddev-addon you want to test against.'
+        description: 'Repo branch name for the DKAN DDev add-on you want to test against.'
         default: 'main'
         type: string
       dkan_recommended_branch:
@@ -182,7 +182,7 @@ jobs:
 
   cypress:
     machine:
-      image: default
+      image: ubuntu-2204:current
     parallelism: 4
     parameters:
       php_version:
@@ -230,29 +230,29 @@ workflows:
     jobs:
       - cypress:
           name: install_test_cypress
-          dkan_recommended_branch: '10.2.x-dev'
+          dkan_recommended_branch: '10.3.x-dev'
       - phpunit:
-          name: 'Install target (Drupal 10.2, PHP 8.3)'
+          name: 'Install target (Drupal 10.3, PHP 8.3)'
           report_coverage: true
           matrix:
             parameters:
-              dkan_recommended_branch: ['10.2.x-dev']
+              dkan_recommended_branch: ['10.3.x-dev']
+              php_version: [ '8.3' ]
+      - phpunit:
+          matrix:
+            parameters:
+              dkan_recommended_branch: [ '10.4.x-dev']
               php_version: [ '8.3' ]
       - phpunit:
           matrix:
             parameters:
               dkan_recommended_branch: [ '10.3.x-dev']
-              php_version: [ '8.3' ]
-      - phpunit:
-          matrix:
-            parameters:
-              dkan_recommended_branch: [ '10.2.x-dev']
               php_version: [ '8.1', '8.2' ]
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: [ '10.1.x-dev']
-              php_version: [ '8.2' ]
+              dkan_recommended_branch: [ '10.2.x-dev']
+              php_version: [ '8.3' ]
   upgrade_and_test:
     jobs:
       - cypress:
@@ -260,9 +260,9 @@ workflows:
           upgrade: true
           dkan_recommended_branch: '10.2.x-dev'
       - phpunit:
-          name: 'Upgrade target (Drupal 10.2, PHP 8.2)'
+          name: 'Upgrade target (Drupal 10.3, PHP 8.3)'
           upgrade: true
           matrix:
             parameters:
-              dkan_recommended_branch: [ '10.2.x-dev']
-              php_version: [ '8.2' ]
+              dkan_recommended_branch: [ '10.3.x-dev']
+              php_version: [ '8.3' ]

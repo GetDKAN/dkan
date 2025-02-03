@@ -143,11 +143,12 @@
         "ui:options": {
           "title": "File Format",
           "widget": "list",
-          "type": "select_other",
+          "type": "select",
           "other_type": "textfield",
           "description": "CSV files must be encoded in UTF-8 format to be imported correctly. UTF-8 encoding is an established standard that provides optimal compatibility between applications and operating systems. Note that Excel provides a <strong>CSV UTF-8</strong> option when saving data files.",
           "source": {
             "enum": [
+              "",
               "arcgis",
               "csv",
               "esri rest",

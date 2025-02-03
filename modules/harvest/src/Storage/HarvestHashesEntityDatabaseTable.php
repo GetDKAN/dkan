@@ -34,22 +34,16 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * The plan ID for this 'table'.
    *
    * All queries will use this plan ID to limit the results.
-   *
-   * @var string
    */
   protected string $planId;
 
   /**
    * Entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Entity storage interface for the entity type we're wrapping.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected EntityStorageInterface $entityStorage;
 
@@ -122,7 +116,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * @param string $id
    *   Dataset node UUID.
    *
-   * @return \Contracts\HydratableInterface|string|null
+   * @return \Procrastinator\HydratableInterface
    *   JSON-encoded result of query.
    */
   public function retrieve(string $id) {

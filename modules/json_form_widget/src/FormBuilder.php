@@ -42,8 +42,6 @@ class FormBuilder implements ContainerInjectionInterface {
 
   /**
    * Logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

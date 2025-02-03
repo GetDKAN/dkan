@@ -14,8 +14,6 @@ class MetastoreApiResponse {
 
   /**
    * Metastore item factory service.
-   *
-   * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
    */
   private MetastoreItemFactoryInterface $metastoreItemFactory;
 

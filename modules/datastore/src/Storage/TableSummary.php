@@ -39,8 +39,6 @@ class TableSummary implements \JsonSerializable {
 
   /**
    * Full text indexes.
-   *
-   * @var array|null
    */
   private ?array $fulltextIndexes;
 

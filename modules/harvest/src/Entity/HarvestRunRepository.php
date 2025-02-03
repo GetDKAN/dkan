@@ -21,22 +21,16 @@ class HarvestRunRepository {
 
   /**
    * Entity storage service for the harvest_run entity type.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   private EntityStorageInterface $runStorage;
 
   /**
    * Database connection service.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   private Connection $connection;
 
   /**
    * Harvest run entity definition service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeInterface
    */
   private EntityTypeInterface $entityTypeDefinition;
 

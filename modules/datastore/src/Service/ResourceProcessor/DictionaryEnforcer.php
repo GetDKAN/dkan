@@ -5,6 +5,7 @@ namespace Drupal\datastore\Service\ResourceProcessor;
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
+use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
@@ -44,6 +45,13 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   protected $resourceMapper;
 
   /**
+   * Database table factory service.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseTableFactory
+   */
+  protected $databaseTableFactory;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
@@ -52,15 +60,19 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *   The metastore service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
+   * @param \Drupal\datastore\Storage\DatabaseTableFactory $table_factory
+   *   The datastore database table factory service.
    */
   public function __construct(
     AlterTableQueryBuilderInterface $alter_table_query_builder,
     MetastoreService $metastore,
-    DataDictionaryDiscoveryInterface $data_dictionary_discovery
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery,
+    DatabaseTableFactory $table_factory,
   ) {
     $this->metastore = $metastore;
     $this->dataDictionaryDiscovery = $data_dictionary_discovery;
     $this->alterTableQueryBuilder = $alter_table_query_builder;
+    $this->databaseTableFactory = $table_factory;
   }
 
   /**
@@ -78,7 +90,8 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
     // Get data-dictionary for the given resource.
     $dictionary = $this->getDataDictionaryForResource($resource);
     // Retrieve name of datastore table for resource.
-    $datastore_table = $resource->getTableName();
+    $table = $this->databaseTableFactory->getInstance('', ['resource' => $resource]);
+    $datastore_table = $table->getTableName();
 
     $this->applyDictionary($dictionary, $datastore_table);
   }
@@ -125,13 +138,13 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Returning data dictionary fields from schema.
    *
-   * @param string $identifier
+   * @param string|null $identifier
    *   A resource's identifier. Used when in reference mode.
    *
    * @return array|null
    *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function returnDataDictionaryFields(string $identifier = NULL): ?array {
+  public function returnDataDictionaryFields(?string $identifier = NULL): ?array {
     // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.

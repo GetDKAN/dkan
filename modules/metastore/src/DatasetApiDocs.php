@@ -67,8 +67,6 @@ class DatasetApiDocs {
 
   /**
    * Prefix to the API path.
-   *
-   * @var string
    */
   private string $dkanApiBase;
 

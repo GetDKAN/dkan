@@ -25,23 +25,30 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscriberInterface {
 
+  protected $strictConfigSchema = FALSE;
+
   protected static $modules = [
     'common',
     'datastore',
     'metastore',
+    'node',
+    'user',
+    'field',
+    'text',
+    'system',
   ];
 
   /**
    * Store the events we receive.
    *
-   * @var array
+   * @var \Drupal\datastore\Events\DatastoreEventBase[]
    */
   protected array $events = [];
 
   /**
    * {@inheritDoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       DatastoreService::EVENT_DATASTORE_PRE_DROP => 'catchPreDropEvent',
       DatastoreService::EVENT_DATASTORE_DROPPED => 'catchDroppedEvent',
@@ -79,6 +86,9 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
   }
 
   public function testEvents() {
+    $this->installEntitySchema('node');
+    $this->installConfig(['node']);
+    $this->installConfig(['metastore']);
     // Mock a data resource.
     $data_resource = $this->getMockBuilder(DataResource::class)
       ->disableOriginalConstructor()
@@ -130,6 +140,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
         $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
         $this->container->get('dkan.metastore.resource_mapper'),
         $this->container->get('event_dispatcher'),
+        $this->container->get('dkan.metastore.reference_lookup'),
       ])
       ->onlyMethods(['getStorage'])
       ->getMock();

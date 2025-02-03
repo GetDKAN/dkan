@@ -15,8 +15,6 @@ class JobStoreCommands extends DrushCommands {
 
   /**
    * Database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   protected Connection $connection;
 

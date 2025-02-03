@@ -21,21 +21,10 @@
 
 declare(strict_types=1);
 
-use DrupalFinder\DrupalFinder;
-use DrupalRector\Rector\Deprecation\FunctionToStaticRector;
+use DrupalFinder\DrupalFinderComposerRuntime;
 use DrupalRector\Set\Drupal10SetList;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
-use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
-use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
-use Rector\PHPUnit\PHPUnit60\Rector\ClassMethod\AddDoesNotPerformAssertionToNonAssertingTestRector;
-use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
-use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
-use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Set\ValueObject\SetList;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -52,43 +41,15 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
 
   $rectorConfig->skip([
-    // Skip data_dictionary_widget to avoid merge conflicts.
-    // @todo Add this back.
-    '*/modules/data_dictionary_widget',
-    // Skip this file because we want its switch/case to remain:
-    // @todo Figure out what to do about DataFactory::getInstance().
-    '*/modules/metastore/src/Storage/DataFactory.php',
-    // Skip this file to keep the debug method.
-    // @todo Do we need the debug method?
-    '*/modules/common/tests/src/Unit/Storage/SelectFactoryTest.php',
     // Don't change the signature of these service classes.
     // @todo Unskip these later.
     '*/modules/datastore/src/Service/Info/ImportInfo.php',
     '*/modules/frontend/src/Routing/RouteProvider.php',
     '*/modules/frontend/src/Page.php',
-    // Don't throw errors on JSON parse problems. Yet.
-    // @todo Throw errors and deal with them appropriately.
-    JsonThrowOnErrorRector::class,
-    // We like our tags. Unfortunately some other rules obliterate them anyway.
-    RemoveUselessParamTagRector::class,
-    RemoveUselessVarTagRector::class,
-    RemoveUselessReturnTagRector::class,
-    AddDoesNotPerformAssertionToNonAssertingTestRector::class,
-    ClosureToArrowFunctionRector::class,
-    // Don't automate ::class because we need some string literals that look
-    // like class names.
-    // @see \Drupal\common\Util\JobStoreUtil
-    // @see \Drupal\common\EventDispatcherTrait
-    StringClassNameToClassConstantRector::class,
-    RemoveExtraParametersRector::class,
-    RemoveParentCallWithoutParentRector::class,
     ClassPropertyAssignToConstructorPromotionRector::class,
-    FunctionToStaticRector::class,
-    NullToStrictStringFuncCallArgRector::class,
   ]);
 
-  $drupalFinder = new DrupalFinder();
-  $drupalFinder->locateRoot(__DIR__);
+  $drupalFinder = new DrupalFinderComposerRuntime(__DIR__);
   $drupalRoot = $drupalFinder->getDrupalRoot();
 
   $rectorConfig->autoloadPaths([

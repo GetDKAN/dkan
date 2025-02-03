@@ -2,11 +2,11 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Contracts\ParserInterface;
+use CsvParser\Parser\ParserInterface;
 use Drupal\common\Storage\DatabaseTableInterface;
+use ForceUTF8\Encoding;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
-use ForceUTF8\Encoding;
 
 /**
  * Procrastinator job for importing to the datastore.
@@ -82,14 +82,14 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Parser object.
    *
-   * @var \Contracts\ParserInterface
+   * @var \CsvParser\Parser\ParserInterface
    */
   protected $parser;
 
   /**
    * Datastore resource.
    *
-   * @var \Drupal\datastore\DatastoreResource
+   * @var \Drupal\common\DataResource
    */
   protected $resource;
 
@@ -105,7 +105,7 @@ class ImportJob extends AbstractPersistentJob {
    * @param array|null $config
    *   Configuration options.
    */
-  protected function __construct(string $identifier, $storage, array $config = NULL) {
+  protected function __construct(string $identifier, $storage, ?array $config = NULL) {
     parent::__construct($identifier, $storage, $config);
 
     $this->dataStorage = $config['storage'];
@@ -195,7 +195,7 @@ class ImportJob extends AbstractPersistentJob {
    * {@inheritdoc}
    */
   protected function runIt() {
-    $filename = $this->resource->getFilePath();
+    $filename = $this->resource->getFilePath(TRUE);
     $size = @filesize($filename);
     if (!$size) {
       return $this->setResultError("Can't get size from file {$filename}");
@@ -378,7 +378,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Get the parser object.
    *
-   * @return \Contracts\ParserInterface
+   * @return \CsvParser\Parser\ParserInterface
    *   Parser object.
    */
   public function getParser(): ParserInterface {

@@ -14,8 +14,6 @@ class SqlParser {
 
   /**
    * State machine.
-   *
-   * @var \Maquina\StateMachine\IStateMachine|null
    */
   private ?IStateMachine $stateMachine = NULL;
 

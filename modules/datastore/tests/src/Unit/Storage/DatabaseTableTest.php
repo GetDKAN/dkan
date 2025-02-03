@@ -2,13 +2,13 @@
 
 namespace Drupal\Tests\datastore\Storage;
 
+use Drupal\common\DataResource;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\StatementWrapper;
 use Drupal\common\Storage\Query;
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\mysql\Driver\Database\mysql\Schema;
 use MockChain\Chain;
@@ -476,7 +476,7 @@ class DatabaseTableTest extends TestCase {
    * Private.
    */
   private function getResource() {
-    return new DatastoreResource("people", "", "text/csv");
+    return new DataResource("", "text/csv");
   }
 
 }

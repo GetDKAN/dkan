@@ -3,21 +3,39 @@
 namespace Drupal\harvest\Transform;
 
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
+use Drupal\common\Util\DrupalFiles;
 use Harvest\ETL\Transform\Transform;
 
 /**
  * Moves local files to public:// and alters the downloadUrl field.
  *
- * @codeCoverageIgnore
+ * Used by the sample_content harvest.
+ *
+ * @see modules/sample_content/harvest_plan.json
  */
 class ResourceImporter extends Transform {
 
   /**
-   * Drupal files.
+   * DKAN's Drupal files service.
    *
    * @var \Drupal\common\Util\DrupalFiles
    */
-  private $drupalFiles;
+  private DrupalFiles $drupalFiles;
+
+  /**
+   * File URL generator service.
+   *
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
+   */
+  private FileUrlGeneratorInterface $fileUrlGenerator;
+
+  /**
+   * Drupal's file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  private FileSystemInterface $fileSystem;
 
   /**
    * Constructor.
@@ -25,6 +43,8 @@ class ResourceImporter extends Transform {
   public function __construct($harvest_plan) {
     parent::__construct($harvest_plan);
     $this->drupalFiles = \Drupal::service('dkan.common.drupal_files');
+    $this->fileUrlGenerator = \Drupal::service('file_url_generator');
+    $this->fileSystem = \Drupal::service('file_system');
   }
 
   /**
@@ -96,10 +116,6 @@ class ResourceImporter extends Transform {
   /**
    * Pulls down external file and saves it locally.
    *
-   * If this method is called when PHP is running on the CLI (e.g. via drush),
-   * `$settings['file_public_base_url']` must be configured in `settings.php`,
-   * otherwise 'default' will be used as the hostname in the new URL.
-   *
    * @param string $url
    *   External file URL.
    * @param string $dataset_id
@@ -108,12 +124,10 @@ class ResourceImporter extends Transform {
    * @return string|bool
    *   The URL for the newly created file, or FALSE if failure occurs.
    */
-  public function saveFile($url, $dataset_id) {
-
+  public function saveFile(string $url, string $dataset_id) {
     $targetDir = 'public://distribution/' . $dataset_id;
 
-    $this->drupalFiles
-      ->getFilesystem()
+    $this->fileSystem
       ->prepareDirectory($targetDir, FileSystemInterface::CREATE_DIRECTORY);
 
     // Abort if file can't be saved locally.
@@ -122,11 +136,9 @@ class ResourceImporter extends Transform {
     }
 
     if (is_object($path)) {
-      return \Drupal::service('file_url_generator')->generateAbsoluteString($path->uri->value);
+      return $this->fileUrlGenerator->generateAbsoluteString($path->uri->value);
     }
-    else {
-      return $this->drupalFiles->fileCreateUrl($path);
-    }
+    return $this->drupalFiles->fileCreateUrl($path);
   }
 
 }

@@ -25,29 +25,21 @@ class ImportController implements ContainerInjectionInterface {
 
   /**
    * Datastore Service.
-   *
-   * @var \Drupal\datastore\DatastoreService
    */
   protected DatastoreService $datastoreService;
 
   /**
    * Metastore API response service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   protected MetastoreApiResponse $metastoreApiResponse;
 
   /**
    * Reference lookup service.
-   *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
    */
   protected ReferenceLookup $referenceLookup;
 
   /**
    * Import info list service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
    */
   protected ImportInfoList $importInfoList;
 

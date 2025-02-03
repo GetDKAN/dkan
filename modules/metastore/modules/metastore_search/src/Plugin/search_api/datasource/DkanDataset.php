@@ -33,15 +33,11 @@ class DkanDataset extends DatasourcePluginBase {
 
   /**
    * Node query service.
-   *
-   * @var \Drupal\Core\Entity\Query\QueryInterface
    */
   protected QueryInterface $nodeQueryService;
 
   /**
    * Metastore storage service.
-   *
-   * @var \Drupal\metastore\Storage\DataFactory
    */
   protected DataFactory $metastoreStorageService;
 

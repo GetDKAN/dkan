@@ -20,10 +20,17 @@ use Symfony\Component\ErrorHandler\BufferingLogger;
  */
 class ImportServiceTest extends KernelTestBase {
 
+  protected $strictConfigSchema = FALSE;
+
   protected static $modules = [
     'common',
     'datastore',
     'metastore',
+    'node',
+    'user',
+    'field',
+    'text',
+    'system',
   ];
 
   /**
@@ -32,6 +39,9 @@ class ImportServiceTest extends KernelTestBase {
    * @covers ::import
    */
   public function testImport() {
+    $this->installEntitySchema('node');
+    $this->installConfig(['node']);
+    $this->installConfig(['metastore']);
     // Mock some services and statuses.
     $result = new Result();
     $result->setStatus(Result::DONE);
@@ -54,6 +64,7 @@ class ImportServiceTest extends KernelTestBase {
         $this->container->get('dkan.datastore.database_table_factory'),
         $this->container->get('dkan.datastore.logger_channel'),
         $this->container->get('event_dispatcher'),
+        $this->container->get('dkan.metastore.reference_lookup'), 
       ])
       ->getMock();
     $import_service->method('getImporter')
@@ -83,9 +94,14 @@ class ImportServiceTest extends KernelTestBase {
     // Tell the logger channel factory to use a buffering logger.
     $logger = new BufferingLogger();
     $logger_factory = $this->createMock(LoggerChannelFactory::class);
-    $logger_factory->expects($this->once())
+    $logger_factory->expects($this->exactly(2))
       ->method('get')
-      ->with('datastore')
+      ->with(
+        $this->logicalOr(
+          $this->equalTo('datastore'),
+          $this->equalTo('dkan')
+        )
+      )
       ->willReturn($logger);
     $this->container->set('logger.factory', $logger_factory);
 

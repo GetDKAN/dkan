@@ -66,6 +66,7 @@ class DictionaryEnforcerTest extends KernelTestBase {
         $this->container->get('dkan.datastore.data_dictionary.alter_table_query_builder.mysql'),
         $this->container->get('dkan.metastore.service'),
         $this->container->get('dkan.metastore.data_dictionary_discovery'),
+        $this->container->get('dkan.datastore.database_table_factory'),
       ])
       ->onlyMethods(['getDataDictionaryForResource', 'applyDictionary'])
       ->getMock();

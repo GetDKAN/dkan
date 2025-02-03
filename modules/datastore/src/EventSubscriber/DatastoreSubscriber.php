@@ -30,29 +30,21 @@ class DatastoreSubscriber implements EventSubscriberInterface {
 
   /**
    * Datastore logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 
   /**
    * Datastore service.
-   *
-   * @var \Drupal\datastore\DatastoreService
    */
   private DatastoreService $datastoreService;
 
   /**
    * Resource purger service.
-   *
-   * @var \Drupal\datastore\Service\ResourcePurger
    */
   private ResourcePurger $resourcePurger;
 
   /**
    * Import job store factory.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
@@ -90,7 +82,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     LoggerInterface $loggerChannel,
     DatastoreService $service,
     ResourcePurger $resourcePurger,
-    ImportJobStoreFactory $importJobStoreFactory
+    ImportJobStoreFactory $importJobStoreFactory,
   ) {
     $this->configFactory = $config_factory;
     $this->logger = $loggerChannel;

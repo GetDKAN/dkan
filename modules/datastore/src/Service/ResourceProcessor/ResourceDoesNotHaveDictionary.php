@@ -11,8 +11,6 @@ class ResourceDoesNotHaveDictionary extends \RuntimeException {
 
   /**
    * The resource ID.
-   *
-   * @var string
    */
   private string $resourceId;
 

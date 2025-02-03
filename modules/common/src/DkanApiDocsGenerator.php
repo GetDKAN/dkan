@@ -14,15 +14,11 @@ class DkanApiDocsGenerator {
 
   /**
    * Docs manager.
-   *
-   * @var \Drupal\common\Plugin\DkanApiDocsPluginManager
    */
   protected DkanApiDocsPluginManager $docManager;
 
   /**
    * Site settings.
-   *
-   * @var \Drupal\Core\Site\Settings
    */
   protected Settings $settings;
 

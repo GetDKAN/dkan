@@ -49,8 +49,6 @@ class JsonFormWidget extends WidgetBase {
 
   /**
    * DKAN Data Schema.
-   *
-   * @var string|null
    */
   protected ?string $schema;
 

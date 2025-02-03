@@ -10,6 +10,7 @@ use Drupal\datastore\Events\DatastorePreDropEvent;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\ResourceMapper;
@@ -65,24 +66,25 @@ class DatastoreService implements ContainerInjectionInterface {
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
 
   /**
    * Import job store factory.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   private EventDispatcherInterface $eventDispatcher;
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
 
   /**
    * {@inheritdoc}
@@ -95,7 +97,8 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.datastore.import_job_store_factory'),
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
       $container->get('dkan.metastore.resource_mapper'),
-      $container->get('event_dispatcher')
+      $container->get('event_dispatcher'),
+      $container->get('dkan.metastore.reference_lookup')
     );
   }
 
@@ -116,6 +119,8 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Resource mapper service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   Event dispatcher service.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The reference lookup service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
@@ -125,6 +130,7 @@ class DatastoreService implements ContainerInjectionInterface {
     DictionaryEnforcer $dictionaryEnforcer,
     ResourceMapper $resourceMapper,
     EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
@@ -133,6 +139,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->dictionaryEnforcer = $dictionaryEnforcer;
     $this->resourceMapper = $resourceMapper;
     $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -297,6 +304,9 @@ class DatastoreService implements ContainerInjectionInterface {
     if ($remove_local_resource) {
       $this->resourceLocalizer->remove($identifier, $version);
     }
+
+    // Invalidate cache tag.
+    $this->invalidateCacheTags($identifier . '__' . $version . '__source');
   }
 
   /**
@@ -358,6 +368,26 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   public function getQueueFactory(): QueueFactory {
     return $this->queue;
+  }
+
+  /**
+   * Invalidate all appropriate cache tags for this resource.
+   *
+   * @param mixed $resourceId
+   *   A resource ID.
+   */
+  public function invalidateCacheTags(mixed $resourceId) {
+    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
+  }
+
+  /**
+   * Return the resource mapper.
+   *
+   * @return \Drupal\metastore\ResourceMapper
+   *   Resource mapper.
+   */
+  public function getResourceMapper(): ResourceMapper {
+    return $this->resourceMapper;
   }
 
 }

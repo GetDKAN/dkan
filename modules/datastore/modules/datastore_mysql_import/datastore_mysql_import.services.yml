@@ -7,6 +7,7 @@ services:
       - '@dkan.datastore_mysql_import.database_table_factory'
       - '@dkan.datastore.logger_channel'
       - '@event_dispatcher'
+      - '@dkan.metastore.reference_lookup'
 
   dkan.datastore_mysql_import.database_table_factory:
     class: \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory

@@ -13,8 +13,6 @@ trait OrphanDatasetsProcessor {
 
   /**
    * Entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected EntityTypeManagerInterface $entityTypeManager;
 

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HarvestUtilityTest extends TestCase {
 
-  public function providerPlanIdFromTableName() {
+  public static function providerPlanIdFromTableName() {
     return [
       ['thing', 'harvest_thing_hash'],
       ['', 'harvest__hash'],

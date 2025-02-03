@@ -205,7 +205,7 @@ class MysqlImportTest extends KernelTestBase {
     $this->toggleEmptyRowRemoval(TRUE);
 
     // Store the table.
-    $result = $mysql_import->run();
+    $mysql_import->run();
     // The row cleaner runs as part of run().
     // Set the config back to off.
     $this->toggleEmptyRowRemoval(FALSE);
@@ -237,7 +237,7 @@ class MysqlImportTest extends KernelTestBase {
     $this->assertInstanceOf(MySqlDatabaseTable::class, $mysql_import->getStorage());
     $this->toggleEmptyRowRemoval(FALSE);
     // Store the table.
-    $result = $mysql_import->run();
+    $mysql_import->run();
     $sql_row_count = $mysql_import->getStorage()->count();
 
     $this->assertEquals(5, $sql_row_count, "There should be 5 rows.");

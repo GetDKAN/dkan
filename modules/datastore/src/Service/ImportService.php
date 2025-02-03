@@ -10,6 +10,7 @@ use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -54,22 +55,16 @@ class ImportService {
 
   /**
    * The DKAN Resource to import.
-   *
-   * @var \Drupal\common\DataResource|null
    */
   private ?DataResource $resource;
 
   /**
    * The jobstore factory service.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
    * Database table factory service.
-   *
-   * @var \Drupal\datastore\Storage\DatabaseTableFactory
    */
   private DatabaseTableFactory $databaseTableFactory;
 
@@ -78,25 +73,26 @@ class ImportService {
    *
    * Access using self::getImporter().
    *
-   * @var \Drupal\datastore\Plugin\QueueWorker\ImportJob|null
-   *
    * @see self::getImporter()
    */
   private ?ImportJob $importJob = NULL;
 
   /**
    * Logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
   /**
    * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   private EventDispatcherInterface $eventDispatcher;
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
 
   /**
    * Create a resource service instance.
@@ -111,6 +107,8 @@ class ImportService {
    *   DKAN logger channel service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   Event dispatcher service.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The reference lookup service.
    */
   public function __construct(
     DataResource $resource,
@@ -118,12 +116,14 @@ class ImportService {
     DatabaseTableFactory $databaseTableFactory,
     LoggerInterface $loggerChannel,
     EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->resource = $resource;
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
     $this->logger = $loggerChannel;
     $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -151,10 +151,9 @@ class ImportService {
     $data_resource = $this->getResource();
 
     if ($result->getStatus() === Result::ERROR) {
-      $datastore_resource = $data_resource->getDatastoreResource();
       $this->logger->error('Error importing resource id:%id path:%path message:%message', [
-        '%id' => $datastore_resource->getId(),
-        '%path' => $datastore_resource->getFilePath(),
+        '%id' => $data_resource->getUniqueIdentifier(),
+        '%path' => $data_resource->getFilePath(TRUE),
         '%message' => $result->getError(),
       ]);
     }
@@ -168,6 +167,10 @@ class ImportService {
       // Queue the imported resource for post-import processing.
       $post_import_queue = \Drupal::service('queue')->get('post_import');
       $post_import_queue->createItem($data_resource);
+
+      // Invalidate cache tag.
+      $uid = $data_resource->getIdentifier() . '__' . $data_resource->getVersion();
+      $this->invalidateCacheTags($uid . '__source');
     }
   }
 
@@ -184,20 +187,20 @@ class ImportService {
     if ($this->importJob ?? FALSE) {
       return $this->importJob;
     }
-    $datastore_resource = $this->getResource()->getDatastoreResource();
+    $data_resource = $this->getResource();
 
     $delimiter = ",";
-    if ($datastore_resource->getMimeType() == 'text/tab-separated-values') {
+    if ($data_resource->getMimeType() == 'text/tab-separated-values') {
       $delimiter = "\t";
     }
 
     $this->importJob = call_user_func([$this->importerClass, 'get'],
-      $datastore_resource->getId(),
+      md5($data_resource->getUniqueIdentifier()),
       $this->importJobStoreFactory->getInstance(),
       [
         "storage" => $this->getStorage(),
         "parser" => $this->getNonRecordingParser($delimiter),
-        "resource" => $datastore_resource,
+        "resource" => $data_resource,
       ]
     );
 
@@ -241,8 +244,18 @@ class ImportService {
    *   DatabaseTable storage object.
    */
   public function getStorage(): DatabaseTable {
-    $datastore_resource = $this->getResource()->getDatastoreResource();
-    return $this->databaseTableFactory->getInstance($datastore_resource->getId(), ['resource' => $datastore_resource]);
+    $data_resource = $this->getResource();
+    return $this->databaseTableFactory->getInstance($data_resource->getUniqueIdentifier(), ['resource' => $data_resource]);
+  }
+
+  /**
+   * Invalidate all appropriate cache tags for this resource.
+   *
+   * @param mixed $resourceId
+   *   A resource ID.
+   */
+  protected function invalidateCacheTags(mixed $resourceId) {
+    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
 }

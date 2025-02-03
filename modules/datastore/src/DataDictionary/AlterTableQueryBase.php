@@ -14,43 +14,31 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
 
   /**
    * Keep track of whether this query has already been executed or not.
-   *
-   * @var bool
    */
   private bool $executed = FALSE;
 
   /**
    * Database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   protected Connection $connection;
 
   /**
    * Strptime-to-MySQL date format converter.
-   *
-   * @var \PDLT\ConverterInterface
    */
   protected ConverterInterface $dateFormatConverter;
 
   /**
    * Query table.
-   *
-   * @var string
    */
   protected string $table;
 
   /**
    * Query fields.
-   *
-   * @var array
    */
   protected array $fields;
 
   /**
    * Query indexes.
-   *
-   * @var array
    */
   protected array $indexes;
 
@@ -73,7 +61,7 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
     ConverterInterface $date_format_converter,
     string $table,
     array $fields,
-    array $indexes
+    array $indexes,
   ) {
     $this->connection = $connection;
     $this->dateFormatConverter = $date_format_converter;

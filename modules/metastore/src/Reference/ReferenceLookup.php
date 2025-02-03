@@ -32,15 +32,11 @@ class ReferenceLookup implements ReferenceLookupInterface {
 
   /**
    * Cache tags invalidator service.
-   *
-   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
    */
   private CacheTagsInvalidatorInterface $invalidator;
 
   /**
    * Module handler service.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   private ModuleHandlerInterface $moduleHandler;
 

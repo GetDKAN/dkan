@@ -7,6 +7,7 @@ namespace Drupal\Tests\datastore\Unit\Service\Factory;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\metastore\Reference\ReferenceLookup;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -33,7 +34,8 @@ class ImportServiceFactoryTest extends TestCase {
         ->disableOriginalConstructor()
         ->getMock(),
       $this->createStub(LoggerInterface::class),
-      $this->createStub(EventDispatcherInterface::class)
+      $this->createStub(EventDispatcherInterface::class),
+      $this->createStub(ReferenceLookup::class)
     );
 
     $this->expectException(\Exception::class);
