@@ -115,7 +115,7 @@ function datastore_update_9003(&$sandbox) {
 
   $query = "
       ALTER TABLE {$table_name}
-      ADD COLUMN row_number INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
       ADD COLUMN timestamp INT NOT NULL DEFAULT 0
   ";
   \Drupal::database()->query($query);

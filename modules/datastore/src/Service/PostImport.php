@@ -10,6 +10,7 @@ use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Psr\Log\LoggerInterface;
 use Drupal\datastore\PostImportResultFactory;
+use Drupal\Component\Datetime\Time;
 
 /**
  * Service to handle post-import resource processing.
@@ -59,6 +60,13 @@ class PostImport {
   protected PostImportResultFactory $postImportResultFactory;
 
   /**
+   * The post import result factory.
+   *
+   * @var \Drupal\Component\Datetime\Time
+   */
+  protected Time $timestamp;
+
+  /**
    * Constructs a new PostImport service.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
@@ -73,6 +81,8 @@ class PostImport {
    *   The datastore service.
    * @param \Drupal\datastore\Service\PostImportResultFactory $postImportResultFactory
    *   The post import result factory.
+   * @param \Drupal\Component\Datetime\Time $timestamp
+   *   The time class.
    */
   public function __construct(
     ConfigFactoryInterface $configFactory,
@@ -80,7 +90,8 @@ class PostImport {
     ResourceProcessorCollector $resourceProcessorCollector,
     DataDictionaryDiscoveryInterface $dataDictionaryDiscovery,
     DatastoreService $datastoreService,
-    PostImportResultFactory $postImportResultFactory
+    PostImportResultFactory $postImportResultFactory,
+    Time $timestamp,
   ) {
     $this->configFactory = $configFactory;
     $this->logger = $logger;
@@ -88,6 +99,7 @@ class PostImport {
     $this->dataDictionaryDiscovery = $dataDictionaryDiscovery;
     $this->datastoreService = $datastoreService;
     $this->postImportResultFactory = $postImportResultFactory;
+    $this->timestamp = $timestamp;
   }
 
   /**
@@ -209,7 +221,7 @@ class PostImport {
    *   The post import result service.
    */
   protected function createPostImportResult($status, $message, DataResource $resource): PostImportResult {
-    return $this->postImportResultFactory->initializeFromResource($status, $message, $resource);
+    return $this->postImportResultFactory->initializeFromResource($status, $message, $this->timestamp->getCurrentTime(), $resource);
   }
 
   /**

@@ -63,6 +63,7 @@ class PostImportResult {
   public function __construct(
     ?string $status,
     ?string $message,
+    ?int $timestamp,
     DataResource $resource,
     Connection $connection,
     ) {
@@ -70,7 +71,7 @@ class PostImportResult {
     $this->resourceVersion = $resource->getVersion() ?? NULL;
     $this->postImportStatus = $status ?? '';
     $this->postImportMessage = $message ?? '';
-    $this->currentTime = $resource->getCurrentTime();
+    $this->currentTime = $timestamp ?? NULL;
     $this->connection = $connection;
   }
 
