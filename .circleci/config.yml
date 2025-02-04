@@ -144,6 +144,10 @@ jobs:
         description: 'Generate coverage report and send it to CodeClimate'
         default: false
         type: boolean
+      addon_branch:
+        description: 'Repo branch name for the DKAN DDev add-on you want to test against.'
+        default: 'main'
+        type: string
       upgrade:
         description: 'If true, will install the latest stable DKAN version and test upgrade'
         default: false
@@ -297,3 +301,4 @@ workflows:
             parameters:
               dkan_recommended_branch: [ '10.3.x-dev']
               php_version: [ '8.3' ]
+              addon_branch: [ 'main' ]
