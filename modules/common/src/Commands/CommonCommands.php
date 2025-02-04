@@ -53,8 +53,10 @@ class CommonCommands extends DrushCommands {
    * -- identifier
    * -- version
    * -- perspective
-   * - Lookup the associated dataset uuid
-   * - Display the dataset uuid in the console.
+   * - Lookup the associated resource ID
+   * - Lookup the associated distribution UUID
+   * - Lookup the associated dataset UUID
+   * - Display all to console.
    *
    * @param string $data_table_name
    *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
@@ -66,55 +68,65 @@ class CommonCommands extends DrushCommands {
       // Establish DB connection
       $connection = \Drupal::database();
       // Build the query to get the
-      // Resource identifier
+      // resource identifier.
       $resource_query = $connection->select('dkan_metastore_resource_mapper', 'dm')
         ->fields('dm', ['identifier']);
         // Add the condition using a raw SQL expression.
-        // We want just the identifier here which is part of an amalgamation of an MD% hash of the
-        // identifier, version, and perspective of the related resource which
-        // in turn creates the data table name, so we're reversing that with this query
+        // We want just the identifier here which
+        // is part of an amalgamation of an MD5 hash of the
+        // identifier, version, and perspective 
+        // of the related resource which
+        // in turn creates the data table name,
+        // so we're reversing that with this query.
       $resource_query->where(
         'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :data_table_name',
         [':data_table_name' => $data_table_name]
       );
-      // Execute the query and Fetch the results as an associative array.
+      // Execute the query and fetch the results as an associative array.
       $resource_result = $resource_query->execute()->fetchAll(\PDO::FETCH_ASSOC);;
-      // If our query returns something
+      // If our query returns something...
       if($resource_result) {
-        // Extract the identifier value from the associative array.
+        // Extract the identifier value 
+        // from the returned associative array.
         $resource_identifier = $resource_result[0]['identifier'];
         // Echo for info's sake
-        echo 'Associated Resource Identifier: ' . $resource_identifier . PHP_EOL;
+        echo 'Associated Resource Identifier:' . PHP_EOL . $resource_identifier . PHP_EOL;
         // Now we have our associated resource identifier so
         // Use it to find the associated distribution UUID
-        // from the node__field_json_metadata table
-        // Set our identifier as our search value for the query
+        // from the node__field_json_metadata table.
+        // Set our identifier as our search value for the query.
         $search_value = $resource_identifier;
-        // Build the query for searching the json metadata table
+        // Build the query for searching the json metadata table.
         $distribution_query = \Drupal::database()->select('node__field_json_metadata', 'nfm');
-        // Add our JSON_EXTRACT expression targeting the identifier
-        // property
+        // Add our JSON_EXTRACT expression
+        // targeting the identifier property.
         $distribution_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
-        // Add a LIKE condition with our escaped search value (resource identifier)
+        // Add a LIKE condition with our 
+        // escaped search value (resource identifier).
         $distribution_query->condition(
           'nfm.field_json_metadata_value',
           '%' . \Drupal::database()->escapeLike($search_value) . '%',
           'LIKE'
         );
-        // Get our result (distribution UUID) from our executed query as an associative array.
+        // Get our result (distribution UUID) from our
+        // executed query as an associative array.
         $distribution_result = $distribution_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
-        // Extract the distribution identifier value from the associative array
-        // We know this will only be one level
+        // Extract the distribution identifier value
+        // from the associative array.
+        // This should only be one 
         $distribution_identifier = $distribution_result[0]['identifier'];
         if ($distribution_identifier) {
           // Echo for info's sake
-          echo 'Associated Distribution Identifier: ' . $distribution_identifier  . PHP_EOL;
-          // Now we have the distribution identifier so lets get the dataset ID
-          // Associated with it from the node__field_json_metadata table 
+          echo 'Associated Distribution UUID:' . PHP_EOL . $distribution_identifier  . PHP_EOL;
+          // Now we have the distribution identifier, 
+          // so lets get the dataset UUID
+          // Associated with it from
+          // the node__field_json_metadata table.
           $dataset_query = \Drupal::database()->select('node__field_json_metadata', 'nfm');
           // Add JSON_EXTRACT to get the identifier
           $dataset_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
-          // Add condition to check if the distribution array contains the value
+          // Add condition to check if the
+          // column contains the distribution UUID.
           $dataset_query->condition(
               'nfm.field_json_metadata_value',
               '%' . \Drupal::database()->escapeLike($distribution_identifier) . '%',
@@ -122,10 +134,14 @@ class CommonCommands extends DrushCommands {
           );
           // Execute query
           $dataset_result = $dataset_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
+          // Save the second item in the array to be the dataset identifier
+          // as this identifier is the dataset UUID related to the distribution
+          // which appears in the row that holds the distribution and dataset.
+          // The other is the row that holds the distribution and resource.
           $dataset_identifier = $dataset_result[1]['identifier'];
           if ($dataset_identifier) {
-            echo 'Associated Dataset: ' . $dataset_identifier . PHP_EOL;
-            $this->output()->writeln('Dataset UUID: ' . $dataset_identifier);
+            // Output to console and end command.
+            $this->output()->writeln('Dataset UUID:' . PHP_EOL . $dataset_identifier);
             return DrushCommands::EXIT_SUCCESS;
           }
         }
