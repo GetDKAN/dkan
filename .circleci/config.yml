@@ -153,6 +153,7 @@ jobs:
           php_version: << parameters.php_version >>
           database_version: << parameters.database_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
+          addon_branch: << parameters.addon_branch >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: false
