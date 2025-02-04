@@ -52,9 +52,7 @@ class DrupalFiles implements ContainerInjectionInterface {
   private MessengerInterface $messenger;
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -72,7 +70,7 @@ class DrupalFiles implements ContainerInjectionInterface {
     FileSystemInterface $filesystem,
     StreamWrapperManager $streamWrapperManager,
     ClientFactory $httpClientFactory,
-    MessengerInterface $messenger
+    MessengerInterface $messenger,
   ) {
     $this->filesystem = $filesystem;
     $this->streamWrapperManager = $streamWrapperManager;
