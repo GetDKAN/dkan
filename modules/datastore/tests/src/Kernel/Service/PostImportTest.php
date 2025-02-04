@@ -8,13 +8,10 @@ use Drupal\datastore\DatastoreService;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
-use Drupal\Core\Database\Query\SelectInterface;
-use Drupal\Core\Database\StatementInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\Service\PostImport;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 
 /**
  * Tests the PostImport service.
