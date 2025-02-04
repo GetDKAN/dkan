@@ -5,6 +5,7 @@ namespace Drupal\common\Commands;
 use Drupal\common\DatasetInfo;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Database\Connection;
+
 /**
  * Drush commands providing utility common to DKAN's sub-modules.
  */
@@ -77,25 +78,25 @@ class CommonCommands extends DrushCommands {
       // Establish DB connection.
       $resource_query = $this->database->select('dkan_metastore_resource_mapper', 'dm')
         ->fields('dm', ['identifier']);
-        // Add the condition using a raw SQL expression.
-        // We want just the identifier here which
-        // is part of an amalgamation of an MD5 hash of the
-        // identifier, version, and perspective 
-        // of the related resource which
-        // in turn creates the data table name,
-        // so we're reversing that with this query.
+      // Add the condition using a raw SQL expression.
+      // We want just the identifier here which
+      // is part of an amalgamation of an MD5 hash of the
+      // identifier, version, and perspective
+      // of the related resource which
+      // in turn creates the data table name,
+      // so we're reversing that with this query.
       $resource_query->where(
         'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :data_table_name',
         [':data_table_name' => $data_table_name]
       );
       // Execute the query and fetch the results as an associative array.
-      $resource_result = $resource_query->execute()->fetchAll(\PDO::FETCH_ASSOC);;
+      $resource_result = $resource_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
       // If our query returns something...
       if ($resource_result) {
-        // Extract the identifier value 
+        // Extract the identifier value
         // from the returned associative array.
         $resource_identifier = $resource_result[0]['identifier'];
-        // Echo for info's sake
+        // Echo for info's sake...
         echo 'Associated Resource Identifier:' . PHP_EOL . $resource_identifier . PHP_EOL;
         // Now we have our associated resource identifier so
         // Use it to find the associated distribution UUID
@@ -107,7 +108,7 @@ class CommonCommands extends DrushCommands {
         // Add our JSON_EXTRACT expression
         // targeting the identifier property.
         $distribution_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
-        // Add a LIKE condition with our 
+        // Add a LIKE condition with our
         // escaped search value (resource identifier).
         $distribution_query->condition(
           'nfm.field_json_metadata_value',
@@ -119,17 +120,17 @@ class CommonCommands extends DrushCommands {
         $distribution_result = $distribution_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
         // Extract the distribution identifier value
         // from the associative array.
-        // This should only be one 
+        // This should only be one level deep.
         $distribution_identifier = $distribution_result[0]['identifier'];
         if ($distribution_identifier) {
-          // Echo for info's sake
-          echo 'Associated Distribution UUID:' . PHP_EOL . $distribution_identifier  . PHP_EOL;
-          // Now we have the distribution identifier, 
+          // Echo for info's sake...
+          echo 'Associated Distribution UUID:' . PHP_EOL . $distribution_identifier . PHP_EOL;
+          // Now we have the distribution identifier,
           // so lets get the dataset UUID
           // Associated with it from
           // the node__field_json_metadata table.
           $dataset_query = $this->database->select('node__field_json_metadata', 'nfm');
-          // Add JSON_EXTRACT to get the identifier
+          // Add JSON_EXTRACT to get the identifier.
           $dataset_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
           // Add condition to check if the
           // column contains the distribution UUID.
@@ -138,7 +139,7 @@ class CommonCommands extends DrushCommands {
               '%' . $this->database->escapeLike($distribution_identifier) . '%',
               'LIKE'
           );
-          // Execute query
+          // Execute query.
           $dataset_result = $dataset_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
           // Save the second item in the array to be the dataset identifier
           // as this identifier is the dataset UUID related to the distribution
@@ -155,5 +156,7 @@ class CommonCommands extends DrushCommands {
       $this->output()->writeln('Can not map data table to dataset: ' . $data_table_name);
       return DrushCommands::EXIT_FAILURE;
     }
+
   }
+  
 }
