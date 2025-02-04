@@ -29,8 +29,6 @@ class DatastoreApiDocs extends DkanApiDocsBase {
 
   /**
    * Import info service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfo
    */
   private ImportInfo $importInfo;
 

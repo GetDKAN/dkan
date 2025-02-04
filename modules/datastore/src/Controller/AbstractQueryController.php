@@ -25,29 +25,21 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
 
   /**
    * Datastore query service.
-   *
-   * @var \Drupal\datastore\Service\Query
    */
   protected QueryService $queryService;
 
   /**
    * DatasetInfo Service.
-   *
-   * @var \Drupal\common\DatasetInfo
    */
   protected DatasetInfo $datasetInfo;
 
   /**
    * ConfigFactory object.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected ConfigFactoryInterface $configFactory;
 
   /**
    * Metastore API response.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   protected MetastoreApiResponse $metastoreApiResponse;
 
@@ -335,9 +327,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   public static function fixTypes($json, $schema) {
     $data = json_decode($json);
-    $validator = new Validator();
-    $validator->coerce($data, json_decode($schema));
-    return json_encode($data, JSON_PRETTY_PRINT);
+
+    if ($data !== NULL) {
+      $validator = new Validator();
+      $validator->coerce($data, json_decode($schema));
+      return json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+    throw new \InvalidArgumentException("Invalid JSON");
   }
 
   /**

@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore_search\Unit;
 
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
@@ -19,6 +18,7 @@ use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Class SearchTest.
@@ -75,7 +75,7 @@ class SearchTest extends TestCase {
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('search_api.query_helper', QueryHelperInterface::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('event_dispatcher', EventDispatcher::class)
       ->index(0);
 
     $container = (new Chain($this))
@@ -188,7 +188,7 @@ class SearchTest extends TestCase {
       'dkan.metastore.service' => MetastoreService::class,
       'entity_type.manager' => EntityTypeManager::class,
       'search_api.query_helper' => QueryHelperInterface::class,
-      'event_dispatcher' => ContainerAwareEventDispatcher::class,
+      'event_dispatcher' => EventDispatcher::class,
     ];
 
     foreach ($myServices as $serviceName => $class) {

@@ -6,6 +6,7 @@ use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element\FormElement;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -85,7 +86,7 @@ class StringHelper implements ContainerInjectionInterface {
     }
 
     if ($element['#type'] == 'textfield') {
-      $element['#maxlength'] = $property->maxLength ?? self::TEXTFIELD_MAXLENGTH;
+      $this->addTextFieldAttributes($element, $property);
     }
 
     // Add extra validate if element type is email.
@@ -162,6 +163,24 @@ class StringHelper implements ContainerInjectionInterface {
 
     if ($value !== '' && !$this->emailValidator->isValid($value) || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
       $form_state->setError($element, $this->t('The email address %mail is not valid.', ['%mail' => $value]));
+    }
+  }
+
+  /**
+   * Validate string pattern.
+   */
+  public function validatePattern(&$element, FormStateInterface $form_state, &$complete_form) {
+    FormElement::validatePattern($element, $form_state, $complete_form);
+  }
+
+  /**
+   * Add maxlength and regex pattern, if any, to text field.
+   */
+  public function addTextFieldAttributes(array &$element, \stdClass $property) {
+    $element['#maxlength'] = $property->maxLength ?? self::TEXTFIELD_MAXLENGTH;
+    if (!empty($property->pattern)) {
+      $element['#pattern'] = $property->pattern;
+      $element['#element_validate'][] = [$this, 'validatePattern'];
     }
   }
 

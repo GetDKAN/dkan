@@ -301,7 +301,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       unset($element['#default_value']);
     }
     if (isset($spec->extensions)) {
-      $element['#upload_validators']['file_validate_extensions'][] = $spec->extensions;
+      $element['#upload_validators']['FileExtension'] = ['extensions' => $spec->extensions];
     }
     // If a maxlength was set earlier, remove it as it is not allowed here.
     unset($element['#maxlength']);
@@ -322,6 +322,13 @@ class WidgetRouter implements ContainerInjectionInterface {
   public function handleTextareaElement(mixed $spec, array $element) {
     $element['#type'] = 'textarea';
     unset($element['#maxlength']);
+    if (isset($spec->textFormat)) {
+      $element['#type'] = 'text_format';
+      $element['#format'] = $spec->textFormat;
+      $element['#allowed_formats'] = [
+        $spec->textFormat,
+      ];
+    }
     if (isset($spec->rows)) {
       $element['#rows'] = $spec->rows;
     }

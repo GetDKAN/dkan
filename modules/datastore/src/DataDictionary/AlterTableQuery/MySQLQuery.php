@@ -93,8 +93,6 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
   /**
    * Config for which column heading values to use for csv downloads.
-   *
-   * @var string
    */
   protected string $csvHeadersMode = 'resource_headers';
 
@@ -514,10 +512,39 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       $comment = addslashes($description);
 
       // Build add index option list.
-      $add_index_options[] = "ADD {$mysql_index_type} INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}'";
+      if ($index_type == 'index') {
+        $add_index_options[] = "ADD {$mysql_index_type} INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}'";
+      }
+      if ($index_type == 'fulltext') {
+        $this->executeFulltextAlter($table, $name, $formatted_field_options, $comment);
+      }
     }
 
     return $add_index_options;
+  }
+
+  /**
+   * Execute fulltext index table alters.
+   *
+   * @param string $table
+   *   Table name.
+   * @param string $name
+   *   Index name.
+   * @param string $formatted_field_options
+   *   Fields to be indexed.
+   * @param string $comment
+   *   Description of the index.
+   */
+  protected function executeFulltextAlter(string $table, string $name, string $formatted_field_options, string $comment): void {
+    try {
+      // Innodb only allows adding one fulltext index at a time.
+      $command = $this->connection->prepareStatement("ALTER TABLE {{$table}} ADD FULLTEXT INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}';", []);
+      // Execute alter command.
+      $command->execute();
+    }
+    catch (\Exception) {
+      \Drupal::logger('Data Dictionary')->error("Error applying fulltext index to dataset {$comment}");
+    }
   }
 
   /**

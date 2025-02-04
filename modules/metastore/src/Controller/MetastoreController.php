@@ -26,29 +26,21 @@ class MetastoreController implements ContainerInjectionInterface {
 
   /**
    * Request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private RequestStack $requestStack;
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $service;
 
   /**
    * Metastore dataset docs service.
-   *
-   * @var \Drupal\metastore\DatasetApiDocs
    */
   private DatasetApiDocs $docs;
 
   /**
    * Metastore API response service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   private MetastoreApiResponse $apiResponse;
 

@@ -17,15 +17,19 @@ class ArrayHelper implements ContainerInjectionInterface {
 
   /**
    * Object Helper.
-   *
-   * @var \Drupal\json_form_widget\ObjectHelper
    */
   protected ObjectHelper $objectHelper;
 
+
+  /**
+   * String Helper.
+   *
+   * @var StringHelper
+   */
+  protected StringHelper $stringHelper;
+
   /**
    * Builder object.
-   *
-   * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   public FieldTypeRouter $builder;
 
@@ -36,15 +40,17 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('json_form.object_helper')
+      $container->get('json_form.object_helper'),
+      $container->get('json_form.string_helper')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(ObjectHelper $object_helper) {
+  public function __construct(ObjectHelper $object_helper, StringHelper $string_helper) {
     $this->objectHelper = $object_helper;
+    $this->stringHelper = $string_helper;
   }
 
   /**
@@ -264,7 +270,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   protected function buildSimpleArrayElement(array $definition, $data): array {
     return array_filter([
-      '#type'          => 'textfield',
+      '#type'          => $this->stringHelper->getElementType($definition['schema']->items),
       '#title'         => $definition['schema']->items->title ?? NULL,
       '#default_value' => $data,
     ]);

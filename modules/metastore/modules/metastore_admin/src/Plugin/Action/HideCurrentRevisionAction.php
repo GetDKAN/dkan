@@ -28,22 +28,16 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
 
   /**
    * Account.
-   *
-   * @var \Drupal\Core\Session\AccountInterface
    */
   private AccountInterface $currentUser;
 
   /**
    * Time service.
-   *
-   * @var \Drupal\Component\Datetime\TimeInterface
    */
   private TimeInterface $timeInterface;
 
   /**
    * Logger channel.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

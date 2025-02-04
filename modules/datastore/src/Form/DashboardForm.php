@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Form;
 
+use Drupal\common\DataResource;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Form\FormBase;
@@ -12,8 +13,8 @@ use Drupal\Core\Url;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\datastore\Service\PostImport;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\datastore\PostImportResultFactory;
 
 /**
  * Datastore Import Dashboard form.
@@ -64,11 +65,11 @@ class DashboardForm extends FormBase {
   protected $dateFormatter;
 
   /**
-   * The PostImport service.
+   * The PostImportResultFactory service.
    *
-   * @var \Drupal\datastore\Service\PostImport
+   * @var \Drupal\datastore\PostImportResultFactory
    */
-  protected $postImport;
+  protected PostImportResultFactory $postImportResultFactory;
 
   /**
    * DashboardController constructor.
@@ -83,8 +84,8 @@ class DashboardForm extends FormBase {
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
-   * @param \Drupal\datastore\Service\PostImport $post_import
-   *   The post import service.
+   * @param \Drupal\datastore\PostImportResultFactory $postImportResultFactory
+   *   The PostImportResultFactory service..
    */
   public function __construct(
     HarvestService $harvestService,
@@ -92,15 +93,15 @@ class DashboardForm extends FormBase {
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
     DateFormatter $dateFormatter,
-    PostImport $post_import
+    PostImportResultFactory $postImportResultFactory
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
     $this->dateFormatter = $dateFormatter;
-    $this->postImport = $post_import;
     $this->itemsPerPage = 10;
+    $this->postImportResultFactory = $postImportResultFactory;
   }
 
   /**
@@ -113,7 +114,7 @@ class DashboardForm extends FormBase {
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
       $container->get('date.formatter'),
-      $container->get('dkan.datastore.service.post_import'),
+      $container->get('dkan.datastore.post_import_result_factory'),
     );
   }
 
@@ -302,6 +303,7 @@ class DashboardForm extends FormBase {
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
+
       // Build a table row using its details and harvest status.
       $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
@@ -378,12 +380,18 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach ($datasetInfo as $rev) {
-      $distributions = $rev['distributions'];
-      // For first distribution, combine with revision information.
-      $rows[] = array_merge(
-        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
-        $this->buildResourcesRow(array_shift($distributions))
-      );
+      // Filter out distributions whose resources are not csv or tsv.
+      $distributions = array_filter($rev['distributions'], function ($v) {
+        return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
+      });
+
+      if (!empty($distributions)) {
+        // For first distribution, combine with revision information.
+        $rows[] = array_merge(
+          $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+          $this->buildResourcesRow(array_shift($distributions))
+        );
+      }
       // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
@@ -453,8 +461,8 @@ class DashboardForm extends FormBase {
    */
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
-
-      $postImportInfo = $this->postImport->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
+      $postImportResult = $this->postImportResultFactory->initializeFromDistribution($dist);
+      $postImportInfo = $postImportResult->retrieveJobStatus();
       $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
 

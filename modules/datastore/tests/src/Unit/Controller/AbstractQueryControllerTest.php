@@ -25,7 +25,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a post
+   * Make sure we get what we expect with a POST
    */
   public function testPostNormalizer() {
     $sampleJson = $this->getSampleJson();
@@ -36,7 +36,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a patch
+   * Make sure we get what we expect with a PATCH
    */
   public function testPatchNormalizer() {
     $sampleJson = $this->getSampleJson();
@@ -48,7 +48,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a delete
+   * Make sure we get what we expect with a DELETE
    */
   public function testDeleteNormalizer() {
     $this->expectExceptionMessage("Only POST, PUT, PATCH and GET requests can be normalized");
@@ -59,7 +59,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a put
+   * Make sure we get what we expect with a PUT
    */
   public function testPutNormalizer() {
     $sampleJson = $this->getSampleJson();
@@ -70,8 +70,24 @@ class AbstractQueryControllerTest extends TestCase {
     $this->assertEquals($requestJson, $sampleJson);
   }
 
+  /**
+   * Make sure we get what we expect with invalid JSON.
+   */
+  public function testInvalidJson() {
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Invalid JSON');
+    $sampleJson = $this->getBadJson();
+    $schema = $this->getSampleSchema();
+    $request = Request::create("http://example.com", "POST", [], [], [], [], $sampleJson);
+    AbstractQueryController::getPayloadJson($request, $schema);
+  }
+
   private function getSampleJson() {
     return file_get_contents(__DIR__ . "/../../../data/query.json");
+  }
+
+  private function getBadJson() {
+    return file_get_contents(__DIR__ . "/../../../data/query/invalidJson.json");
   }
 
   private function getSampleSchema() {

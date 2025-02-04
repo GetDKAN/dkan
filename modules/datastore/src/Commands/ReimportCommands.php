@@ -22,8 +22,6 @@ class ReimportCommands extends DrushCommands {
 
   /**
    * Dataset info service.
-   *
-   * @var \Drupal\common\DatasetInfo
    */
   protected DatasetInfo $datasetInfo;
 

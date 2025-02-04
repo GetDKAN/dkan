@@ -36,8 +36,6 @@ class ResourceMapper {
 
   /**
    * Entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private EntityTypeManagerInterface $entityTypeManager;
 
@@ -45,8 +43,6 @@ class ResourceMapper {
    * Entity storage service.
    *
    * The data used by the ResourceMapper is stored in resource_mapping entities.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
    *
    * @see \Drupal\metastore\Entity\ResourceMapping
    */
@@ -57,7 +53,7 @@ class ResourceMapper {
    */
   public function __construct(
     DatabaseTableInterface $store,
-    EntityTypeManagerInterface $entityTypeManager
+    EntityTypeManagerInterface $entityTypeManager,
   ) {
     $this->store = $store;
     $this->entityTypeManager = $entityTypeManager;
@@ -179,7 +175,7 @@ class ResourceMapper {
    * @param string $perspective
    *   (Optional) Data resource perspective. The source perspective will be used
    *   if not provided.
-   * @param string $version
+   * @param null|string $version
    *   (Optional) Data resource version. The newest version will be used if not
    *   provided.
    *
@@ -189,7 +185,7 @@ class ResourceMapper {
   public function get(
     string $identifier,
     string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE,
-    string $version = NULL
+    ?string $version = NULL,
   ): ?DataResource {
     $data = $this->getFull($identifier, $perspective, $version);
     if ($data) {
@@ -205,14 +201,14 @@ class ResourceMapper {
    *   Resource identifier.
    * @param string $perspective
    *   Resource perspective.
-   * @param string $version
+   * @param null|string $version
    *   (Optional) Resource version. If not supplied, the latest revision will be
    *   returned.
    *
    * @return \Drupal\metastore\ResourceMappingInterface|null
    *   Resource mapping.
    */
-  private function getFull(string $identifier, string $perspective, string $version = NULL): ?ResourceMappingInterface {
+  private function getFull(string $identifier, string $perspective, ?string $version = NULL): ?ResourceMappingInterface {
     if (!$version) {
       $data = $this->getLatestRevision($identifier, $perspective);
     }

@@ -50,7 +50,7 @@ If you plan to maintain the datasets with the harvest process then do not edit t
 Edit the metadata in the data.json file and re-run the harvest to update the datasets.
 
 If you are using the harvest to simply bulk generate datasets, and want to allow data publishers to update the datasets as needed
-via the UI or API, delete the data.json file to prevent overwritting any changes. After the 2.16.13 release, you could also
+via the UI or API, delete the data.json file to prevent overwriting any changes. After the 2.16.13 release, you could also
 deregister the harvest.
 
 Register a harvest
@@ -73,7 +73,7 @@ Register a harvest
 Run the harvest
 ---------------
   Once you have registered a harvest source, run the import, passing in
-  the identifier as an arguement
+  the identifier as an argument
 
   .. prompt:: bash $
 

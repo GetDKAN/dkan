@@ -9,7 +9,6 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
-use Drupal\common\Storage\JobStore;
 use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ReferenceLookupInterface;

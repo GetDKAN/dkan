@@ -5,10 +5,11 @@ namespace Drupal\datastore;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\common\DataResource;
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\MetastoreService;
-use Drupal\datastore\Service\PostImport;
 use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
 use Procrastinator\Result;
@@ -35,32 +36,26 @@ class Drush extends DrushCommands {
   protected $datastoreService;
 
   /**
-   * The PostImport service.
-   *
-   * @var \Drupal\datastore\Service\PostImport
-   */
-  protected PostImport $postImport;
-
-  /**
    * The datastore resource localizer.
-   *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
    */
   protected ResourceLocalizer $resourceLocalizer;
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 
   /**
    * Import info list service.
-   *
-   * @var \Drupal\datastore\Service\Info\ImportInfoList
    */
   private ImportInfoList $importInfoList;
+
+  /**
+   * The PostImportResultFactory service.
+   *
+   * @var \Drupal\datastore\PostImportResultFactory
+   */
+  protected PostImportResultFactory $postImportResultFactory;
 
   /**
    * Constructor for DkanDatastoreCommands.
@@ -68,18 +63,18 @@ class Drush extends DrushCommands {
   public function __construct(
     MetastoreService $metastoreService,
     DatastoreService $datastoreService,
-    PostImport $postImport,
     ResourceLocalizer $resourceLocalizer,
     ResourceMapper $resourceMapper,
-    ImportInfoList $importInfoList
+    ImportInfoList $importInfoList,
+    PostImportResultFactory $postImportResultFactory
   ) {
     parent::__construct();
     $this->metastoreService = $metastoreService;
     $this->datastoreService = $datastoreService;
-    $this->postImport = $postImport;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->resourceMapper = $resourceMapper;
     $this->importInfoList = $importInfoList;
+    $this->postImportResultFactory = $postImportResultFactory;
   }
 
   /**
@@ -149,11 +144,13 @@ class Drush extends DrushCommands {
    *
    * @command dkan:datastore:list
    */
-  public function list($options = [
-    'format' => 'table',
-    'status' => NULL,
-    'uuid-only' => FALSE,
-  ]) {
+  public function list(
+    $options = [
+      'format' => 'table',
+      'status' => NULL,
+      'uuid-only' => FALSE,
+    ],
+  ) {
     $status = $options['status'];
     $uuid_only = $options['uuid-only'];
 
@@ -186,13 +183,23 @@ class Drush extends DrushCommands {
    * Private.
    */
   private function createRow($uuid, $item) {
+    // Using deprecation helper.
     return [
       'uuid' => $uuid,
       'fileName' => $item->fileName,
       'fileFetcherStatus' => $item->fileFetcherStatus,
-      'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
+      'fileFetcherBytes' => DeprecationHelper::backwardsCompatibleCall(
+        \Drupal::VERSION,
+        '10.2.0',
+        fn() => ByteSizeMarkup::create($item->fileFetcherBytes),
+        fn() => \format_size($item->fileFetcherBytes)
+      ) . " ($item->fileFetcherPercentDone%)",
       'importerStatus' => $item->importerStatus,
-      'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
+      'importerBytes' => DeprecationHelper::backwardsCompatibleCall(
+        \Drupal::VERSION, '10.2.0',
+        fn() => ByteSizeMarkup::create($item->importerBytes),
+        fn() => \format_size($item->importerBytes)
+      ) . " ($item->importerPercentDone%)",
     ];
   }
 
@@ -215,6 +222,8 @@ class Drush extends DrushCommands {
    *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   * @param array $options
+   *   Options array.
    *
    * @option keep-local
    *   Do not remove localized resource, only datastore.
@@ -233,7 +242,8 @@ class Drush extends DrushCommands {
       // is a type that will never be imported, such as a ZIP file.
       $this->logger->warning('Unable to drop datastore for ' . $identifier);
     }
-    $this->postImport->removeJobStatus($identifier);
+    $post_import_result = $this->postImportResultFactory->initializeFromDistribution(['resource_id' => $identifier]);
+    $post_import_result->removeJobStatus();
     $this->logger->notice('Successfully removed the post import job status for resource ' . $identifier);
   }
 

@@ -624,10 +624,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $identifier;
   }
 
-  private function getQueueService() : QueueFactory {
-    return $this->container->get('queue');
-  }
-
   private function getHarvester() : HarvestService {
     return $this->container->get('dkan.harvest.service');
   }
@@ -636,9 +632,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
-  /**
-   * @return \Drupal\metastore\MetastoreService
-   */
   private function getMetastore(): MetastoreService {
     return $this->container->get('dkan.metastore.service');
   }

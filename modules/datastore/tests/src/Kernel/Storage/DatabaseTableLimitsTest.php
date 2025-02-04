@@ -15,6 +15,7 @@ use Procrastinator\Result;
  * @covers \Drupal\datastore\Storage\DatabaseTable
  * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
  *
+ * @group dkan
  * @group datastore
  * @group kernel
  *
@@ -31,7 +32,7 @@ class DatabaseTableLimitsTest extends KernelTestBase {
     'metastore',
   ];
 
-  public function provideColumns() {
+  public static function provideColumns() {
     $columns = 197;
     $values = [];
 

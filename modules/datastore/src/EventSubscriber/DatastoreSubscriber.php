@@ -30,29 +30,21 @@ class DatastoreSubscriber implements EventSubscriberInterface {
 
   /**
    * Datastore logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 
   /**
    * Datastore service.
-   *
-   * @var \Drupal\datastore\DatastoreService
    */
   private DatastoreService $datastoreService;
 
   /**
    * Resource purger service.
-   *
-   * @var \Drupal\datastore\Service\ResourcePurger
    */
   private ResourcePurger $resourcePurger;
 
   /**
    * Import job store factory.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
@@ -90,7 +82,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     LoggerInterface $loggerChannel,
     DatastoreService $service,
     ResourcePurger $resourcePurger,
-    ImportJobStoreFactory $importJobStoreFactory
+    ImportJobStoreFactory $importJobStoreFactory,
   ) {
     $this->configFactory = $config_factory;
     $this->logger = $loggerChannel;
@@ -140,10 +132,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * Private.
    */
   private function isDataStorable(DataResource $resource) : bool {
-    return in_array($resource->getMimeType(), [
-      'text/csv',
-      'text/tab-separated-values',
-    ]);
+    return in_array($resource->getMimeType(), DataResource::IMPORTABLE_FILE_TYPES);
   }
 
   /**
@@ -167,6 +156,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $resource = $event->getData();
     $id = md5(str_replace(DataResource::DEFAULT_SOURCE_PERSPECTIVE, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource->getUniqueIdentifier()));
     try {
+      // @todo Check if the datastore exists before dropping. Don't log an
+      //   error if it wasn't there to begin with.
       $this->datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
       $this->logger->notice('Dropping datastore for @id', ['@id' => $id]);
     }
