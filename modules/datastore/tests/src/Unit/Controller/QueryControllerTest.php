@@ -7,7 +7,6 @@ use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\common\DatasetInfo;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;

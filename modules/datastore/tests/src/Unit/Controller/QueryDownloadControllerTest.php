@@ -3,7 +3,6 @@
 namespace Drupal\Tests\datastore\Unit\Controller;
 
 use Drupal\common\DataResource;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
