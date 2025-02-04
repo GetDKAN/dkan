@@ -4,11 +4,6 @@ namespace Drupal\common\Commands;
 
 use Drupal\common\DatasetInfo;
 use Drush\Commands\DrushCommands;
-use Drupal\datastore\DatastoreService;
-use Drupal\Core\Database\Database;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Drupal\Core\StringTranslation\ByteSizeMarkup;
 
 /**
  * Drush commands providing utility common to DKAN's sub-modules.
