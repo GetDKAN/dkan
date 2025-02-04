@@ -4,7 +4,7 @@ namespace Drupal\common\Commands;
 
 use Drupal\common\DatasetInfo;
 use Drush\Commands\DrushCommands;
-
+use Drupal\Core\Database\Connection;
 /**
  * Drush commands providing utility common to DKAN's sub-modules.
  */
@@ -18,14 +18,24 @@ class CommonCommands extends DrushCommands {
   protected $datasetInfo;
 
   /**
+   * Database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
    * CommonCommands constructor.
    *
    * @param \Drupal\common\DatasetInfo $datasetInfo
    *   Dataset information service.
+   * @param \Drupal\Core\Database\Connection $database
+   *   Database connection service.
    */
-  public function __construct(DatasetInfo $datasetInfo) {
+  public function __construct(DatasetInfo $datasetInfo, Connection $database) {
     parent::__construct();
     $this->datasetInfo = $datasetInfo;
+    $this->database = $database;
   }
 
   /**
@@ -44,8 +54,7 @@ class CommonCommands extends DrushCommands {
   }
 
   /**
-   * Return the dataset uuid associated with
-   * the provided data table name.
+   * Return the dataset uuid associated with the provided data table name.
    *
    * Will do the following:
    * - Deconstruct the data table id.
@@ -65,11 +74,8 @@ class CommonCommands extends DrushCommands {
    */
   public function reverseDatasetLookup(string $data_table_name) {
     if ($data_table_name) {
-      // Establish DB connection
-      $connection = \Drupal::database();
-      // Build the query to get the
-      // resource identifier.
-      $resource_query = $connection->select('dkan_metastore_resource_mapper', 'dm')
+      // Establish DB connection.
+      $resource_query = $this->database->select('dkan_metastore_resource_mapper', 'dm')
         ->fields('dm', ['identifier']);
         // Add the condition using a raw SQL expression.
         // We want just the identifier here which
@@ -85,7 +91,7 @@ class CommonCommands extends DrushCommands {
       // Execute the query and fetch the results as an associative array.
       $resource_result = $resource_query->execute()->fetchAll(\PDO::FETCH_ASSOC);;
       // If our query returns something...
-      if($resource_result) {
+      if ($resource_result) {
         // Extract the identifier value 
         // from the returned associative array.
         $resource_identifier = $resource_result[0]['identifier'];
@@ -97,7 +103,7 @@ class CommonCommands extends DrushCommands {
         // Set our identifier as our search value for the query.
         $search_value = $resource_identifier;
         // Build the query for searching the json metadata table.
-        $distribution_query = \Drupal::database()->select('node__field_json_metadata', 'nfm');
+        $distribution_query = $this->database->select('node__field_json_metadata', 'nfm');
         // Add our JSON_EXTRACT expression
         // targeting the identifier property.
         $distribution_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
@@ -105,7 +111,7 @@ class CommonCommands extends DrushCommands {
         // escaped search value (resource identifier).
         $distribution_query->condition(
           'nfm.field_json_metadata_value',
-          '%' . \Drupal::database()->escapeLike($search_value) . '%',
+          '%' . $this->database->escapeLike($search_value) . '%',
           'LIKE'
         );
         // Get our result (distribution UUID) from our
@@ -122,14 +128,14 @@ class CommonCommands extends DrushCommands {
           // so lets get the dataset UUID
           // Associated with it from
           // the node__field_json_metadata table.
-          $dataset_query = \Drupal::database()->select('node__field_json_metadata', 'nfm');
+          $dataset_query = $this->database->select('node__field_json_metadata', 'nfm');
           // Add JSON_EXTRACT to get the identifier
           $dataset_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
           // Add condition to check if the
           // column contains the distribution UUID.
           $dataset_query->condition(
               'nfm.field_json_metadata_value',
-              '%' . \Drupal::database()->escapeLike($distribution_identifier) . '%',
+              '%' . $this->database->escapeLike($distribution_identifier) . '%',
               'LIKE'
           );
           // Execute query

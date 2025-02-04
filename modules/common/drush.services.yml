@@ -5,6 +5,7 @@ services:
       - { name: drush.command }
     arguments:
       - '@dkan.common.dataset_info'
+      - '@database'
 
   common.jobstore.commands:
     class: \Drupal\common\Commands\JobStoreCommands
