@@ -47,19 +47,17 @@ class PostImportResultFactory {
    *   Status of the post import process.
    * @param string $message
    *   Messages retrieved during the post import process.
-   * @param int $timestamp
-   *   Current unix timestamp.
    * @param \Drupal\common\DataResource $resource
    *   The DKAN resource being imported.
    *
    * @return \Drupal\datastore\PostImportResult
    *   The PostImportResult object.
    */
-  public function initializeFromResource($status, $message, $timestamp, DataResource $resource): PostImportResult {
+  public function initializeFromResource($status, $message, DataResource $resource): PostImportResult {
     return new PostImportResult(
       $status,
       $message,
-      $timestamp,
+      $this->getCurrentTime(),
       $resource,
       $this->connection,
     );
@@ -86,6 +84,13 @@ class PostImportResultFactory {
       $resource,
       $this->connection,
     );
+  }
+
+  /**
+   * Return current Unix timestamp.
+   */
+  protected function getCurrentTime(): int {
+    return time();
   }
 
 }

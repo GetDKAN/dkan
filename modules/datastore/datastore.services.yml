@@ -20,7 +20,6 @@ services:
      - '@dkan.metastore.data_dictionary_discovery'
      - '@dkan.datastore.service'
      - '@dkan.datastore.post_import_result_factory'
-     - '@datetime.time'
 
   dkan.datastore.post_import_result_factory:
     class: Drupal\datastore\PostImportResultFactory
