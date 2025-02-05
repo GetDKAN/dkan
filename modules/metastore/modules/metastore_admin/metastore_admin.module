@@ -147,7 +147,7 @@ function metastore_admin_create_text_link($linkText, $internalUri) {
  */
 function metastore_admin_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if ($form_id === "node_data_form" || $form_id === "node_data_edit_form") {
-    $config = \Drupal::config('metastore_admin.settings');
+    $config = \Drupal::config('metastore.settings');
 
     // Add checkbox to control redirect
     $form['redirect_to_datasets'] = [
@@ -169,7 +169,7 @@ function metastore_admin_form_submit($form, FormStateInterface &$form_state) {
   $redirect_to_datasets = $form_state->getValue('redirect_to_datasets');
 
   // Save the value to the configuration.
-  \Drupal::configFactory()->getEditable('metastore_admin.settings')
+  \Drupal::configFactory()->getEditable('metastore.settings')
     ->set('redirect_to_datasets', $redirect_to_datasets)
     ->save();
 

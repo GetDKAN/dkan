@@ -150,3 +150,14 @@ function metastore_update_8009() {
     modules/contrib/dkan/schema/collections/data-dictionary.json over you local
     site version before attempting to read or write any data dictionaries.");
 }
+
+/**
+ * Set the default value for the redirect_to_datasets setting.
+ */
+function metastore_update_8010() {
+  \Drupal::configFactory()->getEditable('metastore.settings')
+    ->set('redirect_to_datasets', TRUE)
+    ->save();
+
+  drupal_flush_all_caches();
+}

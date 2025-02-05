@@ -87,6 +87,13 @@ class DkanDataSettingsForm extends ConfigFormBase {
       ),
     ];
 
+    $form['redirect_to_datasets'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Redirect to datasets view after form submit'),
+      '#default_value' => $config->get('redirect_to_datasets'),
+      '#description' => $this->t('Enable this option to automatically redirect to the datasets view after submitting a dataset form.'),
+    ];
+
     $form['html_allowed_properties'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties that allow HTML'),
@@ -117,6 +124,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     $this->config('metastore.settings')
+      ->set('redirect_to_datasets', $form_state->getValue('redirect_to_datasets'))
       ->set('property_list', $form_state->getValue('property_list'))
       ->set('html_allowed_properties', $form_state->getValue('html_allowed_properties'))
       ->save();
