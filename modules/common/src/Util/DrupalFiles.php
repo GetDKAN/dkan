@@ -9,7 +9,9 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use GuzzleHttp\Exception\TransferException;
+use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -22,6 +24,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\common\Util
  */
 class DrupalFiles implements ContainerInjectionInterface {
+
+  use StringTranslationTrait;
 
   /**
    * Drupal file system service.
@@ -132,6 +136,8 @@ class DrupalFiles implements ContainerInjectionInterface {
    *
    * The destination file will never be a managed file.
    *
+   * This is a copy of system_retrieve_file().
+   *
    * @param string $url
    *   The URL of the file to grab.
    * @param string $destination
@@ -150,21 +156,50 @@ class DrupalFiles implements ContainerInjectionInterface {
    * @see \system_retrieve_file()
    * @see https://www.drupal.org/node/3223362
    */
-  protected function systemRetrieveFile($url, $destination = NULL) {
+  protected function systemRetrieveFile($url, $destination = NULL, $managed = FALSE, $replace = FileSystemInterface::EXISTS_RENAME) {
+    $parsed_url = parse_url($url);
+    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+    $file_system = \Drupal::service('file_system');
+    if (!isset($destination)) {
+      $path = $file_system->basename($parsed_url['path']);
+      $path = \Drupal::config('system.file')->get('default_scheme') . '://' . $path;
+      $path = \Drupal::service('stream_wrapper_manager')->normalizeUri($path);
+    }
+    else {
+      if (is_dir($file_system->realpath($destination))) {
+        // Prevent URIs with triple slashes when glueing parts together.
+        $path = str_replace('///', '//', "$destination/") . \Drupal::service('file_system')->basename($parsed_url['path']);
+      }
+      else {
+        $path = $destination;
+      }
+    }
     try {
-      $data = (string) $this->httpClientFactory
-        ->fromOptions()
+      $data = (string) \Drupal::httpClient()
         ->get($url)
         ->getBody();
-      return $this->filesystem->saveData($data, $destination, FileSystemInterface::EXISTS_REPLACE);
+      if ($managed) {
+        /** @var \Drupal\file\FileRepositoryInterface $file_repository */
+        $file_repository = \Drupal::service('file.repository');
+        $local = $file_repository->writeData($data, $path, $replace);
+      }
+      else {
+        $local = $file_system->saveData($data, $path, $replace);
+      }
     }
-    catch (TransferException $exception) {
-      $this->messenger->addError(t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
+    catch (ClientExceptionInterface $exception) {
+      \Drupal::messenger()->addError(t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
+      return FALSE;
     }
     catch (FileException | InvalidStreamWrapperException $e) {
-      $this->messenger->addError(t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
+      \Drupal::messenger()->addError(t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
+      return FALSE;
     }
-    return FALSE;
+    if (!$local) {
+      \Drupal::messenger()->addError(t('@remote could not be saved to @path.', ['@remote' => $url, '@path' => $path]));
+    }
+
+    return $local;
   }
 
   /**
