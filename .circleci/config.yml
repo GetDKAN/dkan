@@ -169,7 +169,6 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
-                - exec: echo "GRANT SESSION_VARIABLES_ADMIN on *.* TO db@`%`" | mysql
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
