@@ -233,7 +233,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   protected function translateType(string $type, mixed $extra = NULL) {
     // Clean up things like "int(10) unsigned".
-    $db_type = strtok($type, '(');
+    $db_type = strtok($type, ' ()');
     $driver = $this->connection->driver() ?? 'mysql';
 
     preg_match('#\((.*?)\)#', $type, $match);
