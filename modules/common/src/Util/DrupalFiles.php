@@ -145,8 +145,8 @@ class DrupalFiles implements ContainerInjectionInterface {
    *   If this value is omitted, the site's default files scheme will be used,
    *   usually "public://".
    * @param bool $managed
-   *   If this is set to TRUE, the file API hooks will be invoked and the file is
-   *   registered in the database.
+   *   If this is set to TRUE, the file API hooks will be invoked and the file
+   *   is registered in the database.
    * @param int $replace
    *   Replace behavior when the destination file already exists:
    *   - FileSystemInterface::EXISTS_REPLACE: Replace the existing file.
@@ -195,19 +195,19 @@ class DrupalFiles implements ContainerInjectionInterface {
       }
     }
     catch (ClientExceptionInterface $exception) {
-      \Drupal::messenger()->addError($this->t('Failed to fetch file due to error "%error"', [
+      $this->messenger->addError($this->t('Failed to fetch file due to error "%error"', [
         '%error' => $exception->getMessage(),
       ]));
       return FALSE;
     }
     catch (FileException | InvalidStreamWrapperException $e) {
-      \Drupal::messenger()->addError($this->t('Failed to save file due to error "%error"', [
+      $this->messenger->addError($this->t('Failed to save file due to error "%error"', [
         '%error' => $e->getMessage(),
       ]));
       return FALSE;
     }
     if (!$local) {
-      \Drupal::messenger()->addError($this->t('@remote could not be saved to @path.', [
+      $this->messenger->addError($this->t('@remote could not be saved to @path.', [
         '@remote' => $url,
         '@path' => $path,
       ]));
