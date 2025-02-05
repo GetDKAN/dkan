@@ -10,7 +10,6 @@ use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use GuzzleHttp\Exception\TransferException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -94,6 +93,8 @@ class DrupalFiles implements ContainerInjectionInterface {
 
   /**
    * Getter.
+   *
+   * @deprecated
    */
   public function getStreamWrapperManager(): StreamWrapperManager {
     return $this->streamWrapperManager;
@@ -134,10 +135,6 @@ class DrupalFiles implements ContainerInjectionInterface {
   /**
    * Attempts to get a file using Guzzle HTTP client and to store it locally.
    *
-   * The destination file will never be a managed file.
-   *
-   * This is a copy of system_retrieve_file().
-   *
    * @param string $url
    *   The URL of the file to grab.
    * @param string $destination
@@ -147,10 +144,22 @@ class DrupalFiles implements ContainerInjectionInterface {
    *   be used instead.
    *   If this value is omitted, the site's default files scheme will be used,
    *   usually "public://".
+   * @param bool $managed
+   *   If this is set to TRUE, the file API hooks will be invoked and the file is
+   *   registered in the database.
+   * @param int $replace
+   *   Replace behavior when the destination file already exists:
+   *   - FileSystemInterface::EXISTS_REPLACE: Replace the existing file.
+   *   - FileSystemInterface::EXISTS_RENAME: Append _{incrementing number} until
+   *   the filename is unique.
+   *   - FileSystemInterface::EXISTS_ERROR: Do nothing and return FALSE.
    *
    * @return mixed
    *   One of these possibilities:
-   *   - If it succeeds the location where the file was saved.
+   *   - If it succeeds and $managed is FALSE, the location where the file was
+   *   saved.
+   *   - If it succeeds and $managed is TRUE, a \Drupal\file\FileInterface
+   *   object which describes the file.
    *   - If it fails, FALSE.
    *
    * @see \system_retrieve_file()
@@ -158,15 +167,13 @@ class DrupalFiles implements ContainerInjectionInterface {
    */
   protected function systemRetrieveFile($url, $destination = NULL, $managed = FALSE, $replace = FileSystemInterface::EXISTS_RENAME) {
     $parsed_url = parse_url($url);
-    /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-    $file_system = \Drupal::service('file_system');
     if (!isset($destination)) {
-      $path = $file_system->basename($parsed_url['path']);
+      $path = $this->filesystem->basename($parsed_url['path']);
       $path = \Drupal::config('system.file')->get('default_scheme') . '://' . $path;
-      $path = \Drupal::service('stream_wrapper_manager')->normalizeUri($path);
+      $path = $this->streamWrapperManager->normalizeUri($path);
     }
     else {
-      if (is_dir($file_system->realpath($destination))) {
+      if (is_dir($this->filesystem->realpath($destination))) {
         // Prevent URIs with triple slashes when glueing parts together.
         $path = str_replace('///', '//', "$destination/") . \Drupal::service('file_system')->basename($parsed_url['path']);
       }
@@ -175,7 +182,7 @@ class DrupalFiles implements ContainerInjectionInterface {
       }
     }
     try {
-      $data = (string) \Drupal::httpClient()
+      $data = (string) $this->httpClientFactory->fromOptions()
         ->get($url)
         ->getBody();
       if ($managed) {
@@ -184,19 +191,26 @@ class DrupalFiles implements ContainerInjectionInterface {
         $local = $file_repository->writeData($data, $path, $replace);
       }
       else {
-        $local = $file_system->saveData($data, $path, $replace);
+        $local = $this->filesystem->saveData($data, $path, $replace);
       }
     }
     catch (ClientExceptionInterface $exception) {
-      \Drupal::messenger()->addError(t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
+      \Drupal::messenger()->addError($this->t('Failed to fetch file due to error "%error"', [
+        '%error' => $exception->getMessage(),
+      ]));
       return FALSE;
     }
     catch (FileException | InvalidStreamWrapperException $e) {
-      \Drupal::messenger()->addError(t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
+      \Drupal::messenger()->addError($this->t('Failed to save file due to error "%error"', [
+        '%error' => $e->getMessage(),
+      ]));
       return FALSE;
     }
     if (!$local) {
-      \Drupal::messenger()->addError(t('@remote could not be saved to @path.', ['@remote' => $url, '@path' => $path]));
+      \Drupal::messenger()->addError($this->t('@remote could not be saved to @path.', [
+        '@remote' => $url,
+        '@path' => $path,
+      ]));
     }
 
     return $local;
@@ -212,7 +226,7 @@ class DrupalFiles implements ContainerInjectionInterface {
     if (substr_count($uri, 'http') > 0) {
       return $uri;
     }
-    elseif ($wrapper = $this->getStreamWrapperManager()->getViaUri($uri)) {
+    elseif ($wrapper = $this->streamWrapperManager->getViaUri($uri)) {
       return $wrapper->getExternalUrl();
     }
     throw new \Exception("No stream wrapper available for {$uri}");
