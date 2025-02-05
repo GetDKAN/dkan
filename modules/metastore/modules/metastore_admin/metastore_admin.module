@@ -143,37 +143,12 @@ function metastore_admin_create_text_link($linkText, $internalUri) {
 }
 
 /**
- * Add custom submit handler to redirect to datasets page.
- */
-function metastore_admin_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  if ($form_id === "node_data_form" || $form_id === "node_data_edit_form") {
-    $config = \Drupal::config('metastore.settings');
-
-    // Add checkbox to control redirect
-    $form['redirect_to_datasets'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Redirect to datasets view after form submit'),
-      '#default_value' => $config->get('redirect_to_datasets'),
-      '#description' => t('Uncheck to disable automatic redirect to datasets view on form submit.'),
-    ];
-
-    $form['actions']['submit']['#submit'][] = 'metastore_admin_form_submit';
-  }
-}
-
-/**
  * Submit handler to redirect after node save to dkan dataset content page.
  */
-function metastore_admin_form_submit($form, FormStateInterface &$form_state) {
-  // Get the value of the checkbox from the form submission.
-  $redirect_to_datasets = $form_state->getValue('redirect_to_datasets');
+function metastore_admin_form_submit($form, FormStateInterface &$form_state) {.
+  $redirect_to_datasets = \Drupal::config('metastore.settings')->get('redirect_to_datasets');
 
-  // Save the value to the configuration.
-  \Drupal::configFactory()->getEditable('metastore.settings')
-    ->set('redirect_to_datasets', $redirect_to_datasets)
-    ->save();
-
-  // Check if the redirect option is enabled before redirecting.
+  // If the setting is enabled, redirect to the dataset content page.
   if ($redirect_to_datasets) {
     $form_state->setRedirect('view.dkan_dataset_content.page_1');
   }
