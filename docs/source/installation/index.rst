@@ -21,7 +21,7 @@ Requirements
 DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/system-requirements>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we recommend:
 
 -  Drupal 10+
--  MySQL: minimum version 5.7.8+ with PDO
+-  MySQL: minimum version 5.7.8+ for Drupal 10, or 8.0 for Drupal 11+. MariaDB equivilants also supported.
 -  PHP: minimum version 8.1
 -  Apache: minimum version 2.4.7
 -  Drush: minimum version 11.x.
