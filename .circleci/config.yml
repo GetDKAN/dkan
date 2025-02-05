@@ -61,7 +61,7 @@ commands:
             yq '.php_version ="<< parameters.php_version >>"' -i .ddev/config.dkan.yaml
             # With mysql 8, we need to set this permission.
             if [ "<< parameters.database_version >>" = "8.0" ]; then
-              yq '.hooks.post-start += [{"exec": "echo \"GRANT SESSION_VARIABLES_ADMIN on *.* TO db`@`%\" | mysql"}]' -i .ddev/config.dkan.yaml
+              yq '.hooks.post-start += [{"exec": "echo \"GRANT SESSION_VARIABLES_ADMIN on *.* TO db@`%`\" | mysql"}]' -i .ddev/config.dkan.yaml
             fi
             cat .ddev/config.dkan.yaml
             ddev restart
