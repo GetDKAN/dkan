@@ -17,7 +17,6 @@ use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\jsonapi\JsonApiResource\Data;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\metastore\MetastoreService;
@@ -54,21 +53,7 @@ class DictionaryEnforcerTest extends TestCase {
    * Test process() succeeds.
    */
   public function testProcess() {
-    $resource = $this->getMockBuilder(DataResource::class)
-      ->setConstructorArgs(['test.csv', 'text/csv'])
-      ->getMock();
-
-    $resource->expects($this->any())
-      ->method('getCurrentTime')
-      ->willReturn(1700000000);
-
-    $resource->expects($this->any())
-      ->method('getVersion')
-      ->willReturn(1700000000);
-
-    $resource->expects($this->any())
-      ->method('getIdentifier')
-      ->willReturn('abc123');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $alter_table_query_builder = (new Chain($this))
       ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
@@ -124,21 +109,7 @@ class DictionaryEnforcerTest extends TestCase {
    * Test exception thrown in execute() is caught and logged.
    */
   public function testProcessItemExecuteException() {
-    $resource = $this->getMockBuilder(DataResource::class)
-      ->setConstructorArgs(['test.csv', 'text/csv'])
-      ->getMock();
-
-    $resource->expects($this->any())
-      ->method('getCurrentTime')
-      ->willReturn(1700000000);
-
-    $resource->expects($this->any())
-      ->method('getVersion')
-      ->willReturn(1700000000);
-
-    $resource->expects($this->any())
-      ->method('getIdentifier')
-      ->willReturn('abc123');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $alter_table_query_builder = (new Chain($this))
       ->add(AlterTableQueryBuilderInterface::class, 'setTable', AlterTableQueryBuilderInterface::class)
@@ -233,7 +204,7 @@ class DictionaryEnforcerTest extends TestCase {
    */
   public function getMockDependencies($resource, $expectation, $dictionary_enforcer) {
     $resourceMapperMock = $this->createMock(ResourceMapper::class);
-    $resourceMapperMock->expects($this->any())
+    $resourceMapperMock->expects($this->exactly(2))
       ->method('get')
       ->withAnyParameters()
       ->willReturn($resource);
@@ -252,12 +223,12 @@ class DictionaryEnforcerTest extends TestCase {
       ->willReturn(false);
 
     $resourceProcessorMock = $this->createMock(ResourceProcessorCollector::class);
-    $resourceProcessorMock->expects($this->any())
+    $resourceProcessorMock->expects($this->exactly(2))
       ->method('getResourceProcessors')
       ->willReturn([$dictionary_enforcer]);
 
     $datastoreServiceMock = $this->createMock(DatastoreService::class);
-    $datastoreServiceMock->expects($this->any())
+    $datastoreServiceMock->expects($this->exactly(2))
       ->method('getResourceMapper')
       ->willReturn($resourceMapperMock);
 
@@ -272,13 +243,9 @@ class DictionaryEnforcerTest extends TestCase {
         'resource_version' => $resource->getVersion(),
         'post_import_status' => ($expectation === "error") ? 'error' : 'done',
         'post_import_error' => ($expectation === "error") ? 'Test Error' : '',
-        'timestamp' => $resource->getCurrentTime(),
+        'timestamp' => 1700000000,
       ])
       ->willReturnSelf();
-
-    $queryMock->expects($this->once())
-      ->method('execute')
-      ->willReturn(TRUE);
 
     $connectionMock = $this->createMock(Connection::class);
     $connectionMock ->expects($this->once())
@@ -286,14 +253,14 @@ class DictionaryEnforcerTest extends TestCase {
       ->with('dkan_post_import_job_status')
       ->willReturn($queryMock);
 
-    $postImportResultMock = $this->createMock(PostImportResult::class);
+    $postImportResultFactoryMock = $this->getMockBuilder(PostImportResultFactory::class)
+      ->setConstructorArgs([$connectionMock, $resourceMapperMock])
+      ->onlyMethods(['getCurrentTime'])
+      ->getMock();
 
-    $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
-
-    $postImportResultFactoryMock = $this->createMock(PostImportResultFactory::class);
     $postImportResultFactoryMock->expects($this->any())
-      ->method('initializeFromResource')
-      ->willReturn($postImportResultMock);
+      ->method('getCurrentTime')
+      ->willReturn(1700000000);
 
     return [
       'configFactory' => $configFactoryMock ,
@@ -301,7 +268,7 @@ class DictionaryEnforcerTest extends TestCase {
       'resourceProcessorCollector' => $resourceProcessorMock,
       'dataDictionaryDiscovery' => $this->createMock(DataDictionaryDiscoveryInterface::class),
       'datastoreService' => $datastoreServiceMock,
-      'postImportResultFactory' => $postImportResultFactory,
+      'postImportResultFactory' => $postImportResultFactoryMock,
     ];
   }
 

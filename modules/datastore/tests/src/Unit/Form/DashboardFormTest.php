@@ -129,7 +129,7 @@ class DashboardFormTest extends TestCase {
     $resourceMappermock = $this->createMock(ResourceMapper::class);
     $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', NULL, $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
 
@@ -185,7 +185,7 @@ class DashboardFormTest extends TestCase {
     $resourceMappermock = $this->createMock(ResourceMapper::class);
     $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', NULL, $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
 
@@ -271,7 +271,7 @@ class DashboardFormTest extends TestCase {
     $resourceMappermock = $this->createMock(ResourceMapper::class);
     $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', NULL, $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
 
@@ -382,7 +382,7 @@ class DashboardFormTest extends TestCase {
     $resourceMappermock = $this->createMock(ResourceMapper::class);
     $dataResourceMock = $this->createMock(DataResource::class);
     $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
-      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->setConstructorArgs(['', '', NULL, $dataResourceMock, $connectionMock, $resourceMappermock])
       ->onlyMethods(['retrieveJobStatus'])
       ->getMock();
 
