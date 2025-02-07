@@ -155,9 +155,11 @@ function metastore_update_8009() {
  * Set the default value for the redirect_to_datasets setting.
  */
 function metastore_update_8010() {
-  \Drupal::configFactory()->getEditable('metastore.settings')
-    ->set('redirect_to_datasets', TRUE)
-    ->save();
+  $config = \Drupal::configFactory()->getEditable('metastore_admin.settings');
+
+  if ($config->get('redirect_to_datasets') === NULL) {
+    $config->set('redirect_to_datasets', TRUE)->save();
+  }
 
   drupal_flush_all_caches();
 }
