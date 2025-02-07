@@ -27,24 +27,22 @@ DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/s
 -  Drush: minimum version 11.x.
 -  Node: minimum version 18 (if using the decoupled frontend)
 
-Starting a new DKAN project
----------------------------
+Starting a new DKAN project with DDEV
+-------------------------------------
 
 Follow the instructions from the **DKAN DDEV Add-on** documentation: `Starting a new project <https://getdkan.github.io/ddev-dkan/getting-started.html>`_ to generate a new Drupal site with DKAN installed on your system.
 
+
+Starting a new DKAN project with Composer
+-----------------------------------------
 DKAN DDEV Add-on bases new projects off of a `composer project <https://github.com/GetDKAN/recommended-project>`_ that you can also use to start a project using your own toolset:
 
   .. prompt:: bash $
 
     composer create-project getdkan/recommended-project my-project
 
-Or simply create a project however you prefer and add a requirement for `getdkan/dkan`.
-
-.. warning::
-   Do note that a bug in Drupal core cron may cause problems with data imports, and applying `this patch <https://www.drupal.org/project/drupal/issues/3274931>`_ is highly recommended. The patch will be applied automatically if you use the `recommended project <https://github.com/GetDKAN/recommended-project>`_.
-
 Adding DKAN into an existing project
-----------------------------------------
+------------------------------------
 
 If you already have an existing Drupal site, install DKAN with `composer <https://www.drupal.org/node/2718229>`_. You can find the `latest DKAN release here <https://github.com/GetDKAN/dkan/releases>`_. Composer will download the module and all of the dependencies it requires for the backend.
 
@@ -53,7 +51,11 @@ If you already have an existing Drupal site, install DKAN with `composer <https:
       composer require 'getdkan/dkan'
       drush en dkan
 
-To start with some example datasets:
+.. warning::
+   Do note that a bug in Drupal core cron may cause problems with data imports, and applying `this patch <https://www.drupal.org/project/drupal/issues/3274931>`_ is highly recommended. The patch will be applied automatically if you use the `recommended project <https://github.com/GetDKAN/recommended-project>`_.
+
+Add some example datasets to your site
+--------------------------------------
 
   .. prompt:: bash $
 

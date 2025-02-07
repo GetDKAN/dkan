@@ -9,14 +9,19 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test DatabaseConnectionFactory class.
+ * @covers \Drupal\common\Storage\DatabaseConnectionFactory
+ * @coversDefaultClass \Drupal\common\Storage\DatabaseConnectionFactory
+ *
+ * @group dkan
+ * @group common
+ * @group unit
  */
 class DatabaseConnectionFactoryTest extends TestCase {
 
   /**
-   * Test ::doSetTimeout method.
+   * @covers ::prepareConnection
    */
-  public function testDoSetConnectionTimeout(): void {
+  public function testConnectionTimeout(): void {
     $connection_chain = (new Chain($this))
       ->add(Connection::class, 'query', StatementInterface::class, 'query');
 

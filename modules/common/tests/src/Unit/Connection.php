@@ -27,6 +27,10 @@ class Connection extends CoreConnection {
    */
   protected $statementClass;
 
+  public function upsert($table, array $options = []) { }
+
+  public function schema() { }
+
   /**
    * {@inheritdoc}
    */

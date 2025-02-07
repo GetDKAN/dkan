@@ -4,7 +4,6 @@ namespace Drupal\Tests\metastore\Unit;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\common\Events\Event;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\Exception\ExistingObjectException;
@@ -21,6 +20,7 @@ use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @coversDefaultClass \Drupal\metastore\MetastoreService
@@ -129,7 +129,7 @@ class MetastoreServiceTest extends TestCase {
     $container = self::getCommonMockChain($this, NULL, $logger)
       ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
       ->add(ValidMetadataFactory::class, 'get', $data)
-      ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence)
+      ->add(EventDispatcher::class, 'dispatch', $sequence)
       ->getMock();
 
     \Drupal::setContainer($container);
@@ -416,7 +416,7 @@ EOF;
     $options = (new Options)
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('dkan.metastore.storage', DataFactory::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('event_dispatcher', EventDispatcher::class)
       ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
       ->add('dkan.common.logger_channel', LoggerChannelInterface::class)
       ->index(0);

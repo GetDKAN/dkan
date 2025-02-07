@@ -28,6 +28,10 @@ commands:
         description: 'PHP major.minor for DDev to use.'
         default: '8.2'
         type: string
+      database_version:
+        description: 'Database version for DDev to use.'
+        default: '5.7'
+        type: string
       addon_branch:
         description: 'Repo branch name for the DKAN DDev add-on you want to test against.'
         default: 'main'
@@ -50,10 +54,12 @@ commands:
             which ddev
             ddev --version
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
-            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            ddev add-on get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
             bash -c 'echo COMPOSER_AUTH=$COMPOSER_AUTH' > .ddev/.env
-            # Modify config to use our PHP version.
-            sed -i 's/^php_version.*$/php_version: "<< parameters.php_version >>"/' .ddev/config.dkan.yaml
+            # Modify config to use our PHP version and database.
+            yq '.database.version ="<< parameters.database_version >>"' -i .ddev/config.dkan.yaml
+            yq '.php_version ="<< parameters.php_version >>"' -i .ddev/config.dkan.yaml
+            cat .ddev/config.dkan.yaml
             ddev restart
             ddev status
             ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
@@ -122,6 +128,10 @@ jobs:
         description: 'PHP major.minor for DDev to use.'
         default: '8.1'
         type: string
+      database_version:
+        description: 'Database version for DDev to use.'
+        default: '5.7'
+        type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
         default: '10.2.x-dev'
@@ -137,6 +147,7 @@ jobs:
     steps:
       - prepare_build:
           php_version: << parameters.php_version >>
+          database_version: << parameters.database_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
@@ -189,6 +200,10 @@ jobs:
         description: 'PHP major.minor for DDev to use.'
         default: '8.2'
         type: string
+      database_version:
+        description: 'Database version for DDev to use.'
+        default: '5.7'
+        type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
         default: '10.2.x-dev'
@@ -200,6 +215,7 @@ jobs:
     steps:
       - prepare_build:
           php_version: << parameters.php_version >>
+          database_version: << parameters.database_version >>
           dkan_recommended_branch: << parameters.dkan_recommended_branch >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
