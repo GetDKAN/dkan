@@ -221,7 +221,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Translate the database type into a table schema type.
    *
-   * @param string $type
+   * @param string $rawtype
    *   Type returned from the describe query.
    * @param mixed $extra
    *   Additional information for column.
@@ -231,33 +231,45 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @see https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/9.2.x
    */
-  protected function translateType(string $type, mixed $extra = NULL) {
+  public function translateType(string $rawtype, mixed $extra = NULL) {
     // Clean up things like "int(10) unsigned".
-    $db_type = strtok($type, '(');
+    $db_type = strtok($rawtype, ' ()');
     $driver = $this->connection->driver() ?? 'mysql';
-
-    preg_match('#\((.*?)\)#', $type, $match);
-    $length = $match[1] ?? NULL;
-    $length = $length ? (int) $length : $length;
 
     $map = array_flip(array_map('strtolower', $this->connection->schema()->getFieldTypeMap()));
 
     $fullType = explode(':', ($map[$db_type] ?? 'varchar'));
     // Set type to serial if auto-increment, else use mapped type.
     $type = ($fullType[0] == 'int' && $extra == 'auto_increment') ? 'serial' : $fullType[0];
-    $unsigned = ($type == 'serial') ? TRUE : NULL;
+    // @todo Add support for NOT NULL for other types.
     $notNull = ($type == 'serial') ? TRUE : NULL;
     // Ignore size if "normal" or unset.
     $size = (isset($fullType[1]) && $fullType[1] != 'normal') ? $fullType[1] : NULL;
 
-    return [
+    // We only use length for varchar.
+    preg_match('#\((.*?)\)#', $rawtype, $match);
+    $length = $match[1] ?? NULL;
+    $length = ($length && $type == 'varchar') ? (int) $length : NULL;
+
+    // For decimal types, we need to get the precision and scale.
+    if ($type == 'numeric') {
+      preg_match('#\((\d+),(\d+)\)#', $rawtype, $match);
+      $precision = $match[1] ?? NULL;
+      $scale = $match[2] ?? NULL;
+    }
+
+    $unsigned = str_contains($rawtype, ' unsigned');
+
+    return array_filter([
       'type' => $type,
       'length' => $length,
       'size' => $size,
       'unsigned' => $unsigned,
       'not null' => $notNull,
+      'precision' => $precision ?? NULL,
+      'scale' => $scale ?? NULL,
       $driver . '_type' => $db_type,
-    ];
+    ]);
   }
 
 }
