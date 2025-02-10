@@ -37,7 +37,7 @@ class SqliteDatabaseTable extends DatabaseTable {
   /**
    * {@inheritdoc}
    */
-  protected function translateType(string $type, $info = NULL) {
+  public function translateType(string $type, ?string $info = NULL) {
     // Clean up things like "int(10) unsigned".
     $driver = $this->connection->driver() ?? 'sqlite';
     $db_type = strtolower($type);
