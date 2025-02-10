@@ -149,14 +149,13 @@ class DatabaseTableTest extends TestCase {
           "type" => "serial",
           "unsigned" => TRUE,
           "not null" => TRUE,
-          'length' => 10,
           'mysql_type' => 'int',
         ],
         "first_name" => [
           "type" => "varchar",
           "description" => "First Name",
           'length' => 10,
-          'mysql_type' => 'varchar'
+          'mysql_type' => 'varchar',
         ],
         "last_name" => [
           "type" => "text",

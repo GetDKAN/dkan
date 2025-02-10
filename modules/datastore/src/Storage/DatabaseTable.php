@@ -223,7 +223,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param string $rawtype
    *   Type returned from the describe query.
-   * @param mixed $extra
+   * @param null|string $extra
    *   Additional information for column.
    *
    * @return array
@@ -231,7 +231,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @see https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/9.2.x
    */
-  public function translateType(string $rawtype, mixed $extra = NULL) {
+  public function translateType(string $rawtype, ?string $extra = NULL) {
     // Clean up things like "int(10) unsigned".
     $db_type = strtok($rawtype, ' ()');
     $driver = $this->connection->driver() ?? 'mysql';
@@ -246,10 +246,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // Ignore size if "normal" or unset.
     $size = (isset($fullType[1]) && $fullType[1] != 'normal') ? $fullType[1] : NULL;
 
-    // We only use length for varchar.
+    // Length is only relevant for varchar types.
     preg_match('#\((.*?)\)#', $rawtype, $match);
-    $length = $match[1] ?? NULL;
-    $length = ($length && $type == 'varchar') ? (int) $length : NULL;
+    $length = ($match[1] ?? NULL) && $type == 'varchar' ? (int) $match[1] : NULL;
 
     // For decimal types, we need to get the precision and scale.
     if ($type == 'numeric') {
@@ -258,7 +257,8 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       $scale = $match[2] ?? NULL;
     }
 
-    $unsigned = str_contains($rawtype, ' unsigned');
+    // Serial should always be unsigned.
+    $unsigned = (str_contains($rawtype, ' unsigned') || $type == 'serial');
 
     return array_filter([
       'type' => $type,
