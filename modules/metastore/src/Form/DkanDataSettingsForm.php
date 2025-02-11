@@ -74,11 +74,6 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
-   * Form class for managing Metastore settings.
-   */
-class DkanDataSettingsForm extends ConfigFormBase {
-
-  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
