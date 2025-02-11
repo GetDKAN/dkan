@@ -89,42 +89,83 @@ class DkanDataSettingsForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
+  /**
+   * Provides a markup description for the Metastore settings form.
+   *
+   * @return array
+   *   Render array containing the form description.
+   */
   private function getDescriptionMarkup() {
     return [
       '#markup' => $this->t('Configure the metastore settings.'),
     ];
   }
 
-  private function getRedirectCheckbox($config) {
+  /**
+   * Builds the checkbox form element for redirecting after form submission.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The metastore settings configuration.
+   *
+   * @return array
+   *   The form element array.
+   */
+  private function getRedirectCheckbox(Config $config) {
     return [
       '#type' => 'checkbox',
       '#title' => $this->t('Redirect to datasets view after form submit'),
       '#default_value' => $config->get('redirect_to_datasets'),
-      '#description' => $this->t('Enable this option to automatically redirect to the datasets view after submitting a dataset form.'),
+      '#description' => $this->t('Enable this option to automatically redirect
+            to the datasets view after submitting a dataset form.'),
     ];
   }
 
-  private function getHtmlAllowedProperties($config) {
+  /**
+   * Builds the checkboxes for dataset properties that allow HTML.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The metastore settings configuration.
+   *
+   * @return array
+   *   The form element array.
+   */
+  private function getHtmlAllowedProperties(Config $config) {
     return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties that allow HTML'),
-      '#description' => $this->t('Metadata properties that may contain HTML elements.'),
+      '#description' => $this->t('Metadata properties that may contain
+            HTML elements.'),
       '#options' => $this->schemaHelper->retrieveStringSchemaProperties(),
-      '#default_value' => $config->get('html_allowed_properties') ?: ['dataset_description', 'distribution_description'],
+      '#default_value' => $config->get('html_allowed_properties')
+        ?: [
+          'dataset_description',
+          'distribution_description',
+        ],
     ];
   }
 
-  private function getPropertyList($config) {
+  /**
+   * Builds the checkboxes for dataset properties stored as separate entities.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The metastore settings configuration.
+   *
+   * @return array
+   *   The form element array.
+   */
+  private function getPropertyList(Config $config) {
     return [
       '#type' => 'checkboxes',
-      '#title' => $this->t('Dataset properties to be stored as separate entities; use caution'),
-      '#description' => $this->t('Select properties from the dataset schema to be available as individual objects.
-        Each property will be assigned a unique identifier in addition to its original schema value.'),
+      '#title' => $this->t('Dataset properties to be stored as separate
+            entities; use caution'),
+      '#description' => $this->t('Select properties from the dataset schema
+            to be available as individual objects. Each property will be assigned
+            a unique identifier in addition to its original schema value.'),
       '#options' => $this->schemaHelper->retrieveSchemaProperties(),
       '#default_value' => $config->get('property_list'),
     ];
   }
-
+}
 
   /**
    * Inherited.
