@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore\Form;
 
+use Drupal\Core\Config\Config;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
@@ -108,7 +109,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * @return array
    *   The form element array.
    */
-  private function getRedirectCheckbox(\Drupal\Core\Config\Config $config) {
+  private function getRedirectCheckbox(Config $config) {
     return [
       '#type' => 'checkbox',
       '#title' => $this->t('Redirect to datasets view after form submit'),
@@ -127,7 +128,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * @return array
    *   The form element array.
    */
-  private function getHtmlAllowedProperties(\Drupal\Core\Config\Config $config) {
+  private function getHtmlAllowedProperties(Config $config) {
     return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties that allow HTML'),
@@ -151,7 +152,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * @return array
    *   The form element array.
    */
-  private function getPropertyList(\Drupal\Core\Config\Config $config) {
+  private function getPropertyList(Config $config) {
     return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties to be stored as separate
