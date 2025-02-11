@@ -108,7 +108,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * @return array
    *   The form element array.
    */
-  private function getRedirectCheckbox(Config $config) {
+  private function getRedirectCheckbox(\Drupal\Core\Config\Config $config) {
     return [
       '#type' => 'checkbox',
       '#title' => $this->t('Redirect to datasets view after form submit'),
@@ -127,7 +127,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * @return array
    *   The form element array.
    */
-  private function getHtmlAllowedProperties(Config $config) {
+  private function getHtmlAllowedProperties(\Drupal\Core\Config\Config $config) {
     return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties that allow HTML'),
@@ -151,7 +151,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * @return array
    *   The form element array.
    */
-  private function getPropertyList(Config $config) {
+  private function getPropertyList(\Drupal\Core\Config\Config $config) {
     return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties to be stored as separate
