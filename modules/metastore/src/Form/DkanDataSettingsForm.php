@@ -74,8 +74,11 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
-   * Inherited.
-   *
+   * Form class for managing Metastore settings.
+   */
+class DkanDataSettingsForm extends ConfigFormBase {
+
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
@@ -116,7 +119,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Redirect to datasets view after form submit'),
       '#default_value' => $config->get('redirect_to_datasets'),
       '#description' => $this->t('Enable this option to automatically redirect
-            to the datasets view after submitting a dataset form.'),
+        to the datasets view after submitting a dataset form.'),
     ];
   }
 
@@ -134,7 +137,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties that allow HTML'),
       '#description' => $this->t('Metadata properties that may contain
-            HTML elements.'),
+        HTML elements.'),
       '#options' => $this->schemaHelper->retrieveStringSchemaProperties(),
       '#default_value' => $config->get('html_allowed_properties')
         ?: [
@@ -157,19 +160,16 @@ class DkanDataSettingsForm extends ConfigFormBase {
     return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties to be stored as separate
-            entities; use caution'),
+        entities; use caution'),
       '#description' => $this->t('Select properties from the dataset schema
-            to be available as individual objects. Each property will be assigned
-            a unique identifier in addition to its original schema value.'),
+        to be available as individual objects. Each property will be assigned
+        a unique identifier in addition to its original schema value.'),
       '#options' => $this->schemaHelper->retrieveSchemaProperties(),
       '#default_value' => $config->get('property_list'),
     ];
   }
-}
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
