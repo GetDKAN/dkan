@@ -81,29 +81,41 @@ class DkanDataSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('metastore.settings');
 
-    $form['description'] = [
-      '#markup' => $this->t(
-        'Configure the metastore settings.'
-      ),
-    ];
+    $form['description'] = $this->getDescriptionMarkup();
+    $form['redirect_to_datasets'] = $this->getRedirectCheckbox($config);
+    $form['html_allowed_properties'] = $this->getHtmlAllowedProperties($config);
+    $form['property_list'] = $this->getPropertyList($config);
 
-    $form['redirect_to_datasets'] = [
+    return parent::buildForm($form, $form_state);
+  }
+
+  private function getDescriptionMarkup() {
+    return [
+      '#markup' => $this->t('Configure the metastore settings.'),
+    ];
+  }
+
+  private function getRedirectCheckbox($config) {
+    return [
       '#type' => 'checkbox',
       '#title' => $this->t('Redirect to datasets view after form submit'),
       '#default_value' => $config->get('redirect_to_datasets'),
       '#description' => $this->t('Enable this option to automatically redirect to the datasets view after submitting a dataset form.'),
     ];
+  }
 
-    $form['html_allowed_properties'] = [
+  private function getHtmlAllowedProperties($config) {
+    return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties that allow HTML'),
       '#description' => $this->t('Metadata properties that may contain HTML elements.'),
       '#options' => $this->schemaHelper->retrieveStringSchemaProperties(),
-      '#default_value' => $config->get('html_allowed_properties') ?:
-        ['dataset_description', 'distribution_description'],
+      '#default_value' => $config->get('html_allowed_properties') ?: ['dataset_description', 'distribution_description'],
     ];
+  }
 
-    $form['property_list'] = [
+  private function getPropertyList($config) {
+    return [
       '#type' => 'checkboxes',
       '#title' => $this->t('Dataset properties to be stored as separate entities; use caution'),
       '#description' => $this->t('Select properties from the dataset schema to be available as individual objects.
@@ -111,9 +123,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#options' => $this->schemaHelper->retrieveSchemaProperties(),
       '#default_value' => $config->get('property_list'),
     ];
-
-    return parent::buildForm($form, $form_state);
   }
+
 
   /**
    * Inherited.
