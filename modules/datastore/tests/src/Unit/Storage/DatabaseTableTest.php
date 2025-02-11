@@ -17,7 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Drupal\datastore\Storage\DatabaseTable
+ * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
+ *
  * @group dkan
  * @group datastore
  * @group unit

@@ -37,7 +37,7 @@ class SqliteDatabaseTable extends DatabaseTable {
   /**
    * {@inheritdoc}
    */
-  public function translateType(string $type, ?string $info = NULL) {
+  public function translateType(string $describe_type, $info = NULL) {
     // Clean up things like "int(10) unsigned".
     $driver = $this->connection->driver() ?? 'sqlite';
     $db_type = strtolower($type);
@@ -51,7 +51,7 @@ class SqliteDatabaseTable extends DatabaseTable {
     $size = (isset($fullType[1]) && $fullType[1] != 'normal') ? $fullType[1] : NULL;
 
     return [
-      'type' => $type,
+      'type' => $describe_type,
       'length' => $length,
       'size' => $size,
       'not null' => $notNull,
