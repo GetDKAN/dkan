@@ -155,7 +155,7 @@ function metastore_update_8009() {
  * Set the default value for the redirect_to_datasets setting.
  */
 function metastore_update_8010() {
-  $config = \Drupal::configFactory()->getEditable('metastore_admin.settings');
+  $config = \Drupal::configFactory()->getEditable('metastore.settings');
 
   if ($config->get('redirect_to_datasets') === NULL) {
     $config->set('redirect_to_datasets', TRUE)->save();
