@@ -135,10 +135,10 @@ class DkanDataSettingsForm extends ConfigFormBase {
         HTML elements.'),
       '#options' => $this->schemaHelper->retrieveStringSchemaProperties(),
       '#default_value' => $config->get('html_allowed_properties')
-        ?: [
-          'dataset_description',
-          'distribution_description',
-        ],
+      ?: [
+        'dataset_description',
+        'distribution_description',
+      ],
     ];
   }
 
