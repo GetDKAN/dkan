@@ -156,7 +156,7 @@ class DashboardFormTest extends TestCase {
   }
 
   /**
-   * Test building the dashboard table with a Dataset ID filter.
+   * Test building the dashboard table with a Dataset Title filter.
    */
   public function testBuildTableRowsWithDatasetTitleFilter() {
     $info = [
@@ -262,7 +262,7 @@ class DashboardFormTest extends TestCase {
     $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
 
     $container = $this->buildContainerChain()
-      ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test 1']))
+      ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
       ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
