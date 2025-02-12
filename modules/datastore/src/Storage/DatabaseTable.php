@@ -235,7 +235,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @see https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/9.2.x
    */
-  protected function translateType(string $describe_type, $extra = NULL) {
+  protected function translateType(string $describe_type, mixed $extra = NULL) {
     // Clean up things like "int(10) unsigned".
     $db_type = strtok($describe_type, ' ()');
     $driver = $this->connection->driver() ?? 'mysql';
