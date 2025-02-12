@@ -28,6 +28,10 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\PostImportResultFactory;
 use Drupal\common\DataResource;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\node\NodeInterface;
 
 /**
  * @group dkan
@@ -152,6 +156,72 @@ class DashboardFormTest extends TestCase {
   }
 
   /**
+   * Test building the dashboard table with a Dataset ID filter.
+   */
+  public function testBuildTableRowsWithDatasetTitleFilter() {
+    $info = [
+      'uuid' => 'dataset-1',
+      'title' => 'Dataset 1',
+      'revision_id' => '2',
+      'moderation_state' => 'published',
+      'modified_date_metadata' => '2020-01-15',
+      'modified_date_dkan' => '2021-02-11',
+    ];
+    $distribution = [
+      'distribution_uuid' => 'dist-1',
+      'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535f',
+      'resource_version' => '1679508886',
+      'fetcher_status' => 'done',
+      'fetcher_percent_done' => 100,
+      'importer_status' => 'done',
+      'importer_percent_done' => 100,
+      'importer_error' => '',
+      'source_path' => 'http://example.com/file.csv',
+    ];
+
+    $postImportInfo = [
+      'resource_version' => '1679508886',
+      'post_import_status' => 'done',
+      'post_import_error' => NULL,
+    ];
+
+    $connectionMock = $this->createMock(Connection::class);
+    $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
+    $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
+      ->setConstructorArgs(['', '', $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->onlyMethods(['retrieveJobStatus'])
+      ->getMock();
+
+    $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
+
+    $nodeMock = (new Chain($this))
+      ->add(NodeInterface::class, 'uuid', 'dataset-1')
+      ->getMock();
+
+    $container = $this->buildContainerChain()
+      ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class)
+      ->add(RequestStack::class, 'getCurrentRequest', new Request(['dataset_title' => 'Dataset 1']))
+      ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
+      ->add(EntityStorageInterface::class, 'loadMultiple', [$nodeMock])
+      ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
+      ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', [$nodeMock])
+      ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
+      ->getMock();
+    \Drupal::setContainer($container);
+    $form = DashboardForm::create($container)->buildForm([], new FormState());
+
+    $this->assertEquals(1, count($form['table']['#rows']));
+    $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']['#uuid']);
+    $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
+    $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
+    $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
+    $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
+  }
+
+  /**
    * Test building the dashboard table with a UUID filter.
    */
   public function testBuildTableRowsWithUuidFilter() {
@@ -192,7 +262,7 @@ class DashboardFormTest extends TestCase {
     $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
 
     $container = $this->buildContainerChain()
-      ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test']))
+      ->add(RequestStack::class, 'getCurrentRequest', new Request(['uuid' => 'test 1']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
       ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
       ->getMock();
@@ -429,6 +499,8 @@ class DashboardFormTest extends TestCase {
       ->add('dkan.harvest.storage.harvest_run_repository', HarvestRunRepository::class)
       ->add('database', Connection::class)
       ->add('dkan.datastore.post_import_result_factory', PostImportResultFactory::class)
+      ->add('entity.storage.interface', EntityStorageInterface::class)
+      ->add('entity_type.manager', EntityTypeManagerInterface::class)
       ->index(0);
 
     $runStatus = [
@@ -459,6 +531,7 @@ class DashboardFormTest extends TestCase {
       ->add(PathValidator::class, 'getUrlIfValidWithoutAccessCheck', NULL)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
       ->add(PublicStream::class, 'getExternalUrl', 'http://example.com')
-      ->add(Pager::class, 'getCurrentPage', 0);
+      ->add(Pager::class, 'getCurrentPage', 0)
+      ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class);
   }
 }

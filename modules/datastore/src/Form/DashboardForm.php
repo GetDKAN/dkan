@@ -13,7 +13,6 @@ use Drupal\Core\Url;
 use Drupal\common\DataResource;
 use Drupal\common\DatasetInfo;
 use Drupal\common\UrlHostTokenResolver;
-use Drupal\datastore\Service\PostImport;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -94,8 +93,8 @@ class DashboardForm extends FormBase {
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
-   * @param \Drupal\datastore\Service\PostImport $post_import
-   *   The post import service.
+   * @param \Drupal\datastore\PostImportResultFactory $postImportResultFactory
+   *   The PostImportResultFactory service..
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager service.
    */
@@ -105,7 +104,7 @@ class DashboardForm extends FormBase {
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
     DateFormatter $dateFormatter,
-    PostImport $post_import,
+    PostImportResultFactory $postImportResultFactory,
     EntityTypeManagerInterface $entityTypeManager,
   ) {
     $this->harvest = $harvestService;
@@ -113,7 +112,6 @@ class DashboardForm extends FormBase {
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
     $this->dateFormatter = $dateFormatter;
-    $this->postImport = $post_import;
     $this->nodeStorage = $entityTypeManager->getStorage('node');
     $this->itemsPerPage = 10;
     $this->postImportResultFactory = $postImportResultFactory;
@@ -129,7 +127,7 @@ class DashboardForm extends FormBase {
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
       $container->get('date.formatter'),
-      $container->get('dkan.datastore.service.post_import'),
+      $container->get('dkan.datastore.post_import_result_factory'),
       $container->get('entity_type.manager'),
     );
   }
@@ -266,7 +264,7 @@ class DashboardForm extends FormBase {
    * Filters over-ride each other, in this order of priority:
    * - UUID
    * - Title search
-   * - Harvest plan ID
+   * - Harvest plan ID.
    *
    * @param string[] $filters
    *   Datasets filters. Keys determine the filter. Recognized keys:
@@ -288,11 +286,10 @@ class DashboardForm extends FormBase {
     }
     // Is the user searching for a dataset title?
     elseif (isset($filters['dataset_title'])) {
-      $datasets = [];
       // Get the ids using an entity query, because our dataset title is in the
       // node title field.
       // @todo Unify different queries against Data nodes using a repository or
-      //   the NodeData wrapper.
+      // the NodeData wrapper.
       $results = $this->nodeStorage->getQuery()
         ->accessCheck(FALSE)
         ->condition('type', 'data')
@@ -302,22 +299,14 @@ class DashboardForm extends FormBase {
       foreach ($this->nodeStorage->loadMultiple($results) as $node) {
         $datasets[] = $node->uuid();
       }
-      $total = count($datasets);
-      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
-
-      $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
-      $datasets = $chunks[$currentPage];
+      $datasets = $this->pagedFilteredList($datasets);
     }
     // If a value was supplied for the harvest ID filter, retrieve dataset UUIDs
     // belonging to the specified harvest.
     elseif (isset($filters['harvest_id'])) {
       $harvestLoad = iterator_to_array($this->getHarvestLoadStatus($filters['harvest_id']));
       $datasets = array_keys($harvestLoad);
-      $total = count($datasets);
-      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
-
-      $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
-      $datasets = $chunks[$currentPage];
+      $datasets = $this->pagedFilteredList($datasets);
     }
     // If no filter values were supplied, fetch from the list of all dataset
     // UUIDs.
@@ -333,6 +322,23 @@ class DashboardForm extends FormBase {
     }
 
     return $datasets;
+  }
+
+  /**
+   * Paged, filtered list of dataset UUIDs.
+   *
+   * @param string[] $datasets
+   *   Dataset UUIDs.
+   *
+   * @return string[]
+   *   Paged, filtered list of dataset UUIDs.
+   */
+  protected function pagedFilteredList(array $datasets): array {
+    $total = count($datasets);
+    $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
+    $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
+
+    return $chunks[$currentPage];
   }
 
   /**
