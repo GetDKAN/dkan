@@ -219,5 +219,5 @@ class CommonCommands extends DrushCommands {
     $this->output()->writeln('Can not map data table to dataset: ' . $data_table_name);
     return DrushCommands::EXIT_FAILURE;
   }
-  
+
 }
