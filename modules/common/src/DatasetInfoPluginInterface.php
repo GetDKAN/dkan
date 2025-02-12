@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Drupal\common;
 
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+
 /**
  * Interface for dataset_info plugins.
  */
-interface DatasetInfoPluginInterface {
+interface DatasetInfoPluginInterface extends ContainerFactoryPluginInterface {
 
   /**
    * Returns the translated plugin label.

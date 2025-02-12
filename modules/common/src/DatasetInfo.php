@@ -39,8 +39,6 @@ class DatasetInfo {
   /**
    * DatasetInfo constructor.
    *
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
-   *   Resource mapper service.
    * @param \Drupal\common\DatasetInfoPluginManager $pluginManager
    *   The DatasetInfo plugin manager.
    */
@@ -223,7 +221,7 @@ class DatasetInfo {
    *   Dataset info array.
    */
   protected function applyPlugins(array &$info) {
-    $pluginDefinitions = \Drupal::service('plugin.manager.dataset_info')->getDefinitions();
+    $pluginDefinitions = $this->pluginManager->getDefinitions();
     foreach ($pluginDefinitions as $definition) {
       $plugin = $this->pluginManager->createInstance($definition['id']);
       // Ensure existing values are not overwritten.

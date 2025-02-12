@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Drupal\common\Plugin\DatasetInfo;
+namespace Drupal\datastore\Plugin\DatasetInfo;
 
 use Drupal\common\DatasetInfoPluginBase;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -15,10 +14,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Plugin implementation of the dataset_info.
  *
- * @DatasetInfo(
+ * @DatasetInfoPlugin(
  *   id = "datastore_info",
- *   label = @Translation("Datastore info"),
- *   description = @Translation("Datastore info for dataset.")
  * )
  */
 class DatastoreInfo extends DatasetInfoPluginBase {
@@ -47,8 +44,6 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    *   The plugin_id for the plugin instance.
    * @param mixed $pluginDefinition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-   *   The module handler service.
    * @param \Drupal\datastore\Service\Info\ImportInfo $importInfo
    *   Import info datastoer service.
    * @param \Drupal\datastore\DatastoreService $datastore
@@ -60,12 +55,11 @@ class DatastoreInfo extends DatasetInfoPluginBase {
     array $configuration,
     $pluginId,
     $pluginDefinition,
-    ModuleHandlerInterface $moduleHandler,
     ImportInfo $importInfo,
     DatastoreService $datastore,
     ResourceMapper $resourceMapper,
   ) {
-    parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler);
+    parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->importInfo = $importInfo;
     $this->datastore = $datastore;
     $this->resourceMapper = $resourceMapper;
@@ -95,10 +89,9 @@ class DatastoreInfo extends DatasetInfoPluginBase {
       $configuration,
       $pluginId,
       $pluginDefinition,
-      $container->get('module_handler'),
       $container->get('dkan.datastore.import_info'),
       $container->get('dkan.datastore.service'),
-      $container->get('metastore.resource_mapper'),
+      $container->get('dkan.metastore.resource_mapper'),
     );
   }
 
@@ -106,8 +99,15 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    * {@inheritdoc}
    */
   public function addDatasetInfo(array $info): array {
-    foreach ($info['latest_revision']['distributions'] as &$distribution) {
-      $this->addDistributionInfo($distribution);
+    if (isset($info['latest_revision'])) {
+      foreach ($info['latest_revision']['distributions'] as &$distribution) {
+        $this->addDistributionInfo($distribution);
+      }
+    }
+    if (isset($info['published_revision'])) {
+      foreach ($info['published_revision']['distributions'] as &$distribution) {
+        $this->addDistributionInfo($distribution);
+      }
     }
     return $info;
   }
