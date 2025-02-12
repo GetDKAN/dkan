@@ -286,20 +286,8 @@ class DashboardForm extends FormBase {
     }
     // Is the user searching for a dataset title?
     elseif (isset($filters['dataset_title'])) {
-      // Get the ids using an entity query, because our dataset title is in the
-      // node title field.
-      // @todo Unify different queries against Data nodes using a repository or
-      // the NodeData wrapper.
-      $results = $this->nodeStorage->getQuery()
-        ->accessCheck(FALSE)
-        ->condition('type', 'data')
-        ->condition('field_data_type', 'dataset')
-        ->condition('title', $filters['dataset_title'], 'CONTAINS')
-        ->execute();
-      foreach ($this->nodeStorage->loadMultiple($results) as $node) {
-        $datasets[] = $node->uuid();
-      }
-      $datasets = $this->pagedFilteredList($datasets);
+      $results = $this->getDatasetsByTitle($filters);
+      $datasets = $this->pagedFilteredList($results);
     }
     // If a value was supplied for the harvest ID filter, retrieve dataset UUIDs
     // belonging to the specified harvest.
@@ -319,6 +307,33 @@ class DashboardForm extends FormBase {
         $this->itemsPerPage,
         TRUE
       );
+    }
+
+    return $datasets;
+  }
+
+  /**
+   * Entity query for nodes containing the dataset title.
+   *
+   * @param string[] $filters
+   *   Datasets filters.
+   *
+   * @return string[]
+   *   Dataset UUIDs .
+   */
+  protected function getDatasetsByTitle($filters): array {
+    // Get the ids using an entity query, because our dataset title is in the
+    // node title field.
+    // @todo Unify different queries against Data nodes using a repository or
+    // the NodeData wrapper.
+    $results = $this->nodeStorage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'data')
+      ->condition('field_data_type', 'dataset')
+      ->condition('title', $filters['dataset_title'], 'CONTAINS')
+      ->execute();
+    foreach ($this->nodeStorage->loadMultiple($results) as $node) {
+      $datasets[] = $node->uuid();
     }
 
     return $datasets;
