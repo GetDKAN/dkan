@@ -321,7 +321,7 @@ class DashboardForm extends FormBase {
    * @return string[]
    *   Dataset UUIDs .
    */
-  protected function getDatasetsByTitle($filters): array {
+  protected function getDatasetsByTitle(array $filters): array {
     // Get the ids using an entity query, because our dataset title is in the
     // node title field.
     // @todo Unify different queries against Data nodes using a repository or
