@@ -119,7 +119,7 @@ class CommonCommands extends DrushCommands {
       // targeting the identifier property.
       $distribution_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
       // Add a LIKE condition with our
-      // escaped search value (resource identifier).
+      // escaped search value.
       $distribution_query->condition(
         'nfm.field_json_metadata_value',
         '%' . $this->database->escapeLike($search_id) . '%',
@@ -194,7 +194,7 @@ class CommonCommands extends DrushCommands {
    * - Lookup the associated resource ID
    * - Lookup the associated distribution UUID
    * - Lookup the associated dataset UUID
-   * - Display all to console.
+   * - Display dataset UUID to console.
    *
    * @param string $data_table_name
    *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
