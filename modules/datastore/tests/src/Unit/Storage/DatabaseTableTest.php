@@ -36,7 +36,9 @@ class DatabaseTableTest extends TestCase {
       $this->createStub(LoggerInterface::class)
     );
 
-    $this->assertEquals($return, $databaseTable->translateType($type, $extra));
+    $reflection = new \ReflectionClass($databaseTable);
+    $translateType = $reflection->getMethod('translateType');
+    $this->assertEquals($return, $translateType->invokeArgs($databaseTable, [$type, $extra]));
   }
 
   public static function translateTypeProvider() {
