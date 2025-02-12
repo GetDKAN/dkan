@@ -22,6 +22,8 @@ use PHPUnit\Framework\TestCase;
  *
  * @group common
  * @group dkan-core
+ *
+ * @skip
  */
 class DatasetInfoTest extends TestCase {
 

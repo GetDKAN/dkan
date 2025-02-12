@@ -37,19 +37,15 @@ services:
 
   dkan.common.dataset_info:
     class: \Drupal\common\DatasetInfo
+    arguments:
+      - '@plugin.manager.dataset_info'
     calls:
       - [setStorage, ['@?dkan.metastore.storage']]
-      - [setDatastore, ['@?dkan.datastore.service']]
       - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
-      - [setImportInfo, ['@?dkan.datastore.import_info']]
 
   dkan.common.logger_channel:
     parent: logger.channel_base
     arguments: [ 'dkan' ]
-
-  plugin.manager.dkan_api_docs:
-    class: \Drupal\common\Plugin\DkanApiDocsPluginManager
-    parent: default_plugin_manager
 
   # @deprecated
   common.docs:
@@ -62,3 +58,11 @@ services:
     class: \Drupal\common\StreamWrapper\DkanStreamWrapper
     tags:
       - { name: stream_wrapper, scheme: dkan }
+
+  plugin.manager.dataset_info:
+    class: Drupal\common\DatasetInfoPluginManager
+    parent: default_plugin_manager
+
+  plugin.manager.dkan_api_docs:
+    class: \Drupal\common\Plugin\DkanApiDocsPluginManager
+    parent: default_plugin_manager
