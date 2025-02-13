@@ -59,6 +59,9 @@ class CommonCommands extends DrushCommands {
    *
    * @param string $data_table_name
    *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
+   * 
+   * @throws \Exception
+   *   If $data_table_name can not be found in DB.
    *
    * @command dkan:datastore:lookup-resource
    */
@@ -88,7 +91,7 @@ class CommonCommands extends DrushCommands {
         return $resource_identifier;
       }
       else {
-        echo "Resource lookup: Can not map data table name " . $data_table_name . " to resource ID." . PHP_EOL;
+        throw new \Exception("Resource lookup: Can not map data table name {$data_table_name} to resource ID.");
       }
     }
   }
@@ -98,7 +101,10 @@ class CommonCommands extends DrushCommands {
    *
    * @param string $resource_id
    *   Resource ID, e.g., "6e5a8b0e5f9ae95d1e239844aaab2db4".
-   *
+   * 
+   * @throws \Exception
+   *   If $resource_id can not be found in DB.
+   * 
    * @command dkan:datastore:lookup-distribution
    */
   public function resourceToDistribution(string $resource_id) {
@@ -136,7 +142,7 @@ class CommonCommands extends DrushCommands {
         return $distribution_identifier;
       }
       else {
-        return "Distribution lookup: Can not map resource ID " . $resource_id . " to distribution UUID." . PHP_EOL;
+        throw new \Exception("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID.");
       }
     }
   }
@@ -146,6 +152,9 @@ class CommonCommands extends DrushCommands {
    *
    * @param string $distribution_uuid
    *   Distribution ID, e.g., "d10163be-b7cc-5f76-a5e7-8d2bb4cda6bc".
+   * 
+   * @throws \Exception
+   *   If $distribution_id is not exactly 36 chars.
    *
    * @command dkan:datastore:lookup-dataset
    */
@@ -179,7 +188,7 @@ class CommonCommands extends DrushCommands {
         return "Dataset lookup: Cannot map distribution UUID " . $distribution_uuid . " to dataset UUID.";
       }
     }
-    return "Dataset lookup: Distribution UUID needs to be 36 characters.";
+    throw new \Exception("Dataset lookup: Distribution UUID needs to be 36 characters.");
   }
 
   /**
