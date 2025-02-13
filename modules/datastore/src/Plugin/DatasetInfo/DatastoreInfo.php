@@ -101,10 +101,11 @@ class DatastoreInfo extends DatasetInfoPluginBase {
   public function addDatasetInfo(array $info): array {
     $revisions = ['latest_revision', 'published_revision'];
     foreach ($revisions as $revision) {
-      if (isset($info[$revision])) {
-        foreach ($info[$revision]['distributions'] as &$distribution) {
-          $this->addDistributionInfo($distribution);
-        }
+      if (!isset($info[$revision])) {
+        continue;
+      }
+      foreach ($info[$revision]['distributions'] as &$distribution) {
+        $this->addDistributionInfo($distribution);
       }
     }
     return $info;

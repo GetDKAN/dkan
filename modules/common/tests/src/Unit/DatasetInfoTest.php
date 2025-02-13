@@ -25,8 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class DatasetInfoTest extends TestCase {
 
-  public function setUp() {
-    $this->markTestSkipped('Temporarily broken');
+  protected function setUp():void {
+    $this->markTestSkipped();
   }
 
   public function testGather() {
