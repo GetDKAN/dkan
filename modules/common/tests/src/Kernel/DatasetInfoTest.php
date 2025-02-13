@@ -52,6 +52,7 @@ class DatasetInfoTest extends KernelTestBase {
     $datasetInfo->setStorage($this->container->get('dkan.metastore.storage'));
     $datasetInfo->setResourceMapper($this->container->get('dkan.metastore.resource_mapper'));
     $info = $datasetInfo->gather('foo');
+    // No dataset with that identifier.
     $this->assertEquals(['notice' => 'Not found'], $info);
 
     /**
@@ -65,7 +66,7 @@ class DatasetInfoTest extends KernelTestBase {
      * @var \Drupal\metastore\MetastoreService $metastore
      */
     $metastore = $this->container->get('dkan.metastore.service');
-    $metadata = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset()), 'dataset');
+    $metadata = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset('foo')), 'dataset');
     $metastore->post('dataset', $metadata);
 
     $info = $datasetInfo->gather('foo');
@@ -82,7 +83,7 @@ class DatasetInfoTest extends KernelTestBase {
     // @see: \Drupal\Tests\datastore\Kernel\DatasetInfoTest
     $this->assertArrayNotHasKey('file_path', $info['latest_revision']['distributions'][0]);
 
-    // Publish the dataset, then patch it to get a published + latest revision
+    // Publish the dataset, then patch it to get a published + latest revision.
     $metastore->publish('dataset', 'foo');
 
     $title = ['title' => 'New Title'];
@@ -90,13 +91,28 @@ class DatasetInfoTest extends KernelTestBase {
 
     $info = $datasetInfo->gather('foo');
     $this->assertArrayHasKey('latest_revision', $info);
-    $this->assertArrayHasKey('published_revision', $info); 
+    $this->assertArrayHasKey('published_revision', $info);
+
+    // Now try a dataset with no distributions.
+    $metadata2 = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset('bar')), 'dataset');
+    $metadata2->remove("$", "distribution");
+    $metastore->post('dataset', $metadata2);
+    $info = $datasetInfo->gather('bar');
+    $this->assertEquals(['Not found'], $info['latest_revision']['distributions']);
+
+    // Now try a distribution with no resources.
+    $metadata3 = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset('res')), 'dataset');
+    $metadata3->remove("$.distribution[*]", "downloadURL");
+    $metastore->post('dataset', $metadata3);
+    $info = $datasetInfo->gather('res');
+    $this->assertEquals('No resource found', $info["latest_revision"]["distributions"][0][0]);
+    $this->assertEquals('No resource found', $info["latest_revision"]["distributions"][1][0]);
   }
 
-  protected function getDataset(): array {
+  protected function getDataset(string $identifier): array {
     return [
       'title' => 'Test Dataset',
-      'identifier' => 'foo',
+      'identifier' => $identifier,
       'keyword' => ['test'],
       'description' => 'Test Description',
       'modified' => '2020-01-01',
