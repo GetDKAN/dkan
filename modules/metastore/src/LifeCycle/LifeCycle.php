@@ -2,14 +2,6 @@
 
 namespace Drupal\metastore\LifeCycle;
 
-<<<<<<< HEAD
-=======
-use Drupal\common\EventDispatcherTrait;
-use Drupal\common\DataResource;
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\common\Events\Event;
-use Drupal\common\UrlHostTokenResolver;
->>>>>>> 73cebc052 (updated datastore subscriber, subscriber test, datastore and metastore services)
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
@@ -17,8 +9,8 @@ use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\common\DataResource;
-use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\common\Events\Event;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
@@ -120,10 +112,7 @@ class LifeCycle {
     DataFactory $dataFactory,
     QueueFactory $queueFactory,
     ConfigFactory $configFactory,
-<<<<<<< HEAD
-=======
-    EventDispatcherInterface $event_dispatcher
->>>>>>> efc5963af (updating only MetastoreItemInterface)
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
@@ -133,7 +122,7 @@ class LifeCycle {
     $this->dataFactory = $dataFactory;
     $this->queueFactory = $queueFactory;
     $this->configFactory = $configFactory;
-    $this->eventDispatcher = $event_dispatcher;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -361,9 +350,10 @@ class LifeCycle {
 
     // Trigger datastore import if applicable.
     // Needs to happen before updating references.
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
-      return $data instanceof MetastoreItemInterface;
-    });
+    if ($data instanceof MetastoreItemInterface) {
+      $event = new Event($data);
+      $this->eventDispatcher->dispatch($event, self::EVENT_PRE_REFERENCE);
+    }
 
     // Convert references in metadata to uuids.
     // Create new reference entities if they do not exist.

@@ -85,8 +85,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.datastore.service.resource_purger service.
    * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
    *   The dkan.datastore.import_job_store_factory service.
-   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
-   *   The event dispatcher service
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event dispatcher service.
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
