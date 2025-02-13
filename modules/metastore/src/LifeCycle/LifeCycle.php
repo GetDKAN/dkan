@@ -32,7 +32,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * storage systems.
  */
 class LifeCycle {
-  use EventDispatcherTrait;
 
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
@@ -186,7 +185,6 @@ class LifeCycle {
    * Purge resources (if unneeded) of any updated dataset.
    */
   protected function datasetUpdate(MetastoreItemInterface $data): void {
-    // $this->dispatchEvent(self::EVENT_DATASET_UPDATE, $data);
     $event = new Event($data);
     $this->eventDispatcher->dispatch($event, self::EVENT_DATASET_UPDATE);
   }
