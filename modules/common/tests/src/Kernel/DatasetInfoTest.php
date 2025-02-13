@@ -19,7 +19,6 @@ class DatasetInfoTest extends KernelTestBase {
     'node',
     'user',
     'field',
-    // 'field_ui',
     'filter',
     'text',
     'metastore',
