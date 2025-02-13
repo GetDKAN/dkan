@@ -91,7 +91,7 @@ class CommonCommands extends DrushCommands {
         return $resource_identifier;
       }
       else {
-        throw new \Exception("Resource lookup: Can not map data table name {$data_table_name} to resource ID.");
+        throw new \Exception("Resource lookup: Can not map data table name {$data_table_name} to resource ID. Please make sure your data table name exists as a table in the database.");
       }
     }
   }
@@ -142,7 +142,7 @@ class CommonCommands extends DrushCommands {
         return $distribution_identifier;
       }
       else {
-        throw new \Exception("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID.");
+        throw new \Exception("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource and it's ID exists in the database.");
       }
     }
   }
@@ -185,7 +185,7 @@ class CommonCommands extends DrushCommands {
         return $dataset_identifier;
       }
       else {
-        return "Dataset lookup: Cannot map distribution UUID " . $distribution_uuid . " to dataset UUID.";
+        throw new \Exception("Dataset lookup: Cannot map distribution UUID {$distribution_uuid} to dataset UUID. Please make sure the expected distribution exists in the daatabase.");
       }
     }
     throw new \Exception("Dataset lookup: Distribution UUID needs to be 36 characters.");
