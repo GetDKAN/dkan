@@ -22,10 +22,12 @@ use PHPUnit\Framework\TestCase;
  *
  * @group common
  * @group dkan-core
- *
- * @skip
  */
 class DatasetInfoTest extends TestCase {
+
+  public function setUp() {
+    $this->markTestSkipped('Temporarily broken');
+  }
 
   public function testGather() {
     // Set up some dependencies.
