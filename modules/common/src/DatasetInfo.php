@@ -80,7 +80,8 @@ class DatasetInfo {
    *   Dataset information array.
    */
   public function gather(string $uuid) : array {
-    if (!$this->storage) {
+    // @todo Remove this check once we consolodate common and metastore.
+    if (!($this->storage ?? FALSE)) {
       $info['notice'] = 'The DKAN Metastore module is not enabled.';
       return $info;
     }

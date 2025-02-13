@@ -109,6 +109,13 @@ class DatasetInfoTest extends KernelTestBase {
     $this->assertEquals('No resource found', $info["latest_revision"]["distributions"][1][0]);
   }
 
+  public function testDatasetInfoNoMetastore() {
+    $this->disableModules(['metastore']);
+    $datasetInfo = new DatasetInfo($this->container->get('plugin.manager.dataset_info'));
+    $info = $datasetInfo->gather('foo');
+    $this->assertEquals(['notice' => 'The DKAN Metastore module is not enabled.'], $info);
+  }
+
   protected function getDataset(string $identifier): array {
     return [
       'title' => 'Test Dataset',
