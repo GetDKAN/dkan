@@ -116,7 +116,7 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    * @param array $distribution
    *   The distribution info array from a dataset info array.
    */
-  protected function addDistributionInfo(&$distribution): void {
+  protected function addDistributionInfo(array &$distribution): void {
     $identifier = $distribution['resource_id'];
     $version = $distribution['resource_version'];
     $import_info = $this->importInfo->getItem($identifier, $version);
