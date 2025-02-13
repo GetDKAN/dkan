@@ -2,6 +2,14 @@
 
 namespace Drupal\metastore\LifeCycle;
 
+<<<<<<< HEAD
+=======
+use Drupal\common\EventDispatcherTrait;
+use Drupal\common\DataResource;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\common\Events\Event;
+use Drupal\common\UrlHostTokenResolver;
+>>>>>>> 73cebc052 (updated datastore subscriber, subscriber test, datastore and metastore services)
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
@@ -189,8 +197,9 @@ class LifeCycle {
    * Purge resources (if unneeded) of any updated dataset.
    */
   protected function datasetUpdate(MetastoreItemInterface $data): void {
-    //$this->dispatchEvent(self::EVENT_DATASET_UPDATE, $data);
-    $this->eventDispatcher->dispatch($data, self::EVENT_DATASET_UPDATE);
+    // $this->dispatchEvent(self::EVENT_DATASET_UPDATE, $data);
+    $event = new Event($data);
+    $this->eventDispatcher->dispatch($event, self::EVENT_DATASET_UPDATE);
   }
 
   /**

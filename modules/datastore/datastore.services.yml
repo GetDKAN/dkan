@@ -113,6 +113,7 @@ services:
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.resource_purger'
       - '@dkan.datastore.import_job_store_factory'
+      - '@event_dispatcher'
     tags:
       - { name: event_subscriber }
 

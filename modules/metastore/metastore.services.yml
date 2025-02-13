@@ -18,6 +18,7 @@ services:
       - '@dkan.metastore.storage'
       - '@queue'
       - '@config.factory'
+      - '@event_dispatcher'
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
