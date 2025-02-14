@@ -401,6 +401,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     catch (\Exception $e) {
       $this->logger->error("Error removing resource localizer id {$id}, version {$version}: " . $e->getMessage());
     }
+    $this->logger->notice("Removed localized resource for $id");
   }
 
   /**
@@ -418,6 +419,8 @@ class ResourcePurger implements ContainerInjectionInterface {
     catch (\Exception $e) {
       $this->logger->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());
     }
+    $this->logger->notice("Removed datastore storage for $id");
+
   }
 
   /**

@@ -18,6 +18,7 @@ services:
       - '@dkan.metastore.storage'
       - '@queue'
       - '@config.factory'
+      - '@dkan.common.logger_channel'
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
@@ -59,6 +60,7 @@ services:
     arguments:
       - '@config.factory'
       - '@queue'
+      - '@dkan.common.logger_channel'
 
   dkan.metastore.resource_mapper:
     class: \Drupal\metastore\ResourceMapper

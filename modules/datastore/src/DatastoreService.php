@@ -14,6 +14,7 @@ use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\metastore\ResourceMapper;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -87,6 +88,12 @@ class DatastoreService implements ContainerInjectionInterface {
   protected $referenceLookup;
 
   /**
+   * Logger service.
+   */
+  protected LoggerInterface $logger;
+
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -98,7 +105,8 @@ class DatastoreService implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.resource_processor.dictionary_enforcer'),
       $container->get('dkan.metastore.resource_mapper'),
       $container->get('event_dispatcher'),
-      $container->get('dkan.metastore.reference_lookup')
+      $container->get('dkan.metastore.reference_lookup'),
+      $container->get('dkan.datastore.logger_channel')
     );
   }
 
@@ -121,6 +129,7 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Event dispatcher service.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
+   * @param \Psr\Log\LoggerInterface $logger
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
@@ -131,6 +140,7 @@ class DatastoreService implements ContainerInjectionInterface {
     ResourceMapper $resourceMapper,
     EventDispatcherInterface $eventDispatcher,
     ReferenceLookup $referenceLookup,
+    LoggerInterface $logger
   ) {
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
@@ -140,6 +150,7 @@ class DatastoreService implements ContainerInjectionInterface {
     $this->resourceMapper = $resourceMapper;
     $this->eventDispatcher = $eventDispatcher;
     $this->referenceLookup = $referenceLookup;
+    $this->logger = $logger;
   }
 
   /**
@@ -218,8 +229,10 @@ class DatastoreService implements ContainerInjectionInterface {
     if ($queueId === FALSE) {
       throw new \RuntimeException('Failed to create datastore_import queue for ' . $identifier . ':' . $version);
     }
+    $message = 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.';
+    $this->logger->notice($message);
     return [
-      'message' => 'Resource ' . $identifier . ':' . $version . ' has been queued to be imported.',
+      'message' => $message,
     ];
   }
 
@@ -229,6 +242,7 @@ class DatastoreService implements ContainerInjectionInterface {
   private function doImport($resource) {
     $importService = $this->getImportService($resource);
     $importService->import();
+    $this->logger->notice("Datastore resource {$resource->getIdentifier()} imported");
     return [
       $this->getLabelFromObject($importService) => $importService->getImporter()->getResult(),
     ];
@@ -287,6 +301,7 @@ class DatastoreService implements ContainerInjectionInterface {
       }
       // Drop.
       $storage->destruct();
+      $this->logger->notice("Storage $identifier version $version dropped");
       // Check for the resource before removing the job store or sending the
       // dropped event.
       if ($resource) {

@@ -144,6 +144,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   public function purgeResources(Event $event) {
     $node = $event->getData();
     $this->resourcePurger->schedule([$node->getIdentifier()]);
+    $this->logger->notice('purge scheduled for node ' . $node->getIdentifier());
   }
 
   /**

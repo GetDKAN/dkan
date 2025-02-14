@@ -5,6 +5,7 @@ namespace Drupal\metastore\Plugin\QueueWorker;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\metastore\ResourceMapper;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -30,6 +31,11 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
   protected $resourceMapper;
 
   /**
+   * Logger service.
+   */
+  protected LoggerInterface $logger;
+
+  /**
    * OrphanResourceRemover constructor.
    *
    * @param array $configuration
@@ -40,10 +46,13 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
    *   The plugin implementation definition.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   Logger channel.
    */
-  public function __construct(array $configuration, $pluginId, $pluginDefinition, ResourceMapper $resourceMapper) {
+  public function __construct(array $configuration, $pluginId, $pluginDefinition, ResourceMapper $resourceMapper, LoggerInterface $logger) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->resourceMapper = $resourceMapper;
+    $this->logger = $logger;
   }
 
   /**
@@ -56,7 +65,8 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
       $configuration,
       $pluginId,
       $pluginDefinition,
-      $container->get('dkan.metastore.resource_mapper')
+      $container->get('dkan.metastore.resource_mapper'),
+      $container->get('dkan.common.logger_channel')
     );
   }
 
@@ -73,6 +83,7 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
     if ($resource) {
       $this->resourceMapper->remove($resource);
     }
+    $this->logger->notice("Removing resource {$resource->getIdentifier()}");
 
   }
 

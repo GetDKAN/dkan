@@ -19,6 +19,7 @@ use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * Abstraction of logic used in entity hooks.
@@ -93,6 +94,11 @@ class LifeCycle {
   protected $configFactory;
 
   /**
+   * Logger service.
+   */
+  protected LoggerInterface $logger;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -103,7 +109,8 @@ class LifeCycle {
     DateFormatter $dateFormatter,
     DataFactory $dataFactory,
     QueueFactory $queueFactory,
-    ConfigFactory $configFactory
+    ConfigFactory $configFactory,
+    LoggerInterface $logger
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
@@ -113,6 +120,7 @@ class LifeCycle {
     $this->dataFactory = $dataFactory;
     $this->queueFactory = $queueFactory;
     $this->configFactory = $configFactory;
+    $this->logger = $logger;
   }
 
   /**
@@ -164,6 +172,7 @@ class LifeCycle {
    * Purge resources (if unneeded) of any updated dataset.
    */
   protected function datasetUpdate(MetastoreItemInterface $data) {
+    $this->logger->notice('Dispatching dkan_metastore_dataset_update event for ' . $data->getIdentifier());
     $this->dispatchEvent(self::EVENT_DATASET_UPDATE, $data);
   }
 
@@ -234,6 +243,7 @@ class LifeCycle {
         $version,
       ]);
     }
+    $this->logger->notice("Adding $id to orphan_resource_remover queue");
   }
 
   /**
@@ -320,6 +330,7 @@ class LifeCycle {
 
     // Trigger datastore import if applicable.
     // Needs to happen before updating references.
+    $this->logger->notice("Dispatching dkan_metastore_metadata_pre_reference event");
     $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
       return $data instanceof MetastoreItemInterface;
     });
@@ -343,6 +354,8 @@ class LifeCycle {
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    */
   protected function queueOrphanReferenceCleanup(MetastoreItemInterface $data): void {
+    $this->logger->notice("Processing {$data->getIdentifier()}");
+
     $metadata = $data->getMetadata();
 
     // Check for possible orphan property references when updating a dataset.

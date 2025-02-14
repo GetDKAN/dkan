@@ -10,6 +10,7 @@ use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Reference\ReferenceLookup;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -44,18 +45,25 @@ class ImportController implements ContainerInjectionInterface {
   protected ImportInfoList $importInfoList;
 
   /**
+   * Logger service.
+   */
+  protected LoggerInterface $logger;
+
+  /**
    * Api constructor.
    */
   public function __construct(
     DatastoreService $datastoreService,
     MetastoreApiResponse $metastoreApiResponse,
     ReferenceLookup $referenceLookup,
-    ImportInfoList $importInfoList
+    ImportInfoList $importInfoList,
+    LoggerInterface $logger
   ) {
     $this->datastoreService = $datastoreService;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->referenceLookup = $referenceLookup;
     $this->importInfoList = $importInfoList;
+    $this->logger = $logger;
   }
 
   /**
@@ -66,7 +74,8 @@ class ImportController implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service'),
       $container->get('dkan.metastore.api_response'),
       $container->get('dkan.metastore.reference_lookup'),
-      $container->get('dkan.datastore.import_info_list')
+      $container->get('dkan.datastore.import_info_list'),
+      $container->get('dkan.datastore.logger_channel')
     );
   }
 
@@ -207,6 +216,8 @@ class ImportController implements ContainerInjectionInterface {
     }
 
     $identifiers = $payload->resource_ids;
+    $this->logger->notice('Deleting resource(s)' . implode($identifiers));
+
 
     $responses = [];
     foreach ($identifiers as $identifier) {

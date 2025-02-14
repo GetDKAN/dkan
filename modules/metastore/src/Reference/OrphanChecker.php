@@ -4,6 +4,7 @@ namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * Checks for orphanned references in deleted datasets.
@@ -19,11 +20,17 @@ class OrphanChecker {
   protected $queueService;
 
   /**
+   * Logger service.
+   */
+  protected LoggerInterface $logger;
+
+  /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, QueueFactory $queueService) {
+  public function __construct(ConfigFactoryInterface $configService, QueueFactory $queueService, LoggerInterface $logger) {
     $this->queueService = $queueService;
     $this->setConfigService($configService);
+    $this->logger = $logger;
   }
 
   /**
@@ -108,6 +115,7 @@ class OrphanChecker {
    * @codeCoverageIgnore
    */
   private function queueReferenceForRemoval($property_id, $uuid) {
+    $this->logger->notice("Adding $property_id, $uuid to orphan_reference_processor queue");
     $this->queueService->get('orphan_reference_processor')
       ->createItem([
         $property_id,
