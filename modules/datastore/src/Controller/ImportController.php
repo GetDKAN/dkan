@@ -218,7 +218,6 @@ class ImportController implements ContainerInjectionInterface {
     $identifiers = $payload->resource_ids;
     $this->logger->notice('Deleting resource(s)' . implode($identifiers));
 
-
     $responses = [];
     foreach ($identifiers as $identifier) {
       $responses[$identifier] = json_decode($this->delete($identifier)->getContent());

@@ -89,9 +89,10 @@ class DatastoreService implements ContainerInjectionInterface {
 
   /**
    * Logger service.
+   *
+   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
-
 
   /**
    * {@inheritdoc}
@@ -130,6 +131,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
    * @param \Psr\Log\LoggerInterface $logger
+   *   The logger service.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,
