@@ -14,31 +14,38 @@
 config_version = "0"
 
 exclude_patterns = [
-  "*_min.*",
-  "*-min.*",
-  "*.min.*",
+  "cypress/",
+  "config/",
+  "db/",
+  "dist/",
+  "docs/",
+  "documentation/",
+  "features/",
+  "**/node_modules/",
+  "script/",
+  "**/spec/",
+  "**/test/",
+  "**/tests/",
+  "Tests/",
+  "**/vendor/",
+  "**/*_test.go",
   "**/*.d.ts",
-  "**/.yarn/**",
-  "**/bower_components/**",
-  "**/build/**",
-  "**/cache/**",
-  "**/config/**",
-  "**/db/**",
-  "**/deps/**",
-  "**/dist/**",
-  "**/extern/**",
-  "**/external/**",
-  "**/generated/**",
-  "**/Godeps/**",
-  "**/gradlew/**",
-  "**/mvnw/**",
-  "**/node_modules/**",
-  "**/protos/**",
-  "**/seed/**",
-  "**/target/**",
-  "**/testdata/**",
-  "**/vendor/**",
-  "**/assets/**",
+  "**/*.yml",
+  "**/*.json",
+  "**/*.js",
+  "**/*.jsx",
+  "*.md",
+  "**/*.md",
+  "*.install",
+  "*.profile",
+  "*.module",
+  "*.xml",
+  "**/*.xml",
+  "**/*.install",
+  "**/*.profile",
+  "**/*.module",
+  ".circleci/",
+  ".gitignore",
 ]
 
 test_patterns = [
@@ -53,7 +60,7 @@ test_patterns = [
 ]
 
 [smells]
-mode = "comment"
+mode = "block"
 
 [[source]]
 name = "default"
