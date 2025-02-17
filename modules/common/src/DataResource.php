@@ -194,6 +194,11 @@ class DataResource implements \JsonSerializable {
     return $clone;
   }
 
+  public static function twoPlusTwo(): int {
+    return 4;
+  }
+  
+
   /**
    * Clone the current resource with a new perspective and URI.
    *
