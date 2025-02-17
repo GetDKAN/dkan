@@ -50,13 +50,8 @@ exclude_patterns = [
 
 test_patterns = [
   "**/test/**",
-  "**/spec/**",
-  "**/*.test.*",
-  "**/*.spec.*",
-  "**/*_test.*",
-  "**/*_spec.*",
-  "**/test_*.*",
-  "**/spec_*.*",
+  "**/tests/**",
+  "**/Tests/**",
 ]
 
 [smells]
