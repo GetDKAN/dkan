@@ -267,12 +267,12 @@ workflows:
           matrix:
             parameters:
               dkan_recommended_branch: [ '10.4.x-dev']
-              php_version: [ '8.3' ]
+              php_version: [ '8.3', '8.4' ]
       - phpunit:
           matrix:
             parameters:
               dkan_recommended_branch: [ '11.0.x-dev']
-              php_version: [ '8.3' ]
+              php_version: [ '8.3', '8.4' ]
               database_version: [ '8.0' ]
               addon_branch: [ 'local-infile' ]
       - phpunit:
