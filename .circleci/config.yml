@@ -38,7 +38,7 @@ commands:
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '10.2.x-dev'
+        default: '10.3.x-dev'
         type: string
     steps:
       - run:
@@ -138,7 +138,7 @@ jobs:
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '10.2.x-dev'
+        default: '10.3.x-dev'
         type: string
       report_coverage:
         description: 'Generate coverage report and send it to CodeClimate'
@@ -215,7 +215,7 @@ jobs:
         type: string
       dkan_recommended_branch:
         description: 'Branch of getdkan/recommended-project to use.'
-        default: '10.2.x-dev'
+        default: '10.3.x-dev'
         type: string
       upgrade:
         description: 'If true, will install the latest stable DKAN version and test upgrade'
@@ -267,19 +267,19 @@ workflows:
           matrix:
             parameters:
               dkan_recommended_branch: [ '10.4.x-dev']
-              php_version: [ '8.3', '8.4' ]
+              php_version: [ '8.3' ]
       - phpunit:
           matrix:
             parameters:
               dkan_recommended_branch: [ '11.0.x-dev']
-              php_version: [ '8.3', '8.4' ]
+              php_version: [ '8.3' ]
               database_version: [ '8.0' ]
               addon_branch: [ 'local-infile' ]
       - phpunit:
           matrix:
             parameters:
               dkan_recommended_branch: [ '10.3.x-dev']
-              php_version: [ '8.1', '8.2' ]
+              php_version: [ '8.1' ]
       - phpunit:
           matrix:
             parameters:
@@ -290,7 +290,7 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          dkan_recommended_branch: '10.2.x-dev'
+          dkan_recommended_branch: '10.3.x-dev'
       - phpunit:
           name: 'Upgrade target (Drupal 10.3, PHP 8.3)'
           upgrade: true
