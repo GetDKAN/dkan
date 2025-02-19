@@ -1,10 +1,12 @@
 .env.local
 .DS_Store
 .idea
+.phpcs-cache
 .swp
 .vscode
 composer.lock
 package-lock.json
+phpcs.xml
 tagfile
 /core
 /cypress/videos
