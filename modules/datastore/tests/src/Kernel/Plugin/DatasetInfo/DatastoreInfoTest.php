@@ -47,7 +47,7 @@ class DatastoreInfoTest extends DatasetInfoTest {
     $this->assertEquals('', $info['latest_revision']['distributions'][0]['importer_error']);
     $this->assertEquals(NULL, $info['latest_revision']['distributions'][0]['table_name']);
 
-    // Now test for edge case where a revision does not "distributions" key.
+    // Test for edge case where a revision does not have "distributions" key.
     $metadata2 = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset('bar')), 'dataset');
     $metadata2->remove("$", "distribution");
     $metastore->post('dataset', $metadata2);
