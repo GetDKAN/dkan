@@ -114,7 +114,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Redirect to datasets view after form submit'),
       '#default_value' => $config->get('redirect_to_datasets'),
-      '#description' => $this->t('Disable this option if you do not have access to the datasets view.'),
+      '#description' => $this->t('Disable this option if you want to use Drupal\'s default or your own custom redirect after submitting a metadata form.'),
     ];
   }
 

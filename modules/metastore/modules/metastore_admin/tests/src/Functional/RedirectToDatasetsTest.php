@@ -99,25 +99,19 @@ class RedirectToDatasetsTest extends BrowserTestBase {
       ->set('redirect_to_datasets', FALSE)
       ->save();
 
-    $this->drupalGet('node/add/data');
+    $this->drupalGet('admin/content');
     $assert->statusCodeEquals(200);
+    $this->clickLink($dataset_title);
+    $this->drupalGet($this->getSession()->getCurrentUrl() . '/edit');
 
-    $dataset_title_no_redirect = 'No Redirect Dataset';
     $this->submitForm([
-      'edit-field-json-metadata-0-value-title' => $dataset_title,
-      'edit-field-json-metadata-0-value-description' => 'Dataset Description.',
-      'edit-field-json-metadata-0-value-accesslevel' => 'public',
-      'edit-field-json-metadata-0-value-modified-date' => '2020-02-02',
-      'edit-field-json-metadata-0-value-publisher-publisher-name' => $publisher_name,
-      'edit-field-json-metadata-0-value-contactpoint-contactpoint-fn' => 'DKANTEST Contact Name',
-      'edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail' => 'dkantest@test.com',
-      'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
+      'edit-field-json-metadata-0-value-description' => 'Updated Dataset Description.',
     ], 'Save');
 
     // Assert that the user lands on the dataset node page (not redirected).
     $assert->statusCodeEquals(200);
     $assert->addressMatches('/node\/\d+$/');
-    $assert->pageTextContains('Data ' . $dataset_title_no_redirect . ' has been created.');
+    $assert->pageTextContains('Data ' . $dataset_title . ' has been updated.');
   }
 
 }
