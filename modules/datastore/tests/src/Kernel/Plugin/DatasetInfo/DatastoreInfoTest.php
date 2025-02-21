@@ -8,6 +8,8 @@ use Drupal\common\DatasetInfo;
 use Drupal\Tests\common\Kernel\DatasetInfoTest;
 
 /**
+ * Tests the DatastoreInfo plugin for DatasetInfo.
+ *
  * @group dkan
  * @group datastore
  * @group kernel
@@ -44,6 +46,13 @@ class DatastoreInfoTest extends DatasetInfoTest {
     $this->assertEquals('waiting', $info['latest_revision']['distributions'][0]['importer_status']);
     $this->assertEquals('', $info['latest_revision']['distributions'][0]['importer_error']);
     $this->assertEquals(NULL, $info['latest_revision']['distributions'][0]['table_name']);
+
+    // Now test for edge case where a revision does not "distributions" key.
+    $metadata2 = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset('bar')), 'dataset');
+    $metadata2->remove("$", "distribution");
+    $metastore->post('dataset', $metadata2);
+    $info = $datasetInfo->gather('bar');
+    $this->assertEquals(['Not found'], $info['latest_revision']['distributions']);
   }
 
 }

@@ -48,8 +48,6 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    *   Import info datastoer service.
    * @param \Drupal\datastore\DatastoreService $datastore
    *   Datastore service.
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
-   *   Resource mapper service.
    */
   public function __construct(
     array $configuration,
@@ -57,12 +55,11 @@ class DatastoreInfo extends DatasetInfoPluginBase {
     $pluginDefinition,
     ImportInfo $importInfo,
     DatastoreService $datastore,
-    ResourceMapper $resourceMapper,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->importInfo = $importInfo;
     $this->datastore = $datastore;
-    $this->resourceMapper = $resourceMapper;
+    $this->resourceMapper = $datastore->getResourceMapper();
   }
 
   /**
@@ -91,7 +88,6 @@ class DatastoreInfo extends DatasetInfoPluginBase {
       $pluginDefinition,
       $container->get('dkan.datastore.import_info'),
       $container->get('dkan.datastore.service'),
-      $container->get('dkan.metastore.resource_mapper'),
     );
   }
 
@@ -100,21 +96,31 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    */
   public function addDatasetInfo(array $info): array {
     foreach ($info as &$revision) {
-      if (!isset($revision['distributions'])) {
-        continue;
-      }
-      foreach ($revision['distributions'] as &$distribution) {
+      $this->addRevisionInfo($revision);
+    }
+    return $info;
+  }
+
+  /**
+   * Add revision info.
+   *
+   * @param array $revision
+   *   The revision info from a dataset info array.
+   */
+  protected function addRevisionInfo(array &$revision): array {
+    foreach ($revision['distributions'] as &$distribution) {
+      if (is_array($distribution)) {
         $this->addDistributionInfo($distribution);
       }
     }
-    return $info;
+    return $revision;
   }
 
   /**
    * Alter the distribution info.
    *
    * @param array $distribution
-   *   The distribution info array from a dataset info array.
+   *   The distribution info from a dataset info array.
    */
   protected function addDistributionInfo(array &$distribution): void {
     $identifier = $distribution['resource_id'];
