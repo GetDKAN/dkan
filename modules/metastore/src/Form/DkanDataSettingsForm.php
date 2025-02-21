@@ -114,8 +114,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Redirect to datasets view after form submit'),
       '#default_value' => $config->get('redirect_to_datasets'),
-      '#description' => $this->t('Enable this option to automatically redirect
-        to the datasets view after submitting a dataset form.'),
+      '#description' => $this->t('Disable this option if you do not have access to the datasets view.'),
     ];
   }
 

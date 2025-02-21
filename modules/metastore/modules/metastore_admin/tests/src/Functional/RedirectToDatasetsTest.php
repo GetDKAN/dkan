@@ -35,7 +35,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
   /**
    * Tests dataset form submission when redirect_to_datasets is enabled.
    */
-  public function testRedirectEnabled() {
+  public function testDatasetRedirect() {
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
 
@@ -93,44 +93,6 @@ class RedirectToDatasetsTest extends BrowserTestBase {
     $assert->statusCodeEquals(200);
     $assert->addressEquals('admin/dkan/datasets');
     $assert->pageTextContains('Data ' . $dataset_title . ' has been created.');
-  }
-
-  /**
-   * Tests dataset form submission when redirect_to_datasets is disabled.
-   */
-  public function testRedirectDisabled() {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
-    $metastore_service = $this->container->get('dkan.metastore.service');
-
-    $this->drupalLogin(
-    // @todo Figure out least possible admin permissions.
-      $this->drupalCreateUser([], NULL, TRUE)
-    );
-    $assert = $this->assertSession();
-
-    // 07_admin_dataset_json_form.spec.js : User can create and edit a dataset
-    // with the json form UI.
-    //
-    // Since we don't have JavaScript, we can't use select2 or select_or_other
-    // to add publisher or keyword entities. We create them here with arbitrary
-    // UUIDs so that we can post the names to the form.
-    $publisher_name = uniqid();
-    $metastore_service->post('publisher',
-      $metastore_service->getValidMetadataFactory()->get(
-        json_encode((object) [
-          'identifier' => '9deadc2f-50e0-512a-af7c-4323697d530d',
-          'data' => ['name' => $publisher_name],
-        ]), 'publisher', ['method' => 'POST'])
-    );
-    // We need a keyword.
-    $keyword_data = uniqid();
-    $metastore_service->post('keyword',
-      $metastore_service->getValidMetadataFactory()->get(json_encode((object) [
-        'identifier' => '05b2e74a-eb23-585b-9c1c-4d023e21e8a5',
-        'data' => $keyword_data,
-      ]), 'keyword', ['method' => 'POST'])
-    );
-
 
     // Disable redirect option.
     $this->config('metastore.settings')
@@ -142,8 +104,8 @@ class RedirectToDatasetsTest extends BrowserTestBase {
 
     $dataset_title_no_redirect = 'No Redirect Dataset';
     $this->submitForm([
-      'edit-field-json-metadata-0-value-title' => $dataset_title_no_redirect,
-      'edit-field-json-metadata-0-value-description' => 'No Redirect Dataset Description.',
+      'edit-field-json-metadata-0-value-title' => $dataset_title,
+      'edit-field-json-metadata-0-value-description' => 'Dataset Description.',
       'edit-field-json-metadata-0-value-accesslevel' => 'public',
       'edit-field-json-metadata-0-value-modified-date' => '2020-02-02',
       'edit-field-json-metadata-0-value-publisher-publisher-name' => $publisher_name,
