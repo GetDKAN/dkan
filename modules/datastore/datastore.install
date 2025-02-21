@@ -134,6 +134,25 @@ function datastore_update_9003(&$sandbox) {
   $schema = \Drupal::database()->schema();
   $table_name = 'dkan_post_import_job_status';
 
+  // Drop the current primary keys.
+  $schema->dropPrimaryKey($table_name);
+
+  $query = "
+      ALTER TABLE {$table_name}
+      ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      ADD COLUMN timestamp INT NOT NULL DEFAULT 0
+  ";
+  \Drupal::database()->query($query);
+}
+
+/**
+ * Add 'id' and 'timestamp' to the dkan_post_import_job_status table
+ * if it does not exist.
+ */
+function datastore_update_9004(&$sandbox) {
+  $schema = \Drupal::database()->schema();
+  $table_name = 'dkan_post_import_job_status';
+
   if (!$schema->fieldExists($table_name, 'id')) {
     // Drop the current primary keys.
     $schema->dropPrimaryKey($table_name);
