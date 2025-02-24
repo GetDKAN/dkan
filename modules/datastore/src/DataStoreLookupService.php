@@ -1,21 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
 
 class DataStoreLookupService implements DataStoreLookupServiceInterface {
-
-/**
-   * Return the resource ID associated with the provided data table name.
-   *
-   * @param string $data_table_name
-   *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
-   *
-   * @throws \Exception
-   *   If $data_table_name can not be found in DB.
-   *
-   * @command dkan:datastore:lookup-resource
+  
+  /**
+   * {@inheritDoc}
    */
   public function datatableToResourceLookup(string $data_table_name) {
     if ($data_table_name) {
@@ -49,15 +43,7 @@ class DataStoreLookupService implements DataStoreLookupServiceInterface {
   }
 
   /**
-   * Return the distribution associated with the provided resource ID.
-   *
-   * @param string $resource_id
-   *   Resource ID, e.g., "6e5a8b0e5f9ae95d1e239844aaab2db4".
-   *
-   * @throws \Exception
-   *   If $resource_id can not be found in DB.
-   *
-   * @command dkan:datastore:lookup-distribution
+   * {@inheritDoc}
    */
   public function resourceToDistribution(string $resource_id) {
     if ($resource_id) {
@@ -100,15 +86,7 @@ class DataStoreLookupService implements DataStoreLookupServiceInterface {
   }
 
   /**
-   * Return the dataset UUID associated with the provided distribution UUID.
-   *
-   * @param string $distribution_uuid
-   *   Distribution ID, e.g., "d10163be-b7cc-5f76-a5e7-8d2bb4cda6bc".
-   *
-   * @throws \Exception
-   *   If $distribution_id is not exactly 36 chars.
-   *
-   * @command dkan:datastore:lookup-dataset
+   * {@inheritDoc}
    */
   public function distributionToDataset(string $distribution_uuid) {
     if ($distribution_uuid && strlen($distribution_uuid) == 36) {
@@ -141,43 +119,5 @@ class DataStoreLookupService implements DataStoreLookupServiceInterface {
       }
     }
     throw new \Exception("Dataset lookup: Distribution UUID needs to be 36 characters.");
-  }
-
-  /**
-   * Return the dataset uuid associated with the provided data table name.
-   *
-   * Will do the following:
-   * - Deconstruct the data table id.
-   * -- datastore_
-   * -- identifier
-   * -- version
-   * -- perspective
-   * - Lookup the associated resource ID
-   * - Lookup the associated distribution UUID
-   * - Lookup the associated dataset UUID
-   * - Display dataset UUID to console.
-   *
-   * @param string $data_table_name
-   *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
-   *
-   * @command dkan:datastore:reverse-dataset-lookup
-   */
-  public function reverseDatasetLookup(string $data_table_name) {
-    $resource_id = '';
-    $distribution_uuid = '';
-    if ($data_table_name) {
-      $resource_id = $this->datatableToResourceLookup($data_table_name);
-    }
-    if ($resource_id) {
-      $distribution_uuid = $this->resourceToDistribution($resource_id);
-    }
-    if ($distribution_uuid) {
-      $dataset_uuid = $this->distributionToDataset($distribution_uuid);
-      // Output to console and end command.
-      $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
-      return DrushCommands::EXIT_SUCCESS;
-    }
-    $this->output()->writeln('Can not map data table to dataset: ' . $data_table_name);
-    return DrushCommands::EXIT_FAILURE;
   }
 }

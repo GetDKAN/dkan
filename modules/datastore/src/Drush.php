@@ -56,6 +56,13 @@ class Drush extends DrushCommands {
   protected PostImportResultFactory $postImportResultFactory;
 
   /**
+   * Database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -316,4 +323,41 @@ class Drush extends DrushCommands {
     return DrushCommands::EXIT_FAILURE;
   }
 
+  /**
+   * Return the dataset uuid associated with the provided data table name.
+   *
+   * Will do the following:
+   * - Deconstruct the data table id.
+   * -- datastore_
+   * -- identifier
+   * -- version
+   * -- perspective
+   * - Lookup the associated resource ID
+   * - Lookup the associated distribution UUID
+   * - Lookup the associated dataset UUID
+   * - Display dataset UUID to console.
+   *
+   * @param string $data_table_name
+   *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
+   * 
+   * @command dkan:datastore:reverse-dataset-lookup
+   */
+  public function reverseDatasetLookup(string $data_table_name) {
+    $resource_id = '';
+    $distribution_uuid = '';
+    if ($data_table_name) {
+      $resource_id = $this->datatableToResourceLookup($data_table_name);
+    }
+    if ($resource_id) {
+      $distribution_uuid = $this->resourceToDistribution($resource_id);
+    }
+    if ($distribution_uuid) {
+      $dataset_uuid = $this->distributionToDataset($distribution_uuid);
+      // Output to console and end command.
+      $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
+      return DrushCommands::EXIT_SUCCESS;
+    }
+    $this->output()->writeln('Can not map data table to dataset: ' . $data_table_name);
+    return DrushCommands::EXIT_FAILURE;
+  }
 }
