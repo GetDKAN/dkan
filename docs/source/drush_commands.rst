@@ -11,36 +11,6 @@ dkan:dataset-info
 
 ~~~~~~
 
-dkan:datastore:lookup-resource
------------------
-  Return the resource ID associated with the provided data table name.
-
-  **Arguments**
-
-  - **data_table_name** The datastore table name in the database.
-
-~~~~~~
-
-dkan:datastore:lookup-distribution
------------------
-  Return the distribution associated with the provided resource ID.
-
-  **Arguments**
-
-  - **resource_id** The resource ID for a data file.
-
-~~~~~~
-
-dkan:datastore:lookup-dataset
------------------
-  Return the dataset UUID associated with the provided distribution UUID.
-
-  **Arguments**
-
-  - **distribution_uuid** The UUID for the distribution.
-
-~~~~~~
-
 dkan:datastore:reverse-dataset-lookup
 -----------------
    Takes an argument of the table name and returns the dataset uuid.
