@@ -10,6 +10,11 @@ services:
       - '@dkan.metastore.resource_mapper'
       - '@event_dispatcher'
       - '@dkan.metastore.reference_lookup'
+  
+  dkan.datastore.lookup:
+    class: \Drupal\datastore\DatastoreLookup
+    arguments:
+      - '@database'
 
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport

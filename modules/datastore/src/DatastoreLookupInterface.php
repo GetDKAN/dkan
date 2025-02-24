@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Drupal\datastore;
 
-use Drupal\common\DataResource;
-
 /**
  * Various lookup utilities related to the datastore.
  */
-interface DataStoreLookupServiceInterface {
+interface DatastoreLookupInterface {
 
   /**
    * Return the resource ID associated with the provided data table name.

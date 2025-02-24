@@ -6,12 +6,29 @@ namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
 
-class DataStoreLookupService implements DataStoreLookupServiceInterface {
+class DatastoreLookup implements DatastoreLookupInterface {
+
+  /**
+   * Database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
+   * DataStoreLookupService constructor.
+   *
+   * @param \Drupal\Core\Database\Connection $database
+   *   Database connection service.
+   */
+  public function __construct(Connection $database) {
+      $this->database = $database;
+    }
   
   /**
    * {@inheritDoc}
    */
-  public function datatableToResourceLookup(string $data_table_name) {
+  public function datatableToResourceLookup(string $data_table_name): string {
     if ($data_table_name) {
       // Establish DB connection.
       $resource_query = $this->database->select('dkan_metastore_resource_mapper', 'dm')
@@ -45,7 +62,7 @@ class DataStoreLookupService implements DataStoreLookupServiceInterface {
   /**
    * {@inheritDoc}
    */
-  public function resourceToDistribution(string $resource_id) {
+  public function resourceToDistribution(string $resource_id): string {
     if ($resource_id) {
       // Tack on an underscore to the
       // end of the provided resource ID.
@@ -88,7 +105,7 @@ class DataStoreLookupService implements DataStoreLookupServiceInterface {
   /**
    * {@inheritDoc}
    */
-  public function distributionToDataset(string $distribution_uuid) {
+  public function distributionToDataset(string $distribution_uuid): string {
     if ($distribution_uuid && strlen($distribution_uuid) == 36) {
       // Now we have the distribution identifier,
       // so lets get the dataset UUID
@@ -120,4 +137,5 @@ class DataStoreLookupService implements DataStoreLookupServiceInterface {
     }
     throw new \Exception("Dataset lookup: Distribution UUID needs to be 36 characters.");
   }
+
 }

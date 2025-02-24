@@ -42,4 +42,5 @@ class CommonCommands extends DrushCommands {
   public function datasetInfo(string $uuid) {
     return json_encode($this->datasetInfo->gather($uuid), JSON_PRETTY_PRINT);
   }
+
 }

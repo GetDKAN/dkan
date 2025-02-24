@@ -7,6 +7,7 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\common\DataResource;
 use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
+use Drupal\datastore\DatastoreLookupInterface;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\MetastoreService;
@@ -56,6 +57,13 @@ class Drush extends DrushCommands {
   protected PostImportResultFactory $postImportResultFactory;
 
   /**
+   * The Datastore lookup service.
+   *
+   * @var \Drupal\datastore\DatastoreLookupInterface
+   */
+  protected DatastoreLookupInterface $DatastoreLookup;
+
+  /**
    * Database connection service.
    *
    * @var \Drupal\Core\Database\Connection
@@ -71,7 +79,8 @@ class Drush extends DrushCommands {
     ResourceLocalizer $resourceLocalizer,
     ResourceMapper $resourceMapper,
     ImportInfoList $importInfoList,
-    PostImportResultFactory $postImportResultFactory
+    PostImportResultFactory $postImportResultFactory,
+    DatastoreLookupInterface $datastoreLookup
   ) {
     parent::__construct();
     $this->metastoreService = $metastoreService;
@@ -80,6 +89,7 @@ class Drush extends DrushCommands {
     $this->resourceMapper = $resourceMapper;
     $this->importInfoList = $importInfoList;
     $this->postImportResultFactory = $postImportResultFactory;
+    $this->datastoreLookup = $datastoreLookup;
   }
 
   /**
@@ -346,13 +356,13 @@ class Drush extends DrushCommands {
     $resource_id = '';
     $distribution_uuid = '';
     if ($data_table_name) {
-      $resource_id = $this->datatableToResourceLookup($data_table_name);
+      $resource_id = $this->datastoreLookup->datatableToResourceLookup($data_table_name);
     }
     if ($resource_id) {
-      $distribution_uuid = $this->resourceToDistribution($resource_id);
+      $distribution_uuid = $this->datastoreLookup->resourceToDistribution($resource_id);
     }
     if ($distribution_uuid) {
-      $dataset_uuid = $this->distributionToDataset($distribution_uuid);
+      $dataset_uuid = $this->datastoreLookup->distributionToDataset($distribution_uuid);
       // Output to console and end command.
       $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
       return DrushCommands::EXIT_SUCCESS;
@@ -360,4 +370,5 @@ class Drush extends DrushCommands {
     $this->output()->writeln('Can not map data table to dataset: ' . $data_table_name);
     return DrushCommands::EXIT_FAILURE;
   }
+
 }
