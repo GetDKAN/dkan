@@ -41,4 +41,5 @@ interface DatastoreLookupInterface {
    *   If $distribution_id is not exactly 36 chars.
    */
   public function distributionToDataset(string $distribution_uuid): string;
+
 }

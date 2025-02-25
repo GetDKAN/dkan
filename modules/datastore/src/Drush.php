@@ -7,7 +7,6 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\common\DataResource;
 use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
-use Drupal\datastore\DatastoreLookupInterface;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\MetastoreService;
@@ -61,7 +60,7 @@ class Drush extends DrushCommands {
    *
    * @var \Drupal\datastore\DatastoreLookupInterface
    */
-  protected DatastoreLookupInterface $DatastoreLookup;
+  protected DatastoreLookupInterface $datastoreLookup;
 
   /**
    * Database connection service.
@@ -349,7 +348,7 @@ class Drush extends DrushCommands {
    *
    * @param string $data_table_name
    *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
-   * 
+   *
    * @command dkan:datastore:reverse-dataset-lookup
    */
   public function reverseDatasetLookup(string $data_table_name) {

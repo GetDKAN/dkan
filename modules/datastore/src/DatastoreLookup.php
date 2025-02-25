@@ -6,6 +6,9 @@ namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
 
+/**
+ * Implementation of various lookup utilities related to the datastore.
+ */
 class DatastoreLookup implements DatastoreLookupInterface {
 
   /**
@@ -22,9 +25,9 @@ class DatastoreLookup implements DatastoreLookupInterface {
    *   Database connection service.
    */
   public function __construct(Connection $database) {
-      $this->database = $database;
-    }
-  
+    $this->database = $database;
+  }
+
   /**
    * {@inheritDoc}
    */
