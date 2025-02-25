@@ -219,7 +219,7 @@ class DatastoreLookupTest extends TestCase {
    * @covers ::reverseDatasetLookup
    */
   public function testReverseDatasetLookupError(): void {
-    $data_table_name = 'invalid_datastore_name';
+    $data_table_name = 'invalid-datatable-name';
 
     // Set up the expectations for the datastore lookup methods.
     $this->datastoreLookupInterface->expects($this->once())
