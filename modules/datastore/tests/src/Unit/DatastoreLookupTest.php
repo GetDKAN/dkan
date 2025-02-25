@@ -19,7 +19,6 @@ use Drush\Commands\DrushCommands;
  */
 class DatastoreLookupTest extends TestCase {
 
-
   /**
    * @var \Drupal\datastore\DatastoreLookupInterface|\PHPUnit\Framework\MockObject\MockObject
    */
