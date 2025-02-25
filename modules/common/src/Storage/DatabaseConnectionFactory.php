@@ -3,65 +3,30 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Database;
 
 /**
- * Create database connection.
+ * Database connection factory that can set a connection timeout.
  *
- * @return \Drupal\Core\Database\Connection
- *   New connection object.
+ * This is the dkan.common.database_connection_factory service.
+ *
+ * @todo Services should not contain state, such as the timeout property here.
+ *   We should have a way to set the timeout as an argument to getConnection().
  */
-class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
+class DatabaseConnectionFactory extends AbstractDatabaseConnectionFactory {
 
   /**
-   * Timeout for built database connections in seconds.
+   * Timeout for database connections in seconds.
    */
   protected int $timeout;
 
   /**
-   * Database connection target name.
-   */
-  protected string $target = 'default';
-
-  /**
-   * Database connection key.
-   */
-  protected string $key = 'default';
-
-  /**
-   * Build database connection factory.
-   *
-   * Adds connection info for the connection being built.
-   */
-  public function __construct() {
-    Database::addConnectionInfo($this->key, $this->target, $this->buildConnectionInfo());
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function buildConnectionInfo(): array {
-    return Database::getConnectionInfo()[$this->target];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getConnection(): Connection {
-    $connection = Database::getConnection($this->target, $this->key);
-    $this->prepareConnection($connection);
-
-    return $connection;
-  }
-
-  /**
-   * Prepare database connection.
-   *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection object.
+   * {@inheritDoc}
    */
   protected function prepareConnection(Connection $connection): void {
-    $this->doSetConnectionTimeout($connection);
+    if (isset($this->timeout)) {
+      // @see https://github.com/GetDKAN/dkan/pull/3764
+      $connection->query('SET SESSION wait_timeout = ' . $this->timeout);
+    }
   }
 
   /**
@@ -71,18 +36,6 @@ class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
     $this->timeout = $timeout;
 
     return $this;
-  }
-
-  /**
-   * Set the timeout on the supplied connection object.
-   *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection object.
-   */
-  protected function doSetConnectionTimeout(Connection $connection): void {
-    if (isset($this->timeout)) {
-      $connection->query('SET SESSION wait_timeout = ' . $this->timeout);
-    }
   }
 
 }

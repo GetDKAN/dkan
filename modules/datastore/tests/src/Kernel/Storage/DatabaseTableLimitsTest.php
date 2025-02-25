@@ -15,6 +15,7 @@ use Procrastinator\Result;
  * @covers \Drupal\datastore\Storage\DatabaseTable
  * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
  *
+ * @group dkan
  * @group datastore
  * @group kernel
  *

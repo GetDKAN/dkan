@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - name: DKAN Docs
+  - name: 📘 DKAN Docs
     url: https://dkan.readthedocs.io/en/latest/
     about: This is the central site for technical/developer documentation of DKAN.
   - name: Get DKAN
     url: https://demo.getdkan.org/
-    about: A boilerplate DKAN demo
+    about: A boilerplate DKAN demo site.

@@ -18,6 +18,17 @@ Our efforts will be focused on the 2.x version of DKAN. If you are reporting a b
 and it is not a security issue, we encourage you to reach out on the
 `DKAN Discussions <https://github.com/GetDKAN/dkan/discussions>`_.
 
+Setting up a local development sandbox
+--------------------------------------
+
+We recomend using DDEV with the DDEV-DKAN add-on as there are many helpful commands that will make it easier to get started.
+Once you have composer, docker, and DDEV `installed <https://dkan.readthedocs.io/en/latest/installation/index.html>`_, head over to `Getting Started with DDEV-DKAN <https://getdkan.github.io/ddev-dkan/getting-started.html>`_.
+
+Issues tagged Good First Issue
+------------------------------
+
+Issues tagged with the "Good First Issue" tag have been identified by experienced contributors as having some aspect that should be easy for a new contributor to do.
+
 Submitting a Pull Request (PR)
 ------------------------------
 
@@ -34,3 +45,8 @@ and push the changes to your GitHub repository, which will automatically update 
 At all times, please ensure the automated build passes so that a minimal amount of tests are passed for your code.
 
 After your PR is merged, you can safely delete your branch and pull the changes from the main (upstream) repository.
+
+Coding Standards
+----------------
+
+`Coder <http://drupal.org/project/coder>`_ is a tool to help write code for Drupal modules. It can detect and automatically fix coding standard errors. The project provides a coding standard for PHP_CodeSniffer based on the `Drupal coding standard <https://www.drupal.org/docs/develop/standards/php/php-coding-standards>`_.

@@ -1,0 +1,17 @@
+name: 🛠️ Task
+description: A workitem that needs to be done while developing a story, feature, addressing tech debt, documentation, etc.
+title: ""
+labels: [task]
+
+body:
+  - type: textarea
+    attributes:
+     label: Description
+     description: A concise explanation of the task or suggested implementation.
+     render: markdown
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      description: Tell us what should happen when the task is completed. How will we know when we're done?.
+      render: markdown
+

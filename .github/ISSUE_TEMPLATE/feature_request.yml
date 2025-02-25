@@ -6,8 +6,8 @@ labels: [feature request]
 body:
   - type: textarea
     attributes:
-      label: Feature Description
-      description: "Briefly describe the feature you would like to see added to the project."
+      label: User Story
+      description: "As a [user], I want [goal] so that [some reason]."
       placeholder: "Provide a brief overview of the feature..."
     validations:
       required: true
@@ -25,16 +25,6 @@ body:
       label: Problem and Motivation
       description: "Explain the problem that this feature addresses and why it is important."
       placeholder: "What problem does this feature solve? Why is it needed?"
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Potential Benefits
-      description: "Outline the potential benefits of this feature for the project or its users."
-      placeholder: "How will this feature benefit the project or its users?"
-    validations:
-      required: true
 
   - type: checkboxes
     attributes:
@@ -54,7 +44,7 @@ body:
 
   - type: textarea
     attributes:
-      label: Additional Context
-      description: "Provide any additional context, such as similar features in other projects, screenshots, or mockups."
+      label: Acceptance Criteria
+      description: Set up the scenario. Given [x] When [y] Then [z].
     validations:
       required: false

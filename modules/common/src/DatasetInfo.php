@@ -1,55 +1,55 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\common;
 
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Info\ImportInfo;
-use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\node\Entity\Node;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Extract helpful information from a dataset identifier.
  *
+ * Uses basic metastore information by default, other modules may add
+ * additional information using the dataset_info plugin type.
+ *
  * @package Drupal\common
  */
-class DatasetInfo implements ContainerInjectionInterface {
+class DatasetInfo {
 
   /**
    * Metastore storage.
-   *
-   * @var \Drupal\metastore\Storage\Data
    */
-  protected $storage;
-
-  /**
-   * Datastore.
-   *
-   * @var \Drupal\datastore\DatastoreService
-   */
-  protected $datastore;
+  protected MetastoreEntityStorageInterface $storage;
 
   /**
    * Resource mapper.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
-  protected $resourceMapper;
+  protected ResourceMapper $resourceMapper;
 
   /**
-   * Import info service.
+   * DatasetInfoPluginManager.
    *
-   * @var \Drupal\datastore\Service\Info\ImportInfo
+   * @var \Drupal\common\DatasetInfoPluginManager
    */
-  protected $importInfo;
+  protected DatasetInfoPluginManager $pluginManager;
 
   /**
-   * Set storage.
+   * DatasetInfo constructor.
+   *
+   * @param \Drupal\common\DatasetInfoPluginManager $pluginManager
+   *   The DatasetInfo plugin manager.
+   */
+  public function __construct(DatasetInfoPluginManager $pluginManager) {
+    $this->pluginManager = $pluginManager;
+  }
+
+  /**
+   * Inject storage factory and set storage.
+   *
+   * @todo Inject this via the constructor one we have our dependencies fixed.
    *
    * @param \Drupal\metastore\Storage\DataFactory $dataFactory
    *   Metastore's data factory.
@@ -59,49 +59,15 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
-   * Set datastore.
+   * Inject the resource mapper.
    *
-   * @param \Drupal\datastore\DatastoreService $datastore
-   *   Datastore service.
-   */
-  public function setDatastore(DatastoreService $datastore) {
-    $this->datastore = $datastore;
-  }
-
-  /**
-   * Set the resource mapper.
+   * @todo Inject this via the constructor one we have our dependencies fixed.
    *
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
    */
   public function setResourceMapper(ResourceMapper $resourceMapper) {
     $this->resourceMapper = $resourceMapper;
-  }
-
-  /**
-   * Set the import info service.
-   *
-   * @param \Drupal\datastore\Service\Info\ImportInfo $importInfo
-   *   Import info service.
-   */
-  public function setImportInfo(ImportInfo $importInfo) {
-    $this->importInfo = $importInfo;
-  }
-
-  /**
-   * Instantiates a new instance of this class.
-   *
-   * While the relevant services are each called conditionally, leaving none
-   * needed here, this function must still be implemented.
-   *
-   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-   *   The service container this instance should use.
-   *
-   * @return static
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-    );
   }
 
   /**
@@ -114,7 +80,8 @@ class DatasetInfo implements ContainerInjectionInterface {
    *   Dataset information array.
    */
   public function gather(string $uuid) : array {
-    if (!$this->storage) {
+    // @todo Remove this check once we consolodate common and metastore.
+    if (!($this->storage ?? FALSE)) {
       $info['notice'] = 'The DKAN Metastore module is not enabled.';
       return $info;
     }
@@ -131,6 +98,8 @@ class DatasetInfo implements ContainerInjectionInterface {
     if ($latestRevisionIsDraft && isset($published)) {
       $info['published_revision'] = $this->getRevisionInfo($published);
     }
+
+    $this->applyPlugins($info);
 
     return $info;
   }
@@ -215,27 +184,6 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
-   * Get the storage object for a resource.
-   *
-   * @param string $identifier
-   *   Resource identifier.
-   * @param string $version
-   *   Resource version timestamp.
-   *
-   * @return null|\Drupal\datastore\Storage\DatabaseTable
-   *   The Database table object, or NULL.
-   */
-  protected function getStorage(string $identifier, string $version) {
-    try {
-      $storage = $this->datastore->getStorage($identifier, $version);
-    }
-    catch (\Exception) {
-      $storage = NULL;
-    }
-    return $storage;
-  }
-
-  /**
    * Get resources information.
    *
    * @param object $distribution
@@ -256,24 +204,31 @@ class DatasetInfo implements ContainerInjectionInterface {
     $identifier = $resource->data->identifier;
     $version = $resource->data->version;
 
-    $info = $this->importInfo->getItem($identifier, $version);
-    $fileMapper = $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version);
     $source = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
 
     return [
       'distribution_uuid' => $distribution->identifier,
       'resource_id' => $identifier,
       'resource_version' => $version,
-      'fetcher_status' => $info->fileFetcherStatus,
-      'fetcher_percent_done' => $info->fileFetcherPercentDone ?? 0,
-      'file_path' => isset($fileMapper) ? $fileMapper->getFilePath() : 'not found',
       'mime_type' => isset($source) ? $source->getMimeType() : '',
       'source_path' => isset($source) ? $source->getFilePath() : '',
-      'importer_percent_done' => $info->importerPercentDone ?? 0,
-      'importer_status' => $info->importerStatus,
-      'importer_error' => $info->importerError,
-      'table_name' => ($storage = $this->getStorage($identifier, $version)) ? $storage->getTableName() : 'not found',
     ];
+  }
+
+  /**
+   * Apply plugins to dataset info.
+   *
+   * @param array $info
+   *   Dataset info array.
+   */
+  protected function applyPlugins(array &$info) {
+    $pluginDefinitions = $this->pluginManager->getDefinitions();
+    foreach ($pluginDefinitions as $definition) {
+      $plugin = $this->pluginManager->createInstance($definition['id']);
+      // Ensure existing values are not overwritten.
+      $info = \array_replace_recursive($plugin->addDatasetInfo($info), $info);
+    }
+
   }
 
 }
