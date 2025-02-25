@@ -6,10 +6,13 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Routing\RouteProvider;
+use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Harvest\ResultInterpreter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /**
  * Provides a list controller for the harvest plan entity type.
@@ -23,6 +26,8 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    */
   protected HarvestService $harvestService;
 
+  protected RouteProviderInterface $routeProvider;
+
   /**
    * Harvest run repository service.
    */
@@ -35,6 +40,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     $builder = parent::createInstance($container, $entity_type);
     $builder->harvestService = $container->get('dkan.harvest.service');
     $builder->harvestRunRepository = $container->get('dkan.harvest.storage.harvest_run_repository');
+    $builder->routeProvider = $container->get('router.route_provider');
     return $builder;
   }
 
@@ -77,10 +83,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
 
     // Default values for a row if there's no info.
     $row = [
-      'harvest_link' => Link::fromTextAndUrl($harvest_plan_id, Url::fromRoute(
-        'datastore.datasets_import_status_dashboard',
-        ['harvest_id' => $harvest_plan_id],
-      )),
+      'harvest_link' => $this->getHarvestLink($harvest_plan_id),
       'extract_status' => [
         'data' => 'REGISTERED',
         'class' => 'registered',
@@ -101,6 +104,30 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     }
     // Don't call parent::buildRow() because we don't want operations (yet).
     return $row;
+  }
+
+  /**
+   * Get the harvest link.
+   *
+   * @param string $harvest_plan_id
+   *   Harvest plan ID.
+   *
+   * @return \Drupal\Core\Link|string
+   *   Link to datastore import dashboard if available, else just the plan ID.
+   */
+  protected function getHarvestLink(string $harvest_plan_id) {
+    try {
+      // Test for presence of datastore.datasets_import_status_dashboard route.
+      $this->routeProvider->getRouteByName('datastore.datasets_import_status_dashboard');
+      $harvest_link = Link::fromTextAndUrl($harvest_plan_id, Url::fromRoute(
+        'datastore.datasets_import_status_dashboard',
+        ['harvest_id' => $harvest_plan_id],
+      ));
+      return $harvest_link;
+    }
+    catch (RouteNotFoundException $e) {
+      return $harvest_plan_id;
+    }
   }
 
 }

@@ -1,10 +1,24 @@
 <?php
 
 use Drupal\Core\Database\Database;
+use Drupal\user\Entity\Role;
 
 /**
  * @file
  */
+
+/**
+ * Implements hook_install().
+ */
+function datastore_install() {
+  // If we  have the built-in api_user role, add some datastore permissions.
+  $role = Role::load('api_user');
+  if ($role) {
+    $role->grantPermission('datastore_api_drop');
+    $role->grantPermission('datastore_api_import');
+    $role->save();
+  }
+}
 
 /**
  * Add a new "checksum" column to the "dkan_metastore_resource_mapper" table.

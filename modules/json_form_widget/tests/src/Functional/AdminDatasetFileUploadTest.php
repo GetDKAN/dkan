@@ -22,6 +22,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan',
+    'datastore',
     'json_form_widget',
     'node',
   ];

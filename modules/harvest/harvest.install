@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\user\Entity\Role;
+
 /**
  * @file
  */
@@ -26,6 +28,21 @@ function harvest_requirements($phase): array {
     }
   }
   return $requirements;
+}
+
+/**
+ * Implements hook_install().
+ */
+function harvest_install() {
+  // If we have the built-in api_user role, add some harvest permissions.
+  $role = Role::load('api_user');
+  if ($role) {
+    $role->grantPermission('harvest_api_index');
+    $role->grantPermission('harvest_api_register');
+    $role->grantPermission('harvest_api_run');
+    $role->grantPermission('harvest_api_info');
+    $role->save();
+  }
 }
 
 /**
