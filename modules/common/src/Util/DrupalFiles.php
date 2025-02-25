@@ -11,8 +11,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provide custom DKAN file storage system functionality.
  *
  * It wraps a few file related Drupal functions, it provides
- * a mechanism to bring remote files locally, and to move local files to a
- * Drupal appropriate place for public access through a URL.
+ * a mechanism to move local files to a Drupal-appropriate place for public
+ * access through a URL.
+ *
+ * Historically, this class also supported remote file retrieval, but that has
+ * been removed due to the deprecation of Drupal's system_retrieve_file(). In
+ * practice it's not clear this was ever really used, as remote file retrieval
+ * is always managed through the FileFetcher.
+ *
+ * In the future it may be best to deprecate this whole class and simply move
+ * whatever logic is needed directly into the harvest and datastore modules.
  *
  * @package Drupal\common\Util
  */
@@ -97,8 +105,8 @@ class DrupalFiles implements ContainerInjectionInterface {
 
       return $this->fileCreateUrl("{$destination}/{$filename}");
     }
-    // Handle http(s):// URIs.
-    return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);
+    // @todo Retrieve a remote file.
+    throw new \Exception("Remote file retrieval not yet supported");
   }
 
   /**
