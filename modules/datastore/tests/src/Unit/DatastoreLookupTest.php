@@ -83,8 +83,8 @@ class DatastoreLookupTest extends TestCase {
    * @covers ::datatableToResourceLookup
    */
   public function testDatatableToResourceLookup(): void {
-    $data_table_name = 'datastore_1cc649587284c4bf29ada1cc2e58b00d';
-    $expected_identifier = 'e1f2ebcd-ee23-454f-87b5-df0306658418';
+    $data_table_name = 'datatable-name';
+    $expected_identifier = 'expected-identifier';
 
     // Mock the SelectInterface.
     $select = $this->createMock(SelectInterface::class);
@@ -127,11 +127,63 @@ class DatastoreLookupTest extends TestCase {
   }
 
   /**
+   * Tests the resourceToDistribution method.
+   *
+   * @covers ::resourceToDistribution
+   */
+  public function testResourceToDistribution(): void {
+    $resource_id = 'resource-uuid';
+    $expected_distribution_identifier = 'distribution-uuid';
+  
+    // Mock the SelectInterface.
+    $select = $this->createMock(SelectInterface::class);
+  
+    // Mock the query result.
+    $query_result = [['identifier' => $expected_distribution_identifier]];
+  
+    // Mock the StatementInterface.
+    $statement = $this->createMock(StatementInterface::class);
+    $statement->expects($this->once())
+      ->method('fetchAll')
+      ->willReturn($query_result);
+  
+    // Set up the expectations for the database select query.
+    $this->database->expects($this->once())
+      ->method('select')
+      ->with('node__field_json_metadata', 'nfm')
+      ->willReturn($select);
+
+    // Add our special expression
+    $select->expects($this->once())
+      ->method('addExpression')
+      ->with("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier')
+      ->willReturnSelf();
+  
+    // Add our special condition
+    $select->expects($this->once())
+      ->method('condition')
+      ->with(
+        'nfm.field_json_metadata_value',
+        '%' . $this->database->escapeLike($resource_id . '_') . '%',
+        'LIKE'
+      )
+      ->willReturnSelf();
+  
+    $select->expects($this->once())
+      ->method('execute')
+      ->willReturn($statement);
+  
+    // Call the method and assert the result.
+    $result = $this->datastoreLookup->resourceToDistribution($resource_id);
+    $this->assertEquals($expected_distribution_identifier, $result);
+  }
+
+  /**
    * Tests the reverseDatasetLookup method for a successful lookup.
    */
   public function testReverseDatasetLookupSuccess(): void {
-    $data_table_name = 'datastore_8b7a21d442d603b113f1a17beac8bcdd';
-    $resource_id = 'resource-uuid';
+    $data_table_name = 'datatable-name';
+    $resource_id = 'resource-id';
     $distribution_uuid = 'distribution-uuid';
     $dataset_uuid = 'dataset-uuid';
 
@@ -161,7 +213,7 @@ class DatastoreLookupTest extends TestCase {
     $this->assertEquals(DrushCommands::EXIT_SUCCESS, $result);
   }
 
-  /**
+ /**
    * Tests the reverseDatasetLookup method for an error scenario.
    *
    * @covers ::reverseDatasetLookup
@@ -169,44 +221,20 @@ class DatastoreLookupTest extends TestCase {
   public function testReverseDatasetLookupError(): void {
     $data_table_name = 'invalid_datastore_name';
 
-    // Mock the SelectInterface.
-    $select = $this->createMock(SelectInterface::class);
+    // Set up the expectations for the datastore lookup methods.
+    $this->datastoreLookupInterface->expects($this->once())
+      ->method('datatableToResourceLookup')
+      ->with($data_table_name)
+      ->willReturn('');
 
-    // Mock the StatementInterface.
-    $statement = $this->createMock(StatementInterface::class);
-    $statement->expects($this->once())
-      ->method('fetchAll')
-      ->willReturn([]);
+    // Set up the expectation for the output.
+    $this->output->expects($this->once())
+      ->method('writeln')
+      ->with('Can not map data table to dataset: ' . $data_table_name);
 
-    // Set up the expectations for the database select query.
-    $this->database->expects($this->once())
-      ->method('select')
-      ->with('dkan_metastore_resource_mapper', 'dm')
-      ->willReturn($select);
-
-    $select->expects($this->once())
-      ->method('fields')
-      ->with('dm', ['identifier'])
-      ->willReturnSelf();
-
-    $select->expects($this->once())
-      ->method('where')
-      ->with(
-        'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :data_table_name',
-        [':data_table_name' => $data_table_name]
-      )
-      ->willReturnSelf();
-
-    $select->expects($this->once())
-      ->method('execute')
-      ->willReturn($statement);
-
-    // Expect the exception to be thrown.
-    $this->expectException(\Exception::class);
-    $this->expectExceptionMessage('Resource lookup: Can not map data table name invalid_datastore_name to resource ID. Please make sure your data table name exists as a table in the database.');
-
-    // Call the method which should throw the exception.
-    $this->datastoreLookup->datatableToResourceLookup($data_table_name);
+    // Call the reverseDatasetLookup method and assert the result.
+    $result = $this->drush->reverseDatasetLookup($data_table_name);
+    $this->assertEquals(DrushCommands::EXIT_FAILURE, $result);
   }
 
 }
