@@ -18,3 +18,4 @@ tagfile
 .phpunit.result.cache
 .phpunit.cache
 docs/build
+docs/.venv

@@ -5,7 +5,6 @@ namespace Drupal\Tests\datastore\Unit\Service;
 use Drupal\Core\Database\Connection;
 use Drupal\metastore\ResourceMapper;
 use PHPUnit\Framework\TestCase;
-use Drupal\datastore\DatastoreService;
 use Drupal\common\DataResource;
 use Drupal\datastore\PostImportResultFactory;
 
@@ -28,47 +27,40 @@ class PostImportResultTest extends TestCase {
     $resource = new DataResource('test.csv', 'text/csv');
 
     $resourceMapperMock = $this->createMock(ResourceMapper::class);
-    $resourceMapperMock->expects($this->any())
-      ->method('get')
-      ->withAnyParameters()
-      ->willReturn($resource);
-
-    $datastoreServiceMock = $this->createMock(DatastoreService::class);
-    $datastoreServiceMock->expects($this->any())
-      ->method('getResourceMapper')
-      ->willReturn($resourceMapperMock);
 
     $queryMock = $this->getMockBuilder('stdClass')
       ->addMethods(['fields', 'execute'])
       ->getMock();
 
-    $queryMock->expects($this->once())
+    $queryMock->expects($this->any())
       ->method('fields')
       ->with([
         'resource_identifier' => $resource->getIdentifier(),
         'resource_version' => $resource->getVersion(),
         'post_import_status' => 'done',
-        'post_import_error' => '',
+        'post_import_error' => 'N/A',
+        'timestamp' => 1700000000,
       ])
       ->willReturnSelf();
 
-    $queryMock->expects($this->once())
-      ->method('execute')
-      ->willReturn(TRUE);
-
     $connectionMock = $this->createMock(Connection::class);
-    $connectionMock ->expects($this->once())
+    $connectionMock->expects($this->once())
       ->method('insert')
       ->with('dkan_post_import_job_status')
-      ->willReturn($queryMock);
+      ->willReturnOnConsecutiveCalls($queryMock);
 
-    $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
+    $postImportResultFactoryMock = $this->getMockBuilder(PostImportResultFactory::class)
+      ->setConstructorArgs([$connectionMock, $resourceMapperMock])
+      ->onlyMethods(['getCurrentTime'])
+      ->getMock();
 
-    $postImportResult = $postImportResultFactory->initializeFromResource('done', '', $resource);
+    $postImportResultFactoryMock->expects($this->once())
+      ->method('getCurrentTime')
+      ->willReturn(1700000000);
 
-    $result_store = $postImportResult->storeJobStatus();
-
-    $this->assertTrue($result_store);
+    $postImportResult = $postImportResultFactoryMock->initializeFromResource('done', 'N/A', $resource);
+    $resultStore = $postImportResult->storeJobStatus();
+    $this->assertTrue($resultStore);
   }
 
   /**
@@ -77,24 +69,23 @@ class PostImportResultTest extends TestCase {
    * @covers ::retrieveJobStatus
    */
   public function testRetrieveJobStatus() {
+    $resource = new DataResource('test.csv', 'text/csv');
+
     $import_info = [
-      '#resource_version' => 'test_version',
+      '#resource_version' => $resource->getVersion(),
       '#post_import_status' => 'test_status',
       '#post_import_error' => 'test_error',
     ];
 
-    $resource = new DataResource('test.csv', 'text/csv');
+    $distribution = [
+      'resource_id' => $resource->getIdentifier(),
+    ];
 
     $resourceMapperMock = $this->createMock(ResourceMapper::class);
-    $resourceMapperMock->expects($this->any())
+    $resourceMapperMock->expects($this->once())
       ->method('get')
       ->withAnyParameters()
       ->willReturn($resource);
-
-    $datastoreServiceMock = $this->createMock(DatastoreService::class);
-    $datastoreServiceMock->expects($this->any())
-      ->method('getResourceMapper')
-      ->willReturn($resourceMapperMock);
 
     $resultMock = $this->getMockBuilder('stdClass')
       ->addMethods(['fetchAssoc'])
@@ -105,11 +96,21 @@ class PostImportResultTest extends TestCase {
       ->willReturn($import_info);
 
     $queryMock = $this->getMockBuilder('stdClass')
-      ->addMethods(['condition', 'fields', 'execute'])
+      ->addMethods(['condition', 'fields', 'orderBy', 'range', 'execute'])
       ->getMock();
 
     $queryMock->expects($this->exactly(2))
       ->method('condition')
+      ->willReturnSelf();
+
+    $queryMock->expects($this->once())
+      ->method('orderBy')
+      ->with('timestamp', 'DESC')
+      ->willReturnSelf();
+
+    $queryMock->expects($this->once())
+      ->method('range')
+      ->with(0, 1)
       ->willReturnSelf();
 
     $queryMock->expects($this->once())
@@ -133,7 +134,7 @@ class PostImportResultTest extends TestCase {
 
     $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
 
-    $postImportResult = $postImportResultFactory->initializeFromResource('test_status', 'test_error', $resource);
+    $postImportResult = $postImportResultFactory->initializeFromDistribution($distribution);
 
     $result_store = $postImportResult->retrieveJobStatus();
 
@@ -148,16 +149,15 @@ class PostImportResultTest extends TestCase {
   public function testRemoveJobStatus() {
     $resource = new DataResource('test.csv', 'text/csv');
 
+    $distribution = [
+      'resource_id' => $resource->getIdentifier(),
+    ];
+
     $resourceMapperMock = $this->createMock(ResourceMapper::class);
-    $resourceMapperMock->expects($this->any())
+    $resourceMapperMock->expects($this->once())
       ->method('get')
       ->withAnyParameters()
       ->willReturn($resource);
-
-    $datastoreServiceMock = $this->createMock(DatastoreService::class);
-    $datastoreServiceMock->expects($this->any())
-      ->method('getResourceMapper')
-      ->willReturn($resourceMapperMock);
 
     $queryMock = $this->getMockBuilder('stdClass')
       ->addMethods(['condition', 'execute'])
@@ -167,10 +167,6 @@ class PostImportResultTest extends TestCase {
       ->method('condition')
       ->willReturnSelf();
 
-    $queryMock->expects($this->once())
-      ->method('execute')
-      ->willReturn(TRUE);
-
     $connectionMock = $this->createMock(Connection::class);
     $connectionMock ->expects($this->once())
       ->method('delete')
@@ -179,7 +175,7 @@ class PostImportResultTest extends TestCase {
 
     $postImportResultFactory = new PostImportResultFactory($connectionMock, $resourceMapperMock);
 
-    $postImportResult = $postImportResultFactory->initializeFromResource('test_status', 'test_error', $resource);
+    $postImportResult = $postImportResultFactory->initializeFromDistribution($distribution);
 
     $result_store = $postImportResult->removeJobStatus();
 

@@ -41,6 +41,13 @@ class PostImportResult {
   private $postImportMessage;
 
   /**
+   * Current Unix timestamp.
+   *
+   * @var string
+   */
+  private $currentTime;
+
+  /**
    * The database connection.
    */
   protected Connection $connection;
@@ -56,6 +63,7 @@ class PostImportResult {
   public function __construct(
     ?string $status,
     ?string $message,
+    ?int $timestamp,
     DataResource $resource,
     Connection $connection,
     ) {
@@ -63,6 +71,7 @@ class PostImportResult {
     $this->resourceVersion = $resource->getVersion() ?? NULL;
     $this->postImportStatus = $status ?? '';
     $this->postImportMessage = $message ?? '';
+    $this->currentTime = $timestamp ?? NULL;
     $this->connection = $connection;
   }
 
@@ -77,6 +86,7 @@ class PostImportResult {
           'resource_version' => $this->getResourceVersion(),
           'post_import_status' => $this->getPostImportStatus(),
           'post_import_error' => $this->getPostImportMessage(),
+          'timestamp' => $this->currentTime,
         ])
         ->execute();
 
@@ -95,6 +105,8 @@ class PostImportResult {
       return $this->connection->select('dkan_post_import_job_status')
         ->condition('resource_identifier', $this->getResourceIdentifier(), '=')
         ->condition('resource_version', $this->getResourceVersion(), '=')
+        ->orderBy('timestamp', 'DESC')
+        ->range(0, 1)
         ->fields('dkan_post_import_job_status', [
           'resource_version',
           'post_import_status',

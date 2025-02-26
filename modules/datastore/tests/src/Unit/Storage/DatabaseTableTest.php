@@ -17,11 +17,107 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
+ * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
+ *
  * @group dkan
  * @group datastore
  * @group unit
  */
 class DatabaseTableTest extends TestCase {
+
+  /**
+   * @covers ::translateType()
+   * @dataProvider translateTypeProvider
+   */
+  public function testTranslateType($type, $extra, $return) {
+    $databaseTable = new DatabaseTable(
+      $this->getConnectionChain()->getMock(),
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
+    );
+
+    $reflection = new \ReflectionClass($databaseTable);
+    $translateType = $reflection->getMethod('translateType');
+    $this->assertEquals($return, $translateType->invokeArgs($databaseTable, [$type, $extra]));
+  }
+
+  public static function translateTypeProvider() {
+    return [
+      [
+        'int unsigned',
+        'auto_increment',
+        [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'int unsigned',
+        NULL,
+        [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'int(10)',
+        NULL,
+        [
+          'type' => 'int',
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'int (10) unsigned',
+        'auto_increment',
+        [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'varchar(10)',
+        NULL,
+        [
+          'type' => 'varchar',
+          'length' => 10,
+          'mysql_type' => 'varchar',
+        ],
+      ],
+      [
+        'text',
+        '',
+        [
+          'type' => 'text',
+          'mysql_type' => 'text',
+        ],
+      ],
+      [
+        'tinyint(1)',
+        NULL,
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'mysql_type' => 'tinyint',
+        ],
+      ],
+      [
+        'decimal(3,2)',
+        NULL,
+        [
+          'type' => 'numeric',
+          'precision' => 3,
+          'scale' => 2,
+          'mysql_type' => 'decimal',
+        ],
+      ],
+    ];
+  }
 
   /**
    *
@@ -56,14 +152,13 @@ class DatabaseTableTest extends TestCase {
           "type" => "serial",
           "unsigned" => TRUE,
           "not null" => TRUE,
-          'length' => 10,
           'mysql_type' => 'int',
         ],
         "first_name" => [
           "type" => "varchar",
           "description" => "First Name",
           'length' => 10,
-          'mysql_type' => 'varchar'
+          'mysql_type' => 'varchar',
         ],
         "last_name" => [
           "type" => "text",

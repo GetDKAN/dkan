@@ -12,11 +12,28 @@ use Harvest\ETL\Load\Load;
 class Dataset extends Load {
 
   /**
-   * Public.
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreService
    */
-  public function removeItem($id) {
-    $service = $this->getMetastoreService();
-    $service->delete("dataset", "{$id}");
+  private MetastoreService $metastoreService;
+
+  /**
+   * {@inheritDoc}
+   */
+  public function __construct($harvest_plan, $hash_storage, $item_storage) {
+    $this->metastoreService = \Drupal::service('dkan.metastore.service');
+    parent::__construct($harvest_plan, $hash_storage, $item_storage);
+  }
+
+  /**
+   * Remove dataset item from storage.
+   *
+   * @param string $identifier
+   *   Identifier.
+   */
+  public function removeItem($identifier): void {
+    $this->metastoreService->delete('dataset', $identifier);
   }
 
   /**
@@ -29,29 +46,18 @@ class Dataset extends Load {
    * @see schema/collections/dataset.json
    */
   protected function saveItem($item) {
-    $service = $this->getMetastoreService();
     if (!is_string($item)) {
       $item = json_encode($item);
     }
 
     $schema_id = 'dataset';
-    $item = $service->getValidMetadataFactory()->get($item, $schema_id);
+    $item = $this->metastoreService->getValidMetadataFactory()->get($item, $schema_id);
     try {
-      $service->post($schema_id, $item);
+      $this->metastoreService->post($schema_id, $item);
     }
     catch (ExistingObjectException) {
-      $service->put($schema_id, $item->{"$.identifier"}, $item);
+      $this->metastoreService->put($schema_id, $item->{"$.identifier"}, $item);
     }
-  }
-
-  /**
-   * Get the metastore service.
-   *
-   * @return \Drupal\metastore\MetastoreService
-   *   Metastore service.
-   */
-  protected function getMetastoreService(): MetastoreService {
-    return \Drupal::service('dkan.metastore.service');
   }
 
 }
