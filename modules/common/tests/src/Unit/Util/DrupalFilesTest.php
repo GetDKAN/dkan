@@ -8,6 +8,7 @@ use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\file\FileRepository;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +38,7 @@ class DrupalFilesTest extends TestCase {
   private function getContainer(): ContainerInterface {
     $options = (new Options())
       ->add('file_system', FileSystemInterface::class)
+      ->add('file.repository', FileRepository::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('http_client_factory', ClientFactory::class)
       ->add('messenger', MessengerInterface::class)

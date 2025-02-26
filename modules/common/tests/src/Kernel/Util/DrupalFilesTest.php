@@ -17,6 +17,7 @@ class DrupalFilesTest extends KernelTestBase {
 
   protected static $modules = [
     'common',
+    'file',
   ];
 
   public function provideExceptions() {
@@ -53,20 +54,21 @@ class DrupalFilesTest extends KernelTestBase {
    */
   public function testHttpSource($url) {
     // We're checking the internal logic of retrieveFile(), to make sure it
-    // calls systemRetrieveFile() given the inputs, and not testing whether the
+    // calls retrieveRemoteFile() given the inputs, and not testing whether the
     // file is successfully retrieved.
-    // Mock a DrupalFiles object so that we can mock systemRetrieveFile().
+    // Mock a DrupalFiles object so that we can mock retrieveRemoteFile().
     $drupal_files = $this->getMockBuilder(DrupalFiles::class)
       ->setConstructorArgs([
         $this->container->get('file_system'),
         $this->container->get('stream_wrapper_manager'),
         $this->container->get('http_client_factory'),
+        $this->container->get('file.repository'),
         $this->container->get('messenger'),
       ])
-      ->onlyMethods(['systemRetrieveFile'])
+      ->onlyMethods(['retrieveRemoteFile'])
       ->getMock();
     $drupal_files->expects($this->once())
-      ->method('systemRetrieveFile')
+      ->method('retrieveRemoteFile')
       ->willReturn('/your/fake/path');
 
     $this->assertEquals(

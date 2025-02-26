@@ -19,6 +19,7 @@ services:
       - '@file_system'
       - '@stream_wrapper_manager'
       - '@http_client_factory'
+      - '@file.repository'
       - '@messenger'
 
   dkan.common.node_storage:

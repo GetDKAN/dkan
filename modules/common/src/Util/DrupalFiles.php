@@ -5,12 +5,15 @@ namespace Drupal\common\Util;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\File\Exception\FileException;
 use Drupal\Core\File\Exception\InvalidStreamWrapperException;
+use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Psr\Http\Client\ClientExceptionInterface;
+use Drupal\file\FileRepositoryInterface;
+use GuzzleHttp\Exception\TransferException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -28,17 +31,18 @@ class DrupalFiles implements ContainerInjectionInterface {
 
   /**
    * Drupal file system service.
-   *
-   * @var \Drupal\Core\File\FileSystemInterface
    */
-  private $filesystem;
+  private FileSystemInterface $filesystem;
+
+  /**
+   * Drupal file repository service.
+   */
+  private FileRepositoryInterface $fileRepository;
 
   /**
    * Drupal stream wrapper manager.
-   *
-   * @var \Drupal\Core\StreamWrapper\StreamWrapperManager
    */
-  private $streamWrapperManager;
+  private StreamWrapperManagerInterface $streamWrapperManager;
 
   /**
    * HTTP client factory service.
@@ -62,6 +66,7 @@ class DrupalFiles implements ContainerInjectionInterface {
       $container->get('file_system'),
       $container->get('stream_wrapper_manager'),
       $container->get('http_client_factory'),
+      $container->get('file.repository'),
       $container->get('messenger')
     );
   }
@@ -73,11 +78,13 @@ class DrupalFiles implements ContainerInjectionInterface {
     FileSystemInterface $filesystem,
     StreamWrapperManager $streamWrapperManager,
     ClientFactory $httpClientFactory,
+    FileRepositoryInterface $fileRepository,
     MessengerInterface $messenger,
   ) {
     $this->filesystem = $filesystem;
     $this->streamWrapperManager = $streamWrapperManager;
     $this->httpClientFactory = $httpClientFactory;
+    $this->fileRepository = $fileRepository;
     $this->messenger = $messenger;
   }
 
@@ -94,7 +101,8 @@ class DrupalFiles implements ContainerInjectionInterface {
   /**
    * Getter.
    *
-   * @deprecated
+   * @deprecated in dkan:2.20.1 and is removed from dkan:2.21.0.
+   *   Unsed, cleaning up.
    */
   public function getStreamWrapperManager(): StreamWrapperManager {
     return $this->streamWrapperManager;
@@ -129,7 +137,7 @@ class DrupalFiles implements ContainerInjectionInterface {
       return $this->fileCreateUrl("{$destination}/{$filename}");
     }
     // Handle http(s):// URIs.
-    return $this->systemRetrieveFile($url, $destination);
+    return $this->retrieveRemoteFile($url, $destination);
   }
 
   /**
@@ -138,82 +146,61 @@ class DrupalFiles implements ContainerInjectionInterface {
    * @param string $url
    *   The URL of the file to grab.
    * @param string $destination
-   *   Stream wrapper URI specifying where the file should be placed. If a
-   *   directory path is provided, the file is saved into that directory under
-   *   its original name. If the path contains a filename as well, that one will
-   *   be used instead.
-   *   If this value is omitted, the site's default files scheme will be used,
-   *   usually "public://".
+   *   Stream wrapper URI specifying where the file should be placed. Can be a
+   *   directory or full path with file name if you want to rename. If NULL, the
+   *   file will be placed in "public://" with the same name as the remote file.
    * @param bool $managed
-   *   If this is set to TRUE, the file API hooks will be invoked and the file
-   *   is registered in the database.
-   * @param int $replace
-   *   Replace behavior when the destination file already exists:
-   *   - FileSystemInterface::EXISTS_REPLACE: Replace the existing file.
-   *   - FileSystemInterface::EXISTS_RENAME: Append _{incrementing number} until
-   *   the filename is unique.
-   *   - FileSystemInterface::EXISTS_ERROR: Do nothing and return FALSE.
+   *   Whether to invode file API and register the file in the database.
+   * @param \Drupal\Core\File\FileExists|null $replace
+   *   Replace behavior when the destination file already exists.
    *
-   * @return mixed
+   * @return false|string|\Drupal\file\FileInterface
    *   One of these possibilities:
-   *   - If it succeeds and $managed is FALSE, the location where the file was
-   *   saved.
-   *   - If it succeeds and $managed is TRUE, a \Drupal\file\FileInterface
-   *   object which describes the file.
+   *   - If it succeeds and $managed is FALSE, the new location URI.
+   *   - If it succeeds and $managed is TRUE, a FileInterface object.
    *   - If it fails, FALSE.
    *
    * @see \system_retrieve_file()
    * @see https://www.drupal.org/node/3223362
    */
-  protected function systemRetrieveFile($url, $destination = NULL, $managed = FALSE, $replace = FileSystemInterface::EXISTS_RENAME) {
-    $parsed_url = parse_url($url);
-    if (!isset($destination)) {
-      $path = $this->filesystem->basename($parsed_url['path']);
-      $path = \Drupal::config('system.file')->get('default_scheme') . '://' . $path;
-      $path = $this->streamWrapperManager->normalizeUri($path);
-    }
-    else {
-      if (is_dir($this->filesystem->realpath($destination))) {
-        // Prevent URIs with triple slashes when glueing parts together.
-        $path = str_replace('///', '//', "$destination/") . \Drupal::service('file_system')->basename($parsed_url['path']);
-      }
-      else {
-        $path = $destination;
-      }
-    }
+  protected function retrieveRemoteFile(string $url, ?string $destination = NULL, bool $managed = FALSE, ?FileExists $replace = FileExists::Rename) {
+    $this->fixDestination($destination, $url);
     try {
-      $data = (string) $this->httpClientFactory->fromOptions()
-        ->get($url)
-        ->getBody();
-      if ($managed) {
-        /** @var \Drupal\file\FileRepositoryInterface $file_repository */
-        $file_repository = \Drupal::service('file.repository');
-        $local = $file_repository->writeData($data, $path, $replace);
-      }
-      else {
-        $local = $this->filesystem->saveData($data, $path, $replace);
-      }
+      $client = $this->httpClientFactory->fromOptions();
+      $data = (string) $client->get($url)->getBody();
+      return $managed ?
+        $this->fileRepository->writeData($data, $destination, $replace) :
+        $this->filesystem->saveData($data, $destination, $replace);
     }
-    catch (ClientExceptionInterface $exception) {
-      $this->messenger->addError($this->t('Failed to fetch file due to error "%error"', [
-        '%error' => $exception->getMessage(),
-      ]));
+    catch (TransferException $exception) {
+      $this->messenger->addError($this->t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
       return FALSE;
     }
     catch (FileException | InvalidStreamWrapperException $e) {
-      $this->messenger->addError($this->t('Failed to save file due to error "%error"', [
-        '%error' => $e->getMessage(),
-      ]));
+      $this->messenger->addError($this->t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
       return FALSE;
     }
-    if (!$local) {
-      $this->messenger->addError($this->t('@remote could not be saved to @path.', [
-        '@remote' => $url,
-        '@path' => $path,
-      ]));
-    }
+  }
 
-    return $local;
+  /**
+   * Fix missing or extra-escaped destination string.
+   *
+   * @param string|null $destination
+   *   The destination string.
+   * @param string $url
+   *   The source URL.
+   */
+  private function fixDestination(?string &$destination, $url): void {
+    $parsed_url = parse_url($url);
+    if (!isset($destination)) {
+      $destination = $this->filesystem->basename($parsed_url['path']);
+      $destination = 'public://' . $destination;
+      $destination = $this->streamWrapperManager->normalizeUri($destination);
+    }
+    elseif (is_dir($this->filesystem->realpath($destination))) {
+      // Prevent URIs with triple slashes when glueing parts together.
+      $destination = str_replace('///', '//', "$destination/") . $this->filesystem->basename($parsed_url['path']);
+    }
   }
 
   /**

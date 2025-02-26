@@ -22,6 +22,7 @@ class DrupalFilesTest extends BrowserTestBase {
 
   protected static $modules = [
     'common',
+    'file',
   ];
 
   /**
@@ -30,13 +31,12 @@ class DrupalFilesTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
-   * @covers ::systemRetrieveFile
+   * @covers ::retrieveRemoteFile
    */
   public function testFileRetrieving(): void {
     /** @var \Drupal\common\Util\DrupalFiles $drupal_files */
     $drupal_files = \Drupal::service('dkan.common.drupal_files');
-    $ref_system_retrieve_file = new \ReflectionMethod($drupal_files, 'systemRetrieveFile');
-    $ref_system_retrieve_file->setAccessible(TRUE);
+    $ref_system_retrieve_file = new \ReflectionMethod($drupal_files, 'retrieveRemoteFile');
 
     // Test 404 handling by trying to fetch a randomly named file.
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
