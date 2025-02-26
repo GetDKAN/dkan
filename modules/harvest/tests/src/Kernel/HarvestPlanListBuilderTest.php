@@ -126,7 +126,9 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     );
   }
 
-  public function testRegisteredPlan() {
+  public function testRegisteredPlanDatastore() {
+    // Enable datastore module
+    $this->enableModules(['datastore']);
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
@@ -154,6 +156,41 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     /** @var \Drupal\Core\Link $link */
     $this->assertNotNull($link = $row['harvest_link'] ?? NULL);
     $this->assertEquals($plan_identifier, $link->getText());
+    // Harvest was registered, but never run.
+    $this->assertEquals('REGISTERED', $row['extract_status']['data'] ?? NULL);
+    $this->assertEquals('never', $row['last_run'] ?? NULL);
+    $this->assertEquals('unknown', $row['dataset_count'] ?? NULL);
+  }
+
+  public function testRegisteredPlanNoDatastore() {
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    $harvest_service = $this->container->get('dkan.harvest.service');
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
+    $entity_type_manager = $this->container->get('entity_type.manager');
+
+    $list_builder = HarvestPlanListBuilder::createInstance(
+      $this->container,
+      $entity_type_manager->getDefinition('harvest_plan')
+    );
+
+    // There are no registered harvests, so there should be zero rows. We also
+    // verify the empty table value.
+    $table_render = $list_builder->render()['table'] ?? 'phail';
+    $this->assertCount(0, $table_render['#rows'] ?? NULL);
+    $this->assertEquals('There are no harvest plans yet.', $table_render['#empty'] ?? NULL);
+
+    // Register a harvest plan but don't run it...
+    $plan_identifier = 'test_plan';
+    $this->registerHarvestPlan($harvest_service, $plan_identifier);
+
+    // Revisit the dashboard. It should show the registered harvest.
+    $table_render = $list_builder->render()['table'] ?? 'phail';
+    $this->assertCount(1, $table_render['#rows'] ?? NULL);
+    $this->assertNotNull($row = $table_render['#rows'][$plan_identifier] ?? 'phail');
+    /** @var \Drupal\Core\Link $link */
+    $this->assertNotNull($link = $row['harvest_link'] ?? NULL);
+    // W/o datastore, there is no link just text.
+    $this->assertEquals($plan_identifier, $link);
     // Harvest was registered, but never run.
     $this->assertEquals('REGISTERED', $row['extract_status']['data'] ?? NULL);
     $this->assertEquals('never', $row['last_run'] ?? NULL);
