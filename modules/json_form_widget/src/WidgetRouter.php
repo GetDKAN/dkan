@@ -84,7 +84,6 @@ class WidgetRouter implements ContainerInjectionInterface {
       else {
         $element = $this->$method_name($spec, $element);
       }
-      $element = $this->$method_name($spec, $element);
     }
     return $element;
   }
