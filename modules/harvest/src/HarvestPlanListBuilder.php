@@ -6,7 +6,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
-use Drupal\Core\Routing\RouteProvider;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drupal\harvest\Entity\HarvestRunRepository;
@@ -26,6 +25,9 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    */
   protected HarvestService $harvestService;
 
+  /**
+   * Route provider.
+   */
   protected RouteProviderInterface $routeProvider;
 
   /**
