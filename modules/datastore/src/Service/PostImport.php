@@ -80,7 +80,7 @@ class PostImport {
     ResourceProcessorCollector $resourceProcessorCollector,
     DataDictionaryDiscoveryInterface $dataDictionaryDiscovery,
     DatastoreService $datastoreService,
-    PostImportResultFactory $postImportResultFactory
+    PostImportResultFactory $postImportResultFactory,
   ) {
     $this->configFactory = $configFactory;
     $this->logger = $logger;

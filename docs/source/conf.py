@@ -19,11 +19,11 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = 'DKAN Documentation'
-copyright = '2023, CivicActions'
+copyright = '2024, CivicActions'
 author = 'CivicActions'
 
 # The full version, including alpha/beta/rc tags
-release = '2.15.2'
+release = '2.19.2'
 version = '2.x'
 
 # -- General configuration ---------------------------------------------------

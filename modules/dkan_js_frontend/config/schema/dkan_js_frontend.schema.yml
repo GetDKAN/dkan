@@ -1,0 +1,29 @@
+dkan_js_frontend.config:
+  type: config_object
+  mapping:
+    css_folder:
+      type: string
+      label: 'css folder'
+    js_folder:
+      type: string
+      label: 'css folder'
+    routes:
+      type: sequence
+      label: 'Routes'
+      sequence:
+        type: label
+    minified:
+      type: boolean
+      label: 'Is minified'
+    preprocess:
+      type: boolean
+      label: 'Preprocess'
+    js:
+      type: mapping
+      label: 'js'
+      mapping:
+        attributes:
+          type: sequence
+          label: 'Attributes'
+          sequence:
+            type: label

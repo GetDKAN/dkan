@@ -56,6 +56,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
+      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(SimpleSitemapSettingsInterface::class, 'get', NULL)
       ->getMock();
     \Drupal::setContainer($container);
