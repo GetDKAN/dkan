@@ -8,7 +8,7 @@ use Drupal\Core\File\Exception\InvalidStreamWrapperException;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Http\ClientFactory;
-use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -46,17 +46,13 @@ class DrupalFiles implements ContainerInjectionInterface {
 
   /**
    * HTTP client factory service.
-   *
-   * @var \Drupal\Core\Http\ClientFactory
    */
   private ClientFactory $httpClientFactory;
 
   /**
-   * Messenger service.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
+   * Logger service.
    */
-  private MessengerInterface $messenger;
+  private LoggerChannelInterface $logger;
 
   /**
    * {@inheritDoc}
@@ -67,7 +63,7 @@ class DrupalFiles implements ContainerInjectionInterface {
       $container->get('stream_wrapper_manager'),
       $container->get('http_client_factory'),
       $container->get('file.repository'),
-      $container->get('messenger')
+      $container->get('dkan.common.logger_channel')
     );
   }
 
@@ -79,13 +75,13 @@ class DrupalFiles implements ContainerInjectionInterface {
     StreamWrapperManager $streamWrapperManager,
     ClientFactory $httpClientFactory,
     FileRepositoryInterface $fileRepository,
-    MessengerInterface $messenger,
+    LoggerChannelInterface $logger,
   ) {
     $this->filesystem = $filesystem;
     $this->streamWrapperManager = $streamWrapperManager;
     $this->httpClientFactory = $httpClientFactory;
     $this->fileRepository = $fileRepository;
-    $this->messenger = $messenger;
+    $this->logger = $logger;
   }
 
   /**
@@ -173,11 +169,11 @@ class DrupalFiles implements ContainerInjectionInterface {
         $this->filesystem->saveData($data, $destination, $replace);
     }
     catch (TransferException $exception) {
-      $this->messenger->addError($this->t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
+      $this->logger->error($this->t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
       return FALSE;
     }
     catch (FileException | InvalidStreamWrapperException $e) {
-      $this->messenger->addError($this->t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
+      $this->logger->error($this->t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
       return FALSE;
     }
   }

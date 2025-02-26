@@ -63,7 +63,7 @@ class DrupalFilesTest extends KernelTestBase {
         $this->container->get('stream_wrapper_manager'),
         $this->container->get('http_client_factory'),
         $this->container->get('file.repository'),
-        $this->container->get('messenger'),
+        $this->container->get('dkan.common.logger_channel'),
       ])
       ->onlyMethods(['retrieveRemoteFile'])
       ->getMock();
