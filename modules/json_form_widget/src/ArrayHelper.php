@@ -330,6 +330,11 @@ class ArrayHelper implements ContainerInjectionInterface {
    *   The context name, output of ::buildContextName().
    */
   protected function buildAction(string $title, string $method, string $parent, string $context_name): array {
+    $context_name_array = explode('-', $context_name);
+    $parent_full = $parent;
+    if ($context_name_array[0] !== $parent) {
+      $parent_full = $context_name_array[0] . '-'  . $parent;
+    }
     $action = [
       '#type'   => 'submit',
       '#name'   => $context_name,
@@ -337,10 +342,11 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#submit' => [self::class . '::' . $method],
       '#ajax'   => [
         'callback' => [$this, 'arrayActionButtonCallback'],
-        'wrapper'  => self::buildWrapperIdentifier($parent),
+        'wrapper'  => self::buildWrapperIdentifier($parent_full),
       ],
       '#attributes' => [
         'data-parent'  => $parent,
+        'data-parent-full' => $parent_full
       ],
       '#limit_validation_errors' => [],
     ];
@@ -378,9 +384,10 @@ class ArrayHelper implements ContainerInjectionInterface {
   public static function remove(array &$form, FormStateInterface $form_state) {
     $button_element = $form_state->getTriggeringElement();
     $parent = $button_element['#attributes']['data-parent'];
+    $parent_full = $button_element['#attributes']['data-parent-full'];
     $parents = $button_element['#parents'];
-    $element_index = str_replace("{$parent}-", '', $button_element['#name']);
-    $count_property = self::buildCountProperty($parent);
+    $element_index = str_replace("{$parent_full}-", '', $button_element['#name']);
+    $count_property = self::buildCountProperty($parent_full);
     $user_input = $form_state->getUserInput();
 
     // Update the user input to remove the specific element.
@@ -438,8 +445,9 @@ class ArrayHelper implements ContainerInjectionInterface {
   protected static function moveElement(FormStateInterface $form_state, int $offset) {
     $button_element = $form_state->getTriggeringElement();
     $parent = $button_element['#attributes']['data-parent'];
+    $parent_full = $button_element['#attributes']['data-parent-full'];
     $parents = $button_element['#parents'];
-    $element_index = str_replace("{$parent}-", '', $button_element['#name']);
+    $element_index = str_replace("{$parent_full}-", '', $button_element['#name']);
     $user_input = $form_state->getUserInput();
 
     // Update the user input to change the order.

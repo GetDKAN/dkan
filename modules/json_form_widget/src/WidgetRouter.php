@@ -78,6 +78,12 @@ class WidgetRouter implements ContainerInjectionInterface {
     $widgets = $this->getWidgets();
     if (in_array($spec->widget, array_keys($widgets))) {
       $method_name = $widgets[$spec->widget];
+      if (isset($element['field']) && $element['#type'] == 'fieldset') {
+        $element = array_merge($element, ['field' => $this->$method_name($spec, $element['field'])]);
+      }
+      else {
+        $element = $this->$method_name($spec, $element);
+      }
       $element = $this->$method_name($spec, $element);
     }
     return $element;
