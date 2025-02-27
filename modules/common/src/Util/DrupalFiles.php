@@ -156,7 +156,7 @@ class DrupalFiles implements ContainerInjectionInterface {
    *   file will be placed in "public://" with the same name as the remote file.
    * @param bool $managed
    *   Whether to invode file API and register the file in the database.
-   * @param \Drupal\Core\File\FileExists|null $replace
+   * @param int|null $replace
    *   Replace behavior when the destination file already exists.
    *
    * @return false|string|\Drupal\file\FileInterface
@@ -167,8 +167,9 @@ class DrupalFiles implements ContainerInjectionInterface {
    *
    * @see \system_retrieve_file()
    * @see https://www.drupal.org/node/3223362
+   * @todo Switch $managed to Drupal\Core\File\FileExists once we drop D10.2.
    */
-  protected function retrieveRemoteFile(string $url, ?string $destination = NULL, bool $managed = FALSE, ?FileExists $replace = FileExists::Rename) {
+  protected function retrieveRemoteFile(string $url, ?string $destination = NULL, bool $managed = FALSE, ?int $replace = FileSystemInterface::EXISTS_RENAME) {
     $this->fixDestination($destination, $url);
     try {
       $client = $this->httpClientFactory->fromOptions();
