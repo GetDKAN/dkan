@@ -11,7 +11,6 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\file\FileRepositoryInterface;
 use GuzzleHttp\Exception\TransferException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -32,11 +31,6 @@ class DrupalFiles implements ContainerInjectionInterface {
    * Drupal file system service.
    */
   private FileSystemInterface $filesystem;
-
-  /**
-   * Drupal file repository service.
-   */
-  private FileRepositoryInterface $fileRepository;
 
   /**
    * Drupal stream wrapper manager.
@@ -88,18 +82,6 @@ class DrupalFiles implements ContainerInjectionInterface {
    */
   public function getFilesystem(): FileSystemInterface {
     return $this->filesystem;
-  }
-
-  /**
-   * Set the Drupal file_system service.
-   *
-   * Allows class to be instantiated without file module enabled.
-   *
-   * @param \Drupal\file\FileRepositoryInterface $fileRepository
-   *   The file repository service.
-   */
-  public function setFileRepository(FileRepositoryInterface $fileRepository): void {
-    $this->fileRepository = $fileRepository;
   }
 
   /**
@@ -155,16 +137,11 @@ class DrupalFiles implements ContainerInjectionInterface {
    *   Stream wrapper URI specifying where the file should be placed. Can be a
    *   directory or full path with file name if you want to rename. If NULL, the
    *   file will be placed in "public://" with the same name as the remote file.
-   * @param bool $managed
-   *   Whether to invode file API and register the file in the database.
    * @param int|null $replace
    *   Replace behavior when the destination file already exists.
    *
-   * @return false|string|\Drupal\file\FileInterface
-   *   One of these possibilities:
-   *   - If it succeeds and $managed is FALSE, the new location URI.
-   *   - If it succeeds and $managed is TRUE, a FileInterface object.
-   *   - If it fails, FALSE.
+   * @return false|string
+   *   If it succeeds , the new location URI. If it fails, FALSE.
    *
    * @see \system_retrieve_file()
    * @see https://www.drupal.org/node/3223362
@@ -173,16 +150,13 @@ class DrupalFiles implements ContainerInjectionInterface {
   protected function retrieveRemoteFile(
     string $url,
     ?string $destination = NULL,
-    bool $managed = FALSE,
     ?int $replace = FileSystemInterface::EXISTS_RENAME
   ) {
     $this->fixDestination($destination, $url);
     try {
       $client = $this->httpClientFactory->fromOptions();
       $data = (string) $client->get($url)->getBody();
-      return ($managed && isset($this->fileRepository)) ?
-        $this->fileRepository->writeData($data, $destination, $replace) :
-        $this->filesystem->saveData($data, $destination, $replace);
+      return $this->filesystem->saveData($data, $destination, $replace);
     }
     catch (TransferException $exception) {
       $this->logger->error($this->t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));

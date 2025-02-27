@@ -22,7 +22,6 @@ class DrupalFilesTest extends BrowserTestBase {
 
   protected static $modules = [
     'common',
-    'file',
   ];
 
   /**

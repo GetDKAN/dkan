@@ -17,7 +17,6 @@ class DrupalFilesTest extends KernelTestBase {
 
   protected static $modules = [
     'common',
-    'file',
   ];
 
   public function provideExceptions() {
