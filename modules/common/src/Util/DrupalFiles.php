@@ -123,9 +123,7 @@ class DrupalFiles implements ContainerInjectionInterface {
       return $this->fileCreateUrl("{$destination}/{$filename}");
     }
     // Handle http(s):// URIs.
-    // @todo Switch FileSystemInterface::EXISTS_REPLACE for FileExists::Replace
-    // once we drop D10.2 support.
-    return $this->retrieveRemoteFile($url, $destination, FileSystemInterface::EXISTS_REPLACE);
+    return $this->retrieveRemoteFile($url, $destination);
   }
 
   /**
@@ -145,18 +143,15 @@ class DrupalFiles implements ContainerInjectionInterface {
    *
    * @see \system_retrieve_file()
    * @see https://www.drupal.org/node/3223362
-   * @todo Switch $replace to FileExists once we drop D10.2 support.
    */
-  protected function retrieveRemoteFile(
-    string $url,
-    ?string $destination = NULL,
-    ?int $replace = FileSystemInterface::EXISTS_RENAME
-  ) {
+  protected function retrieveRemoteFile(string $url, ?string $destination = NULL) {
     $this->fixDestination($destination, $url);
     try {
       $client = $this->httpClientFactory->fromOptions();
       $data = (string) $client->get($url)->getBody();
-      return $this->filesystem->saveData($data, $destination, $replace);
+      // @todo Switch FileSystemInterface::EXISTS_REPLACE for
+      // FileExists::Replace once we drop D10.2 support.
+      return $this->filesystem->saveData($data, $destination, FileSystemInterface::EXISTS_REPLACE);
     }
     catch (TransferException $exception) {
       $this->logger->error($this->t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
