@@ -392,8 +392,8 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    */
   protected function buildBoolPreAlterCommands(string $table, string $column): array {
     return [
-      $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'FALSE'])->expression($column, '0'),
-      $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'TRUE'])->expression($column, '1'),
+      $this->connection->update($table)->where("UPPER(TRIM({$column})) = :value", [':value' => 'FALSE'])->expression($column, '0'),
+      $this->connection->update($table)->where("UPPER(TRIM({$column})) = :value", [':value' => 'TRUE'])->expression($column, '1'),
     ];
   }
 
