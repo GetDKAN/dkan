@@ -88,7 +88,7 @@ class ResourceImporterTest extends KernelTestBase {
         $this->container->get('file_system'),
         $this->container->get('stream_wrapper_manager'),
         $this->container->get('http_client_factory'),
-        $this->container->get('messenger'),
+        $this->container->get('dkan.common.logger_channel'),
       ])
       ->onlyMethods(['retrieveFile'])
       ->getMock();
