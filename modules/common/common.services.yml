@@ -19,8 +19,9 @@ services:
       - '@file_system'
       - '@stream_wrapper_manager'
       - '@http_client_factory'
-      - '@file.repository'
       - '@dkan.common.logger_channel'
+    calls:
+      - [setFileRepository, ['@?file.repository']]
 
   dkan.common.node_storage:
     class: Drupal\node\NodeStorage

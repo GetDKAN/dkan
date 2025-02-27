@@ -62,7 +62,6 @@ class DrupalFiles implements ContainerInjectionInterface {
       $container->get('file_system'),
       $container->get('stream_wrapper_manager'),
       $container->get('http_client_factory'),
-      $container->get('file.repository'),
       $container->get('dkan.common.logger_channel')
     );
   }
@@ -74,13 +73,11 @@ class DrupalFiles implements ContainerInjectionInterface {
     FileSystemInterface $filesystem,
     StreamWrapperManager $streamWrapperManager,
     ClientFactory $httpClientFactory,
-    FileRepositoryInterface $fileRepository,
     LoggerChannelInterface $logger,
   ) {
     $this->filesystem = $filesystem;
     $this->streamWrapperManager = $streamWrapperManager;
     $this->httpClientFactory = $httpClientFactory;
-    $this->fileRepository = $fileRepository;
     $this->logger = $logger;
   }
 
@@ -92,6 +89,18 @@ class DrupalFiles implements ContainerInjectionInterface {
    */
   public function getFilesystem(): FileSystemInterface {
     return $this->filesystem;
+  }
+
+  /**
+   * Set the Drupal file_system service.
+   *
+   * Allows class to be instantiated without file module enabled.
+   *
+   * @param \Drupal\file\FileRepositoryInterface $fileRepository
+   *   The file repository service.
+   */
+  public function setFileRepository(FileRepositoryInterface $fileRepository): void {
+    $this->fileRepository = $fileRepository;
   }
 
   /**
@@ -164,7 +173,7 @@ class DrupalFiles implements ContainerInjectionInterface {
     try {
       $client = $this->httpClientFactory->fromOptions();
       $data = (string) $client->get($url)->getBody();
-      return $managed ?
+      return ($managed && isset($this->fileRepository)) ?
         $this->fileRepository->writeData($data, $destination, $replace) :
         $this->filesystem->saveData($data, $destination, $replace);
     }
