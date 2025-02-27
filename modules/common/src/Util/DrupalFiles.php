@@ -5,7 +5,6 @@ namespace Drupal\common\Util;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\File\Exception\FileException;
 use Drupal\Core\File\Exception\InvalidStreamWrapperException;
-use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
@@ -167,7 +166,7 @@ class DrupalFiles implements ContainerInjectionInterface {
    *
    * @see \system_retrieve_file()
    * @see https://www.drupal.org/node/3223362
-   * @todo Switch $managed to Drupal\Core\File\FileExists once we drop D10.2.
+   * @todo Switch $managed to FileExists once we drop D10.2 support.
    */
   protected function retrieveRemoteFile(string $url, ?string $destination = NULL, bool $managed = FALSE, ?int $replace = FileSystemInterface::EXISTS_RENAME) {
     $this->fixDestination($destination, $url);
