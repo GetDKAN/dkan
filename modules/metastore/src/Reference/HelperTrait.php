@@ -19,7 +19,7 @@ trait HelperTrait {
   /**
    * Setter.
    */
-  private function setConfigService(ConfigFactoryInterface $configService) {
+  protected function setConfigService(ConfigFactoryInterface $configService) {
     $this->configService = $configService;
   }
 
@@ -31,7 +31,7 @@ trait HelperTrait {
    *
    * @todo consolidate with common RouteProvider's getPropertyList.
    */
-  private function getPropertyList() : array {
+  protected function getPropertyList() : array {
     if (isset($this->configService)) {
       $list = $this->configService->get('metastore.settings')->get('property_list');
       return array_values(array_filter($list));
@@ -40,7 +40,6 @@ trait HelperTrait {
   }
 
   /**
-   * Private.
    *
    * @param mixed $data
    *   Data whose type we want to match.
@@ -48,7 +47,7 @@ trait HelperTrait {
    * @return array|string
    *   Either the empty string or an empty array.
    */
-  private function emptyPropertyOfSameType(mixed $data) {
+  protected function emptyPropertyOfSameType(mixed $data) {
     if (is_array($data)) {
       return [];
     }
@@ -58,7 +57,7 @@ trait HelperTrait {
   /**
    * Uuid Service.
    */
-  private function getUuidService() {
+  protected function getUuidService() {
     return new Uuid5();
   }
 
