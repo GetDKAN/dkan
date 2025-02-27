@@ -141,7 +141,9 @@ class DrupalFiles implements ContainerInjectionInterface {
       return $this->fileCreateUrl("{$destination}/{$filename}");
     }
     // Handle http(s):// URIs.
-    return $this->retrieveRemoteFile($url, $destination);
+    // @todo Switch FileSystemInterface::EXISTS_REPLACE for FileExists::Replace
+    // once we drop D10.2 support.
+    return $this->retrieveRemoteFile($url, $destination, FileSystemInterface::EXISTS_REPLACE);
   }
 
   /**
