@@ -150,7 +150,7 @@ class DrupalFiles implements ContainerInjectionInterface {
    *
    * @param string $url
    *   The URL of the file to grab.
-   * @param string $destination
+   * @param string|null $destination
    *   Stream wrapper URI specifying where the file should be placed. Can be a
    *   directory or full path with file name if you want to rename. If NULL, the
    *   file will be placed in "public://" with the same name as the remote file.
