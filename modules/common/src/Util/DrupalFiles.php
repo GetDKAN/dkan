@@ -135,8 +135,6 @@ class DrupalFiles implements ContainerInjectionInterface {
    *   Stream wrapper URI specifying where the file should be placed. Can be a
    *   directory or full path with file name if you want to rename. If NULL, the
    *   file will be placed in "public://" with the same name as the remote file.
-   * @param int|null $replace
-   *   Replace behavior when the destination file already exists.
    *
    * @return false|string
    *   If it succeeds , the new location URI. If it fails, FALSE.
