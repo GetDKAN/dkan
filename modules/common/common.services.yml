@@ -18,6 +18,8 @@ services:
     arguments:
       - '@file_system'
       - '@stream_wrapper_manager'
+      - '@http_client_factory'
+      - '@dkan.common.logger_channel'
 
   dkan.common.node_storage:
     class: Drupal\node\NodeStorage
