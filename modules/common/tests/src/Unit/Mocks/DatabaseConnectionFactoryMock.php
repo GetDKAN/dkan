@@ -14,7 +14,7 @@ class DatabaseConnectionFactoryMock extends DatabaseConnectionFactory {
   }
 
   public function getConnection(): Connection {
-    $this->doSetConnectionTimeout($this->connection);
+    $this->prepareConnection($this->connection);
 
     return $this->connection;
   }

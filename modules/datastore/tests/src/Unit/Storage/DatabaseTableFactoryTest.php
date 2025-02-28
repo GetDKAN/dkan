@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\datastore\Unit\Storage;
 
-use Drupal\Core\Database\Connection;
 use Drupal\common\DataResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -21,8 +21,9 @@ class DatabaseTableFactoryTest extends TestCase {
    * Test basic function (no indexer service).
    */
   public function test() {
-    $connection = (new Chain($this))
-      ->add(Connection::class, "__destruct", NULL)
+    $connection = $this->getMockBuilder(Connection::class)
+      ->disableOriginalConstructor()
+      ->onlyMethods([])
       ->getMock();
 
     $databaseTable = (new Chain($this))
@@ -31,9 +32,9 @@ class DatabaseTableFactoryTest extends TestCase {
 
     $builder = $this->getMockBuilder(DatabaseTableFactory::class);
     $factory = $builder->setConstructorArgs([
-        $connection,
-        $this->createStub(LoggerInterface::class
-      )])
+      $connection,
+      $this->createStub(LoggerInterface::class),
+    ])
       ->onlyMethods(["getDatabaseTable"])
       ->getMock();
 

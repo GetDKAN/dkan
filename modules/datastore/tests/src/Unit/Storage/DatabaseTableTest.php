@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\datastore\Storage;
+namespace Drupal\Tests\datastore\Unit\Storage;
 
 use Drupal\common\DataResource;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
-use Drupal\Core\Database\StatementWrapper;
 use Drupal\common\Storage\Query;
+use Drupal\Core\Database\StatementInterface;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\mysql\Driver\Database\mysql\Schema;
 use MockChain\Chain;
@@ -17,11 +17,107 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
+ * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
+ *
  * @group dkan
  * @group datastore
  * @group unit
  */
 class DatabaseTableTest extends TestCase {
+
+  /**
+   * @covers ::translateType()
+   * @dataProvider translateTypeProvider
+   */
+  public function testTranslateType($type, $extra, $return) {
+    $databaseTable = new DatabaseTable(
+      $this->getConnectionChain()->getMock(),
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class)
+    );
+
+    $reflection = new \ReflectionClass($databaseTable);
+    $translateType = $reflection->getMethod('translateType');
+    $this->assertEquals($return, $translateType->invokeArgs($databaseTable, [$type, $extra]));
+  }
+
+  public static function translateTypeProvider() {
+    return [
+      [
+        'int unsigned',
+        'auto_increment',
+        [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'int unsigned',
+        NULL,
+        [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'int(10)',
+        NULL,
+        [
+          'type' => 'int',
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'int (10) unsigned',
+        'auto_increment',
+        [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'mysql_type' => 'int',
+        ],
+      ],
+      [
+        'varchar(10)',
+        NULL,
+        [
+          'type' => 'varchar',
+          'length' => 10,
+          'mysql_type' => 'varchar',
+        ],
+      ],
+      [
+        'text',
+        '',
+        [
+          'type' => 'text',
+          'mysql_type' => 'text',
+        ],
+      ],
+      [
+        'tinyint(1)',
+        NULL,
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'mysql_type' => 'tinyint',
+        ],
+      ],
+      [
+        'decimal(3,2)',
+        NULL,
+        [
+          'type' => 'numeric',
+          'precision' => 3,
+          'scale' => 2,
+          'mysql_type' => 'decimal',
+        ],
+      ],
+    ];
+  }
 
   /**
    *
@@ -56,14 +152,13 @@ class DatabaseTableTest extends TestCase {
           "type" => "serial",
           "unsigned" => TRUE,
           "not null" => TRUE,
-          'length' => 10,
           'mysql_type' => 'int',
         ],
         "first_name" => [
           "type" => "varchar",
           "description" => "First Name",
           'length' => 10,
-          'mysql_type' => 'varchar'
+          'mysql_type' => 'varchar',
         ],
         "last_name" => [
           "type" => "text",
@@ -104,8 +199,8 @@ class DatabaseTableTest extends TestCase {
     $connection = $this->getConnectionChain()
       ->add(Connection::class, "select", Select::class)
       ->add(Select::class, "fields", Select::class)
-      ->add(Select::class, "execute", StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetchAll', $sequence)
+      ->add(Select::class, "execute", StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchAll', $sequence)
       ->getMock();
 
     $databaseTable = new DatabaseTable(
@@ -128,8 +223,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -151,8 +246,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -175,8 +270,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -203,8 +298,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -228,8 +323,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'countQuery', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetchField', 1);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -247,8 +342,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'countQuery', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetchField', 1);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -294,8 +389,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -318,8 +413,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -340,8 +435,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', StatementWrapper::class)
-      ->add(StatementWrapper::class, 'fetchAll', []);
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchAll', []);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -460,9 +555,9 @@ class DatabaseTableTest extends TestCase {
     return (new Chain($this))
       // Construction.
       ->add(Connection::class, "schema", Schema::class)
-      ->add(Connection::class, 'query', StatementWrapper::class)
+      ->add(Connection::class, 'query', StatementInterface::class)
       ->add(Connection::class, 'getConnectionOptions', ['driver' => 'mysql'])
-      ->add(StatementWrapper::class, 'fetchAll',
+      ->add(StatementInterface::class, 'fetchAll',
         (new Sequence())->add($fieldInfo)->add($indexInfo)
       )
       ->add(Schema::class, "tableExists", TRUE)

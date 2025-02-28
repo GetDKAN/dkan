@@ -3,8 +3,15 @@
 namespace Drupal\common\Util;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\File\Exception\FileException;
+use Drupal\Core\File\Exception\InvalidStreamWrapperException;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Http\ClientFactory;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use GuzzleHttp\Exception\TransferException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -18,38 +25,53 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DrupalFiles implements ContainerInjectionInterface {
 
+  use StringTranslationTrait;
+
   /**
    * Drupal file system service.
-   *
-   * @var \Drupal\Core\File\FileSystemInterface
    */
-  private $filesystem;
+  private FileSystemInterface $filesystem;
 
   /**
    * Drupal stream wrapper manager.
-   *
-   * @var \Drupal\Core\StreamWrapper\StreamWrapperManager
    */
-  private $streamWrapperManager;
+  private StreamWrapperManagerInterface $streamWrapperManager;
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * HTTP client factory service.
+   */
+  private ClientFactory $httpClientFactory;
+
+  /**
+   * Logger service.
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('file_system'),
-      $container->get('stream_wrapper_manager')
+      $container->get('stream_wrapper_manager'),
+      $container->get('http_client_factory'),
+      $container->get('dkan.common.logger_channel')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FileSystemInterface $filesystem, StreamWrapperManager $streamWrapperManager) {
+  public function __construct(
+    FileSystemInterface $filesystem,
+    StreamWrapperManager $streamWrapperManager,
+    ClientFactory $httpClientFactory,
+    LoggerChannelInterface $logger,
+  ) {
     $this->filesystem = $filesystem;
     $this->streamWrapperManager = $streamWrapperManager;
+    $this->httpClientFactory = $httpClientFactory;
+    $this->logger = $logger;
   }
 
   /**
@@ -64,6 +86,9 @@ class DrupalFiles implements ContainerInjectionInterface {
 
   /**
    * Getter.
+   *
+   * @deprecated in dkan:2.20.1 and is removed from dkan:2.21.0.
+   *   Unsed, cleaning up.
    */
   public function getStreamWrapperManager(): StreamWrapperManager {
     return $this->streamWrapperManager;
@@ -98,7 +123,63 @@ class DrupalFiles implements ContainerInjectionInterface {
       return $this->fileCreateUrl("{$destination}/{$filename}");
     }
     // Handle http(s):// URIs.
-    return system_retrieve_file($url, $destination, FALSE, FileSystemInterface::EXISTS_REPLACE);
+    return $this->retrieveRemoteFile($url, $destination);
+  }
+
+  /**
+   * Attempts to get a file using Guzzle HTTP client and to store it locally.
+   *
+   * @param string $url
+   *   The URL of the file to grab.
+   * @param string|null $destination
+   *   Stream wrapper URI specifying where the file should be placed. Can be a
+   *   directory or full path with file name if you want to rename. If NULL, the
+   *   file will be placed in "public://" with the same name as the remote file.
+   *
+   * @return false|string
+   *   If it succeeds , the new location URI. If it fails, FALSE.
+   *
+   * @see \system_retrieve_file()
+   * @see https://www.drupal.org/node/3223362
+   */
+  protected function retrieveRemoteFile(string $url, ?string $destination = NULL) {
+    $this->fixDestination($destination, $url);
+    try {
+      $client = $this->httpClientFactory->fromOptions();
+      $data = (string) $client->get($url)->getBody();
+      // @todo Switch FileSystemInterface::EXISTS_REPLACE for
+      // FileExists::Replace once we drop D10.2 support.
+      return $this->filesystem->saveData($data, $destination, FileSystemInterface::EXISTS_REPLACE);
+    }
+    catch (TransferException $exception) {
+      $this->logger->error($this->t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
+      return FALSE;
+    }
+    catch (FileException | InvalidStreamWrapperException $e) {
+      $this->logger->error($this->t('Failed to save file due to error "%error"', ['%error' => $e->getMessage()]));
+      return FALSE;
+    }
+  }
+
+  /**
+   * Fix missing or extra-escaped destination string.
+   *
+   * @param string|null $destination
+   *   The destination string.
+   * @param string $url
+   *   The source URL.
+   */
+  private function fixDestination(?string &$destination, $url): void {
+    $parsed_url = parse_url($url);
+    if (!isset($destination)) {
+      $destination = $this->filesystem->basename($parsed_url['path']);
+      $destination = 'public://' . $destination;
+      $destination = $this->streamWrapperManager->normalizeUri($destination);
+    }
+    elseif (is_dir($this->filesystem->realpath($destination))) {
+      // Prevent URIs with triple slashes when glueing parts together.
+      $destination = str_replace('///', '//', "$destination/") . $this->filesystem->basename($parsed_url['path']);
+    }
   }
 
   /**
@@ -111,7 +192,7 @@ class DrupalFiles implements ContainerInjectionInterface {
     if (substr_count($uri, 'http') > 0) {
       return $uri;
     }
-    elseif ($wrapper = $this->getStreamWrapperManager()->getViaUri($uri)) {
+    elseif ($wrapper = $this->streamWrapperManager->getViaUri($uri)) {
       return $wrapper->getExternalUrl();
     }
     throw new \Exception("No stream wrapper available for {$uri}");

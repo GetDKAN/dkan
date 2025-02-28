@@ -2,19 +2,21 @@
 
 namespace Drupal\datastore\Form;
 
-use Drupal\common\DataResource;
-use Drupal\Core\Pager\PagerManagerInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\common\DatasetInfo;
-use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Pager\PagerManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
+use Drupal\common\DataResource;
+use Drupal\common\DatasetInfo;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\datastore\Service\PostImport;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\datastore\PostImportResultFactory;
 
 /**
  * Datastore Import Dashboard form.
@@ -65,11 +67,18 @@ class DashboardForm extends FormBase {
   protected $dateFormatter;
 
   /**
-   * The PostImport service.
+   * The PostImportResultFactory service.
    *
-   * @var \Drupal\datastore\Service\PostImport
+   * @var \Drupal\datastore\PostImportResultFactory
    */
-  protected $postImport;
+  protected PostImportResultFactory $postImportResultFactory;
+
+  /**
+   * Node storage service.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected EntityStorageInterface $nodeStorage;
 
   /**
    * DashboardController constructor.
@@ -84,8 +93,10 @@ class DashboardForm extends FormBase {
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
-   * @param \Drupal\datastore\Service\PostImport $post_import
-   *   The post import service.
+   * @param \Drupal\datastore\PostImportResultFactory $postImportResultFactory
+   *   The PostImportResultFactory service..
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Entity type manager service.
    */
   public function __construct(
     HarvestService $harvestService,
@@ -93,15 +104,17 @@ class DashboardForm extends FormBase {
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
     DateFormatter $dateFormatter,
-    PostImport $post_import
+    PostImportResultFactory $postImportResultFactory,
+    EntityTypeManagerInterface $entityTypeManager,
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
     $this->dateFormatter = $dateFormatter;
-    $this->postImport = $post_import;
+    $this->nodeStorage = $entityTypeManager->getStorage('node');
     $this->itemsPerPage = 10;
+    $this->postImportResultFactory = $postImportResultFactory;
   }
 
   /**
@@ -114,7 +127,8 @@ class DashboardForm extends FormBase {
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
       $container->get('date.formatter'),
-      $container->get('dkan.datastore.service.post_import'),
+      $container->get('dkan.datastore.post_import_result_factory'),
+      $container->get('entity_type.manager'),
     );
   }
 
@@ -190,6 +204,12 @@ class DashboardForm extends FormBase {
           '#title' => $this->t('Dataset ID'),
           '#default_value' => $filters['uuid'] ?? '',
         ],
+        'dataset_title' => [
+          '#type' => 'textfield',
+          '#weight' => 1,
+          '#title' => $this->t('Dataset Title'),
+          '#default_value' => $filters['dataset_title'] ?? '',
+        ],
         'harvest_id' => [
           '#type' => 'select',
           '#weight' => 1,
@@ -241,11 +261,20 @@ class DashboardForm extends FormBase {
   /**
    * Retrieve list of UUIDs for datasets matching the given filters.
    *
+   * Filters over-ride each other, in this order of priority:
+   * - UUID
+   * - Title search
+   * - Harvest plan ID.
+   *
    * @param string[] $filters
-   *   Datasets filters.
+   *   Datasets filters. Keys determine the filter. Recognized keys:
+   *   - uuid - Dataset UUID.
+   *   - dataset_title - A CONTAINS search within the dataset title field.
+   *   - harvest_id - A harvest plan ID.
    *
    * @return string[]
-   *   Filtered list of dataset UUIDs.
+   *   Paged, filtered list of dataset UUIDs. If no filter was supplied, all
+   *   dataset UUIDs will be returned, paged.
    */
   protected function getDatasets(array $filters): array {
     $datasets = [];
@@ -255,16 +284,17 @@ class DashboardForm extends FormBase {
     if (isset($filters['uuid'])) {
       $datasets = [$filters['uuid']];
     }
+    // Is the user searching for a dataset title?
+    elseif (isset($filters['dataset_title'])) {
+      $results = $this->getDatasetsByTitle($filters);
+      $datasets = $this->pagedFilteredList($results);
+    }
     // If a value was supplied for the harvest ID filter, retrieve dataset UUIDs
-    // belonging to the specfied harvest.
+    // belonging to the specified harvest.
     elseif (isset($filters['harvest_id'])) {
       $harvestLoad = iterator_to_array($this->getHarvestLoadStatus($filters['harvest_id']));
       $datasets = array_keys($harvestLoad);
-      $total = count($datasets);
-      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
-
-      $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
-      $datasets = $chunks[$currentPage];
+      $datasets = $this->pagedFilteredList($datasets);
     }
     // If no filter values were supplied, fetch from the list of all dataset
     // UUIDs.
@@ -280,6 +310,50 @@ class DashboardForm extends FormBase {
     }
 
     return $datasets;
+  }
+
+  /**
+   * Entity query for nodes containing the dataset title.
+   *
+   * @param string[] $filters
+   *   Datasets filters.
+   *
+   * @return string[]
+   *   Dataset UUIDs .
+   */
+  protected function getDatasetsByTitle(array $filters): array {
+    // Get the ids using an entity query, because our dataset title is in the
+    // node title field.
+    // @todo Unify different queries against Data nodes using a repository or
+    // the NodeData wrapper.
+    $results = $this->nodeStorage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'data')
+      ->condition('field_data_type', 'dataset')
+      ->condition('title', $filters['dataset_title'], 'CONTAINS')
+      ->execute();
+    foreach ($this->nodeStorage->loadMultiple($results) as $node) {
+      $datasets[] = $node->uuid();
+    }
+
+    return $datasets;
+  }
+
+  /**
+   * Paged, filtered list of dataset UUIDs.
+   *
+   * @param string[] $datasets
+   *   Dataset UUIDs.
+   *
+   * @return string[]
+   *   Paged, filtered list of dataset UUIDs.
+   */
+  protected function pagedFilteredList(array $datasets): array {
+    $total = count($datasets);
+    $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
+    $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
+
+    return $chunks[$currentPage];
   }
 
   /**
@@ -461,8 +535,8 @@ class DashboardForm extends FormBase {
    */
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
-
-      $postImportInfo = $this->postImport->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
+      $postImportResult = $this->postImportResultFactory->initializeFromDistribution($dist);
+      $postImportInfo = $postImportResult->retrieveJobStatus();
       $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
 

@@ -47,7 +47,9 @@ class MySQLQueryTest extends TestCase {
    */
   public function buildConnectionChain(): Chain {
     return (new Chain($this))
+      // Drupal 10 will call getDriverClass, while 11 will call update directly.
       ->add(Connection::class, 'getDriverClass', UpdateQueryMock::class)
+      ->add(Connection::class, 'update', UpdateQueryMock::class)
       ->add(Connection::class, 'prepareStatement', StatementInterface::class, 'prepare')
       ->add(Connection::class, 'query', StatementInterface::class)
       ->add(StatementInterface::class, 'execute', TRUE)
