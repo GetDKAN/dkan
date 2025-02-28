@@ -2,11 +2,12 @@
 
 namespace Drupal\metastore_search;
 
-use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Utility\QueryHelperInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Search API query builder trait.
@@ -14,7 +15,6 @@ use Drupal\search_api\Utility\QueryHelperInterface;
  * @package Drupal\metastore_search
  */
 trait QueryBuilderTrait {
-  use EventDispatcherTrait;
 
   /**
    * Private.
@@ -125,12 +125,14 @@ trait QueryBuilderTrait {
     foreach ($fields as $field) {
       if (isset($params[$field])) {
 
-        $info = $this->dispatchEvent(Search::EVENT_SEARCH_QUERY_BUILDER_CONDITION,
-          [
-            'field' => $field,
-            'values' => $this->getValuesFromCommaSeparatedString($params[$field]),
-            'conjunction' => 'AND',
-          ]);
+        $dispatcher = \Drupal::getContainer()->get('event_dispatcher');
+        $event = new Event([
+          'field' => $field,
+          'values' => $this->getValuesFromCommaSeparatedString($params[$field]),
+          'conjunction' => 'AND',
+        ]);
+        $dispatcher->dispatch($event, Search::EVENT_SEARCH_QUERY_BUILDER_CONDITION);
+        $info = $event->getData();
 
         $conditions = [];
         $conditions[$info['field']] = $info['values'];

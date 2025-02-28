@@ -52,7 +52,6 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   private $eventDispatcher;
 
-
   /**
    * {@inheritdoc}
    */
