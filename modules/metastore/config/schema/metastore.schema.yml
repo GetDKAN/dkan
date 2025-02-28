@@ -26,3 +26,6 @@ metastore.settings:
     resource_perspective_display:
       type: string
       label: 'Resource download url display'
+    redirect_to_datasets:
+      type: boolean
+      label: 'Redirect to datasets view after form submit'

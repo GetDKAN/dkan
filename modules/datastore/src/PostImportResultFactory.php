@@ -57,6 +57,7 @@ class PostImportResultFactory {
     return new PostImportResult(
       $status,
       $message,
+      $this->getCurrentTime(),
       $resource,
       $this->connection,
     );
@@ -79,9 +80,17 @@ class PostImportResultFactory {
     return new PostImportResult(
       NULL,
       NULL,
+      NULL,
       $resource,
       $this->connection,
     );
+  }
+
+  /**
+   * Return current Unix timestamp.
+   */
+  protected function getCurrentTime(): int {
+    return time();
   }
 
 }
