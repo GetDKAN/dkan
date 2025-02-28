@@ -16,7 +16,7 @@ use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
 /**
- * Dataset integration tests.
+ * Dataset tests.
  *
  * @group dkan
  * @group functional
