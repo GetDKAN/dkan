@@ -2,20 +2,20 @@
 
 namespace Drupal\datastore\SqlEndpoint;
 
-use Drupal\common\EventDispatcherTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\common\Events\Event;
 use Drupal\common\JsonResponseTrait;
 use Drupal\metastore\MetastoreApiResponse;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Api class.
  */
 class WebServiceApi implements ContainerInjectionInterface {
   use JsonResponseTrait;
-  use EventDispatcherTrait;
 
   const EVENT_RUN_QUERY = 'dkan_datastore_sql_run_query';
 
@@ -46,6 +46,14 @@ class WebServiceApi implements ContainerInjectionInterface {
   private MetastoreApiResponse $metastoreApiResponse;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private $eventDispatcher;
+
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -53,7 +61,8 @@ class WebServiceApi implements ContainerInjectionInterface {
       $container->get('dkan.datastore.sql_endpoint.service'),
       $container->get('database'),
       $container->get('request_stack'),
-      $container->get('dkan.metastore.api_response')
+      $container->get('dkan.metastore.api_response'),
+      $container->get('event_dispatcher')
     );
   }
 
@@ -64,12 +73,14 @@ class WebServiceApi implements ContainerInjectionInterface {
     DatastoreSqlEndpointService $service,
     Connection $database,
     RequestStack $requestStack,
-    MetastoreApiResponse $metastoreApiResponse
+    MetastoreApiResponse $metastoreApiResponse,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->service = $service;
     $this->database = $database;
     $this->requestStack = $requestStack;
     $this->metastoreApiResponse = $metastoreApiResponse;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -129,7 +140,8 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $uuid = $this->service->getResourceUuid($query);
 
-      $this->dispatchEvent(self::EVENT_RUN_QUERY, $uuid);
+      $event = new Event($uuid);
+      $this->eventDispatcher->dispatch($event, self::EVENT_RUN_QUERY);
 
       $result = $this->service->runQuery($query, $showDbColumns);
     }
