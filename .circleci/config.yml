@@ -102,7 +102,7 @@ commands:
                   ddev composer show getdkan/dkan
                   # Install dkan release specified by getdkan/recommended-project.
                   ddev dkan-site-install
-                  ddev en -y datastore harvest
+                  ddev drush en -y datastore harvest
                   # Switch over to using the repo code for dkan and update.
                   ddev composer config repositories.dkan path dkan
                   ddev composer require getdkan/dkan:@dev --no-install -W
@@ -122,7 +122,7 @@ commands:
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
                   ddev dkan-site-install
-                  ddev en -y datastore harvest
+                  ddev drush en -y datastore harvest
                   ddev drush rq
 
 jobs:
