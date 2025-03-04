@@ -2,16 +2,16 @@
 
 namespace Drupal\common\Storage;
 
+use Drupal\common\Events\Event;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
-use Drupal\common\EventDispatcherTrait;
 use Drupal\Core\Database\SchemaObjectExistsException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Base class for database storage methods.
  */
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
-  use EventDispatcherTrait;
 
   /**
    * The event name we send when we create a table.
@@ -35,6 +35,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   protected $connection;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Prepare data.
    *
    * Transform the string data given into what should be use by the insert
@@ -54,9 +61,15 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *    Event dispatcher service.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(
+    Connection $connection,
+    EventDispatcherInterface $eventDispatcher
+  ) {
     $this->connection = $connection;
+    $this->eventDispatcher = $eventDispatcher
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
@@ -297,12 +310,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   protected function tableCreate($table_name, $schema) {
     // Opportunity to further alter the schema before table creation.
-    // @todo Give this event its own event class. Pass the schema array by
-    //   reference.
-    $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
+    $event = new Event($schema);
+    $this->eventDispatcher->dispatch($event, self::EVENT_TABLE_CREATE);
 
-    $this->connection->schema()->createTable($table_name, $schema);
+    $this->connection->schema()->createTable($table_name, $event->getData());
   }
+
 
   /**
    * Set the schema using the existing database table.

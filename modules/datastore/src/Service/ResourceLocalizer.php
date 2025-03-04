@@ -21,8 +21,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class ResourceLocalizer {
 
-  use EventDispatcherTrait;
-
   /**
    * Event sent when a resource is successfully localized.
    *
