@@ -115,7 +115,9 @@ class Search implements ContainerInjectionInterface {
    *   Search parameters.
    */
   public function search(array $params = []) {
-    $params = $this->dispatchEvent(self::EVENT_SEARCH_PARAMS, $params);
+    $event = new Event($params);
+    $this->eventDispatcher->dispatch($event, self::EVENT_SEARCH_PARAMS);
+    $params = $event->getData();
     $query = $this->getQuery($params, $this->index, $this->queryHelper)[0];
     $result = $query->execute();
 

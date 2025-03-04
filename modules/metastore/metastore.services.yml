@@ -66,6 +66,7 @@ services:
     arguments:
       - '@dkan.metastore.resource_mapper_database_table'
       - '@entity_type.manager'
+      - '@event_dispatcher'
 
   dkan.metastore.resource_mapper_database_table:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
