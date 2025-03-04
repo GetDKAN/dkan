@@ -3,7 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -14,12 +14,12 @@ use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * The metastore service.
  */
 class MetastoreService implements ContainerInjectionInterface {
-  use EventDispatcherTrait;
 
   const EVENT_DATA_GET = 'dkan_metastore_data_get';
   const EVENT_DATA_GET_ALL = 'dkan_metastore_data_get_all';
@@ -58,6 +58,13 @@ class MetastoreService implements ContainerInjectionInterface {
   private LoggerInterface $logger;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}
@@ -67,7 +74,8 @@ class MetastoreService implements ContainerInjectionInterface {
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('dkan.metastore.storage'),
       $container->get('dkan.metastore.valid_metadata'),
-      $container->get('dkan.common.logger_channel')
+      $container->get('dkan.common.logger_channel'),
+      $container->get('event_dispatcher')
     );
   }
 
@@ -78,12 +86,14 @@ class MetastoreService implements ContainerInjectionInterface {
     SchemaRetriever $schemaRetriever,
     DataFactory $factory,
     ValidMetadataFactory $validMetadataFactory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
     $this->validMetadataFactory = $validMetadataFactory;
     $this->logger = $loggerChannel;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -178,15 +188,17 @@ class MetastoreService implements ContainerInjectionInterface {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll($start, $length, $unpublished);
     $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 
-    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
-      if (!is_array($data)) {
-        return FALSE;
-      }
-      if (count($data) == 0) {
-        return TRUE;
-      }
-      return reset($data) instanceof RootedJsonData;
-    });
+    $event = new Event($objects);
+    $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET_ALL);
+    $processedData = $event->getData();
+
+    if (!is_array($processedData)) {
+      return FALSE;
+    }
+    if (count($processedData) == 0) {
+      return TRUE;
+    }
+    return reset($processedData) instanceof RootedJsonData;
 
   }
 
@@ -208,9 +220,11 @@ class MetastoreService implements ContainerInjectionInterface {
       function ($jsonString) use ($schema_id) {
         try {
           $data = $this->validMetadataFactory->get($jsonString, $schema_id);
-          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
-            return $data instanceof RootedJsonData;
-          });
+          $event = new Event($data);
+          $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET);
+          $processedData = $event->getData();
+
+          return $processedData instanceof RootedJsonData;
         }
         catch (\Exception) {
           $this->logger->error('A JSON string failed validation.', [
@@ -253,7 +267,9 @@ class MetastoreService implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier, bool $published = TRUE): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier, $published);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
-    return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+    $event = new Event($data);
+    $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET);
+    return $event->getData();
   }
 
   /**

@@ -6,6 +6,7 @@ services:
       - '@dkan.metastore.storage'
       - '@dkan.metastore.valid_metadata'
       - '@dkan.common.logger_channel'
+      - '@event_dispatcher'
 
   dkan.metastore.lifecycle:
     class: \Drupal\metastore\LifeCycle\LifeCycle

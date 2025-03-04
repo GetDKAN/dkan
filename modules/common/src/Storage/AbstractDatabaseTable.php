@@ -62,14 +62,14 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-   *    Event dispatcher service.
+   *   Event dispatcher service.
    */
   public function __construct(
     Connection $connection,
     EventDispatcherInterface $eventDispatcher
   ) {
     $this->connection = $connection;
-    $this->eventDispatcher = $eventDispatcher
+    $this->eventDispatcher = $eventDispatcher;
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
