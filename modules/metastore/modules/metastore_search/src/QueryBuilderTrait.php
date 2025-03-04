@@ -7,7 +7,6 @@ use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Utility\QueryHelperInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Search API query builder trait.

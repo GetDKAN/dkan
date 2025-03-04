@@ -4,6 +4,7 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Drupal\common\DataResource;
+use \Drupal\common\Events\Event;
 use Drupal\datastore\Events\DatastoreImportedEvent;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -214,6 +215,8 @@ class ImportService {
    *
    * @param string $delimiter
    *   Delimiter character.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   Event dispatcher.
    *
    * @return \CsvParser\Parser\Csv
    *   A parser which does not keep track of every execution steps.
