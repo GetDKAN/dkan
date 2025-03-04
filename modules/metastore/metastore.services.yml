@@ -38,6 +38,7 @@ services:
       - '@entity_type.manager'
       - '@config.factory'
       - '@dkan.common.logger_channel'
+      - '@event_dispatcher'
 
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
@@ -74,6 +75,7 @@ services:
     arguments:
       - '@database'
       - '@dkan.common.logger_channel'
+      - '@event_dispatcher'
 
   dkan.metastore.event_subscriber:
     class: \Drupal\metastore\EventSubscriber\MetastoreSubscriber

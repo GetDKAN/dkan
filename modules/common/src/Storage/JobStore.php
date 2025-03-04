@@ -3,6 +3,7 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Retrieve a serialized job (datastore importer or harvest) from the database.
@@ -29,11 +30,11 @@ class JobStore extends AbstractDatabaseTable {
    * @param string $deprecatedTableName
    *   (Optional) Deprecated table name, if there is one.
    */
-  public function __construct(string $tableName, Connection $connection, string $deprecatedTableName = '') {
+  public function __construct(string $tableName, Connection $connection, EventDispatcherInterface $eventDispatcher, string $deprecatedTableName = '') {
     $this->tableName = $tableName;
     $this->deprecatedTableName = $deprecatedTableName;
     $this->setOurSchema();
-    parent::__construct($connection);
+    parent::__construct($connection, $eventDispatcher);
   }
 
   /**

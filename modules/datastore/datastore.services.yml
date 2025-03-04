@@ -136,6 +136,7 @@ services:
     class: \Drupal\datastore\Storage\ImportJobStoreFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
 
   pdlt.converter.strptime_to_mysql:
     class: \PDLT\Converter

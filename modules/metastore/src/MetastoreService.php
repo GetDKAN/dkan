@@ -193,11 +193,13 @@ class MetastoreService implements ContainerInjectionInterface {
     $processedData = $event->getData();
 
     if (!is_array($processedData)) {
-      return FALSE;
+      return [];
     }
-    if (count($processedData) == 0) {
-      return TRUE;
+
+    if (empty($processedData)) {
+      return [];
     }
+
     return reset($processedData) instanceof RootedJsonData;
 
   }

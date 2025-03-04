@@ -12,6 +12,7 @@ services:
     class: \Drupal\common\Storage\JobStoreFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
 
   dkan.common.drupal_files:
     class: \Drupal\common\Util\DrupalFiles
@@ -36,6 +37,7 @@ services:
     class: \Drupal\common\Storage\FileFetcherJobStoreFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
 
   dkan.common.dataset_info:
     class: \Drupal\common\DatasetInfo
