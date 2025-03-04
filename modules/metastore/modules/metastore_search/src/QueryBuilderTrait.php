@@ -17,13 +17,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 trait QueryBuilderTrait {
 
   /**
-   * The event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected EventDispatcherInterface $eventDispatcher;
-
-  /**
    * Private.
    *
    * @param array $params

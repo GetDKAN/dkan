@@ -10,8 +10,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class EventTest extends TestCase
 {
-  public function testDataIntegrityAcrossEventSubscribers()
-  {
+  public function testDataIntegrityAcrossEventSubscribers() {
     $this->expectExceptionMessage("Invalid event data.");
 
     $dispatcher = new EventDispatcher();

@@ -106,23 +106,6 @@ class Search implements ContainerInjectionInterface {
   }
 
   /**
-   * Dispatcher.
-   *
-   * @param string $eventName
-   *   The event name.
-   * @param mixed $data
-   *   The event data.
-   *
-   * @return mixed
-   *   The event data after being processed by subscribers.
-   */
-  protected function dispatchEvent(string $eventName, $data) {
-    $event = new Event($data);
-    $this->eventDispatcher->dispatch($event, $eventName);
-    return $event->getData();
-  }
-
-  /**
    * Search.
    *
    * Returns an object with 2 properties: total (the total number of records
@@ -139,7 +122,9 @@ class Search implements ContainerInjectionInterface {
     $count = $result->getResultCount();
     $data = $this->getData($result);
 
-    $data = $this->dispatchEvent(self::EVENT_SEARCH, $data);
+    $event = new Event($data);
+    $this->eventDispatcher->dispatch($event, self::EVENT_SEARCH);
+    $data = $event->getData();
 
     return (object) [
       'total' => $count,

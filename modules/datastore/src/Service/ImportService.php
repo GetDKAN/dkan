@@ -4,7 +4,6 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Drupal\common\DataResource;
-use Drupal\common\EventDispatcherTrait;
 use Drupal\datastore\Events\DatastoreImportedEvent;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -24,8 +23,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @see \Drupal\datastore\Service\Factory\ImportServiceFactory::getInstance
  */
 class ImportService {
-
-  use EventDispatcherTrait;
 
   /**
    * Event name used when configuring the parser during import.
@@ -229,7 +226,9 @@ class ImportService {
       'record_end' => ["\n", "\r"],
     ];
 
-    $parserConfiguration = $this->dispatchEvent(self::EVENT_CONFIGURE_PARSER, $parserConfiguration);
+    $event = new Event($parserConfiguration);
+    $this->eventDispatcher->dispatch($event, self::EVENT_CONFIGURE_PARSER);
+    $parserConfiguration = $event->getData();
 
     $parser = Csv::getParser($parserConfiguration['delimiter'], $parserConfiguration['quote'], $parserConfiguration['escape'], $parserConfiguration['record_end']);
     $parser->machine->stopRecording();
