@@ -17,6 +17,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 trait QueryBuilderTrait {
 
   /**
+   * The event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Private.
    *
    * @param array $params
@@ -125,13 +132,12 @@ trait QueryBuilderTrait {
     foreach ($fields as $field) {
       if (isset($params[$field])) {
 
-        $dispatcher = \Drupal::getContainer()->get('event_dispatcher');
         $event = new Event([
           'field' => $field,
           'values' => $this->getValuesFromCommaSeparatedString($params[$field]),
           'conjunction' => 'AND',
         ]);
-        $dispatcher->dispatch($event, Search::EVENT_SEARCH_QUERY_BUILDER_CONDITION);
+        $this->eventDispatcher->dispatch($event, Search::EVENT_SEARCH_QUERY_BUILDER_CONDITION);
         $info = $event->getData();
 
         $conditions = [];

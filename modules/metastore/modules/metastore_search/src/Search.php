@@ -75,7 +75,7 @@ class Search implements ContainerInjectionInterface {
    * @param \Drupal\search_api\Utility\QueryHelperInterface $queryHelper
    *   Query helper.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-   *    Event dispatcher.
+   *   Event dispatcher.
    */
   public function __construct(
     MetastoreService $metastoreService,

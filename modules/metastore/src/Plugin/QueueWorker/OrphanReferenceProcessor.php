@@ -60,7 +60,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
    *   The referencer lookup service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-   *    The event dispatcher.
+   *   The event dispatcher.
    */
   public function __construct(
     array $configuration,
