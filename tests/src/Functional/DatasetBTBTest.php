@@ -3,16 +3,15 @@
 namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\common\DataResource;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
+use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
-use Harvest\ETL\Extract\DataJson;
+use Drupal\harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
 /**

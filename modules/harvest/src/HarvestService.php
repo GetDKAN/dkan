@@ -8,8 +8,7 @@ use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
-use Harvest\ETL\Factory;
-use Harvest\Harvester;
+use Drupal\harvest\ETL\Factory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -416,7 +415,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @param string $plan_id
    *   Harvester ID.
    *
-   * @return \Harvest\Harvester
+   * @return \Drupal\harvest\Harvester
    *   Harvester object.
    */
   private function getHarvester(string $plan_id): Harvester {

@@ -21,8 +21,8 @@ interface HarvestRunInterface extends ContentEntityInterface {
    *
    * @internal
    *
-   * @see \Harvest\Harvester::harvest()
-   * @see \Harvest\ResultInterpreter
+   * @see \Drupal\harvest\Harvester::harvest()
+   * @see \Drupal\harvest\ResultInterpreter
    *
    * @todo Refactor other areas of the harvest system so they know how to deal
    *   with the entity rather than the results array.

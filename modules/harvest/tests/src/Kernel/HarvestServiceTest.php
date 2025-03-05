@@ -3,8 +3,8 @@
 namespace Drupal\Tests\harvest\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Harvest\ETL\Extract\DataJson;
-use Harvest\ETL\Load\Simple;
+use Drupal\harvest\ETL\Extract\DataJson;
+use Drupal\harvest\ETL\Load\Simple;
 
 /**
  * @covers \Drupal\harvest\HarvestService

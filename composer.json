@@ -22,8 +22,12 @@
         "fylax/forceutf8": "^3.0",
         "getdkan/contracts": "^1.2.0",
         "getdkan/csv-parser": "^1.3.3",
+<<<<<<< HEAD
         "getdkan/file-fetcher": "^5.1.0",
         "getdkan/harvest": "^1.1.0",
+=======
+        "getdkan/file-fetcher": "^5.0.5",
+>>>>>>> 73d6ce85a (Updated code to reference harvest module, not library.)
         "getdkan/pdlt": "^0.1.7",
         "getdkan/procrastinator": "^5.0.3",
         "getdkan/rooted-json-data": "^0.2.2",

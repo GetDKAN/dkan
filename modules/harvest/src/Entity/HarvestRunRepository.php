@@ -95,7 +95,7 @@ class HarvestRunRepository {
    * @return string
    *   The run identifier.
    *
-   * @see \Harvest\Harvester::harvest()
+   * @see \Drupal\harvest\Harvester::harvest()
    *
    * @todo Eventually all the subsystems will be able to understand the entity
    *   rather than needing conversion to and from the array format.

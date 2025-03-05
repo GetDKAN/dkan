@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\harvest\Entity\HarvestRunRepository;
-use Harvest\ResultInterpreter;
+use Drupal\harvest\ResultInterpreter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

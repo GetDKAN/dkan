@@ -6,7 +6,7 @@ use Drupal\harvest\HarvestService;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
 use Drush\Commands\DrushCommands;
-use Harvest\ETL\Extract\DataJson;
+use Drupal\harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -74,7 +74,7 @@ class HarvestCommands extends DrushCommands {
    * https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
    *
    * @param string $plan_json
-   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
+   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Drupal\\harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
    * @param array $opts
    *   Options array.
    *

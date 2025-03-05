@@ -2,10 +2,10 @@
 
 namespace Drupal\harvest\Transform;
 
+use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
-use Drupal\common\Util\DrupalFiles;
-use Harvest\ETL\Transform\Transform;
+use Drupal\harvest\ETL\Transform\Transform;
 
 /**
  * Moves local files to public:// and alters the downloadUrl field.
