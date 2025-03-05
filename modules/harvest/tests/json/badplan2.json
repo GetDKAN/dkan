@@ -1,0 +1,11 @@
+{
+  "identifier": "test",
+  "extract": {
+    "type": "NoClass",
+    "uri": "http://demo.getdkan.com/data.json"
+  },
+  "transforms": ["NoClass"],
+  "load": {
+    "type": "NoClass"
+  }
+}
