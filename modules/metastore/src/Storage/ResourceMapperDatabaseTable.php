@@ -5,7 +5,6 @@ namespace Drupal\metastore\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Database storage object.
@@ -33,10 +32,9 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
    */
   public function __construct(
     Connection $connection,
-    LoggerInterface $loggerChannel,
-    EventDispatcherInterface $eventDispatcher
+    LoggerInterface $loggerChannel
   ) {
-    parent::__construct($connection, $eventDispatcher);
+    parent::__construct($connection);
     $this->logger = $loggerChannel;
 
     $schema = [];

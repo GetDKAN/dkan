@@ -4,7 +4,6 @@ namespace Drupal\harvest\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Harvest database table storage.
@@ -32,10 +31,10 @@ class DatabaseTable extends AbstractDatabaseTable {
    * @param string $identifier
    *   Each unique identifier represents a table.
    */
-  public function __construct(Connection $connection, EventDispatcherInterface $eventDispatcher, string $identifier) {
+  public function __construct(Connection $connection, string $identifier) {
     $this->identifier = $identifier;
     $this->setOurSchema();
-    parent::__construct($connection, $eventDispatcher);
+    parent::__construct($connection);
   }
 
   /**

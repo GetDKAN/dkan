@@ -6,7 +6,6 @@ use Drupal\Core\Database\Connection;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Database storage object.
@@ -45,14 +44,12 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     Connection $connection,
     DataResource $resource,
     LoggerInterface $loggerChannel,
-    EventDispatcherInterface $eventDispatcher
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
     $this->connection = $connection;
     $this->logger = $loggerChannel;
-    parent::__construct($eventDispatcher);
 
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
