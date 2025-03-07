@@ -454,18 +454,12 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach ($datasetInfo as $rev) {
-      // Filter out distributions whose resources are not csv or tsv.
-      $distributions = array_filter($rev['distributions'], function ($v) {
-        return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
-      });
-
-      if (!empty($distributions)) {
-        // For first distribution, combine with revision information.
-        $rows[] = array_merge(
-          $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
-          $this->buildResourcesRow(array_shift($distributions))
-        );
-      }
+      $distributions = $rev['distributions'];
+      // For first distribution, combine with revision information.
+      $rows[] = array_merge(
+        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+        $this->buildResourcesRow(array_shift($distributions))
+      );
       // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
@@ -537,24 +531,49 @@ class DashboardForm extends FormBase {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
       $postImportResult = $this->postImportResultFactory->initializeFromDistribution($dist);
       $postImportInfo = $postImportResult->retrieveJobStatus();
-      $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
+      $postImportStatus = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
+      $mime_type = in_array($dist['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
 
-      return [
-        [
-          'data' => [
-            '#theme' => 'datastore_dashboard_resource_cell',
-            '#uuid' => $dist['distribution_uuid'],
-            '#file_name' => basename($dist['source_path']),
-            '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
-          ],
-        ],
-        $this->buildStatusCell($dist['fetcher_status']),
-        $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
-        $this->buildPostImportStatusCell($status, $error),
-      ];
+      return $this->buildResourceData($dist, $mime_type, $postImportStatus, $error);
     }
+
     return ['', '', '', ''];
+  }
+
+  /**
+   * Build resource data array.
+   *
+   * @param array $dist
+   *   Distribution details.
+   * @param bool $mime_type
+   *   Whether the mime type is importable.
+   * @param string $postImportStatus
+   *   Post import status.
+   * @param string|null $error
+   *   Error message, if any.
+   *
+   * @return array
+   *   Resource data array.
+   */
+  protected function buildResourceData(array $dist, bool $mime_type, string $postImportStatus, ?string $error): array {
+    $data = [
+      [
+        'data' => [
+          '#theme' => 'datastore_dashboard_resource_cell',
+          '#uuid' => $dist['distribution_uuid'],
+          '#file_name' => basename($dist['source_path']),
+          '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
+        ],
+        'class' => $mime_type ? '' : 'unsupported',
+      ],
+      $mime_type ? $this->buildStatusCell($dist['fetcher_status']) : $this->buildStatusCell('unsupported'),
+      $mime_type ? $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])) : '',
+      $mime_type ? $this->buildPostImportStatusCell($postImportStatus, $error) : '',
+    ];
+
+    // Remove empty cells.
+    return array_filter($data);
   }
 
   /**
@@ -571,15 +590,23 @@ class DashboardForm extends FormBase {
    *   Renderable array.
    */
   protected function buildStatusCell(string $status, ?int $percentDone = NULL, ?string $error = NULL) {
-    return [
+    $statusCell = [
       'data' => [
         '#theme' => 'datastore_dashboard_status_cell',
-        '#status' => $status,
+        '#status' => $status === 'unsupported' ? 'Data import is not supported for this resource type' : $status,
         '#percent' => $percentDone ?? NULL,
         '#error' => $error,
       ],
       'class' => str_replace('_', '-', $status),
     ];
+
+    // If the status is unsupported, we want to span the cell across
+    // all three columns.
+    if ($status === 'unsupported') {
+      $statusCell['colspan'] = 3;
+    }
+
+    return $statusCell;
   }
 
   /**
