@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class WebServiceApi implements ContainerInjectionInterface {
 
-  private const array DEFAULT_HEADERS = ['Access-Control-Allow-Origin' => '*'];
+  private const DEFAULT_HEADERS = ['Access-Control-Allow-Origin' => '*'];
 
   /**
    * Harvest.
