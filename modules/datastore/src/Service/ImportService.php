@@ -48,10 +48,8 @@ class ImportService {
 
   /**
    * The qualified class name of the importer to use.
-   *
-   * @var \Procrastinator\Job\AbstractPersistentJob
    */
-  private $importerClass = ImportJob::class;
+  private string $importerClass = ImportJob::class;
 
   /**
    * The DKAN Resource to import.
@@ -194,7 +192,7 @@ class ImportService {
       $delimiter = "\t";
     }
 
-    $this->importJob = call_user_func($this->importerClass->get(...),
+    $this->importJob = call_user_func([$this->importerClass, 'get'],
       md5($data_resource->getUniqueIdentifier()),
       $this->importJobStoreFactory->getInstance(),
       [

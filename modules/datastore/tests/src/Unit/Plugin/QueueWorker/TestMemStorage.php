@@ -92,7 +92,7 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         $cleanSchema['fields'] = [];
         foreach ($this->schema['fields'] as $field => $info) {
             $new = preg_replace("/[^A-Za-z0-9_ ]/", '', (string) $field);
-            $new = trim($new);
+            $new = trim((string) $new);
             $new = strtolower($new);
             $new = str_replace(" ", "_", $new);
 
