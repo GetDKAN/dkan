@@ -25,7 +25,7 @@ class NodeDataTest extends BrowserTestBase {
 
   protected $defaultTheme = 'stark';
 
-  private const string S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
 
   private ValidMetadataFactory $validMetadataFactory;
 
