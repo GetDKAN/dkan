@@ -143,7 +143,7 @@ class MysqlImport extends ImportJob {
     }
 
     // Attempt to retrieve the columns from the resource file.
-    $columns = fgetcsv($f, 0, $delimiter);
+    $columns = fgetcsv($f, 0, $delimiter, '"', '\\');
     // Attempt to read the column lines from the resource file.
     $end_pointer = ftell($f);
     rewind($f);
