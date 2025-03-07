@@ -36,9 +36,9 @@ trait EventDispatcherTrait {
     if ($this->useLegacyDispatcher()) {
       return $this->legacyDispatchEvent($eventName, $data, $validator);
     }
-    $eventDispatcher = \Drupal::service('event_dispatcher');
+    $dispatcher = \Drupal::service('event_dispatcher');
 
-    if ($event = $eventDispatcher->dispatch(new Event($data, $validator), $eventName)) {
+    if ($event = $dispatcher->dispatch(new Event($data, $validator), $eventName)) {
       if ($e = $event->getException()) {
         throw $e;
       }
@@ -79,9 +79,9 @@ trait EventDispatcherTrait {
    *   If any of the subscribers registered and Exception it is thrown.
    */
   private function legacyDispatchEvent(mixed $eventName, mixed $data, mixed $validator = NULL) {
-    $eventDispatcher = \Drupal::service('event_dispatcher');
+    $dispatcher = \Drupal::service('event_dispatcher');
 
-    if ($event = $eventDispatcher->dispatch($eventName, new Event($data, $validator))) {
+    if ($event = $dispatcher->dispatch($eventName, new Event($data, $validator))) {
       if ($e = $event->getException()) {
         throw $e;
       }
