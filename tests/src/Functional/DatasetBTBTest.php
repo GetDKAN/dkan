@@ -51,8 +51,8 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   protected $strictConfigSchema = FALSE;
 
-  private const string S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-  private const string FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
+  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
   /**
    * Test the resource purger when the default moderation state is 'draft'.
