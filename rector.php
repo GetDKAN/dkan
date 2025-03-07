@@ -24,7 +24,6 @@ declare(strict_types=1);
 use DrupalFinder\DrupalFinderComposerRuntime;
 use DrupalRector\Set\Drupal10SetList;
 use Rector\Config\RectorConfig;
-use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Set\ValueObject\SetList;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -46,7 +45,6 @@ return static function (RectorConfig $rectorConfig): void {
     '*/modules/datastore/src/Service/Info/ImportInfo.php',
     '*/modules/frontend/src/Routing/RouteProvider.php',
     '*/modules/frontend/src/Page.php',
-    ClassPropertyAssignToConstructorPromotionRector::class,
   ]);
 
   $drupalFinder = new DrupalFinderComposerRuntime(__DIR__);

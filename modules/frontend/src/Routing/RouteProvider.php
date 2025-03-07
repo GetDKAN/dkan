@@ -21,8 +21,6 @@ class RouteProvider {
 
   /**
    * Query factory service.
-   *
-   * @var \Drupal\Core\Entity\Query\QueryFactoryInterface
    */
   private QueryFactoryInterface $entityQuery;
 
@@ -49,11 +47,13 @@ class RouteProvider {
 
   /**
    * Constructor.
+   *
+   * @todo Remove the $entityQuery argument; it's not used.
    */
   public function __construct(
     string $appRoot,
     QueryFactoryInterface $entityQuery,
-    ConfigFactoryInterface $configFactory
+    ConfigFactoryInterface $configFactory,
   ) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
