@@ -23,8 +23,6 @@ class ArrayHelper implements ContainerInjectionInterface {
 
   /**
    * String Helper.
-   *
-   * @var StringHelper
    */
   protected StringHelper $stringHelper;
 

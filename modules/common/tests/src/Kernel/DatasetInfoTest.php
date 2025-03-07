@@ -54,9 +54,6 @@ class DatasetInfoTest extends KernelTestBase {
     // No dataset with that identifier.
     $this->assertEquals(['notice' => 'Not found'], $info);
 
-    /**
-     * @var \Drupal\workflows\Entity\Workflow $workflow
-     */
     $this->config('workflows.workflow.dkan_publishing')
       ->set('type_settings.default_moderation_state', 'draft')
       ->save();

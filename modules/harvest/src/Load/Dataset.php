@@ -13,8 +13,6 @@ class Dataset extends Load {
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $metastoreService;
 

@@ -36,7 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
 
   $rectorConfig->sets([
     Drupal10SetList::DRUPAL_10,
-    SetList::PHP_80,
+    SetList::PHP_84,
     SetList::DEAD_CODE,
   ]);
 

@@ -28,8 +28,6 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
 
   /**
    * The current path.
-   *
-   * @var \Drupal\Core\Path\CurrentPathStack
    */
   protected CurrentPathStack $currentPath;
 

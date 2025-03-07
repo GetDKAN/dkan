@@ -68,15 +68,11 @@ class DashboardForm extends FormBase {
 
   /**
    * The PostImportResultFactory service.
-   *
-   * @var \Drupal\datastore\PostImportResultFactory
    */
   protected PostImportResultFactory $postImportResultFactory;
 
   /**
    * Node storage service.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected EntityStorageInterface $nodeStorage;
 

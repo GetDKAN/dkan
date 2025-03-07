@@ -37,8 +37,6 @@ class QueryDownloadControllerTest extends TestCase {
 
   /**
    * Output buffer.
-   *
-   * @var string
    */
   private string $buffer;
 

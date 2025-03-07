@@ -52,8 +52,6 @@ class Drush extends DrushCommands {
 
   /**
    * The PostImportResultFactory service.
-   *
-   * @var \Drupal\datastore\PostImportResultFactory
    */
   protected PostImportResultFactory $postImportResultFactory;
 
