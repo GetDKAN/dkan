@@ -500,7 +500,7 @@ class QueryDownloadControllerTest extends TestCase {
     $fp = fopen($resource->getFilePath(), 'rb');
     $sampleData = [];
     while (!feof($fp)) {
-      $sampleData[] = fgetcsv($fp);
+      $sampleData[] = fgetcsv($fp, escape: '\\');
     }
     fclose($fp);
 
