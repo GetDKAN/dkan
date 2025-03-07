@@ -206,10 +206,9 @@ class PostImport {
    * @param string $resourceIdentifier
    *   The resource identifier of the distribution.
    */
-  public function drop($resourceIdentifier): bool
-  {
-      $this->datastoreService->drop($resourceIdentifier, NULL, FALSE);
-      return TRUE;
+  public function drop($resourceIdentifier): bool {
+    $this->datastoreService->drop($resourceIdentifier, NULL, FALSE);
+    return TRUE;
   }
 
 }
