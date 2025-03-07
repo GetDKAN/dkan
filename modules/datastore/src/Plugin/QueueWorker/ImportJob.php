@@ -146,9 +146,9 @@ class ImportJob extends AbstractPersistentJob {
     // not supported.
     $column = preg_replace('/(?: |\r\n|\r|\n)/', '_', $column);
     // Strip unsupported characters from the header.
-    $column = preg_replace('/[^A-Za-z0-9_]/', '', $column);
+    $column = preg_replace('/[^A-Za-z0-9_]/', '', (string) $column);
     // Trim underscores from the beginning and end of the column name.
-    $column = trim($column, '_');
+    $column = trim((string) $column, '_');
     // Convert the column name to lowercase.
     $column = strtolower($column);
 

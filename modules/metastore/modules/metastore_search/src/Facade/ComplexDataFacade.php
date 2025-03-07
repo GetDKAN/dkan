@@ -136,7 +136,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   public static function createInstance(
     $definition,
     $name = NULL,
-    TraversableTypedDataInterface $parent = NULL
+    ?TraversableTypedDataInterface $parent = NULL
   ) {
     // @todo Implement createInstance() method.
   }
@@ -238,7 +238,7 @@ abstract class ComplexDataFacade implements \Iterator, ComplexDataInterface {
    */
   public function setContext(
     $name = NULL,
-    TraversableTypedDataInterface $parent = NULL
+    ?TraversableTypedDataInterface $parent = NULL
   ) {
     // @todo Implement setContext() method.
   }

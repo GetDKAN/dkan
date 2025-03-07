@@ -369,7 +369,7 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private function setQueryGroupBy(Query $query) {
-    array_map([$this->dbQuery, 'groupBy'], $query->groupby);
+    array_map($this->dbQuery->groupBy(...), $query->groupby);
   }
 
   /**

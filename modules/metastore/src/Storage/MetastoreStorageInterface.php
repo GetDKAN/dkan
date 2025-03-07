@@ -126,7 +126,7 @@ interface MetastoreStorageInterface {
    * @throws \Exception
    *   Issues storing the data.
    */
-  public function store(string $data, string $id = NULL): string;
+  public function store(string $data, ?string $id = NULL): string;
 
   /**
    * Retrieve by hash.

@@ -56,7 +56,7 @@ abstract class Api1TestBase extends BrowserTestBase {
     // Load the API spec for use by tests.
     $response = $this->httpClient->request('GET', 'api/1');
     $this->validator = ValidatorBuilder::fromJsonString($response->getBody())->getValidator();
-    $this->spec = json_decode($response->getBody());
+    $this->spec = json_decode((string) $response->getBody());
   }
 
   protected function assertJsonIsValid($schema, $json) {

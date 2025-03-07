@@ -29,7 +29,7 @@ trait GetDataTrait {
    * @return string|false
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getDataset(string $identifier, string $title, array $downloadUrls, bool $localFiles = FALSE, string $describedBy = NULL) {
+  private function getDataset(string $identifier, string $title, array $downloadUrls, bool $localFiles = FALSE, ?string $describedBy = NULL) {
 
     $data = new \stdClass();
     $data->title = $title;

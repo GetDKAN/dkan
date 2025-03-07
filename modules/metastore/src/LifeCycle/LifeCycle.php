@@ -220,7 +220,7 @@ class LifeCycle {
 
     $storage = $this->dataFactory->getInstance('distribution');
     $resource = $storage->retrieve($distributionUuid);
-    $resource = json_decode($resource);
+    $resource = json_decode((string) $resource);
 
     $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
 
@@ -429,7 +429,7 @@ class LifeCycle {
       $distributionUuid = $data->getIdentifier();
       $storage = $this->dataFactory->getInstance('distribution');
       $resource = $storage->retrieve($distributionUuid);
-      $resource = json_decode($resource);
+      $resource = json_decode((string) $resource);
 
       $resourceId = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
 

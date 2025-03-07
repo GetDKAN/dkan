@@ -411,7 +411,7 @@ EOF;
   /**
    * @return \MockChain\Chain
    */
-  public static function getCommonMockChain(TestCase $case, Options $services = NULL, $logger = NULL) {
+  public static function getCommonMockChain(TestCase $case, ?Options $services = NULL, $logger = NULL) {
 
     $options = (new Options)
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)

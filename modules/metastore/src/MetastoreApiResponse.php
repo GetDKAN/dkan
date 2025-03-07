@@ -137,7 +137,7 @@ class MetastoreApiResponse {
     $metadata = $item->getMetaData();
     $ids = [];
     foreach ($metadata as $propertyId => $value) {
-      if (str_starts_with($propertyId, '%Ref')) {
+      if (str_starts_with((string) $propertyId, '%Ref')) {
         $this->addReferenceIdentifier($ids, $value);
       }
     }

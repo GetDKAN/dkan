@@ -46,7 +46,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
   public function retrieveSchemaProperties(): array {
     // Create a json object from our schema.
     $schema = $this->schemaRetriever->retrieve('dataset');
-    $schema_object = json_decode($schema);
+    $schema_object = json_decode((string) $schema);
 
     // Build a list of the schema properties' title and description.
     $property_list = [];
@@ -71,7 +71,7 @@ class SchemaPropertiesHelper implements ContainerInjectionInterface {
   public function retrieveStringSchemaProperties(): array {
     // Create a json object from our schema.
     $schema = $this->schemaRetriever->retrieve('dataset');
-    $schema_object = json_decode($schema);
+    $schema_object = json_decode((string) $schema);
 
     return $this->buildPropertyList($schema_object->properties);
   }

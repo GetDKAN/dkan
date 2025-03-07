@@ -315,7 +315,7 @@ class ReferencerTest extends TestCase {
   /**
    * Create a test dataset using the supplied download URL.
    */
-  private function getData(string $downloadUrl, string $mediaType = NULL): object {
+  private function getData(string $downloadUrl, ?string $mediaType = NULL): object {
     return (object) [
       'title' => 'Test Dataset No Media Type',
       'description' => 'Hi',

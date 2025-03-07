@@ -82,7 +82,7 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
       try {
         $this->metastoreService->get('dataset', $matches['id']);
       }
-      catch (MissingObjectException $exception) {
+      catch (MissingObjectException) {
         throw new NotFoundHttpException();
       }
     }

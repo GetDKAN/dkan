@@ -204,7 +204,7 @@ trait QueryBuilderTrait {
       return $default;
     }
 
-    return strtoupper($orders[$index]);
+    return strtoupper((string) $orders[$index]);
   }
 
   /**

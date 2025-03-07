@@ -31,7 +31,7 @@ class HideCurrentRevisionActionTest extends BrowserTestBase {
   protected User $testUser;
   protected User $testApiUser;
 
-  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const string S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
 
   public function setUp(): void {
     parent::setUp();

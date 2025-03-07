@@ -79,7 +79,7 @@ class QueryController extends AbstractQueryController {
    */
   public function querySchema() {
     $schema = (new DatastoreQuery("{}", $this->getRowsLimit()))->getSchema();
-    return $this->metastoreApiResponse->cachedJsonResponse(json_decode($schema), 200);
+    return $this->metastoreApiResponse->cachedJsonResponse(json_decode((string) $schema), 200);
   }
 
 }

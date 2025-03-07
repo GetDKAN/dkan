@@ -51,8 +51,8 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   protected $strictConfigSchema = FALSE;
 
-  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
+  private const string S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const string FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
   /**
    * Test the resource purger when the default moderation state is 'draft'.
@@ -135,7 +135,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // @todo Why does this fail the test when we use $this->container instead of
     //   \Drupal::service()?
     $metadata = \Drupal::service('dkan.metastore.service')->get('dataset', 123);
-    $dataset = json_decode($metadata);
+    $dataset = json_decode((string) $metadata);
 
     $this->assertNotEquals(
       $dataset->distribution[0]->downloadURL,
@@ -375,7 +375,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Get local resource folder name.
     $dataset = $this->getMetastore()->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $resourceId = explode('__', (string) $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder doesn't exist.
@@ -393,7 +393,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Get local resource folder name.
     $dataset = $this->getMetastore()->get('dataset', $id_2);
     $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $resourceId = explode('__', (string) $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder exists.

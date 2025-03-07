@@ -61,7 +61,7 @@ class DatabaseTableMock implements DatabaseTableInterface {
 
     if ($sortProperty) {
       usort($storeCopy, function ($a, $b) use ($sortProperty) {
-        return strcmp($a->{$sortProperty}, $b->{$sortProperty});
+        return strcmp((string) $a->{$sortProperty}, (string) $b->{$sortProperty});
       });
     }
 
@@ -100,7 +100,7 @@ class DatabaseTableMock implements DatabaseTableInterface {
   /**
    *
    */
-  public function store($data, string $id = NULL): string {
+  public function store($data, ?string $id = NULL): string {
     $this->id++;
     $this->store[$this->id] = json_decode($data);
     return $this->id;

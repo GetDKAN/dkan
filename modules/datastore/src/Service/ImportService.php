@@ -194,7 +194,7 @@ class ImportService {
       $delimiter = "\t";
     }
 
-    $this->importJob = call_user_func([$this->importerClass, 'get'],
+    $this->importJob = call_user_func($this->importerClass->get(...),
       md5($data_resource->getUniqueIdentifier()),
       $this->importJobStoreFactory->getInstance(),
       [

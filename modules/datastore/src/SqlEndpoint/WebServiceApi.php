@@ -93,7 +93,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
 
     // The incoming string could contain escaped characters.
-    $query = stripslashes($query);
+    $query = stripslashes((string) $query);
 
     return $this->runQuery($query, $showDbColumns);
   }

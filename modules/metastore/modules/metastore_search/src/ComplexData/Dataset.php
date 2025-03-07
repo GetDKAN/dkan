@@ -29,7 +29,7 @@ class Dataset extends ComplexDataFacade {
     /** @var   \Drupal\metastore\SchemaRetriever $schemaRetriever */
     $schemaRetriever = \Drupal::service("dkan.metastore.schema_retriever");
     $json = $schemaRetriever->retrieve("dataset");
-    $object = json_decode($json);
+    $object = json_decode((string) $json);
     $properties = array_keys((array) $object->properties);
 
     foreach ($properties as $property) {
@@ -143,7 +143,7 @@ class Dataset extends ComplexDataFacade {
     $value = [];
     $matches = [];
 
-    if (preg_match('/(.*)__(.*)/', $property_name, $matches)) {
+    if (preg_match('/(.*)__(.*)/', (string) $property_name, $matches)) {
       // Check if property corresponds to an object.
       if (isset($matches[1])
       && isset($this->data->{$matches[1]})
@@ -165,7 +165,7 @@ class Dataset extends ComplexDataFacade {
   private function getArrayValues($property_name) {
     $values = [];
     $matches = [];
-    if (preg_match('/(.*)__item__(.*)/', $property_name, $matches)
+    if (preg_match('/(.*)__item__(.*)/', (string) $property_name, $matches)
       && isset($this->data->{$matches[1]})
       && is_array($this->data->{$matches[1]})) {
       foreach ($this->data->{$matches[1]} as $dist) {
