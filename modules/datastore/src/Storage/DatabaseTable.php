@@ -41,7 +41,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-   *    The event dispatcher service.
+   *   The event dispatcher service.
    */
   public function __construct(
     Connection $connection,

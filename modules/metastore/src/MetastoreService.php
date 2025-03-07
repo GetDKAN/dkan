@@ -97,7 +97,7 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * Dispatch an event and return the (possibly) modified data.
    *
-   * This method simulates the behavior of the deprecated event dispatcher trait.
+   * This method simulates the deprecated event dispatcher trait.
    *
    * @param string $eventName
    *   The event name.
@@ -109,11 +109,11 @@ class MetastoreService implements ContainerInjectionInterface {
    * @return mixed
    *   The (possibly) modified data.
    */
-  private function dispatchEvent(string $eventName, $data, callable $validate = null) {
+  private function dispatchEvent(string $eventName, $data, callable $validate = NULL) {
     $event = new GenericEvent($data);
     $event = $this->eventDispatcher->dispatch($event, $eventName);
 
-    if (method_exists($event, 'getException') && $event->getException() !== null) {
+    if (method_exists($event, 'getException') && $event->getException() !== NULL) {
       $this->logger->error('A JSON string failed validation.');
       return $data;
     }
@@ -122,7 +122,7 @@ class MetastoreService implements ContainerInjectionInterface {
       ? $event->getSubject()
       : (method_exists($event, 'getData') ? $event->getData() : $data);
 
-    return ($validate !== null && !$validate($modifiedData)) ? $data : $modifiedData;
+    return ($validate !== NULL && !$validate($modifiedData)) ? $data : $modifiedData;
   }
 
   /**

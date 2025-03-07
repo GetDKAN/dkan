@@ -13,19 +13,19 @@ class EventTest extends TestCase
   public function testDataIntegrityAcrossEventSubscribers() {
     $this->expectExceptionMessage("Invalid event data.");
 
-    $dispatcher = new EventDispatcher();
-    $dispatcher->addListener('test_event', function (Event $event) {
+    $eventDispatcher = new EventDispatcher();
+    $eventDispatcher->addListener('test_event', function (Event $event) {
       $event->setData(1);
     });
 
     $container = (new Chain($this))
-      ->add(Container::class, 'get', $dispatcher)
+      ->add(Container::class, 'get', $eventDispatcher)
       ->getMock();
 
     \Drupal::setContainer($container);
 
     $event = new Event('hello');
-    $dispatcher->dispatch($event, 'test_event');
+    $eventDispatcher->dispatch($event, 'test_event');
 
     if (!is_string($event->getData())) {
       throw new \Exception("Invalid event data.");

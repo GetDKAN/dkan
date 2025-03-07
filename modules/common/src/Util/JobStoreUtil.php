@@ -30,17 +30,19 @@ class JobStoreUtil {
    *
    * @var \Symfony\Contracts\EventDispatcher\EventDispatcherInterface
    */
-  protected EventDispatcherInterface $dispatcher;
+  protected EventDispatcherInterface $eventDispatcher;
 
   /**
    * Constructor.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Database connection service.
+   * @param \Symfony\Contracts\EventDispatcher\EventDispatcherInterface $dispatcher
+   *    The event dispatcher instance.
    */
-  public function __construct(Connection $connection, EventDispatcherInterface $dispatcher) {
+  public function __construct(Connection $connection, EventDispatcherInterface $eventDispatcher) {
     $this->connection = $connection;
-    $this->dispatcher = $dispatcher;
+    $this->dispatcher = $eventDispatcher;
   }
 
   /**
