@@ -28,6 +28,7 @@ services:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
   dkan.harvest.storage.hashes_database_table:
     class: Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
     arguments:
@@ -52,6 +53,7 @@ services:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
   harvest.logger_channel:
     parent: logger.channel_base
     arguments: ['harvest']

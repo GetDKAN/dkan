@@ -24,6 +24,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -539,7 +540,8 @@ class QueryControllerTest extends TestCase {
     $storage = new SqliteDatabaseTable(
       $connection,
       $this->resource,
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $storage->setSchema([
       'fields' => [

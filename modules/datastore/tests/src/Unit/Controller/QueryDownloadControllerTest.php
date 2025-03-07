@@ -24,6 +24,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -482,11 +483,12 @@ class QueryDownloadControllerTest extends TestCase {
    *   A database table storage class useable for datastore queries.
    */
   public function mockDatastoreTable(DataResource $resource, $fields, $connection) {
-    
+
     $storage = new SqliteDatabaseTable(
       $connection,
       $resource,
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $storage->setSchema([
       'fields' => $fields,
@@ -496,7 +498,7 @@ class QueryDownloadControllerTest extends TestCase {
     foreach ($fields as $field) {
       $types[] = $field['type'];
     }
-    
+
     $fp = fopen($resource->getFilePath(), 'rb');
     $sampleData = [];
     while (!feof($fp)) {

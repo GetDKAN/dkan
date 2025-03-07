@@ -3,7 +3,6 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\Events\Event;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -15,6 +14,7 @@ use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * The metastore service.
@@ -58,15 +58,13 @@ class MetastoreService implements ContainerInjectionInterface {
   private LoggerInterface $logger;
 
   /**
-   * Event dispatcher service.
+   * The event dispatcher.
    *
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   private EventDispatcherInterface $eventDispatcher;
 
   /**
-   * Inherited.
-   *
    * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
@@ -94,6 +92,37 @@ class MetastoreService implements ContainerInjectionInterface {
     $this->validMetadataFactory = $validMetadataFactory;
     $this->logger = $loggerChannel;
     $this->eventDispatcher = $eventDispatcher;
+  }
+
+  /**
+   * Dispatch an event and return the (possibly) modified data.
+   *
+   * This method simulates the behavior of the deprecated event dispatcher trait.
+   *
+   * @param string $eventName
+   *   The event name.
+   * @param mixed $data
+   *   The data to dispatch.
+   * @param callable|null $validate
+   *   Optional validation callback.
+   *
+   * @return mixed
+   *   The (possibly) modified data.
+   */
+  private function dispatchEvent(string $eventName, $data, callable $validate = null) {
+    $event = new GenericEvent($data);
+    $event = $this->eventDispatcher->dispatch($event, $eventName);
+
+    if (method_exists($event, 'getException') && $event->getException() !== null) {
+      $this->logger->error('A JSON string failed validation.');
+      return $data;
+    }
+
+    $modifiedData = method_exists($event, 'getSubject')
+      ? $event->getSubject()
+      : (method_exists($event, 'getData') ? $event->getData() : $data);
+
+    return ($validate !== null && !$validate($modifiedData)) ? $data : $modifiedData;
   }
 
   /**
@@ -188,20 +217,9 @@ class MetastoreService implements ContainerInjectionInterface {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll($start, $length, $unpublished);
     $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 
-    $event = new Event($objects);
-    $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET_ALL);
-    $processedData = $event->getData();
-
-    if (!is_array($processedData)) {
-      return [];
-    }
-
-    if (empty($processedData)) {
-      return [];
-    }
-
-    return reset($processedData) instanceof RootedJsonData;
-
+    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
+      return !is_array($data) ? FALSE : (count($data) === 0 || reset($data) instanceof RootedJsonData);
+    });
   }
 
   /**
@@ -218,24 +236,21 @@ class MetastoreService implements ContainerInjectionInterface {
    * @todo Exception should not be caught; let controller handle it.
    */
   private function jsonStringsArrayToObjects(array $jsonStringsArray, string $schema_id) {
-    return array_map(
-      function ($jsonString) use ($schema_id) {
-        try {
-          $data = $this->validMetadataFactory->get($jsonString, $schema_id);
-          $event = new Event($data);
-          $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET);
-          $processedData = $event->getData();
-
-          return $processedData instanceof RootedJsonData;
-        }
-        catch (\Exception) {
-          $this->logger->error('A JSON string failed validation.', [
-            '@schema_id' => $schema_id,
-            '@json' => $jsonString,
-          ]);
-          return NULL;
-        }
-      }, $jsonStringsArray);
+    return array_map(function ($jsonString) use ($schema_id) {
+      try {
+        $data = $this->validMetadataFactory->get($jsonString, $schema_id);
+        return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
+          return $data instanceof RootedJsonData;
+        });
+      }
+      catch (\Exception) {
+        $this->logger->error('A JSON string failed validation.', [
+          '@schema_id' => $schema_id,
+          '@json' => $jsonString,
+        ]);
+        return NULL;
+      }
+    }, $jsonStringsArray);
   }
 
   /**
@@ -269,9 +284,7 @@ class MetastoreService implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier, bool $published = TRUE): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier, $published);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
-    $event = new Event($data);
-    $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET);
-    return $event->getData();
+    return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
   }
 
   /**
@@ -424,7 +437,6 @@ class MetastoreService implements ContainerInjectionInterface {
         $storage->store($new, "{$identifier}");
         return $identifier;
       }
-
     }
 
     throw new MissingObjectException("No data with the identifier {$identifier} was found.");
@@ -443,9 +455,7 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public function delete($schema_id, $identifier) {
     $storage = $this->getStorage($schema_id);
-
     $storage->remove($identifier);
-
     return $identifier;
   }
 
@@ -484,7 +494,6 @@ class MetastoreService implements ContainerInjectionInterface {
         $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
       }
     }
-
     return self::removeReferences($no_schema_object, "%Ref");
   }
 
@@ -551,20 +560,17 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
     $array = $object->get('$');
-
     foreach ($array as $property => $value) {
       if (substr_count((string) $property, $prefix) > 0) {
         unset($array[$property]);
       }
     }
-
     if (!empty($array['distribution'])) {
       $array['distribution'] = array_map(function ($dist) {
         unset($dist['%Ref:downloadURL']);
         return $dist;
       }, $array['distribution']);
     }
-
     $object->set('$', $array);
     return $object;
   }
@@ -595,7 +601,6 @@ class MetastoreService implements ContainerInjectionInterface {
     else {
       throw new \InvalidArgumentException("Invalid metadata argument.");
     }
-
     return md5((string) $normalizedData);
   }
 

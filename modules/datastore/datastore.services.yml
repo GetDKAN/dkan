@@ -99,6 +99,7 @@ services:
     arguments:
       - '@dkan.datastore.database'
       - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
 
   dkan.datastore.sql_endpoint.service:
     class: \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService

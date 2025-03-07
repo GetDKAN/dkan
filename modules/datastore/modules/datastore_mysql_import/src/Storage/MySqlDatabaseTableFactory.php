@@ -13,7 +13,7 @@ class MySqlDatabaseTableFactory extends DatabaseTableFactory {
    * {@inheritDoc}
    */
   protected function getDatabaseTable($resource) {
-    return new MySqlDatabaseTable($this->connection, $resource, $this->logger);
+    return new MySqlDatabaseTable($this->connection, $resource, $this->logger, $this->eventDispatcher);
   }
 
 }

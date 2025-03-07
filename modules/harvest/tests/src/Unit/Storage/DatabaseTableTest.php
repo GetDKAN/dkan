@@ -7,6 +7,7 @@ use Drupal\Core\Database\Schema;
 use MockChain\Chain;
 use Drupal\harvest\Storage\DatabaseTable;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @coversDefaultClass \Drupal\harvest\Storage\DatabaseTable
@@ -26,7 +27,9 @@ class DatabaseTableTest extends TestCase {
       ->add(Schema::class, 'tableExists', FALSE)
       ->getMock();
 
-    $databaseTable = new DatabaseTable($connection, "blah");
+    $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+
+    $databaseTable = new DatabaseTable($connection, "blah", $eventDispatcher);
     $this->assertTrue(is_object($databaseTable));
   }
 

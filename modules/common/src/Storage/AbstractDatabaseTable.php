@@ -312,8 +312,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     // Opportunity to further alter the schema before table creation.
     $event = new Event($schema);
     $this->eventDispatcher->dispatch($event, self::EVENT_TABLE_CREATE);
+    $modified_schema = $event->getData();
 
-    $this->connection->schema()->createTable($table_name, $event->getData());
+    $this->connection->schema()->createTable($table_name, $modified_schema);
   }
 
 

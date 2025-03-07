@@ -7,6 +7,7 @@ use Drupal\Core\Database\Schema;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @group dkan
@@ -19,7 +20,7 @@ class DatabaseTableFactoryTest extends TestCase {
    *
    */
   public function test() {
-    $factory = new DatabaseTableFactory($this->getConnection());
+    $factory = new DatabaseTableFactory($this->getConnection(), $this->getEventDispatcher());
     $this->assertNotNull($factory->getInstance('blah', []));
   }
 
@@ -31,6 +32,13 @@ class DatabaseTableFactoryTest extends TestCase {
       ->add(Connection::class, 'schema', Schema::class)
       ->add(Schema::class, 'tableExists', FALSE)
       ->getMock();
+  }
+
+  /**
+   * Getter for the event dispatcher.
+   */
+  public function getEventDispatcher(): EventDispatcherInterface {
+    return $this->createMock(EventDispatcherInterface::class);
   }
 
 }
