@@ -34,7 +34,7 @@ commands:
         type: string
       addon_branch:
         description: "Repo branch name for the DKAN DDev add-on you want to test against."
-        default: "mysql-57"
+        default: "main"
         type: string
       dkan_recommended_branch:
         description: "Branch of getdkan/recommended-project to use."
@@ -67,9 +67,6 @@ commands:
             ddev restart
             ddev status
             ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
-            if [[ "<< parameters.dkan_recommended_branch >>" == 11* && "<< parameters.database_version >>" == "5.7" ]]; then
-              ddev composer require 'drupal/mysql57:^1.0'
-            fi
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             mkdir -p test_results
@@ -264,16 +261,19 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: ["11.1.x-dev", "11.0.x-dev", "10.4.x-dev"]
+              dkan_recommended_branch: ["11.1.x-dev", "11.0.x-dev"]
               php_version: ["8.4", "8.3"]
-              database_version: ["5.7", "8.0"]
+              database_version: ["8.0"]
             exclude:
               - php_version: "8.4"
                 dkan_recommended_branch: "11.0.x-dev"
                 database_version: "8.0"
-              - php_version: "8.4"
-                dkan_recommended_branch: "11.0.x-dev"
-                database_version: "5.7"
+      - phpunit:
+          matrix:
+            parameters:
+              dkan_recommended_branch: ["10.4.x-dev"]
+              php_version: ["8.4", "8.3"]
+              database_version: ["5.7", "8.0"]
       - phpunit:
           matrix:
             parameters:
