@@ -269,13 +269,13 @@ workflows:
               database_version: ["5.7", "8.0"]
             exclude:
               - php_version: "8.4"
-                dkan_recommended_branch: "11.0.x-dev"
-              - php_version: "8.4"
-                dkan_recommended_branch: "10.3.x-dev"
+                dkan_recommended_branch: ["11.0.x-dev", "10.3.x-dev"]
               - database_version: "8.0"
                 dkan_recommended_branch: "10.3.x-dev"
               - database_version: "5.7"
                 dkan_recommended_branch: "11.0.x-dev"
+              - php_version: ["8.2", "8.1"]
+                dkan_recommended_branch: ["11.1.x-dev", "11.0.x-dev", "10.4.x-dev"]
             
   upgrade_and_test:
     jobs:
