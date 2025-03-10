@@ -2,8 +2,7 @@
 
 namespace Drupal\harvest\ETL\Extract;
 
-interface IExtract
-{
+interface IExtract {
 
   /**
    * Run the extraction.
@@ -11,5 +10,6 @@ interface IExtract
    * @return array
    *   An array of php objects.
    */
-    public function run(): array;
+  public function run(): array;
+
 }

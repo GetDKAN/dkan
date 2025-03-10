@@ -33,7 +33,7 @@ class HarvestCommands extends DrushCommands {
    */
   public function __construct(
     HarvestService $service,
-    HarvestUtility $harvestUtility
+    HarvestUtility $harvestUtility,
   ) {
     parent::__construct();
     $this->harvestService = $service;
@@ -88,13 +88,16 @@ class HarvestCommands extends DrushCommands {
    *
    * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
    */
-  public function register(string $plan_json = '', array $opts = [
-    'identifier' => '',
-    'extract-type' => DataJson::class,
-    'extract-uri' => '',
-    'transform' => [],
-    'load-type' => Dataset::class,
-  ]) {
+  public function register(
+    string $plan_json = '',
+    array $opts = [
+      'identifier' => '',
+      'extract-type' => DataJson::class,
+      'extract-uri' => '',
+      'transform' => [],
+      'load-type' => Dataset::class,
+    ],
+  ) {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);

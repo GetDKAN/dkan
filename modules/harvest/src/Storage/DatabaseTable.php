@@ -40,7 +40,7 @@ class DatabaseTable extends AbstractDatabaseTable {
   /**
    * Inherited.
    *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function retrieve(string $id) {
     $result = parent::retrieve($id);
@@ -48,27 +48,21 @@ class DatabaseTable extends AbstractDatabaseTable {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function getTableName() {
     return "{$this->identifier}";
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function prepareData(string $data, ?string $id = NULL): array {
     return ["id" => $id, "data" => $data];
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function primaryKey() {
     return "id";

@@ -65,9 +65,7 @@ class HarvestService implements ContainerInjectionInterface {
   private LoggerInterface $logger;
 
   /**
-   * Create.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new self(
@@ -89,7 +87,7 @@ class HarvestService implements ContainerInjectionInterface {
     MetastoreService $metastore,
     HarvestPlanRepository $harvestPlansRepository,
     HarvestRunRepository $runRepository,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->storeFactory = $storeFactory;
     $this->hashesStoreFactory = $hashesStoreFactory;

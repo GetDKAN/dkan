@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\harvest\Tests\Functional\Api;
 
 use Drupal\harvest\Load\Dataset;

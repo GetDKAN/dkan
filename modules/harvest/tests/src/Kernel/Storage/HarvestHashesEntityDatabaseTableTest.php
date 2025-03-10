@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\harvest\Kernel\Storage;
 
 use Drupal\KernelTests\KernelTestBase;

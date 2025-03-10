@@ -47,7 +47,7 @@ class HarvestApiDocs extends DkanApiDocsBase {
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
-    HarvestService $harvest
+    HarvestService $harvest,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
     $this->harvest = $harvest;
@@ -71,7 +71,7 @@ class HarvestApiDocs extends DkanApiDocsBase {
     ContainerInterface $container,
     array $configuration,
     $pluginId,
-    $pluginDefinition
+    $pluginDefinition,
   ) {
     return new static(
       $configuration,

@@ -50,7 +50,7 @@ class HarvestRunRepository {
    */
   public function __construct(
     Connection $connection,
-    EntityTypeManagerInterface $entityTypeManager
+    EntityTypeManagerInterface $entityTypeManager,
   ) {
     $this->connection = $connection;
     $this->runStorage = $entityTypeManager->getStorage('harvest_run');
