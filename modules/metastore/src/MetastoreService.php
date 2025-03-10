@@ -238,20 +238,20 @@ class MetastoreService implements ContainerInjectionInterface {
   private function jsonStringsArrayToObjects(array $jsonStringsArray, string $schema_id) {
     return array_map(
       function ($jsonString) use ($schema_id) {
-      try {
-        $data = $this->validMetadataFactory->get($jsonString, $schema_id);
-        return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
-          return $data instanceof RootedJsonData;
-        });
-      }
-      catch (\Exception) {
-        $this->logger->error('A JSON string failed validation.', [
+        try {
+          $data = $this->validMetadataFactory->get($jsonString, $schema_id);
+          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
+            return $data instanceof RootedJsonData;
+          });
+        }
+        catch (\Exception) {
+          $this->logger->error('A JSON string failed validation.', [
           '@schema_id' => $schema_id,
           '@json' => $jsonString,
         ]);
-        return NULL;
-      }
-    }, $jsonStringsArray);
+          return NULL;
+        }
+      }, $jsonStringsArray);
   }
 
   /**
