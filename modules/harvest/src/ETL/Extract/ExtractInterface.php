@@ -2,7 +2,10 @@
 
 namespace Drupal\harvest\ETL\Extract;
 
-interface IExtract {
+/**
+ * Harvest extraction interface
+ */
+interface ExtractInterface {
 
   /**
    * Run the extraction.

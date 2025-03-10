@@ -5,6 +5,9 @@ namespace Drupal\harvest\ETL\Load;
 use Drupal\harvest\Harvester;
 use Drupal\harvest\Util;
 
+/***
+ * Abstract class for harvest loading.
+ */
 abstract class Load {
 
   protected $harvestPlan;
@@ -54,36 +57,33 @@ abstract class Load {
    * @see \Drupal\harvest\Harvester
    */
   protected function itemState($item): int {
-    if (isset($item->identifier)) {
-      // Load the hash from storage, for comparison, if it exists.
-      $hash = NULL;
-      if ($hash_json = $this->hashStorage->retrieve(Util::getDatasetId($item))) {
-        $hash_object = json_decode($hash_json);
-        $hash = $hash_object->hash ?? NULL;
-      }
+    if (!isset($item->identifier)) {
+      throw new \Exception('Item does not have an identifier ' . json_encode($item));
+    }
 
-      if ($hash) {
-        if ($hash === Util::generateHash($item)) {
-          // Hashes matched, so no change.
-          return Harvester::HARVEST_LOAD_UNCHANGED;
-        }
-        else {
-          // Hashes don't match, so try again with the legacy hash
-          // generator. This might match if the hash was generated
-          // before we changed the hashing system.
-          if ($hash === Util::legacyGenerateHash($item)) {
-            return Harvester::HARVEST_LOAD_UNCHANGED;
-          }
-          // We do have a past hash record, but neither new nor
-          // legacy hash matched, so update the dataset.
-          return Harvester::HARVEST_LOAD_UPDATED_ITEM;
-        }
-      }
-      // There was no existing hash in storage, so this is a new
-      // item.
+    // Load the hash from storage, for comparison, if it exists.
+    $hash = NULL;
+    if ($hash_json = $this->hashStorage->retrieve(Util::getDatasetId($item))) {
+      $hash_object = json_decode($hash_json);
+      $hash = $hash_object->hash ?? NULL;
+    }
+
+    if (empty($hash)) {
+      // There was no existing hash in storage, so this is a new item.
       return Harvester::HARVEST_LOAD_NEW_ITEM;
     }
-    throw new \Exception('Item does not have an identifier ' . json_encode($item));
+
+    if ($hash === Util::generateHash($item) || $hash === Util::legacyGenerateHash($item)) {
+      // Hash matches item's current or legacy hash, so no change.
+      // Legacy hash might match if the hash was generated
+      // before we changed the hashing system.
+      return Harvester::HARVEST_LOAD_UNCHANGED;
+    }
+    else {
+      // We do have a past hash record, but neither new nor
+      // legacy hash matched, so update the dataset.
+      return Harvester::HARVEST_LOAD_UPDATED_ITEM;
+    }
   }
 
 }

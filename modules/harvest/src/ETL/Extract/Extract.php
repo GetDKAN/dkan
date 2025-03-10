@@ -2,7 +2,10 @@
 
 namespace Drupal\harvest\ETL\Extract;
 
-abstract class Extract implements IExtract {
+/**
+ * Abstract base class for harvest extraction.
+ */
+abstract class Extract implements ExtractInterface {
 
    /**
    * {@inheritDoc}
