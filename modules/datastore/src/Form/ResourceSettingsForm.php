@@ -5,6 +5,7 @@ namespace Drupal\datastore\Form;
 use Drupal\common\DataResource;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\RedundantEditableConfigNamesTrait;
 use Drupal\datastore\Service\ResourceLocalizer;
 
 /**
@@ -14,20 +15,13 @@ use Drupal\datastore\Service\ResourceLocalizer;
  * @codeCoverageIgnore
  */
 class ResourceSettingsForm extends ConfigFormBase {
+  use RedundantEditableConfigNamesTrait;
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
     return 'resource_settings_form';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getEditableConfigNames() {
-    // This form uses #config_target instead.
-    return [];
   }
 
   /**
