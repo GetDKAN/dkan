@@ -227,14 +227,12 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       'columns' => [
         'record_number' => [
           'type' => 'serial',
-          'length' => 10,
           'unsigned' => TRUE,
           'not null' => TRUE,
           'mysql_type' => 'int',
         ],
         'a' => [
           'type' => 'int',
-          'length' => 11,
           'mysql_type' => 'int',
         ],
         'b' => [
@@ -244,7 +242,8 @@ class DictionaryEnforcerTest extends BrowserTestBase {
         ],
         'c' => [
           'type' => 'numeric',
-          'length' => 3,
+          'precision' => 3,
+          'scale' => 2,
           'mysql_type' => 'decimal',
           'description' => 'C',
         ],
@@ -257,7 +256,6 @@ class DictionaryEnforcerTest extends BrowserTestBase {
           'type' => 'int',
           'mysql_type' => 'tinyint',
           'description' => 'E',
-          'length' => 1,
           'size' => 'tiny',
         ],
       ],

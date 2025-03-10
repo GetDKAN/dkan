@@ -48,6 +48,7 @@ context('Admin content and dataset views', () => {
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
         cy.get('#edit-submit').click({ force:true })
+        cy.wait(2000)
         cy.get('.button').contains('Yes').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
     })

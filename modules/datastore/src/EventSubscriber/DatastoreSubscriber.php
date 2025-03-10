@@ -82,7 +82,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     LoggerInterface $loggerChannel,
     DatastoreService $service,
     ResourcePurger $resourcePurger,
-    ImportJobStoreFactory $importJobStoreFactory
+    ImportJobStoreFactory $importJobStoreFactory,
   ) {
     $this->configFactory = $config_factory;
     $this->logger = $loggerChannel;

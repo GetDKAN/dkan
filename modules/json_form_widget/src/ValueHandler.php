@@ -88,7 +88,7 @@ class ValueHandler {
   }
 
   /**
-   * Sets '@type' to null if other fields are empty.
+   * Sets "@type" to null if other fields are empty.
    *
    * @param array $formValues
    *   Form values.
@@ -96,7 +96,7 @@ class ValueHandler {
    * @return array
    *   Processed form values.
    */
-  private function processTypeValue(array $formValues): array {
+  protected function processTypeValue(array $formValues): array {
     // $formValues without the '@type' key.
     $formValuesNoType = array_diff_key($formValues, array_flip(['@type']));
 
@@ -120,7 +120,7 @@ class ValueHandler {
    * @return bool
    *   TRUE if the value is empty, FALSE if it is not.
    */
-  private function isValueEmpty(mixed $value): bool {
+  protected function isValueEmpty(mixed $value): bool {
     if (is_scalar($value)) {
       return empty($value);
     }
@@ -149,7 +149,7 @@ class ValueHandler {
   /**
    * Flatten values for arrays in arrays.
    */
-  private function flattenArraysInArrays($value) {
+  protected function flattenArraysInArrays($value) {
     $data = [];
     if (is_array($value)) {
       foreach ($value as $item) {
@@ -168,10 +168,10 @@ class ValueHandler {
    * @param string $value
    *   Value that we want to clean.
    *
-   * @return array
+   * @return string
    *   String without $ID:.
    */
-  private function cleanSelectId($value) {
+  protected function cleanSelectId($value) {
     if (str_starts_with($value, "\$ID:")) {
       return substr($value, 4);
     }
@@ -181,7 +181,7 @@ class ValueHandler {
   /**
    * Flatten values for objects in arrays.
    */
-  private function getObjectInArrayData($formValues, $property, $schema) {
+  protected function getObjectInArrayData($formValues, $property, $schema) {
     $data = [];
     if (isset($formValues[$property][$property])) {
       foreach ($formValues[$property][$property] as $key => $item) {

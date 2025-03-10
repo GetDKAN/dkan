@@ -135,9 +135,9 @@ class DataResource implements \JsonSerializable {
    * @return \Drupal\common\DataResource
    *   DataResource object.
    *
-   * @deprecated Use DataResource::createFromEntity() instead.
-   *
-   * @see self::createFromEntity()
+   * @deprecated in dkan:8.x-2.17 and is removed from dkan:8.x-2.21. Use
+   *   DataResource::createFromEntity() instead.
+   * @see https://github.com/GetDKAN/dkan/pull/4027
    */
   public static function createFromRecord(object $record): DataResource {
     $resource = new static($record->filePath, $record->mimeType, $record->perspective);
@@ -236,6 +236,11 @@ class DataResource implements \JsonSerializable {
    *
    * @return \Drupal\datastore\DatastoreResource
    *   Datastore Resource.
+   *
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use storage
+   *   classes like DatabaseTable::getTableName() to determine correct table
+   *   names, and pass true to ::getFilePath to get the resolved URL.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getDatastoreResource(): DatastoreResource {
     return new DatastoreResource(
@@ -253,10 +258,16 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Getter.
+   * Get the resource's filepath.
+   *
+   * @param bool|null $resolve
+   *   Whether to resolve the URL host tokens in the file path.
+   *
+   * @return string
+   *   The file path.
    */
-  public function getFilePath() {
-    return $this->filePath;
+  public function getFilePath(?bool $resolve = FALSE):string {
+    return $resolve ? UrlHostTokenResolver::resolve($this->getFilePath()) : $this->filePath;
   }
 
   /**
@@ -324,6 +335,11 @@ class DataResource implements \JsonSerializable {
 
   /**
    * Retrieve datastore table name for resource.
+   *
+   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use storage
+   *  classes like DatabaseTable::getTableName() to determine correct table
+   *  names.
+   * @see https://github.com/GetDKAN/dkan/pull/4372
    */
   public function getTableName() {
     return 'datastore_' . md5($this->getUniqueIdentifier());
@@ -333,7 +349,7 @@ class DataResource implements \JsonSerializable {
    * {@inheritDoc}
    */
   #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
+  public function jsonSerialize(): mixed {
     return $this->serialize();
   }
 

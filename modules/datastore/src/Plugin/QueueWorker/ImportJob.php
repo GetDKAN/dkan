@@ -89,7 +89,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Datastore resource.
    *
-   * @var \Drupal\datastore\DatastoreResource
+   * @var \Drupal\common\DataResource
    */
   protected $resource;
 
@@ -105,7 +105,7 @@ class ImportJob extends AbstractPersistentJob {
    * @param array|null $config
    *   Configuration options.
    */
-  protected function __construct(string $identifier, $storage, array $config = NULL) {
+  protected function __construct(string $identifier, $storage, ?array $config = NULL) {
     parent::__construct($identifier, $storage, $config);
 
     $this->dataStorage = $config['storage'];
@@ -195,7 +195,7 @@ class ImportJob extends AbstractPersistentJob {
    * {@inheritdoc}
    */
   protected function runIt() {
-    $filename = $this->resource->getFilePath();
+    $filename = $this->resource->getFilePath(TRUE);
     $size = @filesize($filename);
     if (!$size) {
       return $this->setResultError("Can't get size from file {$filename}");
