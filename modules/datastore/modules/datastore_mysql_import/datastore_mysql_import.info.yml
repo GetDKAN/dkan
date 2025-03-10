@@ -1,7 +1,7 @@
 name: Datastore MySQL Import
 description: Provides a MySQL Importer class.
 type: module
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 package: DKAN
 configure: datastore.mysql_import.settings
 dependencies:

@@ -1,7 +1,7 @@
 name: DKAN
 description: 'DKAN Open Data Portal'
 type: module
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 package: DKAN
 dependencies:
   - dkan:metastore
