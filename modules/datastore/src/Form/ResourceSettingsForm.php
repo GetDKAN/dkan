@@ -79,20 +79,4 @@ class ResourceSettingsForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('datastore.settings')
-      ->set('purge_table', $form_state->getValue('purge_table'))
-      ->set('purge_file', $form_state->getValue('purge_file'))
-      ->set('delete_local_resource', $form_state->getValue('delete_local_resource'))
-      ->set('drop_datastore_on_post_import_error', $form_state->getValue('drop_datastore_on_post_import_error'))
-      ->save();
-    $this->config('metastore.settings')
-      ->set('resource_perspective_display', $form_state->getValue('resource_perspective_display'))
-      ->save();
-    parent::submitForm($form, $form_state);
-  }
-
 }
