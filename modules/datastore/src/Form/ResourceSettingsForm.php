@@ -58,7 +58,7 @@ class ResourceSettingsForm extends ConfigFormBase {
     $form['drop_datastore_on_post_import_error'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Drop the datastore table if the post import queue reports an error.'),
-      '#default_value' => $this->config('datastore.settings')->get('drop_datastore_on_post_import_error'),
+      '#config_target' => 'datastore.settings:drop_datastore_on_post_import_error',
       '#description' => $this->t('The datastore import queue brings in all columns as strings. The post import
       queue will alter the table according to the data dictionary, if there is a problem during this step the
       error will be posted to the Datastore Import Status dashboard, and the datastore table will keep all
