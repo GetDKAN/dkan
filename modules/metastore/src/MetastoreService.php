@@ -246,9 +246,9 @@ class MetastoreService implements ContainerInjectionInterface {
         }
         catch (\Exception) {
           $this->logger->error('A JSON string failed validation.', [
-          '@schema_id' => $schema_id,
-          '@json' => $jsonString,
-        ]);
+            '@schema_id' => $schema_id,
+            '@json' => $jsonString,
+          ]);
           return NULL;
         }
       }, $jsonStringsArray);
