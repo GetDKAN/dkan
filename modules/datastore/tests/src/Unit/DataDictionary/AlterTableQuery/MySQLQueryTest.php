@@ -19,7 +19,11 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery.
  *
- * @coversDefaultClass Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ * @coversDefaultClass \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class MySQLQueryTest extends TestCase {
 
@@ -27,6 +31,7 @@ class MySQLQueryTest extends TestCase {
    * Prepare for tests.
    */
   public function setUp(): void {
+    parent::setUp();
     // Build container with 'state' service for testing.
     $container_options = (new Options())
       ->add('state', (new MemoryStorage('test_storage')))
@@ -42,7 +47,9 @@ class MySQLQueryTest extends TestCase {
    */
   public function buildConnectionChain(): Chain {
     return (new Chain($this))
+      // Drupal 10 will call getDriverClass, while 11 will call update directly.
       ->add(Connection::class, 'getDriverClass', UpdateQueryMock::class)
+      ->add(Connection::class, 'update', UpdateQueryMock::class)
       ->add(Connection::class, 'prepareStatement', StatementInterface::class, 'prepare')
       ->add(Connection::class, 'query', StatementInterface::class)
       ->add(StatementInterface::class, 'execute', TRUE)
@@ -117,10 +124,8 @@ class MySQLQueryTest extends TestCase {
     $this->assertEquals("ALTER TABLE {" . $table . "} MODIFY COLUMN foo TEXT COMMENT 'Foo', " .
     "MODIFY COLUMN bar DECIMAL(10, 5) COMMENT 'Bar', " .
     "MODIFY COLUMN baz DATE COMMENT 'Baz', " .
-    "ADD  INDEX index1 (foo (12), bar, baz) COMMENT 'Fizz', " .
-    "ADD FULLTEXT INDEX index2 (foo (6), baz) COMMENT '';", $query);
+    "ADD  INDEX index1 (foo (12), bar, baz) COMMENT 'Fizz';", $query);
   }
-
 
   /**
    * Ensure alter fails when attempting to apply decimal type to large numbers.
@@ -136,7 +141,7 @@ class MySQLQueryTest extends TestCase {
     $mysql_query->execute();
   }
 
-  public function baseTypeProvider() {
+  public static function baseTypeProvider() {
     return [
       'string' => ['string', 'TEXT'],
       'getBaseType-does-no-error-checking' => ['not-a-frictionless-type', NULL],

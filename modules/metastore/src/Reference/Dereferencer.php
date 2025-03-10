@@ -23,8 +23,6 @@ class Dereferencer {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -103,11 +101,10 @@ class Dereferencer {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      $this->logger->log('value_referencer', 'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
-        [
-          '@property_id' => $property_id,
-          '@uuid' => var_export($uuid, TRUE),
-        ]);
+      $this->logger->error('Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid', [
+        '@property_id' => $property_id,
+        '@uuid' => var_export($uuid, TRUE),
+      ]);
       return NULL;
     }
   }
@@ -157,7 +154,7 @@ class Dereferencer {
     try {
       $value = $storage->retrieve($uuid);
     }
-    catch (MissingObjectException $exception) {
+    catch (MissingObjectException) {
       $value = FALSE;
     }
 
@@ -168,14 +165,10 @@ class Dereferencer {
 
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    $this->logger->log(
-      'value_referencer',
-      'Property @property_id reference @uuid not found',
-      [
-        '@property_id' => $property_id,
-        '@uuid' => var_export($uuid, TRUE),
-      ]
-    );
+    $this->logger->error('Property @property_id reference @uuid not found', [
+      '@property_id' => $property_id,
+      '@uuid' => var_export($uuid, TRUE),
+    ]);
 
     return [NULL, NULL];
   }

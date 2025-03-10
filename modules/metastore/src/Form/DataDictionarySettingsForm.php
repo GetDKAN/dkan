@@ -3,6 +3,7 @@
 namespace Drupal\metastore\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -32,15 +33,25 @@ class DataDictionarySettingsForm extends ConfigFormBase {
   /**
    * Constructs a \Drupal\Core\Form\ConfigFormBase object.
    *
+   * Arg order a little weird because TypedConfigManagerInterface was not
+   * required when this was first done.
+   *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger.
    * @param \Drupal\metastore\MetastoreService $metastore
    *   The metastore service.
+   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typed_config
+   *   The typed config manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger, MetastoreService $metastore) {
-    parent::__construct($config_factory);
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    MessengerInterface $messenger,
+    MetastoreService $metastore,
+    TypedConfigManagerInterface $typed_config,
+  ) {
+    parent::__construct($config_factory, $typed_config);
     $this->messenger = $messenger;
     $this->metastore = $metastore;
   }
@@ -57,7 +68,8 @@ class DataDictionarySettingsForm extends ConfigFormBase {
     return new static(
       $container->get('config.factory'),
       $container->get('messenger'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('config.typed')
     );
   }
 
@@ -119,6 +131,21 @@ class DataDictionarySettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('data_dictionary_sitewide'),
     ];
 
+    $form['csv_headers_mode'] = [
+      '#type' => 'select',
+      '#title' => $this->t('CSV Headers Mode'),
+      '#options' => [
+        'resource_headers' => $this->t('Use the column names from the resource file'),
+        'dictionary_titles' => $this->t('Use data dictionary titles'),
+        'machine_names' => $this->t('Use the datastore machine names'),
+      ],
+      '#default_value' => $config->get('csv_headers_mode'),
+      '#description' => $this->t("Choose the column header values to be used for datastore query CSV downloads."),
+      '#attributes' => [
+        'name' => 'csv_headers_mode',
+      ],
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -150,6 +177,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
       // Set the submitted configuration setting.
       ->set('data_dictionary_mode', $form_state->getValue('dictionary_mode'))
       ->set('data_dictionary_sitewide', $form_state->getValue('sitewide_dictionary_id'))
+      ->set('csv_headers_mode', $form_state->getValue('csv_headers_mode'))
       ->save();
 
     parent::submitForm($form, $form_state);

@@ -1,30 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
-
+use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\GetDataTrait;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
-use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
-
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * DictionaryEnforcer QueueWorker test.
  *
- * @package Drupal\Tests\datastore\Functional
  * @group datastore
  * @group functional
  * @group btb
+ *
+ * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait, CleanUp;
+  use GetDataTrait, QueueRunnerTrait;
 
   protected $defaultTheme = 'stark';
 
@@ -105,7 +105,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     // Initialize services.
     $this->metastore = $this->container->get('dkan.metastore.service');
     $this->uuid = $this->container->get('uuid');
-    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
+    $this->validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
     $this->importController = ImportController::create(\Drupal::getContainer());
     $this->datasetStorage = $this->container->get('dkan.metastore.storage')
       ->getInstance('dataset');
@@ -185,6 +185,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $metastore_config = $this->config('metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
       ->set('data_dictionary_sitewide', $dict_id)
+      ->set('csv_headers_mode', 'dictionary_titles')
       ->save();
 
     // Build dataset.
@@ -226,14 +227,12 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       'columns' => [
         'record_number' => [
           'type' => 'serial',
-          'length' => 10,
           'unsigned' => TRUE,
           'not null' => TRUE,
           'mysql_type' => 'int',
         ],
         'a' => [
           'type' => 'int',
-          'length' => 11,
           'mysql_type' => 'int',
         ],
         'b' => [
@@ -243,7 +242,8 @@ class DictionaryEnforcerTest extends BrowserTestBase {
         ],
         'c' => [
           'type' => 'numeric',
-          'length' => 3,
+          'precision' => 3,
+          'scale' => 2,
           'mysql_type' => 'decimal',
           'description' => 'C',
         ],
@@ -256,7 +256,6 @@ class DictionaryEnforcerTest extends BrowserTestBase {
           'type' => 'int',
           'mysql_type' => 'tinyint',
           'description' => 'E',
-          'length' => 1,
           'size' => 'tiny',
         ],
       ],
@@ -273,24 +272,6 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       ],
       'numOfRows' => 3,
     ], $result);
-  }
-
-  /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = $this->container->get('queue');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queueFactory->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
   }
 
 }

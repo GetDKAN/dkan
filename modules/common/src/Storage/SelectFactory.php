@@ -2,8 +2,8 @@
 
 namespace Drupal\common\Storage;
 
-use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Query\Select;
 
 /**
  * Class to convert a DKAN Query object into a Drupal DB API Select Object.
@@ -13,7 +13,7 @@ class SelectFactory {
   /**
    * A database table object, which includes a database connection.
    *
-   * @var Drupal\Core\Database\Connection
+   * @var \Drupal\Core\Database\Connection
    */
   private $connection;
 
@@ -54,7 +54,7 @@ class SelectFactory {
   /**
    * Create Drupal select object.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param \Drupal\common\Storage\Query $query
    *   DKAN Query object.
    */
   public function create(Query $query): Select {
@@ -104,8 +104,10 @@ class SelectFactory {
   private function addDateExpressions($db_query, $fields, $meta_data) {
     foreach ($meta_data as $definition) {
       // Confirm definition name is in the fields list.
-      if ($fields[$definition['name']]['field'] && $definition['type'] == 'date') {
-        $db_query->addExpression("DATE_FORMAT(" . $definition['name'] . ", '" . $definition['format'] . "')", $definition['name']);
+      $name = $this->dbQuery->escapeField($definition['name']);
+      $sanitizedName = $fields[$name]['field'];
+      if ($sanitizedName && $definition['type'] == 'date') {
+        $db_query->addExpression("DATE_FORMAT(" . $sanitizedName . ", '" . $definition['format'] . "')", $sanitizedName);
       }
     }
   }
@@ -116,7 +118,7 @@ class SelectFactory {
    * @param mixed $property
    *   One property from a query properties array.
    */
-  private function setQueryProperty($property) {
+  private function setQueryProperty(mixed $property) {
 
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);
@@ -137,21 +139,23 @@ class SelectFactory {
    * @return object
    *   Normalized property for conversion to field in select object.
    */
-  private function normalizeProperty($property): object {
+  private function normalizeProperty(mixed $property): object {
     if (is_string($property) && self::safeProperty($property)) {
       return (object) [
         "collection" => $this->alias,
-        "property" => $property,
+        "property" => $this->dbQuery->escapeField($property),
         "alias" => NULL,
       ];
     }
     if (!is_object($property) || !isset($property->property) || !isset($property->collection)) {
       throw new \Exception("Bad query property: " . print_r($property, 1));
     }
+    // Throw exception if obviously unsafe property name.
     self::safeProperty($property->property);
-    if (!isset($property->alias)) {
-      $property->alias = NULL;
-    }
+    // Sanitize the property name.
+    $property->property = $this->dbQuery->escapeField($property->property);
+    $property->alias = isset($property->alias) ? $this->connection->escapeAlias($property->alias) : NULL;
+    $property->collection = isset($property->collection) ? $this->connection->escapeTable($property->collection) : NULL;
     return $property;
   }
 
@@ -227,7 +231,7 @@ class SelectFactory {
    * @return mixed
    *   String or numeric operand for expression.
    */
-  private function normalizeOperand($operand) {
+  private function normalizeOperand(mixed $operand) {
     if (is_numeric($operand)) {
       return $operand;
     }
@@ -248,7 +252,7 @@ class SelectFactory {
    * @return string
    *   Property name with alias prefix.
    */
-  private function propertyToString($property) {
+  private function propertyToString(mixed $property) {
     $property = $this->normalizeProperty($property);
     return "{$property->collection}.{$property->property}";
   }
@@ -293,7 +297,10 @@ class SelectFactory {
   /**
    * Add a custom where condition in the case of a fulltext match operator.
    *
-   * Currently, only BOOLEAN MODE Mysql fulltext searches supported.
+   * Currently, only BOOLEAN MODE Mysql fulltext searches supported. Note
+   * that an explicit resource in the condition will be ignored to prevent
+   * possible injection attacks, so match conditions are unlikely to work
+   * well in combination with joins.
    *
    * @param \Drupal\Core\Database\Query\Select|\Drupal\Core\Database\Query\Condition $statementObj
    *   Drupal DB API select object or condition object.
@@ -304,9 +311,7 @@ class SelectFactory {
     $properties = explode(',', $condition->property);
     $fields = [];
     foreach ($properties as $property) {
-      $fields[] = ($condition->collection ?? $this->alias)
-      . '.'
-      . $property;
+      $fields[] = $this->alias . '.' . $this->dbQuery->escapeField($property);
     }
     $fields_list = implode(',', $fields);
 
@@ -452,8 +457,30 @@ class SelectFactory {
       throw new \Exception("Invalid join condition; collection must be specified.");
     }
 
+    self::safeJoinOperator($condition->operator);
+    $collection = $this->connection->escapeTable($condition->collection);
+    $property = $this->dbQuery->escapeField($condition->property);
     $value = $this->propertyToString($condition->value);
-    return "{$condition->collection}.{$condition->property} $condition->operator $value";
+    return "$collection.$property $condition->operator $value";
+  }
+
+  /**
+   * Check if a join condition operator is valid.
+   *
+   * @param string $operator
+   *   The operator to check.
+   *
+   * @return bool
+   *   True if valid.
+   *
+   * @throws \Exception
+   *   If the operator is invalid.
+   */
+  public static function safeJoinOperator(string $operator): bool {
+    if (in_array($operator, ['=', '!=', '<>', '>', '>=', '<', '<=', 'LIKE'])) {
+      return TRUE;
+    }
+    throw new \Exception('Invalid join operator: ' . $operator);
   }
 
 }

@@ -5,6 +5,7 @@ namespace Drupal\datastore\Service\ResourceProcessor;
 use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
+use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
@@ -44,6 +45,13 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   protected $resourceMapper;
 
   /**
+   * Database table factory service.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseTableFactory
+   */
+  protected $databaseTableFactory;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
@@ -52,15 +60,19 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *   The metastore service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
+   * @param \Drupal\datastore\Storage\DatabaseTableFactory $table_factory
+   *   The datastore database table factory service.
    */
   public function __construct(
     AlterTableQueryBuilderInterface $alter_table_query_builder,
     MetastoreService $metastore,
-    DataDictionaryDiscoveryInterface $data_dictionary_discovery
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery,
+    DatabaseTableFactory $table_factory,
   ) {
     $this->metastore = $metastore;
     $this->dataDictionaryDiscovery = $data_dictionary_discovery;
     $this->alterTableQueryBuilder = $alter_table_query_builder;
+    $this->databaseTableFactory = $table_factory;
   }
 
   /**
@@ -78,7 +90,8 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
     // Get data-dictionary for the given resource.
     $dictionary = $this->getDataDictionaryForResource($resource);
     // Retrieve name of datastore table for resource.
-    $datastore_table = $resource->getTableName();
+    $table = $this->databaseTableFactory->getInstance('', ['resource' => $resource]);
+    $datastore_table = $table->getTableName();
 
     $this->applyDictionary($dictionary, $datastore_table);
   }
@@ -91,16 +104,19 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *
    * @return \RootedData\RootedJsonData
    *   Data-dictionary metadata.
+   *
+   * @throws \Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
+   *   Thrown when the resource does not have an associated data dictionary.
    */
   protected function getDataDictionaryForResource(DataResource $resource): RootedJsonData {
     $resource_id = $resource->getIdentifier();
     $resource_version = $resource->getVersion();
-    $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
+    $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
 
-    if (!isset($dict_id)) {
-      throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
+    if (!isset($dictionary_id)) {
+      throw new ResourceDoesNotHaveDictionary($resource_id, $resource_version);
     }
-    return $this->metastore->get('data-dictionary', $dict_id);
+    return $this->metastore->get('data-dictionary', $dictionary_id);
   }
 
   /**
@@ -122,17 +138,31 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Returning data dictionary fields from schema.
    *
-   *  {@inheritdoc}
+   * @param string|null $identifier
+   *   A resource's identifier. Used when in reference mode.
+   *
+   * @return array|null
+   *   An array of dictionary fields or null if no dictionary is in use.
    */
-  public function returnDataDictionaryFields() {
-    // Get DD is mode.
+  public function returnDataDictionaryFields(?string $identifier = NULL): ?array {
+    // Get data dictionary mode.
     $dd_mode = $this->dataDictionaryDiscovery->getDataDictionaryMode();
     // Get data dictionary info.
-    if ($dd_mode == "sitewide") {
-      $dict_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
-      $metaData = $this->metastore->get('data-dictionary', $dict_id)->{"$.data.fields"};
-      return $metaData;
+    switch ($dd_mode) {
+      case "sitewide":
+        $dictionary_id = $this->dataDictionaryDiscovery->getSitewideDictionaryId();
+        break;
+
+      case "reference":
+        $resource = DataResource::getIdentifierAndVersion($identifier);
+        $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource[0]);
+        break;
+
+      default:
+        return NULL;
     }
+
+    return $dictionary_id ? $this->metastore->get('data-dictionary', $dictionary_id)->{"$.data.fields"} : NULL;
   }
 
 }

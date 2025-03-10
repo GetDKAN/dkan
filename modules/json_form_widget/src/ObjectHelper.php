@@ -11,8 +11,6 @@ class ObjectHelper {
 
   /**
    * Builder object.
-   *
-   * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   public FieldTypeRouter $builder;
 

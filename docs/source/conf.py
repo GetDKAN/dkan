@@ -19,11 +19,11 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = 'DKAN Documentation'
-copyright = '2023, CivicActions'
+copyright = '2024, CivicActions'
 author = 'CivicActions'
 
 # The full version, including alpha/beta/rc tags
-release = '2.15.2'
+release = '2.19.2'
 version = '2.x'
 
 # -- General configuration ---------------------------------------------------
@@ -36,6 +36,7 @@ extensions = [
   'myst_parser',
   'sphinx.ext.autosectionlabel',
   'sphinxcontrib.httpdomain',
+  'sphinxcontrib.mermaid',
   'sphinx_rtd_theme',
   'sphinx_prompt'
 ]
@@ -76,6 +77,7 @@ source_suffix = {
     '.md': 'markdown',
 }
 source_parsers = {'.md': 'myst_parser.sphinx_'}
+myst_fence_as_directive = ["mermaid"]
 
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth=None

@@ -21,8 +21,7 @@ class AuthCleanupHelper {
   public static function makePublicSpec(OpenApiSpec $spec) {
     $filteredSpec = static::removeAuthenticatedEndpoints($spec);
     $filteredSpec = static::cleanUpParameters($filteredSpec);
-    $filteredSpec = static::cleanUpSchemas($filteredSpec);
-    return $filteredSpec;
+    return static::cleanUpSchemas($filteredSpec);
   }
 
   /**

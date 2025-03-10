@@ -1,7 +1,7 @@
 name: DKAN
 description: 'DKAN Open Data Portal'
 type: module
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 package: DKAN
 dependencies:
   - dkan:metastore
@@ -10,6 +10,7 @@ dependencies:
   - dkan:datastore
   - dkan:harvest
   - dkan:json_form_widget
+  - dkan:data_dictionary_widget
   - drupal:config
   - drupal:field
   - drupal:file

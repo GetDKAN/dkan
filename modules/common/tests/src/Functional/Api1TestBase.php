@@ -8,20 +8,26 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
+use Osteel\OpenApi\Testing\ValidatorBuilder;
 
 abstract class Api1TestBase extends BrowserTestBase {
   use UserCreationTrait;
 
   /**
    * HTTP Client.
-   *
-   * @var \GuzzleHttp\Client
    */
   protected Client $httpClient;
 
   protected $spec;
   protected $auth;
   protected $endpoint;
+
+  /**
+   * OpenApi Validator.
+   *
+   * @var \Osteel\OpenApi\Testing\ValidatorInterface
+   */
+  protected $validator;
 
   protected $defaultTheme = 'stark';
   protected $strictConfigSchema = FALSE;
@@ -49,6 +55,7 @@ abstract class Api1TestBase extends BrowserTestBase {
 
     // Load the API spec for use by tests.
     $response = $this->httpClient->request('GET', 'api/1');
+    $this->validator = ValidatorBuilder::fromJsonString($response->getBody())->getValidator();
     $this->spec = json_decode($response->getBody());
   }
 

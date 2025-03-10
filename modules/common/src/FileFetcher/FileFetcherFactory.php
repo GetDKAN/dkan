@@ -15,22 +15,16 @@ class FileFetcherFactory implements FactoryInterface {
 
   /**
    * File fetcher job store factory.
-   *
-   * @var \Drupal\common\Storage\FileFetcherJobStoreFactory
    */
   private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
    * The common.settings config.
-   *
-   * @var \Drupal\Core\Config\ImmutableConfig
    */
   private ImmutableConfig $dkanConfig;
 
   /**
    * Default file fetcher config.
-   *
-   * @var array
    */
   private array $configDefault = [
     'keep_original_filename' => TRUE,

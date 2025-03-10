@@ -21,8 +21,6 @@ class JobStoreUtil {
 
   /**
    * Database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   protected Connection $connection;
 

@@ -27,6 +27,7 @@ class HarvestServiceTest extends KernelTestBase {
     parent::setUp();
     $this->installEntitySchema('harvest_plan');
     $this->installEntitySchema('harvest_hash');
+    $this->installEntitySchema('harvest_run');
   }
 
   public function testGetAllHarvestIds() {
@@ -185,6 +186,38 @@ class HarvestServiceTest extends KernelTestBase {
       0,
       $harvest_storage_factory->getInstance('harvest_plans')->retrieveAll()
     );
+  }
+
+  /**
+   * @covers ::getHarvestRunResult
+   */
+  public function testGetHarvestRunResult() {
+    // There should be no harvest runs at the beginning of this test method, so
+    // getHarvestRunResult should return an empty array.
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    $harvest_service = $this->container->get('dkan.harvest.service');
+    $this->assertEquals([], $harvest_service->getHarvestRunResult('any_plan', 'any_id'));
+
+    // Register a harvest and run it.
+    $plan_identifier = 'test_plan';
+    $plan = (object) [
+      'identifier' => $plan_identifier,
+      'extract' => (object) [
+        'type' => DataJson::class,
+        'uri' => 'file://' . realpath(__DIR__ . '/../../files/data.json'),
+      ],
+      'transforms' => [],
+      'load' => (object) [
+        'type' => Simple::class,
+      ],
+    ];
+    $this->assertEquals($plan_identifier, $harvest_service->registerHarvest($plan));
+
+    $run_result = $harvest_service->runHarvest($plan_identifier);
+    $this->assertNotEmpty($run_id = $run_result['identifier']);
+
+    // Compare the reloaded results to the ones from the original run.
+    $this->assertEquals($run_result, $harvest_service->getHarvestRunResult($plan_identifier, $run_id));
   }
 
 }

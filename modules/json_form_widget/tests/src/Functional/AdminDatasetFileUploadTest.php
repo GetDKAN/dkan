@@ -4,6 +4,7 @@ namespace Drupal\json_form_widget\Tests\Functional;
 
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 
 /**
  * Test the json form widget.
@@ -16,6 +17,8 @@ use Drupal\Tests\BrowserTestBase;
  * @group functional
  */
 class AdminDatasetFileUploadTest extends BrowserTestBase {
+
+  use QueueRunnerTrait;
 
   protected static $modules = [
     'dkan',
@@ -31,24 +34,6 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
   protected $strictConfigSchema = FALSE;
 
   /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = $this->container->get('plugin.manager.queue_worker');
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = $this->container->get('queue');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queueFactory->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
-  }
-
-  /**
    * Test creating datasets.
    *
    * 11_admin_dataset_file_upload.spec.js : Admin dataset file upload : Create
@@ -57,8 +42,6 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
   public function testCreateDatasetWithRemoteFile() {
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
-    /** @var \Drupal\metastore\ValidMetadataFactory $metadata_factory */
-    $metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
     $this->drupalLogin(
     // @todo Figure out least possible admin permissions.
@@ -111,7 +94,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'distribution title test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'distribution description test',
-      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format' => 'csv',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-remote' => 'remote',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote' => $file_url,
     ], 'Save');
@@ -152,8 +135,6 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
   public function testCreateDatasetWithFileUpload() {
     /** @var \Drupal\metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
-    /** @var \Drupal\metastore\ValidMetadataFactory $metadata_factory */
-    $metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
     $this->drupalLogin(
     // @todo Figure out least possible admin permissions.
@@ -211,7 +192,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'distribution title test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'distribution description test',
-      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select' => 'csv',
+      'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format' => 'csv',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-upload' => 'upload',
     ], 'Save');
     $assert->statusCodeEquals(200);

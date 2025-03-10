@@ -18,15 +18,11 @@ class MetastoreUrlGenerator {
 
   /**
    * DKAN Stream Wrapper.
-   *
-   * @var \Drupal\Core\StreamWrapper\StreamWrapperManager
    */
   protected StreamWrapperManager $streamWrapperManager;
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   protected MetastoreService $metastore;
 
@@ -151,7 +147,7 @@ class MetastoreUrlGenerator {
       $this->metastore()->get($parts[2], $parts[4]);
       return TRUE;
     }
-    catch (MissingObjectException $e) {
+    catch (MissingObjectException) {
       return FALSE;
     }
 

@@ -26,29 +26,21 @@ class MetastoreController implements ContainerInjectionInterface {
 
   /**
    * Request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private RequestStack $requestStack;
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $service;
 
   /**
    * Metastore dataset docs service.
-   *
-   * @var \Drupal\metastore\DatasetApiDocs
    */
   private DatasetApiDocs $docs;
 
   /**
    * Metastore API response service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
    */
   private MetastoreApiResponse $apiResponse;
 
@@ -377,7 +369,7 @@ class MetastoreController implements ContainerInjectionInterface {
    * @throws \Drupal\metastore\Exception\CannotChangeUuidException
    *   Thrown when the identifiers are different.
    */
-  private function checkIdentifier(string $data, $identifier = NULL) {
+  private function checkIdentifier(string $data, mixed $identifier = NULL) {
     $obj = json_decode($data);
     if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");

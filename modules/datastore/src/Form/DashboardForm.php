@@ -2,23 +2,24 @@
 
 namespace Drupal\datastore\Form;
 
-use Drupal\Core\Pager\PagerManagerInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\common\DatasetInfo;
-use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Pager\PagerManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
+use Drupal\common\DataResource;
+use Drupal\common\DatasetInfo;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\datastore\Service\PostImport;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\datastore\PostImportResultFactory;
 
 /**
  * Datastore Import Dashboard form.
- *
- * @package Drupal\datastore
  */
 class DashboardForm extends FormBase {
   use StringTranslationTrait;
@@ -66,11 +67,18 @@ class DashboardForm extends FormBase {
   protected $dateFormatter;
 
   /**
-   * The PostImport service.
+   * The PostImportResultFactory service.
    *
-   * @var \Drupal\datastore\Service\PostImport
+   * @var \Drupal\datastore\PostImportResultFactory
    */
-  protected $postImport;
+  protected PostImportResultFactory $postImportResultFactory;
+
+  /**
+   * Node storage service.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected EntityStorageInterface $nodeStorage;
 
   /**
    * DashboardController constructor.
@@ -85,8 +93,10 @@ class DashboardForm extends FormBase {
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
-   * @param \Drupal\datastore\Service\PostImport $post_import
-   *   The post import service.
+   * @param \Drupal\datastore\PostImportResultFactory $postImportResultFactory
+   *   The PostImportResultFactory service..
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Entity type manager service.
    */
   public function __construct(
     HarvestService $harvestService,
@@ -94,15 +104,17 @@ class DashboardForm extends FormBase {
     MetastoreService $metastoreService,
     PagerManagerInterface $pagerManager,
     DateFormatter $dateFormatter,
-    PostImport $post_import
+    PostImportResultFactory $postImportResultFactory,
+    EntityTypeManagerInterface $entityTypeManager,
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
     $this->dateFormatter = $dateFormatter;
-    $this->postImport = $post_import;
+    $this->nodeStorage = $entityTypeManager->getStorage('node');
     $this->itemsPerPage = 10;
+    $this->postImportResultFactory = $postImportResultFactory;
   }
 
   /**
@@ -115,7 +127,8 @@ class DashboardForm extends FormBase {
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
       $container->get('date.formatter'),
-      $container->get('dkan.datastore.service.post_import'),
+      $container->get('dkan.datastore.post_import_result_factory'),
+      $container->get('entity_type.manager'),
     );
   }
 
@@ -191,6 +204,12 @@ class DashboardForm extends FormBase {
           '#title' => $this->t('Dataset ID'),
           '#default_value' => $filters['uuid'] ?? '',
         ],
+        'dataset_title' => [
+          '#type' => 'textfield',
+          '#weight' => 1,
+          '#title' => $this->t('Dataset Title'),
+          '#default_value' => $filters['dataset_title'] ?? '',
+        ],
         'harvest_id' => [
           '#type' => 'select',
           '#weight' => 1,
@@ -242,11 +261,20 @@ class DashboardForm extends FormBase {
   /**
    * Retrieve list of UUIDs for datasets matching the given filters.
    *
+   * Filters over-ride each other, in this order of priority:
+   * - UUID
+   * - Title search
+   * - Harvest plan ID.
+   *
    * @param string[] $filters
-   *   Datasets filters.
+   *   Datasets filters. Keys determine the filter. Recognized keys:
+   *   - uuid - Dataset UUID.
+   *   - dataset_title - A CONTAINS search within the dataset title field.
+   *   - harvest_id - A harvest plan ID.
    *
    * @return string[]
-   *   Filtered list of dataset UUIDs.
+   *   Paged, filtered list of dataset UUIDs. If no filter was supplied, all
+   *   dataset UUIDs will be returned, paged.
    */
   protected function getDatasets(array $filters): array {
     $datasets = [];
@@ -256,16 +284,17 @@ class DashboardForm extends FormBase {
     if (isset($filters['uuid'])) {
       $datasets = [$filters['uuid']];
     }
+    // Is the user searching for a dataset title?
+    elseif (isset($filters['dataset_title'])) {
+      $results = $this->getDatasetsByTitle($filters);
+      $datasets = $this->pagedFilteredList($results);
+    }
     // If a value was supplied for the harvest ID filter, retrieve dataset UUIDs
-    // belonging to the specfied harvest.
+    // belonging to the specified harvest.
     elseif (isset($filters['harvest_id'])) {
-      $harvestLoad = $this->getHarvestLoadStatus($filters['harvest_id']);
+      $harvestLoad = iterator_to_array($this->getHarvestLoadStatus($filters['harvest_id']));
       $datasets = array_keys($harvestLoad);
-      $total = count($datasets);
-      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
-
-      $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
-      $datasets = $chunks[$currentPage];
+      $datasets = $this->pagedFilteredList($datasets);
     }
     // If no filter values were supplied, fetch from the list of all dataset
     // UUIDs.
@@ -284,6 +313,50 @@ class DashboardForm extends FormBase {
   }
 
   /**
+   * Entity query for nodes containing the dataset title.
+   *
+   * @param string[] $filters
+   *   Datasets filters.
+   *
+   * @return string[]
+   *   Dataset UUIDs .
+   */
+  protected function getDatasetsByTitle(array $filters): array {
+    // Get the ids using an entity query, because our dataset title is in the
+    // node title field.
+    // @todo Unify different queries against Data nodes using a repository or
+    // the NodeData wrapper.
+    $results = $this->nodeStorage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'data')
+      ->condition('field_data_type', 'dataset')
+      ->condition('title', $filters['dataset_title'], 'CONTAINS')
+      ->execute();
+    foreach ($this->nodeStorage->loadMultiple($results) as $node) {
+      $datasets[] = $node->uuid();
+    }
+
+    return $datasets;
+  }
+
+  /**
+   * Paged, filtered list of dataset UUIDs.
+   *
+   * @param string[] $datasets
+   *   Dataset UUIDs.
+   *
+   * @return string[]
+   *   Paged, filtered list of dataset UUIDs.
+   */
+  protected function pagedFilteredList(array $datasets): array {
+    $total = count($datasets);
+    $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
+    $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
+
+    return $chunks[$currentPage];
+  }
+
+  /**
    * Builds dataset rows array.
    *
    * @param string[] $datasets
@@ -293,7 +366,7 @@ class DashboardForm extends FormBase {
    *   Table rows.
    */
   protected function buildDatasetRows(array $datasets): array {
-    // Fetch the status of all harvests.
+    // Fetch the dataset status of all harvests.
     $harvestLoad = iterator_to_array($this->getHarvestLoadStatuses());
 
     $rows = [];
@@ -304,7 +377,8 @@ class DashboardForm extends FormBase {
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
-      // Build a table row using it's details and harvest status.
+
+      // Build a table row using its details and harvest status.
       $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
     }
@@ -314,6 +388,12 @@ class DashboardForm extends FormBase {
 
   /**
    * Fetch the status of all harvests.
+   *
+   * @return \Generator
+   *   Array of all the most recent load statuses for all the datasets for all
+   *   the harvests that have been run, keyed by dataset UUID. This can
+   *   potentially be a very large array to return by value, which is why it is
+   *   structured as a generator.
    */
   protected function getHarvestLoadStatuses(): \Generator {
     foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
@@ -322,23 +402,19 @@ class DashboardForm extends FormBase {
   }
 
   /**
-   * Fetch the status of datasets belonging to the given harvest.
+   * Fetch the status of loaded datasets for the most recent harvest run.
    *
    * @param string|null $harvestId
    *   Harvest ID to search for.
    *
-   * @return string[]
-   *   Harvest statuses keyed by dataset UUIDs.
+   * @return \Generator
+   *   Array of harvest load statuses, keyed by dataset UUIDs.
    */
-  protected function getHarvestLoadStatus(?string $harvestId): array {
-    $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
-    $runId = end($runIds);
-
-    $json = $this->harvest->getHarvestRunInfo($harvestId, $runId);
-    $info = json_decode($json);
-    $loadExists = isset($info->status) && isset($info->status->load);
-
-    return $loadExists ? (array) $info->status->load : [];
+  protected function getHarvestLoadStatus(?string $harvestId): \Generator {
+    $result = $this->harvest->getHarvestRunResult(
+      $harvestId, $this->harvest->getLastHarvestRunId($harvestId)
+    );
+    yield from $result['status']['load'] ?? [];
   }
 
   /**
@@ -377,13 +453,19 @@ class DashboardForm extends FormBase {
 
     // Create a row for each dataset revision (there could be both a published
     // and latest).
-    foreach (array_values($datasetInfo) as $rev) {
-      $distributions = $rev['distributions'];
-      // For first distribution, combine with revision information.
-      $rows[] = array_merge(
-        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
-        $this->buildResourcesRow(array_shift($distributions))
-      );
+    foreach ($datasetInfo as $rev) {
+      // Filter out distributions whose resources are not csv or tsv.
+      $distributions = array_filter($rev['distributions'], function ($v) {
+        return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
+      });
+
+      if (!empty($distributions)) {
+        // For first distribution, combine with revision information.
+        $rows[] = array_merge(
+          $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+          $this->buildResourcesRow(array_shift($distributions))
+        );
+      }
       // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
@@ -412,7 +494,7 @@ class DashboardForm extends FormBase {
     // here.
     $moderation_class = $rev['moderation_state'];
     if ($moderation_class == 'hidden') {
-      $moderation_class = 'registered';
+      $moderation_class = 'published-hidden';
     }
     return [
       [
@@ -426,12 +508,12 @@ class DashboardForm extends FormBase {
       ],
       [
         'rowspan' => $resourceCount,
-        'class' => $rev['moderation_state'],
+        'class' => $moderation_class,
         'data' => [
           '#theme' => 'datastore_dashboard_revision_cell',
           '#revision_id' => $rev['revision_id'],
           '#modified' => $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short'),
-          '#moderation_state' => $moderation_class,
+          '#moderation_state' => $rev['moderation_state'],
         ],
       ],
       [
@@ -453,8 +535,8 @@ class DashboardForm extends FormBase {
    */
   protected function buildResourcesRow($dist): array {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
-
-      $postImportInfo = $this->postImport->retrieveJobStatus($dist['resource_id'], $dist['resource_version']);
+      $postImportResult = $this->postImportResultFactory->initializeFromDistribution($dist);
+      $postImportInfo = $postImportResult->retrieveJobStatus();
       $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
 
@@ -467,7 +549,7 @@ class DashboardForm extends FormBase {
             '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
           ],
         ],
-        $this->buildStatusCell($dist['fetcher_status'], $dist['fetcher_percent_done']),
+        $this->buildStatusCell($dist['fetcher_status']),
         $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
         $this->buildPostImportStatusCell($status, $error),
       ];
@@ -480,7 +562,7 @@ class DashboardForm extends FormBase {
    *
    * @param string $status
    *   Current job status.
-   * @param int $percentDone
+   * @param int|null $percentDone
    *   Percent done, 0-100.
    * @param null|string $error
    *   An error message, if any.
@@ -488,12 +570,12 @@ class DashboardForm extends FormBase {
    * @return array
    *   Renderable array.
    */
-  protected function buildStatusCell(string $status, int $percentDone, ?string $error = NULL) {
+  protected function buildStatusCell(string $status, ?int $percentDone = NULL, ?string $error = NULL) {
     return [
       'data' => [
         '#theme' => 'datastore_dashboard_status_cell',
         '#status' => $status,
-        '#percent' => $percentDone,
+        '#percent' => $percentDone ?? NULL,
         '#error' => $error,
       ],
       'class' => str_replace('_', '-', $status),
@@ -531,7 +613,7 @@ class DashboardForm extends FormBase {
    * @return string
    *   The sanitized error message.
    */
-  private function cleanUpError($error) {
+  private function cleanUpError(mixed $error) {
     $error = (string) $error;
     $mysqlErrorPattern = '/^SQLSTATE\[[A-Z0-9]+\]: .+?: [0-9]+ (.+?): [A-Z]/';
     if (preg_match($mysqlErrorPattern, $error, $matches)) {

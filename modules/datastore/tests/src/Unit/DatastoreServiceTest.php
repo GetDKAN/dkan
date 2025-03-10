@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\datastore\Unit;
 
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
@@ -15,6 +14,7 @@ use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
@@ -24,10 +24,15 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
+ *
+ * @group dkan
+ * @group datastore
+ * @group unit
  */
 class DatastoreServiceTest extends TestCase {
 
@@ -47,7 +52,7 @@ class DatastoreServiceTest extends TestCase {
       ->add(ImportService::class, 'getImporter', ImportJob::class)
       ->add(ImportJob::class, 'getResult', new Result())
       ->add(QueueFactory::class, "get", NULL)
-      ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
+      ->add(EventDispatcher::class, "dispatch", NULL);
 
     $service = DatastoreService::create($chain->getMock());
     $result = $service->import("1");
@@ -65,8 +70,10 @@ class DatastoreServiceTest extends TestCase {
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(JobStore::class, 'remove', TRUE)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', TRUE);
+      ->add(ReferenceLookup::class, 'getReferencers', [$resource->getIdentifier()])
+      ->add(ReferenceLookup::class, 'invalidateReferencerCacheTags');
 
     $service = DatastoreService::create($mockChain->getMock());
     // These are all valid ways to call drop().
@@ -93,6 +100,7 @@ class DatastoreServiceTest extends TestCase {
 
   private function getCommonChain() {
     $options = (new Options())
+      ->add('event_dispatcher', EventDispatcher::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
@@ -101,6 +109,7 @@ class DatastoreServiceTest extends TestCase {
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->index(0);
 
     return (new Chain($this))

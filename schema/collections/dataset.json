@@ -119,7 +119,7 @@
     },
     "license": {
       "title": "License",
-      "description": "The license dataset or API is published with. See <a href=\"https://project-open-data.cio.gov/open-licenses/\">Open Licenses</a> for more information.",
+      "description": "The license dataset or API is published with. See <a href=\"https://resources.data.gov/open-licenses/\">Open Licenses</a> for more information.",
       "type": "string",
       "format": "uri"
     },
@@ -225,7 +225,7 @@
     },
     "distribution": {
       "title": "Distribution",
-      "description": "A distribution is a container for the data object. Each distribution should contain one accessURL or downloadURL. When providing a downloadURL, also include the format of the file.",
+      "description": "A distribution is a container for the metadata specific to the data resource being shared. Each distribution should contain one <strong>Access URL</strong> or <strong>Download URL</strong>. When providing a Download URL, also include the format of the file. A distribution containing a Download URL to a csv or tsv file will generate queues that will import the data into a database table, this is referred to as a datastore. The datastore provides an API endpoint for users to run queries against the data.",
       "type": "array",
       "items": {
         "title": "Data File",

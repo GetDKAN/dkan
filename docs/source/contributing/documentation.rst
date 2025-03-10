@@ -2,8 +2,8 @@ Contributing to DKAN documentation
 ==================================
 
 What follows is a style guide for the DKAN documentation. Use it both to follow the conventions used throughout the site,
-and for your own contributions. DKAN's documentaion is written in a combination of `Markdown <https://daringfireball.net/projects/markdown>`_
-and `ReStructuredText (RST) <http://www.sphinx-doc.org/en/stable/rest.html>`_, and built with `Sphynx <http://www.sphinx-doc.org/en/stable/index.html>`_.
+and for your own contributions. DKAN's documentation is written in a combination of `Markdown <https://daringfireball.net/projects/markdown>`_
+and `ReStructuredText (RST) <http://www.sphinx-doc.org/en/stable/rest.html>`_, and built with `Sphinx <http://www.sphinx-doc.org/en/stable/index.html>`_.
 The docs live in the `/docs/source` folder of the `DKAN Project <https://github.com/GetDKAN/dkan>`_; to suggest modifications,
 submit a pull request as you would for any suggested code change.
 

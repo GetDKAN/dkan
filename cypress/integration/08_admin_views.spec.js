@@ -22,7 +22,7 @@ context('Admin content and dataset views', () => {
         cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
         // There is an "Add new dataset" button that takes user to the dataset json form.
         cy.get('.view-header > .form-actions > .button').should('contain', 'Add new dataset').click({ force:true })
-        cy.contains('h1', 'Create Data');
+        cy.contains('h1', 'Create dataset');
     })
 
     it('User can create a dataset with the UI.', () => {
@@ -48,6 +48,7 @@ context('Admin content and dataset views', () => {
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
         cy.get('#edit-submit').click({ force:true })
+        cy.wait(2000)
         cy.get('.button').contains('Yes').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
     })

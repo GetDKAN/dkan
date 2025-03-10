@@ -2,14 +2,21 @@
 
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
-use Contracts\ParserInterface;
-use CsvParser\Parser\Csv;
 use Contracts\Mock\Storage\Memory;
-use Drupal\datastore\DatastoreResource;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use CsvParser\Parser\Csv;
+use CsvParser\Parser\ParserInterface;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
-use Procrastinator\Result;
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\Core\StreamWrapper\StreamWrapperInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Procrastinator\Result;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Unit tests for Importer class.
@@ -17,8 +24,10 @@ use PHPUnit\Framework\TestCase;
  * @covers \Drupal\datastore\Plugin\QueueWorker\ImportJob
  * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\ImportJob
  *
- * @group datastore
+ * @group dkan
  * @group dkan-core
+ * @group datastore
+ * @group unit
  */
 class ImportJobTest extends TestCase {
 
@@ -33,8 +42,20 @@ class ImportJobTest extends TestCase {
    * This method is called before each test.
    */
   protected function setUp(): void {
+    parent::setUp();
     $this->database = new TestMemStorage();
     $this->assertTrue($this->database instanceof DatabaseTableInterface);
+
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('request_stack', RequestStack::class)
+      ->index(0);
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', StreamWrapperInterface::class)
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getHost', 'web');
+    \Drupal::setContainer($container->getMock());
   }
 
   protected function tearDown(): void {
@@ -43,24 +64,29 @@ class ImportJobTest extends TestCase {
   }
 
   /**
+   * Get an ImportJob object.
    *
+   * @param \Drupal\common\DataResource $resource
+   *   DataResource object.
+   *
+   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
+   *   ImportJob object.
    */
-  private function getImportJob(DatastoreResource $resource): ImportJob {
+  private function getImportJob(DataResource $resource): ImportJob {
     $storage = new Memory();
     $config = [
       'resource' => $resource,
       'storage' => $this->database,
       'parser' => Csv::getParser(),
     ];
-    return ImportJob::get('1', $storage, $config);
+    return ImportJob::get($resource->getUniqueIdentifier(), $storage, $config);
   }
 
   /**
    *
    */
   public function testBasics() {
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/countries.csv', 'text/csv');
-    $this->assertEquals(1, $resource->getID());
+    $resource = new DataResource(__DIR__ . '/../../../../data/countries.csv', 'text/csv');
 
     $import_job = $this->getImportJob($resource);
 
@@ -92,7 +118,7 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testFileNotFound() {
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/non-existent.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/non-existent.csv', 'text/csv');
     $datastore = $this->getImportJob($resource);
     $datastore->run();
 
@@ -103,7 +129,7 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testNonTextFile() {
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/non-text.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/non-text.csv', 'text/csv');
     $datastore = $this->getImportJob($resource);
     $datastore->run();
 
@@ -114,7 +140,7 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testDuplicateHeaders() {
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/duplicate-headers.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/duplicate-headers.csv', 'text/csv');
     $datastore = $this->getImportJob($resource);
     $datastore->run();
 
@@ -127,7 +153,7 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testLongColumnName() {
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/longcolumn.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/longcolumn.csv', 'text/csv');
     $datastore = $this->getImportJob($resource);
     $truncatedLongFieldName = 'extra_long_column_name_with_tons_of_characters_that_will_ne_e872';
 
@@ -146,7 +172,7 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testColumnNameSpaces() {
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/columnspaces.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/columnspaces.csv', 'text/csv');
     $datastore = $this->getImportJob($resource);
     $noMoreSpaces = 'column_name_with_spaces_in_it';
 
@@ -165,8 +191,7 @@ class ImportJobTest extends TestCase {
    */
   public function testSerialization() {
     $timeLimit = 40;
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/countries.csv', 'text/csv');
-    $this->assertEquals(1, $resource->getID());
+    $resource = new DataResource(__DIR__ . '/../../../../data/countries.csv', 'text/csv');
 
     $datastore = $this->getImportJob($resource);
     $datastore->setTimeLimit($timeLimit);
@@ -183,7 +208,7 @@ class ImportJobTest extends TestCase {
    * Test whether a potential multi-batch import works correctly.
    */
   public function testLargeImport() {
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/Bike_Lane.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/Bike_Lane.csv', 'text/csv');
 
     $storage = new Memory();
 
@@ -220,7 +245,7 @@ class ImportJobTest extends TestCase {
    */
   public function testMultiplePasses() {
     $this->markTestIncomplete('This does not always use more than one pass.');
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/Bike_Lane.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/Bike_Lane.csv', 'text/csv');
 
     $storage = new Memory();
 
@@ -262,9 +287,9 @@ class ImportJobTest extends TestCase {
    */
   public function testBadStorage() {
     $this->expectExceptionMessage('Storage must be an instance of ' . DatabaseTableInterface::class);
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/countries.csZv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/countries.csZv', 'text/csv');
 
-    ImportJob::get('1', new Memory(), [
+    ImportJob::get($resource->getUniqueIdentifier(), new Memory(), [
       'resource' => $resource,
       'storage' => new TestMemStorageBad(),
       'parser' => Csv::getParser(),
@@ -276,7 +301,7 @@ class ImportJobTest extends TestCase {
    */
   public function testNonStorage() {
     $this->expectExceptionMessage('Storage must be an instance of Drupal\common\Storage\DatabaseTableInterface');
-    $resource = new DatastoreResource(1, __DIR__ . '/../../../../data/countries.csv', 'text/csv');
+    $resource = new DataResource(__DIR__ . '/../../../../data/countries.csv', 'text/csv');
     ImportJob::get('1', new Memory(), [
       'resource' => $resource,
       'storage' => new class() {
@@ -286,7 +311,7 @@ class ImportJobTest extends TestCase {
     ]);
   }
 
-  public function sanitizeDescriptionProvider(): array {
+  public static function sanitizeDescriptionProvider(): array {
     return [
       'multiline' => ["Multi\nLine", 'Multi Line'],
     ];
@@ -300,7 +325,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, ImportJob::sanitizeDescription($column));
   }
 
-  public function sanitizeHeaderProvider() {
+  public static function sanitizeHeaderProvider() {
     return [
       'reserved_word' => ['accessible', '_accessible'],
       'numeric' => [1, '_1'],
@@ -315,7 +340,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($expected, ImportJob::sanitizeHeader($column));
   }
 
-  public function truncateHeaderProvider(): array {
+  public static function truncateHeaderProvider(): array {
     $max_length = 64;
     return [
       'max_length' => [

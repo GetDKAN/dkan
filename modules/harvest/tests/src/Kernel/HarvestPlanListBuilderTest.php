@@ -36,12 +36,12 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   protected function setUp() : void {
     parent::setUp();
     $this->installEntitySchema('harvest_plan');
+    $this->installEntitySchema('harvest_hash');
+    $this->installEntitySchema('harvest_run');
     $this->installEntitySchema('node');
   }
 
   public function testNoHarvests() {
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
-    $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->container->get('entity_type.manager');
 
@@ -79,11 +79,8 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $response = $list_builder->render();
 
     $json = json_encode($response);
-    $strings = array_merge(self::HARVEST_HEADERS, [
-      'Total harvest plans: 1',
-    ]);
 
-    foreach ($strings as $string) {
+    foreach (self::HARVEST_HEADERS as $string) {
       $this->assertStringContainsString($string, $json);
     }
   }
@@ -115,12 +112,18 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
       'harvest_link',
       'SUCCESS',
       json_encode(date('m/d/y H:m:s T', $run_id)),
-      '1',
+      '2',
     ]);
-
     foreach ($strings as $string) {
       $this->assertStringContainsString($string, $json);
     }
+
+    // Directly assert the dataset count so the string assert above won't pass
+    // by accident.
+    $this->assertEquals(
+      2,
+      $response['table']['#rows']['run_harvest']['dataset_count'] ?? NULL
+    );
   }
 
   public function testRegisteredPlan() {

@@ -5,7 +5,9 @@ namespace Drupal\datastore\Service\Factory;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Create an importer object for a given resource.
@@ -14,8 +16,6 @@ class ImportServiceFactory implements ImportFactoryInterface {
 
   /**
    * Job store factory.
-   *
-   * @var \Drupal\datastore\Storage\ImportJobStoreFactory
    */
   private ImportJobStoreFactory $importJobStoreFactory;
 
@@ -28,10 +28,20 @@ class ImportServiceFactory implements ImportFactoryInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
+
+  /**
+   * Event dispatcher service.
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
 
   /**
    * Constructor.
@@ -39,17 +49,19 @@ class ImportServiceFactory implements ImportFactoryInterface {
   public function __construct(
     ImportJobStoreFactory $importJobStoreFactory,
     DatabaseTableFactory $databaseTableFactory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->importJobStoreFactory = $importJobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
     $this->logger = $loggerChannel;
+    $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     if ($resource = $config['resource'] ?? FALSE) {
@@ -57,7 +69,9 @@ class ImportServiceFactory implements ImportFactoryInterface {
         $resource,
         $this->importJobStoreFactory,
         $this->databaseTableFactory,
-        $this->logger
+        $this->logger,
+        $this->eventDispatcher,
+        $this->referenceLookup,
       );
     }
     throw new \Exception("config['resource'] is required");

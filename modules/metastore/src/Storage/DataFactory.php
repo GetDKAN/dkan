@@ -4,7 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,7 +22,7 @@ class DataFactory implements FactoryInterface {
   /**
    * Entity type manager service.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private $entityTypeManager;
 
@@ -35,8 +35,6 @@ class DataFactory implements FactoryInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -44,9 +42,9 @@ class DataFactory implements FactoryInterface {
    * Constructor.
    */
   public function __construct(
-    EntityTypeManager $entityTypeManager,
+    EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
@@ -62,12 +60,9 @@ class DataFactory implements FactoryInterface {
     if (!isset($this->stores[$identifier])) {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 
-      switch ($entity_type) {
-        case 'node':
-        default:
-          $instance = $this->createNodeInstance($identifier);
-          break;
-      }
+      $instance = match ($entity_type) {
+        default => $this->createNodeInstance($identifier),
+      };
 
       $this->stores[$identifier] = $instance;
     }

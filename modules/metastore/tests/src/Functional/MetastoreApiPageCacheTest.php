@@ -3,6 +3,7 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 use RootedData\RootedJsonData;
@@ -16,6 +17,8 @@ use RootedData\RootedJsonData;
  * @group btb
  */
 class MetastoreApiPageCacheTest extends BrowserTestBase {
+
+  use QueueRunnerTrait;
 
   protected static $modules = [
     'common',
@@ -36,7 +39,6 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
   protected $httpClient;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
   public function setUp(): void {
     parent::setUp();
@@ -211,24 +213,6 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
     $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
     return $valid_metadata_factory->get(json_encode($data), 'dataset');
-  }
-
-  /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
-    $queueFactory = $this->container->get('queue');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $queueFactory->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
   }
 
   private function renderDatasetNodesForCache() {

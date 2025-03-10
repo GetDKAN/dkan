@@ -4,27 +4,21 @@ namespace Drupal\Tests\datastore\Unit\Service\Info;
 
 use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
-use Drupal\common\FileFetcher\FileFetcherFactory;
-use Drupal\datastore\DatastoreResource;
+use Drupal\common\DataResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\JobStore;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Info\ImportInfo;
-use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\Tests\datastore\Unit\Plugin\QueueWorker\TestMemStorage;
 use FileFetcher\FileFetcher;
-use MockChain\Chain;
-use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Job\Job;
-use Procrastinator\Result;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * @coversDefaultClass \Drupal\datastore\Service\Info\ImportInfo
  *
- * @group datastore
+ * @group dkan
  * @group dkan-core
+ * @group datastore
+ * @group unit
  */
 class ImportInfoTest extends TestCase {
 
@@ -62,7 +56,7 @@ class ImportInfoTest extends TestCase {
     // Make a FileFetcher object.
     $storage = new Memory();
     $config = [
-      "resource" => (new DatastoreResource('id', 'path', 'mime')),
+      "resource" => (new DataResource('path', 'mime')),
       "storage" => new TestMemStorage(),
       "parser" => Csv::getParser(),
       "filePath" => 'test',
@@ -93,7 +87,7 @@ class ImportInfoTest extends TestCase {
     // Make an ImportJob object.
     $storage = new Memory();
     $config = [
-      "resource" => (new DatastoreResource('id', 'path', 'mime')),
+      "resource" => (new DataResource('path', 'mime')),
       "storage" => new TestMemStorage(),
       "parser" => Csv::getParser(),
     ];

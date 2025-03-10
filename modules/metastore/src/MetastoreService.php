@@ -54,8 +54,6 @@ class MetastoreService implements ContainerInjectionInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
@@ -105,9 +103,8 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public function getSchema($identifier) {
     $schema = $this->schemaRetriever->retrieve($identifier);
-    $schema = json_decode($schema);
 
-    return $schema;
+    return json_decode($schema);
   }
 
   /**
@@ -215,10 +212,11 @@ class MetastoreService implements ContainerInjectionInterface {
             return $data instanceof RootedJsonData;
           });
         }
-        catch (\Exception $e) {
-          $this->logger->log('metastore', 'A JSON string failed validation.',
-            ['@schema_id' => $schema_id, '@json' => $jsonString]
-          );
+        catch (\Exception) {
+          $this->logger->error('A JSON string failed validation.', [
+            '@schema_id' => $schema_id,
+            '@json' => $jsonString,
+          ]);
           return NULL;
         }
       }, $jsonStringsArray);
@@ -255,9 +253,7 @@ class MetastoreService implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier, bool $published = TRUE): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier, $published);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
-
-    $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
-    return $data;
+    return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
   }
 
   /**
@@ -395,7 +391,7 @@ class MetastoreService implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function patch($schema_id, $identifier, $json_data) {
+  public function patch($schema_id, $identifier, mixed $json_data) {
     $storage = $this->getStorage($schema_id);
     if ($this->objectExists($schema_id, $identifier)) {
 
@@ -493,7 +489,7 @@ class MetastoreService implements ContainerInjectionInterface {
       $this->getStorage($schemaId)->retrieve($identifier);
       return TRUE;
     }
-    catch (\Exception $e) {
+    catch (\Exception) {
       return FALSE;
     }
   }

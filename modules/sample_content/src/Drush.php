@@ -21,22 +21,16 @@ class Drush extends DrushCommands {
 
   /**
    * The core extension module list service.
-   *
-   * @var \Drupal\Core\Extension\ModuleExtensionList
    */
   protected ModuleExtensionList $moduleExtensionList;
 
   /**
    * Harvest service.
-   *
-   * @var \Drupal\harvest\HarvestService
    */
   private HarvestService $harvestService;
 
   /**
    * Sample content service.
-   *
-   * @var \Drupal\sample_content\SampleContentService
    */
   private SampleContentService $sampleContentService;
 
@@ -66,10 +60,7 @@ class Drush extends DrushCommands {
     $this->logger()->notice('Setting up harvest: ' . static::HARVEST_ID);
     $this->sampleContentService->registerSampleContentHarvest(static::HARVEST_ID);
     $this->renderHarvestRunsInfo([
-      [
-        static::HARVEST_ID,
-        $this->harvestService->runHarvest(static::HARVEST_ID),
-      ],
+      $this->harvestService->runHarvest(static::HARVEST_ID),
     ]);
     $this->logger()->notice('Run cron a few times to finish the import of this data.');
   }

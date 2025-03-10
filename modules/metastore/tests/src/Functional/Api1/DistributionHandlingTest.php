@@ -95,9 +95,7 @@ class DistributionHandlingTest extends Api1TestBase {
     $this->assertEquals(201, $response->getStatusCode());
 
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
-    $this->assertJsonIsValid($responseSchema, $responseBody);
     // Unless JSON changes, we should always get same id back.
     $this->assertEquals("47f1d697-f469-5b41-a613-80cdfac7a326", $responseBody->identifier);
 

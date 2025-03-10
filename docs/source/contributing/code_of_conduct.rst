@@ -72,6 +72,11 @@ We expect all community participants (contributors, paid or otherwise; sponsors;
 
 This code of conduct and its related procedures also applies to unacceptable behavior occurring outside the scope of community activities when such behavior has the potential to adversely affect the safety and well-being of community members.
 
+Contributing
+------------
+
+Learn more about :doc:`contributing <../contributing/index>` here.
+
 Contact info
 ------------
 

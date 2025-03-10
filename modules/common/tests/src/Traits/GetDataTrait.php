@@ -22,11 +22,14 @@ trait GetDataTrait {
    *   Array of resource files URLs for this dataset.
    * @param bool $localFiles
    *   Whether the resource files are local.
+   * @param string $describedBy
+   *   (Optional) URI for describedBy for all the download URLs. describedByType
+   *   will be set to 'application/vnd.tableschema+json' if present.
    *
    * @return string|false
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getDataset(string $identifier, string $title, array $downloadUrls, bool $localFiles = FALSE) {
+  private function getDataset(string $identifier, string $title, array $downloadUrls, bool $localFiles = FALSE, string $describedBy = NULL) {
 
     $data = new \stdClass();
     $data->title = $title;
@@ -42,6 +45,10 @@ trait GetDataTrait {
       $distribution->title = "Distribution #{$key} for {$identifier}";
       $distribution->downloadURL = $localFiles ? $downloadUrl : $this->getDownloadUrl($downloadUrl);
       $distribution->mediaType = "text/csv";
+      if ($describedBy) {
+        $distribution->describedBy = $describedBy;
+        $distribution->describedByType = 'application/vnd.tableschema+json';
+      }
 
       $data->distribution[] = $distribution;
     }

@@ -3,45 +3,47 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Drupal\datastore\DatastoreResource;
 use Psr\Log\LoggerInterface;
 
 /**
  * Database storage object.
  *
  * @see \Drupal\common\Storage\DatabaseTableInterface
+ *
+ * @todo This class name suggests it is a generic database table but it is
+ * actually MySQL-specific. In the future it should probably be a base class
+ * with a MySQL-specific subclass.
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
   /**
    * Datastore resource object.
    *
-   * @var \Drupal\datastore\DatastoreResource
+   * @var \Drupal\common\DataResource
    */
-  private $resource;
+  protected $resource;
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
-  private LoggerInterface $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Constructor method.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
-   * @param \Drupal\datastore\DatastoreResource $resource
+   * @param \Drupal\common\DataResource $resource
    *   A resource.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
    */
   public function __construct(
     Connection $connection,
-    DatastoreResource $resource,
-    LoggerInterface $loggerChannel
+    DataResource $resource,
+    LoggerInterface $loggerChannel,
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
@@ -73,12 +75,10 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
    */
   #[\ReturnTypeWillChange]
-  public function jsonSerialize() {
+  public function jsonSerialize(): mixed {
     return (object) ['resource' => $this->resource];
   }
 
@@ -90,7 +90,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public function getTableName() {
     if ($this->resource) {
-      return 'datastore_' . $this->resource->getId();
+      return 'datastore_' . md5($this->resource->getUniqueIdentifier());
     }
     return 'datastore_does_not_exist';
   }
@@ -98,22 +98,20 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Protected.
    */
-  protected function prepareData(string $data, string $id = NULL): array {
+  protected function prepareData(string $data, ?string $id = NULL): array {
     $decoded = json_decode($data);
     if ($decoded === NULL) {
-      $this->logger->log(
-        'datastore_import',
-        'Error decoding id:@id, data: @data.',
-        ['@id' => $id, '@data' => $data]
-      );
+      $this->logger->error('Error decoding id:@id, data: @data.', [
+        '@id' => $id,
+        '@data' => $data,
+      ]);
       throw new \Exception('Import for ' . $id . ' error when decoding ' . $data);
     }
     elseif (!is_array($decoded)) {
-      $this->logger->log(
-        'datastore_import',
-        'Array expected while decoding id:@id, data: @data.',
-        ['@id' => $id, '@data' => $data]
-      );
+      $this->logger->error('Array expected while decoding id:@id, data: @data.', [
+        '@id' => $id,
+        '@data' => $data,
+      ]);
       throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return $decoded;
@@ -227,7 +225,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Translate the database type into a table schema type.
    *
-   * @param string $type
+   * @param string $describe_type
    *   Type returned from the describe query.
    * @param mixed $extra
    *   Additional information for column.
@@ -237,33 +235,45 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @see https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/9.2.x
    */
-  protected function translateType(string $type, $extra = NULL) {
+  protected function translateType(string $describe_type, mixed $extra = NULL) {
     // Clean up things like "int(10) unsigned".
-    $db_type = strtok($type, '(');
+    $db_type = strtok($describe_type, ' ()');
     $driver = $this->connection->driver() ?? 'mysql';
-
-    preg_match('#\((.*?)\)#', $type, $match);
-    $length = $match[1] ?? NULL;
-    $length = $length ? (int) $length : $length;
 
     $map = array_flip(array_map('strtolower', $this->connection->schema()->getFieldTypeMap()));
 
     $fullType = explode(':', ($map[$db_type] ?? 'varchar'));
     // Set type to serial if auto-increment, else use mapped type.
     $type = ($fullType[0] == 'int' && $extra == 'auto_increment') ? 'serial' : $fullType[0];
-    $unsigned = ($type == 'serial') ? TRUE : NULL;
+    // @todo Add support for NOT NULL for other types.
     $notNull = ($type == 'serial') ? TRUE : NULL;
     // Ignore size if "normal" or unset.
     $size = (isset($fullType[1]) && $fullType[1] != 'normal') ? $fullType[1] : NULL;
 
-    return [
+    // Length is only relevant for varchar types.
+    preg_match('#\((.*?)\)#', $describe_type, $match);
+    $length = ($match[1] ?? NULL) && $type == 'varchar' ? (int) $match[1] : NULL;
+
+    // For decimal types, we need to get the precision and scale.
+    if ($type == 'numeric') {
+      preg_match('#\((\d+),(\d+)\)#', $describe_type, $match);
+      $precision = $match[1] ?? NULL;
+      $scale = $match[2] ?? NULL;
+    }
+
+    // Serial should always be unsigned.
+    $unsigned = (str_contains($describe_type, ' unsigned') || $type == 'serial');
+
+    return array_filter([
       'type' => $type,
       'length' => $length,
       'size' => $size,
       'unsigned' => $unsigned,
       'not null' => $notNull,
+      'precision' => $precision ?? NULL,
+      'scale' => $scale ?? NULL,
       $driver . '_type' => $db_type,
-    ];
+    ]);
   }
 
 }

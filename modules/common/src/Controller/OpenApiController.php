@@ -15,8 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Serves openapi spec for dataset-related endpoints.
- *
- * @codeCoverageIgnore
  */
 class OpenApiController implements ContainerInjectionInterface {
   use JsonResponseTrait;
@@ -107,11 +105,11 @@ class OpenApiController implements ContainerInjectionInterface {
    * @param int $code
    *   HTTP response code.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return \Symfony\Component\HttpFoundation\Response
    *   OpenAPI spec response.
    */
   private function getYamlResponse($spec, $code = 200) {
-    $response = new Response(Yaml::encode($spec), 200, ['Content-type' => 'application/vnd.oai.openapi']);
+    $response = new Response(Yaml::encode($spec), $code, ['Content-type' => 'application/vnd.oai.openapi']);
     return $this->addCacheHeaders($response);
   }
 

@@ -41,7 +41,7 @@ abstract class ConfigFormTestBase extends KernelTestBase {
    * @return array[]
    *   Form test data.
    */
-  abstract public function provideFormData(): array;
+  abstract public static function provideFormData(): array;
 
   /**
    * Test submitting config form.

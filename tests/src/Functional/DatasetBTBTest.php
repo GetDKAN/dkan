@@ -11,6 +11,7 @@ use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
@@ -21,6 +22,8 @@ use RootedData\RootedJsonData;
  * @group functional
  */
 class DatasetBTBTest extends BrowserTestBase {
+
+  use QueueRunnerTrait;
 
   /**
    * {@inheritdoc}
@@ -454,8 +457,14 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->runQueues(['localize_import', 'datastore_import']);
 
+    // Assert dataset info shows 100%
+    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $metadata = $datasetInfoService->gather($dataset->identifier);
+    $dist = array_shift($metadata['latest_revision']['distributions']);
+    $this->assertEquals(100, $dist['fetcher_percent_done']);
+
     $queryString = '[SELECT * FROM ' . $this->getResourceDatastoreTable($resource) . '][WHERE lon = "61.33"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];';
-    $this->queryResource($resource, $queryString);
+    $this->queryResource($queryString);
   }
 
   private function getResourceDatastoreTable(object $resource) {
@@ -568,22 +577,6 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
   }
 
-  /**
-   * Process queues in a predictable order.
-   */
-  private function runQueues(array $relevantQueues = []) {
-    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
-    $queueWorkerManager = $this->container->get('plugin.manager.queue_worker');
-    foreach ($relevantQueues as $queueName) {
-      $worker = $queueWorkerManager->createInstance($queueName);
-      $queue = $this->getQueueService()->get($queueName);
-      while ($item = $queue->claimItem()) {
-        $worker->processItem($item->data);
-        $queue->deleteItem($item);
-      }
-    }
-  }
-
   private function countTables() {
     /** @var \Drupal\Core\Database\Connection $db */
     $db = $this->container->get('database');
@@ -609,7 +602,7 @@ class DatasetBTBTest extends BrowserTestBase {
     return $filenames;
   }
 
-  private function queryResource(object $resource, string $queryString) {
+  private function queryResource(string $queryString) {
     /** @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);
@@ -631,10 +624,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $identifier;
   }
 
-  private function getQueueService() : QueueFactory {
-    return $this->container->get('queue');
-  }
-
   private function getHarvester() : HarvestService {
     return $this->container->get('dkan.harvest.service');
   }
@@ -643,9 +632,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
-  /**
-   * @return \Drupal\metastore\MetastoreService
-   */
   private function getMetastore(): MetastoreService {
     return $this->container->get('dkan.metastore.service');
   }

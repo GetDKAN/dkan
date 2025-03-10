@@ -1,7 +1,7 @@
 name: DKAN JS Frontend
 description: Provides the routing connection between Drupal and a decoupled JavaScript frontend.
 type: module
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - drupal:field
 package: DKAN

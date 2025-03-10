@@ -35,20 +35,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   protected $connection;
 
   /**
-   * Get the full name of datastore db table.
-   *
-   * @return string
-   *   Table name.
-   */
-  abstract protected function getTableName();
-
-  /**
    * Prepare data.
    *
    * Transform the string data given into what should be use by the insert
    * query.
    */
-  abstract protected function prepareData(string $data, string $id = NULL): array;
+  abstract protected function prepareData(string $data, ?string $id = NULL): array;
 
   /**
    * Get the primary key used in the table.
@@ -105,17 +97,15 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       return [];
     }
 
-    $result = array_map(function ($item) {
+    return array_map(function ($item) {
       return $item->{$this->primaryKey()};
     }, $result);
-
-    return $result;
   }
 
   /**
    * Store data.
    */
-  public function store($data, string $id = NULL): string {
+  public function store($data, ?string $id = NULL): string {
     $this->setTable();
 
     $existing = (isset($id)) ? $this->retrieve($id) : NULL;
@@ -252,7 +242,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       'Can\'t find FULLTEXT index matching the column list' => 'You have attempted a fulltext match against a column that is not indexed for fulltext searching',
     ];
     foreach ($messages as $portion => $message) {
-      if (strpos($unsanitizedMessage, $portion) !== FALSE) {
+      if (str_contains($unsanitizedMessage, $portion)) {
         return $message . '.';
       }
     }
@@ -265,13 +255,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @throws \Exception
    *   Throws an exception if the schema was not already set.
    */
-  protected function setTable() {
+  public function setTable() {
     if (!$this->tableExist($table_name = $this->getTableName())) {
       if ($schema = $this->schema) {
         try {
           $this->tableCreate($table_name, $schema);
         }
-        catch (SchemaObjectExistsException $e) {
+        catch (SchemaObjectExistsException) {
           // Table already exists, which is totally OK. Other throwables find
           // their way out to the caller.
         }
@@ -393,10 +383,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Get the schema for this table.
    *
    * @return array
-   *   A schema array.
+   *   A Drupal Schema API array, or an empty array if none found.
    */
   public function getSchema(): array {
-    return $this->schema;
+    return $this->schema ?? [];
   }
 
   /**

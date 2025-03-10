@@ -2,16 +2,13 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\common\DataResource;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Database\Query\Select;
-use Drupal\Tests\common\Unit\Connection;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\Controller\QueryDownloadController;
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
@@ -26,6 +23,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -35,24 +33,46 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class QueryDownloadControllerTest extends TestCase {
 
-  private $buffer;
+  const FILE_DIR = __DIR__ . "/../../../data/";
+
+  /**
+   * Output buffer.
+   *
+   * @var string
+   */
+  private string $buffer;
+
+  /**
+   * Resources to be used in tests.
+   *
+   * @var \Drupal\common\DataResource[]
+   */
+  private array $resources;
 
   protected function setUp(): void {
     parent::setUp();
     // Set cache services
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
-      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('event_dispatcher', EventDispatcher::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
+
+    $this->resources = [
+      '2' => new DataResource(self::FILE_DIR . 'states_with_dupes.csv', 'text/csv'),
+      '3' => new DataResource(self::FILE_DIR . 'years_colors.csv', 'text/csv'),
+      '4' => new DataResource(self::FILE_DIR . 'states_with_dupes_link.csv', 'text/csv'),
+    ];
+
+    $this->buffer = '';
   }
 
   protected function tearDown(): void {
     parent::tearDown();
-    $this->buffer = NULL;
+    $this->buffer = '';
   }
 
   /**
@@ -62,13 +82,13 @@ class QueryDownloadControllerTest extends TestCase {
     $request = $this->mockRequest($data);
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
-    $csv = $response->getContent();
+    $csv = $response->getContent() ?? '';
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
     ob_start([self::class, 'getBuffer']);
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
-    $streamedCsv = $this->buffer;
+    $streamedCsv = $this->buffer ?? '';
     ob_get_clean();
 
     $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
@@ -82,7 +102,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -90,19 +110,6 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
-  }
-
-  /**
-   *
-   */
-  private function getConnection() {
-    return (new Chain($this))
-      ->add(
-        Connection::class,
-        "select",
-        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
-      )
-      ->getMock();
   }
 
   /**
@@ -123,7 +130,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -153,11 +160,11 @@ class QueryDownloadControllerTest extends TestCase {
       "schema" => TRUE,
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
         [
-          "id" => "3",
+          "id" => $this->resources[3]->getIdentifier(),
           "alias" => "j",
         ],
       ],
@@ -215,7 +222,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = json_encode([
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -234,10 +241,11 @@ class QueryDownloadControllerTest extends TestCase {
   public function testStreamedLimit() {
     $queryLimit = 75;
     $pageLimit = 50;
+    $responseStreamMaxAge = 3600;
     $data = json_encode([
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -245,10 +253,11 @@ class QueryDownloadControllerTest extends TestCase {
       "limit" => $queryLimit,
     ]);
     // Set the row limit to 50 even though we're requesting 1000.
-    $container = $this->getQueryContainer($pageLimit);
+    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start([self::class, 'getBuffer']);
+    /** @var \Symfony\Component\HttpFoundation\StreamedResponse $streamResponse */
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
@@ -256,7 +265,12 @@ class QueryDownloadControllerTest extends TestCase {
     $streamedCsv = $this->buffer;
     // Check that the CSV has the full queryLimit number of lines, plus header and final newline.
     $this->assertEquals(($queryLimit + 2), count(explode("\n", $streamedCsv)));
-
+    // Check that the max-age header is correct.
+    $this->assertEquals(3600, $streamResponse->getMaxAge());
+    $this->assertStringContainsString(
+      'public',
+      $streamResponse->headers->get('cache-control') ?? ''
+    );
   }
 
   /**
@@ -266,7 +280,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -283,7 +297,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -311,7 +325,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "t",
         ],
       ],
@@ -329,7 +343,7 @@ class QueryDownloadControllerTest extends TestCase {
     $data = [
       "resources" => [
         [
-          "id" => "2",
+          "id" => $this->resources[2]->getIdentifier(),
           "alias" => "tx",
         ],
       ],
@@ -347,15 +361,30 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   * Make sure we get what we expect with invalid JSON.
+   */
+  public function testInvalidJson() {
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Invalid JSON');
+    $sampleJson = $this->getBadJson();
+    $schema = $this->getSampleSchema();
+    $request = $this->mockRequest($sampleJson);
+    QueryDownloadController::getPayloadJson($request, $schema);
+  }
+
+  /**
    * Create a mock chain for the main container passed to the controller.
    *
-   * @param array $info
-   *   Dataset info array mock to be returned by DatasetInfo::gather().
+   * @param int $rowLimit
+   *   The row limit for a query.
+   * @param int|null $responseStreamMaxAge
+   *   The max age for the response stream in cache, or NULL to use the default.
    *
-   * @return \MockChain\Chain
-   *   MockChain chain object.
+   * @return \PHPUnit\Framework\MockObject\MockObject
+   *   MockChain mock object.
    */
-  private function getQueryContainer(int $rowLimit) {
+  private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
+    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
@@ -365,8 +394,6 @@ class QueryDownloadControllerTest extends TestCase {
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->index(0);
-
-    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
 
     $schema2 = [
       'record_number' => [
@@ -399,14 +426,14 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ];
 
-    $storage2 = $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2);
-    $storage2x = clone($storage2);
+    $storage2 = $this->mockDatastoreTable($this->resources[2], $schema2, $connection);
+    $storage2x = $this->mockDatastoreTable($this->resources[4], $schema2, $connection);
     $storage2x->setSchema(['fields' => []]);
+    $storage3 = $this->mockDatastoreTable($this->resources[3], $schema3, $connection);
     $storageMap = [
       't' => $storage2,
       'tx' => $storage2x,
-      'j' => $this->mockDatastoreTable($connection, "3", 'years_colors.csv', $schema3
-      ),
+      'j' => $storage3,
     ];
 
     $chain = (new Chain($this))
@@ -420,9 +447,11 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
-      ->add(Query::class, 'getDatastoreService',  DatastoreService::class)
+      ->add(Query::class, 'getDatastoreService', DatastoreService::class)
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
-      ->add(ImmutableConfig::class, 'get', $rowLimit);
+      // @todo Use an Options or Sequence return here; this will only work for one arg at a time.
+      ->add(ImmutableConfig::class, 'get', $rowLimit)
+      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge);
 
     return $chain->getMock();
   }
@@ -454,47 +483,58 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \Drupal\common\Storage\DatabaseTableInterface
    *   A database table storage class useable for datastore queries.
    */
-  public function mockDatastoreTable($connection, $id, $csvFile, $fields) {
-    foreach ($fields as $name => $field) {
-      $types[] = $field['type'];
-      $notNull = $field['not null'] ?? FALSE;
-      $createFields[] = "`$name` " . strtoupper($field['type']) . (($notNull) ? ' NOT NULL' : '');
-    }
-    $createFieldsStr = implode(", ", $createFields);
-    $connection->query("CREATE TABLE `datastore_$id` ($createFieldsStr);");
+  public function mockDatastoreTable(DataResource $resource, $fields, $connection) {
+    
+    $storage = new SqliteDatabaseTable(
+      $connection,
+      $resource,
+      $this->createStub(LoggerInterface::class)
+    );
+    $storage->setSchema([
+      'fields' => $fields,
+    ]);
+    $storage->setTable();
 
+    foreach ($fields as $field) {
+      $types[] = $field['type'];
+    }
+    
+    $fp = fopen($resource->getFilePath(), 'rb');
     $sampleData = [];
-    $fp = fopen(__DIR__ . "/../../../data/$csvFile", 'rb');
     while (!feof($fp)) {
       $sampleData[] = fgetcsv($fp);
     }
+    fclose($fp);
+
+    $table_name = $storage->getTableName();
     foreach ($sampleData as $row) {
       $values = [];
       foreach ($row as $key => $value) {
         $values[] = $types[$key] == "int" ? $value : "'$value'";
         $valuesStr = implode(", ", $values);
       }
-      $connection->query("INSERT INTO `datastore_$id` VALUES ($valuesStr);");
+      $connection->query("INSERT INTO `$table_name` VALUES ($valuesStr);");
     }
 
-    $storage = new SqliteDatabaseTable(
-      $connection,
-      new DatastoreResource($id, "data-$id.csv", "text/csv"),
-      $this->createStub(LoggerInterface::class)
-    );
-    $storage->setSchema([
-      'fields' => $fields,
-    ]);
     return $storage;
   }
 
   /**
    * Callback to get output buffer.
    *
-   * @param $buffer
+   * @param string $buffer
+   *   A buffer to be appended to existing buffer in memory.
    */
-  protected function getBuffer($buffer) {
+  protected function getBuffer(string $buffer) {
     $this->buffer .= $buffer;
+  }
+
+  private function getBadJson() {
+    return file_get_contents(__DIR__ . "/../../../data/query/invalidJson.json");
+  }
+
+  private function getSampleSchema() {
+    return file_get_contents(__DIR__ . "/../../../data/querySchema.json");
   }
 
 }

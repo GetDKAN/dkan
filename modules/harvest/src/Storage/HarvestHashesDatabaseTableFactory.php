@@ -18,8 +18,6 @@ class HarvestHashesDatabaseTableFactory implements FactoryInterface {
 
   /**
    * Entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private EntityTypeManagerInterface $entityTypeManager;
 

@@ -48,8 +48,6 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * DKAN logger channel service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 

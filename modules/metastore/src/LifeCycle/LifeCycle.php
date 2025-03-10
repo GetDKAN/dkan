@@ -189,11 +189,10 @@ class LifeCycle {
 
     $downloadUrl = $metadata->data->downloadURL;
 
-    if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
-      $resourceIdentifier = $downloadUrl;
+    if (!empty($downloadUrl) && filter_var($downloadUrl, FILTER_VALIDATE_URL) === FALSE) {
       $ref = NULL;
       $original = NULL;
-      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
+      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($downloadUrl);
 
       $downloadUrl = $original ?? "";
 
