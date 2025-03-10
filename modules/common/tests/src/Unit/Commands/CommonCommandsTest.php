@@ -4,19 +4,16 @@ namespace Drupal\Tests\common\Unit\Commands;
 
 use Drupal\common\Commands\CommonCommands;
 use Drupal\common\DatasetInfo;
-use Drush\TestTraits\CliTestTrait;
-use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ * @covers \Drupal\common\Commands\CommonCommands
+ * @coversDefaultClass \Drupal\common\Commands\CommonCommands
  */
 class CommonCommandsTest extends TestCase {
 
-  use CliTestTrait;
-
   /**
-   *
+   * @covers ::datasetInfo
    */
   public function testDatasetInfo() {
 
