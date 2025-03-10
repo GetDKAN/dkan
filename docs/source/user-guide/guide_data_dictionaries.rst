@@ -303,7 +303,7 @@ request the dataset back from the API, it would show us the absolute URL as well
   If you have set the dictionary mode to *sitewide*, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the sitewide data dictionary, the data typing will also be applied to the datastore table.
 
 Modidfy the dataset form
--------------------------
+........................
 
 If you are using the distribution reference setting, and you have created many data dictionaries,
 you could customize the dataset.ui.json file (Remember you must copy ALL schema files from DKAN into your
@@ -329,7 +329,7 @@ This will allow data publishers to select from a list of existing data dictionar
 .. _guide_data_dictionary_config:
 
 CSV Headers Mode
-----------------
+................
 
 Users can run queries against the datastore API and download the results to a CSV file. The **CSV Headers Mode** will determine what values to use for the column headers when the CSV file is generated. The default setting will simply use the same column headings that exist in the original resource file. If your site is using data dictionaries, you could change this setting to use the titles defined in the data dictionary. And there is a third option to use the converted machine name headers that are used in the datastore table.
 
