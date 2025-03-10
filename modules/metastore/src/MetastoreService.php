@@ -236,7 +236,8 @@ class MetastoreService implements ContainerInjectionInterface {
    * @todo Exception should not be caught; let controller handle it.
    */
   private function jsonStringsArrayToObjects(array $jsonStringsArray, string $schema_id) {
-    return array_map(function ($jsonString) use ($schema_id) {
+    return array_map(
+      function ($jsonString) use ($schema_id) {
       try {
         $data = $this->validMetadataFactory->get($jsonString, $schema_id);
         return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
@@ -407,6 +408,7 @@ class MetastoreService implements ContainerInjectionInterface {
       $this->getStorage($schema_id)->store($data);
       return ['identifier' => $identifier, 'new' => TRUE];
     }
+
   }
 
   /**
@@ -424,6 +426,7 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public function patch($schema_id, $identifier, mixed $json_data) {
     $storage = $this->getStorage($schema_id);
+
     if ($this->objectExists($schema_id, $identifier)) {
 
       $json_data_original = $storage->retrieve($identifier);
@@ -494,6 +497,7 @@ class MetastoreService implements ContainerInjectionInterface {
         $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
       }
     }
+
     return self::removeReferences($no_schema_object, "%Ref");
   }
 
@@ -560,17 +564,20 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
     $array = $object->get('$');
+
     foreach ($array as $property => $value) {
       if (substr_count((string) $property, $prefix) > 0) {
         unset($array[$property]);
       }
     }
+
     if (!empty($array['distribution'])) {
       $array['distribution'] = array_map(function ($dist) {
         unset($dist['%Ref:downloadURL']);
         return $dist;
       }, $array['distribution']);
     }
+
     $object->set('$', $array);
     return $object;
   }
@@ -601,6 +608,7 @@ class MetastoreService implements ContainerInjectionInterface {
     else {
       throw new \InvalidArgumentException("Invalid metadata argument.");
     }
+
     return md5((string) $normalizedData);
   }
 

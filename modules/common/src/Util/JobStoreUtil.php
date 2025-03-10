@@ -3,7 +3,7 @@
 namespace Drupal\common\Util;
 
 use Drupal\Core\Database\Connection;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Utility class of methods for mitigating/updating legacy job store tables.

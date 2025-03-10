@@ -14,7 +14,7 @@ class EventTest extends TestCase
     $this->expectExceptionMessage("Invalid event data.");
 
     $eventDispatcher = new EventDispatcher();
-    $eventDispatcher->addListener('test_event', function (Event $event) {
+    $eventDispatcher->addListener('test_event', function(Event $event) {
       $event->setData(1);
     });
 
