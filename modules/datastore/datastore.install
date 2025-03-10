@@ -169,3 +169,13 @@ function datastore_update_9004(&$sandbox) {
   }
 
 }
+
+/**
+ * Update datastore.settings, cast purge_file and purge_table to bool.
+ */
+function datastore_update_9005() {
+  $config = \Drupal::service('config.factory')->getEditable('datastore.settings');
+  $config->set('purge_file', (bool) $config->get('purge_file'));
+  $config->set('purge_table', (bool) $config->get('purge_table'));
+  $config->save();
+}
