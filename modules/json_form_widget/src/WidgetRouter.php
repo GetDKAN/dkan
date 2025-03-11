@@ -2,6 +2,8 @@
 
 namespace Drupal\json_form_widget;
 
+use Drupal\Component\Utility\Bytes;
+use Drupal\Component\Utility\Environment;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -302,6 +304,14 @@ class WidgetRouter implements ContainerInjectionInterface {
     }
     if (isset($spec->extensions)) {
       $element['#upload_validators']['FileExtension'] = ['extensions' => $spec->extensions];
+    }
+    if (isset($spec->max_filesize)) {
+      $max_filesize = min(Bytes::toNumber($spec->max_filesize), Environment::getUploadMaxSize());
+    }
+    $max_filesize = $max_filesize ?? Environment::getUploadMaxSize();
+    $element['#upload_validators']['FileSizeLimit'] = ['fileLimit' => $max_filesize];
+    if (isset($spec->progress_indicator)) {
+      $element['#progress_indicator'] = $spec->progress_indicator;
     }
     // If a maxlength was set earlier, remove it as it is not allowed here.
     unset($element['#maxlength']);
