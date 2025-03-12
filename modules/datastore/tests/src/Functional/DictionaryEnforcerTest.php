@@ -284,11 +284,13 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     ], $result);
 
     //  Validate boolean values
-    $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0");
     $column_e = [];
+    $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0");
     if ($response->getStatusCode() === 200) {
       $data = json_decode($response->getBody()->getContents(), true);
-      $column_e = array_column($data['results'], 'e');
+      if (isset($data['results']) && is_array($data['results'])) {
+        $column_e = array_column($data['results'], 'e');
+      }
     }
     $expected = ['0', NULL, '1', '0', '1', '0', '1', '0'];
     $this->assertSame($expected, $column_e);
