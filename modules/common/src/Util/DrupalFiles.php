@@ -99,21 +99,26 @@ class DrupalFiles implements ContainerInjectionInterface {
    *
    * Stores the file at the given destination and returns the Drupal url for
    * the newly stored file.
+   *
+   * @param string $url
+   *   The URL of the file to retrieve.
+   * @param string $destination
+   *   The destination to store the file; for now must be a public:// URI.
    */
-  public function retrieveFile($url, $destination) {
-    if (substr_count((string) $url, "file://") == 0 &&
-      substr_count((string) $url, "http://") == 0 &&
-      substr_count((string) $url, "https://") == 0
+  public function retrieveFile(string $url, string $destination) {
+    if (substr_count($url, "file://") == 0 &&
+      substr_count($url, "http://") == 0 &&
+      substr_count($url, "https://") == 0
     ) {
       throw new \Exception("Only file:// and http(s) urls are supported");
     }
 
-    if (substr_count((string) $destination, "public://") == 0) {
+    if (substr_count($destination, "public://") == 0) {
       throw new \Exception("Only moving files to Drupal's public directory (public://) is supported");
     }
 
     // Handle file:// URIs.
-    if (substr_count((string) $url, "file://") > 0) {
+    if (substr_count($url, "file://") > 0) {
 
       $src = str_replace("file://", "", $url);
       $filename = $this->getFilenameFromUrl($url);
