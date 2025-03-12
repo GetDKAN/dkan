@@ -229,9 +229,10 @@ jobs:
           command: |
             mkdir dkan/cypress/tmp
             mkdir dkan/cypress/results
-            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
-            rm dkan/cypress/integration/*
-            mv dkan/cypress/tmp/* dkan/cypress/integration
+            mv $(circleci tests glob dkan/cypress/e2e/*.cy.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
+            rm dkan/cypress/e2e/*
+            mv dkan/cypress/tmp/* dkan/cypress/e2e
+            ddev npm install cypress --save-dev
             ddev dkan-module-test-cypress \
               --headless \
               --reporter junit \
