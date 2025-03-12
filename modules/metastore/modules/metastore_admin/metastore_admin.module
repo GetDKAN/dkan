@@ -96,6 +96,11 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
           break;
       }
     }
+    elseif ($vars['field']->field == 'field_json_metadata' &&
+      $vars['field']->options['admin_label'] == 'Indexes' &&
+      $entity->field_data_type->value == 'data-dictionary') {
+      $vars['field']->options['exclude'] = FALSE;
+    }
   }
   // Check if the frontend module is enabled. If not, dataset titles
   // should link to the drupal node rather than the REACT frontend.

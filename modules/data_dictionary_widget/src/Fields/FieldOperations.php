@@ -36,27 +36,27 @@ class FieldOperations {
   /**
    * Setting ajax elements.
    */
-  public static function setAjaxElements(array $dictionaryFields) {
-    foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
-      $edit_button = $dictionaryFields['edit_buttons'][$row] ?? NULL;
-      $edit_fields = $dictionaryFields['edit_fields'][$row] ?? NULL;
-      // Setting the ajax fields if they exsist.
-      if ($edit_button) {
-        $dictionaryFields['data']['#rows'][$row] = array_merge($data, $edit_button);
-        unset($dictionaryFields['edit_buttons'][$row]);
-      }
-      elseif ($edit_fields) {
-        unset($dictionaryFields['data']['#rows'][$row]);
-        $dictionaryFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
-        // Remove the buttons so they don't show up twice.
-        unset($dictionaryFields['edit_fields'][$row]);
-        ksort($dictionaryFields['data']['#rows']);
-      }
-
-    }
-
-    return $dictionaryFields;
-  }
+//  public static function setAjaxElements(array $dictionaryFields) {
+//    foreach ($dictionaryFields['data']['#rows'] as $row => $data) {
+//      $edit_button = $dictionaryFields['edit_buttons'][$row] ?? NULL;
+//      $edit_fields = $dictionaryFields['edit_fields'][$row] ?? NULL;
+//      // Setting the ajax fields if they exsist.
+//      if ($edit_button) {
+//        $dictionaryFields['data']['#rows'][$row] = array_merge($data, $edit_button);
+//        unset($dictionaryFields['edit_buttons'][$row]);
+//      }
+//      elseif ($edit_fields) {
+//        unset($dictionaryFields['data']['#rows'][$row]);
+//        $dictionaryFields['data']['#rows'][$row]['field_collection'] = $edit_fields;
+//        // Remove the buttons so they don't show up twice.
+//        unset($dictionaryFields['edit_fields'][$row]);
+//        ksort($dictionaryFields['data']['#rows']);
+//      }
+//
+//    }
+//
+//    return $dictionaryFields;
+//  }
 
   /**
    * Function to generate the description for the "Format" field.
@@ -91,33 +91,33 @@ class FieldOperations {
   /**
    * Cleaning the data up.
    */
-  public static function processDataResults($data_results, $current_fields, $field_values, $op) {
-    if (isset($current_fields)) {
-      $data_results = $current_fields;
-    }
-
-    if (isset($field_values["field_json_metadata"][0]["dictionary_fields"]["field_collection"])) {
-      $field_group = $field_values["field_json_metadata"][0]["dictionary_fields"]["field_collection"]["group"];
-      $field_format = $field_group["format"] == 'other' ? $field_group["format_other"] : $field_group["format"];
-
-      $data_pre = [
-        [
-          "name" => $field_group["name"],
-          "title" => $field_group["title"],
-          "type" => $field_group["type"],
-          "format" => $field_format,
-          "description" => $field_group["description"],
-        ],
-      ];
-
-    }
-
-    if (isset($data_pre) && $op === "add") {
-      $data_results = isset($current_fields) ? array_merge($current_fields, $data_pre) : $data_pre;
-    }
-
-    return $data_results;
-  }
+//  public static function processDataResults($data_results, $current_fields, $field_values, $op) {
+//    if (isset($current_fields)) {
+//      $data_results = $current_fields;
+//    }
+//
+//    if (isset($field_values["field_json_metadata"][0]["dictionary_fields"]["field_collection"])) {
+//      $field_group = $field_values["field_json_metadata"][0]["dictionary_fields"]["field_collection"]["group"];
+//      $field_format = $field_group["format"] == 'other' ? $field_group["format_other"] : $field_group["format"];
+//
+//      $data_pre = [
+//        [
+//          "name" => $field_group["name"],
+//          "title" => $field_group["title"],
+//          "type" => $field_group["type"],
+//          "format" => $field_format,
+//          "description" => $field_group["description"],
+//        ],
+//      ];
+//
+//    }
+//
+//    if (isset($data_pre) && $op === "add") {
+//      $data_results = isset($current_fields) ? array_merge($current_fields, $data_pre) : $data_pre;
+//    }
+//
+//    return $data_results;
+//  }
 
   /**
    * Return acceptable edit actions.
@@ -150,60 +150,53 @@ class FieldOperations {
   /**
    * Return true if field is being edited.
    */
-  public static function checkEditingField($key, $op_index, $fields_being_modified) {
-    $action_list = FieldOperations::editActions();
-    if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($key, $fields_being_modified)) {
-      return TRUE;
-    }
-    else {
-      return FALSE;
-    }
-  }
+//  public static function checkEditingField($key, $op_index, $fields_being_modified) {
+//    $action_list = FieldOperations::editActions();
+//    if (isset($op_index[0]) && in_array($op_index[0], $action_list) && array_key_exists($key, $fields_being_modified)) {
+//      return TRUE;
+//    }
+//    else {
+//      return FALSE;
+//    }
+//  }
 
   /**
    * Return true if field collection is present.
    */
-  public static function checkFieldCollection($data_pre, $op) {
-    if (isset($data_pre) && $op === "add") {
-      return TRUE;
-    }
-    else {
-      return FALSE;
-    }
-  }
+//  public static function checkFieldCollection($data_pre, $op) {
+//    if (isset($data_pre) && $op === "add") {
+//      return TRUE;
+//    }
+//    else {
+//      return FALSE;
+//    }
+//  }
 
   /**
    * Set the elements associated with adding a new field.
    */
-  public static function setAddFormState($add_new_field, $element) {
-    if ($add_new_field) {
-      $element['dictionary_fields']['field_collection'] = $add_new_field;
-      $element['dictionary_fields']['field_collection']['#access'] = TRUE;
-      $element['dictionary_fields']['add_row_button']['#access'] = FALSE;
-      $element['identifier']['#required'] = FALSE;
-      $element['title']['#required'] = FALSE;
-    }
-    return $element;
-  }
+//  public static function setAddDictionaryFieldFormState($add_new_field, $element) {
+//    if ($add_new_field) {
+//      unset($element['dictionary_fields']["edit_buttons"]);
+//      $element['dictionary_fields']['field_collection'] = $add_new_field;
+//      $element['dictionary_fields']['field_collection']['#access'] = TRUE;
+//      $element['dictionary_fields']['add_row_button']['#access'] = FALSE;
+//      $element['identifier']['#required'] = FALSE;
+//      $element['title']['#required'] = FALSE;
+//    }
+//    return $element;
+//  }
 
   /**
-   * Create edit and update fields where needed.
+   * Set the elements associated with editing a dictionary field.
    */
-  public static function createDictionaryFieldOptions($op_index, $data_results, $fields_being_modified, $element) {
-    $current_fields = $element['current_fields'];
-    // Creating ajax buttons/fields to be placed in correct location later.
-    foreach ($data_results as $key => $data) {
-      if (self::checkEditingField($key, $op_index, $fields_being_modified)) {
-        $element['edit_fields'][$key] = FieldEditCreation::editFields($key, $current_fields, $fields_being_modified);
-      }
-      else {
-        $element['edit_buttons'][$key]['edit_button'] = FieldButtons::editButtons($key);
-      }
-    }
-    $element['add_row_button'] = FieldButtons::addButton();
-
-    return $element;
-  }
+//  public static function editDictionaryFieldFormState($edit_dictionary_field, $element) {
+//    if ($edit_dictionary_field) {
+//      unset($element['dictionary_fields']["edit_buttons"]);
+//    }
+//
+//    return $element;
+//  }
 
   /**
    * Restore the data dictionary fields after a form_state rebuild.

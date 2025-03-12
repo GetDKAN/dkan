@@ -3,9 +3,11 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_data_type
+    - field.storage.node.field_json_metadata
     - node.type.data
   module:
     - content_moderation
+    - data_dictionary_widget
     - node
     - user
 id: dkan_dataset_content
@@ -2114,6 +2116,120 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        field_json_metadata:
+          id: field_json_metadata
+          table: node__field_json_metadata
+          field: field_json_metadata
+          relationship: none
+          group_type: group
+          admin_label: Indexes
+          plugin_id: field
+          label: Indexes
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: json_metadata
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        nothing_1:
+          id: nothing_1
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: custom
+          label: 'Add index'
+          exclude: false
+          alter:
+            alter_text: true
+            text: 'Add index'
+            make_link: true
+            path: '/node/{{ nid }}/edit?index=add'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: 'Add index'
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+      cache:
+        type: none
+        options: {  }
       filters:
         title:
           id: title
@@ -2350,6 +2466,7 @@ display:
         groups:
           1: AND
       defaults:
+        cache: false
         title: false
         fields: false
         filters: false
@@ -2391,4 +2508,5 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.node.field_data_type'
+        - 'config:field.storage.node.field_json_metadata'
         - 'config:workflow_list'
