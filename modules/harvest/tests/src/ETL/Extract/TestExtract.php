@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\harvest\tests\ETL\Extract;
+namespace Drupal\Tests\harvest\ETL\Extract;
 
 use Drupal\harvest\ETL\Extract\Extract;
 

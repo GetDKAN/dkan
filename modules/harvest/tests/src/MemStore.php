@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\harvest\tests;
+namespace Drupal\Tests\harvest;
 
 use Contracts\Mock\Storage\Memory;
 use Drupal\harvest\Storage\StorageInterface;

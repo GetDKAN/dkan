@@ -1,9 +1,9 @@
 <?php
 
-namespace modules\harvest\tests\ETL;
+namespace Drupal\Tests\harvest\ETL;
 
 use Drupal\harvest\ETL\Factory;
-use modules\harvest\tests\MemStore;
+use Drupal\Tests\harvest\MemStore;
 use PHPUnit\Framework\TestCase;
 
 class FactoryTest extends TestCase {

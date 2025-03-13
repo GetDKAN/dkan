@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\harvest\tests;
+namespace Drupal\Tests\harvest;
 
 use Drupal\harvest\ETL\Factory;
 use Drupal\harvest\Harvester;

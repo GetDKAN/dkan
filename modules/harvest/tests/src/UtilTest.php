@@ -1,6 +1,8 @@
 <?php
 
-namespace modules\harvest\tests;
+declare(strict_types=1);
+
+namespace Drupal\Tests\harvest;
 
 use Drupal\harvest\Util;
 use PHPUnit\Framework\TestCase;

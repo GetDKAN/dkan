@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\harvest\tests\ETL\Load;
+namespace Drupal\Tests\harvest\ETL\Load;
 
 use Contracts\RetrieverInterface;
 use Drupal\harvest\ETL\Load\Load;
