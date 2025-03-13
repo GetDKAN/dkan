@@ -105,7 +105,7 @@ class SelectFactory {
     foreach ($meta_data as $definition) {
       // Confirm definition name is in the fields list.
       $name = $this->dbQuery->escapeField($definition['name']);
-      $sanitizedName = $fields[$name]['field'];
+      $sanitizedName = array_key_exists($name, $fields) ? $fields[$name]['field'] : NULL;
       if ($sanitizedName && $definition['type'] == 'date') {
         $db_query->addExpression("DATE_FORMAT(" . $sanitizedName . ", '" . $definition['format'] . "')", $sanitizedName);
       }

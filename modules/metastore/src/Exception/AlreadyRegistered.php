@@ -12,7 +12,7 @@ class AlreadyRegistered extends \Exception {
   /**
    * An array of entities that have already been registered in the mapping.
    *
-   * @var \Drupal\Core\Entity\EntityInterface[]
+   * @var \Drupal\Core\Entity\ContentEntityInterface[]
    */
   protected array $alreadyRegistered = [];
 
@@ -32,7 +32,7 @@ class AlreadyRegistered extends \Exception {
   /**
    * Get the resource mapping entities that were already registered.
    *
-   * @return \Drupal\Core\Entity\EntityInterface[]
+   * @return \Drupal\Core\Entity\ContentEntityInterface[]
    *   The entities that were already registered.
    */
   public function getAlreadyRegistered(): array {
