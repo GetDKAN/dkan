@@ -161,7 +161,7 @@ trait QueryBuilderTrait {
     $sorts = $params['sort'] ?? [];
     if (is_string($sorts)) {
       // @todo Move this into Util class to share with FacetsCommonTrait.
-      $sorts = array_map('trim', str_getcsv($sorts));
+      $sorts = array_map('trim', str_getcsv($sorts, escape: '\\'));
     }
 
     if (empty($sorts)) {
@@ -197,14 +197,14 @@ trait QueryBuilderTrait {
 
     $orders = $params['sort-order'] ?? [];
     if (is_string($orders)) {
-      $orders = array_map('trim', str_getcsv($orders));
+      $orders = array_map('trim', str_getcsv($orders, escape: '\\'));
     }
 
     if (!isset($orders[$index]) || !in_array($orders[$index], $allowed)) {
       return $default;
     }
 
-    return strtoupper($orders[$index]);
+    return strtoupper((string) $orders[$index]);
   }
 
   /**

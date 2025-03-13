@@ -26,15 +26,11 @@ class ImportInfo {
 
   /**
    * Import factory service.
-   *
-   * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
    */
-  private $importServiceFactory;
+  private ImportFactoryInterface $importServiceFactory;
 
   /**
    * Resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   private ResourceMapper $resourceMapper;
 
@@ -56,13 +52,13 @@ class ImportInfo {
 
   /**
    * Datastore service.
-   *
-   * @var \Drupal\datastore\DatastoreService
    */
   protected DatastoreService $datastoreService;
 
   /**
    * Constructor.
+   *
+   * @todo Remove the $importServiceFactory argument; it's not used.
    */
   public function __construct(
     ResourceLocalizer $resourceLocalizer,

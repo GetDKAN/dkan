@@ -54,7 +54,7 @@ class WebServiceApiTest extends TestCase {
           $this->equalTo('request_stack')
         )
       )
-      ->will($this->returnCallback([$this, 'containerGet']));
+      ->will($this->returnCallback($this->containerGet(...)));
 
     return $container;
   }

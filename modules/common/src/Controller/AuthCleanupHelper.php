@@ -143,7 +143,7 @@ class AuthCleanupHelper {
    */
   private static function getUsedParameters(array $parameter, array &$usedParameters) {
     if (isset($parameter['$ref'])) {
-      $parts = explode('/', $parameter['$ref']);
+      $parts = explode('/', (string) $parameter['$ref']);
       $parameterKey = end($parts);
     }
     if (isset($parameterKey) && !in_array($parameterKey, $usedParameters)) {

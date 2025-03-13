@@ -221,7 +221,7 @@ class WidgetRouter implements ContainerInjectionInterface {
     $options = [];
     $metastore_items = $this->metastore->getAll($source->metastoreSchema);
     foreach ($metastore_items as $item) {
-      $item = json_decode($item);
+      $item = json_decode((string) $item);
       $title = $this->metastoreOptionTitle($item, $titleProperty);
       $value = $this->metastoreOptionValue($item, $source, $titleProperty);
       $options[$value] = $title;

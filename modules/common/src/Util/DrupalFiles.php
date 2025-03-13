@@ -99,8 +99,13 @@ class DrupalFiles implements ContainerInjectionInterface {
    *
    * Stores the file at the given destination and returns the Drupal url for
    * the newly stored file.
+   *
+   * @param string $url
+   *   The URL of the file to retrieve.
+   * @param string $destination
+   *   The destination to store the file; for now must be a public:// URI.
    */
-  public function retrieveFile($url, $destination) {
+  public function retrieveFile(string $url, string $destination) {
     if (substr_count($url, "file://") == 0 &&
       substr_count($url, "http://") == 0 &&
       substr_count($url, "https://") == 0
@@ -189,7 +194,7 @@ class DrupalFiles implements ContainerInjectionInterface {
    *   The URL.
    */
   public function fileCreateUrl($uri) : string {
-    if (substr_count($uri, 'http') > 0) {
+    if (substr_count((string) $uri, 'http') > 0) {
       return $uri;
     }
     elseif ($wrapper = $this->streamWrapperManager->getViaUri($uri)) {
@@ -209,7 +214,7 @@ class DrupalFiles implements ContainerInjectionInterface {
    * Private.
    */
   private function getFilenameFromUrl($url) {
-    $pieces = parse_url($url);
+    $pieces = parse_url((string) $url);
     $path = explode("/", $pieces['path']);
     return end($path);
   }

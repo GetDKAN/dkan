@@ -179,7 +179,7 @@ class SearchTest extends TestCase {
   /**
    *
    */
-  public static function getCommonMockChain(TestCase $case, Options $services = NULL, $collection = NULL) {
+  public static function getCommonMockChain(TestCase $case, ?Options $services = NULL, $collection = NULL) {
     if (!$services) {
       $services = new Options();
     }

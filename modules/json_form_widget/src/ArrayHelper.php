@@ -23,8 +23,6 @@ class ArrayHelper implements ContainerInjectionInterface {
 
   /**
    * String Helper.
-   *
-   * @var StringHelper
    */
   protected StringHelper $stringHelper;
 
@@ -235,7 +233,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#value'  => $title,
       '#submit' => [$function],
       '#ajax'   => [
-        'callback' => [$this, 'addOrRemoveButtonCallback'],
+        'callback' => $this->addOrRemoveButtonCallback(...),
         'wrapper'  => self::buildWrapperIdentifier($context_name),
       ],
       '#attributes' => [

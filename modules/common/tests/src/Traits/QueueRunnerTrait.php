@@ -22,8 +22,8 @@ trait QueueRunnerTrait {
    */
   public function runQueues(
     array $relevant_queues = [],
-    QueueWorkerManagerInterface $queue_worker_manager = NULL,
-    QueueFactoryInterface $queue_factory = NULL
+    ?QueueWorkerManagerInterface $queue_worker_manager = NULL,
+    ?QueueFactoryInterface $queue_factory = NULL
   ): void {
     if (empty($queue_worker_manager)) {
       $queue_worker_manager = \Drupal::service('plugin.manager.queue_worker');

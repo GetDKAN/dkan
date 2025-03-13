@@ -553,7 +553,7 @@ class QueryControllerTest extends TestCase {
     $fp = fopen($this->resource->getFilePath(), 'rb');
     $sampleData = [];
     while (!feof($fp)) {
-      $sampleData[] = fgetcsv($fp);
+      $sampleData[] = fgetcsv($fp, escape: '\\');
     }
     fclose($fp);
 

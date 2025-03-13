@@ -261,19 +261,26 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: ["10.4.x-dev", "10.2.x-dev"]
-              php_version: ["8.3"]
+              dkan_recommended_branch: ["11.1.x-dev", "11.0.x-dev"]
+              php_version: ["8.4", "8.3"]
+              database_version: ["8.0"]
+            exclude:
+              - php_version: "8.4"
+                dkan_recommended_branch: "11.0.x-dev"
+                database_version: "8.0"
       - phpunit:
           matrix:
             parameters:
-              dkan_recommended_branch: ["11.0.x-dev", "11.1.x-dev"]
-              php_version: ["8.3"]
-              database_version: ["8.0"]
+              dkan_recommended_branch: ["10.4.x-dev"]
+              php_version: ["8.4", "8.3"]
+              database_version: ["5.7"]
       - phpunit:
           matrix:
             parameters:
               dkan_recommended_branch: ["10.3.x-dev"]
-              php_version: ["8.1"]
+              php_version: ["8.2", "8.1"]
+              database_version: ["5.7"]
+            
   upgrade_and_test:
     jobs:
       - cypress:

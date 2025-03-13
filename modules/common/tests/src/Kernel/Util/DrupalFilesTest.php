@@ -19,7 +19,7 @@ class DrupalFilesTest extends KernelTestBase {
     'common',
   ];
 
-  public function provideExceptions() {
+  public static function provideExceptions() {
     return [
       ['Only file:// and http(s) urls are supported', 'badscheme://', 'any_destination'],
       ["Only moving files to Drupal's public directory (public://) is supported", 'file://', 'badscheme://'],
@@ -39,7 +39,7 @@ class DrupalFilesTest extends KernelTestBase {
     $drupal_files->retrieveFile($url, $destination);
   }
 
-  public function provideRetrieve() {
+  public static function provideRetrieve() {
     return [
       ['http://'],
       ['https://'],

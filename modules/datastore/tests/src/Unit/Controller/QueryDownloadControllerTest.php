@@ -37,8 +37,6 @@ class QueryDownloadControllerTest extends TestCase {
 
   /**
    * Output buffer.
-   *
-   * @var string
    */
   private string $buffer;
 
@@ -85,13 +83,13 @@ class QueryDownloadControllerTest extends TestCase {
     $csv = $response->getContent() ?? '';
 
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start([self::class, 'getBuffer']);
+    ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer ?? '';
     ob_get_clean();
 
-    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
+    $this->assertEquals(count(explode("\n", (string) $csv)), count(explode("\n", $streamedCsv)));
     $this->assertEquals($csv, $streamedCsv);
   }
 
@@ -256,7 +254,7 @@ class QueryDownloadControllerTest extends TestCase {
     $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
-    ob_start([self::class, 'getBuffer']);
+    ob_start(self::getBuffer(...));
     /** @var \Symfony\Component\HttpFoundation\StreamedResponse $streamResponse */
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
@@ -351,7 +349,7 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     $request = $this->mockRequest($data);
     $dController = QueryDownloadController::create($this->getQueryContainer(25));
-    ob_start([self::class, 'getBuffer']);
+    ob_start(self::getBuffer(...));
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;
@@ -502,7 +500,7 @@ class QueryDownloadControllerTest extends TestCase {
     $fp = fopen($resource->getFilePath(), 'rb');
     $sampleData = [];
     while (!feof($fp)) {
-      $sampleData[] = fgetcsv($fp);
+      $sampleData[] = fgetcsv($fp, escape: '\\');
     }
     fclose($fp);
 

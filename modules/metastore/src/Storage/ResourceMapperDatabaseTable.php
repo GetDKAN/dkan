@@ -93,7 +93,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   /**
    * Protected.
    */
-  protected function prepareData(string $data, string $id = NULL): array {
+  protected function prepareData(string $data, ?string $id = NULL): array {
     $decoded = json_decode($data);
 
     foreach (['filePath' => 'filepath', 'mimeType' => 'mimetype'] as $old => $new) {

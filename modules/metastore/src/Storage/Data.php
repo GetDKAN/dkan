@@ -131,7 +131,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return \Drupal\Core\Entity\Query\QueryInterface
    *   A Drupal query object.
    */
-  protected function listQueryBase(int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
+  protected function listQueryBase(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
     $query = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
@@ -318,7 +318,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function store($data, string $uuid = NULL): string {
+  public function store($data, ?string $uuid = NULL): string {
     $data = json_decode($data);
 
     $data = $this->filterHtml($data, $this->schemaId);
@@ -463,7 +463,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     // @todo Inject this service.
     $tmp_path = \Drupal::service('file_system')->getTempDirectory();
     // Specify custom location in tmp directory for storing HTML Purifier cache.
-    $cache_dir = rtrim($tmp_path, '/') . '/html_purifier_cache';
+    $cache_dir = rtrim((string) $tmp_path, '/') . '/html_purifier_cache';
 
     // Ensure the tmp cache directory exists.
     if (!is_dir($cache_dir) && !mkdir($cache_dir)) {

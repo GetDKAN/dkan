@@ -86,7 +86,7 @@ class JobStore extends AbstractDatabaseTable {
    *
    * @inheritdoc
    */
-  protected function prepareData(string $data, string $id = NULL): array {
+  protected function prepareData(string $data, ?string $id = NULL): array {
     return ['ref_uuid' => $id, 'job_data' => $data];
   }
 

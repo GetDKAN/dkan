@@ -32,7 +32,7 @@ class OpenApiControllerTest extends TestCase {
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertEquals("Test Spec (valid)", $data['info']['title']);
     $this->assertArrayHasKey('components', $data);
@@ -48,7 +48,7 @@ class OpenApiControllerTest extends TestCase {
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertEquals("JSON Schema validation failed.", $data['message']);
   }
@@ -62,7 +62,7 @@ class OpenApiControllerTest extends TestCase {
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertArrayNotHasKey('components', $data);
   }

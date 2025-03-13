@@ -51,7 +51,7 @@ function dkan_js_frontend_library_info_build() {
       // Loop through JS attributes and add to library.
       if(isset($js['attributes'])) {
         foreach($js['attributes'] as $attr) {
-          $exploded_attr = explode(',', $attr);
+          $exploded_attr = explode(',', (string) $attr);
           $js_attributes[$exploded_attr[0]] = $exploded_attr[1];
         }
         $libraries['dkan_js_frontend']['js'][$js_path . $basename]['attributes'] = $js_attributes;

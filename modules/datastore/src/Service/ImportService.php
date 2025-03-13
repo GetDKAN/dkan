@@ -48,10 +48,8 @@ class ImportService {
 
   /**
    * The qualified class name of the importer to use.
-   *
-   * @var \Procrastinator\Job\AbstractPersistentJob
    */
-  private $importerClass = ImportJob::class;
+  private string $importerClass = ImportJob::class;
 
   /**
    * The DKAN Resource to import.

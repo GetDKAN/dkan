@@ -464,7 +464,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       if ($this->csvHeadersMode == 'dictionary_titles') {
         // Escape characters in column title in preparation for it being used as
         // a MySQL comment.
-        $comment = addslashes($title);
+        $comment = addslashes((string) $title);
         // Build modify line for alter command and add the appropriate arguments
         // to the args list.
         $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$comment}'";
@@ -509,7 +509,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
       // Escape characters in index description in preparation for it being
       // used as a MySQL comment.
-      $comment = addslashes($description);
+      $comment = addslashes((string) $description);
 
       // Build add index option list.
       if ($index_type == 'index') {

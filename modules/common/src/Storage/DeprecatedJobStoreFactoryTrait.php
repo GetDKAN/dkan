@@ -70,7 +70,7 @@ trait DeprecatedJobStoreFactoryTrait {
    * @see https://github.com/GetDKAN/dkan/releases/tag/2.16.5
    */
   protected function getDeprecatedTableName(string $identifier): string {
-    $safeClassName = strtolower(preg_replace(
+    $safeClassName = strtolower((string) preg_replace(
       '/\\\\/', '_',
       $identifier
     ));

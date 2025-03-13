@@ -449,7 +449,7 @@ class DataResource implements \JsonSerializable {
     if (is_null($distroJson)) {
       $distroJson = '';
     }
-    return json_decode($distroJson);
+    return json_decode((string) $distroJson);
   }
 
   /**
