@@ -25,6 +25,11 @@ class DashboardForm extends FormBase {
   use StringTranslationTrait;
 
   /**
+   * Resource type unsupported.
+   */
+  const RESOURCE_TYPE_UNSUPPORTED = 'unsupported';
+
+  /**
    * Harvest service.
    *
    * @var \Drupal\harvest\HarvestService
@@ -545,18 +550,19 @@ class DashboardForm extends FormBase {
    * Build resource data array.
    *
    * @param array $dist
-   *   Distribution details.
-   * @param bool $mime_type
+   *   Distribution element from a datastore_info array.
+   * @param bool $importable
    *   Whether the mime type is importable.
-   * @param string $postImportStatus
+   * @param string $post_import_status
    *   Post import status.
    * @param string|null $error
    *   Error message, if any.
    *
    * @return array
-   *   Resource data array.
+   *   Array of render arrays representing the last three
+   *   columns of the dashboard table.
    */
-  protected function buildResourceData(array $dist, bool $mime_type, string $postImportStatus, ?string $error): array {
+  protected function buildResourceData(array $dist, bool $importable, string $post_import_status, ?string $error): array {
     $data = [
       [
         'data' => [
@@ -565,11 +571,12 @@ class DashboardForm extends FormBase {
           '#file_name' => basename($dist['source_path']),
           '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
         ],
-        'class' => $mime_type ? '' : 'unsupported',
+        'class' => $importable ? '' : 'unsupported',
       ],
-      $mime_type ? $this->buildStatusCell($dist['fetcher_status']) : $this->buildStatusCell('unsupported'),
-      $mime_type ? $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])) : '',
-      $mime_type ? $this->buildPostImportStatusCell($postImportStatus, $error) : '',
+
+      $this->buildStatusCell($importable ? $dist['fetcher_status'] : 'unsupported'),
+      $importable ? $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])) : NULL,
+      $importable ? $this->buildPostImportStatusCell($post_import_status, $error) : NULL,
     ];
 
     // Remove empty cells.
@@ -593,7 +600,7 @@ class DashboardForm extends FormBase {
     $statusCell = [
       'data' => [
         '#theme' => 'datastore_dashboard_status_cell',
-        '#status' => $status === 'unsupported' ? 'Data import is not supported for this resource type' : $status,
+        '#status' => $status === DashboardForm::RESOURCE_TYPE_UNSUPPORTED ? 'Data import is not supported for this resource type' : $status,
         '#percent' => $percentDone ?? NULL,
         '#error' => $error,
       ],
@@ -602,7 +609,7 @@ class DashboardForm extends FormBase {
 
     // If the status is unsupported, we want to span the cell across
     // all three columns.
-    if ($status === 'unsupported') {
+    if ($status === DashboardForm::RESOURCE_TYPE_UNSUPPORTED) {
       $statusCell['colspan'] = 3;
     }
 
