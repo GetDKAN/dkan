@@ -7,9 +7,10 @@ namespace Drupal\metastore\Functional;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 /**
- * Tests update functions for the Database Logging module.
+ * Tests update functions for the metastore module.
  *
- * @group dblog
+ * @group metastore
+ * @group update
  */
 class MetastoreUpdatePathTest extends UpdatePathTestBase {
 

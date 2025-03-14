@@ -7,9 +7,10 @@ namespace Drupal\datastore\Functional;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 /**
- * Tests update functions for the Database Logging module.
+ * Tests update functions for the datastore module.
  *
- * @group dblog
+ * @group datastore
+ * @group update
  */
 class DatastoreUpdatePathTest extends UpdatePathTestBase {
 
