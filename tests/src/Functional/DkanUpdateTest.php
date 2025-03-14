@@ -20,13 +20,10 @@ class DkanUpdateTest extends UpdatePathTestBase {
    */
   protected function setDatabaseDumpFiles() {
     $this->databaseDumpFiles = [
-      __DIR__ . '/../../fixtures/update/dkan-2.20.3.php.gz',
+      __DIR__ . '/../../fixtures/update/update-2.20.0.php.gz',
     ];
   }
 
-  /**
-   * Tests that, after update 10101, the 'wid' column can be a 64-bit integer.
-   */
   public function testUpdates(): void {
     $this->runUpdates();
   }
