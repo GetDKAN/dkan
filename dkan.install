@@ -18,7 +18,3 @@ function dkan_update_9001() {
 function dkan_update_9002() {
   \Drupal::service('module_installer')->install(['data_dictionary_widget']);
 }
-
-function dkan_update_9003() {
-  $a = 1;
-}

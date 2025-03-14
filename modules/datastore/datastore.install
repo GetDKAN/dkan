@@ -137,11 +137,11 @@ function datastore_update_9003(&$sandbox) {
   // Drop the current primary keys.
   $schema->dropPrimaryKey($table_name);
 
-  $query = "
-      ALTER TABLE {$table_name}
+  $query = '
+      ALTER TABLE {'. $table_name . '}
       ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
       ADD COLUMN timestamp INT NOT NULL DEFAULT 0
-  ";
+  ';
   \Drupal::database()->query($query);
 }
 
@@ -157,11 +157,11 @@ function datastore_update_9004(&$sandbox) {
     // Drop the current primary keys.
     $schema->dropPrimaryKey($table_name);
 
-    $query = "
-        ALTER TABLE {$table_name}
+    $query = '
+        ALTER TABLE {'. $table_name . '}
         ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         ADD COLUMN timestamp INT NOT NULL DEFAULT 0
-    ";
+    ';
     \Drupal::database()->query($query);
   }
   else {
