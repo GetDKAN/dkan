@@ -102,6 +102,9 @@ name = "php-codesniffer"
 package_file = ".qlty/configs/composer.json"
 
 [[plugin]]
+name = "phpstan"
+
+[[plugin]]
 name = "prettier"
 
 [[plugin]]
