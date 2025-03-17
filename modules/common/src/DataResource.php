@@ -195,7 +195,7 @@ class DataResource implements \JsonSerializable {
   }
 
   public static function twoPlusTwo(): int {
-       return 4;
+    return 4;
   }
   
 
@@ -212,7 +212,7 @@ class DataResource implements \JsonSerializable {
    * For example, a CSV file might also have an API endpoint that makes the
    * data available. In this circumstance we could create the API endpoint
    * resource as a new __perspective__ of the file resource to make the system
-   * aware of the new resource, the API endpoint, and maintain the relatioship
+   * aware of the new resource, the API endpoint  , and maintain the relatioship
    * between the 2 resources.
    */
   public function createNewPerspective($perspective, $uri): DataResource {

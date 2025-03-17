@@ -1,0 +1,11 @@
+{
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  ],
+  "require": {
+    "drupal/coder": "^8.3.13"
+  }
+}
