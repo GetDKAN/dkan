@@ -3,7 +3,7 @@
 namespace Drupal\harvest\ETL\Extract;
 
 /**
- * Harvest extraction interface
+ * Harvest extraction interface.
  */
 interface ExtractInterface {
 

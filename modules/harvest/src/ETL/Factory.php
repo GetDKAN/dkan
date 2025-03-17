@@ -5,6 +5,9 @@ namespace Drupal\harvest\ETL;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 
+/**
+ * ETL factory class.
+ */
 class Factory {
 
   public $harvestPlan;
@@ -26,41 +29,34 @@ class Factory {
     $this->client = $client;
   }
 
-  public function get($type) {
+  public function get($type)
+  {
 
-    if ($type == "extract") {
-      $class = $this->harvestPlan->extract->type;
+    switch ($type) {
+      case  "extract":
+        $class = $this->harvestPlan->extract->type;
+        $this->validateClass($class);
 
-      if (!class_exists($class)) {
-        throw new \Exception("Class {$class} does not exist");
-      }
+        return new $class($this->harvestPlan, $this->client);
 
-      return new $class($this->harvestPlan, $this->client);
-    }
-    elseif ($type == "load") {
-      $class = $this->harvestPlan->load->type;
+      case "load":
+        $class = $this->harvestPlan->load->type;
+        $this->validateClass($class);
 
-      if (!class_exists($class)) {
-        throw new \Exception("Class {$class} does not exist");
-      }
+        return new $class($this->harvestPlan, $this->hashStorage, $this->itemStorage);
 
-      return new $class($this->harvestPlan, $this->hashStorage, $this->itemStorage);
-    }
-    elseif ($type == "transforms") {
-      $transforms = [];
-      if (isset($this->harvestPlan->transforms)) {
-        foreach ($this->harvestPlan->transforms as $info) {
-          $class = $info;
+      case "transforms":
+        $transforms = [];
+        if (isset($this->harvestPlan->transforms)) {
+          foreach ($this->harvestPlan->transforms as $info) {
+            $class = $info;
+            $this->validateClass($class);
 
-          if (!class_exists($class)) {
-            throw new \Exception("Class {$class} does not exist");
+            $transforms[] = $this->getOne($class, $this->harvestPlan);
           }
-
-          $transforms[] = $this->getOne($class, $this->harvestPlan);
         }
-      }
 
-      return $transforms;
+        return $transforms;
     }
   }
 
@@ -71,6 +67,17 @@ class Factory {
     return new $class($config);
   }
 
+  /**
+   * Validate harvest plan against schema.
+   *
+   * @param $harvest_plan
+   *   The harvest plan object to test.
+   *
+   * @return bool
+   *   Return TRUE if plan validates.
+   *
+   * @throws \Exception
+   */
   public static function validateHarvestPlan($harvest_plan): bool {
     if (!is_object($harvest_plan)) {
       throw new \Exception("Harvest plan must be a php object.");
@@ -93,6 +100,26 @@ class Factory {
             "Invalid harvest plan. " . implode("->", $error->dataPointer()) .
             " " . json_encode($error->keywordArgs())
         );
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * Validate that a class exists.
+   *
+   * @param string $class
+   *   The name of the class to validate.
+   *
+   * @return bool
+   *   Returns TRUE if class exists.
+   *
+   * @throws \Exception
+   */
+  private function validateClass(string $class) : bool
+  {
+    if (!class_exists($class)) {
+      throw new \Exception("Class {$class} does not exist");
     }
 
     return TRUE;

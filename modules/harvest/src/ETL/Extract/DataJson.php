@@ -12,7 +12,7 @@ class DataJson extends Extract {
    *
    * @var object
    */
-  protected $harvest_plan;
+  protected $harvestPlan;
 
   /**
    * Inject the guzzle client.
@@ -23,7 +23,7 @@ class DataJson extends Extract {
 
   public function __construct(object $harvest_plan, ?ClientInterface $client = NULL) {
     $this->client = $client ?? new Client();
-    $this->harvest_plan = $harvest_plan;
+    $this->harvestPlan = $harvest_plan;
   }
 
   /**
@@ -33,7 +33,7 @@ class DataJson extends Extract {
    *   The items to be harvested.
    */
   public function getItems(): array {
-    $file_location = $this->harvest_plan->extract->uri;
+    $file_location = $this->harvestPlan->extract->uri;
     if (substr_count($file_location, "file://") > 0) {
       $json = file_get_contents($file_location);
     }

@@ -2,27 +2,60 @@
 
 namespace Drupal\harvest;
 
+/**
+ *  Extract helpful information from a harvest result.
+ */
 class ResultInterpreter {
   private array $result;
 
+  /**
+   * ResultInterpreter constructor.
+   *
+   * @param array $result
+   *   Harvest result data.
+   */
   public function __construct(array $result) {
     $this->result = $result;
   }
 
+  /**
+   * Get the number of items created by harvest.
+   *
+   * @return int
+   *  Number of items created.
+   */
   public function countCreated(): int {
     return $this->loadCount("NEW");
   }
 
+  /**
+   * Get the number of items updated by harvest.
+   *
+   * @return int
+   *  Number of items updated.
+   */
   public function countUpdated(): int {
     return $this->loadCount("UPDATED");
   }
 
+  /**
+   * Get the harvest failures.
+   *
+   * @return int
+   *  Number of failures.
+   */
   public function countFailed(): int {
     $load_failures = $this->loadCount("FAILURE");
     $transform_failures = $this->transformFailures();
     return $load_failures + $transform_failures;
   }
 
+  /**
+   * Get the number of items processed by harvest.
+   *
+   * @return int
+   *  Number of items processed.
+   */
   public function countProcessed(): int {
 
     $ids = [];
@@ -42,6 +75,12 @@ class ResultInterpreter {
     return count($ids);
   }
 
+  /**
+   * Calculate number of results.
+   *
+   * @return int
+   *  Number of results.
+   */
   private function loadCount(string $status): int {
     $count = 0;
     if (!isset($this->result['status']['load'])) {
@@ -57,6 +96,12 @@ class ResultInterpreter {
     return $count;
   }
 
+  /**
+   * Calculate number of failures.
+   *
+   * @return int
+   *  Number of failures.
+   */
   private function transformFailures(): int {
     $count = 0;
 

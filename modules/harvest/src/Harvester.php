@@ -5,6 +5,9 @@ namespace Drupal\harvest;
 use Drupal\harvest\ETL\Factory;
 use Drupal\harvest\ETL\Transform\Transform;
 
+/**
+ * Executes harvests.
+ */
 class Harvester {
   public const HARVEST_LOAD_NEW_ITEM = 0;
   public const HARVEST_LOAD_UPDATED_ITEM = 1;
@@ -12,10 +15,24 @@ class Harvester {
 
   private Factory $factory;
 
+  /**
+   * Class constructor.
+   *
+   * @param Drupal\harvest\ETL\Factory $factory
+   *   ETL factory.
+   */
   public function __construct(Factory $factory) {
     $this->factory = $factory;
   }
 
+  /**
+   * Reverts harvests.
+   *
+   * @return int
+   *   Number of harvests removed.
+   *
+   * @throws \Exception
+   */
   public function revert(): int {
     $ids = $this->factory->hashStorage->retrieveAll();
     $load = $this->factory->get("load");
@@ -34,6 +51,12 @@ class Harvester {
     return $counter;
   }
 
+  /**
+   * Runs harvests.
+   *
+   * @return array
+   *   Array of harvest result statuses and errors.
+   */
   public function harvest(): array {
     $result = [];
     $transformers = NULL;
@@ -59,32 +82,7 @@ class Harvester {
       $result['errors']['transform']['loading'] = $e->getMessage();
     }
 
-    if ($transformers) {
-      /** @var  Transform $transform */
-      foreach ($items as $identifier => $item) {
-        $transformed_item = clone $item;
-        foreach ($transformers as $transformer) {
-          $transformer_name = get_class($transformer);
-          $transformed_item = $this->transform($transformer, $transformed_item);
-
-          if (is_string($transformed_item)) {
-            $result['status']['transform'][$transformer_name][$identifier] = "FAILURE";
-            $result['errors']['transform'][$transformer_name][$identifier] = $transformed_item;
-            break;
-          }
-          else {
-            $result['status']['transform'][$transformer_name][$identifier] = "SUCCESS";
-          }
-        }
-
-        if (!is_string($transformed_item)) {
-          $transformed_items[$identifier] = $transformed_item;
-        }
-      }
-    }
-    else {
-      $transformed_items = $items;
-    }
+    $transformed_items = $transformers ? $this->executeTransformers($transformers, $items, $result) : $items;
 
     if (empty($transformed_items)) {
       return $result;
@@ -106,6 +104,12 @@ class Harvester {
     return $result;
   }
 
+  /**
+   * Extract harvest items.
+   *
+   * @return object|string
+   *   The extracted items or error message if load fails.
+   */
   private function extract() {
     try {
       $extract = $this->factory->get('extract');
@@ -118,7 +122,58 @@ class Harvester {
     return $items;
   }
 
-  private function transform($transformer, $item) {
+  /**
+   * Run transformers on items.
+   *
+   * @param array $transformers
+   *   Array of Transformer objects.
+   * @param array $items
+   *   Array of items to transform.
+   * @param array $result
+   *   Array of results.
+   *
+   * @return array
+   *   Array of transformed items.
+   */
+  private function executeTransformers(array $transformers, array $items, array &$result) {
+    $transformed_items = [];
+
+    foreach ($items as $identifier => $item) {
+      $transformed_item = clone $item;
+
+      foreach ($transformers as $transformer) {
+        $transformer_name = get_class($transformer);
+        $transformed_item = $this->transform($transformer, $transformed_item);
+
+        if (is_string($transformed_item)) {
+          $result['status']['transform'][$transformer_name][$identifier] = "FAILURE";
+          $result['errors']['transform'][$transformer_name][$identifier] = $transformed_item;
+          break;
+        }
+        else {
+          $result['status']['transform'][$transformer_name][$identifier] = "SUCCESS";
+        }
+      }
+
+      if (!is_string($transformed_item)) {
+        $transformed_items[$identifier] = $transformed_item;
+      }
+    }
+
+    return $transformed_items;
+  }
+
+  /**
+   * Transform an item.
+   *
+   * @param $transformer
+   *   The transformer to run.
+   * @param $item
+   *   The item to transform.
+   *
+   * @return mixed|string
+   */
+  private function transform(Transform $transformer, $item) {
     $transformed = clone $item;
 
     try {
@@ -131,6 +186,15 @@ class Harvester {
     return $transformed;
   }
 
+  /**
+   * Load a harvest item.
+   *
+   * @param $item
+   *   Harvest item object.
+   *
+   * @return int|string
+   *   The load status or error message if load fails.
+   */
   private function load($item) {
     try {
       $load = $this->factory->get('load');
@@ -141,7 +205,16 @@ class Harvester {
     }
   }
 
-  private function loadStatusToString($status) {
+  /**
+   * Convert load status to string.
+   *
+   * @param int $status
+   *   The load status.
+   *
+   * @return string
+   *   A string representing the status.
+   */
+  private function loadStatusToString(int $status) {
     if ($status === self::HARVEST_LOAD_NEW_ITEM) {
       return "NEW";
     }
@@ -151,6 +224,8 @@ class Harvester {
     elseif ($status === self::HARVEST_LOAD_UNCHANGED) {
       return "UNCHANGED";
     }
+
+    return "UNKNOWN";
   }
 
 }

@@ -2,6 +2,9 @@
 
 namespace Drupal\harvest;
 
+/**
+ * Utilities for managing datasets.
+ */
 class Util {
 
   /**
@@ -42,6 +45,17 @@ class Util {
     return hash('sha256', serialize($item));
   }
 
+  /**
+   * Get dataset id from decoded dataset json.
+   *
+   * @param $dataset
+   *   The dataset content.
+   *
+   * @return string
+   *   The dataset ID.
+   *
+   * @throws \Exception
+   */
   public static function getDatasetId($dataset): string {
     if (!is_object($dataset)) {
       throw new \Exception("The dataset " . json_encode($dataset) . " is not an object.");
