@@ -116,8 +116,7 @@ class Factory {
    *
    * @throws \Exception
    */
-  private function validateClass(string $class) : bool
-  {
+  private function validateClass(string $class) : bool {
     if (!class_exists($class)) {
       throw new \Exception("Class {$class} does not exist");
     }

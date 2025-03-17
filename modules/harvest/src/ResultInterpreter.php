@@ -3,7 +3,7 @@
 namespace Drupal\harvest;
 
 /**
- *  Extract helpful information from a harvest result.
+ * Extract helpful information from a harvest result.
  */
 class ResultInterpreter {
   private array $result;
@@ -22,7 +22,7 @@ class ResultInterpreter {
    * Get the number of items created by harvest.
    *
    * @return int
-   *  Number of items created.
+   *   Number of items created.
    */
   public function countCreated(): int {
     return $this->loadCount("NEW");
@@ -32,7 +32,7 @@ class ResultInterpreter {
    * Get the number of items updated by harvest.
    *
    * @return int
-   *  Number of items updated.
+   *   Number of items updated.
    */
   public function countUpdated(): int {
     return $this->loadCount("UPDATED");
@@ -42,7 +42,7 @@ class ResultInterpreter {
    * Get the harvest failures.
    *
    * @return int
-   *  Number of failures.
+   *   Number of failures.
    */
   public function countFailed(): int {
     $load_failures = $this->loadCount("FAILURE");
@@ -54,7 +54,7 @@ class ResultInterpreter {
    * Get the number of items processed by harvest.
    *
    * @return int
-   *  Number of items processed.
+   *   Number of items processed.
    */
   public function countProcessed(): int {
 
@@ -79,7 +79,7 @@ class ResultInterpreter {
    * Calculate number of results.
    *
    * @return int
-   *  Number of results.
+   *   Number of results.
    */
   private function loadCount(string $status): int {
     $count = 0;
@@ -100,7 +100,7 @@ class ResultInterpreter {
    * Calculate number of failures.
    *
    * @return int
-   *  Number of failures.
+   *   Number of failures.
    */
   private function transformFailures(): int {
     $count = 0;
