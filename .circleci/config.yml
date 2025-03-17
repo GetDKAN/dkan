@@ -34,7 +34,7 @@ commands:
         type: string
       addon_branch:
         description: "Repo branch name for the DKAN DDev add-on you want to test against."
-        default: "main"
+        default: "innodbthreads"
         type: string
       dkan_recommended_branch:
         description: "Branch of getdkan/recommended-project to use."
