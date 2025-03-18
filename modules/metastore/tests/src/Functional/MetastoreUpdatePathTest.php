@@ -23,6 +23,9 @@ class MetastoreUpdatePathTest extends UpdatePathTestBase {
     ];
   }
 
+  /**
+   * Test metastore module update 8010.
+   */
   public function testUpdates8010on(): void {
     $config = \Drupal::configFactory()->getEditable('metastore.settings');
 

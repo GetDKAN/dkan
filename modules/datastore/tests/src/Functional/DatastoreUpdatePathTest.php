@@ -23,6 +23,9 @@ class DatastoreUpdatePathTest extends UpdatePathTestBase {
     ];
   }
 
+  /**
+   * Test datastore module updates 9003, 9005.
+   */
   public function testUpdates9003on(): void {
     $schema = \Drupal::database()->schema();
     $config = \Drupal::configFactory()->getEditable('datastore.settings');
