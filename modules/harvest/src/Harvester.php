@@ -166,14 +166,14 @@ class Harvester {
   /**
    * Transform an item.
    *
-   * @param $transformer
+   * @param Transform $transformer
    *   The transformer to run.
-   * @param $item
+   * @param object $item
    *   The item to transform.
    *
    * @return mixed|string
    */
-  private function transform(Transform $transformer, $item) {
+  private function transform(Transform $transformer, object $item) {
     $transformed = clone $item;
 
     try {
@@ -189,13 +189,13 @@ class Harvester {
   /**
    * Load a harvest item.
    *
-   * @param $item
+   * @param object $item
    *   Harvest item object.
    *
    * @return int|string
    *   The load status or error message if load fails.
    */
-  private function load($item) {
+  private function load(object $item) {
     try {
       $load = $this->factory->get('load');
       return $load->run($item);

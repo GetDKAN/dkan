@@ -2,8 +2,14 @@
 
 namespace Drupal\harvest\ETL\Load;
 
+/**
+ * The most basic implementation of the harvest Load class.
+ */
 class Simple extends Load {
 
+  /**
+   * {@inheritdoc}
+   */
   protected function saveItem($item) {
     $id = $item->identifier;
     if (!isset($item->accessLevel)) {
@@ -12,7 +18,14 @@ class Simple extends Load {
     $this->itemStorage->store(json_encode($item), $id);
   }
 
-  public function removeItem($id): void {
+  /**
+   * Remove a harvest item from storage.
+   *
+   * @param string $id
+   *  The id of the item to remove.
+   *
+   */
+  public function removeItem(string $id): void {
     $this->itemStorage->remove($id);
   }
 

@@ -10,22 +10,69 @@ use Drupal\harvest\Util;
  */
 abstract class Load {
 
+  /**
+   * Harvest plan, decoded JSON object.
+   *
+   * @var object
+   */
   protected $harvestPlan;
+
+  /**
+   * The hash storage object.
+   *
+   * @var Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   */
   protected $hashStorage;
+
+  /**
+   * The hash storage object.
+   *
+   * @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   */
   protected $itemStorage;
 
-  abstract protected function saveItem($item);
+  /**
+   * Save a harvested dataset item into our metastore.
+   *
+   * @param object $item
+   *   An object representing the dataset. This object should comport to
+   *   DCAT-US Schema v1.1 once JSON-encoded.
+   *
+   * @see schema/collections/dataset.json
+   */
+  abstract protected function saveItem(object $item);
 
+  /**
+   * Load constructor.
+   *
+   * @param \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $harvest_plan
+   *   The harvest plan.
+   * @param \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $hash_storage
+   *   The hash storage.
+   * @param \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $item_storage
+   *   The item storage.
+   */
   public function __construct(
-    $harvest_plan,
-    $hash_storage,
-    $item_storage,
+    HarvestHashesEntityDatabaseTable $harvest_plan,
+    HarvestHashesEntityDatabaseTable $hash_storage,
+    HarvestHashesEntityDatabaseTable $item_storage,
   ) {
     $this->harvestPlan = $harvest_plan;
     $this->hashStorage = $hash_storage;
     $this->itemStorage = $item_storage;
   }
 
+  /**
+   * Create and store the hash for the harvest item if appropriate.
+   *
+   * @param $item
+   *   The harvest item.
+   *
+   * @return int
+   *   The status of the harvest item.
+   *
+   * @throws \JsonException
+   */
   public function run($item): int {
     $state = $this->itemState($item);
 
