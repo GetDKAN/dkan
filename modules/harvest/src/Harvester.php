@@ -137,23 +137,10 @@ class Harvester {
    */
   private function executeTransformers(array $transformers, array $items, array &$result) {
     $transformed_items = [];
+    $result = [];
 
     foreach ($items as $identifier => $item) {
-      $transformed_item = clone $item;
-
-      foreach ($transformers as $transformer) {
-        $transformer_name = get_class($transformer);
-        $transformed_item = $this->transform($transformer, $transformed_item);
-
-        if (is_string($transformed_item)) {
-          $result['status']['transform'][$transformer_name][$identifier] = "FAILURE";
-          $result['errors']['transform'][$transformer_name][$identifier] = $transformed_item;
-          break;
-        }
-        else {
-          $result['status']['transform'][$transformer_name][$identifier] = "SUCCESS";
-        }
-      }
+      $transformed_item = $this->executeTransformersSingle($item);
 
       if (!is_string($transformed_item)) {
         $transformed_items[$identifier] = $transformed_item;
@@ -163,6 +150,39 @@ class Harvester {
     return $transformed_items;
   }
 
+  /**
+   * Execute transformers on a single item.
+   *
+   * @param array $transformers
+   *   The transformers to execute.
+   * @param object $transformed_item
+   *   The item to transform
+   * @param string $identifier
+   *   The item identifier.
+   *
+   * @return object
+   *   The transformed item.
+   */
+  private function executeTransformersSingle(array $transformers, object $item, string $identifier)
+  {
+    $transformed_item = clone $item;
+
+    foreach ($transformers as $transformer) {
+      $transformer_name = get_class($transformer);
+      $transformed_item = $this->transform($transformer, $transformed_item);
+
+      if (is_string($transformed_item)) {
+        $result['status']['transform'][$transformer_name][$identifier] = "FAILURE";
+        $result['errors']['transform'][$transformer_name][$identifier] = $transformed_item;
+        break;
+      }
+      else {
+        $result['status']['transform'][$transformer_name][$identifier] = "SUCCESS";
+      }
+    }
+
+    return $transformed_item;
+  }
   /**
    * Transform an item.
    *

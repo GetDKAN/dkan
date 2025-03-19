@@ -6,6 +6,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Drupal\harvest\Util;
 
+/**
+ * Extract class for json data.
+ */
 class DataJson extends Extract {
   /**
    * Harvest Plan, decoded JSON object.
@@ -21,13 +24,21 @@ class DataJson extends Extract {
    */
   protected $client;
 
+  /**
+   * DataJson constructor.
+   *
+   * @param object $harvest_plan
+   *   The harvest plan.
+   * @param ClientInterface|null $client
+   *   Optional http client.
+   */
   public function __construct(object $harvest_plan, ?ClientInterface $client = NULL) {
     $this->client = $client ?? new Client();
     $this->harvestPlan = $harvest_plan;
   }
 
   /**
-   * {@inheritdoc }
+   * {@inheritdoc}
    */
   public function getItems(): array {
     $file_location = $this->harvestPlan->extract->uri;
