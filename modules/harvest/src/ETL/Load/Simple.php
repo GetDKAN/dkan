@@ -22,8 +22,7 @@ class Simple extends Load {
    * Remove a harvest item from storage.
    *
    * @param string $id
-   *  The id of the item to remove.
-   *
+   *   The id of the item to remove.
    */
   public function removeItem(string $id): void {
     $this->itemStorage->remove($id);

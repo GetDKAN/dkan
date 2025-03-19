@@ -27,10 +27,7 @@ class DataJson extends Extract {
   }
 
   /**
-   * Get the items to be harvested.
-   *
-   * @return array
-   *   The items to be harvested.
+   * {@inheritdoc }
    */
   public function getItems(): array {
     $file_location = $this->harvestPlan->extract->uri;

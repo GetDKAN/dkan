@@ -2,8 +2,14 @@
 
 namespace Drupal\harvest\ETL\Transform;
 
+/**
+ * transform to add an identifier.
+ */
 class AddId extends Transform {
 
+  /**
+   * {@inheritdoc}
+   */
   public function run($item): object {
     $copy = clone $item;
     if (isset($item->identifier)) {

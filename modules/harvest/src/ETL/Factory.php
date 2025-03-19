@@ -2,6 +2,8 @@
 
 namespace Drupal\harvest\ETL;
 
+use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
+use GuzzleHttp\ClientInterface;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 
@@ -10,16 +12,53 @@ use Opis\JsonSchema\Validator;
  */
 class Factory {
 
+  /**
+   * Harvest plan, decoded JSON object.
+   *
+   * @var object
+   */
   public $harvestPlan;
+
+  /**
+   * The hash storage object.
+   *
+   * @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   */
   public $itemStorage;
+
+  /**
+   * The hash storage object.
+   *
+   * @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   */
   public $hashStorage;
+
+  /**
+   * Inject the guzzle client.
+   *
+   * @var \GuzzleHttp\ClientInterface
+   */
   protected $client;
 
+  /**
+   * Factory constructor.
+   *
+   * @param object $harvest_plan
+   *   The harvest.
+   * @param HarvestHashesEntityDatabaseTable $item_storage
+   *   The item storage
+   * @param HarvestHashesEntityDatabaseTable $hash_storage
+   *   The item storage
+   * @param ClientInterface|NULL $client
+   *   The http client.
+   *
+   * @throws \Exception
+   */
   public function __construct(
-    $harvest_plan,
-    $item_storage,
-    $hash_storage,
-    $client = NULL,
+    object $harvest_plan,
+    HarvestHashesEntityDatabaseTable $item_storage,
+    HarvestHashesEntityDatabaseTable $hash_storage,
+    ClientInterface $client = NULL,
   ) {
     if (self::validateHarvestPlan($harvest_plan)) {
       $this->harvestPlan = $harvest_plan;
@@ -29,9 +68,19 @@ class Factory {
     $this->client = $client;
   }
 
-  public function get($type)
+  /**
+   * Get the requested ETL type.
+   *
+   * @param string $type
+   *   The ETL type to get.
+   *
+   * @return array|mixed|void
+   *   The requested object.
+   *
+   * @throws \Exception
+   */
+  public function get(string $type)
   {
-
     switch ($type) {
       case  "extract":
         $class = $this->harvestPlan->extract->type;
@@ -60,6 +109,17 @@ class Factory {
     }
   }
 
+  /**
+   * Get an object of the requested class.
+   *
+   * @param string $class
+   *   The name of the class.
+   * @param $config
+   *   Optional class config.
+   *
+   * @return mixed
+   *   The requested object.
+   */
   private function getOne(string $class, $config = NULL) {
     if (!$config) {
       $config = $this->harvestPlan;

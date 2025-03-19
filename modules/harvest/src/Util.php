@@ -2,6 +2,8 @@
 
 namespace Drupal\harvest;
 
+use Drupal\harvest\Load\Dataset;
+
 /**
  * Utilities for managing datasets.
  */
@@ -48,7 +50,7 @@ class Util {
   /**
    * Get dataset id from decoded dataset json.
    *
-   * @param $dataset
+   * @param object $dataset
    *   The dataset content.
    *
    * @return string
@@ -56,7 +58,7 @@ class Util {
    *
    * @throws \Exception
    */
-  public static function getDatasetId($dataset): string {
+  public static function getDatasetId(object $dataset): string {
     if (!is_object($dataset)) {
       throw new \Exception("The dataset " . json_encode($dataset) . " is not an object.");
     }
@@ -76,14 +78,14 @@ class Util {
    *
    * Recursively applies ksort() to any value in the array that is an array.
    *
-   * @param $array
+   * @param array $array
    *   The array to be sorted.
-   * @param $flags
+   * @param int $flags
    *   Flags to pass along to ksort().
    *
    * @see \ksort()
    */
-  public static function recursiveKeySort(&$array, int $flags = SORT_REGULAR): void {
+  public static function recursiveKeySort(array &$array, int $flags = SORT_REGULAR): void {
     foreach ($array as &$value) {
       if (is_array($value)) {
         static::recursiveKeySort($value);

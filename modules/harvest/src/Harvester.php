@@ -172,6 +172,7 @@ class Harvester {
    *   The item to transform.
    *
    * @return mixed|string
+   *   The transformed object.
    */
   private function transform(Transform $transformer, object $item) {
     $transformed = clone $item;

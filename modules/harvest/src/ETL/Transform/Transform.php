@@ -8,9 +8,9 @@ namespace Drupal\harvest\ETL\Transform;
 abstract class Transform {
 
   /**
-   * Harvest plan, decoded JSON object.
+   * Harvest plan, string-encoded JSON.
    *
-   * @var object
+   * @var string
    */
   protected $harvestPlan;
 
@@ -18,22 +18,21 @@ abstract class Transform {
    * Transform constructor.
    *
    * @param object $harvest_plan
-   *  The harvest plan.
-   *
+   *   The harvest plan.
    */
-  public function __construct(object $harvest_plan) {
+  public function __construct(string $harvest_plan) {
     $this->harvestPlan = $harvest_plan;
   }
 
   /**
    * Run the transformation.
    *
-   * @param $item
+   * @param object $item
    *   The item to transform.
    *
    * @return mixed
    *   The results of the action.
    */
-  abstract public function run($item);
+  abstract public function run(object $item);
 
 }

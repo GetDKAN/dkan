@@ -8,8 +8,8 @@ namespace Drupal\harvest\ETL\Extract;
 abstract class Extract implements ExtractInterface {
 
   /**
-  * {@inheritDoc}
-  */
+    * {@inheritDoc}
+    */
   public function run(): array {
     $items = $this->getItems();
 
@@ -26,6 +26,12 @@ abstract class Extract implements ExtractInterface {
     return $items;
   }
 
+  /**
+   * Get the items to be harvested.
+   *
+   * @return array
+   *   The items to be harvested.
+   */
   abstract protected function getItems();
 
 }

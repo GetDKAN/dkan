@@ -20,14 +20,14 @@ abstract class Load {
   /**
    * The hash storage object.
    *
-   * @var Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   * @var object
    */
   protected $hashStorage;
 
   /**
    * The hash storage object.
    *
-   * @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   * @var object
    */
   protected $itemStorage;
 
@@ -45,17 +45,17 @@ abstract class Load {
   /**
    * Load constructor.
    *
-   * @param \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $harvest_plan
+   * @param object $harvest_plan
    *   The harvest plan.
-   * @param \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $hash_storage
+   * @param object $hash_storage
    *   The hash storage.
-   * @param \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $item_storage
+   * @param object $item_storage
    *   The item storage.
    */
   public function __construct(
-    HarvestHashesEntityDatabaseTable $harvest_plan,
-    HarvestHashesEntityDatabaseTable $hash_storage,
-    HarvestHashesEntityDatabaseTable $item_storage,
+    object $harvest_plan,
+    object $hash_storage,
+    object $item_storage,
   ) {
     $this->harvestPlan = $harvest_plan;
     $this->hashStorage = $hash_storage;
@@ -65,7 +65,7 @@ abstract class Load {
   /**
    * Create and store the hash for the harvest item if appropriate.
    *
-   * @param $item
+   * @param object $item
    *   The harvest item.
    *
    * @return int
@@ -73,7 +73,7 @@ abstract class Load {
    *
    * @throws \JsonException
    */
-  public function run($item): int {
+  public function run(object $item): int {
     $state = $this->itemState($item);
 
     if ($state == Harvester::HARVEST_LOAD_NEW_ITEM || $state == Harvester::HARVEST_LOAD_UPDATED_ITEM) {
@@ -95,7 +95,7 @@ abstract class Load {
   /**
    * Determine what to do next for the item, based on hash comparison.
    *
-   * @param $item
+   * @param object $item
    *   The item we're dealing with, as an arbitrary data structure.
    *
    * @return int
@@ -103,7 +103,7 @@ abstract class Load {
    *
    * @see \Drupal\harvest\Harvester
    */
-  protected function itemState($item): int {
+  protected function itemState(object $item): int {
     if (!isset($item->identifier)) {
       throw new \Exception('Item does not have an identifier ' . json_encode($item));
     }
