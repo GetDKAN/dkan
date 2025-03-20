@@ -3,7 +3,7 @@
 namespace Drupal\harvest\ETL\Transform;
 
 /**
- * transform to add an identifier.
+ * Transform to add an identifier.
  */
 class AddId extends Transform {
 

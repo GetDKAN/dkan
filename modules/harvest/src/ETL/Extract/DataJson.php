@@ -29,7 +29,7 @@ class DataJson extends Extract {
    *
    * @param object $harvest_plan
    *   The harvest plan.
-   * @param ClientInterface|null $client
+   * @param \GuzzleHttp\ClientInterface|null $client
    *   Optional http client.
    */
   public function __construct(object $harvest_plan, ?ClientInterface $client = NULL) {

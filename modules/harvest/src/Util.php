@@ -2,8 +2,6 @@
 
 namespace Drupal\harvest;
 
-use Drupal\harvest\Load\Dataset;
-
 /**
  * Utilities for managing datasets.
  */

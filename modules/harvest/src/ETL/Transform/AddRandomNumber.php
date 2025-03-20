@@ -3,7 +3,7 @@
 namespace Drupal\harvest\ETL\Transform;
 
 /**
- * transform to add a random number.
+ * Transform to add a random number.
  */
 class AddRandomNumber extends Transform {
 

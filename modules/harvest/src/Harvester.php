@@ -13,6 +13,11 @@ class Harvester {
   public const HARVEST_LOAD_UPDATED_ITEM = 1;
   public const HARVEST_LOAD_UNCHANGED = 2;
 
+  /**
+   * The Factory object.
+   *
+   * @var Factory|Drupal\harvest\ETL\Factory
+   */
   private Factory $factory;
 
   /**
@@ -155,16 +160,15 @@ class Harvester {
    *
    * @param array $transformers
    *   The transformers to execute.
-   * @param object $transformed_item
-   *   The item to transform
+   * @param object $item
+   *   The item to transform.
    * @param string $identifier
    *   The item identifier.
    *
    * @return object
    *   The transformed item.
    */
-  private function executeTransformersSingle(array $transformers, object $item, string $identifier)
-  {
+  private function executeTransformersSingle(array $transformers, object $item, string $identifier) {
     $transformed_item = clone $item;
 
     foreach ($transformers as $transformer) {
@@ -183,10 +187,11 @@ class Harvester {
 
     return $transformed_item;
   }
+
   /**
    * Transform an item.
    *
-   * @param Transform $transformer
+   * @param \Drupal\harvest\ETL\Transform\Transform $transformer
    *   The transformer to run.
    * @param object $item
    *   The item to transform.

@@ -3,9 +3,14 @@
 namespace Drupal\harvest;
 
 /**
- * Extract helpful information from a harvest result.
+ * Extracts information from an arroy of harvest result statuses.
  */
 class ResultInterpreter {
+  /**
+   * The result statuses of actions performed by a harvest.
+   *
+   * @var array
+   */
   private array $result;
 
   /**
@@ -66,7 +71,10 @@ class ResultInterpreter {
 
     if (isset($this->result['status']['transform'])) {
       foreach (array_keys($this->result['status']['transform']) as $transformer) {
-        $ids = [...$ids, ...array_keys($this->result['status']['transform'][$transformer])];
+        $ids = [
+          ...$ids,
+          ...array_keys($this->result['status']['transform'][$transformer])
+        ];
       }
     }
 

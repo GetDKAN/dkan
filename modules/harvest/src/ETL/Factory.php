@@ -45,10 +45,10 @@ class Factory {
    * @param object $harvest_plan
    *   The harvest.
    * @param object $item_storage
-   *   The item storage
+   *   The item storage.
    * @param object $hash_storage
-   *   The item storage
-   * @param ClientInterface|NULL $client
+   *   The item storage.
+   * @param /GuzzleHttp/ClientInterface|null $client
    *   The http client.
    *
    * @throws \Exception
@@ -78,8 +78,7 @@ class Factory {
    *
    * @throws \Exception
    */
-  public function get(string $type)
-  {
+  public function get(string $type) {
     switch ($type) {
       case  "extract":
         $class = $this->harvestPlan->extract->type;
@@ -113,13 +112,13 @@ class Factory {
    *
    * @param string $class
    *   The name of the class.
-   * @param $config
+   * @param object $config
    *   Optional class config.
    *
    * @return mixed
    *   The requested object.
    */
-  private function getOne(string $class, $config = NULL) {
+  private function getOne(string $class, object $config = NULL) {
     if (!$config) {
       $config = $this->harvestPlan;
     }
@@ -129,7 +128,7 @@ class Factory {
   /**
    * Validate harvest plan against schema.
    *
-   * @param $harvest_plan
+   * @param object $harvest_plan
    *   The harvest plan object to test.
    *
    * @return bool
@@ -137,7 +136,7 @@ class Factory {
    *
    * @throws \Exception
    */
-  public static function validateHarvestPlan($harvest_plan): bool {
+  public static function validateHarvestPlan(object $harvest_plan): bool {
     if (!is_object($harvest_plan)) {
       throw new \Exception("Harvest plan must be a php object.");
     }
