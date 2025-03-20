@@ -104,11 +104,9 @@ class Harvester {
    *   The existing result statuses.
    *
    * @return array
-   *  The updated result statuses.
-   *
+   *   The updated result statuses.
    */
-  private function loadItems(array $items, array $result)
-  {
+  private function loadItems(array $items, array $result) {
     $result['status']['load'] = [];
 
     foreach ($items as $identifier => $item) {
