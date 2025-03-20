@@ -48,7 +48,7 @@ class Factory {
    *   The item storage.
    * @param object $hash_storage
    *   The item storage.
-   * @param /GuzzleHttp/ClientInterface|null $client
+   * @param \GuzzleHttp\ClientInterface|null $client
    *   The http client.
    *
    * @throws \Exception

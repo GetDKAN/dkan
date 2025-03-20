@@ -16,14 +16,14 @@ class Harvester {
   /**
    * The Factory object.
    *
-   * @var Factory|Drupal\harvest\ETL\Factory
+   * @var \Drupal\harvest\ETL\Factory
    */
   private Factory $factory;
 
   /**
    * Class constructor.
    *
-   * @param Drupal\harvest\ETL\Factory $factory
+   * @param \Drupal\harvest\ETL\Factory $factory
    *   ETL factory.
    */
   public function __construct(Factory $factory) {
@@ -79,7 +79,6 @@ class Harvester {
 
     $result['status']['transform'] = [];
 
-    $transformed_items = [];
     try {
       $transformers = $this->factory->get("transforms");
     }
@@ -93,9 +92,26 @@ class Harvester {
       return $result;
     }
 
+    return $this->loadItems($transformed_items, $result);
+  }
+
+  /**
+   * Load harvest items.
+   *
+   * @param array $items
+   *   The items to load.
+   * @param array $result
+   *   The existing result statuses.
+   *
+   * @return array
+   *  The updated result statuses.
+   *
+   */
+  private function loadItems(array $items, array $result)
+  {
     $result['status']['load'] = [];
 
-    foreach ($transformed_items as $identifier => $item) {
+    foreach ($items as $identifier => $item) {
       $status = $this->load($item);
       if (!is_string($status)) {
         $result['status']['load'][$identifier] = $this->loadStatusToString($status);
@@ -112,7 +128,7 @@ class Harvester {
   /**
    * Extract harvest items.
    *
-   * @return object|string
+   * @return array|string
    *   The extracted items or error message if load fails.
    */
   private function extract() {
@@ -142,10 +158,9 @@ class Harvester {
    */
   private function executeTransformers(array $transformers, array $items, array &$result) {
     $transformed_items = [];
-    $result = [];
 
     foreach ($items as $identifier => $item) {
-      $transformed_item = $this->executeTransformersSingle($item);
+      $transformed_item = $this->executeTransformersSingle($transformers, $item, $identifier);
 
       if (!is_string($transformed_item)) {
         $transformed_items[$identifier] = $transformed_item;

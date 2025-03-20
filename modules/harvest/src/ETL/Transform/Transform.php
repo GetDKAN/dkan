@@ -10,7 +10,7 @@ abstract class Transform {
   /**
    * Harvest plan, string-encoded JSON.
    *
-   * @var string
+   * @var object
    */
   protected $harvestPlan;
 
@@ -20,7 +20,7 @@ abstract class Transform {
    * @param object $harvest_plan
    *   The harvest plan.
    */
-  public function __construct(string $harvest_plan) {
+  public function __construct(object $harvest_plan) {
     $this->harvestPlan = $harvest_plan;
   }
 

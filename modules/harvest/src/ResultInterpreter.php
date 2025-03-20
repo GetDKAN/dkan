@@ -73,7 +73,7 @@ class ResultInterpreter {
       foreach (array_keys($this->result['status']['transform']) as $transformer) {
         $ids = [
           ...$ids,
-          ...array_keys($this->result['status']['transform'][$transformer])
+          ...array_keys($this->result['status']['transform'][$transformer]),
         ];
       }
     }
@@ -118,11 +118,11 @@ class ResultInterpreter {
     }
 
     foreach ($this->result['status']['transform'] as $results) {
-      foreach ($results as $result) {
+      $count = array_reduce($results, function ($count, $result) {
         if ($result == "FAILURE") {
           $count++;
         }
-      }
+      });
     }
 
     return $count;
