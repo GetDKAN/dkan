@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\MetastoreService;
 
 /**
@@ -68,13 +69,13 @@ function resource_mapper_new_revision() {
  *   The entity hook stage, such as 'load' or 'update'.
  */
 function metastore_data_lifecycle(array $entities, string $stage): void {
-  /** @var \Drupal\metastore\LifeCycle\LifeCycle $life_cycle */
-  $life_cycle = \Drupal::service('dkan.metastore.lifecycle');
+  /** @var \Drupal\metastore\LifeCycle\LifeCycle $lifecycle */
+  $lifecycle = \Drupal::service('dkan.metastore.lifecycle');
   /** @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface $item_factory */
   $item_factory = \Drupal::service('dkan.metastore.metastore_item_factory');
   foreach ($entities as $entity) {
-    if ($life_cycle->entityIsValidItem($entity)) {
-      $life_cycle->go($stage, $item_factory->wrap($entity));
+    if (Data::validEntityType($entity)) {
+      $lifecycle->go($stage, $item_factory->wrap($entity));
     }
   }
 }
@@ -88,12 +89,10 @@ function metastore_data_lifecycle(array $entities, string $stage): void {
  * @return bool
  *   Returns true if the entity is used by the metastore.
  *
- * @deprecated Use LifeCycle::entityIsValidItem().
+ * @deprecated Use Data::validEntityType()
  */
 function metastore_entity_is_valid_item(EntityInterface $entity) {
-  /** @var \Drupal\metastore\LifeCycle\LifeCycle $life_cycle */
-  $life_cycle = \Drupal::service('dkan.metastore.lifecycle');
-  return $life_cycle->entityIsValidItem($entity);
+  return Data::validEntityType($entity);
 }
 
 /**

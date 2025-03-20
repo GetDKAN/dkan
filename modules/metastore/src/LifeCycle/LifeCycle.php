@@ -6,7 +6,6 @@ use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\common\DataResource;
@@ -20,7 +19,6 @@ use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 
 /**
  * Abstraction of logic used in entity hooks.
@@ -115,46 +113,6 @@ class LifeCycle {
     $this->dataFactory = $dataFactory;
     $this->queueFactory = $queueFactory;
     $this->configFactory = $configFactory;
-  }
-
-  /**
-   * Check if the entity is part of the metastore.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   A Drupal content entity.
-   *
-   * @return bool
-   *   Returns true if the entity is used by the metastore.
-   */
-  public function entityIsValidItem(EntityInterface $entity) {
-    // Currently, all metastore items are Data nodes. We can short-circuit here
-    // based on this. When we start expecting other entity types we can modify
-    // this logic.
-    // @todo Modify this logic when other entity types are valid.
-    if ($entity->getEntityTypeId() == 'node' && $entity->bundle() === 'data') {
-      // @todo Inject this.
-      $storageClass = \Drupal::service('dkan.metastore.storage')::getStorageClass();
-
-      // If the storage class used implements the entity storage interface,
-      // continue.
-      // @todo Should we look at the entity's storage class instead?
-      if (!is_a($storageClass, MetastoreEntityStorageInterface::class, TRUE)) {
-        return FALSE;
-      }
-
-      // @todo Inject these.
-      $storageEntityType = \Drupal::service('dkan.metastore.metastore_item_factory')::getEntityType();
-      $storageBundles = \Drupal::service('dkan.metastore.metastore_item_factory')::getBundles();
-
-      // If the type and bundle are correct, return true.
-      if ($entity->getEntityTypeId() != $storageEntityType) {
-        return FALSE;
-      }
-      if (in_array($entity->bundle(), $storageBundles)) {
-        return TRUE;
-      }
-    }
-    return FALSE;
   }
 
   /**

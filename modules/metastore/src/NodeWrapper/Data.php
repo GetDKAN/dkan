@@ -52,7 +52,9 @@ class Data implements MetastoreItemInterface {
    *   Thrown when the entity is not a Data node.
    */
   public function __construct(EntityInterface $entity, EntityTypeManagerInterface $entityTypeManager) {
-    $this->validate($entity);
+    if (!static::validEntityType($entity)) {
+      throw new DataNodeLifeCycleEntityValidationException('Entity must be a node of bundle data.');
+    }
     $this->node = $entity;
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
@@ -166,16 +168,18 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
+   * Check if the entity is one that can be wrapped by Data.
+   *
+   * Currently only node entities which are data bundles are allowed.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   Entity to be wrapped by a Data wrapper instance.
+   *
+   * @return bool
+   *   TRUE if the entity can be wrapped, FALSE otherwise.
    */
-  private function validate(EntityInterface $entity) {
-    if (!($entity instanceof NodeInterface)) {
-      throw new DataNodeLifeCycleEntityValidationException("We only work with nodes.");
-    }
-
-    if ($entity->bundle() != "data") {
-      throw new DataNodeLifeCycleEntityValidationException("We only work with data nodes.");
-    }
+  public static function validEntityType(EntityInterface $entity): bool {
+    return ($entity instanceof NodeInterface) && ($entity->bundle() == "data");
   }
 
   /**

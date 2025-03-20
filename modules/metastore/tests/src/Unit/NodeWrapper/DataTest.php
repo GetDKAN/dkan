@@ -143,7 +143,7 @@ class DataTest extends TestCase {
    *
    */
   public function testNotNode() {
-    $this->expectExceptionMessage("We only work with nodes.");
+    $this->expectExceptionMessage('Entity must be a node of bundle data.');
 
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, 'loadEntityByUuid', EntityInterface::class)
@@ -161,7 +161,7 @@ class DataTest extends TestCase {
    *
    */
   public function testNotDataNode() {
-    $this->expectExceptionMessage("We only work with data nodes.");
+    $this->expectExceptionMessage('Entity must be a node of bundle data.');
 
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
