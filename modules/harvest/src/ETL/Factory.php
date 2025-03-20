@@ -2,7 +2,6 @@
 
 namespace Drupal\harvest\ETL;
 
-use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
 use GuzzleHttp\ClientInterface;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
@@ -22,14 +21,14 @@ class Factory {
   /**
    * The hash storage object.
    *
-   * @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   * @var object
    */
   public $itemStorage;
 
   /**
    * The hash storage object.
    *
-   * @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+   * @var object
    */
   public $hashStorage;
 
@@ -45,9 +44,9 @@ class Factory {
    *
    * @param object $harvest_plan
    *   The harvest.
-   * @param HarvestHashesEntityDatabaseTable $item_storage
+   * @param object $item_storage
    *   The item storage
-   * @param HarvestHashesEntityDatabaseTable $hash_storage
+   * @param object $hash_storage
    *   The item storage
    * @param ClientInterface|NULL $client
    *   The http client.
@@ -56,8 +55,8 @@ class Factory {
    */
   public function __construct(
     object $harvest_plan,
-    HarvestHashesEntityDatabaseTable $item_storage,
-    HarvestHashesEntityDatabaseTable $hash_storage,
+    object $item_storage,
+    object $hash_storage,
     ClientInterface $client = NULL,
   ) {
     if (self::validateHarvestPlan($harvest_plan)) {
