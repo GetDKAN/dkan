@@ -91,7 +91,7 @@ class StringHelper implements ContainerInjectionInterface {
 
     // Add extra validate if element type is email.
     if ($element['#type'] === 'email') {
-      $element['#element_validate'][] = [$this, 'validateEmail'];
+      $element['#element_validate'][] = $this->validateEmail(...);
       $element['#default_value'] = str_replace('mailto:', '', $element['#default_value'] ?? '');
     }
 
@@ -154,7 +154,7 @@ class StringHelper implements ContainerInjectionInterface {
    * Validate email field.
    */
   public function validateEmail(&$element, FormStateInterface $form_state, &$complete_form) {
-    $value = trim($element['#value']);
+    $value = trim((string) $element['#value']);
     $form_state->setValueForElement($element, $value);
 
     if (empty($value)) {
@@ -180,7 +180,7 @@ class StringHelper implements ContainerInjectionInterface {
     $element['#maxlength'] = $property->maxLength ?? self::TEXTFIELD_MAXLENGTH;
     if (!empty($property->pattern)) {
       $element['#pattern'] = $property->pattern;
-      $element['#element_validate'][] = [$this, 'validatePattern'];
+      $element['#element_validate'][] = $this->validatePattern(...);
     }
   }
 

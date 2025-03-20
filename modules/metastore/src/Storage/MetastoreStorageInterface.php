@@ -116,7 +116,7 @@ interface MetastoreStorageInterface {
    *
    * @param string $data
    *   The data to be stored.
-   * @param string $id
+   * @param string|null $id
    *   The identifier for the data. If the act of storing generates the
    *   id, there is no need to pass one.
    *
@@ -126,7 +126,7 @@ interface MetastoreStorageInterface {
    * @throws \Exception
    *   Issues storing the data.
    */
-  public function store(string $data, string $id = NULL): string;
+  public function store(string $data, ?string $id = NULL): string;
 
   /**
    * Retrieve by hash.

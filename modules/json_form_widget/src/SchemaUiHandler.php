@@ -81,7 +81,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public function setSchemaUi(mixed $schema_name) {
     try {
       $schema_ui = $this->schemaRetriever->retrieve($schema_name . '.ui');
-      $this->schemaUi = json_decode($schema_ui);
+      $this->schemaUi = json_decode((string) $schema_ui);
     }
     catch (\Exception) {
       $this->logger->notice("The UI Schema for $schema_name does not exist.");

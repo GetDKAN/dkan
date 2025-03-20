@@ -31,12 +31,12 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         return $this->storage;
     }
 
-    public function store($data, string $id = null): string
+    public function store($data, ?string $id = null): string
     {
         return $this->storeMultiple([ $data ], $id);
     }
 
-    public function storeMultiple(array $data, string $id = null) : string
+    public function storeMultiple(array $data, ?string $id = null) : string
     {
         if (!isset($id)) {
             $ids = array_keys($this->storage);
@@ -91,8 +91,8 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         $cleanSchema = $this->schema;
         $cleanSchema['fields'] = [];
         foreach ($this->schema['fields'] as $field => $info) {
-            $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
-            $new = trim($new);
+            $new = preg_replace("/[^A-Za-z0-9_ ]/", '', (string) $field);
+            $new = trim((string) $new);
             $new = strtolower($new);
             $new = str_replace(" ", "_", $new);
 
@@ -126,7 +126,7 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
 
     public function generateToken($field)
     {
-        $md5 = md5($field);
+        $md5 = md5((string) $field);
         return substr($md5, 0, 4);
     }
 

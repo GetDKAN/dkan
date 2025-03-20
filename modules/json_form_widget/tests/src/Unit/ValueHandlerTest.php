@@ -52,7 +52,7 @@ class ValueHandlerTest extends TestCase {
       ],
     ];
     $property = "distribution";
-    $schema = json_decode($this->getComplexObjectSchema());
+    $schema = json_decode((string) $this->getComplexObjectSchema());
     $expected = [
       0 => [
         "@type" => "dcat:Distribution",
@@ -131,7 +131,7 @@ class ValueHandlerTest extends TestCase {
     $this->assertEquals($result, $expected);
 
     // Test object without values.
-    $schema = json_decode($this->getObjectSchema());
+    $schema = json_decode((string) $this->getObjectSchema());
     $result = $value_handler->handleObjectValues(NULL, "publisher", $schema);
     $this->assertEquals($result, FALSE);
   }

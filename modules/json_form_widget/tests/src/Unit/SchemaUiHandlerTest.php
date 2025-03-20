@@ -500,7 +500,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test upload_or_link widget.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv"}}}');
+    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv", "progress_indicator": "bar"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -525,6 +525,7 @@ class SchemaUiHandlerTest extends TestCase {
         '#upload_validators' => [
           'FileExtension' => ['extensions' => 'jpg pdf png csv'],
         ],
+        '#progress_indicator' => 'bar',
       ],
     ];
     $form = $ui_handler->applySchemaUi($form);

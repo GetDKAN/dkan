@@ -220,7 +220,7 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
       // $idAndVersion is a json encoded array with resource's id and version.
-      [$id, $version] = json_decode($idAndVersion);
+      [$id, $version] = json_decode((string) $idAndVersion);
       $this->delete($id, $version);
     }
   }

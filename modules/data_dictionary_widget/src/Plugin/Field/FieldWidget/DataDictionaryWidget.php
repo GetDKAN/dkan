@@ -33,7 +33,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $fields_being_modified = $form_state->get("fields_being_modified") ?? NULL;
     $op = $form_state->getTriggeringElement()['#op'] ?? NULL;
     $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, TRUE) : [];
-    $op_index = isset($form_state->getTriggeringElement()['#op']) ? explode("_", $form_state->getTriggeringElement()['#op']) : NULL;
+    $op_index = isset($form_state->getTriggeringElement()['#op']) ? explode("_", (string) $form_state->getTriggeringElement()['#op']) : NULL;
     $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
 
     // Build the data_results array to display the rows in the data table.
@@ -42,7 +42,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $form_state);
 
     $element['dictionary_fields']['#pre_render'] = [
-      [$this, 'preRenderForm'],
+      $this->preRenderForm(...),
     ];
 
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_fields, $data_results, $form_state);
@@ -70,7 +70,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
     $field_collection = $values[0]['dictionary_fields']["field_collection"]["group"] ?? [];
-    $indexes = isset($values[0]["indexes"]) ? json_decode($values[0]["indexes"]) : NULL;
+    $indexes = isset($values[0]["indexes"]) ? json_decode((string) $values[0]["indexes"]) : NULL;
 
     $data_results = !empty($field_collection) ? [
       [

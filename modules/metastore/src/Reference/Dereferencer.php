@@ -159,7 +159,7 @@ class Dereferencer {
     }
 
     if ($value) {
-      $metadata = json_decode($value);
+      $metadata = json_decode((string) $value);
       return [$metadata, $metadata->data];
     }
 

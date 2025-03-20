@@ -119,7 +119,7 @@
     },
     "license": {
       "title": "License",
-      "description": "The license dataset or API is published with. See <a href=\"https://project-open-data.cio.gov/open-licenses/\">Open Licenses</a> for more information.",
+      "description": "The license dataset or API is published with. See <a href=\"https://resources.data.gov/open-licenses/\">Open Licenses</a> for more information.",
       "type": "string",
       "format": "uri"
     },

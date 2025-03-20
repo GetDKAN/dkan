@@ -161,7 +161,7 @@ trait Helper {
 
     if ($status['load'][$item_id] == 'FAILURE') {
 
-      $report = json_decode($errors['load'][$item_id], TRUE);
+      $report = json_decode((string) $errors['load'][$item_id], TRUE);
 
       if (empty($report['errors'])) {
         // Probably a string and not a json object.

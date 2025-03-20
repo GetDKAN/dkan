@@ -80,7 +80,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * @return string
    *   Identifier.
    */
-  public function store($data, string $id = NULL) : string {
+  public function store($data, ?string $id = NULL) : string {
     $decoded = json_decode($data, TRUE);
     // Coalesce to NULL because if these values are not present, there
     // should be an error when we write the entity.

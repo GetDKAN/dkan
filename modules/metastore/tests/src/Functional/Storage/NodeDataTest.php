@@ -49,7 +49,7 @@ class NodeDataTest extends BrowserTestBase {
     $this->assertEquals(2, $datasetStorage->count(TRUE));
 
     $allPublished = $datasetStorage->retrieveAll();
-    $datasetData = json_decode($allPublished[0]);
+    $datasetData = json_decode((string) $allPublished[0]);
     $this->assertEquals('123', $datasetData->identifier);
     $this->assertEquals(1, count($allPublished));
 
@@ -92,7 +92,7 @@ class NodeDataTest extends BrowserTestBase {
     $keyword = 'some keyword';
     $hash = MetastoreService::metadataHash($keyword);
     $keywordId = $keywordStorage->retrieveByHash($hash, 'keyword');
-    $keywordMetadata = json_decode($keywordStorage->retrieve($keywordId));
+    $keywordMetadata = json_decode((string) $keywordStorage->retrieve($keywordId));
     $this->assertEquals($keyword, $keywordMetadata->data);
   }
 
@@ -110,7 +110,7 @@ class NodeDataTest extends BrowserTestBase {
     );
 
     $datasetRootedJsonData = $metastore_service->get('dataset', $uuid);
-    $retrievedDataset = json_decode($datasetRootedJsonData);
+    $retrievedDataset = json_decode((string) $datasetRootedJsonData);
 
     $this->assertEquals(
       $retrievedDataset->identifier,

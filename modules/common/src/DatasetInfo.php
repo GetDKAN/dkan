@@ -31,8 +31,6 @@ class DatasetInfo {
 
   /**
    * DatasetInfoPluginManager.
-   *
-   * @var \Drupal\common\DatasetInfoPluginManager
    */
   protected DatasetInfoPluginManager $pluginManager;
 

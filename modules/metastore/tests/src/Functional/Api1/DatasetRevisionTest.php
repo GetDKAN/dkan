@@ -121,7 +121,7 @@ class DatasetRevisionTest extends Api1TestBase {
       $count++;
 
       // Validate response object.
-      $responseBody = json_decode($response->getBody());
+      $responseBody = json_decode((string) $response->getBody());
       $this->validator->validate($response, $this->endpoint, 'post');
 
       // Validate URL and contents of response object.
@@ -152,7 +152,7 @@ class DatasetRevisionTest extends Api1TestBase {
     // Test a bad workflow state.
     $response = $this->newRevision('foo');
     $this->assertEquals(400, $response->getStatusCode());
-    $responseBody = json_decode($response->getBody());
+    $responseBody = json_decode((string) $response->getBody());
     $this->assertStringContainsString('does not exist in workflow', $responseBody->message);
     $response = $this->httpClient->get($this->endpoint, [
       RequestOptions::AUTH => $this->auth,

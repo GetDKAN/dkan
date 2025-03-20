@@ -70,14 +70,14 @@ class ArrayHelperTest extends TestCase {
 
     $definition = [
       'name' => 'distribution',
-      'schema' => json_decode($distribution_schema),
+      'schema' => json_decode((string) $distribution_schema),
     ];
     $context = [$definition['name']];
     $context_name = ArrayHelper::buildContextName($context);
     $form_state = new FormState();
     $form_state->set(ArrayHelper::buildCountProperty($context_name), 1);
     $router = FieldTypeRouter::create($container);
-    $router->setSchema(json_decode($distribution_schema));
+    $router->setSchema(json_decode((string) $distribution_schema));
     $array_helper->setBuilder($router);
 
     $result = $array_helper->handleArrayElement($definition, [], $form_state, $context);

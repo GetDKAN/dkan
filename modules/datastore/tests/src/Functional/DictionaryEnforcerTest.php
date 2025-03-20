@@ -10,6 +10,7 @@ use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use GuzzleHttp\Client;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -97,6 +98,11 @@ class DictionaryEnforcerTest extends BrowserTestBase {
   protected $resourceUrl;
 
   /**
+   * HTTP Client.
+   */
+  protected Client $httpClient;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
@@ -119,6 +125,10 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $this->resourceUrl = $this->container->get('stream_wrapper_manager')
       ->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)
       ->getExternalUrl();
+    $this->httpClient = $this->container->get('http_client_factory')
+      ->fromOptions([
+        'base_uri' => $this->baseUrl,
+      ]);
   }
 
   /**
@@ -181,7 +191,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     // Publish should return FALSE, because the node was already published.
     $this->assertFalse($this->metastore->publish('data-dictionary', $dict_id));
 
-    // Set global data-dictinary in metastore config.
+    // Set global data-dictionary in metastore config.
     $metastore_config = $this->config('metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
       ->set('data_dictionary_sitewide', $dict_id)
@@ -270,8 +280,20 @@ class DictionaryEnforcerTest extends BrowserTestBase {
           'd',
         ],
       ],
-      'numOfRows' => 3,
+      'numOfRows' => 8,
     ], $result);
+
+    //  Validate boolean values
+    $column_e = [];
+    $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0");
+    if ($response->getStatusCode() === 200) {
+      $data = json_decode($response->getBody()->getContents(), true);
+      if (isset($data['results']) && is_array($data['results'])) {
+        $column_e = array_column($data['results'], 'e');
+      }
+    }
+    $expected = ['0', NULL, '1', '0', '1', '0', '1', '0'];
+    $this->assertSame($expected, $column_e);
   }
 
 }

@@ -18,22 +18,16 @@ class ResourceImporter extends Transform {
 
   /**
    * DKAN's Drupal files service.
-   *
-   * @var \Drupal\common\Util\DrupalFiles
    */
   private DrupalFiles $drupalFiles;
 
   /**
    * File URL generator service.
-   *
-   * @var \Drupal\Core\File\FileUrlGeneratorInterface
    */
   private FileUrlGeneratorInterface $fileUrlGenerator;
 
   /**
    * Drupal's file system service.
-   *
-   * @var \Drupal\Core\File\FileSystemInterface
    */
   private FileSystemInterface $fileSystem;
 

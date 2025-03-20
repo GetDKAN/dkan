@@ -93,7 +93,7 @@ class MetastoreService implements ContainerInjectionInterface {
     $schemas = [];
     foreach ($this->schemaRetriever->getAllIds() as $id) {
       $schema = $this->schemaRetriever->retrieve($id);
-      $schemas[$id] = json_decode($schema);
+      $schemas[$id] = json_decode((string) $schema);
     }
     return $schemas;
   }
@@ -104,7 +104,7 @@ class MetastoreService implements ContainerInjectionInterface {
   public function getSchema($identifier) {
     $schema = $this->schemaRetriever->retrieve($identifier);
 
-    return json_decode($schema);
+    return json_decode((string) $schema);
   }
 
   /**
@@ -399,7 +399,7 @@ class MetastoreService implements ContainerInjectionInterface {
       if ($json_data_original) {
         $patched = (new Patch())->apply(
           json_decode($json_data_original),
-          json_decode($json_data)
+          json_decode((string) $json_data)
         );
 
         $new = $this->validMetadataFactory->get(json_encode($patched), $schema_id);
@@ -462,7 +462,7 @@ class MetastoreService implements ContainerInjectionInterface {
   public function swapReferences(RootedJsonData $object): RootedJsonData {
     $no_schema_object = $this->getValidMetadataFactory()->get("$object", NULL);
     foreach ($no_schema_object->get('$') as $property => $value) {
-      if (substr_count($property, "%Ref:") > 0) {
+      if (substr_count((string) $property, "%Ref:") > 0) {
         $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
       }
     }
@@ -535,7 +535,7 @@ class MetastoreService implements ContainerInjectionInterface {
     $array = $object->get('$');
 
     foreach ($array as $property => $value) {
-      if (substr_count($property, $prefix) > 0) {
+      if (substr_count((string) $property, $prefix) > 0) {
         unset($array[$property]);
       }
     }

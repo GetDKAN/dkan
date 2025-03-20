@@ -35,9 +35,9 @@ class DatastoreInfoTest extends DatasetInfoTest {
     $this->assertCount(2, $info['latest_revision']['distributions']);
 
     $downloadUrl1 = $metadata->{"$.distribution[0].downloadURL"};
-    $this->assertEquals(md5($downloadUrl1), $info['latest_revision']['distributions'][0]['resource_id']);
+    $this->assertEquals(md5((string) $downloadUrl1), $info['latest_revision']['distributions'][0]['resource_id']);
     $downloadUrl2 = $metadata->{"$.distribution[1].downloadURL"};
-    $this->assertEquals(md5($downloadUrl2), $info['latest_revision']['distributions'][1]['resource_id']);
+    $this->assertEquals(md5((string) $downloadUrl2), $info['latest_revision']['distributions'][1]['resource_id']);
 
     $this->assertEquals('waiting', $info['latest_revision']['distributions'][0]['fetcher_status']);
     $this->assertEquals(0, $info['latest_revision']['distributions'][0]['fetcher_percent_done']);

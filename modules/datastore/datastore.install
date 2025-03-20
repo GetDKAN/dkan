@@ -137,11 +137,11 @@ function datastore_update_9003(&$sandbox) {
   // Drop the current primary keys.
   $schema->dropPrimaryKey($table_name);
 
-  $query = "
-      ALTER TABLE {$table_name}
+  $query = '
+      ALTER TABLE {'. $table_name . '}
       ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
       ADD COLUMN timestamp INT NOT NULL DEFAULT 0
-  ";
+  ';
   \Drupal::database()->query($query);
 }
 
@@ -157,15 +157,25 @@ function datastore_update_9004(&$sandbox) {
     // Drop the current primary keys.
     $schema->dropPrimaryKey($table_name);
 
-    $query = "
-        ALTER TABLE {$table_name}
+    $query = '
+        ALTER TABLE {'. $table_name . '}
         ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         ADD COLUMN timestamp INT NOT NULL DEFAULT 0
-    ";
+    ';
     \Drupal::database()->query($query);
   }
   else {
     \Drupal::logger('datstore')->notice("No schema update required for $table_name, skipping update.");
   }
 
+}
+
+/**
+ * Update datastore.settings, cast purge_file and purge_table to bool.
+ */
+function datastore_update_9005() {
+  $config = \Drupal::service('config.factory')->getEditable('datastore.settings');
+  $config->set('purge_file', (bool) $config->get('purge_file'));
+  $config->set('purge_table', (bool) $config->get('purge_table'));
+  $config->save();
 }

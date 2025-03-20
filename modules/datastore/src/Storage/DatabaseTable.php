@@ -205,7 +205,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *   Drupal Schema API array.
    */
   protected function addIndexInfo(array &$schema): void {
-    if (!str_contains($this->connection->getConnectionOptions()['driver'], 'mysql')) {
+    if (!str_contains((string) $this->connection->getConnectionOptions()['driver'], 'mysql')) {
       return;
     }
 

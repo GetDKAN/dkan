@@ -135,7 +135,7 @@ class DateRange extends Datetime {
    */
   public static function getFormattedTime(mixed $time) {
     $formatted = !empty($time) ? $time : '00:00:00';
-    if (strlen($formatted) == 5) {
+    if (strlen((string) $formatted) == 5) {
       $formatted = $formatted . ':00';
     }
     return $formatted;
@@ -157,7 +157,7 @@ class DateRange extends Datetime {
     // Add default value for start and end dates.
     $default = !empty($element['#default_value']) ? $element['#default_value'] : '';
     $matches = [];
-    if (preg_match('/(.*)\/(.*)/', $default, $matches)) {
+    if (preg_match('/(.*)\/(.*)/', (string) $default, $matches)) {
       $start_date = new DrupalDateTime($matches[1], date_default_timezone_get());
       $element['start_date']['#default_value'] = $start_date;
       $end_date = new DrupalDateTime($matches[2], date_default_timezone_get());
