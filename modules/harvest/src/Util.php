@@ -48,7 +48,7 @@ class Util {
   /**
    * Get dataset id from decoded dataset json.
    *
-   * @param object $dataset
+   * @param object|string $dataset
    *   The dataset content.
    *
    * @return string
@@ -56,7 +56,7 @@ class Util {
    *
    * @throws \Exception
    */
-  public static function getDatasetId(object $dataset): string {
+  public static function getDatasetId(object|string $dataset): string {
     if (!is_object($dataset)) {
       throw new \Exception("The dataset " . json_encode($dataset) . " is not an object.");
     }
