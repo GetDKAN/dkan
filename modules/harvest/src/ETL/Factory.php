@@ -42,7 +42,7 @@ class Factory {
   /**
    * Factory constructor.
    *
-   * @param object $harvest_plan
+   * @param object|string $harvest_plan
    *   The harvest.
    * @param object $item_storage
    *   The item storage.
@@ -54,7 +54,7 @@ class Factory {
    * @throws \Exception
    */
   public function __construct(
-    object $harvest_plan,
+    object|string $harvest_plan,
     object $item_storage,
     object $hash_storage,
     ClientInterface $client = NULL,
@@ -128,7 +128,7 @@ class Factory {
   /**
    * Validate harvest plan against schema.
    *
-   * @param object $harvest_plan
+   * @param object|string|null $harvest_plan
    *   The harvest plan object to test.
    *
    * @return bool
@@ -136,7 +136,7 @@ class Factory {
    *
    * @throws \Exception
    */
-  public static function validateHarvestPlan(object $harvest_plan): bool {
+  public static function validateHarvestPlan(object|string|null $harvest_plan): bool {
     if (!is_object($harvest_plan)) {
       throw new \Exception("Harvest plan must be a php object.");
     }
