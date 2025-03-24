@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest;
+namespace Drupal\Tests\Unit\harvest;
 
 use Drupal\harvest\Util;
 use PHPUnit\Framework\TestCase;

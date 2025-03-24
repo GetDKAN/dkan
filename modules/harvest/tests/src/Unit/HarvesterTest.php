@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest;
+namespace Drupal\Tests\Unit\harvest;
 
 use Drupal\harvest\ETL\Factory;
 use Drupal\harvest\Harvester;
@@ -8,6 +8,7 @@ use Drupal\harvest\ResultInterpreter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Drupal\Tests\harvest\MemStore;
 
 class HarvesterTest extends TestCase {
 
@@ -19,7 +20,7 @@ class HarvesterTest extends TestCase {
 
   public function basicData(): array {
     return [
-      ["file://" . __DIR__ . "/json/data.json"],
+      ["file://" . __DIR__ . "/../json/data.json"],
       ["https://demo.getdkan.org/data.json"],
     ];
   }
@@ -38,7 +39,7 @@ class HarvesterTest extends TestCase {
           new Response(
               200,
               [],
-              file_get_contents(__DIR__ . "/json/data3.json")
+              file_get_contents(__DIR__ . "/../json/data3.json")
           )
       );
 
@@ -102,7 +103,7 @@ class HarvesterTest extends TestCase {
   }
 
   private function getPlan(string $name) {
-    $path = __DIR__ . "/json/{$name}.json";
+    $path = __DIR__ . "/../json/{$name}.json";
     $content = file_get_contents($path);
     return json_decode($content);
   }
