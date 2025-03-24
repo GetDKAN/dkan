@@ -158,7 +158,7 @@ class Harvester {
     $transformed_items = [];
 
     foreach ($items as $identifier => $item) {
-      $transformed_item = $this->executeTransformersSingle($transformers, $item, $identifier);
+      $transformed_item = $this->executeTransformersSingle($transformers, $item, $identifier, $result);
 
       if (!is_string($transformed_item)) {
         $transformed_items[$identifier] = $transformed_item;
@@ -177,11 +177,13 @@ class Harvester {
    *   The item to transform.
    * @param string $identifier
    *   The item identifier.
+   * @param array $result
+   *   The result object.
    *
    * @return object
    *   The transformed item.
    */
-  private function executeTransformersSingle(array $transformers, object $item, string $identifier) {
+  private function executeTransformersSingle(array $transformers, object $item, string $identifier, array &$result) {
     $transformed_item = clone $item;
 
     foreach ($transformers as $transformer) {
