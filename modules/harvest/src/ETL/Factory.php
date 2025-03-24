@@ -128,7 +128,7 @@ class Factory {
   /**
    * Validate harvest plan against schema.
    *
-   * @param object|string|NULL $harvest_plan
+   * @param object|string|null $harvest_plan
    *   The harvest plan object to test.
    *
    * @return bool
