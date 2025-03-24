@@ -117,12 +117,10 @@ class ResultInterpreter {
       return $count;
     }
 
-    foreach ($this->result['status']['transform'] as $results) {
-      $count = array_reduce($results, function ($count, $result) {
-        if ($result == "FAILURE") {
-          $count++;
-        }
-      });
+    foreach ($this->result['status']['transform'] as $transform) {
+      $count += array_sum(array_map(function($transform_status) {
+        return $transform_status == "FAILURE" ? 1 : 0;
+      }, $transform));
     }
 
     return $count;
