@@ -48,7 +48,7 @@ class Factory {
    *   The item storage.
    * @param object $hash_storage
    *   The item storage.
-   * @param \GuzzleHttp\ClientInterface $client
+   * @param ?\GuzzleHttp\ClientInterface $client
    *   The http client.
    *
    * @throws \Exception
@@ -57,7 +57,7 @@ class Factory {
     object|string $harvest_plan,
     object $item_storage,
     object $hash_storage,
-    ClientInterface $client = NULL,
+    ?ClientInterface $client = NULL,
   ) {
     if (self::validateHarvestPlan($harvest_plan)) {
       $this->harvestPlan = $harvest_plan;
@@ -112,13 +112,13 @@ class Factory {
    *
    * @param string $class
    *   The name of the class.
-   * @param object $config
+   * @param ?object $config
    *   Optional class config.
    *
    * @return mixed
    *   The requested object.
    */
-  private function getOne(string $class, object $config = NULL) {
+  private function getOne(string $class, ?object $config = NULL) {
     if (!$config) {
       $config = $this->harvestPlan;
     }
