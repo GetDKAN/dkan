@@ -118,7 +118,7 @@ class ResultInterpreter {
     }
 
     foreach ($this->result['status']['transform'] as $transform) {
-      $count += array_sum(array_map(function($transform_status) {
+      $count += array_sum(array_map(function ($transform_status) {
         return $transform_status == "FAILURE" ? 1 : 0;
       }, $transform));
     }
