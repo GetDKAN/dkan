@@ -115,22 +115,18 @@ abstract class Load {
       $hash = $hash_object->hash ?? NULL;
     }
 
-    if (empty($hash)) {
+    return match (TRUE) {
       // There was no existing hash in storage, so this is a new item.
-      return Harvester::HARVEST_LOAD_NEW_ITEM;
-    }
-
-    if ($hash === Util::generateHash($item) || $hash === Util::legacyGenerateHash($item)) {
+      empty($hash) => Harvester::HARVEST_LOAD_NEW_ITEM,
       // Hash matches item's current or legacy hash, so no change.
       // Legacy hash might match if the hash was generated
       // before we changed the hashing system.
-      return Harvester::HARVEST_LOAD_UNCHANGED;
-    }
-    else {
+      $hash === Util::generateHash($item) || $hash === Util::legacyGenerateHash($item) => Harvester::HARVEST_LOAD_UNCHANGED,
       // We do have a past hash record, but neither new nor
       // legacy hash matched, so update the dataset.
-      return Harvester::HARVEST_LOAD_UPDATED_ITEM;
-    }
+      default => Harvester::HARVEST_LOAD_UPDATED_ITEM,
+    };
+
   }
 
 }
