@@ -48,7 +48,7 @@ class Factory {
    *   The item storage.
    * @param object $hash_storage
    *   The item storage.
-   * @param \GuzzleHttp\ClientInterface|null $client
+   * @param \GuzzleHttp\ClientInterface $client
    *   The http client.
    *
    * @throws \Exception
@@ -128,7 +128,7 @@ class Factory {
   /**
    * Validate harvest plan against schema.
    *
-   * @param object|string|null $harvest_plan
+   * @param object|string|NULL $harvest_plan
    *   The harvest plan object to test.
    *
    * @return bool
@@ -136,7 +136,7 @@ class Factory {
    *
    * @throws \Exception
    */
-  public static function validateHarvestPlan(object|string|null $harvest_plan): bool {
+  public static function validateHarvestPlan(object|string|NULL $harvest_plan): bool {
     if (!is_object($harvest_plan)) {
       throw new \Exception("Harvest plan must be a php object.");
     }
