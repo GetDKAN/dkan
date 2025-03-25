@@ -218,7 +218,7 @@ class HarvestUtility {
     foreach ($old_runs_table->retrieveAll() as $timestamp) {
       if ($data = $old_runs_table->retrieve($timestamp)) {
         // Explicitly decode the data as an array.
-        $this->runRepository->storeRun(json_decode((string) $data, TRUE), $plan_id, $id);
+        $this->runRepository->storeRun(json_decode((string) $data, TRUE), $plan_id, $timestamp);
       }
     }
   }
