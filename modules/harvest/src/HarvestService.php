@@ -252,7 +252,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @return array
    *   Array of status info from the run.
    */
-  public function getHarvestRunResult(string $plan_id, string $timestamp = NULL): array {
+  public function getHarvestRunResult(string $plan_id, ?string $timestamp = NULL): array {
     if (!is_null($timestamp)) {
       // This one has to keep using the loadEntity method as it may be looking
       // up something other than the most recent run.
