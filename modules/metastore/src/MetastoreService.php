@@ -270,13 +270,8 @@ class MetastoreService implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier, bool $published = TRUE): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier, $published);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
-
-    $event = new Event($data, function ($data) {
-      return $data instanceof RootedJsonData;
-    });
-
+    $event = new Event($data);
     $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET);
-
     return $event->getData();
   }
 
