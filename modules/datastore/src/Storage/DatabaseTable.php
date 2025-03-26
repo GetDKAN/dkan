@@ -51,9 +51,14 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
+    $this->connection = $connection;
     $this->resource = $resource;
     $this->logger = $loggerChannel;
     parent::__construct($connection, $eventDispatcher);
+
+    if (!$this->schema && $this->tableExist($this->getTableName())) {
+      $this->setSchemaFromTable();
+    }
 
   }
 
@@ -186,6 +191,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
     $schema = ['fields' => []];
     foreach ($fieldsInfo as $info) {
+      if (!isset($info->Field)) {
+        continue;
+      }
       $name = $info->Field;
       $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
       $schema['fields'][$name] += [

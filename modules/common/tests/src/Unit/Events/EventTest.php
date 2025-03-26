@@ -24,12 +24,11 @@ class EventTest extends TestCase
 
     \Drupal::setContainer($container);
 
-    $event = new Event('hello');
-    $eventDispatcher->dispatch($event, 'test_event');
+    $event = new Event('hello', function ($data) {
+      return is_string($data);
+    });
 
-    if (!is_string($event->getData())) {
-      throw new \Exception("Invalid event data.");
-    }
+    $eventDispatcher->dispatch($event, 'test_event');
   }
 
 }

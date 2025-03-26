@@ -2,11 +2,11 @@
 
 namespace Drupal\common\Storage;
 
-use Drupal\common\Events\Event;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\SchemaObjectExistsException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Drupal\common\Events\Event;
 
 /**
  * Base class for database storage methods.

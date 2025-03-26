@@ -3,6 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\common\Events\Event;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -14,7 +15,6 @@ use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * The metastore service.
@@ -92,37 +92,6 @@ class MetastoreService implements ContainerInjectionInterface {
     $this->validMetadataFactory = $validMetadataFactory;
     $this->logger = $loggerChannel;
     $this->eventDispatcher = $eventDispatcher;
-  }
-
-  /**
-   * Dispatch an event and return the (possibly) modified data.
-   *
-   * This method simulates the deprecated event dispatcher trait.
-   *
-   * @param string $eventName
-   *   The event name.
-   * @param mixed $data
-   *   The data to dispatch.
-   * @param callable|null $validate
-   *   Optional validation callback.
-   *
-   * @return mixed
-   *   The (possibly) modified data.
-   */
-  private function dispatchEvent(string $eventName, $data, callable $validate = NULL) {
-    $event = new GenericEvent($data);
-    $event = $this->eventDispatcher->dispatch($event, $eventName);
-
-    if (method_exists($event, 'getException') && $event->getException() !== NULL) {
-      $this->logger->error('A JSON string failed validation.');
-      return $data;
-    }
-
-    $modifiedData = method_exists($event, 'getSubject')
-      ? $event->getSubject()
-      : (method_exists($event, 'getData') ? $event->getData() : $data);
-
-    return ($validate !== NULL && !$validate($modifiedData)) ? $data : $modifiedData;
   }
 
   /**
@@ -217,9 +186,20 @@ class MetastoreService implements ContainerInjectionInterface {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll($start, $length, $unpublished);
     $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 
-    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
-      return !is_array($data) ? FALSE : (count($data) === 0 || reset($data) instanceof RootedJsonData);
-    });
+    $validator = function ($data) {
+      if (!is_array($data)) {
+        return FALSE;
+      }
+      if (count($data) == 0) {
+        return TRUE;
+      }
+      return reset($data) instanceof RootedJsonData;
+    };
+
+    $event = new Event($objects, $validator);
+    $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET_ALL);
+
+    return $event->getData();
   }
 
   /**
@@ -240,9 +220,14 @@ class MetastoreService implements ContainerInjectionInterface {
       function ($jsonString) use ($schema_id) {
         try {
           $data = $this->validMetadataFactory->get($jsonString, $schema_id);
-          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
+
+          $event = new Event($data, function ($data) {
             return $data instanceof RootedJsonData;
           });
+
+          $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET);
+
+          return $event->getData();
         }
         catch (\Exception) {
           $this->logger->error('A JSON string failed validation.', [
@@ -285,7 +270,14 @@ class MetastoreService implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier, bool $published = TRUE): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier, $published);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
-    return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+
+    $event = new Event($data, function ($data) {
+      return $data instanceof RootedJsonData;
+    });
+
+    $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET);
+
+    return $event->getData();
   }
 
   /**
