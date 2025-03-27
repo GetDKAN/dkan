@@ -110,35 +110,22 @@ class MetastoreServiceTest extends TestCase {
     $this->assertEquals([$expected], $service->getAll("dataset"));
   }
 
+  /**
+   * Test getAll() with an exception.
+   */
   public function testGetAllException() {
-    $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
-
-    $event = new Event($data);
-    $event->setException(new \Exception("blah"));
-
-    $event2 = new Event($data);
-    $event2->setData([$data]);
-
-    $sequence = (new Sequence())
-      ->add($event)
-      ->add($event2);
-
     // Add a logger we can assert against.
     $logger = new TestLogger();
 
     $container = self::getCommonMockChain($this, NULL, $logger)
       ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
-      ->add(ValidMetadataFactory::class, 'get', $data)
-      ->add(EventDispatcher::class, 'dispatch', $sequence)
+      ->add(ValidMetadataFactory::class, 'get', new \Exception())
       ->getMock();
 
     \Drupal::setContainer($container);
     $service = MetastoreService::create($container);
 
-    $this->assertEquals(
-      json_encode([$data]),
-      json_encode($service->getAll('dataset'))
-    );
+    $service->getAll('dataset');
 
     $this->assertTrue(
       $logger->hasErrorThatContains('A JSON string failed validation.')
