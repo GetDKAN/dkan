@@ -108,7 +108,6 @@ class FormBuilder implements ContainerInjectionInterface {
       $properties = array_keys((array) $this->schema->properties);
       $weights = $this->schemaUiHandler->getSchemaUi() ? $this->schemaUiHandler->getFieldWeights() : [];
 
-      // Sort properties by weight
       usort($properties, function ($a, $b) use ($weights) {
         return ($weights[$a] ?? 0) <=> ($weights[$b] ?? 0);
       });
