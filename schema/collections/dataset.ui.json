@@ -6,7 +6,8 @@
   },
   "title": {
     "ui:options": {
-      "description": "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery."
+      "description": "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery.",
+      "weight": 2
     }
   },
   "identifier": {
@@ -18,7 +19,8 @@
     "ui:options": {
       "widget": "textarea",
       "rows": 5,
-      "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest."
+      "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
+      "weight": 1
     }
   },
   "contactPoint": {

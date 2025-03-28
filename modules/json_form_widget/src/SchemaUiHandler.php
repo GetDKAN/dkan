@@ -353,4 +353,20 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     return $element;
   }
 
+  /**
+   * Extracts weights from the UI schema.
+   *
+   * @return array
+   *   An array of weights by field name.
+   */
+  public function getFieldWeights(): array {
+    $weights = [];
+
+    foreach ((array) $this->schemaUi ?? [] as $property => $spec) {
+      $weights[$property] = $spec->{"ui:options"}->weight ?? 0;
+    }
+
+    return $weights;
+  }
+
 }

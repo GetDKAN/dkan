@@ -103,8 +103,18 @@ class FormBuilder implements ContainerInjectionInterface {
    * Build form based on schema.
    */
   public function getJsonForm($data, $form_state = NULL) {
-    if ($this->schema) {
-      $properties = array_keys((array) $this->schema->properties);
+    if (!$this->schema) {
+      return [];
+    }
+
+    // Get property names and weights (if available)
+    $properties = array_keys((array) $this->schema->properties);
+    $weights = $this->schemaUiHandler->getSchemaUi() ? $this->schemaUiHandler->getFieldWeights() : [];
+
+    // Sort properties by weight
+    usort($properties, function ($a, $b) use ($weights) {
+      return ($weights[$a] ?? 0) <=> ($weights[$b] ?? 0);
+    });
 
       foreach ($properties as $property) {
         $type = $this->schema->properties->{$property}->type ?? "string";
