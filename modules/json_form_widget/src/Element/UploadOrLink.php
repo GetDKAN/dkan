@@ -4,6 +4,7 @@ namespace Drupal\json_form_widget\Element;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\file\Element\ManagedFile;
 use Drupal\file\Entity\File;
@@ -132,8 +133,8 @@ class UploadOrLink extends ManagedFile {
     return [
       '#type' => 'radios',
       '#options' => [
-        static::TYPE_UPLOAD => t('Upload Data File'),
-        static::TYPE_REMOTE => t('Link to Data File'),
+        static::TYPE_UPLOAD => new TranslatableMarkup('Upload Data File'),
+        static::TYPE_REMOTE => new TranslatableMarkup('Link to Data File'),
       ],
       '#default_value' => $file_url_type,
       '#prefix' => '<div class="container-inline">',
@@ -149,9 +150,9 @@ class UploadOrLink extends ManagedFile {
   private static function getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible) {
     return [
       '#type' => 'url',
-      '#title' => t('Remote URL'),
+      '#title' => new TranslatableMarkup('Remote URL'),
       '#title_display' => 'invisible',
-      '#description' => t('This must be an external URL such as <em>http://example.com</em>.'),
+      '#description' => new TranslatableMarkup('This must be an external URL such as <em>http://example.com</em>.'),
       '#default_value' => $file_url_remote,
       // Only show this field when the 'remote' radio is selected.
       '#states' => ['visible' => $remote_visible],
