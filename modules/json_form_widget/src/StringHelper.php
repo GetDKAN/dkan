@@ -6,7 +6,7 @@ use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element\FormElement;
+use Drupal\Core\Render\Element\FormElementBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -91,7 +91,7 @@ class StringHelper implements ContainerInjectionInterface {
 
     // Add extra validate if element type is email.
     if ($element['#type'] === 'email') {
-      $element['#element_validate'][] = $this->validateEmail(...);
+      $element['#element_validate'][] = [$this, 'validateEmail'];
       $element['#default_value'] = str_replace('mailto:', '', $element['#default_value'] ?? '');
     }
 
@@ -170,7 +170,7 @@ class StringHelper implements ContainerInjectionInterface {
    * Validate string pattern.
    */
   public function validatePattern(&$element, FormStateInterface $form_state, &$complete_form) {
-    FormElement::validatePattern($element, $form_state, $complete_form);
+    FormElementBase::validatePattern($element, $form_state, $complete_form);
   }
 
   /**
@@ -180,7 +180,7 @@ class StringHelper implements ContainerInjectionInterface {
     $element['#maxlength'] = $property->maxLength ?? self::TEXTFIELD_MAXLENGTH;
     if (!empty($property->pattern)) {
       $element['#pattern'] = $property->pattern;
-      $element['#element_validate'][] = $this->validatePattern(...);
+      $element['#element_validate'][] = [$this, 'validatePattern'];
     }
   }
 
