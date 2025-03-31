@@ -115,6 +115,7 @@ commands:
                 name: Install site
                 command: |
                   ddev composer config repositories.dkan path dkan
+                  ddev composer require --dev osteel/openapi-httpfoundation-testing
                   ddev composer require getdkan/dkan:@dev --no-install -W
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
