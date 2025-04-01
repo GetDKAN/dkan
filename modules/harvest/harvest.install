@@ -196,3 +196,13 @@ function harvest_update_8011(&$sandbox) {
     $harvest_utility->harvestRunsUpdate();
     return 'Harvest plan specific run tables coalesced into table harvest_runs.';
 }
+
+/**
+ * Updates namespace for harvest type.
+ */
+function harvest_update_10001()
+{
+  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+  $harvest_utility = \Drupal::service('dkan.harvest.utility');
+  $harvest_utility->harvestNammespaceUpdate();
+}

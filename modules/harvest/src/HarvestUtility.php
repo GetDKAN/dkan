@@ -242,6 +242,44 @@ class HarvestUtility {
   }
 
   /**
+   * Update extract type namespace.
+   * @param string $plan_id
+   *   The harvest plan to update.
+   *
+   */
+  public function updateTypeNamespace(string $plan_id)
+  {
+    try {
+      $plan = $this->harvestService->getHarvestPlanObject($plan_id);
+      $this->logger->notice(json_encode($plan));
+
+      if (isset($plan->extract->type)) {
+        $plan->extract->type = str_replace('\\Harvest', '\\Drupal\\harvest', $plan->extract->type);
+        $this->logger->notice($plan->extract->type);
+        $this->harvestService->registerHarvest($plan);
+      }
+    }
+    catch (\Exception $exception) {
+      $this->logger->notice("Namespace update failed for %id: %msg", ['%id' => $plan_id, '%msg' => $exception->getMessage()] );
+    }
+  }
+
+  /**
+   * Update the extract type namespace for all plans.
+   */
+  public function harvestNammespaceUpdate()
+  {
+    $plan_ids = array_merge(
+      $this->harvestService->getAllHarvestIds(),
+      array_values($this->findOrphanedHarvestDataIds())
+    );
+    foreach ($plan_ids as $plan_id) {
+      $this->logger->notice('Updating namespace for ' . $plan_id);
+      $this->updateTypeNamespace($plan_id);
+    }
+  }
+
+  /**
    * Get the ids from the temp harvest run table.
    *
    * Only needed for harvest_update_8010.
