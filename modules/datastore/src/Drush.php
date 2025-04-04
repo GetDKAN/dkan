@@ -12,7 +12,6 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
-use Illuminate\Support\LazyCollection;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use Procrastinator\Result;
@@ -27,30 +26,25 @@ class Drush extends DrushCommands {
   /**
    * @command dkan:split
    */
-  public function split(string $source, int $chunk_size) {
+  public function split(string $source, int $split_size) {
     $reader = Reader::createFromPath($source);
     $reader->setHeaderOffset(0);
-
-//    $statement = (new Statement())
-//      ->offset(0)
-//      ->limit($chunk_size);
-//    $result = $statement->process($reader);
-//    $result->getRecords();
-    // @see chunkBy()
-
-    // @todo count() took 5 minutes on 14 million records.
-    // $reader->count();
-    $source_count = 14676913;
-    $this->output()->writeln('File length: ' . $source_count);
-    $chunk_count = 1;
-    $total_chunked = 0;
-    // Use a closure around a generator, so we don't use up all the memory.
-    $collection = LazyCollection::make(static fn () => yield from $reader->getRecords());
+    $header = $reader->getHeader();
+    $split_count = 1;
+    $total_split = 0;
     do {
-      Writer::createFromPath($source . '.chunked-' . $chunk_count++ . '.csv', 'w')
-        ->insertAll($collection->slice($total_chunked, $chunk_size));
-      $total_chunked += $chunk_size;
-    } while ($total_chunked < $source_count);
+      $slice = $reader->slice($total_split, $split_size);
+      if ($slice->count() > 0) {
+        $this->output()->writeln($path_name = $source . '.split-' . $split_count++ . '.csv');
+        $writer = Writer::createFromPath($path_name, 'w');
+        $writer->insertOne($header);
+        $writer->insertAll($slice);
+        $total_split += $split_size;
+      }
+      else {
+        break;
+      }
+    } while (TRUE);
   }
 
   /**
