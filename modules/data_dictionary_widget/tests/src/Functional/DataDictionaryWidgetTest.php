@@ -39,19 +39,39 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
    * Test the behavior of the Data-Dictionary-Widget.
    */
   public function testDataDictionaryWidgetBehavior() {
-    $permissions = ['administer data dictionary settings', 'create data content', 'administer site configuration', 'administer content types', 'bypass node access'];
-    $this->drupalLogin($this->drupalCreateUser($permissions));
+    $this->drupalLogin(
+        $this->drupalCreateUser([], NULL, TRUE)
+      );
+
     $session = $this->assertSession();
-
     $this->drupalGet('node/add/data', ['query' => ['schema' => 'data-dictionary']]);
-    $this->assertSession()->statusCodeEquals(200);
     $session->addressEquals('node/add/data?schema=data-dictionary');
-    $session->elementTextContains('css', '.page-title', 'Create Data');
-    $session->elementExists('css', '.field--widget-data-dictionary-widget');
-    $session->elementExists('css', '#edit-field-json-metadata-0-identifier');
-    $session->elementExists('css', '#edit-field-json-metadata-0-title');
-    $session->elementExists('css', '#edit-field-json-metadata-0-dictionary-fields-add-row-button');
+    $this->assertSession()->statusCodeEquals(200);
 
+    $page = $this->getSession()->getPage();
+    $page->find('css', '[id^="edit-title-0-value"]')->setValue('Test Dictionary');
+    $page->find('css', '[id^="edit-field-json-metadata-0-title"]')->setValue('Test Dictionary');
+
+    // Add a new field to the dictionary.
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-add-row-button"]')->click();
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-field-collection-group-name"]')->setValue('Test Name');
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-field-collection-group-title"]')->setValue('Test Title');
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-field-collection-group-description"]')->setValue('Test Desc');
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-field-collection-group-actions-save-settings"]')->click();
+
+    // Edit the description field and confirm it has updated.
+    $page->find('css', '[id^="edit_0"]')->press();
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-edit-fields-0-update-field-actions-save-update"]');
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-edit-fields-0-update-field-actions-cancel-updates"]');
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-edit-fields-0-update-field-actions-delete-field"]');
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-edit-fields-0-description"]')->setValue('Test Desc Update');
+    $page->find('css', '[id^="edit-field-json-metadata-0-dictionary-fields-edit-fields-0-update-field-actions-save-update"]')->press();
+    $tableValue = $page->find('css', '[id^="field-json-metadata-dictionary-edit-field"]')->getText();
+    $this->assertSame('Test Name Test Title Data Type: string Format: default Description: Test Desc Update', $tableValue, "Expected text not found in tbody.");
+
+    // Confirm successful save.
+    $page->find('css', '[id^="edit-submit"]')->click();
+    $this->assertSession()->pageTextContains('Data Test Dictionary has been created');
   }
 
 }
