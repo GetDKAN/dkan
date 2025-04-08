@@ -24,30 +24,6 @@ use Procrastinator\Result;
 class Drush extends DrushCommands {
 
   /**
-   * @command dkan:split
-   */
-  public function split(string $source, int $split_size) {
-    $reader = Reader::createFromPath($source);
-    $reader->setHeaderOffset(0);
-    $header = $reader->getHeader();
-    $split_count = 1;
-    $total_split = 0;
-    do {
-      $slice = $reader->slice($total_split, $split_size);
-      if ($slice->count() > 0) {
-        $this->output()->writeln($path_name = $source . '.split-' . $split_count++ . '.csv');
-        $writer = Writer::createFromPath($path_name, 'w');
-        $writer->insertOne($header);
-        $writer->insertAll($slice);
-        $total_split += $split_size;
-      }
-      else {
-        break;
-      }
-    } while (TRUE);
-  }
-
-  /**
    * The metastore service.
    *
    * @var \Drupal\metastore\MetastoreService
@@ -340,6 +316,58 @@ class Drush extends DrushCommands {
     }
     $this->output()->writeln('No resource for identifier: ' . $identifier);
     return DrushCommands::EXIT_FAILURE;
+  }
+
+  /**
+   * Split a localized resource by records.
+   *
+   * @command dkan:datastore:csv-split-localized
+   *
+   * @param string $resource_id
+   *   Datastore resource ID.
+   * @param int $split_size
+   *   Size to split up, in records.
+   */
+  public function splitLocalized(string $resource_id, int $split_size) {
+    // Does the resource have a localized file?
+    $resource = $this->resourceMapper->get($resource_id, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE);
+    if ($resource && ($file_path = $resource->getFilePath(TRUE))) {
+      return $this->split($file_path, $split_size);
+    }
+    $this->output()->writeln('Resource ' . $resource_id . ' has not been localized.');
+    return DrushCommands::EXIT_FAILURE;
+  }
+
+  /**
+   * Split a CSV file per records.
+   *
+   * @command dkan:datastore:csv-split
+   *
+   * @param string $source
+   *   String path to source CSV.
+   * @param int $split_size
+   *   Size to split up, in records.
+   */
+  public function split(string $source, int $split_size) {
+    $reader = Reader::createFromPath($source);
+    $reader->setHeaderOffset(0);
+    $header = $reader->getHeader();
+    $split_count = 1;
+    $total_split = 0;
+    do {
+      $slice = $reader->slice($total_split, $split_size);
+      if ($slice->count() > 0) {
+        $this->output()->writeln($path_name = $source . '.split-' . $split_count++ . '.csv');
+        $writer = Writer::createFromPath($path_name, 'w');
+        $writer->insertOne($header);
+        $writer->insertAll($slice);
+        $total_split += $split_size;
+      }
+      else {
+        break;
+      }
+    } while (TRUE);
+    return DrushCommands::EXIT_SUCCESS;
   }
 
 }
