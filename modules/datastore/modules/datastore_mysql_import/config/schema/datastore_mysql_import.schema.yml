@@ -5,6 +5,3 @@ datastore_mysql_import.settings:
     remove_empty_rows:
       type: boolean
       label: 'Remove empty rows from the datastore table'
-    load_data_chunk_size:
-      type: integer
-      label: 'Chunk size in records'
