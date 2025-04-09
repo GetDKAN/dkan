@@ -122,6 +122,18 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     $this->drupalGet('node/add/data');
     $assert->statusCodeEquals(200);
     $dataset_title = 'DKANTEST dataset title';
+
+    // Quickly test adding and removing a distribution.
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-actions-actions-add"]')->click();
+    $assert->statusCodeEquals(200);
+    // Now we have two distributions.
+    $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
+    $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-actions-actions-remove"]')->click();
+    // Now we have one again.
+    $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
+    $this->assertNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
+
     $this->submitForm([
       'edit-field-json-metadata-0-value-title' => $dataset_title,
       'edit-field-json-metadata-0-value-description' => 'DKANTEST dataset description.',
