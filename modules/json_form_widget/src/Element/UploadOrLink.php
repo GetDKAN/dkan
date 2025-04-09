@@ -2,17 +2,14 @@
 
 namespace Drupal\json_form_widget\Element;
 
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\Core\Url;
 use Drupal\file\Element\ManagedFile;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
-use Drupal\json_form_widget\Entity\RemoteFile;
 
 /**
  * Provides a new Element for uploading or linking to files.
@@ -69,29 +66,45 @@ class UploadOrLink extends ManagedFile {
     }
 
     $uri = $element['#uri'] ?? NULL;
+
+    // Detect whether the remove button was clicked.
     $remove = FALSE;
     $file_remove = $form_state->get('file_remove') ?? [];
     $diff = array_diff($file_remove, $element['#array_parents']);
-
     if (!empty($file_remove) && empty($diff)) {
       $remove = TRUE;
     }
 
-    if (empty($input['fids']) && $uri && !$remove) {
+    if (empty($input['fids']) && $uri) {
       $uri = static::getFileUri($uri);
       $file = static::getManagedFile($uri);
+      // If remove was clicked, we need to unset the uri. If not, we need to add
+      // the fid to the input array.
       if ($remove) {
         $element['#uri'] = '';
       }
       else {
+        // Add filet to input array and update the entity.
+        $fo = $form_state->getFormObject();
+        $entity = $fo instanceof EntityFormInterface ? $fo->getEntity() : NULL;
+        static::updateFile($file, $entity);
         $input['fids'] = $file->id() ?? NULL;
+
       }
     }
 
-    // If the input is not empty, return the input value.
     return parent::valueCallback($element, $input, $form_state);
   }
 
+  /**
+   * Retrieve or create a file entity based on a URI.
+   *
+   * @param string $uri
+   *   The URI of the file.
+   *
+   * @return \Drupal\file\FileInterface|null
+   *   The file entity or NULL if not found or able to create.
+   */
   public static function getManagedFile(string $uri): ?FileInterface {
     $file = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
     $file = !empty($file) ? reset($file) : NULL;
@@ -149,7 +162,7 @@ class UploadOrLink extends ManagedFile {
     $remote_visible = [$file_url_type_selector => ['value' => static::TYPE_REMOTE]];
 
     $element['file_url_type'] = static::getFileUrlTypeElement($file_url_type, $access_file_url_elements);
-    // $element['file_url_remote'] = static::getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible);
+    $element['file_url_remote'] = static::getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible);
     $element = static::overrideUploadSubfield($element, $file_url_type_selector);
 
     if (!empty($element['remove_button'])) {
@@ -358,15 +371,18 @@ class UploadOrLink extends ManagedFile {
     }
     $urls = array_unique(array_filter($urls));
     foreach ($urls as $url) {
-      static::updateFile($url, $entity);
+      $uri = static::getFileUri($url);
+      $file = static::getManagedFile($uri);
+      static::updateFile($file, $entity);
     }
   }
 
+  /**
+   * Submit handler for remove button.
+   */
   public static function removeSubmit(array $form, FormStateInterface $form_state) {
     $parents = $form_state->getTriggeringElement()['#array_parents'];
     $button_key = array_pop($parents);
-    // $element = NestedArray::getValue($form, $parents);
-
     if (($button_key) == 'remove_button') {
       $form_state->set('file_remove', $parents);
     }
@@ -375,15 +391,12 @@ class UploadOrLink extends ManagedFile {
   /**
    * Find recently-uploaded file entity, set to permanent and add usage.
    *
-   * @param string $url
-   *   The URL of the file stored in the form submission.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form_state object.
+   * @param \Drupal\file\FileInterface $file
+   *   The file entity to update.
+   * @param \Drupal\Core\Entity\EntityInterface|null $entity
+   *   The entity to which the file is attached.
    */
-  public static function updateFile(string $url, ?EntityInterface $entity): ?int {
-    $uri = static::getFileUri($url);
-    $file = static::getManagedFile($uri);
-
+  public static function updateFile(FileInterface $file, ?EntityInterface $entity): ?int {
     if (!$file) {
       return NULL;
     }
