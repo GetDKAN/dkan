@@ -141,19 +141,15 @@ class UploadOrLink extends ManagedFile {
 
     $file_url_remote = static::setRemoteFile($element, $form_state);
     $file_url_remote_is_valid = isset($file_url_remote) && UrlHelper::isValid($file_url_remote, TRUE);
-    $is_remote = $file_url_remote_is_valid && $file_url_type == static::TYPE_REMOTE;
-    if ($is_remote) {
-      $element = static::loadRemoteFile($element, $file_url_remote);
-    }
 
     $access_file_url_elements = (empty($element['#files']) && !$file_url_remote_is_valid) || !$file_url_type;
-    $element['#uri'] = !isset($element['#uri']) ? $file_url_remote : $element['#uri'];
+    $element['#uri'] = $element['#uri'] ?? $file_url_remote;
 
     $file_url_type_selector = ':input[name="' . $element['#name'] . '[file_url_type]"]';
     $remote_visible = [$file_url_type_selector => ['value' => static::TYPE_REMOTE]];
 
     $element['file_url_type'] = static::getFileUrlTypeElement($file_url_type, $access_file_url_elements);
-    $element['file_url_remote'] = static::getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible);
+    // $element['file_url_remote'] = static::getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible);
     $element = static::overrideUploadSubfield($element, $file_url_type_selector);
 
     if (!empty($element['remove_button'])) {
@@ -211,24 +207,6 @@ class UploadOrLink extends ManagedFile {
       '#access' => $access_file_url_elements,
       '#weight' => 15,
     ];
-  }
-
-  /**
-   * Load remote file into element.
-   */
-  private static function loadRemoteFile($element, $file_url_remote) {
-    $remote_file = RemoteFile::load($file_url_remote);
-    $element['#files'] = [$file_url_remote => $remote_file];
-    $file_link = [
-      '#type' => 'link',
-      '#title' => $remote_file->getFileUri(),
-      '#url' => Url::fromUri($remote_file->getFileUri()),
-    ];
-    $element["file_{$file_url_remote}"]['filename'] = $file_link + ['#weight' => -10];
-    $element['#value']['file_url_type'] = static::TYPE_REMOTE;
-    $element['#value']['file_url_remote'] = $file_url_remote;
-    $element['#value']['upload'] = NULL;
-    return $element;
   }
 
   /**
