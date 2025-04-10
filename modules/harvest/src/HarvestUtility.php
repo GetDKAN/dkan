@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\Storage\DatabaseTableFactory;
@@ -11,8 +12,8 @@ use Psr\Log\LoggerInterface;
 /**
  * DKAN Harvest utility service for maintenance tasks.
  *
- * These methods generally exist to support a thin Drush layer. These are
- * methods that we don't need in the HarvestService object.
+ * These methods generally exist to support a thin Drush layer or hook_update_n.
+ * These are methods that we don't need in the HarvestService object.
  */
 class HarvestUtility {
 
@@ -47,6 +48,13 @@ class HarvestUtility {
   private LoggerInterface $logger;
 
   /**
+   * Uuid service.
+   *
+   * @var \Drupal\Component\Uuid\UuidInterface
+   */
+  private UuidInterface $uuidService;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -55,7 +63,8 @@ class HarvestUtility {
     HarvestHashesDatabaseTableFactory $hashesFactory,
     HarvestRunRepository $runRepository,
     Connection $connection,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
+    UuidInterface $uuid_service
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;
@@ -63,6 +72,7 @@ class HarvestUtility {
     $this->runRepository = $runRepository;
     $this->connection = $connection;
     $this->logger = $loggerChannel;
+    $this->uuidService = $uuid_service;
   }
 
   /**
@@ -205,10 +215,10 @@ class HarvestUtility {
    */
   public function convertRunTable(string $plan_id) {
     $old_runs_table = $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs');
-    foreach ($old_runs_table->retrieveAll() as $id) {
-      if ($data = $old_runs_table->retrieve($id)) {
+    foreach ($old_runs_table->retrieveAll() as $timestamp) {
+      if ($data = $old_runs_table->retrieve($timestamp)) {
         // Explicitly decode the data as an array.
-        $this->runRepository->storeRun(json_decode((string) $data, TRUE), $plan_id, $id);
+        $this->runRepository->storeRun(json_decode((string) $data, TRUE), $plan_id, $timestamp);
       }
     }
   }
@@ -229,6 +239,76 @@ class HarvestUtility {
       $this->storeFactory->getInstance('harvest_' . $plan_id . '_runs')
         ->destruct();
     }
+  }
+
+  /**
+   * Get the ids from the temp harvest run table.
+   *
+   * Only needed for harvest_update_8010.
+   *
+   * @param mixed $table_name_temp
+   *   The name of the temp table.
+   *
+   * @return array
+   *   The ids of all the harvest runs in the table sorted oldest to newest.
+   */
+  public function getTempRunIdsForUpdate($table_name_temp) : array {
+    $query = $this->connection->select($table_name_temp, 'hrt')
+      ->fields('hrt', ['id'])
+      ->orderBy('id', 'ASC');
+    $result = $query->execute()->fetchCol(0);
+    // Can't rely on orderBy as the sort ends up natural, not numeric.
+    asort($result, SORT_NUMERIC);
+
+    return $result ?? [];
+  }
+
+  /**
+   * Reads a single harvest row from the harvest run temp table.
+   *
+   * Only needed for harvest_update_8010.
+   *
+   * @param string $table_name_temp
+   *   Name of the table to read from.
+   * @param string $timestamp
+   *   The id to read from, which was also the timestamp.
+   *
+   * @return array
+   *   Elements from the row['id', 'harvest_plan_id', 'data', 'extract_status'].
+   */
+  public function readTempHarvestRunForUpdate(string $table_name_temp, string $timestamp): array {
+    $query = $this->connection->select($table_name_temp, 'hrt')
+      ->fields('hrt', ['id', 'harvest_plan_id', 'data', 'extract_status'])
+      ->condition('id', $timestamp, '=')
+      ->orderBy('id', 'ASC');
+    $result = $query->execute()->fetchAll(\PDO::FETCH_ASSOC);
+    return reset($result);
+  }
+
+  /**
+   * Creates a new entry in harvest_run based on data from harvest run temp.
+   *
+   * Only needed for harvest_update_8010.
+   *
+   * @param string $timestamp
+   *   The id from the old harvest run, which was a timestamp.
+   * @param string $harvest_plan_id
+   *   The harvest plan id.
+   * @param string $data
+   *   Data about the harvest.
+   * @param string $extract_status
+   *   The status of the harvest.
+   */
+  public function writeHarvestRunFromUpdate(string $timestamp, string $harvest_plan_id, string $data, string $extract_status): void {
+    $this->connection->insert('harvest_runs')
+      ->fields([
+        'timestamp' => (int) $timestamp,
+        'harvest_plan_id' => $harvest_plan_id,
+        'uuid' => $this->uuidService->generate(),
+        'data' => $data,
+        'extract_status' => $extract_status,
+      ])
+      ->execute();
   }
 
 }

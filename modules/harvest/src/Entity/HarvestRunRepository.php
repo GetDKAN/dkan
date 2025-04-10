@@ -21,16 +21,22 @@ class HarvestRunRepository {
 
   /**
    * Entity storage service for the harvest_run entity type.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  private EntityStorageInterface $runStorage;
+  protected EntityStorageInterface $runStorage;
 
   /**
    * Database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
    */
   private Connection $connection;
 
   /**
    * Harvest run entity definition service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeInterface
    */
   private EntityTypeInterface $entityTypeDefinition;
 
@@ -83,8 +89,8 @@ class HarvestRunRepository {
    *   Run data. Usually the result returned by Harvester::harvest().
    * @param string $plan_id
    *   The plan identifier.
-   * @param string $run_id
-   *   The run identifier, which is also a timestamp.
+   * @param string $timestamp
+   *   The run timestamp.
    *
    * @return string
    *   The run identifier.
@@ -94,9 +100,9 @@ class HarvestRunRepository {
    * @todo Eventually all the subsystems will be able to understand the entity
    *   rather than needing conversion to and from the array format.
    */
-  public function storeRun(array $run_data, string $plan_id, string $run_id): string {
+  public function storeRun(array $run_data, string $plan_id, string $timestamp): string {
     $field_values = [
-      'id' => $run_id,
+      'timestamp' => (int) $timestamp,
       'harvest_plan_id' => $plan_id,
     ];
     $field_values['extract_status'] = $run_data['status']['extract'] ?? 'FAILURE';
@@ -133,7 +139,7 @@ class HarvestRunRepository {
     // JSON encode remaining run data.
     $field_values['data'] = json_encode($run_data);
 
-    return $this->writeEntity($field_values, $plan_id, $run_id);
+    return $this->writeEntity($field_values, $plan_id, $timestamp);
   }
 
   /**
@@ -141,15 +147,18 @@ class HarvestRunRepository {
    *
    * @param string $plan_id
    *   The harvest plan identifier.
-   * @param string $run_id
-   *   The harvest run identifier.
+   * @param string|null $timestamp
+   *   The harvest run timestamp. No longer used.  Retained for BC.
    *
    * @return string|null
    *   JSON-encoded run result data, or NULL if none could be found.
    */
-  public function retrieveRunJson(string $plan_id, string $run_id): ?string {
-    if ($entity = $this->loadEntity($plan_id, $run_id)) {
-      return json_encode($entity->toResult());
+  public function retrieveRunJson(string $plan_id, $timestamp = NULL): ?string {
+    $run_ids = $this->retrieveAllRunIds($plan_id);
+    $run_id = reset($run_ids);
+    if ($run_id) {
+      $run_entity = $this->runStorage->load($run_id);
+      return json_encode($run_entity->toResult());
     }
     return NULL;
   }
@@ -192,7 +201,7 @@ class HarvestRunRepository {
   }
 
   /**
-   * Get all the harvet plan ids available in the harvest runs table.
+   * Get all the harvest plan ids available in the harvest runs table.
    *
    * @return array
    *   All the harvest plan ids present in the harvest runs table, as both key
@@ -212,18 +221,18 @@ class HarvestRunRepository {
   /**
    * Get the extracted UUIDs from the given harvest run.
    *
-   * @param string $plan_id
-   *   The harvest plan ID.
-   * @param string $run_id
-   *   The harvest run ID.
+   * @param string $planId
+   *   The harvest plan ID.  deprecated: no longer needed but kept for BC.
+   * @param string $runId
+   *   The harvest_run entity id.
    *
    * @return string[]
    *   Array of UUIDs, keyed by UUID. Note that these are UUIDs by convention;
    *   they could be any string value.
    */
-  public function getExtractedUuids(string $plan_id, string $run_id): array {
+  public function getExtractedUuids(string $planId, string $runId): array {
     $extracted = [];
-    if ($entity = $this->loadEntity($plan_id, $run_id)) {
+    if ($entity = $this->runStorage->load($runId)) {
       foreach ($entity->get('extracted_uuid')->getValue() as $field) {
         $uuid = $field['value'];
         $extracted[$uuid] = $uuid;
@@ -233,20 +242,21 @@ class HarvestRunRepository {
   }
 
   /**
-   * Helper method to load a harvest_run entity given an ID and plan ID.
+   * Helper method to load a harvest_run entity given an Plan ID and timestamp.
    *
    * @param string $plan_id
    *   Plan ID.
-   * @param string $run_id
-   *   Run ID, which is a timestamp.
+   * @param string $timestamp
+   *   The timestamp for the run. Formerly the id.
    *
    * @return \Drupal\harvest\HarvestRunInterface|\Drupal\Core\Entity\EntityInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
-  public function loadEntity(string $plan_id, string $run_id): ?HarvestRunInterface {
+  public function loadEntity(string $plan_id, string $timestamp): ?HarvestRunInterface {
     if ($ids = $this->runStorage->getQuery()
-      ->condition('id', $run_id)
+      ->condition('timestamp', $timestamp)
       ->condition('harvest_plan_id', $plan_id)
+      ->sort('id', 'DESC')
       ->range(0, 1)
       ->accessCheck(FALSE)
       ->execute()
@@ -257,27 +267,58 @@ class HarvestRunRepository {
   }
 
   /**
+   * Helper method to load the most recent harvest_run entity given a plan ID.
+   *
+   * @param string $harvest_plan_id
+   *   Plan ID.
+   *
+   * @return \Drupal\harvest\HarvestRunInterface|null
+   *   The loaded harvest_run entity or NULL if none could be loaded.
+   */
+  public function loadRunByPlan($harvest_plan_id): ?HarvestRunInterface {
+    $run_id = $this->getLastHarvestRunId($harvest_plan_id);
+    return ($run_id) ? $this->runStorage->load($run_id) : NULL;
+  }
+
+  /**
+   * Get a harvest's most recent run identifier.
+   *
+   * Since the run record id is a timestamp, we can sort on the id.
+   *
+   * @param string $plan_id
+   *   The harvest plan identifier.
+   *
+   * @return string
+   *   The entity id of the most recent harvest run.
+   */
+  public function getLastHarvestRunId(string $plan_id): string {
+    $run_ids = $this->retrieveAllRunIds($plan_id);
+    return reset($run_ids);
+  }
+
+  /**
    * Write a harvest_run entity, updating or saving as needed.
    *
    * @param array $field_values
    *   Structured data ready to send to entity_storage->create().
    * @param string $plan_id
    *   Harvest plan identifier.
-   * @param string $run_id
-   *   Harvest run identifier.
+   * @param mixed $timestamp
+   *   Harvest run timestamp.
    *
    * @return string
-   *   Harvest plan identifier for the entity that was written.
+   *   Harvest run id.
    */
-  public function writeEntity(array $field_values, string $plan_id, string $run_id) {
+  public function writeEntity(array $field_values, string $plan_id, mixed $timestamp) {
+    $timestamp = (int) $timestamp;
     /** @var \Drupal\harvest\HarvestRunInterface $entity */
-    $entity = $this->loadEntity($plan_id, $run_id);
+    $entity = $this->loadEntity($plan_id, $timestamp);
     if ($entity) {
       // Modify entity.
-      unset($field_values['id']);
       foreach ($field_values as $key => $value) {
         $entity->set($key, $value);
       }
+      $field_values['id'] = $entity->id();
     }
     else {
       // Create new entity.

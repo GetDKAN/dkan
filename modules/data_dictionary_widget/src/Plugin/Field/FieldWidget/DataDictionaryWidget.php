@@ -42,7 +42,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $element = FieldCreation::createGeneralFields($element, $field_json_metadata, $current_fields, $form_state);
 
     $element['dictionary_fields']['#pre_render'] = [
-      $this->preRenderForm(...),
+      [$this, 'preRenderForm'],
     ];
 
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows($current_fields, $data_results, $form_state);

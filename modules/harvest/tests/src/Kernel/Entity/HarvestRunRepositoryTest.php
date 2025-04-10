@@ -32,8 +32,8 @@ class HarvestRunRepositoryTest extends KernelTestBase {
    * @covers ::destructForPlanId
    */
   public function testDestructForPlanId() {
-    $destruct_id = '1711038292';
-    $keep_id = '1711038293';
+    $destruct_timestamp = '1711038292';
+    $keep_timestamp = '1711038293';
     $destruct_this_plan_id = 'DESTRUCTTHISPLAN';
     $keep_this_plan_id = 'KEEPTHISPLAN';
     $run_data = [
@@ -44,10 +44,10 @@ class HarvestRunRepositoryTest extends KernelTestBase {
     ];
     /** @var \Drupal\harvest\Entity\HarvestRunRepository $harvest_run_repo */
     $harvest_run_repo = $this->container->get('dkan.harvest.storage.harvest_run_repository');
-    $run_data['identifier'] = $keep_id;
-    $harvest_run_repo->storeRun($run_data, $keep_this_plan_id, $keep_id);
-    $run_data['identifier'] = $destruct_id;
-    $harvest_run_repo->storeRun($run_data, $destruct_this_plan_id, $destruct_id);
+    $run_data['identifier'] = $keep_timestamp;
+    $harvest_run_repo->storeRun($run_data, $keep_this_plan_id, $keep_timestamp);
+    $run_data['identifier'] = $destruct_timestamp;
+    $harvest_run_repo->storeRun($run_data, $destruct_this_plan_id, $destruct_timestamp);
 
     $harvest_run_repo->destructForPlanId($destruct_this_plan_id);
 
@@ -56,9 +56,9 @@ class HarvestRunRepositoryTest extends KernelTestBase {
     /** @var \Drupal\harvest\HarvestRunInterface $run */
     $this->assertInstanceOf(
       HarvestRunInterface::class,
-      $run = $harvest_run_repo->loadEntity($keep_this_plan_id, $keep_id)
+      $run = $harvest_run_repo->loadEntity($keep_this_plan_id, $keep_timestamp)
     );
-    $this->assertEquals($keep_id, $run->id());
+    $this->assertEquals($keep_timestamp, $run->get('timestamp')->value);
   }
 
   /**
@@ -75,23 +75,23 @@ class HarvestRunRepositoryTest extends KernelTestBase {
 
     // Set up an entity.
     $plan_id = 'plan';
-    $run_id = '1711038293';
+    $run_timestamp = '1711038293';
     $run_data = [
       'plan' => '{"plan": "json"}',
       'status' => [
         'extract' => 'AWESOME',
       ],
-      'identifier' => $run_id,
+      'identifier' => $run_timestamp,
     ];
-    $harvest_run_repo->storeRun($run_data, $plan_id, $run_id);
+    $run_id = $harvest_run_repo->storeRun($run_data, $plan_id, $run_timestamp);
 
     // Retrieve one run as JSON.
     $this->assertIsString(
-      $run_json = $harvest_run_repo->retrieveRunJson($plan_id, $run_id)
+      $run_json = $harvest_run_repo->retrieveRunJson($plan_id, $run_timestamp)
     );
     $this->assertIsObject($run = json_decode($run_json));
     foreach (array_keys($run_data) as $key) {
-      $this->assertObjectHasProperty($key, $run);
+      $this->assertObjectHasProperty($key, $run, "The key $key was not found in the harvest_run.");
     }
 
     // Retrieve all runs as JSON.
@@ -99,10 +99,10 @@ class HarvestRunRepositoryTest extends KernelTestBase {
       $runs_json = $harvest_run_repo->retrieveAllRunsJson($plan_id)
     );
     // Do some assertions.
-    $this->assertArrayHasKey($run_id, $runs_json);
+    $this->assertArrayHasKey($run_id, $runs_json, 'The harvest_run id of the test save was not found.');
     $this->assertIsString($runs_json[$run_id]);
     $this->assertIsObject($run_decoded = json_decode($runs_json[$run_id]));
-    $this->assertEquals($run_id, $run_decoded->identifier);
+    $this->assertEquals($run_timestamp, $run_decoded->identifier, 'The harvest_run timestamps do not match.');
   }
 
   /**
@@ -112,11 +112,12 @@ class HarvestRunRepositoryTest extends KernelTestBase {
     /** @var \Drupal\harvest\Entity\HarvestRunRepository $harvest_run_repo */
     $harvest_run_repo = $this->container->get('dkan.harvest.storage.harvest_run_repository');
     $plan_id = 'plan';
-    $run_id = '1711038293';
+    $non_existent_run_id = '123456777';
+    $timestamp = '1711038293';
 
     // There are no entities at this point, so trying to get UUIDs should
     // result in an empty array.
-    $this->assertIsArray($uuids = $harvest_run_repo->getExtractedUuids($plan_id, $run_id));
+    $this->assertIsArray($uuids = $harvest_run_repo->getExtractedUuids($plan_id, $non_existent_run_id));
     $this->assertEquals([], $uuids);
 
     $uuids = [
@@ -131,9 +132,9 @@ class HarvestRunRepositoryTest extends KernelTestBase {
         'extract' => 'AWESOME',
         'extracted_items_ids' => $uuids,
       ],
-      'identifier' => $run_id,
+      'identifier' => $timestamp,
     ];
-    $harvest_run_repo->storeRun($run_data, $plan_id, $run_id);
+    $run_id = $harvest_run_repo->storeRun($run_data, $plan_id, $timestamp);
 
     // Get the extracted UUIDs.
     $this->assertIsArray($extracted_uuids = $harvest_run_repo->getExtractedUuids($plan_id, $run_id));

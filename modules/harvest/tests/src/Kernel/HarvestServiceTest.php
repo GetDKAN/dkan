@@ -196,7 +196,8 @@ class HarvestServiceTest extends KernelTestBase {
     // getHarvestRunResult should return an empty array.
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
-    $this->assertEquals([], $harvest_service->getHarvestRunResult('any_plan', 'any_id'));
+    $any_harvest_run_id = 111;
+    $this->assertEquals([], $harvest_service->getHarvestRunResult('any_plan', $any_harvest_run_id));
 
     // Register a harvest and run it.
     $plan_identifier = 'test_plan';
@@ -214,10 +215,10 @@ class HarvestServiceTest extends KernelTestBase {
     $this->assertEquals($plan_identifier, $harvest_service->registerHarvest($plan));
 
     $run_result = $harvest_service->runHarvest($plan_identifier);
-    $this->assertNotEmpty($run_id = $run_result['identifier']);
+    $this->assertNotEmpty($timestamp = $run_result['identifier']);
 
     // Compare the reloaded results to the ones from the original run.
-    $this->assertEquals($run_result, $harvest_service->getHarvestRunResult($plan_identifier, $run_id));
+    $this->assertEquals($run_result, $harvest_service->getHarvestRunResult($plan_identifier, $timestamp));
   }
 
 }
