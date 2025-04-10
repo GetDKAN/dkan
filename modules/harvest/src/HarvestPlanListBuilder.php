@@ -50,6 +50,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     $builder = parent::createInstance($container, $entity_type);
     $builder->harvestRunRepository = $container->get('dkan.harvest.storage.harvest_run_repository');
     $builder->harvestRunStorage = $container->get('entity_type.manager')->getStorage('harvest_run');
+    $builder->routeProvider = $container->get('router.route_provider');
     return $builder;
   }
 

@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\harvest\HarvestUtility;
+use Drupal\user\Entity\Role;
 
 /**
  * @file
