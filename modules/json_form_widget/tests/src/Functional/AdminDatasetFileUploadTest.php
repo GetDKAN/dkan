@@ -217,7 +217,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
 
     // Find the URL.
     $assert->elementContains('css', 'h1', 'Edit Data');
-    $uploaded_file_url = $this->baseUrl . '/' . PublicStream::basePath() . '/uploaded_resources/' . basename($upload_file);
+    $uploaded_file_url = PublicStream::basePath() . '/uploaded_resources/' . basename($upload_file);
     $assert->elementAttributeContains(
       'css',
       '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a',
