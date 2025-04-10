@@ -198,7 +198,7 @@ class HarvestServiceTest extends KernelTestBase {
     // getHarvestRunResult should return an empty array.
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
-    $any_harvest_run_id = 111;
+    $any_harvest_run_id = '111';
     $this->assertEquals([], $harvest_service->getHarvestRunResult('any_plan', $any_harvest_run_id));
 
     // Register a harvest and run it.
