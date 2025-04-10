@@ -110,7 +110,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $strings = array_merge(self::HARVEST_HEADERS, [
       'harvest_link',
       'SUCCESS',
-      json_encode(date('m/d/y H:m:s T', $run_result['identifier'])),
+      json_encode(date('m/d/y H:m:s T', (int)$run_result['identifier'])),
       '2',
     ]);
     foreach ($strings as $string) {
