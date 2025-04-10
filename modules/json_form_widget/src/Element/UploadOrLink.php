@@ -61,11 +61,7 @@ class UploadOrLink extends ManagedFile {
    */
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
     // If the input is empty, return the default value.
-    if ($input === FALSE) {
-      $input = [];
-    }
-
-    $uri = $element['#uri'] ?? NULL;
+    $input = $input === FALSE ? [] : $input;
 
     // Detect whether the remove button was clicked.
     $remove = FALSE;
@@ -75,9 +71,8 @@ class UploadOrLink extends ManagedFile {
       $remove = TRUE;
     }
 
-    if (empty($input['fids']) && $uri) {
-      $uri = static::getFileUri($uri);
-      $file = static::getManagedFile($uri);
+    if (empty($input['fids']) && ($element['#uri'] ?? FALSE)) {
+      $file = static::getManagedFile(static::getFileUri($element['#uri']));
       // If remove was clicked, we need to unset the uri. If not, we need to add
       // the fid to the input array.
       if ($remove) {
@@ -87,8 +82,7 @@ class UploadOrLink extends ManagedFile {
         // Add filet to input array and update the entity.
         $fo = $form_state->getFormObject();
         $entity = $fo instanceof EntityFormInterface ? $fo->getEntity() : NULL;
-        static::updateFile($file, $entity);
-        $input['fids'] = $file->id() ?? NULL;
+        $input['fids'] = static::updateFile($file, $entity) ?? NULL;
 
       }
     }
@@ -106,18 +100,18 @@ class UploadOrLink extends ManagedFile {
    *   The file entity or NULL if not found or able to create.
    */
   public static function getManagedFile(string $uri): ?FileInterface {
-    $file = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
-    $file = !empty($file) ? reset($file) : NULL;
-    if ($file) {
-      return $file;
+    $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
+    if (!empty($files)) {
+      // If a file entity already exists, return it.
+      return reset($files);
     }
+
     // If no File entity matches the URI, create one.
-    $file = File::create([
+    if ($file = File::create([
       'uri' => $uri,
       'status' => File::STATUS_PERMANENT,
       'uid' => \Drupal::currentUser()->id(),
-    ]);
-    if ($file) {
+    ])) {
       $file->save();
       return $file;
     }
@@ -152,7 +146,7 @@ class UploadOrLink extends ManagedFile {
     $element = parent::processManagedFile($element, $form_state, $complete_form);
     $file_url_type = static::getUrlType($element);
 
-    $file_url_remote = static::setRemoteFile($element, $form_state);
+    $file_url_remote = $element['#value']['file_url_remote'] ?? $element['#uri'];
     $file_url_remote_is_valid = isset($file_url_remote) && UrlHelper::isValid($file_url_remote, TRUE);
 
     $access_file_url_elements = (empty($element['#files']) && !$file_url_remote_is_valid) || !$file_url_type;
@@ -170,21 +164,6 @@ class UploadOrLink extends ManagedFile {
     }
 
     return $element;
-  }
-
-  /**
-   * Helper function to set file_url_remote variable.
-   */
-  private static function setRemoteFile($element, $form_state) {
-    $file_url_remote = '';
-    if (isset($element['#value']['file_url_remote'])) {
-      $file_url_remote = $element['#value']['file_url_remote'];
-    }
-    elseif (isset($element['#uri'])) {
-      $file_url_remote = $element['#uri'];
-    }
-
-    return $file_url_remote;
   }
 
   /**

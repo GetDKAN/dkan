@@ -20,18 +20,19 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
 
   use QueueRunnerTrait;
 
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'dkan',
     'json_form_widget',
     'node',
   ];
 
-  protected $defaultTheme = 'stark';
-
   /**
-   * @todo Remove this when we drop support for Drupal 10.0.
+   * {@inheritdoc}
    */
-  protected $strictConfigSchema = FALSE;
+  protected $defaultTheme = 'stark';
 
   /**
    * Test creating datasets.
