@@ -30,35 +30,26 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
    * Test datastore module update 10001.
    */
   public function testUpdates10001on(): void {
-
-    // Set up sample content.
-    /** @var SampleContentService $sample_service */
-//    $sample_service = \Drupal::service('dkan.sample_content.service');
-//    $sample_service->registerSampleContentHarvest('sample_content');
-
-
-
-    // Get a baseline for pre-10001.
+    // HarvestRun() should fail before update because harvest library
+    // namespaces are included in class names stored in the database.
     /** @var HarvestService $harvest_service */
     $harvest_service = \Drupal::service('dkan.harvest.service');
     try {
-      $result = $harvest_service->runHarvest('sample_content');
+      $harvest_service->runHarvest('sample_content');
     }
     catch (\Exception $exception) {
-      $result = $exception->getMessage();
+      $exception_msg = $exception->getMessage();
     }
-    $this->assertSame('No items found to extract, review your harvest plan.', $result);
+    $this->assertSame('No items found to extract, review your harvest plan.', $exception_msg);
 
     // Run update and recreate harvest service with updated data.
     $this->runUpdates();
     $harvest_service = \Drupal::service('dkan.harvest.service');
 
-
     try {
       $result = $harvest_service->runHarvest('sample_content');
     }
     catch (\Exception $exception) {
-      $result = $exception->getMessage();
     }
     $this->assertIsArray($result);
     $this->assertSame('SUCCESS', $result['status']['extract']);
