@@ -162,6 +162,24 @@ class WidgetRouter implements ContainerInjectionInterface {
     if (isset($element['#autocreate']) && $spec->type !== 'select2') {
       $element['#target_type'] = 'node';
     }
+
+    // Tagify.
+    if ($element['#type'] === 'select_tagify') {
+      $element['#identifier'] = $spec->title;
+      $element['#match_operator'] = 'CONTAINS';
+      $element['#match_limit'] = 10;
+      $element['#placeholder'] = "Enter " . $spec->title . "...";
+
+      if (isset($spec->multiple)) {
+        $element['#cardinality'] = -1;
+        $element['#multiple'] = TRUE;
+      }
+      else {
+        $element['#cardinality'] = NULL;
+        $element['#multiple'] = FALSE;
+      }
+
+    }
     return $element;
   }
 
@@ -178,8 +196,8 @@ class WidgetRouter implements ContainerInjectionInterface {
     if (isset($spec->type) && $spec->type === 'select_other') {
       return 'select_or_other_select';
     }
-    elseif (isset($spec->type) && ($spec->type === 'autocomplete' || $spec->type === 'select2')) {
-      return 'select2';
+    elseif (isset($spec->type) && ($spec->type === 'autocomplete')) {
+      return 'select_tagify';
     }
     return 'select';
   }
