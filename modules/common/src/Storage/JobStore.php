@@ -27,16 +27,16 @@ class JobStore extends AbstractDatabaseTable {
    *   Table name for this jobstore table.
    * @param \Drupal\Core\Database\Connection $connection
    *   Database connection.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event dispatcher service.
    * @param string $deprecatedTableName
    *   (Optional) Deprecated table name, if there is one.
-   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-   *    The event dispatcher service.
    */
   public function __construct(
     string $tableName,
     Connection $connection,
-    string $deprecatedTableName = '',
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
+    string $deprecatedTableName = ''
   ) {
     $this->tableName = $tableName;
     $this->deprecatedTableName = $deprecatedTableName;
