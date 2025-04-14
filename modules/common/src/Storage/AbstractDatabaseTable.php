@@ -317,7 +317,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $this->connection->schema()->createTable($table_name, $modified_schema);
   }
 
-
   /**
    * Set the schema using the existing database table.
    */
