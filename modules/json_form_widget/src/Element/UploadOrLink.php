@@ -290,7 +290,7 @@ class UploadOrLink extends ManagedFile {
         return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
       }
     }
-    return $element['#uri'];
+    return $element['#uri'] ?? NULL;
   }
 
   /**
