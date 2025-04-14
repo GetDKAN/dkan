@@ -19,6 +19,7 @@ use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Abstraction of logic used in entity hooks.
@@ -93,6 +94,13 @@ class LifeCycle {
   protected $configFactory;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -104,6 +112,10 @@ class LifeCycle {
     DataFactory $dataFactory,
     QueueFactory $queueFactory,
     ConfigFactory $configFactory,
+<<<<<<< HEAD
+=======
+    EventDispatcherInterface $event_dispatcher
+>>>>>>> efc5963af (updating only MetastoreItemInterface)
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
@@ -113,6 +125,7 @@ class LifeCycle {
     $this->dataFactory = $dataFactory;
     $this->queueFactory = $queueFactory;
     $this->configFactory = $configFactory;
+    $this->eventDispatcher = $event_dispatcher;
   }
 
   /**
@@ -176,7 +189,8 @@ class LifeCycle {
    * Purge resources (if unneeded) of any updated dataset.
    */
   protected function datasetUpdate(MetastoreItemInterface $data): void {
-    $this->dispatchEvent(self::EVENT_DATASET_UPDATE, $data);
+    //$this->dispatchEvent(self::EVENT_DATASET_UPDATE, $data);
+    $this->eventDispatcher->dispatch($data, self::EVENT_DATASET_UPDATE);
   }
 
   /**

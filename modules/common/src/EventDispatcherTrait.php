@@ -6,6 +6,12 @@ use Drupal\common\Events\Event;
 
 /**
  * Event dispatcher trait.
+ *
+ * @deprecated DKAN 2.x - Many services use this trait because we needed a
+ * backwards-compatibility layer between Drupal 8 and 9, which is no longer
+ * needed. Classes should inject the 'event_dispatcher' service directly
+ * instead of using this trait. Modify those classes to use their own
+ * dispatcher instead of the one called in the trait.
  */
 trait EventDispatcherTrait {
 
