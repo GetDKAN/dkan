@@ -503,4 +503,51 @@ class JsonFormBuilderTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(SchemaUiHandler::class, 'setSchemaUi');
   }
+
+  /**
+   * Test schema field ordering by weight from UI schema.
+   */
+  public function testSchemaFieldWeightOrdering() {
+    $schema_json = '
+  {
+    "properties": {
+      "first_field": {
+        "type": "string",
+        "title": "First Field"
+      },
+      "second_field": {
+        "type": "string",
+        "title": "Second Field"
+      },
+      "third_field": {
+        "type": "string",
+        "title": "Third Field"
+      }
+    },
+    "type": "object"
+  }';
+
+    $schema_ui_json = '
+  {
+    "second_field": {"ui:options": {"weight": -10}},
+    "third_field": {"ui:options": {"weight": 10}},
+    "first_field": {"ui:options": {"weight": 0}}
+  }';
+
+    $container_chain = $this->getDetaultContainerChain()
+      ->add(SchemaRetriever::class, 'retrieve', $schema_json)
+      ->add(SchemaRetriever::class, 'retrieve', $schema_ui_json);
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+
+    $form_builder = FormBuilder::create($container);
+    $form_builder->setSchema('dataset');
+
+    $form = $form_builder->getJsonForm([]);
+
+    $expected_order = ['second_field', 'first_field', 'third_field'];
+
+    $this->assertEquals($expected_order, array_keys($form));
+  }
 }
