@@ -46,11 +46,7 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
     $this->runUpdates();
     $harvest_service = \Drupal::service('dkan.harvest.service');
 
-    try {
-      $result = $harvest_service->runHarvest('sample_content');
-    }
-    catch (\Exception $exception) {
-    }
+    $result = $harvest_service->runHarvest('sample_content');
     $this->assertIsArray($result);
     $this->assertSame('SUCCESS', $result['status']['extract']);
   }
