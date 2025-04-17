@@ -126,6 +126,9 @@ class UploadOrLink extends ManagedFile {
    */
   public static function getFileUri(string $url): string {
     $path = urldecode((string) \Drupal::service('file_url_generator')->transformRelative($url));
+    if (strpos($path, '/') !== 0) {
+      return $path;
+    }
     // We're loading scheme from config, but this will probably break if not
     // "public".
     $scheme = \Drupal::config('system.file')->get('default_scheme') . "://";
