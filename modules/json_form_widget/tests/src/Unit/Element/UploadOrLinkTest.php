@@ -74,6 +74,12 @@ class UploadOrLinkTest extends TestCase {
         'scheme_path' => '/sites/default/files/',
         'expected' => 'public://test3.csv',
       ],
+      [
+        'url' => "http://localhost/vfs://root/sites/simpletest/10834342/files/test4.csv",
+        'relative' => '/vfs://root/sites/simpletest/10834342/files/test4.csv',
+        'scheme_path' => '/vfs://root/sites/simpletest/10834342/files/',
+        'expected' => 'public://test4.csv',
+      ],
     ];
  }
 }
