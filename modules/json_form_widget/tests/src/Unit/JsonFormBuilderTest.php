@@ -444,6 +444,7 @@ class JsonFormBuilderTest extends TestCase {
         "#title" => "Resources",
         "#description" => "List of links.",
         "#tree" => TRUE,
+        '#required' => FALSE,
         "#description_display" => "before",
         "#prefix" => '<div id="contributors-fieldset-wrapper">',
         "#suffix" => '</div>',
@@ -479,7 +480,7 @@ class JsonFormBuilderTest extends TestCase {
     $form_state = new FormState();
     $form_state->set(ArrayHelper::buildCountProperty('contributors'), 1);
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['contributors']['actions']);
+    unset($result['contributors']['actions'], $result['contributors']['contributors'][0]['contributors']['actions']);
     $this->assertEquals($expected, $result);
   }
 

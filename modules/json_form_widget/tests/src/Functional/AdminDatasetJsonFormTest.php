@@ -129,7 +129,7 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
     // Now we have two distributions.
     $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
     $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-actions-actions-remove"]')->click();
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-actions-remove"]')->click();
     // Now we have one again.
     $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
     $this->assertNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
