@@ -147,7 +147,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The dropdown element configured.
    */
   public function getDropdownElement(mixed $element, mixed $spec, mixed $titleProperty = FALSE) {
-    ArrayHelper::flattenArrayElementFieldset($element);
+    static::flattenArrayElementFieldset($element);
     $element['#type'] = $this->getSelectType($spec);
     $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
@@ -164,6 +164,22 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element['#target_type'] = 'node';
     }
     return $element;
+  }
+
+  /**
+   * Flatten array element fieldset w/buttons for alteration.
+   *
+   * By default arrays are wrapped in fieldsets as a sub-element called "field"
+   * with buttons for adding and removing items. This function eliminates the
+   * buttons and moves the properties of the "field" element to the parent.
+   *
+   * @param array $element
+   *   A fieldset form element containing a "field" sub-element.
+   */
+  protected static function flattenArrayElementFieldset(array &$element): void {
+    if (isset($element['field']) && $element['#type'] == 'fieldset') {
+      $element = ['#required' => ($element['#required'] ?? FALSE)] + $element['field'];
+    }
   }
 
   /**
