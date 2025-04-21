@@ -96,7 +96,18 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Handle form element for an array.
+   * Create an array element from a schema field definition.
+   *
+   * @param array $definition
+   *   Field definition, should contain 'schema' and 'name' keys.
+   * @param mixed $data
+   *   The field data, read directly from the existing JSON value.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
+   * @param array $context
+   *   Field context, used to build unique identifiers for the field.
+   *
+   * @todo Can we eliminate the $context parameter or make it more intuitive?
    */
   public function handleArrayElement(array $definition, ?array $data, FormStateInterface $form_state, array $context): array {
     // Extract field name from field definition and min items from field schema.
@@ -222,6 +233,8 @@ class ArrayHelper implements ContainerInjectionInterface {
    *
    * @return array
    *   Render array for the complex array element.
+   *
+   * @todo better document the context parameter.
    */
   protected function buildComplexArrayElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
     $subdefinition = [
@@ -235,6 +248,9 @@ class ArrayHelper implements ContainerInjectionInterface {
 
   /**
    * Get the form items count for the given field.
+   *
+   * We use both the provided data and the schema to determine the proper number
+   * of items to display on the form.
    *
    * @param string $context_name
    *   Field context to target.
