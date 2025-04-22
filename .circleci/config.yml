@@ -19,10 +19,6 @@ commands:
             sudo apt update && sudo apt install -y ddev
 
   prepare_build:
-    # TODO: Currently the DKAN ddev addon adds an extra config file called
-    # config.dkan.yml. This prevents us from just calling
-    # `ddev config --php-version` to change PHP version. In the future,
-    # change this around so we can just tell ddev to change the PHP version.
     parameters:
       php_version:
         description: "PHP major.minor for DDev to use."
@@ -30,7 +26,7 @@ commands:
         type: string
       database_version:
         description: "Database version for DDev to use."
-        default: "5.7"
+        default: "mysql:5.7"
         type: string
       addon_branch:
         description: "Repo branch name for the DKAN DDev add-on you want to test against."
@@ -53,20 +49,22 @@ commands:
           command: |
             which ddev
             ddev --version
-            ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
-            ddev add-on get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            ddev config global --instrumentation-opt-in=false
+            ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot
+            ddev add-on get https://github.com/GetDKAN/ddev-dkan/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            ddev restart
+            ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
             bash -c 'echo COMPOSER_AUTH=$COMPOSER_AUTH' > .ddev/.env
             # Modify config to use our PHP version and database.
-            yq '.database.version ="<< parameters.database_version >>"' -i .ddev/config.dkan.yaml
-            yq '.php_version ="<< parameters.php_version >>"' -i .ddev/config.dkan.yaml
+            ddev delete --omit-snapshot --yes
+            ddev config --database="<< parameters.database_version >>" --php-version="<< parameters.php_version >>"
             # With mysql 8, we need to set this permission.
-            if [ "<< parameters.database_version >>" = "8.0" ]; then
-              yq '.hooks.post-start += [{"exec": "echo '\''GRANT SESSION_VARIABLES_ADMIN on *.* TO db@`%`'\'' | mysql"}]' -i .ddev/config.dkan.yaml
+            if [ "<< parameters.database_version >>" = "mysql:8.0" ]; then
+              yq '.hooks.post-start += [{"exec": "echo '\''GRANT SESSION_VARIABLES_ADMIN on *.* TO db@`%`'\'' | mysql"}]' -i .ddev/config.yaml
             fi
-            cat .ddev/config.dkan.yaml
+            cat .ddev/config.yaml
             ddev restart
             ddev status
-            ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             mkdir -p test_results
@@ -117,6 +115,8 @@ commands:
                 name: Install site
                 command: |
                   ddev composer config repositories.dkan path dkan
+                  # To avoid dependency issues when installing on PHP 8.1 we need to re-require openapi-httpfoundation-testing.
+                  ddev composer require --dev osteel/openapi-httpfoundation-testing -W
                   ddev composer require getdkan/dkan:@dev --no-install -W
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
@@ -133,7 +133,7 @@ jobs:
         type: string
       database_version:
         description: "Database version for DDev to use."
-        default: "5.7"
+        default: "mysql:5.7"
         type: string
       dkan_recommended_branch:
         description: "Branch of getdkan/recommended-project to use."
@@ -205,7 +205,7 @@ jobs:
         type: string
       database_version:
         description: "Database version for DDev to use."
-        default: "5.7"
+        default: "mysql:5.7"
         type: string
       dkan_recommended_branch:
         description: "Branch of getdkan/recommended-project to use."
@@ -263,24 +263,24 @@ workflows:
             parameters:
               dkan_recommended_branch: ["11.1.x-dev", "11.0.x-dev"]
               php_version: ["8.4", "8.3"]
-              database_version: ["8.0"]
+              database_version: ["mysql:8.0"]
             exclude:
               - php_version: "8.4"
                 dkan_recommended_branch: "11.0.x-dev"
-                database_version: "8.0"
+                database_version: "mysql:8.0"
       - phpunit:
           matrix:
             parameters:
               dkan_recommended_branch: ["10.4.x-dev"]
               php_version: ["8.4", "8.3"]
-              database_version: ["5.7"]
+              database_version: ["mysql:5.7"]
       - phpunit:
           matrix:
             parameters:
               dkan_recommended_branch: ["10.3.x-dev"]
               php_version: ["8.2", "8.1"]
-              database_version: ["5.7"]
-            
+              database_version: ["mysql:5.7"]
+
   upgrade_and_test:
     jobs:
       - cypress:
