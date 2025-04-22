@@ -109,7 +109,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    *
    * @todo Can we eliminate the $context parameter or make it more intuitive?
    */
-  public function handleArrayElement(array $definition, ?array $data, FormStateInterface $form_state, array $context): array {
+  public function handleArrayElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
     // Extract field name from field definition and min items from field schema.
     $min_items = $definition['schema']->minItems ?? 0;
 
