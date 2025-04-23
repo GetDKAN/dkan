@@ -154,7 +154,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#suffix' => '</div>',
       '#tree' => TRUE,
       '#required' => $is_required,
-      'actions' => [
+      'array_actions' => [
         '#type'   => 'actions',
         'actions' => [
           'add' => $this->buildAction($this->t('Add one'), 'addOne', $definition['name'], $context_name),
@@ -469,10 +469,22 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   public static function addOne(array &$form, FormStateInterface $form_state) {
     $button_element = $form_state->getTriggeringElement();
+    $data_parent = $button_element['#attributes']['data-parent'];
+    $parents = $button_element['#parents'];
+    $user_input = $form_state->getUserInput();
     $count_property = static::buildCountProperty($button_element['#name']);
     // Modify stored item count.
     $item_count = $form_state->get($count_property) ?? 0;
     $item_count++;
+    $key_exists = NULL;
+    static::trimParents($parents, "array_actions");
+    // Getting from the add button to array requires duplicating last parent.
+    $parents[] = $data_parent;
+    // Add a new empty value to the user input so that the item is not
+    // pre-populated with default values.
+    $input_values = &NestedArray::getValue($user_input, $parents, $key_exists);
+    $input_values[] = [$data_parent => []];
+
     $form_state->set($count_property, $item_count);
     $form_state->setRebuild();
   }
@@ -487,7 +499,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @param int $element_index
    *   Element index.
    */
-  public static function trimParents(array &$parents, int $element_index): void {
+  public static function trimParents(array &$parents, $element_index): void {
     for ($i = count($parents) - 1; $i >= 0; $i--) {
       if ($parents[$i] == $element_index) {
         $ei_position = $i;
