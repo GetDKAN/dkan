@@ -428,7 +428,7 @@ class HarvestService implements ContainerInjectionInterface {
    * Get the harvester from the harvester library.
    */
   protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store): Harvester {
-    return new Harvester(new Factory($harvestPlan, $item_store, $hash_store));
+    return new Harvester(new Factory($harvestPlan, $item_store, $hash_store, \Drupal::httpClient()));
   }
 
 }
