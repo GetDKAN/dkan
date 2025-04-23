@@ -3,8 +3,8 @@
 namespace Drupal\json_form_widget\Tests\Functional;
 
 use Drupal\Core\StreamWrapper\PublicStream;
-use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
 
 /**
  * Test the json form widget.
@@ -16,7 +16,7 @@ use Drupal\Tests\common\Traits\QueueRunnerTrait;
  * @group json_form_widget
  * @group functional
  */
-class AdminDatasetFileUploadTest extends BrowserTestBase {
+class AdminDatasetFileUploadTest extends JsonFormTestBase {
 
   use QueueRunnerTrait;
 
@@ -42,35 +42,6 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
    * dataset with remote file.
    */
   public function testCreateDatasetWithRemoteFile() {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
-    $metastore_service = $this->container->get('dkan.metastore.service');
-
-    $this->drupalLogin(
-    // @todo Figure out least possible admin permissions.
-      $this->drupalCreateUser([], NULL, TRUE)
-    );
-
-    // Since we don't have JavaScript, we can't use select2 or select_or_other
-    // to add publisher or keyword entities. We create them here with arbitrary
-    // UUIDs so that we can post the names to the form.
-    $publisher_name = uniqid();
-    $metastore_service->post('publisher',
-      $metastore_service->getValidMetadataFactory()->get(
-        json_encode((object) [
-          'identifier' => '9deadc2f-50e0-512a-af7c-4323697d530d',
-          'data' => ['name' => $publisher_name],
-        ]), 'publisher', ['method' => 'POST'])
-    );
-    // We need a keyword.
-    $keyword_data = uniqid();
-    $metastore_service->post('keyword',
-      $metastore_service->getValidMetadataFactory()->get(json_encode((object) [
-        'identifier' => '05b2e74a-eb23-585b-9c1c-4d023e21e8a5',
-        'data' => $keyword_data,
-      ]), 'keyword', ['method' => 'POST'])
-    );
-
-    $dataset_title = uniqid();
     $file_url = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
     $assert = $this->assertSession();
@@ -86,14 +57,14 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
     $this->drupalGet('node/add/data');
     $assert->statusCodeEquals(200);
     $this->submitForm([
-      'edit-field-json-metadata-0-value-title' => $dataset_title,
+      'edit-field-json-metadata-0-value-title' => $this->datasetTitle,
       'edit-field-json-metadata-0-value-description' => 'DKANTEST distribution description.',
       'edit-field-json-metadata-0-value-accesslevel' => 'public',
       'edit-field-json-metadata-0-value-modified-date' => '2020-02-02',
-      'edit-field-json-metadata-0-value-publisher-publisher-name' => $publisher_name,
+      'edit-field-json-metadata-0-value-publisher-publisher-name' => $this->publisherName,
       'edit-field-json-metadata-0-value-contactpoint-contactpoint-fn' => 'DKANTEST Contact Name',
       'edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail' => 'dkantest@test.com',
-      'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
+      'edit-field-json-metadata-0-value-keyword-keyword-0' => $this->keywordData,
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'distribution title test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'distribution description test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format' => 'csv',
@@ -101,18 +72,18 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote' => $file_url,
     ], 'Save');
     $assert->statusCodeEquals(200);
-    $assert->pageTextContains('Data ' . $dataset_title . ' has been created.');
+    $assert->pageTextContains('Data ' . $this->datasetTitle . ' has been created.');
 
     // Queues to do import.
     $this->runQueues(['localize_import', 'datastore_import']);
     // Did our file import?
-    $this->assertDatasetWasImported($dataset_title);
+    $this->assertDatasetWasImported($this->datasetTitle);
 
     // 11_admin_dataset_file_upload.spec.js : Create dataset with remote file :
     // uploaded dataset files show remote link on edit.
     $this->drupalGet('admin/dkan/datasets');
     $this->submitForm([
-      'edit-title' => $dataset_title,
+      'edit-title' => $this->dataset_title,
     ], 'Filter');
     $assert->statusCodeEquals(200);
 
@@ -135,36 +106,6 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
    * dataset with file upload.
    */
   public function testCreateDatasetWithFileUpload() {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
-    $metastore_service = $this->container->get('dkan.metastore.service');
-
-    $this->drupalLogin(
-    // @todo Figure out least possible admin permissions.
-      $this->drupalCreateUser([], NULL, TRUE)
-    );
-
-    // Since we don't have JavaScript, we can't use select2 or select_or_other
-    // to add publisher or keyword entities. We create them here with arbitrary
-    // UUIDs so that we can post the names to the form.
-    $publisher_name = uniqid();
-    $metastore_service->post('publisher',
-      $metastore_service->getValidMetadataFactory()->get(
-        json_encode((object) [
-          'identifier' => '9deadc2f-50e0-512a-af7c-4323697d530d',
-          'data' => ['name' => $publisher_name],
-        ]), 'publisher', ['method' => 'POST'])
-    );
-    // We need a keyword.
-    $keyword_data = uniqid();
-    $metastore_service->post('keyword',
-      $metastore_service->getValidMetadataFactory()->get(json_encode((object) [
-        'identifier' => '05b2e74a-eb23-585b-9c1c-4d023e21e8a5',
-        'data' => $keyword_data,
-      ]), 'keyword', ['method' => 'POST'])
-    );
-
-    // Title for our dataset.
-    $dataset_title = uniqid();
     // The file we'll upload.
     $upload_file = realpath(dirname(__DIR__, 4) . '/datastore/tests/data/Bike_Lane.csv');
 
@@ -184,32 +125,32 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
     $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload')
       ->attachFile('file://' . $upload_file);
     $this->submitForm([
-      'edit-field-json-metadata-0-value-title' => $dataset_title,
+      'edit-field-json-metadata-0-value-title' => $this->datasetTitle,
       'edit-field-json-metadata-0-value-description' => 'DKANTEST distribution description.',
       'edit-field-json-metadata-0-value-accesslevel' => 'public',
       'edit-field-json-metadata-0-value-modified-date' => '2020-02-02',
-      'edit-field-json-metadata-0-value-publisher-publisher-name' => $publisher_name,
+      'edit-field-json-metadata-0-value-publisher-publisher-name' => $this->publisherName,
       'edit-field-json-metadata-0-value-contactpoint-contactpoint-fn' => 'DKANTEST Contact Name',
       'edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail' => 'dkantest@test.com',
-      'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
+      'edit-field-json-metadata-0-value-keyword-keyword-0' => $this->keywordData,
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title' => 'distribution title test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description' => 'distribution description test',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format' => 'csv',
       'edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-upload' => 'upload',
     ], 'Save');
     $assert->statusCodeEquals(200);
-    $assert->pageTextContains('Data ' . $dataset_title . ' has been created.');
+    $assert->pageTextContains('Data ' . $this->datasetTitle . ' has been created.');
 
     // Queues to do import.
     $this->runQueues(['localize_import', 'datastore_import']);
     // Did our file import?
-    $this->assertDatasetWasImported($dataset_title);
+    $this->assertDatasetWasImported($this->datasetTitle);
 
     // 11_admin_dataset_file_upload.spec.js : Create dataset with remote file :
     // uploaded dataset files show remote link on edit.
     $this->drupalGet('admin/dkan/datasets');
     $this->submitForm([
-      'edit-title' => $dataset_title,
+      'edit-title' => $this->datasetTitle,
     ], 'Filter');
     $assert->statusCodeEquals(200);
 
