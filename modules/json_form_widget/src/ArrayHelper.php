@@ -16,6 +16,10 @@ class ArrayHelper implements ContainerInjectionInterface {
   use StringTranslationTrait;
   use DependencySerializationTrait;
 
+  const STATE_PROP = 'json_form_widget_info';
+  const STATE_PROP_COUNT = 'count';
+  const STATE_PROP_ADD = 'add';
+
   /**
    * Object Helper.
    */
@@ -115,6 +119,8 @@ class ArrayHelper implements ContainerInjectionInterface {
 
     $context_name = self::buildContextName($context);
     $item_count = $this->getItemCount($context_name, count($data ?? []), $min_items, $form_state);
+    $add_property = self::buildStateProperty(self::STATE_PROP_ADD, $context_name);
+    $add = $form_state->get($add_property) ?? FALSE;
     $is_required = in_array($definition['name'], $this->builder->getSchema()->required ?? []);
 
     // Build the parent fieldset.
@@ -127,6 +133,13 @@ class ArrayHelper implements ContainerInjectionInterface {
       $item['#required'] = $is_required && ($i < $min_items);
       $items[] = $item;
     }
+    // If add is true, overwrite the last item with a new empty item.
+    if ($add && $item_count > 0) {
+      $items[$item_count - 1] = $this->buildArrayItemElement($definition, NULL, $form_state, array_merge($context, [$item_count]));
+      $items[$item_count - 1]['#required'] = $is_required;
+      $form_state->set($add_property, FALSE);
+    }
+
     $element[$definition['name']] = $items;
     return $element;
   }
@@ -268,7 +281,7 @@ class ArrayHelper implements ContainerInjectionInterface {
     // Retrieve the item count from form state (this is not necessarily the
     // current number of items on the form, but the number we wish to be
     // present on the form).
-    $count_property = self::buildCountProperty($context_name);
+    $count_property = self::buildStateProperty(self::STATE_PROP_COUNT, $context_name);
     $item_count = $form_state->get($count_property);
     // If item count is not set in form state...
     if (!isset($item_count)) {
@@ -315,8 +328,8 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @return string[]
    *   Full count property array.
    */
-  public static function buildCountProperty(string $context_name): array {
-    return ['json_form_widget_info', $context_name, 'count'];
+  public static function buildStateProperty(string $name, string $context_name): array {
+    return [self::STATE_PROP, $context_name, $name];
   }
 
   /**
@@ -382,7 +395,7 @@ class ArrayHelper implements ContainerInjectionInterface {
     $parent = $button_element['#attributes']['data-parent'];
     $parents = $button_element['#parents'];
     $element_index = str_replace("{$parent}-", '', $button_element['#name']);
-    $count_property = self::buildCountProperty($parent);
+    $count_property = self::buildStateProperty(self::STATE_PROP_COUNT, $parent);
     $user_input = $form_state->getUserInput();
 
     // Update the user input to remove the specific element.
@@ -469,25 +482,15 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   public static function addOne(array &$form, FormStateInterface $form_state) {
     $button_element = $form_state->getTriggeringElement();
-    $data_parent = $button_element['#attributes']['data-parent'];
-    $parents = $button_element['#parents'];
-    $user_input = $form_state->getUserInput();
-    $count_property = static::buildCountProperty($button_element['#name']);
+    $count_property = static::buildStateProperty(self::STATE_PROP_COUNT, $button_element['#name']);
     // Modify stored item count.
     $item_count = $form_state->get($count_property) ?? 0;
     $item_count++;
-    $key_exists = NULL;
-    static::trimParents($parents, "array_actions");
-    // Getting from the add button to array requires duplicating last parent.
-    $parents[] = $data_parent;
-    // Add a new empty value to the user input so that the item is not
-    // pre-populated with default values.
-    $input_values = &NestedArray::getValue($user_input, $parents, $key_exists);
-    // @todo This does not actually work; instead of the empty array we actually
-    // need each property with an empty value.
-    $input_values[] = [$data_parent => []];
-
     $form_state->set($count_property, $item_count);
+
+    $add_property = static::buildStateProperty(self::STATE_PROP_ADD, $button_element['#name']);
+    $form_state->set($add_property, TRUE);
+
     $form_state->setRebuild();
   }
 

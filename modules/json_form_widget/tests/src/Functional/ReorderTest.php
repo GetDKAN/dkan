@@ -132,14 +132,18 @@ class ReorderTest extends JsonFormTestBase {
     $this->assertNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
     $assert->statusCodeEquals(200);
-    // Assert that the title and URL fields are empty (not yet working).
+    // Assert that the title and URL fields are empty.
     $this->assertEquals(
       '',
       $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
     );
     $this->assertEquals(
       '',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-file-url-remote"]')->getValue()
+    );
+    // There is no managed file.
+    $this->assertNull(
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')
     );
   }
 
