@@ -320,8 +320,10 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Build count property.
+   * Build a form_state property pointer specific to this array that can be set.
    *
+   * @param string $name
+   *   The specific property to build (e.g., "count").
    * @param string $context_name
    *   Field element context name.
    *
