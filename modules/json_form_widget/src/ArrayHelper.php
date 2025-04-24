@@ -483,6 +483,8 @@ class ArrayHelper implements ContainerInjectionInterface {
     // Add a new empty value to the user input so that the item is not
     // pre-populated with default values.
     $input_values = &NestedArray::getValue($user_input, $parents, $key_exists);
+    // @todo This does not actually work; instead of the empty array we actually
+    // need each property with an empty value.
     $input_values[] = [$data_parent => []];
 
     $form_state->set($count_property, $item_count);
