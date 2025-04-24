@@ -75,14 +75,17 @@ class ArrayHelperTest extends TestCase {
     $context = [$definition['name']];
     $context_name = ArrayHelper::buildContextName($context);
     $form_state = new FormState();
-    $form_state->set(ArrayHelper::buildCountProperty($context_name), 1);
+    $form_state->set(
+      ArrayHelper::buildStateProperty(ArrayHelper::STATE_PROP_COUNT, $context_name),
+      1
+    );
     $router = FieldTypeRouter::create($container);
     $router->setSchema(json_decode((string) $distribution_schema));
     $array_helper->setBuilder($router);
 
     $result = $array_helper->handleArrayElement($definition, [], $form_state, $context);
     $expected = $this->getExpectedComplexArrayElement();
-    unset($result['actions']);
+    unset($result['array_actions']);
     unset($result['distribution'][0]['distribution']['actions']);
     $this->assertEquals($expected, $result);
   }
