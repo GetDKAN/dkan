@@ -30,7 +30,7 @@
         "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
-        "npm-asset/select2": "^4.0 || dev-develop",
+        "npm-asset/select2": "dev-develop#595494a",
         "oomphinc/composer-installers-extender": "^2.0",
         "ramsey/uuid": "^3.8.0 || ^4",
         "stolt/json-merge-patch": "^2.0",
