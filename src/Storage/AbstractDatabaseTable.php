@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\dkan\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\SchemaObjectExistsException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Drupal\common\Events\Event;
+use Drupal\dkan\Events\Event;
 
 /**
  * Base class for database storage methods.
@@ -216,7 +216,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Run a query on the database table.
    *
-   * @param \Drupal\common\Storage\Query $query
+   * @param \Drupal\dkan\Storage\Query $query
    *   Query object.
    * @param string $alias
    *   (Optional) alias for primary table.

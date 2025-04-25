@@ -1,0 +1,69 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "API Documentation",
+        "version": "v1"
+    },
+    "components": {
+        "securitySchemes": {
+            "basic_auth": {
+                "type": "http",
+                "scheme": "basic"
+            }
+        },
+        "responses": {
+            "400BadJson": {
+                "description": "Bad request, usually JSON schema validation failure.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/errorResponse" },
+                        "example": {
+                            "message": "JSON Schema validation failed.",
+                            "status": 400,
+                            "timestamp": "2021-06-14T13:46:06+00:00",
+                            "data": {
+                                "keyword": "type",
+                                "pointer": "path/to/invalid/json/property",
+                                "message": "The attribute expected to be of type ''object'' but 'array' given."
+                            }
+                        }
+                    }
+                }
+            },
+            "404IdNotFound": {
+                "description": "Not found, usually due to incorrect identifier.",
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/errorResponse" },
+                        "example": {
+                            "message": "Error retrieving metadata: 00000000-0000-0000-0000-000000000000 not found.",
+                            "status": 404,
+                            "timestamp": "2021-06-14T13:46:06+00:00"
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "errorResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Error message."
+                    },
+                    "status": { "type": "integer" },
+                    "timestamp": { 
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "Arbitrary object storing more detailed data on the error message."
+                    }
+                }
+            }
+        }
+    },
+    "paths": {}
+}

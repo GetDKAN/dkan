@@ -1,0 +1,14 @@
+services:
+  dkan.commands:
+    class: \Drupal\dkan\Commands\CommonCommands
+    tags:
+      - { name: drush.command }
+    arguments:
+      - '@dkan.dataset_info'
+
+  dkan.jobstore.commands:
+    class: \Drupal\dkan\Commands\JobStoreCommands
+    tags:
+      - { name: drush.command }
+    arguments:
+      - '@database'

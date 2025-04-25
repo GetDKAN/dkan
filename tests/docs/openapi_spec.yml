@@ -1,0 +1,25 @@
+openapi: 3.0.2
+info:
+  title: Test Spec (valid)
+  version: Alpha
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+paths:
+  /api/1/foo/bar:
+    get:
+      operationId: foo-bar
+      summary: Foo Bar summary
+      description: |
+        This is just a test spec.
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
