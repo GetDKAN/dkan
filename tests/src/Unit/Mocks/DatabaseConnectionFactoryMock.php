@@ -3,7 +3,7 @@
 namespace Drupal\Tests\common\Unit\Mocks;
 
 use Drupal\Core\Database\Connection;
-use Drupal\common\Storage\DatabaseConnectionFactory;
+use Drupal\dkan\Storage\DatabaseConnectionFactory;
 
 class DatabaseConnectionFactoryMock extends DatabaseConnectionFactory {
 

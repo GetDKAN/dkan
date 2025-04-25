@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\common\Controller;
 
-use Drupal\common\Controller\OpenApiController;
-use Drupal\common\Plugin\DkanApiDocsBase;
-use Drupal\common\DkanApiDocsGenerator;
-use Drupal\common\Plugin\DkanApiDocsPluginManager;
+use Drupal\dkan\Controller\OpenApiController;
+use Drupal\dkan\Plugin\DkanApiDocsBase;
+use Drupal\dkan\DkanApiDocsGenerator;
+use Drupal\dkan\Plugin\DkanApiDocsPluginManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
@@ -160,7 +160,7 @@ class OpenApiControllerTest extends TestCase {
     $pluginDefinition = [
       'id' => 'test_dkan_api_docs',
       'description' => 'Testing the docs',
-      'class' => 'Drupal\common\Tests\Controller\TestApiDocs',
+      'class' => 'Drupal\dkan\Tests\Controller\TestApiDocs',
       'provider' => 'common',
     ];
 

@@ -3,9 +3,9 @@
 namespace Drupal\Tests\common\Unit;
 
 use Drupal\Core\Site\Settings;
-use Drupal\common\DkanApiDocsGenerator;
-use Drupal\common\Plugin\DkanApiDocsBase;
-use Drupal\common\Plugin\DkanApiDocsPluginManager;
+use Drupal\dkan\DkanApiDocsGenerator;
+use Drupal\dkan\Plugin\DkanApiDocsBase;
+use Drupal\dkan\Plugin\DkanApiDocsPluginManager;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 

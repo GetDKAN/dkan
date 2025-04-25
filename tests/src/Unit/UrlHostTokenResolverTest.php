@@ -5,7 +5,7 @@ namespace Drupal\Tests\common\Unit;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\UrlHostTokenResolver;
+use Drupal\dkan\UrlHostTokenResolver;
 use Drupal\Core\StreamWrapper\PublicStream;
 use MockChain\Chain;
 use MockChain\Options;

@@ -2,12 +2,12 @@
 
 namespace Drupal\Tests\common\Kernel\Util;
 
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan\Util\DrupalFiles;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\common\Util\DrupalFiles
- * @coversDefaultClass \Drupal\common\Util\DrupalFiles
+ * @covers \Drupal\dkan\Util\DrupalFiles
+ * @coversDefaultClass \Drupal\dkan\Util\DrupalFiles
  *
  * @group dkan
  * @group common
@@ -32,8 +32,8 @@ class DrupalFilesTest extends KernelTestBase {
    * @dataProvider provideExceptions
    */
   public function testExceptions($exception_message, $url, $destination) {
-    /** @var \Drupal\common\Util\DrupalFiles $drupal_files */
-    $drupal_files = $this->container->get('dkan.common.drupal_files');
+    /** @var \Drupal\dkan\Util\DrupalFiles $drupal_files */
+    $drupal_files = $this->container->get('dkan.drupal_files');
     $this->expectException(\Exception::class);
     $this->expectExceptionMessage($exception_message);
     $drupal_files->retrieveFile($url, $destination);
@@ -61,7 +61,7 @@ class DrupalFilesTest extends KernelTestBase {
         $this->container->get('file_system'),
         $this->container->get('stream_wrapper_manager'),
         $this->container->get('http_client_factory'),
-        $this->container->get('dkan.common.logger_channel'),
+        $this->container->get('dkan.logger_channel'),
       ])
       ->onlyMethods(['retrieveRemoteFile'])
       ->getMock();

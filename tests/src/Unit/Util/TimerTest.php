@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Util;
 
-use Drupal\common\Util\Timer;
+use Drupal\dkan\Util\Timer;
 use PHPUnit\Framework\TestCase;
 
 /**

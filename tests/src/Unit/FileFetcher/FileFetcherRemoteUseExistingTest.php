@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\common\Unit\FileFetcher;
 
-use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
+use Drupal\dkan\FileFetcher\FileFetcherRemoteUseExisting;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\common\FileFetcher\FileFetcherRemoteUseExisting
- * @coversDefaultClass \Drupal\common\FileFetcher\FileFetcherRemoteUseExisting
+ * @covers \Drupal\dkan\FileFetcher\FileFetcherRemoteUseExisting
+ * @coversDefaultClass \Drupal\dkan\FileFetcher\FileFetcherRemoteUseExisting
  */
 class FileFetcherRemoteUseExistingTest extends TestCase {
 

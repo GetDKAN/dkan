@@ -2,21 +2,21 @@
 
 namespace Drupal\Tests\common\Unit\Storage;
 
-use Drupal\common\Storage\Query;
-use Drupal\common\Storage\SelectFactory;
+use Drupal\dkan\Storage\Query;
+use Drupal\dkan\Storage\SelectFactory;
 use Drupal\Core\Database\Query\Select;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Drupal\Tests\common\Unit\Connection;
 
 /**
- * @coversDefaultClass \Drupal\common\Storage\SelectFactory
+ * @coversDefaultClass \Drupal\dkan\Storage\SelectFactory
  */
 class SelectFactoryTest extends TestCase {
   /**
    * SelectFactory object.
    *
-   * @var \Drupal\common\Storage\SelectFactory
+   * @var \Drupal\dkan\Storage\SelectFactory
    */
   private $selectFactory;
 

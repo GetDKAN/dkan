@@ -10,7 +10,7 @@ use Drupal\Core\Database\Query\Update;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\StatementWrapper;
 use Drupal\Core\Database\StatementWrapperIterator;
-use Drupal\common\Storage\JobStore;
+use Drupal\dkan\Storage\JobStore;
 use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Sequence;
@@ -18,8 +18,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @covers \Drupal\common\Storage\JobStore
- * @coversDefaultClass \Drupal\common\Storage\JobStore
+ * @covers \Drupal\dkan\Storage\JobStore
+ * @coversDefaultClass \Drupal\dkan\Storage\JobStore
  *
  * @group dkan
  * @group common

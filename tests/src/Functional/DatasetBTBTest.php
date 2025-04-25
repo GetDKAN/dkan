@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Load\Dataset;
@@ -72,8 +72,8 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->getMetastore()->publish('dataset', $id_1);
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
-    /** @var \Drupal\common\DatasetInfo $datasetInfo */
-    $datasetInfo = $this->container->get('dkan.common.dataset_info');
+    /** @var \Drupal\dkan\DatasetInfo $datasetInfo */
+    $datasetInfo = $this->container->get('dkan.dataset_info');
     $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
     $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
@@ -292,7 +292,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->storeDatasetRunQueues($id_1, '1', ['1.csv']);
 
     // Get the dataset info.
-    $metadata = $this->container->get('dkan.common.dataset_info')->gather($id_1);
+    $metadata = $this->container->get('dkan.dataset_info')->gather($id_1);
     $distributionTable = $metadata['latest_revision']['distributions'][0]['table_name'];
 
     // Confirm distribution table exists.
@@ -457,7 +457,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues(['localize_import', 'datastore_import']);
 
     // Assert dataset info shows 100%
-    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $datasetInfoService = $this->container->get('dkan.dataset_info');
     $metadata = $datasetInfoService->gather($dataset->identifier);
     $dist = array_shift($metadata['latest_revision']['distributions']);
     $this->assertEquals(100, $dist['fetcher_percent_done']);
@@ -683,7 +683,7 @@ class DatasetBTBTest extends BrowserTestBase {
     ]);
 
     // Get dataset info.
-    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $datasetInfoService = $this->container->get('dkan.dataset_info');
     $metadata = $datasetInfoService->gather($identifier);
     $distributionTableLatest = $metadata['latest_revision']['distributions'][0]['table_name'];
     $distributionTablePublished = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
@@ -797,7 +797,7 @@ class DatasetBTBTest extends BrowserTestBase {
       ['distribution' => [$distribution]]
     ));
 
-    $datasetInfoService = $this->container->get('dkan.common.dataset_info');
+    $datasetInfoService = $this->container->get('dkan.dataset_info');
     $databaseSchema = $this->container->get('database')->schema();
     $entityManager = $this->getNodeStorage();
 

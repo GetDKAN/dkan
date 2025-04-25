@@ -6,15 +6,15 @@
 
 namespace Drupal\Tests\common\Kernel\Util {
 
-  use Drupal\common\Storage\JobStore;
-  use Drupal\common\Util\JobStoreFactoryAccessor;
-  use Drupal\common\Util\JobStoreUtil;
+  use Drupal\dkan\Storage\JobStore;
+  use Drupal\dkan\Util\JobStoreFactoryAccessor;
+  use Drupal\dkan\Util\JobStoreUtil;
   use Drupal\KernelTests\KernelTestBase;
   use FileFetcher\FileFetcher;
 
   /**
-   * @covers \Drupal\common\Util\JobStoreUtil
-   * @coversDefaultClass \Drupal\common\Util\JobStoreUtil
+   * @covers \Drupal\dkan\Util\JobStoreUtil
+   * @coversDefaultClass \Drupal\dkan\Util\JobStoreUtil
    *
    * @group dkan
    * @group common
@@ -148,12 +148,12 @@ namespace Drupal\Tests\common\Kernel\Util {
      * @covers ::getUnknownJobstoreTables
      */
     public function testGetAllAndUnknownJobstoreTables() {
-      /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
-      $job_store_factory = $this->container->get('dkan.common.job_store');
+      /** @var \Drupal\dkan\Storage\JobStoreFactory $job_store_factory */
+      $job_store_factory = $this->container->get('dkan.job_store');
       // Two jobstore objects.
-      /** @var \Drupal\common\Storage\JobStore $job_store */
+      /** @var \Drupal\dkan\Storage\JobStore $job_store */
       $job_store = $job_store_factory->getInstance(\DkanTestUtilJobSubclass::class);
-      /** @var \Drupal\common\Storage\JobStore $job_store_2 */
+      /** @var \Drupal\dkan\Storage\JobStore $job_store_2 */
       $job_store_2 = $job_store_factory->getInstance(\DkanTestUtilJobSubclass2::class);
       // Create tables using count().
       $this->assertEquals(0, $job_store->count());

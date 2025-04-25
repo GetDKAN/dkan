@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Mocks;
 
-use Drupal\common\LoggerTrait;
+use Drupal\dkan\LoggerTrait;
 
 /**
  *

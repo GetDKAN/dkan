@@ -9,8 +9,8 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * This is a copy of \Drupal\Tests\system\Functional\System\RetrieveFileTest.
  *
- * @covers \Drupal\common\Util\DrupalFiles
- * @coversDefaultClass \Drupal\common\Util\DrupalFiles
+ * @covers \Drupal\dkan\Util\DrupalFiles
+ * @coversDefaultClass \Drupal\dkan\Util\DrupalFiles
  *
  * @group dkan
  * @group common
@@ -33,8 +33,8 @@ class DrupalFilesTest extends BrowserTestBase {
    * @covers ::retrieveRemoteFile
    */
   public function testFileRetrieving(): void {
-    /** @var \Drupal\common\Util\DrupalFiles $drupal_files */
-    $drupal_files = \Drupal::service('dkan.common.drupal_files');
+    /** @var \Drupal\dkan\Util\DrupalFiles $drupal_files */
+    $drupal_files = \Drupal::service('dkan.drupal_files');
     $ref_system_retrieve_file = new \ReflectionMethod($drupal_files, 'retrieveRemoteFile');
 
     // Test 404 handling by trying to fetch a randomly named file.

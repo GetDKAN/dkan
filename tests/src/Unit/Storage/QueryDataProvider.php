@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Storage;
 
-use Drupal\common\Storage\Query;
+use Drupal\dkan\Storage\Query;
 
 /**
  * Data provider for testing the SelectFactory class.
