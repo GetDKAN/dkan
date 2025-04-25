@@ -7,7 +7,6 @@ dependencies:
   - dkan:metastore
   - dkan:metastore_admin
   - dkan:metastore_search
-  - dkan:common
   - dkan:json_form_widget
   - dkan:data_dictionary_widget
   - drupal:config
