@@ -25,8 +25,8 @@ class CustomProcessorTest extends KernelTestBase {
   public function test() {
     $identifier = 'my_identifier';
     // Services from custom_processor_test module should decorate
-    // dkan.common.file_fetcher so that we get the custom file fetcher instead.
-    $factory = $this->container->get('dkan.common.file_fetcher');
+    // dkan.file_fetcher so that we get the custom file fetcher instead.
+    $factory = $this->container->get('dkan.file_fetcher');
     $this->assertInstanceOf(CustomFileFetcherFactory::class, $factory);
 
     /** @var \FileFetcher\FileFetcher $instance */

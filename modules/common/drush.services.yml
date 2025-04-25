@@ -4,7 +4,7 @@ services:
     tags:
       - { name: drush.command }
     arguments:
-      - '@dkan.common.dataset_info'
+      - '@dkan.dataset_info'
 
   common.jobstore.commands:
     class: \Drupal\common\Commands\JobStoreCommands

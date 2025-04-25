@@ -41,7 +41,7 @@ class DrupalFilesTest extends TestCase {
       ->add('file.repository', FileRepository::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->add('http_client_factory', ClientFactory::class)
-      ->add('dkan.common.logger_channel', LoggerChannelInterface::class)
+      ->add('dkan.logger_channel', LoggerChannelInterface::class)
       ->index(0);
 
     return (new Chain($this))

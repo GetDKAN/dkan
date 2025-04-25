@@ -105,7 +105,7 @@ class DatastoreServiceTest extends TestCase {
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)

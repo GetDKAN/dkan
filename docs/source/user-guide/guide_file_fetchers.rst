@@ -41,16 +41,16 @@ The new factory should create and configure a ``FileFetcher\FileFetcher`` object
 Declare your factory as a service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It is also very important to declare your new factory class as a service. You accomplish this by decorating ``dkan.common.file_fetcher`` in your module's ``*.services.yml`` file, something like this:
+It is also very important to declare your new factory class as a service. You accomplish this by decorating ``dkan.file_fetcher`` in your module's ``*.services.yml`` file, something like this:
 
     .. code-block:: yaml
 
       our_module.file_fetcher:
         class: Drupal\our_module\FileFetcher\FileFetcherFactory
-        decorates: dkan.common.file_fetcher
+        decorates: dkan.file_fetcher
         arguments: ['@our_module.file_fetcher.inner']
 
-Now whenever DKAN uses the ``dkan.common.file_fetcher`` service, your file fetcher factory will be used instead, and your new processor will find its way into use.
+Now whenever DKAN uses the ``dkan.file_fetcher`` service, your file fetcher factory will be used instead, and your new processor will find its way into use.
 
 Processor negotiation
 ---------------------

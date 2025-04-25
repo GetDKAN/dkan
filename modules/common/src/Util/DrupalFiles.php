@@ -55,7 +55,7 @@ class DrupalFiles implements ContainerInjectionInterface {
       $container->get('file_system'),
       $container->get('stream_wrapper_manager'),
       $container->get('http_client_factory'),
-      $container->get('dkan.common.logger_channel')
+      $container->get('dkan.logger_channel')
     );
   }
 

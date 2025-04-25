@@ -29,7 +29,7 @@ class ReferencerTest extends KernelTestBase {
   public function testGetLocalMimeTypeLogging() {
     // Test logger we can assert against.
     $logger = new TestLogger();
-    $this->container->set('dkan.common.logger_channel', $logger);
+    $this->container->set('dkan.logger_channel', $logger);
 
     // The guesser service always returns NULL.
     $guesser = $this->getMockBuilder(MimeTypeGuesserInterface::class)

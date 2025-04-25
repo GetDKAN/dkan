@@ -242,7 +242,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
 
     // Get the import status for the dataset.
     /** @var \Drupal\common\DatasetInfo $info_service */
-    $info_service = $this->container->get('dkan.common.dataset_info');
+    $info_service = $this->container->get('dkan.dataset_info');
     $info = $info_service->gather($uuid);
     $this->assertEquals(
       'done',

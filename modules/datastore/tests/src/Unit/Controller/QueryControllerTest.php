@@ -488,7 +488,7 @@ class QueryControllerTest extends TestCase {
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
       ->add("dkan.datastore.query", Query::class)
-      ->add("dkan.common.dataset_info", DatasetInfo::class)
+      ->add("dkan.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)

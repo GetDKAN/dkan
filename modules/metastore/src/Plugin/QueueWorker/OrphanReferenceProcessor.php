@@ -86,7 +86,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
           $configuration,
           $plugin_id,
           $plugin_definition,
-          $container->get('dkan.common.node_storage'),
+          $container->get('dkan.node_storage'),
           $container->get('dkan.metastore.reference_lookup'),
           $container->get('event_dispatcher')
       );

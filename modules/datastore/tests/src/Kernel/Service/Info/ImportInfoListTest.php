@@ -66,7 +66,7 @@ class ImportInfoListTest extends KernelTestBase {
       ->add(FileFetcherJobStoreFactory::class, 'getInstance', $job_store)
       ->getMock();
 
-    $this->container->set('dkan.common.filefetcher_job_store_factory', $job_store_factory);
+    $this->container->set('dkan.filefetcher_job_store_factory', $job_store_factory);
 
     // Build the list.
     /** @var \Drupal\datastore\Service\Info\ImportInfoList $import_info_list */

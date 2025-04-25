@@ -47,7 +47,7 @@ class OpenApiController implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new OpenApiController(
       $container->get('request_stack'),
-      $container->get('dkan.common.docs_generator')
+      $container->get('dkan.docs_generator')
     );
   }
 

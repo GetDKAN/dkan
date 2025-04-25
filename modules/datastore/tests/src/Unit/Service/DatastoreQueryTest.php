@@ -200,7 +200,7 @@ class DatastoreQueryTest extends TestCase {
       ->add("dkan.datastore.service.factory.import", ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
       ->add('request_stack', RequestStack::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)

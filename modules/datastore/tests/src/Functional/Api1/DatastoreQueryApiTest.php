@@ -26,7 +26,7 @@ class DatastoreQueryApiTest extends Api1TestBase {
     $this->validator->validate($response, "/api/1/datastore/query/{datasetId}/{index}", 'get');
 
     // Confirm a 200 response after the datastore_import has run.
-    $dataset_info = \Drupal::service('dkan.common.dataset_info')->gather($dataset_id);
+    $dataset_info = \Drupal::service('dkan.dataset_info')->gather($dataset_id);
     $resource_id = $dataset_info['latest_revision']['distributions'][0]['resource_id'];
     \Drupal::service('dkan.datastore.service')->import($resource_id, FALSE);
     $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0", [
@@ -47,11 +47,11 @@ class DatastoreQueryApiTest extends Api1TestBase {
     $this->post($dataset, FALSE);
     $dataset_id = $dataset->identifier;
 
-    $dataset_info = \Drupal::service('dkan.common.dataset_info')->gather($dataset_id);
+    $dataset_info = \Drupal::service('dkan.dataset_info')->gather($dataset_id);
     $resource_id = $dataset_info['latest_revision']['distributions'][0]['resource_id'];
     \Drupal::service('dkan.datastore.service')->import($resource_id, FALSE);
 
-    $dataset_info = \Drupal::service('dkan.common.dataset_info')->gather($dataset_id);
+    $dataset_info = \Drupal::service('dkan.dataset_info')->gather($dataset_id);
     $datastore_table = $dataset_info['latest_revision']['distributions'][0]['table_name'];
     \Drupal::database()->schema()->dropTable($datastore_table);
 

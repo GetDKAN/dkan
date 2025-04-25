@@ -30,7 +30,7 @@ class ImportInfoList implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.common.filefetcher_job_store_factory'),
+      $container->get('dkan.filefetcher_job_store_factory'),
       $container->get('dkan.datastore.import_info')
     );
   }

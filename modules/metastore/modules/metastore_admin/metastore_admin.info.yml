@@ -9,6 +9,6 @@ dependencies:
   - drupal:toolbar
   - drupal:user
   - drupal:views
-  - views_bulk_operations
-  - moderated_content_bulk_publish
+  - views_bulk_operations:views_bulk_operations
+  - moderated_content_bulk_publish:moderated_content_bulk_publish
 package: DKAN

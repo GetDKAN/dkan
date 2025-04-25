@@ -1,6 +1,6 @@
 services:
   dkan.commands:
-    class: \Drupal\dkan\Commands\CommonCommands
+    class: \Drupal\dkan\Commands\DkanCommands
     tags:
       - { name: drush.command }
     arguments:

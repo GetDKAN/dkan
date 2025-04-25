@@ -45,7 +45,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $config->save();
 
     /** @var \Drupal\common\FileFetcher\FileFetcherFactory $factory */
-    $factory = $this->container->get('dkan.common.file_fetcher');
+    $factory = $this->container->get('dkan.file_fetcher');
     $this->assertInstanceOf(FileFetcherFactory::class, $factory);
 
     $ref_get_config = new \ReflectionMethod($factory, 'getFileFetcherConfig');
@@ -115,7 +115,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $config->save();
 
     /** @var \Drupal\common\FileFetcher\FileFetcherFactory $factory */
-    $factory = $this->container->get('dkan.common.file_fetcher');
+    $factory = $this->container->get('dkan.file_fetcher');
 
     $instance = $factory->getInstance('id', ['filePath' => '/tmp/thingie.csv']);
 

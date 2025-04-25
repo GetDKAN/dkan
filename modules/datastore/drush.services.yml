@@ -20,7 +20,7 @@ services:
     class: \Drupal\datastore\Commands\ReimportCommands
     arguments:
       - '@dkan.datastore.service'
-      - '@dkan.common.dataset_info'
+      - '@dkan.dataset_info'
       - '@dkan.datastore.logger_channel'
     tags:
       - { name: drush.command }

@@ -5,7 +5,7 @@ services:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
       - '@dkan.metastore.valid_metadata'
-      - '@dkan.common.logger_channel'
+      - '@dkan.logger_channel'
       - '@event_dispatcher'
 
   dkan.metastore.lifecycle:
@@ -38,7 +38,7 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@config.factory'
-      - '@dkan.common.logger_channel'
+      - '@dkan.logger_channel'
       - '@event_dispatcher'
 
   dkan.metastore.referencer:
@@ -49,14 +49,14 @@ services:
       - '@dkan.metastore.url_generator'
       - '@http_client'
       - '@file.mime_type.guesser.extension'
-      - '@dkan.common.logger_channel'
+      - '@dkan.logger_channel'
 
   dkan.metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
-      - '@dkan.common.logger_channel'
+      - '@dkan.logger_channel'
 
   dkan.metastore.orphan_checker:
     class: \Drupal\metastore\Reference\OrphanChecker
@@ -75,7 +75,7 @@ services:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
-      - '@dkan.common.logger_channel'
+      - '@dkan.logger_channel'
       - '@event_dispatcher'
 
   dkan.metastore.event_subscriber:
@@ -101,7 +101,7 @@ services:
   dkan.metastore.dataset_api_docs:
     class: \Drupal\metastore\DatasetApiDocs
     arguments:
-      - '@dkan.common.docs_generator'
+      - '@dkan.docs_generator'
       - '@dkan.metastore.service'
       - '@settings'
 

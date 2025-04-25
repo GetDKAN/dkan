@@ -71,7 +71,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
     // Get our resource info from the dataset info service.
     /** @var \Drupal\common\DatasetInfo $dataset_info_service */
-    $dataset_info_service = $this->container->get('dkan.common.dataset_info');
+    $dataset_info_service = $this->container->get('dkan.dataset_info');
     $info = $dataset_info_service->gather($identifier);
 
     // Having gotten the info, there should still only be 1 record.

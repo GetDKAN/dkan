@@ -124,7 +124,7 @@ class DashboardForm extends FormBase {
   public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('dkan.harvest.service'),
-      $container->get('dkan.common.dataset_info'),
+      $container->get('dkan.dataset_info'),
       $container->get('dkan.metastore.service'),
       $container->get('pager.manager'),
       $container->get('date.formatter'),

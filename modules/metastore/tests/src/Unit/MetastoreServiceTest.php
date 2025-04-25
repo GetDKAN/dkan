@@ -405,11 +405,11 @@ EOF;
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('event_dispatcher', EventDispatcher::class)
       ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
-      ->add('dkan.common.logger_channel', LoggerChannelInterface::class)
+      ->add('dkan.logger_channel', LoggerChannelInterface::class)
       ->index(0);
 
     if ($logger) {
-      $options->add('dkan.common.logger_channel', $logger);
+      $options->add('dkan.logger_channel', $logger);
     }
 
     return (new Chain($case))

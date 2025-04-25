@@ -597,7 +597,7 @@ class DashboardFormTest extends TestCase {
     $options = (new Options())
       ->add('dkan.harvest.service', HarvestService::class)
       ->add('dkan.harvest.storage.harvest_run_repository', HarvestRunRepository::class)
-      ->add('dkan.common.dataset_info', DatasetInfo::class)
+      ->add('dkan.dataset_info', DatasetInfo::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('pager.manager', PagerManagerInterface::class)
       ->add('request_stack', RequestStack::class)

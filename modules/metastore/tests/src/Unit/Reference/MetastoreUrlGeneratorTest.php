@@ -120,7 +120,7 @@ class MetastoreUrlGeneratorTest extends TestCase {
         ->add('url_generator', MetadataBubblingUrlGenerator::class)
         ->index(0)
       )
-      ->add(PathValidator::class, 'getPathAttributes', ['_route' => "dkan.common.api.version", '_raw_variables' => new ParameterBag()])
+      ->add(PathValidator::class, 'getPathAttributes', ['_route' => "dkan.api.version", '_raw_variables' => new ParameterBag()])
       ->add(UnroutedUrlAssembler::class, 'assemble', "/api/1/metastore/schemas/data-dictionary/items/111")
       ->add(MetadataBubblingUrlGenerator::class, 'generateFromRoute', GeneratedUrl::class)
       ->add(GeneratedUrl::class, 'getGeneratedUrl', 'http://web/api/1')

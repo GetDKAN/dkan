@@ -72,7 +72,7 @@ class MetastoreService implements ContainerInjectionInterface {
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('dkan.metastore.storage'),
       $container->get('dkan.metastore.valid_metadata'),
-      $container->get('dkan.common.logger_channel'),
+      $container->get('dkan.logger_channel'),
       $container->get('event_dispatcher')
     );
   }

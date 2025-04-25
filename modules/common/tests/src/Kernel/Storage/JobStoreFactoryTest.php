@@ -30,7 +30,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
       $db = $this->container->get('database');
       // Make a JobStore object.
       /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
-      $job_store_factory = $this->container->get('dkan.common.job_store');
+      $job_store_factory = $this->container->get('dkan.job_store');
       $job_store = $job_store_factory->getInstance(\DkanTestJobSubclass::class);
 
       $this->assertInstanceOf(JobStore::class, $job_store);

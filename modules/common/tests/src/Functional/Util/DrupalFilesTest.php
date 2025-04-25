@@ -34,7 +34,7 @@ class DrupalFilesTest extends BrowserTestBase {
    */
   public function testFileRetrieving(): void {
     /** @var \Drupal\common\Util\DrupalFiles $drupal_files */
-    $drupal_files = \Drupal::service('dkan.common.drupal_files');
+    $drupal_files = \Drupal::service('dkan.drupal_files');
     $ref_system_retrieve_file = new \ReflectionMethod($drupal_files, 'retrieveRemoteFile');
 
     // Test 404 handling by trying to fetch a randomly named file.

@@ -88,7 +88,7 @@ class ResourceImporterTest extends KernelTestBase {
         $this->container->get('file_system'),
         $this->container->get('stream_wrapper_manager'),
         $this->container->get('http_client_factory'),
-        $this->container->get('dkan.common.logger_channel'),
+        $this->container->get('dkan.logger_channel'),
       ])
       ->onlyMethods(['retrieveFile'])
       ->getMock();
@@ -96,7 +96,7 @@ class ResourceImporterTest extends KernelTestBase {
       ->method('retrieveFile')
       ->willReturn(FALSE);
 
-    $this->container->set('dkan.common.drupal_files', $drupal_files);
+    $this->container->set('dkan.drupal_files', $drupal_files);
 
     $importer = new ResourceImporter('harvest_plan_id');
     $this->assertFalse($importer->saveFile('any_url', 'any_dataset'));

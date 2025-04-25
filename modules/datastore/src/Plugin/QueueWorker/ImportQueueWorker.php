@@ -114,7 +114,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
       $container->get('config.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.logger_channel'),
-      $container->get('dkan.common.database_connection_factory'),
+      $container->get('dkan.database_connection_factory'),
       $container->get('dkan.datastore.database_connection_factory')
     );
   }

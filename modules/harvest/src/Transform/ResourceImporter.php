@@ -36,7 +36,7 @@ class ResourceImporter extends Transform {
    */
   public function __construct($harvest_plan) {
     parent::__construct($harvest_plan);
-    $this->drupalFiles = \Drupal::service('dkan.common.drupal_files');
+    $this->drupalFiles = \Drupal::service('dkan.drupal_files');
     $this->fileUrlGenerator = \Drupal::service('file_url_generator');
     $this->fileSystem = \Drupal::service('file_system');
   }

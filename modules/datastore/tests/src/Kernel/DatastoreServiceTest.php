@@ -41,9 +41,9 @@ class DatastoreServiceTest extends KernelTestBase {
     $resource_localizer = $this->getMockBuilder(ResourceLocalizer::class)
       ->setConstructorArgs([
         $this->container->get('dkan.metastore.resource_mapper'),
-        $this->container->get('dkan.common.file_fetcher'),
-        $this->container->get('dkan.common.drupal_files'),
-        $this->container->get('dkan.common.filefetcher_job_store_factory'),
+        $this->container->get('dkan.file_fetcher'),
+        $this->container->get('dkan.drupal_files'),
+        $this->container->get('dkan.filefetcher_job_store_factory'),
         $this->container->get('queue'),
         $this->container->get('event_dispatcher')
       ])

@@ -134,9 +134,9 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
       ->setConstructorArgs([
         // These are the real services, we just want to mock localizeTask().
         $this->container->get('dkan.metastore.resource_mapper'),
-        $this->container->get('dkan.common.file_fetcher'),
-        $this->container->get('dkan.common.drupal_files'),
-        $this->container->get('dkan.common.filefetcher_job_store_factory'),
+        $this->container->get('dkan.file_fetcher'),
+        $this->container->get('dkan.drupal_files'),
+        $this->container->get('dkan.filefetcher_job_store_factory'),
         $this->container->get('queue'),
         $this->container->get('event_dispatcher')
       ])
@@ -169,9 +169,9 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
       ->setConstructorArgs([
         // These are the real services, we just want to mock localizeTask().
         $this->container->get('dkan.metastore.resource_mapper'),
-        $this->container->get('dkan.common.file_fetcher'),
-        $this->container->get('dkan.common.drupal_files'),
-        $this->container->get('dkan.common.filefetcher_job_store_factory'),
+        $this->container->get('dkan.file_fetcher'),
+        $this->container->get('dkan.drupal_files'),
+        $this->container->get('dkan.filefetcher_job_store_factory'),
         $this->container->get('queue'),
         $this->container->get('event_dispatcher')
       ])
