@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ImportControllerTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
   ];

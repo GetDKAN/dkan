@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\datastore\Kernel\Plugin\DatasetInfo;
 
 use Drupal\dkan\DatasetInfo;
-use Drupal\Tests\common\Kernel\DatasetInfoTest;
+use Drupal\Tests\dkan\Functional\Kernel\DatasetInfoTest;
 
 /**
  * Tests the DatastoreInfo plugin for DatasetInfo.

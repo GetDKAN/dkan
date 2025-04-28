@@ -21,7 +21,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
     'node',
@@ -37,7 +37,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
   }
 
   public function test() {
-    $this->installConfig(['common']);
+    $this->installConfig(['dkan']);
 
     // Create dataset.
     $source_resource = new DataResource(
@@ -55,11 +55,11 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
     );
 
     // Set always_use_existing_local_perspective to true.
-    $this->config('common.settings')
+    $this->config('dkan.settings')
       ->set('always_use_existing_local_perspective', TRUE)
       ->save();
     $this->assertTrue(
-      $this->config('common.settings')->get('always_use_existing_local_perspective')
+      $this->config('dkan.settings')->get('always_use_existing_local_perspective')
     );
 
     // Run prepare-localized, emulating the Drush command.

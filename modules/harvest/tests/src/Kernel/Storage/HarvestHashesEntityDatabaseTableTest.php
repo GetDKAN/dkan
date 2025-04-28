@@ -17,7 +17,7 @@ use Drupal\KernelTests\KernelTestBase;
 class HarvestHashesEntityDatabaseTableTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'harvest',
     'metastore',
   ];

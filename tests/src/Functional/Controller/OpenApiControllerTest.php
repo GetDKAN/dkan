@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Functional\Controller;
+namespace Drupal\Tests\dkan\Functional\Controller;
 
 use Drupal\dkan\Controller\OpenApiController;
 use Drupal\Core\Serialization\Yaml;

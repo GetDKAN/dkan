@@ -24,7 +24,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
   ];

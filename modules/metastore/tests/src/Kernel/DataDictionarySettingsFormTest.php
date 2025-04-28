@@ -30,7 +30,6 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     'filter',
     'text',
     'metastore',
-    'common',
     'dkan',
     'menu_link_content',
     'basic_auth',
@@ -166,7 +165,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     $this->installConfig('system');
     $this->installConfig('node');
     $this->installConfig('metastore');
-    $this->installConfig('common');
+    $this->installConfig('dkan');
     $this->installConfig('basic_auth');
     $this->installConfig('content_moderation');
     $this->installConfig('workflows');

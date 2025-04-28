@@ -17,7 +17,7 @@ use Drupal\KernelTests\KernelTestBase;
 class ResourceMapperTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'metastore',
   ];
 

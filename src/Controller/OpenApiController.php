@@ -23,7 +23,7 @@ class OpenApiController implements ContainerInjectionInterface {
   /**
    * API Docs generator class.
    *
-   * @var Drupal\dkan\Controller\DkanApiDocsGenerator
+   * @var Drupal\dkan\DkanApiDocsGenerator
    */
   protected $generator;
 
@@ -61,7 +61,7 @@ class OpenApiController implements ContainerInjectionInterface {
    */
   public function __construct(
     RequestStack $requestStack,
-    DkanApiDocsGenerator $generator
+    DkanApiDocsGenerator $generator,
   ) {
     $this->requestStack = $requestStack;
     $this->generator = $generator;

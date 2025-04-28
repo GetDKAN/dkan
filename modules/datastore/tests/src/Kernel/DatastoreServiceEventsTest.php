@@ -28,7 +28,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
     'node',

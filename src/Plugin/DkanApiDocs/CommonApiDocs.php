@@ -12,7 +12,7 @@ use Drupal\dkan\Plugin\DkanApiDocsBase;
  *  description = "Base API docs plugin."
  * )
  */
-class DkanApiDocs extends DkanApiDocsBase {
+class CommonApiDocs extends DkanApiDocsBase {
 
   /**
    * {@inheritdoc}

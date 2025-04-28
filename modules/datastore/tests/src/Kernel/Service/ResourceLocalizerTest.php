@@ -20,7 +20,7 @@ use Procrastinator\Result;
 class ResourceLocalizerTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
     'node',
@@ -104,8 +104,8 @@ class ResourceLocalizerTest extends KernelTestBase {
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.
-    $this->installConfig(['common']);
-    $config = $this->config('common.settings');
+    $this->installConfig(['dkan']);
+    $config = $this->config('dkan.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
 

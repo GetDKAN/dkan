@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 class WebServiceApiTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'harvest',
     'metastore',
     'node',

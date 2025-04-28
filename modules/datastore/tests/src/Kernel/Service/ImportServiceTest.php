@@ -23,7 +23,7 @@ class ImportServiceTest extends KernelTestBase {
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
     'node',
