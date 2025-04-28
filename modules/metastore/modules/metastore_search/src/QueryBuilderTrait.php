@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore_search;
 
-use Drupal\common\Events\Event;
+use Drupal\dkan\Events\Event;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Query\QueryInterface;

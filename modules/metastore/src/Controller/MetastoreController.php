@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Controller;
 
-use Drupal\common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\CannotChangeUuidException;

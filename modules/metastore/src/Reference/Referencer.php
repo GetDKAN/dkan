@@ -5,8 +5,8 @@ namespace Drupal\metastore\Reference;
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\common\DataResource;
-use Drupal\common\UrlHostTokenResolver;
+use Drupal\dkan\DataResource;
+use Drupal\dkan\UrlHostTokenResolver;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ResourceMapper;
@@ -289,7 +289,7 @@ class Referencer {
   /**
    * Get download URL for existing resource.
    *
-   * @param \Drupal\common\DataResource $existing
+   * @param \Drupal\dkan\DataResource $existing
    *   Existing data resource object.
    * @param string $mimeType
    *   MIME type.

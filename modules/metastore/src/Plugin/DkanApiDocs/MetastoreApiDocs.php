@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Plugin\DkanApiDocs;
 
-use Drupal\common\Plugin\DkanApiDocsBase;
+use Drupal\dkan\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\metastore\MetastoreService;
@@ -58,7 +58,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Drupal\dkan\Plugin\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

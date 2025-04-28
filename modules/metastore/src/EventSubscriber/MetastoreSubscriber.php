@@ -2,8 +2,8 @@
 
 namespace Drupal\metastore\EventSubscriber;
 
-use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
+use Drupal\dkan\DataResource;
+use Drupal\dkan\Events\Event;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\metastore\ReferenceLookupInterface;
@@ -82,7 +82,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * Removes resources associated with the orphaned distribution.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan\Events\Event $event
    *   The event object containing the resource uuid.
    */
   public function cleanResourceMapperTable(Event $event) {

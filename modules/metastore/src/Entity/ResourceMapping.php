@@ -46,7 +46,7 @@ use Drupal\metastore\ResourceMappingInterface;
  *   },
  * )
  *
- * @see \Drupal\common\DataResource
+ * @see \Drupal\dkan\DataResource
  */
 class ResourceMapping extends ContentEntityBase implements ResourceMappingInterface {
 
@@ -71,7 +71,7 @@ class ResourceMapping extends ContentEntityBase implements ResourceMappingInterf
     // File path or URL or URI for this resource, depending on perspective. For
     // source perspective this will be a remote URL. For local_file this will
     // be a local URI. For local_url, this will be a 'hostified' URL.
-    // @see \Drupal\common\UrlHostTokenResolver::hostify()
+    // @see \Drupal\dkan\UrlHostTokenResolver::hostify()
     $base_fields['filePath'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('File Path'))
       ->setReadOnly(FALSE)

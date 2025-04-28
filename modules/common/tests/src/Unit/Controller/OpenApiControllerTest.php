@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Controller;
 
-use Drupal\common\Controller\OpenApiController;
+use Drupal\dkan\Controller\OpenApiController;
 use Drupal\common\Plugin\DkanApiDocsBase;
 use Drupal\common\DkanApiDocsGenerator;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;

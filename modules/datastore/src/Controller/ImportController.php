@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\common\DataResource;
-use Drupal\common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;

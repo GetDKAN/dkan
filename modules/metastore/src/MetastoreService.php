@@ -3,7 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\Events\Event;
+use Drupal\dkan\Events\Event;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;

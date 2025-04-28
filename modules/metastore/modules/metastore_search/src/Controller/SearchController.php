@@ -3,7 +3,7 @@
 namespace Drupal\metastore_search\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore_search\Search;

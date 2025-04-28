@@ -4,7 +4,7 @@ namespace Drupal\Tests\metastore\Unit;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\common\Events\Event;
+use Drupal\dkan\Events\Event;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;

@@ -3,7 +3,7 @@
 namespace Drupal\common\Controller;
 
 use Drupal\common\CacheableResponseTrait;
-use Drupal\common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 use Drupal\common\DkanApiDocsGenerator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Serialization\Yaml;
