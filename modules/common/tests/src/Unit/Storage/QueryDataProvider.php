@@ -11,7 +11,7 @@ use Drupal\common\Storage\Query;
  * messages. Methods are public static so that other tests can easily pull them
  * in individually.
  *
- * @see \Drupal\Tests\common\Storage\SelectFactoryTest
+ * @see \Drupal\Tests\dkan\Storage\SelectFactoryTest
  * @see \Drupal\Tests\datastore\Service\QueryTest
  */
 class QueryDataProvider {

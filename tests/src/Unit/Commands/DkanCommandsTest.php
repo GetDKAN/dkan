@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Commands;
+namespace Drupal\Tests\dkan\Unit\Commands;
 
-use Drupal\dkan\Commands\CommonCommands;
+use Drupal\dkan\Commands\DkanCommands;
 use Drupal\dkan\DatasetInfo;
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Drupal\dkan\Commands\CommonCommands
  * @coversDefaultClass \Drupal\dkan\Commands\CommonCommands
  */
-class CommonCommandsTest extends TestCase {
+class DkanCommandsTest extends TestCase {
 
   /**
    * @covers ::datasetInfo
@@ -25,7 +25,7 @@ class CommonCommandsTest extends TestCase {
       ->method('gather')
       ->willReturn(['uuid' => 'foo']);
 
-    $drush = new CommonCommands($datasetInfo);
+    $drush = new DkanCommands($datasetInfo);
     $result = $drush->datasetInfo('foo');
     $expected = "{\n    \"uuid\": \"foo\"\n}";
 

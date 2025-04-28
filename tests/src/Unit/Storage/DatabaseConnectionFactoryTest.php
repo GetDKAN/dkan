@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Storage;
+namespace Drupal\Tests\dkan\Unit\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Tests\common\Unit\Mocks\DatabaseConnectionFactoryMock;
+use Drupal\Tests\dkan\Unit\Mocks\DatabaseConnectionFactoryMock;
 
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;

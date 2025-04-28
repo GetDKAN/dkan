@@ -28,7 +28,7 @@ class SelectFactoryTest extends TestCase {
   /**
    * @test
    *
-   * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
+   * @dataProvider \Drupal\Tests\dkan\Unit\Storage\QueryDataProvider::getAllData()
    */
   public function testQuery(Query $query, string $sql, string $message, array $values = []) {
     if ($message) {

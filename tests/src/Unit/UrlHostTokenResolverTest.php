@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit;
+namespace Drupal\Tests\dkan\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;

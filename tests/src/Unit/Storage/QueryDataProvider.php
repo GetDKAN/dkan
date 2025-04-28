@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Storage;
+namespace Drupal\Tests\dkan\Unit\Storage;
 
 use Drupal\dkan\Storage\Query;
 
@@ -11,7 +11,7 @@ use Drupal\dkan\Storage\Query;
  * messages. Methods are public static so that other tests can easily pull them
  * in individually.
  *
- * @see \Drupal\Tests\common\Storage\SelectFactoryTest
+ * @see \Drupal\Tests\dkan\Storage\SelectFactoryTest
  * @see \Drupal\Tests\datastore\Service\QueryTest
  */
 class QueryDataProvider {

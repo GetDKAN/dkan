@@ -31,7 +31,7 @@
       <directory>.</directory>
     </testsuite>
     <testsuite name="DkanUnitTests">
-      <directory>modules/common/tests/src/Unit</directory>
+      <directory>tests/src/Unit</directory>
       <directory>modules/metastore/modules/metastore_search/tests/src/Unit</directory>
       <directory>modules/datastore/tests/src/Unit</directory>
       <directory>modules/datastore/modules/datastore_mysql_import/tests/src/Unit</directory>
@@ -41,13 +41,22 @@
       <directory>modules/json_form_widget/tests/src/Unit</directory>
     </testsuite>
     <testsuite name="DkanFunctionalTests">
-      <directory>modules/common/tests/src/Functional</directory>
+      <directory>tests/src/Functional</directory>
       <directory>modules/metastore/tests/src/Functional</directory>
       <directory>modules/metastore/modules/metastore_search/tests/src/Functional</directory>
       <directory>modules/metastore/modules/metastore_admin/tests/src/Functional</directory>
       <directory>modules/datastore/tests/src/Functional</directory>
       <directory>modules/dkan_js_frontend/tests/src/Functional</directory>
       <directory>tests/src/Functional</directory>
+    </testsuite>
+    <testsuite name="DkanKernelTests">
+      <directory>tests/src/Kernel</directory>
+      <directory>modules/harvest/tests/src/Kernel</directory>
+      <directory>modules/metastore/tests/src/Kernel</directory>
+      <directory>modules/metastore/modules/metastore_search/tests/src/Kernel</directory>
+      <directory>modules/metastore/modules/metastore_admin/tests/src/Kernel</directory>
+      <directory>modules/datastore/tests/src/Kernel</directory>
+      <directory>modules/dkan_js_frontend/tests/src/Kernel</directory>
     </testsuite>
   </testsuites>
   <groups>

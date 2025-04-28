@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Util;
+namespace Drupal\Tests\dkan\Unit\Util;
 
 use Drupal\dkan\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;

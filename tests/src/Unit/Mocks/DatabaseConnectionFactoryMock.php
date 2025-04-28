@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Mocks;
+namespace Drupal\Tests\dkan\Unit\Mocks;
 
 use Drupal\Core\Database\Connection;
 use Drupal\dkan\Storage\DatabaseConnectionFactory;
