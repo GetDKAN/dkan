@@ -34,7 +34,7 @@ services:
       - '@config.factory'
 
   dkan.filefetcher_job_store_factory:
-    class: \Drupal\Storage\FileFetcherJobStoreFactory
+    class: \Drupal\dkan\Storage\FileFetcherJobStoreFactory
     arguments:
       - '@database'
       - '@event_dispatcher'

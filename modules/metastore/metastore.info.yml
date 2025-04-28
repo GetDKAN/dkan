@@ -5,7 +5,6 @@ core_version_requirement: ^10.2 || ^11
 package: DKAN
 dependencies:
   - dkan:dkan
-  - dkan:json_form_widget
   - dkan:data_dictionary_widget
   - drupal:basic_auth
   - drupal:content_moderation

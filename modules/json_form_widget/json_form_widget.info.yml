@@ -4,6 +4,6 @@ package: DKAN
 type: module
 core_version_requirement: ^10.2 || ^11
 dependencies:
-  - select_or_other
-  - select2
+  - select_or_other:select_or_other
+  - select2:select2
   - dkan:metastore
