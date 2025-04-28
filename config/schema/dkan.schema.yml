@@ -36,4 +36,67 @@ user.role.api_user:
     dependencies:
       type: config_dependencies
       label: 'Dependencies'
-      
+system.action.user_remove_role_action.api_user:
+  type: config_object
+  label: 'Remove API user role'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    uuid:
+      type: string
+      label: 'UUID'
+    label:
+      type: string
+      label: 'Label'
+    status:
+      type: boolean
+      label: 'Status'
+    dependencies:
+      type: config_dependencies
+      label: 'Dependencies'
+    type:
+      type: string
+      label: 'Type'
+    configuration:
+      type: config_object
+      label: 'Configuration'
+      mapping:
+        rid:
+          type: string
+          label: 'RID'
+    plugin:
+      type: string
+      label: 'Plugin'
+system.action.user_add_role_action.api_user:
+  type: config_object
+  label: 'Add API user role'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    uuid:
+      type: string
+      label: 'UUID'
+    label:
+      type: string
+      label: 'Label'
+    status:
+      type: boolean
+      label: 'Status'
+    dependencies:
+      type: config_dependencies
+      label: 'Dependencies'
+    type:
+      type: string
+      label: 'Type'
+    configuration:
+      type: config_object
+      label: 'Configuration'
+      mapping:
+        rid:
+          type: string
+          label: 'RID'
+    plugin:
+      type: string
+      label: 'Plugin'
