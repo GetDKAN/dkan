@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 
@@ -17,7 +17,7 @@ class Import extends ImportService {
   /**
    * Create a resource service instance.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   DKAN Resource.
    * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
    *   Import jobstore factory.

@@ -2,12 +2,12 @@
 
 namespace Drupal\Tests\datastore\Unit\Storage;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
-use Drupal\common\Storage\Query;
+use Drupal\dkan\Storage\Query;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\mysql\Driver\Database\mysql\Schema;

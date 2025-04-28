@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
-use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Storage\Query;
+use Drupal\dkan\Storage\DatabaseTableInterface;
+use Drupal\dkan\Storage\Query;
 
 /**
  * @todo Modify the storage class in Contracts to allow the necessary changes.

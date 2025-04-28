@@ -2,10 +2,10 @@
 
 namespace Drupal\datastore\SqlEndpoint;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\Storage\Query;
+use Drupal\dkan\Storage\Query;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
 use Drupal\datastore\SqlParser\SqlParser;
@@ -171,7 +171,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
    * @param Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine returned from the validate() function.
    *
-   * @return Drupal\common\Storage\Query
+   * @return Drupal\dkan\Storage\Query
    *   A Drupal query object
    */
   private function getQueryObjectFromStateMachine(MachineOfMachines $state_machine): Query {
@@ -187,7 +187,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Set select statements on query object.
    *
-   * @param \Drupal\common\Storage\Query $object
+   * @param \Drupal\dkan\Storage\Query $object
    *   A drupal query object.
    * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine from validate().
@@ -213,7 +213,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Set where conditions on query object.
    *
-   * @param \Drupal\common\Storage\Query $object
+   * @param \Drupal\dkan\Storage\Query $object
    *   A drupal query object.
    * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine from validate().
@@ -237,7 +237,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Set sorting on query object.
    *
-   * @param \Drupal\common\Storage\Query $object
+   * @param \Drupal\dkan\Storage\Query $object
    *   A drupal query object.
    * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine from validate().

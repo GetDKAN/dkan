@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\dastastore_mysql_import\Unit\Service;
 
-use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStore;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\dkan\DataResource;
+use Drupal\dkan\Storage\JobStore;
+use Drupal\dkan\Storage\JobStoreFactory;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore_mysql_import\Service\MysqlImport;

@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\common\DatasetInfo;
+use Drupal\dkan\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Query as QueryService;
 use Drupal\metastore\MetastoreApiResponse;

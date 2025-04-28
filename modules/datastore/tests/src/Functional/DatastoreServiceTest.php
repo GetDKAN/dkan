@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
@@ -14,7 +14,7 @@ use Procrastinator\Result;
  * This test has to be a BTB test because the import services rely on MySQL, and
  * kernel tests use SQLite.
  *
- * @covers \Drupal\common\FileFetcher\FileFetcherFactory
+ * @covers \Drupal\dkan\FileFetcher\FileFetcherFactory
  * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
  *

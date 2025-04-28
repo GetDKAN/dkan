@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\datastore\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\dkan\Storage\DatabaseTableInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 

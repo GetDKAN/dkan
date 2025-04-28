@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
@@ -110,7 +110,7 @@ class ImportInfo {
   /**
    * Get a file fetcher for the given resource.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   Resource to get the file fetcher for.
    *
    * @return \FileFetcher\FileFetcher
@@ -123,7 +123,7 @@ class ImportInfo {
   /**
    * Get an import job store object for the resource.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   Resource object reperesenting the resource.
    *
    * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob

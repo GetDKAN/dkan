@@ -4,7 +4,7 @@ namespace Drupal\datastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\Events\DatastoreDroppedEvent;
 use Drupal\datastore\Events\DatastorePreDropEvent;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;

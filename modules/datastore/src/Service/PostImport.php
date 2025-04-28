@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\datastore\PostImportResult;
@@ -85,7 +85,7 @@ class PostImport {
    *   behavior. Put all the dictionary-related logic into
    *   DictionaryEnforcer::process().
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   DKAN Resource.
    *
    * @return \Drupal\datastore\PostImportResult
@@ -117,7 +117,7 @@ class PostImport {
   /**
    * Handle errors during resource processing.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   DKAN Resource.
    * @param \Exception $exception
    *   The caught exception.
@@ -143,7 +143,7 @@ class PostImport {
   /**
    * Process resource.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   DKAN Resource.
    *
    * @throws \Exception
@@ -156,7 +156,7 @@ class PostImport {
   /**
    * Validation checks before processing resource.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   DKAN Resource.
    *
    * @return \Drupal\datastore\PostImportResult|null
@@ -190,7 +190,7 @@ class PostImport {
    *   Status of the post import process.
    * @param string $message
    *   Error messages retrieved during the post import process.
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   The DKAN resource being imported.
    *
    * @return \Drupal\datastore\PostImportResult

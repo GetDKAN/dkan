@@ -3,7 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 
 /**
  * PostImportResult class to insert,retrieve,remove post import jobs.

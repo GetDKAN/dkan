@@ -10,9 +10,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
-use Drupal\common\DataResource;
-use Drupal\common\DatasetInfo;
-use Drupal\common\UrlHostTokenResolver;
+use Drupal\dkan\DataResource;
+use Drupal\dkan\DatasetInfo;
+use Drupal\dkan\UrlHostTokenResolver;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -39,7 +39,7 @@ class DashboardForm extends FormBase {
   /**
    * Dataset information service.
    *
-   * @var \Drupal\common\DatasetInfo
+   * @var \Drupal\dkan\DatasetInfo
    */
   protected $datasetInfo;
 
@@ -86,7 +86,7 @@ class DashboardForm extends FormBase {
    *
    * @param \Drupal\harvest\HarvestService $harvestService
    *   Harvest service.
-   * @param \Drupal\common\DatasetInfo $datasetInfo
+   * @param \Drupal\dkan\DatasetInfo $datasetInfo
    *   Dataset information service.
    * @param \Drupal\metastore\MetastoreService $metastoreService
    *   Metastore service.
@@ -440,7 +440,7 @@ class DashboardForm extends FormBase {
    * This method may build 2 rows if data has both published and draft version.
    *
    * @param array $datasetInfo
-   *   Dataset information, result of \Drupal\common\DatasetInfo::gather().
+   *   Dataset information, result of \Drupal\dkan\DatasetInfo::gather().
    * @param string $harvestStatus
    *   Dataset harvest status.
    *

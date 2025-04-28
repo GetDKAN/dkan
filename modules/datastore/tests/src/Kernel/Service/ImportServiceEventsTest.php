@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\datastore\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\datastore\Events\DatastoreImportedEvent;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
@@ -52,7 +52,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
   /**
    * Our event handler.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan\Events\Event $event
    *   The event.
    */
   public function catchImportEvent(DatastoreImportedEvent $event) {

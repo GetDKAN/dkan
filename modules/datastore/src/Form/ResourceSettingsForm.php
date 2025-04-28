@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Form;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\RedundantEditableConfigNamesTrait;

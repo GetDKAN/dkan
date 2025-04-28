@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Storage;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;

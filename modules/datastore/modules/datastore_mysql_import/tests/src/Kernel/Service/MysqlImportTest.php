@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore_mysql_import\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore_mysql_import\Factory\MysqlImportFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;

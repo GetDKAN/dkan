@@ -4,7 +4,7 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
+use Drupal\dkan\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
 
@@ -33,9 +33,9 @@ class Import extends ImportQueueWorker {
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
-   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $defaultConnectionFactory
+   * @param \Drupal\dkan\Storage\DatabaseConnectionFactoryInterface $defaultConnectionFactory
    *   Default database connection factory.
-   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $datastoreConnectionFactory
+   * @param \Drupal\dkan\Storage\DatabaseConnectionFactoryInterface $datastoreConnectionFactory
    *   Datastore database connection factory.
    */
   public function __construct(

@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore_mysql_import\Service;
 
-use Drupal\common\Storage\ImportedItemInterface;
+use Drupal\dkan\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;

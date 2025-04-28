@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service\Info;
 
-use Drupal\common\DataResource;
-use Drupal\common\Storage\FileFetcherJobStoreFactory;
+use Drupal\dkan\DataResource;
+use Drupal\dkan\Storage\FileFetcherJobStoreFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\JobStore;
+use Drupal\dkan\Storage\JobStore;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\ResourceMapper;

@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Controller;
 
-use Drupal\common\DatasetInfo;
+use Drupal\dkan\DatasetInfo;
 use Drupal\dkan\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;

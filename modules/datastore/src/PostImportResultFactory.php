@@ -4,7 +4,7 @@ namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
 use Drupal\metastore\ResourceMapper;
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 
 /**
  * Factory class to create PostImportResult objects.
@@ -43,7 +43,7 @@ class PostImportResultFactory {
    *   Status of the post import process.
    * @param string $message
    *   Messages retrieved during the post import process.
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   The DKAN resource being imported.
    *
    * @return \Drupal\datastore\PostImportResult

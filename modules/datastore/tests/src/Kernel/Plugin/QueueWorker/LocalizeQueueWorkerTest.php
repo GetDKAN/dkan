@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker;

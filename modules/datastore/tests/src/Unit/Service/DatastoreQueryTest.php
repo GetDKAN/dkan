@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\datastore\Unit\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\dkan\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\Storage\ImportJobStoreFactory;

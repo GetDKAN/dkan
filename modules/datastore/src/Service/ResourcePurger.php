@@ -5,7 +5,7 @@ namespace Drupal\datastore\Service;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\DatastoreService;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;

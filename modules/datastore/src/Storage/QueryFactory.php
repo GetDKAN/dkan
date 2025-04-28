@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\common\Storage\Query;
+use Drupal\dkan\Storage\Query;
 use Drupal\datastore\Service\DatastoreQuery;
 
 /**
@@ -45,7 +45,7 @@ class QueryFactory {
    * @param array $storageMap
    *   Storage map array.
    *
-   * @return \Drupal\common\Storage\Query
+   * @return \Drupal\dkan\Storage\Query
    *   DKAN query object.
    */
   public static function create(DatastoreQuery $datastoreQuery, array $storageMap): Query {
@@ -56,7 +56,7 @@ class QueryFactory {
   /**
    * Create Query and populate with properties with DatastoreQuery object.
    *
-   * @return Drupal\common\Storage\Query
+   * @return Drupal\dkan\Storage\Query
    *   Query object.
    */
   public function populateQuery(): Query {
@@ -79,7 +79,7 @@ class QueryFactory {
   /**
    * Helper function for adding group by clauses to the given query.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param Drupal\dkan\Storage\Query $query
    *   DKAN query object we're building.
    *
    * @throws \Exception
@@ -139,7 +139,7 @@ class QueryFactory {
   /**
    * Populate a query object with the queries from a datastore query payload.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param Drupal\dkan\Storage\Query $query
    *   DKAN generalized query object.
    */
   private function populateQueryProperties(Query $query) {
@@ -214,7 +214,7 @@ class QueryFactory {
   /**
    * Process both potential sorting direction.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param Drupal\dkan\Storage\Query $query
    *   DKAN query object we're building.
    */
   private function populateQuerySorts(Query $query) {
@@ -229,7 +229,7 @@ class QueryFactory {
   /**
    * Parse and normalize query conditions.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param Drupal\dkan\Storage\Query $query
    *   DKAN query object we're building.
    */
   private function populateQueryConditions(Query $query) {
@@ -294,7 +294,7 @@ class QueryFactory {
   /**
    * Helper function for converting joins to Query format.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param Drupal\dkan\Storage\Query $query
    *   DKAN query object we're building.
    */
   private function populateQueryJoins(Query $query) {

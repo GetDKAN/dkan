@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\datastore\Plugin\DatasetInfo;
 
-use Drupal\common\DatasetInfoPluginBase;
+use Drupal\dkan\DatasetInfoPluginBase;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\ResourceLocalizer;

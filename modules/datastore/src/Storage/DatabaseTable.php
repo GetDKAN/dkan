@@ -3,15 +3,15 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\common\DataResource;
-use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\dkan\DataResource;
+use Drupal\dkan\Storage\AbstractDatabaseTable;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Database storage object.
  *
- * @see \Drupal\common\Storage\DatabaseTableInterface
+ * @see \Drupal\dkan\Storage\DatabaseTableInterface
  *
  * @todo This class name suggests it is a generic database table but it is
  * actually MySQL-specific. In the future it should probably be a base class
@@ -22,7 +22,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Datastore resource object.
    *
-   * @var \Drupal\common\DataResource
+   * @var \Drupal\dkan\DataResource
    */
   protected $resource;
 
@@ -36,7 +36,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan\DataResource $resource
    *   A resource.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.

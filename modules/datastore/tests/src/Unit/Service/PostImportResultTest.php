@@ -5,7 +5,7 @@ namespace Drupal\Tests\datastore\Unit\Service;
 use Drupal\Core\Database\Connection;
 use Drupal\metastore\ResourceMapper;
 use PHPUnit\Framework\TestCase;
-use Drupal\common\DataResource;
+use Drupal\dkan\DataResource;
 use Drupal\datastore\PostImportResultFactory;
 
 /**

@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Service\Info;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\Storage\FileFetcherJobStoreFactory;
+use Drupal\dkan\Storage\FileFetcherJobStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

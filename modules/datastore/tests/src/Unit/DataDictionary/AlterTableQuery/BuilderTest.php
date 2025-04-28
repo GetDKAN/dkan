@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
-use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
+use Drupal\dkan\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\datastore\DataDictionary\AlterTableQueryBase;
