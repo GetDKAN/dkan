@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Traits;
+namespace Drupal\Tests\dkan\Traits;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Serialization\Yaml;
@@ -48,7 +48,7 @@ trait ServiceCheckTrait {
    */
   private function checkService($serviceName) {
     $dkanModules = [
-      'common',
+      'dkan',
       'datastore',
       'frontend',
       'harvest',

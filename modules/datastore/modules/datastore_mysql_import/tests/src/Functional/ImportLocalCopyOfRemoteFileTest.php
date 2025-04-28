@@ -17,7 +17,7 @@ class ImportLocalCopyOfRemoteFileTest extends ParentTest {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'datastore_mysql_import',
     'metastore',

@@ -25,7 +25,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
     'node',

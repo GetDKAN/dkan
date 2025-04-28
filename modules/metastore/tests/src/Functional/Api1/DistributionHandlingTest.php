@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Functional\Api1;
 
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
-use Drupal\Tests\common\Functional\Api1TestBase;
+use Drupal\Tests\dkan\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
 class DistributionHandlingTest extends Api1TestBase {

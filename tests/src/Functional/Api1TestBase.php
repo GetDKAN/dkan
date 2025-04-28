@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Functional;
+namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;

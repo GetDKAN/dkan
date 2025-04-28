@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Traits;
+namespace Drupal\Tests\dkan\Traits;
 
 use Drupal\node\Entity\Node;
 

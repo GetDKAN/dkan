@@ -5,8 +5,8 @@ namespace Drupal\Tests\datastore\Functional\Controller;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan\Traits\GetDataTrait;
+use Drupal\Tests\dkan\Traits\QueueRunnerTrait;
 use RootedData\RootedJsonData;
 
 /**

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan\Traits\QueueRunnerTrait;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 use RootedData\RootedJsonData;
@@ -21,7 +21,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
   use QueueRunnerTrait;
 
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'dynamic_page_cache',
     'harvest',

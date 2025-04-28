@@ -28,7 +28,7 @@ class DatastoreServiceTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
     'node',

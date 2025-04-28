@@ -5,7 +5,7 @@ namespace Drupal\Tests\datastore\Unit;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Drupal\Tests\dkan\Traits\ServiceCheckTrait;
 use Drupal\dkan\DataResource;
 use Drupal\dkan\Storage\JobStore;
 use Drupal\dkan\Storage\JobStoreFactory;

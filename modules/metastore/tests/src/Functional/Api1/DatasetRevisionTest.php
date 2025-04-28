@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\metastore\Functional\Api1;
 
-use Drupal\Tests\common\Functional\Api1TestBase;
+use Drupal\Tests\dkan\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
 class DatasetRevisionTest extends Api1TestBase {

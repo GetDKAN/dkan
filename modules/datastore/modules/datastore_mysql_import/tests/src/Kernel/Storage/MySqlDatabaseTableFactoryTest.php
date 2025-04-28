@@ -19,7 +19,7 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'datastore_mysql_import',
     'metastore',

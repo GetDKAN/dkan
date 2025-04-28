@@ -3,8 +3,8 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan\Traits\GetDataTrait;
+use Drupal\Tests\dkan\Traits\QueueRunnerTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Util;
+namespace Drupal\Tests\dkan\Unit\Util;
 
 use Drupal\datastore\Controller\AbstractQueryController;
 use PHPUnit\Framework\TestCase;
