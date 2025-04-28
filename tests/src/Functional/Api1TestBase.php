@@ -33,7 +33,7 @@ abstract class Api1TestBase extends BrowserTestBase {
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'metastore',
     'node',

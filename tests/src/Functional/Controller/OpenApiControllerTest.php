@@ -10,17 +10,17 @@ use Drupal\Tests\BrowserTestBase;
  * @coversDefaultClass \Drupal\dkan\Controller\OpenApiController
  *
  * @group dkan
- * @group common
  * @group functional
  * @group btb
  */
 class OpenApiControllerTest extends BrowserTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'datastore',
     'harvest',
     'node',
+    'metastore',
   ];
 
   protected $defaultTheme = 'stark';

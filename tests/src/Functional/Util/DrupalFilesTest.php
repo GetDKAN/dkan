@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\common\Functional\Util;
+namespace Drupal\Tests\dkan\Functional\Util;
 
 use Drupal\Tests\BrowserTestBase;
 
@@ -13,7 +13,6 @@ use Drupal\Tests\BrowserTestBase;
  * @coversDefaultClass \Drupal\dkan\Util\DrupalFiles
  *
  * @group dkan
- * @group common
  * @group functional
  *
  * @see \Drupal\Tests\system\Functional\System\RetrieveFileTest
@@ -21,7 +20,7 @@ use Drupal\Tests\BrowserTestBase;
 class DrupalFilesTest extends BrowserTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
   ];
 
   /**
