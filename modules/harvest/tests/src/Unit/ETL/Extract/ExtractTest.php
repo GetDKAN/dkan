@@ -1,9 +1,17 @@
 <?php
 
-namespace Drupal\Tests\harvest\ETL\Extract;
+namespace Drupal\Tests\Unit\harvest\ETL\Extract;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group dkan
+ * @group harvest
+ * @group unit
+ *
+ * @covers \Drupal\harvest\ETL\Extract\Extract
+ * @coversDefaultClass \Drupal\harvest\ETL\Extract\Extract
+ */
 class ExtractTest extends TestCase {
 
   public function testNoItems(): void {

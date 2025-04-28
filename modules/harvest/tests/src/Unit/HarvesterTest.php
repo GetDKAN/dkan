@@ -20,7 +20,7 @@ class HarvesterTest extends TestCase {
 
   public function basicData(): array {
     return [
-      ["file://" . __DIR__ . "/../json/data.json"],
+      ["file://" . __DIR__ . "/../../../files/data4.json"],
       ["https://demo.getdkan.org/data.json"],
     ];
   }
@@ -39,7 +39,7 @@ class HarvesterTest extends TestCase {
           new Response(
               200,
               [],
-              file_get_contents(__DIR__ . "/../json/data3.json")
+              file_get_contents(__DIR__ . "/../../../files/data3.json")
           )
       );
 
@@ -103,7 +103,7 @@ class HarvesterTest extends TestCase {
   }
 
   private function getPlan(string $name) {
-    $path = __DIR__ . "/../json/{$name}.json";
+    $path = __DIR__ . "/../../../files/{$name}.json";
     $content = file_get_contents($path);
     return json_decode($content);
   }
