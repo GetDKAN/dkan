@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\common\Kernel;
+namespace Drupal\Tests\dkan\Kernel;
 
 use Drupal\dkan\DatasetInfo;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
  * @group dkan
- * @group common
  * @group kernel
  */
 class DatasetInfoTest extends KernelTestBase {
@@ -22,7 +21,6 @@ class DatasetInfoTest extends KernelTestBase {
     'filter',
     'text',
     'metastore',
-    'common',
     'dkan',
     'content_moderation',
     'workflows',
@@ -36,7 +34,7 @@ class DatasetInfoTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig('system');
     $this->installConfig('node');
-    $this->installConfig('common');
+    $this->installConfig('dkan');
     $this->installConfig('metastore');
     $this->installEntitySchema('node');
     $this->installSchema('node', ['node_access']);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel\FileFetcher;
+namespace Drupal\Tests\dkan\Kernel\FileFetcher;
 
 use Drupal\dkan\FileFetcher\FileFetcherFactory;
 use Drupal\KernelTests\KernelTestBase;
@@ -14,7 +14,6 @@ use Procrastinator\Result;
  * @coversDefaultClass \Drupal\dkan\FileFetcher\FileFetcherFactory
  *
  * @group dkan
- * @group common
  * @group kernel
  */
 class FileFetcherFactoryTest extends KernelTestBase {
@@ -22,7 +21,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
   protected const DATA_FILE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   protected static $modules = [
-    'common',
+    'dkan',
   ];
 
   public static function provideUseExisting() {
@@ -39,8 +38,8 @@ class FileFetcherFactoryTest extends KernelTestBase {
    */
   public function testOurRemote($use_existing, $remote_class) {
     // Config for overwrite.
-    $this->installConfig(['common']);
-    $config = $this->config('common.settings');
+    $this->installConfig(['dkan']);
+    $config = $this->config('dkan.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
 
@@ -109,8 +108,8 @@ class FileFetcherFactoryTest extends KernelTestBase {
    */
   public function testGetInstance($always_use_existing_local_perspective, $expected_class) {
     // Config for overwrite.
-    $this->installConfig(['common']);
-    $config = $this->config('common.settings');
+    $this->installConfig(['dkan']);
+    $config = $this->config('dkan.settings');
     $config->set('always_use_existing_local_perspective', $always_use_existing_local_perspective);
     $config->save();
 

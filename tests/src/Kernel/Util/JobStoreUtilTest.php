@@ -4,7 +4,7 @@
  * We must manage namespaces so that we don't end up with a too-long table name.
  */
 
-namespace Drupal\Tests\common\Kernel\Util {
+namespace Drupal\Tests\dkan\Kernel\Util {
 
   use Drupal\dkan\Storage\JobStore;
   use Drupal\dkan\Util\JobStoreFactoryAccessor;
@@ -23,7 +23,7 @@ namespace Drupal\Tests\common\Kernel\Util {
   class JobStoreUtilTest extends KernelTestBase {
 
     protected static $modules = [
-      'common',
+      'dkan',
     ];
 
     /**

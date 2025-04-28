@@ -53,8 +53,6 @@
       <directory>tests/src/Kernel</directory>
       <directory>modules/harvest/tests/src/Kernel</directory>
       <directory>modules/metastore/tests/src/Kernel</directory>
-      <directory>modules/metastore/modules/metastore_search/tests/src/Kernel</directory>
-      <directory>modules/metastore/modules/metastore_admin/tests/src/Kernel</directory>
       <directory>modules/datastore/tests/src/Kernel</directory>
       <directory>modules/dkan_js_frontend/tests/src/Kernel</directory>
     </testsuite>

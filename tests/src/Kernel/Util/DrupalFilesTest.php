@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel\Util;
+namespace Drupal\Tests\dkan\Kernel\Util;
 
 use Drupal\dkan\Util\DrupalFiles;
 use Drupal\KernelTests\KernelTestBase;
@@ -16,7 +16,7 @@ use Drupal\KernelTests\KernelTestBase;
 class DrupalFilesTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
   ];
 
   public static function provideExceptions() {

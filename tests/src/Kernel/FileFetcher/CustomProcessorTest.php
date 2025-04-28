@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel\FileFetcher;
+namespace Drupal\Tests\dkan\Kernel\FileFetcher;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\custom_processor_test\FileFetcher\CustomFileFetcherFactory;
@@ -18,7 +18,7 @@ use FileFetcher\FileFetcher;
 class CustomProcessorTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'custom_processor_test',
   ];
 

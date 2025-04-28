@@ -4,7 +4,7 @@
  * Manage namespaces so they don't get too long for deprecated table names.
  */
 
-namespace Drupal\Tests\common\Kernel\Storage {
+namespace Drupal\Tests\dkan\Kernel\Storage {
 
   use Drupal\dkan\Storage\JobStore;
   use Drupal\KernelTests\KernelTestBase;
@@ -22,7 +22,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
   class AbstractJobStoreFactoryTest extends KernelTestBase {
 
     protected static $modules = [
-      'common',
+      'dkan',
     ];
 
     public function testDeprecatedClassnameTable() {

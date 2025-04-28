@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel;
+namespace Drupal\Tests\dkan\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dkan\CacheableResponseTrait;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CacheableResponseTraitTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'system',
   ];
 

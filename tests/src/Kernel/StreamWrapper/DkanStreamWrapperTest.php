@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel\StreamWrapper;
+namespace Drupal\Tests\dkan\Kernel\StreamWrapper;
 
 use Drupal\KernelTests\KernelTestBase;
 
@@ -12,7 +12,7 @@ use Drupal\KernelTests\KernelTestBase;
 class DkanStreamWrapperTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan',
     'metastore',
   ];
 
