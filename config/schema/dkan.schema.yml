@@ -5,3 +5,35 @@ dkan.settings:
     always_use_existing_local_perspective:
       label: 'If a local file is in place, use it.'
       type: boolean
+user.role.api_user:
+  type: config_object
+  label: 'API user'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    uuid:
+      type: string
+      label: 'UUID'
+    label:
+      type: string
+      label: 'Label'
+    weight:
+      type: integer
+      label: 'Weight'
+    is_admin:
+      type: boolean
+      label: 'Is admin'
+    permissions:
+      type: sequence
+      label: 'Permissions'
+      sequence:
+        type: string
+        label: 'Permission'
+    status:
+      type: boolean
+      label: 'Status'
+    dependencies:
+      type: config_dependencies
+      label: 'Dependencies'
+      
