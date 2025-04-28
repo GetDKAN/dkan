@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\Unit\harvest\ETL\Extract;
 
+use Drupal\Tests\harvest\TestExtract;
+use Drupal\Tests\harvest\TestExtractNoObjects;
 use PHPUnit\Framework\TestCase;
 
 /**

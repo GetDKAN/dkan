@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\Unit\harvest\ETL\Extract;
+namespace Drupal\Tests\harvest;
 
 use Drupal\harvest\ETL\Extract\Extract;
 
@@ -12,10 +12,10 @@ use Drupal\harvest\ETL\Extract\Extract;
  * @group harvest
  * @group unit
  */
-class TestExtractNoObjects extends Extract {
+class TestExtract extends Extract {
 
   protected function getItems(): array {
-    return ["Hello World!!"];
+    return [];
   }
 
 }
