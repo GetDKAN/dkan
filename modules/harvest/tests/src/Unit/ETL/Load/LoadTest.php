@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Drupal\harvest\ETL\Load\Load
  * @coversDefaultClass \Drupal\harvest\ETL\Load\Load
  *
- * @group harvest\
+ * @group harvest
  * @group unit
  * @group dkan
  */
