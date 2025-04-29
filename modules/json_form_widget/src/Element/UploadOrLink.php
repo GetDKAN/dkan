@@ -72,7 +72,7 @@ class UploadOrLink extends ManagedFile {
       $remove = TRUE;
     }
 
-    $uri = $element['#uri'] ?? $input['file_url_remote'] ?? FALSE;
+    $uri = $input['file_url_remote'] ?? $element['#uri'] ?? FALSE;
 
     if (empty($input['fids']) && $uri) {
       $file = static::getManagedFile(static::getFileUri($uri));

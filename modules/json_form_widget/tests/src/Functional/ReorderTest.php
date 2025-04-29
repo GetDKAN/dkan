@@ -16,14 +16,17 @@ use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
  */
 class ReorderTest extends JsonFormTestBase {
 
+  /**
+   * One mega-test to make it faster. Try lots of scenarios for reordering.
+   */
   public function testAdminJsonFormArrayReorder() {
     $this->drupalLogin(
-    // @todo Figure out least possible admin permissions.
       $this->drupalCreateUser([], NULL, TRUE)
     );
     $assert = $this->assertSession();
 
-    // Use the form.
+    // SCENARIO ONE: NEW DATASET FORM
+
     $this->drupalGet('node/add/data');
     $assert->statusCodeEquals(200);
     $page = $this->getSession()->getPage();
@@ -73,7 +76,6 @@ class ReorderTest extends JsonFormTestBase {
       'dkan-test-distribution-1.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
     );
-
     $this->submitForm([
       'edit-field-json-metadata-0-value-title' => $this->datasetTitle,
       'edit-field-json-metadata-0-value-description' => 'DKANTEST dataset description.',
@@ -87,11 +89,12 @@ class ReorderTest extends JsonFormTestBase {
     $assert->statusCodeEquals(200);
     $assert->pageTextContains('Data DKANTEST dataset title has been created.');
 
-    // Edit the dataset.
+    // SCENARIO TWO: BASIC REORDER EXISTING DATASET FORM, SAVE AND RE-EDIT
+
     $page->find('css', 'tbody > tr:first-of-type > .views-field-nothing > a')->click();
     // Move the second distribution to the first position.
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-move-up"]')->click();
-    // Assert that the title and URL of the original first distribution is 
+    // Assert that the title and URL of the original first distribution is
     // now back in the first position.
     $this->assertEquals(
       'DKANTEST distribution 0 title text',
@@ -102,7 +105,6 @@ class ReorderTest extends JsonFormTestBase {
       'https://example.com/dkan-test-distribution-0.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
     );
-
     // Get the URL to edit this dataset, so we find our way back later.
     $edit_url = $this->getSession()->getCurrentUrl();
     $this->submitForm([], 'Save');
@@ -125,8 +127,9 @@ class ReorderTest extends JsonFormTestBase {
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
     );
 
-    // Now let's remove the last distribution then add one more, to make sure
-    // we don't get previous values re-populated.
+    // SCENARIO THREE: REMOVE DISTRIBUTION, ADD NEW DISTRIBUTION
+
+    $this->drupalGet($edit_url);
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-remove"]')->click();
     $assert->statusCodeEquals(200);
     $this->assertNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
@@ -144,6 +147,71 @@ class ReorderTest extends JsonFormTestBase {
     // There is no managed file.
     $this->assertNull(
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')
+    );
+
+    // SCENARIO FOUR: REMOVE FILE, REPLACE URL AND REORDER BEFORE SAVING
+
+    $this->drupalGet($edit_url);
+    $this->assertEquals(
+      'DKANTEST distribution 0 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-0.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
+    );
+    $this->assertEquals(
+      'DKANTEST distribution 1 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-1.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
+    );
+    // Remove the file from the first distribution.
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-remove-button"]')->click();
+    $assert->statusCodeEquals(200);
+    // Add a new remove file URL.
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-2.csv');
+    // Now move the second distribution to the first position.
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-move-up"]')->click();
+    // Assert that the title and URL of the second distribution are now in the first position.
+    $this->assertEquals(
+      'DKANTEST distribution 1 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-2.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
+    );
+    // Assert that the title and URL of the first distribution are now in the second position.
+    $this->assertEquals(
+      'DKANTEST distribution 0 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-0.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
+    );
+    // Submit the form, reopen and make sure the changes are saved.
+    $this->submitForm([], 'Save');
+    $assert->statusCodeEquals(200);
+    $this->drupalGet($edit_url);
+    $this->assertEquals(
+      'DKANTEST distribution 1 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-2.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
+    );
+    $this->assertEquals(
+      'DKANTEST distribution 0 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-0.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
     );
   }
 
