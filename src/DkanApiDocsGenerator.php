@@ -74,8 +74,8 @@ class DkanApiDocsGenerator {
    *   Desired plugins, filter out all others except dkan_dkan_api_docs.
    */
   private function filterPluginDefinitions(array &$definitions, array $plugins) {
-    // We always include dkan_dkan_api_docs.
-    $plugins[] = 'dkan_dkan_api_docs';
+    // We always include dkan_common_api_docs.
+    $plugins[] = 'dkan_common_api_docs';
 
     $definitions = array_filter($definitions, function ($key) use ($plugins) {
       if (in_array($key, $plugins)) {
