@@ -4,7 +4,7 @@
  * @file
  */
 
-use Drupal\common\Util\JobStoreUtil;
+use Drupal\dkan\Util\JobStoreUtil;
 
 /**
  * Implements hook_requirements().
@@ -12,6 +12,16 @@ use Drupal\common\Util\JobStoreUtil;
 function dkan_requirements($phase): array {
   $requirements = [];
   if ($phase == 'runtime') {
+    // Check if the common module is enabled.
+    if (\Drupal::moduleHandler()->moduleExists('common')) {
+      $requirements['dkan common disabled'] = [
+        'title' => t('DKAN Common Module'),
+        'value' => t('Enabled'),
+        'description' => t('The common module is is deprecated and must be disabled.'),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+    
     // List all the jobstore tables.
     if ($connection = \Drupal::database()) {
       $job_store_util = new JobStoreUtil(
@@ -54,14 +64,14 @@ function dkan_requirements($phase): array {
       }
     }
     // Alert the user if they have always_use_existing_local_perspective on.
-    if ($config = \Drupal::config('common.settings')) {
+    if ($config = \Drupal::config('dkan.settings')) {
       if ($config->get('always_use_existing_local_perspective') ?? FALSE) {
         $requirements['dkan using local files'] = [
           'title' => t('DKAN Using Local Files'),
           'value' => 'always_use_existing_local_perspective: true',
           'description' => t(
             'DKAN is configured to use localized files rather than download them during import.
-            Disable this setting on the CLI by running: <code>drush config:set common.settings always_use_existing_local_perspective 0</code>'
+            Disable this setting on the CLI by running: <code>drush config:set dkan.settings always_use_existing_local_perspective 0</code>'
           ),
           'severity' => REQUIREMENT_WARNING,
         ];

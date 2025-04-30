@@ -37,11 +37,11 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
   public function test() {
     // Explicitly turn off always_use_existing_local_perspective for now.
-    $this->config('common.settings')
+    $this->config('dkan.settings')
       ->set('always_use_existing_local_perspective', FALSE)
       ->save();
     $this->assertFalse(
-      $this->config('common.settings')->get('always_use_existing_local_perspective')
+      $this->config('dkan.settings')->get('always_use_existing_local_perspective')
     );
 
     $identifier = uniqid();
@@ -125,11 +125,11 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     );
 
     // Turn on always_use_existing_local_perspective.
-    $this->config('common.settings')
+    $this->config('dkan.settings')
       ->set('always_use_existing_local_perspective', TRUE)
       ->save();
     $this->assertTrue(
-      $this->config('common.settings')->get('always_use_existing_local_perspective')
+      $this->config('dkan.settings')->get('always_use_existing_local_perspective')
     );
 
     // We should get our FileFetcherRemoteUseExisting when we get another
@@ -143,7 +143,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
     // Turn off always_use_existing_local_perspective and get the file fetcher
     // again. It should be Remote again.
-    $this->config('common.settings')
+    $this->config('dkan.settings')
       ->set('always_use_existing_local_perspective', FALSE)
       ->save();
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
