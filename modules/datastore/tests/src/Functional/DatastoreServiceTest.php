@@ -52,7 +52,7 @@ class DatastoreServiceTest extends BrowserTestBase {
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.
-    $config = $this->config('common.settings');
+    $config = $this->config('dkan.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
 
