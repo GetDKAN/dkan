@@ -18,6 +18,8 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan',
+    'metastore',
+    'metastore_admin',
     'json_form_widget',
     'node',
   ];

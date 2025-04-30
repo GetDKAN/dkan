@@ -79,6 +79,9 @@ trait ServiceCheckTrait {
     if (!$path) {
       $path = $this->getRelativeDkanPath();
     }
+    if ($moduleName == "dkan") {
+      return $path;
+    }
 
     foreach (new \DirectoryIterator($path) as $fileInfo) {
       if ($fileInfo->isDir() && !$fileInfo->isDot()) {

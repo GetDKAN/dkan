@@ -4,7 +4,7 @@ namespace Drupal\json_form_widget\Tests\Functional;
 
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan\Traits\QueueRunnerTrait;
 
 /**
  * Test the json form widget.
@@ -26,6 +26,8 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
   protected static $modules = [
     'dkan',
     'datastore',
+    'metastore',
+    'metastore_admin',
     'json_form_widget',
     'node',
   ];
@@ -241,7 +243,7 @@ class AdminDatasetFileUploadTest extends BrowserTestBase {
     $uuid = ($node_storage->load(reset($node_ids)))->uuid();
 
     // Get the import status for the dataset.
-    /** @var \Drupal\common\DatasetInfo $info_service */
+    /** @var \Drupal\dkan\DatasetInfo $info_service */
     $info_service = $this->container->get('dkan.dataset_info');
     $info = $info_service->gather($uuid);
     $this->assertEquals(

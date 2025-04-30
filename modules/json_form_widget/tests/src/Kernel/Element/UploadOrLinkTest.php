@@ -13,6 +13,7 @@ class UploadOrLinkTest extends KernelTestBase {
     'json_form_widget',
     'file',
     'node',
+    'dkan',
     'metastore',
     'common',
     'user',

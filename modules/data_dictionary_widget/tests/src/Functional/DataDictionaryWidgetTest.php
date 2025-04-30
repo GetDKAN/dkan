@@ -19,6 +19,8 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
    */
   protected static $modules = [
     'node',
+    'dkan',
+    'metastore',
     'data_dictionary_widget',
   ];
 

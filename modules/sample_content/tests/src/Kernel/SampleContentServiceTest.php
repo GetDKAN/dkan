@@ -15,6 +15,7 @@ use Drupal\KernelTests\KernelTestBase;
 class SampleContentServiceTest extends KernelTestBase {
 
   protected static $modules = [
+    'dkan',
     'sample_content',
     'harvest',
     'metastore',
