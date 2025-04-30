@@ -65,9 +65,9 @@ class JobStore extends AbstractDatabaseTable {
   }
 
   /**
-   * Private.
+   * Default schema for jobstore tables.
    */
-  private function setOurSchema() {
+  protected function setOurSchema() {
     $schema = [
       'fields' => [
         'ref_uuid' => [

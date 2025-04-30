@@ -2,7 +2,7 @@
 
 namespace Drupal\common\Commands;
 
-use Drupal\common\DatasetInfo;
+use Drupal\dkan\DatasetInfo;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -20,7 +20,7 @@ class CommonCommands extends DrushCommands {
   /**
    * CommonCommands constructor.
    *
-   * @param \Drupal\common\DatasetInfo $datasetInfo
+   * @param \Drupal\dkan\DatasetInfo $datasetInfo
    *   Dataset information service.
    */
   public function __construct(DatasetInfo $datasetInfo) {

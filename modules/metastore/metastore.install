@@ -161,5 +161,5 @@ function metastore_update_8010() {
     $config->set('redirect_to_datasets', TRUE)->save();
   }
 
-  drupal_flush_all_caches();
+  return t('Set the default value for the redirect_to_datasets setting to TRUE.');
 }

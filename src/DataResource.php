@@ -65,21 +65,21 @@ class DataResource implements \JsonSerializable {
    *
    * @var string
    */
-  private $filePath;
+  protected $filePath;
 
   /**
    * MD5 hash of the filepath, used as the main identifier.
    *
    * @var string
    */
-  private $identifier;
+  protected $identifier;
 
   /**
    * Content type of the resource.
    *
    * @var string
    */
-  private $mimeType;
+  protected $mimeType;
 
   /**
    * Specifies the perspective for the resource's file path.
@@ -88,21 +88,21 @@ class DataResource implements \JsonSerializable {
    *
    * @var string
    */
-  private $perspective;
+  protected $perspective;
 
   /**
    * The resource "version" -- a timestamp.
    *
    * @var int
    */
-  private $version;
+  protected $version;
 
   /**
    * Resource object checksum.
    *
    * @var string
    */
-  private $checksum;
+  protected $checksum;
 
   /**
    * Constructor.
@@ -440,7 +440,7 @@ class DataResource implements \JsonSerializable {
    * @return object
    *   JSON-decoded object.
    */
-  private static function getDistribution(mixed $identifier) {
+  protected static function getDistribution(mixed $identifier) {
     /** @var \Drupal\metastore\Storage\DataFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
     $storage = $factory->getInstance('distribution');
