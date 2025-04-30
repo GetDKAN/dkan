@@ -3,7 +3,7 @@
 namespace Drupal\harvest\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\dkan\Storage\AbstractDatabaseTable;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
