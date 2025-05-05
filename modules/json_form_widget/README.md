@@ -24,6 +24,7 @@ The examples section of this readme can be used to understand how different fiel
 
 - Create Drupal forms from JSON schema.
 - Modify form element options created from JSON schema with specialized schema.ui JSON.
+- Support for sorting form fields by weight: You can define the field order using a weight property in the schema.
 
 ## Requirements
 
@@ -89,7 +90,8 @@ In the above example the listed fields (which would appear later as objects in t
       "title": "Title",
       "description": "Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery.",
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "weight": 1
     },
 
 **UI Schema File Example:**
@@ -135,6 +137,8 @@ UI options:
 - rows: 5
   - The text area has a height of 5 rows
 - description
+- weight: 0
+  - Fields with a lower weight value will appear earlier in the form layout
 
 ### Formatted Text Area
 
@@ -154,7 +158,8 @@ UI options:
         "widget": "textarea",
         "rows": 5,
         "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
-        "textFormat": "html"
+        "textFormat": "html",
+        "weight": 1
       }
     },
 
