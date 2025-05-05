@@ -90,7 +90,7 @@ In the above example the listed fields (which would appear later as objects in t
       "title": "Title",
       "description": "Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery.",
       "type": "string",
-      "minLength": 1,
+      "minLength": 1
     },
 
 **UI Schema File Example:**
