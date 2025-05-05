@@ -104,7 +104,6 @@ class FormBuilder implements ContainerInjectionInterface {
    */
   public function getJsonForm($data, $form_state = NULL) {
     if ($this->schema) {
-
       $properties = array_keys((array) $this->schema->properties);
 
       foreach ($properties as $property) {
