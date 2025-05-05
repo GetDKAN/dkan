@@ -557,6 +557,8 @@ class JsonFormBuilderTest extends TestCase {
     $form_builder->setSchema('dataset');
     $form = $form_builder->getJsonForm([]);
 
-    $this->assertEquals(['second', 'third', 'first'], array_keys($form));
+    $ordered_keys = array_keys($form);
+    $expected_order = ['second', 'third', 'first'];
+    $this->assertEquals($expected_order, $ordered_keys);
   }
 }

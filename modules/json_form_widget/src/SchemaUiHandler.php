@@ -109,6 +109,13 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    */
   public function applySchemaUi(mixed $form) {
     if ($this->schemaUi) {
+      $weights = $this->getFieldWeights();
+      if (!empty($weights)) {
+        uksort($form, function ($a, $b) use ($weights) {
+          return ($weights[$a] ?? 0) <=> ($weights[$b] ?? 0);
+        });
+      }
+
       foreach ((array) $this->schemaUi as $property => $spec) {
         // Apply schema UI on base field.
         $form[$property] = $this->applyOnBaseField($spec, $form[$property]);
