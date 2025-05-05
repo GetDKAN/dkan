@@ -91,7 +91,6 @@ In the above example the listed fields (which would appear later as objects in t
       "description": "Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery.",
       "type": "string",
       "minLength": 1,
-      "weight": 1
     },
 
 **UI Schema File Example:**
@@ -127,7 +126,8 @@ UI Options:
       "ui:options": {
         "widget": "textarea",
         "rows": 5,
-        "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest."
+        "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
+        "weight": 1
       }
     },
 
@@ -137,7 +137,7 @@ UI options:
 - rows: 5
   - The text area has a height of 5 rows
 - description
-- weight: 0
+- weight: 1
   - Fields with a lower weight value will appear earlier in the form layout
 
 ### Formatted Text Area
@@ -166,6 +166,8 @@ UI options:
 UI options:
 - textFormat: html
   - This can be the machine name of any Drupal text format you have configured in your system
+- weight: 1
+  - Fields with a lower weight value will appear earlier in the form layout
 
 You can use `textFormat` to add a WYSIWYG or other Drupal text editor plugin to your dataset form. Just enable the modules you need and assign the editor to your text format in Drupal at /admin/config/content/formats.
 
