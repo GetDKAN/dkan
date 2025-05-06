@@ -79,7 +79,7 @@ class FormBuilder implements ContainerInjectionInterface {
    * Build form based on schema.
    */
   public function getJsonForm($data, $form_state = NULL) {
-    if ($this->schema) {
+    if ($this->schema && isset($this->schema->properties)) {
       $properties = array_keys((array) $this->schema->properties);
 
       foreach ($properties as $property) {

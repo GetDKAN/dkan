@@ -61,7 +61,7 @@ class JsonFormBuilderTest extends TestCase {
 
     $form_builder = FormBuilder::create($container);
 
-    $form_builder->setSchema('dataset');
+    $form_builder->setSchema((object) []);
     $this->assertEquals($form_builder->getJsonForm([]), []);
   }
 
