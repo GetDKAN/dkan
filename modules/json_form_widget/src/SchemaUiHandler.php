@@ -3,7 +3,6 @@
 namespace Drupal\json_form_widget;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\SchemaRetriever;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -18,13 +17,6 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @var object
    */
   public $schemaUi;
-
-  /**
-   * SchemaRetriever.
-   *
-   * @var \Drupal\metastore\SchemaRetriever
-   */
-  protected $schemaRetriever;
 
   /**
    * Json form widget logger channel service.
@@ -45,7 +37,6 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.metastore.schema_retriever'),
       $container->get('dkan.json_form.logger_channel'),
       $container->get('json_form.widget_router')
     );
@@ -54,19 +45,15 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\metastore\SchemaRetriever $schema_retriever
-   *   SchemaRetriever service.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   Logger channel service.
    * @param WidgetRouter $widget_router
    *   WidgetRouter service.
    */
   public function __construct(
-    SchemaRetriever $schema_retriever,
     LoggerInterface $loggerChannel,
-    WidgetRouter $widget_router
+    WidgetRouter $widget_router,
   ) {
-    $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
     $this->logger = $loggerChannel;
     $this->widgetRouter = $widget_router;
@@ -78,14 +65,8 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @param mixed $schema_name
    *   The schema name.
    */
-  public function setSchemaUi(mixed $schema_name) {
-    try {
-      $schema_ui = $this->schemaRetriever->retrieve($schema_name . '.ui');
-      $this->schemaUi = json_decode((string) $schema_ui);
-    }
-    catch (\Exception) {
-      $this->logger->notice("The UI Schema for $schema_name does not exist.");
-    }
+  public function setUiSchemaUi(?object $ui_schema = NULL) {
+    $this->schemaUi = $ui_schema;
   }
 
   /**

@@ -2,23 +2,25 @@
 
 namespace Drupal\json_form_widget\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\FormBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\json_form_widget\ValueHandler;
+use Drupal\metastore\SchemaRetriever;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Plugin implementation of the 'json_form_widget'.
  *
  * @FieldWidget(
- *   id = "json_form_widget",
+ *   id = "dkan_json_form_widget",
  *   module = "json_form_widget",
- *   label = @Translation("JSON Form"),
+ *   label = @Translation("DKAN JSON Form"),
  *   field_types = {
  *     "string_long"
  *   }
@@ -31,7 +33,7 @@ class JsonFormWidget extends WidgetBase {
    *
    * @var string
    */
-  protected const DEFAULT_SCHEMA = 'dataset';
+  protected const DEFAULT_SCHEMA_ID = 'dataset';
 
   /**
    * FormBuilder.
@@ -42,15 +44,18 @@ class JsonFormWidget extends WidgetBase {
 
   /**
    * ValueHandler.
-   *
-   * @var \Drupal\json_form_widget\ValueHandler
    */
-  protected $valueHandler;
+  protected ValueHandler $valueHandler;
 
   /**
-   * DKAN Data Schema.
+   * DKAN SchemaRetriever.
    */
-  protected ?string $schema;
+  protected SchemaRetriever $schemaRetriever;
+
+  /**
+   * The current request stack.
+   */
+  protected RequestStack $requestStack;
 
   /**
    * Constructs a JsonFormWidget object.
@@ -71,6 +76,8 @@ class JsonFormWidget extends WidgetBase {
    *   The JsonFormValueHandler service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   Drupal request context service.
+   * @param \Drupal\metastore\SchemaRetriever $schema_retriever
+   *   The DKAN SchemaRetriever service.
    */
   public function __construct(
     $plugin_id,
@@ -80,12 +87,20 @@ class JsonFormWidget extends WidgetBase {
     array $third_party_settings,
     FormBuilder $builder,
     ValueHandler $value_handler,
-    RequestStack $request_stack
+    RequestStack $request_stack,
+    SchemaRetriever $schema_retriever,
   ) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-    $this->builder = $builder;
-    $this->valueHandler = $value_handler;
-    $this->schema = $request_stack->getCurrentRequest()->query->get('schema');
+    parent::__construct(
+      $plugin_id,
+      $plugin_definition,
+      $field_definition,
+      $settings,
+      $third_party_settings,
+      $builder,
+      $value_handler,
+    );
+    $this->requestStack = $request_stack;
+    $this->schemaRetriever = $schema_retriever;
   }
 
   /**
@@ -100,89 +115,110 @@ class JsonFormWidget extends WidgetBase {
       $configuration['third_party_settings'],
       $container->get('json_form.builder'),
       $container->get('json_form.value_handler'),
-      $container->get('request_stack')
+      $container->get('request_stack'),
+      $container->get('dkan.metastore.schema_retriever'),
     );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $form_state->set('json_form_widget_field', $items->getName());
-    $default_data = [];
-    // Get default data.
-    foreach ($items as $item) {
-      if ($item->value) {
-        $default_data = json_decode($item->value);
-      }
-    }
-    $type = $this->getSchemaId($form_state);
-    // Copy the item type to the entity.
-    $form_entity = $form_state->getFormObject()->getEntity();
-    if ($form_entity instanceof FieldableEntityInterface) {
-      $form_entity->set('field_data_type', $type);
-    }
-    // Set the schema for the form builder.
-    $this->builder->setSchema($type);
-    // Attempt to build the form.
-    $json_form = $this->builder->getJsonForm($default_data, $form_state);
-    if ($json_form) {
-      return ['value' => $json_form];
-    }
+  protected function resolveSchema(FormStateInterface $form_state): object {
+    $schema_id = $this->resolveSchemaId($form_state);
+    return $this->retrieveSchema($schema_id);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
-    // Set the schema for the form builder.
-    $this->builder->setSchema($this->getSchemaId($form_state));
-
-    $field_name = $form_state->get('json_form_widget_field');
-    $schema = $this->builder->getSchema();
-    $data = [];
-    $properties = array_keys((array) $schema->properties);
-    $values = $form_state->getValue($field_name)[0]['value'];
-
-    foreach ($properties as $property) {
-      $value = $this->valueHandler->flattenValues($values, $property, $schema->properties->{$property});
-      if ($value) {
-        $data[$property] = $value;
-      }
-    }
-    $json = [json_encode($data)];
-    $values = $this->massageFormValues($json, $form, $form_state);
-    $items->setValue($values);
-    $items->filterEmptyItems();
-
-    $field_state = static::getWidgetState($form['#parents'], $field_name, $form_state);
-    foreach ($items as $delta => $item) {
-      $field_state['original_deltas'][$delta] = $item->_original_delta ?? $delta;
-      unset($item->_original_delta, $item->_weight);
-    }
-    static::setWidgetState($form['#parents'], $field_name, $form_state, $field_state);
+  protected function resolveUiSchema(FormStateInterface $form_state): object {
+    $schema_id = $this->resolveSchemaId($form_state) . '.ui';
+    return $this->retrieveSchema($schema_id);
   }
 
   /**
-   * Get form data schema ID.
-   *
-   * @param \Drupal\Core\Form\FormStateInterface|null $form_state
-   *   Form state.
-   *
-   * @return string
-   *   Data schema ID.
+   * {@inheritdoc}
    */
-  protected function getSchemaId(?FormStateInterface $form_state = NULL): string {
-    // Extract the metastore item type from form state if provided.
-    if (isset($form_state)) {
-      $form_entity = $form_state->getFormObject()->getEntity();
-      if ($form_entity instanceof FieldableEntityInterface && isset($form_entity->field_data_type->value)) {
-        return $form_entity->field_data_type->value;
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    // Set the data type in the metadata entity.
+    $type = $this->resolveSchemaId($form_state);
+    $form_entity = $this->getFormEntity($form_state);
+    if ($form_entity ?? FALSE) {
+      $form_entity->set('field_data_type', $type);
+    }
+
+    return parent::formElement($items, $delta, $element, $form, $form_state);
+  }
+
+  /**
+   * Retrieves the form entity from the form state.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state object.
+   *
+   * @return null|\Drupal\Core\Entity\FieldableEntityInterface
+   *   The form entity, or NULL if none found.
+   */
+  protected function getFormEntity(FormStateInterface $form_state): ?FieldableEntityInterface {
+    $form_object = $form_state->getFormObject();
+    if ($form_object instanceof ContentEntityFormInterface) {
+      $form_entity = $form_object->getEntity();
+      if ($form_entity instanceof FieldableEntityInterface) {
+        return $form_entity;
       }
     }
-    // Otherwise use form state provided in request query, or the default
-    // schema if one is not found.
-    return $this->schema ?? self::DEFAULT_SCHEMA;
+    return NULL;
+  }
+
+  /**
+   * Resolves the schema ID from the form state.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return string
+   *   The schema ID.
+   */
+  protected function resolveSchemaId(FormStateInterface $form_state): string {
+    $form_entity = $this->getFormEntity($form_state);
+    if ($form_entity->hasField('field_data_type')) {
+      $schema_id = $form_entity->field_data_type->value ?? NULL;
+    }
+    if ($schema_id ?? FALSE) {
+      return $schema_id;
+    }
+
+    // If the schema ID is not set, and the entity is new, figure out the
+    // schema ID from the request or the default.
+    if ($form_entity->isNew()) {
+      $request = $this->requestStack->getCurrentRequest();
+      return $request->query->get('schema') ?? self::DEFAULT_SCHEMA_ID;
+    }
+
+    return self::DEFAULT_SCHEMA_ID;
+  }
+
+  /**
+   * Retrieves and validates a schema by its ID with optional suffix (.ui).
+   *
+   * @param string $schema_id
+   *   DKAN Schema ID.
+   *
+   * @return object
+   *   The schema object.
+   *
+   * @throws \RuntimeException
+   *   When no valid schema is found.
+   */
+  protected function retrieveSchema(string $schema_id): object {
+    $schema_json = $this->schemaRetriever->retrieve($schema_id);
+    $schema = json_decode($schema_json);
+
+    if ($schema && isset($schema->properties)) {
+      return $schema;
+    }
+
+    throw new \RuntimeException("No valid schema found for {$schema_id}.");
   }
 
 }
