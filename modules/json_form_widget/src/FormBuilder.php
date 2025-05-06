@@ -64,7 +64,7 @@ class FormBuilder implements ContainerInjectionInterface {
    */
   public function setSchema(object $schema, ?object $ui_schema = NULL): void {
     $this->schema = $schema;
-    $this->schemaUiHandler->setUiSchema($ui_schema);
+    $this->schemaUiHandler->setSchemaUi($ui_schema);
     $this->router->setSchema($schema);
   }
 

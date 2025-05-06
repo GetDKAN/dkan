@@ -6,7 +6,6 @@ use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\ValueHandler;
@@ -26,7 +25,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *   }
  * )
  */
-class JsonFormWidget extends WidgetBase {
+class JsonFormWidget extends JsonFormWidgetBase {
 
   /**
    * Default DKAN Data Schema.
@@ -34,18 +33,6 @@ class JsonFormWidget extends WidgetBase {
    * @var string
    */
   protected const DEFAULT_SCHEMA_ID = 'dataset';
-
-  /**
-   * FormBuilder.
-   *
-   * @var \Drupal\json_form_widget\FormBuilder
-   */
-  protected $builder;
-
-  /**
-   * ValueHandler.
-   */
-  protected ValueHandler $valueHandler;
 
   /**
    * DKAN SchemaRetriever.
@@ -214,7 +201,7 @@ class JsonFormWidget extends WidgetBase {
     $schema_json = $this->schemaRetriever->retrieve($schema_id);
     $schema = json_decode($schema_json);
 
-    if ($schema && isset($schema->properties)) {
+    if ($schema) {
       return $schema;
     }
 
