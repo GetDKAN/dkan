@@ -67,7 +67,8 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
    * {@inheritdoc}
    */
   public function getReferenceDictionaryId(string $resourceId, ?int $resourceIdVersion = NULL): ?string {
-    // Should we log an error when no resource version is given? This can lead to picking up an orphaned distribution.
+    // Should we log an error when no resource version is given?
+    // This can lead to picking up an orphaned distribution.
     $partial_resource_id = $resourceId . ($resourceIdVersion ? "__$resourceIdVersion" : '');
     $referencers = $this->lookup->getReferencers('distribution', $partial_resource_id, 'downloadURL');
     $distributionId = $referencers[0] ?? NULL;
