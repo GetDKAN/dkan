@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Plugin implementation of the 'json_form_widget'.
  *
  * @FieldWidget(
- *   id = "dkan_json_form_widget",
+ *   id = "json_form_widget",
  *   module = "json_form_widget",
  *   label = @Translation("DKAN JSON Form"),
  *   field_types = {
