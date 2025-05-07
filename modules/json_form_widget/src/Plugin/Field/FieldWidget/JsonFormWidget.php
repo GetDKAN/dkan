@@ -143,8 +143,11 @@ class JsonFormWidget extends JsonFormWidgetBase {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   Form state object.
    *
-   * @return null|\Drupal\Core\Entity\FieldableEntityInterface
+   * @return \Drupal\Core\Entity\FieldableEntityInterface
    *   The form entity, or NULL if none found.
+   *
+   * @throws \RuntimeException
+   *   If no valid form entity is found.
    */
   protected function getFormEntity(FormStateInterface $form_state): ?FieldableEntityInterface {
     $form_object = $form_state->getFormObject();
@@ -154,7 +157,8 @@ class JsonFormWidget extends JsonFormWidgetBase {
         return $form_entity;
       }
     }
-    return NULL;
+    // Throw exception if no valid form entity found.
+    throw new \RuntimeException('No valid form entity found. The JsonFormWidget must be used with a fieldable content entity.');
   }
 
   /**
@@ -175,14 +179,10 @@ class JsonFormWidget extends JsonFormWidgetBase {
       return $schema_id;
     }
 
-    // If the schema ID is not set, and the entity is new, figure out the
-    // schema ID from the request or the default.
-    if ($form_entity->isNew()) {
-      $request = $this->requestStack->getCurrentRequest();
-      return $request->query->get('schema') ?? self::DEFAULT_SCHEMA_ID;
-    }
-
-    return self::DEFAULT_SCHEMA_ID;
+    // If the schema ID is not set, figure out the schema ID from the request
+    // or the default.
+    $request = $this->requestStack->getCurrentRequest();
+    return $request->query->get('schema') ?? self::DEFAULT_SCHEMA_ID;
   }
 
   /**

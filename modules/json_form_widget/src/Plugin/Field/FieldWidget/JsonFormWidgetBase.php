@@ -13,6 +13,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Base class for JSON Form widgets.
+ *
+ * @codeCoverageIgnore
  */
 abstract class JsonFormWidgetBase extends WidgetBase implements WidgetInterface {
 
