@@ -12,29 +12,21 @@ class FormBuilder implements ContainerInjectionInterface {
 
   /**
    * Schema.
-   *
-   * @var object
    */
-  public $schema;
+  public object $schema;
 
   /**
    * Schema UI handler.
-   *
-   * @var object
    */
-  public $schemaUiHandler;
+  public SchemaUiHandler $schemaUiHandler;
 
   /**
    * Field types router.
-   *
-   * @var \Drupal\json_form_widget\FieldTypeRouter
    */
-  protected $router;
+  protected FieldTypeRouter $router;
 
   /**
-   * Inherited.
-   *
-   * @{inheritdocs}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -45,6 +37,11 @@ class FormBuilder implements ContainerInjectionInterface {
 
   /**
    * Constructor.
+   *
+   * @param \Drupal\json_form_widget\FieldTypeRouter $router
+   *   Field type router service.
+   * @param \Drupal\json_form_widget\SchemaUiHandler $schema_ui_handler
+   *   Schema UI handler service.
    */
   public function __construct(
     FieldTypeRouter $router,
@@ -79,24 +76,22 @@ class FormBuilder implements ContainerInjectionInterface {
    * Build form based on schema.
    */
   public function getJsonForm($data, $form_state = NULL) {
-    if ($this->schema && isset($this->schema->properties)) {
-      $properties = array_keys((array) $this->schema->properties);
-
-      foreach ($properties as $property) {
-        $type = $this->schema->properties->{$property}->type ?? "string";
-        $value = $data->{$property} ?? NULL;
-        $definition = [
-          'name' => $property,
-          'schema' => $this->schema->properties->{$property},
-        ];
-        $form[$property] = $this->router->getFormElement($type, $definition, $value, NULL, $form_state, []);
-      }
-      if ($this->schemaUiHandler->getSchemaUi()) {
-        return $this->schemaUiHandler->applySchemaUi($form);
-      }
-      return $form;
+    if (!$this->schema || !isset($this->schema->properties)) {
+      return [];
     }
-    return [];
+
+    $properties = array_keys((array) $this->schema->properties);
+
+    foreach ($properties as $property) {
+      $type = $this->schema->properties->{$property}->type ?? "string";
+      $value = $data->{$property} ?? NULL;
+      $definition = [
+        'name' => $property,
+        'schema' => $this->schema->properties->{$property},
+      ];
+      $form[$property] = $this->router->getFormElement($type, $definition, $value, NULL, $form_state, []);
+    }
+    return $this->schemaUiHandler->getSchemaUi() ? $this->schemaUiHandler->applySchemaUi($form) : $form;
   }
 
 }
