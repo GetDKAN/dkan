@@ -56,7 +56,7 @@ class FormBuilder implements ContainerInjectionInterface {
    *
    * @param object $schema
    *   JSON Schema.
-   * @param ?object $ui_schema
+   * @param object|null $ui_schema
    *   JSON UI Schema.
    */
   public function setSchema(object $schema, ?object $ui_schema = NULL): void {
