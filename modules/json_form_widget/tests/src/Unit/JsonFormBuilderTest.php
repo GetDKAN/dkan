@@ -49,411 +49,49 @@ class JsonFormBuilderTest extends TestCase {
 
   /**
    * Basic schema test.
+   *
+   * @param object $schema
+   *   JSON schema.
+   * @param object $ui_schema
+   *   UI schema.
+   * @param object $default_data
+   *   Default data for form.
+   * @param array $expected
+   *   Expected result from form builder.
+   * @param array $count
+   *   Count property and value for ArrayHelper. Should be associative array
+   *   with property name as key and count value as value. (e.g.
+   *   ['keyword' => 1]).
+   *
+   * @dataProvider schemaProvider
    */
-  public function testSchema() {
+  public function testSchema(
+    object $schema,
+    ?object $ui_schema,
+    ?object $default_data,
+    array $expected,
+    array $count = [],
+  ) {
     $container = $this->getDetaultContainerChain()->getMock();
     $form_builder = FormBuilder::create($container);
-    $schema = json_decode('
-      {
-        "required": [
-          "accessLevel"
-        ],
-        "properties":{
-          "title":{
-            "type":"string",
-            "title":"Title field"
-          },
-          "test":{
-            "type":"string",
-            "title":"Test field",
-            "maxLength":400
-          },
-          "downloadURL":{
-            "title":"Download URL",
-            "description":"This is an URL field.",
-            "type":"string",
-            "format":"uri"
-          },
-          "accessLevel": {
-            "description": "Description.",
-            "title": "Public Access Level",
-            "type": "string",
-            "enum": [
-              "public",
-              "restricted public",
-              "non-public"
-            ],
-            "default": "public"
-          },
-          "accrualPeriodicity": {
-            "title": "Frequency",
-            "description": "Description.",
-            "type": "string",
-            "enum": [
-              "R/P10Y",
-              "R/P4Y"
-            ],
-            "enumNames": [
-              "Decennial",
-              "Quadrennial"
-            ]
-          }
-        },
-        "type":"object"
-      }'
-    );
-    $form_builder->setSchema($schema);
-    $this->assertIsObject($form_builder->getSchema());
-    $expected = [
-      "title" => [
-        "#type" => "textfield",
-        "#title" => "Title field",
-        "#description" => "",
-        "#default_value" => NULL,
-        '#description_display' => 'before',
-        "#required" => FALSE,
-        "#maxlength" => 256,
-      ],
-      "test" => [
-        "#type" => "textfield",
-        "#title" => "Test field",
-        "#description" => "",
-        "#default_value" => "Some value.",
-        '#description_display' => 'before',
-        "#required" => FALSE,
-        "#maxlength" => 400,
-      ],
-      "downloadURL" => [
-        "#type" => "url",
-        "#title" => "Download URL",
-        "#description" => "This is an URL field.",
-        '#description_display' => 'before',
-        "#default_value" => NULL,
-        "#required" => FALSE,
-      ],
-      "accessLevel" => [
-        "#type" => "select",
-        "#title" => "Public Access Level",
-        "#description" => "Description.",
-        '#description_display' => 'before',
-        "#default_value" => "public",
-        "#required" => TRUE,
-        "#options" => [
-          "public" => "public",
-          "restricted public" => "restricted public",
-          "non-public" => "non-public",
-        ],
-      ],
-      "accrualPeriodicity" => [
-        "#type" => "select",
-        "#title" => "Frequency",
-        "#description" => "Description.",
-        '#description_display' => 'before',
-        "#default_value" => NULL,
-        "#required" => FALSE,
-        "#options" => [
-          "R/P10Y" => "Decennial",
-          "R/P4Y" => "Quadrennial",
-        ],
-        "#empty_value" => '',
-      ],
-    ];
-    $default_data = new \stdClass();
-    $default_data->test = "Some value.";
-    $this->assertEquals($expected, $form_builder->getJsonForm($default_data));
-  }
-
-  public function testSchemaWithEmail() {
-    // Test email.
-    $container = $this->getDetaultContainerChain()->getMock();  
-    $form_builder = FormBuilder::create($container);
-
-    $default_data = new \stdClass();
-    $default_data->test = "Some value.";
-    $schema = json_decode('
-      {
-        "properties":{
-          "hasEmail": {
-            "title": "Email",
-            "description": "Email address for the contact name.",
-            "pattern": "^mailto:",
-            "type": "string"
-          }
-        },
-        "type":"object"
-      }'
-    );
-
-    $form_builder->setSchema($schema);
-    $result = $form_builder->getJsonForm($default_data);
-    $this->assertEquals('email', $result["hasEmail"]['#type']);
-    $this->assertArrayHasKey("#element_validate", $result["hasEmail"]);
-
-    // Test object.
-    $schema = json_decode('{"properties":{"publisher": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
-      "title": "Organization",
-      "description": "A Dataset Publisher Organization.",
-      "type": "object",
-      "required": [
-        "name"
-      ],
-      "properties": {
-        "@type": {
-          "title": "Metadata Context",
-          "description": "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
-          "type": "string",
-          "default": "org:Organization"
-        },
-        "name": {
-          "title": "Publisher Name",
-          "description": "",
-          "type": "string",
-          "minLength": 1
-        }
-      }}},"type":"object"}'
-    );
-    $form_builder->setSchema($schema);
-
-    $expected = [
-      "publisher" => [
-        "publisher" => [
-          "#type" => "details",
-          "#open" => TRUE,
-          "#title" => "Organization",
-          "#description" => "A Dataset Publisher Organization.",
-          '#description_display' => 'before',
-          "@type" => [
-            "#type" => "textfield",
-            "#title" => "Metadata Context",
-            "#description" => "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
-            '#description_display' => 'before',
-            "#default_value" => "org:Organization",
-            "#required" => FALSE,
-            '#maxlength' => 256,
-          ],
-          "name" => [
-            "#type" => "textfield",
-            "#title" => "Publisher Name",
-            "#description" => "",
-            '#description_display' => 'before',
-            "#default_value" => NULL,
-            "#required" => TRUE,
-            '#maxlength' => 256,
-          ],
-        ],
-      ],
-    ];
-    $this->assertEquals($expected, $form_builder->getJsonForm([]));
-  }
-
-  /**
-   * Test array with integer.
-   */
-  public function testSchemaWithArray() {
-    $container = $this->getDetaultContainerChain()->getMock();  
-    $form_builder = FormBuilder::create($container);
-    $schema = json_decode('
-      {
-        "properties":{
-          "keyword": {
-            "title": "Tags",
-            "description": "Tags (or keywords).",
-            "type": "array",
-            "items": {
-              "type": "string",
-              "title": "Tag"
-            }
-          }
-        },
-        "type":"object"
-      }'
-    );
-    $form_builder->setSchema($schema);
-
-    $expected = [
-      "keyword" => [
-        "#type" => "fieldset",
-        "#title" => "Tags",
-        "#tree" => TRUE,
-        "#description" => "Tags (or keywords).",
-        "#description_display" => "before",
-        "#prefix" => '<div id="keyword-fieldset-wrapper">',
-        "#suffix" => '</div>',
-        "keyword" => [
-          0 => [
-            "#type" => "textfield",
-            "#title" => "Tag",
-            "#required" => FALSE,
-          ],
-        ],
-      ],
-    ];
-    $form_state = new FormState();
-    $form_state->set(ArrayHelper::buildCountProperty('keyword'), 1);
-    $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword']['actions']);
-    $this->assertEquals($expected, $result);
-  }
-
-  /**
-   * Test array required.
-   */
-  public function testArrayRequired() {
-    $container = $this->getDetaultContainerChain()->getMock();
-    $form_builder = FormBuilder::create($container);
-
-    $schema = json_decode('
-    {
-      "required": [
-        "keyword"
-      ],
-      "properties":{
-        "keyword": {
-          "title": "Tags",
-          "description": "Tags (or keywords).",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "title": "Tag"
-          },
-          "minItems": 1
-        }
-      },
-      "type":"object"
-    }');
-    $form_builder->setSchema($schema);
-    $expected = [
-      "keyword" => [
-        "#type" => "fieldset",
-        "#title" => "Tags",
-        "#prefix" => '<div id="keyword-fieldset-wrapper">',
-        "#suffix" => "</div>",
-        "#tree" => TRUE,
-        "#description" => "Tags (or keywords).",
-        '#description_display' => 'before',
-        "keyword" => [
-          0 => [
-            "#type" => "textfield",
-            "#title" => "Tag",
-            "#required" => TRUE,
-          ],
-        ],
-      ],
-    ];
-    $form_state = new FormState();
-    $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword']['actions']);
-    $this->assertEquals($expected, $result);
-  }
-
-  /**
-   * Test schema with array of objects.
-   */
-  public function testSchemaWithArrayOfObjects() {
-    $container = $this->getDetaultContainerChain()->getMock();  
-    $form_builder = FormBuilder::create($container);
-    $schema = json_decode('
-      {
-        "properties": {
-          "contributors": {
-            "title": "Resources",
-            "description": "List of links.",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "title": "Name"
-                },
-                "url": {
-                  "type": "string",
-                  "format": "uri",
-                  "title": "URL",
-                  "default": "http://example.com"
-                }
-              }
-            }
-          }
-        },
-        "type": "object"
-      }
-    ');
-    $form_builder->setSchema($schema);
-    $expected = [
-      "contributors" => [
-        "#type" => "fieldset",
-        "#title" => "Resources",
-        "#description" => "List of links.",
-        "#tree" => TRUE,
-        "#description_display" => "before",
-        "#prefix" => '<div id="contributors-fieldset-wrapper">',
-        "#suffix" => '</div>',
-        "contributors" => [
-          0 => [
-            'contributors' => [
-              "#type" => "details",
-              "#open" => TRUE,
-              '#description_display' => 'before',
-              "name" => [
-                "#type" => "textfield",
-                "#title" => "Name",
-                "#required" => FALSE,
-                "#description" => "",
-                '#description_display' => 'before',
-                '#default_value' => NULL,
-                '#maxlength' => 256,
-              ],
-              "url" => [
-                "#type" => "url",
-                "#title" => "URL",
-                "#required" => FALSE,
-                "#description" => "",
-                '#description_display' => 'before',
-                '#default_value' => "http://example.com",
-              ],
-            ],
-            '#required' => FALSE,
-          ],
-        ],
-      ],
-    ];
-    $form_state = new FormState();
-    $form_state->set(ArrayHelper::buildCountProperty('contributors'), 1);
-    $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['contributors']['actions']);
-    $this->assertEquals($expected, $result);
-  }
-
-  /**
-   * Test schema field ordering by weight.
-   */
-  public function testSchemaFieldWeightOrdering() {
-    $container = $this->getDetaultContainerChain()->getMock();  
-    $form_builder = FormBuilder::create($container);
-    
-    $schema = json_decode('{
-      "properties": {
-        "first":  { "type": "string" },
-        "second": { "type": "string" },
-        "third":  { "type": "string" }
-      },
-      "type": "object"
-    }');
-    $ui_schema = json_decode('{
-      "first":  { "ui:options": { "weight": 10 } },
-      "second": { "ui:options": { "weight": -10 } },
-      "third":  { "ui:options": { "weight": 0 } }
-    }');
-
     $form_builder->setSchema($schema, $ui_schema);
-    $form = $form_builder->getJsonForm([]);
 
-    $ordered_keys = array_keys($form);
-    $expected_order = ['second', 'third', 'first'];
-    $this->assertEquals($expected_order, $ordered_keys);
+    $form_state = new FormState();
+    foreach ($count as $property => $value) {
+      $form_state->set(ArrayHelper::buildCountProperty($property), $value);
+    }
+
+    $this->assertIsObject($form_builder->getSchema());
+    $result = $form_builder->getJsonForm($default_data, $form_state);
+
+    // Eliminate the #element_validate key from the result.
+    // Iterate through fields and remove element_validate from each
+    foreach ($result as $field_key => $field_value) {
+      unset($result[$field_key]['#element_validate']);
+      unset($result[$field_key]['actions']);
+    }
+
+    $this->assertEquals($expected, $result);
   }
 
   /**
@@ -496,6 +134,422 @@ class JsonFormBuilderTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options);
+  }
+
+  /**
+   * Data provider for testSchema.
+   *
+   * (Probably want to use folding to make sense of this!)
+   */
+  public function schemaProvider() {
+    return [
+      'basic' => [
+        'schema' => json_decode('
+          {
+            "required": [
+              "accessLevel"
+            ],
+            "properties":{
+              "title":{
+                "type":"string",
+                "title":"Title field"
+              },
+              "test":{
+                "type":"string",
+                "title":"Test field",
+                "maxLength":400
+              },
+              "downloadURL":{
+                "title":"Download URL",
+                "description":"This is an URL field.",
+                "type":"string",
+                "format":"uri"
+              },
+              "accessLevel": {
+                "description": "Description.",
+                "title": "Public Access Level",
+                "type": "string",
+                "enum": [
+                  "public",
+                  "restricted public",
+                  "non-public"
+                ],
+                "default": "public"
+              },
+              "accrualPeriodicity": {
+                "title": "Frequency",
+                "description": "Description.",
+                "type": "string",
+                "enum": [
+                  "R/P10Y",
+                  "R/P4Y"
+                ],
+                "enumNames": [
+                  "Decennial",
+                  "Quadrennial"
+                ]
+              }
+            },
+            "type":"object"
+          }'
+        ),
+        'ui_schema' => NULL,
+        'default_data' => (object) [
+          'test' => "Some value.",
+        ],
+        'expected' => [
+          "title" => [
+            "#type" => "textfield",
+            "#title" => "Title field",
+            "#description" => "",
+            "#default_value" => NULL,
+            '#description_display' => 'before',
+            "#required" => FALSE,
+            "#maxlength" => 256,
+          ],
+          "test" => [
+            "#type" => "textfield",
+            "#title" => "Test field",
+            "#description" => "",
+            "#default_value" => "Some value.",
+            '#description_display' => 'before',
+            "#required" => FALSE,
+            "#maxlength" => 400,
+          ],
+          "downloadURL" => [
+            "#type" => "url",
+            "#title" => "Download URL",
+            "#description" => "This is an URL field.",
+            '#description_display' => 'before',
+            "#default_value" => NULL,
+            "#required" => FALSE,
+          ],
+          "accessLevel" => [
+            "#type" => "select",
+            "#title" => "Public Access Level",
+            "#description" => "Description.",
+            '#description_display' => 'before',
+            "#default_value" => "public",
+            "#required" => TRUE,
+            "#options" => [
+              "public" => "public",
+              "restricted public" => "restricted public",
+              "non-public" => "non-public",
+            ],
+          ],
+          "accrualPeriodicity" => [
+            "#type" => "select",
+            "#title" => "Frequency",
+            "#description" => "Description.",
+            '#description_display' => 'before',
+            "#default_value" => NULL,
+            "#required" => FALSE,
+            "#options" => [
+              "R/P10Y" => "Decennial",
+              "R/P4Y" => "Quadrennial",
+            ],
+            "#empty_value" => '',
+          ],
+        ],
+      ],
+      'withEmail' => [
+        'schema' => json_decode('
+          {
+            "properties":{
+              "hasEmail": {
+                "title": "Email",
+                "description": "Email address for the contact name.",
+                "pattern": "^mailto:",
+                "type": "string"
+              }
+            },
+            "type":"object"
+          }'
+        ),
+        'ui_schema' => NULL,
+        'default_data' => (object) [
+          'hasEmail' => "Some value.",
+        ],
+        'expected' => [
+          "hasEmail" => [
+            "#type" => "email",
+            "#title" => "Email",
+            "#description" => "Email address for the contact name.",
+            '#description_display' => 'before',
+            "#default_value" => "Some value.",
+            "#required" => FALSE,
+          ],
+        ],
+      ],
+      'withObject' => [
+        'schema' => json_decode('
+          {
+            "properties": {
+              "publisher": {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
+                "title": "Organization",
+                "description": "A Dataset Publisher Organization.",
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "@type": {
+                    "title": "Metadata Context",
+                    "description": "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
+                    "type": "string",
+                    "default": "org:Organization"
+                  },
+                  "name": {
+                    "title": "Publisher Name",
+                    "description": "",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "type": "object"
+          }
+        '),
+        'ui_schema' => NULL,
+        'default_data' => NULL,
+        'expected' => [
+          "publisher" => [
+            "publisher" => [
+              "#type" => "details",
+              "#open" => TRUE,
+              "#title" => "Organization",
+              "#description" => "A Dataset Publisher Organization.",
+              '#description_display' => 'before',
+              "@type" => [
+                "#type" => "textfield",
+                "#title" => "Metadata Context",
+                "#description" => "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
+                '#description_display' => 'before',
+                "#default_value" => "org:Organization",
+                "#required" => FALSE,
+                '#maxlength' => 256,
+              ],
+              "name" => [
+                "#type" => "textfield",
+                "#title" => "Publisher Name",
+                "#description" => "",
+                '#description_display' => 'before',
+                "#default_value" => NULL,
+                "#required" => TRUE,
+                '#maxlength' => 256,
+              ],
+            ],
+          ],
+        ],
+      ],
+      'withArray' => [
+        'schema' => json_decode('
+          {
+            "properties":{
+              "keyword": {
+                "title": "Tags",
+                "description": "Tags (or keywords).",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "title": "Tag"
+                }
+              }
+            },
+            "type":"object"
+          }        
+        '),
+        'ui_schema' => NULL,
+        'default_data' => NULL,
+        'expected' => [
+          "keyword" => [
+            "#type" => "fieldset",
+            "#title" => "Tags",
+            "#tree" => TRUE,
+            "#description" => "Tags (or keywords).",
+            "#description_display" => "before",
+            "#prefix" => '<div id="keyword-fieldset-wrapper">',
+            "#suffix" => '</div>',
+            "keyword" => [
+              0 => [
+                "#type" => "textfield",
+                "#title" => "Tag",
+                "#required" => FALSE,
+              ],
+            ],
+          ],
+        ],
+        'count' => [
+          'keyword' => 1,
+        ],
+      ],
+      'withArrayOfObjects' => [
+        'schema' => json_decode('
+          {
+            "properties": {
+              "contributors": {
+                "title": "Resources",
+                "description": "List of links.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "title": "Name"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "title": "URL",
+                      "default": "http://example.com"
+                    }
+                  }
+                }
+              }
+            },
+            "type": "object"
+          }
+        '),
+        'ui_schema' => NULL,
+        'default_data' => NULL,
+        'expected' => [
+          "contributors" => [
+            "#type" => "fieldset",
+            "#title" => "Resources",
+            "#description" => "List of links.",
+            "#tree" => TRUE,
+            "#description_display" => "before",
+            "#prefix" => '<div id="contributors-fieldset-wrapper">',
+            "#suffix" => '</div>',
+            "contributors" => [
+              0 => [
+                'contributors' => [
+                  "#type" => "details",
+                  "#open" => TRUE,
+                  '#description_display' => 'before',
+                  "name" => [
+                    "#type" => "textfield",
+                    "#title" => "Name",
+                    "#required" => FALSE,
+                    "#description" => "",
+                    '#description_display' => 'before',
+                    '#default_value' => NULL,
+                    '#maxlength' => 256,
+                  ],
+                  "url" => [
+                    "#type" => "url",
+                    "#title" => "URL",
+                    "#required" => FALSE,
+                    "#description" => "",
+                    '#description_display' => 'before',
+                    '#default_value' => "http://example.com",
+                  ],
+                ],
+                '#required' => FALSE,
+              ],
+            ],
+          ],
+        ],
+        'count' => [
+          'contributors' => 1,
+        ],
+      ],
+      'arrayRequired' => [
+        'schema' => json_decode('
+          {
+            "required": [
+              "keyword"
+            ],
+            "properties":{
+              "keyword": {
+                "title": "Tags",
+                "description": "Tags (or keywords).",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "title": "Tag"
+                },
+                "minItems": 1
+              }
+            },
+            "type":"object"
+          }'
+        ),
+        'ui_schema' => NULL,
+        'default_data' => NULL,
+        'expected' => [
+          "keyword" => [
+            "#type" => "fieldset",
+            "#title" => "Tags",
+            "#prefix" => '<div id="keyword-fieldset-wrapper">',
+            "#suffix" => "</div>",
+            "#tree" => TRUE,
+            "#description" => "Tags (or keywords).",
+            '#description_display' => 'before',
+            "keyword" => [
+              0 => [
+                "#type" => "textfield",
+                "#title" => "Tag",
+                "#required" => TRUE,
+              ],
+            ],
+          ],
+        ],
+      ],
+      'weights' => [
+        'schema' => json_decode('
+          {
+            "properties": {
+              "first":  { "type": "string", "title": "First" },
+              "second": { "type": "string", "title": "Second" },
+              "third":  { "type": "string", "title": "Third" }
+            },
+            "type": "object"
+          }'
+        ),
+        'ui_schema' => json_decode('
+          {
+            "first":  { "ui:options": { "weight": 10 } },
+            "second": { "ui:options": { "weight": -10 } },
+            "third":  { "ui:options": { "weight": 0 } }
+          }'
+        ),
+        'default_data' => NULL,
+        'expected' => [
+          'second' => [
+            '#type' => 'textfield',
+            '#title' => 'Second',
+            '#description' => '',
+            '#description_display' => 'before',
+            '#default_value' => NULL,
+            '#required' => FALSE,
+            '#maxlength' => 256,
+          ],
+          'third' => [
+            '#type' => 'textfield',
+            '#title' => 'Third',
+            '#description' => '',
+            '#description_display' => 'before',
+            '#default_value' => NULL,
+            '#required' => FALSE,
+            '#maxlength' => 256,
+          ],
+          'first' => [
+            '#type' => 'textfield',
+            '#title' => 'First',
+            '#description' => '',
+            '#description_display' => 'before',
+            '#default_value' => NULL,
+            '#required' => FALSE,
+            '#maxlength' => 256,
+          ],
+        ],
+      ],
+    ];
   }
 
 }
