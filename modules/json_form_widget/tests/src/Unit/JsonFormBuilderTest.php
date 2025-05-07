@@ -13,7 +13,6 @@ use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
-use Drupal\json_form_widget\WidgetRouter;
 use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
