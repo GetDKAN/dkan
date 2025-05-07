@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest\ETL\Load;
+namespace Drupal\Tests\Unit\harvest\ETL\Load;
 
 use Contracts\RetrieverInterface;
 use Drupal\harvest\ETL\Load\Load;
@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
  * @coversDefaultClass \Drupal\harvest\ETL\Load\Load
  *
  * @group harvest
+ * @group unit
+ * @group dkan
  */
 class LoadTest extends TestCase {
 

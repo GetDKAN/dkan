@@ -13,6 +13,7 @@ use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
+use Drupal\json_form_widget\WidgetRouter;
 use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
@@ -531,5 +532,62 @@ class JsonFormBuilderTest extends TestCase {
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(SchemaUiHandler::class, 'setSchemaUi');
+  }
+
+  /**
+   * Test schema field ordering by weight.
+   */
+  public function testSchemaFieldWeightOrdering() {
+    $base_schema = '{
+      "properties": {
+        "first":  { "type": "string" },
+        "second": { "type": "string" },
+        "third":  { "type": "string" }
+      },
+      "type": "object"
+    }';
+    $ui_schema = '{
+      "first":  { "ui:options": { "weight": 10 } },
+      "second": { "ui:options": { "weight": -10 } },
+      "third":  { "ui:options": { "weight": 0 } }
+    }';
+
+    $schema_retriever = $this->createMock(SchemaRetriever::class);
+    $schema_retriever
+      ->method('retrieve')
+      ->willReturnCallback(function ($name) use ($base_schema, $ui_schema) {
+        return $name === 'dataset' ? $base_schema : $ui_schema;
+      });
+
+    $logger = $this->createStub(LoggerInterface::class);
+    $schema_ui_handler = new SchemaUiHandler(
+      $schema_retriever,
+      $logger,
+      $this->createStub(WidgetRouter::class)
+    );
+
+    $router = $this->getRouter();
+
+    $options = (new Options())
+      ->add('dkan.metastore.schema_retriever', $schema_retriever)
+      ->add('json_form.router', $router)
+      ->add('json_form.schema_ui_handler', $schema_ui_handler)
+      ->add('dkan.json_form.logger_channel', $logger)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(SchemaUiHandler::class, 'setSchemaUi')
+      ->getMock();
+
+    \Drupal::setContainer($container);
+
+    $form_builder = FormBuilder::create($container);
+    $form_builder->setSchema('dataset');
+    $form = $form_builder->getJsonForm([]);
+
+    $ordered_keys = array_keys($form);
+    $expected_order = ['second', 'third', 'first'];
+    $this->assertEquals($expected_order, $ordered_keys);
   }
 }
