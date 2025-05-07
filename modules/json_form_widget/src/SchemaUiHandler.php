@@ -62,8 +62,10 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   /**
    * Set schemaUi.
    *
-   * @param mixed $schema_name
-   *   The schema name.
+   * @param object|null $ui_schema
+   *   The UIschema, as decoded JSON object.
+   *
+   * @todo Eliminate inconsistencies between "schemaUI" and "uiSchema"
    */
   public function setSchemaUi(?object $ui_schema = NULL) {
     $this->schemaUi = $ui_schema;
