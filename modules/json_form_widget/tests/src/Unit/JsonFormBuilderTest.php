@@ -40,25 +40,7 @@ class JsonFormBuilderTest extends TestCase {
    * Test.
    */
   public function testNoSchema() {
-    $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
-      ->add('json_form.string_helper', StringHelper::class)
-      ->add('json_form.object_helper', ObjectHelper::class)
-      ->add('json_form.array_helper', ArrayHelper::class)
-      ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
-      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
-      ->add('json_form.router', FieldTypeRouter::class)
-      ->index(0);
-
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '')
-      ->add(SchemaUiHandler::class, 'setSchemaUi');
-
-    $container = $container_chain->getMock();
-
-    \Drupal::setContainer($container);
-
+    $container = $this->getDetaultContainerChain()->getMock();
     $form_builder = FormBuilder::create($container);
 
     $form_builder->setSchema((object) []);
@@ -69,9 +51,9 @@ class JsonFormBuilderTest extends TestCase {
    * Basic schema test.
    */
   public function testSchema() {
-
-    $container_chain = $this->getDetaultContainerChain()
-      ->add(SchemaRetriever::class, 'retrieve', '
+    $container = $this->getDetaultContainerChain()->getMock();
+    $form_builder = FormBuilder::create($container);
+    $schema = json_decode('
       {
         "required": [
           "accessLevel"
@@ -118,13 +100,9 @@ class JsonFormBuilderTest extends TestCase {
           }
         },
         "type":"object"
-      }');
-
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
-
-    $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
+      }'
+    );
+    $form_builder->setSchema($schema);
     $this->assertIsObject($form_builder->getSchema());
     $expected = [
       "title" => [
@@ -187,8 +165,12 @@ class JsonFormBuilderTest extends TestCase {
 
   public function testSchemaWithEmail() {
     // Test email.
-    $container_chain = $this->getDetaultContainerChain()
-      ->add(SchemaRetriever::class, 'retrieve', '
+    $container = $this->getDetaultContainerChain()->getMock();  
+    $form_builder = FormBuilder::create($container);
+
+    $default_data = new \stdClass();
+    $default_data->test = "Some value.";
+    $schema = json_decode('
       {
         "properties":{
           "hasEmail": {
@@ -199,23 +181,16 @@ class JsonFormBuilderTest extends TestCase {
           }
         },
         "type":"object"
-      }')
-      ->add(SchemaUiHandler::class, 'setSchemaUi');
+      }'
+    );
 
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
-
-    $default_data = new \stdClass();
-    $default_data->test = "Some value.";
-
-    $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
+    $form_builder->setSchema($schema);
     $result = $form_builder->getJsonForm($default_data);
     $this->assertEquals('email', $result["hasEmail"]['#type']);
     $this->assertArrayHasKey("#element_validate", $result["hasEmail"]);
 
     // Test object.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"properties":{"publisher": {
+    $schema = json_decode('{"properties":{"publisher": {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
       "title": "Organization",
@@ -237,13 +212,10 @@ class JsonFormBuilderTest extends TestCase {
           "type": "string",
           "minLength": 1
         }
-      }
-    }},"type":"object"}');
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
+      }}},"type":"object"}'
+    );
+    $form_builder->setSchema($schema);
 
-    $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
     $expected = [
       "publisher" => [
         "publisher" => [
@@ -280,28 +252,26 @@ class JsonFormBuilderTest extends TestCase {
    * Test array with integer.
    */
   public function testSchemaWithArray() {
-    $container_chain = $this->getDetaultContainerChain()
-      ->add(SchemaRetriever::class, 'retrieve', '
-        {
-          "properties":{
-            "keyword": {
-              "title": "Tags",
-              "description": "Tags (or keywords).",
-              "type": "array",
-              "items": {
-                "type": "string",
-                "title": "Tag"
-              }
-            }
-          },
-          "type":"object"
-        }'
-      );
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
-
+    $container = $this->getDetaultContainerChain()->getMock();  
     $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
+    $schema = json_decode('
+      {
+        "properties":{
+          "keyword": {
+            "title": "Tags",
+            "description": "Tags (or keywords).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "title": "Tag"
+            }
+          }
+        },
+        "type":"object"
+      }'
+    );
+    $form_builder->setSchema($schema);
+
     $expected = [
       "keyword" => [
         "#type" => "fieldset",
@@ -331,8 +301,10 @@ class JsonFormBuilderTest extends TestCase {
    * Test array required.
    */
   public function testArrayRequired() {
-    $container_chain = $this->getDetaultContainerChain();
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '
+    $container = $this->getDetaultContainerChain()->getMock();
+    $form_builder = FormBuilder::create($container);
+
+    $schema = json_decode('
     {
       "required": [
         "keyword"
@@ -351,11 +323,7 @@ class JsonFormBuilderTest extends TestCase {
       },
       "type":"object"
     }');
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
-
-    $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
+    $form_builder->setSchema($schema);
     $expected = [
       "keyword" => [
         "#type" => "fieldset",
@@ -384,8 +352,9 @@ class JsonFormBuilderTest extends TestCase {
    * Test schema with array of objects.
    */
   public function testSchemaWithArrayOfObjects() {
-    $container_chain = $this->getDetaultContainerChain()
-      ->add(SchemaRetriever::class, 'retrieve', '
+    $container = $this->getDetaultContainerChain()->getMock();  
+    $form_builder = FormBuilder::create($container);
+    $schema = json_decode('
       {
         "properties": {
           "contributors": {
@@ -410,13 +379,9 @@ class JsonFormBuilderTest extends TestCase {
           }
         },
         "type": "object"
-      }');
-
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
-
-    $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
+      }
+    ');
+    $form_builder->setSchema($schema);
     $expected = [
       "contributors" => [
         "#type" => "fieldset",
@@ -463,6 +428,35 @@ class JsonFormBuilderTest extends TestCase {
   }
 
   /**
+   * Test schema field ordering by weight.
+   */
+  public function testSchemaFieldWeightOrdering() {
+    $container = $this->getDetaultContainerChain()->getMock();  
+    $form_builder = FormBuilder::create($container);
+    
+    $schema = json_decode('{
+      "properties": {
+        "first":  { "type": "string" },
+        "second": { "type": "string" },
+        "third":  { "type": "string" }
+      },
+      "type": "object"
+    }');
+    $ui_schema = json_decode('{
+      "first":  { "ui:options": { "weight": 10 } },
+      "second": { "ui:options": { "weight": -10 } },
+      "third":  { "ui:options": { "weight": 0 } }
+    }');
+
+    $form_builder->setSchema($schema, $ui_schema);
+    $form = $form_builder->getJsonForm([]);
+
+    $ordered_keys = array_keys($form);
+    $expected_order = ['second', 'third', 'first'];
+    $this->assertEquals($expected_order, $ordered_keys);
+  }
+
+  /**
    * Return FieldTypeRouter object.
    */
   private function getRouter() {
@@ -501,64 +495,7 @@ class JsonFormBuilderTest extends TestCase {
       ->index(0);
 
     return (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(SchemaUiHandler::class, 'setSchemaUi');
+      ->add(Container::class, 'get', $options);
   }
 
-  /**
-   * Test schema field ordering by weight.
-   */
-  public function testSchemaFieldWeightOrdering() {
-    $base_schema = '{
-      "properties": {
-        "first":  { "type": "string" },
-        "second": { "type": "string" },
-        "third":  { "type": "string" }
-      },
-      "type": "object"
-    }';
-    $ui_schema = '{
-      "first":  { "ui:options": { "weight": 10 } },
-      "second": { "ui:options": { "weight": -10 } },
-      "third":  { "ui:options": { "weight": 0 } }
-    }';
-
-    $schema_retriever = $this->createMock(SchemaRetriever::class);
-    $schema_retriever
-      ->method('retrieve')
-      ->willReturnCallback(function ($name) use ($base_schema, $ui_schema) {
-        return $name === 'dataset' ? $base_schema : $ui_schema;
-      });
-
-    $logger = $this->createStub(LoggerInterface::class);
-    $schema_ui_handler = new SchemaUiHandler(
-      $schema_retriever,
-      $logger,
-      $this->createStub(WidgetRouter::class)
-    );
-
-    $router = $this->getRouter();
-
-    $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', $schema_retriever)
-      ->add('json_form.router', $router)
-      ->add('json_form.schema_ui_handler', $schema_ui_handler)
-      ->add('dkan.json_form.logger_channel', $logger)
-      ->index(0);
-
-    $container = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(SchemaUiHandler::class, 'setSchemaUi')
-      ->getMock();
-
-    \Drupal::setContainer($container);
-
-    $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
-    $form = $form_builder->getJsonForm([]);
-
-    $ordered_keys = array_keys($form);
-    $expected_order = ['second', 'third', 'first'];
-    $this->assertEquals($expected_order, $ordered_keys);
-  }
 }
