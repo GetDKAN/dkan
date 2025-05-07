@@ -112,7 +112,7 @@ abstract class JsonFormWidgetBase extends WidgetBase implements WidgetInterface 
     $schema = $this->resolveSchema($form_state);
     $this->builder->setSchema($schema);
 
-    // @todo: Why not use $this->fieldDefinition->getName()?
+    // @todo Use $this->fieldDefinition->getName() instead.
     $field_name = $form_state->get('json_form_widget_field');
     $data = [];
     $properties = array_keys((array) $schema->properties);
