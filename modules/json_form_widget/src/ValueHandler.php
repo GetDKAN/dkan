@@ -151,9 +151,12 @@ class ValueHandler {
    */
   protected function flattenArraysInArrays($value) {
     $data = [];
+    if (isset($value['actions'])) {
+      unset($value['actions']);
+    }
     if (is_array($value)) {
       foreach ($value as $item) {
-        $data[] = $this->cleanSelectId($item);
+        $data[] = is_array($item) ? $this->flattenArraysInArrays($item) : $this->cleanSelectId($item);
       }
     }
     elseif (!empty($value)) {

@@ -1,8 +1,6 @@
 <?php
 
-namespace Drupal\json_form_widget\Tests\Functional;
-
-use Drupal\Tests\BrowserTestBase;
+namespace Drupal\Tests\json_form_widget\Functional;
 
 /**
  * Test the json form widget.
@@ -14,25 +12,9 @@ use Drupal\Tests\BrowserTestBase;
  * @group json_form_widget
  * @group functional
  */
-class AdminDatasetJsonFormTest extends BrowserTestBase {
-
-  protected static $modules = [
-    'dkan',
-    'json_form_widget',
-    'node',
-  ];
-
-  protected $defaultTheme = 'stark';
-
-  /**
-   * @todo Remove this when we drop support for Drupal 10.0.
-   */
-  protected $strictConfigSchema = FALSE;
+class AdminDatasetJsonFormTest extends JsonFormTestBase {
 
   public function testAdminDatasetJsonForm() {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
-    $metastore_service = $this->container->get('dkan.metastore.service');
-
     $this->drupalLogin(
     // @todo Figure out least possible admin permissions.
       $this->drupalCreateUser([], NULL, TRUE)
@@ -95,54 +77,40 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
       $this->assertNull($page->find('css', $locator));
     }
 
+    // Assert that there is no "Add" button for any array fields that are now
+    // select2 elements (e.g. Topics or Tags)
+    foreach (['keyword', 'theme'] as $field) {
+      $this->assertNull($page->find('css', sprintf(
+        '#edit-field-json-metadata-0-value-theme-array-actions-actions-add',
+        $field
+      )));
+    }
+
     // 07_admin_dataset_json_form.spec.js : User can create and edit a dataset
     // with the json form UI. User can delete a dataset.
-    //
-    // Since we don't have JavaScript, we can't use select2 or select_or_other
-    // to add publisher or keyword entities. We create them here with arbitrary
-    // UUIDs so that we can post the names to the form.
-    $publisher_name = uniqid();
-    $metastore_service->post('publisher',
-      $metastore_service->getValidMetadataFactory()->get(
-        json_encode((object) [
-          'identifier' => '9deadc2f-50e0-512a-af7c-4323697d530d',
-          'data' => ['name' => $publisher_name],
-        ]), 'publisher', ['method' => 'POST'])
-    );
-    // We need a keyword.
-    $keyword_data = uniqid();
-    $metastore_service->post('keyword',
-      $metastore_service->getValidMetadataFactory()->get(json_encode((object) [
-        'identifier' => '05b2e74a-eb23-585b-9c1c-4d023e21e8a5',
-        'data' => $keyword_data,
-      ]), 'keyword', ['method' => 'POST'])
-    );
-
-    // Use the form.
     $this->drupalGet('node/add/data');
     $assert->statusCodeEquals(200);
-    $dataset_title = 'DKANTEST dataset title';
 
     // Quickly test adding and removing a distribution.
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-actions-actions-add"]')->click();
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
     $assert->statusCodeEquals(200);
     // Now we have two distributions.
     $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
     $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-actions-actions-remove"]')->click();
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-actions-remove"]')->click();
     // Now we have one again.
     $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
     $this->assertNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
 
     $this->submitForm([
-      'edit-field-json-metadata-0-value-title' => $dataset_title,
+      'edit-field-json-metadata-0-value-title' => $this->datasetTitle,
       'edit-field-json-metadata-0-value-description' => 'DKANTEST dataset description.',
       'edit-field-json-metadata-0-value-accesslevel' => 'public',
       'edit-field-json-metadata-0-value-modified-date' => '2020-02-02',
-      'edit-field-json-metadata-0-value-publisher-publisher-name' => $publisher_name,
+      'edit-field-json-metadata-0-value-publisher-publisher-name' => $this->publisherName,
       'edit-field-json-metadata-0-value-contactpoint-contactpoint-fn' => 'DKANTEST Contact Name',
       'edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail' => 'dkantest@test.com',
-      'edit-field-json-metadata-0-value-keyword-keyword-0' => $keyword_data,
+      'edit-field-json-metadata-0-value-keyword-keyword-0' => $this->keywordData,
     ], 'Save');
     $assert->statusCodeEquals(200);
     $assert->pageTextContains('Data DKANTEST dataset title has been created.');
@@ -158,12 +126,12 @@ class AdminDatasetJsonFormTest extends BrowserTestBase {
 
     // Filter for our dataset.
     $this->drupalGet('admin/dkan/datasets');
-    $this->submitForm(['edit-title' => $dataset_title], 'Filter');
+    $this->submitForm(['edit-title' => $this->datasetTitle], 'Filter');
 
     // Edit the dataset.
     $page->find('css', 'tbody > tr:first-of-type > .views-field-nothing > a')->click();
     $this->assertNotNull($page->find('css', '#edit-field-json-metadata-0-value-title'));
-    $assert->fieldValueEquals('edit-field-json-metadata-0-value-title', $dataset_title);
+    $assert->fieldValueEquals('edit-field-json-metadata-0-value-title', $this->datasetTitle);
     $dataset_new_title = 'NEW dkantest dataset title';
     $this->submitForm([
       'edit-field-json-metadata-0-value-title' => $dataset_new_title,
