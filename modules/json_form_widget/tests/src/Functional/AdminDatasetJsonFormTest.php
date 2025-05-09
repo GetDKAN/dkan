@@ -77,6 +77,15 @@ class AdminDatasetJsonFormTest extends JsonFormTestBase {
       $this->assertNull($page->find('css', $locator));
     }
 
+    // Assert that there is no "Add" button for any array fields that are now
+    // select2 elements (e.g. Topics or Tags)
+    foreach (['keyword', 'theme'] as $field) {
+      $this->assertNull($page->find('css', sprintf(
+        '#edit-field-json-metadata-0-value-theme-array-actions-actions-add',
+        $field
+      )));
+    }
+
     // 07_admin_dataset_json_form.spec.js : User can create and edit a dataset
     // with the json form UI. User can delete a dataset.
     $this->drupalGet('node/add/data');
