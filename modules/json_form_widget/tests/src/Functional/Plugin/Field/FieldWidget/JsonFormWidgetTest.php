@@ -12,7 +12,6 @@ use Drupal\node\Entity\Node;
 use Drupal\Tests\BrowserTestBase;
 use MockChain\Chain;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class JsonFormWidgetTest extends BrowserTestBase {
 
@@ -88,7 +87,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
     $this->assertEquals('textarea', $result['value']['description']['#type']);
     $this->assertEquals('fieldset', $result['value']['keyword']['#type']);
     $this->assertEquals('select2', $result['value']['keyword']['keyword'][0]['#type']);
-    $this->assertNotEmpty($result['value']['references']['actions']['actions']);
+    $this->assertNotEmpty($result['value']['references']['array_actions']['actions']);
 
     // Now try it again simulating a new dataset.
     $dataset = Node::create(['type' => 'data']);
@@ -102,7 +101,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
     $this->assertEquals('textarea', $result['value']['description']['#type']);
     $this->assertEquals('fieldset', $result['value']['keyword']['#type']);
     $this->assertEquals('select2', $result['value']['keyword']['keyword'][0]['#type']);
-    $this->assertNotEmpty($result['value']['references']['actions']['actions']);
+    $this->assertNotEmpty($result['value']['references']['array_actions']['actions']);
 
     // Simulate a new node form, but change the request stack to have query ?schema=distribution
     $distro_request = new Request([
