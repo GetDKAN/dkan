@@ -135,7 +135,7 @@ class ArrayHelper implements ContainerInjectionInterface {
     }
     // If add is true, overwrite the last item with a new empty item.
     if ($add && $item_count > 0) {
-      $items[$item_count - 1] = $this->buildArrayItemElement($definition, NULL, $form_state, array_merge($context, [$item_count]));
+      $items[$item_count - 1] = $this->buildArrayItemElement($definition, NULL, $form_state, array_merge($context, [$item_count - 1]));
       $items[$item_count - 1]['#required'] = $is_required;
       $form_state->set($add_property, FALSE);
     }

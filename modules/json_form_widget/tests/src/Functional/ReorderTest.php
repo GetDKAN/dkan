@@ -149,6 +149,53 @@ class ReorderTest extends JsonFormTestBase {
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')
     );
 
+    // SCENARIO FIVE: ADD NEW DISTRIBUTION AND REORDER
+
+    $this->drupalGet($edit_url);
+    $this->assertEquals(
+      'DKANTEST distribution 0 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-0.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
+    );
+    $this->assertEquals(
+      'DKANTEST distribution 1 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-1.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
+    );
+    // Add a new distribution.
+    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
+    $assert->statusCodeEquals(200);
+    // Assert that the title and URL fields are empty.
+    $this->assertEquals(
+      '',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      '',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')->getValue()
+    );
+    // Add a title and URL.
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')->setValue('DKANTEST distribution 2 title text');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-2.csv');
+    // Now move the third distribution to the second position.
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-actions-move-up"]')->click();
+    // Assert that the title and URL of the third distribution are now in the
+    // second position.
+    $this->assertEquals(
+      'DKANTEST distribution 2 title text',
+      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
+    );
+    $this->assertEquals(
+      'https://example.com/dkan-test-distribution-2.csv',
+      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
+    );
+
     // SCENARIO FOUR: REMOVE FILE, REPLACE URL AND REORDER BEFORE SAVING
 
     $this->drupalGet($edit_url);
