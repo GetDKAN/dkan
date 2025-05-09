@@ -55,10 +55,7 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-actions-move-down"]')->click();
     
     // Assert that the title and URL of the first distribution is now in the second position.
-    $this->assertEquals(
-      'DKANTEST distribution 0 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(1, 0);
     // Note: this should really show the full URL, the theme logic that controls
     // this depends on file usage being in place so fails when on a new dataset
     // form.
@@ -68,10 +65,7 @@ class ReorderTest extends JsonFormTestBase {
     );
 
     // Assert that the title and URL of the second distribution is now in the first position.
-    $this->assertEquals(
-      'DKANTEST distribution 1 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(0, 1);
     $this->assertEquals(
       'dkan-test-distribution-1.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
@@ -96,10 +90,7 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-move-up"]')->click();
     // Assert that the title and URL of the original first distribution is
     // now back in the first position.
-    $this->assertEquals(
-      'DKANTEST distribution 0 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(0, 0);
     $this->assertEquals(
       // Now that we're editing an existing dataset, we see the full URL.
       'https://example.com/dkan-test-distribution-0.csv',
@@ -110,18 +101,12 @@ class ReorderTest extends JsonFormTestBase {
     $this->submitForm([], 'Save');
     $assert->statusCodeEquals(200);
     $this->drupalGet($edit_url);
-    $this->assertEquals(
-      'DKANTEST distribution 0 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(0, 0);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-0.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
     );
-    $this->assertEquals(
-      'DKANTEST distribution 1 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(1, 1);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-1.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
@@ -152,18 +137,12 @@ class ReorderTest extends JsonFormTestBase {
     // SCENARIO FIVE: ADD NEW DISTRIBUTION AND REORDER
 
     $this->drupalGet($edit_url);
-    $this->assertEquals(
-      'DKANTEST distribution 0 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(0, 0);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-0.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
     );
-    $this->assertEquals(
-      'DKANTEST distribution 1 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(1, 1);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-1.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
@@ -187,10 +166,7 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-actions-move-up"]')->click();
     // Assert that the title and URL of the third distribution are now in the
     // second position.
-    $this->assertEquals(
-      'DKANTEST distribution 2 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(1, 2);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-2.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
@@ -199,18 +175,12 @@ class ReorderTest extends JsonFormTestBase {
     // SCENARIO FOUR: REMOVE FILE, REPLACE URL AND REORDER BEFORE SAVING
 
     $this->drupalGet($edit_url);
-    $this->assertEquals(
-      'DKANTEST distribution 0 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(0, 0);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-0.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
     );
-    $this->assertEquals(
-      'DKANTEST distribution 1 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(1, 1);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-1.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
@@ -223,19 +193,13 @@ class ReorderTest extends JsonFormTestBase {
     // Now move the second distribution to the first position.
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-move-up"]')->click();
     // Assert that the title and URL of the second distribution are now in the first position.
-    $this->assertEquals(
-      'DKANTEST distribution 1 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(0, 1);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-2.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
     );
     // Assert that the title and URL of the first distribution are now in the second position.
-    $this->assertEquals(
-      'DKANTEST distribution 0 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(1, 0);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-0.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
@@ -244,22 +208,30 @@ class ReorderTest extends JsonFormTestBase {
     $this->submitForm([], 'Save');
     $assert->statusCodeEquals(200);
     $this->drupalGet($edit_url);
-    $this->assertEquals(
-      'DKANTEST distribution 1 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(0, 1);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-2.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
     );
-    $this->assertEquals(
-      'DKANTEST distribution 0 title text',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
+    $this->assertCorrectTitle(1, 0);
     $this->assertEquals(
       'https://example.com/dkan-test-distribution-0.csv',
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
     );
+  }
+
+  /**
+   * Asserts that the title of a distribution is correct.
+   *
+   * @param int $elementIndex
+   *   The index of the element to check.
+   * @param int $titleIndex
+   *   The index of the title to check.
+   */
+  protected function assertCorrectTitle(int $elementIndex, int $titleIndex) {
+    $expected_title = sprintf('DKANTEST distribution %d title text', $titleIndex);
+    $selector = sprintf('[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-%d-distribution-title"]', $elementIndex);
+    $this->assertEquals($expected_title, $this->getSession()->getPage()->find('css', $selector)->getValue());
   }
 
 }
