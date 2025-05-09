@@ -56,20 +56,11 @@ class ReorderTest extends JsonFormTestBase {
     
     // Assert that the title and URL of the first distribution is now in the second position.
     $this->assertCorrectTitle(1, 0);
-    // Note: this should really show the full URL, the theme logic that controls
-    // this depends on file usage being in place so fails when on a new dataset
-    // form.
-    $this->assertEquals(
-      'dkan-test-distribution-0.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(1, 0, FALSE);
 
     // Assert that the title and URL of the second distribution is now in the first position.
     $this->assertCorrectTitle(0, 1);
-    $this->assertEquals(
-      'dkan-test-distribution-1.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(0, 1, FALSE);
     $this->submitForm([
       'edit-field-json-metadata-0-value-title' => $this->datasetTitle,
       'edit-field-json-metadata-0-value-description' => 'DKANTEST dataset description.',
@@ -91,26 +82,16 @@ class ReorderTest extends JsonFormTestBase {
     // Assert that the title and URL of the original first distribution is
     // now back in the first position.
     $this->assertCorrectTitle(0, 0);
-    $this->assertEquals(
-      // Now that we're editing an existing dataset, we see the full URL.
-      'https://example.com/dkan-test-distribution-0.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(0, 0, TRUE);
     // Get the URL to edit this dataset, so we find our way back later.
     $edit_url = $this->getSession()->getCurrentUrl();
     $this->submitForm([], 'Save');
     $assert->statusCodeEquals(200);
     $this->drupalGet($edit_url);
     $this->assertCorrectTitle(0, 0);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-0.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(0, 0, TRUE);
     $this->assertCorrectTitle(1, 1);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-1.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(1, 1, TRUE);
 
     // SCENARIO THREE: REMOVE DISTRIBUTION, ADD NEW DISTRIBUTION
 
@@ -138,15 +119,9 @@ class ReorderTest extends JsonFormTestBase {
 
     $this->drupalGet($edit_url);
     $this->assertCorrectTitle(0, 0);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-0.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(0, 0, TRUE);
     $this->assertCorrectTitle(1, 1);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-1.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(1, 1, TRUE);
     // Add a new distribution.
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
     $assert->statusCodeEquals(200);
@@ -167,24 +142,15 @@ class ReorderTest extends JsonFormTestBase {
     // Assert that the title and URL of the third distribution are now in the
     // second position.
     $this->assertCorrectTitle(1, 2);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-2.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(1, 2, TRUE);
 
     // SCENARIO FOUR: REMOVE FILE, REPLACE URL AND REORDER BEFORE SAVING
 
     $this->drupalGet($edit_url);
     $this->assertCorrectTitle(0, 0);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-0.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(0, 0, TRUE);
     $this->assertCorrectTitle(1, 1);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-1.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(1, 1, TRUE);
     // Remove the file from the first distribution.
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-remove-button"]')->click();
     $assert->statusCodeEquals(200);
@@ -194,30 +160,18 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-move-up"]')->click();
     // Assert that the title and URL of the second distribution are now in the first position.
     $this->assertCorrectTitle(0, 1);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-2.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(0, 2, TRUE);
     // Assert that the title and URL of the first distribution are now in the second position.
     $this->assertCorrectTitle(1, 0);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-0.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(1, 0, TRUE);
     // Submit the form, reopen and make sure the changes are saved.
     $this->submitForm([], 'Save');
     $assert->statusCodeEquals(200);
     $this->drupalGet($edit_url);
     $this->assertCorrectTitle(0, 1);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-2.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(0, 2, TRUE);
     $this->assertCorrectTitle(1, 0);
-    $this->assertEquals(
-      'https://example.com/dkan-test-distribution-0.csv',
-      $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')->getText()
-    );
+    $this->assertCorrectFileName(1, 0, TRUE);
   }
 
   /**
@@ -232,6 +186,25 @@ class ReorderTest extends JsonFormTestBase {
     $expected_title = sprintf('DKANTEST distribution %d title text', $titleIndex);
     $selector = sprintf('[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-%d-distribution-title"]', $elementIndex);
     $this->assertEquals($expected_title, $this->getSession()->getPage()->find('css', $selector)->getValue());
+  }
+
+  /**
+   * Asserts that the file name in the download URL is correct.
+   *
+   * @param int $elementIndex
+   *   The index of the element to check.
+   * @param int $filenameIndex
+   *   The index of the file name to check.
+   * @param bool $fullUrl
+   *   Whether the full URL is expected.
+   */
+  protected function assertCorrectFileName(int $elementIndex, int $filenameIndex, bool $fullUrl = FALSE) {
+    $expectedFileName = sprintf('dkan-test-distribution-%d.csv', $filenameIndex);
+    if ($fullUrl === TRUE) {
+      $expectedFileName = 'https://example.com/' . $expectedFileName;
+    }
+    $selector = sprintf('#edit-field-json-metadata-0-value-distribution-distribution-%d-distribution-downloadurl a', $elementIndex);
+    $this->assertEquals($expectedFileName, $this->getSession()->getPage()->find('css', $selector)->getText());
   }
 
 }
