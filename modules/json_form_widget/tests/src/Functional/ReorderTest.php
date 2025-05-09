@@ -19,7 +19,6 @@ class ReorderTest extends JsonFormTestBase {
   const MOVE_UP = 'move-up';
   const MOVE_DOWN = 'move-down';
   const REMOVE = 'remove';
-  const ADD = 'add';
 
   /**
    * One mega-test to make it faster. Try lots of scenarios for reordering.
@@ -121,7 +120,7 @@ class ReorderTest extends JsonFormTestBase {
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')
     );
 
-    // SCENARIO FIVE: ADD NEW DISTRIBUTION AND REORDER
+    // SCENARIO FOUR: ADD NEW DISTRIBUTION AND REORDER
 
     $this->drupalGet($edit_url);
     $this->assertCorrectTitle(0, 0);
@@ -135,8 +134,10 @@ class ReorderTest extends JsonFormTestBase {
     $this->assertFieldEmpty(2, 'title');
     $this->assertFieldEmpty(2, 'downloadurl-file-url-remote');
     // Add a title and URL.
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')->setValue('DKANTEST distribution 2 title text');
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-2.csv');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')
+      ->setValue('DKANTEST distribution 2 title text');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')
+      ->setValue('https://example.com/dkan-test-distribution-2.csv');
     // Now move the third distribution to the second position.
     $this->distributionAction(2, self::MOVE_UP);
     // Assert that the title and URL of the third distribution are now in the
@@ -144,7 +145,7 @@ class ReorderTest extends JsonFormTestBase {
     $this->assertCorrectTitle(1, 2);
     $this->assertCorrectFileName(1, 2, TRUE);
 
-    // SCENARIO FOUR: REMOVE FILE, REPLACE URL AND REORDER BEFORE SAVING
+    // SCENARIO FIVE: REMOVE FILE, REPLACE URL AND REORDER BEFORE SAVING
 
     $this->drupalGet($edit_url);
     $this->assertCorrectTitle(0, 0);
