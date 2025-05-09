@@ -144,6 +144,49 @@ class ReorderTest extends JsonFormTestBase {
     // second position.
     $this->assertCorrectTitle(1, 2);
     $this->assertCorrectFileName(1, 2, TRUE);
+    // Move the thrd distribution back down to the third position, and assert
+    // that now the original third distribution values are back in the third
+    // position.
+    $this->distributionAction(1, self::MOVE_DOWN);
+    $this->assertCorrectTitle(2, 2);
+    $this->assertCorrectFileName(2, 2, TRUE);
+
+    // Reset, and now we're going to move it up two positions and back down
+    // again.
+    $this->drupalGet($edit_url);
+    $this->addDistribution();
+    $assert->statusCodeEquals(200);
+    // Assert that the title and URL fields are empty.
+    $this->assertFieldEmpty(2, 'title');
+    $this->assertFieldEmpty(2, 'downloadurl-file-url-remote');
+    // Add a title and URL.
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')
+      ->setValue('DKANTEST distribution 2 title text');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')
+      ->setValue('https://example.com/dkan-test-distribution-2.csv');
+    // Now move the third distribution to the first position.
+    $this->distributionAction(2, self::MOVE_UP);
+    $this->distributionAction(1, self::MOVE_UP);
+    // Assert that the title and URL of the third distribution are now in the
+    // first position, and the other two moved one down.
+    $this->assertCorrectTitle(0, 2);
+    $this->assertCorrectFileName(0, 2, TRUE);
+    $this->assertCorrectTitle(1, 0);
+    $this->assertCorrectFileName(1, 0, TRUE);
+    $this->assertCorrectTitle(2, 1);
+    $this->assertCorrectFileName(2, 1, TRUE);
+
+    // Move the first distribution back down to the third position, and assert
+    // that now the original first distribution values are back in the first
+    // position.
+    $this->distributionAction(0, self::MOVE_DOWN);
+    $this->distributionAction(1, self::MOVE_DOWN);
+    $this->assertCorrectTitle(0, 0);
+    $this->assertCorrectFileName(0, 0, TRUE);
+    $this->assertCorrectTitle(1, 1);
+    $this->assertCorrectFileName(1, 1, TRUE);
+    $this->assertCorrectTitle(2, 2);
+    $this->assertCorrectFileName(2, 2, TRUE);
 
     // SCENARIO FIVE: REMOVE FILE, REPLACE URL AND REORDER BEFORE SAVING
 
