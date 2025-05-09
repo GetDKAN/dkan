@@ -42,7 +42,7 @@ class ReorderTest extends JsonFormTestBase {
     // Now we have two distributions.
     $this->assertDistributionExists(0, TRUE);
     $this->assertDistributionExists(1, TRUE);
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-actions-remove"]')->click();
+    $this->distributionAction(0, self::REMOVE);
     // Now we have one again.
     $this->assertDistributionExists(0, TRUE);
     $this->assertDistributionExists(1, FALSE);
@@ -61,7 +61,7 @@ class ReorderTest extends JsonFormTestBase {
       ->setValue('https://example.com/dkan-test-distribution-1.csv');
 
     // Now move the first distribution to the second position.
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-actions-move-down"]')->click();
+    $this->distributionAction(0, self::MOVE_DOWN);
 
     // Assert that the title and URL of the first distribution is now in the second position.
     $this->assertCorrectTitle(1, 0);
@@ -90,7 +90,7 @@ class ReorderTest extends JsonFormTestBase {
 
     $page->find('css', 'tbody > tr:first-of-type > .views-field-nothing > a')->click();
     // Move the second distribution to the first position.
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-move-up"]')->click();
+    $this->distributionAction(1, self::MOVE_UP);
     // Assert that the title and URL of the original first distribution is
     // now back in the first position.
     $this->assertCorrectTitle(0, 0);
@@ -108,7 +108,7 @@ class ReorderTest extends JsonFormTestBase {
     // SCENARIO THREE: REMOVE DISTRIBUTION, ADD NEW DISTRIBUTION
 
     $this->drupalGet($edit_url);
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-remove"]')->click();
+    $this->distributionAction(1, self::REMOVE);
     $assert->statusCodeEquals(200);
     $this->assertDistributionExists(1, FALSE);
     $this->addDistribution();
@@ -138,7 +138,7 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')->setValue('DKANTEST distribution 2 title text');
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-2.csv');
     // Now move the third distribution to the second position.
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-actions-move-up"]')->click();
+    $this->distributionAction(2, self::MOVE_UP);
     // Assert that the title and URL of the third distribution are now in the
     // second position.
     $this->assertCorrectTitle(1, 2);
@@ -157,7 +157,7 @@ class ReorderTest extends JsonFormTestBase {
     // Add a new remove file URL.
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-2.csv');
     // Now move the second distribution to the first position.
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-move-up"]')->click();
+    $this->distributionAction(1, self::MOVE_UP);
     // Assert that the title and URL of the second distribution are now in the first position.
     $this->assertCorrectTitle(0, 1);
     $this->assertCorrectFileName(0, 2, TRUE);
@@ -246,6 +246,25 @@ class ReorderTest extends JsonFormTestBase {
    */
   protected function addDistribution() {
     $this->getSession()->getPage()->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
+  }
+
+  /**
+   * Performs an action on a distribution element.
+   *
+   * @param int $elementIndex
+   *   The index of the distribution element.
+   * @param string $action
+   *   The action to perform. Must be one of the defined constants.
+   */
+  protected function distributionAction(int $elementIndex, string $action) {
+    $selector = sprintf('[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-%d-distribution-actions-%s"]', $elementIndex, $action);
+    $button = $this->getSession()->getPage()->find('css', $selector);
+    if ($button) {
+      $button->click();
+    }
+    else {
+      throw new \Exception(sprintf('Action button for element %d and action %s not found.', $elementIndex, $action));
+    }
   }
 
 }
