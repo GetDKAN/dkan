@@ -16,6 +16,11 @@ use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
  */
 class ReorderTest extends JsonFormTestBase {
 
+  const MOVE_UP = 'move-up';
+  const MOVE_DOWN = 'move-down';
+  const REMOVE = 'remove';
+  const ADD = 'add';
+
   /**
    * One mega-test to make it faster. Try lots of scenarios for reordering.
    */
@@ -32,7 +37,7 @@ class ReorderTest extends JsonFormTestBase {
     $page = $this->getSession()->getPage();
 
     // Quickly test adding and removing a distribution.
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
+    $this->addDistribution();
     $assert->statusCodeEquals(200);
     // Now we have two distributions.
     $this->assertDistributionExists(0, TRUE);
@@ -43,7 +48,7 @@ class ReorderTest extends JsonFormTestBase {
     $this->assertDistributionExists(1, FALSE);
 
     // Add a distribution again.
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
+    $this->addDistribution();
     $assert->statusCodeEquals(200);
     // Enter a title and remote URL for each
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')
@@ -106,7 +111,7 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-remove"]')->click();
     $assert->statusCodeEquals(200);
     $this->assertDistributionExists(1, FALSE);
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
+    $this->addDistribution();
     $assert->statusCodeEquals(200);
     // Assert that the title and URL fields are empty.
     $this->assertFieldEmpty(1, 'title');
@@ -124,7 +129,7 @@ class ReorderTest extends JsonFormTestBase {
     $this->assertCorrectTitle(1, 1);
     $this->assertCorrectFileName(1, 1, TRUE);
     // Add a new distribution.
-    $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
+    $this->addDistribution();
     $assert->statusCodeEquals(200);
     // Assert that the title and URL fields are empty.
     $this->assertFieldEmpty(2, 'title');
@@ -234,6 +239,13 @@ class ReorderTest extends JsonFormTestBase {
     else {
       $this->assertNull($this->getSession()->getPage()->find('css', $selector));
     }
+  }
+
+  /**
+   * Adds a new distribution by clicking the add button.
+   */
+  protected function addDistribution() {
+    $this->getSession()->getPage()->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
   }
 
 }
