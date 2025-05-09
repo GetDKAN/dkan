@@ -196,7 +196,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    *   Return flattened element without actions.
    */
   public function flattenArrays(mixed $spec, array $element) {
-    unset($element['actions']);
+    unset($element['array_actions']);
     $default_value = [];
     foreach ($element[$spec->child] as $key => $item) {
       $default_value = array_merge($default_value, $this->formatArrayDefaultValue($item));
