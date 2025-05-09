@@ -35,27 +35,34 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
     $assert->statusCodeEquals(200);
     // Now we have two distributions.
-    $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
-    $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
+    $this->assertDistributionExists(0, TRUE);
+    $this->assertDistributionExists(1, TRUE);
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-actions-remove"]')->click();
     // Now we have one again.
-    $this->assertNotNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution"]'));
-    $this->assertNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
+    $this->assertDistributionExists(0, TRUE);
+    $this->assertDistributionExists(1, FALSE);
 
     // Add a distribution again.
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
     $assert->statusCodeEquals(200);
     // Enter a title and remote URL for each
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')->setValue('DKANTEST distribution 0 title text');
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-0.csv');
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->setValue('DKANTEST distribution 1 title text');
-    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-1.csv');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title"]')
+      ->setValue('DKANTEST distribution 0 title text');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote"]')
+      ->setValue('https://example.com/dkan-test-distribution-0.csv');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')
+      ->setValue('DKANTEST distribution 1 title text');
+    $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-file-url-remote"]')
+      ->setValue('https://example.com/dkan-test-distribution-1.csv');
 
     // Now move the first distribution to the second position.
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-0-distribution-actions-move-down"]')->click();
-    
+
     // Assert that the title and URL of the first distribution is now in the second position.
     $this->assertCorrectTitle(1, 0);
+    // Note: this should really show the full URL, the theme logic that controls
+    // this depends on file usage being in place so fails when on a new dataset
+    // form.
     $this->assertCorrectFileName(1, 0, FALSE);
 
     // Assert that the title and URL of the second distribution is now in the first position.
@@ -98,18 +105,12 @@ class ReorderTest extends JsonFormTestBase {
     $this->drupalGet($edit_url);
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-actions-remove"]')->click();
     $assert->statusCodeEquals(200);
-    $this->assertNull($page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution"]'));
+    $this->assertDistributionExists(1, FALSE);
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
     $assert->statusCodeEquals(200);
     // Assert that the title and URL fields are empty.
-    $this->assertEquals(
-      '',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-title"]')->getValue()
-    );
-    $this->assertEquals(
-      '',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl-file-url-remote"]')->getValue()
-    );
+    $this->assertFieldEmpty(1, 'title');
+    $this->assertFieldEmpty(1, 'downloadurl-file-url-remote');
     // There is no managed file.
     $this->assertNull(
       $page->find('css', '#edit-field-json-metadata-0-value-distribution-distribution-1-distribution-downloadurl a')
@@ -126,14 +127,8 @@ class ReorderTest extends JsonFormTestBase {
     $page->find('css', '[id^="edit-field-json-metadata-0-value-distribution-array-actions-actions-add"]')->click();
     $assert->statusCodeEquals(200);
     // Assert that the title and URL fields are empty.
-    $this->assertEquals(
-      '',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')->getValue()
-    );
-    $this->assertEquals(
-      '',
-      $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')->getValue()
-    );
+    $this->assertFieldEmpty(2, 'title');
+    $this->assertFieldEmpty(2, 'downloadurl-file-url-remote');
     // Add a title and URL.
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-title"]')->setValue('DKANTEST distribution 2 title text');
     $page->find('css', '[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-2-distribution-downloadurl-file-url-remote"]')->setValue('https://example.com/dkan-test-distribution-2.csv');
@@ -191,6 +186,9 @@ class ReorderTest extends JsonFormTestBase {
   /**
    * Asserts that the file name in the download URL is correct.
    *
+   * Note we need to deal with occasionally having just the filename, due to
+   * issues with the theme logic for the managed file field.
+   *
    * @param int $elementIndex
    *   The index of the element to check.
    * @param int $filenameIndex
@@ -205,6 +203,37 @@ class ReorderTest extends JsonFormTestBase {
     }
     $selector = sprintf('#edit-field-json-metadata-0-value-distribution-distribution-%d-distribution-downloadurl a', $elementIndex);
     $this->assertEquals($expectedFileName, $this->getSession()->getPage()->find('css', $selector)->getText());
+  }
+
+  /**
+   * Asserts that a field is empty.
+   *
+   * @param int $elementIndex
+   *   The index of the element to check.
+   * @param string $nameFragment
+   *   The fragment of the field name (e.g., "title" or "downloadurl-file-url-remote").
+   */
+  protected function assertFieldEmpty(int $elementIndex, string $nameFragment) {
+    $selector = sprintf('[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-%d-distribution-%s"]', $elementIndex, $nameFragment);
+    $this->assertEquals('', $this->getSession()->getPage()->find('css', $selector)->getValue());
+  }
+
+  /**
+   * Asserts whether a distribution element exists.
+   *
+   * @param int $elementIndex
+   *   The index of the distribution element to check.
+   * @param bool $exists
+   *   Whether the distribution element should exist.
+   */
+  protected function assertDistributionExists(int $elementIndex, bool $exists) {
+    $selector = sprintf('[data-drupal-selector="edit-field-json-metadata-0-value-distribution-distribution-%d-distribution"]', $elementIndex);
+    if ($exists === TRUE) {
+      $this->assertNotNull($this->getSession()->getPage()->find('css', $selector));
+    }
+    else {
+      $this->assertNull($this->getSession()->getPage()->find('css', $selector));
+    }
   }
 
 }
