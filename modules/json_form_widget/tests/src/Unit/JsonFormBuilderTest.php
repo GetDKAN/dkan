@@ -77,17 +77,24 @@ class JsonFormBuilderTest extends TestCase {
 
     $form_state = new FormState();
     foreach ($count as $property => $value) {
-      $form_state->set(ArrayHelper::buildCountProperty($property), $value);
+      $form_state->set(
+        ArrayHelper::buildStateProperty(ArrayHelper::STATE_PROP_COUNT, $property), 
+        $value
+      );
     }
 
     $this->assertIsObject($form_builder->getSchema());
     $result = $form_builder->getJsonForm($default_data, $form_state);
 
-    // Eliminate the #element_validate key from the result.
-    // Iterate through fields and remove element_validate from each
+    // Eliminate validation and actions elements to make comparison easier.
     foreach ($result as $field_key => $field_value) {
-      unset($result[$field_key]['#element_validate']);
-      unset($result[$field_key]['actions']);
+      unset(
+        $result[$field_key]['#element_validate'],
+        $result[$field_key][$field_key][0]['actions'],
+        $result[$field_key][$field_key][0][$field_key]['actions'],
+        $result[$field_key][$field_key][0]['#attributes'],
+        $result[$field_key]['array_actions']
+      );
     }
 
     $this->assertEquals($expected, $result);
@@ -374,11 +381,15 @@ class JsonFormBuilderTest extends TestCase {
             "#suffix" => '</div>',
             "keyword" => [
               0 => [
-                "#type" => "textfield",
-                "#title" => "Tag",
-                "#required" => FALSE,
+                "#type" => "fieldset",
+                'field' => [
+                  "#type" => "textfield",
+                  "#title" => "Tag",
+                ],
+                '#required' => FALSE,
               ],
             ],
+            "#required" => FALSE,
           ],
         ],
         'count' => [
@@ -451,6 +462,7 @@ class JsonFormBuilderTest extends TestCase {
                 '#required' => FALSE,
               ],
             ],
+            "#required" => FALSE,
           ],
         ],
         'count' => [
@@ -491,11 +503,15 @@ class JsonFormBuilderTest extends TestCase {
             '#description_display' => 'before',
             "keyword" => [
               0 => [
-                "#type" => "textfield",
-                "#title" => "Tag",
+                "#type" => "fieldset",
                 "#required" => TRUE,
+                'field' => [
+                  "#type" => "textfield",
+                  "#title" => "Tag",
+                ],
               ],
             ],
+            '#required' => TRUE,
           ],
         ],
       ],
