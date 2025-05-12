@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
  * Unit tests for Drupal\common\Resource.
  *
  * @coversDefaultClass \Drupal\common\DataResource
+ * @group split0
  */
 class DataResourceTest extends TestCase {
 

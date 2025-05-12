@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @group common
  * @group dkan-core
+ * @group split0
  */
 class DatasetInfoTest extends TestCase {
 

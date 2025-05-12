@@ -17,6 +17,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
    * @group common
    * @group kernel
    * @group legacy
+   * @group split0
    *
    * @see \Drupal\Tests\common\Kernel\Storage\AbstractJobStoreFactoryTest
    */

@@ -12,6 +12,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @group dkan
  * @group common
  * @group kernel
+ * @group split0
  */
 class DrupalFilesTest extends KernelTestBase {
 

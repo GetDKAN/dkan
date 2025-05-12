@@ -24,6 +24,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @group dkan
  * @group common
  * @group unit
+ * @group split0
  */
 class JobStoreTest extends TestCase {
 

@@ -6,7 +6,7 @@ use Drupal\common\Util\Timer;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ * @group split0
  */
 class TimerTest extends TestCase {
 

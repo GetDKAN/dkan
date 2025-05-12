@@ -13,6 +13,16 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Test the UrlHostTokenResolver class.
+ *
+ * @covers \Drupal\common\UrlHostTokenResolver
+ *
+ * @group dkan
+ * @group common
+ * @group unit
+ * @group split0
+ */
 class UrlHostTokenResolverTest extends TestCase {
 
   /**

@@ -13,6 +13,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group common
  * @group functional
  * @group btb
+ * @group split1
  */
 class OpenApiControllerTest extends BrowserTestBase {
 
