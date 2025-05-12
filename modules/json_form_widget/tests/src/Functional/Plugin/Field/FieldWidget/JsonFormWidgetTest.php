@@ -13,6 +13,13 @@ use Drupal\Tests\BrowserTestBase;
 use MockChain\Chain;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Test the JsonFormWidget.
+ *
+ * @group dkan
+ * @group json_form_widget
+ * @group functional
+ */
 class JsonFormWidgetTest extends BrowserTestBase {
 
   /**
@@ -20,6 +27,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
    */
   protected static $modules = [
     'json_form_widget',
+    'file',
   ];
 
   /**
@@ -104,9 +112,11 @@ class JsonFormWidgetTest extends BrowserTestBase {
     $this->assertNotEmpty($result['value']['references']['array_actions']['actions']);
 
     // Simulate a new node form, but change the request stack to have query ?schema=distribution
+    $session = \Drupal::service('session');
     $distro_request = new Request([
       'schema' => 'distribution',
     ]);
+    $distro_request->setSession($session);
     \Drupal::service('request_stack')->push($distro_request);
     $widget = JsonFormWidget::create(
       \Drupal::getContainer(),
@@ -130,6 +140,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
     $distro_request = new Request([
       'schema' => 'foo',
     ]);
+    $distro_request->setSession($session);
     \Drupal::service('request_stack')->push($distro_request);
     $widget = JsonFormWidget::create(
       \Drupal::getContainer(),
