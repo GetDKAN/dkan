@@ -166,8 +166,10 @@ jobs:
                 command: |
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
+                  EXCLUDES=$(seq -s, 1 $(($CIRCLE_NODE_TOTAL-1)) | sed 's/[0-9]\+/split&/g')
+                  [[ $CIRCLE_NODE_INDEX == 0 ]] && GROUP_ARG="--exclude-group $EXCLUDES" || GROUP_ARG="--group split$CIRCLE_NODE_INDEX"
                   ddev dkan-phpunit \
-                    --group split$CIRCLE_NODE_INDEX \
+                    $GROUP_ARG \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
                     --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
@@ -191,8 +193,10 @@ jobs:
             - run:
                 name: Run PHPUnit tests
                 command: |
+                  EXCLUDES=$(seq -s, 1 $(($CIRCLE_NODE_TOTAL-1)) | sed 's/[0-9]\+/split&/g')
+                  [[ $CIRCLE_NODE_INDEX == 0 ]] && GROUP_ARG="--exclude-group $EXCLUDES" || GROUP_ARG="--group split$CIRCLE_NODE_INDEX"
                   ddev dkan-phpunit \
-                    --group split$CIRCLE_NODE_INDEX \
+                    $GROUP_ARG \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
       - store_test_results:
           path: dkan/junit

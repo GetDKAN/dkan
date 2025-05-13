@@ -17,6 +17,7 @@ use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
  * @group datastore
  * @group functional
  * @group btb
+ * @group split1
  */
 class ResourcePurgerTest extends BrowserTestBase {
   use GetDataTrait;
