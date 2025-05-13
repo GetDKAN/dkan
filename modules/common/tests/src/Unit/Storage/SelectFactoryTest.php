@@ -15,7 +15,6 @@ use Drupal\Tests\common\Unit\Connection;
  * @group dkan
  * @group common
  * @group unit
- * @group split0
  */
 class SelectFactoryTest extends TestCase {
   /**

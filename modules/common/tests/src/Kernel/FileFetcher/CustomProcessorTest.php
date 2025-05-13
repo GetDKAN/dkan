@@ -14,7 +14,6 @@ use FileFetcher\FileFetcher;
  * @group dkan
  * @group common
  * @group kernel
- * @group split0
  */
 class CustomProcessorTest extends KernelTestBase {
 

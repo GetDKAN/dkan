@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Drupal\common\Commands\CommonCommands
  * @coversDefaultClass \Drupal\common\Commands\CommonCommands
- * @group split0
  */
 class CommonCommandsTest extends TestCase {
 

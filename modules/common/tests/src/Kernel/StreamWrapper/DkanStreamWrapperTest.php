@@ -8,7 +8,6 @@ use Drupal\KernelTests\KernelTestBase;
  * @group dkan
  * @group common
  * @group kernel
- * @group split0
  */
 class DkanStreamWrapperTest extends KernelTestBase {
 

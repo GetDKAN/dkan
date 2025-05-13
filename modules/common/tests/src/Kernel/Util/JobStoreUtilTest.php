@@ -19,8 +19,7 @@ namespace Drupal\Tests\common\Kernel\Util {
    * @group dkan
    * @group common
    * @group kernel
-   * @group split0
-   */
+      */
   class JobStoreUtilTest extends KernelTestBase {
 
     protected static $modules = [

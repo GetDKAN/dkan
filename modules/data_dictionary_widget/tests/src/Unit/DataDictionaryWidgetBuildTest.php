@@ -20,7 +20,6 @@ use Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget;
  * @group dkan
  * @group data_dictionary_widget
  * @group unit
- * @group split0
  */
 class DataDictionaryWidgetBuildTest extends TestCase {
 

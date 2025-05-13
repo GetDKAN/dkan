@@ -15,7 +15,6 @@ use PHPUnit\Framework\TestCase;
  * @group dkan
  * @group common
  * @group unit
- * @group split0
  */
 class DatabaseConnectionFactoryTest extends TestCase {
 

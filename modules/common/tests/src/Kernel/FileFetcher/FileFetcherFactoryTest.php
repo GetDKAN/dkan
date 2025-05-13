@@ -16,7 +16,6 @@ use Procrastinator\Result;
  * @group dkan
  * @group common
  * @group kernel
- * @group split0
  */
 class FileFetcherFactoryTest extends KernelTestBase {
 

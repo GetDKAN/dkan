@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Test the DKAN Docs controller.
  *
- * @group split0
  */
 class OpenApiControllerTest extends TestCase {
 
@@ -130,7 +129,7 @@ class OpenApiControllerTest extends TestCase {
 
   /**
   *
-  */
+ */
   private function getGenerator($containerMock): DkanApiDocsGenerator {
     $manager = $containerMock->get('plugin.manager.dkan_api_docs');
     $settings = $containerMock->get('settings');

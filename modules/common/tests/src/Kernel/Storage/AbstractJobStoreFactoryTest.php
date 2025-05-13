@@ -16,8 +16,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
    * @group dkan
    * @group common
    * @group kernel
-   * @group split0
-   *
+      *
    * @see \Drupal\Tests\common\Kernel\Storage\JobStoreFactoryTest
    */
   class AbstractJobStoreFactoryTest extends KernelTestBase {

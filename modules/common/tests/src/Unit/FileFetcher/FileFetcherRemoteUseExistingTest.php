@@ -11,7 +11,6 @@ use Procrastinator\Result;
  * @covers \Drupal\common\FileFetcher\FileFetcherRemoteUseExisting
  * @coversDefaultClass \Drupal\common\FileFetcher\FileFetcherRemoteUseExisting
  *
- * @group split0
  */
 class FileFetcherRemoteUseExistingTest extends TestCase {
 

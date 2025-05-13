@@ -18,7 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @group dkan
  * @group common
  * @group unit
- * @group split0
  */
 class DrupalFilesTest extends TestCase {
 

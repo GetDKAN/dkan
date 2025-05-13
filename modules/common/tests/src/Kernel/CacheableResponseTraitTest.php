@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
  * @group dkan
  * @group common
  * @group kernel
- * @group split0
  */
 class CacheableResponseTraitTest extends KernelTestBase {
 
