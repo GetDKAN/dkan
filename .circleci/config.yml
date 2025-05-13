@@ -255,6 +255,7 @@ jobs:
           path: dkan/cypress/videos
       - store_test_results:
           path: dkan/cypress/results
+
   coverage-report:
     docker:
       - image: circleci/php:8.3
@@ -277,8 +278,6 @@ jobs:
               --html /report/html \
               /junit
             ls -la /report
-            ls -la /report/html
-            ls -la /report/clover
 
 workflows:
   version: 2
@@ -319,7 +318,7 @@ workflows:
               database_version: ["mysql:5.7"]
       - coverage-report:
           requires:
-            - phpunit
+            - "Install target (Drupal 10.3, PHP 8.3)"
 
   upgrade_and_test:
     jobs:
