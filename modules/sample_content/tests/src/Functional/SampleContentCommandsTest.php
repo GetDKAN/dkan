@@ -14,6 +14,7 @@ use GuzzleHttp\RequestOptions;
  * @group dkan
  * @group sample_content
  * @group functional
+ * @group functional2
  */
 class SampleContentCommandsTest extends BrowserTestBase {
 
