@@ -177,7 +177,6 @@ jobs:
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
                     --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
-                    --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
                     --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
                   TEST_RESULT=$?
                   if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
@@ -191,8 +190,11 @@ jobs:
                     --prefix /var/www/html/dkan \
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
-            - store_artifacts:
-                path: docroot/modules/contrib/dkan/coverage-html
+            - persist_to_workspace:
+                root: dkan
+                paths:
+                - junit
+
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -253,6 +255,30 @@ jobs:
           path: dkan/cypress/videos
       - store_test_results:
           path: dkan/cypress/results
+  coverage-report:
+    docker:
+      - image: circleci/php:8.3
+        environment:
+          CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
+    steps:
+      - attach_workspace:
+          at: /junit
+      - run:
+          name: Install phpcov tool
+          command: |
+            wget https://phar.phpunit.de/phpcov-11.0.0.phar
+            chmod +x phpcov-11.0.0.phar
+      - run:
+          name: Combine coverage reports
+          command: |
+            ls -la /junit
+            php phpcov-11.0.0.phar merge \
+              --clover /report/clover/coverage.xml \
+              --html /report/html \
+              /junit
+            ls -la /report
+            ls -la /report/html
+            ls -la /report/clover
 
 workflows:
   version: 2
