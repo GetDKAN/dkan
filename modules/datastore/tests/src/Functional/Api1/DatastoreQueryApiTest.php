@@ -12,7 +12,7 @@ use GuzzleHttp\RequestOptions;
  * @group datastore
  * @group api1
  * @group functional
- * @group split2
+ * @group functional2
  */
  class DatastoreQueryApiTest extends Api1TestBase {
 

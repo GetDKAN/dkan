@@ -18,7 +18,7 @@ use RootedData\RootedJsonData;
  * @group datastore
  * @group btb
  * @group functional
- * @group split2
+ * @group functional2
  */
 class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
