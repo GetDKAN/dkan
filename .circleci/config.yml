@@ -163,7 +163,7 @@ jobs:
             [[ $CIRCLE_NODE_INDEX == 0 ]] \
               && PHPUNIT_GROUP_ARG="exclude-group $EXCLUDES" \
               || PHPUNIT_GROUP_ARG="group functional$CIRCLE_NODE_INDEX"
-            echo "export PHPUNIT_GROUP_ARG=$PHPUNIT_GROUP_ARG" >> $BASH_ENV
+            echo "export PHPUNIT_GROUP_ARG=\"$PHPUNIT_GROUP_ARG\"" >> $BASH_ENV
       - when:
           condition: << parameters.report_coverage >>
           steps:
