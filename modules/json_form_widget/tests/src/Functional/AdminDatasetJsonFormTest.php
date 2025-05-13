@@ -13,6 +13,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group dkan
  * @group json_form_widget
  * @group functional
+ * @group functional2
  */
 class AdminDatasetJsonFormTest extends BrowserTestBase {
 

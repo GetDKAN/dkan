@@ -15,6 +15,7 @@ use Drupal\Tests\common\Traits\QueueRunnerTrait;
  * @group dkan
  * @group json_form_widget
  * @group functional
+ * @group functional1
  */
 class AdminDatasetFileUploadTest extends BrowserTestBase {
 
