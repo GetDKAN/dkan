@@ -28,6 +28,11 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
    * Test datastore module update 10001.
    */
   public function testUpdates10001on(): void {
+    /** @var \Drupal\sample_content\SampleContentService $sample_content_service */
+    $sample_content_service = \Drupal::service('dkan.sample_content.service');
+    // Create the JSON file in case it doesn't exist.
+    $sample_content_service->createDatasetJsonFileFromTemplate();
+
     // HarvestRun() should fail before update because harvest library
     // namespaces are included in class names stored in the database.
     /** @var \Drupal\harvest\HarvestService $harvest_service */
