@@ -258,7 +258,7 @@ jobs:
 
   coverage-report:
     docker:
-      - image: circleci/php:8.3
+      - image: cimg/php:8.3
         environment:
           CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
     steps:
