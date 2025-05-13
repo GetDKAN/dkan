@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @group metastore_search
  * @group functional
  * @group btb
+ * @group functional2
  */
 class SearchTest extends BrowserTestBase {
 
