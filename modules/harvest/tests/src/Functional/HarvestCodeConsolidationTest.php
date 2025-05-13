@@ -14,6 +14,7 @@ use PHPUnit\Exception;
  *
  * @group datastore
  * @group update
+ * @group functional3
  */
 class HarvestCodeConsolidationTest extends UpdatePathTestBase {
 
