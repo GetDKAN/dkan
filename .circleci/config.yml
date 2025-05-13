@@ -317,6 +317,9 @@ workflows:
               dkan_recommended_branch: ["10.3.x-dev"]
               php_version: ["8.2", "8.1"]
               database_version: ["mysql:5.7"]
+      - coverage-report:
+          requires:
+            - phpunit
 
   upgrade_and_test:
     jobs:
