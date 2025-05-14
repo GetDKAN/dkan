@@ -180,9 +180,9 @@ jobs:
                     --log-junit /var/www/html/report/junit/junit.xml
                   TEST_RESULT=$?
                   if [ -f /var/www/html/report/clover/clover.xml ]; then
-                    echo "Coverage file: /var/www/html/report/clover/clover.xml"
+                    echo "Coverage file: $CIRCLE_WORKING_DIRECTORY/report/clover/clover.xml"
                   else
-                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY//var/www/html/report/clover/clover.xml"
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover.xml"
                   fi
                   cd report
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
@@ -203,7 +203,7 @@ jobs:
                 command: |
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
-                    --log-junit /var/www/html//var/www/html/report/junit/junit.xml
+                    --log-junit var/www/html/report/junit/junit.xml
       - store_test_results:
           path: report/junit
 
