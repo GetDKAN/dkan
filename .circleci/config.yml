@@ -193,7 +193,7 @@ jobs:
             - run:
                 name: Move coverage report and rename node-specific
                 command: |
-                  mkdir $CIRCLE_WORKING_DIRECTORY/report
+                  mkdir -p $CIRCLE_WORKING_DIRECTORY/report/clover
                   mv $CIRCLE_WORKING_DIRECTORY/dkan/clover.xml \
                     $CIRCLE_WORKING_DIRECTORY/report/clover/coverage-$CIRCLE_NODE_INDEX.xml
             - persist_to_workspace:
