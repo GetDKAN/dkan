@@ -193,7 +193,7 @@ jobs:
             - run:
                 name: Reformat the coverage report
                 command: |
-                  php $CIRCLE_WORKING_DIRECTORY/cc-test-reporter format-coverage \
+                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter format-coverage \
                     --input-type clover \
                     --output $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.$CIRCLE_NODE_INDEX.json
             - persist_to_workspace:
