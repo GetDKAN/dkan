@@ -175,6 +175,7 @@ jobs:
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
+                    --$PHPUNIT_GROUP_ARG
                     --coverage-clover /var/www/html/dkan/clover.xml \
                     --log-junit /var/www/html/dkan/junit/junit.xml
                   TEST_RESULT=$?
