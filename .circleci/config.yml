@@ -178,7 +178,7 @@ jobs:
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
-                    --coverage-clover /var/www/html/report/clover/clover-$CICLE_NODE_INDEX.xml \
+                    --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.php \
                     --log-junit /var/www/html/dkan/junit/junit.xml
                   TEST_RESULT=$?
