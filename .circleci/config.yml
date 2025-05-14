@@ -175,25 +175,29 @@ jobs:
                   ddev xdebug on
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
-                    --$PHPUNIT_GROUP_ARG \
-                    --coverage-clover /var/www/html/report/clover/clover.xml \
-                    --log-junit /var/www/html/report/junit/junit.xml
+                    --coverage-clover /var/www/html/dkan/clover.xml \
+                    --log-junit /var/www/html/dkan/junit/junit.xml
                   TEST_RESULT=$?
-                  if [ -f /var/www/html/report/clover/clover.xml ]; then
-                    echo "Coverage file: $CIRCLE_WORKING_DIRECTORY/report/clover/clover.xml"
+                  if [ -f dkan/clover.xml ]; then
+                    echo "Coverage file: $CIRCLE_WORKING_DIRECTORY/dkan/clover.xml"
                   else
-                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover.xml"
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/dkan/clover.xml"
                   fi
-                  cd report
+                  cd $CIRCLE_WORKING_DIRECTORY/dkan
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
                     --coverage-input-type clover \
-                    --prefix report/clover \
+                    --prefix /var/www/html/dkan \
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
+            - run:
+                name: Move coverage report and rename node-specific
+                command: |
+                  mkdir $CIRCLE_WORKING_DIRECTORY/report
+                  mv $CIRCLE_WORKING_DIRECTORY/dkan/clover.xml \
+                    $CIRCLE_WORKING_DIRECTORY/report/clover/coverage-$CIRCLE_NODE_INDEX.xml
             - persist_to_workspace:
                 root: report
                 paths:
-                - junit
                 - clover
       - unless:
           condition: << parameters.report_coverage >>
@@ -205,7 +209,7 @@ jobs:
                     --$PHPUNIT_GROUP_ARG \
                     --log-junit var/www/html/report/junit/junit.xml
       - store_test_results:
-          path: report/junit
+          path: dkan/junit
 
   cypress:
     machine:
@@ -272,12 +276,11 @@ jobs:
       - run:
           name: Combine coverage reports
           command: |
-            ls -la report/clover
+            ls -la $CIRCLE_WORKING_DIRECTORY/report/clover
             php phpcov-11.0.0.phar merge \
-              --clover report/clover/coverage-merged.xml \
-              --html report/html \
-              report
-            ls -la /report
+              --html $CIRCLE_WORKING_DIRECTORY/report/html \
+              $CIRCLE_WORKING_DIRECTORY/report/clover
+            ls -la $CIRCLE_WORKING_DIRECTORY/report/html
 
 workflows:
   version: 2
