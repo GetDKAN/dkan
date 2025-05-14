@@ -179,7 +179,7 @@ jobs:
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
                     --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
-                    --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.php \
+                    --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.cov \
                     --log-junit /var/www/html/dkan/junit/junit.xml
                   TEST_RESULT=$?
                   echo "Listing all files in the report directory:"
@@ -194,6 +194,7 @@ jobs:
                 root: report
                 paths:
                 - php
+                - clover
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -208,7 +209,7 @@ jobs:
 
   phpunit-coverage-report:
     docker:
-      - image: cimg/php:8.3
+      - image: cimg/php:7.4
         environment:
           CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
     steps:
@@ -217,7 +218,7 @@ jobs:
       - run:
           name: Install phpcov tool
           command: |
-            wget https://phar.phpunit.de/phpcov-11.0.0.phar
+            wget https://phar.phpunit.de/phpcov-8.2.1.phar
             chmod +x phpcov-11.0.0.phar
       - run:
           name: Install CodeClimate test reporter
@@ -228,7 +229,7 @@ jobs:
           name: Create HTML report
           command: |
             ls -la $CIRCLE_WORKING_DIRECTORY/report/php
-            php phpcov-11.0.0.phar merge \
+            php phpcov-8.2.1.phar merge \
               --html $CIRCLE_WORKING_DIRECTORY/report/html \
               $CIRCLE_WORKING_DIRECTORY/report/php
             ls -la $CIRCLE_WORKING_DIRECTORY/report/html
