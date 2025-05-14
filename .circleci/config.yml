@@ -281,6 +281,9 @@ jobs:
               --html $CIRCLE_WORKING_DIRECTORY/report/html \
               $CIRCLE_WORKING_DIRECTORY/report/clover
             ls -la $CIRCLE_WORKING_DIRECTORY/report/html
+      - store_artifacts:
+          path: $CIRCLE_WORKING_DIRECTORY/report/html
+
 
 workflows:
   version: 2
