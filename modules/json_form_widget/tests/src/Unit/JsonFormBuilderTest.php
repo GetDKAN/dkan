@@ -390,6 +390,14 @@ class JsonFormBuilderTest extends TestCase {
               ],
             ],
             "#required" => FALSE,
+            '#attributes' => [
+              'class' => ['json-form-widget-array-item'],
+              'data-parent' => 'keyword',
+            ],
+            "field" => [
+              '#type' => 'textfield',
+              '#title' => 'Tag',
+            ],
           ],
         ],
         'count' => [

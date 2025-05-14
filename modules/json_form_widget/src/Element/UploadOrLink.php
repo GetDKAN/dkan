@@ -66,7 +66,7 @@ class UploadOrLink extends ManagedFile {
     // Detect whether the remove button was clicked.
     $remove = FALSE;
     $file_remove = $form_state->get('file_remove') ?? [];
-    // Make sure the element set for remove is the same as current.
+    // Make sure the element set for removal is the same as current.
     $diff = array_diff($file_remove, $element['#array_parents']);
     if (!empty($file_remove) && empty($diff) && empty($input['file_url_remote'])) {
       $remove = TRUE;
@@ -83,7 +83,7 @@ class UploadOrLink extends ManagedFile {
         $input['file_url_remote'] = '';
       }
       else {
-        // Add fil ID to input array and update the entity.
+        // Add file ID to input array and update the entity.
         $fo = $form_state->getFormObject();
         $entity = $fo instanceof EntityFormInterface ? $fo->getEntity() : NULL;
         $input['fids'] = static::updateFile($file, $entity) ?? NULL;
