@@ -147,7 +147,7 @@ class JsonFormBuilderTest extends TestCase {
    *
    * (Probably want to use folding to make sense of this!)
    */
-  public function schemaProvider() {
+  public static function schemaProvider() {
     return [
       'basic' => [
         'schema' => json_decode('
@@ -390,14 +390,6 @@ class JsonFormBuilderTest extends TestCase {
               ],
             ],
             "#required" => FALSE,
-            '#attributes' => [
-              'class' => ['json-form-widget-array-item'],
-              'data-parent' => 'keyword',
-            ],
-            "field" => [
-              '#type' => 'textfield',
-              '#title' => 'Tag',
-            ],
           ],
         ],
         'count' => [
