@@ -190,11 +190,17 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   fi
                   exit $TEST_RESULT
+            - run:
+                name: Reformat the coverage report
+                command: |
+                  php $CIRCLE_WORKING_DIRECTORY/cc-test-reporter format-coverage \
+                    --input-type clover \
+                    --output $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.$CIRCLE_NODE_INDEX.json
             - persist_to_workspace:
                 root: report
                 paths:
                 - php
-                - clover
+                - json
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -238,18 +244,15 @@ jobs:
               --html $CIRCLE_WORKING_DIRECTORY/report/html \
               $CIRCLE_WORKING_DIRECTORY/report/php
             ls -la $CIRCLE_WORKING_DIRECTORY/report/html
-      - run:
-          name: Send coverage report to CodeClimate
-          command: |
-            $CIRCLE_WORKING_DIRECTORY/cc-test-reporter sum-coverage \
-              --input-type clover \
-              --output - \
-              $CIRCLE_WORKING_DIRECTORY/report/clover/clover-*.xml |
-              $CIRCLE_WORKING_DIRECTORY/cc-test-reporter upload-coverage \
-              --debug \
-              --input -
       - store_artifacts:
           path: $CIRCLE_WORKING_DIRECTORY/report/html
+      - run:
+          name: Merge and send coverage report to CodeClimate
+          command: |
+            $CIRCLE_WORKING_DIRECTORY/cc-test-reporter sum-coverage \
+              --output - 
+              $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.*.json |
+              $CIRCLE_WORKING_DIRECTORY/cc-test-reporter upload-coverage --debug --input -
 
   cypress:
     machine:
