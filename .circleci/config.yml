@@ -182,13 +182,14 @@ jobs:
                     --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.php \
                     --log-junit /var/www/html/dkan/junit/junit.xml
                   TEST_RESULT=$?
+                  echo "Listing all files in the report directory:"
+                  find $CIRCLE_WORKING_DIRECTORY/report -type f -ls
                   if [ -f $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml ]; then
-                    echo "Coverage file: $CIRCLE_WORKING_DIRECTORY/report/clover/clover.xml"
-                    exit $TEST_RESULT
+                    echo "Coverage file: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   else
-                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover.xml"
-                    exit 1
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   fi
+                  exit $TEST_RESULT
             - persist_to_workspace:
                 root: report
                 paths:
