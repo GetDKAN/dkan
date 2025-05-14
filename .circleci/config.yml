@@ -176,25 +176,25 @@ jobs:
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
-                    --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
-                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
+                    --coverage-clover /var/www/html/report/clover/clover.xml \
+                    --log-junit /var/www/html/report/junit/junit.xml
                   TEST_RESULT=$?
-                  if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
-                    echo "Coverage file: docroot/modules/contrib/dkan/clover.xml"
+                  if [ -f /var/www/html/report/clover/clover.xml ]; then
+                    echo "Coverage file: /var/www/html/report/clover/clover.xml"
                   else
-                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY//var/www/html/report/clover/clover.xml"
                   fi
-                  cd docroot/modules/contrib/dkan
+                  cd report
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
                     --coverage-input-type clover \
-                    --prefix /var/www/html/dkan \
+                    --prefix /var/www/html/report \
                     --exit-code $TEST_RESULT
                   exit $TEST_RESULT
             - persist_to_workspace:
-                root: dkan
+                root: report
                 paths:
                 - junit
-
+                - clover
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -203,9 +203,9 @@ jobs:
                 command: |
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
-                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
+                    --log-junit /var/www/html//var/www/html/report/junit/junit.xml
       - store_test_results:
-          path: dkan/junit
+          path: report/junit
 
   cypress:
     machine:
@@ -256,14 +256,14 @@ jobs:
       - store_test_results:
           path: dkan/cypress/results
 
-  coverage-report:
+  phpunit-coverage-report:
     docker:
       - image: cimg/php:8.3
         environment:
           CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
     steps:
       - attach_workspace:
-          at: /junit
+          at: report
       - run:
           name: Install phpcov tool
           command: |
@@ -272,11 +272,11 @@ jobs:
       - run:
           name: Combine coverage reports
           command: |
-            ls -la /junit
+            ls -la report/clover
             php phpcov-11.0.0.phar merge \
-              --clover /report/clover/coverage.xml \
-              --html /report/html \
-              /junit
+              --clover report/clover/coverage-merged.xml \
+              --html report/html \
+              report
             ls -la /report
 
 workflows:
@@ -316,7 +316,7 @@ workflows:
               dkan_recommended_branch: ["10.3.x-dev"]
               php_version: ["8.2", "8.1"]
               database_version: ["mysql:5.7"]
-      - coverage-report:
+      - phpunit-coverage-report:
           requires:
             - "Install target (Drupal 10.3, PHP 8.3)"
 
