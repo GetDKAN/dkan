@@ -212,14 +212,19 @@ jobs:
       - image: cimg/php:7.4
         environment:
           CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
+    parameters:
+      phpcov_version:
+        description: "Version of phpcov tool to use for coverage report."
+        default: "8.2.1"
+        type: string
     steps:
       - attach_workspace:
           at: report
       - run:
           name: Install phpcov tool
           command: |
-            wget https://phar.phpunit.de/phpcov-8.2.1.phar
-            chmod +x phpcov-11.0.0.phar
+            wget https://phar.phpunit.de/phpcov-<< parameters.phpcov_version >>.phar
+            chmod +x phpcov-<< parameters.phpcov_version >>.phar
       - run:
           name: Install CodeClimate test reporter
           command: |
@@ -229,7 +234,7 @@ jobs:
           name: Create HTML report
           command: |
             ls -la $CIRCLE_WORKING_DIRECTORY/report/php
-            php phpcov-8.2.1.phar merge \
+            php phpcov-<< parameters.phpcov_version >>.phar merge \
               --html $CIRCLE_WORKING_DIRECTORY/report/html \
               $CIRCLE_WORKING_DIRECTORY/report/php
             ls -la $CIRCLE_WORKING_DIRECTORY/report/html
