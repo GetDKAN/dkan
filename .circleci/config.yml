@@ -180,7 +180,7 @@ jobs:
                     --$PHPUNIT_GROUP_ARG \
                     --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.cov \
-                    --log-junit /var/www/html/dkan/junit/junit.xml
+                    --log-junit /var/www/html/report/junit/junit.xml
                   TEST_RESULT=$?
                   echo "Listing all files in the report directory:"
                   find $CIRCLE_WORKING_DIRECTORY/report -type f -ls
@@ -194,8 +194,10 @@ jobs:
                 name: Reformat the coverage report
                 command: |
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter format-coverage \
+                    $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --input-type clover \
-                    --output $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.$CIRCLE_NODE_INDEX.json
+                    --output $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.$CIRCLE_NODE_INDEX.json \
+                    --prefix /var/www/html/dkan
             - persist_to_workspace:
                 root: report
                 paths:
@@ -211,7 +213,7 @@ jobs:
                     --$PHPUNIT_GROUP_ARG \
                     --log-junit var/www/html/report/junit/junit.xml
       - store_test_results:
-          path: dkan/junit
+          path: report/junit
 
   phpunit-coverage-report:
     docker:
