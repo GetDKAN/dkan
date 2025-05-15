@@ -66,24 +66,27 @@ class UploadOrLink extends ManagedFile {
     // Detect whether the remove button was clicked.
     $remove = FALSE;
     $file_remove = $form_state->get('file_remove') ?? [];
+    // Make sure the element set for removal is the same as current.
     $diff = array_diff($file_remove, $element['#array_parents']);
-    if (!empty($file_remove) && empty($diff)) {
+    if (!empty($file_remove) && empty($diff) && empty($input['file_url_remote'])) {
       $remove = TRUE;
     }
 
-    if (empty($input['fids']) && ($element['#uri'] ?? FALSE)) {
-      $file = static::getManagedFile(static::getFileUri($element['#uri']));
+    $uri = $input['file_url_remote'] ?? $element['#uri'] ?? FALSE;
+
+    if (empty($input['fids']) && $uri) {
+      $file = static::getManagedFile(static::getFileUri($uri));
       // If remove was clicked, we need to unset the uri. If not, we need to add
       // the fid to the input array.
       if ($remove) {
         $element['#uri'] = '';
+        $input['file_url_remote'] = '';
       }
       else {
-        // Add filet to input array and update the entity.
+        // Add file ID to input array and update the entity.
         $fo = $form_state->getFormObject();
         $entity = $fo instanceof EntityFormInterface ? $fo->getEntity() : NULL;
         $input['fids'] = static::updateFile($file, $entity) ?? NULL;
-
       }
     }
 
@@ -392,7 +395,7 @@ class UploadOrLink extends ManagedFile {
       /** @var Drupal\file\FileUsage\FileUsageInterface $fu */
       $usage = $fu->listUsage($file);
       // If the file is already used by this entity, don't add usage again.
-      if (!isset($usage['json_form_widget'][$entity->getEntityTypeId()][$entity->id()])) {
+      if (!$entity->isNew() && !isset($usage['json_form_widget'][$entity->getEntityTypeId()][$entity->id()])) {
         $fu->add($file, 'json_form_widget', $entity->getEntityTypeId(), $entity->id());
       }
     }
