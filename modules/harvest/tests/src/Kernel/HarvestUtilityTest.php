@@ -215,6 +215,7 @@ class HarvestUtilityTest extends KernelTestBase {
         $this->container->get('dkan.harvest.storage.harvest_run_repository'),
         $this->container->get('database'),
         $this->container->get('dkan.harvest.logger_channel'),
+        $this->container->get('uuid'),
       ])
       ->onlyMethods(['findOrphanedHarvestDataIds', 'convertRunTable'])
       ->getMock();
@@ -247,6 +248,7 @@ class HarvestUtilityTest extends KernelTestBase {
         $this->container->get('dkan.harvest.storage.harvest_run_repository'),
         $this->container->get('database'),
         $this->container->get('dkan.harvest.logger_channel'),
+        $this->container->get('uuid'),
       ])
       ->onlyMethods(['findOrphanedHarvestDataIds', 'convertHashTable'])
       ->getMock();
