@@ -229,6 +229,8 @@ jobs:
     steps:
       - attach_workspace:
           at: report
+      - checkout:
+          path: dkan
       - run:
           name: Install phpcov tool
           command: |
@@ -239,6 +241,12 @@ jobs:
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
+      - run:
+          name: Find and replace paths in the coverage files
+          command: |
+            for file in $(find $CIRCLE_WORKING_DIRECTORY/report/php -name "*.cov"); do
+              sed -i "s|/var/www/html/dkan|$CIRCLE_WORKING_DIRECTORY/dkan|g" $
+            done
       - run:
           name: Create HTML report
           command: |
