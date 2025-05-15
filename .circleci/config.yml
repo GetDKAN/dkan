@@ -253,8 +253,8 @@ jobs:
           name: Merge and send coverage report to CodeClimate
           command: |
             $CIRCLE_WORKING_DIRECTORY/cc-test-reporter sum-coverage \
-              --output - 
-              $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.*.json |
+              $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.*.json \
+              --output - |
               $CIRCLE_WORKING_DIRECTORY/cc-test-reporter upload-coverage --debug --input -
 
   cypress:
