@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\common\Unit\Events;
 
-use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Events\Event;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -11,28 +10,25 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class EventTest extends TestCase
 {
-  use EventDispatcherTrait;
-
   public function testDataIntegrityAcrossEventSubscribers() {
     $this->expectExceptionMessage("Invalid event data.");
-    $containerx = (new Chain($this))
-      ->add(Container::class)
-      ->getMock();
 
-    $dispatcher = new EventDispatcher($containerx);
-    $dispatcher->addListener('test_event', function(Event $event) {
+    $eventDispatcher = new EventDispatcher();
+    $eventDispatcher->addListener('test_event', function(Event $event) {
       $event->setData(1);
     });
 
     $container = (new Chain($this))
-      ->add(Container::class, 'get', $dispatcher)
+      ->add(Container::class, 'get', $eventDispatcher)
       ->getMock();
 
     \Drupal::setContainer($container);
 
-    $this->dispatchEvent('test_event', 'hello', function($data) {
+    $event = new Event('hello', function ($data) {
       return is_string($data);
     });
+
+    $eventDispatcher->dispatch($event, 'test_event');
   }
 
 }

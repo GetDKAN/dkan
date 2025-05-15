@@ -210,7 +210,7 @@ class ImportController implements ContainerInjectionInterface {
 
     $responses = [];
     foreach ($identifiers as $identifier) {
-      $responses[$identifier] = json_decode($this->delete($identifier)->getContent());
+      $responses[$identifier] = json_decode((string) $this->delete($identifier)->getContent());
     }
 
     return $this->getResponse($responses);

@@ -28,8 +28,6 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
 
   /**
    * The current path.
-   *
-   * @var \Drupal\Core\Path\CurrentPathStack
    */
   protected CurrentPathStack $currentPath;
 
@@ -84,7 +82,7 @@ class Page extends ControllerBase implements ContainerInjectionInterface {
       try {
         $this->metastoreService->get('dataset', $matches['id']);
       }
-      catch (MissingObjectException $exception) {
+      catch (MissingObjectException) {
         throw new NotFoundHttpException();
       }
     }

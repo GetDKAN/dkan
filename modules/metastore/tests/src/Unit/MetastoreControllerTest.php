@@ -139,7 +139,7 @@ class MetastoreControllerTest extends TestCase {
       ->getMock();
     $controller = MetastoreController::create($container);
     $response = $controller->get($schema_id, $identifier, new Request());
-    $json = json_decode($response->getContent());
+    $json = json_decode((string) $response->getContent());
     $this->assertEquals("Error retrieving metadata: {$schema_id} {$identifier} not found.", $json->message);
   }
 
@@ -474,7 +474,7 @@ EOF;
     $response = $controller->getSchemas();
     $this->assertEquals('["dataset"]', $response->getContent());
 
-    $schemaId = json_decode($response->getContent())[0];
+    $schemaId = json_decode((string) $response->getContent())[0];
     $schemaResponse = $controller->getSchema($schemaId);
     $this->assertEquals('{"id":"http:\/\/schema"}', $schemaResponse->getContent());
   }

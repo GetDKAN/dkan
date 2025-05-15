@@ -45,6 +45,7 @@ class DatastoreServiceTest extends KernelTestBase {
         $this->container->get('dkan.common.drupal_files'),
         $this->container->get('dkan.common.filefetcher_job_store_factory'),
         $this->container->get('queue'),
+        $this->container->get('event_dispatcher')
       ])
       ->onlyMethods(['get'])
       ->getMock();

@@ -71,7 +71,7 @@ class SchemaRetrieverTest extends TestCase {
   public function testGet() {
     $retriever = $this->getSchemaRetriever();
     $schema = $retriever->retrieve('dataset');
-    $json = json_decode($schema);
+    $json = json_decode((string) $schema);
     $this->assertNotFalse($json);
   }
 

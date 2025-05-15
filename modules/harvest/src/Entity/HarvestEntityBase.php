@@ -25,7 +25,7 @@ class HarvestEntityBase extends ContentEntityBase {
    */
   protected static function getBaseFieldIdentifier(
     TranslatableMarkup $label,
-    TranslatableMarkup $description = NULL
+    ?TranslatableMarkup $description = NULL
   ): BaseFieldDefinition {
     return BaseFieldDefinition::create('string')
       ->setLabel($label)
@@ -58,7 +58,7 @@ class HarvestEntityBase extends ContentEntityBase {
    */
   protected static function getBaseFieldJsonData(
     TranslatableMarkup $label,
-    TranslatableMarkup $description = NULL
+    ?TranslatableMarkup $description = NULL
   ): BaseFieldDefinition {
     return BaseFieldDefinition::create('string_long')
       ->setLabel($label)
@@ -97,7 +97,7 @@ class HarvestEntityBase extends ContentEntityBase {
    */
   protected static function getBaseFieldUnlimitedCardinalityUuidField(
     TranslatableMarkup $label,
-    TranslatableMarkup $description = NULL
+    ?TranslatableMarkup $description = NULL
   ): BaseFieldDefinition {
     return BaseFieldDefinition::create('string')
       ->setLabel($label)

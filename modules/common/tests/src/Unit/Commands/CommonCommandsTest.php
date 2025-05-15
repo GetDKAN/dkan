@@ -4,28 +4,32 @@ namespace Drupal\Tests\common\Unit\Commands;
 
 use Drupal\common\Commands\CommonCommands;
 use Drupal\common\DatasetInfo;
-use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ * @covers \Drupal\common\Commands\CommonCommands
+ * @coversDefaultClass \Drupal\common\Commands\CommonCommands
  */
 class CommonCommandsTest extends TestCase {
 
   /**
-   *
+   * @covers ::datasetInfo
    */
   public function testDatasetInfo() {
 
-    $datasetInfo = (new Chain($this))
-      ->add(DatasetInfo::class, 'gather', ['uuid' => 'foo']);
+    $datasetInfo = $this->getMockBuilder(DatasetInfo::class)
+      ->disableOriginalConstructor()
+      ->onlyMethods(['gather'])
+      ->getMock();
+    $datasetInfo->expects($this->once())
+      ->method('gather')
+      ->willReturn(['uuid' => 'foo']);
 
-    $drush = new CommonCommands($datasetInfo->getMock());
+    $drush = new CommonCommands($datasetInfo);
     $result = $drush->datasetInfo('foo');
+    $expected = "{\n    \"uuid\": \"foo\"\n}";
 
-    $expected = json_encode(['uuid' => 'foo'], JSON_PRETTY_PRINT);
-
-    $this->expectOutputString($expected, $result);
+    $this->assertEquals($expected, $result);
   }
 
 }

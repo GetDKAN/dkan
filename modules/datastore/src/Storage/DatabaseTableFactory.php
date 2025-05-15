@@ -6,6 +6,7 @@ use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\Core\Database\Connection;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * DatabaseTable data object factory.
@@ -25,14 +26,21 @@ class DatabaseTableFactory implements FactoryInterface {
   protected LoggerInterface $logger;
 
   /**
+   * The event dispatcher.
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Constructor.
    */
   public function __construct(
     Connection $connection,
     LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->connection = $connection;
     $this->logger = $loggerChannel;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -66,7 +74,7 @@ class DatabaseTableFactory implements FactoryInterface {
    *   A DatabaseTable object.
    */
   protected function getDatabaseTable(DataResource $resource) {
-    return new DatabaseTable($this->connection, $resource, $this->logger);
+    return new DatabaseTable($this->connection, $resource, $this->logger, $this->eventDispatcher);
   }
 
 }

@@ -64,7 +64,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public function __construct(
     SchemaRetriever $schema_retriever,
     LoggerInterface $loggerChannel,
-    WidgetRouter $widget_router
+    WidgetRouter $widget_router,
   ) {
     $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
@@ -81,7 +81,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public function setSchemaUi(mixed $schema_name) {
     try {
       $schema_ui = $this->schemaRetriever->retrieve($schema_name . '.ui');
-      $this->schemaUi = json_decode($schema_ui);
+      $this->schemaUi = json_decode((string) $schema_ui);
     }
     catch (\Exception) {
       $this->logger->notice("The UI Schema for $schema_name does not exist.");
@@ -109,6 +109,13 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    */
   public function applySchemaUi(mixed $form) {
     if ($this->schemaUi) {
+      $weights = $this->getFieldWeights();
+      if (!empty($weights)) {
+        uksort($form, function ($a, $b) use ($weights) {
+          return ($weights[$a] ?? 0) <=> ($weights[$b] ?? 0);
+        });
+      }
+
       foreach ((array) $this->schemaUi as $property => $spec) {
         // Apply schema UI on base field.
         $form[$property] = $this->applyOnBaseField($spec, $form[$property]);
@@ -189,7 +196,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    *   Return flattened element without actions.
    */
   public function flattenArrays(mixed $spec, array $element) {
-    unset($element['actions']);
+    unset($element['array_actions']);
     $default_value = [];
     foreach ($element[$spec->child] as $key => $item) {
       $default_value = array_merge($default_value, $this->formatArrayDefaultValue($item));
@@ -197,7 +204,13 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         unset($element[$spec->child][$key]);
       }
     }
-    $element[$spec->child][0]['#default_value'] = $default_value;
+
+    if (isset($element[$spec->child][0]['field'])) {
+      $element[$spec->child][0]['field']['#default_value'] = $default_value;
+    }
+    else {
+      $element[$spec->child][0]['#default_value'] = $default_value;
+    }
     return $element;
   }
 
@@ -207,6 +220,9 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   private function formatArrayDefaultValue($item) {
     if (!empty($item['#default_value'])) {
       return [$item['#default_value'] => $item['#default_value']];
+    }
+    if (!empty($item['field']['#default_value'])) {
+      return [$item['field']['#default_value'] => $item['field']['#default_value']];
     }
     return [];
   }
@@ -351,6 +367,22 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       $element['#title'] = $spec->title;
     }
     return $element;
+  }
+
+  /**
+   * Extracts weights from the UI schema.
+   *
+   * @return array
+   *   An array of weights by field name.
+   */
+  public function getFieldWeights(): array {
+    $weights = [];
+
+    foreach ((array) $this->schemaUi ?? [] as $property => $spec) {
+      $weights[$property] = $spec->{"ui:options"}->weight ?? 0;
+    }
+
+    return $weights;
   }
 
 }

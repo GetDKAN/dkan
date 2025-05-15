@@ -40,7 +40,7 @@ class MysqlImport extends ImportJob {
    * @param array|null $config
    *   Configuration options.
    */
-  protected function __construct(string $identifier, $storage, array $config = NULL) {
+  protected function __construct(string $identifier, $storage, ?array $config = NULL) {
     // Ensure we can check if the data has already been imported.
     if (!($config['storage'] instanceof ImportedItemInterface)) {
       throw new \Exception('Storage must be an instance of ' . ImportedItemInterface::class);
@@ -94,7 +94,7 @@ class MysqlImport extends ImportJob {
     $eol = $this->getEol($column_lines) ?? '\n';
     // Count the number of EOL characters in the header row to determine how
     // many lines the headers are occupying.
-    $header_line_count = substr_count(trim($column_lines), self::EOL_TABLE[$eol]) + 1;
+    $header_line_count = substr_count(trim((string) $column_lines), self::EOL_TABLE[$eol]) + 1;
     // Generate sanitized table headers from column names.
     // Use headers to set the storage schema.
     $spec = $this->generateTableSpec($columns);
@@ -143,7 +143,7 @@ class MysqlImport extends ImportJob {
     }
 
     // Attempt to retrieve the columns from the resource file.
-    $columns = fgetcsv($f, 0, $delimiter);
+    $columns = fgetcsv($f, 0, $delimiter, '"', '\\');
     // Attempt to read the column lines from the resource file.
     $end_pointer = ftell($f);
     rewind($f);

@@ -3,6 +3,7 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Connection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * DKAN JobStore factory base class.
@@ -24,10 +25,16 @@ abstract class AbstractJobStoreFactory implements StorageFactoryInterface {
   protected Connection $connection;
 
   /**
+   * The event dispatcher.
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Constructor.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(Connection $connection, EventDispatcherInterface $eventDispatcher) {
     $this->connection = $connection;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -59,7 +66,7 @@ abstract class AbstractJobStoreFactory implements StorageFactoryInterface {
     if ($table_name === $deprecated_table_name) {
       $deprecated_table_name = '';
     }
-    return new JobStore($table_name, $this->connection, $deprecated_table_name);
+    return new JobStore($table_name, $this->connection, $this->eventDispatcher, $deprecated_table_name);
   }
 
 }

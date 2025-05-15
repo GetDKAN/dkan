@@ -116,7 +116,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    *
    * Drupal\Core\Action\ActionInterface::access.
    */
-  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
+  public function access($object, ?AccountInterface $account = NULL, $return_as_object = FALSE) {
     if ($account === NULL) {
       $account = $this->currentUser;
     }

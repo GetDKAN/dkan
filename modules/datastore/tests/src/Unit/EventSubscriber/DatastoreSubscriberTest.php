@@ -22,6 +22,7 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @coversDefaultClass \Drupal\datastore\EventSubscriber\DatastoreSubscriber
@@ -109,6 +110,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
+      ->add('event_dispatcher', EventDispatcherInterface::class)
       ->index(0);
 
     $chain = (new Chain($this))
@@ -121,7 +123,8 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
       ->add(LoggerInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerInterface::class, 'notice', NULL, 'notices');
+      ->add(LoggerInterface::class, 'notice', NULL, 'notices')
+      ->add(EventDispatcherInterface::class, 'dispatch');
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $subscriber->drop($event);
@@ -145,6 +148,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
+      ->add('event_dispatcher', EventDispatcherInterface::class)
       ->index(0);
 
     $chain = (new Chain($this))
@@ -156,7 +160,8 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
       ->add(LoggerInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerInterface::class, 'notice', NULL, 'notices');
+      ->add(LoggerInterface::class, 'notice', NULL, 'notices')
+      ->add(EventDispatcherInterface::class, 'dispatch');
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $subscriber->drop($event);
@@ -179,6 +184,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
+      ->add('event_dispatcher', EventDispatcherInterface::class)
       ->index(0);
 
     $chain = (new Chain($this))
@@ -190,7 +196,8 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', new \Exception('error'))
       ->add(LoggerInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerInterface::class, 'notice', NULL, 'notices');
+      ->add(LoggerInterface::class, 'notice', NULL, 'notices')
+      ->add(EventDispatcherInterface::class, 'dispatch');
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $subscriber->drop($event);
@@ -208,6 +215,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
+      ->add('event_dispatcher', EventDispatcherInterface::class)
       ->index(0);
 
     return (new Chain($this))

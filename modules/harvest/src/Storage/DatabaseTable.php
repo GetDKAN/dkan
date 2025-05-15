@@ -4,6 +4,7 @@ namespace Drupal\harvest\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\AbstractDatabaseTable;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Harvest database table storage.
@@ -30,17 +31,23 @@ class DatabaseTable extends AbstractDatabaseTable {
    *   Drupal's database connection object.
    * @param string $identifier
    *   Each unique identifier represents a table.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event dispatcher service.
    */
-  public function __construct(Connection $connection, string $identifier) {
+  public function __construct(
+    Connection $connection,
+    string $identifier,
+    EventDispatcherInterface $eventDispatcher
+  ) {
     $this->identifier = $identifier;
     $this->setOurSchema();
-    parent::__construct($connection);
+    parent::__construct($connection, $eventDispatcher);
   }
 
   /**
    * Inherited.
    *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function retrieve(string $id) {
     $result = parent::retrieve($id);
@@ -48,27 +55,21 @@ class DatabaseTable extends AbstractDatabaseTable {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function getTableName() {
     return "{$this->identifier}";
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
-  protected function prepareData(string $data, string $id = NULL): array {
+  protected function prepareData(string $data, ?string $id = NULL): array {
     return ["id" => $id, "data" => $data];
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function primaryKey() {
     return "id";

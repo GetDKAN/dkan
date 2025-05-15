@@ -17,9 +17,12 @@ trait HelperTrait {
   private $configService;
 
   /**
-   * Setter.
+   * Set the config service.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
+   *   The config service.
    */
-  private function setConfigService(ConfigFactoryInterface $configService) {
+  private function setConfigService(ConfigFactoryInterface $configService): void {
     $this->configService = $configService;
   }
 
@@ -40,7 +43,7 @@ trait HelperTrait {
   }
 
   /**
-   * Private.
+   * Normalize an "empty" property against an array.
    *
    * @param mixed $data
    *   Data whose type we want to match.
@@ -57,6 +60,9 @@ trait HelperTrait {
 
   /**
    * Uuid Service.
+   *
+   * @return \Drupal\metastore\Service\Uuid5
+   *   Uuid5 object.
    */
   private function getUuidService() {
     return new Uuid5();

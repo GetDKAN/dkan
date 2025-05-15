@@ -111,9 +111,9 @@ function metastore_preprocess_node__data(&$variables) {
  * Format email into a valid Url object.
  */
 function metastore_create_mailto_link($email) {
-  $lower_case_email = strtolower($email);
+  $lower_case_email = strtolower((string) $email);
   if (!str_starts_with($lower_case_email, 'mailto:')) {
-    $lower_case_email = 'mailto:' . strtolower($email);
+    $lower_case_email = 'mailto:' . strtolower((string) $email);
   }
   if (Url::fromUri($lower_case_email)) {
     return Url::fromUri($lower_case_email);
@@ -141,7 +141,7 @@ function metastore_use_in_table($property, $value) {
   if (in_array($property, ["description", "title"])) {
     return FALSE;
   }
-  if (!ctype_alnum(substr($property, 0, 1))) {
+  if (!ctype_alnum(substr((string) $property, 0, 1))) {
     return FALSE;
   }
   if (is_string($value)) {

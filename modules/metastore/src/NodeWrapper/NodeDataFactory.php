@@ -5,6 +5,7 @@ namespace Drupal\metastore\NodeWrapper;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
+use Drupal\metastore\MetastoreItemInterface;
 
 /**
  * Class NodeDataFactory.
@@ -48,25 +49,26 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    * @param array $config
    *   Optional config from interface, not used.
    *
-   * @return Data
+   * @return \Drupal\metastore\MetastoreItemInterface
    *   Metastore data node object.
    */
-  public function getInstance(string $identifier, array $config = []) {
-    $dataNode = $this->entityRepository->loadEntityByUuid("node", $identifier);
-    return new Data($dataNode, $this->entityTypeManager);
+  public function getInstance(string $identifier, array $config = []): MetastoreItemInterface {
+    return $this->wrap(
+      $this->entityRepository->loadEntityByUuid('node', $identifier)
+    );
   }
 
   /**
    * Create a metastore node data object from a node object.
    *
-   * @param mixed $dataNode
+   * @param mixed $input
    *   A data node.
    *
-   * @return Data
+   * @return \Drupal\metastore\MetastoreItemInterface
    *   Metastore data node object.
    */
-  public function wrap($dataNode) {
-    return new Data($dataNode, $this->entityTypeManager);
+  public function wrap($input): MetastoreItemInterface {
+    return new Data($input, $this->entityTypeManager);
   }
 
   /**

@@ -18,43 +18,31 @@ class PostImport {
 
   /**
    * The config factory.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected ConfigFactoryInterface $configFactory;
 
   /**
    * The logger service.
-   *
-   * @var \Psr\Log\LoggerInterface
    */
   protected LoggerInterface $logger;
 
   /**
    * The resource processor collector.
-   *
-   * @var \Drupal\datastore\Service\ResourceProcessorCollector
    */
   protected ResourceProcessorCollector $resourceProcessorCollector;
 
   /**
    * The data dictionary discovery interface.
-   *
-   * @var \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface
    */
   protected DataDictionaryDiscoveryInterface $dataDictionaryDiscovery;
 
   /**
    * The datastore service.
-   *
-   * @var \Drupal\datastore\DatastoreService
    */
   protected DatastoreService $datastoreService;
 
   /**
    * The post import result factory.
-   *
-   * @var \Drupal\datastore\PostImportResultFactory
    */
   protected PostImportResultFactory $postImportResultFactory;
 
@@ -219,13 +207,8 @@ class PostImport {
    *   The resource identifier of the distribution.
    */
   public function drop($resourceIdentifier): bool {
-    try {
-      $this->datastoreService->drop($resourceIdentifier, NULL, FALSE);
-      return TRUE;
-    }
-    catch (\Exception $e) {
-      throw $e;
-    }
+    $this->datastoreService->drop($resourceIdentifier, NULL, FALSE);
+    return TRUE;
   }
 
 }

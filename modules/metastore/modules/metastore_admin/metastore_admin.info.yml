@@ -1,7 +1,7 @@
 name: Administration
 description: Provides administrative views for managing dataset content.
 type: module
-core_version_requirement: ^10 || ^11
+core_version_requirement: ^10.2 || ^11
 dependencies:
   - dkan:metastore
   - drupal:breakpoint

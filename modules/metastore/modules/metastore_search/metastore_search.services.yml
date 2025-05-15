@@ -5,4 +5,5 @@ services:
       - '@dkan.metastore.service'
       - '@entity_type.manager'
       - '@search_api.query_helper'
+      - '@event_dispatcher'
 

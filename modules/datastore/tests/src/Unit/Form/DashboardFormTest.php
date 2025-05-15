@@ -116,6 +116,7 @@ class DashboardFormTest extends TestCase {
       'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535f',
       'resource_version' => '1679508886',
       'fetcher_status' => 'done',
+      'mime_type' => 'text/csv',
       'fetcher_percent_done' => 100,
       'importer_status' => 'done',
       'importer_percent_done' => 100,
@@ -173,6 +174,7 @@ class DashboardFormTest extends TestCase {
       'resource_version' => '1679508886',
       'fetcher_status' => 'done',
       'fetcher_percent_done' => 100,
+      'mime_type' => 'text/csv',
       'importer_status' => 'done',
       'importer_percent_done' => 100,
       'importer_error' => '',
@@ -239,6 +241,7 @@ class DashboardFormTest extends TestCase {
       'resource_version' => '1679508886',
       'fetcher_status' => 'done',
       'fetcher_percent_done' => 100,
+      'mime_type' => 'text/csv',
       'importer_status' => 'done',
       'importer_percent_done' => 100,
       'importer_error' => '',
@@ -298,6 +301,7 @@ class DashboardFormTest extends TestCase {
             'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
             'fetcher_percent_done' => 0,
+            'mime_type' => 'text/csv',
             'importer_status' => 'waiting',
             'importer_percent_done' => 0,
             'importer_error' => '',
@@ -322,6 +326,7 @@ class DashboardFormTest extends TestCase {
             'resource_version' => '1679508885',
             'fetcher_status' => 'done',
             'fetcher_percent_done' => 100,
+            'mime_type' => 'text/csv',
             'importer_status' => 'done',
             'importer_percent_done' => 100,
             'importer_error' => '',
@@ -404,6 +409,109 @@ class DashboardFormTest extends TestCase {
   }
 
   /**
+   * Test building the dashboard table for a dataset w/ unsupported resource types.
+   */
+  public function testBuildTableRowsWithUnsupportedResourceTypes() {
+    $datasetInfo = [
+      'latest_revision' => [
+        'uuid' => 'dataset-1',
+        'revision_id' => '1',
+        'moderation_state' => 'published',
+        'title' => 'Dataset 1',
+        'modified_date_metadata' => '2019-08-12',
+        'modified_date_dkan' => '2021-07-08',
+        'distributions' => [
+          [
+            'distribution_uuid' => 'dist-1',
+            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_version' => '1679508886',
+            'fetcher_status' => 'waiting',
+            'fetcher_percent_done' => 0,
+            'mime_type' => 'application/pdf',
+            'importer_status' => 'waiting',
+            'importer_percent_done' => 0,
+            'importer_error' => '',
+            'source_path' => 'http://example.com/file.pdf',
+          ],
+          [
+            'distribution_uuid' => 'dist-2',
+            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_version' => '1679508886',
+            'fetcher_status' => 'waiting',
+            'fetcher_percent_done' => 0,
+            'mime_type' => 'text/csv',
+            'importer_status' => 'waiting',
+            'importer_percent_done' => 0,
+            'importer_error' => '',
+            'source_path' => 'http://example.com/file2.csv',
+          ],
+        ],
+      ],
+    ];
+
+    $postImportInfo = [
+      'resource_version' => '1679508885',
+      'post_import_status' => 'done',
+      'post_import_error' => NULL,
+    ];
+
+    $connectionMock = $this->createMock(Connection::class);
+    $resourceMappermock = $this->createMock(ResourceMapper::class);
+    $dataResourceMock = $this->createMock(DataResource::class);
+    $postImportResultMock = $this->getMockBuilder(PostImportResult::class)
+      ->setConstructorArgs(['', '', NULL, $dataResourceMock, $connectionMock, $resourceMappermock])
+      ->onlyMethods(['retrieveJobStatus'])
+      ->getMock();
+
+    $postImportResultMock->method('retrieveJobStatus')->willReturn($postImportInfo);
+
+    $container = $this->buildContainerChain()
+      ->add(MetastoreService::class, 'count', 1)
+      ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid']])
+      ->add(DatasetInfo::class, 'gather', $datasetInfo)
+      ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $form = DashboardForm::create($container)->buildForm([], new FormState());
+
+    // Table has two rows.
+    $this->assertEquals(2, count($form['table']['#rows']));
+
+    // Table uuid for first row is correct.
+    $this->assertEquals('dist-1', $form['table']['#rows'][0][3]['data']['#uuid']);
+    // First row has six columns.
+    $this->assertEquals(5, count($form['table']['#rows'][0]));
+    // Rowspan on first two columns.
+    $this->assertEquals(2, $form['table']['#rows'][0][1]['rowspan']);
+    // Unsupported mime type class on resource column.
+    $this->assertEquals("unsupported", $form["table"]["#rows"][0][3]["class"]);
+    // Colspan on last 3 columns.
+    $this->assertEquals(3, $form["table"]["#rows"][0][4]["colspan"]);
+    // Unsupported mime type class on last column.
+    $this->assertEquals("unsupported", $form["table"]["#rows"][0][4]["class"]);
+    // Status on last column displays correct status for unsupported mime type.
+    $this->assertEquals("Data import is not supported for this resource type", $form["table"]["#rows"][0][4]["data"]["#status"]);
+
+    // The second row has only four columns.
+    $this->assertEquals(4, count($form['table']['#rows'][1]));
+    // Table uuid for first second row is correct.
+    $this->assertEquals('dist-2', $form['table']['#rows'][1][0]['data']['#uuid']);
+    // The second row fetch status is correct.
+    $this->assertEquals('waiting', $form["table"]["#rows"][1][1]["data"]["#status"]);
+    // The second row fetch class is correct.
+    $this->assertEquals('waiting', $form["table"]["#rows"][1][1]["class"]);
+    // The second row store status is correct.
+    $this->assertEquals('waiting', $form["table"]["#rows"][1][2]["data"]["#status"]);
+    // The second row store class is correct.
+    $this->assertEquals('waiting', $form["table"]["#rows"][1][2]["class"]);
+    // The second row post import status is correct.
+    $this->assertEquals('done', $form["table"]["#rows"][1][3]["data"]["#status"]);
+    // The second row post import class is correct.
+    $this->assertEquals('done', $form["table"]["#rows"][1][3]["class"]);
+  }
+
+  /**
    * Test building the dashboard table for a dataset without a distribution.
    */
   public function testBuildTableRowsDatasetMultipleDistribution() {
@@ -422,6 +530,7 @@ class DashboardFormTest extends TestCase {
             'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
             'fetcher_percent_done' => 0,
+            'mime_type' => 'text/csv',
             'importer_status' => 'waiting',
             'importer_percent_done' => 0,
             'importer_error' => '',
@@ -433,6 +542,7 @@ class DashboardFormTest extends TestCase {
             'resource_version' => '1679508886',
             'fetcher_status' => 'done',
             'fetcher_percent_done' => 100,
+            'mime_type' => 'text/csv',
             'importer_status' => 'done',
             'importer_percent_done' => 100,
             'importer_error' => '',
@@ -534,4 +644,5 @@ class DashboardFormTest extends TestCase {
       ->add(Pager::class, 'getCurrentPage', 0)
       ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class);
   }
+
 }

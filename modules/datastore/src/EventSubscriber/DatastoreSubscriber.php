@@ -15,6 +15,7 @@ use Drupal\metastore\ResourceMapper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Subscriber.
@@ -49,6 +50,13 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   private ImportJobStoreFactory $importJobStoreFactory;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -59,7 +67,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       $container->get('dkan.datastore.logger_channel'),
       $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.service.resource_purger'),
-      $container->get('dkan.datastore.import_job_store_factory')
+      $container->get('dkan.datastore.import_job_store_factory'),
+      $container->get('event_dispatcher')
     );
   }
 
@@ -76,6 +85,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.datastore.service.resource_purger service.
    * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
    *   The dkan.datastore.import_job_store_factory service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event dispatcher service.
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
@@ -83,12 +94,14 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     DatastoreService $service,
     ResourcePurger $resourcePurger,
     ImportJobStoreFactory $importJobStoreFactory,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->configFactory = $config_factory;
     $this->logger = $loggerChannel;
     $this->datastoreService = $service;
     $this->resourcePurger = $resourcePurger;
     $this->importJobStoreFactory = $importJobStoreFactory;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**

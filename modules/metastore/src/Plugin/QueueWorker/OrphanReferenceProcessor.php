@@ -6,10 +6,11 @@ namespace Drupal\metastore\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Verifies if a dataset property reference is orphaned, then deletes it.
@@ -23,8 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @codeCoverageIgnore
  */
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-
-  use EventDispatcherTrait;
 
   const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
 
@@ -41,6 +40,13 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
   private ReferenceLookupInterface $referenceLookup;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Constructs a new class instance.
    *
    * @param array $configuration
@@ -53,17 +59,21 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   Node storage service.
    * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
    *   The referencer lookup service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event dispatcher.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     NodeStorageInterface $nodeStorage,
-    ReferenceLookupInterface $referenceLookup
+    ReferenceLookupInterface $referenceLookup,
+    EventDispatcherInterface $eventDispatcher
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->referenceLookup = $referenceLookup;
     $this->nodeStorage = $nodeStorage;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -77,7 +87,8 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
           $plugin_id,
           $plugin_definition,
           $container->get('dkan.common.node_storage'),
-          $container->get('dkan.metastore.reference_lookup')
+          $container->get('dkan.metastore.reference_lookup'),
+          $container->get('event_dispatcher')
       );
   }
 
@@ -118,7 +129,8 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     if (FALSE !== ($reference = reset($references))) {
       // When orphaning distribution nodes, trigger database clean up.
       if ($property_id === 'distribution') {
-        $this->dispatchEvent(self::EVENT_ORPHANING_DISTRIBUTION, $uuid);
+        $event = new Event($uuid);
+        $this->eventDispatcher->dispatch($event, self::EVENT_ORPHANING_DISTRIBUTION);
       }
       $reference->set('moderation_state', 'orphaned');
       $reference->save();

@@ -8,37 +8,38 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 
 /**
  * Implements hook_entity_load().
+ *
+ * @see Drupal\metastore\LifeCycle\LifeCycle::datasetLoad()
+ * @see Drupal\metastore\LifeCycle\LifeCycle::distributionLoad()
  */
 function metastore_entity_load(array $entities) {
-  foreach($entities as $entity) {
-    metastore_data_lifecycle($entity, "load");
-  }
+    metastore_data_lifecycle($entities, "load");
 }
 
 /**
  * Implements hook_entity_presave().
  */
 function metastore_entity_presave(EntityInterface $entity) {
-  metastore_data_lifecycle($entity, "presave");
+  metastore_data_lifecycle([$entity], "presave");
 }
 
 /**
  * Implements hook_entity_predelete().
  */
 function metastore_entity_predelete(EntityInterface $entity) {
-  metastore_data_lifecycle($entity, "predelete");
+  metastore_data_lifecycle([$entity], "predelete");
 }
 
 /**
  * Implements hook_entity_update().
  */
 function metastore_entity_update(EntityInterface $entity) {
-  metastore_data_lifecycle($entity, "update");
+  metastore_data_lifecycle([$entity], "update");
 }
 
 /**
@@ -60,22 +61,23 @@ function resource_mapper_new_revision() {
 }
 
 /**
- * Create a LifeCycle object.
+ * Send some entities into their life cycle.
  *
- * @param Drupal\Core\Entity\ContentEntityInterface $entity
- *
- * @return Drupal\metastore\LifeCycle\Data
- *   LifeCycle object.
+ * @param \Drupal\Core\Entity\EntityInterface[] $entities
+ *   The entities in question.
+ * @param string $stage
+ *   The entity hook stage, such as 'load' or 'update'.
  */
-function metastore_data_lifecycle(EntityInterface $entity, string $stage) {
-
-  if (metastore_entity_is_valid_item($entity)) {
-    $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
-    $metastoreItem = $itemFactory->wrap($entity);
-    \Drupal::service('dkan.metastore.lifecycle')->go($stage, $metastoreItem);
+function metastore_data_lifecycle(array $entities, string $stage): void {
+  /** @var \Drupal\metastore\LifeCycle\LifeCycle $lifecycle */
+  $lifecycle = \Drupal::service('dkan.metastore.lifecycle');
+  /** @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface $item_factory */
+  $item_factory = \Drupal::service('dkan.metastore.metastore_item_factory');
+  foreach ($entities as $entity) {
+    if (Data::validEntityType($entity)) {
+      $lifecycle->go($stage, $item_factory->wrap($entity));
+    }
   }
-
-  return FALSE;
 }
 
 /**
@@ -86,25 +88,11 @@ function metastore_data_lifecycle(EntityInterface $entity, string $stage) {
  *
  * @return bool
  *   Returns true if the entity is used by the metastore.
+ *
+ * @deprecated Use Data::validEntityType()
  */
 function metastore_entity_is_valid_item(EntityInterface $entity) {
-  $storageClass = \Drupal::service('dkan.metastore.storage')::getStorageClass();
-
-  // If the storage class used implements the entity storage interface, continue.
-  if (!is_a($storageClass, MetastoreEntityStorageInterface::class, true)) {
-    return FALSE;
-  }
-
-  $storageEntityType = \Drupal::service('dkan.metastore.metastore_item_factory')::getEntityType();
-  $storageBundles = \Drupal::service('dkan.metastore.metastore_item_factory')::getBundles();
-
-  // If the type and bundle are correct, return true.
-  if ($entity->getEntityTypeId() != $storageEntityType) {
-    return FALSE;
-  }
-  if (in_array($entity->bundle(), $storageBundles)) {
-    return TRUE;
-  }
+  return Data::validEntityType($entity);
 }
 
 /**

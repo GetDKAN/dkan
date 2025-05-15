@@ -4,12 +4,14 @@ namespace Drupal\harvest;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drupal\harvest\Entity\HarvestRunRepository;
-use Harvest\ResultInterpreter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /**
  * Provides a list controller for the harvest plan entity type.
@@ -24,17 +26,30 @@ class HarvestPlanListBuilder extends EntityListBuilder {
   protected HarvestService $harvestService;
 
   /**
+   * Route provider.
+   */
+  protected RouteProviderInterface $routeProvider;
+
+  /**
    * Harvest run repository service.
    */
   protected HarvestRunRepository $harvestRunRepository;
+
+  /**
+   * Entity storage service for the harvest_run entity type.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected EntityStorageInterface $harvestRunStorage;
 
   /**
    * {@inheritDoc}
    */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     $builder = parent::createInstance($container, $entity_type);
-    $builder->harvestService = $container->get('dkan.harvest.service');
     $builder->harvestRunRepository = $container->get('dkan.harvest.storage.harvest_run_repository');
+    $builder->harvestRunStorage = $container->get('entity_type.manager')->getStorage('harvest_run');
+    $builder->routeProvider = $container->get('router.route_provider');
     return $builder;
   }
 
@@ -70,17 +85,15 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     $harvest_plan_id = $entity->get('id')->getString();
     $run_entity = NULL;
 
-    if ($run_id = $this->harvestService->getLastHarvestRunId($harvest_plan_id)) {
+    if ($run_id = $this->harvestRunRepository->getLastHarvestRunId($harvest_plan_id)) {
       // There is a run identifier, so we should get that info.
-      $run_entity = $this->harvestRunRepository->loadEntity($harvest_plan_id, $run_id);
+      /** @var \Drupal\harvest\HarvestRunInterface $run_entity */
+      $run_entity = $this->harvestRunStorage->load($run_id);
     }
 
     // Default values for a row if there's no info.
     $row = [
-      'harvest_link' => Link::fromTextAndUrl($harvest_plan_id, Url::fromRoute(
-        'datastore.datasets_import_status_dashboard',
-        ['harvest_id' => $harvest_plan_id],
-      )),
+      'harvest_link' => $this->getHarvestLink($harvest_plan_id),
       'extract_status' => [
         'data' => 'REGISTERED',
         'class' => 'registered',
@@ -96,11 +109,35 @@ class HarvestPlanListBuilder extends EntityListBuilder {
         'data' => $extract_status,
         'class' => strtolower($extract_status),
       ];
-      $row['last_run'] = date('m/d/y H:m:s T', $run_id);
+      $row['last_run'] = date('m/d/y H:m:s T', $run_entity->get('timestamp')->value);
       $row['dataset_count'] = $interpreter->countProcessed();
     }
     // Don't call parent::buildRow() because we don't want operations (yet).
     return $row;
+  }
+
+  /**
+   * Get the harvest link.
+   *
+   * @param string $harvest_plan_id
+   *   Harvest plan ID.
+   *
+   * @return \Drupal\Core\Link|string
+   *   Link to datastore import dashboard if available, else just the plan ID.
+   */
+  protected function getHarvestLink(string $harvest_plan_id) {
+    try {
+      // Test for presence of datastore.datasets_import_status_dashboard route.
+      $this->routeProvider->getRouteByName('datastore.datasets_import_status_dashboard');
+      $harvest_link = Link::fromTextAndUrl($harvest_plan_id, Url::fromRoute(
+        'datastore.datasets_import_status_dashboard',
+        ['harvest_id' => $harvest_plan_id],
+      ));
+      return $harvest_link;
+    }
+    catch (RouteNotFoundException $e) {
+      return $harvest_plan_id;
+    }
   }
 
 }
