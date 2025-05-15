@@ -128,7 +128,7 @@ class SchemaUiHandlerTest extends TestCase {
         "#disabled" => TRUE,
       ],
     ];
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test flexible datetime without default value.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": true}}}');
@@ -153,7 +153,7 @@ class SchemaUiHandlerTest extends TestCase {
         "#date_time_required" => TRUE,
       ],
     ];
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test flexible datetime with date format 2020-05-11T15:06:39.000Z.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": false}}}');
@@ -179,19 +179,19 @@ class SchemaUiHandlerTest extends TestCase {
         "#date_time_required" => FALSE,
       ],
     ];
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test flexible datetime with date format 2020-05-11 15:06:39.000.
     $form['modified']['#default_value'] = '2020-05-11 15:06:39.000';
     $date = new DrupalDateTime('2020-05-11 15:06:39.000');
     $expected['modified']['#default_value'] = $date;
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test flexible datetime with date format 2020-05-09.
     $form['modified']['#default_value'] = '2020-05-09';
     $date = new DrupalDateTime('2020-05-09');
     $expected['modified']['#default_value'] = $date;
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test date_range.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"temporal":{"ui:options":{"widget":"date_range"}}}');
@@ -216,12 +216,12 @@ class SchemaUiHandlerTest extends TestCase {
         "#required" => FALSE,
       ],
     ];
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test date range without default value.
     $form['temporal']['#default_value'] = NULL;
     $expected['temporal']['#default_value'] = '';
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test dkan_uuid field with already existing value.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
@@ -249,7 +249,7 @@ class SchemaUiHandlerTest extends TestCase {
         '#access' => FALSE,
       ],
     ];
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test dkan_uuid field, adding new value.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
@@ -296,7 +296,7 @@ class SchemaUiHandlerTest extends TestCase {
             '#default_value' => NULL,
           ],
         ],
-        'actions' => [],
+        'array_actions' => [],
       ],
     ];
 
@@ -327,10 +327,10 @@ class SchemaUiHandlerTest extends TestCase {
             ],
           ],
         ],
-        'actions' => [],
+        'array_actions' => [],
       ],
     ];
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test object field.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"publisher":{"properties":{"@type":{"ui:options":{"widget":"hidden"}},"name":{"ui:options":{"description":"Better description"}}}}}');
@@ -387,7 +387,7 @@ class SchemaUiHandlerTest extends TestCase {
         ],
       ],
     ];
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test array field with object.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"distribution":{"items":{"@type":{"ui:options":{"widget":"hidden"}}}}}');
@@ -497,7 +497,7 @@ class SchemaUiHandlerTest extends TestCase {
       ],
     ];
 
-    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+    $this->assertEquals($expected, $ui_handler->applySchemaUi($form));
 
     // Test upload_or_link widget.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv", "progress_indicator": "bar"}}}');
@@ -615,7 +615,7 @@ class SchemaUiHandlerTest extends TestCase {
     ];
     $form = $ui_handler->applySchemaUi($form);
 
-    $this->assertEquals($form, $expected);
+    $this->assertEquals($expected, $form);
   }
 
   /**
@@ -691,7 +691,7 @@ class SchemaUiHandlerTest extends TestCase {
     ];
     $form = $ui_handler->applySchemaUi($form);
 
-    $this->assertEquals($form, $expected);
+    $this->assertEquals($expected, $form);
   }
 
   /**
@@ -753,7 +753,7 @@ class SchemaUiHandlerTest extends TestCase {
     ];
     $form = $ui_handler->applySchemaUi($form);
 
-    $this->assertEquals($form, $expected);
+    $this->assertEquals($expected, $form);
   }
 
   /**
@@ -815,7 +815,7 @@ class SchemaUiHandlerTest extends TestCase {
             '#default_value' => 'Test 2',
           ],
         ],
-        'actions' => [
+        'array_actions' => [
           '#type' => 'actions',
           'actions' => ['add' => []],
         ],
@@ -851,7 +851,7 @@ class SchemaUiHandlerTest extends TestCase {
     ];
     $form = $ui_handler->applySchemaUi($form);
 
-    $this->assertEquals($form, $expected);
+    $this->assertEquals($expected, $form);
 
     // Test with no default value.
     $form = [
@@ -869,7 +869,7 @@ class SchemaUiHandlerTest extends TestCase {
             '#default_value' => NULL,
           ],
         ],
-        'actions' => [
+        'array_actions' => [
           '#type' => 'actions',
           'actions' => ['add' => []],
         ],

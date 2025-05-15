@@ -66,7 +66,7 @@ class FormBuilder implements ContainerInjectionInterface {
     SchemaRetriever $schema_retriever,
     FieldTypeRouter $router,
     SchemaUiHandler $schema_ui_handler,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->schemaRetriever = $schema_retriever;
     $this->router = $router;
