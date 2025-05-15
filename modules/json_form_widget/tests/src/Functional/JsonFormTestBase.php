@@ -19,6 +19,8 @@ abstract class JsonFormTestBase extends BrowserTestBase {
   protected static $modules = [
     'dkan',
     'json_form_widget',
+    'metastore',
+    'metastore_admin',
     'node',
   ];
 

@@ -3,7 +3,7 @@
 namespace Drupal\json_form_widget\Tests\Functional;
 
 use Drupal\Core\StreamWrapper\PublicStream;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan\Traits\QueueRunnerTrait;
 use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
 
 /**
