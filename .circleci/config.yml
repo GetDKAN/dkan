@@ -193,6 +193,7 @@ jobs:
             - run:
                 name: Reformat the coverage report
                 command: |
+                  cd $CIRCLE_WORKING_DIRECTORY/dkan
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter format-coverage \
                     $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --input-type clover \
