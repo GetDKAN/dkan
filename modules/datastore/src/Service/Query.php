@@ -84,6 +84,7 @@ class Query implements ContainerInjectionInterface {
       return [];
     }
     $schema = [];
+    // Only get the storage map after we've determined there is a resource.
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     foreach ($resources as $resource) {
       $storage = $storageMap[$resource["alias"]];
