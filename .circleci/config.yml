@@ -203,7 +203,7 @@ jobs:
                 root: report
                 paths:
                 - php
-                - json
+                - codeclimate
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -248,7 +248,7 @@ jobs:
               $CIRCLE_WORKING_DIRECTORY/report/php
             ls -la $CIRCLE_WORKING_DIRECTORY/report/html
       - store_artifacts:
-          path: $CIRCLE_WORKING_DIRECTORY/report/html
+          path: report/html
       - run:
           name: Merge and send coverage report to CodeClimate
           command: |
