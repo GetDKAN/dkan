@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\harvest\Tests\Functional\Api;
 
 use Drupal\harvest\Load\Dataset;
@@ -7,7 +9,7 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\user\Entity\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use Harvest\ETL\Extract\DataJson;
+use Drupal\harvest\ETL\Extract\DataJson;
 
 /**
  * Test Harvest-related RESTful API.

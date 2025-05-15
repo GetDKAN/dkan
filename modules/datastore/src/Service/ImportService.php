@@ -4,7 +4,7 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Drupal\common\DataResource;
-use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\datastore\Events\DatastoreImportedEvent;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -18,13 +18,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * Datastore importer.
  *
- * @todo This class has state and is not actually a service because it holds
- *   state. Have import() take an argument of a resource, instead of storing it
- *   as a property.
+ * Use the factory service (dkan.datastore.service.factory.import) to generate
+ * these.
+ *
+ * @see \Drupal\datastore\Service\Factory\ImportServiceFactory::getInstance
  */
 class ImportService {
-
-  use EventDispatcherTrait;
 
   /**
    * Event name used when configuring the parser during import.
@@ -48,10 +47,8 @@ class ImportService {
 
   /**
    * The qualified class name of the importer to use.
-   *
-   * @var \Procrastinator\Job\AbstractPersistentJob
    */
-  private $importerClass = ImportJob::class;
+  private string $importerClass = ImportJob::class;
 
   /**
    * The DKAN Resource to import.
@@ -144,7 +141,7 @@ class ImportService {
   }
 
   /**
-   * Import.
+   * Import resources into storage.
    */
   public function import() {
     $result = $this->getImporter()->run();
@@ -230,7 +227,9 @@ class ImportService {
       'record_end' => ["\n", "\r"],
     ];
 
-    $parserConfiguration = $this->dispatchEvent(self::EVENT_CONFIGURE_PARSER, $parserConfiguration);
+    $event = new Event($parserConfiguration);
+    $this->eventDispatcher->dispatch($event, self::EVENT_CONFIGURE_PARSER);
+    $parserConfiguration = $event->getData();
 
     $parser = Csv::getParser($parserConfiguration['delimiter'], $parserConfiguration['quote'], $parserConfiguration['escape'], $parserConfiguration['record_end']);
     $parser->machine->stopRecording();

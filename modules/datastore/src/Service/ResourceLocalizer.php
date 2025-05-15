@@ -4,7 +4,7 @@ namespace Drupal\datastore\Service;
 
 use Contracts\FactoryInterface;
 use Drupal\common\DataResource;
-use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
@@ -14,13 +14,12 @@ use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Resource localizer.
  */
 class ResourceLocalizer {
-
-  use EventDispatcherTrait;
 
   /**
    * Event sent when a resource is successfully localized.
@@ -71,6 +70,11 @@ class ResourceLocalizer {
   private QueueFactory $queueFactory;
 
   /**
+   * Event dispatcher service.
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -79,12 +83,14 @@ class ResourceLocalizer {
     DrupalFiles $drupalFiles,
     FileFetcherJobStoreFactory $fileFetcherJobStoreFactory,
     QueueFactory $queueFactory,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->fileFetcherJobStoreFactory = $fileFetcherJobStoreFactory;
     $this->queueFactory = $queueFactory;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -102,10 +108,11 @@ class ResourceLocalizer {
         // Localization is done. Register the perspectives.
         $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
         // Send the event.
-        $this->dispatchEvent(static::EVENT_RESOURCE_LOCALIZED, [
+        $event = new Event([
           'identifier' => $resource->getIdentifier(),
           'version' => $resource->getVersion(),
         ]);
+        $this->eventDispatcher->dispatch($event, static::EVENT_RESOURCE_LOCALIZED);
       }
       return $result;
     }

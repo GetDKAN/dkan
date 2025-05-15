@@ -3,56 +3,58 @@
 namespace Drupal\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\MetastoreItemInterface;
-use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 
 /**
  * MetastoreItem object that wraps a data node, provides additional methods.
+ *
+ * Generate these objects using the factory:
+ * dkan.metastore.metastore_item_factory.
+ *
+ * @see \Drupal\metastore\NodeWrapper\NodeDataFactory::getInstance()
  */
 class Data implements MetastoreItemInterface {
 
   /**
    * Node.
    *
-   * @var \Drupal\node\Entity\Node
+   * @var \Drupal\Core\Entity\EntityInterface
    */
-  protected $node;
-
-  /**
-   * Referenced raw metadata string.
-   *
-   * @var string
-   */
-  protected $rawMetadata;
+  protected EntityInterface $node;
 
   /**
    * Entity Type Manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  private $entityTypeManager;
+  private EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Entity Node Storage.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  private $nodeStorage;
+  private EntityStorageInterface $nodeStorage;
 
   /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   A Drupal entity.
+   *   A Drupal entity. Must be a Data node.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity Type Manager service.
    *
    * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   *   Thrown when the entity is not a Data node.
    */
   public function __construct(EntityInterface $entity, EntityTypeManagerInterface $entityTypeManager) {
-    $this->validate($entity);
+    if (!static::validEntityType($entity)) {
+      throw new DataNodeLifeCycleEntityValidationException('Entity must be a node of bundle data.');
+    }
     $this->node = $entity;
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
@@ -81,6 +83,8 @@ class Data implements MetastoreItemInterface {
 
   /**
    * Private.
+   *
+   * @todo Needing to call fix() on every method seems like a code smell.
    */
   private function fix() {
     $this->fixDataType();
@@ -164,16 +168,18 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
+   * Check if the entity is one that can be wrapped by Data.
+   *
+   * Currently only node entities which are data bundles are allowed.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   Entity to be wrapped by a Data wrapper instance.
+   *
+   * @return bool
+   *   TRUE if the entity can be wrapped, FALSE otherwise.
    */
-  private function validate(EntityInterface $entity) {
-    if (!($entity instanceof Node)) {
-      throw new DataNodeLifeCycleEntityValidationException("We only work with nodes.");
-    }
-
-    if ($entity->bundle() != "data") {
-      throw new DataNodeLifeCycleEntityValidationException("We only work with data nodes.");
-    }
+  public static function validEntityType(EntityInterface $entity): bool {
+    return ($entity instanceof NodeInterface) && ($entity->bundle() == "data");
   }
 
   /**
@@ -195,6 +201,8 @@ class Data implements MetastoreItemInterface {
 
   /**
    * Private.
+   *
+   * @todo Why do we do this?
    */
   private function saveRawMetadata() {
     // Temporarily save the raw json metadata, for later use.

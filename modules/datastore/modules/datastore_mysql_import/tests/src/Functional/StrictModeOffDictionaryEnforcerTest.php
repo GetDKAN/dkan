@@ -162,7 +162,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       Request::create('http://blah/api')
     );
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
-    $result = json_decode($response->getContent(), TRUE);
+    $result = json_decode((string) $response->getContent(), TRUE);
 
     // 300 columns + record_number.
     $this->assertCount(

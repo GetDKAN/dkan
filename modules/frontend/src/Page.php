@@ -12,39 +12,33 @@ class Page {
 
   /**
    * App root directory for react data catalog app.
-   *
-   * @var string
    */
-  private $appRoot;
+  private string $appRoot;
 
   /**
    * Node storage service.
-   *
-   * @var \Drupal\node\NodeStorageInterface
    */
-  private $nodeStorage;
+  private NodeStorageInterface $nodeStorage;
 
   /**
    * Build folder configuration.
-   *
-   * @var string
    */
-  private $buildFolder;
+  private string $buildFolder;
 
   /**
    * Frontend path configuration.
-   *
-   * @var string
    */
-  private $frontendPath;
+  private string $frontendPath;
 
   /**
    * Constructor.
+   *
+   * @todo Remove $nodeStorage argument; it's not used.
    */
   public function __construct(
     string $appRoot,
     NodeStorageInterface $nodeStorage,
-    ConfigFactoryInterface $configFactory
+    ConfigFactoryInterface $configFactory,
   ) {
     $this->appRoot = $appRoot;
     $this->nodeStorage = $nodeStorage;

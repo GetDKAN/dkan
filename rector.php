@@ -25,7 +25,11 @@ use DrupalFinder\DrupalFinderComposerRuntime;
 use DrupalRector\Set\Drupal10SetList;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\Php83\Rector\ClassConst\AddTypeToConstRector;
+use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\Set\ValueObject\SetList;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
 
@@ -37,6 +41,10 @@ return static function (RectorConfig $rectorConfig): void {
   $rectorConfig->sets([
     Drupal10SetList::DRUPAL_10,
     SetList::PHP_80,
+    SetList::PHP_81,
+    SetList::PHP_82,
+    SetList::PHP_83,
+    SetList::PHP_84,
     SetList::DEAD_CODE,
   ]);
 
@@ -46,7 +54,12 @@ return static function (RectorConfig $rectorConfig): void {
     '*/modules/datastore/src/Service/Info/ImportInfo.php',
     '*/modules/frontend/src/Routing/RouteProvider.php',
     '*/modules/frontend/src/Page.php',
+    // These seems a little excessive for now, revisit later.
+    AddOverrideAttributeToOverriddenMethodsRector::class,
     ClassPropertyAssignToConstructorPromotionRector::class,
+    ReadOnlyPropertyRector::class,
+    ReturnNeverTypeRector::class,
+    AddTypeToConstRector::class,
   ]);
 
   $drupalFinder = new DrupalFinderComposerRuntime(__DIR__);

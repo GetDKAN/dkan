@@ -2,4 +2,4 @@ name: 'Processor API Test'
 type: module
 description: 'Support module for testing custom processor APIs.'
 package: Testing
-core_version_requirement: ^10
+core_version_requirement: ^10.2

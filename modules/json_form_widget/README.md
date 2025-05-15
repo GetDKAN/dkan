@@ -24,6 +24,7 @@ The examples section of this readme can be used to understand how different fiel
 
 - Create Drupal forms from JSON schema.
 - Modify form element options created from JSON schema with specialized schema.ui JSON.
+- Support for sorting form fields by weight: You can define the field order using a weight property in the schema.
 
 ## Requirements
 
@@ -125,7 +126,8 @@ UI Options:
       "ui:options": {
         "widget": "textarea",
         "rows": 5,
-        "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest."
+        "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
+        "weight": 1
       }
     },
 
@@ -135,6 +137,8 @@ UI options:
 - rows: 5
   - The text area has a height of 5 rows
 - description
+- weight: 1
+  - Fields with a lower weight value will appear earlier in the form layout
 
 ### Formatted Text Area
 
@@ -154,13 +158,16 @@ UI options:
         "widget": "textarea",
         "rows": 5,
         "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
-        "textFormat": "html"
+        "textFormat": "html",
+        "weight": 1
       }
     },
 
 UI options:
 - textFormat: html
   - This can be the machine name of any Drupal text format you have configured in your system
+- weight: 1
+  - Fields with a lower weight value will appear earlier in the form layout
 
 You can use `textFormat` to add a WYSIWYG or other Drupal text editor plugin to your dataset form. Just enable the modules you need and assign the editor to your text format in Drupal at /admin/config/content/formats.
 

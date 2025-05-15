@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "harvest-plan",
+  "type": "object",
+  "title": "Harvest Plan",
+  "required": [
+    "identifier",
+    "extract",
+    "load"
+  ],
+  "properties": {
+    "identifier": {
+      "type": "string",
+      "title": "The plan's identifier",
+      "pattern": "^(.*)$"
+    },
+    "extract": {
+      "type": "object",
+      "title": "Extract",
+      "required": [
+        "type",
+        "uri"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Class utilized to extract the data from the source."
+        },
+        "uri": {
+          "type": "string",
+          "title": "The URL or Location of the Source",
+          "examples": [
+            "http://demo.getdkan.com/data.json"
+          ]
+        }
+      }
+    },
+    "transforms": {
+      "type": "array",
+      "title": "The Transforms for the Harvest",
+      "additionalProperties": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "load": {
+      "type": "object",
+      "title": "The Load settings for the Harvest",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Class utilized to load the harvested data."
+        }
+      }
+    }
+  }
+}

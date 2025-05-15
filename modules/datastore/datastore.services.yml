@@ -40,6 +40,7 @@ services:
       - '@dkan.common.drupal_files'
       - '@dkan.common.filefetcher_job_store_factory'
       - '@queue'
+      - '@event_dispatcher'
 
   dkan.datastore.service.resource_processor_collector:
     class: \Drupal\datastore\Service\ResourceProcessorCollector
@@ -98,6 +99,7 @@ services:
     arguments:
       - '@dkan.datastore.database'
       - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
 
   dkan.datastore.sql_endpoint.service:
     class: \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
@@ -113,6 +115,7 @@ services:
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.resource_purger'
       - '@dkan.datastore.import_job_store_factory'
+      - '@event_dispatcher'
     tags:
       - { name: event_subscriber }
 
@@ -134,6 +137,7 @@ services:
     class: \Drupal\datastore\Storage\ImportJobStoreFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
 
   pdlt.converter.strptime_to_mysql:
     class: \PDLT\Converter

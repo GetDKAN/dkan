@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @group dkan
@@ -65,7 +66,8 @@ class ResourceLocalizerTest extends TestCase {
       $fileFetcher,
       $this->getDrupalFilesChain()->getMock(),
       $this->getJobStoreFactoryChain()->getMock(),
-      $this->createMock(QueueFactory::class)
+      $this->createMock(QueueFactory::class),
+      $this->createMock(EventDispatcherInterface::class)
     );
 
     \Drupal::setContainer($this->getContainer()->getMock());

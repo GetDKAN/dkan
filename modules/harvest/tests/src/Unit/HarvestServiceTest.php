@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Entity\HarvestRunRepository;
@@ -12,10 +13,11 @@ use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
-use Harvest\Harvester;
+use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
+use Drupal\harvest\Harvester;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 

@@ -6,7 +6,7 @@ use Drupal\harvest\HarvestService;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
 use Drush\Commands\DrushCommands;
-use Harvest\ETL\Extract\DataJson;
+use Drupal\harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -33,7 +33,7 @@ class HarvestCommands extends DrushCommands {
    */
   public function __construct(
     HarvestService $service,
-    HarvestUtility $harvestUtility
+    HarvestUtility $harvestUtility,
   ) {
     parent::__construct();
     $this->harvestService = $service;
@@ -74,7 +74,7 @@ class HarvestCommands extends DrushCommands {
    * https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
    *
    * @param string $plan_json
-   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
+   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Drupal\\harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
    * @param array $opts
    *   Options array.
    *
@@ -88,13 +88,16 @@ class HarvestCommands extends DrushCommands {
    *
    * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
    */
-  public function register(string $plan_json = '', array $opts = [
-    'identifier' => '',
-    'extract-type' => DataJson::class,
-    'extract-uri' => '',
-    'transform' => [],
-    'load-type' => Dataset::class,
-  ]) {
+  public function register(
+    string $plan_json = '',
+    array $opts = [
+      'identifier' => '',
+      'extract-type' => DataJson::class,
+      'extract-uri' => '',
+      'transform' => [],
+      'load-type' => Dataset::class,
+    ],
+  ) {
     try {
       $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
       $identifier = $this->harvestService->registerHarvest($plan);
@@ -217,11 +220,6 @@ class HarvestCommands extends DrushCommands {
     foreach ($plan_ids as $plan_id) {
       $result = $this->harvestService->runHarvest($plan_id);
       $runs_info[] = $result;
-      // Since run IDs are also one-second-resolution timestamps, we must wait
-      // one second before running the next harvest.
-      // @todo Remove this sleep when we've switched to a better system for
-      //   timestamps.
-      sleep(1);
     }
     $this->renderHarvestRunsInfo($runs_info);
   }

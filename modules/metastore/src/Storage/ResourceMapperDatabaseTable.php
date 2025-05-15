@@ -5,6 +5,7 @@ namespace Drupal\metastore\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Database storage object.
@@ -32,9 +33,10 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
    */
   public function __construct(
     Connection $connection,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher
   ) {
-    parent::__construct($connection);
+    parent::__construct($connection, $eventDispatcher);
     $this->logger = $loggerChannel;
 
     $schema = [];
@@ -93,7 +95,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   /**
    * Protected.
    */
-  protected function prepareData(string $data, string $id = NULL): array {
+  protected function prepareData(string $data, ?string $id = NULL): array {
     $decoded = json_decode($data);
 
     foreach (['filePath' => 'filepath', 'mimeType' => 'mimetype'] as $old => $new) {

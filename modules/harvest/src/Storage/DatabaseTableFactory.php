@@ -4,6 +4,7 @@ namespace Drupal\harvest\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Database table factory.
@@ -18,6 +19,13 @@ class DatabaseTableFactory implements FactoryInterface {
   private $connection;
 
   /**
+   * The event dispatcher.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private $eventDispatcher;
+
+  /**
    * Database table data objects.
    *
    * @var \Drupal\harvest\Storage\DatabaseTable
@@ -27,14 +35,13 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(Connection $connection, EventDispatcherInterface $eventDispatcher) {
     $this->connection = $connection;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->storage[$identifier])) {
@@ -47,7 +54,7 @@ class DatabaseTableFactory implements FactoryInterface {
    * Protected.
    */
   protected function getDatabaseTable($identifier) {
-    return new DatabaseTable($this->connection, $identifier);
+    return new DatabaseTable($this->connection, $identifier, $this->eventDispatcher);
   }
 
 }

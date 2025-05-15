@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\harvest\Kernel\Transform;
 
 use Drupal\common\Util\DrupalFiles;
@@ -85,6 +87,8 @@ class ResourceImporterTest extends KernelTestBase {
       ->setConstructorArgs([
         $this->container->get('file_system'),
         $this->container->get('stream_wrapper_manager'),
+        $this->container->get('http_client_factory'),
+        $this->container->get('dkan.common.logger_channel'),
       ])
       ->onlyMethods(['retrieveFile'])
       ->getMock();

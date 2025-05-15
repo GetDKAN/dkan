@@ -6,6 +6,7 @@ services:
       - '@dkan.metastore.storage'
       - '@dkan.metastore.valid_metadata'
       - '@dkan.common.logger_channel'
+      - '@event_dispatcher'
 
   dkan.metastore.lifecycle:
     class: \Drupal\metastore\LifeCycle\LifeCycle
@@ -18,6 +19,8 @@ services:
       - '@dkan.metastore.storage'
       - '@queue'
       - '@config.factory'
+      - '@event_dispatcher'
+
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
@@ -36,6 +39,7 @@ services:
       - '@entity_type.manager'
       - '@config.factory'
       - '@dkan.common.logger_channel'
+      - '@event_dispatcher'
 
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
@@ -65,12 +69,14 @@ services:
     arguments:
       - '@dkan.metastore.resource_mapper_database_table'
       - '@entity_type.manager'
+      - '@event_dispatcher'
 
   dkan.metastore.resource_mapper_database_table:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
       - '@dkan.common.logger_channel'
+      - '@event_dispatcher'
 
   dkan.metastore.event_subscriber:
     class: \Drupal\metastore\EventSubscriber\MetastoreSubscriber

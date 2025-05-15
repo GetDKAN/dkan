@@ -6,7 +6,7 @@ use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element\FormElement;
+use Drupal\Core\Render\Element\FormElementBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -154,7 +154,7 @@ class StringHelper implements ContainerInjectionInterface {
    * Validate email field.
    */
   public function validateEmail(&$element, FormStateInterface $form_state, &$complete_form) {
-    $value = trim($element['#value']);
+    $value = trim((string) $element['#value']);
     $form_state->setValueForElement($element, $value);
 
     if (empty($value)) {
@@ -170,7 +170,7 @@ class StringHelper implements ContainerInjectionInterface {
    * Validate string pattern.
    */
   public function validatePattern(&$element, FormStateInterface $form_state, &$complete_form) {
-    FormElement::validatePattern($element, $form_state, $complete_form);
+    FormElementBase::validatePattern($element, $form_state, $complete_form);
   }
 
   /**

@@ -6,6 +6,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Database storage object.
@@ -39,21 +40,26 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *   A resource.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event dispatcher service.
    */
   public function __construct(
     Connection $connection,
     DataResource $resource,
     LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
-    $this->resource = $resource;
     $this->connection = $connection;
+    $this->resource = $resource;
     $this->logger = $loggerChannel;
+    parent::__construct($connection, $eventDispatcher);
 
-    if ($this->tableExist($this->getTableName())) {
+    if (!$this->schema && $this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
     }
+
   }
 
   /**
@@ -185,6 +191,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
     $schema = ['fields' => []];
     foreach ($fieldsInfo as $info) {
+      if (!isset($info->Field)) {
+        continue;
+      }
       $name = $info->Field;
       $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
       $schema['fields'][$name] += [
@@ -205,7 +214,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *   Drupal Schema API array.
    */
   protected function addIndexInfo(array &$schema): void {
-    if (!str_contains($this->connection->getConnectionOptions()['driver'], 'mysql')) {
+    if (!str_contains((string) $this->connection->getConnectionOptions()['driver'], 'mysql')) {
       return;
     }
 

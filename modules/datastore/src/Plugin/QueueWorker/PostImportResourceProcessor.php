@@ -23,8 +23,6 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
 
   /**
    * The PostImport service.
-   *
-   * @var \Drupal\datastore\Service\PostImport
    */
   protected PostImport $postImport;
 

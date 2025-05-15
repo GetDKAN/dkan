@@ -28,7 +28,7 @@ trait ServiceCheckTrait {
       $argService = $this->checkService($arg);
       $class = $argService['class'];
       if ($class[0] == '\\') {
-        $class = substr($class, 1);
+        $class = substr((string) $class, 1);
       }
       $options->add($arg, $class);
     }

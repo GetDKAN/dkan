@@ -106,7 +106,7 @@ class ResourcePurgerTest extends BrowserTestBase {
   protected function getResourcesForDataset(string $dataset_identifier): array {
     // Retrieve dataset metastore storage service.
     $metadata = $this->datasetStorage->retrieve($dataset_identifier);
-    $distributions = json_decode($metadata)->{'%Ref:distribution'} ?? [];
+    $distributions = json_decode((string) $metadata)->{'%Ref:distribution'} ?? [];
 
     $resources = [];
     foreach ($distributions as $distribution) {

@@ -54,9 +54,6 @@ class DatasetInfoTest extends KernelTestBase {
     // No dataset with that identifier.
     $this->assertEquals(['notice' => 'Not found'], $info);
 
-    /**
-     * @var \Drupal\workflows\Entity\Workflow $workflow
-     */
     $this->config('workflows.workflow.dkan_publishing')
       ->set('type_settings.default_moderation_state', 'draft')
       ->save();
@@ -74,9 +71,9 @@ class DatasetInfoTest extends KernelTestBase {
     $this->assertCount(2, $info['latest_revision']['distributions']);
 
     $downloadUrl1 = $metadata->{"$.distribution[0].downloadURL"};
-    $this->assertEquals(md5($downloadUrl1), $info['latest_revision']['distributions'][0]['resource_id']);
+    $this->assertEquals(md5((string) $downloadUrl1), $info['latest_revision']['distributions'][0]['resource_id']);
     $downloadUrl2 = $metadata->{"$.distribution[1].downloadURL"};
-    $this->assertEquals(md5($downloadUrl2), $info['latest_revision']['distributions'][1]['resource_id']);
+    $this->assertEquals(md5((string) $downloadUrl2), $info['latest_revision']['distributions'][1]['resource_id']);
 
     // Datastore isn't enabled, so file_path shouldn't be set.
     // @see: \Drupal\Tests\datastore\Kernel\DatasetInfoTest

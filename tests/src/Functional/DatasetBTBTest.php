@@ -3,16 +3,15 @@
 namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\common\DataResource;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\HarvestService;
+use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
-use Harvest\ETL\Extract\DataJson;
+use Drupal\harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
 /**
@@ -135,7 +134,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // @todo Why does this fail the test when we use $this->container instead of
     //   \Drupal::service()?
     $metadata = \Drupal::service('dkan.metastore.service')->get('dataset', 123);
-    $dataset = json_decode($metadata);
+    $dataset = json_decode((string) $metadata);
 
     $this->assertNotEquals(
       $dataset->distribution[0]->downloadURL,
@@ -375,7 +374,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Get local resource folder name.
     $dataset = $this->getMetastore()->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $resourceId = explode('__', (string) $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder doesn't exist.
@@ -393,7 +392,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Get local resource folder name.
     $dataset = $this->getMetastore()->get('dataset', $id_2);
     $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $resourceId = explode('__', (string) $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder exists.

@@ -12,6 +12,7 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\common\Unit\Connection;
 use Procrastinator\Result;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @covers \Drupal\datastore\Storage\DatabaseTable
@@ -97,6 +98,7 @@ class DatabaseTableTest extends KernelTestBase {
         $this->createStub(Connection::class),
         $this->createStub(DataResource::class),
         $logger,
+        $this->createStub(EventDispatcherInterface::class),
         $this->createStub(DatabaseTableFactory::class),
       ])
       ->getMock();

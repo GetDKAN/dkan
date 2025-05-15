@@ -2,12 +2,14 @@
 
 namespace Drupal\metastore_search;
 
+use Drupal\common\Events\Event;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\metastore\MetastoreService;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Search.
@@ -57,6 +59,13 @@ class Search implements ContainerInjectionInterface {
   private $queryHelper;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private $eventDispatcher;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\metastore\MetastoreService $metastoreService
@@ -65,15 +74,19 @@ class Search implements ContainerInjectionInterface {
    *   Entity type manager.
    * @param \Drupal\search_api\Utility\QueryHelperInterface $queryHelper
    *   Query helper.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   Event dispatcher.
    */
   public function __construct(
     MetastoreService $metastoreService,
     EntityTypeManagerInterface $entityTypeManager,
-    QueryHelperInterface $queryHelper
+    QueryHelperInterface $queryHelper,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->metastoreService = $metastoreService;
     $this->entityTypeManager = $entityTypeManager;
     $this->queryHelper = $queryHelper;
+    $this->eventDispatcher = $eventDispatcher;
 
     $this->setSearchIndex('dkan');
   }
@@ -87,7 +100,8 @@ class Search implements ContainerInjectionInterface {
     return new static(
       $container->get('dkan.metastore.service'),
       $container->get('entity_type.manager'),
-      $container->get('search_api.query_helper')
+      $container->get('search_api.query_helper'),
+      $container->get('event_dispatcher')
     );
   }
 
@@ -101,14 +115,18 @@ class Search implements ContainerInjectionInterface {
    *   Search parameters.
    */
   public function search(array $params = []) {
-    $params = $this->dispatchEvent(self::EVENT_SEARCH_PARAMS, $params);
+    $event = new Event($params);
+    $this->eventDispatcher->dispatch($event, self::EVENT_SEARCH_PARAMS);
+    $params = $event->getData();
     $query = $this->getQuery($params, $this->index, $this->queryHelper)[0];
     $result = $query->execute();
 
     $count = $result->getResultCount();
     $data = $this->getData($result);
 
-    $data = $this->dispatchEvent(self::EVENT_SEARCH, $data);
+    $event = new Event($data);
+    $this->eventDispatcher->dispatch($event, self::EVENT_SEARCH);
+    $data = $event->getData();
 
     return (object) [
       'total' => $count,

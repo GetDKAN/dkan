@@ -15,6 +15,7 @@ use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @covers \Drupal\common\Storage\JobStore
@@ -34,7 +35,11 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", FALSE);
 
-    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
+    $jobStore = new JobStore(
+      FileFetcher::class,
+      $chain->getMock(),
+      $this->createStub(EventDispatcherInterface::class)
+    );
     $this->assertTrue(is_object($jobStore));
   }
 
@@ -67,7 +72,11 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, 'query', $statement_wrapper_class)
       ->add($statement_wrapper_class, 'fetchAll', $fieldInfo);
 
-    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
+    $jobStore = new JobStore(
+      FileFetcher::class,
+      $chain->getMock(),
+      $this->createStub(EventDispatcherInterface::class)
+    );
     $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcher::class));
   }
 
@@ -102,7 +111,11 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, 'query', $statement_wrapper_class)
       ->add($statement_wrapper_class, 'fetchAll', $sequence);
 
-    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
+    $jobStore = new JobStore(
+      FileFetcher::class,
+      $chain->getMock(),
+      $this->createStub(EventDispatcherInterface::class)
+    );
     $this->assertTrue(is_array($jobStore->retrieveAll()));
   }
 
@@ -143,7 +156,11 @@ class JobStoreTest extends TestCase {
       ->add($statement_wrapper_class, 'fetchAll', $fieldInfo)
       ->getMock();
 
-    $jobStore = new JobStore(FileFetcher::class, $connection);
+    $jobStore = new JobStore(
+      FileFetcher::class,
+      $connection,
+      $this->createStub(EventDispatcherInterface::class)
+    );
 
     $this->assertEquals("1", $jobStore->store(json_encode($jobObject), "1"));
   }
@@ -171,7 +188,11 @@ class JobStoreTest extends TestCase {
       ->add($statement_wrapper_class, 'fetchAll', $fieldInfo)
       ->getMock();
 
-    $jobStore = new JobStore(FileFetcher::class, $connection);
+    $jobStore = new JobStore(
+      FileFetcher::class,
+      $connection,
+      $this->createStub(EventDispatcherInterface::class)
+    );
 
     $this->assertEquals("", $jobStore->remove("1", FileFetcher::class));
   }
