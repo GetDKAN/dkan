@@ -245,7 +245,7 @@ jobs:
           name: Find and replace paths in the coverage files
           command: |
             for file in $(find $CIRCLE_WORKING_DIRECTORY/report/php -name "*.cov"); do
-              sed -i "s|/var/www/html/dkan|$CIRCLE_WORKING_DIRECTORY/dkan|g" $
+              sed -i "s|/var/www/html/dkan|$CIRCLE_WORKING_DIRECTORY/dkan|g" $file
             done
       - run:
           name: Create HTML report
