@@ -217,46 +217,18 @@ jobs:
           path: report/junit
 
   phpunit-coverage-report:
-    docker:
-      - image: cimg/php:8.4
-        environment:
-          CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
-    parameters:
-      phpcov_version:
-        description: "Version of phpcov tool to use for coverage report."
-        default: "8.2.1"
-        type: string
+    machine:
+      image: ubuntu-2204:current
+    environment:
+      CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
     steps:
       - attach_workspace:
           at: report
-      - checkout:
-          path: dkan
-      - run:
-          name: Install phpcov tool
-          command: |
-            wget https://phar.phpunit.de/phpcov-<< parameters.phpcov_version >>.phar
-            chmod +x phpcov-<< parameters.phpcov_version >>.phar
       - run:
           name: Install CodeClimate test reporter
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
-      - run:
-          name: Find and replace paths in the coverage files
-          command: |
-            for file in $(find $CIRCLE_WORKING_DIRECTORY/report/php -name "*.cov"); do
-              sed -i "s|/var/www/html/dkan|$CIRCLE_WORKING_DIRECTORY/dkan|g" $file
-            done
-      - run:
-          name: Create HTML report
-          command: |
-            ls -la $CIRCLE_WORKING_DIRECTORY/report/php
-            php phpcov-<< parameters.phpcov_version >>.phar merge \
-              --html $CIRCLE_WORKING_DIRECTORY/report/html \
-              $CIRCLE_WORKING_DIRECTORY/report/php
-            ls -la $CIRCLE_WORKING_DIRECTORY/report/html
-      - store_artifacts:
-          path: report/html
       - run:
           name: Merge and send coverage report to CodeClimate
           command: |
