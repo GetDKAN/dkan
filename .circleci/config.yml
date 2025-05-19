@@ -218,7 +218,7 @@ jobs:
 
   phpunit-coverage-report:
     docker:
-      - image: cimg/php:7.4
+      - image: cimg/php:8.1
         environment:
           CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
     parameters:
