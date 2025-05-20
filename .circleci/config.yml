@@ -219,8 +219,6 @@ jobs:
   phpunit-coverage-report:
     machine:
       image: ubuntu-2204:current
-    environment:
-      CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
     steps:
       - attach_workspace:
           at: report
