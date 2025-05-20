@@ -228,7 +228,7 @@ class ArrayHelper implements ContainerInjectionInterface {
         '#title'         => $definition['schema']->items->title ?? NULL,
         '#default_value' => $data,
       ]),
-      'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context)),
+      'actions' => empty($definition['schema']->no_actions) ? $this->buildElementActions($definition['name'], self::buildContextName($context)) : [],
     ];
   }
 
