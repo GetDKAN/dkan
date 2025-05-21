@@ -79,14 +79,12 @@ class Query implements ContainerInjectionInterface {
    *   An assoc array containing a table schema for each resource.
    */
   private function getSchema(DatastoreQuery $datastoreQuery) {
-    // Short-circuit in case there are no resources.
-    if (!$resources = $datastoreQuery->{"$.resources"}) {
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    if (!$datastoreQuery->{"$.resources"}) {
       return [];
     }
     $schema = [];
-    // Only get the storage map after we've determined there is a resource.
-    $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    foreach ($resources as $resource) {
+    foreach ($datastoreQuery->{"$.resources"} as $resource) {
       $storage = $storageMap[$resource["alias"]];
       $schemaItem = $storage->getSchema();
       if (empty($datastoreQuery->{"$.rowIds"})) {

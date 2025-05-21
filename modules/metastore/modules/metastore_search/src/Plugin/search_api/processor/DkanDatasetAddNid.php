@@ -104,8 +104,11 @@ class DkanDatasetAddNid extends ProcessorPluginBase implements ContainerFactoryP
    * {@inheritdoc}
    */
   public function addFieldValues(ItemInterface $item) {
-    if ($id = $item->getId()) {
-      $uuid = str_replace("dkan_dataset/", "", $id);
+    $id = $item->getId();
+    // Search_API can send all kinds of Items our way, so we must make sure
+    // we're only processing ours.
+    if (strpos($id, 'dkan_dataset/') === 0) {
+      $uuid = str_replace('dkan_dataset/', '', $id);
       if ($entity = $this->entityRepository->loadEntityByUuid('node', $uuid)) {
         $nid = $entity->id();
 
