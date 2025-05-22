@@ -313,17 +313,32 @@ class JsonFormBuilderTest extends TestCase {
         "#suffix" => '</div>',
         "keyword" => [
           0 => [
-            "#type" => "textfield",
-            "#title" => "Tag",
+            "#type" => "fieldset",
             "#required" => FALSE,
+            '#attributes' => [
+              'class' => ['json-form-widget-array-item'],
+              'data-parent' => 'keyword',
+            ],
+            "field" => [
+              '#type' => 'textfield',
+              '#title' => 'Tag',
+            ],
           ],
         ],
+        '#required' => FALSE,
       ],
     ];
     $form_state = new FormState();
-    $form_state->set(ArrayHelper::buildCountProperty('keyword'), 1);
+    $form_state->set(
+      ArrayHelper::buildStateProperty(ArrayHelper::STATE_PROP_COUNT, 'keyword'),
+      1
+    );
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword']['actions']);
+    // The actions are too complex to deal with in the $expected array, we just
+    // assert the count is correct then remove them.
+    $this->assertCount(1, $result['keyword']['keyword']);
+    $this->assertCount(1, $result['keyword']['keyword']);
+    unset($result['keyword']['array_actions'], $result['keyword']['keyword'][0]['actions']);
     $this->assertEquals($expected, $result);
   }
 
@@ -367,16 +382,26 @@ class JsonFormBuilderTest extends TestCase {
         '#description_display' => 'before',
         "keyword" => [
           0 => [
-            "#type" => "textfield",
-            "#title" => "Tag",
+            "#type" => "fieldset",
             "#required" => TRUE,
+            'field' => [
+              '#type' => 'textfield',
+              '#title' => 'Tag',
+            ],
+            '#attributes' => [
+              'class' => ['json-form-widget-array-item'],
+              'data-parent' => 'keyword',
+            ],
           ],
         ],
+        '#required' => TRUE,
       ],
     ];
     $form_state = new FormState();
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword']['actions']);
+    $this->assertCount(1, $result['keyword']['keyword']);
+    $this->assertCount(1, $result['keyword']['keyword']);
+    unset($result['keyword']['array_actions'], $result['keyword']['keyword'][0]['actions']);
     $this->assertEquals($expected, $result);
   }
 
@@ -423,6 +448,7 @@ class JsonFormBuilderTest extends TestCase {
         "#title" => "Resources",
         "#description" => "List of links.",
         "#tree" => TRUE,
+        '#required' => FALSE,
         "#description_display" => "before",
         "#prefix" => '<div id="contributors-fieldset-wrapper">',
         "#suffix" => '</div>',
@@ -456,9 +482,12 @@ class JsonFormBuilderTest extends TestCase {
       ],
     ];
     $form_state = new FormState();
-    $form_state->set(ArrayHelper::buildCountProperty('contributors'), 1);
+    $form_state->set(
+      ArrayHelper::buildStateProperty(ArrayHelper::STATE_PROP_COUNT, 'contributors'),
+      1
+    );
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['contributors']['actions']);
+    unset($result['contributors']['array_actions'], $result['contributors']['contributors'][0]['contributors']['actions']);
     $this->assertEquals($expected, $result);
   }
 

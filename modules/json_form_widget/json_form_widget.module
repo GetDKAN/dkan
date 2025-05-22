@@ -13,61 +13,6 @@ use Drupal\json_form_widget\ArrayHelper;
 use Drupal\json_form_widget\Element\UploadOrLink;
 
 /**
- * Submit handler for the "add-one-more" button.
- *
- * Increments the max counter and causes a rebuild.
- */
-function json_form_widget_add_one(array &$form, FormStateInterface $form_state): void {
-  _json_form_widget_update_count($form_state, 1);
-}
-
-/**
- * Submit handler for the "remove one" button.
- *
- * Decrements the max counter and causes a form rebuild.
- */
-function json_form_widget_remove_one(array &$form, FormStateInterface $form_state): void {
-  _json_form_widget_update_count($form_state, -1);
-}
-
-/**
- * Update count property by the given offset.
- *
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   Form state.
- * @param int $offset
- *   Offset to change count by.
- */
-function _json_form_widget_update_count(FormStateInterface $form_state, int $offset): void {
-  // Build count property form state attribute.
-  $button_element = $form_state->getTriggeringElement();
-  $count_property = _json_form_widget_build_count_property($button_element);
-  // Modify stored item count.
-  $item_count = $form_state->get($count_property) ?? 0;
-  $item_count += $offset;
-  $form_state->set($count_property, $item_count);
-
-  // Since our buildForm() method relies on the value of 'num_names' to
-  // generate 'name' form elements, we have to tell the form to rebuild. If we
-  // don't do this, the form builder will not call buildForm().
-  $form_state->setRebuild();
-}
-
-/**
- * Build count property form state attribute.
- *
- * @param array $form_button_element
- *   Form button element.
- *
- * @return string[]
- *   Form element context.
- */
-function _json_form_widget_build_count_property(array $button_element): array {
-  $field_context = $button_element['#attributes']['data-context'];
-  return ArrayHelper::buildCountProperty($field_context);
-}
-
-/**
  * Implements hook_field_widget_complete_form_alter().
  *
  * Set json_form_widget flag for later.

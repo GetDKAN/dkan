@@ -58,10 +58,6 @@ commands:
             # Modify config to use our PHP version and database.
             ddev delete --omit-snapshot --yes
             ddev config --database="<< parameters.database_version >>" --php-version="<< parameters.php_version >>"
-            # With mysql 8, we need to set this permission.
-            if [ "<< parameters.database_version >>" = "mysql:8.0" ]; then
-              yq '.hooks.post-start += [{"exec": "echo '\''GRANT SESSION_VARIABLES_ADMIN on *.* TO db@`%`'\'' | mysql"}]' -i .ddev/config.yaml
-            fi
             cat .ddev/config.yaml
             ddev restart
             ddev status
@@ -304,11 +300,11 @@ workflows:
             parameters:
               dkan_recommended_branch: ["11.1.x-dev", "11.0.x-dev"]
               php_version: ["8.4", "8.3"]
-              database_version: ["mysql:8.0"]
+              database_version: ["mariadb:10.6"]
             exclude:
               - php_version: "8.4"
                 dkan_recommended_branch: "11.0.x-dev"
-                database_version: "mysql:8.0"
+                database_version: "mariadb:10.6"
       - phpunit:
           matrix:
             parameters:

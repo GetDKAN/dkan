@@ -3,14 +3,14 @@
 namespace Drupal\json_form_widget\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\FormBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\json_form_widget\ValueHandler;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Plugin implementation of the 'json_form_widget'.
@@ -80,7 +80,7 @@ class JsonFormWidget extends WidgetBase {
     array $third_party_settings,
     FormBuilder $builder,
     ValueHandler $value_handler,
-    RequestStack $request_stack
+    RequestStack $request_stack,
   ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->builder = $builder;
