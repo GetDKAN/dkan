@@ -118,9 +118,15 @@ class JsonFormWidget extends JsonFormWidgetBase {
   /**
    * {@inheritdoc}
    */
-  protected function resolveUiSchema(FormStateInterface $form_state): object {
+  protected function resolveUiSchema(FormStateInterface $form_state): ?object {
     $schema_id = $this->resolveSchemaId($form_state) . '.ui';
-    return $this->retrieveSchema($schema_id);
+    try {
+      return $this->retrieveSchema($schema_id);
+    }
+    catch (\Exception $e) {
+      // If the UI schema is not found, fall back to the default schema.
+      return NULL;
+    }
   }
 
   /**

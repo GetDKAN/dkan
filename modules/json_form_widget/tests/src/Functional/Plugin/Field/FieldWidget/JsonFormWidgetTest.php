@@ -12,6 +12,7 @@ use Drupal\node\Entity\Node;
 use Drupal\Tests\BrowserTestBase;
 use MockChain\Chain;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Test the JsonFormWidget.
@@ -21,6 +22,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @group functional
  */
 class JsonFormWidgetTest extends BrowserTestBase {
+
+  protected RequestStack $requestStack;
 
   /**
    * {@inheritdoc}
@@ -35,19 +38,14 @@ class JsonFormWidgetTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
+  public function setUp(): void {
+    parent::setUp();
+    $this->requestStack = \Drupal::service('request_stack');
+  }
 
   public function testNewDataset() {
     // Mock the SchemaRetriever service.
-    $widget = JsonFormWidget::create(
-      \Drupal::getContainer(),
-      [
-        'field_definition' => $this->createMock(FieldDefinitionInterface::class),
-        'settings' => [],
-        'third_party_settings' => [],
-      ],
-      'json_form_widget',
-      [],
-    );
+    $widget = $this->initializeWidget();
 
     $element = [
       '#title' => 'JSON Metadata',
@@ -112,12 +110,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
     $this->assertNotEmpty($result['value']['references']['array_actions']['actions']);
 
     // Simulate a new node form, but change the request stack to have query ?schema=distribution
-    $session = \Drupal::service('session');
-    $distro_request = new Request([
-      'schema' => 'distribution',
-    ]);
-    $distro_request->setSession($session);
-    \Drupal::service('request_stack')->push($distro_request);
+    $this->setSchemaQuery('distribution');
     $widget = JsonFormWidget::create(
       \Drupal::getContainer(),
       [
@@ -137,21 +130,8 @@ class JsonFormWidgetTest extends BrowserTestBase {
     $this->assertEquals("dcat:Distribution", $result['value']['data']['data']['@type']['#default_value']);
 
     // Simulate a new node form, this time give it an invalid schema name.
-    $distro_request = new Request([
-      'schema' => 'foo',
-    ]);
-    $distro_request->setSession($session);
-    \Drupal::service('request_stack')->push($distro_request);
-    $widget = JsonFormWidget::create(
-      \Drupal::getContainer(),
-      [
-        'field_definition' => $this->createMock(FieldDefinitionInterface::class),
-        'settings' => [],
-        'third_party_settings' => [],
-      ],
-      'json_form_widget',
-      [],
-    );
+    $this->setSchemaQuery('foo');
+    $widget = $this->initializeWidget();
     $dataset = Node::create(['type' => 'data']);
     $form_state = (new Chain($this))
       ->add(FormStateInterface::class, 'getFormObject', ContentEntityFormInterface::class)
@@ -176,7 +156,102 @@ class JsonFormWidgetTest extends BrowserTestBase {
     catch (\Exception $e) {
       $this->assertStringContainsString('No valid form entity found', $e->getMessage());
     }
-    
+
+    // Copy the dataset schema file to the docroot schema directory.
+    $this->schemaCopy("dataset");
+
+    // Re-initialize the widget with the new schema file.
+    $widget = $this->initializeWidget();
+
+    // Set the schema query to dataset.
+    $this->setSchemaQuery('dataset');
+
+    // Simulate a new node form, this time it has no ui schema.
+    $dataset = Node::create(['type' => 'data']);
+    $form_state = (new Chain($this))
+      ->add(FormStateInterface::class, 'getFormObject', ContentEntityFormInterface::class)
+      ->add(ContentEntityFormInterface::class, 'getEntity', $dataset)
+      ->getMock();
+    $result = $widget->formElement($items, 0, $element, $form, $form_state);
+    // Assert form is still a dataset...
+    $this->assertEquals('dcat:Dataset', $result['value']['@type']['#default_value']);
+    // ... but now the description field is a textfield, not a textarea.
+    $this->assertEquals('textfield', $result['value']['description']['#type']);
+    $this->schemaCleanup();
+  }
+
+  /**
+   * Set the schema query parameter in the request stack.
+   *
+   * @param string $schema
+   *   The schema name to set.
+   */
+  protected function setSchemaQuery(string $schema) {
+    $request = new Request([
+      'schema' => $schema,
+    ]);
+    $request->setSession($this->requestStack->getCurrentRequest()->getSession());
+    $this->requestStack->push($request);
+  }
+
+  /**
+   * Initialize the JsonFormWidget.
+   *
+   * @return \Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidget
+   *   The initialized widget.
+   */
+  protected function initializeWidget() {
+    return JsonFormWidget::create(
+      \Drupal::getContainer(),
+      [
+        'field_definition' => $this->createMock(FieldDefinitionInterface::class),
+        'settings' => [],
+        'third_party_settings' => [],
+      ],
+      'json_form_widget',
+      [],
+    );
+  }
+
+  /**
+   * Copy the schema file to the docroot schema directory.
+   *
+   * @param string $schema
+   *   The schema name to copy.
+   */
+  protected function schemaCopy(string $schema) {
+    $source = \Drupal::service('extension.list.module')->getPath('dkan') . "/schema/collections/{$schema}.json";
+    $destDir = \Drupal::root() . '/schema/collections';
+    $dest = $destDir . "/{$schema}.json";
+    if (!file_exists($destDir)) {
+      mkdir($destDir, 0777, TRUE);
+    }
+    if (file_exists($source)) {
+      copy($source, $dest);
+      $this->assertTrue(file_exists($dest), "{$schema} schema file copied successfully");
+    }
+    else {
+      $this->fail('Source schema file not found at ' . $source);
+    }
+  }
+
+  /**
+   * Clean up the schema directory after the test.
+   */
+  protected function schemaCleanup(): void {
+    // Clean up the schema directory after the test.
+    $destDir = \Drupal::root() . '/schema/collections';
+    $dest = $destDir . '/dataset.json';
+
+    if (file_exists($dest)) {
+      unlink($dest);
+    }
+    // Remove the directory if it's empty.
+    if (is_dir($destDir) && count(scandir($destDir)) === 2) {
+      rmdir($destDir);
+      rmdir(dirname($destDir));
+    }
+    parent::tearDown();
   }
 
 }
