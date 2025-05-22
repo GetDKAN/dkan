@@ -58,10 +58,6 @@ commands:
             # Modify config to use our PHP version and database.
             ddev delete --omit-snapshot --yes
             ddev config --database="<< parameters.database_version >>" --php-version="<< parameters.php_version >>"
-            # With mysql 8, we need to set this permission.
-            # if [ "<< parameters.database_version >>" = "mysql:8.0" ]; then
-            #   yq '.hooks.post-start += [{"exec": "echo '\''GRANT SESSION_VARIABLES_ADMIN on *.* TO db@`%`'\'' | mysql"}]' -i .ddev/config.yaml
-            # fi
             cat .ddev/config.yaml
             ddev restart
             ddev status
