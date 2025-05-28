@@ -11,6 +11,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group metastore
  * @group functional
  * @group btb
+ * @group functional1
  */
 class DatasetApiDocsTest extends BrowserTestBase {
 

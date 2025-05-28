@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @group dkan
  * @group datastore_mysql_import
  * @group functional
+ * @group functional2
  *
  * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
  */

@@ -14,6 +14,7 @@ use RootedData\RootedJsonData;
  * @group metastore
  * @group functional
  * @group btb
+ * @group functional3
  */
 class NodeDataTest extends BrowserTestBase {
 

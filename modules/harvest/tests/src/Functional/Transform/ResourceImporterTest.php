@@ -15,6 +15,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group harvest
  * @group functional
  * @group btb
+ * @group functional1
  *
  * @todo Turn this into a kernel test when we have refactored
  *   DrupalFiles::retrieveFile to allow for vfsStream.

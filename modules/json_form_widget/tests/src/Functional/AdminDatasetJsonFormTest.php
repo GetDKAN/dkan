@@ -11,6 +11,7 @@ namespace Drupal\Tests\json_form_widget\Functional;
  * @group dkan
  * @group json_form_widget
  * @group functional
+ * @group functional2
  */
 class AdminDatasetJsonFormTest extends JsonFormTestBase {
 

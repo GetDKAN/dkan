@@ -11,6 +11,7 @@ use Drupal\Tests\BrowserTestBase;
  *
  * @group data_dictionary_widget
  * @group functional
+ * @group functional1
  */
 class DataDictionaryWidgetTest extends BrowserTestBase {
 
