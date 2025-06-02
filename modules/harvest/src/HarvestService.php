@@ -149,15 +149,14 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Register a new harvest plan.
+   * Register a new harvest plan or update an existing one.
    *
    * @param object $plan
-   *   The plan object. Must contain an 'identifier' propoerty. See
-   *   components.schemas.harvestPlan within
-   *   modules/harvest/docs/openapi_spec.json for the schema of a plan.
+   *   The plan object. Must contain an 'identifier' property. See
+   *   modules/harvest/schema/schema.json for the schema of a harvest plan.
    *
    * @return string
-   *   Identifier.
+   *   The identifier for the harvest plan.
    *
    * @throws \Exception
    *   Exceptions may be thrown if validation fails.
@@ -402,6 +401,11 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @return bool
    *   TRUE if harvest plan validates. Throws exception otherwise.
+   *
+   * @throws \Exception
+   *   Thrown on validation failure.
+   *
+   * @see \Drupal\harvest\ETL\Factory::validateHarvestPlan()
    */
   public function validateHarvestPlan($plan): bool {
     return Factory::validateHarvestPlan($plan);
