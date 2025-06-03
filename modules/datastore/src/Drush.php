@@ -335,17 +335,6 @@ class Drush extends DrushCommands {
   /**
    * Return the dataset uuid associated with the provided data table name.
    *
-   * Will do the following:
-   * - Deconstruct the data table id.
-   * -- datastore_
-   * -- identifier
-   * -- version
-   * -- perspective
-   * - Lookup the associated resource ID
-   * - Lookup the associated distribution UUID
-   * - Lookup the associated dataset UUID
-   * - Display dataset UUID to console.
-   *
    * @param string $data_table_name
    *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
    *
