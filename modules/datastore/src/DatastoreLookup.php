@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
+use Drupal\metastore\Reference\ReferenceLookup;
 
 /**
  * Implementation of various lookup utilities related to the datastore.
@@ -19,13 +20,22 @@ class DatastoreLookup implements DatastoreLookupInterface {
   protected $database;
 
   /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+
+  protected $referenceLookup;
+
+  /**
    * DataStoreLookupService constructor.
    *
    * @param \Drupal\Core\Database\Connection $database
    *   Database connection service.
    */
-  public function __construct(Connection $database) {
+  public function __construct(Connection $database, ReferenceLookup $referenceLookup) {
     $this->database = $database;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -63,46 +73,25 @@ class DatastoreLookup implements DatastoreLookupInterface {
   }
 
   /**
-   * {@inheritDoc}
+   * Get the distribution UUID for a given resource ID.
+   *
+   * @param string $resource_id
+   *   The UUID of the resource node.
+   *
+   * @return string
+   *   The UUID of the related distribution node.
+   *
+   * @throws \RuntimeException
+   *   If no distribution is found.
    */
   public function resourceToDistribution(string $resource_id): string {
-    if ($resource_id) {
-      // Tack on an underscore to the
-      // end of the provided resource ID.
-      // We need this to search the json metadata table
-      // for the identifier property correctly without
-      // bringing back too many results.
-      // (An underscore always follows the complete resource ID).
-      $search_id = $resource_id . '_';
-      // Now we have our associated resource identifier so
-      // Use it to find the associated distribution UUID
-      // from the node__field_json_metadata table.
-      // Build the query for searching the json metadata table.
-      $distribution_query = $this->database->select('node__field_json_metadata', 'nfm');
-      // Add our JSON_EXTRACT expression
-      // targeting the identifier property.
-      $distribution_query->addExpression("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier');
-      // Add a LIKE condition with our
-      // escaped search value.
-      $distribution_query->condition(
-        'nfm.field_json_metadata_value',
-        '%' . $this->database->escapeLike($search_id) . '%',
-        'LIKE'
-      );
-      // Get our result (distribution UUID) from our
-      // executed query as an associative array.
-      $distribution_result = $distribution_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
-      // Extract the distribution identifier value
-      // from the associative array.
-      // This should only be one level deep.
-      if ($distribution_result) {
-        $distribution_identifier = $distribution_result[0]['identifier'];
-        return $distribution_identifier;
-      }
-      else {
-        throw new \Exception("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource and it's ID exists in the database.");
-      }
+    $referencers = $this->referenceLookup->getReferencers($resource_id, 'dcat:distribution');
+
+    if (empty($referencers)) {
+      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
     }
+
+    return $referencers[0];
   }
 
   /**
