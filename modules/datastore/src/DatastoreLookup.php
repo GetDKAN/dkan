@@ -77,7 +77,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
    *   If no distribution is found.
    */
   public function resourceToDistribution(string $resource_id): string {
-    $referencers = $this->referenceLookup->getReferencers($resource_id, 'dcat:distribution');
+    $referencers = $this->referenceLookup->getReferencers($resource_id, 'dcat:distribution', 'uuid');
 
     if (empty($referencers)) {
       throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
@@ -103,7 +103,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
       throw new \InvalidArgumentException("Dataset lookup: Distribution UUID must be 36 characters.");
     }
 
-    $referencers = $this->referenceLookup->getReferencers($distribution_id, 'dcat:dataset');
+    $referencers = $this->referenceLookup->getReferencers($distribution_id, 'dcat:dataset', 'uuid');
 
     if (empty($referencers)) {
       throw new \RuntimeException("No dataset found for distribution ID: {$distribution_id}");
