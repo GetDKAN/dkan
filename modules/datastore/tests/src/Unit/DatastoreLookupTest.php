@@ -83,7 +83,7 @@ class DatastoreLookupTest extends TestCase {
    * @covers ::datatableToResourceLookup
    */
   public function testDatatableToResourceLookup(): void {
-    $data_table_name = 'datatable-name';
+    $table_name = 'datatable-name';
     $expected_identifier = 'expected-identifier';
 
     // Mock the SelectInterface.
@@ -112,8 +112,8 @@ class DatastoreLookupTest extends TestCase {
     $select->expects($this->once())
       ->method('where')
       ->with(
-        'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :data_table_name',
-        [':data_table_name' => $data_table_name]
+        'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :table_name',
+        [':table_name' => $table_name]
       )
       ->willReturnSelf();
 
@@ -122,7 +122,7 @@ class DatastoreLookupTest extends TestCase {
       ->willReturn($statement);
 
     // Call the method and assert the result.
-    $result = $this->datastoreLookup->datatableToResourceLookup($data_table_name);
+    $result = $this->datastoreLookup->datatableToResourceLookup($table_name);
     $this->assertEquals($expected_identifier, $result);
   }
 
@@ -182,7 +182,7 @@ class DatastoreLookupTest extends TestCase {
    * Tests the reverseDatasetLookup method for a successful lookup.
    */
   public function testReverseDatasetLookupSuccess(): void {
-    $data_table_name = 'datatable-name';
+    $table_name = 'datatable-name';
     $resource_id = 'resource-id';
     $distribution_uuid = 'distribution-uuid';
     $dataset_uuid = 'dataset-uuid';
@@ -190,7 +190,7 @@ class DatastoreLookupTest extends TestCase {
     // Set up the expectations for the datastore lookup methods.
     $this->datastoreLookupInterface->expects($this->once())
       ->method('datatableToResourceLookup')
-      ->with($data_table_name)
+      ->with($table_name)
       ->willReturn($resource_id);
 
     $this->datastoreLookupInterface->expects($this->once())
@@ -209,7 +209,7 @@ class DatastoreLookupTest extends TestCase {
       ->with('Dataset UUID = ' . $dataset_uuid);
 
     // Call the reverseDatasetLookup method and assert the result.
-    $result = $this->drush->reverseDatasetLookup($data_table_name);
+    $result = $this->drush->reverseDatasetLookup($table_name);
     $this->assertEquals(DrushCommands::EXIT_SUCCESS, $result);
   }
 
@@ -219,21 +219,21 @@ class DatastoreLookupTest extends TestCase {
    * @covers ::reverseDatasetLookup
    */
   public function testReverseDatasetLookupError(): void {
-    $data_table_name = 'invalid-datatable-name';
+    $table_name = 'invalid-datatable-name';
 
     // Set up the expectations for the datastore lookup methods.
     $this->datastoreLookupInterface->expects($this->once())
       ->method('datatableToResourceLookup')
-      ->with($data_table_name)
+      ->with($table_name)
       ->willReturn('');
 
     // Set up the expectation for the output.
     $this->output->expects($this->once())
       ->method('writeln')
-      ->with('Can not map data table to dataset: ' . $data_table_name);
+      ->with('Can not map data table to dataset: ' . $table_name);
 
     // Call the reverseDatasetLookup method and assert the result.
-    $result = $this->drush->reverseDatasetLookup($data_table_name);
+    $result = $this->drush->reverseDatasetLookup($table_name);
     $this->assertEquals(DrushCommands::EXIT_FAILURE, $result);
   }
 

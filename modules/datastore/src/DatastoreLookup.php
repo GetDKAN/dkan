@@ -41,8 +41,8 @@ class DatastoreLookup implements DatastoreLookupInterface {
   /**
    * {@inheritDoc}
    */
-  public function datatableToResourceLookup(string $data_table_name): string {
-    if ($data_table_name) {
+  public function datatableToResourceLookup(string $table_name): string {
+    if ($table_name) {
       // Establish DB connection.
       $resource_query = $this->database->select('dkan_metastore_resource_mapper', 'dm')
         ->fields('dm', ['identifier']);
@@ -54,8 +54,8 @@ class DatastoreLookup implements DatastoreLookupInterface {
       // in turn creates the data table name,
       // so we're reversing that with this query.
       $resource_query->where(
-        'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :data_table_name',
-        [':data_table_name' => $data_table_name]
+        'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :table_name',
+        [':table_name' => $table_name]
       );
       // Execute the query and fetch the results as an associative array.
       $resource_result = $resource_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
@@ -67,7 +67,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
         return $resource_identifier;
       }
       else {
-        throw new \Exception("Resource lookup: Can not map data table name {$data_table_name} to resource ID. Please make sure your data table name exists as a table in the database.");
+        throw new \Exception("Resource lookup: Can not map data table name {$table_name} to resource ID. Please make sure your data table name exists as a table in the database.");
       }
     }
   }
