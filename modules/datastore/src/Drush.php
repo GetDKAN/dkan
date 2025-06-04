@@ -339,6 +339,7 @@ class Drush extends DrushCommands {
    *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
    *
    * @command dkan:datastore:reverse-dataset-lookup
+   * @aliases dkan:datastore:rdl
    */
   public function reverseDatasetLookup(string $data_table_name) {
     $resource_id = '';
