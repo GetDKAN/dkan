@@ -47,21 +47,13 @@ class DatastoreLookup implements DatastoreLookupInterface {
       $resource_query = $this->database->select('dkan_metastore_resource_mapper', 'dm')
         ->fields('dm', ['identifier']);
       // Add the condition using a raw SQL expression.
-      // We want just the identifier here which
-      // is part of an amalgamation of an MD5 hash of the
-      // identifier, version, and perspective
-      // of the related resource which
-      // in turn creates the data table name,
-      // so we're reversing that with this query.
       $resource_query->where(
         'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :table_name',
         [':table_name' => $table_name]
       );
       // Execute the query and fetch the results as an associative array.
       $resource_result = $resource_query->execute()->fetchAll(\PDO::FETCH_ASSOC);
-      // If our query returns something...
       // Extract the identifier value
-      // from the returned associative array.
       if ($resource_result) {
         $resource_identifier = $resource_result[0]['identifier'];
         return $resource_identifier;
