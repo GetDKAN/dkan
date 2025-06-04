@@ -78,9 +78,9 @@ class DatastoreLookupTest extends TestCase {
   }
 
   /**
-   * Tests the datatableToResourceLookup method.
+   * Tests the tableToResourceLookup method.
    *
-   * @covers ::datatableToResourceLookup
+   * @covers ::tableToResourceLookup
    */
   public function testDatatableToResourceLookup(): void {
     $table_name = 'datatable-name';
@@ -122,7 +122,7 @@ class DatastoreLookupTest extends TestCase {
       ->willReturn($statement);
 
     // Call the method and assert the result.
-    $result = $this->datastoreLookup->datatableToResourceLookup($table_name);
+    $result = $this->datastoreLookup->tableToResourceLookup($table_name);
     $this->assertEquals($expected_identifier, $result);
   }
 
@@ -189,7 +189,7 @@ class DatastoreLookupTest extends TestCase {
 
     // Set up the expectations for the datastore lookup methods.
     $this->datastoreLookupInterface->expects($this->once())
-      ->method('datatableToResourceLookup')
+      ->method('tableToResourceLookup')
       ->with($table_name)
       ->willReturn($resource_id);
 
@@ -223,14 +223,14 @@ class DatastoreLookupTest extends TestCase {
 
     // Set up the expectations for the datastore lookup methods.
     $this->datastoreLookupInterface->expects($this->once())
-      ->method('datatableToResourceLookup')
+      ->method('tableToResourceLookup')
       ->with($table_name)
       ->willReturn('');
 
     // Set up the expectation for the output.
     $this->output->expects($this->once())
       ->method('writeln')
-      ->with('Can not map data table to dataset: ' . $table_name);
+      ->with('Can not map datastore table to dataset: ' . $table_name);
 
     // Call the reverseDatasetLookup method and assert the result.
     $result = $this->drush->reverseDatasetLookup($table_name);

@@ -333,10 +333,10 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Return the dataset uuid associated with the provided data table name.
+   * Return the dataset uuid associated with the provided datastore table name.
    *
    * @param string $table_name
-   *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
+   *   Datastore Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
    *
    * @command dkan:datastore:reverse-dataset-lookup
    * @aliases dkan:datastore:rdl
@@ -345,7 +345,7 @@ class Drush extends DrushCommands {
     $resource_id = '';
     $distribution_uuid = '';
     if ($table_name) {
-      $resource_id = $this->datastoreLookup->datatableToResourceLookup($table_name);
+      $resource_id = $this->datastoreLookup->tableToResourceLookup($table_name);
     }
     if ($resource_id) {
       $distribution_uuid = $this->datastoreLookup->resourceToDistribution($resource_id);
@@ -356,7 +356,7 @@ class Drush extends DrushCommands {
       $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
       return DrushCommands::EXIT_SUCCESS;
     }
-    $this->output()->writeln('Can not map data table to dataset: ' . $table_name);
+    $this->output()->writeln('Can not map datastore table to dataset: ' . $table_name);
     return DrushCommands::EXIT_FAILURE;
   }
 

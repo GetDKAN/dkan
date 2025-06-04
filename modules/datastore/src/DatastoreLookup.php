@@ -41,7 +41,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
   /**
    * {@inheritDoc}
    */
-  public function datatableToResourceLookup(string $table_name): string {
+  public function tableToResourceLookup(string $table_name): string {
     if ($table_name) {
       // Establish DB connection.
       $resource_query = $this->database->select('dkan_metastore_resource_mapper', 'dm')
@@ -59,7 +59,8 @@ class DatastoreLookup implements DatastoreLookupInterface {
         return $resource_identifier;
       }
       else {
-        throw new \Exception("Resource lookup: Can not map data table name {$table_name} to resource ID. Please make sure your data table name exists as a table in the database.");
+        throw new \Exception("Resource lookup: Can not map datastore table name {$table_name}
+        to resource ID. Please make sure your datastore table name exists as a table in the database.");
       }
     }
   }
@@ -80,7 +81,8 @@ class DatastoreLookup implements DatastoreLookupInterface {
     $referencers = $this->referenceLookup->getReferencers($resource_id, 'dcat:distribution', 'uuid');
 
     if (empty($referencers)) {
-      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
+      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id}
+      to distribution UUID. Please make sure your resource exists in the database.");
     }
 
     return $referencers[0];
@@ -111,7 +113,5 @@ class DatastoreLookup implements DatastoreLookupInterface {
 
     return $referencers[0];
   }
-
-
 
 }

@@ -17,7 +17,7 @@ dkan:datastore:reverse-dataset-lookup
 
   **Arguments**
 
-  - **data_table_name** The datastore table name in the database.
+  - **table_name** The datastore table name in the database.
 
   **Usage**
 

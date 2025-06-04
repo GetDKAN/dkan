@@ -10,7 +10,7 @@ namespace Drupal\datastore;
 interface DatastoreLookupInterface {
 
   /**
-   * Return the resource ID associated with the provided data table name.
+   * Return the resource ID associated with the provided datastore table name.
    *
    * @param string $table_name
    *   Data Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
@@ -18,7 +18,7 @@ interface DatastoreLookupInterface {
    * @throws \Exception
    *   If $table_name can not be found in DB.
    */
-  public function datatableToResourceLookup(string $table_name): string;
+  public function tableToResourceLookup(string $table_name): string;
 
   /**
    * Return the distribution associated with the provided resource ID.
