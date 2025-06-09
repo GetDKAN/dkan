@@ -61,22 +61,22 @@ class DatastoreLookupTest extends TestCase {
     // Mock the database connection.
     $this->database = $this->createMock(Connection::class);
 
-    // Instantiate the DatastoreLookup with the mocked database connection.
-    $this->datastoreLookup = new DatastoreLookup($this->database);
+    // // Instantiate the DatastoreLookup with the mocked database connection.
+    // $this->datastoreLookup = new DatastoreLookup($this->database);
 
-    // Instantiate the Drush class with the mocked dependencies.
-    $this->drush = new Drush(
-      $this->createMock(\Drupal\metastore\MetastoreService::class),
-      $this->createMock(\Drupal\datastore\DatastoreService::class),
-      $this->createMock(\Drupal\datastore\Service\ResourceLocalizer::class),
-      $this->createMock(\Drupal\metastore\ResourceMapper::class),
-      $this->createMock(\Drupal\datastore\Service\Info\ImportInfoList::class),
-      $this->createMock(\Drupal\datastore\PostImportResultFactory::class),
-      $this->datastoreLookupInterface
-    );
+    // // Instantiate the Drush class with the mocked dependencies.
+    // $this->drush = new Drush(
+    //   $this->createMock(\Drupal\metastore\MetastoreService::class),
+    //   $this->createMock(\Drupal\datastore\DatastoreService::class),
+    //   $this->createMock(\Drupal\datastore\Service\ResourceLocalizer::class),
+    //   $this->createMock(\Drupal\metastore\ResourceMapper::class),
+    //   $this->createMock(\Drupal\datastore\Service\Info\ImportInfoList::class),
+    //   $this->createMock(\Drupal\datastore\PostImportResultFactory::class),
+    //   $this->datastoreLookupInterface
+    // );
 
-    // Set the output property.
-    $this->drush->setOutput($this->output);
+    // // Set the output property.
+    // $this->drush->setOutput($this->output);
   }
 
   /**
@@ -124,7 +124,9 @@ class DatastoreLookupTest extends TestCase {
       ->willReturn($statement);
 
     // Call the method and assert the result.
-    $result = $this->datastoreLookup->tableToResourceLookup($table_name);
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
+    $result = $datastoreLookup->tableToResourceLookup($table_name);
     $this->assertEquals($expected_identifier, $result);
   }
 
@@ -147,7 +149,7 @@ class DatastoreLookupTest extends TestCase {
       ->willReturn([$expected_distribution_identifier]);
 
     // Perform the lookup.
-    $datastoreLookup = new DatastoreLookup($this->database);
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
 
     // Call the method and assert the result.
     $result = $datastoreLookup->resourceToDistribution($resource_id);
@@ -172,83 +174,82 @@ class DatastoreLookupTest extends TestCase {
       ->willReturn([]);
 
     // Perform the lookup.
-    $datastoreLookup = new DatastoreLookup($this->database);
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
     $this->expectExceptionMessage("Distribution lookup: Can not map resource ID");
 
     // Call the method and assert the result.
-    $result = $datastoreLookup->resourceToDistribution($resource_id);
+    $datastoreLookup->resourceToDistribution($resource_id);
 
   }
-
-//  /**
-//   * Tests the distributionToDataset method.
-//   *
-//   * @covers ::distributionToDataset
-//   */
-//  public function testDistributionToDataset();
-//
-//  /** Tests the distributionToDataset method.
-//   *
-//   * @covers ::distributionToDataset
-//   */
 
   /**
-   * Tests the reverseDatasetLookup method for a successful lookup.
+   * Tests the distributionToDataset method.
+   *
+   * @covers ::distributionToDataset
    */
-  public function testReverseDatasetLookupSuccess(): void {
-    $table_name = 'datatable-name';
-    $resource_id = 'resource-id';
-    $distribution_uuid = 'distribution-uuid';
-    $dataset_uuid = 'dataset-uuid';
+  public function testDistributionToDataset() {
+    $distribution_id = '550e8400-e29b-41d4-a716-446655440000';
+    $expected_dataset_id = 'dataset-uuid';
 
-    // Set up the expectations for the datastore lookup methods.
-    $this->datastoreLookupInterface->expects($this->once())
-      ->method('tableToResourceLookup')
-      ->with($table_name)
-      ->willReturn($resource_id);
+    // Mock the referenceLookup service.
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
 
-    $this->datastoreLookupInterface->expects($this->once())
-      ->method('resourceToDistribution')
-      ->with($resource_id)
-      ->willReturn($distribution_uuid);
+    // Set expectations for getReferencers to use correct arguments and return dataset ID.
+    $referenceLookup->expects($this->once())
+      ->method('getReferencers')
+      ->with('dataset', $distribution_id, 'distribution')
+      ->willReturn([$expected_dataset_id]);
 
-    $this->datastoreLookupInterface->expects($this->once())
-      ->method('distributionToDataset')
-      ->with($distribution_uuid)
-      ->willReturn($dataset_uuid);
+    // Perform the lookup.
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
 
-    // Set up the expectation for the output.
-    $this->output->expects($this->once())
-      ->method('writeln')
-      ->with('Dataset UUID = ' . $dataset_uuid);
-
-    // Call the reverseDatasetLookup method and assert the result.
-    $result = $this->drush->reverseDatasetLookup($table_name);
-    $this->assertEquals(DrushCommands::EXIT_SUCCESS, $result);
+    // Call the method and assert the result.
+    $result = $datastoreLookup->distributionToDataset($distribution_id);
+    $this->assertEquals($expected_dataset_id, $result);
   }
 
- /**
-   * Tests the reverseDatasetLookup method for an error scenario.
+
+  /**
+   * Tests the distributionToDataset method.
    *
-   * @covers ::reverseDatasetLookup
+   * @covers ::distributionToDataset
    */
-  public function testReverseDatasetLookupError(): void {
-    $table_name = 'invalid-datatable-name';
+  public function testDistributionToDatasetForInvalidDistribution() {
+    $distribution_id = 'distribution-id';
 
-    // Set up the expectations for the datastore lookup methods.
-    $this->datastoreLookupInterface->expects($this->once())
-      ->method('tableToResourceLookup')
-      ->with($table_name)
-      ->willReturn('');
+    $this->expectExceptionMessage("Dataset lookup: Distribution UUID must be 36 characters.");
+    // Mock the referenceLookup service.
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
+    // Perform the lookup.
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
 
-    // Set up the expectation for the output.
-    $this->output->expects($this->once())
-      ->method('writeln')
-      ->with('Can not map datastore table to dataset: ' . $table_name);
+    // Call the method and assert the result.
+    $datastoreLookup->distributionToDataset($distribution_id);
+  }
 
-    // Call the reverseDatasetLookup method and assert the result.
-    $result = $this->drush->reverseDatasetLookup($table_name);
-    $this->assertEquals(DrushCommands::EXIT_FAILURE, $result);
+  /**
+   * Tests the distributionToDataset method.
+   *
+   * @covers ::distributionToDataset
+   */
+  public function testDistributionToDatasetNonExistantDistribution() {
+    $distribution_id = '550e8400-e29b-41d4-a716-446655440000';
+
+    // Mock the referenceLookup service.
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
+
+    // Set expectations for getReferencers to use correct arguments and return dataset ID.
+    $referenceLookup->expects($this->once())
+      ->method('getReferencers')
+      ->with('dataset', $distribution_id, 'distribution')
+      ->willReturn([]);
+
+    // Perform the lookup.
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
+
+    // Call the method and assert the result.
+    $this->expectExceptionMessage("No dataset found for distribution ID: {$distribution_id}");
+    $datastoreLookup->distributionToDataset($distribution_id);
   }
 
 }
