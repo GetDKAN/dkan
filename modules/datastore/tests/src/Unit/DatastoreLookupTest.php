@@ -9,6 +9,8 @@ use Drupal\datastore\DatastoreLookupInterface;
 use Drupal\datastore\DatastoreLookup;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\SelectInterface;
+use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\metastore\ResourceMapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drupal\Core\Database\StatementInterface;
@@ -132,51 +134,63 @@ class DatastoreLookupTest extends TestCase {
    * @covers ::resourceToDistribution
    */
   public function testResourceToDistribution(): void {
-    $resource_id = 'resource-uuid';
+    $resource_id = 'resource-id';
     $expected_distribution_identifier = 'distribution-uuid';
-  
-    // Mock the SelectInterface.
-    $select = $this->createMock(SelectInterface::class);
-  
-    // Mock the query result.
-    $query_result = [['identifier' => $expected_distribution_identifier]];
-  
-    // Mock the StatementInterface.
-    $statement = $this->createMock(StatementInterface::class);
-    $statement->expects($this->once())
-      ->method('fetchAll')
-      ->willReturn($query_result);
-  
-    // Set up the expectations for the database select query.
-    $this->database->expects($this->once())
-      ->method('select')
-      ->with('node__field_json_metadata', 'nfm')
-      ->willReturn($select);
 
-    // Add our special expression
-    $select->expects($this->once())
-      ->method('addExpression')
-      ->with("JSON_UNQUOTE(JSON_EXTRACT(nfm.field_json_metadata_value, '$.identifier'))", 'identifier')
-      ->willReturnSelf();
-  
-    // Add our special condition
-    $select->expects($this->once())
-      ->method('condition')
-      ->with(
-        'nfm.field_json_metadata_value',
-        '%' . $this->database->escapeLike($resource_id . '_') . '%',
-        'LIKE'
-      )
-      ->willReturnSelf();
-  
-    $select->expects($this->once())
-      ->method('execute')
-      ->willReturn($statement);
-  
+    // Mock the referenceLookup service.
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
+
+    // Set expectations for getReferencers to use correct arguements and return distribution ID.
+    $referenceLookup->expects($this->once())
+      ->method('getReferencers')
+      ->with('distribution', $resource_id, 'downloadURL')
+      ->willReturn([$expected_distribution_identifier]);
+
+    // Perform the lookup.
+    $datastoreLookup = new DatastoreLookup($this->database);
+
     // Call the method and assert the result.
-    $result = $this->datastoreLookup->resourceToDistribution($resource_id);
+    $result = $datastoreLookup->resourceToDistribution($resource_id);
     $this->assertEquals($expected_distribution_identifier, $result);
   }
+
+  /**
+   * Tests  resourceToDistribution method for empty result.
+   *
+   * @covers ::resourceToDistribution
+   */
+  public function testResourceToDistributionForEmptyResult(): void {
+    $resource_id = 'resource-id';
+
+    //Mock the referenceLookup service.
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
+
+    // Do the lookup.
+    $referenceLookup->expects($this->once())
+      ->method('getReferencers')
+      ->with('distribution', $resource_id, 'downloadURL')
+      ->willReturn([]);
+
+    // Perform the lookup.
+    $datastoreLookup = new DatastoreLookup($this->database);
+    $this->expectExceptionMessage("Distribution lookup: Can not map resource ID");
+
+    // Call the method and assert the result.
+    $result = $datastoreLookup->resourceToDistribution($resource_id);
+
+  }
+
+//  /**
+//   * Tests the distributionToDataset method.
+//   *
+//   * @covers ::distributionToDataset
+//   */
+//  public function testDistributionToDataset();
+//
+//  /** Tests the distributionToDataset method.
+//   *
+//   * @covers ::distributionToDataset
+//   */
 
   /**
    * Tests the reverseDatasetLookup method for a successful lookup.

@@ -42,6 +42,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
    * {@inheritDoc}
    */
   public function tableToResourceLookup(string $table_name): string {
+    // Maps the datastore table name to the resource ID
     if ($table_name) {
       // Establish DB connection.
       $resource_query = $this->database->select('dkan_metastore_resource_mapper', 'dm')
@@ -78,8 +79,8 @@ class DatastoreLookup implements DatastoreLookupInterface {
    *   If no distribution is found.
    */
   public function resourceToDistribution(string $resource_id): string {
+    // Maps the resource ID to the distribution ID
     $referencers = $this->referenceLookup->getReferencers('distribution', $resource_id, 'downloadURL');
-
     if (empty($referencers)) {
       throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id}
       to distribution UUID. Please make sure your resource exists in the database.");
@@ -101,6 +102,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
    *   If no dataset is found.
    */
   public function distributionToDataset(string $distribution_id): string {
+    // Maps the distribution ID to the dataset
     if (strlen($distribution_id) !== 36) {
       throw new \InvalidArgumentException("Dataset lookup: Distribution UUID must be 36 characters.");
     }
