@@ -8,6 +8,8 @@ dependencies:
     - content_moderation
     - node
     - user
+_core:
+  default_config_hash: irFBft1oX4jNnCgXVnCZQEAr0hqqSqCRkUrLnnWFfus
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -572,6 +574,7 @@ display:
       pager:
         type: full
         options:
+          pagination_heading_level: h4
           items_per_page: 50
           tags:
             next: 'Next ›'
@@ -984,63 +987,6 @@ display:
     position: 1
     display_options:
       fields:
-        node_bulk_form:
-          id: node_bulk_form
-          table: node
-          field: node_bulk_form
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: node
-          plugin_id: node_bulk_form
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          action_title: Action
-          include_exclude: include
-          selected_actions:
-            - archive_current
-            - hide_current
-            - node_delete_action
-            - publish_latest
         uuid:
           id: uuid
           table: node
@@ -1480,21 +1426,22 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        nothing:
-          id: nothing
-          table: views
-          field: nothing
+        operations:
+          id: operations
+          table: node
+          field: operations
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: custom
-          label: Edit
+          entity_type: node
+          plugin_id: entity_operations
+          label: Operations
           exclude: false
           alter:
-            alter_text: true
-            text: edit
-            make_link: true
-            path: '/node/{{ nid }}/edit'
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
             absolute: false
             external: false
             replace_spaces: false
@@ -1528,7 +1475,8 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: false
+          hide_alter_empty: true
+          destination: false
       defaults:
         fields: false
       display_extenders: {  }
@@ -1549,7 +1497,7 @@ display:
         weight: -10
         menu_name: admin
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
