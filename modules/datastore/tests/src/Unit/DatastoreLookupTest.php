@@ -130,6 +130,57 @@ class DatastoreLookupTest extends TestCase {
     $this->assertEquals($expected_identifier, $result);
   }
 
+    /**
+   * Tests the tableToResourceLookup method.
+   *
+   * @covers ::tableToResourceLookup
+   */
+  public function testDatatableToResourceLookupNoMapping(): void {
+    $table_name = 'datatable-name';
+
+    // Mock the SelectInterface.
+    $select = $this->createMock(SelectInterface::class);
+
+    // Mock the query result.
+    $query_result = [];
+
+    // Mock the StatementInterface.
+    $statement = $this->createMock(StatementInterface::class);
+    $statement->expects($this->once())
+      ->method('fetchAll')
+      ->willReturn($query_result);
+
+    // Set up the expectations for the database select query.
+    $this->database->expects($this->once())
+      ->method('select')
+      ->with('dkan_metastore_resource_mapper', 'dm')
+      ->willReturn($select);
+
+    $select->expects($this->once())
+      ->method('fields')
+      ->with('dm', ['identifier'])
+      ->willReturnSelf();
+
+    $select->expects($this->once())
+      ->method('where')
+      ->with(
+        'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :table_name',
+        [':table_name' => $table_name]
+      )
+      ->willReturnSelf();
+
+    $select->expects($this->once())
+      ->method('execute')
+      ->willReturn($statement);
+
+    // Call the method and assert the result.
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
+
+    $this->expectExceptionMessage("Resource lookup: Can not map datastore table name");
+    $datastoreLookup->tableToResourceLookup($table_name);
+  }
+
   /**
    * Tests the resourceToDistribution method.
    *
