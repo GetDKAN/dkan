@@ -56,7 +56,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
   public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string {
     $mode = $this->getDataDictionaryMode();
     return match ($mode) {
-      self::MODE_NONE => NULL,
+      self::MODE_NONE => "Disabled",
       self::MODE_SITEWIDE => $this->getSitewideDictionaryId(),
       self::MODE_REFERENCE => $this->getReferenceDictionaryId($resourceId, $resourceIdVersion),
       default => throw new \OutOfRangeException(sprintf('Unsupported data dictionary mode "%s"', $mode)),
@@ -67,10 +67,12 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
    * {@inheritdoc}
    */
   public function getReferenceDictionaryId(string $resourceId, ?int $resourceIdVersion = NULL): ?string {
-    // Should we log an error when no resource version is given?
-    // This can lead to picking up an orphaned distribution.
-    $partial_resource_id = $resourceId . ($resourceIdVersion ? "__$resourceIdVersion" : '');
-    $referencers = $this->lookup->getReferencers('distribution', $partial_resource_id, 'downloadURL');
+    $resource_id = $resourceId . "__" . $resourceIdVersion;
+    $referencers = $this->lookup->getReferencers('distribution', $resource_id, 'downloadURL');
+    if (empty($referencers)) {
+      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id}
+      to distribution UUID. Please make sure your resource exists in the database.");
+    }
     $distributionId = $referencers[0] ?? NULL;
     if ($distributionId === NULL) {
       return NULL;
