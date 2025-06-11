@@ -56,6 +56,20 @@ class Drush extends DrushCommands {
   protected PostImportResultFactory $postImportResultFactory;
 
   /**
+   * The Datastore lookup service.
+   *
+   * @var \Drupal\datastore\DatastoreLookupInterface
+   */
+  protected DatastoreLookupInterface $datastoreLookup;
+
+  /**
+   * Database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -64,7 +78,8 @@ class Drush extends DrushCommands {
     ResourceLocalizer $resourceLocalizer,
     ResourceMapper $resourceMapper,
     ImportInfoList $importInfoList,
-    PostImportResultFactory $postImportResultFactory
+    PostImportResultFactory $postImportResultFactory,
+    DatastoreLookupInterface $datastoreLookup
   ) {
     parent::__construct();
     $this->metastoreService = $metastoreService;
@@ -73,6 +88,7 @@ class Drush extends DrushCommands {
     $this->resourceMapper = $resourceMapper;
     $this->importInfoList = $importInfoList;
     $this->postImportResultFactory = $postImportResultFactory;
+    $this->datastoreLookup = $datastoreLookup;
   }
 
   /**
@@ -313,6 +329,34 @@ class Drush extends DrushCommands {
       return DrushCommands::EXIT_FAILURE;
     }
     $this->output()->writeln('No resource for identifier: ' . $identifier);
+    return DrushCommands::EXIT_FAILURE;
+  }
+
+  /**
+   * Return the dataset uuid associated with the provided datastore table name.
+   *
+   * @param string $table_name
+   *   Datastore Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
+   *
+   * @command dkan:datastore:reverse-dataset-lookup
+   * @aliases dkan:datastore:rdl
+   */
+  public function reverseDatasetLookup(string $table_name) {
+    $resource_id = '';
+    $distribution_uuid = '';
+    if ($table_name) {
+      $resource_id = $this->datastoreLookup->tableToResourceLookup($table_name);
+    }
+    if ($resource_id) {
+      $distribution_uuid = $this->datastoreLookup->resourceToDistribution($resource_id);
+    }
+    if ($distribution_uuid) {
+      $dataset_uuid = $this->datastoreLookup->distributionToDataset($distribution_uuid);
+      // Output to console and end command.
+      $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
+      return DrushCommands::EXIT_SUCCESS;
+    }
+    $this->output()->writeln('Can not map datastore table to dataset: ' . $table_name);
     return DrushCommands::EXIT_FAILURE;
   }
 

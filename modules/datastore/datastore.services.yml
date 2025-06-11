@@ -11,6 +11,12 @@ services:
       - '@event_dispatcher'
       - '@dkan.metastore.reference_lookup'
 
+  dkan.datastore.lookup:
+    class: \Drupal\datastore\DatastoreLookup
+    arguments:
+      - '@database'
+      - '@dkan.metastore.reference_lookup'
+
   dkan.datastore.service.post_import:
     class: \Drupal\datastore\Service\PostImport
     arguments:
