@@ -53,7 +53,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
   /**
    * {@inheritdoc}
    */
-  public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string {
+  public function dictionaryIdFromResource(string $resourceId, int $resourceIdVersion): ?string {
     $mode = $this->getDataDictionaryMode();
     return match ($mode) {
       self::MODE_NONE => "Disabled",
@@ -66,7 +66,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
   /**
    * {@inheritdoc}
    */
-  public function getReferenceDictionaryId(string $resourceId, ?int $resourceIdVersion = NULL): ?string {
+  public function getReferenceDictionaryId(string $resourceId, int $resourceIdVersion): ?string {
     $resource_id = $resourceId . "__" . $resourceIdVersion;
     $referencers = $this->lookup->getReferencers('distribution', $resource_id, 'downloadURL');
     if (empty($referencers)) {

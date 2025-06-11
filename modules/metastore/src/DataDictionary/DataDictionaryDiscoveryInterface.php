@@ -22,7 +22,7 @@ interface DataDictionaryDiscoveryInterface {
    * @return string|null
    *   The data dictionary identifier or NULL if none exists.
    */
-  public function dictionaryIdFromResource(string $resourceId, ?int $resourceIdVersion = NULL): ?string;
+  public function dictionaryIdFromResource(string $resourceId, int $resourceIdVersion): ?string;
 
   /**
    * Look for a data dictionary from a metastore reference.
