@@ -15,6 +15,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group metastore
  * @group metastore_admin
  * @group functional
+ * @group functional1
  */
 class RedirectToDatasetsTest extends BrowserTestBase {
 

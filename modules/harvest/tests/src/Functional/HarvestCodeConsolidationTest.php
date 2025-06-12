@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace Drupal\datastore\Functional;
 
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
-use Drupal\harvest\HarvestService;
-use Drupal\sample_content\SampleContentService;
-use PHPUnit\Exception;
 
 /**
  * Tests update functions for the datastore module.
  *
  * @group datastore
  * @group update
+ * @group functional3
  */
 class HarvestCodeConsolidationTest extends UpdatePathTestBase {
 
@@ -30,9 +28,14 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
    * Test datastore module update 10001.
    */
   public function testUpdates10001on(): void {
+    /** @var \Drupal\sample_content\SampleContentService $sample_content_service */
+    $sample_content_service = \Drupal::service('dkan.sample_content.service');
+    // Create the JSON file in case it doesn't exist.
+    $sample_content_service->createDatasetJsonFileFromTemplate();
+
     // HarvestRun() should fail before update because harvest library
     // namespaces are included in class names stored in the database.
-    /** @var HarvestService $harvest_service */
+    /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = \Drupal::service('dkan.harvest.service');
     try {
       $harvest_service->runHarvest('sample_content');
@@ -50,4 +53,5 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
     $this->assertIsArray($result);
     $this->assertSame('SUCCESS', $result['status']['extract']);
   }
+
 }

@@ -15,6 +15,7 @@ use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
  * @group dkan
  * @group json_form_widget
  * @group functional
+ * @group functional2
  */
 class AdminDatasetFileUploadTest extends JsonFormTestBase {
 

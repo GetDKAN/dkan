@@ -22,6 +22,7 @@ use Drupal\harvest\ETL\Extract\DataJson;
  * @group harvest
  * @group functional
  * @group api
+ * @group functional1
  *
  * @todo Add API schema validation to responses.
  */

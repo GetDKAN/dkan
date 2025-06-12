@@ -15,6 +15,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group dkan
  * @group common
  * @group functional
+ * @group functional2
  *
  * @see \Drupal\Tests\system\Functional\System\RetrieveFileTest
  */

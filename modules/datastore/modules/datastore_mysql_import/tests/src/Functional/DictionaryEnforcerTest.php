@@ -15,6 +15,7 @@ use Drupal\Tests\datastore\Functional\DictionaryEnforcerTest as DatastoreDiction
  * @group datastore_mysql_import
  * @group functional
  * @group btb
+ * @group functional2
  */
 class DictionaryEnforcerTest extends DatastoreDictionaryEnforcerTest {
 

@@ -10,6 +10,7 @@ use Drupal\Tests\datastore\Functional\ImportLocalCopyOfRemoteFileTest as ParentT
  * @group datastore_mysql_import
  * @group btb
  * @group functional
+ * @group functional3
  */
 class ImportLocalCopyOfRemoteFileTest extends ParentTest {
 

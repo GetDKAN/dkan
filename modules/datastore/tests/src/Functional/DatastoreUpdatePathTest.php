@@ -11,6 +11,8 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  *
  * @group datastore
  * @group update
+ * @group dkan
+ * @group functional3
  */
 class DatastoreUpdatePathTest extends UpdatePathTestBase {
 

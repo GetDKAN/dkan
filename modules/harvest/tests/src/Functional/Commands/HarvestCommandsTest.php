@@ -13,7 +13,7 @@ use Drush\TestTraits\DrushTestTrait;
  * @group dkan
  * @group harvest
  * @group btb
- * @group functional
+ * @group functional2
  */
 class HarvestCommandsTest extends BrowserTestBase {
 
