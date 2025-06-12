@@ -105,15 +105,20 @@ class DkanDatasetAddNid extends ProcessorPluginBase implements ContainerFactoryP
    */
   public function addFieldValues(ItemInterface $item) {
     $id = $item->getId();
-    if ($id) {
-      $uuid = str_replace("dkan_dataset/", "", $id);
-      $nid = $this->entityRepository->loadEntityByUuid('node', $uuid)->id();
+    // Search_API can send all kinds of Items our way, so we must make sure
+    // we're only processing ours.
+    if (strpos($id, 'dkan_dataset/') === 0) {
+      $uuid = str_replace('dkan_dataset/', '', $id);
+      if ($entity = $this->entityRepository->loadEntityByUuid('node', $uuid)) {
+        $nid = $entity->id();
 
-      $fields = $item->getFields(FALSE);
-      $fields = $this->getFieldsHelper()->filterForPropertyPath($fields, $item->getDatasourceId(), 'search_api_nid');
+        $fields = $item->getFields(FALSE);
+        $fields = $this->getFieldsHelper()
+          ->filterForPropertyPath($fields, $item->getDatasourceId(), 'search_api_nid');
 
-      foreach ($fields as $field) {
-        $field->addValue($nid);
+        foreach ($fields as $field) {
+          $field->addValue($nid);
+        }
       }
     }
   }
