@@ -106,7 +106,7 @@ class HarvestCommandsTest extends KernelTestBase {
   public static function providePlanOpts(): array {
     return [
       'no identifier key' => [
-        'Undefined array key "identifier"', [
+        'Invalid harvest plan.  {"missing":"identifier"}', [
           'extract-type' => DataJson::class,
           'extract-uri' => 'uri',
           'transform' => [],

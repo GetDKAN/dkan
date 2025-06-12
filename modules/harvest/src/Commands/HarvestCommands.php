@@ -123,10 +123,10 @@ class HarvestCommands extends DrushCommands {
     // Filter the array, so subsequent plan schema validation will throw an
     // error if anything is missing.
     return (object) array_filter([
-      'identifier' => $opts['identifier'],
+      'identifier' => $opts['identifier'] ?? NULL,
       'extract' => (object) array_filter([
-        'type' => $opts['extract-type'] ?: NULL,
-        'uri' => $opts['extract-uri'] ?: NULL,
+        'type' => $opts['extract-type'] ?? NULL,
+        'uri' => $opts['extract-uri'] ?? NULL,
       ]),
       'transforms' => $opts['transform'],
       'load' => (object) array_filter([
