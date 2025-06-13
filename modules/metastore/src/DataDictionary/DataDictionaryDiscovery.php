@@ -68,27 +68,46 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
    */
   public function getReferenceDictionaryId(string $resourceId, int $resourceIdVersion): ?string {
     $resource_id = $resourceId . "__" . $resourceIdVersion;
-    $referencers = $this->lookup->getReferencers('distribution', $resource_id, 'downloadURL');
-    if (empty($referencers)) {
-      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id}
-      to distribution UUID. Please make sure your resource exists in the database.");
-    }
-    $distributionId = $referencers[0] ?? NULL;
+    $distributionId = $this->getDistributionId($resource_id);
     if ($distributionId === NULL) {
       return NULL;
     }
     $distribution = $this->metastore->get('distribution', $distributionId);
-    if (!isset($distribution->{"$.data.describedBy"})) {
+    if (!$this->hasValidDescribedBy($distribution)) {
       return NULL;
     }
-    if (($distribution->{"$.data.describedByType"} ?? NULL) == 'application/vnd.tableschema+json') {
-      try {
-        $uri = $this->urlGenerator->uriFromUrl($distribution->{"$.data.describedBy"});
-        return $this->urlGenerator->extractItemId($uri, "data-dictionary");
-      }
-      catch (\DomainException) {
-        return NULL;
-      }
+    return $this->extractDictionaryId($distribution->{"$.data.describedBy"});
+  }
+
+  /**
+   * Get the distribution ID for a given resource ID.
+   */
+  private function getDistributionId(string $resource_id): ?string {
+    $referencers = $this->lookup->getReferencers('distribution', $resource_id, 'downloadURL');
+    if (empty($referencers)) {
+      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
+    }
+    return $referencers[0] ?? NULL;
+  }
+
+  /**
+   * Verify that the distribution has a valid describedBy URL.
+   */
+  private function hasValidDescribedBy($distribution): bool {
+    return isset($distribution->{"$.data.describedBy"})
+      && (($distribution->{"$.data.describedByType"} ?? NULL) === 'application/vnd.tableschema+json');
+  }
+
+  /**
+   * Extract the data dictionary ID from the describedBy URL.
+   */
+  private function extractDictionaryId(string $describedBy): ?string {
+    try {
+      $uri = $this->urlGenerator->uriFromUrl($describedBy);
+      return $this->urlGenerator->extractItemId($uri, "data-dictionary");
+    }
+    catch (\DomainException) {
+      return NULL;
     }
   }
 

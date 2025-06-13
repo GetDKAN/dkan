@@ -31,8 +31,10 @@ interface DataDictionaryDiscoveryInterface {
    *   DKAN datastore resource identifier.
    * @param int $resourceIdVersion
    *   DKAN datastore resource version ID.
+   *
    * @throws \RuntimeException
    *   If no distribution is found.
+   *
    * @return string|null
    *   The data dictionary identifier or NULL if none exists.
    */
