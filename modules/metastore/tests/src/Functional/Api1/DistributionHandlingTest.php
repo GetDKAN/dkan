@@ -6,6 +6,11 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
+/**
+ * Tests the Distribution API.
+ *
+ * @group functional3
+ */
 class DistributionHandlingTest extends Api1TestBase {
 
   public function getEndpoint():string {

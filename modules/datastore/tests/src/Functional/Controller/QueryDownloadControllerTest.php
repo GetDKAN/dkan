@@ -16,6 +16,7 @@ use RootedData\RootedJsonData;
  * @group datastore
  * @group functional
  * @group btb
+ * @group functional3
  */
 class QueryDownloadControllerTest extends BrowserTestBase {
 

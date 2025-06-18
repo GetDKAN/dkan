@@ -11,6 +11,20 @@ dkan:dataset-info
 
 ~~~~~~
 
+dkan:datastore:reverse-dataset-lookup
+-----------------
+   Takes an argument of the table name and returns the dataset uuid.
+
+  **Arguments**
+
+  - **table_name** The datastore table name in the database.
+
+  **Usage**
+
+        ``drush dkan:datastore:reverse-dataset-lookup datastore_abcdefghijklmnop``
+
+~~~~~~
+
 dkan:datastore:drop
 -------------------
     Drop a datastore.

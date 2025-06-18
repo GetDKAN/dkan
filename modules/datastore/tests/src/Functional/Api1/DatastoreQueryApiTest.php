@@ -5,7 +5,16 @@ namespace Drupal\Tests\datastore\Functional\Api1;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
-class DatastoreQueryApiTest extends Api1TestBase {
+/**
+ * Tests the Datastore Query API.
+ *
+ * @group dkan
+ * @group datastore
+ * @group api1
+ * @group functional
+ * @group functional2
+ */
+ class DatastoreQueryApiTest extends Api1TestBase {
 
   public function getEndpoint():string {
     return 'api/1/metastore/schemas/dataset/items';

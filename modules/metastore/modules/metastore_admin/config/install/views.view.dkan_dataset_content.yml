@@ -569,9 +569,61 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        operations:
+          id: operations
+          table: node
+          field: operations
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          plugin_id: entity_operations
+          label: Operations
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          destination: false
       pager:
         type: full
         options:
+          pagination_heading_level: h4
           items_per_page: 50
           tags:
             next: 'Next ›'
@@ -855,7 +907,7 @@ display:
             status: status
             moderation_state: moderation_state
             revision_timestamp: revision_timestamp
-            nothing: nothing
+            operations: operations
           default: revision_timestamp
           info:
             node_bulk_form:
@@ -917,7 +969,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            nothing:
+            operations:
               align: ''
               separator: ''
               empty_column: false
@@ -1187,7 +1239,7 @@ display:
           alter:
             alter_text: false
             text: ''
-            make_link: false
+            make_link: true
             path: '/dataset/{{ uuid }}'
             absolute: false
             external: false
@@ -1226,7 +1278,7 @@ display:
           click_sort_column: value
           type: string
           settings:
-            link_to_entity: true
+            link_to_entity: false
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -1480,21 +1532,22 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        nothing:
-          id: nothing
-          table: views
-          field: nothing
+        operations:
+          id: operations
+          table: node
+          field: operations
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: custom
-          label: Edit
+          entity_type: node
+          plugin_id: entity_operations
+          label: Operations
           exclude: false
           alter:
-            alter_text: true
-            text: edit
-            make_link: true
-            path: '/node/{{ nid }}/edit'
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
             absolute: false
             external: false
             replace_spaces: false
@@ -1528,7 +1581,8 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: false
+          hide_alter_empty: true
+          destination: false
       defaults:
         fields: false
       display_extenders: {  }
@@ -2065,21 +2119,22 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        nothing:
-          id: nothing
-          table: views
-          field: nothing
+        operations:
+          id: operations
+          table: node
+          field: operations
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: custom
-          label: Edit
+          entity_type: node
+          plugin_id: entity_operations
+          label: Operations
           exclude: false
           alter:
-            alter_text: true
-            text: edit
-            make_link: true
-            path: '/node/{{ nid }}/edit'
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
             absolute: false
             external: false
             replace_spaces: false
@@ -2113,7 +2168,8 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: false
+          hide_alter_empty: true
+          destination: false
       filters:
         title:
           id: title

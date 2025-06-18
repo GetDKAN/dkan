@@ -87,7 +87,9 @@ class ReorderTest extends JsonFormTestBase {
 
     // SCENARIO TWO: BASIC REORDER EXISTING DATASET FORM, SAVE AND RE-EDIT
 
-    $page->find('css', 'tbody > tr:first-of-type > .views-field-nothing > a')->click();
+    // Click on the edit link on the listing page.
+    $page->find('css', 'tbody > tr:first-of-type > .views-field-operations a:contains(\'Edit\')')
+      ->click();
     // Move the second distribution to the first position.
     $this->distributionAction(1, self::MOVE_UP);
     // Assert that the title and URL of the original first distribution is

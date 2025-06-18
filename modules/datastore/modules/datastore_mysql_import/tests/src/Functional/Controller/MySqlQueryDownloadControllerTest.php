@@ -15,6 +15,7 @@ use Drupal\Tests\datastore\Functional\Controller\QueryDownloadControllerTest;
  * @group datastore_mysql_import
  * @group functional
  * @group btb
+ * @group functional1
  *
  * @see \Drupal\Tests\datastore\Functional\Controller\QueryDownloadControllerTest
  */

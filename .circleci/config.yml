@@ -58,10 +58,6 @@ commands:
             # Modify config to use our PHP version and database.
             ddev delete --omit-snapshot --yes
             ddev config --database="<< parameters.database_version >>" --php-version="<< parameters.php_version >>"
-            # With mysql 8, we need to set this permission.
-            if [ "<< parameters.database_version >>" = "mysql:8.0" ]; then
-              yq '.hooks.post-start += [{"exec": "echo '\''GRANT SESSION_VARIABLES_ADMIN on *.* TO db@`%`'\'' | mysql"}]' -i .ddev/config.yaml
-            fi
             cat .ddev/config.yaml
             ddev restart
             ddev status
@@ -126,6 +122,7 @@ commands:
 jobs:
   phpunit:
     executor: docker/machine
+    parallelism: 4
     parameters:
       php_version:
         description: "PHP major.minor for DDev to use."
@@ -155,6 +152,14 @@ jobs:
       - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: false
+      - run:
+          name: Set up GROUP_ARG variable for paralallel tests
+          command: |
+            EXCLUDES=$(seq -s, 1 $(($CIRCLE_NODE_TOTAL-1)) | sed 's/[0-9]\+/functional&/g')
+            [[ $CIRCLE_NODE_INDEX == 0 ]] \
+              && PHPUNIT_GROUP_ARG="exclude-group $EXCLUDES" \
+              || PHPUNIT_GROUP_ARG="group functional$CIRCLE_NODE_INDEX"
+            echo "export PHPUNIT_GROUP_ARG=\"$PHPUNIT_GROUP_ARG\"" >> $BASH_ENV
       - when:
           condition: << parameters.report_coverage >>
           steps:
@@ -164,25 +169,37 @@ jobs:
                   XDEBUG_MODE: coverage
                 command: |
                   ddev xdebug on
+                  mkdir -p $CIRCLE_WORKING_DIRECTORY/report/php
+                  mkdir $CIRCLE_WORKING_DIRECTORY/report/clover
                   $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
                   ddev dkan-phpunit \
-                    --coverage-clover /var/www/html/docroot/modules/contrib/dkan/clover.xml \
-                    --coverage-html /var/www/html/docroot/modules/contrib/dkan/coverage-html \
-                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
+                    --$PHPUNIT_GROUP_ARG \
+                    --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
+                    --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.cov \
+                    --log-junit /var/www/html/report/junit/junit.xml
                   TEST_RESULT=$?
-                  if [ -f docroot/modules/contrib/dkan/clover.xml ]; then
-                    echo "Coverage file: docroot/modules/contrib/dkan/clover.xml"
+                  echo "Listing all files in the report directory:"
+                  find $CIRCLE_WORKING_DIRECTORY/report -type f -ls
+                  if [ -f $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml ]; then
+                    echo "Coverage file: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   else
-                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/docroot/modules/contrib/dkan/clover.xml"
+                    echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   fi
-                  cd docroot/modules/contrib/dkan
-                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter after-build \
-                    --coverage-input-type clover \
-                    --prefix /var/www/html/dkan \
-                    --exit-code $TEST_RESULT
                   exit $TEST_RESULT
-            - store_artifacts:
-                path: docroot/modules/contrib/dkan/coverage-html
+            - run:
+                name: Reformat the coverage report
+                command: |
+                  cd $CIRCLE_WORKING_DIRECTORY/dkan
+                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter format-coverage \
+                    $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
+                    --input-type clover \
+                    --output $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.$CIRCLE_NODE_INDEX.json \
+                    --prefix /var/www/html/dkan
+            - persist_to_workspace:
+                root: report
+                paths:
+                - php
+                - codeclimate
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -190,9 +207,29 @@ jobs:
                 name: Run PHPUnit tests
                 command: |
                   ddev dkan-phpunit \
-                    --log-junit /var/www/html/docroot/modules/contrib/dkan/junit/junit.xml
+                    --$PHPUNIT_GROUP_ARG \
+                    --log-junit var/www/html/report/junit/junit.xml
       - store_test_results:
-          path: dkan/junit
+          path: report/junit
+
+  phpunit-coverage-report:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      - attach_workspace:
+          at: report
+      - run:
+          name: Install CodeClimate test reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Merge and send coverage report to CodeClimate
+          command: |
+            $CIRCLE_WORKING_DIRECTORY/cc-test-reporter sum-coverage \
+              $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.*.json \
+              --output - |
+              $CIRCLE_WORKING_DIRECTORY/cc-test-reporter upload-coverage --debug --input -
 
   cypress:
     machine:
@@ -263,11 +300,11 @@ workflows:
             parameters:
               dkan_recommended_branch: ["11.1.x-dev", "11.0.x-dev"]
               php_version: ["8.4", "8.3"]
-              database_version: ["mysql:8.0"]
+              database_version: ["mariadb:10.6"]
             exclude:
               - php_version: "8.4"
                 dkan_recommended_branch: "11.0.x-dev"
-                database_version: "mysql:8.0"
+                database_version: "mariadb:10.6"
       - phpunit:
           matrix:
             parameters:
@@ -280,6 +317,9 @@ workflows:
               dkan_recommended_branch: ["10.3.x-dev"]
               php_version: ["8.2", "8.1"]
               database_version: ["mysql:5.7"]
+      - phpunit-coverage-report:
+          requires:
+            - "Install target (Drupal 10.3, PHP 8.3)"
 
   upgrade_and_test:
     jobs:
@@ -287,10 +327,3 @@ workflows:
           name: upgrade_test_cypress
           upgrade: true
           dkan_recommended_branch: "10.3.x-dev"
-      - phpunit:
-          name: "Upgrade target (Drupal 10.3, PHP 8.3)"
-          upgrade: true
-          matrix:
-            parameters:
-              dkan_recommended_branch: ["10.3.x-dev"]
-              php_version: ["8.3"]
