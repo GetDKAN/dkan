@@ -130,7 +130,7 @@ class AdminDatasetJsonFormTest extends JsonFormTestBase {
     $this->submitForm(['edit-title' => $this->datasetTitle], 'Filter');
 
     // Edit the dataset.
-    $page->find('css', 'tbody > tr:first-of-type > .views-field-nothing > a')->click();
+    $page->find('css', 'tbody > tr:first-of-type > .views-field-operations a:contains(\'Edit\')')->click();
     $this->assertNotNull($page->find('css', '#edit-field-json-metadata-0-value-title'));
     $assert->fieldValueEquals('edit-field-json-metadata-0-value-title', $this->datasetTitle);
     $dataset_new_title = 'NEW dkantest dataset title';

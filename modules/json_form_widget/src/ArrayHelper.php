@@ -354,7 +354,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#submit' => [self::class . '::' . $method],
       '#ajax'   => [
         'callback' => [$this, 'arrayActionButtonCallback'],
-        'wrapper'  => self::buildWrapperIdentifier($parent),
+        'wrapper'  => $method === 'addOne' ? self::buildWrapperIdentifier($context_name) : self::buildWrapperIdentifier($parent),
       ],
       '#attributes' => [
         'data-parent'  => $parent,
