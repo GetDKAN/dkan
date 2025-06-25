@@ -55,6 +55,24 @@ trait Helper {
   }
 
   /**
+   * Display a JSON harvest plan.
+   *
+   * @param object $plan
+   *   Harvest plan object, as returned from Harvester::getHarvestPlanObject().
+   *
+   * @see Harvester::getHarvestPlanObject()
+   */
+  private function renderHarvestPlan(object $plan) {
+    // Encode the plan as formatted JSON and output it.
+    $consoleOutput = new ConsoleOutput();
+    $consoleOutput->writeln([
+      '<info>Harvest Plan:</info>',
+      json_encode($plan, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+      '',
+    ]);
+  }
+
+  /**
    * Display errors.
    *
    * @param array $errors

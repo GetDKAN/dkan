@@ -88,7 +88,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
     ], 'Filter');
     $assert->statusCodeEquals(200);
 
-    $page->find('css', '.views-field-nothing > a')->click();
+    $page->find('css', 'tbody > tr:first-of-type > .views-field-operations a:contains(\'Edit\')')->click();
     $assert->statusCodeEquals(200);
 
     $assert->elementContains('css', 'h1', 'Edit Data');
@@ -156,7 +156,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
     $assert->statusCodeEquals(200);
 
     // Click on 'edit'.
-    $page->find('css', '.views-field-nothing > a')->click();
+    $page->find('css', 'tbody > tr:first-of-type > .views-field-operations a:contains(\'Edit\')')->click();
     $assert->statusCodeEquals(200);
 
     // Find the URL.
