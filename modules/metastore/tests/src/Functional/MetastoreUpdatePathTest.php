@@ -11,6 +11,7 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  *
  * @group metastore
  * @group update
+ * @group functional3
  */
 class MetastoreUpdatePathTest extends UpdatePathTestBase {
 

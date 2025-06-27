@@ -15,8 +15,7 @@ use PHPUnit\Framework\TestCase;
 class DkanApiDocsGeneratorTest extends TestCase {
 
   /**
-   *
-   */
+      */
   public function testBuildSpecWithoutDkanApiBase() {
 
     $generator = new DkanApiDocsGenerator(

@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+/**
+ */
 class EventTest extends TestCase
 {
   public function testDataIntegrityAcrossEventSubscribers() {

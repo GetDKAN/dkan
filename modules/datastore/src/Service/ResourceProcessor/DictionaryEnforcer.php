@@ -155,7 +155,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
 
       case "reference":
         $resource = DataResource::getIdentifierAndVersion($identifier);
-        $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource[0]);
+        $dictionary_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource[0], $resource[1]);
         break;
 
       default:

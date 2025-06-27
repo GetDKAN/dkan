@@ -34,7 +34,8 @@ context('DKAN Workflow', () => {
       cy.get('h1.page-title').should('contain', dataset_title)
       cy.get('#edit-moderation-state-0-state').select('published')
       cy.get('#edit-submit').click()
-      cy.get('.button').contains('Yes').click({ force:true })
+      cy.get('.button', { timeout: 10000 }).should('be.visible')
+        .contains('Yes').click({ force:true })
       cy.get('.messages--status').should('contain', 'has been updated')
 
       // Ensure dataset is visible via public API with correct title

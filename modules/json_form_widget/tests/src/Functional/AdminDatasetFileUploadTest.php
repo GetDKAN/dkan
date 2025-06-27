@@ -15,6 +15,7 @@ use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
  * @group dkan
  * @group json_form_widget
  * @group functional
+ * @group functional2
  */
 class AdminDatasetFileUploadTest extends JsonFormTestBase {
 
@@ -87,7 +88,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
     ], 'Filter');
     $assert->statusCodeEquals(200);
 
-    $page->find('css', '.views-field-nothing > a')->click();
+    $page->find('css', 'tbody > tr:first-of-type > .views-field-operations a:contains(\'Edit\')')->click();
     $assert->statusCodeEquals(200);
 
     $assert->elementContains('css', 'h1', 'Edit Data');
@@ -155,7 +156,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
     $assert->statusCodeEquals(200);
 
     // Click on 'edit'.
-    $page->find('css', '.views-field-nothing > a')->click();
+    $page->find('css', 'tbody > tr:first-of-type > .views-field-operations a:contains(\'Edit\')')->click();
     $assert->statusCodeEquals(200);
 
     // Find the URL.

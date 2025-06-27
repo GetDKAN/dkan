@@ -15,6 +15,7 @@ use RootedData\RootedJsonData;
  * @group metastore
  * @group functional
  * @group btb
+ * @group functional2
  */
 class MetastoreApiPageCacheTest extends BrowserTestBase {
 

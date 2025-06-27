@@ -12,6 +12,7 @@ use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
  * @group metastore
  * @group functional
  * @group btb
+ * @group functional1
  */
 class OrphanCheckerTest extends BrowserTestBase {
   use GetDataTrait;
