@@ -11,6 +11,7 @@ use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidget;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\BrowserTestBase;
 use MockChain\Chain;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -141,7 +142,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
       $result = $widget->formElement($items, 0, $element, $form, $form_state);
       $this->fail('Expected exception not thrown.');
     }
-    catch (\Exception $e) {
+    catch (BadRequestException $e) {
       $this->assertStringContainsString('Schema foo not found', $e->getMessage());
     }
 

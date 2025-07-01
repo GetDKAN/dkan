@@ -11,6 +11,7 @@ use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\ValueHandler;
 use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -112,7 +113,16 @@ class JsonFormWidget extends JsonFormWidgetBase {
    */
   protected function resolveSchema(FormStateInterface $form_state): object {
     $schema_id = $this->resolveSchemaId($form_state);
-    return $this->retrieveSchema($schema_id);
+    try {
+      // Attempt to retrieve the schema with the given ID.
+      $schema = $this->retrieveSchema($schema_id);
+    }
+    catch (\Exception $e) {
+      // If the schema is not found, throw an error.
+      \Drupal::logger('json_form_widget')->error($e->getMessage());
+      throw new BadRequestException($e->getMessage());
+    }
+    return $schema;
   }
 
   /**
