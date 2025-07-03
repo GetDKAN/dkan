@@ -16,6 +16,12 @@ class StrictModeOffMySQLQueryBuilder extends MySQLQueryBuilder {
    * {@inheritDoc}
    */
   public function getQuery(): AlterTableQueryInterface {
+    $settings = $this->configFactory->get('datastore_mysql_import.settings');
+    // If strict_mode_disabled is not set or is FALSE, back out.
+    if (!($settings->get('strict_mode_disabled') ?? FALSE)) {
+      return parent::getQuery();
+    }
+
     $query = new StrictModeOffMySQLQuery(
       $this->databaseConnectionFactory->getConnection(),
       $this->dateFormatConverter,
