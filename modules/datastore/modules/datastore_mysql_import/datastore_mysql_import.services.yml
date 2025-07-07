@@ -15,6 +15,7 @@ services:
       - '@dkan.datastore.database'
       - '@dkan.datastore.logger_channel'
       - '@event_dispatcher'
+      - '@config.factory'
 
   dkan.datastore_mysql_import.data_dictionary.alter_table_query_builder.mysql:
     class: \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder
