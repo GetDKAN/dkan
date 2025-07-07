@@ -16,7 +16,7 @@
         "drupal/search_api": "^1.15",
         "drupal/select2": "^2.0",
         "drupal/select_or_other": "^4.2.0",
-        "drupal/tagify":"^1.2",
+        "drupal/tagify":"1.2.x-dev",
         "drupal/views_bulk_operations": "^4.0",
         "ezyang/htmlpurifier": "^4.11",
         "fmizzell/maquina": "^1.1.1",

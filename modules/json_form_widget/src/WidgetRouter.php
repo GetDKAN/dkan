@@ -175,6 +175,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element['#match_operator'] = 'CONTAINS';
       $element['#match_limit'] = 10;
       $element['#placeholder'] = "Enter " . $spec->title . "...";
+      $element['#allow_create'] = TRUE;
 
       if (isset($spec->multiple)) {
         $element['#cardinality'] = -1;
