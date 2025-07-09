@@ -50,9 +50,9 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
 
   private function columnTestSetup(array $columns, bool $strict_mode_disabled): ImportJob {
     $this->installConfig(['datastore_mysql_import']);
-    $config = $this->config('datastore_mysql_import.settings');
-    $config->set('strict_mode_disabled', $strict_mode_disabled);
-    $config->save();
+    $this->config('datastore_mysql_import.settings')
+      ->set('strict_mode_disabled', $strict_mode_disabled)
+      ->save();
 
     $file_path = stream_get_meta_data(tmpfile())['uri'];
 

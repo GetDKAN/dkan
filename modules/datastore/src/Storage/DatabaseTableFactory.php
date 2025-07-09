@@ -36,7 +36,7 @@ class DatabaseTableFactory implements FactoryInterface {
   public function __construct(
     Connection $connection,
     LoggerInterface $loggerChannel,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->connection = $connection;
     $this->logger = $loggerChannel;

@@ -32,6 +32,10 @@ class MySqlDatabaseTable extends DatabaseTable implements ImportedItemInterface 
     $this->strictModeDisabled = $disable;
   }
 
+  public function isStrictModeDisabled(): bool {
+    return $this->strictModeDisabled;
+  }
+
   /**
    * Disable strict mode for this table.
    *
