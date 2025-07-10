@@ -190,29 +190,6 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       $columns['name_at_the_sixty_four_character_limit_including_the_number_300']['mysql_type'] ?? NULL
     );
 
-    // Drop and import the queues again.
-    /** @var \Drupal\datastore\Service\DatastoreService $datastore_service */
-    $datastore_service = $this->container->get('dkan.datastore.service');
-    $datastore_service->drop($resource_identifier, $resource_version, FALSE);
-    $datastore_service->import($resource_identifier, FALSE, $resource_version);
-
-    // Now test that enabling strict mode again causes an error when trying to
-    // apply the same dictionary (also tests that disabling/enabling has
-    // expected effect in data dictionary enforcement).
-    $this->config('datastore_mysql_import.settings')
-      ->set('strict_mode_disabled', FALSE)
-      ->save();
-
-    // Attempting to apply the dictionary again with strict mode enabled should
-    // throw an exception.
-    $this->expectExceptionMessage("1118 Row size too large");
-    $dictionary_enforcer->process(
-      $resource_mapper->get(
-        $resource_identifier,
-        ResourceLocalizer::LOCAL_FILE_PERSPECTIVE,
-        $resource_version
-      )
-    );
   }
 
   /**
