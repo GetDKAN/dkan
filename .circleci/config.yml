@@ -3,6 +3,7 @@
 version: 2.1
 orbs:
   docker: circleci/docker@2.5.0
+  qlty: qltysh/qlty-orb@0.0
 
 commands:
   install-ddev:
@@ -162,9 +163,6 @@ jobs:
           condition: << parameters.report_coverage >>
           steps:
             - run:
-                name: Install Qlty CLI
-                command: curl https://qlty.sh | sh
-            - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
                   XDEBUG_MODE: coverage
@@ -186,16 +184,10 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   fi
                   exit $TEST_RESULT
-            - run:
-                name: Upload coverage report to Qlty
-                command: |
-                  cd $CIRCLE_WORKING_DIRECTORY/dkan
-                  qlty coverage publish \
-                    --total-parts-count $CIRCLE_NODE_TOTAL \
-                    --file $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
-                    --format clover
-                environment:
-                  QLTY_COVERAGE_TOKEN: ${QLTY_COVERAGE_TOKEN}
+            - qlty/coverage-publish:
+              format: clover
+              file: report/clover/clover-$CIRCLE_NODE_INDEX.xml
+              total_parts_count: << pipeline.parameters.CIRCLE_NODE_TOTAL >>
             - persist_to_workspace:
                 root: report
                 paths:
