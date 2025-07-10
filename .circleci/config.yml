@@ -191,8 +191,8 @@ jobs:
                   cd $CIRCLE_WORKING_DIRECTORY/dkan
                   qlty coverage publish \
                     --total-parts-count $CIRCLE_NODE_TOTAL \
-                    --files $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
-                    --format clover
+                    --format clover \
+                    $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml
                 environment:
                   QLTY_COVERAGE_TOKEN: ${QLTY_COVERAGE_TOKEN}
             - persist_to_workspace:
