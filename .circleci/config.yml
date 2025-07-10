@@ -187,8 +187,9 @@ jobs:
                 name: Upload coverage report to Qlty
                 command: |
                   curl https://qlty.sh | sh
+                  source /home/circleci/.bash_profile
                   cd $CIRCLE_WORKING_DIRECTORY/dkan
-                  $CIRCLE_WORKING_DIRECTORY/.qlty/bin/qlty coverage publish \
+                  qlty coverage publish \
                     --total-parts-count $CIRCLE_NODE_TOTAL \
                     --files $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --format clover
