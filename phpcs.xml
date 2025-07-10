@@ -4,13 +4,7 @@
     <arg name="extensions" value="inc,install,module,php,profile,test,theme,yml"/>
     <description>PHP CodeSniffer configuration for GetDKAN.</description>
 
-    <file>src</file>
-    <file>test</file>
-    <file>rector.php</file>
-
-    <rule ref="Drupal">
-    </rule>
-    <rule ref="DrupalPractice">
-    </rule>
+    <rule ref="Drupal" />
+    <rule ref="DrupalPractice" />
 
 </ruleset>
