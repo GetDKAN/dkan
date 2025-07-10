@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="getdkan">
+
+    <arg name="extensions" value="inc,install,module,php,profile,test,theme,yml"/>
+    <description>PHP CodeSniffer configuration for GetDKAN.</description>
+
+    <file>src</file>
+    <file>test</file>
+    <file>rector.php</file>
+
+    <rule ref="PSR1">
+        <!-- PSR1 does not like that we trigger deprecation errors. -->
+        <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+    </rule>
+    <rule ref="PSR2"/>
+
+</ruleset>
