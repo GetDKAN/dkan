@@ -188,7 +188,7 @@ jobs:
                 command: |
                   curl https://qlty.sh | sh
                   cd $CIRCLE_WORKING_DIRECTORY/dkan
-                  qlty coverage publish \
+                  $CIRCLE_WORKING_DIRECTORY/.qlty/bin/qlty coverage publish \
                     --total-parts-count $CIRCLE_NODE_TOTAL \
                     --files $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --format clover
