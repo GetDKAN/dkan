@@ -6,6 +6,6 @@
     }
   ],
   "require": {
-    "drupal/coder": "*"
+    "drupal/coder": "^8.3.13"
   }
 }
