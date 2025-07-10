@@ -58,8 +58,8 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
 
     $fp = fopen($file_path, 'w');
 
-    fputcsv($fp, array_keys($columns));
-    fputcsv($fp, array_values($columns));
+    fputcsv($fp, array_keys($columns), escape: "\\");
+    fputcsv($fp, array_values($columns), escape: "\\");
     fclose($fp);
 
     $identifier = 'id';
