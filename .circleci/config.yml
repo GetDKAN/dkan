@@ -3,7 +3,6 @@
 version: 2.1
 orbs:
   docker: circleci/docker@2.5.0
-  qlty: qltysh/qlty-orb@0.0
 
 commands:
   install-ddev:
@@ -184,10 +183,17 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   fi
                   exit $TEST_RESULT
-            - qlty/coverage_publish:
-                format: clover
-                files: report/clover/clover-$CIRCLE_NODE_INDEX.xml
-                total_parts_count: $CIRCLE_NODE_TOTAL
+            - run:
+                name: Upload coverage report to Qlty
+                command: |
+                  curl https://qlty.sh | sh
+                  cd $CIRCLE_WORKING_DIRECTORY/dkan
+                  qlty coverage publish \
+                    --total-parts-count $CIRCLE_NODE_TOTAL \
+                    --files $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
+                    --format clover
+                environment:
+                  QLTY_COVERAGE_TOKEN: ${QLTY_COVERAGE_TOKEN}
             - persist_to_workspace:
                 root: report
                 paths:
