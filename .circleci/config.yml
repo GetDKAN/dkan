@@ -184,10 +184,10 @@ jobs:
                     echo "Coverage file not created: $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml"
                   fi
                   exit $TEST_RESULT
-            - qlty/coverage-publish:
-              format: clover
-              file: report/clover/clover-$CIRCLE_NODE_INDEX.xml
-              total_parts_count: << pipeline.parameters.CIRCLE_NODE_TOTAL >>
+            - qlty/coverage_publish:
+                format: clover
+                files: report/clover/clover-$CIRCLE_NODE_INDEX.xml
+                total_parts_count: $CIRCLE_NODE_TOTAL
             - persist_to_workspace:
                 root: report
                 paths:
