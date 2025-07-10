@@ -191,6 +191,7 @@ jobs:
                 command: |
                   cd $CIRCLE_WORKING_DIRECTORY/dkan
                   qlty coverage publish \
+                    --total-parts-count $CIRCLE_NODE_TOTAL \
                     --file $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --format clover
                 environment:
