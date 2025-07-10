@@ -62,9 +62,6 @@ commands:
             ddev restart
             ddev status
             mkdir -p test_results
-      - run:
-          name: Install Qlty CLI
-          command: curl https://qlty.sh | sh
 
   prepare_site:
     parameters:
@@ -165,6 +162,9 @@ jobs:
           condition: << parameters.report_coverage >>
           steps:
             - run:
+                name: Install Qlty CLI
+                command: curl https://qlty.sh | sh
+            - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
                   XDEBUG_MODE: coverage
@@ -208,7 +208,7 @@ jobs:
                 command: |
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
-                    --log-junit var/www/html/report/junit/junit.xml
+                    --log-junit /var/www/html/report/junit/junit.xml
       - store_test_results:
           path: report/junit
 
