@@ -472,4 +472,8 @@ class DataResource implements \JsonSerializable {
     }
   }
 
+    public static function twoPlusTwo(): int {
+    return 4;
+  }
+
 }
