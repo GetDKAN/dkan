@@ -472,4 +472,43 @@ class DataResource implements \JsonSerializable {
     }
   }
 
+  public static function twoPlusTwo(): int {
+      // Bad coding standards example.
+    return 4;
+  }
+
+  /**
+   * Example of a method with nested conditionals.
+   *
+   * This is an example of a method that has a deep set of nested conditionals,
+   * which can lead to code complexity smells.
+   *
+   * @return int
+   *   Returns 42 if all conditions are met.
+   */
+  public function nested() {
+    if (TRUE) {
+      if (FALSE) {
+        if (TRUE) {
+          if (FALSE) {
+            if (TRUE) {
+              return 42;
+            }
+          }
+        }
+      }
+    }
+    else {
+      if (FALSE) {
+        if (TRUE) {
+          if (FALSE) {
+            if (TRUE) {
+              return 42;
+            }
+          }
+        }
+      }
+    }
+  }
+
 }
