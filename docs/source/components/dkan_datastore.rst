@@ -18,7 +18,7 @@ sure to have cron running on a regular basis so that large file imports will com
 status of datastore imports at `/admin/dkan/datastore/status`.
 
 If you enable the :ref:`Datastore Mysql Import <mysql_import>` module, the data will be imported in
-a single step using MySQL's native LOAD DATA function.
+a single step using MySQL's native LOAD DATA function. See See :ref:`mysql-import-settings` for more details.
 
 .. attention::
 
