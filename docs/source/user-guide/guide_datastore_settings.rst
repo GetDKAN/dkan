@@ -22,21 +22,3 @@ can select other "triggers" to ensure that the old datastore is dropped and a ne
 For example, if you select "Last Update (modified)", any change to this value will add
 jobs to the queue when the dataset is saved. These jobs will drop the existing datastore
 table and generate a new datastore when cron runs or when the queue is run directly.
-
-.. _mysql-import-settings:
-
-MySQL Import settings
----------------------
-
-The MySQL importer is an optional module that leverages MySQL's native LOAD DATA INFILE
-functionality to import data into the datastore. This can be significantly faster than
-the default DKAN importer.
-
-MySQL Import settings can be found at ``/admin/dkan/datastore/mysql_import``.
-
-In some cases, creating tables may fail because the number of columns and length
-of column names is too long. If you encounter this issue, you can try to check
-the "Disable strict mode for creating/altering MySQL tables" setting. This will
-temporarily disable innodb_strict_mode via session variables, allowing
-the table to be created. This setting should be used with caution. It may also
-require the `SESSION_VARIABLES_ADMIN` permission to be set for the database user.
