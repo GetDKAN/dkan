@@ -41,7 +41,7 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * List available harvests.
+   * List available harvest plans.
    *
    * @command dkan:harvest:list
    *
@@ -60,11 +60,11 @@ class HarvestCommands extends DrushCommands {
       (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
       return;
     }
-    $this->logger()->notice('No harvests registered.');
+    $this->logger()->notice('No harvest plans registered.');
   }
 
   /**
-   * Register a new harvest.
+   * Register a new harvest plan.
    *
    * You may supply a full Harvest plan in JSON or provide configuration via
    * individual options. For a simple data.json harvest, pass only an
@@ -133,7 +133,7 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Deregister a harvest plan, optionally reverting it.
+   * Deregister (delete) a harvest plan, optionally reverting it.
    *
    * @param string $plan_id
    *   The harvest plan ID to deregister.
@@ -141,9 +141,9 @@ class HarvestCommands extends DrushCommands {
    *   Options.
    *
    * @command dkan:harvest:deregister
-   * @option revert Revert the harvest plan before deregistering it.
+   * @option revert Revert the harvest plan (remove all harvested datasets) before deregistering it.
    * @usage dkan:harvest:deregister --revert PLAN_ID
-   *   Deregister the PLAN_ID plan, after reverting all the data resources
+   *   Deregister the PLAN_ID plan, after reverting all the datasets
    *   associated with it.
    */
   public function deregister($plan_id, array $options = ['revert' => FALSE]) {
@@ -187,7 +187,7 @@ class HarvestCommands extends DrushCommands {
    * Run a harvest.
    *
    * @param string $plan_id
-   *   The harvest id.
+   *   The harvest plan id.
    *
    * @command dkan:harvest:run
    *
@@ -200,7 +200,7 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Run all harvests.
+   * Run all registered harvest plans.
    *
    * @option new Run only harvests which haven't run before.
    *
@@ -225,17 +225,27 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Give information about a previous harvest run.
+   * Show a harvest plan and information about its runs.
    *
    * @param string $harvestId
-   *   The harvest id.
+   *   The harvest plan id.
    * @param string $runId
-   *   The run's id.
+   *   A harvest run ID. If not provided, all runs will be shown.
    *
    * @command dkan:harvest:info
    */
   public function info($harvestId, $runId = NULL) {
-    $this->validateHarvestPlan($harvestId);
+    try {
+      $this->validateHarvestPlan($harvestId);
+    }
+    catch (\InvalidArgumentException $exception) {
+      $this->logger()->error($exception->getMessage());
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    $plan = $this->harvestService->getHarvestPlanObject($harvestId);
+    // Format and output the harvest plan JSON.
+    $this->renderHarvestPlan($plan);
     $runIds = $runId ? [$runId] : $this->harvestService->getRunIdsForHarvest($harvestId);
 
     foreach ($runIds as $id) {

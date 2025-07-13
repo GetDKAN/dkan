@@ -61,8 +61,6 @@ commands:
             cat .ddev/config.yaml
             ddev restart
             ddev status
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
             mkdir -p test_results
 
   prepare_site:
@@ -137,7 +135,7 @@ jobs:
         default: "10.3.x-dev"
         type: string
       report_coverage:
-        description: "Generate coverage report and send it to CodeClimate"
+        description: "Generate coverage report and send it to Qlty"
         default: false
         type: boolean
       upgrade:
@@ -167,11 +165,11 @@ jobs:
                 name: Run PHPUnit tests with coverage report
                 environment:
                   XDEBUG_MODE: coverage
+                  QLTY_COVERAGE_TOKEN: ${QLTY_COVERAGE_TOKEN}
                 command: |
                   ddev xdebug on
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/php
-                  mkdir $CIRCLE_WORKING_DIRECTORY/report/clover
-                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter before-build
+                  mkdir -p $CIRCLE_WORKING_DIRECTORY/report/clover
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
                     --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
@@ -187,19 +185,19 @@ jobs:
                   fi
                   exit $TEST_RESULT
             - run:
-                name: Reformat the coverage report
+                name: Upload coverage report to Qlty
                 command: |
+                  curl https://qlty.sh | sh
+                  source /home/circleci/.bash_profile
                   cd $CIRCLE_WORKING_DIRECTORY/dkan
-                  $CIRCLE_WORKING_DIRECTORY/cc-test-reporter format-coverage \
-                    $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
-                    --input-type clover \
-                    --output $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.$CIRCLE_NODE_INDEX.json \
-                    --prefix /var/www/html/dkan
+                  qlty coverage publish \
+                    --total-parts-count $CIRCLE_NODE_TOTAL \
+                    --format clover \
+                    $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml
             - persist_to_workspace:
                 root: report
                 paths:
                 - php
-                - codeclimate
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -208,28 +206,9 @@ jobs:
                 command: |
                   ddev dkan-phpunit \
                     --$PHPUNIT_GROUP_ARG \
-                    --log-junit var/www/html/report/junit/junit.xml
+                    --log-junit /var/www/html/report/junit/junit.xml
       - store_test_results:
           path: report/junit
-
-  phpunit-coverage-report:
-    machine:
-      image: ubuntu-2204:current
-    steps:
-      - attach_workspace:
-          at: report
-      - run:
-          name: Install CodeClimate test reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
-          name: Merge and send coverage report to CodeClimate
-          command: |
-            $CIRCLE_WORKING_DIRECTORY/cc-test-reporter sum-coverage \
-              $CIRCLE_WORKING_DIRECTORY/report/codeclimate/codeclimate.*.json \
-              --output - |
-              $CIRCLE_WORKING_DIRECTORY/cc-test-reporter upload-coverage --debug --input -
 
   cypress:
     machine:
@@ -317,9 +296,6 @@ workflows:
               dkan_recommended_branch: ["10.3.x-dev"]
               php_version: ["8.2", "8.1"]
               database_version: ["mysql:5.7"]
-      - phpunit-coverage-report:
-          requires:
-            - "Install target (Drupal 10.3, PHP 8.3)"
 
   upgrade_and_test:
     jobs:
