@@ -66,6 +66,8 @@ class HarvestCommandsTest extends KernelTestBase {
   }
 
   /**
+   * Test building a plan with bad options.
+   *
    * @dataProvider providePlanOpts
    */
   public function testBuildPlanFromOptsBadArgs($expected_error_message, $opts) {
