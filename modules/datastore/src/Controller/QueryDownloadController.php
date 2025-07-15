@@ -9,6 +9,7 @@ use Drupal\datastore\Service\Query as QueryService;
 use Drupal\metastore\MetastoreApiResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -37,7 +38,7 @@ class QueryDownloadController extends AbstractQueryController {
     DatastoreQuery $datastoreQuery,
     RootedJsonData $result,
     array $dependencies = [],
-    ?ParameterBag $params = NULL
+    ?ParameterBag $params = NULL,
   ) {
     return match ($datastoreQuery->{"$.format"}) {
       'csv' => $this->streamCsvResponse($datastoreQuery, $result),
@@ -56,7 +57,7 @@ class QueryDownloadController extends AbstractQueryController {
     $data = json_decode($json);
     $this->additionalPayloadValidation($data);
     if ($identifier) {
-      $resource = (object) ["id" => $identifier, "alias" => "t"];
+      $resource = (object) ['id' => $identifier, 'alias' => 't'];
       $data->resources = [$resource];
     }
     $data->results = FALSE;
@@ -78,26 +79,43 @@ class QueryDownloadController extends AbstractQueryController {
     $response = $this->initStreamedCsvResponse();
 
     $response->setCallback(function () use ($result, $datastoreQuery) {
-      // Open the stream and send the header.
+      // How many records to send before flushing?
+      $flush_threshhold = 500;
+      $records_sent = 0;
       set_time_limit(0);
+      // Get a handle to PHP's default output stream. We need this so we can
+      // use fputcsv().
       $handle = fopen('php://output', 'wb');
 
       // Wrap in try/catch so that we can still close the output buffer.
       try {
         // Send the header row.
-        $this->sendRow($handle, $this->getHeaderRow($datastoreQuery, $result));
+        fputcsv($handle, $this->getHeaderRow($datastoreQuery, $result), escape: "\\");
 
         // Get the result pointer and send each row to the stream one by one.
         $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE, TRUE);
         while ($row = $result->fetchAssoc()) {
-          $this->sendRow($handle, array_values($row));
+          // Send a row as CSV.
+          fputcsv($handle, array_values($row), escape: "\\");
+          // Figure out if we should flush the buffers.
+          if (++$records_sent >= $flush_threshhold) {
+            if (ob_get_level() > 0) {
+              ob_flush();
+            }
+            fflush($handle);
+            $records_sent = 0;
+          }
         }
       }
       catch (\Exception $e) {
-        $this->sendRow($handle, [$e->getMessage()]);
+        // @todo Sanitize this message.
+        fwrite($handle, $e->getMessage());
       }
-
-      fclose($handle);
+      finally {
+        // We only catch exceptions, but we should try to close the stream for
+        // any throwable.
+        fclose($handle);
+      }
     });
     return $response;
   }
@@ -105,30 +123,27 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Create initial streamed response object.
    *
+   * @param string $filename
+   *   (optional) File name that will be the attached file name. Defaults to
+   *   data.csv.
+   *
    * @return \Symfony\Component\HttpFoundation\StreamedResponse
-   *   A streamed response object set up for data.csv file.
+   *   A streamed response object set up to download the file.
    */
-  private function initStreamedCsvResponse($filename = "data.csv") {
+  private function initStreamedCsvResponse($filename = "data.csv"): StreamedResponse {
     $response = new StreamedResponse();
     $response->headers->set('Content-Type', 'text/csv');
-    $response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
+    $response->headers->set(
+      'Content-Disposition',
+      $response->headers->makeDisposition(
+        ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+        $filename
+      )
+    );
+    // Turn off ngnix buffering.
     $response->headers->set('X-Accel-Buffering', 'no');
     // Ensure one hour max-age plus public status.
     return $this->addCacheHeaders($response);
-  }
-
-  /**
-   * Loop through a group of rows and send as csv.
-   *
-   * @param resource $handle
-   *   The file handler.
-   * @param array $row
-   *   Row of data to send as CSV.
-   */
-  private function sendRow($handle, array $row) {
-    fputcsv($handle, $row, escape: "\\");
-    ob_flush();
-    flush();
   }
 
 }
