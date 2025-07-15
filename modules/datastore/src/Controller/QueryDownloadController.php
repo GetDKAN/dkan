@@ -112,6 +112,10 @@ class QueryDownloadController extends AbstractQueryController {
         fwrite($handle, $e->getMessage());
       }
       finally {
+        if (ob_get_level() > 0) {
+          ob_flush();
+        }
+        fflush($handle);
         // We only catch exceptions, but we should try to close the stream for
         // any throwable.
         fclose($handle);
