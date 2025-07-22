@@ -262,7 +262,7 @@ class MysqlImport extends ImportJob {
       'ESCAPED BY \'\'',
       'LINES TERMINATED BY \'' . $eol . '\'',
       'IGNORE ' . $header_line_count . ' LINES',
-      '(' . implode(',', $headers) . ')',
+      '(' . implode(',', array_map(fn($h) => '[' . $h . ']', $headers)) . ')',
       'SET record_number = NULL;',
     ]);
   }

@@ -132,7 +132,7 @@ class MysqlImportTest extends KernelTestBase {
       'ESCAPED BY \'\'',
       'LINES TERMINATED BY \'\n\'',
       'IGNORE 2 LINES',
-      '(a_b,c)',
+      '([a_b],[c])',
       'SET record_number = NULL;',
     ]), $mysql_import->sqlStatement);
   }

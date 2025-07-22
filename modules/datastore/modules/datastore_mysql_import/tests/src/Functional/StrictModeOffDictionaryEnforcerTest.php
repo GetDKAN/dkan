@@ -50,7 +50,12 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   public function testPostImport() {
-    // Dependencies.
+    // Enable strict mode disabled for datastore MySQL import.
+    $this->config('datastore_mysql_import.settings')
+      ->set('strict_mode_disabled', TRUE)
+      ->save();
+
+      // Dependencies.
     $resourceFile = 'very_wide.csv';
     $uuid = $this->container->get('uuid');
     /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
@@ -184,6 +189,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       'datetime',
       $columns['name_at_the_sixty_four_character_limit_including_the_number_300']['mysql_type'] ?? NULL
     );
+
   }
 
   /**

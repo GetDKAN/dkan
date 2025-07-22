@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Install file for the datastore_mysql_import module.
+ */
+
+/**
+ * Update hook to set new setting strict_mode_disabled to TRUE.
+ */
+function datastore_mysql_import_update_10001(&$sandbox) {
+  \Drupal::configFactory()->getEditable('datastore_mysql_import.settings')
+    ->set('strict_mode_disabled', TRUE)
+    ->save();
+  // Add a message to indicate the update was successful.
+  \Drupal::messenger()->addStatus(t('Strict mode for MySQL table creation is now optional via the setting @setting. It has now been set to TRUE for consistency with previous behavior. To keep strict mode enabled for imports uncheck "Disable innodb_strict_mode for imports" at /admin/dkan/datastore/mysql_import/.',
+  [
+    '@setting' => 'strict_mode_disabled',
+  ]));
+}
