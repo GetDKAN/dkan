@@ -333,9 +333,9 @@ class DashboardForm extends FormBase {
       ->accessCheck(FALSE)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset');
-    
+
     $searchTerms = array_filter(explode(' ', trim($filters['dataset_title'])));
-    
+
     if (!empty($searchTerms)) {
       $titleGroup = $query->andConditionGroup();
       foreach ($searchTerms as $term) {
@@ -343,7 +343,7 @@ class DashboardForm extends FormBase {
       }
       $query->condition($titleGroup);
     }
-    
+
     $results = $query->execute();
 
     foreach ($this->nodeStorage->loadMultiple($results) as $node) {
