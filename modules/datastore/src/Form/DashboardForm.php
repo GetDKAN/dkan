@@ -345,7 +345,7 @@ class DashboardForm extends FormBase {
     }
     
     $results = $query->execute();
-    
+
     foreach ($this->nodeStorage->loadMultiple($results) as $node) {
       $datasets[] = $node->uuid();
     }
