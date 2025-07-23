@@ -3,9 +3,11 @@
 namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
 
 use Drupal\common\DataResource;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore_mysql_import\Factory\MysqlImportFactory;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\search_api_db\DatabaseCompatibility\MySql;
 use Procrastinator\Result;
 
 /**
@@ -46,17 +48,18 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
     return [[$values]];
   }
 
-  /**
-   * @dataProvider provideColumns
-   */
-  public function testTableWidth($columns) {
-    $this->markTestIncomplete('Intermittent fails.');
+  private function columnTestSetup(array $columns, bool $strict_mode_disabled): ImportJob {
+    $this->installConfig(['datastore_mysql_import']);
+    $this->config('datastore_mysql_import.settings')
+      ->set('strict_mode_disabled', $strict_mode_disabled)
+      ->save();
+
     $file_path = stream_get_meta_data(tmpfile())['uri'];
 
     $fp = fopen($file_path, 'w');
 
-    fputcsv($fp, array_keys($columns));
-    fputcsv($fp, array_values($columns));
+    fputcsv($fp, array_keys($columns), escape: "\\");
+    fputcsv($fp, array_values($columns), escape: "\\");
     fclose($fp);
 
     $identifier = 'id';
@@ -70,11 +73,30 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
     $this->assertInstanceOf(MySqlDatabaseTable::class, $import_job->getStorage());
+    return $import_job;
+  }
+
+  /**
+   * @dataProvider provideColumns
+   */
+  public function testTableWidthDisableStrict($columns) {
+    $import_job = $this->columnTestSetup($columns, TRUE);
 
     $result = $import_job->run();
     $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError());
     $this->assertEquals(1, $import_job->getStorage()
       ->count(), 'There is 1 row in the CSV.');
+  }
+
+  /**
+   * @dataProvider provideColumns
+   */
+  public function testTableWidthNoDisableStrict($columns) {
+    $import_job = $this->columnTestSetup($columns, FALSE);
+
+    $result = $import_job->run();
+    $this->assertEquals(Result::ERROR, $result->getStatus(), $result->getError());
+    $this->assertStringContainsString('Row size too large (> 8126)', $result->getError(), 'The import job failed with the expected error message.');
   }
 
 }

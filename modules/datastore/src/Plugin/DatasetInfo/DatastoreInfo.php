@@ -123,8 +123,8 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    *   The distribution info from a dataset info array.
    */
   protected function addDistributionInfo(array &$distribution): void {
-    $identifier = $distribution['resource_id'];
-    $version = $distribution['resource_version'];
+    $identifier = $distribution['resource_id'] ?? '';
+    $version = $distribution['resource_version'] ?? '';
     $import_info = $this->importInfo->getItem($identifier, $version);
     $fileMapper = $this->resourceMapper->get($identifier, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $version);
 
