@@ -311,7 +311,10 @@ class MetastoreController implements ContainerInjectionInterface {
   public function delete($schema_id, $identifier) {
     try {
       $this->service->delete($schema_id, $identifier);
-      return $this->apiResponse->cachedJsonResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
+      return $this->apiResponse->cachedJsonResponse(
+        (object) ["message" => "Dataset {$identifier} has been deleted."],
+        204
+      );
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);

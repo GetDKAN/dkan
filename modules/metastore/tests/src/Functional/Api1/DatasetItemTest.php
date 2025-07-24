@@ -53,6 +53,14 @@ class DatasetItemTest extends Api1TestBase {
     $response = $this->post($dataset, FALSE);
     $this->assertEquals(409, $response->getStatusCode());
     $this->validator->validate($response, $this->endpoint, 'post');
+
+    // Now an unauthorized user.
+    $response = $this->httpClient->post($this->endpoint, [
+      RequestOptions::JSON => $dataset,
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
   }
 
   public function testPatch() {
@@ -86,6 +94,13 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(412, $response->getStatusCode());
     $this->validator->validate($response, "$this->endpoint/$datasetId", 'patch');
 
+    // Now an unauthorized user.
+    $response = $this->httpClient->patch("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::JSON => [],
+      RequestOptions::AUTH => $this->authNoPerms,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
   }
 
   public function testPut() {
@@ -113,6 +128,39 @@ class DatasetItemTest extends Api1TestBase {
     ]);
     $this->assertEquals(409, $response->getStatusCode());
     $this->validator->validate($response, "$this->endpoint/$datasetId", 'put');
+
+    // Now an unauthorized user.
+    $response = $this->httpClient->put("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::JSON => $newDataset,
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
+
+  }
+
+  public function testDelete() {
+    $dataset = $this->getSampleDataset();
+    $this->post($dataset);
+    $datasetId = $dataset->identifier;
+
+    $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::AUTH => $this->auth,
+    ]);
+    $this->assertEquals(204, $response->getStatusCode());
+
+    // Now try to get the deleted dataset.
+    $response = $this->httpClient->get("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(404, $response->getStatusCode());
+
+    // Now an unauthorized user.
+    $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
   }
 
   private function assertDatasetGet($dataset) {
