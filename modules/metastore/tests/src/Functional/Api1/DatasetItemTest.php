@@ -147,6 +147,7 @@ class DatasetItemTest extends Api1TestBase {
     $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
       RequestOptions::AUTH => $this->auth,
     ]);
+    // @todo Add delete to the spec so we can validate it.
     $this->assertEquals(204, $response->getStatusCode());
 
     // Now try to get the deleted dataset.
