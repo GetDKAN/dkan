@@ -8,6 +8,7 @@ use GuzzleHttp\RequestOptions;
 /**
  * Tests the DatasetItem API.
  *
+ * @group metastore
  * @group functional1
  */
 class DatasetItemTest extends Api1TestBase {
@@ -144,6 +145,14 @@ class DatasetItemTest extends Api1TestBase {
     $this->post($dataset);
     $datasetId = $dataset->identifier;
 
+    // Delete as unauthorized user.
+    $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
+
+    // Now delete as authorized user.
     $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
       RequestOptions::AUTH => $this->auth,
     ]);
@@ -155,13 +164,6 @@ class DatasetItemTest extends Api1TestBase {
       RequestOptions::HTTP_ERRORS => FALSE,
     ]);
     $this->assertEquals(404, $response->getStatusCode());
-
-    // Now an unauthorized user.
-    $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
-      RequestOptions::AUTH => $this->authNoPerms,
-      RequestOptions::HTTP_ERRORS => FALSE,
-    ]);
-    $this->assertEquals(403, $response->getStatusCode());
   }
 
   private function assertDatasetGet($dataset) {
