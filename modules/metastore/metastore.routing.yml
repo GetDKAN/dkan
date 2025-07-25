@@ -44,7 +44,7 @@ metastore.1.metastore.schemas.id.items.post:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::post'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _access: 'TRUE'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -74,7 +74,7 @@ metastore.1.metastore.schemas.id.items.id.put:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::put'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _access: 'TRUE'
   options:
     _auth: ['basic_auth', 'cookie']
 

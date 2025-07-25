@@ -45,8 +45,6 @@ class MetastoreController implements ContainerInjectionInterface {
   private MetastoreApiResponse $apiResponse;
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
