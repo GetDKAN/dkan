@@ -57,4 +57,15 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
    */
   public function isNew();
 
+  /**
+   * Get the relevant entity.
+   *
+   * If the implementation is an entity itself, this should simply
+   * return $this.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The wrapped entity.
+   */
+  public function getEntity();
+
 }

@@ -305,4 +305,14 @@ class Data implements MetastoreItemInterface {
     $this->node->save();
   }
 
+  /**
+   * Get the node entity.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The wrapped node entity.
+   */
+  public function getEntity() {
+    return $this->node;
+  }
+
 }
