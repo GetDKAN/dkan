@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Functional\Api1;
 
+use Composer\DependencyResolver\Request;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
@@ -73,6 +74,7 @@ class DatasetItemTest extends Api1TestBase {
     $response = $this->httpClient->patch("$this->endpoint/$datasetId", [
       RequestOptions::JSON => $newTitle,
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
 
     $this->assertEquals(200, $response->getStatusCode());
@@ -81,6 +83,14 @@ class DatasetItemTest extends Api1TestBase {
 
     $dataset->title = $newTitle->title;
     $this->assertDatasetGet($dataset);
+
+    // Now an unauthorized user.
+    $response = $this->httpClient->patch("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::JSON => [],
+      RequestOptions::AUTH => $this->authNoPerms,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
 
     // Now, try with a non-existent identifier.
     $datasetId = "abc-123";
@@ -94,14 +104,6 @@ class DatasetItemTest extends Api1TestBase {
 
     $this->assertEquals(404, $response->getStatusCode());
     $this->validator->validate($response, "$this->endpoint/$datasetId", 'patch');
-
-    // Now an unauthorized user.
-    $response = $this->httpClient->patch("{$this->endpoint}/{$datasetId}", [
-      RequestOptions::HTTP_ERRORS => FALSE,
-      RequestOptions::JSON => [],
-      RequestOptions::AUTH => $this->authNoPerms,
-    ]);
-    $this->assertEquals(403, $response->getStatusCode());
   }
 
   public function testPut() {
@@ -120,6 +122,14 @@ class DatasetItemTest extends Api1TestBase {
     $this->validator->validate($response, "$this->endpoint/$datasetId", 'put');
     $this->assertDatasetGet($newDataset);
 
+    // Now an unauthorized user.
+    $response = $this->httpClient->put("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::JSON => $newDataset,
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
+
     // Now try with mismatched identifiers.
     $datasetId = 'abc-123';
     $response = $this->httpClient->put("$this->endpoint/$datasetId", [
@@ -129,15 +139,6 @@ class DatasetItemTest extends Api1TestBase {
     ]);
     $this->assertEquals(409, $response->getStatusCode());
     $this->validator->validate($response, "$this->endpoint/$datasetId", 'put');
-
-    // Now an unauthorized user.
-    $response = $this->httpClient->put("{$this->endpoint}/{$datasetId}", [
-      RequestOptions::JSON => $newDataset,
-      RequestOptions::AUTH => $this->authNoPerms,
-      RequestOptions::HTTP_ERRORS => FALSE,
-    ]);
-    $this->assertEquals(403, $response->getStatusCode());
-
   }
 
   public function testDelete() {
@@ -155,7 +156,9 @@ class DatasetItemTest extends Api1TestBase {
     // Now delete as authorized user.
     $this->assertDatasetGet($dataset);
     $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::HTTP_ERRORS => FALSE,
       RequestOptions::AUTH => $this->auth,
+      RequestOptions::TIMEOUT => 100,
     ]);
     // @todo Add delete to the spec so we can validate it.
     $this->assertEquals(200, $response->getStatusCode());

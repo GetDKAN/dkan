@@ -2,14 +2,23 @@
 
 namespace Drupal\metastore\Controller;
 
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityAccessControlHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Manages access control for Metastore items in API endpoints.
+ *
+ * This class provides methods to check if a user can create, update, or delete
+ * items based on their schema ID and item ID.
+ */
 class MetastoreAccessManager implements ContainerInjectionInterface {
 
   /**
@@ -44,8 +53,10 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     EntityTypeManagerInterface $entityTypeManager,
     MetastoreEntityItemFactoryInterface $itemFactory,
   ) {
+    $this->itemFactory = $itemFactory;
     $this->entityType = $itemFactory->getEntityType();
-    $this->bundle = reset($itemFactory->getBundles());
+    $bundles = $itemFactory->getBundles();
+    $this->bundle = reset($bundles);
     $this->accessControlHandler = $entityTypeManager->getAccessControlHandler($this->entityType);
   }
 
@@ -55,74 +66,103 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('metastore.entity_item_factory'),
+      $container->get('dkan.metastore.metastore_item_factory'),
     );
   }
 
   /**
    * Check if user can create an item from a schema.
    *
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The user account.
    * @param string $schema_id
    *   The schema ID.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account.
    *
-   * @return bool
-   *   TRUE if the user can create an item, FALSE otherwise.
+   * @return \Drupal\Core\Access\AccessResult
+   *   An access result object indicating whether the user can create an item.
    */
-  public function canCreate(AccountInterface $account): bool {
-    return $this->accessControlHandler->createAccess($this->bundle, $account);
+  public function canCreate(string $schema_id, AccountInterface $account): AccessResult {
+    if ($this->accessControlHandler->createAccess($this->bundle, $account)) {
+      return AccessResult::allowed();
+    }
+    return AccessResult::forbidden();
   }
 
   /**
    * Check if user can update an item from a schema.
    *
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The user account.
    * @param string $schema_id
    *   The schema ID.
-   * @param string $item_id
+   * @param string $identifier
    *   The item ID.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account.
    *
-   * @return bool
-   *   TRUE if the user can update the item, FALSE otherwise.
+   * @return \Drupal\Core\Access\AccessResult
+   *   An access result object indicating whether the user can update the item.
    */
-  public function canUpdate(AccountInterface $account, string $schema_id, string $item_id): bool {
+  public function canUpdate(string $schema_id, string $identifier, AccountInterface $account): AccessResult {
     // Check if the user has permission to update items of this schema.
-    $entity = $this->getEntity($schema_id, $item_id);
-    return $this->accessControlHandler->access($entity, "update", $account);
+    try {
+      $entity = $this->getEntity($schema_id, $identifier);
+      return $this->accessControlHandler->access($entity, "update", $account, TRUE);
+    }
+    catch (MissingObjectException | \InvalidArgumentException $e) {
+      // If the the item does not exist, assume "allowed" and let the controller
+      // handle the 404 response.
+      return AccessResult::allowed();
+    }
   }
 
   /**
    * Check if user can delete an item from a schema.
    *
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The user account.
    * @param string $schema_id
    *   The schema ID.
-   * @param string $item_id
+   * @param string $identifier
    *   The item ID.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account.
    *
-   * @return bool
-   *   TRUE if the user can delete the item, FALSE otherwise.
+   * @return \Drupal\Core\Access\AccessResult
+   *   An access result object indicating whether the user can delete the item.
    */
-  public function canDelete(AccountInterface $account, string $schema_id, string $item_id): bool {
-    // Check if the user has permission to delete items of this schema.
-    $entity = $this->getEntity($schema_id, $item_id);
-    return $this->accessControlHandler->access($entity, "delete", $account);
+  public function canDelete(string $schema_id, string $identifier, AccountInterface $account): AccessResult {
+    try {
+      $entity = $this->getEntity($schema_id, $identifier);
+      return $this->accessControlHandler->access($entity, "delete", $account, TRUE);
+    }
+    catch (MissingObjectException | \InvalidArgumentException $e) {
+      // If the item does not exist, assume "allowed" and let the controller
+      // handle the 404 response.
+      return AccessResult::allowed();
+    }
   }
 
-  protected function getEntity(string $schema_id, string $item_id): EntityInterface {
+  /**
+   * Get the entity for a given schema ID and item ID.
+   *
+   * @param string $schema_id
+   *   The schema ID.
+   * @param string $identifier
+   *   The item ID.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The entity corresponding to the schema and item ID.
+   *
+   * @throws \InvalidArgumentException
+   *   If no entity is found for the given schema ID and item ID.
+   */
+  protected function getEntity(string $schema_id, string $identifier): EntityInterface {
     // Load the entity based on schema ID and item ID.
-    $item = $this->itemFactory->getInstance($item_id);
-    if ($item && $item->getSchemaId() === $schema_id) {
-      return $item->getEntity();
+    try {
+      $item = $this->itemFactory->getInstance($identifier, ['schema_id' => $schema_id]);
     }
-    throw new \InvalidArgumentException(sprintf(
-      'No entity found for schema ID %s and item ID %s.',
-      $schema_id,
-      $item_id
-    ));
+    catch (\Throwable $e) {
+      throw new MissingObjectException("No item found for schema ID '$schema_id' and identifier '$identifier'.", 0, $e);
+    }
+    assert($item->getSchemaId() === $schema_id, \InvalidArgumentException::class);
+    return $item->getEntity();
   }
 
 }
