@@ -445,10 +445,8 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public function delete($schema_id, $identifier) {
     $storage = $this->getStorage($schema_id);
-    $result = $storage->remove($identifier);
-    if (!$result) {
-      throw new MissingObjectException("No data with the identifier {$identifier} was found.", 404);
-    }
+    $storage->remove($identifier);
+    // If remove method did not throw an exception, assume the item was deleted.
     return $identifier;
   }
 
