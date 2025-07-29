@@ -153,6 +153,7 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(403, $response->getStatusCode());
 
     // Now delete as authorized user.
+    $this->assertDatasetGet($dataset);
     $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
       RequestOptions::AUTH => $this->auth,
     ]);
@@ -161,6 +162,14 @@ class DatasetItemTest extends Api1TestBase {
 
     // Now try to get the deleted dataset.
     $response = $this->httpClient->get("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(404, $response->getStatusCode());
+
+    // Try to delete a non-existent dataset.
+    $datasetId = 'abc-123';
+    $response = $this->httpClient->delete("{$this->endpoint}/{$datasetId}", [
+      RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => FALSE,
     ]);
     $this->assertEquals(404, $response->getStatusCode());
