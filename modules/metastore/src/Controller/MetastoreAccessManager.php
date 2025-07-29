@@ -10,8 +10,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Manages access control for Metastore items in API endpoints.
@@ -101,13 +101,23 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    * @return \Drupal\Core\Access\AccessResult
    *   An access result object indicating whether the user can update the item.
    */
-  public function canUpdate(string $schema_id, string $identifier, AccountInterface $account): AccessResult {
+  public function canUpdate(
+    string $schema_id,
+    string $identifier,
+    AccountInterface $account,
+    Request $request,
+  ): AccessResult {
+    $method = $request->getMethod();
     // Check if the user has permission to update items of this schema.
     try {
       $entity = $this->getEntity($schema_id, $identifier);
       return $this->accessControlHandler->access($entity, "update", $account, TRUE);
     }
     catch (MissingObjectException | \InvalidArgumentException $e) {
+      // If this is a PUT, we should check if user has CREATE permission.
+      if ($method === 'PUT' && !$this->canCreate($schema_id, $account)->isAllowed()) {
+        return AccessResult::forbidden();
+      }
       // If the the item does not exist, assume "allowed" and let the controller
       // handle the 404 response.
       return AccessResult::allowed();
