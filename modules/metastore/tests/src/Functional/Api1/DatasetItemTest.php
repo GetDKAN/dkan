@@ -92,7 +92,7 @@ class DatasetItemTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
     ]);
 
-    $this->assertEquals(412, $response->getStatusCode());
+    $this->assertEquals(404, $response->getStatusCode());
     $this->validator->validate($response, "$this->endpoint/$datasetId", 'patch');
 
     // Now an unauthorized user.
