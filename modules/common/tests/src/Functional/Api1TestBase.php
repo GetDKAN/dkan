@@ -73,6 +73,8 @@ abstract class Api1TestBase extends BrowserTestBase {
       'edit own data content',
       'delete own data content',
       'use dkan_publishing transition publish',
+      'view data revisions',
+      'view any unpublished content',
     ], 'testapiuser', FALSE);
     $user2 = $this->createUser(['access content'], 'testnopermsuser', FALSE);
 

@@ -6,10 +6,12 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityAccessControlHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
+use Drupal\workflows\WorkflowInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -30,6 +32,11 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    * Metastore Storage Factory service.
    */
   protected MetastoreEntityItemFactoryInterface $itemFactory;
+
+  /**
+   * Entity type manager.
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Entity type ID for the items managed by this factory.
@@ -57,6 +64,7 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     $this->entityType = $itemFactory->getEntityType();
     $bundles = $itemFactory->getBundles();
     $this->bundle = reset($bundles);
+    $this->entityTypeManager = $entityTypeManager;
     $this->accessControlHandler = $entityTypeManager->getAccessControlHandler($this->entityType);
   }
 
@@ -151,6 +159,51 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     }
   }
 
+  public function canPublish(
+    string $schema_id,
+    string $identifier,
+    AccountInterface $account,
+  ): AccessResult {
+    $workflow_id = $this->getWorkflowIdForBundle();
+    return AccessResult::allowed();
+  }
+
+  public function canViewRevisionList(
+    string $schema_id,
+    string $identifier,
+    AccountInterface $account,
+  ): AccessResult {
+    try {
+      /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
+      $entity = $this->getEntity($schema_id, $identifier);
+      return $this->accessControlHandler->access($entity, "view revisions", $account, TRUE);
+    }
+    catch (MissingObjectException | \InvalidArgumentException $e) {
+      // If the item does not exist, assume "allowed" and let the controller
+      // handle the 404 response.
+      return AccessResult::allowed();
+    }
+  }
+
+  public function canViewRevision(
+    string $schema_id,
+    string $identifier,
+    int $revision_id,
+    AccountInterface $account,
+  ): AccessResult {
+    try {
+      /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
+      $storage = $this->entityTypeManager->getStorage($this->entityType);
+      $revision = $storage->loadRevision($revision_id);
+      return $this->accessControlHandler->access($revision, "view", $account, TRUE);
+    }
+    catch (MissingObjectException | \InvalidArgumentException $e) {
+      // If the item does not exist, assume "allowed" and let the controller
+      // handle the 404 response.
+      return AccessResult::allowed();
+    }
+  }
+
   /**
    * Get the entity for a given schema ID and item ID.
    *
@@ -175,6 +228,28 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     }
     assert($item->getSchemaId() === $schema_id, \InvalidArgumentException::class);
     return $item->getEntity();
+  }
+
+  /**
+   * Get the workflow ID for a given entity type and bundle.
+   *
+   * @return string|null
+   *   The workflow ID, or NULL if none is assigned.
+   */
+  protected function getWorkflowIdForBundle(): ?string {
+    /** @var \Drupal\workflows\WorkflowInterface[] $workflows */
+    $workflows = $this->entityTypeManager->getStorage('workflow')->loadMultiple();
+    foreach ($workflows as $workflow) {
+      /** @var \Drupal\metastore\Controller\ContentModerationInterface $type_plugin */
+      $type_plugin = $workflow->getTypePlugin();
+      $entity_types = $type_plugin->getEntityTypes();
+      $bundles = $type_plugin->getBundlesForEntityType($this->entityType);
+
+      if (in_array($this->entityType, $entity_types) && in_array($this->bundle, $bundles)) {
+        return $workflow->id();
+      }
+    }
+    return NULL;
   }
 
 }

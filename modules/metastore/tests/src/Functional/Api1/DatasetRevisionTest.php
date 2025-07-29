@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Functional\Api1;
 
+use Composer\DependencyResolver\Request;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
@@ -134,6 +135,7 @@ class DatasetRevisionTest extends Api1TestBase {
       // Validate URL and contents of response object.
       $response = $this->httpClient->get($responseBody->endpoint, [
         RequestOptions::AUTH => $this->auth,
+        RequestOptions::CONNECT_TIMEOUT => 1000,
       ]);
       $responseBody = json_decode($response->getBody());
       // Message and state match the values submitted.
@@ -196,7 +198,7 @@ class DatasetRevisionTest extends Api1TestBase {
     return $this->httpClient->post($this->endpoint, [
       RequestOptions::JSON => $newRevision,
       RequestOptions::AUTH => $this->auth,
-      RequestOptions::HTTP_ERRORS => FALSE,
+      // RequestOptions::HTTP_ERRORS => FALSE,
     ]);
   }
 
