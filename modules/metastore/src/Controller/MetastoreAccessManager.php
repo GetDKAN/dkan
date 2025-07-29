@@ -97,6 +97,8 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    *   The item ID.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The user account.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request object.
    *
    * @return \Drupal\Core\Access\AccessResult
    *   An access result object indicating whether the user can update the item.
