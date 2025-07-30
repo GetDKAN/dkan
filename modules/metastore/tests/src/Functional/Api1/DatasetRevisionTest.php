@@ -45,6 +45,13 @@ class DatasetRevisionTest extends Api1TestBase {
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($listRevision, $responseBody);
 
+    // Try to get the list without permissions
+    $response = $this->httpClient->get($this->endpoint . "/$listRevision->identifier", [
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
+
     // Confirm error if we have a non-existant dataset ID.
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions/$listRevision->identifier";
     $response = $this->httpClient->get($badDatasetUrl, [
@@ -112,6 +119,17 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
     ]);
+
+    // Try to create a new revision without permissions.
+    $result = $this->httpClient->post($this->endpoint, [
+      RequestOptions::JSON => (object) [
+        'message' => "Unauthorized revision.",
+        'state' => 'published',
+      ],
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $result->getStatusCode());
 
     // Array with states as keys and whether publicly visible as values.
     $states = [
@@ -205,7 +223,6 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::JSON => $newRevision,
       RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => FALSE,
-      RequestOptions::TIMEOUT => 1000,
     ]);
   }
 
