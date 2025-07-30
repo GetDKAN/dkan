@@ -57,6 +57,9 @@ class DataTest extends TestCase {
     $this->assertTrue(
       $wrapper->getLatestRevision() instanceof Data
     );
+
+    // Test the getEntity method.
+    $this->assertTrue($wrapper->getEntity() instanceof Node);
   }
 
   public function testGetLatestRevisionGiveUsNull() {
@@ -81,6 +84,9 @@ class DataTest extends TestCase {
     $this->assertNull(
       $wrapper->getLatestRevision()
     );
+
+    // Test the getEntity method.
+    $this->assertTrue($wrapper->getEntity() instanceof Node);
   }
 
   public function testGetPublishedRevisionGetUsAWrapper() {
@@ -205,6 +211,9 @@ class DataTest extends TestCase {
     $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $data = $factory->wrap($entity);
     $this->assertEquals('123', $data->getIdentifier());
+
+    // Test the getEntity method.
+    $this->assertTrue($data->getEntity() instanceof Node);
   }
 
   public function testDataNodeAdditionalMethods() {
