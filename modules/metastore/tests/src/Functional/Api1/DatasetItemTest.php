@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore\Functional\Api1;
 
-use Composer\DependencyResolver\Request;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
