@@ -21,6 +21,7 @@ use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\ValidMetadataFactory;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
