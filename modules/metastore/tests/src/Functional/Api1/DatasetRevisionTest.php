@@ -10,8 +10,9 @@ use GuzzleHttp\RequestOptions;
  * Tests the revision API.
  *
  * @group functional2
+ * @group metastore
  *
- * @coversDefaultClass \Drupal\metastore\Plugin\rest\resource\DatasetItemResource
+ * @coversDefaultClass \Drupal\metastore\Controller\MetastoreRevisionController
  */
 class DatasetRevisionTest extends Api1TestBase {
 
@@ -116,9 +117,8 @@ class DatasetRevisionTest extends Api1TestBase {
     $states = [
       'draft' => FALSE,
       'published' => TRUE,
-      'orphaned' => FALSE,
-      'archived' => FALSE,
       'hidden' => TRUE,
+      'archived' => FALSE,
     ];
 
     $count = 1;
@@ -135,8 +135,9 @@ class DatasetRevisionTest extends Api1TestBase {
       // Validate URL and contents of response object.
       $response = $this->httpClient->get($responseBody->endpoint, [
         RequestOptions::AUTH => $this->auth,
-        RequestOptions::CONNECT_TIMEOUT => 1000,
+        RequestOptions::HTTP_ERRORS => FALSE,
       ]);
+      $this->assertEquals(200, $response->getStatusCode());
       $responseBody = json_decode($response->getBody());
       // Message and state match the values submitted.
       $this->assertStringContainsString($state, $responseBody->message);
@@ -145,7 +146,9 @@ class DatasetRevisionTest extends Api1TestBase {
       // Confirm revisions list has increased by one item.
       $response = $this->httpClient->get($this->endpoint, [
         RequestOptions::AUTH => $this->auth,
+        RequestOptions::HTTP_ERRORS => FALSE,
       ]);
+      $this->assertEquals(200, $response->getStatusCode());
       $responseBody = json_decode($response->getBody());
       $this->assertEquals($count, count($responseBody));
 
@@ -158,6 +161,9 @@ class DatasetRevisionTest extends Api1TestBase {
       $this->assertEquals($expectedCode, $response->getStatusCode());
     }
 
+    // Reset state.
+    $response = $this->newRevision('published');
+    $count++;
     // Test a bad workflow state.
     $response = $this->newRevision('foo');
     $this->assertEquals(400, $response->getStatusCode());
@@ -198,7 +204,8 @@ class DatasetRevisionTest extends Api1TestBase {
     return $this->httpClient->post($this->endpoint, [
       RequestOptions::JSON => $newRevision,
       RequestOptions::AUTH => $this->auth,
-      // RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::TIMEOUT => 1000,
     ]);
   }
 

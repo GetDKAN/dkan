@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\metastore\Unit\Controller;
 
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;

@@ -6,12 +6,10 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityAccessControlHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
-use Drupal\workflows\WorkflowInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -61,8 +59,8 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     MetastoreEntityItemFactoryInterface $itemFactory,
   ) {
     $this->itemFactory = $itemFactory;
-    $this->entityType = $itemFactory->getEntityType();
-    $bundles = $itemFactory->getBundles();
+    $this->entityType = $itemFactory::getEntityType();
+    $bundles = $itemFactory::getBundles();
     $this->bundle = reset($bundles);
     $this->entityTypeManager = $entityTypeManager;
     $this->accessControlHandler = $entityTypeManager->getAccessControlHandler($this->entityType);
@@ -90,10 +88,7 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    *   An access result object indicating whether the user can create an item.
    */
   public function canCreate(string $schema_id, AccountInterface $account): AccessResult {
-    if ($this->accessControlHandler->createAccess($this->bundle, $account)) {
-      return AccessResult::allowed();
-    }
-    return AccessResult::forbidden();
+    return $this->accessControlHandler->createAccess($this->bundle, $account, [], TRUE);
   }
 
   /**
@@ -159,15 +154,19 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     }
   }
 
-  public function canPublish(
-    string $schema_id,
-    string $identifier,
-    AccountInterface $account,
-  ): AccessResult {
-    $workflow_id = $this->getWorkflowIdForBundle();
-    return AccessResult::allowed();
-  }
-
+  /**
+   * Check if user can view the revision list for an item.
+   *
+   * @param string $schema_id
+   *   The schema ID.
+   * @param string $identifier
+   *   The item ID.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account.
+   *
+   * @return \Drupal\Core\Access\AccessResult
+   *   Access result object.
+   */
   public function canViewRevisionList(
     string $schema_id,
     string $identifier,
@@ -176,7 +175,7 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     try {
       /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
       $entity = $this->getEntity($schema_id, $identifier);
-      return $this->accessControlHandler->access($entity, "view revisions", $account, TRUE);
+      return $this->accessControlHandler->access($entity, "view all revisions", $account, TRUE);
     }
     catch (MissingObjectException | \InvalidArgumentException $e) {
       // If the item does not exist, assume "allowed" and let the controller
@@ -185,6 +184,21 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     }
   }
 
+  /**
+   * Check if user can view a specific revision of an item.
+   *
+   * @param string $schema_id
+   *   The schema ID.
+   * @param string $identifier
+   *   The item ID.
+   * @param int $revision_id
+   *   The revision ID.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account.
+   *
+   * @return \Drupal\Core\Access\AccessResult
+   *   Access result object.
+   */
   public function canViewRevision(
     string $schema_id,
     string $identifier,
@@ -195,6 +209,9 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
       /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
       $storage = $this->entityTypeManager->getStorage($this->entityType);
       $revision = $storage->loadRevision($revision_id);
+      if (!$revision || $revision->uuid() !== $identifier) {
+        throw new MissingObjectException();
+      }
       return $this->accessControlHandler->access($revision, "view", $account, TRUE);
     }
     catch (MissingObjectException | \InvalidArgumentException $e) {

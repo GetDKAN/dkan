@@ -64,7 +64,7 @@ metastore.1.metastore.schemas.id.items.id.publish:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::publish'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -124,7 +124,7 @@ metastore.1.metastore.schemas.id.items.id.revisions.post:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreRevisionController::post'}
   requirements:
-    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canPublish'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
     _auth: ['basic_auth', 'cookie']
 
