@@ -37,6 +37,13 @@ class DatasetRevisionTest extends Api1TestBase {
     $responseBody = json_decode($response->getBody());
     $listRevision = $responseBody[0];
 
+    // Try to get the list without permissions.
+    $response = $this->httpClient->get($this->endpoint, [
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
+
     // Confirm we get the same object from the item get as the list.
     $response = $this->httpClient->get($this->endpoint . "/$listRevision->identifier", [
       RequestOptions::AUTH => $this->auth,
@@ -45,12 +52,11 @@ class DatasetRevisionTest extends Api1TestBase {
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($listRevision, $responseBody);
 
-    // Try to get the list without permissions
+    // This revision is public, so should not need perms to see it.
     $response = $this->httpClient->get($this->endpoint . "/$listRevision->identifier", [
       RequestOptions::AUTH => $this->authNoPerms,
-      RequestOptions::HTTP_ERRORS => FALSE,
     ]);
-    $this->assertEquals(403, $response->getStatusCode());
+    $this->assertEquals(200, $response->getStatusCode());
 
     // Confirm error if we have a non-existant dataset ID.
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions/$listRevision->identifier";
