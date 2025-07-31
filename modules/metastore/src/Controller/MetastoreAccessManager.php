@@ -247,26 +247,4 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     return $item->getEntity();
   }
 
-  /**
-   * Get the workflow ID for a given entity type and bundle.
-   *
-   * @return string|null
-   *   The workflow ID, or NULL if none is assigned.
-   */
-  protected function getWorkflowIdForBundle(): ?string {
-    /** @var \Drupal\workflows\WorkflowInterface[] $workflows */
-    $workflows = $this->entityTypeManager->getStorage('workflow')->loadMultiple();
-    foreach ($workflows as $workflow) {
-      /** @var \Drupal\metastore\Controller\ContentModerationInterface $type_plugin */
-      $type_plugin = $workflow->getTypePlugin();
-      $entity_types = $type_plugin->getEntityTypes();
-      $bundles = $type_plugin->getBundlesForEntityType($this->entityType);
-
-      if (in_array($this->entityType, $entity_types) && in_array($this->bundle, $bundles)) {
-        return $workflow->id();
-      }
-    }
-    return NULL;
-  }
-
 }
