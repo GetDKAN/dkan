@@ -2,15 +2,14 @@
 
 namespace Drupal\Tests\metastore\Controller\Kernel;
 
-use Drupal\Core\Entity\EntityRepository;
-use Drupal\Core\Field\FieldItemList;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\Controller\MetastoreAccessManager;
+use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
-use Drupal\metastore\Storage\NodeData;
-use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use MockChain\Chain;
@@ -67,25 +66,27 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->installEntitySchema('node');
     $this->installEntitySchema('user');
 
-
-    $repositoryOptions = (new Options)
-      ->add('123', NodeInterface::class)
-      ->index(0);
-    $entityRepository = (new Chain($this))
-      ->add(EntityRepository::class, 'loadEntityByUuid', NodeInterface::class)
+    // Mock the NodeDataFactory to return a Data wrapper with a data node mock.
+    $itemFactory = (new Chain($this))
+      ->add(NodeDataFactory::class, 'getInstance', (new Options)
+        ->add('123', Data::class)
+        ->add('345', NULL)
+        ->index(0)
+      )
+      ->add(Data::class, 'fix', NULL)
+      ->add(Data::class, 'getEntity', NodeInterface::class)
       ->add(NodeInterface::class, 'bundle', 'data')
       ->add(NodeInterface::class, 'get', FieldItemListInterface::class)
+      ->add(NodeInterface::class, 'language', LanguageInterface::class)
+      ->add(NodeInterface::class, 'getEntityType', EntityTypeInterface::class)
+      ->add(EntityTypeInterface::class, 'id', 'node')
+      ->add(LanguageInterface::class, 'getId', 'en')
       ->add(FieldItemListInterface::class, 'getString', 'dataset')
       ->getMock();
 
-    $metastoreItemFactory = new NodeDataFactory(
-      $entityRepository,
-      $this->container->get('entity_type.manager')
-    );
-
     $this->accessManager = new MetastoreAccessManager(
       $this->container->get('entity_type.manager'),
-      $metastoreItemFactory
+      $itemFactory
     );
 
     $this->priviledgedUser = $this->createUser([
@@ -121,10 +122,70 @@ class MetastoreAccessManagerTest extends KernelTestBase {
 
     $can_update = $this->accessManager->canUpdate($schema_id, $item_id, $this->priviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-
     $can_update = $this->accessManager->canUpdate($schema_id, $item_id, $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
+
+    // We should be "allowed" to update a non-existant item, the controller will
+    // handle the 404 response.
+    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
+    $this->assertTrue($can_update->isAllowed());
+    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
+    $this->assertTrue($can_update->isAllowed());
+
+    // Now try with a PUT request, which should check for create permissions if 
+    // non-existant node.
+    $request->setMethod('PUT');
+    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
+    $this->assertTrue($can_update->isAllowed());
+    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
+    $this->assertFalse($can_update->isAllowed());
+
+    $request->setMethod('PUT');
+    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
+    $this->assertTrue($can_update->isAllowed());
+    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
+    $this->assertFalse($can_update->isAllowed());
+
+    // Now try with a PATCH request
+    $request->setMethod('PATCH');
+    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
+    $this->assertTrue($can_update->isAllowed());
+    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
+    $this->assertFalse($can_update->isAllowed());
   }
+
+  public function testCanDelete(): void {
+    $schema_id = 'dataset';
+    $item_id = '123';
+
+    $can_delete = $this->accessManager->canDelete($schema_id, $item_id, $this->priviledgedUser);
+    $this->assertTrue($can_delete->isAllowed());
+    $can_delete = $this->accessManager->canDelete($schema_id, $item_id, $this->unpriviledgedUser);
+    $this->assertFalse($can_delete->isAllowed());
+
+    // Test with a non-existant item. Should always be allowed, controller handles.
+    $can_delete = $this->accessManager->canDelete($schema_id, '345', $this->priviledgedUser);
+    $this->assertTrue($can_delete->isAllowed());
+    $can_delete = $this->accessManager->canDelete($schema_id, '345', $this->unpriviledgedUser);
+    $this->assertTrue($can_delete->isAllowed());
+  }
+
+  public function testCanViewRevisionList(): void {
+    $schema_id = 'dataset';
+    $item_id = '123';
+
+    $can_view = $this->accessManager->canViewRevisionList($schema_id, $item_id, $this->priviledgedUser);
+    $this->assertTrue($can_view->isAllowed());
+
+    $can_view = $this->accessManager->canViewRevisionList($schema_id, $item_id, $this->unpriviledgedUser);
+    $this->assertFalse($can_view->isAllowed());
+
+    // Non-existant item should be allowed, controller handles.
+    $can_view = $this->accessManager->canViewRevisionList($schema_id, '345', $this->unpriviledgedUser);
+    $this->assertTrue($can_view->isAllowed());
+  }
+
+
 
 }
 
