@@ -19,8 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Tests the MetastoreAccessManager.
  *
+ * Note, no current test for the canViewRevision() method, because it relies
+ * on static methods from the Data wrapper, which can't be mocked.
+ *
  * @coversDefaultClass \Drupal\metastore\Controller\MetastoreAccessManager
- * 
+ *
  * @group dkan
  * @group metastore
  */
@@ -59,6 +62,9 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     'text',
   ];
 
+  /**
+   * {@inheritdoc}
+   */
   public function setUp(): void {
     parent::setUp();
     // Set up the necessary services and configurations for the test.
@@ -103,7 +109,9 @@ class MetastoreAccessManagerTest extends KernelTestBase {
   }
 
   /**
-   * Tests the MetastoreAccessManager.
+   * Tests the canCreate() method.
+   *
+   * @covers ::canCreate
    */
   public function testCanCreate(): void {
     $schema_id = 'example_schema';
@@ -114,6 +122,11 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertFalse($can_create->isAllowed());
   }
 
+  /**
+   * Tests the canUpdate method.
+   *
+   * @covers ::canUpdate
+   */
   public function testCanUpdate(): void {
     $schema_id = 'dataset';
     $item_id = '123';
@@ -154,6 +167,11 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertFalse($can_update->isAllowed());
   }
 
+  /**
+   * Tests the canDelete method.
+   *
+   * @covers ::canDelete
+   */
   public function testCanDelete(): void {
     $schema_id = 'dataset';
     $item_id = '123';
@@ -170,6 +188,11 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertTrue($can_delete->isAllowed());
   }
 
+  /**
+   * Tests if a user can view the revision list of a dataset.
+   *
+   * @covers ::canViewRevisionList
+   */
   public function testCanViewRevisionList(): void {
     $schema_id = 'dataset';
     $item_id = '123';
@@ -185,7 +208,4 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertTrue($can_view->isAllowed());
   }
 
-
-
 }
-
