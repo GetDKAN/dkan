@@ -90,10 +90,7 @@ class MetastoreAccessManagerTest extends KernelTestBase {
       ->add(FieldItemListInterface::class, 'getString', 'dataset')
       ->getMock();
 
-    $this->accessManager = new MetastoreAccessManager(
-      $this->container->get('entity_type.manager'),
-      $itemFactory
-    );
+    $this->container->set('dkan.metastore.metastore_item_factory', $itemFactory);
 
     $this->priviledgedUser = $this->createUser([
       'access content',
@@ -112,13 +109,17 @@ class MetastoreAccessManagerTest extends KernelTestBase {
    * Tests the canCreate() method.
    *
    * @covers ::canCreate
+   * @covers ::create
+   * @covers ::__construct
    */
   public function testCanCreate(): void {
     $schema_id = 'example_schema';
-    $can_create = $this->accessManager->canCreate($schema_id, $this->priviledgedUser);
+    $accessManager = MetastoreAccessManager::create($this->container);
+
+    $can_create = $accessManager->canCreate($schema_id, $this->priviledgedUser);
     $this->assertTrue($can_create->isAllowed());
 
-    $can_create = $this->accessManager->canCreate($schema_id, $this->unpriviledgedUser);
+    $can_create = $accessManager->canCreate($schema_id, $this->unpriviledgedUser);
     $this->assertFalse($can_create->isAllowed());
   }
 
@@ -126,85 +127,95 @@ class MetastoreAccessManagerTest extends KernelTestBase {
    * Tests the canUpdate method.
    *
    * @covers ::canUpdate
+   * @covers ::getEntity
    */
   public function testCanUpdate(): void {
+    $accessManager = MetastoreAccessManager::create($this->container);
     $schema_id = 'dataset';
     $item_id = '123';
     // Create a dummy post request
     $request = new Request([], [], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-    $can_update = $this->accessManager->canUpdate($schema_id, $item_id, $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->priviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $this->accessManager->canUpdate($schema_id, $item_id, $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
 
     // We should be "allowed" to update a non-existant item, the controller will
     // handle the 404 response.
-    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
 
     // Now try with a PUT request, which should check for create permissions if 
     // non-existant node.
     $request->setMethod('PUT');
-    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
 
     $request->setMethod('PUT');
-    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $this->accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
 
     // Now try with a PATCH request
     $request->setMethod('PATCH');
-    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $this->accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
   }
 
   /**
    * Tests the canDelete method.
    *
+   * @covers ::create
+   * @covers ::__construct
    * @covers ::canDelete
+   * @covers ::getEntity
    */
   public function testCanDelete(): void {
     $schema_id = 'dataset';
     $item_id = '123';
+    $accessManager = MetastoreAccessManager::create($this->container);
 
-    $can_delete = $this->accessManager->canDelete($schema_id, $item_id, $this->priviledgedUser);
+    $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->priviledgedUser);
     $this->assertTrue($can_delete->isAllowed());
-    $can_delete = $this->accessManager->canDelete($schema_id, $item_id, $this->unpriviledgedUser);
+    $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->unpriviledgedUser);
     $this->assertFalse($can_delete->isAllowed());
 
     // Test with a non-existant item. Should always be allowed, controller handles.
-    $can_delete = $this->accessManager->canDelete($schema_id, '345', $this->priviledgedUser);
+    $can_delete = $accessManager->canDelete($schema_id, '345', $this->priviledgedUser);
     $this->assertTrue($can_delete->isAllowed());
-    $can_delete = $this->accessManager->canDelete($schema_id, '345', $this->unpriviledgedUser);
+    $can_delete = $accessManager->canDelete($schema_id, '345', $this->unpriviledgedUser);
     $this->assertTrue($can_delete->isAllowed());
   }
 
   /**
    * Tests if a user can view the revision list of a dataset.
    *
+   * @covers ::create
+   * @covers ::__construct
+   * @covers ::getEntity
    * @covers ::canViewRevisionList
    */
   public function testCanViewRevisionList(): void {
+    $accessManager = MetastoreAccessManager::create($this->container);
     $schema_id = 'dataset';
     $item_id = '123';
 
-    $can_view = $this->accessManager->canViewRevisionList($schema_id, $item_id, $this->priviledgedUser);
+    $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->priviledgedUser);
     $this->assertTrue($can_view->isAllowed());
 
-    $can_view = $this->accessManager->canViewRevisionList($schema_id, $item_id, $this->unpriviledgedUser);
+    $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->unpriviledgedUser);
     $this->assertFalse($can_view->isAllowed());
 
     // Non-existant item should be allowed, controller handles.
-    $can_view = $this->accessManager->canViewRevisionList($schema_id, '345', $this->unpriviledgedUser);
+    $can_view = $accessManager->canViewRevisionList($schema_id, '345', $this->unpriviledgedUser);
     $this->assertTrue($can_view->isAllowed());
   }
 
