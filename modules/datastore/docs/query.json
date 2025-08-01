@@ -165,7 +165,8 @@
                         ]
                     }
                 }
-            }
+            },
+            "required": ["conditions"]
         },
         "condition": {
             "type": "object",
@@ -212,7 +213,7 @@
                     "default": "="
                  }
             },
-            "required": [ "property", "value" ]
+            "required": [ "property", "value", "operator" ]
         },
         "expression": {
             "type": "object",
