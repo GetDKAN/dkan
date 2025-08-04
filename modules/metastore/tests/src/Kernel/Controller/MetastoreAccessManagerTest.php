@@ -47,6 +47,11 @@ class MetastoreAccessManagerTest extends KernelTestBase {
   protected AccountInterface $unpriviledgedUser;
 
   /**
+   * A user with the legacy perm 'post put delete datasets through the api'.
+   */
+  protected AccountInterface $legacyPermUser;
+
+  /**
    * {@inheritdoc}
    */
   protected static $modules = [
@@ -103,6 +108,9 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->unpriviledgedUser = $this->createUser([
       'access content',
     ], 'unprivileged_user');
+    $this->legacyPermUser = $this->createUser([
+      'post put delete datasets through the api',
+    ], 'legacy_perm_user');
   }
 
   /**
@@ -121,6 +129,9 @@ class MetastoreAccessManagerTest extends KernelTestBase {
 
     $can_create = $accessManager->canCreate($schema_id, $this->unpriviledgedUser);
     $this->assertFalse($can_create->isAllowed());
+
+    $can_create = $accessManager->canCreate($schema_id, $this->legacyPermUser);
+    $this->assertTrue($can_create->isAllowed());
   }
 
   /**
@@ -140,6 +151,8 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertTrue($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
+    $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->legacyPermUser, $request);
+    $this->assertTrue($can_update->isAllowed());
 
     // We should be "allowed" to update a non-existant item, the controller will
     // handle the 404 response.
@@ -155,12 +168,16 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertTrue($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->legacyPermUser, $request);
+    $this->assertTrue($can_update->isAllowed());
 
     $request->setMethod('PUT');
     $can_update = $accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
     $this->assertTrue($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
+    $can_update = $accessManager->canUpdate($schema_id, '345', $this->legacyPermUser, $request);
+    $this->assertTrue($can_update->isAllowed());
 
     // Now try with a PATCH request
     $request->setMethod('PATCH');
@@ -168,6 +185,8 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertTrue($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
     $this->assertFalse($can_update->isAllowed());
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->legacyPermUser, $request);
+    $this->assertTrue($can_update->isAllowed());
   }
 
   /**
@@ -187,6 +206,8 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $this->assertTrue($can_delete->isAllowed());
     $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->unpriviledgedUser);
     $this->assertFalse($can_delete->isAllowed());
+    $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->legacyPermUser);
+    $this->assertTrue($can_delete->isAllowed());
 
     // Test with a non-existant item. Should always be allowed, controller handles.
     $can_delete = $accessManager->canDelete($schema_id, '345', $this->priviledgedUser);
@@ -213,6 +234,9 @@ class MetastoreAccessManagerTest extends KernelTestBase {
 
     $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->unpriviledgedUser);
     $this->assertFalse($can_view->isAllowed());
+
+    $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->legacyPermUser);
+    $this->assertTrue($can_view->isAllowed());
 
     // Non-existant item should be allowed, controller handles.
     $can_view = $accessManager->canViewRevisionList($schema_id, '345', $this->unpriviledgedUser);

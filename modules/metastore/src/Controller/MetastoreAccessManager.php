@@ -88,6 +88,12 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    *   An access result object indicating whether the user can create an item.
    */
   public function canCreate(string $schema_id, AccountInterface $account): AccessResult {
+    // Check legacy API access permission.
+    if ($account->hasPermission('post put delete datasets through the api')) {
+      return AccessResult::allowed();
+    }
+
+    // Check entity-specific create access.
     return $this->accessControlHandler->createAccess($this->bundle, $account, [], TRUE);
   }
 
@@ -112,6 +118,10 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     AccountInterface $account,
     Request $request,
   ): AccessResult {
+    // Check legacy API access permission.
+    if ($account->hasPermission('post put delete datasets through the api')) {
+      return AccessResult::allowed();
+    }
     $method = $request->getMethod();
     // Check if the user has permission to update items of this schema.
     try {
@@ -143,6 +153,11 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    *   An access result object indicating whether the user can delete the item.
    */
   public function canDelete(string $schema_id, string $identifier, AccountInterface $account): AccessResult {
+    // Check legacy API access permission.
+    if ($account->hasPermission('post put delete datasets through the api')) {
+      return AccessResult::allowed();
+    }
+
     try {
       $entity = $this->getEntity($schema_id, $identifier);
       return $this->accessControlHandler->access($entity, "delete", $account, TRUE);
@@ -172,6 +187,10 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     string $identifier,
     AccountInterface $account,
   ): AccessResult {
+    // Check legacy API access permission.
+    if ($account->hasPermission('post put delete datasets through the api')) {
+      return AccessResult::allowed();
+    }
     try {
       /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
       $entity = $this->getEntity($schema_id, $identifier);
@@ -205,6 +224,10 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     int $revision_id,
     AccountInterface $account,
   ): AccessResult {
+    // Check legacy API access permission.
+    if ($account->hasPermission('post put delete datasets through the api')) {
+      return AccessResult::allowed();
+    }
     try {
       /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
       $storage = $this->entityTypeManager->getStorage($this->entityType);
@@ -214,7 +237,7 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
       }
       return $this->accessControlHandler->access($revision, "view", $account, TRUE);
     }
-    catch (MissingObjectException | \InvalidArgumentException $e) {
+    catch (MissingObjectException $e) {
       // If the item does not exist, assume "allowed" and let the controller
       // handle the 404 response.
       return AccessResult::allowed();
@@ -232,7 +255,7 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    * @return \Drupal\Core\Entity\EntityInterface
    *   The entity corresponding to the schema and item ID.
    *
-   * @throws \InvalidArgumentException
+   * @throws \Drupal\metastore\Exception\MissingObjectException
    *   If no entity is found for the given schema ID and item ID.
    */
   protected function getEntity(string $schema_id, string $identifier): EntityInterface {
@@ -243,7 +266,7 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
     catch (\Throwable $e) {
       throw new MissingObjectException("No item found for schema ID '$schema_id' and identifier '$identifier'.", 0, $e);
     }
-    assert($item->getSchemaId() === $schema_id, \InvalidArgumentException::class);
+    assert($item->getSchemaId() === $schema_id, MissingObjectException::class);
     return $item->getEntity();
   }
 
