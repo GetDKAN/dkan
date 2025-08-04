@@ -5,12 +5,25 @@
           "alias": "t"
         }
     ],
-    "conditions": [
+  "conditions":[
+    {
+      "operator":"=",
+      "property":"column_a",
+      "value":"value"
+    },
+    {
+      "conditions":[
         {
-          "operator": "=",
-          "property": "filterable",
-          "value": "value"
+          "operator":"=",
+          "property":"column_b",
+          "value":"value"
+        },
+        {
+          "operator":"=",
+          "property":"column_b",
+          "value":"value"
         }
-    ],
-    "invalidGroupOperator":"or"
+      ]
+    }
+  ]
 }
