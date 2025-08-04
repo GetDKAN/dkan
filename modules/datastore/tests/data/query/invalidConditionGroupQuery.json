@@ -1,0 +1,16 @@
+{
+    "resources": [
+        {
+          "id": "asdf",
+          "alias": "t"
+        }
+    ],
+    "conditions": [
+        {
+          "operator": "=",
+          "property": "filterable",
+          "value": "value"
+        }
+    ],
+    "invalidGroupOperator":"or"
+}
