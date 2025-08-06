@@ -37,14 +37,9 @@ class MetastoreAccessManagerTest extends KernelTestBase {
   protected MetastoreAccessManager $accessManager;
 
   /**
-   * A user with permissions to work with the metastore.
-   */
-  protected AccountInterface $priviledgedUser;
-
-  /**
    * A user without permissions to work with the metastore.
    */
-  protected AccountInterface $unpriviledgedUser;
+  protected AccountInterface $unprivilegedUser;
 
   /**
    * A user with the legacy perm 'post put delete datasets through the api'.
@@ -90,6 +85,8 @@ class MetastoreAccessManagerTest extends KernelTestBase {
       ->add(NodeInterface::class, 'get', FieldItemListInterface::class)
       ->add(NodeInterface::class, 'language', LanguageInterface::class)
       ->add(NodeInterface::class, 'getEntityType', EntityTypeInterface::class)
+      ->add(NodeInterface::class, 'getEntityTypeId', 'node')
+      ->add(NodeInterface::class, 'id', '123')
       ->add(EntityTypeInterface::class, 'id', 'node')
       ->add(LanguageInterface::class, 'getId', 'en')
       ->add(FieldItemListInterface::class, 'getString', 'dataset')
@@ -97,15 +94,9 @@ class MetastoreAccessManagerTest extends KernelTestBase {
 
     $this->container->set('dkan.metastore.metastore_item_factory', $itemFactory);
 
-    $this->priviledgedUser = $this->createUser([
-      'access content',
-      'create data content',
-      'edit own data content',
-      'delete own data content',
-      'use dkan_publishing transition publish',
-      'use dkan_publishing transition archive',
-    ], 'privileged_user');
-    $this->unpriviledgedUser = $this->createUser([
+    $this->createUser([], 'superuser', TRUE);
+
+    $this->unprivilegedUser = $this->createUser([
       'access content',
     ], 'unprivileged_user');
     $this->legacyPermUser = $this->createUser([
@@ -124,10 +115,15 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $schema_id = 'example_schema';
     $accessManager = MetastoreAccessManager::create($this->container);
 
-    $can_create = $accessManager->canCreate($schema_id, $this->priviledgedUser);
+    $privilegedUser = $this->createUser([
+      'access content',
+      'create data content',
+    ], 'privileged_user', FALSE);
+
+    $can_create = $accessManager->canCreate($schema_id, $privilegedUser);
     $this->assertTrue($can_create->isAllowed());
 
-    $can_create = $accessManager->canCreate($schema_id, $this->unpriviledgedUser);
+    $can_create = $accessManager->canCreate($schema_id, $this->unprivilegedUser);
     $this->assertFalse($can_create->isAllowed());
 
     $can_create = $accessManager->canCreate($schema_id, $this->legacyPermUser);
@@ -147,43 +143,59 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     // Create a dummy post request
     $request = new Request([], [], [], [], [], ['REQUEST_METHOD' => 'POST']);
 
-    $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->priviledgedUser, $request);
+    $privilegedUser = $this->createUser([
+      'access content',
+      'edit any data content',
+    ], 'privileged_user', FALSE);
+
+    $can_update = $accessManager->canUpdate($schema_id, $item_id, $privilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->unprivilegedUser, $request);
     $this->assertFalse($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, $item_id, $this->legacyPermUser, $request);
     $this->assertTrue($can_update->isAllowed());
 
     // We should be "allowed" to update a non-existant item, the controller will
     // handle the 404 response.
-    $can_update = $accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '345', $privilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '345', $this->unprivilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
 
     // Now try with a PUT request, which should check for create permissions if 
     // non-existant node.
     $request->setMethod('PUT');
-    $can_update = $accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $privilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->unprivilegedUser, $request);
     $this->assertFalse($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, '123', $this->legacyPermUser, $request);
     $this->assertTrue($can_update->isAllowed());
 
-    $request->setMethod('PUT');
-    $can_update = $accessManager->canUpdate($schema_id, '345', $this->priviledgedUser, $request);
+    // Putting again; we don't have create permission! This should return
+    // forbidden.
+    $can_update = $accessManager->canUpdate($schema_id, '345', $privilegedUser, $request);
+    $this->assertFalse($can_update->isAllowed());
+    // Change privileged user permissions
+    unset($privilegedUser);
+    $privilegedUser = $this->createUser([
+      'access content',
+      'edit any data content',
+      'create data content',
+    ], 'privileged_user2', FALSE);
+    $can_update = $accessManager->canUpdate($schema_id, '345', $privilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $accessManager->canUpdate($schema_id, '345', $this->unpriviledgedUser, $request);
+
+    $can_update = $accessManager->canUpdate($schema_id, '345', $this->unprivilegedUser, $request);
     $this->assertFalse($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, '345', $this->legacyPermUser, $request);
     $this->assertTrue($can_update->isAllowed());
 
     // Now try with a PATCH request
     $request->setMethod('PATCH');
-    $can_update = $accessManager->canUpdate($schema_id, '123', $this->priviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $privilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
-    $can_update = $accessManager->canUpdate($schema_id, '123', $this->unpriviledgedUser, $request);
+    $can_update = $accessManager->canUpdate($schema_id, '123', $this->unprivilegedUser, $request);
     $this->assertFalse($can_update->isAllowed());
     $can_update = $accessManager->canUpdate($schema_id, '123', $this->legacyPermUser, $request);
     $this->assertTrue($can_update->isAllowed());
@@ -202,17 +214,22 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $item_id = '123';
     $accessManager = MetastoreAccessManager::create($this->container);
 
-    $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->priviledgedUser);
+    $privilegedUser = $this->createUser([
+      'access content',
+      'delete any data content',
+    ], 'privileged_user', FALSE);
+
+    $can_delete = $accessManager->canDelete($schema_id, $item_id, $privilegedUser);
     $this->assertTrue($can_delete->isAllowed());
-    $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->unpriviledgedUser);
+    $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->unprivilegedUser);
     $this->assertFalse($can_delete->isAllowed());
     $can_delete = $accessManager->canDelete($schema_id, $item_id, $this->legacyPermUser);
     $this->assertTrue($can_delete->isAllowed());
 
     // Test with a non-existant item. Should always be allowed, controller handles.
-    $can_delete = $accessManager->canDelete($schema_id, '345', $this->priviledgedUser);
+    $can_delete = $accessManager->canDelete($schema_id, '345', $privilegedUser);
     $this->assertTrue($can_delete->isAllowed());
-    $can_delete = $accessManager->canDelete($schema_id, '345', $this->unpriviledgedUser);
+    $can_delete = $accessManager->canDelete($schema_id, '345', $this->unprivilegedUser);
     $this->assertTrue($can_delete->isAllowed());
   }
 
@@ -229,17 +246,22 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $schema_id = 'dataset';
     $item_id = '123';
 
-    $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->priviledgedUser);
+    $privilegedUser = $this->createUser([
+      'access content',
+      'view data revisions',
+    ], 'privileged_user', FALSE);
+
+    $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $privilegedUser);
     $this->assertTrue($can_view->isAllowed());
 
-    $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->unpriviledgedUser);
+    $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->unprivilegedUser);
     $this->assertFalse($can_view->isAllowed());
 
     $can_view = $accessManager->canViewRevisionList($schema_id, $item_id, $this->legacyPermUser);
     $this->assertTrue($can_view->isAllowed());
 
     // Non-existant item should be allowed, controller handles.
-    $can_view = $accessManager->canViewRevisionList($schema_id, '345', $this->unpriviledgedUser);
+    $can_view = $accessManager->canViewRevisionList($schema_id, '345', $this->unprivilegedUser);
     $this->assertTrue($can_view->isAllowed());
   }
 
