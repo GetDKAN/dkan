@@ -213,7 +213,7 @@
                     "default": "="
                  }
             },
-            "required": [ "property", "value", "operator" ]
+            "required": [ "property", "value" ]
         },
         "expression": {
             "type": "object",
