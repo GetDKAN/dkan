@@ -8,9 +8,8 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Entity\File;
-use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidget;
-use Drupal\json_form_widget\ArrayHelper;
 use Drupal\json_form_widget\Element\UploadOrLink;
+use Drupal\metastore\Plugin\Field\FieldWidget\DkanJsonFormWidget;
 
 /**
  * Implements hook_field_widget_complete_form_alter().
@@ -18,7 +17,7 @@ use Drupal\json_form_widget\Element\UploadOrLink;
  * Set json_form_widget flag for later.
  */
 function json_form_widget_field_widget_complete_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
-  if ($context['widget'] instanceof JsonFormWidget) {
+  if ($context['widget'] instanceof DkanJsonFormWidget) {
     $form_state->set('has_json_form_widget', TRUE);
   }
 }

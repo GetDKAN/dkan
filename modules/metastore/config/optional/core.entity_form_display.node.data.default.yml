@@ -24,7 +24,7 @@ content:
     weight: 6
     settings: {  }
     third_party_settings: {  }
-    type: json_form_widget
+    type: dkan_json_form_widget
     region: content
   path:
     type: path

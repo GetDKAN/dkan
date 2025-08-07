@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\json_form_widget\Plugin\Field\FieldWidget;
+namespace Drupal\metastore\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
@@ -8,6 +8,7 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\FormBuilder;
+use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidgetBase;
 use Drupal\json_form_widget\ValueHandler;
 use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -18,15 +19,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Plugin implementation of the 'json_form_widget'.
  *
  * @FieldWidget(
- *   id = "json_form_widget",
- *   module = "json_form_widget",
+ *   id = "dkan_json_form_widget",
  *   label = @Translation("DKAN JSON Form"),
  *   field_types = {
  *     "string_long"
  *   }
  * )
  */
-class JsonFormWidget extends JsonFormWidgetBase {
+class DkanJsonFormWidget extends JsonFormWidgetBase {
 
   /**
    * Default DKAN Data Schema.
