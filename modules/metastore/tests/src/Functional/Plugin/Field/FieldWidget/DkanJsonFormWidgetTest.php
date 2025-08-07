@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\json_form_widget\Functional\Plugin\Field\FieldWidget;
+namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @group json_form_widget
  * @group functional
  */
-class JsonFormWidgetTest extends BrowserTestBase {
+class DkanJsonFormWidgetTest extends BrowserTestBase {
 
   protected RequestStack $requestStack;
 
