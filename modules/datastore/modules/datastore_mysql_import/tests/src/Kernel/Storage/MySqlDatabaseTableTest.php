@@ -29,6 +29,12 @@ class MySqlDatabaseTableTest extends KernelTestBase {
   ];
 
   public function testWideTable() {
+    // Use strict mode.
+    $this->installConfig(['datastore_mysql_import']);
+    $this->config('datastore_mysql_import.settings')
+      ->set('strict_mode_disabled', TRUE)
+      ->save();
+
     $identifier = 'id';
     $file_path = dirname(__FILE__, 4) . '/data/wide_table.csv';
 

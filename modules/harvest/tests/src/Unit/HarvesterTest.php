@@ -18,7 +18,7 @@ class HarvesterTest extends TestCase {
     $this->getHarvester($plan, new MemStore(), new MemStore());
   }
 
-  public function basicData(): array {
+  public static function basicData(): array {
     return [
       ["file://" . __DIR__ . "/../../files/data4.json"],
       ["https://demo.getdkan.org/data.json"],

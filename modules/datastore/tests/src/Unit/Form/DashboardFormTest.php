@@ -161,8 +161,8 @@ class DashboardFormTest extends TestCase {
    */
   public function testBuildTableRowsWithDatasetTitleFilter() {
     $info = [
-      'uuid' => 'dataset-1',
-      'title' => 'Dataset 1',
+      'uuid' => 'dataset-1-2',
+      'title' => 'Dataset 1 2',
       'revision_id' => '2',
       'moderation_state' => 'published',
       'modified_date_metadata' => '2020-01-15',
@@ -203,11 +203,12 @@ class DashboardFormTest extends TestCase {
 
     $container = $this->buildContainerChain()
       ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class)
-      ->add(RequestStack::class, 'getCurrentRequest', new Request(['dataset_title' => 'Dataset 1']))
+      ->add(RequestStack::class, 'getCurrentRequest', new Request(['dataset_title' => 'Dataset 2']))
       ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(EntityStorageInterface::class, 'loadMultiple', [$nodeMock])
       ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'andConditionGroup', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [$nodeMock])
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
       ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
@@ -216,8 +217,8 @@ class DashboardFormTest extends TestCase {
     $form = DashboardForm::create($container)->buildForm([], new FormState());
 
     $this->assertEquals(1, count($form['table']['#rows']));
-    $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']['#uuid']);
-    $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
+    $this->assertEquals('dataset-1-2', $form['table']['#rows'][0][0]['data']['#uuid']);
+    $this->assertEquals('Dataset 1 2', $form['table']['#rows'][0][0]['data']['#title']);
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
     $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);

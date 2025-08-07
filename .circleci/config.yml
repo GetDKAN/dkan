@@ -191,8 +191,8 @@ jobs:
                   source /home/circleci/.bash_profile
                   cd $CIRCLE_WORKING_DIRECTORY/dkan
                   qlty coverage publish \
+                    --strip-prefix "/var/www/html/dkan" \
                     --total-parts-count $CIRCLE_NODE_TOTAL \
-                    --format clover \
                     $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml
             - persist_to_workspace:
                 root: report

@@ -1,28 +1,44 @@
 services:
   json_form.builder:
     class: \Drupal\json_form_widget\FormBuilder
-    arguments: ['@dkan.metastore.schema_retriever','@json_form.router', '@json_form.schema_ui_handler', '@dkan.json_form.logger_channel']
+    arguments:
+      - '@json_form.router'
+      - '@json_form.schema_ui_handler'
+      - '@dkan.json_form.logger_channel'
   json_form.router:
     class: \Drupal\json_form_widget\FieldTypeRouter
-    arguments: ['@json_form.string_helper','@json_form.object_helper', '@json_form.array_helper', '@json_form.integer_helper']
+    arguments:
+      - '@json_form.string_helper'
+      - '@json_form.object_helper'
+      - '@json_form.array_helper'
+      - '@json_form.integer_helper'
   json_form.value_handler:
     class: \Drupal\json_form_widget\ValueHandler
   json_form.string_helper:
     class: \Drupal\json_form_widget\StringHelper
-    arguments: ['@email.validator']
+    arguments:
+      - '@email.validator'
   json_form.integer_helper:
     class: \Drupal\json_form_widget\IntegerHelper
   json_form.object_helper:
     class: \Drupal\json_form_widget\ObjectHelper
   json_form.array_helper:
     class: \Drupal\json_form_widget\ArrayHelper
-    arguments: ['@json_form.object_helper', '@json_form.string_helper']
+    arguments: 
+      - '@json_form.object_helper'
+      - '@json_form.string_helper'
   json_form.widget_router:
     class: \Drupal\json_form_widget\WidgetRouter
-    arguments: ['@uuid','@json_form.string_helper', '@dkan.metastore.service']
+    arguments:
+      - '@uuid'
+      - '@json_form.string_helper'
+      - '@dkan.metastore.service'
   json_form.schema_ui_handler:
     class: \Drupal\json_form_widget\SchemaUiHandler
-    arguments: ['@dkan.metastore.schema_retriever', '@dkan.json_form.logger_channel', '@json_form.widget_router']
+    arguments:
+      - '@dkan.json_form.logger_channel'
+      - '@json_form.widget_router'
   dkan.json_form.logger_channel:
     parent: logger.channel_base
-    arguments: ['json_form_widget']
+    arguments: 
+      - 'json_form_widget'

@@ -13,7 +13,7 @@ class MissingObjectException extends MetastoreException {
    * {@inheritdoc}
    */
   public function httpCode(): int {
-    return 412;
+    return 404;
   }
 
 }
