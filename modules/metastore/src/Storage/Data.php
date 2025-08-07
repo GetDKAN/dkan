@@ -311,7 +311,10 @@ abstract class Data implements MetastoreEntityStorageInterface {
 
     $entity = $this->getEntityLatestRevision($uuid);
     if ($entity) {
-      return $entity->delete();
+      $entity->delete();
+    }
+    else {
+      throw new MissingObjectException("No data with the identifier {$uuid} was found.", 404);
     }
   }
 

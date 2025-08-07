@@ -84,7 +84,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
     // uploaded dataset files show remote link on edit.
     $this->drupalGet('admin/dkan/datasets');
     $this->submitForm([
-      'edit-title' => $this->dataset_title,
+      'edit-title' => $this->datasetTitle,
     ], 'Filter');
     $assert->statusCodeEquals(200);
 

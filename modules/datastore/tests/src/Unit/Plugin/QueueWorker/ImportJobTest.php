@@ -240,51 +240,6 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($c, $results[10001]);
   }
 
-  /**
-   * This is the same as testLargeImport but expects more than one pass.
-   */
-  public function testMultiplePasses() {
-    $this->markTestIncomplete('This does not always use more than one pass.');
-    $resource = new DataResource(__DIR__ . '/../../../../data/Bike_Lane.csv', 'text/csv');
-
-    $storage = new Memory();
-
-    $config = [
-      'resource' => $resource,
-      'storage' => $this->database,
-      'parser' => Csv::getParser(),
-    ];
-
-    $results = [];
-    $passes = 0;
-    do {
-      $import_job = ImportJob::get('1', $storage, $config);
-      $import_job->setTimeLimit(1);
-      $import_job->run();
-      $this->assertNotEquals(
-        Result::ERROR,
-        $import_job->getResult()->getStatus()
-      );
-      $results += $import_job->getStorage()->retrieveAll();
-      ++$passes;
-    } while ($import_job->getResult()->getStatus() != Result::DONE);
-
-    // How many passses did it take?
-    $this->assertGreaterThan(1, $passes);
-
-    $a = '["1","11110000","L","1","DESIGNATED","16.814","16.846","51.484"]';
-    $this->assertEquals($a, $results[0]);
-
-    $b = '["5083","87080001","R","1","DESIGNATED","1.074","1.177","163.244"]';
-    $this->assertEquals($b, $results[5001]);
-
-    $c = '["11001","57060000","R","1","DESIGNATED","4.505","4.682","285.7762"]';
-    $this->assertEquals($c, $results[10001]);
-  }
-
-  /**
-   *
-   */
   public function testBadStorage() {
     $this->expectExceptionMessage('Storage must be an instance of ' . DatabaseTableInterface::class);
     $resource = new DataResource(__DIR__ . '/../../../../data/countries.csZv', 'text/csv');
@@ -296,9 +251,6 @@ class ImportJobTest extends TestCase {
     ]);
   }
 
-  /**
-   *
-   */
   public function testNonStorage() {
     $this->expectExceptionMessage('Storage must be an instance of Drupal\common\Storage\DatabaseTableInterface');
     $resource = new DataResource(__DIR__ . '/../../../../data/countries.csv', 'text/csv');

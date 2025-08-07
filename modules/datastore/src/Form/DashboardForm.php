@@ -323,16 +323,29 @@ class DashboardForm extends FormBase {
    *   Dataset UUIDs .
    */
   protected function getDatasetsByTitle(array $filters): array {
+    $datasets = [];
+
     // Get the ids using an entity query, because our dataset title is in the
     // node title field.
     // @todo Unify different queries against Data nodes using a repository or
     // the NodeData wrapper.
-    $results = $this->nodeStorage->getQuery()
+    $query = $this->nodeStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', 'data')
-      ->condition('field_data_type', 'dataset')
-      ->condition('title', $filters['dataset_title'], 'CONTAINS')
-      ->execute();
+      ->condition('field_data_type', 'dataset');
+
+    $searchTerms = array_filter(explode(' ', trim($filters['dataset_title'])));
+
+    if (!empty($searchTerms)) {
+      $titleGroup = $query->andConditionGroup();
+      foreach ($searchTerms as $term) {
+        $titleGroup->condition('title', $term, 'CONTAINS');
+      }
+      $query->condition($titleGroup);
+    }
+
+    $results = $query->execute();
+
     foreach ($this->nodeStorage->loadMultiple($results) as $node) {
       $datasets[] = $node->uuid();
     }

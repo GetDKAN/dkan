@@ -446,6 +446,7 @@ class MetastoreService implements ContainerInjectionInterface {
   public function delete($schema_id, $identifier) {
     $storage = $this->getStorage($schema_id);
     $storage->remove($identifier);
+    // If remove method did not throw an exception, assume the item was deleted.
     return $identifier;
   }
 

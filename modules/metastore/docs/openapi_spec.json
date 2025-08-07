@@ -58,14 +58,14 @@
                     }
                 }
             },
-            "412MetadataObjectNotFound": {
+            "404MetadataObjectNotFound": {
                 "description": "Missing object, usually due to incorrect identifier.",
                 "content": {
                     "application/json": {
                         "schema": { "$ref": "#/components/schemas/errorResponse" },
                         "example": {
                             "message": "No data with the identifier 00000000-0000-0000-0000-000000000000 was found.",
-                            "status": 412,
+                            "status": 404,
                             "timestamp": "2021-06-14T13:46:06+00:00"
                         }
                     }
