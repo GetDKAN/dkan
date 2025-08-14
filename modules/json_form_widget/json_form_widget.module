@@ -91,3 +91,12 @@ function json_form_widget_preprocess_file_link(array &$variables) {
     $variables['link']['#title'] = $file->getFileUri();
   }
 }
+
+/**
+ * Gives linked files the same access permissions as uploaded files.
+ */
+function json_form_widget_entity_type_build(array &$entity_types) {
+  if (isset($entity_types['file'])) {
+    $entity_types['file']->setHandlerClass('access', 'Drupal\json_form_widget\UploadOrLinkAccessControlHandler');
+  }
+}
