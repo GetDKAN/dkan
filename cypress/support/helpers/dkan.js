@@ -242,7 +242,7 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
     .click({ force:true })
   // Dialog will only show if we're using published, click yes.
   if (moderation_state == 'published') {
-    cy.get('.button').contains('Yes')
+    cy.get('.button', { timeout: 10000 }).contains('Yes')
       .click({ force:true })
   }
   cy.get('.messages--status')
