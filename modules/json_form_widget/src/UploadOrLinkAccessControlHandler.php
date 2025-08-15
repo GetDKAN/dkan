@@ -18,11 +18,11 @@ class UploadOrLinkAccessControlHandler extends FileAccessControlHandler {
    * @see: Drupal\file\FileAccessControlHandler
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
+    $file_scheme = \Drupal::service('stream_wrapper_manager')->getScheme($entity->getFileUri());
     if ($operation == 'download' &&
-        \Drupal::service('stream_wrapper_manager')->getScheme($entity->getFileUri()) === 'https') {
-          return AccessResult::allowed();
-    }
-    else {
+      str_starts_with($file_scheme, 'http')) {
+      return AccessResult::allowed();
+    } else {
       return parent::checkAccess($entity, $operation, $account);
     }
   }
