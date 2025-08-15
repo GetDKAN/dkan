@@ -22,7 +22,8 @@ class UploadOrLinkAccessControlHandler extends FileAccessControlHandler {
     if ($operation == 'download' &&
       str_starts_with($file_scheme, 'http')) {
       return AccessResult::allowed();
-    } else {
+    }
+    else {
       return parent::checkAccess($entity, $operation, $account);
     }
   }
