@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   description = @Translation("Foo description.")
  * )
  */
-final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements ContainerFactoryPluginInterface {
+class MetastoreSchema extends JsonFormOptionSourcePluginBase implements ContainerFactoryPluginInterface {
 
   /**
    * The metastore service.
@@ -48,6 +48,10 @@ final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Co
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->metastore = $metastore;
   }
+  
+  public function getMetastore() {
+    return $this->metastore;
+  }
 
   /**
    * {@inheritdoc}
@@ -66,10 +70,10 @@ final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Co
    */
   public function getOptions(array $config): array {
     $options = [];
-    $metastore_items = $this->metastore->getAll($config['schema']);
+    $metastore_items = $this->getMetastore()->getAll($config['schema']);
     foreach ($metastore_items as $item) {
       $item = json_decode((string) $item);
-      $title = $this->metastoreOptionTitle($item, $config['titleProperty']);
+      $title = $this->metastoreOptionTitle($item, $config['titleProperty'] ?? NULL);
       $value = $this->metastoreOptionValue($item, $config);
       $options[$value] = $title;
     }
@@ -81,7 +85,7 @@ final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Co
    *
    * @param object|string $item
    *   Single item from Metastore::getAll()
-   * @param string|false $titleProperty
+   * @param string|null $titleProperty
    *   Title property defined in UI schema.
    *
    * @return string
@@ -109,7 +113,7 @@ final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Co
     if (($config['returnValue'] ?? NULL) == 'url') {
       return 'dkan://metastore/schemas/' . $config['schema'] . '/items/' . $item->identifier;
     }
-    if ($config['titleProperty']) {
+    if ($config['titleProperty'] ?? FALSE) {
       return is_object($item) ? $item->data->{$config['titleProperty']} : $item;
     }
     return $item->data;

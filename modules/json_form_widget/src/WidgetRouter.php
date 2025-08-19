@@ -154,6 +154,7 @@ class WidgetRouter implements ContainerInjectionInterface {
     }
 
     $element['#type'] = $this->getSelectType($spec);
+    $this->fixOptionSource($spec);
     $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
