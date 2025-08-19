@@ -108,7 +108,7 @@ class WidgetRouterTest extends TestCase {
           'type' => 'autocomplete',
           'allowComplete' => TRUE,
           'multiple' => TRUE,
-          'source' => [
+          'source' => (object) [
             'metastoreSchema' => 'theme',
           ],
         ],
