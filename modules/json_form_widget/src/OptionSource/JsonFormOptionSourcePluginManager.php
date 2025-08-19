@@ -12,7 +12,7 @@ use Drupal\json_form_widget\Annotation\JsonFormOptionSource;
 /**
  * JsonFormOptionSource plugin manager.
  */
-final class JsonFormOptionSourcePluginManager extends DefaultPluginManager {
+class JsonFormOptionSourcePluginManager extends DefaultPluginManager {
 
   /**
    * Constructs the object.

@@ -4,6 +4,7 @@ namespace Drupal\Tests\json_form_widget\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
+use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
 use Drupal\json_form_widget\StringHelper;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\WidgetRouter;
@@ -13,6 +14,9 @@ use MockChain\Options;
 
 /**
  * Test class for ValueHandlerTest.
+ *
+ * @group json_form_widget
+ * @coversDefaultClass \Drupal\json_form_widget\WidgetRouter
  */
 class WidgetRouterTest extends TestCase {
 
@@ -32,6 +36,7 @@ class WidgetRouterTest extends TestCase {
       ->add('uuid', Php::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('dkan.metastore.service', MetastoreService::class)
+      ->add('plugin.manager.json_form_option_source', JsonFormOptionSourcePluginManager::class)
       ->index(0);
 
     $metastoreGetAllOptions = (new Options())
@@ -297,5 +302,114 @@ class WidgetRouterTest extends TestCase {
     ];
   }
 
+  /**
+   * Test the getDropdownOptions method.
+   *
+   * @dataProvider fixOptionSourceDataProvider
+   * @covers ::fixOptionSource
+   */
+  public function testFixOptionSource($spec, $expected) {
+    $router = WidgetRouter::create($this->getContainerChain()->getMock());
+
+    // Use reflection to access the protected method.
+    $reflection = new \ReflectionClass($router);
+    $method = $reflection->getMethod('fixOptionSource');
+    $method->setAccessible(TRUE);
+
+    $fixed = $method->invokeArgs($router, [$spec]);
+    $this->assertEquals($expected, $fixed);
+  }
+
+  /**
+   * Data provider for testFixOptionSource.
+   *
+   * @return array
+   *   Array of test data with spec and expected values.
+   */
+  public static function fixOptionSourceDataProvider(): array {
+    return [
+      'metastoreSchema and titleProperty' => [
+        (object) [
+          'titleProperty' => 'name',
+          'source' => (object) [
+            'metastoreSchema' => 'publisher',
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'titleProperty' => 'name',
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+      ],
+      'no titleProperty' => [
+        (object) [
+          'source' => (object) [
+            'metastoreSchema' => 'publisher',
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+      ],
+      'has returnValue' => [
+        (object) [
+          'source' => (object) [
+            'returnValue' => 'url',
+            'metastoreSchema' => 'data-dictionary',
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'schema' => 'data-dictionary',
+              'returnValue' => 'url',
+            ],
+          ],
+        ],
+      ],
+      'already correct' => [
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'titleProperty' => 'name',
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'titleProperty' => 'name',
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+      ],
+      'just enum' => [
+        (object) [
+          'source' => (object) [
+            'enum' => ['option1', 'option2'],
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'enum' => ['option1', 'option2'],
+          ],
+        ],
+      ],
+    ];
+  }
 
 }

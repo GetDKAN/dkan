@@ -17,15 +17,25 @@ interface JsonFormOptionSourceInterface {
   /**
    * Returns options for a given argument.
    *
-   * @param object $source
-   *   The source object to get options for.
-   * @param string|null $titleProperty
-   *   (optional) The property to use as the option title, if not the default.
+   * @param array $config
+   *   Arbitrary configuration for the option source.
    *
    * @return array
    *   An associative array of options, where the keys are the option values and
    *   the values are the option titles.
    */
-  public function getOptions(object $source, ?string $titleProperty): array;
+  public function getOptions(array $config): array;
+
+  /**
+   * Validates the configuration for the option source.
+   *
+   * @param array $config
+   *   Arbitrary configuration for the option source.
+   *
+   * @return true
+   *   If the configuration is valid, returns true. Invalid configuration will
+   *   throw an exception.
+   */
+  public function validateConfig(array $config): true;
 
 }

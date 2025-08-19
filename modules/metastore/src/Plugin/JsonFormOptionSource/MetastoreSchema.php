@@ -6,6 +6,7 @@ namespace Drupal\metastore\Plugin\JsonFormOptionSource;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginBase;
+use Drupal\metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -38,7 +39,12 @@ final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Co
    * @param \Drupal\metastore\MetastoreService $metastore
    *   The metastore service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, \Drupal\metastore\MetastoreService $metastore) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    MetastoreService $metastore,
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->metastore = $metastore;
   }
@@ -58,13 +64,13 @@ final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Co
   /**
    * {@inheritdoc}
    */
-  public function getOptions(object $source, ?string $titleProperty): array {
+  public function getOptions(array $config): array {
     $options = [];
-    $metastore_items = $this->metastore->getAll($source->metastoreSchema);
+    $metastore_items = $this->metastore->getAll($config['schema']);
     foreach ($metastore_items as $item) {
       $item = json_decode((string) $item);
-      $title = $this->metastoreOptionTitle($item, $titleProperty);
-      $value = $this->metastoreOptionValue($item, $source, $titleProperty);
+      $title = $this->metastoreOptionTitle($item, $config['titleProperty']);
+      $value = $this->metastoreOptionValue($item, $config);
       $options[$value] = $title;
     }
     return $options;
@@ -93,22 +99,37 @@ final class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Co
    *
    * @param object|string $item
    *   Single item from Metastore::getAll()
-   * @param object $source
-   *   Source defintion from UI schema.
-   * @param string|false $titleProperty
-   *   Title property defined in UI schema.
+   * @param array $config
+   *   Configuration array containing the schema and other options.
    *
    * @return string
    *   String to be used as option value.
    */
-  protected function metastoreOptionValue($item, object $source, $titleProperty): string {
-    if (($source->returnValue ?? NULL) == 'url') {
-      return 'dkan://metastore/schemas/' . $source->metastoreSchema . '/items/' . $item->identifier;
+  protected function metastoreOptionValue($item, $config): string {
+    if (($config['returnValue'] ?? NULL) == 'url') {
+      return 'dkan://metastore/schemas/' . $config['schema'] . '/items/' . $item->identifier;
     }
-    if ($titleProperty) {
-      return is_object($item) ? $item->data->$titleProperty : $item;
+    if ($config['titleProperty']) {
+      return is_object($item) ? $item->data->{$config['titleProperty']} : $item;
     }
     return $item->data;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateConfig(array $config): true {
+    // Must have a schema.
+    if (empty($config['schema'])) {
+      throw new \InvalidArgumentException('The "schema" config property is required.');
+    }
+    // The titleProperty and returnValue, if present, must be strings.
+    foreach (['titleProperty', 'returnValue'] as $property) {
+      if (isset($config[$property]) && !is_string($config[$property])) {
+        throw new \InvalidArgumentException("The \"{$property}\" config property must be a string.");
+      }
+    }
+    return TRUE;
   }
 
 }

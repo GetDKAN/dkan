@@ -32,7 +32,7 @@ services:
     arguments:
       - '@uuid'
       - '@json_form.string_helper'
-      - '@dkan.metastore.service'
+      - '@plugin.manager.json_form_option_source'
   json_form.schema_ui_handler:
     class: \Drupal\json_form_widget\SchemaUiHandler
     arguments:
@@ -43,5 +43,5 @@ services:
     arguments: 
       - 'json_form_widget'
   plugin.manager.json_form_option_source:
-    class: Drupal\json_form_widget\JsonFormOptionSourcePluginManager
+    class: Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager
     parent: default_plugin_manager
