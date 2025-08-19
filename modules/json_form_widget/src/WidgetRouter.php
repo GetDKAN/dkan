@@ -2,10 +2,10 @@
 
 namespace Drupal\json_form_widget;
 
-use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -30,7 +30,7 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Option source plugin manager.
    */
-  protected PluginManagerInterface $pluginManager;
+  protected JsonFormOptionSourcePluginManager $pluginManager;
 
   /**
    * Constructor.
@@ -39,13 +39,13 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   Uuid service.
    * @param \Drupal\json_form_widget\StringHelper $string_helper
    *   String Helper service.
-   * @param \Drupal\Component\Plugin\PluginManagerInterface $plugin_manager
+   * @param \Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager $plugin_manager
    *   Option source plugin manager.
    */
   public function __construct(
     UuidInterface $uuid,
     StringHelper $string_helper,
-    PluginManagerInterface $plugin_manager,
+    JsonFormOptionSourcePluginManager $plugin_manager,
   ) {
     $this->uuidService = $uuid;
     $this->stringHelper = $string_helper;
@@ -172,6 +172,30 @@ class WidgetRouter implements ContainerInjectionInterface {
   }
 
   /**
+   * Fix legacy "metastoreSchema" source property, move titleProperty to config.
+   *
+   * @param object $spec
+   *   The spec object to fix.
+   *
+   * @return object
+   *   The fixed spec object.
+   */
+  protected function fixOptionSource(object $spec): object {
+    if (is_object($spec->source ?? NULL) && is_string($spec->source->metastoreSchema ?? NULL)) {
+      $spec->source = (object) [
+        'plugin' => 'metastoreSchema',
+        'config' => (object) array_filter([
+          'schema' => $spec->source->metastoreSchema,
+          'titleProperty' => $spec->titleProperty ?? NULL,
+          'returnValue' => $spec->source->returnValue ?? NULL,
+        ]),
+      ];
+      unset($spec->titleProperty, $spec->source->metastoreSchema, $spec->source->returnValue);
+    }
+    return $spec;
+  }
+
+  /**
    * Helper function to get type of pick list.
    *
    * @param mixed $spec
@@ -202,22 +226,14 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   Array with options for the dropdown.
    */
   public function getDropdownOptions(object $source, string|false $titleProperty = FALSE) {
-    $source_properties = get_object_vars($source);
-    if (count($source_properties) > 1) {
-      // If the source object has more than one property, reject it.
-      return [];
-    }
     if (isset($source->enum)) {
       return $this->stringHelper->getSelectOptions($source);
     }
-
-    // If not enum, the property name is a plugin, and the value an argument.
-    $plugin = key($source_properties);
-    $arg = $source->$plugin;
-    $plugin_manager = \Drupal::service('plugin.manager.json_form_option_source');
-    /** @var \Drupal\json_form_widget\JsonFormOptionSourceInterface $option_source */
-    $option_source = $plugin_manager->createInstance($plugin);
-    return $option_source->getOptions($arg, $titleProperty);
+    if (is_string($source->plugin ?? NULL)) {
+      $option_source = $this->pluginManager->createInstance($source->plugin);
+      return $option_source->getOptions((array) $source->config ?? []);
+    }
+    return [];
   }
 
   /**
