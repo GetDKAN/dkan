@@ -82,7 +82,10 @@ class DkanJsonFieldWidgetTest extends TestCase {
         [
           '#type' => 'select2',
           '#title' => 'tags',
-          '#options' => [],
+          '#options' => [
+            'Theme 1' => 'Theme 1',
+            'Theme 2' => 'Theme 2',
+          ],
           '#other_option' => FALSE,
           '#multiple' => TRUE,
           '#autocreate' => FALSE,
@@ -198,15 +201,11 @@ class DkanJsonFieldWidgetTest extends TestCase {
     return [
       json_encode((object) [
         'identifier' => '111',
-        'data' => (object) [
-          'name' => 'Theme 1',
-        ],
+        'data' => 'Theme 1',
       ]),
       json_encode((object) [
         'identifier' => '222',
-        'data' => (object) [
-          'name' => 'Theme 2',
-        ],
+        'data' => 'Theme 2',
       ]),
     ];
   }

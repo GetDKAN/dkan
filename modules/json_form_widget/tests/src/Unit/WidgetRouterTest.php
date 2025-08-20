@@ -8,7 +8,6 @@ use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
 use Drupal\json_form_widget\StringHelper;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\WidgetRouter;
-use Drupal\metastore\MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
 
@@ -35,19 +34,11 @@ class WidgetRouterTest extends TestCase {
     $containerGetOptions = (new Options())
       ->add('uuid', Php::class)
       ->add('json_form.string_helper', StringHelper::class)
-      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('plugin.manager.json_form_option_source', JsonFormOptionSourcePluginManager::class)
       ->index(0);
 
-    $metastoreGetAllOptions = (new Options())
-      ->add('publisher', self::publishers())
-      ->add('data-dictionary', self::dataDictionaries())
-      ->add('theme', self::themes())
-      ->index(0);
-
     return (new Chain($this))
-      ->add(Container::class, 'get', $containerGetOptions)
-      ->add(MetastoreService::class, 'getAll', $metastoreGetAllOptions);
+      ->add(Container::class, 'get', $containerGetOptions);
   }
 
   /**
@@ -108,33 +99,6 @@ class WidgetRouterTest extends TestCase {
           '#allowed_formats' => ['html'],
         ],
       ],
-      'tagField' => [
-        (object) [
-          'widget' => 'list',
-          'type' => 'autocomplete',
-          'allowComplete' => TRUE,
-          'multiple' => TRUE,
-          'source' => (object) [
-            'metastoreSchema' => 'theme',
-          ],
-        ],
-        [
-          '#type' => 'textfield',
-          '#title' => 'tags',
-        ],
-        [
-          '#type' => 'select2',
-          '#title' => 'tags',
-          '#options' => [
-            'Theme 1' => 'Theme 1',
-            'Theme 2' => 'Theme 2',
-          ],
-          '#other_option' => FALSE,
-          '#multiple' => TRUE,
-          '#autocreate' => FALSE,
-          '#target_type' => 'node',
-        ],
-      ],
       // Number field includes constraints and a "step" for up/down controlls.
       'numberField' => [
         (object) [
@@ -182,72 +146,6 @@ class WidgetRouterTest extends TestCase {
           ],
           '#other_option' => FALSE,
           '#input_type' => 'textfield',
-        ],
-      ],
-      // Publisher popualtes from metastore but returns whole object,
-      // is wrapped in a details element.
-      'publisherField' => [
-        (object) [
-          "widget" => "list",
-          "type" => "autocomplete",
-          "allowCreate" => TRUE,
-          "titleProperty" => "name",
-          "source" => (object) [
-            "metastoreSchema" => "publisher",
-          ],
-        ],
-        [
-          '#type' => 'details',
-          '#title' => 'Organization',
-          'name' => [
-            '#type' => 'textfield',
-            '#title' => "Publisher Name",
-            "#default_value" => NULL,
-            "#required" => TRUE,
-          ],
-        ],
-        [
-          '#type' => 'details',
-          '#title' => 'Organization',
-          'name' => [
-            '#type' => 'select2',
-            '#title' => 'Publisher Name',
-            '#default_value' => NULL,
-            '#required' => TRUE,
-            '#options' => [
-              'Publisher 1' => 'Publisher 1',
-              'Publisher 2' => 'Publisher 2',
-            ],
-            '#other_option' => FALSE,
-            '#multiple' => FALSE,
-            '#autocreate' => TRUE,
-            '#target_type' => 'node',
-          ],
-        ],
-      ],
-      // Data dict field draws from metastore but just shows URLs.
-      'dataDict' => [
-        (object) [
-          "widget" => "list",
-          "type" => "select",
-          "titleProperty" => "title",
-          "source" => (object) [
-            "metastoreSchema" => "data-dictionary",
-            "returnValue" => "url",
-          ],
-        ],
-        [
-          '#type' => 'url',
-          '#title' => 'Data Dictionary',
-        ],
-        [
-          '#type' => 'select',
-          '#title' => 'Data Dictionary',
-          '#options' => [
-            'dkan://metastore/schemas/data-dictionary/items/111' => 'Data dictionary 1',
-            'dkan://metastore/schemas/data-dictionary/items/222' => 'Data dictionary 2',
-          ],
-          '#other_option' => FALSE,
         ],
       ],
     ];
