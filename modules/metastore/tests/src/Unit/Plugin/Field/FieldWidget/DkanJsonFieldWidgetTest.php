@@ -69,7 +69,7 @@ class DkanJsonFieldWidgetTest extends TestCase {
         (object) [
           'widget' => 'list',
           'type' => 'autocomplete',
-          'allowComplete' => TRUE,
+          'allowCreate' => TRUE,
           'multiple' => TRUE,
           'source' => (object) [
             'metastoreSchema' => 'theme',
@@ -88,7 +88,7 @@ class DkanJsonFieldWidgetTest extends TestCase {
           ],
           '#other_option' => FALSE,
           '#multiple' => TRUE,
-          '#autocreate' => FALSE,
+          '#autocreate' => TRUE,
           '#target_type' => 'node',
         ],
       ],

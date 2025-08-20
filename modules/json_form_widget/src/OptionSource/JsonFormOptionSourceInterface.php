@@ -27,7 +27,22 @@ interface JsonFormOptionSourceInterface {
   public function getOptions(array $config): array;
 
   /**
+   * Returns the target entity type for the option source for use by
+   * autocreate features.
+   *
+   * @param array $config
+   *   Arbitrary configuration for the option source.
+   *
+   * @return null|string
+   *   The target type, such as 'node', 'taxonomy_term', etc.
+   */
+  public function getTargetType(array $config): string;
+
+  /**
    * Validates the configuration for the option source.
+   *
+   * @todo This should probably provide a framework for validating with JSON
+   * schema, rather than just arbirary PHP logic.
    *
    * @param array $config
    *   Arbitrary configuration for the option source.

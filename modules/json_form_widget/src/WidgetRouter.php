@@ -160,14 +160,14 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
       $element['#input_type'] = $spec->other_type ?? 'textfield';
     }
-    $element['#other_option'] = isset($element['#other_option']) ?? FALSE;
+    $element['#other_option'] = $element['#other_option'] ?? FALSE;
 
     if ($element['#type'] === 'select2') {
-      $element['#multiple'] = isset($spec->multiple) ? TRUE : FALSE;
-      $element['#autocreate'] = isset($spec->allowCreate) ? TRUE : FALSE;
+      $element['#multiple'] = ($spec->multiple ?? FALSE) ? TRUE : FALSE;
+      $element['#autocreate'] = ($spec->allowCreate ?? FALSE) ? TRUE : FALSE;
     }
     if (isset($element['#autocreate']) && $spec->type !== 'select2') {
-      $element['#target_type'] = 'node';
+      $element['#target_type'] = $this->getTargetType($spec->source);
     }
     return $element;
   }
@@ -235,6 +235,23 @@ class WidgetRouter implements ContainerInjectionInterface {
       return $option_source->getOptions((array) $source->config ?? []);
     }
     return [];
+  }
+
+  /**
+   * Get the target type for the dropdown based on the source.
+   *
+   * @param mixed $source
+   *   The source object from UI options.
+   *
+   * @return string|null
+   *   The target type for the dropdown.
+   */
+  public function getTargetType(mixed $source): ?string {
+    if (is_string($source->plugin ?? NULL)) {
+      $option_source = $this->pluginManager->createInstance($source->plugin);
+      return $option_source->getTargetType((array) $source->config ?? []);
+    }
+    return NULL;
   }
 
   /**

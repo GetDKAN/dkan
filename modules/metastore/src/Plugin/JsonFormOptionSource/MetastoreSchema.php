@@ -49,7 +49,10 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
     $this->metastore = $metastore;
   }
   
-  public function getMetastore() {
+  /**
+   * Return the metastore service.
+   */
+  public function getMetastore(): MetastoreService {
     return $this->metastore;
   }
 
@@ -78,6 +81,13 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
       $options[$value] = $title;
     }
     return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTargetType(array $config): string {
+    return 'node';
   }
 
   /**

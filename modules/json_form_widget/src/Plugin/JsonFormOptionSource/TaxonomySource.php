@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Simple source plugin to get taxonomy terms as options.
  *
+ * Use this as an example for building custom plugins to provide options for
+ * list elements.
+ *
  * @JsonFormOptionSource(
  *   id = "taxonomy",
  *   label = @Translation("Foo"),
@@ -68,13 +71,31 @@ class TaxonomySource extends JsonFormOptionSourcePluginBase implements Container
     $this->validateConfig($config);
     $vocabulary = $config['vocabulary'];
     /** @var \Drupal\taxonomy\TermStorageInterface $termStorage */
-    $termStorage = $this->entityTypeManager->getStorage('taxonomy_term');
+    $termStorage = $this->getEntityTypeManager()->getStorage('taxonomy_term');
     $terms = $termStorage->loadTree($vocabulary);
     $options = [];
     foreach ($terms as $term) {
       $options[$term->name] = $term->name;
     }
     return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTargetType(array $config): string {
+    $this->validateConfig($config);
+    return 'taxonomy_term';
+  }
+
+  /**
+   * Returns the entity type manager.
+   *
+   * @return \Drupal\Core\Entity\EntityTypeManager
+   *   The entity type manager.
+   */
+  public function getEntityTypeManager(): EntityTypeManager {
+    return $this->entityTypeManager;
   }
 
   /**

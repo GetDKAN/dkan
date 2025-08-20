@@ -2,12 +2,17 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
+use Dom\Entity;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
+use Drupal\json_form_widget\Plugin\JsonFormOptionSource\TaxonomySource;
 use Drupal\json_form_widget\StringHelper;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\WidgetRouter;
+use Drupal\taxonomy\TermStorage;
+use Drupal\taxonomy\TermStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;
 
@@ -38,7 +43,13 @@ class WidgetRouterTest extends TestCase {
       ->index(0);
 
     return (new Chain($this))
-      ->add(Container::class, 'get', $containerGetOptions);
+      ->add(Container::class, 'get', $containerGetOptions)
+      ->add(JsonFormOptionSourcePluginManager::class, 'createInstance', TaxonomySource::class)
+      ->add(TaxonomySource::class, 'getEntityTypeManager', EntityTypeManager::class)
+      ->add(EntityTypeManager::class, 'getStorage', (new Options())
+        ->add('taxonomy_term', TermStorageInterface::class)
+        ->index(0))
+      ->add(TermStorageInterface::class, 'loadTree', static::terms());
   }
 
   /**
@@ -148,55 +159,56 @@ class WidgetRouterTest extends TestCase {
           '#input_type' => 'textfield',
         ],
       ],
+      'taxonomyOptionsField' => [
+        (object) [
+          "widget" => "list",
+          "type" => "autocomplete",
+          "allowCreate" => FALSE,
+          "source" => (object) [
+            "plugin" => "taxonomy",
+            "config" => (object) [
+              "vocabulary" => "test_vocabulary",
+            ],
+          ],
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'Taxonomy Options',
+        ],
+        [
+          '#type' => 'select2',
+          '#title' => 'Taxonomy Options',
+          '#options' => [
+            'Term 1' => 'Term 1',
+            'Term 2' => 'Term 2',
+            'Term 3' => 'Term 3',
+          ],
+          '#other_option' => FALSE,
+          '#multiple' => FALSE,
+          '#autocreate' => FALSE,
+          '#target_type' => 'taxonomy_term',
+        ],
+      ],
     ];
   }
 
-  public static function themes() {
+  public static function terms(): array {
     return [
-      json_encode((object) [
-        'identifier' => '111',
-        'data' => 'Theme 1',
-      ]),
-      json_encode((object) [
-        'identifier' => '222',
-        'data' => 'Theme 2',
-      ]),
-    ];
-  }
-
-  public static function publishers() {
-    return [
-      json_encode((object) [
-        'identifier' => '111',
-        'data' => (object) [
-          '@type' => 'org:Organization',
-          'name' => 'Publisher 1',
-        ],
-      ]),
-      json_encode((object) [
-        'identifier' => '222',
-        'data' => (object) [
-          '@type' => 'org:Organization',
-          'name' => 'Publisher 2',
-        ],
-      ]),
-    ];
-  }
-
-  public static function dataDictionaries() {
-    return [
-      json_encode((object) [
-        'identifier' => '111',
-        'data' => (object) [
-          'title' => 'Data dictionary 1',
-        ],
-      ]),
-      json_encode((object) [
-        'identifier' => '222',
-        'data' => (object) [
-          'title' => 'Data dictionary 2',
-        ],
-      ]),
+      (object) [
+        'tid' => 1,
+        'name' => 'Term 1',
+        'vid' => 'test_vocabulary',
+      ],
+      (object) [
+        'tid' => 2,
+        'name' => 'Term 2',
+        'vid' => 'test_vocabulary',
+      ],
+      (object) [
+        'tid' => 3,
+        'name' => 'Term 3',
+        'vid' => 'test_vocabulary',
+      ],
     ];
   }
 
