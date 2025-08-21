@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
-use Dom\Entity;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
 use Drupal\Core\Entity\EntityTypeManager;
@@ -11,7 +10,6 @@ use Drupal\json_form_widget\Plugin\JsonFormOptionSource\TaxonomySource;
 use Drupal\json_form_widget\StringHelper;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\WidgetRouter;
-use Drupal\taxonomy\TermStorage;
 use Drupal\taxonomy\TermStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;

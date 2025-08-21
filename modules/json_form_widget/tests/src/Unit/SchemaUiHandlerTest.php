@@ -6,14 +6,17 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Utility\EmailValidator;
 use Drupal\Component\Uuid\Php;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Language\LanguageDefault;
 use Drupal\Core\Language\LanguageManager;
+use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
+use Drupal\json_form_widget\Plugin\JsonFormOptionSource\TaxonomySource;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\json_form_widget\WidgetRouter;
 use Drupal\metastore\MetastoreService;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\taxonomy\TermStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -592,84 +595,11 @@ class SchemaUiHandlerTest extends TestCase {
   }
 
   /**
-   * Test autocomplete on complex elements.
-   */
-  public function testAutocompleteOnComplex() {
-    // Test options with autocomplete widget, titleProperty and options from metastore.
-    $widget_router = $this->getRouter($this->getComplexMetastoreResults());
-    $options = (new Options())
-      ->add('json_form.string_helper', StringHelper::class)
-      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
-      ->add('uuid', Php::class)
-      ->add('json_form.widget_router', $widget_router)
-      ->index(0);
-
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options);
-
-    $container = $container_chain->getMock();
-    $ui_handler = SchemaUiHandler::create($container);
-
-    $ui_schema = json_decode('{"publisher": {
-      "ui:options": {
-        "widget": "list",
-        "type": "autocomplete",
-        "titleProperty": "name",
-        "allowCreate": "true",
-        "multiple": "true",
-        "source": {
-          "metastoreSchema": "publisher"
-        }
-      }
-    }}');
-    $ui_handler->setSchemaUi($ui_schema);
-    $form = [
-      'publisher' => [
-        '#type' => 'details',
-        '#open' => TRUE,
-        '#title' => 'Organization',
-        '#description' => 'Some description',
-        'name' => [
-          '#type' => 'string',
-          '#title' => 'Publisher',
-          '#description' => 'Some description',
-          '#required' => FALSE,
-        ],
-      ],
-    ];
-    $expected = [
-      'publisher' => [
-        '#type' => 'details',
-        '#open' => TRUE,
-        '#title' => 'Organization',
-        '#description' => 'Some description',
-        'name' => [
-          '#type' => 'select2',
-          '#title' => 'Publisher',
-          '#description' => 'Some description',
-          '#required' => FALSE,
-          '#options' => [
-            'Option 1' => 'Option 1',
-            'Option 2' => 'Option 2',
-          ],
-          '#other_option' => '',
-          '#multiple' => TRUE,
-          '#autocreate' => TRUE,
-          '#target_type' => 'node',
-        ],
-      ],
-    ];
-    $form = $ui_handler->applySchemaUi($form);
-
-    $this->assertEquals($expected, $form);
-  }
-
-  /**
    * Test autocomplete in simple elements.
    */
   public function testAutocompleteOnSimple() {
     // Test options with autocomplete widget and options from metastore.
-    $widget_router = $this->getRouter($this->getSimpleMetastoreResults());
+    $widget_router = $this->getRouter();
     $options = (new Options())
       ->add('json_form.string_helper', StringHelper::class)
       ->add('dkan.json_form.logger_channel', LoggerInterface::class)
@@ -682,40 +612,44 @@ class SchemaUiHandlerTest extends TestCase {
     $container = $container_chain->getMock();
     $ui_handler = SchemaUiHandler::create($container);
 
-    $ui_schema = json_decode('{"publisher": {
+    $ui_schema = json_decode('{"tags": {
         "ui:options": {
           "widget": "list",
           "type": "autocomplete",
           "allowCreate": "true",
           "multiple": "true",
           "source": {
-            "metastoreSchema": "publisher"
+            "plugin": "taxonomy",
+            "config": {
+              "vocabulary": "test_vocabulary"
+            }
           }
         }
       }}');
     $ui_handler->setSchemaUi($ui_schema);
     $form = [
-      'publisher' => [
+      'tags' => [
         '#type' => 'string',
-        '#title' => 'Publisher',
+        '#title' => 'Tags',
         '#description' => 'Some description',
         '#required' => FALSE,
       ],
     ];
     $expected = [
-      'publisher' => [
+      'tags' => [
         '#type' => 'select2',
-        '#title' => 'Publisher',
+        '#title' => 'Tags',
         '#description' => 'Some description',
         '#required' => FALSE,
         '#options' => [
-          'Option 1' => 'Option 1',
-          'Option 2' => 'Option 2',
+          'Term 1' => 'Term 1',
+          'Term 2' => 'Term 2',
+          'Term 3' => 'Term 3',
         ],
-        '#other_option' => '',
+        '#other_option' => FALSE,
         '#multiple' => TRUE,
         '#autocreate' => TRUE,
-        '#target_type' => 'node',
+        '#target_type' => 'taxonomy_term',
       ],
     ];
     $form = $ui_handler->applySchemaUi($form);
@@ -728,7 +662,7 @@ class SchemaUiHandlerTest extends TestCase {
    */
   public function testAutocompleteHideActions() {
     // Test options with autocomplete widget and options from metastore.
-    $widget_router = $this->getRouter($this->getSimpleMetastoreResults());
+    $widget_router = $this->getRouter();
     $options = (new Options())
       ->add('json_form.string_helper', StringHelper::class)
       ->add('dkan.json_form.logger_channel', LoggerInterface::class)
@@ -753,7 +687,10 @@ class SchemaUiHandlerTest extends TestCase {
             "allowCreate": "true",
             "multiple": "true",
             "source": {
-              "metastoreSchema": "theme"
+              "plugin": "taxonomy",
+              "config": {
+                "vocabulary": "test_vocabulary"
+              }
             }
           }
         }
@@ -798,13 +735,14 @@ class SchemaUiHandlerTest extends TestCase {
             '#type' => 'select2',
             '#title' => 'Topic',
             '#options' => [
-              'Option 1' => 'Option 1',
-              'Option 2' => 'Option 2',
+              'Term 1' => 'Term 1',
+              'Term 2' => 'Term 2',
+              'Term 3' => 'Term 3',
             ],
-            '#other_option' => '',
+            '#other_option' => FALSE,
             '#multiple' => TRUE,
             '#autocreate' => TRUE,
-            '#target_type' => 'node',
+            '#target_type' => 'taxonomy_term',
             '#default_value' => [
               'Test' => 'Test',
               'Test 2' => 'Test 2',
@@ -852,13 +790,14 @@ class SchemaUiHandlerTest extends TestCase {
             '#type' => 'select2',
             '#title' => 'Topic',
             '#options' => [
-              'Option 1' => 'Option 1',
-              'Option 2' => 'Option 2',
+              'Term 1' => 'Term 1',
+              'Term 2' => 'Term 2',
+              'Term 3' => 'Term 3',
             ],
-            '#other_option' => '',
+            '#other_option' => FALSE,
             '#multiple' => TRUE,
             '#autocreate' => TRUE,
-            '#target_type' => 'node',
+            '#target_type' => 'taxonomy_term',
             '#default_value' => [],
           ],
         ],
@@ -872,7 +811,7 @@ class SchemaUiHandlerTest extends TestCase {
   /**
    * Return WidgetRouter object.
    */
-  private function getRouter($metastoreResults) {
+  private function getRouter() {
     $email_validator = new EmailValidator();
     $string_helper = new StringHelper($email_validator);
 
@@ -880,36 +819,20 @@ class SchemaUiHandlerTest extends TestCase {
       ->add('json_form.string_helper', $string_helper)
       ->add('uuid', Php::class)
       ->add('dkan.metastore.service', MetastoreService::class)
-      ->add('string_translation', TranslationManager::class)
+      ->add('plugin.manager.json_form_option_source', JsonFormOptionSourcePluginManager::class)
       ->index(0);
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(MetastoreService::class, 'getAll', $metastoreResults);
+      ->add(JsonFormOptionSourcePluginManager::class, 'createInstance', TaxonomySource::class)
+      ->add(TaxonomySource::class, 'getEntityTypeManager', EntityTypeManager::class)
+      ->add(EntityTypeManager::class, 'getStorage', (new Options())
+        ->add('taxonomy_term', TermStorageInterface::class)
+        ->index(0))
+      ->add(TermStorageInterface::class, 'loadTree', WidgetRouterTest::terms());
 
     $container = $container_chain->getMock();
     return WidgetRouter::create($container);
-  }
-
-  /**
-   * Dummy list of simple metastore results.
-   */
-  private function getSimpleMetastoreResults() {
-    return [
-      $this->validMetadataFactory->get(json_encode(['data' => 'Option 1']), 'dataset'),
-      $this->validMetadataFactory->get(json_encode(['data' => 'Option 2']), 'dataset'),
-    ];
-
-  }
-
-  /**
-   * Dummy list of complex metastore results.
-   */
-  private function getComplexMetastoreResults() {
-    return [
-      $this->validMetadataFactory->get(json_encode(['data' => ['name' => 'Option 1']]), 'dataset'),
-      $this->validMetadataFactory->get(json_encode(['data' => ['name' => 'Option 2']]), 'dataset'),
-    ];
   }
 
 }

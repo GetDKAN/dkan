@@ -5,6 +5,7 @@ namespace Drupal\Tests\metastore\Unit\Field\FieldWidget;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
 use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
+use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\WidgetRouter;
@@ -12,6 +13,7 @@ use Drupal\metastore\MetastoreService;
 use Drupal\metastore\Plugin\JsonFormOptionSource\MetastoreSchema;
 use MockChain\Chain;
 use MockChain\Options;
+use Psr\Log\LoggerInterface;
 
 /**
  * Test class for ValueHandlerTest.
@@ -39,6 +41,7 @@ class DkanJsonFieldWidgetTest extends TestCase {
       ->add('json_form.string_helper', StringHelper::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('plugin.manager.json_form_option_source', JsonFormOptionSourcePluginManager::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
       ->index(0);
 
     $metastoreGetAllOptions = (new Options())
@@ -208,6 +211,83 @@ class DkanJsonFieldWidgetTest extends TestCase {
         'data' => 'Theme 2',
       ]),
     ];
+  }
+
+  /**
+   * Test autocomplete on complex publisher elements.
+   *
+   * Inherited from SchemaUiHandlerTest::testAutocompleteOnComplex
+   * before decoupling.
+   */
+  public function testAutocompleteOnPublisher() {
+    // Test options with autocomplete widget, titleProperty and options from metastore.
+    // $widget_router = $this->getRouter($results);
+    $widget_router = WidgetRouter::create($this->getContainerChain()->getMock());
+    $options = (new Options())
+      ->add('json_form.string_helper', StringHelper::class)
+      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
+      ->add('uuid', Php::class)
+      ->add('json_form.widget_router', $widget_router)
+      ->index(0);
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options);
+
+    $container = $container_chain->getMock();
+    $ui_handler = SchemaUiHandler::create($container);
+
+    $ui_schema = json_decode('{"publisher": {
+      "ui:options": {
+        "widget": "list",
+        "type": "autocomplete",
+        "titleProperty": "name",
+        "allowCreate": "true",
+        "multiple": "true",
+        "source": {
+          "metastoreSchema": "publisher"
+        }
+      }
+    }}');
+    $ui_handler->setSchemaUi($ui_schema);
+    $form = [
+      'publisher' => [
+        '#type' => 'details',
+        '#open' => TRUE,
+        '#title' => 'Organization',
+        '#description' => 'Some description',
+        'name' => [
+          '#type' => 'string',
+          '#title' => 'Publisher',
+          '#description' => 'Some description',
+          '#required' => FALSE,
+        ],
+      ],
+    ];
+    $expected = [
+      'publisher' => [
+        '#type' => 'details',
+        '#open' => TRUE,
+        '#title' => 'Organization',
+        '#description' => 'Some description',
+        'name' => [
+          '#type' => 'select2',
+          '#title' => 'Publisher',
+          '#description' => 'Some description',
+          '#required' => FALSE,
+          '#options' => [
+            'Publisher 1' => 'Publisher 1',
+            'Publisher 2' => 'Publisher 2',
+          ],
+          '#other_option' => '',
+          '#multiple' => TRUE,
+          '#autocreate' => TRUE,
+          '#target_type' => 'node',
+        ],
+      ],
+    ];
+    $form = $ui_handler->applySchemaUi($form);
+
+    $this->assertEquals($expected, $form);
   }
 
 }
