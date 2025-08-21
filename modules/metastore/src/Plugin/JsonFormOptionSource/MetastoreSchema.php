@@ -48,7 +48,7 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->metastore = $metastore;
   }
-  
+
   /**
    * Return the metastore service.
    */
@@ -133,16 +133,16 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
    * {@inheritdoc}
    */
   public function validateConfig(array $config): true {
-    // Must have a schema.
-    if (empty($config['schema'])) {
-      throw new \InvalidArgumentException('The "schema" config property is required.');
-    }
-    // The titleProperty and returnValue, if present, must be strings.
-    foreach (['titleProperty', 'returnValue'] as $property) {
-      if (isset($config[$property]) && !is_string($config[$property])) {
-        throw new \InvalidArgumentException("The \"{$property}\" config property must be a string.");
-      }
-    }
+    // Validate config properties using match expressions.
+    match (TRUE) {
+      empty($config['schema']) =>
+        throw new \InvalidArgumentException('The "schema" config property is required.'),
+      isset($config['titleProperty']) && !is_string($config['titleProperty']) =>
+        throw new \InvalidArgumentException("The \"titleProperty\" config property must be a string."),
+      isset($config['returnValue']) && !is_string($config['returnValue']) =>
+        throw new \InvalidArgumentException("The \"returnValue\" config property must be a string."),
+      default => NULL,
+    };
     return TRUE;
   }
 

@@ -27,8 +27,7 @@ interface JsonFormOptionSourceInterface {
   public function getOptions(array $config): array;
 
   /**
-   * Returns the target entity type for the option source for use by
-   * autocreate features.
+   * Returns the target entity type for the option source for use by autocreate.
    *
    * @param array $config
    *   Arbitrary configuration for the option source.
