@@ -101,7 +101,7 @@ class TaxonomySource extends JsonFormOptionSourcePluginBase implements Container
   /**
    * {@inheritdoc}
    */
-  public function validateConfig(array $config): true {
+  public function validateConfig(array $config): bool {
     if (empty($config['vocabulary']) || !is_string($config['vocabulary'])) {
       throw new \InvalidArgumentException('Vocabulary must be specified in the configuration.');
     }

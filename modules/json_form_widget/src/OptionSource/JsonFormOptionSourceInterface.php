@@ -46,10 +46,10 @@ interface JsonFormOptionSourceInterface {
    * @param array $config
    *   Arbitrary configuration for the option source.
    *
-   * @return true
+   * @return bool
    *   If the configuration is valid, returns true. Invalid configuration will
-   *   throw an exception.
+   *   throw an exception. Should never return false; bool to support PHP 8.1.
    */
-  public function validateConfig(array $config): true;
+  public function validateConfig(array $config): bool;
 
 }

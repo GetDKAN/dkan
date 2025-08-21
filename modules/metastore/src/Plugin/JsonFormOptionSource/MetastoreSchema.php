@@ -132,7 +132,7 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
   /**
    * {@inheritdoc}
    */
-  public function validateConfig(array $config): true {
+  public function validateConfig(array $config): bool {
     // Validate config properties using match expressions.
     match (TRUE) {
       empty($config['schema']) =>
