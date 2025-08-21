@@ -17,8 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @JsonFormOptionSource(
  *   id = "taxonomy",
- *   label = @Translation("Foo"),
- *   description = @Translation("Foo description.")
+ *   label = @Translation("Drupal Taxonomy"),
+ *   description = @Translation("Get JSON options from a Drupal taxonomy.")
  * )
  */
 class TaxonomySource extends JsonFormOptionSourcePluginBase implements ContainerFactoryPluginInterface {

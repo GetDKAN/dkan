@@ -2,6 +2,7 @@
 
 namespace Drupal\json_form_widget\Tests\Kernel\Plugin\JsonFormOptionSource;
 
+use Drupal\json_form_widget\Plugin\JsonFormOptionSource\TaxonomySource;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
@@ -54,9 +55,17 @@ class TaxonomySourceTest extends KernelTestBase {
     }
   }
 
-  public function testGetOptions() {
+  /**
+   * Tests various methods of the TaxonomySource plugin.
+   */
+  public function testPlugin() {
+    $config = ['vocabulary' => 'test'];
     $plugin_manager = \Drupal::service('plugin.manager.json_form_option_source');
-    $plugin = $plugin_manager->createInstance('taxonomy', ['vocabulary' => 'test']);
+    $plugin = $plugin_manager->createInstance('taxonomy', $config);
+    $this->assertInstanceOf(TaxonomySource::class, $plugin);
+    $this->assertEquals('taxonomy_term', $plugin->getTargetType($config));
+    $this->assertEquals('Drupal Taxonomy', $plugin->label());
+
     $options = $plugin->getOptions(['vocabulary' => 'test']);
 
     // Verify that the options match the terms we created.
