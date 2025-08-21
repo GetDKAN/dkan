@@ -57,13 +57,15 @@ class MetastoreSchemaTest extends KernelTestBase {
   }
 
   /**
-   * Test getOptions method.
+   * Test getOptions and other plugin basics.
    */
   public function testGetOptions() {
+    $config = ['schema' => 'theme'];
     $plugin_manager = \Drupal::service('plugin.manager.json_form_option_source');
-    $plugin = $plugin_manager->createInstance('metastoreSchema', ['schema' => 'theme']);
-    assert($plugin instanceof MetastoreSchema);
-    $options = $plugin->getOptions(['schema' => 'theme']);
+    $plugin = $plugin_manager->createInstance('metastoreSchema', $config);
+    $this->assertInstanceOf(MetastoreSchema::class, $plugin);
+    $options = $plugin->getOptions($config);
+    $this->assertEquals('node', $plugin->getTargetType($config));
 
     // Verify that the options match the terms we created.
     $expected_options = [
@@ -71,19 +73,6 @@ class MetastoreSchemaTest extends KernelTestBase {
       'Theme 2' => 'Theme 2',
     ];
     $this->assertEquals($expected_options, $options);
-  }
-
-  /**
-   * Test getTargetType method returns 'node'.
-   */
-  public function testGetTargetType() {
-    $plugin_manager = \Drupal::service('plugin.manager.json_form_option_source');
-    $plugin = $plugin_manager->createInstance('metastoreSchema', ['schema' => 'theme']);
-    $target_type = $plugin->getTargetType(['schema' => 'theme']);
-
-    // Verify that the target type is as expected.
-    $expected_target_type = 'node';
-    $this->assertEquals($expected_target_type, $target_type);
   }
 
   /**
