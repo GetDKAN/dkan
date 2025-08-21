@@ -187,6 +187,26 @@ class WidgetRouterTest extends TestCase {
           '#target_type' => 'taxonomy_term',
         ],
       ],
+      'listWithNoOptions' => [
+        (object) [
+          'widget' => 'list',
+          'type' => 'autocomplete',
+          'source' => (object) [],
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'List With No Options',
+        ],
+        [
+          '#type' => 'select2',
+          '#title' => 'List With No Options',
+          '#options' => [],
+          '#multiple' => FALSE,
+          '#autocreate' => FALSE,
+          '#target_type' => NULL,
+          '#other_option' => FALSE,
+        ],
+      ],
     ];
   }
 
