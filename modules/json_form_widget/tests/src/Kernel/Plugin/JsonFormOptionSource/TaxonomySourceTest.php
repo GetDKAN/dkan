@@ -76,4 +76,22 @@ class TaxonomySourceTest extends KernelTestBase {
     ];
     $this->assertEquals($expected_options, $options);
   }
+
+  /**
+   * Tests the validateConfig method.
+   *
+   * @todo This could be a unit test.
+   */
+  public function testValidateConfig() {
+    $plugin_manager = \Drupal::service('plugin.manager.json_form_option_source');
+    $plugin = $plugin_manager->createInstance('taxonomy', ['vocabulary' => 'test']);
+
+    // Valid config should pass without exception.
+    $this->assertTrue($plugin->validateConfig(['vocabulary' => 'test']));
+
+    // Missing vocabulary should throw exception.
+    $this->expectException(\InvalidArgumentException::class);
+    $plugin->validateConfig([]);
+  }
+
 }
