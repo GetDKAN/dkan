@@ -227,14 +227,15 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   Array with options for the dropdown.
    */
   public function getDropdownOptions(object $source, string|false $titleProperty = FALSE) {
+    $options = [];
     if (isset($source->enum)) {
-      return $this->stringHelper->getSelectOptions($source);
+      $options = $this->stringHelper->getSelectOptions($source);
     }
-    if (is_string($source->plugin ?? NULL)) {
+    elseif (is_string($source->plugin ?? NULL)) {
       $option_source = $this->pluginManager->createInstance($source->plugin);
-      return $option_source->getOptions((array) $source->config ?? []);
+      $options = $option_source->getOptions((array) $source->config ?? []);
     }
-    return [];
+    return $options;
   }
 
   /**
