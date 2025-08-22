@@ -219,7 +219,10 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
   cy.get('#edit-field-json-metadata-0-value-modified-date')
     .type('2020-02-02', { force:true } )
   // Fill select2 field for publisher.
-  cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name > .fieldset__wrapper > .js-form-item > .select2 > .selection > .select2-selection')
+  cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
+    .find('.select2-selection')
+    .click({ force:true })
+  cy.get('span[aria-owns="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]')
     .type('DKANTEST Publisher{enter}')
   // End filling up publisher.
   cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn')
@@ -227,7 +230,10 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
   cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail')
     .type('dkantest@test.com', { force:true } )
   // Fill select2 field for keyword.
-  cy.get('#edit-field-json-metadata-0-value-keyword-keyword > .fieldset__wrapper > .js-form-item > .select2 > .selection > .select2-selection')
+  cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
+    .find('.select2-selection')
+    .click({ force: true })
+  cy.get('span[aria-owns="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]')
     .type('open data{enter}')
   cy.get('#edit-moderation-state-0-state', {timeout: 2000})
     .select(moderation_state, { force:true } )
