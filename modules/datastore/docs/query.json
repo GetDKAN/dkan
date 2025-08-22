@@ -84,7 +84,8 @@
         },
         "limit": {
             "type": "integer",
-            "description": "Limit for maximum number of records returned. Pass zero for no limit (may be restricted by user permissions)."
+            "description": "Limit for maximum number of records returned. Pass zero for no limit (may be restricted by user permissions).",
+            "minimum": 1
         },
         "offset": {
             "type": "integer",

@@ -145,6 +145,18 @@ class DatastoreQueryTest extends TestCase {
     $queryService->runQuery($datastoreQuery);
   }
 
+  /**
+   * Ensure if an invalid limit is specified, the query fails.
+   */
+  public function testInvalidLimitQuery() {
+    $this->expectExceptionMessage("JSON Schema validation failed");
+    $container = $this->getCommonMockChain();
+    \Drupal::setContainer($container->getMock());
+    $queryService = new Query(DatastoreService::create($container->getMock()));
+    $datastoreQuery = $this->getDatastoreQueryFromJson("invalidLimitQuery");
+    $queryService->runQuery($datastoreQuery);
+  }
+
   public function testRowIdsQuery() {
     $container = $this->getCommonMockChain()
       ->add(DatabaseTable::class, "getSchema", [
