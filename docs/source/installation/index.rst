@@ -64,7 +64,7 @@ If you already have an existing Drupal site, install DKAN with `composer <https:
 
 
 .. warning::
-   DKAN requires som additional composer changes due to a dependency on the Select2 library. You should follow the steps in the `Select2 project's Readme <https://git.drupalcode.org/project/select2/-/blob/2.x/README.md?ref_type=heads#installation>`_.
+   DKAN requires some additional composer changes due to a dependency on the Select2 library. You should follow the steps in the `Select2 project's Readme <https://git.drupalcode.org/project/select2/-/blob/2.x/README.md?ref_type=heads#installation>`_.
 
 
 Add some example datasets to your site
