@@ -63,7 +63,7 @@ If you already have an existing Drupal site, install DKAN with `composer <https:
    Do note that a bug in Drupal core cron may cause problems with data imports, and applying `this patch <https://www.drupal.org/project/drupal/issues/3274931>`_ is highly recommended. The patch will be applied automatically if you use the `recommended project <https://github.com/GetDKAN/recommended-project>`_.
 
 
-   warning::
+.. warning::
    DKAN requires som additional composer changes due to a dependency on the Select2 library. You should follow the steps in the `Select2 project's Readme <https://git.drupalcode.org/project/select2/-/blob/2.x/README.md?ref_type=heads#installation>`_.
 
 
