@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\json_form_widget\Functional\Plugin\Field\FieldWidget;
+namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidget;
+use Drupal\metastore\Plugin\Field\FieldWidget\DkanJsonFormWidget;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\BrowserTestBase;
 use MockChain\Chain;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @group json_form_widget
  * @group functional
  */
-class JsonFormWidgetTest extends BrowserTestBase {
+class DkanJsonFormWidgetTest extends BrowserTestBase {
 
   protected RequestStack $requestStack;
 
@@ -112,7 +112,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
 
     // Simulate a new node form, but change the request stack to have query ?schema=distribution
     $this->setSchemaQuery('distribution');
-    $widget = JsonFormWidget::create(
+    $widget = DkanJsonFormWidget::create(
       \Drupal::getContainer(),
       [
         'field_definition' => $this->createMock(FieldDefinitionInterface::class),
@@ -202,7 +202,7 @@ class JsonFormWidgetTest extends BrowserTestBase {
    *   The initialized widget.
    */
   protected function initializeWidget() {
-    return JsonFormWidget::create(
+    return DkanJsonFormWidget::create(
       \Drupal::getContainer(),
       [
         'field_definition' => $this->createMock(FieldDefinitionInterface::class),

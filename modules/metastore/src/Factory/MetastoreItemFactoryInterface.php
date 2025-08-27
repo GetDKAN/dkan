@@ -13,6 +13,11 @@ use Drupal\metastore\MetastoreItemInterface;
  * Used for service dkan.metastore.metastore_item_factory. Decorate the service
  * to use different logic for producing a MetastoreItemInterface object from
  * just an identifier.
+ *
+ * Note that many DKAN services expect the MetastoreEntityItemFactoryInterface
+ * child interface, which extends this one. As there is not a clear use-case
+ * for non-entity-based metastore items, this interface may be deprecated or
+ * combined with the child interface.
  */
 interface MetastoreItemFactoryInterface extends FactoryInterface {
 

@@ -88,12 +88,21 @@ class DatastoreQueryTest extends TestCase {
     $this->assertIsArray($response->{"$.results[0]"});
   }
 
-  public function testBadCondition() {
-    $this->expectExceptionMessage("Invalid condition");
+  public function testRequiredCondition() {
+    $this->expectExceptionMessage("JSON Schema validation failed.");
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
     $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson("badConditionQuery");
+    $queryService->runQuery($datastoreQuery);
+  }
+
+  public function testInvalidConditionGroup() {
+    $this->expectExceptionMessage("Invalid condition");
+    $container = $this->getCommonMockChain();
+    \Drupal::setContainer($container->getMock());
+    $queryService = new Query(DatastoreService::create($container->getMock()));
+    $datastoreQuery = $this->getDatastoreQueryFromJson("invalidConditionGroupQuery");
     $queryService->runQuery($datastoreQuery);
   }
 
@@ -133,6 +142,18 @@ class DatastoreQueryTest extends TestCase {
     \Drupal::setContainer($container->getMock());
     $queryService = new Query(DatastoreService::create($container->getMock()));
     $datastoreQuery = $this->getDatastoreQueryFromJson('ungroupedGroupByQuery');
+    $queryService->runQuery($datastoreQuery);
+  }
+
+  /**
+   * Ensure if an invalid limit is specified, the query fails.
+   */
+  public function testInvalidLimitQuery() {
+    $this->expectExceptionMessage("JSON Schema validation failed");
+    $container = $this->getCommonMockChain();
+    \Drupal::setContainer($container->getMock());
+    $queryService = new Query(DatastoreService::create($container->getMock()));
+    $datastoreQuery = $this->getDatastoreQueryFromJson("invalidLimitQuery");
     $queryService->runQuery($datastoreQuery);
   }
 

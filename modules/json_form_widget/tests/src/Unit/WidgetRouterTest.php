@@ -37,6 +37,7 @@ class WidgetRouterTest extends TestCase {
     $metastoreGetAllOptions = (new Options())
       ->add('publisher', self::publishers())
       ->add('data-dictionary', self::dataDictionaries())
+      ->add('theme', self::themes())
       ->index(0);
 
     return (new Chain($this))
@@ -108,7 +109,7 @@ class WidgetRouterTest extends TestCase {
           'type' => 'autocomplete',
           'allowComplete' => TRUE,
           'multiple' => TRUE,
-          'source' => [
+          'source' => (object) [
             'metastoreSchema' => 'theme',
           ],
         ],
@@ -119,7 +120,10 @@ class WidgetRouterTest extends TestCase {
         [
           '#type' => 'select2',
           '#title' => 'tags',
-          '#options' => [],
+          '#options' => [
+            'Theme 1' => 'Theme 1',
+            'Theme 2' => 'Theme 2',
+          ],
           '#other_option' => FALSE,
           '#multiple' => TRUE,
           '#autocreate' => FALSE,
@@ -241,6 +245,19 @@ class WidgetRouterTest extends TestCase {
           '#other_option' => FALSE,
         ],
       ],
+    ];
+  }
+
+  public static function themes() {
+    return [
+      json_encode((object) [
+        'identifier' => '111',
+        'data' => 'Theme 1',
+      ]),
+      json_encode((object) [
+        'identifier' => '222',
+        'data' => 'Theme 2',
+      ]),
     ];
   }
 

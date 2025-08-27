@@ -44,7 +44,7 @@ metastore.1.metastore.schemas.id.items.post:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::post'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canCreate'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -64,7 +64,7 @@ metastore.1.metastore.schemas.id.items.id.publish:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::publish'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -74,7 +74,7 @@ metastore.1.metastore.schemas.id.items.id.put:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::put'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -84,7 +84,7 @@ metastore.1.metastore.schemas.id.items.id.patch:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::patch'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -94,7 +94,7 @@ metastore.1.metastore.schemas.id.items.id.delete:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreController::delete'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canDelete'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -104,7 +104,7 @@ metastore.1.metastore.schemas.id.items.id.revisions:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreRevisionController::getAll'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canViewRevisionList'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -114,7 +114,7 @@ metastore.1.metastore.schemas.id.items.id.revisions.id:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreRevisionController::get'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canViewRevision'
   options:
     _auth: ['basic_auth', 'cookie']
 
@@ -124,7 +124,7 @@ metastore.1.metastore.schemas.id.items.id.revisions.post:
   defaults:
     { _controller: '\Drupal\metastore\Controller\MetastoreRevisionController::post'}
   requirements:
-    _permission: 'post put delete datasets through the api'
+    _custom_access: '\Drupal\metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
     _auth: ['basic_auth', 'cookie']
 

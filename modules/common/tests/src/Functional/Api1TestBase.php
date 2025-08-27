@@ -60,6 +60,7 @@ abstract class Api1TestBase extends BrowserTestBase {
     'metastore',
     'node',
     'sample_content',
+    'workflows',
   ];
 
   /**
@@ -67,7 +68,18 @@ abstract class Api1TestBase extends BrowserTestBase {
    */
   public function setUp(): void {
     parent::setUp();
-    $user = $this->createUser(['post put delete datasets through the api'], 'testapiuser', FALSE);
+    $user = $this->createUser([
+      'access content',
+      'create data content',
+      'edit own data content',
+      'delete own data content',
+      'use dkan_publishing transition publish',
+      'use dkan_publishing transition archive',
+      'use dkan_publishing transition hidden',
+      'use dkan_publishing transition restore',
+      'view data revisions',
+      'view any unpublished content',
+    ], 'testapiuser', FALSE);
     $user2 = $this->createUser(['access content'], 'testnopermsuser', FALSE);
 
     $this->httpClient = $this->container->get('http_client_factory')

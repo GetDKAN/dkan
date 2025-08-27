@@ -86,7 +86,7 @@ class Data implements MetastoreItemInterface {
    *
    * @todo Needing to call fix() on every method seems like a code smell.
    */
-  private function fix() {
+  protected function fix() {
     $this->fixDataType();
     $this->saveRawMetadata();
   }
@@ -196,7 +196,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getSchemaId() {
     $this->fix();
-    return $this->node->get('field_data_type')->getString();
+    return $this->getEntity()->get('field_data_type')->getString();
   }
 
   /**
@@ -303,6 +303,16 @@ class Data implements MetastoreItemInterface {
    */
   public function save() {
     $this->node->save();
+  }
+
+  /**
+   * Get the node entity.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The wrapped node entity.
+   */
+  public function getEntity() {
+    return $this->node;
   }
 
 }

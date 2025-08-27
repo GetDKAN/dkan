@@ -68,7 +68,7 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
    */
   public function __construct(
     MetastoreApiResponse $apiResponse,
-    FactoryInterface $storageFactory
+    FactoryInterface $storageFactory,
   ) {
     $this->apiResponse = $apiResponse;
     $this->storageFactory = $storageFactory;

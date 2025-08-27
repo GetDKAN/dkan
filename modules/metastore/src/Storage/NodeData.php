@@ -18,7 +18,7 @@ class NodeData extends Data {
     string $schemaId,
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->entityType = 'node';
     $this->bundle = 'data';

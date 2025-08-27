@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Functional\Api1;
 
+use Composer\DependencyResolver\Request;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
@@ -9,8 +10,9 @@ use GuzzleHttp\RequestOptions;
  * Tests the revision API.
  *
  * @group functional2
+ * @group metastore
  *
- * @coversDefaultClass \Drupal\metastore\Plugin\rest\resource\DatasetItemResource
+ * @coversDefaultClass \Drupal\metastore\Controller\MetastoreRevisionController
  */
 class DatasetRevisionTest extends Api1TestBase {
 
@@ -35,6 +37,13 @@ class DatasetRevisionTest extends Api1TestBase {
     $responseBody = json_decode($response->getBody());
     $listRevision = $responseBody[0];
 
+    // Try to get the list without permissions.
+    $response = $this->httpClient->get($this->endpoint, [
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $response->getStatusCode());
+
     // Confirm we get the same object from the item get as the list.
     $response = $this->httpClient->get($this->endpoint . "/$listRevision->identifier", [
       RequestOptions::AUTH => $this->auth,
@@ -42,6 +51,12 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->assertEquals(200, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($listRevision, $responseBody);
+
+    // This revision is public, so should not need perms to see it.
+    $response = $this->httpClient->get($this->endpoint . "/$listRevision->identifier", [
+      RequestOptions::AUTH => $this->authNoPerms,
+    ]);
+    $this->assertEquals(200, $response->getStatusCode());
 
     // Confirm error if we have a non-existant dataset ID.
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions/$listRevision->identifier";
@@ -111,13 +126,23 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
     ]);
 
+    // Try to create a new revision without permissions.
+    $result = $this->httpClient->post($this->endpoint, [
+      RequestOptions::JSON => (object) [
+        'message' => "Unauthorized revision.",
+        'state' => 'published',
+      ],
+      RequestOptions::AUTH => $this->authNoPerms,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(403, $result->getStatusCode());
+
     // Array with states as keys and whether publicly visible as values.
     $states = [
       'draft' => FALSE,
       'published' => TRUE,
-      'orphaned' => FALSE,
-      'archived' => FALSE,
       'hidden' => TRUE,
+      'archived' => FALSE,
     ];
 
     $count = 1;
@@ -134,7 +159,9 @@ class DatasetRevisionTest extends Api1TestBase {
       // Validate URL and contents of response object.
       $response = $this->httpClient->get($responseBody->endpoint, [
         RequestOptions::AUTH => $this->auth,
+        RequestOptions::HTTP_ERRORS => FALSE,
       ]);
+      $this->assertEquals(200, $response->getStatusCode());
       $responseBody = json_decode($response->getBody());
       // Message and state match the values submitted.
       $this->assertStringContainsString($state, $responseBody->message);
@@ -143,7 +170,9 @@ class DatasetRevisionTest extends Api1TestBase {
       // Confirm revisions list has increased by one item.
       $response = $this->httpClient->get($this->endpoint, [
         RequestOptions::AUTH => $this->auth,
+        RequestOptions::HTTP_ERRORS => FALSE,
       ]);
+      $this->assertEquals(200, $response->getStatusCode());
       $responseBody = json_decode($response->getBody());
       $this->assertEquals($count, count($responseBody));
 
@@ -156,6 +185,9 @@ class DatasetRevisionTest extends Api1TestBase {
       $this->assertEquals($expectedCode, $response->getStatusCode());
     }
 
+    // Reset state.
+    $response = $this->newRevision('published');
+    $count++;
     // Test a bad workflow state.
     $response = $this->newRevision('foo');
     $this->assertEquals(400, $response->getStatusCode());

@@ -22,6 +22,9 @@ interface MetastoreEntityItemFactoryInterface extends MetastoreItemFactoryInterf
   /**
    * Get the bundles, if any, used by this factory for storing item entities.
    *
+   * If multiple bundles are used, they should be returned as a keyed array,
+   * in the format ['schema_id' => 'bundle'].
+   *
    * @return array
    *   Array of bundle IDs.
    */

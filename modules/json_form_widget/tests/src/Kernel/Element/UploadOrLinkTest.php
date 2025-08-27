@@ -41,6 +41,10 @@ class UploadOrLinkTest extends KernelTestBase {
     $uri = UploadOrLink::getFileUri($url);
     $this->assertEquals($url, $uri);
 
+    // Files need download access in order for the reference to be accessible.
+    $file = UploadOrLink::getManagedFile($uri);
+    $this->assertEquals($file->access('download'), 'ALLOWED');
+
     // We need to get the files path dynamically, in a kernel test running in
     // Docker it is likely something like
     // "/vfs://root/sites/simpletest/95827600/files/"

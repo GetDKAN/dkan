@@ -1,0 +1,29 @@
+{
+    "resources": [
+        {
+          "id": "asdf",
+          "alias": "t"
+        }
+    ],
+  "conditions":[
+    {
+      "operator":"=",
+      "property":"column_a",
+      "value":"value"
+    },
+    {
+      "conditions":[
+        {
+          "operator":"=",
+          "property":"column_b",
+          "value":"value"
+        },
+        {
+          "operator":"=",
+          "property":"column_b",
+          "value":"value"
+        }
+      ]
+    }
+  ]
+}
