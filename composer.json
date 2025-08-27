@@ -47,11 +47,6 @@
             "url": "https://packages.drupal.org/8"
         }
     },
-    "config": {
-        "allow-plugins": {
-            "cweagans/composer-patches": true,
-        }
-    },
     "extra": {
         "dkan-frontend": {
             "ref": "1.3.0",
