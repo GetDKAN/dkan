@@ -15,13 +15,13 @@ class FieldCallbacks {
   public static function updateFormatOptions(array &$form, FormStateInterface $form_state) {
     $trigger = $form_state->getTriggeringElement();
     $op = $trigger['#op'];
-    $op_index = explode("_", $trigger['#op']);
+    $op_index = explode("_", (string) $trigger['#op']);
     $field = $form_state->getValue(["field_json_metadata"]);
     $format_field = $form["field_json_metadata"]["widget"][0]['dictionary_fields']["field_collection"]["group"]["format"] ?? NULL;
     $data_type = $field[0]['dictionary_fields']["field_collection"]["group"]["type"] ?? 'string';
 
     // Update format field and data type when in edit mode.
-    if (str_contains($op, 'format')) {
+    if (str_contains((string) $op, 'format')) {
       $field_index = $op_index[1];
       $format_field = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["edit_fields"][$field_index]["format"];
       $data_type = $field[0]["dictionary_fields"]["data"][$field_index]["field_collection"]["type"] ?? 'string';
@@ -40,26 +40,26 @@ class FieldCallbacks {
    */
   public static function editSubformCallback(array &$form, FormStateInterface $form_state) {
     $current_fields = $form["field_json_metadata"]["widget"][0]["dictionary_fields"]["data"]["#rows"];
-    $op_index = explode("_", $form_state->getTriggeringElement()['#op']);
+    $op_index = explode("_", (string) $form_state->getTriggeringElement()['#op']);
     $currently_modifying = $form_state->get('fields_being_modified') != NULL ? $form_state->get('fields_being_modified') : [];
 
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'abort')) {
+    if (str_contains((string) $form_state->getTriggeringElement()['#op'], 'abort')) {
       unset($currently_modifying[$op_index[1]]);
     }
 
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'delete')) {
+    if (str_contains((string) $form_state->getTriggeringElement()['#op'], 'delete')) {
       unset($currently_modifying[$op_index[1]]);
       unset($current_fields[$op_index[1]]);
     }
 
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'update')) {
+    if (str_contains((string) $form_state->getTriggeringElement()['#op'], 'update')) {
       unset($currently_modifying[$op_index[1]]);
       unset($current_fields[$op_index[1]]);
       $current_fields[$op_index[1]] = FieldValues::updateValues($op_index[1], $form_state->getUserInput(), $current_fields);
       ksort($current_fields);
     }
 
-    if (str_contains($form_state->getTriggeringElement()['#op'], 'edit')) {
+    if (str_contains((string) $form_state->getTriggeringElement()['#op'], 'edit')) {
       $currently_modifying[$op_index[1]] = $current_fields[$op_index[1]];
     }
 

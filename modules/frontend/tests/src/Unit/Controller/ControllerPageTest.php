@@ -47,7 +47,7 @@ class ControllerPageTest extends TestCase {
           $this->equalTo('config.factory')
         )
       )
-      ->will($this->returnCallback([$this, 'containerGet']));
+      ->will($this->returnCallback($this->containerGet(...)));
 
     $container->method('has')
       ->with('config.factory')

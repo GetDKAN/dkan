@@ -1,6 +1,6 @@
 'post put delete datasets through the api':
   title: 'Metastore: post, put, patch, and delete datasets through the api'
-  description: 'post, put, patch, and delete datasets through the api'
+  description: 'DEPRECATED: Use regular content permissions instead'
 'administer data dictionary settings':
   title: 'Metastore: Administer Data Dictionary Settings'
   description: 'Administer data dictionary settings'

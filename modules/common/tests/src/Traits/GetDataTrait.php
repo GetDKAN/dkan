@@ -2,6 +2,9 @@
 
 namespace Drupal\Tests\common\Traits;
 
+/**
+ * Trait for getting data remote for tests.
+ */
 trait GetDataTrait {
 
   private $S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
@@ -22,14 +25,14 @@ trait GetDataTrait {
    *   Array of resource files URLs for this dataset.
    * @param bool $localFiles
    *   Whether the resource files are local.
-   * @param string $describedBy
+   * @param string|null $describedBy
    *   (Optional) URI for describedBy for all the download URLs. describedByType
    *   will be set to 'application/vnd.tableschema+json' if present.
    *
    * @return string|false
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getDataset(string $identifier, string $title, array $downloadUrls, bool $localFiles = FALSE, string $describedBy = NULL) {
+  private function getDataset(string $identifier, string $title, array $downloadUrls, bool $localFiles = FALSE, ?string $describedBy = NULL) {
 
     $data = new \stdClass();
     $data->title = $title;
@@ -59,15 +62,6 @@ trait GetDataTrait {
   /**
    * Generate data-dictionary metadata.
    *
-   * @param array[] $fields
-   *   Data-Dictionary fields.
-   * @param array[] $indexes
-   *   Data-Dictionary indexes.
-   * @param string $identifier
-   *   Data-Dictionary identifier.
-   * @param string|null $title
-   *   Data-Dictionary title.
-   *
    * Input fields format:
    * ```php
    * [
@@ -89,6 +83,15 @@ trait GetDataTrait {
    *   'description' => string,
    * ]
    * ```
+   *
+   * @param array[] $fields
+   *   Data-Dictionary fields.
+   * @param array[] $indexes
+   *   Data-Dictionary indexes.
+   * @param string $identifier
+   *   Data-Dictionary identifier.
+   * @param string|null $title
+   *   Data-Dictionary title.
    *
    * @return string|false
    *   Json encoded string of this dataset's metadata, or FALSE if error.

@@ -9,6 +9,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group metastore
  * @group functional
  * @group btb
+ * @group functional1
  */
 class OnPreReferenceTest extends BrowserTestBase {
 
@@ -54,7 +55,7 @@ class OnPreReferenceTest extends BrowserTestBase {
     $dataset = $metastore->getValidMetadataFactory()->get($data, 'dataset');
     $metastore->post('dataset', $dataset);
 
-    $decoded = json_decode($data);
+    $decoded = json_decode((string) $data);
     $decoded->modified = '06-04-2021';
     $edited = json_encode($decoded);
 

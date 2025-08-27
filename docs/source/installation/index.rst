@@ -21,11 +21,19 @@ Requirements
 DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/system-requirements>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we recommend:
 
 -  Drupal 10+
--  MySQL: minimum version 5.7.8+ with PDO
+-  MySQL: See minimum requirements for your Drupal version. MariaDB equivilants also supported.
 -  PHP: minimum version 8.1
 -  Apache: minimum version 2.4.7
 -  Drush: minimum version 11.x.
 -  Node: minimum version 18 (if using the decoupled frontend)
+
+.. note::
+   Drupal 10.4 and 11 support PHP 8.4. While DKAN is compatible with Drupal 10.4
+   and 11 as of the 2.20.1 release, it is not tested against PHP 8.4 and may
+   have issues.
+
+   DKAN has several functions that expect MySQL/MariaDB database connections;
+   running on other databases (e.g. PostgreSQL) is not recommended at this time.
 
 Starting a new DKAN project with DDEV
 -------------------------------------
@@ -53,6 +61,11 @@ If you already have an existing Drupal site, install DKAN with `composer <https:
 
 .. warning::
    Do note that a bug in Drupal core cron may cause problems with data imports, and applying `this patch <https://www.drupal.org/project/drupal/issues/3274931>`_ is highly recommended. The patch will be applied automatically if you use the `recommended project <https://github.com/GetDKAN/recommended-project>`_.
+
+
+.. warning::
+   DKAN requires some additional composer changes due to a dependency on the Select2 library. You should follow the steps in the `Select2 project's Readme <https://git.drupalcode.org/project/select2/-/blob/2.x/README.md?ref_type=heads#installation>`_.
+
 
 Add some example datasets to your site
 --------------------------------------

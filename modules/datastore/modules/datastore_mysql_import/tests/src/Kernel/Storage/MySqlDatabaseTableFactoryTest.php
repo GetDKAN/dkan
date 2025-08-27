@@ -46,4 +46,31 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
     $this->assertInstanceOf(MySqlDatabaseTable::class, $table);
   }
 
+  /**
+   * Test that the factory service returns a table with strict mode disabled.
+   */
+  public function testFactoryServiceStrictModeDisabled() {
+    $this->installConfig(['datastore_mysql_import']);
+    $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
+    $table = $factory->getInstance('id', [
+      'resource' => new DataResource('php://temp', 'text/csv'),
+    ]);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $table);
+    $this->assertFalse($table->isStrictModeDisabled());
+
+    // Now change the config and test whether the table is created with strict
+    // mode disabled.
+    $this->config('datastore_mysql_import.settings')
+      ->set('strict_mode_disabled', TRUE)
+      ->save();
+    $this->container->get('kernel')->rebuildContainer();
+
+    $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
+    $table = $factory->getInstance('id', [
+      'resource' => new DataResource('php://temp', 'text/csv'),
+    ]);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $table);
+    $this->assertTrue($table->isStrictModeDisabled());
+  }
+
 }

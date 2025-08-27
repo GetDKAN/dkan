@@ -134,6 +134,9 @@ class ReferenceLookup implements ReferenceLookupInterface {
     $module_path = $this->moduleHandler->getModule(get_module_name())->getPath();
     $legacy_schema_path = $module_path . '/docs/legacy_metadata.json';
     // Fetch the legacy metadata schema.
+    // @todo This file load happens for every metadata item that is processed.
+    //   The schema JSON is then garbage-collected when we leave the scope of
+    //   this function. Find a way to keep and reuse the schema data.
     $legacy_schema = file_get_contents($legacy_schema_path);
     // Record metadata identifier.
     $identifier = $metadata->identifier;

@@ -4,7 +4,7 @@ namespace Drupal\harvest\Load;
 
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\MetastoreService;
-use Harvest\ETL\Load\Load;
+use Drupal\harvest\ETL\Load\Load;
 
 /**
  * Class.
@@ -13,8 +13,6 @@ class Dataset extends Load {
 
   /**
    * Metastore service.
-   *
-   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $metastoreService;
 

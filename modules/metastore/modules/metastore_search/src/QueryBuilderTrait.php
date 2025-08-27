@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore_search;
 
-use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Query\QueryInterface;
@@ -14,7 +14,6 @@ use Drupal\search_api\Utility\QueryHelperInterface;
  * @package Drupal\metastore_search
  */
 trait QueryBuilderTrait {
-  use EventDispatcherTrait;
 
   /**
    * Private.
@@ -125,12 +124,13 @@ trait QueryBuilderTrait {
     foreach ($fields as $field) {
       if (isset($params[$field])) {
 
-        $info = $this->dispatchEvent(Search::EVENT_SEARCH_QUERY_BUILDER_CONDITION,
-          [
-            'field' => $field,
-            'values' => $this->getValuesFromCommaSeparatedString($params[$field]),
-            'conjunction' => 'AND',
-          ]);
+        $event = new Event([
+          'field' => $field,
+          'values' => $this->getValuesFromCommaSeparatedString($params[$field]),
+          'conjunction' => 'AND',
+        ]);
+        $this->eventDispatcher->dispatch($event, Search::EVENT_SEARCH_QUERY_BUILDER_CONDITION);
+        $info = $event->getData();
 
         $conditions = [];
         $conditions[$info['field']] = $info['values'];
@@ -161,7 +161,7 @@ trait QueryBuilderTrait {
     $sorts = $params['sort'] ?? [];
     if (is_string($sorts)) {
       // @todo Move this into Util class to share with FacetsCommonTrait.
-      $sorts = array_map('trim', str_getcsv($sorts));
+      $sorts = array_map('trim', str_getcsv($sorts, escape: '\\'));
     }
 
     if (empty($sorts)) {
@@ -197,14 +197,14 @@ trait QueryBuilderTrait {
 
     $orders = $params['sort-order'] ?? [];
     if (is_string($orders)) {
-      $orders = array_map('trim', str_getcsv($orders));
+      $orders = array_map('trim', str_getcsv($orders, escape: '\\'));
     }
 
     if (!isset($orders[$index]) || !in_array($orders[$index], $allowed)) {
       return $default;
     }
 
-    return strtoupper($orders[$index]);
+    return strtoupper((string) $orders[$index]);
   }
 
   /**

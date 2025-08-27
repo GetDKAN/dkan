@@ -187,7 +187,7 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
    */
   public function addIndexes(array $indexes): self {
     // Validate and set indexes.
-    $this->indexes = array_map([$this, 'validateIndex'], $indexes);
+    $this->indexes = array_map($this->validateIndex(...), $indexes);
 
     return $this;
   }

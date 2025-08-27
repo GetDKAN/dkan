@@ -123,12 +123,12 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/harvestPlan"    
+                                "$ref": "#/components/schemas/harvestPlan"
                             },
                             "example": {
                                 "identifier": "h1",
                                 "extract": {
-                                  "type": "\\Harvest\\ETL\\Extract\\DataJson",
+                                  "type": "\\Drupal\\harvest\\ETL\\Extract\\DataJson",
                                   "uri": "https://dkan-default-content-files.s3.amazonaws.com/data.json"
                                 },
                                 "transforms": [],
@@ -192,7 +192,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/harvestPlan"    
+                                    "$ref": "#/components/schemas/harvestPlan"
                                 }
                             }
                         }

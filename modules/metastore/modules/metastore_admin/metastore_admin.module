@@ -155,7 +155,12 @@ function metastore_admin_form_alter(&$form, FormStateInterface $form_state, $for
  * Submit handler to redirect after node save to dkan dataset content page.
  */
 function metastore_admin_form_submit($form, FormStateInterface &$form_state) {
-  $form_state->setRedirect('view.dkan_dataset_content.page_1');
+  $redirect_to_datasets = \Drupal::config('metastore.settings')->get('redirect_to_datasets');
+
+  // If the setting is enabled, redirect to the dataset content page.
+  if ($redirect_to_datasets) {
+    $form_state->setRedirect('view.dkan_dataset_content.page_1');
+  }
 }
 
 /*

@@ -123,3 +123,12 @@ function metastore_admin_update_8012() {
 
   drupal_flush_all_caches();
 }
+
+/**
+ * Notification of new DKAN admin views.
+ */
+function metastore_admin_update_10001() {
+  return t('~~~~~ IMPORTANT ~~~~~ There are updates to the DKAN admin view.
+  If you have not made customizations to the existing view, pull in the latest updates with
+  drush cim --partial --source=modules/contrib/dkan/modules/metastore/modules/metastore_admin/config/install -y');
+}

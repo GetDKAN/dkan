@@ -15,6 +15,7 @@ use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
@@ -33,7 +34,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
 
     $reflection = new \ReflectionClass($databaseTable);
@@ -127,7 +129,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $this->assertTrue(is_object($databaseTable));
   }
@@ -141,7 +144,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
 
     $schema = $databaseTable->getSchema();
@@ -206,7 +210,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connection,
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $this->assertEquals([], $databaseTable->retrieveAll());
   }
@@ -229,7 +234,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]', "1"));
   }
@@ -252,7 +258,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $this->expectExceptionMessageMatches("/The number of fields and data given do not match:/");
     $this->assertEquals("1", $databaseTable->store('["Foobar"]', "1"));
@@ -276,7 +283,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $data = [
       '["Gerardo", "Gonzalez"]',
@@ -304,7 +312,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $data = [
       '["One"]',
@@ -329,7 +338,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $this->assertEquals(1, $databaseTable->count());
   }
@@ -348,7 +358,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
 
     $actual = json_decode(json_encode(
@@ -370,7 +381,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $databaseTable->destruct();
     $this->assertTrue(TRUE);
@@ -395,7 +407,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $this->expectExceptionMessage('Import for 1 returned an error when preparing table header: {"foo":"bar"}');
     $this->assertEquals("1", $databaseTable->store('{"foo":"bar"}', "1"));
@@ -419,7 +432,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
     $this->expectExceptionMessage("Import for 1 error when decoding foobar");
     $this->assertEquals("1", $databaseTable->store("foobar", "1"));
@@ -441,7 +455,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
 
     $this->assertEquals([], $databaseTable->query($query));
@@ -462,7 +477,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
 
     $this->expectExceptionMessage("Database internal error.");
@@ -484,7 +500,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
 
     $this->expectExceptionMessage("Column not found");
@@ -506,7 +523,8 @@ class DatabaseTableTest extends TestCase {
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource(),
-      $this->createStub(LoggerInterface::class)
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
     );
 
     $this->expectExceptionMessage("You have attempted a fulltext match against a column that is not indexed for fulltext searching");

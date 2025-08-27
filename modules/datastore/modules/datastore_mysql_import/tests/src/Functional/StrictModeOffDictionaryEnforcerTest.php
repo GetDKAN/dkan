@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @group dkan
  * @group datastore_mysql_import
  * @group functional
+ * @group functional2
  *
  * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
  */
@@ -49,7 +50,12 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   public function testPostImport() {
-    // Dependencies.
+    // Enable strict mode disabled for datastore MySQL import.
+    $this->config('datastore_mysql_import.settings')
+      ->set('strict_mode_disabled', TRUE)
+      ->save();
+
+      // Dependencies.
     $resourceFile = 'very_wide.csv';
     $uuid = $this->container->get('uuid');
     /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
@@ -162,7 +168,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       Request::create('http://blah/api')
     );
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
-    $result = json_decode($response->getContent(), TRUE);
+    $result = json_decode((string) $response->getContent(), TRUE);
 
     // 300 columns + record_number.
     $this->assertCount(
@@ -183,6 +189,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       'datetime',
       $columns['name_at_the_sixty_four_character_limit_including_the_number_300']['mysql_type'] ?? NULL
     );
+
   }
 
   /**

@@ -6,6 +6,11 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;
 
+/**
+ * Tests the Distribution API.
+ *
+ * @group functional3
+ */
 class DistributionHandlingTest extends Api1TestBase {
 
   public function getEndpoint():string {
@@ -32,7 +37,7 @@ class DistributionHandlingTest extends Api1TestBase {
     $datasetMetadata->distribution[0]->describedBy = $url;
     $datasetMetadata->distribution[0]->describedByType = 'application/vnd.tableschema+json';
     $response = $this->post($datasetMetadata, FALSE);
-    $responseBody = json_decode($response->getBody());
+    $responseBody = json_decode((string) $response->getBody());
     $datasetId = $responseBody->identifier;
     $dataset_endpoint = $this->getEndpoint();
     $response = $this->httpClient->get("$dataset_endpoint/$datasetId", [RequestOptions::TIMEOUT => 10000]);

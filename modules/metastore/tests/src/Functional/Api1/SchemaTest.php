@@ -4,6 +4,11 @@ namespace Drupal\Tests\metastore\Functional\Api1;
 
 use Drupal\Tests\common\Functional\Api1TestBase;
 
+/**
+ * Tests the Schema API.
+ *
+ * @group functional1
+ */
 class SchemaTest extends Api1TestBase {
 
   public function getEndpoint(): string {

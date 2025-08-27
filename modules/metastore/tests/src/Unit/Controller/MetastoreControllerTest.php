@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\metastore\Unit\Controller;
 
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -21,6 +21,7 @@ use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\ValidMetadataFactory;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -139,7 +140,7 @@ class MetastoreControllerTest extends TestCase {
       ->getMock();
     $controller = MetastoreController::create($container);
     $response = $controller->get($schema_id, $identifier, new Request());
-    $json = json_decode($response->getContent());
+    $json = json_decode((string) $response->getContent());
     $this->assertEquals("Error retrieving metadata: {$schema_id} {$identifier} not found.", $json->message);
   }
 
@@ -474,7 +475,7 @@ EOF;
     $response = $controller->getSchemas();
     $this->assertEquals('["dataset"]', $response->getContent());
 
-    $schemaId = json_decode($response->getContent())[0];
+    $schemaId = json_decode((string) $response->getContent())[0];
     $schemaResponse = $controller->getSchema($schemaId);
     $this->assertEquals('{"id":"http:\/\/schema"}', $schemaResponse->getContent());
   }

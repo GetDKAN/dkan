@@ -17,9 +17,15 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
- * Testing the NodeWrapper.
+ * @coversDefaultClass \Drupal\metastore\NodeWrapper\Data
+ * @covers \Drupal\metastore\NodeWrapper\Data
+ *
+ * @group dkan
+ * @group metastore
+ * @group unit
  */
 class DataTest extends TestCase {
+
   public function testGetLatestRevisionGetUsAWrapper() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
@@ -51,6 +57,9 @@ class DataTest extends TestCase {
     $this->assertTrue(
       $wrapper->getLatestRevision() instanceof Data
     );
+
+    // Test the getEntity method.
+    $this->assertTrue($wrapper->getEntity() instanceof Node);
   }
 
   public function testGetLatestRevisionGiveUsNull() {
@@ -75,6 +84,9 @@ class DataTest extends TestCase {
     $this->assertNull(
       $wrapper->getLatestRevision()
     );
+
+    // Test the getEntity method.
+    $this->assertTrue($wrapper->getEntity() instanceof Node);
   }
 
   public function testGetPublishedRevisionGetUsAWrapper() {
@@ -137,7 +149,6 @@ class DataTest extends TestCase {
    *
    */
   public function testNotNode() {
-    $this->expectExceptionMessage("We only work with nodes.");
 
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, 'loadEntityByUuid', EntityInterface::class)
@@ -148,6 +159,7 @@ class DataTest extends TestCase {
       ->getMock();
 
     $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
+    $this->expectExceptionMessage('Entity must be a node of bundle data.');
     $factory->getInstance("123");
   }
 
@@ -155,8 +167,6 @@ class DataTest extends TestCase {
    *
    */
   public function testNotDataNode() {
-    $this->expectExceptionMessage("We only work with data nodes.");
-
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
       ->add(Node::class, 'bundle', 'blah')
@@ -167,6 +177,7 @@ class DataTest extends TestCase {
       ->getMock();
 
     $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
+    $this->expectExceptionMessage('Entity must be a node of bundle data.');
     $factory->getInstance("123");
   }
 
@@ -200,6 +211,9 @@ class DataTest extends TestCase {
     $factory = new NodeDataFactory($entityRepository, $entityTypeManager);
     $data = $factory->wrap($entity);
     $this->assertEquals('123', $data->getIdentifier());
+
+    // Test the getEntity method.
+    $this->assertTrue($data->getEntity() instanceof Node);
   }
 
   public function testDataNodeAdditionalMethods() {

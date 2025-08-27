@@ -1,0 +1,14 @@
+{
+  "identifier": "test",
+  "extract": {
+    "type": "\\Drupal\\harvest\\ETL\\Extract\\DataJson",
+    "uri": ""
+  },
+  "transforms": [
+    "\\Drupal\\harvest\\ETL\\Transform\\AddId",
+    "\\Drupal\\harvest\\ETL\\Transform\\AddRandomNumber"
+  ],
+  "load": {
+    "type": "\\Drupal\\harvest\\ETL\\Load\\Simple"
+  }
+}

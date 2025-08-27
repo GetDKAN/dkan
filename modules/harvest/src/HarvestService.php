@@ -8,8 +8,7 @@ use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
-use Harvest\ETL\Factory;
-use Harvest\Harvester;
+use Drupal\harvest\ETL\Factory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -39,28 +38,34 @@ class HarvestService implements ContainerInjectionInterface {
 
   /**
    * DKAN metastore service.
+   *
+   * @var \Drupal\metastore\MetastoreService
    */
   private MetastoreService $metastore;
 
   /**
    * Harvest plan storage repository service.
+   *
+   * @var \Drupal\harvest\Entity\HarvestPlanRepository
    */
   private HarvestPlanRepository $harvestPlanRepository;
 
   /**
    * Harvest run entity repository service.
+   *
+   * @var \Drupal\harvest\Entity\HarvestRunRepository
    */
-  private HarvestRunRepository $runRepository;
+  public HarvestRunRepository $runRepository;
 
   /**
    * DKAN logger channel.
+   *
+   * @var \Psr\Log\LoggerInterface
    */
   private LoggerInterface $logger;
 
   /**
-   * Create.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new self(
@@ -82,7 +87,7 @@ class HarvestService implements ContainerInjectionInterface {
     MetastoreService $metastore,
     HarvestPlanRepository $harvestPlansRepository,
     HarvestRunRepository $runRepository,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->storeFactory = $storeFactory;
     $this->hashesStoreFactory = $hashesStoreFactory;
@@ -144,15 +149,14 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Register a new harvest plan.
+   * Register a new harvest plan or update an existing one.
    *
    * @param object $plan
-   *   The plan object. Must contain an 'identifier' propoerty. See
-   *   components.schemas.harvestPlan within
-   *   modules/harvest/docs/openapi_spec.json for the schema of a plan.
+   *   The plan object. Must contain an 'identifier' property. See
+   *   modules/harvest/schema/schema.json for the schema of a harvest plan.
    *
    * @return string
-   *   Identifier.
+   *   The identifier for the harvest plan.
    *
    * @throws \Exception
    *   Exceptions may be thrown if validation fails.
@@ -198,7 +202,7 @@ class HarvestService implements ContainerInjectionInterface {
   public function runHarvest($plan_id) {
     $harvester = $this->getHarvester($plan_id);
 
-    $run_id = (string) time();
+    $timestamp = (string) time();
     $result = $harvester->harvest();
 
     if (empty($result['status']['extracted_items_ids'])) {
@@ -207,9 +211,9 @@ class HarvestService implements ContainerInjectionInterface {
     $result['status']['orphan_ids'] =
       $this->getOrphanIdsFromResult($plan_id, $result['status']['extracted_items_ids']);
     $this->processOrphanIds($result['status']['orphan_ids']);
-
-    $result['identifier'] = $run_id;
-    $this->runRepository->storeRun($result, $plan_id, $run_id);
+    // For legacy reasons, the identifier is the timestamp.
+    $result['identifier'] = $timestamp;
+    $this->runRepository->storeRun($result, $plan_id, $timestamp);
 
     return $result;
   }
@@ -219,15 +223,15 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @param string $plan_id
    *   The harvest plan ID.
-   * @param string $run_id
-   *   The harvest run ID.
+   * @param string $timestamp
+   *   The timestamp of the harvest_run.
    *
    * @return bool|string
    *   JSON-encoded run information for the given run, or FALSE if no matching
    *   runID is found.
    */
-  public function getHarvestRunInfo(string $plan_id, string $run_id): bool|string {
-    if ($info = $this->runRepository->retrieveRunJson($plan_id, $run_id)) {
+  public function getHarvestRunInfo(string $plan_id, string $timestamp): bool|string {
+    if ($info = $this->runRepository->retrieveRunJson($plan_id, $timestamp)) {
       return $info;
     }
     return FALSE;
@@ -238,19 +242,23 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @param string $plan_id
    *   Harvest plan ID.
-   * @param string $run_id
-   *   Harvest run ID.
+   * @param string|null $timestamp
+   *   Harvest run timestamp.
    *
    * @return array
    *   Array of status info from the run.
    */
-  public function getHarvestRunResult(string $plan_id, string $run_id): array {
-    if ($entity = $this->runRepository->loadEntity($plan_id, $run_id)) {
-      return $entity->toResult();
+  public function getHarvestRunResult(string $plan_id, ?string $timestamp = NULL): array {
+    if (!is_null($timestamp)) {
+      // This one has to keep using the loadEntity method as it may be looking
+      // up something other than the most recent run.
+      $entity = $this->runRepository->loadEntity($plan_id, $timestamp);
     }
     else {
-      return [];
+      $entity = $this->runRepository->loadRunByPlan($plan_id);
     }
+
+    return (!empty($entity)) ? $entity->toResult() : [];
   }
 
   /**
@@ -286,20 +294,18 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Get a harvest's most recent run identifier.
-   *
-   * Since the run record id is a timestamp, we can sort on the id.
+   * Get a harvest's most recent run id. Passthrough for HarvestRunRepository.
    *
    * @param string $plan_id
-   *   The harvest identifier.
+   *   The harvest plan identifier.
    *
    * @return string
-   *   The most recent harvest run record identifier.
+   *   The entity id of the most recent harvest run.
+   *
+   * @deprecated in dkan:2.19.11 and is removed from dkan:3.0.0 Use runStorage::load().
    */
   public function getLastHarvestRunId(string $plan_id): string {
-    $run_ids = $this->runRepository->retrieveAllRunIds($plan_id);
-    rsort($run_ids);
-    return reset($run_ids);
+    return $this->runRepository->getLastHarvestRunId($plan_id);
   }
 
   /**
@@ -344,7 +350,7 @@ class HarvestService implements ContainerInjectionInterface {
       throw new \OutOfRangeException("Method {$method} does not exist");
     }
 
-    $lastRunId = $this->getLastHarvestRunId($harvestId);
+    $lastRunId = $this->runRepository->getLastHarvestRunId($harvestId);
     $lastRunInfo = json_decode($this->getHarvestRunInfo($harvestId, $lastRunId));
     $status = $lastRunInfo->status ?? NULL;
     if (!isset($status->extracted_items_ids)) {
@@ -395,6 +401,11 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @return bool
    *   TRUE if harvest plan validates. Throws exception otherwise.
+   *
+   * @throws \Exception
+   *   Thrown on validation failure.
+   *
+   * @see \Drupal\harvest\ETL\Factory::validateHarvestPlan()
    */
   public function validateHarvestPlan($plan): bool {
     return Factory::validateHarvestPlan($plan);
@@ -406,7 +417,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @param string $plan_id
    *   Harvester ID.
    *
-   * @return \Harvest\Harvester
+   * @return \Drupal\harvest\Harvester
    *   Harvester object.
    */
   private function getHarvester(string $plan_id): Harvester {

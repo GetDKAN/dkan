@@ -25,8 +25,8 @@ class DataDictionaryDiscoveryTest extends TestCase {
       $this->getLookup(),
       $this->getUrlGenerator()
     );
-    $id = $discovery->dictionaryIdFromResource('resource1');
-    $this->assertNull($id);
+    $id = $discovery->dictionaryIdFromResource('resource1', 1);
+    $this->assertEquals("Disabled", $id);
   }
 
   // If mode is sitewide, and we have a sitewide dictionary ID set, it should be
@@ -38,7 +38,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
       $this->getLookup(),
       $this->getUrlGenerator()
     );
-    $id = $discovery->dictionaryIdFromResource('resource1');
+    $id = $discovery->dictionaryIdFromResource('resource1', 1);
     $this->assertEquals('abc-123', $id);
     $idVersion = $discovery->dictionaryIdFromResource('resource1', '2352643');
     $this->assertEquals('abc-123', $idVersion);
@@ -55,7 +55,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
     );
 
     $this->expectException(\OutOfBoundsException::class);
-    $discovery->dictionaryIdFromResource('resource1');
+    $discovery->dictionaryIdFromResource('resource1', 1);
   }
 
   // Test the reference type, four different flows:
@@ -66,17 +66,17 @@ class DataDictionaryDiscoveryTest extends TestCase {
       $this->getLookup(),
       $this->getUrlGenerator()
     );
-    $id = $discovery->dictionaryIdFromResource('resource1');
+    $id = $discovery->dictionaryIdFromResource('resource1', 1);
     $this->assertEquals('111', $id);
 
-    $id = $discovery->dictionaryIdFromResource('resource2');
+    $id = $discovery->dictionaryIdFromResource('resource3', 3);
     $this->assertNull($id);
 
-    $id = $discovery->dictionaryIdFromResource('resource3');
+    $id = $discovery->dictionaryIdFromResource('resource4', 4);
     $this->assertNull($id);
 
-    $id = $discovery->dictionaryIdFromResource('resource4');
-    $this->assertNull($id);
+    $this->expectExceptionMessage("Distribution lookup: Can not map resource ID");
+    $id = $discovery->dictionaryIdFromResource('resource2', 2);
   }
 
   // Test if bad mode in settings
@@ -89,14 +89,14 @@ class DataDictionaryDiscoveryTest extends TestCase {
     );
 
     $this->expectException(OutOfRangeException::class);
-    $discovery->dictionaryIdFromResource('resource1');
+    $discovery->dictionaryIdFromResource('resource1', 1);
   }
   private function getLookup() {
     $options = (new Options())
-      ->add('resource1', ['111'])
-      ->add('resource2', [])
-      ->add('resource3', ['333'])
-      ->add('resource4', ['444'])
+      ->add('resource1__1', ['111'])
+      ->add('resource3__3', ['333'])
+      ->add('resource4__4', ['444'])
+      ->add('resource2__2', [])
       ->index(1);
     return (new Chain($this))
       ->add(ReferenceLookup::class, 'getReferencers', $options)

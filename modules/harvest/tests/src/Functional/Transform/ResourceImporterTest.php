@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\harvest\Functional\Transform;
 
 use Drupal\harvest\Transform\ResourceImporter;
@@ -13,6 +15,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group harvest
  * @group functional
  * @group btb
+ * @group functional1
  *
  * @todo Turn this into a kernel test when we have refactored
  *   DrupalFiles::retrieveFile to allow for vfsStream.

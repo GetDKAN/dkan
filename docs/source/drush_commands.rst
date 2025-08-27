@@ -11,6 +11,20 @@ dkan:dataset-info
 
 ~~~~~~
 
+dkan:datastore:reverse-dataset-lookup
+-----------------
+   Takes an argument of the table name and returns the dataset uuid.
+
+  **Arguments**
+
+  - **table_name** The datastore table name in the database.
+
+  **Usage**
+
+        ``drush dkan:datastore:reverse-dataset-lookup datastore_abcdefghijklmnop``
+
+~~~~~~
+
 dkan:datastore:drop
 -------------------
     Drop a datastore.
@@ -187,7 +201,7 @@ dkan:harvest:register
 
     **Usage**
 
-        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'``
+        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'``
 
     Or
 

@@ -25,6 +25,11 @@ class DashboardForm extends FormBase {
   use StringTranslationTrait;
 
   /**
+   * Resource type unsupported.
+   */
+  const RESOURCE_TYPE_UNSUPPORTED = 'unsupported';
+
+  /**
    * Harvest service.
    *
    * @var \Drupal\harvest\HarvestService
@@ -68,15 +73,11 @@ class DashboardForm extends FormBase {
 
   /**
    * The PostImportResultFactory service.
-   *
-   * @var \Drupal\datastore\PostImportResultFactory
    */
   protected PostImportResultFactory $postImportResultFactory;
 
   /**
    * Node storage service.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected EntityStorageInterface $nodeStorage;
 
@@ -322,16 +323,29 @@ class DashboardForm extends FormBase {
    *   Dataset UUIDs .
    */
   protected function getDatasetsByTitle(array $filters): array {
+    $datasets = [];
+
     // Get the ids using an entity query, because our dataset title is in the
     // node title field.
     // @todo Unify different queries against Data nodes using a repository or
     // the NodeData wrapper.
-    $results = $this->nodeStorage->getQuery()
+    $query = $this->nodeStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', 'data')
-      ->condition('field_data_type', 'dataset')
-      ->condition('title', $filters['dataset_title'], 'CONTAINS')
-      ->execute();
+      ->condition('field_data_type', 'dataset');
+
+    $searchTerms = array_filter(explode(' ', trim($filters['dataset_title'])));
+
+    if (!empty($searchTerms)) {
+      $titleGroup = $query->andConditionGroup();
+      foreach ($searchTerms as $term) {
+        $titleGroup->condition('title', $term, 'CONTAINS');
+      }
+      $query->condition($titleGroup);
+    }
+
+    $results = $query->execute();
+
     foreach ($this->nodeStorage->loadMultiple($results) as $node) {
       $datasets[] = $node->uuid();
     }
@@ -411,9 +425,7 @@ class DashboardForm extends FormBase {
    *   Array of harvest load statuses, keyed by dataset UUIDs.
    */
   protected function getHarvestLoadStatus(?string $harvestId): \Generator {
-    $result = $this->harvest->getHarvestRunResult(
-      $harvestId, $this->harvest->getLastHarvestRunId($harvestId)
-    );
+    $result = $this->harvest->getHarvestRunResult($harvestId);
     yield from $result['status']['load'] ?? [];
   }
 
@@ -454,18 +466,12 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach ($datasetInfo as $rev) {
-      // Filter out distributions whose resources are not csv or tsv.
-      $distributions = array_filter($rev['distributions'], function ($v) {
-        return !isset($v['mime_type']) || in_array($v['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
-      });
-
-      if (!empty($distributions)) {
-        // For first distribution, combine with revision information.
-        $rows[] = array_merge(
-          $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
-          $this->buildResourcesRow(array_shift($distributions))
-        );
-      }
+      $distributions = $rev['distributions'];
+      // For first distribution, combine with revision information.
+      $rows[] = array_merge(
+        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
+        $this->buildResourcesRow(array_shift($distributions))
+      );
       // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
@@ -512,7 +518,7 @@ class DashboardForm extends FormBase {
         'data' => [
           '#theme' => 'datastore_dashboard_revision_cell',
           '#revision_id' => $rev['revision_id'],
-          '#modified' => $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short'),
+          '#modified' => $this->dateFormatter->format(strtotime((string) $rev['modified_date_dkan']), 'short'),
           '#moderation_state' => $rev['moderation_state'],
         ],
       ],
@@ -537,24 +543,51 @@ class DashboardForm extends FormBase {
     if (is_array($dist) && isset($dist['distribution_uuid'])) {
       $postImportResult = $this->postImportResultFactory->initializeFromDistribution($dist);
       $postImportInfo = $postImportResult->retrieveJobStatus();
-      $status = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
+      $postImportStatus = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
       $error = $postImportInfo ? $postImportInfo['post_import_error'] : NULL;
+      $mime_type = in_array($dist['mime_type'], DataResource::IMPORTABLE_FILE_TYPES);
 
-      return [
-        [
-          'data' => [
-            '#theme' => 'datastore_dashboard_resource_cell',
-            '#uuid' => $dist['distribution_uuid'],
-            '#file_name' => basename($dist['source_path']),
-            '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
-          ],
-        ],
-        $this->buildStatusCell($dist['fetcher_status']),
-        $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
-        $this->buildPostImportStatusCell($status, $error),
-      ];
+      return $this->buildResourceData($dist, $mime_type, $postImportStatus, $error);
     }
+
     return ['', '', '', ''];
+  }
+
+  /**
+   * Build resource data array.
+   *
+   * @param array $dist
+   *   Distribution element from a datastore_info array.
+   * @param bool $importable
+   *   Whether the mime type is importable.
+   * @param string $post_import_status
+   *   Post import status.
+   * @param string|null $error
+   *   Error message, if any.
+   *
+   * @return array
+   *   Array of render arrays representing the last three
+   *   columns of the dashboard table.
+   */
+  protected function buildResourceData(array $dist, bool $importable, string $post_import_status, ?string $error): array {
+    $data = [
+      [
+        'data' => [
+          '#theme' => 'datastore_dashboard_resource_cell',
+          '#uuid' => $dist['distribution_uuid'],
+          '#file_name' => basename((string) $dist['source_path']),
+          '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
+        ],
+        'class' => $importable ? '' : 'unsupported',
+      ],
+
+      $this->buildStatusCell($importable ? $dist['fetcher_status'] : 'unsupported'),
+      $importable ? $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])) : NULL,
+      $importable ? $this->buildPostImportStatusCell($post_import_status, $error) : NULL,
+    ];
+
+    // Remove empty cells.
+    return array_filter($data);
   }
 
   /**
@@ -571,15 +604,23 @@ class DashboardForm extends FormBase {
    *   Renderable array.
    */
   protected function buildStatusCell(string $status, ?int $percentDone = NULL, ?string $error = NULL) {
-    return [
+    $statusCell = [
       'data' => [
         '#theme' => 'datastore_dashboard_status_cell',
-        '#status' => $status,
+        '#status' => $status === DashboardForm::RESOURCE_TYPE_UNSUPPORTED ? 'Data import is not supported for this resource type' : $status,
         '#percent' => $percentDone ?? NULL,
         '#error' => $error,
       ],
       'class' => str_replace('_', '-', $status),
     ];
+
+    // If the status is unsupported, we want to span the cell across
+    // all three columns.
+    if ($status === DashboardForm::RESOURCE_TYPE_UNSUPPORTED) {
+      $statusCell['colspan'] = 3;
+    }
+
+    return $statusCell;
   }
 
   /**

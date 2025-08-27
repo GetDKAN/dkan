@@ -4,18 +4,17 @@ namespace Drupal\metastore;
 
 use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Map resource URLs to local files.
  */
 class ResourceMapper {
-
-  use EventDispatcherTrait;
 
   const EVENT_REGISTRATION = 'dkan_metastore_resource_mapper_registration';
 
@@ -49,16 +48,25 @@ class ResourceMapper {
   private EntityStorageInterface $mappingEntityStorage;
 
   /**
+   * Event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  private EventDispatcherInterface $eventDispatcher;
+
+  /**
    * Constructor.
    */
   public function __construct(
     DatabaseTableInterface $store,
     EntityTypeManagerInterface $entityTypeManager,
+    EventDispatcherInterface $eventDispatcher
   ) {
     $this->store = $store;
     $this->entityTypeManager = $entityTypeManager;
     $this->mappingEntityStorage = $this->entityTypeManager
       ->getStorage('resource_mapping');
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -79,7 +87,8 @@ class ResourceMapper {
     // duplicate.
     $this->filePathExists($resource->getFilePath());
     $this->storeResourceToMapping($resource);
-    $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
+    $event = new Event($resource);
+    $this->eventDispatcher->dispatch($event, self::EVENT_REGISTRATION);
 
     return TRUE;
   }
@@ -113,7 +122,8 @@ class ResourceMapper {
     // Record resource in mapper table and dispatch an event for the
     // resource's registration.
     $this->storeResourceToMapping($resource);
-    $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
+    $event = new Event($resource);
+    $this->eventDispatcher->dispatch($event, self::EVENT_REGISTRATION);
   }
 
   /**
@@ -122,7 +132,8 @@ class ResourceMapper {
   public function registerNewVersion(DataResource $resource) {
     $this->validateNewVersion($resource);
     $this->storeResourceToMapping($resource);
-    $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
+    $event = new Event($resource);
+    $this->eventDispatcher->dispatch($event, self::EVENT_REGISTRATION);
   }
 
   /**
@@ -233,7 +244,8 @@ class ResourceMapper {
       );
       if ($resource->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
         // Dispatch event to initiate removal of the datastore and local file.
-        $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE, $resource);
+        $event = new Event($resource);
+        $this->eventDispatcher->dispatch($event, self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE);
       }
       // Remove the resource mapper perspective.
       $this->mappingEntityStorage->delete([$mapping]);

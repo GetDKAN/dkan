@@ -27,9 +27,10 @@ namespace Drupal\Tests\common\Kernel\Storage {
 
     public function testDeprecatedClassnameTable() {
       $db = $this->container->get('database');
+      $eventDispatcher = $this->container->get('event_dispatcher');
       // Make a concrete AbstractJobStoreFactory object.
       /** @var \DkanTestConcreteAbstractJobStoreFactory $job_store_factory */
-      $job_store_factory = new \DkanTestConcreteAbstractJobStoreFactory($db);
+      $job_store_factory = new \DkanTestConcreteAbstractJobStoreFactory($db, $eventDispatcher);
       // Get a Job object by specifying an instance name.
       $job_store = $job_store_factory->getInstance(\DkanTestConcreteJobSubclass::class);
 

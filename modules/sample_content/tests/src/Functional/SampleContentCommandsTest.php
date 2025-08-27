@@ -14,6 +14,7 @@ use GuzzleHttp\RequestOptions;
  * @group dkan
  * @group sample_content
  * @group functional
+ * @group functional2
  */
 class SampleContentCommandsTest extends BrowserTestBase {
 
@@ -61,9 +62,8 @@ class SampleContentCommandsTest extends BrowserTestBase {
       'dkan:sample-content:remove',
     ] as $command) {
       $this->drush($command . ' --help');
-      $this->assertEmpty(
-        $this->getSimplifiedErrorOutput()
-      );
+      // Make this work even when there are deprecation warnings.
+      $this->assertErrorOutputEquals('', '/(Deprecated: |PHP Deprecated: ).*/s');
     }
 
     $harvest_plan_name = 'sample_content';

@@ -10,6 +10,7 @@ use Procrastinator\Result;
 /**
  * @covers \Drupal\common\FileFetcher\FileFetcherRemoteUseExisting
  * @coversDefaultClass \Drupal\common\FileFetcher\FileFetcherRemoteUseExisting
+ *
  */
 class FileFetcherRemoteUseExistingTest extends TestCase {
 

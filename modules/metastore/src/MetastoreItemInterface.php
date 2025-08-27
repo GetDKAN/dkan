@@ -25,7 +25,10 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function getRawMetadata();
 
   /**
-   * Protected.
+   * Get the node schema identifier.
+   *
+   * @return string
+   *   The Data node schema identifier, such as 'dataset' or 'distribution'.
    */
   public function getSchemaId();
 
@@ -53,5 +56,16 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
    * Is New.
    */
   public function isNew();
+
+  /**
+   * Get the relevant entity.
+   *
+   * If the implementation is an entity itself, this should simply
+   * return $this.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The wrapped entity.
+   */
+  public function getEntity();
 
 }

@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest\Commands;
 
-use Harvest\ResultInterpreter;
+use Drupal\harvest\ResultInterpreter;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -52,6 +52,24 @@ trait Helper {
     }
     $table->render();
     $this->renderHarvestRunsErrors($errors);
+  }
+
+  /**
+   * Display a JSON harvest plan.
+   *
+   * @param object $plan
+   *   Harvest plan object, as returned from Harvester::getHarvestPlanObject().
+   *
+   * @see Harvester::getHarvestPlanObject()
+   */
+  private function renderHarvestPlan(object $plan) {
+    // Encode the plan as formatted JSON and output it.
+    $consoleOutput = new ConsoleOutput();
+    $consoleOutput->writeln([
+      '<info>Harvest Plan:</info>',
+      json_encode($plan, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+      '',
+    ]);
   }
 
   /**
@@ -161,7 +179,7 @@ trait Helper {
 
     if ($status['load'][$item_id] == 'FAILURE') {
 
-      $report = json_decode($errors['load'][$item_id], TRUE);
+      $report = json_decode((string) $errors['load'][$item_id], TRUE);
 
       if (empty($report['errors'])) {
         // Probably a string and not a json object.

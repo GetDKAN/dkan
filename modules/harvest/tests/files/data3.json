@@ -1,0 +1,399 @@
+{
+    "@context": "https:\/\/project-open-data.cio.gov\/v1.1\/schema\/catalog.jsonld",
+    "@id": "http:\/\/dkan\/data.json",
+    "@type": "dcat:Catalog",
+    "conformsTo": "https:\/\/project-open-data.cio.gov\/v1.1\/schema",
+    "describedBy": "https:\/\/project-open-data.cio.gov\/v1.1\/schema\/catalog.json",
+    "dataset": [
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "Data on bike lanes in Florida. Florida\u0027s bike lanes provide a safe and designated space for riders to pedal along the coastlines, through bustling urban areas, and amidst tranquil suburban neighborhoods. Whether navigating the bustling streets of Miami, cruising alongside the white sandy beaches of the Gulf Coast, or meandering through the picturesque Everglades, cyclists in Florida enjoy a network of bike lanes that cater to both recreational riders and daily commuters. With a combination of dedicated paths, shared roadways, and expansive trails, Florida\u0027s bike lanes contribute to a healthier and more sustainable lifestyle, encouraging residents and visitors alike to embrace the joy of two-wheeled travel under the warm Florida sun.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/cedcd327-4e5d-43f9-8eb1-c11850fa7c55\/Bike_Lane.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "title": "Florida Bike Lanes"
+                }
+            ],
+            "identifier": "cedcd327-4e5d-43f9-8eb1-c11850fa7c55",
+            "issued": "2016-06-22",
+            "license": "http:\/\/opendatacommons.org\/licenses\/by\/1.0\/",
+            "modified": "2016-06-22",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "State Economic Council"
+            },
+            "spatial": "Florida",
+            "theme": [
+                "Transportation",
+                "City Planning"
+            ],
+            "title": "Florida Bike Lanes ",
+            "keyword": [
+                "bike-lanes",
+                "streets",
+                "infrastructure"
+            ]
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "In late 2016, the URA, in conjunction with Reinvestment Fund, completed the 2016 Market Value Analysis (MVA) for the City of Pittsburgh. The Market Value Analysis (MVA) offers an approach for community revitalization; it recommends applying interventions not only to where there is a need for development but also in places where public investment can stimulate private market activity and capitalize on larger public investment activities. The MVA is a unique tool for characterizing markets because it creates an internally referenced index of a municipality\u2019s residential real estate market. It identifies areas that are the highest demand markets as well as areas of greatest distress, and the various markets types between. The MVA offers insight into the variation in market strength and weakness within and between traditional neighborhood boundaries because it uses Census block groups as the unit of analysis. Where market types abut each other on the map becomes instructive about the potential direction of market change, and ultimately, the appropriateness of types of investment or intervention strategies.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/fb3525f2-d32a-451e-8869-906ed41f7695\/pittsmva2016data.zip",
+                    "mediaType": "application\/zip",
+                    "format": "zip",
+                    "title": "MVA Geographic Data 2016"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/fb3525f2-d32a-451e-8869-906ed41f7695\/2016mvadatadictionary.pdf",
+                    "mediaType": "application\/pdf",
+                    "format": "pdf",
+                    "title": "2016 MVA Data Dictionary"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/fb3525f2-d32a-451e-8869-906ed41f7695\/IMD-MAPS.zip",
+                    "mediaType": "application\/zip",
+                    "format": "zip",
+                    "title": "Map files"
+                }
+            ],
+            "identifier": "fb3525f2-d32a-451e-8869-906ed41f7695",
+            "issued": "2016-04-21",
+            "keyword": [
+                "foreclosures",
+                "economy",
+                "affordable-housing",
+                "housing-markets"
+            ],
+            "license": "http:\/\/www.opendefinition.org\/licenses\/cc-by",
+            "modified": "2016-04-21",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "State Economic Council"
+            },
+            "spatial": "Pittsburgh, PA",
+            "temporal": "2016\/P1Y",
+            "theme": [
+                "Finance and Budgeting"
+            ],
+            "title": "Market Value Analysis - Urban Redevelopment Authority"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "In 2014, crime in U.S. cities continued to be a complex and multifaceted issue, shaped by a variety of social, economic, and demographic factors. While overall crime rates had been on a gradual decline for several years, specific cities experienced fluctuations in crime statistics. Major metropolitan areas often grappled with challenges related to violent crimes. Law enforcement agencies, community organizations, and policymakers are working to collect and analyze data to inform policies addressing the root causes of crime. Source: FBI Uniform Crime Report, 2014",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/d460252e-d42c-474a-9ea9-5287b1d595f6\/ViolentCrimeRates.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "description": "Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.",
+                    "title": "Violent Crime Data for the Ten Most Populous Cities in the U.S."
+                }
+            ],
+            "identifier": "d460252e-d42c-474a-9ea9-5287b1d595f6",
+            "issued": "2014-12-30",
+            "keyword": [
+                "crime",
+                "city"
+            ],
+            "license": "http:\/\/opendatacommons.org\/licenses\/by\/1.0\/",
+            "modified": "2014-12-30",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "State Economic Council"
+            },
+            "spatial": "POLYGON ((-129.7265625 24.046463999667, -129.7265625 51.835777520452, -65.390625 51.835777520452, -65.390625 24.046463999667))",
+            "temporal": "2014-01-01T05:00:00+00:00\/2014-01-01T05:00:00+00:00",
+            "theme": [
+                "Public Safety"
+            ],
+            "title": "Crime Data for the Ten Most Populous Cities in the U.S."
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "accrualPeriodicity": "R\/PT1S",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "Asthma prevalence remains a significant public health concern worldwide, affecting people of all ages and backgrounds. Globally, the World Health Organization estimates that over 339 million individuals grapple with asthma, a chronic respiratory condition characterized by recurrent episodes of wheezing, breathlessness, chest tightness, and coughing. The prevalence of asthma varies across regions and is influenced by factors such as genetics, environmental exposures, and socio-economic conditions. In some developed nations, urbanization and increased exposure to allergens contribute to higher rates of asthma. Moreover, disparities in healthcare access and quality can impact the prevalence and management of asthma, with vulnerable populations often facing greater challenges. Efforts to address asthma prevalence involve public health initiatives, education, and research aimed at understanding the multifaceted factors influencing the condition, ultimately contributing to better prevention and management strategies.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/95f8eac4-fd1f-4b35-8472-5c87e9425dfa\/Asthma-Prevalence-Map-2017.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "description": "Mock data for demonstration purposes.",
+                    "title": "Asthma prevalence by location"
+                }
+            ],
+            "identifier": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
+            "issued": "2017-08-01",
+            "keyword": [
+                "asthma"
+            ],
+            "license": "http:\/\/opendefinition.org\/licenses\/odc-odbl\/",
+            "modified": "2019-06-06",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "National Health Council"
+            },
+            "theme": [
+                "Health Care"
+            ],
+            "temporal": "2017-01-01T05:00:00+00:00\/2017-12-31T05:00:00+00:00",
+            "title": "Asthma Prevalence"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "accrualPeriodicity": "R\/P1Y",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "Statistics on U.S. smoking rates and tobacco taxation rates for all fifty states.\nSource: Centers for Disease Control and Prevention, 2015.\nIn 2019, the Centers for Disease Control and Prevention (CDC) reported that approximately 14% of adults in the U.S. were current cigarette smokers. While this figure represented a significant decline from previous decades, the prevalence of alternative tobacco products, such as e-cigarettes, among youth garnered attention. The use of vaping products increased, contributing to concerns about nicotine addiction and potential health risks, particularly among adolescents.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/1f2042ad-c513-4fcf-a933-cae6c6fd35e6\/CDCSmokingRates.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "description": "This dataset highlights critical trends in adult total and per capita consumption of both combustible (cigarettes, little cigars, small cigars, pipe tobacco, roll-your-own tobacco) tobacco products and smokeless (chewing tobacco and snuff) tobacco.",
+                    "title": "U.S. Adult Smoking Rate"
+                }
+            ],
+            "identifier": "1f2042ad-c513-4fcf-a933-cae6c6fd35e6",
+            "issued": "2018-02-10",
+            "keyword": [
+                "demographics",
+                "health"
+            ],
+            "license": "http:\/\/opendatacommons.org\/licenses\/by\/1.0\/",
+            "modified": "2018-02-10",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "National Health Council"
+            },
+            "spatial": "POLYGON ((-127.705078125 24.206889622398, -127.705078125 50.625073063414, -63.193359375 50.625073063414, -63.193359375 24.206889622398))",
+            "theme": [
+                "Health Care"
+            ],
+            "title": "U.S. Tobacco Usage Statistics"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "accrualPeriodicity": "R\/P1Y",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "The varicella vaccine stands as a crucial tool in preventing the highly contagious viral infection known as chickenpox, caused by the varicella-zoster virus. This vaccine has been an integral part of routine childhood immunization schedules in many countries, demonstrating its effectiveness in reducing the incidence and severity of chickenpox. Administered typically in two doses, the varicella vaccine not only provides direct protection against chickenpox but also contributes to the prevention of more severe complications and the potential reactivation of the virus as shingles later in life. By stimulating the immune system to recognize and combat the varicella-zoster virus, the vaccine plays a pivotal role in public health efforts to control the spread of this contagious disease, promoting a healthier and safer community.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/e1f2ebcd-ee23-454f-87b5-df0306658418\/demo_varicelladeaths_1991_2007.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "description": "Mock data for demonstration purposes.",
+                    "title": "Varicella Mortality by Age Group, 1991-2007"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/e1f2ebcd-ee23-454f-87b5-df0306658418\/demo_varicelladeaths_1974_1990.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "description": "Mock data for demonstration purposes.",
+                    "title": "Varicella Mortality by Age Group, 1974-1990"
+                }
+            ],
+            "identifier": "e1f2ebcd-ee23-454f-87b5-df0306658418",
+            "issued": "2008-01-06",
+            "keyword": [
+                "health"
+            ],
+            "modified": "2008-01-06",
+            "license": "http:\/\/opendatacommons.org\/licenses\/by\/1.0\/",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "National Health Council"
+            },
+            "spatial": "POLYGON ((-128.056640625 24.206889622398, -128.056640625 50.176898122001, -64.775390625 50.176898122001, -64.775390625 24.206889622398))",
+            "temporal": "1974-01-01\/2007-01-01",
+            "theme": [
+                "Health Care"
+            ],
+            "title": "Varicella (Chickenpox) Incidence and Mortality, Before and After the Vaccine"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "Wisconsin\u0027s polling places serve as the cornerstone of the state\u0027s democratic process, providing citizens with the essential means to exercise their right to vote. Dotted across the diverse landscapes of cities, towns, and rural areas, these polling locations are meticulously organized to facilitate fair and accessible elections. On election days, voters converge at designated sites equipped with trained poll workers, electronic voting machines, and paper ballots, ensuring a smooth and secure voting experience. Wisconsin\u0027s commitment to democratic values is evident in the accessibility measures implemented, such as early voting options and absentee balloting, providing flexibility to accommodate the diverse schedules of its residents. The state\u0027s polling places embody the collective voice of its people, playing a pivotal role in shaping the political landscape and fostering civic engagement.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/934400f2-a5dc-4abf-bf16-3f17335888d3\/polling-places.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "description": "List of polling places in Madison, WI.",
+                    "title": "Madison Polling Places"
+                }
+            ],
+            "identifier": "934400f2-a5dc-4abf-bf16-3f17335888d3",
+            "issued": "2013-02-11",
+            "keyword": [
+                "election"
+            ],
+            "license": "http:\/\/opendefinition.org\/licenses\/cc-by\/",
+            "modified": "2013-02-11",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "Committee on International Affairs"
+            },
+            "theme": [
+                "City Planning"
+            ],
+            "spatial": "POLYGON ((-90.415429 46.568478, -90.229213 46.508231, -90.119674 46.338446, -89.09001 46.135799, -88.662808 45.987922, -88.531362 46.020784, -88.10416 45.922199, -87.989145 45.796229, -87.781021 45.675736, -87.791975 45.500474, -87.885083 45.363551, -87.649574 45.341643, -87.742682 45.199243, -87.589328 45.095181, -87.627666 44.974688, -87.819359 44.95278, -87.983668 44.722749, -88.043914 44.563917, -87.928898 44.536533, -87.775544 44.640595, -87.611236 44.837764, -87.403112 44.914442, -87.238804 45.166381, -87.03068 45.22115, -87.047111 45.089704, -87.189511 44.969211, -87.468835 44.552964, -87.545512 44.322932, -87.540035 44.158624, -87.644097 44.103854, -87.737205 43.8793, -87.704344 43.687607, -87.791975 43.561637, -87.912467 43.249452, -87.885083 43.002989, -87.76459 42.783912, -87.802929 42.493634, -88.788778 42.493634, -90.639984 42.510065, -90.711184 42.636034, -91.067185 42.75105, -91.143862 42.909881, -91.176724 43.134436, -91.056231 43.254929, -91.204109 43.353514, -91.215062 43.501391, -91.269832 43.616407, -91.242447 43.775238, -91.43414 43.994316, -91.592971 44.032654, -91.877772 44.202439, -91.927065 44.333886, -92.233773 44.443425, -92.337835 44.552964, -92.545959 44.569394, -92.808852 44.750133, -92.737652 45.117088, -92.75956 45.286874, -92.644544 45.440228, -92.770513 45.566198, -92.885529 45.577151, -92.869098 45.719552, -92.639067 45.933153, -92.354266 46.015307, -92.29402 46.075553, -92.29402 46.667063, -92.091373 46.749217, -92.014696 46.705401, -91.790141 46.694447, -91.09457 46.864232, -90.837154 46.95734, -90.749522 46.88614, -90.886446 46.754694, -90.55783 46.584908))",
+            "title": "Wisconsin Polling Places"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "US National Foreclosure Statistics - By State - January 2012. In January 2012, the United States experienced a lingering aftermath of the housing market collapse that began in 2008, as reflected in the national foreclosure statistics. During this period, foreclosure rates remained elevated, and a considerable number of properties were repossessed by lenders. The statistics painted a sobering picture of the challenges faced by American households, highlighting the continued ripple effects of the subprime mortgage crisis.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/74c06c81-9fe0-439c-aba9-cd5c980a6df4\/us_foreclosures_jan_2012_by_state.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "description": "US National Foreclosure Statistics - By State - January 2012",
+                    "title": "1-2012-Foreclosures-by-State"
+                }
+            ],
+            "identifier": "74c06c81-9fe0-439c-aba9-cd5c980a6df4",
+            "issued": "2012-08-10",
+            "keyword": [
+                "economy",
+                "politics",
+                "transparency"
+            ],
+            "modified": "2012-08-10",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "State Economic Council"
+            },
+            "spatial": "POLYGON ((-126.9140625 24.046463999667, -126.9140625 50.625073063414, -65.56640625 50.625073063414, -65.56640625 24.046463999667))",
+            "temporal": "2012-01-01T05:00:00+00:00\/2012-01-01T05:00:00+00:00",
+            "theme": [
+                "Finance and Budgeting"
+            ],
+            "title": "US National Foreclosure Statistics January 2012"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "Monthly gold prices (USD) in London from Bundesbank. General: 1 ounce of fine gold = 31.1034768g. Method of calculation: Since 1 April 1968, calculated from the daily morning fixing; From January 1950 to 21 March 1954, calculated using the Bank of England\u0027s gold purchasing price (1 ounce of fine = pound 12.40) in connection with the average exchange rate for the pound in New York (up to the end of 1952; source: Federal Reserve Bulletin) and, from January 1953, midpoint exchange rates for the US dollar in London (source: Financial Times (FT)). From 22 March 1954 to December 1959, calculated using the fixing price for gold bars of approx. 12 1\/2 kg and 995\/1000 fineness and over (so-called standard bars) according to data from Metallgesellschaft AG, Frankfurt am Main, in connection with the average midpoint exchange rates for the US dollar in London (source: FT). From January 1960 to 14 March 1968, average fixing price for standard bars as specified in the Bank of England\u0027s Quarterly Bulletin. On 15 March 1968, fixing price suspended. Gold market split into an official (reserved for central banks) and a free market as a result of the Washington Communique of 17 March 1968. Gold trading suspended from 18 to 29 March 1968. Sources for daily prices: April 1968 - March 1974: FT; April 1974 - December 1980: Samuel Montagu \u0026amp; Co. Ltd.; January 1981 - December 2005: FT; January 2006 - present: Reuters. Comment on 1968-03: Average from 1 to 14 March 1968.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/5dc1cfcf-8028-476c-a020-f58ec6dd621c\/data.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "title": "Table of Gold Prices"
+                }
+            ],
+            "identifier": "5dc1cfcf-8028-476c-a020-f58ec6dd621c",
+            "issued": "2010-06-06",
+            "keyword": [
+                "economy",
+                "price",
+                "time-series"
+            ],
+            "license": "http:\/\/opendefinition.org\/licenses\/odc-pddl\/",
+            "modified": "2010-06-06",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "State Economic Council"
+            },
+            "spatial": "POLYGON ((-0.56854248046875 51.253320526331, -0.56854248046875 51.725326868065, 0.3076171875 51.725326868065, 0.3076171875 51.253320526331))",
+            "temporal": "1950-01-01T05:00:00+00:00\/1950-01-01T05:00:00+00:00",
+            "theme": [
+                "Finance and Budgeting"
+            ],
+            "title": "Gold Prices in London 1950-2008 (Monthly)"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "fn": "Jane Doe",
+                "hasEmail": "mailto:data.admin@example.com"
+            },
+            "description": "This data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https:\/\/demo.getdkan.org\/sites\/default\/files\/distribution\/c9e2d352-e24c-4051-9158-f48127aa5692\/district_centerpoints.csv",
+                    "mediaType": "text\/csv",
+                    "format": "csv",
+                    "title": "District Names"
+                }
+            ],
+            "identifier": "c9e2d352-e24c-4051-9158-f48127aa5692",
+            "issued": "2012-10-30",
+            "keyword": [
+                "country-afghanistan",
+                "election",
+                "politics",
+                "transparency"
+            ],
+            "modified": "2012-10-30",
+            "license": "http:\/\/opendefinition.org\/licenses\/cc-by\/",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "Committee on International Affairs"
+            },
+            "theme": [
+                "City Planning"
+            ],
+            "spatial": "POLYGON ((60.8642578125 29.878755346038, 61.787109375 30.977609093349, 61.7431640625 31.391157522825, 60.7763671875 31.653381399664, 60.8642578125 32.361403315275, 60.556640625 33.137551192346, 60.908203125 33.578014746144, 60.5126953125 33.614619292334, 60.5126953125 34.307143856288, 60.8642578125 34.343436068483, 61.3037109375 35.603718740697, 62.666015625 35.353216101238, 64.5556640625 36.421282443649, 64.86328125 37.195330582801, 65.654296875 37.195330582801, 65.654296875 37.474858084971, 67.9833984375 37.055177106661, 68.7744140625 37.265309955619, 69.345703125 37.125286284967, 69.697265625 37.683820326694, 70.3125 37.683820326694, 70.3125 38.065392351332, 71.0595703125 38.582526159353, 71.279296875 37.78808138412, 71.7626953125 37.926867601481, 71.4990234375 37.405073750177, 71.630859375 36.738884124394, 73.3447265625 37.474858084971, 73.7841796875 37.474858084971, 73.7841796875 37.265309955619, 74.7509765625 37.335224359306, 74.9267578125 37.160316546737, 74.1357421875 36.809284702059, 72.9931640625 36.949891786813, 71.54296875 36.315125147481, 71.2353515625 36.066862132579, 71.5869140625 35.460669951495, 71.54296875 34.813803317113, 71.103515625 34.560859367084, 71.1474609375 34.08906131585, 70.3125 33.979808728725, 69.873046875 33.979808728725, 70.2685546875 33.321348526699, 69.345703125 32.916485347314, 69.2578125 32.324275588877, 69.1259765625 31.802892586707, 68.7744140625 31.578535426473, 68.0712890625 31.802892586707, 67.67578125 31.615965936476, 67.8515625 31.353636941501, 67.4560546875 31.278550858947, 67.0166015625 31.278550858947, 66.4892578125 30.939924331023, 66.2255859375 30.334953881989, 66.357421875 29.91685223307, 65.0390625 29.535229562948, 64.248046875 29.611670115197, 64.2041015625 29.420460341013, 63.4130859375 29.458731185355, 62.6220703125 29.420460341013))",
+            "title": "Afghanistan Election Districts"
+        }
+    ]
+}

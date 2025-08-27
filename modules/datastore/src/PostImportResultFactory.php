@@ -13,15 +13,11 @@ class PostImportResultFactory {
 
   /**
    * The database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
    */
   protected Connection $connection;
 
   /**
    * The metastore resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
    */
   protected ResourceMapper $resourceMapper;
 

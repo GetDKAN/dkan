@@ -11,6 +11,10 @@ use Drupal\Tests\common\Unit\Connection;
 
 /**
  * @coversDefaultClass \Drupal\common\Storage\SelectFactory
+ *
+ * @group dkan
+ * @group common
+ * @group unit
  */
 class SelectFactoryTest extends TestCase {
   /**

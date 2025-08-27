@@ -9,6 +9,7 @@ use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @group dkan
@@ -34,6 +35,7 @@ class DatabaseTableFactoryTest extends TestCase {
     $factory = $builder->setConstructorArgs([
       $connection,
       $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class),
     ])
       ->onlyMethods(["getDatabaseTable"])
       ->getMock();

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="getdkan">
+
+    <arg name="extensions" value="inc,install,module,php,profile,test,theme,yml"/>
+    <description>PHP CodeSniffer configuration for GetDKAN.</description>
+
+    <rule ref="Drupal" />
+    <rule ref="DrupalPractice" />
+
+</ruleset>

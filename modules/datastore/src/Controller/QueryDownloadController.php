@@ -126,7 +126,7 @@ class QueryDownloadController extends AbstractQueryController {
    *   Row of data to send as CSV.
    */
   private function sendRow($handle, array $row) {
-    fputcsv($handle, $row);
+    fputcsv($handle, $row, escape: "\\");
     ob_flush();
     flush();
   }

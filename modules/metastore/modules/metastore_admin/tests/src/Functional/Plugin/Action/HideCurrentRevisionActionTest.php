@@ -16,6 +16,7 @@ use RootedData\RootedJsonData;
  *
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
+ * @group functional3
  */
 class HideCurrentRevisionActionTest extends BrowserTestBase {
 

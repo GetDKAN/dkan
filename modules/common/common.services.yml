@@ -12,12 +12,15 @@ services:
     class: \Drupal\common\Storage\JobStoreFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
 
   dkan.common.drupal_files:
     class: \Drupal\common\Util\DrupalFiles
     arguments:
       - '@file_system'
       - '@stream_wrapper_manager'
+      - '@http_client_factory'
+      - '@dkan.common.logger_channel'
 
   dkan.common.node_storage:
     class: Drupal\node\NodeStorage
@@ -34,6 +37,7 @@ services:
     class: \Drupal\common\Storage\FileFetcherJobStoreFactory
     arguments:
       - '@database'
+      - '@event_dispatcher'
 
   dkan.common.dataset_info:
     class: \Drupal\common\DatasetInfo

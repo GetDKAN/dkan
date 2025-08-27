@@ -10,6 +10,12 @@ use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 use Osteel\OpenApi\Testing\ValidatorBuilder;
 
+/**
+ * Base class for API v1 tests.
+ *
+ * Provides common functionality for API 1 tests, including HTTP client setup,
+ * OpenAPI spec validation, and user creation.
+ */
 abstract class Api1TestBase extends BrowserTestBase {
   use UserCreationTrait;
 
@@ -18,9 +24,26 @@ abstract class Api1TestBase extends BrowserTestBase {
    */
   protected Client $httpClient;
 
-  protected $spec;
-  protected $auth;
-  protected $endpoint;
+  /**
+   * Decoded OpenAPI spec.
+   */
+  protected object $spec;
+
+  /**
+   * Login credentials for the API, in format ['username', 'password'].
+   */
+  protected array $auth;
+
+  /**
+   * Another set of credentials, for a user without proper perms.
+   */
+  protected array $authNoPerms;
+
+  /**
+   * Base URL for the API.
+   *
+   */
+  protected string $endpoint;
 
   /**
    * OpenApi Validator.
@@ -30,7 +53,6 @@ abstract class Api1TestBase extends BrowserTestBase {
   protected $validator;
 
   protected $defaultTheme = 'stark';
-  protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
     'common',
@@ -38,6 +60,7 @@ abstract class Api1TestBase extends BrowserTestBase {
     'metastore',
     'node',
     'sample_content',
+    'workflows',
   ];
 
   /**
@@ -45,18 +68,33 @@ abstract class Api1TestBase extends BrowserTestBase {
    */
   public function setUp(): void {
     parent::setUp();
-    $user = $this->createUser(['post put delete datasets through the api'], 'testapiuser', FALSE);
+    $user = $this->createUser([
+      'access content',
+      'create data content',
+      'edit own data content',
+      'delete own data content',
+      'use dkan_publishing transition publish',
+      'use dkan_publishing transition archive',
+      'use dkan_publishing transition hidden',
+      'use dkan_publishing transition restore',
+      'view data revisions',
+      'view any unpublished content',
+    ], 'testapiuser', FALSE);
+    $user2 = $this->createUser(['access content'], 'testnopermsuser', FALSE);
+
     $this->httpClient = $this->container->get('http_client_factory')
       ->fromOptions([
         'base_uri' => $this->baseUrl,
       ]);
     $this->auth = ['testapiuser', $user->pass_raw];
+    $this->authNoPerms = ['testnopermsuser', $user2->pass_raw];
+
     $this->endpoint = $this->getEndpoint();
 
     // Load the API spec for use by tests.
     $response = $this->httpClient->request('GET', 'api/1');
     $this->validator = ValidatorBuilder::fromJsonString($response->getBody())->getValidator();
-    $this->spec = json_decode($response->getBody());
+    $this->spec = json_decode((string) $response->getBody());
   }
 
   protected function assertJsonIsValid($schema, $json) {

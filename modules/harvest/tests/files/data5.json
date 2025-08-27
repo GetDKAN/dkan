@@ -1,0 +1,321 @@
+{
+  "@context": "https:\/\/project-open-data.cio.gov\/v1.1\/schema\/catalog.jsonld",
+  "@id": "http:\/\/demo.getdkan.com\/data.json",
+  "@type": "dcat:Catalog",
+  "conformsTo": "https:\/\/project-open-data.cio.gov\/v1.1\/schema",
+  "describedBy": "https:\/\/project-open-data.cio.gov\/v1.1\/schema\/catalog.json",
+  "dataset": [{
+    "@type": "dcat:Dataset",
+    "accessLevel": "public",
+    "contactPoint": {
+      "fn": "admin",
+      "hasEmail": "mailto:noemailprovided@usa.gov"
+    },
+    "description": "\u003Cp\u003EData on bike lanes in Florida.\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/Bike_Lane.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "title": "Florida Bike Lanes 2"
+    }],
+    "identifier": "http:\/\/blah\/api\/blah\/cedcd327-4e5d-43f9-8eb1-c11850fa7c55",
+    "issued": "2016-06-22",
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/florida-bike-lanes",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "demo.getdkan.com"
+    },
+    "theme": ["Transportation", "City Planning"],
+    "title": "Florida Bike Lanes ",
+    "keyword": ["No keyword provided"]
+  }, {
+    "@type": "dcat:Dataset",
+    "contactPoint": {
+      "fn": "Gray, Stefanie",
+      "hasEmail": "mailto:datademo@example.com"
+    },
+    "description": "\u003Cp\u003EDeprivation is measured across seven different areas or domains - income, employment, health, education, living environment, crime and barriers to services using a wide range of indicators, and the methods used show how each area compares with other areas across England using a combination of all these indicators.\u003C\/p\u003E\n\u003Cp\u003EAs stated by The Guardian, \u0022the data is based on a close analysis of the UK government\u0027s Indices of Multiple Deprivation - which measures relative poverty across England \u2013 by Alasdair Rae at the University of Sheffield.\u0022 (\u003Ca href=\u0022https:\/\/www.theguardian.com\/uk\/datablog\/2012\/apr\/12\/deprivation-poverty-london\u0022\u003ESource\u003C\/a\u003E)\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ESource:\u003C\/strong\u003E \u003Ca href=\u0022https:\/\/data.london.gov.uk\/dataset\/indices-of-deprivation-2015\u0022\u003Ehttps:\/\/data.london.gov.uk\/dataset\/indices-of-deprivation-2015\u003C\/a\u003E\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ERelated Data Story: \u003C\/strong\u003E\u003Ca href=\u0022\/story\/london-income-analysis\u0022\u003ELondon Income Analysis\u003C\/a\u003E\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/IMD-MAPS.zip",
+      "mediaType": "application\/zip",
+      "format": "zip",
+      "title": "English Indices of Deprivation 2010"
+    }],
+    "identifier": "fb3525f2-d32a-451e-8869-906ed41f7695",
+    "issued": "2016-04-21",
+    "keyword": ["demographics", "economy", "spatial data", "United Kingdom"],
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/london-deprivation-index",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "State Economic Council, Committee on International Affairs"
+    },
+    "references": ["http:\/\/www.lfpress.com\/2016\/05\/13\/expert-panel-says-londons-living-wage-is-1553h-londoners-need-30284-to-meet-basic-needs"],
+    "spatial": "POLYGON ((-1.1178588867187 51.08282186161, -1.1178588867187 51.859531509855, 1.1178588867187 51.859531509855, 1.1178588867187 51.08282186161))",
+    "theme": ["Finance and Budgeting"],
+    "title": "London Deprivation Index"
+  }, {
+    "@type": "dcat:Dataset",
+    "accessLevel": "public",
+    "contactPoint": {
+      "fn": "Gray, Stefanie",
+      "hasEmail": "mailto:datademo@example.com"
+    },
+    "description": "\u003Cp\u003E\u003Cstrong\u003ESource:\u003C\/strong\u003E FBI Uniform Crime Report, 2014 (\u003Ca href=\u0022https:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u0022\u003Ehttps:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u003C\/a\u003E)\u003C\/p\u003E\n\u003Cp\u003EData is split into two categories:\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003EViolent Crime:\u003C\/strong\u003E Includes aggravated assault, murder, rape and robbery.\u003Cbr \/\u003E\u003Cstrong\u003EProperty Crime:\u003C\/strong\u003E Includes arson, burglary, larceny-theft and motor vehicle theft.\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ETop 10 Most Populous U.S. Cities:\u003C\/strong\u003E\u003C\/p\u003E\n\u003Col\u003E\n\u003Cli\u003ENew York, NY\u003C\/li\u003E\n\u003Cli\u003ELos Angeles, CA\u003C\/li\u003E\n\u003Cli\u003EChicago, IL\u003C\/li\u003E\n\u003Cli\u003EHouston, TX\u003C\/li\u003E\n\u003Cli\u003EPhiladelphia, PA\u003C\/li\u003E\n\u003Cli\u003ELas Vegas, NV\u003C\/li\u003E\n\u003Cli\u003EPhoenix, AZ\u003C\/li\u003E\n\u003Cli\u003ESan Antonio, TX\u003C\/li\u003E\n\u003Cli\u003ESan Diego, TX\u003C\/li\u003E\n\u003Cli\u003EDallas, TX\u003C\/li\u003E\n\u003C\/ol\u003E\n\u003Cp\u003E\u003Cstrong\u003ERelated Data Dashboard: \u003C\/strong\u003E\u003Ca href=\u0022\/crime-americas-top-10-most-populous-cities\u0022\u003ECrime in America\u0027s Top 10 Most Populous Cities\u003C\/a\u003E\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/ViolentCrimeRates.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ESource: FBI Uniform Crime Report, 2014 (\u003Ca href=\u0022https:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u0022\u003Ehttps:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u003C\/a\u003E)\u003C\/p\u003E\n\u003Cp\u003EIncludes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.\u003C\/p\u003E\n",
+      "title": "Violent Crime Data for the Ten Most Populous Cities in the U.S."
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/PropertyCrimesByCity_3.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "title": "Property Crime Statistics by City"
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/PropertyCrimeRates_1.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ESource: FBI Uniform Crime Report, 2014 (\u003Ca href=\u0022https:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u0022\u003Ehttps:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u003C\/a\u003E)\u003C\/p\u003E\n",
+      "title": "Property Crime Rates for 10 Most Populous US Cities (2015)"
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/NumbersByCity.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "title": "Violent Crime Statistics by City "
+    }],
+    "identifier": "d460252e-d42c-474a-9ea9-5287b1d595f6",
+    "issued": "2016-04-20",
+    "keyword": ["crime", "public safety"],
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/crime-data-ten-most-populous-cities-us",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "demo.getdkan.com"
+    },
+    "spatial": "POLYGON ((-129.7265625 24.046463999667, -129.7265625 51.835777520452, -65.390625 51.835777520452, -65.390625 24.046463999667))",
+    "temporal": "2014-01-01T05:00:00+00:00\/2014-01-01T05:00:00+00:00",
+    "theme": ["Public Safety"],
+    "title": "Crime Data for the Ten Most Populous Cities in the U.S."
+  }, {
+    "@type": "dcat:Dataset",
+    "accessLevel": "public",
+    "contactPoint": {
+      "fn": "Stefanie Gray",
+      "hasEmail": "mailto:stefanie@example.com"
+    },
+    "description": "\u003Cp\u003EInformation about the state workforce, broken down into four generational cohorts.\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ENote:\u003C\/strong\u003E This dataset has been given a vague name because it is anonymized demo data, not actual state data.\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/GenChart_0_0.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003EPopulation of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.\u003C\/p\u003E\n",
+      "title": "Workforce By Generation (2011-2015)"
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/retirements_0.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ETotal number of employees who retired from the state workforce, 2011-2015.\u003C\/p\u003E\n",
+      "title": "Retirements (2011 - 2015)"
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/2015EligibleVsActual.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003EThis data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.\u003C\/p\u003E\n",
+      "title": "Retirements: Eligible vs. Actual"
+    }],
+    "identifier": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
+    "issued": "2016-04-11",
+    "keyword": ["demographics", "socioeconomic", "workforce"],
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/state-workforce-generation-2011-2015",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "State Economic Council"
+    },
+    "temporal": "2011-01-01T05:00:00+00:00\/2011-01-01T05:00:00+00:00",
+    "title": "State Workforce by Generation (2011-2015)"
+  }, {
+    "@type": "dcat:Dataset",
+    "accessLevel": "public",
+    "contactPoint": {
+      "fn": "CDC INFO",
+      "hasEmail": "mailto:cdcinfo@cdc.gov"
+    },
+    "description": "\u003Cp\u003EStatistics on U.S. smoking rates and tobacco taxation rates for all fifty states.\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ESource:\u003C\/strong\u003E Centers for Disease Control and Prevention, 2015\u003Cbr \/\u003E\u003Ca href=\u0022https:\/\/www.cdc.gov\/tobacco\/data_statistics\/state_data\/\u0022\u003Ehttps:\/\/www.cdc.gov\/tobacco\/data_statistics\/state_data\/\u003C\/a\u003E\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ERelated Data Story: \u003C\/strong\u003E\u003Ca href=\u0022\/story\/state-level-policies-reduce-smoking-rates-nationwide\u0022\u003EState-Level Policies Reduce Smoking Rates Nationwide\u003C\/a\u003E\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/TobaccoTaxes2016_2_1.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ESource: The Campaign for Tobacco-Free Kids, April 2016: \u003Ca href=\u0022https:\/\/www.tobaccofreekids.org\/research\/factsheets\/pdf\/0097.pdf\u0022\u003Ehttps:\/\/www.tobaccofreekids.org\/research\/factsheets\/pdf\/0097.pdf\u003C\/a\u003E\u003C\/p\u003E\n",
+      "title": "Tobacco Taxation by State as of April 2016"
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/CDCSmokingRates.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ESource: Centers for Disease Control and Prevention, 2015\u003C\/p\u003E\n",
+      "title": "U.S. Adult Smoking Rate"
+    }],
+    "identifier": "1f2042ad-c513-4fcf-a933-cae6c6fd35e6",
+    "issued": "2016-04-10",
+    "keyword": ["demographics", "health"],
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/us-tobacco-usage-statistics",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "Advisory Council for Infectious Disease"
+    },
+    "spatial": "POLYGON ((-127.705078125 24.206889622398, -127.705078125 50.625073063414, -63.193359375 50.625073063414, -63.193359375 24.206889622398))",
+    "theme": ["Health Care"],
+    "title": "U.S. Tobacco Usage Statistics"
+  }, {
+    "@type": "dcat:Dataset",
+    "accessLevel": "public",
+    "contactPoint": {
+      "fn": "CDC INFO",
+      "hasEmail": "mailto:cdcinfo@cdc.gov"
+    },
+    "description": "\u003Cp\u003ECenters for Disease Control and Prevention data regarding varicella (chickenpox) virus incidence and mortality rates.\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ESource:\u003C\/strong\u003E \u003Ca href=\u0022https:\/\/data.cdc.gov\/NNDSS\/NNDSS-Table-II-Varicella-to-West-Nile-virus-diseas\/ig4m-ub43\u0022\u003Ehttps:\/\/data.cdc.gov\/NNDSS\/NNDSS-Table-II-Varicella-to-West-Nile-virus-d...\u003C\/a\u003E\u003C\/p\u003E\n\u003Cp\u003E\u003Cstrong\u003ERelated Data Story: \u003C\/strong\u003E\u003Ca href=\u0022\/story\/end-chickenpox-varicella-vaccines-success-story\u0022\u003EAn End to Chickenpox: The Varicella Vaccine\u0027s Success Story\u003C\/a\u003E\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/postvaccinedeaths_0_0.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ESource: \u0022Near elimination of varicella deaths in the US after implementation of the vaccination program.\u0022 published in the American Journal of Pediatrics in August 2011.\u003C\/p\u003E\n",
+      "title": " Varicella Mortality by Age Group, 1995-2009"
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/varicelladeaths1970_1994.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ESource: Centers for Disease Control and Prevention in Atlanta, Georgia. \u201cVaricella Mortality: Trends before Vaccine Licensure in the United States, 1970\u20131994\u201d published August 2000 in the Journal of Infectious Diseases.\u003C\/p\u003E\n",
+      "title": "Varicella Mortality by Age Group, 1970-1994"
+    }, {
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/varicellaincidencerates_0.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003ESource: \u0022Impact of Vaccination on the Epidemiology of Varicella: 1995\u20132009\u0022 published in the journal Pediatrics in August 2011.\u003C\/p\u003E\n",
+      "title": "Varicella Incidence Rates After Vaccine Introduced in U.S., 1995-2009"
+    }],
+    "identifier": "e1f2ebcd-ee23-454f-87b5-df0306658418",
+    "issued": "2016-04-06",
+    "keyword": ["health"],
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/varicella-chickenpox-incidence-and-mortality-and-after-vaccine",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "Advisory Council for Infectious Disease"
+    },
+    "spatial": "POLYGON ((-128.056640625 24.206889622398, -128.056640625 50.176898122001, -64.775390625 50.176898122001, -64.775390625 24.206889622398))",
+    "theme": ["Health Care"],
+    "title": "Varicella (Chickenpox) Incidence and Mortality, Before and After the Vaccine"
+  }, {
+    "@type": "dcat:Dataset",
+    "accessLevel": "public",
+    "contactPoint": {
+      "fn": "Couch, Aaron",
+      "hasEmail": "mailto:datademo@example.com"
+    },
+    "description": "\u003Cp\u003EPolling places in the state of Wisconsin.\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "format": "csv",
+      "description": "\u003Cp\u003EThis is a list and map of polling places in Madison, WI.\u003C\/p\u003E\n\u003Cp\u003EOriginal data here:\u003Cbr \/\u003E\u003Ca href=\u0022https:\/\/data.cityofmadison.com\/Polling-Places\/Polling-Places\/rtyh-6ucr\u0022\u003Ehttps:\/\/data.cityofmadison.com\/Polling-Places\/Polling-Places\/rtyh-6ucr\u003C\/a\u003E\u003C\/p\u003E\n",
+      "title": "Madison Polling Places"
+    }],
+    "identifier": "934400f2-a5dc-4abf-bf16-3f17335888d3",
+    "issued": "2013-02-11",
+    "keyword": ["election"],
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/wisconsin-polling-places",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "Committee on International Affairs"
+    },
+    "spatial": "POLYGON ((-90.415429 46.568478, -90.229213 46.508231, -90.119674 46.338446, -89.09001 46.135799, -88.662808 45.987922, -88.531362 46.020784, -88.10416 45.922199, -87.989145 45.796229, -87.781021 45.675736, -87.791975 45.500474, -87.885083 45.363551, -87.649574 45.341643, -87.742682 45.199243, -87.589328 45.095181, -87.627666 44.974688, -87.819359 44.95278, -87.983668 44.722749, -88.043914 44.563917, -87.928898 44.536533, -87.775544 44.640595, -87.611236 44.837764, -87.403112 44.914442, -87.238804 45.166381, -87.03068 45.22115, -87.047111 45.089704, -87.189511 44.969211, -87.468835 44.552964, -87.545512 44.322932, -87.540035 44.158624, -87.644097 44.103854, -87.737205 43.8793, -87.704344 43.687607, -87.791975 43.561637, -87.912467 43.249452, -87.885083 43.002989, -87.76459 42.783912, -87.802929 42.493634, -88.788778 42.493634, -90.639984 42.510065, -90.711184 42.636034, -91.067185 42.75105, -91.143862 42.909881, -91.176724 43.134436, -91.056231 43.254929, -91.204109 43.353514, -91.215062 43.501391, -91.269832 43.616407, -91.242447 43.775238, -91.43414 43.994316, -91.592971 44.032654, -91.877772 44.202439, -91.927065 44.333886, -92.233773 44.443425, -92.337835 44.552964, -92.545959 44.569394, -92.808852 44.750133, -92.737652 45.117088, -92.75956 45.286874, -92.644544 45.440228, -92.770513 45.566198, -92.885529 45.577151, -92.869098 45.719552, -92.639067 45.933153, -92.354266 46.015307, -92.29402 46.075553, -92.29402 46.667063, -92.091373 46.749217, -92.014696 46.705401, -91.790141 46.694447, -91.09457 46.864232, -90.837154 46.95734, -90.749522 46.88614, -90.886446 46.754694, -90.55783 46.584908))",
+    "title": "Wisconsin Polling Places"
+  }, {
+    "@type": "dcat:Dataset",
+    "accessLevel": "public",
+    "contactPoint": {
+      "fn": "Gray, Stefanie",
+      "hasEmail": "mailto:datademo@example.com"
+    },
+    "description": "\u003Cp\u003ECounty data: \u003Ca href=\u0022https:\/\/www.npr.org\/templates\/story\/story.php?storyId=111494514\u0022\u003Ehttps:\/\/www.npr.org\/templates\/story\/story.php?storyId=111494514\u003C\/a\u003E\u003C\/p\u003E\n\u003Cp\u003EState data: \u003Ca href=\u0022http:\/\/statehealthfacts.org\/comparetable.jsp?ind=649\u0026amp;cat=1\u0022\u003Ehttp:\/\/statehealthfacts.org\/comparetable.jsp?ind=649\u0026amp;cat=1\u003C\/a\u003E\u003C\/p\u003E\n",
+    "distribution": [{
+      "@type": "dcat:Distribution",
+      "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/us_foreclosures_jan_2012_by_state_0.csv",
+      "mediaType": "text\/csv",
+      "format": "csv",
+      "description": "\u003Cp\u003EUS National Foreclosure Statistics - By State - January 2012\u003C\/p\u003E\n",
+      "title": "1-2012-Foreclosures-by-State"
+    }],
+    "identifier": "74c06c81-9fe0-439c-aba9-cd5c980a6df4",
+    "issued": "2013-02-10",
+    "keyword": ["economy", "politics", "transparency"],
+    "landingPage": "http:\/\/demo.getdkan.com\/dataset\/us-national-foreclosure-statistics-january-2012",
+    "modified": "2019-06-14",
+    "publisher": {
+      "@type": "org:Organization",
+      "name": "demo.getdkan.com"
+    },
+    "spatial": "POLYGON ((-126.9140625 24.046463999667, -126.9140625 50.625073063414, -65.56640625 50.625073063414, -65.56640625 24.046463999667))",
+    "temporal": "2012-01-01T05:00:00+00:00\/2012-01-01T05:00:00+00:00",
+    "title": "US National Foreclosure Statistics January 2012"
+  },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "contactPoint": {
+        "fn": "Gray, Stefanie",
+        "hasEmail": "mailto:datademo@example.com"
+      },
+      "description": "\u003Cp\u003EMonthly gold prices (USD) in London from Bundesbank.\u003C\/p\u003E\n\u003Cp\u003EGeneral: 1 ounce of fine gold = 31.1034768g.\u003C\/p\u003E\n\u003Cp\u003EMethod of calculation:\u003C\/p\u003E\n\u003Cul\u003E\n\u003Cli\u003ESince 1 April 1968, calculated from the daily morning fixing;\u003C\/li\u003E\n\u003Cli\u003EFrom January 1950 to 21 March 1954, calculated using the Bank of England\u0027s gold purchasing price (1 ounce of fine = pound 12.40) in connection with the average exchange rate for the pound in New York (up to the end of 1952; source: Federal Reserve Bulletin) and, from January 1953, midpoint exchange rates for the US dollar in London (source: Financial Times (FT)).\u003C\/li\u003E\n\u003Cli\u003EFrom 22 March 1954 to December 1959, calculated using the fixing price for gold bars of approx. 12 1\/2 kg and 995\/1000 fineness and over (so-called standard bars) according to data from Metallgesellschaft AG, Frankfurt am Main, in connection with the average midpoint exchange rates for the US dollar in London (source: FT).\u003C\/li\u003E\n\u003Cli\u003EFrom January 1960 to 14 March 1968, average fixing price for standard bars as specified in the Bank of England\u0027s Quarterly Bulletin.\u003C\/li\u003E\n\u003Cli\u003EOn 15 March 1968, fixing price suspended. Gold market split into an official (reserved for central banks) and a free market as a result of the Washington Communique of 17 March 1968. Gold trading suspended from 18 to 29 March 1968.\u003C\/li\u003E\n\u003Cli\u003ESources for daily prices: April 1968 - March 1974: FT; April 1974 - December 1980: Samuel Montagu \u0026amp; Co. Ltd.; January 1981 - December 2005: FT; January 2006 - present: Reuters.\u003C\/li\u003E\n\u003Cli\u003EComment on 1968-03: Average from 1 to 14 March 1968.\u003C\/li\u003E\n\u003C\/ul\u003E\n\u003Cp\u003ELicense: PDDL (Source indicates no restrictions on data).\u003C\/p\u003E\n",
+      "distribution": [{
+        "@type": "dcat:Distribution",
+        "downloadURL": "http:\/\/demo.getdkan.com\/sites\/default\/files\/data_0.csv",
+        "mediaType": "text\/csv",
+        "format": "csv",
+        "description": "\u003Cp\u003ECSV file extracted and cleaned from source excel.\u003C\/p\u003E\n\u003Cp\u003EClick on Graph button under Preview and plot date (x-axis) against price (y-axis) to see a line graph. Hovering over a point gives you the value of that data entry.\u003C\/p\u003E\n",
+        "title": "Table of Gold Prices"
+      }],
+      "identifier": "5dc1cfcf-8028-476c-a120-f58ec6dd621c",
+      "issued": "2013-02-10",
+      "keyword": ["economy", "price", "time-series"],
+      "landingPage": "http:\/\/demo.getdkan.com\/dataset\/gold-prices-london-1950-2008-monthly",
+      "license": "http:\/\/opendefinition.org\/licenses\/odc-pddl\/",
+      "modified": "2019-06-14",
+      "publisher": {
+        "@type": "org:Organization",
+        "name": "demo.getdkan.com"
+      },
+      "spatial": "POLYGON ((-0.56854248046875 51.253320526331, -0.56854248046875 51.725326868065, 0.3076171875 51.725326868065, 0.3076171875 51.253320526331))",
+      "temporal": "1950-01-01T05:00:00+00:00\/1950-01-01T05:00:00+00:00",
+      "theme": ["Finance and Budgeting"],
+      "title": "Gold Prices in London 1950-2008 (Monthlyyyyy)"
+    }, {
+      "@type": "dcat:Dataset",
+      "identifier": "1234",
+      "accessLevel": "public",
+      "contactPoint": {
+        "fn": "Gray, Stefanie",
+        "hasEmail": "mailto:datademo@example.com"
+      },
+      "description": "\u003Cp\u003EThis data created by the National Democratic Institute (NDI) in partnership with Development Seed, a Washington, D.C.-based online communications consultancy, is designed to make data from the August 20, 2009, Afghanistan presidential election accessible and transparent. We have provided this csv file as there is no download for the whole dataset. There are many more files on the website.\u003C\/p\u003E\n",
+      "title": "Afghanistan Election Districtssssss"
+    }]
+}

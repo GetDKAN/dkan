@@ -131,7 +131,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return \Drupal\Core\Entity\Query\QueryInterface
    *   A Drupal query object.
    */
-  protected function listQueryBase(int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
+  protected function listQueryBase(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
     $query = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
@@ -311,14 +311,17 @@ abstract class Data implements MetastoreEntityStorageInterface {
 
     $entity = $this->getEntityLatestRevision($uuid);
     if ($entity) {
-      return $entity->delete();
+      $entity->delete();
+    }
+    else {
+      throw new MissingObjectException("No data with the identifier {$uuid} was found.", 404);
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function store($data, string $uuid = NULL): string {
+  public function store($data, ?string $uuid = NULL): string {
     $data = json_decode($data);
 
     $data = $this->filterHtml($data, $this->schemaId);
@@ -355,11 +358,14 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $entity->{$this->metadataField} = $new_data;
 
     // Dkan publishing's default moderation state.
+    // @todo Honor existing entity's moderation state:
+    //   https://github.com/GetDKAN/dkan/issues/4337
     $entity->set('moderation_state', $this->getDefaultModerationState());
 
     if ($entity instanceof RevisionLogInterface) {
-      $entity->setRevisionLogMessage("Updated on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
-      $entity->setRevisionCreationTime(time());
+      $time = new \DateTimeImmutable();
+      $entity->setRevisionLogMessage("Updated on " . $time->format(\DateTimeImmutable::ATOM));
+      $entity->setRevisionCreationTime($time->getTimestamp());
     }
     $entity->save();
 
@@ -463,7 +469,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     // @todo Inject this service.
     $tmp_path = \Drupal::service('file_system')->getTempDirectory();
     // Specify custom location in tmp directory for storing HTML Purifier cache.
-    $cache_dir = rtrim($tmp_path, '/') . '/html_purifier_cache';
+    $cache_dir = rtrim((string) $tmp_path, '/') . '/html_purifier_cache';
 
     // Ensure the tmp cache directory exists.
     if (!is_dir($cache_dir) && !mkdir($cache_dir)) {

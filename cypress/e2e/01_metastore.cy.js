@@ -226,7 +226,7 @@ context('Metastore', () => {
           body: dkan.generateMetastore(schema_id, identifier),
           failOnStatusCode: false
         }).then((response) => {
-          expect(response.status).eql(412)
+          expect(response.status).eql(404)
         })
       })
 

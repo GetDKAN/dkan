@@ -3,11 +3,13 @@
 namespace Drupal\json_form_widget\Element;
 
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\file\Element\ManagedFile;
 use Drupal\file\Entity\File;
-use Drupal\json_form_widget\Entity\RemoteFile;
+use Drupal\file\FileInterface;
 
 /**
  * Provides a new Element for uploading or linking to files.
@@ -28,8 +30,6 @@ class UploadOrLink extends ManagedFile {
   const TYPE_REMOTE = 'remote';
 
   /**
-   * Inherited.
-   *
    * {@inheritDoc}
    *
    * @codeCoverageIgnore
@@ -57,6 +57,91 @@ class UploadOrLink extends ManagedFile {
   }
 
   /**
+   * {@inheritDoc}
+   */
+  public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
+    // If the input is empty, return the default value.
+    $input = $input === FALSE ? [] : $input;
+
+    // Detect whether the remove button was clicked.
+    $remove = FALSE;
+    $file_remove = $form_state->get('file_remove') ?? [];
+    // Make sure the element set for removal is the same as current.
+    $diff = array_diff($file_remove, $element['#array_parents']);
+    if (!empty($file_remove) && empty($diff) && empty($input['file_url_remote'])) {
+      $remove = TRUE;
+    }
+
+    $uri = $input['file_url_remote'] ?? $element['#uri'] ?? FALSE;
+
+    if (empty($input['fids']) && $uri) {
+      $file = static::getManagedFile(static::getFileUri($uri));
+      // If remove was clicked, we need to unset the uri. If not, we need to add
+      // the fid to the input array.
+      if ($remove) {
+        $element['#uri'] = '';
+        $input['file_url_remote'] = '';
+      }
+      else {
+        // Add file ID to input array and update the entity.
+        $fo = $form_state->getFormObject();
+        $entity = $fo instanceof EntityFormInterface ? $fo->getEntity() : NULL;
+        $input['fids'] = static::updateFile($file, $entity) ?? NULL;
+      }
+    }
+
+    return parent::valueCallback($element, $input, $form_state);
+  }
+
+  /**
+   * Retrieve or create a file entity based on a URI.
+   *
+   * @param string $uri
+   *   The URI of the file.
+   *
+   * @return \Drupal\file\FileInterface|null
+   *   The file entity or NULL if not found or able to create.
+   */
+  public static function getManagedFile(string $uri): ?FileInterface {
+    $files = \Drupal::entityTypeManager()->getStorage('file')->loadByProperties(['uri' => $uri]);
+    if (!empty($files)) {
+      // If a file entity already exists, return it.
+      return reset($files);
+    }
+
+    // If no File entity matches the URI, create one.
+    if ($file = File::create([
+      'uri' => $uri,
+      'status' => File::STATUS_PERMANENT,
+      'uid' => \Drupal::currentUser()->id(),
+    ])) {
+      $file->save();
+      return $file;
+    }
+    return NULL;
+  }
+
+  /**
+   * Generate a Drupal internal URI from an absolute URL in the widget.
+   *
+   * This lets absolute URLs to local files be used correctly. Ideally, the
+   * JSON would simply contain public:// URLs, but this is not always the case.
+   */
+  public static function getFileUri(string $url): string {
+    $path = urldecode((string) \Drupal::service('file_url_generator')->transformRelative($url));
+    if (strpos($path, '/') !== 0) {
+      return $path;
+    }
+    // We're loading scheme from config, but this will probably break if not
+    // "public".
+    $scheme = \Drupal::config('system.file')->get('default_scheme') . "://";
+    $scheme_path = \Drupal::service('file_url_generator')->generateString($scheme);
+    $uri = str_replace($scheme_path, $scheme, $path, $count);
+
+    return $count ? $uri : $path;
+  }
+
+  /**
    * Render API callback: Expands the managed_file element type.
    *
    * Expands file_managed type to include option for links to remote files/urls.
@@ -66,17 +151,12 @@ class UploadOrLink extends ManagedFile {
     // Build element.
     $element = parent::processManagedFile($element, $form_state, $complete_form);
     $file_url_type = static::getUrlType($element);
-    $element = static::unsetFilesWhenRemoving($form_state, $element);
 
-    $file_url_remote = static::setRemoteFile($element, $form_state);
+    $file_url_remote = $element['#value']['file_url_remote'] ?? $element['#uri'];
     $file_url_remote_is_valid = isset($file_url_remote) && UrlHelper::isValid($file_url_remote, TRUE);
-    $is_remote = $file_url_remote_is_valid && $file_url_type == static::TYPE_REMOTE;
-    if ($is_remote) {
-      $element = static::loadRemoteFile($element, $file_url_remote);
-    }
 
     $access_file_url_elements = (empty($element['#files']) && !$file_url_remote_is_valid) || !$file_url_type;
-    $element['#uri'] = !isset($element['#uri']) ? $file_url_remote : $element['#uri'];
+    $element['#uri'] = $element['#uri'] ?? $file_url_remote;
 
     $file_url_type_selector = ':input[name="' . $element['#name'] . '[file_url_type]"]';
     $remote_visible = [$file_url_type_selector => ['value' => static::TYPE_REMOTE]];
@@ -85,44 +165,11 @@ class UploadOrLink extends ManagedFile {
     $element['file_url_remote'] = static::getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible);
     $element = static::overrideUploadSubfield($element, $file_url_type_selector);
 
+    if (!empty($element['remove_button'])) {
+      $element['remove_button']['#submit'][] = [static::class, 'removeSubmit'];
+    }
+
     return $element;
-  }
-
-  /**
-   * Helper function to set file_url_remote variable.
-   */
-  private static function setRemoteFile($element, $form_state) {
-    $file_url_remote = '';
-    if (isset($element['#value']['file_url_remote'])) {
-      $file_url_remote = $element['#value']['file_url_remote'];
-    }
-    elseif (isset($element['#uri'])) {
-      $file_url_remote = $element['#uri'];
-    }
-
-    return static::setPreviousFormFiles($element, $form_state, $file_url_remote);
-  }
-
-  /**
-   * Helper function to previous remote files.
-   */
-  private static function setPreviousFormFiles($element, $form_state, $file_url_remote = NULL) {
-    $previous_files = $form_state->get('previous_files') ?? [];
-    $element_key = $element['#array_parents'][6];
-
-    if ($file_url_remote == NULL && isset($previous_files[$element_key])) {
-      $file_url_remote = $previous_files[$element_key];
-    }
-    elseif ($file_url_remote != NULL && !isset($previous_files[$element_key])) {
-      $previous_files[$element_key] = $file_url_remote;
-    }
-    elseif ($file_url_remote != NULL && isset($previous_files[$element_key]) && $previous_files[$element_key] != $file_url_remote) {
-      unset($previous_files[$element_key]);
-      $previous_files[$element_key] = $file_url_remote;
-    }
-    $form_state->set('previous_files', $previous_files);
-
-    return $file_url_remote != NULL ? $file_url_remote : '';
   }
 
   /**
@@ -132,8 +179,8 @@ class UploadOrLink extends ManagedFile {
     return [
       '#type' => 'radios',
       '#options' => [
-        static::TYPE_UPLOAD => t('Upload Data File'),
-        static::TYPE_REMOTE => t('Link to Data File'),
+        static::TYPE_UPLOAD => new TranslatableMarkup('Upload Data File'),
+        static::TYPE_REMOTE => new TranslatableMarkup('Link to Data File'),
       ],
       '#default_value' => $file_url_type,
       '#prefix' => '<div class="container-inline">',
@@ -149,78 +196,15 @@ class UploadOrLink extends ManagedFile {
   private static function getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible) {
     return [
       '#type' => 'url',
-      '#title' => t('Remote URL'),
+      '#title' => new TranslatableMarkup('Remote URL'),
       '#title_display' => 'invisible',
-      '#description' => t('This must be an external URL such as <em>http://example.com</em>.'),
+      '#description' => new TranslatableMarkup('This must be an external URL such as <em>http://example.com</em>.'),
       '#default_value' => $file_url_remote,
       // Only show this field when the 'remote' radio is selected.
       '#states' => ['visible' => $remote_visible],
       '#access' => $access_file_url_elements,
       '#weight' => 15,
     ];
-  }
-
-  /**
-   * Helper function to return element without files when removing.
-   */
-  private static function unsetFilesWhenRemoving($form_state, $element) {
-    $triggering_element = $form_state->getTriggeringElement();
-    $previous_files = $form_state->get('previous_files') ?? [];
-    $element_key = $element['#array_parents'][6];
-    $button = is_array($triggering_element) ? array_pop($triggering_element['#array_parents']) : '';
-    $count = $form_state->get('json_form_widget_info')['distribution']['count'];
-
-    if ($button == 'remove_button') {
-      unset($element['#files']);
-      unset($previous_files[$element_key]);
-      $element = static::unsetFids($element);
-    }
-
-    if ($button == 'remove' && isset($previous_files[$element_key]) &&  $element_key == $count) {
-      $previous_files = static::unsetPreviousFiles($previous_files, $element_key);
-    }
-
-    $form_state->set('previous_files', $previous_files);
-    return $element;
-  }
-
-  /**
-   * Helper function to unset previous_files.
-   */
-  private static function unsetPreviousFiles($previous_files, $element_key) {
-    if (isset($previous_files[$element_key])) {
-      unset($previous_files[$element_key]);
-    }
-    return $previous_files;
-  }
-
-  /**
-   * Helper function to unsetFids.
-   */
-  private static function unsetFids($element) {
-    foreach ($element['#value']['fids'] as $fid) {
-      unset($element['file_' . $fid]);
-    }
-    $element['#value']['fids'] = [];
-    return $element;
-  }
-
-  /**
-   * Load remote file into element.
-   */
-  private static function loadRemoteFile($element, $file_url_remote) {
-    $remote_file = RemoteFile::load($file_url_remote);
-    $element['#files'] = [$file_url_remote => $remote_file];
-    $file_link = [
-      '#type' => 'link',
-      '#title' => $remote_file->getFileUri(),
-      '#url' => Url::fromUri($remote_file->getFileUri()),
-    ];
-    $element["file_{$file_url_remote}"]['filename'] = $file_link + ['#weight' => -10];
-    $element['#value']['file_url_type'] = static::TYPE_REMOTE;
-    $element['#value']['file_url_remote'] = $file_url_remote;
-    $element['#value']['upload'] = NULL;
-    return $element;
   }
 
   /**
@@ -312,7 +296,7 @@ class UploadOrLink extends ManagedFile {
         return \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
       }
     }
-    return $element['#uri'];
+    return $element['#uri'] ?? NULL;
   }
 
   /**
@@ -348,6 +332,74 @@ class UploadOrLink extends ManagedFile {
       $element['remove_button']['#access'] = FALSE;
     }
     return $element;
+  }
+
+  /**
+   * Submit handler for uploaded elements on upload_or_link.
+   *
+   * Sets up file entities created by upload element.
+   */
+  public static function submit(array $form, FormStateInterface $form_state) {
+    $parents = $form_state->get('upload_or_link_element');
+    if (empty($parents)) {
+      return;
+    }
+
+    // Get attached entity if present.
+    $fo = $form_state->getFormObject();
+    $entity = $fo instanceof EntityFormInterface ? $fo->getEntity() : NULL;
+
+    // Avoid double-processing if URL is duplicated in form object.
+    $urls = [];
+    foreach ($parents as $parent) {
+      $urls[] = $form_state->getValue($parent);
+    }
+    $urls = array_unique(array_filter($urls));
+    foreach ($urls as $url) {
+      $uri = static::getFileUri($url);
+      $file = static::getManagedFile($uri);
+      static::updateFile($file, $entity);
+    }
+  }
+
+  /**
+   * Submit handler for remove button.
+   */
+  public static function removeSubmit(array $form, FormStateInterface $form_state) {
+    $parents = $form_state->getTriggeringElement()['#array_parents'];
+    $button_key = array_pop($parents);
+    if (($button_key) == 'remove_button') {
+      $form_state->set('file_remove', $parents);
+    }
+  }
+
+  /**
+   * Find recently-uploaded file entity, set to permanent and add usage.
+   *
+   * @param \Drupal\file\FileInterface $file
+   *   The file entity to update.
+   * @param \Drupal\Core\Entity\EntityInterface|null $entity
+   *   The entity to which the file is attached.
+   */
+  public static function updateFile(FileInterface $file, ?EntityInterface $entity): ?int {
+    if (!$file) {
+      return NULL;
+    }
+
+    $file->setPermanent();
+    $file->save();
+
+    // If we're working with an entity form, set up usage.
+    if ($entity) {
+      $fu = \Drupal::service('file.usage');
+      /** @var Drupal\file\FileUsage\FileUsageInterface $fu */
+      $usage = $fu->listUsage($file);
+      // If the file is already used by this entity, don't add usage again.
+      if (!$entity->isNew() && !isset($usage['json_form_widget'][$entity->getEntityTypeId()][$entity->id()])) {
+        $fu->add($file, 'json_form_widget', $entity->getEntityTypeId(), $entity->id());
+      }
+    }
+    return $file->id();
   }
 
 }

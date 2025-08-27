@@ -278,7 +278,7 @@ Look closely at the distribution property in the example below, this is using th
             "mediaType": "text\/csv",
             "format": "csv",
             "title": "Projects",
-            "describedBy": "dkan://metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
+            "describedBy": "http://mydomain.com/api/1/metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2",
             "describedByType": "application/vnd.tableschema+json"
           }
         ],
@@ -292,9 +292,7 @@ Look closely at the distribution property in the example below, this is using th
         "keyword":["tag1"]
       }
 
-Note the special URL used to point to the data dictionary. The full URL, e.g.
-http://mydomain.com/api/1/metastore/schemas/data-dictionary/items/7fd6bb1f-2752-54de-9a33-81ce2ea0feb2,
-could also be used, and would be converted to an internal `dkan://` URL on save.
+The API endpoint for the data dictionary can be found at the top of the data dictionary edit form.
 
 This data dictionary will now be used to modify the datastore table after import. If we were to
 request the dataset back from the API, it would show us the absolute URL as well.
@@ -304,11 +302,34 @@ request the dataset back from the API, it would show us the absolute URL as well
 
   If you have set the dictionary mode to *sitewide*, when any dataset is updated, and the machine name of the column header from the source data matches the name value in the sitewide data dictionary, the data typing will also be applied to the datastore table.
 
+Modidfy the dataset form
+........................
+
+If you are using the distribution reference setting, and you have created many data dictionaries,
+you could customize the dataset.ui.json file (Remember you must copy ALL schema files from DKAN into your
+root directory to customize any of them). Edit the dataset.ui.json to look like this:
+
+    .. sourcecode:: json
+
+      "describedBy": {
+        "ui:options": {
+          "description": "URL to the data dictionary for the file found at the Download URL.",
+          "widget": "list",
+          "type": "select",
+          "titleProperty": "title",
+          "source": {
+            "metastoreSchema": "data-dictionary",
+            "returnValue": "url"
+          }
+        }
+      }
+
+This will allow data publishers to select from a list of existing data dictionaries rather than entering the API endpoint.
 
 .. _guide_data_dictionary_config:
 
-How to set the CSV Headers Mode
--------------------------------
+CSV Headers Mode
+................
 
 Users can run queries against the datastore API and download the results to a CSV file. The **CSV Headers Mode** will determine what values to use for the column headers when the CSV file is generated. The default setting will simply use the same column headings that exist in the original resource file. If your site is using data dictionaries, you could change this setting to use the titles defined in the data dictionary. And there is a third option to use the converted machine name headers that are used in the datastore table.
 

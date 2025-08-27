@@ -24,6 +24,7 @@ use org\bovigo\vfs\vfsStream;
  * @group metastore
  * @group functional
  * @group btb
+ * @group functional2
  */
 class DataTest extends BrowserTestBase {
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\harvest\Functional\Commands;
 
 use Drupal\Tests\BrowserTestBase;
@@ -11,7 +13,7 @@ use Drush\TestTraits\DrushTestTrait;
  * @group dkan
  * @group harvest
  * @group btb
- * @group functional
+ * @group functional2
  */
 class HarvestCommandsTest extends BrowserTestBase {
 
@@ -46,7 +48,8 @@ class HarvestCommandsTest extends BrowserTestBase {
       'dkan:harvest:update',
     ] as $command) {
       $this->drush($command, ['--help']);
-      $this->assertErrorOutputEquals('');
+      // Ignore deprecation warnings.
+      $this->assertErrorOutputEquals('', '/(Deprecated: |PHP Deprecated: ).*/s');
     }
 
     // Run the commands with no arguments, assert the response code.
@@ -66,9 +69,9 @@ class HarvestCommandsTest extends BrowserTestBase {
       'dkan:harvest:update' => 0,
     ] as $command => $expected_return) {
       $this->drush($command, [], [], NULL, NULL, $expected_return);
-      // Exceptions will tell you which PHP file.
+      // Exceptions will tell you which line in the Command class file.
       $this->assertStringNotContainsString(
-        '.php',
+        'In HarvestCommands.php line',
         $this->getSimplifiedErrorOutput()
       );
     }

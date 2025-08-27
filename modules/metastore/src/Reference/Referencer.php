@@ -79,7 +79,7 @@ class Referencer {
     MetastoreUrlGenerator $metastoreUrlGenerator,
     Client $httpClient,
     MimeTypeGuesserInterface $mimeTypeGuesser,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
@@ -316,6 +316,10 @@ class Referencer {
   }
 
   /**
+   * Get the resource mapper service.
+   *
+   * @return \Drupal\metastore\ResourceMapper
+   *   The resource mapper service.
    *
    * @todo Inject this service.
    */

@@ -58,7 +58,7 @@ class ImportInfoList implements ContainerInjectionInterface {
     $store = $this->fileFetcherJobStoreFactory->getInstance();
 
     foreach ($store->retrieveAll() as $id) {
-      $pieces = explode('_', $id);
+      $pieces = explode('_', (string) $id);
 
       // The filefetcher identifier for resources has the form <id>_<version>
       // by doing this check we can eliminate processing some unrelated file

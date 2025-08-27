@@ -49,3 +49,11 @@ table.dashboard-datasets td.error
   color: #a51b00;
   background-color: #fcf4f2;
 }
+
+/**
+ * Unsupported.
+ */
+ table.dashboard-datasets td.unsupported
+ {
+  background-color: var(--color-gray-050);
+ }

@@ -17,6 +17,7 @@ use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
  * @group datastore
  * @group functional
  * @group btb
+ * @group functional1
  */
 class ResourcePurgerTest extends BrowserTestBase {
   use GetDataTrait;
@@ -106,7 +107,7 @@ class ResourcePurgerTest extends BrowserTestBase {
   protected function getResourcesForDataset(string $dataset_identifier): array {
     // Retrieve dataset metastore storage service.
     $metadata = $this->datasetStorage->retrieve($dataset_identifier);
-    $distributions = json_decode($metadata)->{'%Ref:distribution'} ?? [];
+    $distributions = json_decode((string) $metadata)->{'%Ref:distribution'} ?? [];
 
     $resources = [];
     foreach ($distributions as $distribution) {

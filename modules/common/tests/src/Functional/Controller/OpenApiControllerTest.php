@@ -13,6 +13,7 @@ use Drupal\Tests\BrowserTestBase;
  * @group common
  * @group functional
  * @group btb
+ * @group functional1
  */
 class OpenApiControllerTest extends BrowserTestBase {
 
@@ -29,7 +30,7 @@ class OpenApiControllerTest extends BrowserTestBase {
     $controller = $this->getController();
     $response = $controller->getVersions();
     $this->assertEquals(200, $response->getStatusCode());
-    $data = json_decode($response->getContent());
+    $data = json_decode((string) $response->getContent());
     $this->assertEquals(1, $data->version);
   }
 
@@ -37,7 +38,7 @@ class OpenApiControllerTest extends BrowserTestBase {
     $controller = $this->getController();
     $response = $controller->getComplete();
     $this->assertEquals(200, $response->getStatusCode());
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
 
     // Basic auth is included.
     $this->assertTrue(isset($data['components']['securitySchemes']['basic_auth']));
@@ -69,7 +70,7 @@ class OpenApiControllerTest extends BrowserTestBase {
 
     // Simulate an authentication=false parameter in the request stack.
     $this->assertEquals(200, $response->getStatusCode());
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
 
     // Basic auth is excluded.
     $this->assertFalse(isset($data['components']['securitySchemes']['basic_auth']));

@@ -24,7 +24,7 @@ class IdGenerator implements IdGeneratorInterface {
    * Public.
    */
   public function __construct($json) {
-    $this->data = json_decode($json);
+    $this->data = json_decode((string) $json);
   }
 
   /**

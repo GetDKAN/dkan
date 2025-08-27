@@ -8,7 +8,10 @@ function common_requirements($phase): array {
   if ($phase == 'runtime') {
     // List all the jobstore tables.
     if ($connection = \Drupal::database()) {
-      $job_store_util = new JobStoreUtil($connection);
+      $job_store_util = new JobStoreUtil(
+        $connection,
+        \Drupal::service('event_dispatcher')
+      );
       if ($tables = $job_store_util->getUnknownJobstoreTables()) {
         $requirements['dkan unknown jobstore tables'] = [
           'title' => t('DKAN Unknown Jobstore Tables'),
@@ -68,7 +71,10 @@ function common_requirements($phase): array {
  */
 function common_update_90201() {
   $messages = [];
-  $job_store_util = new JobStoreUtil(Database::getConnection());
+  $job_store_util = new JobStoreUtil(
+    Database::getConnection(),
+    \Drupal::service('event_dispatcher')
+  );
   if ($renamed = $job_store_util->keyedToListDecorator(
     $job_store_util->renameDeprecatedJobstoreTables(), ' to '
   )) {

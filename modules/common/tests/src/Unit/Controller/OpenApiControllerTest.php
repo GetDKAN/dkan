@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Test the DKAN Docs controller.
+ *
  */
 class OpenApiControllerTest extends TestCase {
 
@@ -32,7 +33,7 @@ class OpenApiControllerTest extends TestCase {
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertEquals("Test Spec (valid)", $data['info']['title']);
     $this->assertArrayHasKey('components', $data);
@@ -48,7 +49,7 @@ class OpenApiControllerTest extends TestCase {
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertEquals("JSON Schema validation failed.", $data['message']);
   }
@@ -62,7 +63,7 @@ class OpenApiControllerTest extends TestCase {
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
-    $data = json_decode($response->getContent(), TRUE);
+    $data = json_decode((string) $response->getContent(), TRUE);
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertArrayNotHasKey('components', $data);
   }
@@ -128,7 +129,7 @@ class OpenApiControllerTest extends TestCase {
 
   /**
   *
-  */
+ */
   private function getGenerator($containerMock): DkanApiDocsGenerator {
     $manager = $containerMock->get('plugin.manager.dkan_api_docs');
     $settings = $containerMock->get('settings');
