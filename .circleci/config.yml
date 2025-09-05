@@ -110,6 +110,7 @@ commands:
                 command: |
                   ddev composer config repositories.dkan path dkan
                   # To avoid dependency issues when installing on PHP 8.1 we need to re-require openapi-httpfoundation-testing.
+                  rm composer.lock
                   ddev composer require --dev osteel/openapi-httpfoundation-testing -W
                   ddev composer require getdkan/dkan:@dev --no-install -W
                   ddev composer update getdkan/dkan -W
