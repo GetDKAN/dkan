@@ -125,7 +125,7 @@ class Referencer {
    * @return string|array
    *   Single reference, or an array of references.
    */
-  private function referenceProperty(string $property_id, mixed $data) {
+  protected function referenceProperty(string $property_id, mixed $data) {
     if (is_array($data)) {
       return $this->referenceMultiple($property_id, $data);
     }
@@ -146,7 +146,7 @@ class Referencer {
    * @return array
    *   The array of uuid references.
    */
-  private function referenceMultiple(string $property_id, array $values) : array {
+  protected function referenceMultiple(string $property_id, array $values) : array {
     $result = [];
     foreach ($values as $value) {
       $data = $this->referenceSingle($property_id, $value);
@@ -168,7 +168,7 @@ class Referencer {
    * @return string|null
    *   The Uuid reference, or NULL on failure.
    */
-  private function referenceSingle(string $property_id, $value) {
+  protected function referenceSingle(string $property_id, $value) {
     if ($property_id == 'distribution') {
       $value = $this->distributionHandling($value);
     }
@@ -258,7 +258,7 @@ class Referencer {
    * @return string
    *   A unique ID for the resource generated using the supplied details.
    */
-  private function registerWithResourceMapper(string $downloadUrl, string $mimeType): string {
+  protected function registerWithResourceMapper(string $downloadUrl, string $mimeType): string {
     try {
       // Create a new resource using the supplied resource details.
       $resource = new DataResource($downloadUrl, $mimeType);
@@ -297,7 +297,7 @@ class Referencer {
    * @return string
    *   The download URL.
    */
-  private function handleExistingResource(DataResource $existing, string $mimeType): string {
+  protected function handleExistingResource(DataResource $existing, string $mimeType): string {
     if (
       $existing->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       (ResourceMapper::newRevision() == 1 || $existing->getMimeType() != $mimeType)
@@ -336,7 +336,7 @@ class Referencer {
    * @return string|null
    *   The detected mime type or NULL on failure.
    */
-  private function getLocalMimeType(string $downloadUrl): ?string {
+  protected function getLocalMimeType(string $downloadUrl): ?string {
     // Use Drupal's mime type guesser service to get the mime type.
     $mime_type = $this->mimeTypeGuesser->guessMimeType($downloadUrl);
 
@@ -360,7 +360,7 @@ class Referencer {
    * @return string|null
    *   The detected mime type, or NULL on failure.
    */
-  private function getRemoteMimeType(string $downloadUrl): ?string {
+  protected function getRemoteMimeType(string $downloadUrl): ?string {
     $mime_type = NULL;
 
     // Perform HTTP Head request against the supplied URL in order to determine
@@ -392,7 +392,7 @@ class Referencer {
    *
    * @todo Update the UI to set mediaType when a format is selected.
    */
-  private function getMimeType($distribution): string {
+  protected function getMimeType($distribution): string {
     $mimeType = self::DEFAULT_MIME_TYPE;
 
     // If we have a mediaType set, use that.
@@ -435,7 +435,7 @@ class Referencer {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  private function checkExistingReference(string $property_id, $data) {
+  protected function checkExistingReference(string $property_id, $data) {
     $storage = $this->storageFactory->getInstance($property_id);
     $nodes = $storage->getEntityStorage()->loadByProperties([
       'field_data_type' => $property_id,
@@ -469,7 +469,7 @@ class Referencer {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  private function createPropertyReference(string $property_id, $value) {
+  protected function createPropertyReference(string $property_id, $value) {
     // Create json metadata for the reference.
     $data = new \stdClass();
     $data->identifier = $this->getUuidService()->generate($property_id, $value);

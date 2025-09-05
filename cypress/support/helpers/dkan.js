@@ -222,7 +222,7 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
   cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
     .find('.select2-selection')
     .click({ force:true })
-  cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]')
+  cy.get('span[aria-owns="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]')
     .type('DKANTEST Publisher{enter}')
   // End filling up publisher.
   cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn')
@@ -233,7 +233,7 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
   cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
     .find('.select2-selection')
     .click({ force: true })
-  cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]')
+  cy.get('span[aria-owns="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]')
     .type('open data{enter}')
   cy.get('#edit-moderation-state-0-state', {timeout: 2000})
     .select(moderation_state, { force:true } )
