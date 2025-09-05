@@ -14,8 +14,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @JsonFormOptionSource(
  *   id = "metastoreSchema",
- *   label = @Translation("Foo"),
- *   description = @Translation("Foo description.")
+ *   label = @Translation("DKAN Metastore Option Source"),
+ *   description = @Translation("Provides options to JSON Forms based on a DKAN schema.")
  * )
  */
 class MetastoreSchema extends JsonFormOptionSourcePluginBase implements ContainerFactoryPluginInterface {
@@ -72,6 +72,7 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
    * {@inheritdoc}
    */
   public function getOptions(array $config): array {
+    $this->validateConfig($config);
     $options = [];
     $metastore_items = $this->getMetastore()->getAll($config['schema']);
     foreach ($metastore_items as $item) {
