@@ -73,12 +73,35 @@ class MetastoreSchemaTest extends KernelTestBase {
       'Theme 2' => 'Theme 2',
     ];
     $this->assertEquals($expected_options, $options);
+
+    // Test with invalid config.
+    $this->expectException(\InvalidArgumentException::class);
+    $plugin->getOptions(['invalid' => 'config']);
+  }
+
+  public static function invalidConfigProvider() {
+    return [
+      'missing schema' => [
+        [],
+        \InvalidArgumentException::class,
+      ],
+      'invalid titleProperty type' => [
+        ['schema' => 'theme', 'titleProperty' => 123],
+        \InvalidArgumentException::class,
+      ],
+      'invalid returnValue type' => [
+        ['schema' => 'theme', 'returnValue' => (object) ['key' => 'value']],
+        \InvalidArgumentException::class,
+      ],
+    ];
   }
 
   /**
    * Test validateConfig method against various configs.
+   *
+   * @dataProvider invalidConfigProvider
    */
-  public function testValidateConfig() {
+  public function testValidateConfig($schema, $expected_exception = NULL) {
     $plugin_manager = \Drupal::service('plugin.manager.json_form_option_source');
     $plugin = $plugin_manager->createInstance('metastoreSchema', ['schema' => 'theme']);
 
@@ -93,16 +116,8 @@ class MetastoreSchemaTest extends KernelTestBase {
     ]));
 
     // Test missing schema.
-    $this->expectException(\InvalidArgumentException::class);
-    $plugin->validateConfig([]);
-
-    // Test invalid titleProperty type.
-    $this->expectException(\InvalidArgumentException::class);
-    $plugin->validateConfig(['schema' => 'theme', 'titleProperty' => 123]);
-
-    // Test invalid returnValue type.
-    $this->expectException(\InvalidArgumentException::class);
-    $plugin->validateConfig(['schema' => 'theme', 'returnValue' => (object) ['key' => 'value']]);
+    $this->expectException($expected_exception);
+    $plugin->validateConfig($schema);
   }
 
   /**
