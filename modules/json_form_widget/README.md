@@ -56,7 +56,7 @@ The forms that the DKAN JSON Form Widget creates utilize the DKAN metastore for 
 
 ## Configuration
 
-To assign a widget to a form text field, go to the **Manage Form Display** settings of your content type. For DKAN this is /admin/structure/types/manage/data/form-display
+To assign a widget to a form text field, go to the **Manage Form Display** settings of your content type. For DKAN this is `/admin/structure/types/manage/data/form-display`.
 
 Set the JSON Metadata field to DKAN JSON Form and save.
 
