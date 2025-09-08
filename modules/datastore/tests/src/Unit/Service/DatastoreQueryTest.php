@@ -88,21 +88,12 @@ class DatastoreQueryTest extends TestCase {
     $this->assertIsArray($response->{"$.results[0]"});
   }
 
-  public function testRequiredCondition() {
-    $this->expectExceptionMessage("JSON Schema validation failed.");
-    $container = $this->getCommonMockChain();
-    \Drupal::setContainer($container->getMock());
-    $queryService = new Query(DatastoreService::create($container->getMock()));
-    $datastoreQuery = $this->getDatastoreQueryFromJson("badConditionQuery");
-    $queryService->runQuery($datastoreQuery);
-  }
-
-  public function testInvalidConditionGroup() {
+  public function testBadCondition() {
     $this->expectExceptionMessage("Invalid condition");
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
     $queryService = new Query(DatastoreService::create($container->getMock()));
-    $datastoreQuery = $this->getDatastoreQueryFromJson("invalidConditionGroupQuery");
+    $datastoreQuery = $this->getDatastoreQueryFromJson("badConditionQuery");
     $queryService->runQuery($datastoreQuery);
   }
 
