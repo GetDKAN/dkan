@@ -356,13 +356,13 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
+        return "WHERE (t.field1 LIKE :db_condition_placeholder_0";
 
       case self::EXCEPTION:
         return '';
 
       case self::VALUES:
-        return ['%value%'];
+        return ['%value%', '%value%'];
     }
 
   }
