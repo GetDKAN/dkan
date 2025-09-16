@@ -338,12 +338,19 @@ class QueryDataProvider {
     switch ($return) {
       case self::QUERY_OBJECT:
         $query = new Query();
+        // Make sure like is case insensitive.
         $query->conditions = [
           (object) [
             "collection" => "t",
             "property" => "field1",
             "value" => "%value%",
             "operator" => "like",
+          ],
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "%value%",
+            "operator" => "LIKE",
           ],
         ];
         return $query;

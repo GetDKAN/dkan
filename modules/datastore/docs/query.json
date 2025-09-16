@@ -193,26 +193,29 @@
                     ],
                     "description": "The value to filter against."
                  },
-                 "operator": {
-                     "type": "string",
-                     "description": "Condition operator",
-                     "enum": [
-                        "=",
-                        "<>",
-                        "<",
-                        "<=",
-                        ">",
-                        ">=",
-                        "like",
-                        "between",
-                        "in",
-                        "not in",
-                        "contains",
-                        "starts with",
-                        "match"
+                "operator": {
+                    "type": "string",
+                    "description": "Condition operator",
+                    "oneOf": [
+                        {
+                            "enum": [
+                                "=",
+                                "<>",
+                                "<",
+                                "<=",
+                                ">",
+                                ">="
+                            ],
+                            "description": "Comparison operators"
+                        },
+                        {
+                            "pattern": "^(?i)(like|between|in|not in|contains|starts with|match)$",
+                            "description": "Alphanumeric comparison operators (case-insensitive)",
+                            "flags": "i"
+                        }
                     ],
                     "default": "="
-                 }
+                }
             },
             "required": [ "property", "value" ]
         },
