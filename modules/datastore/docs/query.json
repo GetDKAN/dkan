@@ -209,7 +209,7 @@
                             "description": "Comparison operators"
                         },
                         {
-                            "pattern": "^(?i)(like|between|in|not in|contains|starts with|match)$",
+                            "pattern": "^([lL][iI][kK][eE]|[bB][eE][tT][wW][eE][eE][nN]|[iI][nN]|[nN][oO][tT] [iI][nN]|[cC][oO][nN][tT][aA][iI][nN][sS]|[sS][tT][aA][rR][tT][sS] [wW][iI][tT][hH]|[mM][aA][tT][cC][hH])$",
                             "description": "Alphanumeric comparison operators (case-insensitive)"
                         }
                     ],
