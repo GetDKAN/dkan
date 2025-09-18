@@ -53,3 +53,4 @@ If you have found a vulnerability in DKAN, please report this by e-mailing dkan-
 - DKAN’s initial v1.0 release was in 2014 (this code is still available on the [7.x-1.x branch](https://github.com/GetDKAN/dkan/tree/7.x-1.x), although no longer supported).
 - In the fall of 2017, CivicActions took over sponsorship and maintenance of DKAN.
 - In May 2020 CivicActions released a completely rewritten version of DKAN to support Drupal 8, then 9 and 10. This new version (v2) was a complete ground up rebuild of the platform, integrating architectural insight from DKAN v1 and many new capabilities.
+
