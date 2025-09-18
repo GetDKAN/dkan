@@ -36,7 +36,17 @@ function json_form_widget_form_alter(&$form, FormStateInterface $form_state, $fo
   }
   if ($form_state->get('has_json_form_widget')) {
     $form['actions']['submit']['#submit'][] = [UploadOrLink::class, 'submit'];
+
+    // Add a validation handler.
+    $form['#validate'][] = '_json_form_widget_post_constraint_validation';
   }
+}
+
+/**
+ * Validation handler.
+ */
+function _json_form_widget_post_constraint_validation(array &$form, FormStateInterface $form_state) {
+  \Drupal::service('json_form.form_post_validate')->onPostConstraintValidate($form, $form_state);
 }
 
 /**

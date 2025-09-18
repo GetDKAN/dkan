@@ -103,9 +103,40 @@ abstract class JsonFormWidgetBase extends WidgetBase implements WidgetInterface 
     // Attempt to build the form.
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
     if ($json_form) {
-      return ['value' => $json_form];
+    // Add entity_builders callback - runs AFTER entity validation
+      //$element['#element_validate'][] = [$this, 'lateValidationHandler'];
+      $element['value'] = $json_form;
+    return $element;
     }
   }
+
+/**
+ * Late validation handler.
+ */
+public static function lateValidationHandler(array &$form, FormStateInterface $form_state) {
+  if ($form_state->hasAnyErrors()) {
+    return;
+  }
+  
+  // Get the entity being validated
+  $form_object = $form_state->getFormObject();
+  if (method_exists($form_object, 'getEntity')) {
+    $entity = $form_object->getEntity();
+    
+    // Manually validate the entity constraints
+    $violations = $entity->validate();
+    
+    // If there are violations, process them with your service
+    if (count($violations) > 0) {
+      $field_name = $form_state->get('json_form_widget_field');
+      $element = $form[$field_name]['widget'][0] ?? null;
+      
+      if ($element) {
+        \Drupal::service('json_form.form_post_validate')->onPostConstraintValidate($element, $form, $form_state);
+      }
+    }
+  }
+}
 
   /**
    * {@inheritdoc}

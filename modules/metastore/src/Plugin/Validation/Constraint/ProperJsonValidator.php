@@ -107,7 +107,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
       $this->validMetadataFactory->get($item->value, $schema_id);
     }
     catch (ValidationException $e) {
-      $errors = $this->getValidationErrorsMessages($e->getResult()->getErrors());
+      $errors = $e->getResult()->getErrors();
     }
     catch (InvalidArgumentException $e) {
       $errors[] = $e->getMessage();
@@ -116,31 +116,86 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   }
 
   /**
-   * Presents errors.
-   *
-   * @param array $errors
-   *   Validation errors array.
-   *
-   * @return array
-   *   Presented errors array.
-   */
-  private function getValidationErrorsMessages(array $errors): array {
-    $presented = $this->presenter->present(...$errors);
-    return array_map(
-      function ($presented_error) {
-        return $presented_error->message();
-      },
-      $presented
-    );
-  }
-
-  /**
-   * Add Violations.
+   * Add Violations with field context.
    */
   private function addViolations($errors) {
     foreach ($errors as $error) {
-      $this->context->addViolation($error);
+      // Extract field information from error pointer
+      $field_name = $this->extractFieldFromPointer($error);
+      $message = is_array($error) ? $error['message'] : $this->presenter->present($error)[0]->message();
+      
+      // Add violation with field context
+      $violation = $this->context->buildViolation($message);
+      
+      // Store field information in the violation for later use
+      if ($field_name) {
+        $violation->setParameter('json_field_pointer', json_encode($field_name));
+      }
+      
+      $violation->addViolation();
     }
+  }
+
+  /**
+   * Extract field name from JSON Schema error pointer.
+   */
+  private function extractFieldFromPointer($error) {
+    if (!is_object($error)) {
+      return null;
+    }
+    
+    // Handle required field errors - field name is in keywordArgs['missing']
+    if (method_exists($error, 'keywordArgs')) {
+      $keywordArgs = $error->keywordArgs();
+      if (isset($keywordArgs['missing'])) {
+        return [$keywordArgs['missing']];
+      }
+    }
+    
+    // Handle other validation errors - field name is in dataPointer
+    if (method_exists($error, 'dataPointer')) {
+      $pointer = $error->dataPointer();
+      if (is_array($pointer) && !empty($pointer)) {
+        // If dataPointer contains just one index, return it as an array
+        if (count($pointer) === 1) {
+          return $pointer;
+        }
+        
+        // For array fields with multiple indices, we need to add the field name both before and after numeric indices
+        $processed_pointer = [];
+        
+        foreach ($pointer as $index => $part) {
+          // If this is the first part and it's a field name, add it twice
+          if ($index === 0 && !is_numeric($part)) {
+            $processed_pointer[] = $part; // First occurrence
+            $processed_pointer[] = $part; // Second occurrence for array structure
+          }
+          // If this is a numeric index, add it and then add the field name after
+          elseif (is_numeric($part)) {
+            $processed_pointer[] = $part;
+            // Find the field name (first non-numeric part)
+            $field_name = null;
+            foreach ($pointer as $p) {
+              if (!is_numeric($p)) {
+                $field_name = $p;
+                break;
+              }
+            }
+            if ($field_name) {
+              $processed_pointer[] = $field_name;
+            }
+          }
+          // For other parts (like 'privateEmail'), just add them
+          else {
+            $processed_pointer[] = $part;
+          }
+        }
+        
+        return $processed_pointer;
+      }
+    }
+    
+    return null;
   }
 
 }
