@@ -1,0 +1,10 @@
+/* Target any fieldset with the error class */
+fieldset.error {
+  border-width: var(--input--error-border-size) !important;
+  border-color: var(--input--error-border-color) !important;
+}
+
+/* Target any fieldset legend when it has an error */
+fieldset.error > legend > span.fieldset__label {
+  color: var(--input--error-color) !important;
+}

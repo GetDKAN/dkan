@@ -9,7 +9,8 @@
     "identifier",
     "accessLevel",
     "modified",
-    "keyword"
+    "keyword",
+    "creators"
   ],
   "properties": {
     "@type": {
@@ -22,7 +23,80 @@
       "title": "Title",
       "description": "Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery.",
       "type": "string",
-      "minLength": 1
+      "minLength": 10
+    },
+    "number": {
+      "title": "Number",
+      "description": "Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery.",
+      "type": "integer",
+      "minimum": 10
+    },
+    "creators": {
+      "title": "Author Information",
+      "type": "array",
+      "items": {
+        "title": "Author",
+        "type": "object",
+        "properties": {
+          "givenName": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "middleName": {
+            "title": "Middle Name",
+            "type": "string"
+          },
+          "familyName": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "privateEmail": {
+            "title": "Email",
+            "format": "email",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "givenName",
+          "familyName",
+          "privateEmail"
+        ]
+      },
+      "minItems": 2
+    },
+    "creators-not-required": {
+      "title": "Author Information NOT",
+      "type": "array",
+      "items": {
+        "title": "Author",
+        "type": "object",
+        "properties": {
+          "givenName": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "middleName": {
+            "title": "Middle Name",
+            "type": "string"
+          },
+          "familyName": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "privateEmail": {
+            "title": "Email",
+            "format": "email",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "givenName",
+          "familyName",
+          "privateEmail"
+        ]
+      }
     },
     "identifier": {
       "title": "Unique Identifier",
