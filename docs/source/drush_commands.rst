@@ -31,7 +31,10 @@ dkan:datastore:drop
 
     **Arguments**
 
-    - **uuid** The uuid of a dataset.
+    - **identifier** The uuid of a dataset.
+
+    **Options**
+    - **--keep-local** Do not remove localized resource, only datastore table.
 
 ~~~~~~
 
@@ -54,8 +57,11 @@ dkan:datastore:import
 
     **Arguments**
 
-    - **uuid** The uuid of a resource.
-    - **deferred** Whether or not the process should be deferred to a queue.
+    - **identifier** The resource identifier; usually an MD5 hash of the resource URI.
+
+    **Options**
+
+    - **--deferred** Whether or not the process should be deferred to a queue.
 
 ~~~~~~
 
@@ -72,8 +78,11 @@ dkan:datastore:localize
 
     **Arguments**
 
-    - **uuid** The uuid of a resource.
-    - **deferred** Whether or not the process should be deferred to a queue.
+    - **identifier** The resource identifier; usually an MD5 hash of the resource URI.
+
+    **Options**
+
+    - **--deferred** Whether or not the process should be deferred to a queue.
 
 ~~~~~~
 
