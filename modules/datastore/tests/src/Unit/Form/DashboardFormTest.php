@@ -424,7 +424,7 @@ class DashboardFormTest extends TestCase {
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
-            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_id' => 'resource-1',
             'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
             'fetcher_percent_done' => 0,
@@ -436,7 +436,7 @@ class DashboardFormTest extends TestCase {
           ],
           [
             'distribution_uuid' => 'dist-2',
-            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_id' => 'resource-2',
             'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
             'fetcher_percent_done' => 0,
@@ -480,7 +480,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals(2, count($form['table']['#rows']));
 
     // Table uuid for first row is correct.
-    $this->assertEquals('dist-1', $form['table']['#rows'][0][3]['data']['#uuid']);
+    $this->assertEquals('resource-1', $form['table']['#rows'][0][3]['data']['#uuid']);
     // First row has six columns.
     $this->assertEquals(5, count($form['table']['#rows'][0]));
     // Rowspan on first two columns.
@@ -496,8 +496,8 @@ class DashboardFormTest extends TestCase {
 
     // The second row has only four columns.
     $this->assertEquals(4, count($form['table']['#rows'][1]));
-    // Table uuid for first second row is correct.
-    $this->assertEquals('dist-2', $form['table']['#rows'][1][0]['data']['#uuid']);
+    // Resource ID for first second row is correct.
+    $this->assertEquals('resource-2', $form['table']['#rows'][1][0]['data']['#uuid']);
     // The second row fetch status is correct.
     $this->assertEquals('waiting', $form["table"]["#rows"][1][1]["data"]["#status"]);
     // The second row fetch class is correct.
@@ -527,7 +527,7 @@ class DashboardFormTest extends TestCase {
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
-            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_id' => 'resource-1',
             'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
             'fetcher_percent_done' => 0,
@@ -539,7 +539,7 @@ class DashboardFormTest extends TestCase {
           ],
           [
             'distribution_uuid' => 'dist-2',
-            'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535g',
+            'resource_id' => 'resource-2',
             'resource_version' => '1679508886',
             'fetcher_status' => 'done',
             'fetcher_percent_done' => 100,
@@ -585,8 +585,8 @@ class DashboardFormTest extends TestCase {
     // The second row has only three columns.
     $this->assertEquals(4, count($form['table']['#rows'][1]));
 
-    $this->assertEquals('dist-1', $form['table']['#rows'][0][3]['data']['#uuid']);
-    $this->assertEquals('dist-2', $form['table']['#rows'][1][0]['data']['#uuid']);
+    $this->assertEquals('resource-1', $form['table']['#rows'][0][3]['data']['#uuid']);
+    $this->assertEquals('resource-2', $form['table']['#rows'][1][0]['data']['#uuid']);
     $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
   }
