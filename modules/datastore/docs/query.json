@@ -193,48 +193,54 @@
                     ],
                     "description": "The value to filter against."
                  },
-                 "operator": {
-                     "type": "string",
-                     "description": "Condition operator",
-                     "enum": [
-                        "=",
-                        "<>",
-                        "<",
-                        "<=",
-                        ">",
-                        ">=",
-                        "like",
-                        "between",
-                        "in",
-                        "not in",
-                        "contains",
-                        "starts with",
-                        "match"
+                "operator": {
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "description": "Comparison operators",
+                            "enum": [
+                                "=",
+                                "<>",
+                                "<",
+                                "<=",
+                                ">",
+                                ">="
+                            ]
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^([lL][iI][kK][eE]|[bB][eE][tT][wW][eE][eE][nN]|[iI][nN]|[nN][oO][tT] [iI][nN]|[cC][oO][nN][tT][aA][iI][nN][sS]|[sS][tT][aA][rR][tT][sS] [wW][iI][tT][hH]|[mM][aA][tT][cC][hH])$",
+                            "description": "Alphanumeric comparison operators, case-insensitive. One of: like, between, in, not in, contains, starts with, match"
+                        }
                     ],
                     "default": "="
-                 }
+                }
             },
             "required": [ "property", "value" ]
         },
         "expression": {
             "type": "object",
             "title": "Expression",
-            "description": "Arithmetic or aggregate expression performed on one or more properties.",
+            "description": "Arithmetic or aggregate expression performed on one or more properties. Note that performing expressions on text or other non-numeric data types my yield unexpected results.",
             "properties": {
                 "operator": {
-                    "type": "string",
-                    "description": "Expression operator. Note that performing expressions on text or other non-numeric data types my yield unexpected results.",
-                    "enum": [
-                        "+",
-                        "-",
-                        "*",
-                        "/",
-                        "%",
-                        "sum",
-                        "count",
-                        "avg",
-                        "max",
-                        "min"
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "pattern": "^([sS][uU][mM]|[cC][oO][uU][nN][tT]|[aA][vV][gG]|[mM][aA][xX]|[mM][iI][nN])$",
+                            "description": "Aggregate operators, case-insensitive. One of: sum, count, avg, max, min"
+                        },
+                        {
+                            "type": "string",
+                            "enum": [
+                                "+",
+                                "-",
+                                "*",
+                                "/",
+                                "%"
+                            ],
+                            "description": "Arithmetic operators"
+                        }
                     ]
                 },
                 "operands": {

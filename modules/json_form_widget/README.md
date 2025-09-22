@@ -1,13 +1,17 @@
 # JSON Form Widget
 
-This module provides a versatile way to create Drupal form elements from a JSON schema. Why would you need to create a form from JSON? This allows for a wide range of flexibility when customizing a content type without hard coding every field. Data publishers can use DKAN to create and edit custom dataset properties without the need to create patches, or hard-to-maintain overrides any time new schema is introduced. By saving field properties in JSON format, the input and output of the metadata structure remains the same. This also speeds up the performance when creating or updating hundreds of datasets at a time, this can happen in seconds rather than hours.
-
-Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route based on the data type (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and its contained methods for more information about UI options).
+This module provides a versatile way to create Drupal form elements from a JSON schema. Why would you need to create a form from JSON? This allows for a wide range of flexibility when customizing a content type without hard coding every field.
 
 The inspiration for this module and the syntax for the UI Schema come from [react-jsonschema-form](https://rjsf-team.github.io/react-jsonschema-form/docs/). While the UI schemas are not actually interoperable at this time, and RJSF supports more features of JSON-Schema than this module is currently able to, we hope to close that gap over time.
 
 > **_TIP:_**
 > A good way to visualize what this module is doing is to use [RJSF](https://github.com/rjsf-team) team's [react-jsonschema-form playground](https://rjsf-team.github.io/react-jsonschema-form/) as this modules functionality is largely similar in regards to how the schema translates to different form fields/structure.
+
+## Plugin
+This module requires a plugin to provide a "widget" that will supply the schema(s) that define the fields of the form(s). DKAN includes a plugin for its data node forms. Data publishers can use DKAN to create and edit custom dataset properties without the need to create patches, or hard-to-maintain overrides any time new schema is introduced. By saving field properties in JSON format, the input and output of the metadata structure remains the same. This also speeds up the performance when creating or updating hundreds of datasets at a time, this can happen in seconds rather than hours.
+
+Using a combination of "router", "helper", and "handler" classes, as well as some extensions on Drupal core elements, it first determines the schema to build the form from the URL paramater in the route based on the data type (EX: ?schema=dataset or ?schema=data-dictionary) and then builds the form according to the retrieved schema and any schema user interface options if supplied (see SchemaUiHandler.php and its contained methods for more information about UI options).
+
 
 The examples section of this readme can be used to understand how different field types translate directly to Drupal form elements and subsequently, how they would look within the Drupal user interface. They are provided under the presumption that the form is for creating a new data node (in this case a dataset).
 
@@ -48,9 +52,17 @@ Drupal Core:
 
 ## Installation
 
-The forms that the JSON Form Widget creates utilize the DKAN metastore for schema discovery and subsequently create nodes as the "data" content type. This module therefore is currently packaged with DKAN and as of now cannot be installed independantly. CivicActions plans to develop this module as a standalone Drupal module in the future.
+The forms that the DKAN JSON Form Widget creates utilize the DKAN metastore for schema discovery and subsequently create nodes as the "data" content type. This module therefore is currently packaged with DKAN and as of now cannot be installed independantly. CivicActions plans to develop this module as a standalone Drupal module in the future.
 
 ## Configuration
+
+To assign a widget to a form text field, go to the **Manage Form Display** settings of your content type. For DKAN this is `/admin/structure/types/manage/data/form-display`.
+
+Set the JSON Metadata field to DKAN JSON Form and save.
+
+![Screenshot of the "JSON Metadata" Drupal form field.](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/json_form_widget/json-metadata-field.png)
+
+## Schemas
 
 DKAN includes schema files that follow the [Project Open Data DCAT-US schema standards](https://resources.data.gov/resources/dcat-us/). If you need to add additional metadata fields, or wish to remove fields, simply create a new schema/collection/ directory in the root of your site (usually docroot), and add your new schema files to it.
 

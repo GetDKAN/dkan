@@ -338,6 +338,7 @@ class QueryDataProvider {
     switch ($return) {
       case self::QUERY_OBJECT:
         $query = new Query();
+        // Make sure like is case insensitive.
         $query->conditions = [
           (object) [
             "collection" => "t",
@@ -345,17 +346,23 @@ class QueryDataProvider {
             "value" => "%value%",
             "operator" => "like",
           ],
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "%value%",
+            "operator" => "LIKE",
+          ],
         ];
         return $query;
 
       case self::SQL:
-        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
+        return "WHERE (t.field1 LIKE :db_condition_placeholder_0";
 
       case self::EXCEPTION:
         return '';
 
       case self::VALUES:
-        return ['%value%'];
+        return ['%value%', '%value%'];
     }
 
   }
