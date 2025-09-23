@@ -179,5 +179,4 @@ metastore.datasets:
   defaults:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
     _title: 'Datasets'
-  requirements:
-    _permission: 'create data content'
+

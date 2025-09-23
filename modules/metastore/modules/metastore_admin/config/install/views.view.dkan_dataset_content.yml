@@ -1,3 +1,4 @@
+uuid: 46a91364-3cbb-4ebd-a24c-264a2a2f4b58
 langcode: en
 status: true
 dependencies:
@@ -8,6 +9,8 @@ dependencies:
     - content_moderation
     - node
     - user
+_core:
+  default_config_hash: o0UfNa65CPMhdBKibp7p9bkwwQxjlfa-7_DFEN6FDcM
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -594,7 +597,7 @@ display:
       access:
         type: perm
         options:
-          perm: 'create data content'
+          perm: 'edit any data content'
       cache:
         type: tag
       empty:
