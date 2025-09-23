@@ -132,3 +132,13 @@ function metastore_admin_update_10001() {
   If you have not made customizations to the existing view, pull in the latest updates with
   drush cim --partial --source=modules/contrib/dkan/modules/metastore/modules/metastore_admin/config/install -y');
 }
+
+/**
+ * Notification DKAN admin view permissions change (info only).
+ */
+function metastore_admin_update_10002() {
+  return t('~~~~~ IMPORTANT ~~~~~ There are permission changes to the DKAN admin
+  view; re-import the default configuration if you have not customized the view.
+  
+  See https://github.com/GetDKAN/dkan/releases/tag/2.21.2 for more information.');
+}
