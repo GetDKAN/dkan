@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\json_form_widget\Tests\Kernel\Plugin\JsonFormOptionSource;
+namespace Drupal\Tests\json_form_widget\Kernel\Plugin\JsonFormOptionSource;
 
 use Drupal\json_form_widget\Plugin\JsonFormOptionSource\TaxonomySource;
 use Drupal\KernelTests\KernelTestBase;
