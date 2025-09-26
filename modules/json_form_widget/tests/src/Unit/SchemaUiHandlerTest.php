@@ -11,11 +11,9 @@ use Drupal\Core\Language\LanguageDefault;
 use Drupal\Core\Language\LanguageManager;
 use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
 use Drupal\json_form_widget\Plugin\JsonFormOptionSource\TaxonomySource;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\json_form_widget\WidgetRouter;
-use Drupal\metastore\MetastoreService;
 use Drupal\taxonomy\TermStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;
@@ -30,17 +28,9 @@ use Psr\Log\LoggerInterface;
  * @group unit
  */
 class SchemaUiHandlerTest extends TestCase {
-
-  /**
-   * The ValidMetadataFactory class used for testing.
-   *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
-   */
-  protected $validMetadataFactory;
-
+  
   protected function setUp(): void {
     parent::setUp();
-    $this->validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
 
     // We need a global container with language_manager.
     $language_manager = new LanguageManager(new LanguageDefault(['en']));
@@ -818,7 +808,6 @@ class SchemaUiHandlerTest extends TestCase {
     $options = (new Options())
       ->add('json_form.string_helper', $string_helper)
       ->add('uuid', Php::class)
-      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('plugin.manager.json_form_option_source', JsonFormOptionSourcePluginManager::class)
       ->index(0);
 

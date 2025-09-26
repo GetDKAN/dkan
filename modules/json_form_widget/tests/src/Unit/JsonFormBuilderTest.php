@@ -13,7 +13,6 @@ use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
-use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -131,7 +130,6 @@ class JsonFormBuilderTest extends TestCase {
    */
   protected function getDetaultContainerChain(): Chain {
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.router', $this->getRouter())
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('dkan.json_form.logger_channel', LoggerInterface::class)
