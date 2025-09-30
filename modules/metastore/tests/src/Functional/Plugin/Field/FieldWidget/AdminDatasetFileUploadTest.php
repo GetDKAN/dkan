@@ -1,10 +1,9 @@
 <?php
 
-namespace Drupal\json_form_widget\Tests\Functional;
+namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
 
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Tests\common\Traits\QueueRunnerTrait;
-use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
 
 /**
  * Test the json form widget.
@@ -14,7 +13,6 @@ use Drupal\Tests\json_form_widget\Functional\JsonFormTestBase;
  *
  * @group dkan
  * @group json_form_widget
- * @group functional
  * @group functional2
  */
 class AdminDatasetFileUploadTest extends JsonFormTestBase {
@@ -108,7 +106,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
    */
   public function testCreateDatasetWithFileUpload() {
     // The file we'll upload.
-    $upload_file = realpath(dirname(__DIR__, 4) . '/datastore/tests/data/Bike_Lane.csv');
+    $upload_file = realpath(dirname(__DIR__, 7) . '/datastore/tests/data/Bike_Lane.csv');
 
     $assert = $this->assertSession();
 
