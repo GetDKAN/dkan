@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 

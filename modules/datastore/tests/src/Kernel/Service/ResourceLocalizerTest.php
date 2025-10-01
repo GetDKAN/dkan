@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\common\FileFetcher\FileFetcherFactory
+ * @covers \Drupal\dkan_common\FileFetcher\FileFetcherFactory
  * @covers \Drupal\datastore\Service\ResourceLocalizer
  * @coversDefaultClass \Drupal\datastore\Service\ResourceLocalizer
  *

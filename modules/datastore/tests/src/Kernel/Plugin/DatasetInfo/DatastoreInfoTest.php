@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\datastore\Kernel\Plugin\DatasetInfo;
 
-use Drupal\common\DatasetInfo;
+use Drupal\dkan_common\DatasetInfo;
 use Drupal\Tests\common\Kernel\DatasetInfoTest;
 
 /**

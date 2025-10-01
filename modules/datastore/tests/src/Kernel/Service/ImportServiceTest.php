@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\ImportService;

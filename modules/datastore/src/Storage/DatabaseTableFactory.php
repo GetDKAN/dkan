@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Storage;
 
 use Contracts\FactoryInterface;
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\Database\Connection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -67,7 +67,7 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Get a DatabaseTable object from a DataResource object.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   A resource.
    *
    * @return \Drupal\datastore\Storage\DatabaseTable

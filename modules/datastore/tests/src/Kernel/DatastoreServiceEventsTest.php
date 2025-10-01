@@ -8,8 +8,8 @@ use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\datastore\Events\DatastoreDroppedEvent;
 use Drupal\datastore\Events\DatastorePreDropEvent;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\common\DataResource;
-use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -58,7 +58,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
   /**
    * Event handler.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan_common\Events\Event $event
    *   The event.
    */
   public function catchPreDropEvent(DatastorePreDropEvent $event) {
@@ -68,7 +68,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
   /**
    * Event handler.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan_common\Events\Event $event
    *   The event.
    */
   public function catchDroppedEvent(DatastoreDroppedEvent $event) {

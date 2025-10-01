@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\harvest\Kernel\Transform;
 
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\harvest\Transform\ResourceImporter;
 

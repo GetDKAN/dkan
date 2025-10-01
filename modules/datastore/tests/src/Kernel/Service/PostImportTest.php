@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\PostImportResult;

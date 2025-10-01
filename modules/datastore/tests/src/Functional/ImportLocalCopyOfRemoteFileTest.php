@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
-use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\FileFetcher\FileFetcherRemoteUseExisting;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
@@ -71,7 +71,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     $this->assertEquals(1, $this->getEntityCount($mapping_entity_storage));
 
     // Get our resource info from the dataset info service.
-    /** @var \Drupal\common\DatasetInfo $dataset_info_service */
+    /** @var \Drupal\dkan_common\DatasetInfo $dataset_info_service */
     $dataset_info_service = $this->container->get('dkan.common.dataset_info');
     $info = $dataset_info_service->gather($identifier);
 

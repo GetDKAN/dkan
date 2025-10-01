@@ -4,7 +4,7 @@ namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\common\Storage\ImportedItemInterface;
+use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker;
 use Procrastinator\Result;

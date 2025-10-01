@@ -181,7 +181,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
     $uuid = ($node_storage->load(reset($node_ids)))->uuid();
 
     // Get the import status for the dataset.
-    /** @var \Drupal\common\DatasetInfo $info_service */
+    /** @var \Drupal\dkan_common\DatasetInfo $info_service */
     $info_service = $this->container->get('dkan.common.dataset_info');
     $info = $info_service->gather($uuid);
     $this->assertEquals(

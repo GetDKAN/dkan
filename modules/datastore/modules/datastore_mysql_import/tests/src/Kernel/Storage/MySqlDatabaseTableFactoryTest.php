@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 

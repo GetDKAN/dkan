@@ -7,8 +7,8 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Events\Event;
 use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
 use Drupal\metastore\MetastoreService;
 use Drupal\metastore\ReferenceLookupInterface;

@@ -2,12 +2,12 @@
 
 namespace Drupal\Tests\datastore\Unit\Service;
 
-use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\DkanFileFetcher;
-use Drupal\common\FileFetcher\FileFetcherFactory;
-use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Storage\FileFetcherJobStoreFactory;
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\FileFetcher\DkanFileFetcher;
+use Drupal\dkan_common\FileFetcher\FileFetcherFactory;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\Storage\FileFetcherJobStoreFactory;
+use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Queue\QueueFactory;

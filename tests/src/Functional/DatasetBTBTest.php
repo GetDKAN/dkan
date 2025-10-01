@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Load\Dataset;
@@ -73,7 +73,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->getMetastore()->publish('dataset', $id_1);
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
-    /** @var \Drupal\common\DatasetInfo $datasetInfo */
+    /** @var \Drupal\dkan_common\DatasetInfo $datasetInfo */
     $datasetInfo = $this->container->get('dkan.common.dataset_info');
     $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
