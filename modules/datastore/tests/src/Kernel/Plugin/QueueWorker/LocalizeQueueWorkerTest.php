@@ -30,7 +30,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];
@@ -53,7 +53,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
   public function testLocalizing(bool $always_use_existing_local_perspective) {
     $existing_local_file_contents = 'pre-existing,file';
     // Config for overwrite.
-    $this->installConfig(['common']);
+    $this->installConfig(['dkan_common']);
     $config = $this->config('common.settings');
     $config->set(
       'always_use_existing_local_perspective',

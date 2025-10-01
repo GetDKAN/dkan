@@ -22,7 +22,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'datastore_mysql_import',
     'metastore',

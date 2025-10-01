@@ -18,7 +18,7 @@ use Drupal\Tests\BrowserTestBase;
 class OpenApiControllerTest extends BrowserTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'harvest',
     'node',

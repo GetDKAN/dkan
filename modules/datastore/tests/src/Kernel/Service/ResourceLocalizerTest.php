@@ -22,7 +22,7 @@ class ResourceLocalizerTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];
@@ -105,7 +105,7 @@ class ResourceLocalizerTest extends KernelTestBase {
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.
-    $this->installConfig(['common']);
+    $this->installConfig(['dkan_common']);
     $config = $this->config('common.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();

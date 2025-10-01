@@ -23,7 +23,7 @@ namespace Drupal\Tests\dkan_common\Kernel\Util {
   class JobStoreUtilTest extends KernelTestBase {
 
     protected static $modules = [
-      'common',
+      'dkan_common',
     ];
 
     /**

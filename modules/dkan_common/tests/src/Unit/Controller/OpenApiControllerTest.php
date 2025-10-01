@@ -162,7 +162,7 @@ class OpenApiControllerTest extends TestCase {
       'id' => 'test_dkan_api_docs',
       'description' => 'Testing the docs',
       'class' => 'Drupal\dkan_common\Tests\Controller\TestApiDocs',
-      'provider' => 'common',
+      'provider' => 'dkan_common',
     ];
 
     $pluginMock = (new Chain($this))

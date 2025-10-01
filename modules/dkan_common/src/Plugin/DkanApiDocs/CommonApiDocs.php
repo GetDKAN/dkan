@@ -18,7 +18,7 @@ class CommonApiDocs extends DkanApiDocsBase {
    * {@inheritdoc}
    */
   public function spec() {
-    return $this->getDoc('common');
+    return $this->getDoc('dkan_common');
   }
 
 }

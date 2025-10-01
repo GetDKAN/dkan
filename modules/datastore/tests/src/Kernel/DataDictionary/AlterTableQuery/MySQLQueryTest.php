@@ -20,7 +20,7 @@ use Drupal\KernelTests\KernelTestBase;
 class MySQLQueryTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

@@ -55,7 +55,7 @@ abstract class Api1TestBase extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
     'node',

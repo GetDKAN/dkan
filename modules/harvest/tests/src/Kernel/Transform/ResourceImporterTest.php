@@ -19,7 +19,7 @@ use Drupal\harvest\Transform\ResourceImporter;
 class ResourceImporterTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
   ];
 
   /**

@@ -19,7 +19,7 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 class DictionaryEnforcerTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

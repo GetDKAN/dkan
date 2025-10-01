@@ -25,7 +25,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
     'node',

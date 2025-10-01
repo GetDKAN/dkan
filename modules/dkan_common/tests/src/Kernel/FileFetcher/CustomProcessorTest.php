@@ -18,7 +18,7 @@ use FileFetcher\FileFetcher;
 class CustomProcessorTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'custom_processor_test',
   ];
 

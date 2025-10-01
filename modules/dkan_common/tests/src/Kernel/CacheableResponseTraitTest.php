@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CacheableResponseTraitTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'system',
   ];
 

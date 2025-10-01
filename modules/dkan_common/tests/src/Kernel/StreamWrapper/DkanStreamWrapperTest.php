@@ -12,7 +12,7 @@ use Drupal\KernelTests\KernelTestBase;
 class DkanStreamWrapperTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'metastore',
   ];
 

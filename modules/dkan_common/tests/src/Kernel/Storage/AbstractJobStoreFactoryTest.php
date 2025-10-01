@@ -22,7 +22,7 @@ namespace Drupal\Tests\dkan_common\Kernel\Storage {
   class AbstractJobStoreFactoryTest extends KernelTestBase {
 
     protected static $modules = [
-      'common',
+      'dkan_common',
     ];
 
     public function testDeprecatedClassnameTable() {

@@ -22,7 +22,7 @@ class DatasetInfoTest extends KernelTestBase {
     'filter',
     'text',
     'metastore',
-    'common',
+    'dkan_common',
     'dkan',
     'content_moderation',
     'workflows',
@@ -36,7 +36,7 @@ class DatasetInfoTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig('system');
     $this->installConfig('node');
-    $this->installConfig('common');
+    $this->installConfig('dkan_common');
     $this->installConfig('metastore');
     $this->installEntitySchema('node');
     $this->installSchema('node', ['node_access']);

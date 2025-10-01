@@ -22,7 +22,7 @@ use Drupal\Tests\BrowserTestBase;
 class DrupalFilesTest extends BrowserTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
   ];
 
   /**

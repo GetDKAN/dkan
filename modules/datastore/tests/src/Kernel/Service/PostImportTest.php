@@ -26,7 +26,7 @@ use Drupal\datastore\Service\PostImport;
 class PostImportTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

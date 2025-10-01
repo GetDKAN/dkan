@@ -23,7 +23,7 @@ namespace Drupal\Tests\dkan_common\Kernel\Storage {
   class JobStoreFactoryTest extends KernelTestBase {
 
     protected static $modules = [
-      'common',
+      'dkan_common',
     ];
 
     public function testDeprecatedClassnameTable() {

@@ -22,7 +22,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
   protected const DATA_FILE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   protected static $modules = [
-    'common',
+    'dkan_common',
   ];
 
   public static function provideUseExisting() {
@@ -39,7 +39,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
    */
   public function testOurRemote($use_existing, $remote_class) {
     // Config for overwrite.
-    $this->installConfig(['common']);
+    $this->installConfig(['dkan_common']);
     $config = $this->config('common.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
@@ -109,7 +109,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
    */
   public function testGetInstance($always_use_existing_local_perspective, $expected_class) {
     // Config for overwrite.
-    $this->installConfig(['common']);
+    $this->installConfig(['dkan_common']);
     $config = $this->config('common.settings');
     $config->set('always_use_existing_local_perspective', $always_use_existing_local_perspective);
     $config->save();

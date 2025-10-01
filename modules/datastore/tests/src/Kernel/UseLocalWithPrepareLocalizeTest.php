@@ -23,7 +23,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];
@@ -38,7 +38,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
   }
 
   public function test() {
-    $this->installConfig(['common']);
+    $this->installConfig(['dkan_common']);
 
     // Create dataset.
     $source_resource = new DataResource(

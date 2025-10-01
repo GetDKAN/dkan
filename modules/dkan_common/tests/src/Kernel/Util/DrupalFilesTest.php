@@ -16,7 +16,7 @@ use Drupal\KernelTests\KernelTestBase;
 class DrupalFilesTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
   ];
 
   public static function provideExceptions() {

@@ -22,7 +22,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
   use QueueRunnerTrait;
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'dynamic_page_cache',
     'harvest',
