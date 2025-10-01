@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Util;
+namespace Drupal\dkan_common\Util;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\File\Exception\FileException;
@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * a mechanism to bring remote files locally, and to move local files to a
  * Drupal appropriate place for public access through a URL.
  *
- * @package Drupal\common\Util
+ * @package Drupal\dkan_common\Util
  */
 class DrupalFiles implements ContainerInjectionInterface {
 

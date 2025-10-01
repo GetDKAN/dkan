@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\Events\Event;
 
 /**
  * Event dispatcher trait.

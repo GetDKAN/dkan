@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit;
 
-use Drupal\common\DatasetInfo;
+use Drupal\dkan_common\DatasetInfo;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  *
  * Most methods are covered in the corresponding Kernel tests.
  *
- * @coversDefaultClass \Drupal\common\DatasetInfo
+ * @coversDefaultClass \Drupal\dkan_common\DatasetInfo
  *
  * @group common
  * @group dkan-core

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\StreamWrapper;
+namespace Drupal\dkan_common\StreamWrapper;
 
 use Drupal\Core\StreamWrapper\LocalReadOnlyStream;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;

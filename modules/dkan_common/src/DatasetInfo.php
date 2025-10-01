@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
@@ -15,7 +15,7 @@ use Drupal\node\Entity\Node;
  * Uses basic metastore information by default, other modules may add
  * additional information using the dataset_info plugin type.
  *
- * @package Drupal\common
+ * @package Drupal\dkan_common
  */
 class DatasetInfo {
 
@@ -37,7 +37,7 @@ class DatasetInfo {
   /**
    * DatasetInfo constructor.
    *
-   * @param \Drupal\common\DatasetInfoPluginManager $pluginManager
+   * @param \Drupal\dkan_common\DatasetInfoPluginManager $pluginManager
    *   The DatasetInfo plugin manager.
    */
   public function __construct(DatasetInfoPluginManager $pluginManager) {

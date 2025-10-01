@@ -9,8 +9,8 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\common\Storage\DatabaseConnectionFactory
- * @coversDefaultClass \Drupal\common\Storage\DatabaseConnectionFactory
+ * @covers \Drupal\dkan_common\Storage\DatabaseConnectionFactory
+ * @coversDefaultClass \Drupal\dkan_common\Storage\DatabaseConnectionFactory
  *
  * @group dkan
  * @group common

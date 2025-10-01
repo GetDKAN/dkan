@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 

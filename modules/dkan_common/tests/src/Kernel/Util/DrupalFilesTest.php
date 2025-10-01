@@ -2,12 +2,12 @@
 
 namespace Drupal\Tests\common\Kernel\Util;
 
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\common\Util\DrupalFiles
- * @coversDefaultClass \Drupal\common\Util\DrupalFiles
+ * @covers \Drupal\dkan_common\Util\DrupalFiles
+ * @coversDefaultClass \Drupal\dkan_common\Util\DrupalFiles
  *
  * @group dkan
  * @group common
@@ -32,7 +32,7 @@ class DrupalFilesTest extends KernelTestBase {
    * @dataProvider provideExceptions
    */
   public function testExceptions($exception_message, $url, $destination) {
-    /** @var \Drupal\common\Util\DrupalFiles $drupal_files */
+    /** @var \Drupal\dkan_common\Util\DrupalFiles $drupal_files */
     $drupal_files = $this->container->get('dkan.common.drupal_files');
     $this->expectException(\Exception::class);
     $this->expectExceptionMessage($exception_message);

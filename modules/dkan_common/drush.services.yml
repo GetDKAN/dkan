@@ -1,13 +1,13 @@
 services:
   common.commands:
-    class: \Drupal\common\Commands\CommonCommands
+    class: \Drupal\dkan_common\Commands\CommonCommands
     tags:
       - { name: drush.command }
     arguments:
       - '@dkan.common.dataset_info'
 
   common.jobstore.commands:
-    class: \Drupal\common\Commands\JobStoreCommands
+    class: \Drupal\dkan_common\Commands\JobStoreCommands
     tags:
       - { name: drush.command }
     arguments:

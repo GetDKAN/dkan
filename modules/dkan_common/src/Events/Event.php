@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\common\Events;
+namespace Drupal\dkan_common\Events;
 
 use Drupal\Component\EventDispatcher\Event as DrupalEvent;
 
 /**
  * Custom DKAN extension of the Drupal Event class.
  *
- * @package Drupal\common\Events
+ * @package Drupal\dkan_common\Events
  */
 class Event extends DrupalEvent {
 

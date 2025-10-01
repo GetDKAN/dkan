@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\dkan_common\Storage;
 
 /**
  * Create a job store object for the import process.

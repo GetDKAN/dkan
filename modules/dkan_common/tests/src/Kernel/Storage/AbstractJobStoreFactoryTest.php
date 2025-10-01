@@ -6,12 +6,12 @@
 
 namespace Drupal\Tests\common\Kernel\Storage {
 
-  use Drupal\common\Storage\JobStore;
+  use Drupal\dkan_common\Storage\JobStore;
   use Drupal\KernelTests\KernelTestBase;
 
   /**
-   * @covers \Drupal\common\Storage\AbstractJobStoreFactory
-   * @coversDefaultClass \Drupal\common\Storage\AbstractJobStoreFactory
+   * @covers \Drupal\dkan_common\Storage\AbstractJobStoreFactory
+   * @coversDefaultClass \Drupal\dkan_common\Storage\AbstractJobStoreFactory
    *
    * @group dkan
    * @group common
@@ -143,7 +143,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
 
 namespace {
 
-  use Drupal\common\Storage\AbstractJobStoreFactory;
+  use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
   use Procrastinator\Job\Job;
 
   class DkanTestConcreteAbstractJobStoreFactory extends AbstractJobStoreFactory {

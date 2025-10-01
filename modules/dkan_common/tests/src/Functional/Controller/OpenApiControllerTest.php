@@ -2,12 +2,12 @@
 
 namespace Drupal\Tests\common\Functional\Controller;
 
-use Drupal\common\Controller\OpenApiController;
+use Drupal\dkan_common\Controller\OpenApiController;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * @coversDefaultClass \Drupal\common\Controller\OpenApiController
+ * @coversDefaultClass \Drupal\dkan_common\Controller\OpenApiController
  *
  * @group dkan
  * @group common

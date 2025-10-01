@@ -5,7 +5,7 @@ namespace Drupal\Tests\common\Unit;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\UrlHostTokenResolver;
+use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\Core\StreamWrapper\PublicStream;
 use MockChain\Chain;
 use MockChain\Options;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Test the UrlHostTokenResolver class.
  *
- * @covers \Drupal\common\UrlHostTokenResolver
+ * @covers \Drupal\dkan_common\UrlHostTokenResolver
  *
  * @group dkan
  * @group common

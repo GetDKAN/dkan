@@ -45,7 +45,7 @@ trait CleanUp {
    *
    */
   private function removeAllFileFetchingJobs() {
-    /** @var \Drupal\common\Storage\FileFetcherJobStoreFactory $jobStoreFactory */
+    /** @var \Drupal\dkan_common\Storage\FileFetcherJobStoreFactory $jobStoreFactory */
     $jobStoreFactory = \Drupal::service('dkan.common.filefetcher_job_store_factory');
 
     $fileFetcherJob = $jobStoreFactory->getInstance();

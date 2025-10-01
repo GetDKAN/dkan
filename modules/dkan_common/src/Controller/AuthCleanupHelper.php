@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\common\Controller;
+namespace Drupal\dkan_common\Controller;
 
-use Drupal\common\Plugin\OpenApiSpec;
+use Drupal\dkan_common\Plugin\OpenApiSpec;
 
 /**
  * Helper class to alter OpenAPI spec for only public endpoints.
@@ -12,10 +12,10 @@ class AuthCleanupHelper {
   /**
    * Remove auth endpoints and cleanup unused parameters on an OpenAPI spec.
    *
-   * @param Drupal\common\Plugin\OpenApiSpec $spec
+   * @param Drupal\dkan_common\Plugin\OpenApiSpec $spec
    *   The original spec.
    *
-   * @return \Drupal\common\Plugin\OpenApiSpec
+   * @return \Drupal\dkan_common\Plugin\OpenApiSpec
    *   Altered spec.
    */
   public static function makePublicSpec(OpenApiSpec $spec) {
@@ -27,10 +27,10 @@ class AuthCleanupHelper {
   /**
    * Remove API spec endpoints requiring authentication.
    *
-   * @param \Drupal\common\Plugin\OpenApiSpec $spec
+   * @param \Drupal\dkan_common\Plugin\OpenApiSpec $spec
    *   The original spec.
    *
-   * @return \Drupal\common\Plugin\OpenApiSpec
+   * @return \Drupal\dkan_common\Plugin\OpenApiSpec
    *   The modified API spec, without authenticated endpoints.
    */
   public static function removeAuthenticatedEndpoints(OpenApiSpec $spec) {
@@ -81,10 +81,10 @@ class AuthCleanupHelper {
   /**
    * Clean up unused parameters from the spec.
    *
-   * @param \Drupal\common\Plugin\OpenApiSpec $spec
+   * @param \Drupal\dkan_common\Plugin\OpenApiSpec $spec
    *   The original spec.
    *
-   * @return \Drupal\common\Plugin\OpenApiSpec
+   * @return \Drupal\dkan_common\Plugin\OpenApiSpec
    *   The OpenAPI spec without .
    */
   public static function cleanUpParameters(OpenApiSpec $spec) {
@@ -154,10 +154,10 @@ class AuthCleanupHelper {
   /**
    * Remove unneeded schemas.
    *
-   * @param Drupal\common\Plugin\OpenApiSpec $spec
+   * @param Drupal\dkan_common\Plugin\OpenApiSpec $spec
    *   Full spec.
    *
-   * @return Drupal\common\Plugin\OpenApiSpec
+   * @return Drupal\dkan_common\Plugin\OpenApiSpec
    *   Spec without unneeded schemas.
    */
   public static function cleanUpSchemas(OpenApiSpec $spec) {
@@ -178,7 +178,7 @@ class AuthCleanupHelper {
    *
    * @param string $schemaKey
    *   Schema key from components array.
-   * @param Drupal\common\Plugin\OpenApiSpec $spec
+   * @param Drupal\dkan_common\Plugin\OpenApiSpec $spec
    *   Full spec.
    *
    * @return bool

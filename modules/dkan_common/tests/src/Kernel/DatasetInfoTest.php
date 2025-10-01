@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\common\Kernel;
 
-use Drupal\common\DatasetInfo;
+use Drupal\dkan_common\DatasetInfo;
 use Drupal\KernelTests\KernelTestBase;
 
 /**

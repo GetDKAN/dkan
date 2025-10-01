@@ -1,11 +1,10 @@
 <?php
 
-namespace Drupal\common\Controller;
+namespace Drupal\dkan_common\Controller;
 
-use Drupal\common\CacheableResponseTrait;
-use Drupal\common\JsonResponseTrait;
-use Drupal\common\DkanApiDocsGenerator;
-use Drupal\Component\Serialization\Yaml;
+use Drupal\dkan_common\CacheableResponseTrait;
+use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan_common\DkanApiDocsGenerator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use RootedData\Exception\ValidationException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -23,7 +22,7 @@ class OpenApiController implements ContainerInjectionInterface {
   /**
    * API Docs generator class.
    *
-   * @var Drupal\common\Controller\DkanApiDocsGenerator
+   * @var Drupal\dkan_common\Controller\DkanApiDocsGenerator
    */
   protected $generator;
 
@@ -56,7 +55,7 @@ class OpenApiController implements ContainerInjectionInterface {
    *
    * @param Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   Request stack.
-   * @param \Drupal\common\DkanApiDocsGenerator $generator
+   * @param \Drupal\dkan_common\DkanApiDocsGenerator $generator
    *   API Docs generator.
    */
   public function __construct(

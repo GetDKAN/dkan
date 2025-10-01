@@ -6,12 +6,12 @@
 
 namespace Drupal\Tests\common\Kernel\Storage {
 
-  use Drupal\common\Storage\JobStore;
+  use Drupal\dkan_common\Storage\JobStore;
   use Drupal\KernelTests\KernelTestBase;
 
   /**
-   * @covers \Drupal\common\Storage\JobStoreFactory
-   * @coversDefaultClass \Drupal\common\Storage\JobStoreFactory
+   * @covers \Drupal\dkan_common\Storage\JobStoreFactory
+   * @coversDefaultClass \Drupal\dkan_common\Storage\JobStoreFactory
    *
    * @group dkan
    * @group common
@@ -29,7 +29,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
     public function testDeprecatedClassnameTable() {
       $db = $this->container->get('database');
       // Make a JobStore object.
-      /** @var \Drupal\common\Storage\JobStoreFactory $job_store_factory */
+      /** @var \Drupal\dkan_common\Storage\JobStoreFactory $job_store_factory */
       $job_store_factory = $this->container->get('dkan.common.job_store');
       $job_store = $job_store_factory->getInstance(\DkanTestJobSubclass::class);
 

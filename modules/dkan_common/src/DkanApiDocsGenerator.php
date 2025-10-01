@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
-use Drupal\common\Util\ApiDocsPathModifier;
+use Drupal\dkan_common\Util\ApiDocsPathModifier;
 use Drupal\Core\Site\Settings;
-use Drupal\common\Plugin\DkanApiDocsPluginManager;
-use Drupal\common\Plugin\OpenApiSpec;
+use Drupal\dkan_common\Plugin\DkanApiDocsPluginManager;
+use Drupal\dkan_common\Plugin\OpenApiSpec;
 
 /**
  * Generator for DKAN OpenApi docs.
@@ -25,7 +25,7 @@ class DkanApiDocsGenerator {
   /**
    * Constructor.
    *
-   * @param \Drupal\common\Plugin\DkanApiDocsPluginManager $dkanApiDocsPluginManager
+   * @param \Drupal\dkan_common\Plugin\DkanApiDocsPluginManager $dkanApiDocsPluginManager
    *   The DKAN API Docs Plugin Manager service.
    * @param \Drupal\Core\Site\Settings $settings
    *   The Drupal settings service.
@@ -41,7 +41,7 @@ class DkanApiDocsGenerator {
    * @param array $plugins
    *   Array of plugin ids to include. Will use all if empty.
    *
-   * @return Drupal\common\Plugin\OpenApiSpec
+   * @return Drupal\dkan_common\Plugin\OpenApiSpec
    *   Valid openapi spec.
    */
   public function buildSpec(array $plugins = []) {

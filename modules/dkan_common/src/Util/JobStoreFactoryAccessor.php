@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\common\Util;
+namespace Drupal\dkan_common\Util;
 
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\dkan_common\Storage\JobStoreFactory;
 
 /**
  * Utility class to access protected JobStoreFactory elements.

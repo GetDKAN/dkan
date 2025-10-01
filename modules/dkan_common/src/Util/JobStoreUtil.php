@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Util;
+namespace Drupal\dkan_common\Util;
 
 use Drupal\Core\Database\Connection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -127,7 +127,7 @@ class JobStoreUtil {
    *   List of tables we merged. Deprecated table name is key, new table name is
    *   value.
    *
-   * @see \Drupal\common\Util\JobStoreUtil::reconcileDuplicateJobstoreTable()
+   * @see \Drupal\dkan_common\Util\JobStoreUtil::reconcileDuplicateJobstoreTable()
    */
   public function reconcileDuplicateJobstoreTables(): array {
     $results = [];

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\FileFetcher;
+namespace Drupal\dkan_common\FileFetcher;
 
 use FileFetcher\FileFetcher;
 

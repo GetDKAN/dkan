@@ -2,13 +2,13 @@
 
 namespace Drupal\Tests\common\Unit\Commands;
 
-use Drupal\common\Commands\CommonCommands;
-use Drupal\common\DatasetInfo;
+use Drupal\dkan_common\Commands\CommonCommands;
+use Drupal\dkan_common\DatasetInfo;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\common\Commands\CommonCommands
- * @coversDefaultClass \Drupal\common\Commands\CommonCommands
+ * @covers \Drupal\dkan_common\Commands\CommonCommands
+ * @coversDefaultClass \Drupal\dkan_common\Commands\CommonCommands
  */
 class CommonCommandsTest extends TestCase {
 

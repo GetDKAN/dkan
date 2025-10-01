@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\dkan_common\Storage;
 
 /**
  * DKAN JobStore factory trait.

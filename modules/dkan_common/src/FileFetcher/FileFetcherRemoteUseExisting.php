@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\FileFetcher;
+namespace Drupal\dkan_common\FileFetcher;
 
 use FileFetcher\Processor\Remote;
 use Procrastinator\Result;
@@ -12,7 +12,7 @@ use Procrastinator\Result;
  *   import. We should have a better way to check that the existing file is
  *   actually the file we want.
  *
- * @see \Drupal\common\FileFetcher\FileFetcherFactory::getInstance()
+ * @see \Drupal\dkan_common\FileFetcher\FileFetcherFactory::getInstance()
  */
 class FileFetcherRemoteUseExisting extends Remote {
 

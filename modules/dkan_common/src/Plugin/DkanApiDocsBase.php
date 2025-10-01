@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Plugin;
+namespace Drupal\dkan_common\Plugin;
 
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -54,7 +54,7 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Drupal\dkan_common\Plugin\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\common\Commands;
+namespace Drupal\dkan_common\Commands;
 
-use Drupal\common\DatasetInfo;
+use Drupal\dkan_common\DatasetInfo;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -13,14 +13,14 @@ class CommonCommands extends DrushCommands {
   /**
    * Dataset information service.
    *
-   * @var \Drupal\common\DatasetInfo
+   * @var \Drupal\dkan_common\DatasetInfo
    */
   protected $datasetInfo;
 
   /**
    * CommonCommands constructor.
    *
-   * @param \Drupal\common\DatasetInfo $datasetInfo
+   * @param \Drupal\dkan_common\DatasetInfo $datasetInfo
    *   Dataset information service.
    */
   public function __construct(DatasetInfo $datasetInfo) {

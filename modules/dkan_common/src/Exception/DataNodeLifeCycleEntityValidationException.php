@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Exception;
+namespace Drupal\dkan_common\Exception;
 
 /**
  * Class Metastore item object validation exception.

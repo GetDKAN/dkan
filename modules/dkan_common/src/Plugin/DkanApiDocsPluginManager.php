@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\common\Plugin;
+namespace Drupal\dkan_common\Plugin;
 
-use Drupal\common\Annotation\DkanApiDocs;
+use Drupal\dkan_common\Annotation\DkanApiDocs;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\common\FileFetcher;
+namespace Drupal\dkan_common\FileFetcher;
 
 use Contracts\FactoryInterface;
-use Drupal\common\Storage\FileFetcherJobStoreFactory;
+use Drupal\dkan_common\Storage\FileFetcherJobStoreFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use FileFetcher\FileFetcher;

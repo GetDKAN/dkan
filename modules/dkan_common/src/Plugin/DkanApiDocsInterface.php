@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Plugin;
+namespace Drupal\dkan_common\Plugin;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;

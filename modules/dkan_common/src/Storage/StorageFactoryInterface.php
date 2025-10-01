@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\dkan_common\Storage;
 
 use Contracts\FactoryInterface;
 
@@ -28,7 +28,7 @@ interface StorageFactoryInterface extends FactoryInterface {
    * @param array $config
    *   (optional) Configuration for the storage object.
    *
-   * @return \Drupal\common\Storage\DatabaseTableInterface
+   * @return \Drupal\dkan_common\Storage\DatabaseTableInterface
    *   A storage object ready for use.
    */
   public function getInstance(string $identifier, array $config = []) : DatabaseTableInterface;

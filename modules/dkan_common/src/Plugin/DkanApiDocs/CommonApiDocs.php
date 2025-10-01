@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\common\Plugin\DkanApiDocs;
+namespace Drupal\dkan_common\Plugin\DkanApiDocs;
 
-use Drupal\common\Plugin\DkanApiDocsBase;
+use Drupal\dkan_common\Plugin\DkanApiDocsBase;
 
 /**
  * API Docs common base.

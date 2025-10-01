@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\common\Commands;
+namespace Drupal\dkan_common\Commands;
 
-use Drupal\common\Util\JobStoreUtil;
+use Drupal\dkan_common\Util\JobStoreUtil;
 use Drupal\Core\Database\Connection;
 use Drush\Commands\DrushCommands;
 
@@ -42,7 +42,7 @@ class JobStoreCommands extends DrushCommands {
   /**
    * Rename deprecated jobstore tables to have non-deprecated names.
    *
-   * @see \Drupal\common\Util\JobStoreUtil::renameDeprecatedJobstoreTables()
+   * @see \Drupal\dkan_common\Util\JobStoreUtil::renameDeprecatedJobstoreTables()
    */
   protected function renameDeprecatedTables() {
     $job_store_util = new JobStoreUtil($this->connection);
@@ -62,7 +62,7 @@ class JobStoreCommands extends DrushCommands {
   /**
    * Merge deprecated jobstore tables into non-deprecated ones.
    *
-   * @see \Drupal\common\Util\JobStoreUtil::reconcileDuplicateJobstoreTable()
+   * @see \Drupal\dkan_common\Util\JobStoreUtil::reconcileDuplicateJobstoreTable()
    */
   protected function mergeDuplicateTables() {
     $job_store_util = new JobStoreUtil($this->connection);

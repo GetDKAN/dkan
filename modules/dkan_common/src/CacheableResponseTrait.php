@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
 use Symfony\Component\HttpFoundation\Response;
 

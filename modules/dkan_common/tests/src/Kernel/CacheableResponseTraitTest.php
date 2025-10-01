@@ -3,11 +3,11 @@
 namespace Drupal\Tests\common\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\common\CacheableResponseTrait;
+use Drupal\dkan_common\CacheableResponseTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @coversDefaultClass \Drupal\common\CacheableResponseTrait
+ * @coversDefaultClass \Drupal\dkan_common\CacheableResponseTrait
  *
  * @group dkan
  * @group common

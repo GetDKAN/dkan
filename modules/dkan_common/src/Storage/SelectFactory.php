@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\dkan_common\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Select;
@@ -54,7 +54,7 @@ class SelectFactory {
   /**
    * Create Drupal select object.
    *
-   * @param \Drupal\common\Storage\Query $query
+   * @param \Drupal\dkan_common\Storage\Query $query
    *   DKAN Query object.
    */
   public function create(Query $query): Select {
@@ -81,7 +81,7 @@ class SelectFactory {
   /**
    * Specify fields on DB query.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param Drupal\dkan_common\Storage\Query $query
    *   A DKAN query object.
    */
   private function setQueryProperties(Query $query) {
@@ -260,7 +260,7 @@ class SelectFactory {
   /**
    * Set filter conditions on DB query.
    *
-   * @param Drupal\common\Storage\Query $query
+   * @param Drupal\dkan_common\Storage\Query $query
    *   A DKAN query object.
    */
   private function setQueryConditions(Query $query) {

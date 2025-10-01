@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Util;
 
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
-use Drupal\common\Annotation\DatasetInfoPlugin;
+use Drupal\dkan_common\Annotation\DatasetInfoPlugin;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;

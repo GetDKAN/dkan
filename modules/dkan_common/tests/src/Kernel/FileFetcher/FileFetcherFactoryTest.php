@@ -2,16 +2,16 @@
 
 namespace Drupal\Tests\common\Kernel\FileFetcher;
 
-use Drupal\common\FileFetcher\FileFetcherFactory;
+use Drupal\dkan_common\FileFetcher\FileFetcherFactory;
 use Drupal\KernelTests\KernelTestBase;
 use FileFetcher\FileFetcher;
-use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
+use Drupal\dkan_common\FileFetcher\FileFetcherRemoteUseExisting;
 use FileFetcher\Processor\Remote;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\common\FileFetcher\FileFetcherFactory
- * @coversDefaultClass \Drupal\common\FileFetcher\FileFetcherFactory
+ * @covers \Drupal\dkan_common\FileFetcher\FileFetcherFactory
+ * @coversDefaultClass \Drupal\dkan_common\FileFetcher\FileFetcherFactory
  *
  * @group dkan
  * @group common
@@ -44,7 +44,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
 
-    /** @var \Drupal\common\FileFetcher\FileFetcherFactory $factory */
+    /** @var \Drupal\dkan_common\FileFetcher\FileFetcherFactory $factory */
     $factory = $this->container->get('dkan.common.file_fetcher');
     $this->assertInstanceOf(FileFetcherFactory::class, $factory);
 
@@ -114,7 +114,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
     $config->set('always_use_existing_local_perspective', $always_use_existing_local_perspective);
     $config->save();
 
-    /** @var \Drupal\common\FileFetcher\FileFetcherFactory $factory */
+    /** @var \Drupal\dkan_common\FileFetcher\FileFetcherFactory $factory */
     $factory = $this->container->get('dkan.common.file_fetcher');
 
     $instance = $factory->getInstance('id', ['filePath' => '/tmp/thingie.csv']);

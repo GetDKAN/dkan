@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\common\Annotation;
+namespace Drupal\dkan_common\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 

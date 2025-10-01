@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\dkan_common\Storage;
 
 use Drupal\Core\Database\Connection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *
  * @todo Add FileFetcherJobStoreFactory as well.
  *
- * @see \Drupal\common\Storage\AbstractJobStoreFactory
+ * @see \Drupal\dkan_common\Storage\AbstractJobStoreFactory
  */
 class JobStoreFactory implements StorageFactoryInterface {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
 /**
  * Convert between local file paths and public file URLs.

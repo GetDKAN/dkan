@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\common\Annotation;
+namespace Drupal\dkan_common\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 
 /**
  * Defines a DkanApiDocs annotation object.
  *
- * @see \Drupal\common\Plugin\DkanApiDocsPluginManager
+ * @see \Drupal\dkan_common\Plugin\DkanApiDocsPluginManager
  * @see plugin_api
  *
  * @Annotation

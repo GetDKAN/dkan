@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Events;
 
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\Events\Event;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;

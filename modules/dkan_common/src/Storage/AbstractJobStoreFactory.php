@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common\Storage;
+namespace Drupal\dkan_common\Storage;
 
 use Drupal\Core\Database\Connection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -47,7 +47,7 @@ abstract class AbstractJobStoreFactory implements StorageFactoryInterface {
    * @param array $config
    *   (optional) Ignored, because JobStore does not use it.
    *
-   * @return \Drupal\common\Storage\DatabaseTableInterface
+   * @return \Drupal\dkan_common\Storage\DatabaseTableInterface
    *   Resulting JobStore object.
    */
   public function getInstance(string $identifier = '', array $config = []): DatabaseTableInterface {

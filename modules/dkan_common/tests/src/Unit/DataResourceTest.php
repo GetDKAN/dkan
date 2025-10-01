@@ -3,7 +3,7 @@
 namespace Drupal\Tests\common\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
@@ -12,9 +12,9 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for Drupal\common\Resource.
+ * Unit tests for Drupal\dkan_common\Resource.
  *
- * @coversDefaultClass \Drupal\common\DataResource
+ * @coversDefaultClass \Drupal\dkan_common\DataResource
  */
 class DataResourceTest extends TestCase {
 

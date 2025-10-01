@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\common;
+namespace Drupal\dkan_common;
 
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -132,7 +132,7 @@ class DataResource implements \JsonSerializable {
    *   Data resource record from the database. Must contain these properties:
    *   'filePath', 'mimeType', 'perspective', 'version'.
    *
-   * @return \Drupal\common\DataResource
+   * @return \Drupal\dkan_common\DataResource
    *   DataResource object.
    *
    * @deprecated in dkan:8.x-2.17 and is removed from dkan:8.x-2.21. Use
@@ -154,7 +154,7 @@ class DataResource implements \JsonSerializable {
    * @param \Drupal\metastore\ResourceMappingInterface $mapping
    *   A resource_mapping entity.
    *
-   * @return \Drupal\common\DataResource
+   * @return \Drupal\dkan_common\DataResource
    *   DataResource object.
    */
   public static function createFromEntity(ResourceMappingInterface $mapping): DataResource {
