@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Controller;
+namespace Drupal\Tests\dkan_common\Controller;
 
 use Drupal\dkan_common\Controller\OpenApiController;
 use Drupal\dkan_common\Plugin\DkanApiDocsBase;

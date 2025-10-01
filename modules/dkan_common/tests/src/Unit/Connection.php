@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit;
+namespace Drupal\Tests\dkan_common\Unit;
 
 use Drupal\Core\Database\Connection as CoreConnection;
 use Drupal\Core\Database\Query\Condition;

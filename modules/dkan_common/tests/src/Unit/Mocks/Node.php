@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Mocks;
+namespace Drupal\Tests\dkan_common\Unit\Mocks;
 
 use Drupal\node\Entity\Node as DrupalNode;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Traits;
+namespace Drupal\Tests\dkan_common\Traits;
 
 /**
  * Trait for getting data remote for tests.

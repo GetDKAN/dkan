@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\FileFetcher;
+namespace Drupal\Tests\dkan_common\Unit\FileFetcher;
 
 use Drupal\dkan_common\FileFetcher\FileFetcherRemoteUseExisting;
 use org\bovigo\vfs\vfsStream;

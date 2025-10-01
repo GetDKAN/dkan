@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit;
+namespace Drupal\Tests\dkan_common\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\dkan_common\DataResource;

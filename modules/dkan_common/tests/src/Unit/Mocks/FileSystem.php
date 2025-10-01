@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Mocks;
+namespace Drupal\Tests\dkan_common\Unit\Mocks;
 
 use Drupal\Core\File\FileSystem as DrupalFilesystem;
 use MockChain\Chain;

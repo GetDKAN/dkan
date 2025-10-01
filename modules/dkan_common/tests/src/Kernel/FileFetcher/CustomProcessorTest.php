@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel\FileFetcher;
+namespace Drupal\Tests\dkan_common\Kernel\FileFetcher;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\custom_processor_test\FileFetcher\CustomFileFetcherFactory;

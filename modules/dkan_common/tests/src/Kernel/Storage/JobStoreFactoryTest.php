@@ -4,7 +4,7 @@
  * Manage namespaces so they don't get too long for deprecated table names.
  */
 
-namespace Drupal\Tests\common\Kernel\Storage {
+namespace Drupal\Tests\dkan_common\Kernel\Storage {
 
   use Drupal\dkan_common\Storage\JobStore;
   use Drupal\KernelTests\KernelTestBase;
@@ -18,7 +18,7 @@ namespace Drupal\Tests\common\Kernel\Storage {
    * @group kernel
    * @group legacy
    *
-   * @see \Drupal\Tests\common\Kernel\Storage\AbstractJobStoreFactoryTest
+   * @see \Drupal\Tests\dkan_common\Kernel\Storage\AbstractJobStoreFactoryTest
    */
   class JobStoreFactoryTest extends KernelTestBase {
 

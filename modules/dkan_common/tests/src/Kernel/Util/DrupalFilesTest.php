@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel\Util;
+namespace Drupal\Tests\dkan_common\Kernel\Util;
 
 use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\KernelTests\KernelTestBase;

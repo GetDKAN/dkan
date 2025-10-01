@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\common\Kernel;
+namespace Drupal\Tests\dkan_common\Kernel;
 
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\KernelTests\KernelTestBase;

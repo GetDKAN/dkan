@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel;
+namespace Drupal\Tests\dkan_common\Kernel;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Form\FormState;

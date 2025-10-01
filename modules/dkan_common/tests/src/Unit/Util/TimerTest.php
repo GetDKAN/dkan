@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Util;
+namespace Drupal\Tests\dkan_common\Unit\Util;
 
 use Drupal\dkan_common\Util\Timer;
 use PHPUnit\Framework\TestCase;

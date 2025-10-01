@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Commands;
+namespace Drupal\Tests\dkan_common\Unit\Commands;
 
 use Drupal\dkan_common\Commands\CommonCommands;
 use Drupal\dkan_common\DatasetInfo;

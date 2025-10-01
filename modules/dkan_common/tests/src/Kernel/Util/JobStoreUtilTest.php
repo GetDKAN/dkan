@@ -4,7 +4,7 @@
  * We must manage namespaces so that we don't end up with a too-long table name.
  */
 
-namespace Drupal\Tests\common\Kernel\Util {
+namespace Drupal\Tests\dkan_common\Kernel\Util {
 
   use Drupal\dkan_common\Storage\JobStore;
   use Drupal\dkan_common\Util\JobStoreFactoryAccessor;

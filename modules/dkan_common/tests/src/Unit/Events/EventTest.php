@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Events;
+namespace Drupal\Tests\dkan_common\Unit\Events;
 
 use Drupal\dkan_common\Events\Event;
 use MockChain\Chain;

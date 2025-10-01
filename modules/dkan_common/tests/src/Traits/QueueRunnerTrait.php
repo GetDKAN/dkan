@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Traits;
+namespace Drupal\Tests\dkan_common\Traits;
 
 use Drupal\Core\Queue\QueueFactoryInterface;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;

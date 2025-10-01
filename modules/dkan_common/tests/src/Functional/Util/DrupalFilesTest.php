@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\common\Functional\Util;
+namespace Drupal\Tests\dkan_common\Functional\Util;
 
 use Drupal\Tests\BrowserTestBase;
 

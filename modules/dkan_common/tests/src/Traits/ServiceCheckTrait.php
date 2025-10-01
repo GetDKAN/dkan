@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Traits;
+namespace Drupal\Tests\dkan_common\Traits;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\DependencyInjection\Container;

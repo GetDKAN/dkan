@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\common\Unit\Storage;
+namespace Drupal\Tests\dkan_common\Unit\Storage;
 
 use Drupal\dkan_common\Storage\Query;
 use Drupal\dkan_common\Storage\SelectFactory;
 use Drupal\Core\Database\Query\Select;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
-use Drupal\Tests\common\Unit\Connection;
 use Pdo\Sqlite;
+use Drupal\Tests\dkan_common\Unit\Connection;
 
 /**
  * @coversDefaultClass \Drupal\dkan_common\Storage\SelectFactory
@@ -33,7 +33,7 @@ class SelectFactoryTest extends TestCase {
   /**
    * @test
    *
-   * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
+   * @dataProvider \Drupal\Tests\dkan_common\Unit\Storage\QueryDataProvider::getAllData()
    */
   public function testQuery(Query $query, string $sql, string $message, array $values = []) {
     if ($message) {

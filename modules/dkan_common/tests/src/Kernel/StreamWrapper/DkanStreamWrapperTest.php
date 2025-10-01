@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Kernel\StreamWrapper;
+namespace Drupal\Tests\dkan_common\Kernel\StreamWrapper;
 
 use Drupal\KernelTests\KernelTestBase;
 
