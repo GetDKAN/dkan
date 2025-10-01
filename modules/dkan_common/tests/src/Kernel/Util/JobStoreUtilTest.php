@@ -17,7 +17,7 @@ namespace Drupal\Tests\dkan_common\Kernel\Util {
    * @coversDefaultClass \Drupal\dkan_common\Util\JobStoreUtil
    *
    * @group dkan
-   * @group common
+   * 'dkan_common'
    * @group kernel
       */
   class JobStoreUtilTest extends KernelTestBase {

@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @coversDefaultClass \Drupal\dkan_common\CacheableResponseTrait
  *
  * @group dkan
- * @group common
+ * 'dkan_common'
  * @group kernel
  */
 class CacheableResponseTraitTest extends KernelTestBase {

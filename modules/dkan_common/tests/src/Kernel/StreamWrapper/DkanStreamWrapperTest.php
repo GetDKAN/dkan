@@ -6,7 +6,7 @@ use Drupal\KernelTests\KernelTestBase;
 
 /**
  * @group dkan
- * @group common
+ * 'dkan_common'
  * @group kernel
  */
 class DkanStreamWrapperTest extends KernelTestBase {

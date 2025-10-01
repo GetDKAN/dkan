@@ -13,7 +13,7 @@ use Drupal\Tests\BrowserTestBase;
  * @coversDefaultClass \Drupal\dkan_common\Util\DrupalFiles
  *
  * @group dkan
- * @group common
+ * 'dkan_common'
  * @group functional
  * @group functional2
  *

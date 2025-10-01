@@ -12,7 +12,7 @@ use FileFetcher\FileFetcher;
  * Ensures custom processor API is working.
  *
  * @group dkan
- * @group common
+ * 'dkan_common'
  * @group kernel
  */
 class CustomProcessorTest extends KernelTestBase {

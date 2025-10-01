@@ -14,7 +14,7 @@ namespace Drupal\Tests\dkan_common\Kernel\Storage {
    * @coversDefaultClass \Drupal\dkan_common\Storage\JobStoreFactory
    *
    * @group dkan
-   * @group common
+   * 'dkan_common'
    * @group kernel
    * @group legacy
    *

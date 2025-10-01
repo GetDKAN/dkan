@@ -14,7 +14,7 @@ use Drupal\Tests\dkan_common\Unit\Connection;
  * @coversDefaultClass \Drupal\dkan_common\Storage\SelectFactory
  *
  * @group dkan
- * @group common
+ * 'dkan_common'
  * @group unit
  */
 class SelectFactoryTest extends TestCase {

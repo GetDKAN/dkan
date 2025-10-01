@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @coversDefaultClass \Drupal\dkan_common\DatasetInfo
  *
- * @group common
+ * 'dkan_common'
  * @group dkan-core
  */
 class DatasetInfoTest extends TestCase {

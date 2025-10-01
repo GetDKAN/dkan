@@ -22,7 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @coversDefaultClass \Drupal\dkan_common\Storage\JobStore
  *
  * @group dkan
- * @group common
+ * 'dkan_common'
  * @group unit
  */
 class JobStoreTest extends TestCase {
