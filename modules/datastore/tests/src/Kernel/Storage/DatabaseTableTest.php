@@ -10,7 +10,7 @@ use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\common\Unit\Connection;
+use Drupal\Tests\dkan_common\Unit\Connection;
 use Procrastinator\Result;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

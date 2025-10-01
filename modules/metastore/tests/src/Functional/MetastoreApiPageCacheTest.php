@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 use RootedData\RootedJsonData;

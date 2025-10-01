@@ -101,7 +101,7 @@ class ResourceLocalizerTest extends KernelTestBase {
   /**
    * @dataProvider provideUseExisting
    *
-   * @see \Drupal\Tests\common\Kernel\FileFetcher\FileFetcherFactoryTest::testOurRemote()
+   * @see \Drupal\Tests\dkan_common\Kernel\FileFetcher\FileFetcherFactoryTest::testOurRemote()
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.

@@ -26,7 +26,7 @@ use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\QueryFactory;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
+use Drupal\Tests\dkan_common\Unit\Storage\QueryDataProvider as QueryData;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\metastore\Reference\ReferenceLookup;
 

@@ -10,7 +10,7 @@ use Drupal\metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 

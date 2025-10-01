@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
 
 use Drupal\Core\StreamWrapper\PublicStream;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 
 /**
  * Test the json form widget.
