@@ -54,7 +54,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
     $existing_local_file_contents = 'pre-existing,file';
     // Config for overwrite.
     $this->installConfig(['dkan_common']);
-    $config = $this->config('common.settings');
+    $config = $this->config('dkan_common.settings');
     $config->set(
       'always_use_existing_local_perspective',
       $always_use_existing_local_perspective

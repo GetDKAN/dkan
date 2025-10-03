@@ -19,7 +19,7 @@ class FileFetcherFactory implements FactoryInterface {
   private FileFetcherJobStoreFactory $fileFetcherJobStoreFactory;
 
   /**
-   * The common.settings config.
+   * The dkan_common.settings config.
    */
   private ImmutableConfig $dkanConfig;
 
@@ -35,7 +35,7 @@ class FileFetcherFactory implements FactoryInterface {
    */
   public function __construct(FileFetcherJobStoreFactory $fileFetcherJobStoreFactory, ConfigFactoryInterface $configFactory) {
     $this->fileFetcherJobStoreFactory = $fileFetcherJobStoreFactory;
-    $this->dkanConfig = $configFactory->get('common.settings');
+    $this->dkanConfig = $configFactory->get('dkan_common.settings');
   }
 
   /**
