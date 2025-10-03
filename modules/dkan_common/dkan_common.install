@@ -1,6 +1,9 @@
 <?php
 
-/**
- * @file
- * Install, update and uninstall functions for the dkan_common module.
- */
+function dkan_common_install() {
+  // Uninstall common module if it is installed.
+  if (\Drupal::moduleHandler()->moduleExists('common')) {
+    \Drupal::service('module_installer')->uninstall(['common']);
+  }
+
+}

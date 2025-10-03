@@ -37,6 +37,7 @@ class MetastoreUpdatePathTest extends UpdatePathTestBase {
     $field_settings = $data_form_config->get('content.field_json_metadata');
     $this->assertEquals('json_form_widget', $field_settings['type']);
 
+    \Drupal::service('module_installer')->install(['dkan_common']);
     $this->runUpdates();
 
     // Confirm results of update 8010.
