@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @covers \Drupal\dkan_common\UrlHostTokenResolver
  *
  * @group dkan
- * 'dkan_common'
+ * @group dkan_common
  * @group unit
  */
 class UrlHostTokenResolverTest extends TestCase {

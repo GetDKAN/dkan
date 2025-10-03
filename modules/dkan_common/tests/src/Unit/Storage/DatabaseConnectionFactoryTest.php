@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @coversDefaultClass \Drupal\dkan_common\Storage\DatabaseConnectionFactory
  *
  * @group dkan
- * 'dkan_common'
+ * @group dkan_common
  * @group unit
  */
 class DatabaseConnectionFactoryTest extends TestCase {

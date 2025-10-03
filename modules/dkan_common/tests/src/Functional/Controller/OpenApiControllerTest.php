@@ -10,7 +10,7 @@ use Drupal\Tests\BrowserTestBase;
  * @coversDefaultClass \Drupal\dkan_common\Controller\OpenApiController
  *
  * @group dkan
- * 'dkan_common'
+ * @group dkan_common
  * @group functional
  * @group btb
  * @group functional1

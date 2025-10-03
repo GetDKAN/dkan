@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @group dkan
- * 'dkan_common'
+ * @group dkan_common
  * @group unit
  */
 class DrupalFilesTest extends TestCase {

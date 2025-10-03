@@ -14,7 +14,7 @@ use Procrastinator\Result;
  * @coversDefaultClass \Drupal\dkan_common\FileFetcher\FileFetcherFactory
  *
  * @group dkan
- * 'dkan_common'
+ * @group dkan_common
  * @group kernel
  */
 class FileFetcherFactoryTest extends KernelTestBase {

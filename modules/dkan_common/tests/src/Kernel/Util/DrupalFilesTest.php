@@ -10,7 +10,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @coversDefaultClass \Drupal\dkan_common\Util\DrupalFiles
  *
  * @group dkan
- * 'dkan_common'
+ * @group dkan_common
  * @group kernel
  */
 class DrupalFilesTest extends KernelTestBase {

@@ -9,7 +9,7 @@ use Drupal\KernelTests\KernelTestBase;
 
 /**
  * @group dkan
- * 'dkan_common'
+ * @group dkan_common
  * @group kernel
  */
 class DatasetInfoTest extends KernelTestBase {
