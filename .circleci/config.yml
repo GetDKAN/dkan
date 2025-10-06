@@ -34,7 +34,7 @@ commands:
         type: string
       dkan_recommended_branch:
         description: "Branch of getdkan/recommended-project to use."
-        default: "10.3.x-dev"
+        default: "10.4.x-dev"
         type: string
     steps:
       - run:
@@ -111,7 +111,7 @@ commands:
                   ddev composer config repositories.dkan path dkan
                   # To avoid dependency issues when installing on PHP 8.1 we need to re-require openapi-httpfoundation-testing.
                   rm composer.lock
-                  ddev composer require getdkan/dkan:3.x-dev --no-install -W
+                  ddev composer require getdkan/dkan:@dev --no-install -W
                   ddev composer require --dev osteel/openapi-httpfoundation-testing -W
                   ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
@@ -133,7 +133,7 @@ jobs:
         type: string
       dkan_recommended_branch:
         description: "Branch of getdkan/recommended-project to use."
-        default: "10.3.x-dev"
+        default: "10.4.x-dev"
         type: string
       report_coverage:
         description: "Generate coverage report and send it to Qlty"
@@ -226,7 +226,7 @@ jobs:
         type: string
       dkan_recommended_branch:
         description: "Branch of getdkan/recommended-project to use."
-        default: "10.3.x-dev"
+        default: "10.4.x-dev"
         type: string
       upgrade:
         description: "If true, will install the latest stable DKAN version and test upgrade"
@@ -297,4 +297,4 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          dkan_recommended_branch: "10.3.x-dev"
+          dkan_recommended_branch: "10.4.x-dev"
