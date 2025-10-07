@@ -28,6 +28,9 @@ class DkanCommonUpdatePathTest extends UpdatePathTestBase {
    * Test metastore module update 8010.
    */
   public function testRenameUpdate(): void {
+    $this->drupalGet('<front>');
+    $this->assertSession()->pageTextContains('Log in');
+
     $config = \Drupal::configFactory()->getEditable('common.settings');
     $this->assertFalse($config->get('always_use_existing_local_perspective'));
     // Assert common module is installed
