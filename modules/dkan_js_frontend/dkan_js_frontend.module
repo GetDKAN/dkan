@@ -19,19 +19,22 @@ const DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK = [
 
 /**
  * Implements hook_library_info_build().
- * Collects all CSS/JS files in the paths set in config 
- * and adds them the dkan_js_frontend.
+ *
+ * Collects all CSS/JS files in the paths set in config and adds them to
+ * dkan_js_frontend.
  *
  * @return array
  */
 function dkan_js_frontend_library_info_build() {
   $libraries = [];
-  $minified = \Drupal::config('dkan_js_frontend.config')->get('minified');
-  $preprocess = \Drupal::config('dkan_js_frontend.config')->get('preprocess');
-  $js_path = \Drupal::config('dkan_js_frontend.config')->get('js_folder');
-  $css_path = \Drupal::config('dkan_js_frontend.config')->get('css_folder');
-  $js = \Drupal::config('dkan_js_frontend.config')->get('js');
-  $css = \Drupal::config('dkan_js_frontend.config')->get('js');
+
+  $config = \Drupal::config('dkan_js_frontend');
+  $minified = $config->get('minified') ?? FALSE;
+  $preprocess = $config->get('preprocess') ?? TRUE;
+  $js_path = $config->get('js_folder');
+  $css_path = $config->get('css_folder');
+  $js = $config->get('js');
+  $css = $config->get('css');
 
   foreach(glob(\Drupal::root() . $js_path . '*.js') as $full_path) {
     $basename = basename($full_path);
@@ -73,7 +76,7 @@ function dkan_js_frontend_library_info_build() {
       }
       // Set the weight if available.
       if(isset($css['weight'])) {
-        $libraries['dkan_js_frontend']['css']['theme'][$js_pcss_pathath . $basename]['weight'] = $css['weight'];
+        $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['weight'] = $css['weight'];
       }
     }
     $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['minified'] = $minified ?? false;
@@ -88,6 +91,8 @@ function dkan_js_frontend_library_info_build() {
 /**
  * Implements hook_page_attachments().
  *
+ * Any route with a 'name' default with a value of dkan_js_frontend gets the
+ * library attached.
  */
 function dkan_js_frontend_page_attachments(array &$page) {
   $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
@@ -108,12 +113,12 @@ function dkan_js_frontend_theme_suggestions_page_alter(array &$suggestions, arra
 
 /**
  * Implements hook_theme().
- * 
+ *
  * Register a module or theme's theme implementations.
  * The implementations declared by this hook specify how a particular render array is to be rendered as HTML.
- * 
+ *
  * See: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/function/hook_theme/8.2.x
- * 
+ *
  * If you change this method, clear theme registry and routing table 'drush cc theme-registry' and 'drush cc router'.
  */
 function dkan_js_frontend_theme($existing, $type, $theme, $path) {
