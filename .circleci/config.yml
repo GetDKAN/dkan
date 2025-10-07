@@ -34,7 +34,7 @@ commands:
         type: string
       drupal_core_constraint:
         description: "Branch of getdkan/recommended-project to use."
-        default: "10.3.x-dev"
+        default: "10.4.x-dev"
         type: string
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"

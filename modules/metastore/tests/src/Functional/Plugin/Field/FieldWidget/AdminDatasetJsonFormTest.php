@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\json_form_widget\Functional;
+namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
 
 /**
  * Test the json form widget.
