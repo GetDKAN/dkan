@@ -1,0 +1,7 @@
+name: 'DKAN Common'
+type: module
+description: 'Provides common functionality for DKAN modules.'
+core_version_requirement: ^10.4 || ^11
+package: DKAN
+dependencies:
+  - dkan:common
