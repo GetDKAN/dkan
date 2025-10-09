@@ -6,9 +6,17 @@
  */
 
 /**
- * Update hook to enable transitional dkan_metastore_search module.
+ * Implements hook_install().
  */
-function metastore_search_update_9001() {
+function metastore_facets_install() {
+  // Run the update hook if we're just enabling for the first time.
+  metastore_facets_update_9001();
+}
+
+/**
+ * Update hook to enable transitional dkan_metastore_facets module.
+ */
+function metastore_facets_update_9001() {
   if (!\Drupal::moduleHandler()->moduleExists('dkan_metastore_facets')) {
     \Drupal::service('module_installer')->install(['dkan_metastore_facets']);
   }
