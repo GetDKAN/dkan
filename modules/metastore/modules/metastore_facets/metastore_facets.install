@@ -9,14 +9,14 @@
  * Implements hook_install().
  */
 function metastore_facets_install() {
-  // Run the update hook if we're just enabling for the first time.
-  metastore_facets_update_9001();
+  // Set the schema version to ensure update hook runs even on new install.
+  \Drupal::service('update.update_hook_registry')->setInstalledVersion('metastore_facets', 9000);
 }
 
 /**
  * Update hook to enable transitional dkan_metastore_facets module.
  */
-function metastore_facets_update_9001() {
+function metastore_facets_update_9001(&$sandbox) {
   if (!\Drupal::moduleHandler()->moduleExists('dkan_metastore_facets')) {
     \Drupal::service('module_installer')->install(['dkan_metastore_facets']);
   }
