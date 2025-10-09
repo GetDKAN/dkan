@@ -187,8 +187,7 @@ function metastore_update_8011() {
  * Enable the dkan_metastore transitional module, in preparation for 4.x.
  */
 function metastore_update_8012(&$sandbox) {
-  $module_installer = \Drupal::service('module_installer');
-  if (!$module_installer->isInstalled('dkan_metastore')) {
-    $module_installer->install(['dkan_metastore'], TRUE);
+  if (!\Drupal::service('module_handler')->moduleExists('dkan_metastore')) {
+    \Drupal::service('module_installer')->install(['dkan_metastore'], TRUE);
   }
 }
