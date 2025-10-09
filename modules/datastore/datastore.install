@@ -193,3 +193,12 @@ function datastore_update_9005() {
   $config->set('purge_table', (bool) $config->get('purge_table'));
   $config->save();
 }
+
+/**
+ * Enable the dkan_datastore transitional module.
+ */
+function datastore_update_9006() {
+  if (!\Drupal::service('module_handler')->moduleExists('dkan_datastore')) {
+    \Drupal::service('module_installer')->install(['dkan_datastore'], TRUE);
+  }
+}
