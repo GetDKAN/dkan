@@ -181,3 +181,14 @@ function metastore_update_8011() {
     $entity_form_display->set('content.field_json_metadata', $settings)->save(TRUE);
   }
 }
+
+
+/**
+ * Enable the dkan_metastore transitional module, in preparation for 4.x.
+ */
+function metastore_update_8012(&$sandbox) {
+  $module_installer = \Drupal::service('module_installer');
+  if (!$module_installer->isInstalled('dkan_metastore')) {
+    $module_installer->install(['dkan_metastore'], TRUE);
+  }
+}
