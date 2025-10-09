@@ -1,0 +1,7 @@
+name: DKAN Administration (transitional)
+description: Provides administrative views for managing dataset content.
+type: module
+core_version_requirement: ^10.4 || ^11
+dependencies:
+  - dkan:metastore_admin
+package: DKAN 4.x Transition
