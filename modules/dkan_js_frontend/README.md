@@ -9,9 +9,9 @@ The paths used are defined by the `dkan_js_frontend.config` yml. In the routes a
 If the Drupal [Simple XML sitemap module](https://www.drupal.org/project/simple_sitemap) is installed, the DKAN JS Frontend module will automatically add static routes and dataset routes listed in the `dkan_js_frontend.config` yml to the default sitemap.
 
 ## JS/CSS
-The module assumes Create React App (CRA) has been loaded into the `/src/frontend` folder of the site. This can be changed by updating the `dkan_js_frontend.config` keys of `css_folder` and `js_folder` with the new directory path.
+The module assumes a JavaScript app has been loaded into the `/src/frontend` folder of the site. This can be changed by updating the `dkan_js_frontend.config` keys of `css_folder` and `js_folder` with the new directory path.
 
-The code will glob all files in the folders specified and attach them to any route/path that has been defined. The glob functionality should allow you to get around issues like CRA's hash in file names. The JS/CSS is directly attached to the page template provided, so the generated `index.html` file from CRA will not be used so all header updates will need to be made in Drupal and not the public files provided by the JS framework.
+The code will glob all files in the folders specified and attach them to any route/path that has been defined. The glob functionality should allow you to get around issues like Create React App (CRA)'s hash in file names. The JS/CSS is directly attached to the page template provided, so the generated `index.html` file from CRA will not be used so all header updates will need to be made in Drupal and not the public files provided by the JS framework.
 
 ## [Data Catalog App](https://github.com/GetDKAN/data-catalog-app#readme)
 
