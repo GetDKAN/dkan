@@ -4,5 +4,5 @@ type: module
 core_version_requirement: ^10.2 || ^11
 dependencies:
   - drupal:field
-  - getdkan:metastore
+  - dkan:metastore
 package: DKAN
