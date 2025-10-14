@@ -37,30 +37,34 @@ commands:
         default: "10.3.x-dev"
         type: string
     steps:
-      - run:
-          # TODO: We might not need to do this.
-          name: Set up composer config
-          command: |
-            mkdir ~/.composer
-            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
+      # - run:
+      #     # TODO: We might not need to do this.
+      #     name: Set up composer config
+      #     command: |
+      #       mkdir ~/.composer
+      #       bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
       - install-ddev
       - run:
           name: Build site codebase
           command: |
+            # Help debug ddev install issues.
             which ddev
             ddev --version
-            ddev config global --instrumentation-opt-in=false
-            ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot
-            ddev add-on get https://github.com/GetDKAN/ddev-dkan/archive/refs/heads/<< parameters.addon_branch >>.tar.gz
+            # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
+            ddev config --project-type=drupal --docroot=web --php-version=8.3 --corepack-enable --instrumentation-opt-in=false
+            ddev add-on get ddev/ddev-drupal-contrib
+            ddev start
+            ddev poser
+            ddev select2
+            ddev symlink-project
+            ddev config --database="<< parameters.database_version >>" --php-version="<< parameters.php_version >>" --update
             ddev restart
-            ddev dkan-init --project-version << parameters.dkan_recommended_branch>> --force
-            bash -c 'echo COMPOSER_AUTH=$COMPOSER_AUTH' > .ddev/.env
-            # Modify config to use our PHP version and database.
-            ddev delete --omit-snapshot --yes
-            ddev config --database="<< parameters.database_version >>" --php-version="<< parameters.php_version >>"
+            # Pass composer token to ddev -- maybe there's a better way to do this.
+            bash -c 'echo COMPOSER_AUTH=$COMPOSER_AUTH' >> .ddev/.env
+            # More debugging info.
             cat .ddev/config.yaml
-            ddev restart
             ddev status
+            # Set up test results dir.
             mkdir -p test_results
 
   prepare_site:
