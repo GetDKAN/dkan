@@ -15,6 +15,7 @@ tagfile
 /vendor
 /tests/reports
 /web
+/recipes
 .phpunit.result.cache
 .phpunit.cache
 docs/build
