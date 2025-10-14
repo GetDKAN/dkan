@@ -36,6 +36,14 @@ commands:
         description: "Branch of getdkan/recommended-project to use."
         default: "10.3.x-dev"
         type: string
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
       - run:
           # TODO: We might not need to do this.
@@ -129,7 +137,6 @@ jobs:
           php_version: << parameters.php_version >>
           database_version: << parameters.database_version >>
           drupal_core_constraint: << parameters.drupal_core_constraint >>
-      - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: false
       - run:
@@ -218,7 +225,6 @@ jobs:
           php_version: << parameters.php_version >>
           database_version: << parameters.database_version >>
           drupal_core_constraint: << parameters.drupal_core_constraint >>
-      - prepare_site:
           upgrade: << parameters.upgrade >>
           needs_cypress: true
       - run:
