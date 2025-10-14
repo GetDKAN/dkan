@@ -18,6 +18,7 @@ function dkan_datastore_install() {
       $new_config->set($key, $value);
     }
     $new_config->save();
+    \Drupal::logger('dkan_datastore')->notice('Copied config from datastore.');
   }
 
 }

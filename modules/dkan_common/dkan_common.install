@@ -17,6 +17,7 @@ function dkan_common_install() {
     \Drupal::configFactory()->getEditable('dkan_common.settings')
       ->set('always_use_existing_local_perspective', $local_perspective)
       ->save();
+    \Drupal::logger('dkan_common')->notice('Copied config from common.');
   }
 
 }
