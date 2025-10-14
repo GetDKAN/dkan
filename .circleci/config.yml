@@ -52,6 +52,7 @@ commands:
             mkdir ~/.composer
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
       - install-ddev
+      - checkout
       - when:
           condition: << parameters.upgrade >>
           steps:
