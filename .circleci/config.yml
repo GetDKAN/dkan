@@ -50,8 +50,9 @@ commands:
             # Help debug ddev install issues.
             which ddev
             ddev --version
+            ddev config global --instrumentation-opt-in=false
             # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
-            ddev config --project-type=drupal --docroot=web --php-version=8.3 --corepack-enable --instrumentation-opt-in=false
+            ddev config --project-type=drupal --docroot=web --php-version=8.3 --corepack-enable
             ddev add-on get ddev/ddev-drupal-contrib
             ddev start
             ddev poser
