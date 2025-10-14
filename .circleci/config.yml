@@ -160,7 +160,7 @@ jobs:
                   ddev xdebug on
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/php
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/clover
-                  ddev dkan-phpunit \
+                  ddev phpunit \
                     --$PHPUNIT_GROUP_ARG \
                     --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.cov \
@@ -194,7 +194,7 @@ jobs:
             - run:
                 name: Run PHPUnit tests
                 command: |
-                  ddev dkan-phpunit \
+                  ddev phpunit \
                     --$PHPUNIT_GROUP_ARG \
                     --log-junit /var/www/html/report/junit/junit.xml
       - store_test_results:
