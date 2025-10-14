@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\common\Traits;
 
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\Serialization\Yaml;
 use MockChain\Chain;
 use MockChain\Options;
 
@@ -50,7 +50,6 @@ trait ServiceCheckTrait {
     $dkanModules = [
       'common',
       'datastore',
-      'frontend',
       'harvest',
       'metastore',
     ];
