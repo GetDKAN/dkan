@@ -115,7 +115,11 @@ trait ServiceCheckTrait {
    * Private.
    */
   private function getRelativeDrupalPath() {
-    return getenv('DRUPAL_ROOT');
+    $root = getenv('DRUPAL_ROOT');
+    if (!$root) {
+      throw new \Exception('DRUPAL_ROOT environment variable not set.');
+    }
+    return $root;
   }
 
 }
