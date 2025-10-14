@@ -22,6 +22,3 @@ docs/build
 docs/.venv
 /.editorconfig
 /.gitattributes
-.ddev/*
-!.ddev/.env.copy-me
-!.ddev/config.local.yaml
