@@ -62,6 +62,7 @@ commands:
             # Set up Drupal version env
             ddev dotenv set .ddev/.env.web --drupal-core "<< parameters.drupal_core_constraint >>"
             ddev dotenv set .ddev/.env.web --composer-no-interaction "1"
+            ddev dotenv set .ddev/.env.web --drupal-root "/var/www/html/web"
             # Pass composer token to ddev -- maybe there's a better way to do this.
             ddev dotenv set .ddev/.env.web --composer-auth "$COMPOSER_AUTH"
             # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib

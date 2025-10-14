@@ -117,7 +117,7 @@ trait ServiceCheckTrait {
   private function getRelativeDrupalPath() {
     $root = getenv('DRUPAL_ROOT');
     if (!$root) {
-      throw new \Exception('DRUPAL_ROOT environment variable not set.');
+      throw new \Exception('DRUPAL_ROOT environment variable not set. If using ddev, try `ddev dotenv set .ddev/.env.web --drupal-root /var/www/html/web`');
     }
     return $root;
   }
