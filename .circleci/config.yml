@@ -67,6 +67,10 @@ commands:
             which ddev
             ddev --version
             ddev config global --instrumentation-opt-in=false
+            ddev config --project-type=drupal \
+              --docroot=web --database="<< parameters.database_version >>" \
+              --php-version="<< parameters.php_version >>" --corepack-enable
+            ddev add-on get ddev/ddev-drupal-contrib
             # Set up Drupal version env
             ddev dotenv set .ddev/.env.web --drupal-core "<< parameters.drupal_core_constraint >>"
             ddev dotenv set .ddev/.env.web --composer-no-interaction "1"
@@ -74,10 +78,6 @@ commands:
             # Pass composer token to ddev -- maybe there's a better way to do this.
             ddev dotenv set .ddev/.env.web --composer-auth "$COMPOSER_AUTH"
             # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
-            ddev config --project-type=drupal \
-              --docroot=web --database="<< parameters.database_version >>" \
-              --php-version="<< parameters.php_version >>" --corepack-enable
-            ddev add-on get ddev/ddev-drupal-contrib
             ddev start
             ddev poser
             ddev select2
