@@ -269,7 +269,7 @@ workflows:
             parameters:
               drupal_core_constraint: ["~11.2", "~11.1", "~11.0"]
               php_version: ["8.4", "8.3"]
-              database_version: ["mariadb:10.6"]
+              database_version: ["mariadb:10.11"]
       - phpunit:
           matrix:
             parameters:
