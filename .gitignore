@@ -22,3 +22,7 @@ docs/build
 docs/.venv
 /.editorconfig
 /.gitattributes
+.ddev/*
+!.ddev/commands/web/dkan-site-install
+!.ddev/commands/web/select2
+!.ddev/misc/
