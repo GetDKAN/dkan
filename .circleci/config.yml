@@ -266,7 +266,7 @@ workflows:
           name: install_test_cypress
           drupal_core_constraint: "10.4.x-dev"
       - phpunit:
-          name: "Install target (Drupal 10.3, PHP 8.3)"
+          name: "Install target (Drupal 10.4, PHP 8.3)"
           report_coverage: true
           matrix:
             parameters:
