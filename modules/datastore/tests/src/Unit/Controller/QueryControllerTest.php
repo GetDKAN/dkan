@@ -19,6 +19,7 @@ use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use MockChain\Chain;
 use MockChain\Options;
+use Pdo\Sqlite;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -535,8 +536,8 @@ class QueryControllerTest extends TestCase {
    *   A database table storage class useable for datastore queries.
    */
   public function mockDatastoreTable() {
-    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
-    // $connection->query('CREATE TABLE `datastore_2` (`record_number` INTEGER NOT NULL, state TEXT, year INT);');
+    $pdo = (class_exists(Sqlite::class)) ? new Sqlite('sqlite::memory:') : new \PDO('sqlite::memory:');
+    $connection = new SqliteConnection($pdo, []);
     $storage = new SqliteDatabaseTable(
       $connection,
       $this->resource,
