@@ -61,7 +61,7 @@ commands:
                 command: |
                   git checkout 2.x
                   # The following should be removed once the 2.x branch has the ddev add-on config.
-                  git checkout $CIRCLE_BRANCH -- .ddev
+                  git checkout $CIRCLE_BRANCH -- .ddev composer.json
 
       - run:
           name: Build site codebase
