@@ -103,6 +103,7 @@ commands:
             - run:
                 name: Update to testing branch
                 command: |
+                  git stash
                   git checkout $CIRCLE_BRANCH
                   ddev poser
                   ddev drush updb -y
