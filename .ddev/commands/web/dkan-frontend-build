@@ -1,0 +1,17 @@
+#!/bin/bash
+#ddev-generated
+
+## Description: Build the frontend for DKAN.
+## Usage: dkan-frontend-build
+
+# Fail early, fail often.
+set -eu -o pipefail
+
+FRONTEND_DOCROOT_DIR="$DDEV_DOCROOT/frontend"
+
+cd $FRONTEND_DOCROOT_DIR || exit
+npm run build --force
+
+drush cr
+
+echo "Frontend build complete."
