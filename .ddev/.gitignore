@@ -4,3 +4,4 @@
 !/commands/web/
 !/commands/web/select2
 !/commands/web/dkan-site-install
+!/misc/**
