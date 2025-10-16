@@ -240,22 +240,22 @@ jobs:
       - run:
           name: Run Cypress tests
           command: |
-            mkdir dkan/cypress/tmp
-            mkdir dkan/cypress/results
-            mv $(circleci tests glob dkan/cypress/e2e/*.cy.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
-            rm dkan/cypress/e2e/*
-            mv dkan/cypress/tmp/* dkan/cypress/e2e
+            mkdir cypress/tmp
+            mkdir cypress/results
+            mv $(circleci tests glob cypress/e2e/*.cy.js | circleci tests split --split-by=timings) cypress/tmp || true
+            rm cypress/e2e/*
+            mv cypress/tmp/* cypress/e2e
             ddev npm install cypress --save-dev
             ddev dkan-module-test-cypress \
               --headless \
               --reporter junit \
               --reporter-options "mochaFile=cypress/results/cypress-results-[hash].xml"
       - store_artifacts:
-          path: dkan/cypress/screenshots
+          path: cypress/screenshots
       - store_artifacts:
-          path: dkan/cypress/videos
+          path: cypress/videos
       - store_test_results:
-          path: dkan/cypress/results
+          path: cypress/results
 
 workflows:
   version: 2
