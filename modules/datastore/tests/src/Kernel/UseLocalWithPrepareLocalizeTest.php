@@ -21,10 +21,11 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'node',
+    'user',
     'common',
     'datastore',
     'metastore',
-    'node',
   ];
 
   protected $defaultTheme = 'stark';

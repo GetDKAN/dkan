@@ -19,10 +19,11 @@ use Drupal\harvest\ETL\Load\Simple;
 class HarvestServiceTest extends KernelTestBase {
 
   protected static $modules = [
+    'node',
+    'user',
     'common',
     'harvest',
     'metastore',
-    'node',
   ];
 
   protected function setUp() : void {

@@ -20,10 +20,11 @@ use Procrastinator\Result;
 class ResourceLocalizerTest extends KernelTestBase {
 
   protected static $modules = [
+    'node',
+    'user',
     'common',
     'datastore',
     'metastore',
-    'node',
   ];
 
   /**

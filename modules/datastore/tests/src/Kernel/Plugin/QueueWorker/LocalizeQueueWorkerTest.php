@@ -28,10 +28,11 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'node',
+    'user',
     'common',
     'datastore',
     'metastore',
-    'node',
   ];
 
   protected function setUp() : void {

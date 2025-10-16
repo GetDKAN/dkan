@@ -18,10 +18,11 @@ use Procrastinator\Result;
 class ImportInfoTest extends KernelTestBase {
 
   protected static $modules = [
+    'node',
+    'user',
     'common',
     'datastore',
     'metastore',
-    'node',
   ];
 
   /**
