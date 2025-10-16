@@ -37,8 +37,8 @@ for TU_TEST_USER in "${TU_TEST_USERS[@]}"; do
   name=$(jq -r '.name' <<<"$TU_TEST_USER")
   mail=$(jq -r '.mail' <<<"$TU_TEST_USER")
   role=$(jq -r '.role' <<<"$TU_TEST_USER")
-  drush user:create $name --password=$name --mail=$mail
-  drush user-add-role $role $name
+  ddev drush user:create $name --password=$name --mail=$mail
+  ddev drush user-add-role $role $name
 done
 
 npx cypress@"$DKAN_MODULE_CYPRESS_VERSION" info
@@ -47,7 +47,7 @@ DKAN_MODULE_RESULT=$?
 
 for TU_TEST_USER in "${TU_TEST_USERS[@]}"; do
   name=$(jq -r '.name' <<<"$TU_TEST_USER")
-  drush user:cancel --delete-content $name -y
+  ddev drush user:cancel --delete-content $name -y
 done
 
 echo "DKAN module Cypress tests complete."
