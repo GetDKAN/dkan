@@ -19,7 +19,6 @@ DRUPAL_MAJOR_VERSION=$(echo "$DRUPAL_VERSION" | cut -d'.' -f1)
 ddev config --project-type=drupal$DRUPAL_MAJOR_VERSION --docroot=web --corepack-enable
 ddev add-on get ddev/ddev-drupal-contrib
 ddev dotenv set .ddev/.env.web --drupal-core $DRUPAL_VERSION
-ddev dotenv set .ddev/.env.web --composer-no-interaction "1"
 ddev dotenv set .ddev/.env.web --drupal-root "/var/www/html/web"
 
 # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
