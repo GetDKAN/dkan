@@ -177,7 +177,6 @@ jobs:
                 command: |
                   curl https://qlty.sh | sh
                   source /home/circleci/.bash_profile
-                  cd $CIRCLE_WORKING_DIRECTORY/dkan
                   qlty coverage publish \
                     --strip-prefix "/var/www/html/dkan" \
                     --total-parts-count $CIRCLE_NODE_TOTAL \
