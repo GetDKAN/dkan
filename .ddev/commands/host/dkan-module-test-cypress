@@ -14,13 +14,10 @@
 # Fail early, fail often.
 set -u -o pipefail
 
-export DKAN_MODULE_PATH=docroot/modules/contrib/dkan
 export DKAN_MODULE_CYPRESS_VERSION=14.1.0
 
 
 echo "Starting DKAN module Cypress tests."
-
-cd $DKAN_MODULE_PATH
 
 npm cache verify
 
@@ -44,7 +41,6 @@ for TU_TEST_USER in "${TU_TEST_USERS[@]}"; do
   drush user-add-role $role $name
 done
 
-echo "Starting Cypress tests for $DDEV_PRIMARY_URL in $DKAN_MODULE_PATH"
 npx cypress@"$DKAN_MODULE_CYPRESS_VERSION" info
 CYPRESS_baseUrl="$DDEV_PRIMARY_URL" npx cypress@"$DKAN_MODULE_CYPRESS_VERSION" run "$@"
 DKAN_MODULE_RESULT=$?
