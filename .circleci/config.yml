@@ -40,10 +40,6 @@ commands:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-      needs_cypress:
-        description: "If true, will add Cypress to the DDev environment"
-        default: false
-        type: boolean
     steps:
       - run:
           # TODO: We might not need to do this.
@@ -78,6 +74,7 @@ commands:
             ddev dotenv set .ddev/.env.web --drupal-core "<< parameters.drupal_core_constraint >>"
             ddev dotenv set .ddev/.env.web --composer-no-interaction "1"
             ddev dotenv set .ddev/.env.web --drupal-root "/var/www/html/web"
+            ddev dotenv set .ddev/.env.web --xdebug-mode "coverage"
             # Pass composer token to ddev -- maybe there's a better way to do this.
             ddev dotenv set .ddev/.env.web --composer-auth "$COMPOSER_AUTH"
             # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
@@ -141,7 +138,6 @@ jobs:
           database_version: << parameters.database_version >>
           drupal_core_constraint: << parameters.drupal_core_constraint >>
           upgrade: << parameters.upgrade >>
-          needs_cypress: false
       - run:
           name: Set up GROUP_ARG variable for paralallel tests
           command: |
@@ -229,7 +225,6 @@ jobs:
           database_version: << parameters.database_version >>
           drupal_core_constraint: << parameters.drupal_core_constraint >>
           upgrade: << parameters.upgrade >>
-          needs_cypress: true
       - run:
           name: Run Cypress tests
           command: |
