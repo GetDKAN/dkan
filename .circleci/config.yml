@@ -109,15 +109,6 @@ commands:
                   ddev drush updb -y
                   ddev drush cr
                   ddev drush rq
-      - when:
-          condition: << parameters.needs_cypress >>
-          steps:
-            - run:
-                # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
-                name: Cypressify ddev
-                command: |
-                  mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
-                  ddev restart
 
 jobs:
   phpunit:
