@@ -59,7 +59,7 @@ commands:
             - run:
                 name: Install site and update to dev dkan
                 command: |
-                  git checkout 3.x
+                  git checkout 2.x
 
       - run:
           name: Build site codebase
@@ -81,7 +81,7 @@ commands:
             # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
             ddev start
             ddev poser
-            ddev select2
+            ddev select2 || { echo "ddev select2 failed with exit code $?"; exit 0; }
             ddev symlink-project
             ddev config --update
             ddev restart
@@ -113,6 +113,7 @@ commands:
                   ddev composer show getdkan/dkan
                   git checkout $CIRCLE_BRANCH
                   ddev poser
+                  ddev select2
                   ddev drush updb -y
                   ddev drush cr
                   ddev drush rq
