@@ -31,7 +31,7 @@ const DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK = [
 function dkan_js_frontend_library_info_build() {
   $libraries = [];
 
-  $config = \Drupal::config('dkan_js_frontend');
+  $config = \Drupal::config('dkan_js_frontend.config');
   $minified = $config->get('minified') ?? FALSE;
   $preprocess = $config->get('preprocess') ?? TRUE;
   $js_path = $config->get('js_folder');
