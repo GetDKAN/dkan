@@ -103,7 +103,6 @@ commands:
             - run:
                 name: Update to testing branch
                 command: |
-                  ddev composer show getdkan/dkan
                   git checkout $CIRCLE_BRANCH
                   ddev poser
                   ddev drush updb -y
