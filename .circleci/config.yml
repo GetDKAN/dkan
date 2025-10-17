@@ -178,7 +178,7 @@ jobs:
                   curl https://qlty.sh | sh
                   source /home/circleci/.bash_profile
                   qlty coverage publish \
-                    --strip-prefix "/var/www/html/dkan" \
+                    --strip-prefix "/var/www/html" \
                     --total-parts-count $CIRCLE_NODE_TOTAL \
                     $CIRCLE_WORKING_DIRECTORY/report/clover/clover-$CIRCLE_NODE_INDEX.xml
             - persist_to_workspace:
