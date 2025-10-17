@@ -13,7 +13,7 @@ tagfile
 /modules/sample_content/sample_content.json
 /node_modules
 /vendor
-/tests/reports
+/report
 /web
 /recipes
 .phpunit.result.cache
