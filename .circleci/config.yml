@@ -66,29 +66,24 @@ commands:
             which ddev
             ddev --version
             ddev config global --instrumentation-opt-in=false
+            # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
             ddev config --project-type=drupal \
               --docroot=web --database="<< parameters.database_version >>" \
               --php-version="<< parameters.php_version >>" --corepack-enable
             ddev add-on get ddev/ddev-drupal-contrib
-            # Set up Drupal version env
-            ddev dotenv set .ddev/.env.web --drupal-core "<< parameters.drupal_core_constraint >>"
-            ddev dotenv set .ddev/.env.web --composer-no-interaction "1"
-            ddev dotenv set .ddev/.env.web --drupal-root "/var/www/html/web"
-            ddev dotenv set .ddev/.env.web --xdebug-mode "coverage"
-            # Pass composer token to ddev -- maybe there's a better way to do this.
-            ddev dotenv set .ddev/.env.web --composer-auth "$COMPOSER_AUTH"
-            # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
+            # Set up env vars for Drupal version, composer, xdebug and drupal root.
+            ddev dotenv set .ddev/.env.web --drupal-core "<< parameters.drupal_core_constraint >>" \
+              --composer-no-interaction "1" \
+              --drupal-root "/var/www/html/web" \
+              --xdebug-mode "coverage" \
+              --composer-auth "$COMPOSER_AUTH"
             ddev start
             ddev poser
             ddev select2
             ddev symlink-project
             ddev config --update
             ddev restart
-            # More debugging info.
-            cat .ddev/config.yaml
             ddev status
-            # Set up test results dir.
-            mkdir -p test_results
       - run:
           name: Install site
           command: |
@@ -173,7 +168,7 @@ jobs:
                   fi
                   exit $TEST_RESULT
             - run:
-                name: Upload coverage report to Qlty
+                name: Upload coverage report to qlty.sh
                 command: |
                   curl https://qlty.sh | sh
                   source /home/circleci/.bash_profile
@@ -184,7 +179,7 @@ jobs:
             - persist_to_workspace:
                 root: report
                 paths:
-                - php
+                  - php
       - unless:
           condition: << parameters.report_coverage >>
           steps:
@@ -204,7 +199,7 @@ jobs:
     parameters:
       php_version:
         description: "PHP major.minor for DDev to use."
-        default: "8.2"
+        default: "8.3"
         type: string
       database_version:
         description: "Database version for DDev to use."
