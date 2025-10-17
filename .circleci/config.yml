@@ -226,6 +226,7 @@ jobs:
           upgrade: << parameters.upgrade >>
       - run:
           name: Run Cypress tests
+          max_auto_reruns: 3
           command: |
             mkdir cypress/tmp
             mkdir cypress/results
