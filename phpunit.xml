@@ -6,12 +6,10 @@
          colors="true">
     <coverage>
         <include>
-            <directory>.</directory>
+            <directory>src</directory>
+            <directory>modules</directory>
         </include>
         <exclude>
-            <file>rector.php</file>
-            <directory>tests</directory>
-            <directory>vendor</directory>
             <directory>modules/common/tests</directory>
             <directory>modules/datastore/tests</directory>
             <directory>modules/datastore/modules/datastore_mysql_import/tests</directory>
