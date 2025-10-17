@@ -20,11 +20,6 @@ Additional resources
 --------------------
 
 - `DKAN Discussions <https://github.com/GetDKAN/dkan/discussions>`_: Central location for the DKAN community.
-- `DKAN DDEV Documentation <https://getdkan.github.io/ddev-dkan/>`_: Helpful dkan commands that work with DDEV.
+- `Drupal Slack <https://www.drupal.org/slack>`_: Find us in `#dkan <https://drupal.slack.com/archives/CA98AMDPA>`_.
 - `Drupal Documentation <https://www.drupal.org/documentation>`_
 - `CKAN <https://ckan.org/>`_: Open-source data portal that is the inspiration for DKAN
-
-Index
------
-
-:ref:`genindex`
