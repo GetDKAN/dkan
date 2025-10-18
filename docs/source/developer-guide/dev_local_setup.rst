@@ -17,7 +17,7 @@ project in the folder you've cloned DKAN to. Follow these steps:
    not conflict with any other DDEV projects you may have running.
 2. Navigate into the new folder. You should see both ``dkan.info.yml`` and
    ``ddev-init.sh`` in the root.
-3. Run ``ddev-init.sh``. If you want to build a specific version of Drupal,
+3. Run ``. ddev-init.sh``. If you want to build a specific version of Drupal,
    provide that version as an argument. E.g. ``ddev-init.sh 11.1``. The default
    is currently 10.4.
 4. You now have a full site codebase (the Drupal root) lives in a new subfolder
