@@ -9,6 +9,12 @@
 DRUPAL_VERSION=${1:-10.4}
 set -e
 
+# Check if /web exists and is not empty
+if [ -d "web" ] && [ "$(ls -A web)" ]; then
+  echo "Error: 'web' directory exists and is not empty. This script is not intended to run on an already-built project." >&2
+  exit 1
+fi
+
 # Validate semver format (X.Y or X.Y.Z)
 if [[ ! $DRUPAL_VERSION =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
   echo "Error: DRUPAL_VERSION must follow semver format (e.g., 10.4 or 10.4.1)" >&2
