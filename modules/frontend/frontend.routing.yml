@@ -1,2 +1,0 @@
-route_callbacks:
-  - 'frontend.route_provider::routes'
