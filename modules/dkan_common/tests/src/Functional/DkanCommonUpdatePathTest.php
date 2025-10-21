@@ -20,7 +20,7 @@ class DkanCommonUpdatePathTest extends UpdatePathTestBase {
    */
   protected function setDatabaseDumpFiles() {
     $this->databaseDumpFiles = [
-      dirname(__DIR__, 5) . '/tests/fixtures/update/update-2.20.0.php.gz',
+      dirname(__DIR__, 5) . '/tests/fixtures/update/update-3.x-dev.php.gz',
     ];
   }
 
@@ -47,7 +47,6 @@ class DkanCommonUpdatePathTest extends UpdatePathTestBase {
     // Get a baseline for pre-8010.
     $this->assertTrue($config->get('always_use_existing_local_perspective'));
 
-    \Drupal::service('module_installer')->install(['dkan_common']);
     $this->runUpdates();
 
     // Confirm common is disabled
