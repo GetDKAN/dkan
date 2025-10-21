@@ -113,3 +113,12 @@ function common_update_90202(&$sandbox) {
     $config->save(TRUE);
   }
 }
+
+/**
+ * Enable transitional dkan_common module, in preparation for 4.x.
+ */
+function common_update_90203(&$sandbox) {
+  if (!\Drupal::service('module_handler')->moduleExists('dkan_common')) {
+    \Drupal::service('module_installer')->install(['dkan_common'], TRUE);
+  }
+}
