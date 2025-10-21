@@ -1,6 +1,5 @@
 <?php
 
-use Drupal\harvest\HarvestUtility;
 use Drupal\user\Entity\Role;
 
 /**
@@ -226,4 +225,13 @@ function harvest_update_10002()
   /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
   $harvest_utility = \Drupal::service('dkan.harvest.utility');
   $harvest_utility->harvestNammespaceUpdate();
+}
+
+/**
+ * Enable transitional dkan_harvest module, in preparation for 4.x.
+ */
+function harvest_update_10002(&$sandbox) {
+  if (!\Drupal::service('module_handler')->moduleExists('dkan_harvest')) {
+    \Drupal::service('module_installer')->install(['dkan_harvest'], TRUE);
+  }
 }
