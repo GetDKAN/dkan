@@ -144,7 +144,7 @@ function metastore_admin_update_10002() {
 }
 
 /**
- * Enable transitional dkan_metastore_admin module.
+ * Enable transitional dkan_metastore_admin module, in preparation for 4.x.
  */
 function metastore_admin_update_10003() {
   if (!\Drupal::moduleHandler()->moduleExists('dkan_metastore_admin')) {

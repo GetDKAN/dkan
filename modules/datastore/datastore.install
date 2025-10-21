@@ -195,7 +195,7 @@ function datastore_update_9005() {
 }
 
 /**
- * Enable the dkan_datastore transitional module.
+ * Enable transitional dkan_datastore module, in preparation for 4.x.
  */
 function datastore_update_9006() {
   if (!\Drupal::service('module_handler')->moduleExists('dkan_datastore')) {

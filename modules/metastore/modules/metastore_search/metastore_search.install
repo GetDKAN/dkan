@@ -6,7 +6,7 @@
  */
 
 /**
- * Update hook to enable transitional dkan_metastore_search module.
+ * Enable transitional dkan_metastore_search transition module, in preparation for 4.x.
  */
 function metastore_search_update_9001() {
   if (!\Drupal::moduleHandler()->moduleExists('dkan_metastore_search')) {
