@@ -15,10 +15,10 @@ its codebase, see the :doc:`Local development <../developer-guide/dev_local_setu
 section of the developer guide.
 
 If you're creating a new web project that will ultimately go into production,
-use your workflow of choise for starting a new Drupal project. DKAN is a Drupal
+use your workflow of choice for starting a new Drupal project. DKAN is a Drupal
 module and can be installed into any Drupal 10+ site using `Composer <https://getcomposer.org/>`_.
 
-DKAN currently lives on Composer's main package respository, and can be added to
+DKAN currently lives on Composer's main package repository, and can be added to
 a project by running:
 
   .. prompt:: bash $
@@ -34,7 +34,7 @@ Requirements
 DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/system-requirements>`_ and -- generally -- runs anywhere Drupal is supported. For the most common setup, we recommend:
 
 -  Drupal 10+
--  MySQL: See minimum requirements for your Drupal version. MariaDB equivilants also supported.
+-  MySQL: See minimum requirements for your Drupal version. MariaDB equivalents also supported.
 -  PHP: minimum version 8.1
 -  Apache: minimum version 2.4.7
 -  Drush: minimum version 11.x.
