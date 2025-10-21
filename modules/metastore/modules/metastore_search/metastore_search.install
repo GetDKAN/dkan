@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the metastore_search module.
+ */
+
+/**
+ * Enable transitional dkan_metastore_search transition module, in preparation for 4.x.
+ */
+function metastore_search_update_9001() {
+  if (!\Drupal::moduleHandler()->moduleExists('dkan_metastore_search')) {
+    \Drupal::service('module_installer')->install(['dkan_metastore_search']);
+  }
+
+}
