@@ -18,7 +18,16 @@ class DkanStreamWrapperTest extends KernelTestBase {
 
   public function testPublicScheme() {
     $uri = 'dkan://metastore';
-    $api = json_decode(file_get_contents('dkan://metastore'));
+    try {
+      $api = json_decode(file_get_contents('dkan://metastore'));
+    }
+    catch (\Throwable $e) {
+      $this->fail('Failed to read from DKAN stream wrapper. This is usually ' .
+      'a side effect of another issue, not a problem with the stream wrapper ' .
+      'itself. Please check for other test failures, especially in the ' .
+      'functional tests, or test the /api/1 endpoint directly. ' .
+      "Full error message:\n\n" . $e->getMessage());
+    }
     $this->assertEquals('API Documentation', $api->info->title);
 
     /** @var \Drupal\Core\StreamWrapper\StreamWrapperManager $manager */
