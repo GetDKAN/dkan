@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dkan_datastore module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dkan_datastore_mysql_import_install() {
+  // If old metastore module is installed, copy all metastore settings.
+  if (\Drupal::moduleHandler()->moduleExists('datastore_mysql_import')) {
+    $config = \Drupal::configFactory()->getEditable('datastore_mysql_import.settings');
+    $settings = $config->getRawData();
+    $new_config = \Drupal::configFactory()->getEditable('dkan_datastore_mysql_import.settings');
+    foreach ($settings as $key => $value) {
+      $new_config->set($key, $value);
+    }
+    $new_config->save();
+    \Drupal::logger('dkan_datastore_mysql_import')->notice('Copied config from datastore_mysql_import.');
+  }
+
+}

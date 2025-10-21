@@ -1,0 +1,7 @@
+name: DKAN Metastore (Transitional)
+description: Stores JSON metadata as Drupal content.
+type: module
+core_version_requirement: ^10.4 || ^11
+package: DKAN 4.x Transition
+dependencies:
+  - dkan:metastore
