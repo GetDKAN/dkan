@@ -21,3 +21,22 @@ function dkan_common_install() {
   }
 
 }
+
+/**
+ * Update core.extension config to remove old common module.
+ */
+function dkan_common_update_10000(&$sandbox) {
+  // Remove common.settings config if exists.
+  if (\Drupal::configFactory()->get('common.settings')) {
+    \Drupal::configFactory()->getEditable('common.settings')->delete();
+  }
+  
+  $config = \Drupal::configFactory()->getEditable('core.extension');
+  $modules = $config->get('module');
+  if (isset($modules['common'])) {
+    unset($modules['common']);
+    $config->set('module', $modules);
+    $config->save();
+  }
+
+}
