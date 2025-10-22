@@ -132,8 +132,7 @@ class ResourceLocalizerTest extends TestCase {
       ->add(DrupalFiles::class, 'getFileSystem', FileSystem::class)
       ->add(FileSystem::class, 'prepareDirectory', NULL)
       ->add(DrupalFiles::class, 'fileCreateUrl', self::HOST . '/file.csv')
-      ->add(FileSystem::class, 'realpath', self::HOST . '/file.csv')
-      ->add(DrupalFiles::class, 'getStreamWrapperManager', StreamWrapperManager::class);
+      ->add(FileSystem::class, 'realpath', self::HOST . '/file.csv');
   }
 
   /**
