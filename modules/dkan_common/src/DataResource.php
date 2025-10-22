@@ -126,29 +126,6 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Create a DataResource object from a database record.
-   *
-   * @param object $record
-   *   Data resource record from the database. Must contain these properties:
-   *   'filePath', 'mimeType', 'perspective', 'version'.
-   *
-   * @return \Drupal\dkan_common\DataResource
-   *   DataResource object.
-   *
-   * @deprecated in dkan:8.x-2.17 and is removed from dkan:8.x-2.21. Use
-   *   DataResource::createFromEntity() instead.
-   * @see https://github.com/GetDKAN/dkan/pull/4027
-   */
-  public static function createFromRecord(object $record): DataResource {
-    $resource = new static($record->filePath, $record->mimeType, $record->perspective);
-    // MD5 of record's file path can differ from the MD5 generated in the
-    // constructor, so we have to explicitly set the identifier.
-    $resource->identifier = $record->identifier;
-    $resource->version = $record->version;
-    return $resource;
-  }
-
-  /**
    * Create a DataResource object from a Drupal entity.
    *
    * @param \Drupal\metastore\ResourceMappingInterface $mapping
@@ -232,25 +209,6 @@ class DataResource implements \JsonSerializable {
   }
 
   /**
-   * Get object storing datastore specific information about this resource.
-   *
-   * @return \Drupal\datastore\DatastoreResource
-   *   Datastore Resource.
-   *
-   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use storage
-   *   classes like DatabaseTable::getTableName() to determine correct table
-   *   names, and pass true to ::getFilePath to get the resolved URL.
-   * @see https://github.com/GetDKAN/dkan/pull/4372
-   */
-  public function getDatastoreResource(): DatastoreResource {
-    return new DatastoreResource(
-      md5($this->getUniqueIdentifier()),
-      UrlHostTokenResolver::resolve($this->getFilePath()),
-      $this->getMimeType()
-    );
-  }
-
-  /**
    * Getter.
    */
   public function getIdentifier() {
@@ -331,18 +289,6 @@ class DataResource implements \JsonSerializable {
    */
   public function getUniqueIdentifierNoPerspective(): string {
     return $this->getIdentifier() . '_' . $this->getVersion();
-  }
-
-  /**
-   * Retrieve datastore table name for resource.
-   *
-   * @deprecated in dkan:8.x-2.20 and is removed from dkan:8.x-2.21. Use storage
-   *  classes like DatabaseTable::getTableName() to determine correct table
-   *  names.
-   * @see https://github.com/GetDKAN/dkan/pull/4372
-   */
-  public function getTableName() {
-    return 'datastore_' . md5($this->getUniqueIdentifier());
   }
 
   /**
