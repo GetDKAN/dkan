@@ -85,16 +85,6 @@ class DrupalFiles implements ContainerInjectionInterface {
   }
 
   /**
-   * Getter.
-   *
-   * @deprecated in dkan:2.20.1 and is removed from dkan:2.21.0.
-   *   Unsed, cleaning up.
-   */
-  public function getStreamWrapperManager(): StreamWrapperManager {
-    return $this->streamWrapperManager;
-  }
-
-  /**
    * Retrieve File.
    *
    * Stores the file at the given destination and returns the Drupal url for
