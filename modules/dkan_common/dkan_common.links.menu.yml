@@ -4,4 +4,3 @@ system.admin_dkan:
   route_name: system.admin_dkan
   parent: 'system.admin'
   weight: 4
-

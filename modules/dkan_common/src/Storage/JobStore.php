@@ -36,7 +36,7 @@ class JobStore extends AbstractDatabaseTable {
     string $tableName,
     Connection $connection,
     EventDispatcherInterface $eventDispatcher,
-    string $deprecatedTableName = ''
+    string $deprecatedTableName = '',
   ) {
     $this->tableName = $tableName;
     $this->deprecatedTableName = $deprecatedTableName;

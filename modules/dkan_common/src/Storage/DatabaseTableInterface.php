@@ -12,12 +12,12 @@ use Contracts\StorerInterface;
  * Databaset table interface.
  */
 interface DatabaseTableInterface extends
-    BulkRetrieverInterface,
-    BulkStorerInterface,
-    \Countable,
-    RemoverInterface,
-    RetrieverInterface,
-    StorerInterface {
+  BulkRetrieverInterface,
+  BulkStorerInterface,
+  \Countable,
+  RemoverInterface,
+  RetrieverInterface,
+  StorerInterface {
 
   /**
    * Remove the table from the database.

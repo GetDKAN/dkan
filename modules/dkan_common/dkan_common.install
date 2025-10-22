@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Install, update and uninstall functions for the dkan_common module.
@@ -30,7 +31,7 @@ function dkan_common_update_10000(&$sandbox) {
   if (\Drupal::configFactory()->get('common.settings')) {
     \Drupal::configFactory()->getEditable('common.settings')->delete();
   }
-  
+
   $config = \Drupal::configFactory()->getEditable('core.extension');
   $modules = $config->get('module');
   if (isset($modules['common'])) {

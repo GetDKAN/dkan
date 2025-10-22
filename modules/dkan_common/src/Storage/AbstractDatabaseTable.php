@@ -66,7 +66,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function __construct(
     Connection $connection,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->connection = $connection;
     $this->eventDispatcher = $eventDispatcher;

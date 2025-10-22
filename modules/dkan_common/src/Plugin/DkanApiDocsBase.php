@@ -44,7 +44,7 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
     $pluginId,
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
-    TranslationInterface $stringTranslation
+    TranslationInterface $stringTranslation,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->moduleHandler = $moduleHandler;
@@ -69,7 +69,7 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
     ContainerInterface $container,
     array $configuration,
     $pluginId,
-    $pluginDefinition
+    $pluginDefinition,
   ) {
     return new static(
       $configuration,

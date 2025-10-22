@@ -61,7 +61,7 @@ class OpenApiController implements ContainerInjectionInterface {
    */
   public function __construct(
     RequestStack $requestStack,
-    DkanApiDocsGenerator $generator
+    DkanApiDocsGenerator $generator,
   ) {
     $this->requestStack = $requestStack;
     $this->generator = $generator;
