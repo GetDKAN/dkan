@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_common\Controller;
 
+use Drupal\Component\Serialization\Yaml;
 use Drupal\dkan_common\CacheableResponseTrait;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_common\DkanApiDocsGenerator;
