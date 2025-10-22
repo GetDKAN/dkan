@@ -2,7 +2,6 @@
 
 namespace Drupal\dkan_common;
 
-use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMappingInterface;
 use Procrastinator\JsonSerializeTrait;

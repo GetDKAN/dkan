@@ -8,7 +8,6 @@ use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\JobStore;
-use Drupal\dkan_common\Storage\JobStoreFactory;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Service\ImportService;
@@ -17,6 +16,7 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use MockChain\Chain;
@@ -69,7 +69,7 @@ class DatastoreServiceTest extends TestCase {
       ->add(ResourceLocalizer::class, 'remove')
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceMapper::class, 'get', $resource)
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(AbstractJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', TRUE)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ReferenceLookup::class, 'getReferencers', [$resource->getIdentifier()])
@@ -105,7 +105,6 @@ class DatastoreServiceTest extends TestCase {
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->add('dkan.datastore.service.resource_processor.dictionary_enforcer', DictionaryEnforcer::class)

@@ -148,8 +148,8 @@ namespace Drupal\Tests\dkan_common\Kernel\Util {
      * @covers ::getUnknownJobstoreTables
      */
     public function testGetAllAndUnknownJobstoreTables() {
-      /** @var \Drupal\dkan_common\Storage\JobStoreFactory $job_store_factory */
-      $job_store_factory = $this->container->get('dkan.common.job_store');
+      /** @var \Drupal\dkan_common\Storage\FileFetcherJobStoreFactory $job_store_factory */
+      $job_store_factory = $this->container->get('dkan.common.filefetcher_job_store_factory');
       // Two jobstore objects.
       /** @var \Drupal\dkan_common\Storage\JobStore $job_store */
       $job_store = $job_store_factory->getInstance(\DkanTestUtilJobSubclass::class);
