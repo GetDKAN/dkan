@@ -60,7 +60,7 @@ class JobStore extends AbstractDatabaseTable {
   /**
    * {@inheritDoc}
    */
-  protected function getTableName() {
+  public function getTableName() {
     return $this->tableName;
   }
 
