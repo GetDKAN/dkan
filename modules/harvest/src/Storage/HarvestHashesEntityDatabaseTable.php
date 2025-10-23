@@ -267,4 +267,11 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
     return NULL;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getTableName() {
+    return 'harvest_hashes';
+  }
+
 }
