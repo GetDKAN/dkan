@@ -57,7 +57,7 @@ class DatabaseTable extends AbstractDatabaseTable {
   /**
    * {@inheritdoc}
    */
-  protected function getTableName() {
+  public function getTableName() {
     return "{$this->identifier}";
   }
 
