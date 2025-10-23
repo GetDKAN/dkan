@@ -83,12 +83,9 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   }
 
   /**
-   * Get the full name of datastore db table.
-   *
-   * @return string
-   *   Table name.
+   * {@inheritdoc}
    */
-  protected function getTableName() {
+  public function getTableName() {
     return "dkan_metastore_resource_mapper";
   }
 
