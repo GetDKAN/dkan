@@ -271,7 +271,7 @@ class HarvestUtility {
       $this->logger->notice(json_encode($plan));
 
       if (isset($plan->extract->type)) {
-        $plan->extract->type = preg_replace('/^\\\\{0,1}harvest\\\\ETL/i', '\\Drupal\\harvest\\ETL', $plan->extract->type);
+        $plan->extract->type = preg_replace('/^\\\\{0,1}Harvest\\\\ETL/i', '\\Drupal\\harvest\\ETL', $plan->extract->type);
         $this->logger->notice($plan->extract->type);
         $this->harvestService->registerHarvest($plan);
       }

@@ -216,7 +216,7 @@ function harvest_update_8011(&$sandbox) {
 /**
  * Updates namespace for harvest type.
  */
-function harvest_update_10001()
+function harvest_update_10002()
 {
   /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
   $harvest_utility = \Drupal::service('dkan.harvest.utility');
