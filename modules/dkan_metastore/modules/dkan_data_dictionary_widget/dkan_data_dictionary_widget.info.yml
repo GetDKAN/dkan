@@ -1,0 +1,7 @@
+name: 'Data Dictionary Widget'
+description: 'Provides a field widget to generate a data-dictionary form'
+package: DKAN
+type: module
+core_version_requirement: ^10.2 || ^11
+dependencies:
+  - dkan:data_dictionary_widget
