@@ -37,7 +37,8 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
    */
   public function test4xTransitionUpdates(): void {
     // Drop cache container file to avoid issues with module moving.
-    \Drupal::database()->truncate('cache_container')->execute();
+    // Clear all caches.
+    // \Drupal::database()->truncate('cache_container')->execute();
 
     $this->drupalGet('<front>');
     $this->assertSession()->pageTextContains('Log in');
@@ -88,6 +89,14 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $mysqlImportConfig->set('strict_mode_disabled', TRUE);
     $mysqlImportConfig->save();
 
+    // Log in as admin and visit /node/add/data to ensure form works.
+    $this->drupalLogin($this->rootUser);
+    $this->drupalGet('node/add/data', ['query' => ['schema' => 'dataset']]);
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->pageTextContains('Create dataset');
+    // Field not available yet.
+    $this->assertSession()->fieldNotExists('field_json_metadata[0][value][title]');
+
     // Run all updates.
     $this->runUpdates();
 
@@ -134,6 +143,12 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue($dkanMysqlImportConfig->get('remove_empty_rows'));
     $this->assertTrue($dkanMysqlImportConfig->get('strict_mode_disabled'));
 
+    // Now the title and description fields are available.
+    $this->drupalGet('node/add/data', ['query' => ['schema' => 'dataset']]);
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->pageTextContains('Create dataset');
+    $this->assertSession()->fieldExists('field_json_metadata[0][value][title]');
+    $this->assertSession()->fieldExists('field_json_metadata[0][value][description]');
   }
 
 }
