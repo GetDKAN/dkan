@@ -36,10 +36,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
    * Test that common settings are copied to dkan_common on install.
    */
   public function test4xTransitionUpdates(): void {
-    // Drop cache container file to avoid issues with module moving.
-    // Clear all caches.
-    // \Drupal::database()->truncate('cache_container')->execute();
-
     $this->drupalGet('<front>');
     $this->assertSession()->pageTextContains('Log in');
 
@@ -94,11 +90,21 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->drupalGet('node/add/data', ['query' => ['schema' => 'dataset']]);
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextContains('Create dataset');
-    // Field not available yet.
+    // Field not available yet. We see this break in different ways in different
+    // situations, but the point here is to show that the form is not working
+    // immediately after the code update, but will work after the database
+    // updates.
     $this->assertSession()->fieldNotExists('field_json_metadata[0][value][title]');
 
     // Run all updates.
     $this->runUpdates();
+
+    // Now the title and description fields are available in the dataset form.
+    $this->drupalGet('node/add/data', ['query' => ['schema' => 'dataset']]);
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->pageTextContains('Create dataset');
+    $this->assertSession()->fieldExists('field_json_metadata[0][value][title]');
+    $this->assertSession()->fieldExists('field_json_metadata[0][value][description]');
 
     // Assert transitional modules are now installed.
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
@@ -142,13 +148,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $dkanMysqlImportConfig = \Drupal::configFactory()->getEditable('dkan_datastore_mysql_import.settings');
     $this->assertTrue($dkanMysqlImportConfig->get('remove_empty_rows'));
     $this->assertTrue($dkanMysqlImportConfig->get('strict_mode_disabled'));
-
-    // Now the title and description fields are available.
-    $this->drupalGet('node/add/data', ['query' => ['schema' => 'dataset']]);
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->pageTextContains('Create dataset');
-    $this->assertSession()->fieldExists('field_json_metadata[0][value][title]');
-    $this->assertSession()->fieldExists('field_json_metadata[0][value][description]');
   }
 
 }
