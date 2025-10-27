@@ -214,6 +214,11 @@ function harvest_update_8011(&$sandbox) {
 }
 
 /**
+ * Superceded by harvest_update_10002.
+ */
+function harvest_update_10001() {}
+
+/**
  * Updates namespace for harvest type.
  */
 function harvest_update_10002()
