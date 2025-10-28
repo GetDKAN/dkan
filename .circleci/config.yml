@@ -55,9 +55,7 @@ commands:
             - run:
                 name: Switch to dev branch for upgrade testing
                 command: |
-                  # For now, an "upgrade test" means jumping from 3.x to 4.x.
-                  # While we wait for ddw-n-dependencies to get merged to 3.x:
-                  git checkout ddw-n-dependencies
+                  git checkout 2.x
 
       - run:
           name: Build site codebase
