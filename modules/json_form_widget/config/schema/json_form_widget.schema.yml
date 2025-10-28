@@ -1,0 +1,4 @@
+field.widget.settings.json_form_widget:
+  type: mapping
+  label: 'JSON Form widget settings'
+  mapping: {  }
