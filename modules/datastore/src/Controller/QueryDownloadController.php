@@ -173,7 +173,7 @@ class QueryDownloadController extends AbstractQueryController {
    */
   protected function streamJsonResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $response = new StreamedJsonResponse(
-    // JSON structure with generators in which will be streamed as a list
+    // JSON structure with generators in which will be streamed as a list.
       [
         'results' => $this->loadJson($datastoreQuery, $result),
       ],
