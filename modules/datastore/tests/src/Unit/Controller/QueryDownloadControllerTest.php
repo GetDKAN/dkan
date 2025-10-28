@@ -78,7 +78,7 @@ class QueryDownloadControllerTest extends TestCase {
   /**
    * Helper function to compare output of streaming vs normal query controller.
    */
-  private function queryResultCompare($data, $resource = NULL) {
+  private function queryResultCompareCsv($data, $resource = NULL) {
     $request = $this->mockRequest($data);
     $qController = QueryController::create($this->getQueryContainer(500));
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
@@ -96,6 +96,26 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   * Helper function to compare output of json streaming vs normal query controller.
+   */
+  private function queryResultCompareJson($data, $resource = NULL) {
+    $request = $this->mockRequest($data);
+    $qController = QueryController::create($this->getQueryContainer(500));
+    $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
+    $json = $response->getContent() ?? '';
+
+    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    ob_start(self::getBuffer(...));
+    $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
+    $streamResponse->sendContent();
+    ob_get_clean();
+    $streamedJson = $this->buffer ?? '';
+
+    $this->assertEquals(count(json_decode($json)->results), count(json_decode($streamedJson)->results));
+    $this->assertEquals(json_decode($json)->results, json_decode($streamedJson)->results);
+  }
+
+  /**
    * Test streaming of a CSV file from database.
    */
   public function testStreamedQueryCsv() {
@@ -109,7 +129,39 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ];
     // Need 2 json responses which get combined on output.
-    $this->queryResultCompare($data);
+    $this->queryResultCompareCsv($data);
+  }
+
+  /**
+   * Test json stream (without specifying csv format; shouldn't work).
+   */
+  public function testStreamedQueryJson() {
+    $data = [
+      "resources" => [
+        [
+          "id" => $this->resources[2]->getIdentifier(),
+          "alias" => "t",
+        ],
+      ],
+      "format" => "json",
+    ];
+    // Need 2 json responses which get combined on output.
+    $this->queryResultCompareJson($data);
+
+//    $data = json_encode([
+//      "resources" => [
+//        [
+//          "id" => $this->resources[2]->getIdentifier(),
+//          "alias" => "t",
+//        ],
+//      ],
+//    ]);
+//    // Need 2 json responses which get combined on output.
+//    $container = $this->getQueryContainer(50);
+//    $webServiceApi = QueryDownloadController::create($container);
+//    $request = $this->mockRequest($data);
+//    $result = $webServiceApi->query($request);
+//    $this->assertEquals(400, $result->getStatusCode());
   }
 
   /**
@@ -120,7 +172,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ];
     // Need 2 json responses which get combined on output.
-    $this->queryResultCompare($data, "2");
+    $this->queryResultCompareCsv($data, "2");
   }
 
   /**
@@ -149,7 +201,7 @@ class QueryDownloadControllerTest extends TestCase {
     ];
 
     // Need 2 json responses which get combined on output.
-    $this->queryResultCompare($data);
+    $this->queryResultCompareCsv($data);
   }
 
   /**
@@ -212,27 +264,7 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
     ];
-    $this->queryResultCompare($data);
-  }
-
-  /**
-   * Test json stream (without specifying csv format; shouldn't work).
-   */
-  public function testStreamedQueryJson() {
-    $data = json_encode([
-      "resources" => [
-        [
-          "id" => $this->resources[2]->getIdentifier(),
-          "alias" => "t",
-        ],
-      ],
-    ]);
-    // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer(50);
-    $webServiceApi = QueryDownloadController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->query($request);
-    $this->assertEquals(400, $result->getStatusCode());
+    $this->queryResultCompareCsv($data);
   }
 
   /**
@@ -287,7 +319,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
       "properties" => ["state", "year"],
     ];
-    $this->queryResultCompare($data);
+    $this->queryResultCompareCsv($data);
   }
 
   /**
@@ -314,7 +346,7 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ];
 
-    $this->queryResultCompare($data);
+    $this->queryResultCompareCsv($data);
   }
 
 
@@ -333,7 +365,7 @@ class QueryDownloadControllerTest extends TestCase {
       "rowIds" => TRUE,
     ];
 
-    $this->queryResultCompare($data);
+    $this->queryResultCompareCsv($data);
   }
 
   /**
