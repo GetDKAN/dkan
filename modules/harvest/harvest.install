@@ -230,7 +230,7 @@ function harvest_update_10002()
 /**
  * Enable transitional dkan_harvest module, in preparation for 4.x.
  */
-function harvest_update_10002(&$sandbox) {
+function harvest_update_10003(&$sandbox) {
   if (!\Drupal::service('module_handler')->moduleExists('dkan_harvest')) {
     \Drupal::service('module_installer')->install(['dkan_harvest'], TRUE);
   }
