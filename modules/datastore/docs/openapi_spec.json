@@ -18,7 +18,7 @@
                 "schema": {
                     "type": "string"
                 }
-            },         
+            },
             "datastoreDatasetUuid": {
                 "name": "datasetId",
                 "in": "path",
@@ -400,7 +400,7 @@
                             "type": "string"
                         },
                         "example": "csv",
-                        "description": "Response format. Currently, only csv is supported.",
+                        "description": "Response format. Either csv or json.",
                         "style": "deepObject"
                     }
                 ],
