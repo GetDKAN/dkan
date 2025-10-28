@@ -27,11 +27,16 @@ ddev add-on get ddev/ddev-drupal-contrib
 ddev dotenv set .ddev/.env.web --drupal-core $DRUPAL_VERSION \
   --drupal-root "/var/www/html/web"
 
+  
 # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
 ddev start
 ddev poser
 ddev select2
 ddev symlink-project
+
+# Remove .gitattributes added by ddev-drupal-contrib to avoid conflicts
+rm -f .gitattributes
+
 ddev config --update
 ddev restart
 
