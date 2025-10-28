@@ -1,0 +1,27 @@
+#!/bin/bash
+## Description: Perform site install for DKAN testing
+## Usage: dkan-site-install
+## Flags: []
+
+# Fail early, fail often.
+set -eu -o pipefail
+
+drush site:install minimal --site-name="DKAN" --account-name="admin" -y
+drush pm-enable dkan harvest datastore automated_cron admin_toolbar admin_toolbar_tools -y
+
+# Create administrator role and assign to user 1
+drush role:create "administrator" "Administrator" -y
+drush config-set user.role.administrator is_admin true -y
+drush user:role:add "administrator" admin
+
+# Enable Claro and Stark themes.
+drush theme:enable claro stark
+drush config-set system.theme admin claro -y
+drush config-set system.theme default stark -y
+drush config-set node.settings use_admin_theme true -y
+
+# Disable CSS/JS preprocessing
+drush config-set system.performance css.preprocess 0 -y
+drush config-set system.performance js.preprocess 0 -y
+
+drush cr

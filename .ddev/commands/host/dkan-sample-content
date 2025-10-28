@@ -1,0 +1,13 @@
+#!/bin/bash
+
+## Description: Add sample content to an existing DKAN site.
+## Usage: dkan-sample-content
+
+ddev drush en sample_content -y
+ddev drush dkan:sample-content:create
+ddev drush queue:run localize_import
+ddev drush queue:run datastore_import
+ddev drush dkan:metastore-search:rebuild-tracker
+ddev drush sapi-i
+
+echo "Sample content added."

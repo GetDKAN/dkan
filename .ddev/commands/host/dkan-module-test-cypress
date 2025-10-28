@@ -1,0 +1,54 @@
+#!/bin/bash
+
+## Description: Run the Cypress tests for the DKAN contrib module.
+## Usage: dkan-module-test-cypress <arguments>
+
+# This command assumes you have cypress installed globally:
+# (As of this writing, DKAN module needs Cypress 14.1.0.)
+#   npm install --location=global cypress@14.1.0
+#   npx cypress verify
+#   npx cypress info
+
+# TODO: Add dkan-module-test-cypress-ci for CI use.
+
+# Fail early, fail often.
+set -u -o pipefail
+
+export DKAN_MODULE_CYPRESS_VERSION=14.1.0
+
+
+echo "Starting DKAN module Cypress tests."
+
+npm cache verify
+
+# If there's no package.json, don't try to install.
+if [ -f package.json ]; then
+  npm install
+else
+  echo "No package.json present, not trying to install."
+fi
+
+TEST_USERS_JSON='[
+  {"name":"testapiuser","mail":"testapiuser@test.com","role":"api_user"},
+  {"name":"testadmin","mail":"testadmin@test.com","role":"administrator"}
+]'
+readarray -t TU_TEST_USERS < <(jq -c '.[]' <<<"$TEST_USERS_JSON")
+for TU_TEST_USER in "${TU_TEST_USERS[@]}"; do
+  name=$(jq -r '.name' <<<"$TU_TEST_USER")
+  mail=$(jq -r '.mail' <<<"$TU_TEST_USER")
+  role=$(jq -r '.role' <<<"$TU_TEST_USER")
+  ddev drush user:create $name --password=$name --mail=$mail
+  ddev drush user-add-role $role $name
+done
+
+npx cypress@"$DKAN_MODULE_CYPRESS_VERSION" info
+CYPRESS_baseUrl="$DDEV_PRIMARY_URL" npx cypress@"$DKAN_MODULE_CYPRESS_VERSION" run "$@"
+DKAN_MODULE_RESULT=$?
+
+for TU_TEST_USER in "${TU_TEST_USERS[@]}"; do
+  name=$(jq -r '.name' <<<"$TU_TEST_USER")
+  ddev drush user:cancel --delete-content $name -y
+done
+
+echo "DKAN module Cypress tests complete."
+exit $DKAN_MODULE_RESULT

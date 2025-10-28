@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+## Description: Download the select2 library at commit 595494a.
+## Usage: select2
+## Example: "ddev select2"
+
+set -eu -o pipefail
+
+curl -L https://github.com/select2/select2/archive/595494a.tar.gz -o select2.tar.gz
+mkdir -p $DOCROOT/libraries
+tar xzf select2.tar.gz
+rm select2.tar.gz
+mv select2-595494a72fee67b0a61c64701cbb72e3121f97b9/ $DOCROOT/libraries/select2
