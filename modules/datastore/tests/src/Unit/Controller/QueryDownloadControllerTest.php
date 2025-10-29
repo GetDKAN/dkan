@@ -147,21 +147,6 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareJson($data);
-
-//    $data = json_encode([
-//      "resources" => [
-//        [
-//          "id" => $this->resources[2]->getIdentifier(),
-//          "alias" => "t",
-//        ],
-//      ],
-//    ]);
-//    // Need 2 json responses which get combined on output.
-//    $container = $this->getQueryContainer(50);
-//    $webServiceApi = QueryDownloadController::create($container);
-//    $request = $this->mockRequest($data);
-//    $result = $webServiceApi->query($request);
-//    $this->assertEquals(400, $result->getStatusCode());
   }
 
   /**
