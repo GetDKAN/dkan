@@ -21,7 +21,6 @@ tagfile
 docs/build
 docs/.venv
 /.editorconfig
-/.gitattributes
 /.ddev/*
 !/.ddev/commands/
 /.ddev/commands/*

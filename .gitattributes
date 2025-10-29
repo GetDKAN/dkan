@@ -1,0 +1,8 @@
+# Exclude development artifacts from archives.
+.circleci/ export-ignore
+.ddev/ export-ignore
+.github/ export-ignore
+.qlty/ export-ignore
+.readthedocs.yaml export-ignore
+docs/ export-ignore
+ddev-init.sh export-ignore
