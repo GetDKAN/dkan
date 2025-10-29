@@ -68,13 +68,12 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    // Don't call parent::buildHeader() because we don't want operations (yet).
     return [
       'harvest_link' => $this->t('Harvest ID'),
       'extract_status' => $this->t('Extract Status'),
       'last_run' => $this->t('Last Run'),
       'dataset_count' => $this->t('# of Datasets'),
-    ];
+    ] + parent::buildHeader();
   }
 
   /**
@@ -82,7 +81,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /** @var \Drupal\harvest\HarvestPlanInterface $entity */
-    $harvest_plan_id = $entity->get('id')->getString();
+    $harvest_plan_id = (string) $entity->id();
     $run_entity = NULL;
 
     if ($run_id = $this->harvestRunRepository->getLastHarvestRunId($harvest_plan_id)) {
@@ -112,8 +111,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
       $row['last_run'] = date('m/d/y H:m:s T', $run_entity->get('timestamp')->value);
       $row['dataset_count'] = $interpreter->countProcessed();
     }
-    // Don't call parent::buildRow() because we don't want operations (yet).
-    return $row;
+    return $row + parent::buildRow($entity);
   }
 
   /**
