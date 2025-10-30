@@ -271,7 +271,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * {@inheritdoc}
    */
   public function getTableName() {
-    return 'harvest_hashes';
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
 }
