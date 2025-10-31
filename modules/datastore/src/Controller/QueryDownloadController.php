@@ -148,7 +148,10 @@ class QueryDownloadController extends AbstractQueryController {
     $response = new StreamedJsonResponse(
     // JSON structure with generator which will be streamed as a list.
       [
-        'results' => $this->loadJson($datastoreQuery, $result),
+        'results' => $this->loadJson($datastoreQuery),
+        'count' => $this->getJsonMetadata($result, 'count'),
+        'schema' => $this->getJsonMetadata($result, 'schema'),
+        'query' => $this->getJsonMetadata($result, 'query')
       ],
     );
     $response->headers->set('Content-Type', 'application/json');
@@ -166,7 +169,7 @@ class QueryDownloadController extends AbstractQueryController {
    * @param \RootedData\RootedJsonData $result
    *   Query result.
    */
-  protected function loadJson(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
+  protected function loadJson(DatastoreQuery $datastoreQuery) {
     $count = 0;
 
     try {
@@ -183,6 +186,18 @@ class QueryDownloadController extends AbstractQueryController {
     catch (\Exception $e) {
       yield json_encode(['error' => $e->getMessage()]);
     }
+  }
+
+  /**
+   * Stream selected metadata value from json object.
+   *
+   * @param RootedJsonData $data
+   *   The json object.
+   * @param string $metadata_name
+   *   The name of the metadata item to stream
+   */
+  private function getJsonMetadata(RootedJsonData $data, string $metadata_name) {
+    yield $data->get('$.' . $metadata_name);
   }
 
 }
