@@ -134,6 +134,31 @@ class QueryDownloadController extends AbstractQueryController {
   }
 
   /**
+   * Set up the Streamed JSON Response.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore Query object.
+   * @param \RootedData\RootedJsonData $result
+   *   Query result.
+   *
+   * @return \Symfony\Component\HttpFoundation\StreamedJsonResponse
+   *   Return the StreamedResponse object.
+   */
+  protected function streamJsonResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
+    $response = new StreamedJsonResponse(
+    // JSON structure with generator which will be streamed as a list.
+      [
+        'results' => $this->loadJson($datastoreQuery, $result),
+      ],
+    );
+    $response->headers->set('Content-Type', 'application/json');
+    $response->headers->set('Content-Disposition', "attachment; filename=\"data.json\"");
+    $response->headers->set('X-Accel-Buffering', 'no');
+    // Ensure one hour max-age plus public status.
+    return $this->addCacheHeaders($response);
+  }
+
+  /**
    * Set up the Stream query result as json objects.
    *
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
@@ -158,31 +183,6 @@ class QueryDownloadController extends AbstractQueryController {
     catch (\Exception $e) {
       yield json_encode(['error' => $e->getMessage()]);
     }
-  }
-
-  /**
-   * Set up the Streamed JSON Response.
-   *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   A datastore Query object.
-   * @param \RootedData\RootedJsonData $result
-   *   Query result.
-   *
-   * @return \Symfony\Component\HttpFoundation\StreamedJsonResponse
-   *   Return the StreamedResponse object.
-   */
-  protected function streamJsonResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
-    $response = new StreamedJsonResponse(
-    // JSON structure with generators in which will be streamed as a list.
-      [
-        'results' => $this->loadJson($datastoreQuery, $result),
-      ],
-    );
-    $response->headers->set('Content-Type', 'application.json');
-    $response->headers->set('Content-Disposition', "attachment; filename=\"data.json\"");
-    $response->headers->set('X-Accel-Buffering', 'no');
-    // Ensure one hour max-age plus public status.
-    return $this->addCacheHeaders($response);
   }
 
 }
