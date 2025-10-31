@@ -40,7 +40,11 @@ class DkanCommonUpdatePathTest extends UpdatePathTestBase {
     $modules = $config->get('module');
     $this->assertArrayHasKey('common', $modules);
     // Assert common settings config exists.
-    $this->assertNotEmpty(\Drupal::configFactory()->get('common.settings')->getRawData());
+    $common_settings = \Drupal::configFactory()->getEditable('common.settings');
+    $this->assertNotEmpty($common_settings->getRawData());
+    // Set some value to ensure it gets copied.
+    $common_settings->set('always_use_existing_local_perspective', TRUE);
+    $common_settings->save();
 
     $this->runUpdates();
 
@@ -52,6 +56,12 @@ class DkanCommonUpdatePathTest extends UpdatePathTestBase {
     $this->assertArrayNotHasKey('common', $modules);
     // Confirm common settings config has been deleted.
     $this->assertEmpty(\Drupal::configFactory()->get('common.settings')->getRawData());
+    // Confirm dkan_common is enabled.
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
+    // Confirm common settings copied to dkan_common.
+    $dkan_common_settings = \Drupal::configFactory()->get('dkan_common.settings');
+    $this->assertNotEmpty($dkan_common_settings->getRawData());
+    $this->assertTrue($dkan_common_settings->get('always_use_existing_local_perspective'));
   }
 
 }
