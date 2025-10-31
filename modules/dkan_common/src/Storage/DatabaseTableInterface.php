@@ -53,7 +53,6 @@ interface DatabaseTableInterface extends
    */
   public function getSchema(): array;
 
-
   /**
    * Get the full name of datastore db table.
    *
