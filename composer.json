@@ -26,13 +26,12 @@
         "getdkan/pdlt": "^0.1.7",
         "getdkan/procrastinator": "^5.0.3",
         "getdkan/rooted-json-data": "^0.2.2",
-        "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5",
+        "guzzlehttp/guzzle": "^7.5",
         "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
         "ramsey/uuid": "^3.8.0 || ^4",
-        "stolt/json-merge-patch": "^2.0",
-        "symfony/polyfill-php80": "^1.27"
+        "stolt/json-merge-patch": "^2.0"
     },
     "require-dev": {
         "colinodell/psr-testlogger": "^1.2",
@@ -46,6 +45,12 @@
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "tbachert/spi": true
+        }        
     },
     "extra": {
         "dkan-frontend": {
