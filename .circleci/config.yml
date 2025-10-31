@@ -55,7 +55,7 @@ commands:
             - run:
                 name: Switch to dev branch for upgrade testing
                 command: |
-                  git checkout 2.x
+                  git checkout 2.x-transition
 
       - run:
           name: Build site codebase
