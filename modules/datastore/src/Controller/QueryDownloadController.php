@@ -38,7 +38,7 @@ class QueryDownloadController extends AbstractQueryController {
     DatastoreQuery $datastoreQuery,
     RootedJsonData $result,
     array $dependencies = [],
-    ?ParameterBag $params = NULL
+    ?ParameterBag $params = NULL,
   ) {
     return match ($datastoreQuery->{"$.format"}) {
       'csv' => $this->streamCsvResponse($datastoreQuery, $result),
@@ -138,8 +138,6 @@ class QueryDownloadController extends AbstractQueryController {
    *
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
-   * @param \RootedData\RootedJsonData $result
-   *   Query result.
    *
    * @return \Symfony\Component\HttpFoundation\StreamedJsonResponse
    *   Return the StreamedResponse object.
@@ -191,10 +189,10 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Stream selected metadata value from json object.
    *
-   * @param RootedJsonData $data
+   * @param \RootedData\RootedJsonData $data
    *   The json object.
    * @param string $metadata_name
-   *   The name of the metadata item to stream
+   *   The name of the metadata item to stream.
    */
   private function getJsonMetadata(RootedJsonData $data, string $metadata_name) {
     yield $data->get('$.' . $metadata_name);
