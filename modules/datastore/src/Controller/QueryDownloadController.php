@@ -139,7 +139,7 @@ class QueryDownloadController extends AbstractQueryController {
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
    * @param \RootedData\RootedJsonData $result
-   * *   Query result.
+   *   Query result.
    *
    * @return \Symfony\Component\HttpFoundation\StreamedJsonResponse
    *   Return the StreamedResponse object.
