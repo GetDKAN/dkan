@@ -138,6 +138,8 @@ class QueryDownloadController extends AbstractQueryController {
    *
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
+   * @param \RootedData\RootedJsonData $result
+   * *   Query result.
    *
    * @return \Symfony\Component\HttpFoundation\StreamedJsonResponse
    *   Return the StreamedResponse object.
@@ -149,7 +151,7 @@ class QueryDownloadController extends AbstractQueryController {
         'results' => $this->loadJson($datastoreQuery),
         'count' => $this->getJsonMetadata($result, 'count'),
         'schema' => $this->getJsonMetadata($result, 'schema'),
-        'query' => $this->getJsonMetadata($result, 'query')
+        'query' => $this->getJsonMetadata($result, 'query'),
       ],
     );
     $response->headers->set('Content-Type', 'application/json');
@@ -164,8 +166,6 @@ class QueryDownloadController extends AbstractQueryController {
    *
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
-   * @param \RootedData\RootedJsonData $result
-   *   Query result.
    */
   protected function loadJson(DatastoreQuery $datastoreQuery) {
     $count = 0;
