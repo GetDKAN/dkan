@@ -8,8 +8,8 @@ against the branch or tag you want to use as a baseline.
 
 2. Run `ddev dkan-site-install`, then `ddev dkan-sample-content`.
 
-3. Run:
+3. Making sure you are in your project rot, run:
 
 ```sh
-ddev exec php ./web/core/scripts/db-tools.php dump-database-d8-mysql | gzip > tests/fixtures/update/YOUR_DUMP_NAME.php.gz
+ddev exec php ./web/core/scripts/db-tools.php dump-database-d8-mysql | gzip > ./tests/fixtures/update/YOUR_DUMP_NAME.php.gz
 ```

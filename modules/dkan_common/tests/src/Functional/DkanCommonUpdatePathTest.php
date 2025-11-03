@@ -20,7 +20,7 @@ class DkanCommonUpdatePathTest extends UpdatePathTestBase {
    */
   protected function setDatabaseDumpFiles() {
     $this->databaseDumpFiles = [
-      dirname(__DIR__, 5) . '/tests/fixtures/update/update-3.x-dev.php.gz',
+      dirname(__DIR__, 5) . '/tests/fixtures/update/update-2.x-transition.php.gz',
     ];
   }
 
