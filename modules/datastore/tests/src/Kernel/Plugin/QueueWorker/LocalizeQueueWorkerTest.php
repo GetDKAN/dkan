@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker;
@@ -30,7 +30,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];
@@ -53,8 +53,8 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
   public function testLocalizing(bool $always_use_existing_local_perspective) {
     $existing_local_file_contents = 'pre-existing,file';
     // Config for overwrite.
-    $this->installConfig(['common']);
-    $config = $this->config('common.settings');
+    $this->installConfig(['dkan_common']);
+    $config = $this->config('dkan_common.settings');
     $config->set(
       'always_use_existing_local_perspective',
       $always_use_existing_local_perspective

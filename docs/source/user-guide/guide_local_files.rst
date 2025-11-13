@@ -16,11 +16,11 @@ Below are some abbreviated instructions. Read past this section for details.
 
 - Use :code:`drush dkan:datastore:prepare-localized [resource_id]` to set up the local file directory.
 - Transfer the file to that directory on the server using the command line or your file transfer program of choice.
-- Set DKAN to use existing local files for imports: :code:`drush config:set common.settings always_use_existing_local_perspective 1`
+- Set DKAN to use existing local files for imports: :code:`drush config:set dkan_common.settings always_use_existing_local_perspective 1`
 - Set up the file localization: :code:`drush dkan:datastore:localize --deferred [id]`
 - Perform the import, using queues: :code:`drush queue:run localize_import && drush queue:run datastore_import`
 - Alternately, perform the import, running cron at least twice: :code:`drush cron && drush cron`
-- Disable the local file configuration: :code:`drush config:set common.settings always_use_existing_local_perspective 0`
+- Disable the local file configuration: :code:`drush config:set dkan_common.settings always_use_existing_local_perspective 0`
 
 Prepare the local perspective
 =============================
@@ -131,14 +131,14 @@ This configuration can only be set via Drush:
 
 .. prompt:: bash $
 
-    drush config:set common.settings always_use_existing_local_perspective 1
+    drush config:set dkan_common.settings always_use_existing_local_perspective 1
 
 We can verify that this configuration was set:
 
 .. prompt:: bash $
 
-    drush config:get common.settings always_use_existing_local_perspective
-    'common.settings:always_use_existing_local_perspective': true
+    drush config:get dkan_common.settings always_use_existing_local_perspective
+    'dkan_common.settings:always_use_existing_local_perspective': true
 
 Now our import will use the local file.
 

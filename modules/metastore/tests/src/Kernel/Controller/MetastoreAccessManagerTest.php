@@ -51,7 +51,7 @@ class MetastoreAccessManagerTest extends KernelTestBase {
    */
   protected static $modules = [
     'metastore',
-    'common',
+    'dkan_common',
     'dkan',
     'field',
     'node',

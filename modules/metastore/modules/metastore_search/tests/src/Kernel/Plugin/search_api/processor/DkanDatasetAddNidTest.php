@@ -21,7 +21,7 @@ class DkanDatasetAddNidTest extends KernelTestBase {
    * {@inheritDoc}
    */
   protected static $modules = [
-    'common',
+    'dkan_common',
     'metastore',
     'metastore_search',
     'search_api',

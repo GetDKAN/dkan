@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
-use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Storage\Query;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\Storage\Query;
 
 /**
  *

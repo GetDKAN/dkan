@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\common\Util\JobStoreUtil;
+use Drupal\dkan_common\Util\JobStoreUtil;
 use Drupal\Core\Database\Database;
 
 /**
