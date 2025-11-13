@@ -13,7 +13,7 @@ use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\metastore\MetastoreService;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;

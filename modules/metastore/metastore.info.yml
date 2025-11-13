@@ -4,7 +4,7 @@ type: module
 core_version_requirement: ^10.2 || ^11
 package: DKAN
 dependencies:
-  - dkan:common
+  - dkan:dkan_common
   - drupal:basic_auth
   - drupal:content_moderation
   - drupal:node

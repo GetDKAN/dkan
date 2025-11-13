@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit\Reference;
 
-use Drupal\common\StreamWrapper\DkanStreamWrapper;
+use Drupal\dkan_common\StreamWrapper\DkanStreamWrapper;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\GeneratedUrl;
 use Symfony\Component\HttpFoundation\RequestStack;
