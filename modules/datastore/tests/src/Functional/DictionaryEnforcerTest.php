@@ -6,8 +6,8 @@ namespace Drupal\Tests\datastore\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\GetDataTrait;
+use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use GuzzleHttp\Client;
