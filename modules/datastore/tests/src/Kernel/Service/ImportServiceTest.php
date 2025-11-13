@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\ImportService;
@@ -23,7 +23,7 @@ class ImportServiceTest extends KernelTestBase {
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
     'node',

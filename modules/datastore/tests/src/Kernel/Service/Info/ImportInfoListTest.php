@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service\Info;
 
-use Drupal\common\DataResource;
-use Drupal\common\Storage\FileFetcherJobStoreFactory;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Storage\FileFetcherJobStoreFactory;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\common\Storage\JobStore;
+use Drupal\dkan_common\Storage\JobStore;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\metastore\ResourceMapper;
@@ -21,7 +21,7 @@ use Procrastinator\Result;
 class ImportInfoListTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

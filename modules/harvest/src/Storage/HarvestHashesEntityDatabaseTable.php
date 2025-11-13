@@ -4,8 +4,8 @@ namespace Drupal\harvest\Storage;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Storage\Query;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\Storage\Query;
 use Drupal\harvest\HarvestHashInterface;
 
 /**

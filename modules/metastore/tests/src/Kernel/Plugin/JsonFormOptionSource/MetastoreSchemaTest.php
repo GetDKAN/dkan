@@ -22,7 +22,7 @@ class MetastoreSchemaTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan_common',
     'metastore',
     'workflows',
     'content_moderation',

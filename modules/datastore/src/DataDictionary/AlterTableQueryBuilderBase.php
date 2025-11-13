@@ -4,7 +4,7 @@ namespace Drupal\datastore\DataDictionary;
 
 use Drupal\Component\Uuid\UuidInterface;
 
-use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
+use Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 
@@ -99,7 +99,7 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
   /**
    * Create an alter table query factory.
    *
-   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $database_connection_factory
+   * @param \Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface $database_connection_factory
    *   Database connection factory.
    * @param \PDLT\ConverterInterface $date_format_converter
    *   PHP Date Language Tool Converter.

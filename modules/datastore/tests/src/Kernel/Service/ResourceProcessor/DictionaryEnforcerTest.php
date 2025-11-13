@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service\ResourceProcessor;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
@@ -19,7 +19,7 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 class DictionaryEnforcerTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Storage;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
@@ -27,7 +27,7 @@ class DatabaseTableLimitsTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

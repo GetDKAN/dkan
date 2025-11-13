@@ -3,14 +3,14 @@
 namespace Drupal\Tests\datastore\Kernel\Storage;
 
 use ColinODell\PsrTestLogger\TestLogger;
-use Drupal\common\DataResource;
-use Drupal\common\Storage\ImportedItemInterface;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\common\Unit\Connection;
+use Drupal\Tests\dkan_common\Unit\Connection;
 use Procrastinator\Result;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -28,7 +28,7 @@ class DatabaseTableTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

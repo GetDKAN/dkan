@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -23,7 +23,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];
@@ -38,7 +38,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
   }
 
   public function test() {
-    $this->installConfig(['common']);
+    $this->installConfig(['dkan_common']);
 
     // Create dataset.
     $source_resource = new DataResource(
@@ -56,11 +56,11 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
     );
 
     // Set always_use_existing_local_perspective to true.
-    $this->config('common.settings')
+    $this->config('dkan_common.settings')
       ->set('always_use_existing_local_perspective', TRUE)
       ->save();
     $this->assertTrue(
-      $this->config('common.settings')->get('always_use_existing_local_perspective')
+      $this->config('dkan_common.settings')->get('always_use_existing_local_perspective')
     );
 
     // Run prepare-localized, emulating the Drush command.
