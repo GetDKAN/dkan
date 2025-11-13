@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
-use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\FileFetcherRemoteUseExisting;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\FileFetcher\FileFetcherRemoteUseExisting;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
@@ -26,7 +26,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
     'node',
@@ -38,11 +38,11 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
   public function test() {
     // Explicitly turn off always_use_existing_local_perspective for now.
-    $this->config('common.settings')
+    $this->config('dkan_common.settings')
       ->set('always_use_existing_local_perspective', FALSE)
       ->save();
     $this->assertFalse(
-      $this->config('common.settings')->get('always_use_existing_local_perspective')
+      $this->config('dkan_common.settings')->get('always_use_existing_local_perspective')
     );
 
     $identifier = uniqid();
@@ -71,7 +71,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     $this->assertEquals(1, $this->getEntityCount($mapping_entity_storage));
 
     // Get our resource info from the dataset info service.
-    /** @var \Drupal\common\DatasetInfo $dataset_info_service */
+    /** @var \Drupal\dkan_common\DatasetInfo $dataset_info_service */
     $dataset_info_service = $this->container->get('dkan.common.dataset_info');
     $info = $dataset_info_service->gather($identifier);
 
@@ -126,11 +126,11 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     );
 
     // Turn on always_use_existing_local_perspective.
-    $this->config('common.settings')
+    $this->config('dkan_common.settings')
       ->set('always_use_existing_local_perspective', TRUE)
       ->save();
     $this->assertTrue(
-      $this->config('common.settings')->get('always_use_existing_local_perspective')
+      $this->config('dkan_common.settings')->get('always_use_existing_local_perspective')
     );
 
     // We should get our FileFetcherRemoteUseExisting when we get another
@@ -144,7 +144,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
     // Turn off always_use_existing_local_perspective and get the file fetcher
     // again. It should be Remote again.
-    $this->config('common.settings')
+    $this->config('dkan_common.settings')
       ->set('always_use_existing_local_perspective', FALSE)
       ->save();
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);

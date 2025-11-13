@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest\Transform;
 
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\harvest\ETL\Transform\Transform;

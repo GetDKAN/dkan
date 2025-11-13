@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
@@ -20,7 +20,7 @@ class ImportInfoTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];

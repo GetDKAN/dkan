@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore_mysql_import\Storage;
 
-use Drupal\common\Storage\ImportedItemInterface;
+use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
 use Drupal\datastore\Storage\DatabaseTable;
 

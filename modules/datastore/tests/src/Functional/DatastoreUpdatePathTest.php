@@ -41,6 +41,9 @@ class DatastoreUpdatePathTest extends UpdatePathTestBase {
     $this->assertSame(1, $config->get('purge_file'));
     $this->assertSame(1, $config->get('purge_table'));
 
+    // enable dkan_common module
+
+    \Drupal::service('module_installer')->install(['dkan_common']);
     $this->runUpdates();
     $schema = \Drupal::database()->schema();
     $config = \Drupal::configFactory()->getEditable('datastore.settings');

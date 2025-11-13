@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\harvest\Unit\Storage;
 
-use Drupal\common\Storage\Query;
+use Drupal\dkan_common\Storage\Query;
 use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
 use PHPUnit\Framework\TestCase;
 

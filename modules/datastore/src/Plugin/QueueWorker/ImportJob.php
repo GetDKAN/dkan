@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Plugin\QueueWorker;
 
 use CsvParser\Parser\ParserInterface;
-use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use ForceUTF8\Encoding;
 use Procrastinator\Job\AbstractPersistentJob;
 use Procrastinator\Result;
@@ -75,7 +75,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Storage class.
    *
-   * @var \Drupal\common\Storage\DatabaseTableInterface
+   * @var \Drupal\dkan_common\Storage\DatabaseTableInterface
    */
   protected $dataStorage;
 
@@ -89,7 +89,7 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Datastore resource.
    *
-   * @var \Drupal\common\DataResource
+   * @var \Drupal\dkan_common\DataResource
    */
   protected $resource;
 
