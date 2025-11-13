@@ -6,8 +6,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\Events\Event;
-use Drupal\common\JsonResponseTrait;
+use Drupal\dkan_common\Events\Event;
+use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\metastore\MetastoreApiResponse;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

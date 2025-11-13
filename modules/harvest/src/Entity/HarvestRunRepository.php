@@ -60,12 +60,12 @@ class HarvestRunRepository {
   /**
    * Destroy all the run records for a given harvest plan ID.
    *
-   * Analogous to \Drupal\common\Storage\DatabaseTableInterface::destruct().
+   * Replaces to \Drupal\dkan_common\Storage\DatabaseTableInterface::destruct().
    *
    * @param string $plan_id
    *   The plan ID for which to destroy all records.
    *
-   * @see \Drupal\common\Storage\DatabaseTableInterface::destruct()
+   * @see \Drupal\dkan_common\Storage\DatabaseTableInterface::destruct()
    */
   public function destructForPlanId(string $plan_id) {
     if ($ids = $this->runStorage->getQuery()

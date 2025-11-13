@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Storage\QueryFactory;

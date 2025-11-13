@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Events;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Component\EventDispatcher\Event;
 
 /**
@@ -18,7 +18,7 @@ class DatastoreEventBase extends Event implements DatastoreEventInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\common\DataResource $data_resource
+   * @param \Drupal\dkan_common\DataResource $data_resource
    *   The DataResource object for the event.
    */
   public function __construct(DataResource $data_resource) {

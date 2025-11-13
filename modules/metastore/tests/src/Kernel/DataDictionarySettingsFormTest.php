@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\metastore\Kernel;
 
-use Drupal\Tests\common\Kernel\ConfigFormTestBase;
+use Drupal\Tests\dkan_common\Kernel\ConfigFormTestBase;
 use Drupal\metastore\Form\DataDictionarySettingsForm;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\Core\Form\FormState;
@@ -30,7 +30,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     'filter',
     'text',
     'metastore',
-    'common',
+    'dkan_common',
     'dkan',
     'menu_link_content',
     'basic_auth',
@@ -166,7 +166,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     $this->installConfig('system');
     $this->installConfig('node');
     $this->installConfig('metastore');
-    $this->installConfig('common');
+    $this->installConfig('dkan_common');
     $this->installConfig('basic_auth');
     $this->installConfig('content_moderation');
     $this->installConfig('workflows');

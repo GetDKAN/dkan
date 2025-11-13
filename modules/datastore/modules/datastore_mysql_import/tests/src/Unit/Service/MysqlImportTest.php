@@ -2,14 +2,13 @@
 
 namespace Drupal\Tests\dastastore_mysql_import\Unit\Service;
 
-use Drupal\common\DataResource;
-use Drupal\common\Storage\JobStore;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Storage\JobStore;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
-
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
@@ -107,7 +106,7 @@ class MysqlImportTest extends TestCase {
       ->getMock();
 
     return (new Chain($this))
-      ->add(JobStoreFactory::class, 'getInstance', $jobStore)
+      ->add(AbstractJobStoreFactory::class, 'getInstance', $jobStore)
       ->getMock();
   }
 
