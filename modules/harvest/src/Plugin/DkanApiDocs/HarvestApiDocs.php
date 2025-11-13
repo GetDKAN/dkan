@@ -2,7 +2,7 @@
 
 namespace Drupal\harvest\Plugin\DkanApiDocs;
 
-use Drupal\common\Plugin\DkanApiDocsBase;
+use Drupal\dkan_common\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\harvest\HarvestService;
@@ -56,7 +56,7 @@ class HarvestApiDocs extends DkanApiDocsBase {
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Drupal\dkan_common\Plugin\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

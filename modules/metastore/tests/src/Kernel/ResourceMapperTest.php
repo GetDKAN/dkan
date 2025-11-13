@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\metastore\Kernel;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -17,7 +17,7 @@ use Drupal\KernelTests\KernelTestBase;
 class ResourceMapperTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'metastore',
   ];
 

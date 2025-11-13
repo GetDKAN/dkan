@@ -3,13 +3,13 @@
 namespace Drupal\datastore\Service;
 
 use Contracts\FactoryInterface;
-use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
-use Drupal\common\UrlHostTokenResolver;
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Events\Event;
+use Drupal\dkan_common\UrlHostTokenResolver;
+use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\common\Storage\FileFetcherJobStoreFactory;
+use Drupal\dkan_common\Storage\FileFetcherJobStoreFactory;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
@@ -50,7 +50,7 @@ class ResourceLocalizer {
   /**
    * DKAN resource file fetcher factory.
    *
-   * @see \Drupal\common\FileFetcher\FileFetcherFactory
+   * @see \Drupal\dkan_common\FileFetcher\FileFetcherFactory
    */
   private FactoryInterface $fileFetcherFactory;
 
@@ -161,7 +161,7 @@ class ResourceLocalizer {
    *
    * Requires the localized file to exist so it can be checksummed.
    *
-   * @return \Drupal\common\DataResource|null
+   * @return \Drupal\dkan_common\DataResource|null
    *   Return the perspective, or NULL if the source perspective did not exist.
    */
   public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?DataResource {
@@ -251,7 +251,7 @@ class ResourceLocalizer {
   /**
    * Get a FileFetcher object for a source data resource, to copy to local.
    *
-   * @param \Drupal\common\DataResource $sourceDataResource
+   * @param \Drupal\dkan_common\DataResource $sourceDataResource
    *   Data resource object we want to process. Assumed to be a source
    *   perspective.
    *
@@ -273,7 +273,7 @@ class ResourceLocalizer {
    *
    * Note: The file fetcher also does this during the fetch.
    *
-   * @param \Drupal\common\DataResource $source_resource
+   * @param \Drupal\dkan_common\DataResource $source_resource
    *   Source DataResource.
    *
    * @return string
@@ -296,7 +296,7 @@ class ResourceLocalizer {
    *
    * Will attempt to create the path.
    *
-   * @param \Drupal\common\DataResource $dataResource
+   * @param \Drupal\dkan_common\DataResource $dataResource
    *   DataResource object to represent.
    * @param string $public_path
    *   Path within the public:// filesystem where this resource will eventually

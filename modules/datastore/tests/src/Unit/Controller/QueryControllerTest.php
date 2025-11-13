@@ -2,11 +2,11 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\common\DatasetInfo;
+use Drupal\dkan_common\DatasetInfo;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
@@ -532,7 +532,7 @@ class QueryControllerTest extends TestCase {
    * is in ascending order but skips many numbers, and both other columns
    * contain duplicate values.
    *
-   * @return \Drupal\common\Storage\DatabaseTableInterface
+   * @return \Drupal\dkan_common\Storage\DatabaseTableInterface
    *   A database table storage class useable for datastore queries.
    */
   public function mockDatastoreTable() {

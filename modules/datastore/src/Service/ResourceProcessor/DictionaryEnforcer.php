@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service\ResourceProcessor;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
 use Drupal\datastore\Storage\DatabaseTableFactory;
@@ -78,7 +78,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Retrieve dictionary and datastore table details; apply dictionary to table.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   DKAN Resource.
    */
   public function process(DataResource $resource): void {
@@ -99,7 +99,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Retrieve the data-dictionary metadata object for the given resource.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   DKAN Resource.
    *
    * @return \RootedData\RootedJsonData

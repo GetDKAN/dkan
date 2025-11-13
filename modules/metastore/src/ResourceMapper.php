@@ -2,9 +2,9 @@
 
 namespace Drupal\metastore;
 
-use Drupal\common\DataResource;
-use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\Events\Event;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -27,7 +27,7 @@ class ResourceMapper {
   /**
    * Database storage service.
    *
-   * @var \Drupal\common\Storage\DatabaseTableInterface
+   * @var \Drupal\dkan_common\Storage\DatabaseTableInterface
    *
    * @todo Deprecate/remove this form of storage.
    */
@@ -96,7 +96,7 @@ class ResourceMapper {
   /**
    * Register new resource perspective.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   Resource for which to register new perspective.
    */
   public function registerNewPerspective(DataResource $resource): void {
@@ -139,7 +139,7 @@ class ResourceMapper {
   /**
    * Store the DataResource to a mapping entity.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   The data resource.
    *
    * @return int
@@ -190,7 +190,7 @@ class ResourceMapper {
    *   (Optional) Data resource version. The newest version will be used if not
    *   provided.
    *
-   * @return \Drupal\common\DataResource|null
+   * @return \Drupal\dkan_common\DataResource|null
    *   DataResource for the mapping.
    */
   public function get(
@@ -232,7 +232,7 @@ class ResourceMapper {
   /**
    * Remove mapping entry representing the given resource object.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   DataResource object to be removed.
    */
   public function remove(DataResource $resource) {

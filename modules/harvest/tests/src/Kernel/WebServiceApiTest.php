@@ -27,7 +27,7 @@ class WebServiceApiTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'harvest',
     'metastore',
   ];
