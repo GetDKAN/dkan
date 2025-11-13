@@ -1,21 +1,21 @@
 services:
-  dkan.common.database_connection_factory:
-    class: \Drupal\common\Storage\DatabaseConnectionFactory
+  # dkan.common.database_connection_factory:
+  #   class: \Drupal\dkan_common\Storage\DatabaseConnectionFactory
 
   dkan.common.docs_generator:
-    class: \Drupal\common\DkanApiDocsGenerator
+    class: \Drupal\dkan_common\DkanApiDocsGenerator
     arguments:
       - '@plugin.manager.dkan_api_docs'
       - '@settings'
 
   dkan.common.job_store:
-    class: \Drupal\common\Storage\JobStoreFactory
+    class: \Drupal\dkan_common\Storage\JobStoreFactory
     arguments:
       - '@database'
       - '@event_dispatcher'
 
   dkan.common.drupal_files:
-    class: \Drupal\common\Util\DrupalFiles
+    class: \Drupal\dkan_common\Util\DrupalFiles
     arguments:
       - '@file_system'
       - '@stream_wrapper_manager'
@@ -28,19 +28,19 @@ services:
     arguments: ['node']
 
   dkan.common.file_fetcher:
-    class: \Drupal\common\FileFetcher\FileFetcherFactory
+    class: \Drupal\dkan_common\FileFetcher\FileFetcherFactory
     arguments:
       - '@dkan.common.filefetcher_job_store_factory'
       - '@config.factory'
 
   dkan.common.filefetcher_job_store_factory:
-    class: \Drupal\common\Storage\FileFetcherJobStoreFactory
+    class: \Drupal\dkan_common\Storage\FileFetcherJobStoreFactory
     arguments:
       - '@database'
       - '@event_dispatcher'
 
   dkan.common.dataset_info:
-    class: \Drupal\common\DatasetInfo
+    class: \Drupal\dkan_common\DatasetInfo
     arguments:
       - '@plugin.manager.dataset_info'
     calls:
@@ -51,22 +51,15 @@ services:
     parent: logger.channel_base
     arguments: [ 'dkan' ]
 
-  # @deprecated
-  common.docs:
-    class: \Drupal\common\Controller\OpenApiController
-    arguments:
-      - '@module_handler'
-      - '@request_stack'
-
   dkan.stream_wrapper:
-    class: \Drupal\common\StreamWrapper\DkanStreamWrapper
+    class: \Drupal\dkan_common\StreamWrapper\DkanStreamWrapper
     tags:
       - { name: stream_wrapper, scheme: dkan }
 
   plugin.manager.dataset_info:
-    class: Drupal\common\DatasetInfoPluginManager
+    class: Drupal\dkan_common\DatasetInfoPluginManager
     parent: default_plugin_manager
 
   plugin.manager.dkan_api_docs:
-    class: \Drupal\common\Plugin\DkanApiDocsPluginManager
+    class: \Drupal\dkan_common\Plugin\DkanApiDocsPluginManager
     parent: default_plugin_manager
