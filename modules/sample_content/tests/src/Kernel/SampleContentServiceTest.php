@@ -18,7 +18,7 @@ class SampleContentServiceTest extends KernelTestBase {
     'sample_content',
     'harvest',
     'metastore',
-    'common',
+    'dkan_common',
   ];
 
   protected function setUp() : void {

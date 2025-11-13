@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dkan_common module.
+ */
+
+/**
+ * Update core.extension config to remove old common module.
+ */
+function dkan_common_update_10000(&$sandbox) {
+  // If old common module is installed, copy setting
+  // always_use_existing_local_perspective.
+  if (\Drupal::moduleHandler()->moduleExists('common')) {
+    $config = \Drupal::configFactory()->getEditable('common.settings');
+    $local_perspective = $config->get('always_use_existing_local_perspective');
+    \Drupal::configFactory()->getEditable('dkan_common.settings')
+      ->set('always_use_existing_local_perspective', $local_perspective)
+      ->save();
+
+    // Now uninstall old common module.
+    \Drupal::service('module_installer')->uninstall(['common']);
+  }
+
+  // Remove common.settings config if exists.
+  if (\Drupal::configFactory()->get('common.settings')) {
+    \Drupal::configFactory()->getEditable('common.settings')->delete();
+  }
+
+}

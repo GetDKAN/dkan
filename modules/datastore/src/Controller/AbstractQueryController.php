@@ -2,8 +2,8 @@
 
 namespace Drupal\datastore\Controller;
 
-use Drupal\common\DatasetInfo;
-use Drupal\common\JsonResponseTrait;
+use Drupal\dkan_common\DatasetInfo;
+use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service\DatastoreQuery;

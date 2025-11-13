@@ -3,9 +3,9 @@
 namespace Drupal\Tests\datastore\Functional\Service;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\CleanUp;
+use Drupal\Tests\dkan_common\Traits\GetDataTrait;
+use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 
 /**

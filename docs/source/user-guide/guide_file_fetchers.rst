@@ -22,7 +22,7 @@ To implement a new file processor, a create a custom file fetcher processor clas
 Create a FileFetcherFactory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Next, create a new file fetcher factory class. This class should emulate ``Drupal\common\FileFetcher\FileFetcherFactory``. There is example code in the ``custom_processor_test`` module which demonstrates how to do this.
+Next, create a new file fetcher factory class. This class should emulate ``Drupal\dkan_common\FileFetcher\FileFetcherFactory``. There is example code in the ``custom_processor_test`` module which demonstrates how to do this.
 
 The new factory should create and configure a ``FileFetcher\FileFetcher`` object to use your new custom processor. Do this by merging configuration for your new processor into the ``$config['processors']`` array that is passed to ``FileFetcherFactory::getInstance()``:
 
