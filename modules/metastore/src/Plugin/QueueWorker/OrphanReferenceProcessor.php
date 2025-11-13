@@ -6,7 +6,7 @@ namespace Drupal\metastore\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\Events\Event;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;

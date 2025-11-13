@@ -3,8 +3,8 @@
 namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
-use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Events\Event;
 use Drupal\datastore\Events\DatastoreImportedEvent;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -94,7 +94,7 @@ class ImportService {
   /**
    * Create a resource service instance.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   DKAN Resource.
    * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
    *   Import jobstore factory.
@@ -133,7 +133,7 @@ class ImportService {
   /**
    * Get DKAN resource.
    *
-   * @return \Drupal\common\DataResource
+   * @return \Drupal\dkan_common\DataResource
    *   DKAN Resource.
    */
   protected function getResource(): DataResource {

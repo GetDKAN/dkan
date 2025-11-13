@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore_search;
 
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\Events\Event;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\metastore\MetastoreService;

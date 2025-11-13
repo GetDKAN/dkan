@@ -3,8 +3,8 @@
 namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Events\Event;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourcePurger;
@@ -123,7 +123,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * The resource mapper has registered a resource.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan_common\Events\Event $event
    *   Event.
    *
    * @see ResourceMapper::EVENT_REGISTRATION
@@ -151,7 +151,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Purge resources.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan_common\Events\Event $event
    *   Dataset publication.
    */
   public function purgeResources(Event $event) {
@@ -162,7 +162,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * React to a distribution being orphaned.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan_common\Events\Event $event
    *   The event object containing the resource object.
    */
   public function drop(Event $event) {
@@ -195,7 +195,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * React to a preReference to check if datastore update should be triggered.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan_common\Events\Event $event
    *   The event object containing the resource uuid.
    */
   public function onPreReference(Event $event) {
@@ -230,7 +230,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * system. When that happens successfully, we create queue items for importing
    * the file into the database.
    *
-   * @param \Drupal\common\Events\Event $event
+   * @param \Drupal\dkan_common\Events\Event $event
    *   The Event.
    *
    * @see \Drupal\datastore\Service\ResourceLocalizer::EVENT_RESOURCE_LOCALIZED

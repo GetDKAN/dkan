@@ -5,8 +5,8 @@ namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
 use CsvParser\Parser\ParserInterface;
-use Drupal\common\DataResource;
-use Drupal\common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
@@ -34,7 +34,7 @@ class ImportJobTest extends TestCase {
   /**
    * Database.
    *
-   * @var \Drupal\common\Storage\DatabaseTableInterface
+   * @var \Drupal\dkan_common\Storage\DatabaseTableInterface
    */
   private $database;
 
@@ -66,7 +66,7 @@ class ImportJobTest extends TestCase {
   /**
    * Get an ImportJob object.
    *
-   * @param \Drupal\common\DataResource $resource
+   * @param \Drupal\dkan_common\DataResource $resource
    *   DataResource object.
    *
    * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
@@ -252,7 +252,7 @@ class ImportJobTest extends TestCase {
   }
 
   public function testNonStorage() {
-    $this->expectExceptionMessage('Storage must be an instance of Drupal\common\Storage\DatabaseTableInterface');
+    $this->expectExceptionMessage('Storage must be an instance of Drupal\dkan_common\Storage\DatabaseTableInterface');
     $resource = new DataResource(__DIR__ . '/../../../../data/countries.csv', 'text/csv');
     ImportJob::get('1', new Memory(), [
       'resource' => $resource,

@@ -28,7 +28,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   ];
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'harvest',
     'metastore',
     'node',

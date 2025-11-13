@@ -2,12 +2,11 @@
 
 namespace Drupal\Tests\datastore\Unit\Service;
 
-use Drupal\common\DataResource;
-use Drupal\common\FileFetcher\DkanFileFetcher;
-use Drupal\common\FileFetcher\FileFetcherFactory;
-use Drupal\common\Storage\DatabaseTableInterface;
-use Drupal\common\Storage\FileFetcherJobStoreFactory;
-use Drupal\common\Util\DrupalFiles;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\FileFetcher\FileFetcherFactory;
+use Drupal\dkan_common\Storage\DatabaseTableInterface;
+use Drupal\dkan_common\Storage\FileFetcherJobStoreFactory;
+use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Queue\QueueFactory;
@@ -15,6 +14,7 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
+use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -58,7 +58,7 @@ class ResourceLocalizerTest extends TestCase {
       ->getMock();
 
     $fileFetcher = $this->getFileFetcherFactoryChain()
-      ->add(DkanFileFetcher::class, 'getStateProperty', $file_path)
+      ->add(FileFetcher::class, 'getStateProperty', $file_path)
       ->getMock();
 
     $service = new ResourceLocalizer(
@@ -119,8 +119,8 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function getFileFetcherFactoryChain() {
     return (new Chain($this))
-      ->add(FileFetcherFactory::class, 'getInstance', DkanFileFetcher::class)
-      ->add(DkanFileFetcher::class, 'getResult', Result::class)
+      ->add(FileFetcherFactory::class, 'getInstance', FileFetcher::class)
+      ->add(FileFetcher::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE);
   }
 
@@ -132,8 +132,7 @@ class ResourceLocalizerTest extends TestCase {
       ->add(DrupalFiles::class, 'getFileSystem', FileSystem::class)
       ->add(FileSystem::class, 'prepareDirectory', NULL)
       ->add(DrupalFiles::class, 'fileCreateUrl', self::HOST . '/file.csv')
-      ->add(FileSystem::class, 'realpath', self::HOST . '/file.csv')
-      ->add(DrupalFiles::class, 'getStreamWrapperManager', StreamWrapperManager::class);
+      ->add(FileSystem::class, 'realpath', self::HOST . '/file.csv');
   }
 
   /**

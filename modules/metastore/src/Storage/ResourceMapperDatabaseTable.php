@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\dkan_common\Storage\AbstractDatabaseTable;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

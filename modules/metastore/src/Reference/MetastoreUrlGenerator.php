@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\common\StreamWrapper\DkanStreamWrapper;
+use Drupal\dkan_common\StreamWrapper\DkanStreamWrapper;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\metastore\Exception\MissingObjectException;
