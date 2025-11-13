@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\common\Storage\DatabaseConnectionFactory as CommonDatabaseConnectionFactory;
+use Drupal\dkan_common\Storage\DatabaseConnectionFactory as CommonDatabaseConnectionFactory;
 
 /**
  * Database connection factory for connections with unbuffered queries.

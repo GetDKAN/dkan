@@ -8,10 +8,10 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\common\DataResource;
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\common\Events\Event;
-use Drupal\common\UrlHostTokenResolver;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\dkan_common\Events\Event;
+use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Reference\MetastoreUrlGenerator;
@@ -372,7 +372,7 @@ class LifeCycle {
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException
    */
   protected function queueOrphanReferenceCleanup(MetastoreItemInterface $data): void {
     $metadata = $data->getMetadata();

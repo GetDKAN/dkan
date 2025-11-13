@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore_search\Plugin\DkanApiDocs;
 
-use Drupal\common\Plugin\DkanApiDocsBase;
+use Drupal\dkan_common\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\metastore_search\Search;

@@ -2,9 +2,8 @@
 
 namespace Drupal\Tests\datastore\Unit\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\ResourceMapper;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
@@ -26,8 +25,9 @@ use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\QueryFactory;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
+use Drupal\Tests\dkan_common\Unit\Storage\QueryDataProvider as QueryData;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use Drupal\metastore\Reference\ReferenceLookup;
 
 /**
@@ -238,7 +238,6 @@ class DatastoreQueryTest extends TestCase {
       ->add("dkan.datastore.service.factory.import", ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
       ->add('request_stack', RequestStack::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)

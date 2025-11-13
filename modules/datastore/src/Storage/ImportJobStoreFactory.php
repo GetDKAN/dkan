@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Storage;
 
-use Drupal\common\Storage\AbstractJobStoreFactory;
+use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 
 /**
  * Create a job store object for the import process.

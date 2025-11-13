@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
@@ -14,7 +14,7 @@ use Procrastinator\Result;
  * This test has to be a BTB test because the import services rely on MySQL, and
  * kernel tests use SQLite.
  *
- * @covers \Drupal\common\FileFetcher\FileFetcherFactory
+ * @covers \Drupal\dkan_common\FileFetcher\FileFetcherFactory
  * @covers \Drupal\datastore\DatastoreService
  * @coversDefaultClass \Drupal\datastore\DatastoreService
  *
@@ -29,7 +29,7 @@ class DatastoreServiceTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
     'node',
@@ -53,7 +53,7 @@ class DatastoreServiceTest extends BrowserTestBase {
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.
-    $config = $this->config('common.settings');
+    $config = $this->config('dkan_common.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
 
