@@ -4,7 +4,7 @@ namespace Drupal\datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\datastore\Service\Info\ImportInfoList;

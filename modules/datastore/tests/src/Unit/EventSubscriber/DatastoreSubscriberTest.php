@@ -5,10 +5,10 @@ namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
-use Drupal\common\DataResource;
-use Drupal\common\Events\Event;
-use Drupal\common\Storage\JobStore;
-use Drupal\common\Storage\JobStoreFactory;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\Events\Event;
+use Drupal\dkan_common\Storage\JobStore;
+use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
@@ -107,7 +107,6 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
       ->add('event_dispatcher', EventDispatcherInterface::class)
@@ -119,7 +118,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(DatabaseTable::class, 'drop')
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(AbstractJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
       ->add(LoggerInterface::class, 'error', NULL, 'errors')
@@ -145,7 +144,6 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
       ->add('event_dispatcher', EventDispatcherInterface::class)
@@ -156,7 +154,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(DatastoreService::class, 'drop', new \Exception('error'))
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(AbstractJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove')
       ->add(LoggerInterface::class, 'error', NULL, 'errors')
@@ -181,7 +179,6 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add("database", Connection::class)
       ->add('event_dispatcher', EventDispatcherInterface::class)
@@ -192,7 +189,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(DatastoreService::class, 'drop')
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(AbstractJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(ImportJobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'remove', new \Exception('error'))
       ->add(LoggerInterface::class, 'error', NULL, 'errors')
@@ -213,7 +210,6 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('dkan.datastore.logger_channel', LoggerInterface::class)
       ->add('dkan.datastore.service', DatastoreService::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.datastore.import_job_store_factory', ImportJobStoreFactory::class)
       ->add('event_dispatcher', EventDispatcherInterface::class)
       ->index(0);

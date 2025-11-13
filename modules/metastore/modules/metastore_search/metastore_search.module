@@ -2,7 +2,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\NodeWrapper\Data;
 
 /**

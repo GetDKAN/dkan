@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\datastore\Kernel\Service;
 
-use Drupal\common\DataResource;
+use Drupal\dkan_common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\common\FileFetcher\FileFetcherFactory
+ * @covers \Drupal\dkan_common\FileFetcher\FileFetcherFactory
  * @covers \Drupal\datastore\Service\ResourceLocalizer
  * @coversDefaultClass \Drupal\datastore\Service\ResourceLocalizer
  *
@@ -22,7 +22,7 @@ class ResourceLocalizerTest extends KernelTestBase {
   protected static $modules = [
     'node',
     'user',
-    'common',
+    'dkan_common',
     'datastore',
     'metastore',
   ];
@@ -101,12 +101,12 @@ class ResourceLocalizerTest extends KernelTestBase {
   /**
    * @dataProvider provideUseExisting
    *
-   * @see \Drupal\Tests\common\Kernel\FileFetcher\FileFetcherFactoryTest::testOurRemote()
+   * @see \Drupal\Tests\dkan_common\Kernel\FileFetcher\FileFetcherFactoryTest::testOurRemote()
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.
-    $this->installConfig(['common']);
-    $config = $this->config('common.settings');
+    $this->installConfig(['dkan_common']);
+    $config = $this->config('dkan_common.settings');
     $config->set('always_use_existing_local_perspective', $use_existing);
     $config->save();
 

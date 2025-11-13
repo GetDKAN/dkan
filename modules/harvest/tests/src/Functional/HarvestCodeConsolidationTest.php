@@ -46,6 +46,7 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
     $this->assertSame('No items found to extract, review your harvest plan.', $exception_msg);
 
     // Run update and recreate harvest service with updated data.
+    \Drupal::service('module_installer')->install(['dkan_common']);
     $this->runUpdates();
     $harvest_service = \Drupal::service('dkan.harvest.service');
 

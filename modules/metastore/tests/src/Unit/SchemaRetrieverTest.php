@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Unit;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

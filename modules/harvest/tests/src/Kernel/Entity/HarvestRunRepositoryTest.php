@@ -18,7 +18,7 @@ use Drupal\KernelTests\KernelTestBase;
 class HarvestRunRepositoryTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'harvest',
     'metastore',
   ];

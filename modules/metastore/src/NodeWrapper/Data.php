@@ -5,7 +5,7 @@ namespace Drupal\metastore\NodeWrapper;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\NodeInterface;
 
@@ -48,7 +48,7 @@ class Data implements MetastoreItemInterface {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity Type Manager service.
    *
-   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException
    *   Thrown when the entity is not a Data node.
    */
   public function __construct(EntityInterface $entity, EntityTypeManagerInterface $entityTypeManager) {
@@ -238,7 +238,7 @@ class Data implements MetastoreItemInterface {
    * @return Data|void
    *   Data object containing the latest revision or null
    *
-   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
@@ -259,7 +259,7 @@ class Data implements MetastoreItemInterface {
    * @return Data|void
    *   Data object containing the latest revision or null
    *
-   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
+   * @throws \Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */

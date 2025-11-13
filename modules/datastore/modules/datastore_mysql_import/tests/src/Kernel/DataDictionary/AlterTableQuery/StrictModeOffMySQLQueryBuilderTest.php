@@ -19,7 +19,7 @@ use Drupal\KernelTests\KernelTestBase;
 class StrictModeOffMySQLQueryBuilderTest extends KernelTestBase {
 
   protected static $modules = [
-    'common',
+    'dkan_common',
     'datastore',
     'datastore_mysql_import',
     'metastore',
