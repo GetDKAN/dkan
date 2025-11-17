@@ -324,8 +324,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
   public function store($data, ?string $uuid = NULL): string {
     $data = json_decode($data);
 
-    $data = $this->filterHtml($data, $this->schemaId);
-
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
     if ($uuid) {
@@ -423,7 +421,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return mixed
    *   Filtered output.
    */
-  private function filterHtml(mixed $input, string $parent = 'dataset') {
+  public function filterHtml(mixed $input, string $parent = 'dataset') {
     $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
       ?: ['dataset_description', 'distribution_description'];
     switch (gettype($input)) {
