@@ -475,6 +475,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
     else {
       $config['Cache.SerializerPath'] = $cache_dir;
+      $config['HTML.Allowed'] = 'a[href],em,i,strong,b,br,p,ol,ul,li';
     }
 
     // Create HTML purifier instance using custom cache path.
