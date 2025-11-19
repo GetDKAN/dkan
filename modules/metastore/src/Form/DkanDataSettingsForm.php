@@ -83,6 +83,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
     $form['description'] = $this->getDescriptionMarkup();
     $form['redirect_to_datasets'] = $this->getRedirectCheckbox($config);
     $form['html_allowed_properties'] = $this->getHtmlAllowedProperties($config);
+    $form['html_allowed_html'] = $this->getHtmlAllowedHtml($config);
     $form['property_list'] = $this->getPropertyList($config);
 
     return parent::buildForm($form, $form_state);
@@ -115,6 +116,26 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Redirect to datasets view after form submit'),
       '#default_value' => $config->get('redirect_to_datasets'),
       '#description' => $this->t("Disable this option if you want to use Drupal's default or your own custom redirect after submitting a metadata form."),
+    ];
+  }
+
+  /**
+   * Builds the text box for allowed HTML elements.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The metastore settings configuration.
+   *
+   * @return array
+   *   The form element array.
+   */
+  private function getHtmlAllowedHtml(Config $config) {
+    return [
+      '#type' => 'textfield',
+      '#title' => $this->t('Allowed tags and elements for properties that allow HTML'),
+      '#description' => $this->t('Comma-separated lists of allowed tags. Attributes can
+        be allowed on specific tags by appending them in square braces.
+        (Example: "p,br,a[href]")'),
+      '#default_value' => $config->get('html_allowed_html') ?: '',
     ];
   }
 
@@ -174,6 +195,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       ->set('redirect_to_datasets', $form_state->getValue('redirect_to_datasets'))
       ->set('property_list', $form_state->getValue('property_list'))
       ->set('html_allowed_properties', $form_state->getValue('html_allowed_properties'))
+      ->set('html_allowed_html', $form_state->getValue('html_allowed_html'))
       ->save();
 
     // Rebuild routes, without clearing all caches.

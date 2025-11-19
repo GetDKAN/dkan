@@ -460,6 +460,8 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   Filtered string.
    */
   private function htmlPurifier(string $input) {
+    $allowed_html = $this->configFactory->get('metastore.settings')->get('html_allowed_html');
+
     // Initialize HTML Purifier cache config settings array.
     $config = [];
 
@@ -475,7 +477,9 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
     else {
       $config['Cache.SerializerPath'] = $cache_dir;
-      $config['HTML.Allowed'] = 'a[href],em,i,strong,b,br,p,ol,ul,li';
+      if (!empty($allowed_html)) {
+        $config['HTML.Allowed'] = $allowed_html;
+      }
     }
 
     // Create HTML purifier instance using custom cache path.
