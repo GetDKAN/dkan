@@ -138,9 +138,6 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $titles = array_keys(get_object_vars($json_content));
     $this->assertEquals('id,name,extra_long_column_name_with_tons_of_characters_that_will_ne_e872,extra_long_column_name_with_tons_of_characters_that_will_ne_5127',
       implode(',',$titles));
-//    $this->assertEquals('1', $json_content->id);
-//    $this->assertEquals('Greg', $json_content->name);
-//    $this->assertEquals('45.6', trim($json_content->extra_long_column_name_with_tons_of_characters_that_will_ne_e872));
   }
 
   /**
