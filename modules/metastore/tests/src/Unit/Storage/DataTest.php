@@ -171,11 +171,9 @@ class DataTest extends TestCase {
       $options->add($input, $return);
     }
 
-    $immutableConfig = (new Chain($this))
-      ->add(ImmutableConfig::class, 'get', $options)
-      ->getMock();
     $configFactoryMock = (new Chain($this))
-      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', $options)
       ->getMock();
 
     $fileSystemStub = $this->createStub(FileSystemInterface::class);
