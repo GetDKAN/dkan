@@ -8,6 +8,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Controller\MetastoreController;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\ExistingObjectException;
@@ -134,7 +135,7 @@ class MetastoreControllerTest extends TestCase {
     $configFactoryMock = (new Chain($this))
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
-    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock, $configFactoryMock, $this->createStub(LoggerInterface::class));
+    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock, $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
     $container = $this->getCommonMockChain()
       ->add(MetastoreService::class, 'getStorage', $nodeDataMock)
       ->getMock();
