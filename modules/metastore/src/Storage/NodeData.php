@@ -4,6 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -18,6 +19,7 @@ class NodeData extends Data {
     string $schemaId,
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
+    FileSystemInterface $file_system,
     LoggerInterface $loggerChannel,
   ) {
     $this->entityType = 'node';
@@ -26,7 +28,7 @@ class NodeData extends Data {
     $this->labelKey = 'title';
     $this->schemaIdField = 'field_data_type';
     $this->metadataField = 'field_json_metadata';
-    parent::__construct($schemaId, $entityTypeManager, $config_factory, $loggerChannel);
+    parent::__construct($schemaId, $entityTypeManager, $config_factory, $file_system, $loggerChannel);
   }
 
   /**

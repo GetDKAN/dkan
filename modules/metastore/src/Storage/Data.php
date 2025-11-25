@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
@@ -91,6 +92,13 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $configFactory;
 
   /**
+   * The file system.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * DKAN logger channel service.
    */
   private LoggerInterface $logger;
@@ -102,12 +110,14 @@ abstract class Data implements MetastoreEntityStorageInterface {
     string $schemaId,
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
+    FileSystemInterface $file_system,
     LoggerInterface $loggerChannel
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->schemaId = $schemaId;
     $this->configFactory = $config_factory;
+    $this->fileSystem = $file_system;
     $this->logger = $loggerChannel;
   }
 
@@ -466,8 +476,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $config = [];
 
     // Determine path to tmp directory.
-    // @todo Inject this service.
-    $tmp_path = \Drupal::service('file_system')->getTempDirectory();
+    $tmp_path = $this->fileSystem->getTempDirectory();
     // Specify custom location in tmp directory for storing HTML Purifier cache.
     $cache_dir = rtrim((string) $tmp_path, '/') . '/html_purifier_cache';
 

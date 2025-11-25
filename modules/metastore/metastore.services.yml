@@ -38,6 +38,7 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@config.factory'
+      - '@file_system'
       - '@dkan.common.logger_channel'
       - '@event_dispatcher'
 

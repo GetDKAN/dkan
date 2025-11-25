@@ -5,6 +5,7 @@ namespace Drupal\metastore\Storage;
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -34,6 +35,13 @@ class DataFactory implements FactoryInterface {
   protected $configFactory;
 
   /**
+   * The file system.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * DKAN logger channel service.
    */
   private LoggerInterface $logger;
@@ -44,10 +52,12 @@ class DataFactory implements FactoryInterface {
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
+    FileSystemInterface $file_system,
     LoggerInterface $loggerChannel,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
+    $this->fileSystem = $file_system;
     $this->logger = $loggerChannel;
   }
 
@@ -100,6 +110,7 @@ class DataFactory implements FactoryInterface {
       $identifier,
       $this->entityTypeManager,
       $this->configFactory,
+      $this->fileSystem,
       $this->logger
     );
   }
