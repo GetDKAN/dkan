@@ -37,7 +37,7 @@
         "colinodell/psr-testlogger": "^1.2",
         "drush/drush": "*",
         "getdkan/mock-chain": "^1.4.0",
-        "osteel/openapi-httpfoundation-testing": "<0.12",
+        "osteel/openapi-httpfoundation-testing": "^0.13",
         "drupal/admin_toolbar": "^3.0"
     },
     "repositories": {
