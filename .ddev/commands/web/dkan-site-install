@@ -15,7 +15,7 @@ drush config-set user.role.administrator is_admin true -y
 drush user:role:add "administrator" admin
 
 # Enable Claro and Stark themes.
-drush theme:enable claro stark
+drush theme:enable claro stark -y
 drush config-set system.theme admin claro -y
 drush config-set system.theme default stark -y
 drush config-set node.settings use_admin_theme true -y
