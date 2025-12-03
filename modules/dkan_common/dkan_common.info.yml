@@ -3,5 +3,3 @@ type: module
 description: Provides common functionality for DKAN modules.
 core_version_requirement: ^10.4 || ^11
 package: DKAN 4.x Transition
-dependencies:
-  - dkan:common
