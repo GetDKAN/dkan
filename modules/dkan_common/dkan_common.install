@@ -1,1 +1,21 @@
 <?php
+
+/**
+ * Implements hook_requirements().
+ */
+function dkan_common_requirements($phase) {
+  $requirements = [];
+
+  // Ensure that common module is enabled before enabling dkan_common.
+  if ($phase == 'install') {
+    if (!\Drupal::moduleHandler()->moduleExists('common')) {
+      $requirements['dkan_common'] = [
+        'title' => t('Common module is not enabled'),
+        'description' => t('The "common" module must be enabled before installing dkan_common.'),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+  }
+
+  return $requirements;
+}
