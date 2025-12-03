@@ -172,7 +172,7 @@ function datastore_update_9004(&$sandbox) {
     $schema->dropPrimaryKey($table_name);
 
     $query = '
-        ALTER TABLE {'. $table_name . '}
+        ALTER TABLE {' . $table_name . '}
         ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         ADD COLUMN timestamp INT NOT NULL DEFAULT 0
     ';

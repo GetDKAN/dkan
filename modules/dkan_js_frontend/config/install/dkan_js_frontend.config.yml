@@ -1,5 +1,8 @@
 css_folder: '/frontend/build/static/css/'
 js_folder: '/frontend/build/static/js/'
+minified: true
+preprocess: true
+datastore_query_api: false
 routes:
   - home,/home
   - about,/about
@@ -8,8 +11,6 @@ routes:
   - datasetapi,/dataset/{id}/api
   - search,/search
   - publishers,/publishers
-minified: true
-preprocess: true
 js:
   attributes:
     - type,module

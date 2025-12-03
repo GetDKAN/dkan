@@ -3,6 +3,7 @@ description: Provides the routing connection between Drupal and a decoupled Java
 type: module
 core_version_requirement: ^10.2 || ^11
 dependencies:
+  — drupal:config
   - drupal:field
   - dkan:metastore
 package: DKAN

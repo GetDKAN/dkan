@@ -1,2 +1,11 @@
 route_callbacks:
   - 'dkan_js_frontend.route_provider::routes'
+dkan_js_frontend.settings:
+  path: '/admin/dkan/js-frontend'
+  defaults:
+    _title: 'JS Frontend Settings'
+    _form: 'Drupal\dkan_js_frontend\Form\DkanJsFrontendSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
