@@ -2,7 +2,16 @@
 
 /**
  * @file
+ * Install, update and uninstall functions for the DKAN metastore_admin module.
  */
+
+/**
+ * Implements hook_install().
+ */
+function metastore_admin_install() {
+  // Only in DKAN 3.x: Run the update hooks to enable transitional modules.
+  metastore_admin_update_8012();
+}
 
 /**
  * Disable metastore_form and enable json_form_widget.
