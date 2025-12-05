@@ -34,7 +34,7 @@ commands:
         type: string
       drupal_core_constraint:
         description: "Branch of getdkan/recommended-project to use."
-        default: "10.4.x-dev"
+        default: "~10.5"
         type: string
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -243,9 +243,6 @@ jobs:
         type: boolean
     steps:
       - prepare_build:
-          php_version: << parameters.php_version >>
-          database_version: << parameters.database_version >>
-          drupal_core_constraint: << parameters.drupal_core_constraint >>
           upgrade: << parameters.upgrade >>
       - run:
           name: Run Cypress tests
