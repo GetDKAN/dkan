@@ -4,8 +4,8 @@ namespace Drupal\metastore_search\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\SchemaRetriever;
 use Drupal\metastore_search\Search;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,9 +39,9 @@ class SearchController implements ContainerInjectionInterface {
    *
    * @param \Drupal\metastore_search\Search $service
    *   Dkan search service.
-   * @param \Drupal\metastore\MetastoreApiResponse $metastoreApiResponse
+   * @param \Drupal\dkan_metastore\MetastoreApiResponse $metastoreApiResponse
    *   Metastore API cached response service.
-   * @param \Drupal\metastore\SchemaRetriever $schemaRetriever
+   * @param \Drupal\dkan_metastore\SchemaRetriever $schemaRetriever
    *   Schema retriever service.
    */
   public function __construct(

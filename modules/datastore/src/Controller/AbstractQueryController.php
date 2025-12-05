@@ -8,7 +8,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Query as QueryService;
-use Drupal\metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
