@@ -7,8 +7,8 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\dkan_common\DataResource;
 use Drupal\datastore\DatastoreService;
-use Drupal\metastore\ReferenceLookupInterface;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\ReferenceLookupInterface;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -28,7 +28,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * The dkan.metastore.reference_lookup service.
    *
-   * @var \Drupal\metastore\ReferenceLookupInterface
+   * @var \Drupal\dkan_metastore\ReferenceLookupInterface
    */
   private $referenceLookup;
 
@@ -42,7 +42,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * The dataset storage.
    *
-   * @var \Drupal\metastore\Storage\Data
+   * @var \Drupal\dkan_metastore\Storage\Data
    */
   private $storage;
 
@@ -56,9 +56,9 @@ class ResourcePurger implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config.factory service.
-   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
+   * @param \Drupal\dkan_metastore\ReferenceLookupInterface $referenceLookup
    *   The dkan.metastore.reference_lookup service.
-   * @param \Drupal\metastore\Storage\DataFactory $dataFactory
+   * @param \Drupal\dkan_metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.storage service.
    * @param \Drupal\datastore\DatastoreService $datastore
    *   The dkan.datastore.service service.

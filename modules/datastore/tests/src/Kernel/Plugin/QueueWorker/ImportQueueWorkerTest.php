@@ -26,7 +26,7 @@ class ImportQueueWorkerTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   public function testErrorPath() {

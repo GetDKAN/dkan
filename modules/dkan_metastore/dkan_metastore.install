@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Install file for the dkan_metastore module.
+ */
+
+use Drupal\Core\Config\FileStorage;
+
+/**
+ * Update hook to uninstall the legacy metastore module.
+ */
+function dkan_metastore_update_10001() {
+  // Re-import default config for dkan_metastore.
+  \Drupal::service('config.installer')->installDefaultConfig('module', 'dkan_metastore');
+
+  // Remove existing config for core.entity_form_display.node.data.default, then
+  // re-install from optional.
+  \Drupal::service('config.factory')->getEditable('core.entity_form_display.node.data.default')->delete();
+  $path_to_module = \Drupal::service('extension.list.module')->getPath('dkan_metastore');
+  $config_source = new FileStorage($path_to_module . '/config/optional');
+  \Drupal::service('config.installer')->installOptionalConfig($config_source);
+
+  // If the old metastore module is still enabled, copy config and uninstall it.
+  if (\Drupal::moduleHandler()->moduleExists('metastore')) {
+    $config = \Drupal::configFactory()->getEditable('metastore.settings');
+    $settings = $config->getRawData();
+    $dkan_config = \Drupal::configFactory()->getEditable('dkan_metastore.settings');
+    foreach ($settings as $key => $value) {
+      $dkan_config->set($key, $value);
+    }
+    $dkan_config->save();
+    \Drupal::service('module_installer')->uninstall(['metastore']);
+    $message = t('The legacy metastore module has been uninstalled.');
+    $config->delete();
+  }
+  return $message;
+}

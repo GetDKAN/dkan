@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\DatastoreService;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 
 /**
  * Processes resource import.
@@ -31,7 +31,7 @@ class Import extends ImportQueueWorker {
    *   A DKAN datastore service instance.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
    *   A logger channel factory instance.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   * @param \Drupal\dkan_metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
    * @param \Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface $defaultConnectionFactory
    *   Default database connection factory.

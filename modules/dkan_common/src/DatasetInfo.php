@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\dkan_common;
 
-use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
+use Drupal\dkan_metastore\ResourceMapper;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\node\Entity\Node;
 
 /**
@@ -49,7 +49,7 @@ class DatasetInfo {
    *
    * @todo Inject this via the constructor one we have our dependencies fixed.
    *
-   * @param \Drupal\metastore\Storage\DataFactory $dataFactory
+   * @param \Drupal\dkan_metastore\Storage\DataFactory $dataFactory
    *   Metastore's data factory.
    */
   public function setStorage(DataFactory $dataFactory) {
@@ -61,7 +61,7 @@ class DatasetInfo {
    *
    * @todo Inject this via the constructor one we have our dependencies fixed.
    *
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
    */
   public function setResourceMapper(ResourceMapper $resourceMapper) {

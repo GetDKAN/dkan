@@ -1,0 +1,30 @@
+<?php
+
+namespace Drupal\Tests\dkan_metastore\Functional\Api1;
+
+use Drupal\Tests\dkan_common\Functional\Api1TestBase;
+
+/**
+ * Tests the Schema API.
+ *
+ * @group functional1
+ */
+class SchemaTest extends Api1TestBase {
+
+  public function getEndpoint(): string {
+    return 'api/1/metastore/schemas';
+  }
+
+  public function testList() {
+    $response = $this->httpClient->request('GET', $this->endpoint);
+    $responseBody = json_decode($response->getBody());
+    $this->assertEquals("http://dkan/api/v1/schema/dataset", $responseBody->dataset->id);
+  }
+
+  public function testGetItem() {
+    $response = $this->httpClient->request('GET', "$this->endpoint/dataset");
+    $responseBody = json_decode($response->getBody());
+    $this->assertEquals("http://dkan/api/v1/schema/dataset", $responseBody->id);
+  }
+
+}
