@@ -11,7 +11,7 @@ use Drupal\Core\Path\PathValidator;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\Core\Database\Connection;
 use Drupal\datastore\Form\DashboardForm;

@@ -10,7 +10,7 @@ use Drupal\harvest\Load\Dataset;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\ValidMetadataFactory;
 use Drupal\dkan_metastore\MetastoreService;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
