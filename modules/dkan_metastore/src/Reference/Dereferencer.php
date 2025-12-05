@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metastore\Reference;
+namespace Drupal\dkan_metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Psr\Log\LoggerInterface;
 
-use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 
 /**
  * Metastore dereferencer.

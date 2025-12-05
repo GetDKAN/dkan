@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Storage;
+namespace Drupal\dkan_metastore\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -102,7 +102,7 @@ class DataFactory implements FactoryInterface {
    * @param string $identifier
    *   Schema id.
    *
-   * @return \Drupal\metastore\Storage\NodeData
+   * @return \Drupal\dkan_metastore\Storage\NodeData
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {

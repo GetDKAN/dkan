@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metastore\DataDictionary;
+namespace Drupal\dkan_metastore\DataDictionary;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\metastore\Reference\MetastoreUrlGenerator;
-use Drupal\metastore\ReferenceLookupInterface;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
+use Drupal\dkan_metastore\ReferenceLookupInterface;
+use Drupal\dkan_metastore\MetastoreService;
 
 /**
  * Data dictionary service.

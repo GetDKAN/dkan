@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\metastore\Service;
+namespace Drupal\dkan_metastore\Service;
 
 use Ramsey\Uuid\Uuid;
 

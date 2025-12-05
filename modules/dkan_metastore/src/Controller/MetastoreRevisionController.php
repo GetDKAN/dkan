@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\metastore\Controller;
+namespace Drupal\dkan_metastore\Controller;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,14 +30,14 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   private $service;
 
   /**
    * Metastore dataset docs service.
    *
-   * @var \Drupal\metastore\DatasetApiDocs
+   * @var \Drupal\dkan_metastore\DatasetApiDocs
    */
   private $docs;
 
@@ -197,7 +197,7 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Entity\RevisionLogInterface $entity
    *   The current metastore entity object.
-   * @param \Drupal\metastore\Storage\MetastoreEntityStorageInterface $storage
+   * @param \Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface $storage
    *   DKAN metastore storage object.
    *
    * @return int[]

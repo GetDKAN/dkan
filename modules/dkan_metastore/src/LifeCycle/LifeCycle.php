@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\LifeCycle;
+namespace Drupal\dkan_metastore\LifeCycle;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -12,13 +12,13 @@ use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\dkan_common\Events\Event;
 use Drupal\dkan_common\UrlHostTokenResolver;
-use Drupal\metastore\MetastoreItemInterface;
-use Drupal\metastore\Reference\Dereferencer;
-use Drupal\metastore\Reference\MetastoreUrlGenerator;
-use Drupal\metastore\Reference\OrphanChecker;
-use Drupal\metastore\Reference\Referencer;
-use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\MetastoreItemInterface;
+use Drupal\dkan_metastore\Reference\Dereferencer;
+use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
+use Drupal\dkan_metastore\Reference\OrphanChecker;
+use Drupal\dkan_metastore\Reference\Referencer;
+use Drupal\dkan_metastore\ResourceMapper;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -39,28 +39,28 @@ class LifeCycle {
   /**
    * Referencer service.
    *
-   * @var \Drupal\metastore\Reference\Referencer
+   * @var \Drupal\dkan_metastore\Reference\Referencer
    */
   protected $referencer;
 
   /**
    * Dereferencer.
    *
-   * @var \Drupal\metastore\Reference\Dereferencer
+   * @var \Drupal\dkan_metastore\Reference\Dereferencer
    */
   protected $dereferencer;
 
   /**
    * OrphanChecker service.
    *
-   * @var \Drupal\metastore\Reference\OrphanChecker
+   * @var \Drupal\dkan_metastore\Reference\OrphanChecker
    */
   protected $orphanChecker;
 
   /**
    * ResourceMapper service.
    *
-   * @var \Drupal\metastore\ResourceMapper
+   * @var \Drupal\dkan_metastore\ResourceMapper
    */
   protected $resourceMapper;
 
@@ -74,7 +74,7 @@ class LifeCycle {
   /**
    * Metastore storage service.
    *
-   * @var \Drupal\metastore\Storage\DataFactory
+   * @var \Drupal\dkan_metastore\Storage\DataFactory
    */
   protected $dataFactory;
 
@@ -137,7 +137,7 @@ class LifeCycle {
    *
    * @param string $stage
    *   Stage or hook name for execution.
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Metastore item object.
    */
   public function go(string $stage, MetastoreItemInterface $data): void {
@@ -195,7 +195,7 @@ class LifeCycle {
    * Translate resource ID to downloadUrl, and translate internal DKAN URI
    * for data dictionary to absolute URL.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Distribution Metastore item.
    *
    * @todo For consistency, this should either be abstracted so that it is not
@@ -316,7 +316,7 @@ class LifeCycle {
   /**
    * Dataset pre-save life cycle method.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Dataset metastore item.
    *
    * @throws \Exception
@@ -341,7 +341,7 @@ class LifeCycle {
   /**
    * Trigger datastore import and reference metadata with uuids.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Metastore item.
    *
    * @throws \Exception
@@ -367,7 +367,7 @@ class LifeCycle {
   /**
    * Orphan removed references if applicable.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Metastore item.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -406,7 +406,7 @@ class LifeCycle {
   /**
    * Set required node values based on metadata.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Data-Dictionary metastore item.
    */
   protected function setNodeValuesFromMetadata(MetastoreItemInterface $data): void {
@@ -427,7 +427,7 @@ class LifeCycle {
   /**
    * Data-Dictionary pre-save life cycle method.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Data-Dictionary metastore item.
    */
   protected function datadictionaryPresave(MetastoreItemInterface $data): void {
@@ -450,7 +450,7 @@ class LifeCycle {
   /**
    * Distribution presave.
    *
-   * @param \Drupal\metastore\MetastoreItemInterface $data
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Dataset metastore item.
    */
   protected function distributionPresave(MetastoreItemInterface $data): void {

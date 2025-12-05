@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
 use Contracts\RetrieverInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;

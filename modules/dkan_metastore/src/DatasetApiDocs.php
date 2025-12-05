@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
 use Drupal\dkan_common\DkanApiDocsGenerator;
 use Drupal\dkan_common\Util\ApiDocsPathModifier;
@@ -61,7 +61,7 @@ class DatasetApiDocs {
   /**
    * OpenAPI spec for dataset-related endpoints.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   private $metastore;
 
@@ -75,7 +75,7 @@ class DatasetApiDocs {
    *
    * @param \Drupal\dkan_common\DkanApiDocsGenerator $docsGenerator
    *   Serves openapi spec.
-   * @param \Drupal\metastore\MetastoreService $metastore
+   * @param \Drupal\dkan_metastore\MetastoreService $metastore
    *   The metastore service.
    * @param \Drupal\Core\Site\Settings $settings
    *   The Drupal settings service.

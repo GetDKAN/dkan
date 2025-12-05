@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\metastore\Controller;
+namespace Drupal\dkan_metastore\Controller;
 
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\DatasetApiDocs;
-use Drupal\metastore\Exception\CannotChangeUuidException;
-use Drupal\metastore\Exception\InvalidJsonException;
-use Drupal\metastore\Exception\MetastoreException;
-use Drupal\metastore\Exception\MissingPayloadException;
-use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\DatasetApiDocs;
+use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
+use Drupal\dkan_metastore\Exception\InvalidJsonException;
+use Drupal\dkan_metastore\Exception\MetastoreException;
+use Drupal\dkan_metastore\Exception\MissingPayloadException;
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -369,7 +369,7 @@ class MetastoreController implements ContainerInjectionInterface {
    * @param mixed $identifier
    *   Identifier.
    *
-   * @throws \Drupal\metastore\Exception\CannotChangeUuidException
+   * @throws \Drupal\dkan_metastore\Exception\CannotChangeUuidException
    *   Thrown when the identifiers are different.
    */
   private function checkIdentifier(string $data, mixed $identifier = NULL) {

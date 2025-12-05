@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -8,14 +8,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Helper for metastore schema properties.
  *
- * @package Drupal\metastore
+ * @package Drupal\dkan_metastore
  */
 class SchemaPropertiesHelper implements ContainerInjectionInterface {
 
   /**
    * SchemaRetriever service.
    *
-   * @var \Drupal\metastore\SchemaRetriever
+   * @var \Drupal\dkan_metastore\SchemaRetriever
    */
   protected $schemaRetriever;
 

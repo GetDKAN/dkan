@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\metastore\NodeWrapper;
+namespace Drupal\dkan_metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
-use Drupal\metastore\MetastoreItemInterface;
+use Drupal\dkan_metastore\Factory\MetastoreEntityItemFactoryInterface;
+use Drupal\dkan_metastore\MetastoreItemInterface;
 
 /**
  * Class NodeDataFactory.
@@ -49,7 +49,7 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    * @param array $config
    *   Optional config from interface, not used.
    *
-   * @return \Drupal\metastore\MetastoreItemInterface
+   * @return \Drupal\dkan_metastore\MetastoreItemInterface
    *   Metastore data node object.
    */
   public function getInstance(string $identifier, array $config = []): MetastoreItemInterface {
@@ -64,7 +64,7 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    * @param mixed $input
    *   A data node.
    *
-   * @return \Drupal\metastore\MetastoreItemInterface
+   * @return \Drupal\dkan_metastore\MetastoreItemInterface
    *   Metastore data node object.
    */
   public function wrap($input): MetastoreItemInterface {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\metastore\Exception;
+namespace Drupal\dkan_metastore\Exception;
 
 /**
  * Exception thrown when a resource is already registered.
  *
- * @package Drupal\metastore\Exception
+ * @package Drupal\dkan_metastore\Exception
  */
 class AlreadyRegistered extends \Exception {
 

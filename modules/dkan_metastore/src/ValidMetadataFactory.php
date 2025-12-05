@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\Service\Uuid5;
+use Drupal\dkan_metastore\Service\Uuid5;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -15,7 +15,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   /**
    * Schema retriever.
    *
-   * @var \Drupal\metastore\SchemaRetriever
+   * @var \Drupal\dkan_metastore\SchemaRetriever
    */
   private $schemaRetriever;
 
@@ -33,7 +33,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   /**
    * ValidMetadataFactory constructor.
    *
-   * @param \Drupal\metastore\SchemaRetriever $schemaRetriever
+   * @param \Drupal\dkan_metastore\SchemaRetriever $schemaRetriever
    *   Service dkan.metastore.schema_retriever.
    */
   public function __construct(SchemaRetriever $schemaRetriever) {
@@ -43,7 +43,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   /**
    * Gets schema retriever.
    *
-   * @return \Drupal\metastore\SchemaRetriever
+   * @return \Drupal\dkan_metastore\SchemaRetriever
    *   Service metastore.schema_retriever.
    */
   public function getSchemaRetriever() {

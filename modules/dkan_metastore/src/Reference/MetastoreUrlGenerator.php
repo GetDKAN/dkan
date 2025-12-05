@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metastore\Reference;
+namespace Drupal\dkan_metastore\Reference;
 
 use Drupal\dkan_common\StreamWrapper\DkanStreamWrapper;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -38,7 +38,7 @@ class MetastoreUrlGenerator {
    *
    * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager
    *   The stream wrapper manager.
-   * @param \Drupal\metastore\MetastoreService $metastore
+   * @param \Drupal\dkan_metastore\MetastoreService $metastore
    *   Metastore service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
@@ -56,7 +56,7 @@ class MetastoreUrlGenerator {
   /**
    * Retrieve the metastore service.
    *
-   * @return \Drupal\metastore\MetastoreService
+   * @return \Drupal\dkan_metastore\MetastoreService
    *   Metastore service.
    */
   protected function metastore(): MetastoreService {

@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\metastore\Entity;
+namespace Drupal\dkan_metastore\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\metastore\ResourceMappingInterface;
+use Drupal\dkan_metastore\ResourceMappingInterface;
 
 /**
  * Defines the resource mapping entity class.
  *
- * Used as storage by \Drupal\metastore\ResourceMapper.
+ * Used as storage by \Drupal\dkan_metastore\ResourceMapper.
  *
  * ResourceMapping entities store particular "perspectives" on a data file
  * resource. The source perspective will be a URL to the original location of

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\DataDictionary;
+namespace Drupal\dkan_metastore\DataDictionary;
 
 /**
  * Provides interface for data dictionary discovery service.

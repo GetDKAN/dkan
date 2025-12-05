@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Reference;
+namespace Drupal\dkan_metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;

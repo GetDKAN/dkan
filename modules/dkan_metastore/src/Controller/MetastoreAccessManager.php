@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Controller;
+namespace Drupal\dkan_metastore\Controller;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -8,8 +8,8 @@ use Drupal\Core\Entity\EntityAccessControlHandlerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Factory\MetastoreEntityItemFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -255,7 +255,7 @@ class MetastoreAccessManager implements ContainerInjectionInterface {
    * @return \Drupal\Core\Entity\EntityInterface
    *   The entity corresponding to the schema and item ID.
    *
-   * @throws \Drupal\metastore\Exception\MissingObjectException
+   * @throws \Drupal\dkan_metastore\Exception\MissingObjectException
    *   If no entity is found for the given schema ID and item ID.
    */
   protected function getEntity(string $schema_id, string $identifier): EntityInterface {

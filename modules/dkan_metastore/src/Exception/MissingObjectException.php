@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\metastore\Exception;
+namespace Drupal\dkan_metastore\Exception;
 
 /**
  * Exception thrown when a metastore item could not be found for an identifier.
  *
- * @package Drupal\metastore\Exception
+ * @package Drupal\dkan_metastore\Exception
  */
 class MissingObjectException extends MetastoreException {
 

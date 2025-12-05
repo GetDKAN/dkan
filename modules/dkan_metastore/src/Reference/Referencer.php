@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\metastore\Reference;
+namespace Drupal\dkan_metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\UrlHostTokenResolver;
-use Drupal\metastore\Exception\AlreadyRegistered;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\Exception\AlreadyRegistered;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\ResourceMapper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
@@ -64,7 +64,7 @@ class Referencer {
    *   Drupal config factory service.
    * @param \Contracts\FactoryInterface $storageFactory
    *   DKAN contracts factory.
-   * @param \Drupal\metastore\Reference\MetastoreUrlGenerator $metastoreUrlGenerator
+   * @param \Drupal\dkan_metastore\Reference\MetastoreUrlGenerator $metastoreUrlGenerator
    *   DKAN metastore url generator.
    * @param \GuzzleHttp\Client $httpClient
    *   Guzzle http client.
@@ -318,7 +318,7 @@ class Referencer {
   /**
    * Get the resource mapper service.
    *
-   * @return \Drupal\metastore\ResourceMapper
+   * @return \Drupal\dkan_metastore\ResourceMapper
    *   The resource mapper service.
    *
    * @todo Inject this service.

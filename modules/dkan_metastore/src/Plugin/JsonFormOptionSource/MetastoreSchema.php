@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drupal\metastore\Plugin\JsonFormOptionSource;
+namespace Drupal\dkan_metastore\Plugin\JsonFormOptionSource;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginBase;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -23,7 +23,7 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
   /**
    * The metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
@@ -36,7 +36,7 @@ class MetastoreSchema extends JsonFormOptionSourcePluginBase implements Containe
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\metastore\MetastoreService $metastore
+   * @param \Drupal\dkan_metastore\MetastoreService $metastore
    *   The metastore service.
    */
   public function __construct(

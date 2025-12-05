@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use RootedData\RootedJsonData;
 
 /**
  * The metastore service.
  *
  * @deprecated
- * @see \Drupal\metastore\MetastoreService
+ * @see \Drupal\dkan_metastore\MetastoreService
  */
 class Service extends MetastoreService {
 

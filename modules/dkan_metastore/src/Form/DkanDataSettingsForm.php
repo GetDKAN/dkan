@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\metastore\Form;
+namespace Drupal\dkan_metastore\Form;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
-use Drupal\metastore\SchemaPropertiesHelper;
+use Drupal\dkan_metastore\SchemaPropertiesHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Metastore data settings form.
  *
- * @package Drupal\metastore\Form
+ * @package Drupal\dkan_metastore\Form
  * @codeCoverageIgnore
  */
 class DkanDataSettingsForm extends ConfigFormBase {
@@ -20,7 +20,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
   /**
    * SchemaPropertiesHelper service.
    *
-   * @var \Drupal\metastore\SchemaPropertiesHelper
+   * @var \Drupal\dkan_metastore\SchemaPropertiesHelper
    */
   private $schemaHelper;
 
@@ -34,7 +34,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
   /**
    * Constructs form.
    *
-   * @param \Drupal\metastore\SchemaPropertiesHelper $schemaHelper
+   * @param \Drupal\dkan_metastore\SchemaPropertiesHelper $schemaHelper
    *   The schema properties helper service.
    * @param \Drupal\Core\Routing\RouteBuilderInterface $routeBuilder
    *   The route builder service.
