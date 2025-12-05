@@ -257,6 +257,7 @@ class MysqlImport extends ImportJob {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
       'INTO TABLE {' . $table_name . '}',
+      'CHARACTER SET utf8mb4',
       'FIELDS TERMINATED BY \'' . $delimiter . '\'',
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',
