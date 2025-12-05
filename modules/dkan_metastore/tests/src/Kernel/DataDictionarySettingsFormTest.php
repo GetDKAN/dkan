@@ -29,7 +29,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     'field_ui',
     'filter',
     'text',
-    'metastore',
+    'dkan_metastore',
     'dkan_common',
     'dkan',
     'menu_link_content',

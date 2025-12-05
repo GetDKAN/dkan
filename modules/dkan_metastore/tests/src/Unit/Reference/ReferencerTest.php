@@ -448,7 +448,7 @@ class ReferencerTest extends TestCase {
         ->add('s3://local-domain.com/api/1/metastore/schemas/data-dictionary/items/111', new \DomainException())
         ->add('dkan://metastore/schemas/data-dictionary/items/222', 'dkan://metastore/schemas/data-dictionary/items/222')
       )
-      ->add(MetastoreUrlGenerator::class, 'metastore', MetastoreService::class)
+      ->add(MetastoreUrlGenerator::class, 'dkan_metastore', MetastoreService::class)
       ->add(MetastoreService::class, 'get', (new Options())
         ->add('111', RootedJsonData::class)
         ->add('222', new MissingObjectException())

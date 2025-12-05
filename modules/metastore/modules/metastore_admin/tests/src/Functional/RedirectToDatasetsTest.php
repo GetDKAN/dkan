@@ -21,7 +21,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan',
-    'metastore',
+    'dkan_metastore',
     'metastore_admin',
     'node',
   ];

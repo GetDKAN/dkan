@@ -32,7 +32,7 @@ class DataTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   protected static $modules = [
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 

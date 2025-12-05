@@ -18,7 +18,7 @@ class ResourceMapperTest extends KernelTestBase {
 
   protected static $modules = [
     'dkan_common',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected function setUp() : void {

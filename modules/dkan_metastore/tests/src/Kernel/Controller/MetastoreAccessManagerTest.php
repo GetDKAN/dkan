@@ -50,7 +50,7 @@ class MetastoreAccessManagerTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'metastore',
+    'dkan_metastore',
     'dkan_common',
     'dkan',
     'field',

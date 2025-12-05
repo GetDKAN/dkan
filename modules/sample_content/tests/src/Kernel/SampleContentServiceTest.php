@@ -17,7 +17,7 @@ class SampleContentServiceTest extends KernelTestBase {
   protected static $modules = [
     'sample_content',
     'harvest',
-    'metastore',
+    'dkan_metastore',
     'dkan_common',
   ];
 

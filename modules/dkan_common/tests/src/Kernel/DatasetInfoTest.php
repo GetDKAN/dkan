@@ -21,7 +21,7 @@ class DatasetInfoTest extends KernelTestBase {
     'field',
     'filter',
     'text',
-    'metastore',
+    'dkan_metastore',
     'dkan_common',
     'dkan',
     'content_moderation',

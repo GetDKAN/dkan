@@ -17,7 +17,7 @@ class DatasetApiDocsTest extends BrowserTestBase {
 
   protected static $modules = [
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 

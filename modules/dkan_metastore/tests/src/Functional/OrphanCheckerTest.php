@@ -20,7 +20,7 @@ class OrphanCheckerTest extends BrowserTestBase {
 
   protected static $modules = [
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 
