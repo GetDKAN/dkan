@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\metastore\Factory;
+namespace Drupal\dkan_metastore\Factory;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\MetastoreItemInterface;
+use Drupal\dkan_metastore\MetastoreItemInterface;
 
 /**
  * Interface MetastoreItemFactoryInterface.
@@ -39,7 +39,7 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @param array $config
    *   User config; not usually used.
    *
-   * @return \Drupal\metastore\MetastoreItemInterface
+   * @return \Drupal\dkan_metastore\MetastoreItemInterface
    *   A metastore item object.
    */
   public function getInstance(string $identifier, array $config = []): MetastoreItemInterface;
@@ -50,7 +50,7 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @param object $input
    *   Any object that can be wrapped as a metastore item. For instance, a node.
    *
-   * @return \Drupal\metastore\MetastoreItemInterface
+   * @return \Drupal\dkan_metastore\MetastoreItemInterface
    *   A wrapper that implements MetastoreItemInterface.
    */
   public function wrap(object $input): MetastoreItemInterface;

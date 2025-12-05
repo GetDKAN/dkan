@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\Events\Event;
-use Drupal\metastore\Exception\CannotChangeUuidException;
-use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\MetastoreStorageInterface;
+use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\MetastoreStorageInterface;
 use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
@@ -27,14 +27,14 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * Schema retriever.
    *
-   * @var \Drupal\metastore\SchemaRetriever
+   * @var \Drupal\dkan_metastore\SchemaRetriever
    */
   private $schemaRetriever;
 
   /**
    * Storage factory.
    *
-   * @var \Drupal\metastore\Storage\DataFactory
+   * @var \Drupal\dkan_metastore\Storage\DataFactory
    */
   private $storageFactory;
 
@@ -48,7 +48,7 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * RootedJsonData wrapper.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory
    */
   private $validMetadataFactory;
 
@@ -121,7 +121,7 @@ class MetastoreService implements ContainerInjectionInterface {
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
    *
-   * @return \Drupal\metastore\Storage\MetastoreStorageInterface
+   * @return \Drupal\dkan_metastore\Storage\MetastoreStorageInterface
    *   Entity storage.
    */
   protected function getStorage(string $schema_id): MetastoreStorageInterface {
@@ -278,7 +278,7 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * Get ValidMetadataFactory.
    *
-   * @return \Drupal\metastore\ValidMetadataFactory
+   * @return \Drupal\dkan_metastore\ValidMetadataFactory
    *   rootedJsonDataWrapper.
    */
   public function getValidMetadataFactory() {
@@ -476,7 +476,7 @@ class MetastoreService implements ContainerInjectionInterface {
    *   Swapped reference object. RootedJsonData for consistency, but will have
    *   no defined schema (swapping will break validation).
    *
-   * @throws \Drupal\metastore\Exception\InvalidJsonException
+   * @throws \Drupal\dkan_metastore\Exception\InvalidJsonException
    */
   public function swapReferences(RootedJsonData $object): RootedJsonData {
     $no_schema_object = $this->getValidMetadataFactory()->get("$object", NULL);

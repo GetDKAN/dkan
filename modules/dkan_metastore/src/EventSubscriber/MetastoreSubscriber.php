@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\metastore\EventSubscriber;
+namespace Drupal\dkan_metastore\EventSubscriber;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
-use Drupal\metastore\ReferenceLookupInterface;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
+use Drupal\dkan_metastore\ReferenceLookupInterface;
+use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -29,7 +29,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   /**
    * The dkan.metastore.reference_lookup service.
    *
-   * @var \Drupal\metastore\ReferenceLookupInterface
+   * @var \Drupal\dkan_metastore\ReferenceLookupInterface
    */
   private $referenceLookup;
 
@@ -49,11 +49,11 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\metastore\MetastoreService $service
+   * @param \Drupal\dkan_metastore\MetastoreService $service
    *   The dkan.metastore.service service.
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
    *   The dkan.metastore.resource_mapper.
-   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
+   * @param \Drupal\dkan_metastore\ReferenceLookupInterface $referenceLookup
    *   The dkan.metastore.reference_lookup service.
    */
   public function __construct(

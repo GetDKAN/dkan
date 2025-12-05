@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\metastore\Plugin\Validation\Constraint;
+namespace Drupal\dkan_metastore\Plugin\Validation\Constraint;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\ValidMetadataFactory;
 use OpisErrorPresenter\Implementation\MessageFormatterFactory;
 use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
 use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
@@ -20,7 +20,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   /**
    * Service dkan.metastore.valid_metadata.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory
    */
   protected $validMetadataFactory;
 
@@ -34,7 +34,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   /**
    * ProperJsonValidator constructor.
    *
-   * @param \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory
+   * @param \Drupal\dkan_metastore\ValidMetadataFactory $valid_metadata_factory
    *   Service dkan.metastore.valid_metadata.
    */
   public function __construct(ValidMetadataFactory $valid_metadata_factory) {

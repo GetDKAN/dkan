@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Storage;
+namespace Drupal\dkan_metastore\Storage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -9,8 +9,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
 use Psr\Log\LoggerInterface;
 

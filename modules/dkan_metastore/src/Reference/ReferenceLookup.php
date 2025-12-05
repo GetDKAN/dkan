@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\metastore\Reference;
+namespace Drupal\dkan_metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
-use Drupal\metastore\ReferenceLookupInterface;
+use Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface;
+use Drupal\dkan_metastore\ReferenceLookupInterface;
 use RootedData\RootedJsonData;
 
 /**
@@ -26,7 +26,7 @@ class ReferenceLookup implements ReferenceLookupInterface {
   /**
    * Metastore Item Factory service.
    *
-   * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
+   * @var \Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface
    */
   protected $metastoreItemFactory;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Storage;
+namespace Drupal\dkan_metastore\Storage;
 
 /**
  * Interface for all metastore storage classes.
@@ -29,7 +29,7 @@ interface MetastoreStorageInterface {
    * @return string|null
    *   The data or null if no data could be retrieved.
    *
-   * @throws \Drupal\metastore\Exception\MissingObjectException
+   * @throws \Drupal\dkan_metastore\Exception\MissingObjectException
    *   When attempting to retrieve metadata fails.
    */
   public function retrieve(string $id, bool $published = FALSE);

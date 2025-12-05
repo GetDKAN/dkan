@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\metastore\Plugin\QueueWorker;
+namespace Drupal\dkan_metastore\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   cron = {"time" = 15}
  * )
  *
- * @see \Drupal\metastore\LifeCycle\LifeCycle::distributionPredelete()
+ * @see \Drupal\dkan_metastore\LifeCycle\LifeCycle::distributionPredelete()
  *
  * @codeCoverageIgnore
  */
@@ -25,7 +25,7 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
   /**
    * Resource mapper service.
    *
-   * @var \Drupal\metastore\ResourceMapper
+   * @var \Drupal\dkan_metastore\ResourceMapper
    */
   protected $resourceMapper;
 
@@ -38,7 +38,7 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
    *   The plugin_id for the plugin instance.
    * @param mixed $pluginDefinition
    *   The plugin implementation definition.
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
    */
   public function __construct(array $configuration, $pluginId, $pluginDefinition, ResourceMapper $resourceMapper) {

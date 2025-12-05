@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\metastore\Commands;
+namespace Drupal\dkan_metastore\Commands;
 
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -13,14 +13,14 @@ class MetastoreCommands extends DrushCommands {
   /**
    * Metastore data storage service.
    *
-   * @var \Drupal\metastore\Storage\DataFactory
+   * @var \Drupal\dkan_metastore\Storage\DataFactory
    */
   protected $factory;
 
   /**
    * Drush constructor.
    *
-   * @param \Drupal\metastore\Storage\DataFactory $factory
+   * @param \Drupal\dkan_metastore\Storage\DataFactory $factory
    *   A data factory.
    */
   public function __construct(DataFactory $factory) {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\metastore\Form;
+namespace Drupal\dkan_metastore\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -19,7 +19,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
   /**
    * The metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
@@ -40,7 +40,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
    *   The factory for configuration objects.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger.
-   * @param \Drupal\metastore\MetastoreService $metastore
+   * @param \Drupal\dkan_metastore\MetastoreService $metastore
    *   The metastore service.
    * @param \Drupal\Core\Config\TypedConfigManagerInterface $typed_config
    *   The typed config manager.

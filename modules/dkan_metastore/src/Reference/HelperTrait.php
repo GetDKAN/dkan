@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\metastore\Reference;
+namespace Drupal\dkan_metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\metastore\Service\Uuid5;
+use Drupal\dkan_metastore\Service\Uuid5;
 
 /**
  * HelperTrait for referencer classes.
@@ -61,7 +61,7 @@ trait HelperTrait {
   /**
    * Uuid Service.
    *
-   * @return \Drupal\metastore\Service\Uuid5
+   * @return \Drupal\dkan_metastore\Service\Uuid5
    *   Uuid5 object.
    */
   protected function getUuidService() {

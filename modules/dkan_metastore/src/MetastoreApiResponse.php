@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
 use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
+use Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -20,7 +20,7 @@ class MetastoreApiResponse {
   /**
    * Constructor.
    *
-   * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
+   * @param \Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
    *   Metastore item factory service.
    */
   public function __construct(MetastoreItemFactoryInterface $metastoreItemFactory) {
@@ -130,7 +130,7 @@ class MetastoreApiResponse {
    *
    * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
    *   Cache metadata object.
-   * @param \Drupal\metastore\MetastoreItemInterface $item
+   * @param \Drupal\dkan_metastore\MetastoreItemInterface $item
    *   Metastore item, such as a dataset.
    */
   protected function addReferenceDependencies(CacheableMetadata $cacheMetadata, MetastoreItemInterface $item) {
@@ -181,7 +181,7 @@ class MetastoreApiResponse {
   /**
    * Return the metastore item factory service.
    *
-   * @return \Drupal\metastore\Factory\MetastoreItemFactoryInterface
+   * @return \Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface
    *   Metastore item factory.
    */
   protected function getMetastoreItemFactory() {

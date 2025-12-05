@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metastore\NodeWrapper;
+namespace Drupal\dkan_metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\metastore\MetastoreItemInterface;
+use Drupal\dkan_metastore\MetastoreItemInterface;
 use Drupal\node\NodeInterface;
 
 /**
@@ -15,7 +15,7 @@ use Drupal\node\NodeInterface;
  * Generate these objects using the factory:
  * dkan.metastore.metastore_item_factory.
  *
- * @see \Drupal\metastore\NodeWrapper\NodeDataFactory::getInstance()
+ * @see \Drupal\dkan_metastore\NodeWrapper\NodeDataFactory::getInstance()
  */
 class Data implements MetastoreItemInterface {
 

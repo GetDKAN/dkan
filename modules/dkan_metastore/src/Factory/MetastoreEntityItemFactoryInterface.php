@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Factory;
+namespace Drupal\dkan_metastore\Factory;
 
 /**
  * Interface MetastoreItemFactoryInterface.

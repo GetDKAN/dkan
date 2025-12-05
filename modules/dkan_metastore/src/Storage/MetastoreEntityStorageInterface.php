@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Storage;
+namespace Drupal\dkan_metastore\Storage;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 

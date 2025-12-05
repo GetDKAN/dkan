@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\metastore\Exception;
+namespace Drupal\dkan_metastore\Exception;
 
 /**
  * Exception thrown when unable to change UUID for a metastore item.
  *
- * @package Drupal\metastore\Exception
+ * @package Drupal\dkan_metastore\Exception
  */
 class CannotChangeUuidException extends MetastoreException {
 

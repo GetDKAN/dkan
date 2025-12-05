@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\metastore\Plugin\QueueWorker;
+namespace Drupal\dkan_metastore\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\dkan_common\Events\Event;
-use Drupal\metastore\ReferenceLookupInterface;
+use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -57,7 +57,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The plugin implementation definition.
    * @param \Drupal\node\NodeStorageInterface $nodeStorage
    *   Node storage service.
-   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
+   * @param \Drupal\dkan_metastore\ReferenceLookupInterface $referenceLookup
    *   The referencer lookup service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   The event dispatcher.

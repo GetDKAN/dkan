@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Plugin\Field\FieldWidget;
+namespace Drupal\dkan_metastore\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidgetBase;
 use Drupal\json_form_widget\ValueHandler;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\dkan_metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -64,7 +64,7 @@ class DkanJsonFormWidget extends JsonFormWidgetBase {
    *   The JsonFormValueHandler service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   Drupal request context service.
-   * @param \Drupal\metastore\SchemaRetriever $schema_retriever
+   * @param \Drupal\dkan_metastore\SchemaRetriever $schema_retriever
    *   The DKAN SchemaRetriever service.
    */
   public function __construct(

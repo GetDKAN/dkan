@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\dkan_metastore;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\DatabaseTableInterface;
@@ -8,7 +8,7 @@ use Drupal\dkan_common\Events\Event;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\Exception\AlreadyRegistered;
+use Drupal\dkan_metastore\Exception\AlreadyRegistered;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -43,7 +43,7 @@ class ResourceMapper {
    *
    * The data used by the ResourceMapper is stored in resource_mapping entities.
    *
-   * @see \Drupal\metastore\Entity\ResourceMapping
+   * @see \Drupal\dkan_metastore\Entity\ResourceMapping
    */
   private EntityStorageInterface $mappingEntityStorage;
 
@@ -216,7 +216,7 @@ class ResourceMapper {
    *   (Optional) Resource version. If not supplied, the latest revision will be
    *   returned.
    *
-   * @return \Drupal\metastore\ResourceMappingInterface|null
+   * @return \Drupal\dkan_metastore\ResourceMappingInterface|null
    *   Resource mapping.
    */
   private function getFull(string $identifier, string $perspective, ?string $version = NULL): ?ResourceMappingInterface {
@@ -255,7 +255,7 @@ class ResourceMapper {
   /**
    * Private.
    *
-   * @return \Drupal\metastore\ResourceMappingInterface|null
+   * @return \Drupal\dkan_metastore\ResourceMappingInterface|null
    *   Resource mapping.
    */
   private function getLatestRevision($identifier, $perspective): ?ResourceMappingInterface {
@@ -275,7 +275,7 @@ class ResourceMapper {
   /**
    * Get the DB record for the mapping, accounting for version.
    *
-   * @return \Drupal\metastore\ResourceMappingInterface|null
+   * @return \Drupal\dkan_metastore\ResourceMappingInterface|null
    *   Resource mapping.
    */
   private function getRevision($identifier, $perspective, $version): ?ResourceMappingInterface {
@@ -301,7 +301,7 @@ class ResourceMapper {
    * @return bool
    *   FALSE of the path does not exist.
    *
-   * @throws \Drupal\metastore\Exception\AlreadyRegistered
+   * @throws \Drupal\dkan_metastore\Exception\AlreadyRegistered
    *   An exception is thrown if the file exists with json info about the
    *   existing resource.
    */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Storage;
+namespace Drupal\dkan_metastore\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
@@ -12,7 +12,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *
  * @deprecated Use resource_mapping entity type instead.
  *
- * @see \Drupal\metastore\Entity\ResourceMapping
+ * @see \Drupal\dkan_metastore\Entity\ResourceMapping
  */
 class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
 
