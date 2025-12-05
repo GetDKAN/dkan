@@ -3,7 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_common\DataResource;
 
 /**
@@ -26,7 +26,7 @@ class PostImportResultFactory {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
    *   The resource mapper service.
    */
   public function __construct(Connection $connection, ResourceMapper $resourceMapper) {

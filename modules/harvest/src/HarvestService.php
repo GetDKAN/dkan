@@ -7,7 +7,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\harvest\ETL\Factory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -39,7 +39,7 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * DKAN metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   private MetastoreService $metastore;
 

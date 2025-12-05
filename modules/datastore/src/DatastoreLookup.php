@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drupal\datastore;
 
 use Drupal\Core\Database\Connection;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 
 /**
  * Implementation of various lookup utilities related to the datastore.
@@ -22,7 +22,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
   /**
    * Reference lookup service.
    *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
+   * @var \Drupal\dkan_metastore\Reference\ReferenceLookup
    */
 
   protected $referenceLookup;
@@ -32,7 +32,7 @@ class DatastoreLookup implements DatastoreLookupInterface {
    *
    * @param \Drupal\Core\Database\Connection $database
    *   Database connection service.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   * @param \Drupal\dkan_metastore\Reference\ReferenceLookup $referenceLookup
    *   Reference lookup service.
    */
   public function __construct(Connection $database, ReferenceLookup $referenceLookup) {

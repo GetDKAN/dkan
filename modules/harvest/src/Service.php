@@ -4,7 +4,7 @@ namespace Drupal\harvest;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 
 /**
  * Main DKAN Harvester service.

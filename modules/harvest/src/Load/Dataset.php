@@ -2,8 +2,8 @@
 
 namespace Drupal\harvest\Load;
 
-use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\harvest\ETL\Load\Load;
 
 /**
