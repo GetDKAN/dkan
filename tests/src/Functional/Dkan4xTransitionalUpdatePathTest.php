@@ -56,15 +56,17 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     // Run all updates.
     $this->runUpdates();
 
-    // Assert legacy modules are now uninstalled.
+    // Assert legacy modules are now uninstalled and their config removed.
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('common'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore'));
-    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_search'));
-    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_facets'));
-    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_admin'));
-    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore'));
-    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
-    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('harvest'));
+    
+    $config = \Drupal::configFactory()->getEditable('core.extension');
+    $modules = $config->get('module');
+    $this->assertArrayNotHasKey('common', $modules);
+    $this->assertArrayNotHasKey('metastore', $modules);
+
+    $this->assertEmpty(\Drupal::configFactory()->get('common.settings')->getRawData());
+    $this->assertEmpty(\Drupal::configFactory()->get('metastore.settings')->getRawData());
   }
 
 }
