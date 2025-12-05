@@ -21,7 +21,7 @@ class DatastoreUpdatePathTest extends UpdatePathTestBase {
    */
   protected function setDatabaseDumpFiles() {
     $this->databaseDumpFiles = [
-      __DIR__ . '/../../../../../tests/fixtures/update/update-2.20.0.php.gz',
+      __DIR__ . '/../../../../../tests/fixtures/update/update-2.x-transition.php.gz',
     ];
   }
 
@@ -29,6 +29,7 @@ class DatastoreUpdatePathTest extends UpdatePathTestBase {
    * Test datastore module updates 9003, 9005.
    */
   public function testUpdates9003on(): void {
+    $this->markTestSkipped('These updates are lost after 3.x jump; need to come up with better update path tests.');
     $schema = \Drupal::database()->schema();
     $config = \Drupal::configFactory()->getEditable('datastore.settings');
 
