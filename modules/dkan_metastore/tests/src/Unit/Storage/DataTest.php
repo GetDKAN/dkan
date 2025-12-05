@@ -185,7 +185,7 @@ class DataTest extends TestCase {
   }
 
   /**
-   * Test \Drupal\metastore\Storage\Data::count() method.
+   * Test \Drupal\dkan_metastore\Storage\Data::count() method.
    *
    * @covers ::count
    */
@@ -211,7 +211,7 @@ class DataTest extends TestCase {
   }
 
   /**
-   * Test \Drupal\metastore\Storage\Data::retrieveIds() method.
+   * Test \Drupal\dkan_metastore\Storage\Data::retrieveIds() method.
    *
    * @covers ::retrieveIds
    */

@@ -48,7 +48,7 @@ class ValidMetadataFactoryTest extends TestCase {
    */
   private function getCommonMockChain() {
     $options = (new Options)
-      ->add('metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->index(0);
 
     $shortDatasetSchema = [

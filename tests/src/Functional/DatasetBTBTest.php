@@ -6,7 +6,7 @@ use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Load\Dataset;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
@@ -32,7 +32,7 @@ class DatasetBTBTest extends BrowserTestBase {
     'datastore',
     'field',
     'harvest',
-    'metastore',
+    'dkan_metastore',
     'metastore_search',
     'node',
     'search_api',
@@ -500,7 +500,7 @@ class DatasetBTBTest extends BrowserTestBase {
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
   private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
-    /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $valid_metadata_factory */
     $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
     $data = new \stdClass();

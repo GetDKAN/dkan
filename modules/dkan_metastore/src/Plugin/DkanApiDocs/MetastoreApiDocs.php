@@ -23,7 +23,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
   /**
    * The DKAN metastore service.
    *
-   * @var Drupal\metastore\Service
+   * @var Drupal\dkan_metastore\Service
    */
   private $metastore;
 

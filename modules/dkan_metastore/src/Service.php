@@ -18,14 +18,14 @@ class Service extends MetastoreService {
    */
   public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, ValidMetadataFactory $validMetadataFactory) {
     parent::__construct($schemaRetriever, $factory, $validMetadataFactory);
-    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
+    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\dkan_metastore\MetastoreService instead.', E_USER_DEPRECATED);
   }
 
   /**
    * {@inheritDoc}
    */
   public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
-    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
+    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\dkan_metastore\MetastoreService instead.', E_USER_DEPRECATED);
     return parent::removeReferences($object, $prefix);
   }
 
@@ -33,7 +33,7 @@ class Service extends MetastoreService {
    * {@inheritDoc}
    */
   public static function metadataHash($data) {
-    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\metastore\MetastoreService instead.', E_USER_DEPRECATED);
+    @trigger_error(__NAMESPACE__ . '\Service is deprecated. Use \Drupal\dkan_metastore\MetastoreService instead.', E_USER_DEPRECATED);
     return parent::metadataHash($data);
   }
 

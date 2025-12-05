@@ -66,10 +66,10 @@ class DatastoreLookupTest extends TestCase {
 
     // // Instantiate the Drush class with the mocked dependencies.
     // $this->drush = new Drush(
-    //   $this->createMock(\Drupal\metastore\MetastoreService::class),
+    //   $this->createMock(\Drupal\dkan_metastore\MetastoreService::class),
     //   $this->createMock(\Drupal\datastore\DatastoreService::class),
     //   $this->createMock(\Drupal\datastore\Service\ResourceLocalizer::class),
-    //   $this->createMock(\Drupal\metastore\ResourceMapper::class),
+    //   $this->createMock(\Drupal\dkan_metastore\ResourceMapper::class),
     //   $this->createMock(\Drupal\datastore\Service\Info\ImportInfoList::class),
     //   $this->createMock(\Drupal\datastore\PostImportResultFactory::class),
     //   $this->datastoreLookupInterface

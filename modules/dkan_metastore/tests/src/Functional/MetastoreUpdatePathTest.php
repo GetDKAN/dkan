@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\metastore\Functional;
+namespace Drupal\dkan_metastore\Functional;
 
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 

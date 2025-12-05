@@ -26,7 +26,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('metastore.schema_retriever'),
+      $container->get('dkan.metastore.schema_retriever'),
     );
   }
 

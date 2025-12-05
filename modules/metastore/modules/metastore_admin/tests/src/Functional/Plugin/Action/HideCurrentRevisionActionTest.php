@@ -7,7 +7,7 @@ use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\ValidMetadataFactory;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use Drupal\user\Entity\User;
 use RootedData\RootedJsonData;
 

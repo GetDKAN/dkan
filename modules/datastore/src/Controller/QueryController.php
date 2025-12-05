@@ -22,7 +22,7 @@ class QueryController extends AbstractQueryController {
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
-   *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
+   *   A dependency array for use by \Drupal\dkan_metastore\MetastoreApiResponse.
    * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
    *   The parameter object from the request.
    *
