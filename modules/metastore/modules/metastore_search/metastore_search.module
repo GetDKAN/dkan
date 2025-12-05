@@ -3,7 +3,7 @@
 use Drupal\Core\Entity\EntityInterface;
 
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\metastore\NodeWrapper\Data;
+use Drupal\dkan_metastore\NodeWrapper\Data;
 
 /**
  * Determine whether the supplied entity is a dataset.

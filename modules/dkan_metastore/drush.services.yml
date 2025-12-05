@@ -1,6 +1,6 @@
 services:
   dkan.metastore.commands:
-    class: \Drupal\metastore\Commands\MetastoreCommands
+    class: \Drupal\dkan_metastore\Commands\MetastoreCommands
     arguments:
       - '@dkan.metastore.storage'
     tags:
