@@ -29,8 +29,8 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
 
   protected static $modules = [
     'dkan_common',
-    'datastore',
     'dkan_metastore',
+    'datastore',
     'node',
     'user',
     'field',
@@ -88,7 +88,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
   public function testEvents() {
     $this->installEntitySchema('node');
     $this->installConfig(['node']);
-    $this->installConfig(['metastore']);
+    $this->installConfig(['dkan_metastore']);
     // Mock a data resource.
     $data_resource = $this->getMockBuilder(DataResource::class)
       ->disableOriginalConstructor()

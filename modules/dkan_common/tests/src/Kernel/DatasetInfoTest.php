@@ -37,7 +37,7 @@ class DatasetInfoTest extends KernelTestBase {
     $this->installConfig('system');
     $this->installConfig('node');
     $this->installConfig('dkan_common');
-    $this->installConfig('metastore');
+    $this->installConfig('dkan_metastore');
     $this->installEntitySchema('node');
     $this->installSchema('node', ['node_access']);
     $this->installEntitySchema('content_moderation_state');
@@ -106,7 +106,7 @@ class DatasetInfoTest extends KernelTestBase {
   }
 
   public function testDatasetInfoNoMetastore() {
-    $this->disableModules(['metastore']);
+    $this->disableModules(['dkan_metastore']);
     $datasetInfo = new DatasetInfo($this->container->get('plugin.manager.dataset_info'));
     $info = $datasetInfo->gather('foo');
     $this->assertEquals(['notice' => 'The DKAN Metastore module is not enabled.'], $info);

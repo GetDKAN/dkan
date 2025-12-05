@@ -89,7 +89,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    * {@inheritdoc}
    */
   public function spec() {
-    $spec = $this->getDoc('metastore');
+    $spec = $this->getDoc('dkan_metastore');
 
     $exampleSchemaIds = array_values(array_filter(
       array_keys($this->metastore->getSchemas()),
