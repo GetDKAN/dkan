@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Install file for the dkan_metastore module.
+ */
+
+/**
+ * Update hook to uninstall the legacy metastore module.
+ */
+function dkan_metastore_update_10001() {
+  // If the old metastore module is still enabled, disable it.
+  if (\Drupal::moduleHandler()->moduleExists('metastore')) {
+    \Drupal::service('module_installer')->uninstall(['metastore']);
+    $message = t('The legacy metastore module has been uninstalled.');
+  }
+  // If any config from the old metastore module exists, delete it.
+  $config_factory = \Drupal::configFactory();
+  $config_removed = FALSE;
+  $all_config_names = $config_factory->listAll('metastore.');
+  foreach ($all_config_names as $config_name) {
+    $config_factory->getEditable($config_name)->delete();
+    $config_removed = TRUE;
+  }
+  if ($config_removed === TRUE) {
+    $message .= ' ' . t('Configuration from the legacy metastore module has been removed.');
+  }
+  return $message;
+}
