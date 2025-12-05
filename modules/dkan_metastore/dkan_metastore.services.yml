@@ -1,6 +1,6 @@
 services:
   dkan.metastore.service:
-    class: \Drupal\metastore\MetastoreService
+    class: \Drupal\dkan_metastore\MetastoreService
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
@@ -9,7 +9,7 @@ services:
       - '@event_dispatcher'
 
   dkan.metastore.lifecycle:
-    class: \Drupal\metastore\LifeCycle\LifeCycle
+    class: \Drupal\dkan_metastore\LifeCycle\LifeCycle
     arguments:
       - '@dkan.metastore.referencer'
       - '@dkan.metastore.dereferencer'
@@ -22,19 +22,19 @@ services:
       - '@event_dispatcher'
 
   dkan.metastore.schema_retriever:
-    class: \Drupal\metastore\SchemaRetriever
+    class: \Drupal\dkan_metastore\SchemaRetriever
     arguments:
       - '%app.root%'
       - '@extension.list.module'
     shared: false
 
   dkan.metastore.schema_properties_helper:
-    class: \Drupal\metastore\SchemaPropertiesHelper
+    class: \Drupal\dkan_metastore\SchemaPropertiesHelper
     arguments:
       - '@dkan.metastore.schema_retriever'
 
   dkan.metastore.storage:
-    class: \Drupal\metastore\Storage\DataFactory
+    class: \Drupal\dkan_metastore\Storage\DataFactory
     arguments:
       - '@entity_type.manager'
       - '@config.factory'
@@ -43,7 +43,7 @@ services:
       - '@event_dispatcher'
 
   dkan.metastore.referencer:
-    class: \Drupal\metastore\Reference\Referencer
+    class: \Drupal\dkan_metastore\Reference\Referencer
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
@@ -53,34 +53,34 @@ services:
       - '@dkan.common.logger_channel'
 
   dkan.metastore.dereferencer:
-    class: \Drupal\metastore\Reference\Dereferencer
+    class: \Drupal\dkan_metastore\Reference\Dereferencer
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
       - '@dkan.common.logger_channel'
 
   dkan.metastore.orphan_checker:
-    class: \Drupal\metastore\Reference\OrphanChecker
+    class: \Drupal\dkan_metastore\Reference\OrphanChecker
     arguments:
       - '@config.factory'
       - '@queue'
 
   dkan.metastore.resource_mapper:
-    class: \Drupal\metastore\ResourceMapper
+    class: \Drupal\dkan_metastore\ResourceMapper
     arguments:
       - '@dkan.metastore.resource_mapper_database_table'
       - '@entity_type.manager'
       - '@event_dispatcher'
 
   dkan.metastore.resource_mapper_database_table:
-    class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
+    class: \Drupal\dkan_metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
       - '@dkan.common.logger_channel'
       - '@event_dispatcher'
 
   dkan.metastore.event_subscriber:
-    class: \Drupal\metastore\EventSubscriber\MetastoreSubscriber
+    class: \Drupal\dkan_metastore\EventSubscriber\MetastoreSubscriber
     arguments:
       - '@dkan.metastore.service'
       - '@dkan.metastore.resource_mapper'
@@ -89,30 +89,30 @@ services:
       - { name: event_subscriber }
 
   dkan.metastore.valid_metadata:
-    class: \Drupal\metastore\ValidMetadataFactory
+    class: \Drupal\dkan_metastore\ValidMetadataFactory
     arguments:
       - '@dkan.metastore.schema_retriever'
 
   dkan.metastore.metastore_item_factory:
-    class: \Drupal\metastore\NodeWrapper\NodeDataFactory
+    class: \Drupal\dkan_metastore\NodeWrapper\NodeDataFactory
     arguments:
       - '@entity.repository'
       - '@entity_type.manager'
 
   dkan.metastore.dataset_api_docs:
-    class: \Drupal\metastore\DatasetApiDocs
+    class: \Drupal\dkan_metastore\DatasetApiDocs
     arguments:
       - '@dkan.common.docs_generator'
       - '@dkan.metastore.service'
       - '@settings'
 
   dkan.metastore.api_response:
-    class: \Drupal\metastore\MetastoreApiResponse
+    class: \Drupal\dkan_metastore\MetastoreApiResponse
     arguments:
       - '@dkan.metastore.metastore_item_factory'
 
   dkan.metastore.reference_lookup:
-    class: \Drupal\metastore\Reference\ReferenceLookup
+    class: \Drupal\dkan_metastore\Reference\ReferenceLookup
     arguments:
       - '@dkan.metastore.storage'
       - '@dkan.metastore.metastore_item_factory'
@@ -120,14 +120,14 @@ services:
       - '@module_handler'
 
   dkan.metastore.url_generator:
-    class: \Drupal\metastore\Reference\MetastoreUrlGenerator
+    class: \Drupal\dkan_metastore\Reference\MetastoreUrlGenerator
     arguments:
       - '@stream_wrapper_manager'
       - '@dkan.metastore.service'
       - '@request_stack'
 
   dkan.metastore.data_dictionary_discovery:
-    class: \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
+    class: \Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery
     arguments:
       - '@config.factory'
       - '@dkan.metastore.service'

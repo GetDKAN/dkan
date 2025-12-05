@@ -4,10 +4,10 @@ type: module
 core_version_requirement: ^10.2 || ^11
 package: DKAN
 dependencies:
-  - dkan:metastore
+  - dkan:dkan_common
+  - dkan:dkan_metastore
   - dkan:metastore_admin
   - dkan:metastore_search
-  - dkan:common
   - dkan:json_form_widget
   - dkan:data_dictionary_widget
   - drupal:config

@@ -1,6 +1,6 @@
 dkan.metastore.config_properties:
   title: Metastore Settings
-  route_name: dkan.metastore.config_properties
+  route_name: dkan_metastore.config_properties
   description: Configure dataset properties for referencing sub-schemas and for HTML sanitization.
   parent: system.admin_dkan
   weight: 14
