@@ -44,7 +44,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   * Test \Drupal\metastore\Service::isPublished() method.
+   * Test \Drupal\dkan_metastore\Service::isPublished() method.
    */
   public function testIsPublished() {
     $service = (new Chain($this))
@@ -323,7 +323,7 @@ EOF;
   }
 
   /**
-   * Test \Drupal\metastore\Service::count() method.
+   * Test \Drupal\dkan_metastore\Service::count() method.
    */
   public function testCount(): void {
     // Set constant which should be returned by the ::count() method.
@@ -340,7 +340,7 @@ EOF;
   }
 
   /**
-   * Test \Drupal\metastore\Service::getIdentifiers() method.
+   * Test \Drupal\dkan_metastore\Service::getIdentifiers() method.
    */
   public function testGetIdentifiers(): void {
     // Set constant which should be returned by the ::getIdentifiers() method.
@@ -422,7 +422,7 @@ EOF;
 
   public static function getValidMetadataFactory(TestCase $case) {
     $options = (new Options())
-      ->add('metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->index(0);
 
     $container = (new Chain($case))

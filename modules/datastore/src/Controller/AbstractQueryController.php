@@ -167,7 +167,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
-   *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
+   *   A dependency array for use by \Drupal\dkan_metastore\MetastoreApiResponse.
    * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
    *   The parameter object from the request.
    */
@@ -185,7 +185,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The datastore query object.
    *
    * @return array
-   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
+   *   Dependency array for \Drupal\dkan_metastore\MetastoreApiResponse.
    */
   protected function extractMetastoreDependencies(DatastoreQuery $datastoreQuery): array {
     if (!isset($datastoreQuery->{'$.resources'})) {

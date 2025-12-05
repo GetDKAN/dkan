@@ -100,7 +100,7 @@ class ImportController implements ContainerInjectionInterface {
    *   Resource or distribution identifier.
    *
    * @return array
-   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
+   *   Dependency array for \Drupal\dkan_metastore\MetastoreApiResponse.
    */
   private function getDependencies($identifier) {
     // If a proper UUID, probably a distribution.

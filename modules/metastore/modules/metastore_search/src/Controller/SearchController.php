@@ -91,7 +91,7 @@ class SearchController implements ContainerInjectionInterface {
    * Get the cache dependencies.
    *
    * @return array
-   *   An array of dependencies for \Drupal\metastore\MetastoreApiResponse.
+   *   An array of dependencies for \Drupal\dkan_metastore\MetastoreApiResponse.
    */
   private function getCacheDependencies() {
     return $this->schemaRetriever->getAllIds();
