@@ -8,44 +8,44 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\metastore\NodeWrapper\Data;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\NodeWrapper\Data;
+use Drupal\dkan_metastore\MetastoreService;
 
 /**
  * Implements hook_entity_load().
  *
- * @see Drupal\metastore\LifeCycle\LifeCycle::datasetLoad()
- * @see Drupal\metastore\LifeCycle\LifeCycle::distributionLoad()
+ * @see Drupal\dkan_metastore\LifeCycle\LifeCycle::datasetLoad()
+ * @see Drupal\dkan_metastore\LifeCycle\LifeCycle::distributionLoad()
  */
-function metastore_entity_load(array $entities) {
-    metastore_data_lifecycle($entities, "load");
+function dkan_metastore_entity_load(array $entities) {
+    dkan_metastore_data_lifecycle($entities, "load");
 }
 
 /**
  * Implements hook_entity_presave().
  */
-function metastore_entity_presave(EntityInterface $entity) {
-  metastore_data_lifecycle([$entity], "presave");
+function dkan_metastore_entity_presave(EntityInterface $entity) {
+  dkan_metastore_data_lifecycle([$entity], "presave");
 }
 
 /**
  * Implements hook_entity_predelete().
  */
-function metastore_entity_predelete(EntityInterface $entity) {
-  metastore_data_lifecycle([$entity], "predelete");
+function dkan_metastore_entity_predelete(EntityInterface $entity) {
+  dkan_metastore_data_lifecycle([$entity], "predelete");
 }
 
 /**
  * Implements hook_entity_update().
  */
-function metastore_entity_update(EntityInterface $entity) {
-  metastore_data_lifecycle([$entity], "update");
+function dkan_metastore_entity_update(EntityInterface $entity) {
+  dkan_metastore_data_lifecycle([$entity], "update");
 }
 
 /**
  * Implements hook_entity_bundle_field_info_alter().
  */
-function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+function dkan_metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
   if ($bundle === 'data') {
     if (isset($fields['field_json_metadata'])) {
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
@@ -57,7 +57,7 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
  * Helper method to retrieve the static value for a resource's revisioning.
  */
 function resource_mapper_new_revision() {
-  return drupal_static('metastore_resource_mapper_new_revision', 0);
+  return drupal_static('dkan_metastore_resource_mapper_new_revision', 0);
 }
 
 /**
@@ -68,10 +68,10 @@ function resource_mapper_new_revision() {
  * @param string $stage
  *   The entity hook stage, such as 'load' or 'update'.
  */
-function metastore_data_lifecycle(array $entities, string $stage): void {
-  /** @var \Drupal\metastore\LifeCycle\LifeCycle $lifecycle */
+function dkan_metastore_data_lifecycle(array $entities, string $stage): void {
+  /** @var \Drupal\dkan_metastore\LifeCycle\LifeCycle $lifecycle */
   $lifecycle = \Drupal::service('dkan.metastore.lifecycle');
-  /** @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface $item_factory */
+  /** @var \Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface $item_factory */
   $item_factory = \Drupal::service('dkan.metastore.metastore_item_factory');
   foreach ($entities as $entity) {
     if (Data::validEntityType($entity)) {
@@ -91,14 +91,14 @@ function metastore_data_lifecycle(array $entities, string $stage): void {
  *
  * @deprecated Use Data::validEntityType()
  */
-function metastore_entity_is_valid_item(EntityInterface $entity) {
+function dkan_metastore_entity_is_valid_item(EntityInterface $entity) {
   return Data::validEntityType($entity);
 }
 
 /**
  * Implements hook_form_alter().
  */
-function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function dkan_metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if ($form_id == 'node_data_form') {
     $datatype = \Drupal::request()->get('schema') ?? 'dataset';
     $form['#title'] = t('Create @datatype', ['@datatype' => $datatype]);
@@ -119,7 +119,7 @@ function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 /**
  * Implements hook_entity_view_alter.
  */
-function metastore_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+function dkan_metastore_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
 
   if (isset($build[$fieldName][0]['#context']['value'])) {
@@ -141,12 +141,12 @@ function get_module_name(): string {
   return basename(__FILE__, '.module');
 }
 
-function metastore_theme() {
+function dkan_metastore_theme() {
   return [
     'node__data' => [
       'template' => 'node--data',
       'base hook' => 'node',
-      'file' => 'metastore.theme.inc',
+      'file' => 'dkan_metastore.theme.inc',
     ],
   ];
 }

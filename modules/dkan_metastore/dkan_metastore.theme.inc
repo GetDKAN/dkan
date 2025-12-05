@@ -11,7 +11,7 @@ use Drupal\Core\Url;
 /**
  * Decode Metadata JSON blob into useable theme variables.
  */
-function metastore_preprocess_node__data(&$variables) {
+function dkan_metastore_preprocess_node__data(&$variables) {
   $json = $variables['node']->get('field_json_metadata')->value;
   $rows = [];
   $metadata = json_decode($json);
@@ -32,7 +32,7 @@ function metastore_preprocess_node__data(&$variables) {
     $variables['dataset']['contactPoint']["email"] = [
       '#markup' => $metadata->contactPoint->hasEmail,
     ];
-    $formatted_contact_point = metastore_format_contactpoint($metadata->contactPoint);
+    $formatted_contact_point = dkan_metastore_format_contactpoint($metadata->contactPoint);
     $rows = [
       [
         "contactPoint",
@@ -75,7 +75,7 @@ function metastore_preprocess_node__data(&$variables) {
   }
 
   foreach ($metadata as $property => $value) {
-    if (metastore_use_in_table($property, $value)) {
+    if (dkan_metastore_use_in_table($property, $value)) {
       $rows[] = [$property, $value];
     }
 
@@ -110,7 +110,7 @@ function metastore_preprocess_node__data(&$variables) {
 /**
  * Format email into a valid Url object.
  */
-function metastore_create_mailto_link($email) {
+function dkan_metastore_create_mailto_link($email) {
   $lower_case_email = strtolower((string) $email);
   if (!str_starts_with($lower_case_email, 'mailto:')) {
     $lower_case_email = 'mailto:' . strtolower((string) $email);
@@ -125,10 +125,10 @@ function metastore_create_mailto_link($email) {
 /**
  * Format contact information name and link.
  */
-function metastore_format_contactpoint($contactpoint) {
+function dkan_metastore_format_contactpoint($contactpoint) {
   $str = $contactpoint->fn;
   if ($contactpoint->hasEmail) {
-    $mailto_link = metastore_create_mailto_link($contactpoint->hasEmail);
+    $mailto_link = dkan_metastore_create_mailto_link($contactpoint->hasEmail);
     $str .= ' (' . Link::fromTextAndUrl(t('email'), $mailto_link)->toString() . ')';
   }
   return ['#markup' => $str];
@@ -137,7 +137,7 @@ function metastore_format_contactpoint($contactpoint) {
 /**
  * Build table using only the string data, skipping description and title.
  */
-function metastore_use_in_table($property, $value) {
+function dkan_metastore_use_in_table($property, $value) {
   if (in_array($property, ["description", "title"])) {
     return FALSE;
   }
