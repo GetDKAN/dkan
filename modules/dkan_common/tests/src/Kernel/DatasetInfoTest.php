@@ -59,7 +59,7 @@ class DatasetInfoTest extends KernelTestBase {
       ->save();
 
     /**
-     * @var \Drupal\metastore\MetastoreService $metastore
+     * @var \Drupal\dkan_metastore\MetastoreService $metastore
      */
     $metastore = $this->container->get('dkan.metastore.service');
     $metadata = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset('foo')), 'dataset');

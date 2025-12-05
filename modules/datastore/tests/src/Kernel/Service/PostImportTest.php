@@ -9,8 +9,8 @@ use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\datastore\Service\PostImport;
 
 /**

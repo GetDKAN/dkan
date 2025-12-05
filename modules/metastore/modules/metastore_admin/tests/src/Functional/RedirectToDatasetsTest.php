@@ -37,7 +37,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
    * Tests dataset form submission when redirect_to_datasets is enabled.
    */
   public function testDatasetRedirect() {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
 
     $this->drupalLogin(

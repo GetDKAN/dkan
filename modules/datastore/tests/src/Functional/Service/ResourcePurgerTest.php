@@ -34,21 +34,21 @@ class ResourcePurgerTest extends BrowserTestBase {
   /**
    * DKAN dataset storage service.
    *
-   * @var \Drupal\metastore\Storage\NodeData
+   * @var \Drupal\dkan_metastore\Storage\NodeData
    */
   protected $datasetStorage;
 
   /**
    * DKAN metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 

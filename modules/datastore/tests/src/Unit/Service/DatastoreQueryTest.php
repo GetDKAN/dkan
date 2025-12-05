@@ -5,7 +5,7 @@ namespace Drupal\Tests\datastore\Unit\Service;
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
@@ -23,12 +23,12 @@ use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\QueryFactory;
-use Drupal\metastore\Storage\Data;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\Data;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\Tests\dkan_common\Unit\Storage\QueryDataProvider as QueryData;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 
 /**
  * @group dkan
