@@ -6,7 +6,7 @@ use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 /**
  * @coversDefaultClass \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer

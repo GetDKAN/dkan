@@ -8,7 +8,7 @@ use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\dkan_common\Storage\JobStore;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use Procrastinator\Result;

@@ -7,9 +7,9 @@ namespace Drupal\Tests\harvest\Unit\Load;
 use Contracts\Mock\Storage\Memory;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\harvest\Load\Dataset;
-use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\ValidMetadataFactory;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
@@ -27,7 +27,7 @@ class DatasetTest extends TestCase {
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 

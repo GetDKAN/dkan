@@ -57,7 +57,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     $this->assertEquals(0, $this->getEntityCount($mapping_entity_storage));
 
     // Post our dataset.
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
     $this->assertEquals(
       $identifier,
@@ -88,7 +88,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     );
 
     // Now let's ask the mapper instead of its storage.
-    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $resource_mapper */
     $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
     $this->assertNotNull(
       $resource_id = $info['latest_revision']['distributions'][0]['resource_id'] ?? NULL
@@ -254,7 +254,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
     );
     // @todo: Figure out how to assert against $factory->getResult()->getError()
     // so we can have a useful test fail message.
-    /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $valid_metadata_factory */
     $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
     return $valid_metadata_factory->get(json_encode($data), 'dataset');
   }

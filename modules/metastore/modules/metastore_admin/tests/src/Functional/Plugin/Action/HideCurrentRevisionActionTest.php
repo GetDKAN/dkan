@@ -3,8 +3,8 @@
 namespace Drupal\Tests\metastore_admin\Functional\Plugin\Action;
 
 use Drupal\Core\Session\AccountProxy;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\ValidMetadataFactory;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\metastore\Unit\MetastoreServiceTest;

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Functional\Controller;
 
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
@@ -50,9 +50,9 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $resourceFile = 'longcolumn.csv';
     // Dependencies.
     $uuid = $this->container->get('uuid');
-    /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
-    /** @var \Drupal\metastore\MetastoreService $metastoreService */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastoreService */
     $metastoreService = $this->container->get('dkan.metastore.service');
     $resourceUrl = $this->setUpResourceFile($resourceFile);
 
@@ -157,9 +157,9 @@ class QueryDownloadControllerTest extends BrowserTestBase {
 
     // Dependencies.
     $uuid = $this->container->get('uuid');
-    /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
-    /** @var \Drupal\metastore\MetastoreService $metastore */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
     $resourceUrl = $this->setUpResourceFile($resourceFile);
 
