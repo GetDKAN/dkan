@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\dkan_metastore\Unit;
 
 use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use Drupal\dkan_common\Storage\Query;

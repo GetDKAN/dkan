@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Kernel;
+namespace Drupal\Tests\dkan_metastore\Kernel;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -11,8 +11,8 @@ use Drupal\KernelTests\KernelTestBase;
  * @group metastore
  * @group kernel
  *
- * @covers \Drupal\metastore\ResourceMapper
- * @coversDefaultClass \Drupal\metastore\ResourceMapper
+ * @covers \Drupal\dkan_metastore\ResourceMapper
+ * @coversDefaultClass \Drupal\dkan_metastore\ResourceMapper
  */
 class ResourceMapperTest extends KernelTestBase {
 
@@ -35,7 +35,7 @@ class ResourceMapperTest extends KernelTestBase {
     $localUrl = 'https://dkan.dkan/resources/file/blah.csv';
     $localUrl2 = 'https://dkan.dkan/resources/file/newblah.csv';
 
-    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
     $mapper = $this->container->get('dkan.metastore.resource_mapper');
 
     // Register a resource.

@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Reference;
+namespace Drupal\Tests\dkan_metastore\Unit\Reference;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\metastore\Reference\OrphanChecker;
+use Drupal\dkan_metastore\Reference\OrphanChecker;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 

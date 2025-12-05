@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\dkan_metastore\Unit;
 
 use Drupal\Core\Cache\Context\CacheContextsManager;
-use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
-use Drupal\metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\NodeWrapper\Data as NodeWrapperData;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;

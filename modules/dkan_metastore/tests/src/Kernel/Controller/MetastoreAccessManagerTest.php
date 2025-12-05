@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\Tests\metastore\Controller\Kernel;
+namespace Drupal\Tests\dkan_metastore\Controller\Kernel;
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\Controller\MetastoreAccessManager;
-use Drupal\metastore\NodeWrapper\Data;
-use Drupal\metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\Controller\MetastoreAccessManager;
+use Drupal\dkan_metastore\NodeWrapper\Data;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Drupal\node\NodeInterface;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use MockChain\Chain;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Note, no current test for the canViewRevision() method, because it relies
  * on static methods from the Data wrapper, which can't be mocked.
  *
- * @coversDefaultClass \Drupal\metastore\Controller\MetastoreAccessManager
+ * @coversDefaultClass \Drupal\dkan_metastore\Controller\MetastoreAccessManager
  *
  * @group dkan
  * @group metastore

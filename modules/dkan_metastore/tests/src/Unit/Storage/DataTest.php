@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Storage;
+namespace Drupal\Tests\dkan_metastore\Unit\Storage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
@@ -10,7 +10,7 @@ use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\metastore\Storage\NodeData;
+use Drupal\dkan_metastore\Storage\NodeData;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 use MockChain\Chain;
@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 use function PHPUnit\Framework\assertEquals;
 
 /**
- * @coversDefaultClass \Drupal\metastore\Storage\Data
+ * @coversDefaultClass \Drupal\dkan_metastore\Storage\Data
  *
  * @group dkan
  * @group metastore

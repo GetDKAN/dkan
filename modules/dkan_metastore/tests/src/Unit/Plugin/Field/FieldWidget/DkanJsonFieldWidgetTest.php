@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Field\FieldWidget;
+namespace Drupal\Tests\dkan_metastore\Unit\Field\FieldWidget;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
@@ -9,8 +9,8 @@ use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\WidgetRouter;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Plugin\JsonFormOptionSource\MetastoreSchema;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Plugin\JsonFormOptionSource\MetastoreSchema;
 use MockChain\Chain;
 use MockChain\Options;
 use Psr\Log\LoggerInterface;
@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
  * Test class for ValueHandlerTest.
  *
  * @group metastore
- * @coversDefaultClass \Drupal\metastore\WidgetRouter
+ * @coversDefaultClass \Drupal\dkan_metastore\WidgetRouter
  */
 class DkanJsonFieldWidgetTest extends TestCase {
 

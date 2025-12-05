@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional;
+namespace Drupal\Tests\dkan_metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * @coversDefaultClass \Drupal\metastore\DatasetApiDocs
+ * @coversDefaultClass \Drupal\dkan_metastore\DatasetApiDocs
  *
  * @group dkan
  * @group metastore
@@ -48,12 +48,12 @@ class DatasetApiDocsTest extends BrowserTestBase {
     // Test posting a dataset to the metastore.
     $dataset = $this->getData($this->downloadUrl);
 
-    /** @var \Drupal\metastore\MetastoreService $metastore */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore */
     $metastore = \Drupal::service('dkan.metastore.service');
     $dataset = $metastore->getValidMetadataFactory()->get($dataset, 'dataset');
     $metastore->post('dataset', $dataset);
 
-    /** @var \Drupal\metastore\DatasetApiDocs $docService */
+    /** @var \Drupal\dkan_metastore\DatasetApiDocs $docService */
     $docService = \Drupal::service('dkan.metastore.dataset_api_docs');
     $spec = $docService->getDatasetSpecific('123');
     $this->assertIsArray($spec);

@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\DataDictionary;
+namespace Drupal\Tests\dkan_metastore\Unit\DataDictionary;
 
 use DomainException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery as Discovery;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Reference\MetastoreUrlGenerator;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery as Discovery;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use MockChain\Chain;
 use MockChain\Options;
 use OutOfRangeException;

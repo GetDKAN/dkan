@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\dkan_metastore\Unit;
 
 use Drupal\Core\Site\Settings;
 use Drupal\dkan_common\DkanApiDocsGenerator;
 use Drupal\dkan_common\Plugin\DkanApiDocsBase;
 use Drupal\dkan_common\Plugin\DkanApiDocsPluginManager;
-use Drupal\metastore\DatasetApiDocs;
-use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\DatasetApiDocs;
+use Drupal\dkan_metastore\SchemaRetriever;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\ValidMetadataFactory;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;

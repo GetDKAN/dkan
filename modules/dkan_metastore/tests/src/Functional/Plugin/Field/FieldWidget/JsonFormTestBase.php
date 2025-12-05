@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
+namespace Drupal\Tests\dkan_metastore\Functional\Plugin\Field\FieldWidget;
 
 use Drupal\Tests\BrowserTestBase;
 
@@ -30,7 +30,7 @@ abstract class JsonFormTestBase extends BrowserTestBase {
 
   public function setUp(): void {
     parent::setUp();
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
 
     $this->drupalLogin(

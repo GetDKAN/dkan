@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional;
+namespace Drupal\Tests\dkan_metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 
@@ -50,7 +50,7 @@ class OnPreReferenceTest extends BrowserTestBase {
 
     // Test posting a dataset to the metastore.
     $data = $this->getData($this->downloadUrl);
-    /** @var \Drupal\metastore\MetastoreService $metastore */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
     $dataset = $metastore->getValidMetadataFactory()->get($data, 'dataset');
     $metastore->post('dataset', $dataset);

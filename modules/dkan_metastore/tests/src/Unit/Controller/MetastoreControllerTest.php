@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Controller;
+namespace Drupal\Tests\dkan_metastore\Unit\Controller;
 
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -9,20 +9,20 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\metastore\Controller\MetastoreController;
-use Drupal\metastore\DatasetApiDocs;
-use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
-use Drupal\metastore\NodeWrapper\NodeDataFactory;
-use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Storage\Data;
-use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\ValidMetadataFactory;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\dkan_metastore\Controller\MetastoreController;
+use Drupal\dkan_metastore\DatasetApiDocs;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\NodeWrapper\Data as NodeWrapperData;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\SchemaRetriever;
+use Drupal\dkan_metastore\Storage\Data;
+use Drupal\dkan_metastore\Storage\NodeData;
+use Drupal\dkan_metastore\ValidMetadataFactory;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -41,7 +41,7 @@ class MetastoreControllerTest extends TestCase {
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 

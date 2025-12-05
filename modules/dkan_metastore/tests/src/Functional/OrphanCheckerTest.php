@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional;
+namespace Drupal\Tests\dkan_metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 
 /**
  * @group dkan
@@ -28,7 +28,7 @@ class OrphanCheckerTest extends BrowserTestBase {
 
   public function test() {
     $validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
-    /** @var \Drupal\metastore\MetastoreService $service */
+    /** @var \Drupal\dkan_metastore\MetastoreService $service */
     $service = $this->container->get('dkan.metastore.service');
 
     $dataset = $validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');

@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\Tests\metastore\Kernel;
+namespace Drupal\Tests\dkan_metastore\Kernel;
 
 use Drupal\Tests\dkan_common\Kernel\ConfigFormTestBase;
-use Drupal\metastore\Form\DataDictionarySettingsForm;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\Form\DataDictionarySettingsForm;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\Core\Form\FormState;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use Drupal\Component\Render\FormattableMarkup;
 
 /**
@@ -41,21 +41,21 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 
   /**
    * Node data storage.
    *
-   * @var \Drupal\metastore\Storage\NodeData
+   * @var \Drupal\dkan_metastore\Storage\NodeData
    */
   protected $datasetStorage;
 

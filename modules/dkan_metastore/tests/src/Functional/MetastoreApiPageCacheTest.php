@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional;
+namespace Drupal\Tests\dkan_metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;

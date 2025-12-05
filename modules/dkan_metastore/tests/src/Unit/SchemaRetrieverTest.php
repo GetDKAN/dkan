@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\dkan_metastore\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\dkan_metastore\SchemaRetriever;
 use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use MockChain\Options;
@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests Drupal\schema\SchemaRetriever.
  *
- * @coversDefaultClass \Drupal\metastore\SchemaRetriever
+ * @coversDefaultClass \Drupal\dkan_metastore\SchemaRetriever
  * @group harvest
  */
 class SchemaRetrieverTest extends TestCase {

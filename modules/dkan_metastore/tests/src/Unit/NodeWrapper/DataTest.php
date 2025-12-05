@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\NodeWrapper;
+namespace Drupal\Tests\dkan_metastore\Unit\NodeWrapper;
 
 use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityInterface;
@@ -8,8 +8,8 @@ use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\metastore\NodeWrapper\Data;
-use Drupal\metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\NodeWrapper\Data;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use MockChain\Options;
@@ -17,8 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
- * @coversDefaultClass \Drupal\metastore\NodeWrapper\Data
- * @covers \Drupal\metastore\NodeWrapper\Data
+ * @coversDefaultClass \Drupal\dkan_metastore\NodeWrapper\Data
+ * @covers \Drupal\dkan_metastore\NodeWrapper\Data
  *
  * @group dkan
  * @group metastore

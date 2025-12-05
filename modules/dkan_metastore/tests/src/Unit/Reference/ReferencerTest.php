@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Reference;
+namespace Drupal\Tests\dkan_metastore\Unit\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
@@ -11,14 +11,14 @@ use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Reference\MetastoreUrlGenerator;
-use Drupal\metastore\Reference\Referencer;
-use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\NodeData;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
+use Drupal\dkan_metastore\Reference\Referencer;
+use Drupal\dkan_metastore\ResourceMapper;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\NodeData;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
 use GuzzleHttp\Client;
@@ -33,8 +33,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
- * @covers \Drupal\metastore\Reference\Referencer
- * @coversDefaultClass \Drupal\metastore\Reference\Referencer
+ * @covers \Drupal\dkan_metastore\Reference\Referencer
+ * @coversDefaultClass \Drupal\dkan_metastore\Reference\Referencer
  *
  * @group dkan
  * @group metastore
