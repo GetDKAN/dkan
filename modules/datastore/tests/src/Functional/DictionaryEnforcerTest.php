@@ -193,7 +193,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $this->assertFalse($this->metastore->publish('data-dictionary', $dict_id));
 
     // Set global data-dictionary in metastore config.
-    $metastore_config = $this->config('metastore.settings');
+    $metastore_config = $this->config('dkan_metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
       ->set('data_dictionary_sitewide', $dict_id)
       ->set('csv_headers_mode', 'dictionary_titles')

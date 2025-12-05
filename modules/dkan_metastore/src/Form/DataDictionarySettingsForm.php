@@ -78,7 +78,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
    *
    * @var string
    */
-  const SETTINGS = 'metastore.settings';
+  const SETTINGS = 'dkan_metastore.settings';
 
   /**
    * {@inheritdoc}

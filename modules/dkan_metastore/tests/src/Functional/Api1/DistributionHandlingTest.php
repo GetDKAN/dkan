@@ -22,7 +22,7 @@ class DistributionHandlingTest extends Api1TestBase {
    */
   public function testDescribedByDataDictionary() {
     // Set data dictionary discovery mode to reference.
-    $config = $this->config('metastore.settings');
+    $config = $this->config('dkan_metastore.settings');
     $config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
     $config->save();
 

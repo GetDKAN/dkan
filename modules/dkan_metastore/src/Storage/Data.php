@@ -432,7 +432,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   Filtered output.
    */
   public function filterHtml(mixed $input, string $parent = 'dataset') {
-    $html_allowed = $this->configFactory->get('metastore.settings')->get('html_allowed_properties')
+    $html_allowed = $this->configFactory->get('dkan_metastore.settings')->get('html_allowed_properties')
       ?: ['dataset_description', 'distribution_description'];
     switch (gettype($input)) {
       case "string":
@@ -470,7 +470,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   Filtered string.
    */
   private function htmlPurifier(string $input) {
-    $allowed_html = $this->configFactory->get('metastore.settings')->get('html_allowed_html');
+    $allowed_html = $this->configFactory->get('dkan_metastore.settings')->get('html_allowed_html');
 
     // Initialize HTML Purifier cache config settings array.
     $config = [];

@@ -36,7 +36,7 @@ trait HelperTrait {
    */
   protected function getPropertyList() : array {
     if (isset($this->configService)) {
-      $list = $this->configService->get('metastore.settings')->get('property_list');
+      $list = $this->configService->get('dkan_metastore.settings')->get('property_list');
       return array_values(array_filter($list));
     }
     throw new \Exception("Can't get property list, the config service was not set.");

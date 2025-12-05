@@ -287,7 +287,7 @@ class LifeCycle {
     }
 
     $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = $this->configFactory->get('metastore.settings')->get('resource_perspective_display')
+    $perspective = $this->configFactory->get('dkan_metastore.settings')->get('resource_perspective_display')
       ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE;
     $resource = $sourceResource;
 

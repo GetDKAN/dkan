@@ -70,7 +70,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
     );
 
     // Enable redirect option.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('redirect_to_datasets', TRUE)
       ->save();
 
@@ -96,7 +96,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
     $assert->pageTextContains('Data ' . $dataset_title . ' has been created.');
 
     // Disable redirect option.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('redirect_to_datasets', FALSE)
       ->save();
 
