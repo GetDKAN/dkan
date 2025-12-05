@@ -56,7 +56,7 @@ class DictionaryEnforcerTest extends KernelTestBase {
    */
   public function testProcessModeNone() {
     // Explicitly set to none.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_NONE)
       ->save();
 

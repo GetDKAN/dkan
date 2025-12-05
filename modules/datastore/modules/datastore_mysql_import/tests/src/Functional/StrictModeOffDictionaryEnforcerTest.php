@@ -66,12 +66,12 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
     $importController = ImportController::create(\Drupal::getContainer());
 
     // Set per-reference data dictionary in metastore config.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
       ->save();
     $this->assertEquals(
       DataDictionaryDiscovery::MODE_REFERENCE,
-      $this->config('metastore.settings')->get('data_dictionary_mode')
+      $this->config('dkan_metastore.settings')->get('data_dictionary_mode')
     );
 
     // Create a data dictionary for very_wide.csv. The 300th (!) column will be

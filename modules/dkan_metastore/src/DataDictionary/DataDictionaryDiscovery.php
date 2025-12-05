@@ -44,7 +44,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
     ReferenceLookupInterface $lookup,
     MetastoreUrlGenerator $urlGenerator
   ) {
-    $this->config = $configFactory->get('metastore.settings');
+    $this->config = $configFactory->get('dkan_metastore.settings');
     $this->metastore = $metastore;
     $this->lookup = $lookup;
     $this->urlGenerator = $urlGenerator;

@@ -88,7 +88,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
 
     // Explicitly configure for the CSV's headers.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'resource_headers')
       ->save();
 
@@ -107,7 +107,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     );
 
     // Re-request, but with machine name headers.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'machine_names')
       ->save();
 
@@ -145,12 +145,12 @@ class QueryDownloadControllerTest extends BrowserTestBase {
    */
   public function testDownloadWithDataDictionary() {
     // Set per-reference data-dictionary in metastore config.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
       ->save();
     $this->assertEquals(
       DataDictionaryDiscovery::MODE_REFERENCE,
-      $this->config('metastore.settings')->get('data_dictionary_mode')
+      $this->config('dkan_metastore.settings')->get('data_dictionary_mode')
     );
 
     $resourceFile = 'data-dict.csv';
@@ -238,7 +238,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->assertEquals($date_format, $dictionary_fields[0]['format'] ?? 'not found');
 
     // Set the dictionary CSV header mode before the import.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'dictionary_titles')
       ->save();
 
@@ -258,7 +258,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->assertEquals('a,b_title,c,d,e', $lines[0]);
 
     // Set the machine name CSV header mode.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'machine_names')
       ->save();
 

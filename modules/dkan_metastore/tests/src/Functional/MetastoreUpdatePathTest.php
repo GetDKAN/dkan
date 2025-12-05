@@ -28,7 +28,7 @@ class MetastoreUpdatePathTest extends UpdatePathTestBase {
    * Test metastore module update 8010.
    */
   public function testUpdates8010on(): void {
-    $config = \Drupal::configFactory()->getEditable('metastore.settings');
+    $config = \Drupal::configFactory()->getEditable('dkan_metastore.settings');
     $data_form_config = \Drupal::configFactory()->getEditable('core.entity_form_display.node.data.default');
 
     // Get a baseline for pre-8010.
@@ -41,7 +41,7 @@ class MetastoreUpdatePathTest extends UpdatePathTestBase {
     $this->runUpdates();
 
     // Confirm results of update 8010.
-    $config = \Drupal::configFactory()->getEditable('metastore.settings');
+    $config = \Drupal::configFactory()->getEditable('dkan_metastore.settings');
     $this->assertTrue($config->get('redirect_to_datasets'));
 
     // Confirm results of update 8011.

@@ -61,7 +61,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'metastore.settings',
+      'dkan_metastore.settings',
     ];
   }
 
@@ -78,7 +78,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('metastore.settings');
+    $config = $this->config('dkan_metastore.settings');
 
     $form['description'] = $this->getDescriptionMarkup();
     $form['redirect_to_datasets'] = $this->getRedirectCheckbox($config);
@@ -191,7 +191,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('redirect_to_datasets', $form_state->getValue('redirect_to_datasets'))
       ->set('property_list', $form_state->getValue('property_list'))
       ->set('html_allowed_properties', $form_state->getValue('html_allowed_properties'))

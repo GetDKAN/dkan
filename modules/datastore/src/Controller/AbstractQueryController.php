@@ -349,7 +349,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   Array of strings for a CSV header row.
    */
   protected function getHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
-    $config = $this->configFactory->get('metastore.settings')->get('csv_headers_mode');
+    $config = $this->configFactory->get('dkan_metastore.settings')->get('csv_headers_mode');
     $schema_fields = $result->{'$.schema..fields'}[0] ?? [];
     if (empty($schema_fields)) {
       throw new \DomainException("Could not generate header for CSV.");
