@@ -43,7 +43,7 @@ class MetastoreSchemaTest extends KernelTestBase {
     // $this->installEntitySchema('user');
     $this->installConfig(['node']);
     $this->installConfig(['workflows']);
-    $this->installConfig(['metastore']);
+    $this->installConfig(['dkan_metastore']);
 
     $metastore = (new Chain($this))
       ->add(MetastoreService::class, 'getAll', (new Options())

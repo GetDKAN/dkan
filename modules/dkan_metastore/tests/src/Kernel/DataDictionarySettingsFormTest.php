@@ -165,7 +165,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
     parent::setUp();
     $this->installConfig('system');
     $this->installConfig('node');
-    $this->installConfig('metastore');
+    $this->installConfig('dkan_metastore');
     $this->installConfig('dkan_common');
     $this->installConfig('basic_auth');
     $this->installConfig('content_moderation');
