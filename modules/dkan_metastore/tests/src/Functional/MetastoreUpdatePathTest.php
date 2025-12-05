@@ -20,7 +20,7 @@ class MetastoreUpdatePathTest extends UpdatePathTestBase {
    */
   protected function setDatabaseDumpFiles() {
     $this->databaseDumpFiles = [
-      __DIR__ . '/../../../../../tests/fixtures/update/update-2.20.0.php.gz',
+      __DIR__ . '/../../../../../tests/fixtures/update/update-2.x-transition.php.gz',
     ];
   }
 
@@ -28,6 +28,7 @@ class MetastoreUpdatePathTest extends UpdatePathTestBase {
    * Test metastore module update 8010.
    */
   public function testUpdates8010on(): void {
+    $this->markTestSkipped('These updates are lost after 3.x jump; need to come up with better update path tests.');
     $config = \Drupal::configFactory()->getEditable('dkan_metastore.settings');
     $data_form_config = \Drupal::configFactory()->getEditable('core.entity_form_display.node.data.default');
 

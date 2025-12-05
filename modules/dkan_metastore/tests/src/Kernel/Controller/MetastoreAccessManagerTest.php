@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @group dkan
  * @group metastore
+ * @group kernel
  */
 class MetastoreAccessManagerTest extends KernelTestBase {
 
@@ -68,7 +69,7 @@ class MetastoreAccessManagerTest extends KernelTestBase {
   public function setUp(): void {
     parent::setUp();
     // Set up the necessary services and configurations for the test.
-    $this->installConfig(['node', 'metastore']);
+    $this->installConfig(['node', 'dkan_metastore']);
     $this->installEntitySchema('node');
     $this->installEntitySchema('user');
 
