@@ -26,7 +26,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     'datastore',
     'dynamic_page_cache',
     'harvest',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 

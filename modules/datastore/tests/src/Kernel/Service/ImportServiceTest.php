@@ -25,7 +25,7 @@ class ImportServiceTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
     'user',
     'field',

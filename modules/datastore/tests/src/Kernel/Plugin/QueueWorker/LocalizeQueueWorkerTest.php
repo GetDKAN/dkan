@@ -32,7 +32,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
     'user',
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected function setUp() : void {

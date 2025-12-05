@@ -25,7 +25,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
     'user',
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected $defaultTheme = 'stark';

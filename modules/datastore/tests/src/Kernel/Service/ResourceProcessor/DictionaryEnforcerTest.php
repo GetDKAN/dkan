@@ -21,7 +21,7 @@ class DictionaryEnforcerTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   /**
