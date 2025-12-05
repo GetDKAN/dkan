@@ -18,7 +18,7 @@ function metastore_facets_install() {
 /**
  * Update hook to enable transitional dkan_metastore_facets module.
  */
-function metastore_facets_update_9001(&$sandbox) {
+function metastore_facets_update_9001() {
   if (!\Drupal::moduleHandler()->moduleExists('dkan_metastore_facets')) {
     \Drupal::service('module_installer')->install(['dkan_metastore_facets']);
   }
