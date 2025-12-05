@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional\Storage;
+namespace Drupal\Tests\dkan_metastore\Functional\Storage;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\metastore\Storage\Data;
+use Drupal\dkan_metastore\Storage\Data;
 use Psr\Log\LoggerInterface;
 use org\bovigo\vfs\vfsStream;
 
@@ -18,8 +18,8 @@ use org\bovigo\vfs\vfsStream;
  * Because of the tight coupling and unification of concerns, this is a
  * BrowserTestBase test. A Kernel test would be too complex and fragile.
  *
- * @covers \Drupal\metastore\Storage\Data
- * @coversDefaultClass \Drupal\metastore\Storage\Data
+ * @covers \Drupal\dkan_metastore\Storage\Data
+ * @coversDefaultClass \Drupal\dkan_metastore\Storage\Data
  *
  * @group dkan
  * @group metastore

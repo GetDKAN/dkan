@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\metastore\Kernel\Reference;
+namespace Drupal\Tests\dkan_metastore\Kernel\Reference;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\KernelTests\KernelTestBase;
 use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
- * @covers \Drupal\metastore\Reference\Referencer
- * @coversDefaultClass \Drupal\metastore\Reference\Referencer
+ * @covers \Drupal\dkan_metastore\Reference\Referencer
+ * @coversDefaultClass \Drupal\dkan_metastore\Reference\Referencer
  *
  * @group dkan
  * @group metastore

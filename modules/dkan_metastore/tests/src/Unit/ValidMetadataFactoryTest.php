@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\dkan_metastore\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\SchemaRetriever;
+use Drupal\dkan_metastore\ValidMetadataFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

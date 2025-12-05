@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\metastore\Kernel\Plugin\JsonFormOptionSource;
+namespace Drupal\Tests\dkan_metastore\Kernel\Plugin\JsonFormOptionSource;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\Plugin\JsonFormOptionSource\MetastoreSchema;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Plugin\JsonFormOptionSource\MetastoreSchema;
 use MockChain\Chain;
 use MockChain\Options;
 
@@ -14,7 +14,7 @@ use MockChain\Options;
  * Test coverage for MetastoreSchema plugin.
  *
  * @group metastore
- * @coversDefaultClass \Drupal\metastore\Plugin\JsonFormOptionSource\MetastoreSchema
+ * @coversDefaultClass \Drupal\dkan_metastore\Plugin\JsonFormOptionSource\MetastoreSchema
  */
 class MetastoreSchemaTest extends KernelTestBase {
 

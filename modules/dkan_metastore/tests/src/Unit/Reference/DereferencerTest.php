@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Reference;
+namespace Drupal\Tests\dkan_metastore\Unit\Reference;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Contracts\FactoryInterface;
@@ -8,18 +8,18 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Reference\Dereferencer;
-use Drupal\metastore\Service\Uuid5;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\NodeData;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Reference\Dereferencer;
+use Drupal\dkan_metastore\Service\Uuid5;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\NodeData;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @coversDefaultClass \Drupal\metastore\Reference\Dereferencer
+ * @coversDefaultClass \Drupal\dkan_metastore\Reference\Dereferencer
  *
  * @group dkan
  * @group metastore

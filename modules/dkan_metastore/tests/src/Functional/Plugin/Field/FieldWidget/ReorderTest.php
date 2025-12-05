@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
+namespace Drupal\Tests\dkan_metastore\Functional\Plugin\Field\FieldWidget;
 
 /**
  * Test the json form widget.

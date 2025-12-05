@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Commands;
+namespace Drupal\Tests\dkan_metastore\Unit\Commands;
 
-use Drupal\metastore\Commands\MetastoreCommands;
-use Drupal\metastore\Storage\Data;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Commands\MetastoreCommands;
+use Drupal\dkan_metastore\Storage\Data;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use Drush\Log\DrushLoggerManager;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;

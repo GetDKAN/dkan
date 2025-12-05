@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional\Storage;
+namespace Drupal\Tests\dkan_metastore\Functional\Storage;
 
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\ValidMetadataFactory;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use RootedData\RootedJsonData;
 
 /**

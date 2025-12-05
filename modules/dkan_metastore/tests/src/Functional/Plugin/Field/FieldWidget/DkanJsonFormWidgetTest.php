@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
+namespace Drupal\Tests\dkan_metastore\Functional\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\metastore\Plugin\Field\FieldWidget\DkanJsonFormWidget;
+use Drupal\dkan_metastore\Plugin\Field\FieldWidget\DkanJsonFormWidget;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\BrowserTestBase;
 use MockChain\Chain;

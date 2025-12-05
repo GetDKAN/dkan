@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Plugin\Validation\Constraint;
+namespace Drupal\Tests\dkan_metastore\Unit\Plugin\Validation\Constraint;
 
-use Drupal\metastore\Plugin\Validation\Constraint\ProperJsonValidator;
-use Drupal\metastore\ValidMetadataFactory;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\dkan_metastore\Plugin\Validation\Constraint\ProperJsonValidator;
+use Drupal\dkan_metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Context\ExecutionContext;
@@ -18,14 +18,14 @@ class ProperJsonValidatorTest extends TestCase {
   /**
    * The schema retriever used for testing.
    *
-   * @var \Drupal\metastore\SchemaRetriever|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\SchemaRetriever|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $schemaRetriever;
 
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 

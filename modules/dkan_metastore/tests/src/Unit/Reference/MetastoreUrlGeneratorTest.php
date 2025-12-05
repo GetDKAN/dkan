@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\Reference;
+namespace Drupal\Tests\dkan_metastore\Unit\Reference;
 
 use Drupal\dkan_common\StreamWrapper\DkanStreamWrapper;
 use Drupal\Core\File\FileSystem;
@@ -10,9 +10,9 @@ use Drupal\Core\Path\PathValidator;
 use Drupal\Core\Render\MetadataBubblingUrlGenerator;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\Utility\UnroutedUrlAssembler;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Reference\MetastoreUrlGenerator;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
+use Drupal\dkan_metastore\MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

@@ -2,15 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\metastore\Unit\Service;
+namespace Drupal\Tests\dkan_metastore\Unit\Service;
 
-use Drupal\metastore\Service\Uuid5;
+use Drupal\dkan_metastore\Service\Uuid5;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Drupal\metastore\Service\Uuid5.
  *
- * @coversDefaultClass \Drupal\metastore\Service\Uuid5
+ * @coversDefaultClass \Drupal\dkan_metastore\Service\Uuid5
  * @package Drupal\Tests\metastore\Unit\Service
  * @group metastore
  */

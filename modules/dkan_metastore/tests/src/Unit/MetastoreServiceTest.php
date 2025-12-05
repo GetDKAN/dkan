@@ -1,20 +1,20 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\dkan_metastore\Unit;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\dkan_common\Events\Event;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\MetastoreStorageInterface;
-use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\ValidMetadataFactory;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\SchemaRetriever;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\MetastoreStorageInterface;
+use Drupal\dkan_metastore\Storage\NodeData;
+use Drupal\dkan_metastore\ValidMetadataFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
@@ -23,7 +23,7 @@ use RootedData\RootedJsonData;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * @coversDefaultClass \Drupal\metastore\MetastoreService
+ * @coversDefaultClass \Drupal\dkan_metastore\MetastoreService
  *
  * @group dkan
  * @group metastore
@@ -34,7 +34,7 @@ class MetastoreServiceTest extends TestCase {
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 

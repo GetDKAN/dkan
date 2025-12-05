@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Functional\Plugin\Field\FieldWidget;
+namespace Drupal\Tests\dkan_metastore\Functional\Plugin\Field\FieldWidget;
 
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;

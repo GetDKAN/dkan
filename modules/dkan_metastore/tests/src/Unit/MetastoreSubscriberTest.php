@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit\EventSubscriber;
+namespace Drupal\Tests\dkan_metastore\Unit\EventSubscriber;
 
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
@@ -9,11 +9,11 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
-use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\ReferenceLookupInterface;
-use Drupal\metastore\ResourceMapper;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\dkan_metastore\EventSubscriber\MetastoreSubscriber;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\ReferenceLookupInterface;
+use Drupal\dkan_metastore\ResourceMapper;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Unit tests for the `MetastoreSubscriber` class.
  *
- * @see \Drupal\metastore\EventSubscriber\MetastoreSubscriber
+ * @see \Drupal\dkan_metastore\EventSubscriber\MetastoreSubscriber
  */
 class MetastoreSubscriberTest extends TestCase {
 
@@ -39,7 +39,7 @@ class MetastoreSubscriberTest extends TestCase {
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 
