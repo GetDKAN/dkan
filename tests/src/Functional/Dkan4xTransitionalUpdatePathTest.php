@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\Tests\dkan_common\Functional;
+
+use Drupal\FunctionalTests\Update\UpdatePathTestBase;
+
+/**
+ * Tests update functions for the metastore module.
+ *
+ * @group metastore
+ * @group update
+ * @group functional3
+ */
+class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setDatabaseDumpFiles() {
+    $this->databaseDumpFiles = [
+      dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition.php.gz',
+    ];
+  }
+
+  /**
+   * Test that common settings are copied to dkan_common on install.
+   */
+  public function test4xTransitionUpdates(): void {
+    $this->drupalGet('<front>');
+    $this->assertSession()->pageTextContains('Log in');
+
+    // Ensure legacy modules are still installed.
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('common'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('metastore'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('metastore_search'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('metastore_admin'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('datastore'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('harvest'));
+
+    // Enable optional modules.
+    \Drupal::service('module_installer')->install(['metastore_facets']);
+    \Drupal::service('module_installer')->install(['datastore_mysql_import']);
+
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_search'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_facets'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_admin'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore_mysql_import'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_harvest'));
+
+
+    // Run all updates.
+    $this->runUpdates();
+
+    // Assert legacy modules are now uninstalled.
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('common'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_search'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_facets'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_admin'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('harvest'));
+  }
+
+}
