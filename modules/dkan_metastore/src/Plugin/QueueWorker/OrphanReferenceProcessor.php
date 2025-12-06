@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\dkan_metastore\Plugin\QueueWorker;
 
@@ -68,7 +68,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     $plugin_definition,
     NodeStorageInterface $nodeStorage,
     ReferenceLookupInterface $referenceLookup,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->referenceLookup = $referenceLookup;

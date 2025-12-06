@@ -42,7 +42,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
     ConfigFactoryInterface $configFactory,
     MetastoreService $metastore,
     ReferenceLookupInterface $lookup,
-    MetastoreUrlGenerator $urlGenerator
+    MetastoreUrlGenerator $urlGenerator,
   ) {
     $this->config = $configFactory->get('dkan_metastore.settings');
     $this->metastore = $metastore;

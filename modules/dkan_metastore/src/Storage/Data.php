@@ -111,7 +111,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     EntityTypeManagerInterface $entityTypeManager,
     ConfigFactoryInterface $config_factory,
     FileSystemInterface $file_system,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);

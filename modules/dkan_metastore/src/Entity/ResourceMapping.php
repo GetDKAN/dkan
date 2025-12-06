@@ -76,10 +76,8 @@ class ResourceMapping extends ContentEntityBase implements ResourceMappingInterf
       ->setLabel(new TranslatableMarkup('File Path'))
       ->setReadOnly(FALSE)
       ->setTranslatable(FALSE);
-    // The perspective of this resource mapping. Can be one of:
-    // - source
-    // - local_file
-    // - local_url
+    // The perspective of this resource mapping. Can be one of: source,
+    // local_file, local_url.
     $base_fields['perspective'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Perspective'))
       ->setReadOnly(FALSE)

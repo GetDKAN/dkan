@@ -60,7 +60,7 @@ class ResourceMapper {
   public function __construct(
     DatabaseTableInterface $store,
     EntityTypeManagerInterface $entityTypeManager,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->store = $store;
     $this->entityTypeManager = $entityTypeManager;

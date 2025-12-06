@@ -32,7 +32,7 @@ class Dereferencer {
   public function __construct(
     ConfigFactoryInterface $configService,
     FactoryInterface $storageFactory,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;

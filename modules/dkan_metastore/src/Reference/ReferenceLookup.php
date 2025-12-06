@@ -49,7 +49,7 @@ class ReferenceLookup implements ReferenceLookupInterface {
     FactoryInterface $metastoreStorage,
     MetastoreItemFactoryInterface $metastoreItemFactory,
     CacheTagsInvalidatorInterface $invalidator,
-    ModuleHandlerInterface $moduleHandler
+    ModuleHandlerInterface $moduleHandler,
   ) {
     $this->metastoreStorage = $metastoreStorage;
     $this->metastoreItemFactory = $metastoreItemFactory;

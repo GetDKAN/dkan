@@ -51,7 +51,7 @@ class MetastoreApiResponse {
     mixed $data,
     int $code = 200,
     array $dependencies = [],
-    ?ParameterBag $params = NULL
+    ?ParameterBag $params = NULL,
   ): CacheableJsonResponse {
 
     $response = new CacheableJsonResponse($data, $code, []);

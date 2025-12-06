@@ -155,8 +155,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Metadata properties that may contain
         HTML elements.'),
       '#options' => $this->schemaHelper->retrieveStringSchemaProperties(),
-      '#default_value' => $config->get('html_allowed_properties')
-      ?: [
+      '#default_value' => $config->get('html_allowed_properties') ?: [
         'dataset_description',
         'distribution_description',
       ],
