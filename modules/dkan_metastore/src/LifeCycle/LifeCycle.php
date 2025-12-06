@@ -111,7 +111,7 @@ class LifeCycle {
     DataFactory $dataFactory,
     QueueFactory $queueFactory,
     ConfigFactory $configFactory,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;

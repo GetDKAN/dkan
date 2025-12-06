@@ -85,7 +85,7 @@ class MetastoreService implements ContainerInjectionInterface {
     DataFactory $factory,
     ValidMetadataFactory $validMetadataFactory,
     LoggerInterface $loggerChannel,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;

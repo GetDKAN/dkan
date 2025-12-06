@@ -59,7 +59,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   public function __construct(
     MetastoreService $service,
     ResourceMapper $resourceMapper,
-    ReferenceLookupInterface $referenceLookup
+    ReferenceLookupInterface $referenceLookup,
   ) {
     $this->service = $service;
     $this->resourceMapper = $resourceMapper;

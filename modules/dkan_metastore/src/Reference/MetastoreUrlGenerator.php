@@ -46,7 +46,7 @@ class MetastoreUrlGenerator {
   public function __construct(
     StreamWrapperManagerInterface $stream_wrapper_manager,
     MetastoreService $metastore,
-    RequestStack $request_stack
+    RequestStack $request_stack,
   ) {
     $this->streamWrapperManager = $stream_wrapper_manager;
     $this->metastore = $metastore;
