@@ -575,6 +575,7 @@ class DashboardForm extends FormBase {
         'data' => [
           '#theme' => 'datastore_dashboard_resource_cell',
           '#uuid' => $dist['distribution_uuid'],
+          '#resource_id' => $dist['resource_id'],
           '#file_name' => basename((string) $dist['source_path']),
           '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
         ],
