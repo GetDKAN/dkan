@@ -119,15 +119,16 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
-   * Transform possible multiline string to single line for description.
+   * Sanitize column description (sanitize multiline and binary string)
    *
    * @param string $column
    *   Column name.
    *
    * @return string
-   *   Column name on single line.
+   *   sanitized column name on single line.
    */
   public static function sanitizeDescription(string $column) {
+    $column = preg_replace('~[^\x20-\x7E\t\r\n]~', '_', $column);
     $trimmed = array_filter(array_map('trim', explode("\n", $column)));
     return implode(" ", $trimmed);
   }
@@ -157,6 +158,10 @@ class ImportJob extends AbstractPersistentJob {
       // This can be dropped after move to Drupal 9.
       // @see https://github.com/GetDKAN/dkan/issues/3606
       $column = '_' . $column;
+    }
+
+    if (empty($column)) {
+      $column = 'empty_col_name';
     }
 
     return $column;
