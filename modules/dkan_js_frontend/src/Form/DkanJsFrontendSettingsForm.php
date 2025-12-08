@@ -89,10 +89,10 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state): void
-  {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     $routes_list = $form_state->getValue('routes');
     $routes_list = trim($routes_list);
+    $form_state->setValue('routes', []);
     if (strlen($routes_list) !== 0) {
       $routes = [];
       $routes = explode(PHP_EOL, $routes_list);
@@ -105,10 +105,6 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
 
       $form_state->setValue('routes', $routes);
     }
-    else {
-      $form_state->setValue('routes', []);
-    }
-
   }
 
   /**
