@@ -31,3 +31,4 @@ docs/.venv
 !/.ddev/commands/host/
 /.ddev/commands/host/*
 !/.ddev/commands/host/dkan-*
+tmp

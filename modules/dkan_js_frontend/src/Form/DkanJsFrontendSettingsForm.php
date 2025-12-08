@@ -32,6 +32,11 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
+    $form['intro'] = [
+      '#type' => 'markup',
+      '#markup' => $this->t('The DKAN JS front end module assumes a JavaScript app has been loaded into a <i>frontend</i> directory in the docroot of your site code base. This can be changed by updating the css and js directory locations below. All JS/CSS files from the specified directories will be attached to any route/path template that has been defined under Routes.'),
+    ];
+
     $form['css_folder'] = [
       '#type' => 'textfield',
       '#min' => 1,
@@ -74,7 +79,7 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Routes'),
       '#description' => $this->t('Add any path you want this module to use with a string structured like: <pre>unique_path_name,/the_path</pre>
-      One pairing per line. The first part is used by Drupal to store path and the second is the actual path the JS frontend will display at.'),
+      One pairing per line. The first part is used by Drupal to store path and the second is the actual path where the JS frontend will display.<p>If the Drupal <a href="https://www.drupal.org/project/simple_sitemap">Simple XML sitemap module</a> is installed, the routes listed here will automatically be added to the default sitemap.</p>'),
       '#default_value' => implode(PHP_EOL, $routes),
     ];
 
