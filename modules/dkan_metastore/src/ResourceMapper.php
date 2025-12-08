@@ -25,15 +25,6 @@ class ResourceMapper {
   const DEREFERENCE_YES = 1;
 
   /**
-   * Database storage service.
-   *
-   * @var \Drupal\dkan_common\Storage\DatabaseTableInterface
-   *
-   * @todo Deprecate/remove this form of storage.
-   */
-  private $store;
-
-  /**
    * Entity type manager service.
    */
   private EntityTypeManagerInterface $entityTypeManager;
@@ -58,11 +49,9 @@ class ResourceMapper {
    * Constructor.
    */
   public function __construct(
-    DatabaseTableInterface $store,
     EntityTypeManagerInterface $entityTypeManager,
     EventDispatcherInterface $eventDispatcher,
   ) {
-    $this->store = $store;
     $this->entityTypeManager = $entityTypeManager;
     $this->mappingEntityStorage = $this->entityTypeManager
       ->getStorage('resource_mapping');
