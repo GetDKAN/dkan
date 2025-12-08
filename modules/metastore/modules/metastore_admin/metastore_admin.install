@@ -10,7 +10,7 @@
  */
 function metastore_admin_install() {
   // Only in DKAN 3.x: Run the update hooks to enable transitional modules.
-  metastore_admin_update_8012();
+  metastore_admin_update_10003();
 }
 
 /**
