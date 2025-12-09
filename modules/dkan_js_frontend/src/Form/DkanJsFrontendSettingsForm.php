@@ -95,11 +95,11 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
     $form_state->setValue('routes', []);
     if (strlen($routes_list) !== 0) {
       $routes = [];
-      $routes = explode(PHP_EOL, $routes_list);
-      foreach ($routes as $route) {
-        $route = trim($route);
-        if (strlen($route) !== 0) {
-          $routes[] = strtolower($route);
+      $mappings = explode(PHP_EOL, $routes_list);
+      foreach ($mappings as $map) {
+        $map = trim($map);
+        if (strlen($map) !== 0) {
+          $routes[] = strtolower($map);
         }
       }
 
@@ -117,6 +117,7 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
       ->set('datastore_query_api', $form_state->getValue('datastore_query_api'))
       ->set('minified', $form_state->getValue('minified'))
       ->set('preprocess', $form_state->getValue('preprocess'))
+      ->set('routes', $form_state->getValue('routes'))
       ->save();
     parent::submitForm($form, $form_state);
   }
