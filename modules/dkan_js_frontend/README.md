@@ -9,7 +9,7 @@ The paths used are defined by the `dkan_js_frontend.config` yml. In the routes a
 If the Drupal [Simple XML sitemap module](https://www.drupal.org/project/simple_sitemap) is installed, the DKAN JS Frontend module will automatically add static routes and dataset routes listed in the `dkan_js_frontend.config` yml to the default sitemap.
 
 ## JS/CSS
-The module assumes a JavaScript app exits in a `/frontend` directory in the docroot of your site codebase. This can be changed by updating the `dkan_js_frontend.config` keys of `css_folder` and `js_folder` with the new directory paths.
+The module assumes a JavaScript app exits in a `/frontend` directory in the docroot of your site code base. This can be changed by updating the `dkan_js_frontend.config` keys of `css_folder` and `js_folder` with the new directory paths.
 
 The code will glob all files in the folders specified and attach them to any route/path that has been defined.
 

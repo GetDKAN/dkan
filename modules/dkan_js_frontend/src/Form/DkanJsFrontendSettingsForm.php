@@ -95,11 +95,11 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
     $form_state->setValue('routes', []);
     if (strlen($routes_list) !== 0) {
       $routes = [];
-      $mappings = explode(PHP_EOL, $routes_list);
-      foreach ($mappings as $map) {
-        $map = trim($map);
-        if (strlen($map) !== 0) {
-          $routes[] = strtolower($map);
+      $paths = explode(PHP_EOL, $routes_list);
+      foreach ($paths as $path) {
+        $path = trim($path);
+        if (strlen($path) !== 0) {
+          $routes[] = strtolower($path);
         }
       }
 
