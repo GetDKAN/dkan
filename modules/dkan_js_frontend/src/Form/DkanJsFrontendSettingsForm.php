@@ -69,7 +69,7 @@ class DkanJsFrontendSettingsForm extends ConfigFormBase {
 
     $form['datastore_query_api'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Datastore Query API Default'),
+      '#title' => $this->t('Datastore Query API'),
       '#config_target' => 'dkan_js_frontend.config:datastore_query_api',
       '#description' => $this->t('Use the dataset UUID and distribution index 0 for datastore queries rather than the distribution UUID.'),
     ];
