@@ -5,7 +5,6 @@
  * This is the DKAN JS Frontend module for using a decoupled frontend w/ DKAN.
  */
 
-use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
