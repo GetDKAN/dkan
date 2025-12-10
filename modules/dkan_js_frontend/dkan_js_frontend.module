@@ -5,6 +5,7 @@
  * This is the DKAN JS Frontend module for using a decoupled frontend w/ DKAN.
  */
 
+use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -223,4 +224,14 @@ function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dat
       'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL),
     ];
   }
+
+  /**
+   * Implements hook_preprocess_html().
+   * @param $variables
+   */
+  function dkan_js_frontend_preprocess_html(&$variables) {
+    $config = \Drupal::config('dkan_js_frontend.config');
+    $variables['#attached']['drupalSettings']['datastore_query_api'] = $config->get('datastore_query_api');
+  }
+
 }
