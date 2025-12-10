@@ -8,3 +8,6 @@ dependencies:
   - drupal:basic_auth
   - drupal:content_moderation
   - drupal:node
+  - drupal:path
+  - json_form_widget:json_form_widget
+  
