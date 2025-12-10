@@ -6,7 +6,7 @@
 #
 # Usage: ddev-init [DRUPAL_VERSION]
 # Example: ddev-init 10.5
-DRUPAL_VERSION=${1:-10.4}
+DRUPAL_VERSION=${1:-10.5.*}
 set -e
 
 # Check if /web exists and is not empty
@@ -16,7 +16,7 @@ if [ -d "web" ] && [ "$(ls -A web)" ]; then
 fi
 
 # Validate semver format (X.Y or X.Y.Z)
-if [[ ! $DRUPAL_VERSION =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+if [[ ! $DRUPAL_VERSION =~ ^[~^]?[0-9]+\.[0-9]+(\.[0-9]+|\.\*)?$ ]]; then
   echo "Error: DRUPAL_VERSION must follow semver format (e.g., 10.4 or 10.4.1)" >&2
   exit 1
 fi
