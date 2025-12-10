@@ -224,13 +224,13 @@ function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dat
     ];
   }
 
-  /**
-   * Implements hook_preprocess_html().
-   * @param $variables
-   */
-  function dkan_js_frontend_preprocess_html(&$variables) {
-    $config = \Drupal::config('dkan_js_frontend.config');
-    $variables['#attached']['drupalSettings']['datastore_query_api'] = $config->get('datastore_query_api');
-  }
+}
 
+/**
+ * Implements hook_preprocess_html().
+ * @param $variables
+ */
+function dkan_js_frontend_preprocess_html(&$variables) {
+  $config = \Drupal::config('dkan_js_frontend.config');
+  $variables['#attached']['drupalSettings']['datastore_query_api'] = $config->get('datastore_query_api');
 }
