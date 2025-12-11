@@ -139,7 +139,7 @@ function dkan_dkan_metastore_admin_update_8012() {
 function dkan_dkan_metastore_admin_update_10001() {
   return t('~~~~~ IMPORTANT ~~~~~ There are updates to the DKAN admin view.
   If you have not made customizations to the existing view, pull in the latest updates with
-  drush cim --partial --source=modules/contrib/dkan/modules/metastore/modules/metastore_admin/config/install -y');
+  drush cim --partial --source=modules/contrib/dkan/modules/dkan_metastore/modules/dkan_metastore_admin/config/install -y');
 }
 
 /**
