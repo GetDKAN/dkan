@@ -58,13 +58,12 @@ commands:
                   git checkout 2.x
                   # The following should be removed once the 2.x branch has the ddev add-on config.
                   git checkout $CIRCLE_BRANCH -- .ddev composer.json
-
+      - restore_cache:
+          keys:
+            - dkan-deps-{{ checksum "composer.json" }}-php<< parameters.php_version >>-drupal<< parameters.drupal_core_constraint >>
       - run:
-          name: Build site codebase
+          name: Configure and start DDev
           command: |
-            # Help debug ddev install issues.
-            which ddev
-            ddev --version
             ddev config global --instrumentation-opt-in=false
             # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
             ddev config --project-type=drupal \
@@ -78,12 +77,34 @@ commands:
               --xdebug-mode "coverage" \
               --composer-auth "$COMPOSER_AUTH"
             ddev start
-            ddev poser
+      - run:
+          name: Pull in dependencies
+          command: |
+            if [ ! -d "web" ] || [ ! -d "vendor" ]; then
+              ddev poser
+            else
+              echo "Using cached dependencies"
+            fi
+      - save_cache:
+          key: dkan-deps-{{ checksum "composer.json" }}-php<< parameters.php_version >>-drupal<< parameters.drupal_core_constraint >>
+          paths:
+            - web
+            - vendor
+      - restore_cache:
+          keys:
+            - select2-v1-{{ checksum ".ddev/commands/web/select2" }}
+      - run:
+          name: Finish building codebase and restart containers
+          command: |
             ddev select2
             ddev symlink-project
             ddev config --update
             ddev restart
             ddev status
+      - save_cache:
+          key: select2-v1-{{ checksum ".ddev/commands/web/select2" }}
+          paths:
+            - web/libraries/select2
       - run:
           name: Install site
           command: |
