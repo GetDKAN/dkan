@@ -6,6 +6,12 @@
 
 set -eu -o pipefail
 
+# Skip download if select2 library already exists
+if [ -d "$DOCROOT/libraries/select2" ]; then
+  echo "No action taken; select2 library already exists."
+  exit 0
+fi
+
 curl -L https://github.com/select2/select2/archive/595494a.tar.gz -o select2.tar.gz
 mkdir -p $DOCROOT/libraries
 tar xzf select2.tar.gz
