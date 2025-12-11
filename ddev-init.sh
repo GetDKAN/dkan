@@ -6,8 +6,9 @@
 #
 # Usage: ddev-init [DRUPAL_VERSION]
 # Example: ddev-init 10.5.*
+# Default: latest 10.5.x
 DRUPAL_VERSION=${1:-10.5.*}
-set -euo pipefail
+set -e
 
 # Check if /web exists and is not empty
 if [ -d "web" ] && [ "$(ls -A web)" ]; then
