@@ -5,9 +5,9 @@
 # h/t @markdorison https://github.com/ddev/ddev-drupal-contrib/issues/15
 #
 # Usage: ddev-init [DRUPAL_VERSION]
-# Example: ddev-init 10.5
+# Example: ddev-init 10.5.*
 DRUPAL_VERSION=${1:-10.5.*}
-set -e
+set -euo pipefail
 
 # Check if /web exists and is not empty
 if [ -d "web" ] && [ "$(ls -A web)" ]; then
@@ -15,9 +15,9 @@ if [ -d "web" ] && [ "$(ls -A web)" ]; then
   exit 1
 fi
 
-# Validate semver format (X.Y or X.Y.Z)
-if [[ ! $DRUPAL_VERSION =~ ^[~^]?[0-9]+\.[0-9]+(\.[0-9]+|\.\*)?$ ]]; then
-  echo "Error: DRUPAL_VERSION must follow semver format (e.g., 10.4 or 10.4.1)" >&2
+# Validate semver format (X.Y or X.Y.Z or X.Y.*)
+if [[ ! $DRUPAL_VERSION =~ ^[0-9]+\.[0-9]+(\.[0-9]+|\.\*)?$ ]]; then
+  echo "Error: DRUPAL_VERSION must follow semver format (e.g., 10.5, 10.5.*, or 10.5.8)" >&2
   exit 1
 fi
 
