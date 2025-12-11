@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
+use Drupal\common\RemovalLogger;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\datastore\Service\ResourcePurger;
@@ -17,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class ResourcePurgerWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+  use RemovalLogger;
 
   /**
    * Resource purger service.
@@ -50,6 +52,7 @@ class ResourcePurgerWorker extends QueueWorkerBase implements ContainerFactoryPl
    */
   public function processItem($data) {
     $this->resourcePurger->purgeMultiple($data['uuids'], $data['prior']);
+    $this->log('Purging @uuids', ['@uuids' => implode(', ', $data['uuids'])]);
   }
 
 }

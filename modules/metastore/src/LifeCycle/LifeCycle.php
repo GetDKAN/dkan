@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore\LifeCycle;
 
+use Drupal\common\RemovalLogger;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
@@ -32,6 +33,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * storage systems.
  */
 class LifeCycle {
+  use RemovalLogger;
 
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
@@ -155,6 +157,8 @@ class LifeCycle {
    * Dataset preDelete.
    */
   protected function datasetPredelete(MetastoreItemInterface $data): void {
+    $this->log("Run orphan checker.");
+
     $raw = $data->getRawMetadata();
 
     if (is_object($raw)) {
@@ -254,6 +258,7 @@ class LifeCycle {
 
     // Ensure a valid resource ID was found since it's required.
     if (isset($id)) {
+      $this->log("Add $distributionUuid to orphan_resource_remover queue");
       $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
       $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
       $this->queueFactory->get('orphan_resource_remover')->createItem([
@@ -330,6 +335,7 @@ class LifeCycle {
 
     if (!$data->isNew()) {
       try {
+        $this->log('Queue orphan reference cleanup on update.');
         $this->queueOrphanReferenceCleanup($data);
       }
       catch (InvalidPluginDefinitionException | PluginNotFoundException | DataNodeLifeCycleEntityValidationException $e) {

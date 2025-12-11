@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore;
 
+use Drupal\common\RemovalLogger;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\Events\Event;
 use Drupal\metastore\Exception\CannotChangeUuidException;
@@ -20,6 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * The metastore service.
  */
 class MetastoreService implements ContainerInjectionInterface {
+  use RemovalLogger;
 
   const EVENT_DATA_GET = 'dkan_metastore_data_get';
   const EVENT_DATA_GET_ALL = 'dkan_metastore_data_get_all';
@@ -444,6 +446,7 @@ class MetastoreService implements ContainerInjectionInterface {
    *   Identifier.
    */
   public function delete($schema_id, $identifier) {
+    $this->log('Delete @schema @id', ['@schema' => $schema_id, '@id' => $identifier]);
     $storage = $this->getStorage($schema_id);
     $storage->remove($identifier);
     // If remove method did not throw an exception, assume the item was deleted.

@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest;
 
+use Drupal\common\RemovalLogger;
 use Drupal\harvest\ETL\Factory;
 use Drupal\harvest\ETL\Transform\Transform;
 
@@ -9,6 +10,8 @@ use Drupal\harvest\ETL\Transform\Transform;
  * Executes harvests.
  */
 class Harvester {
+  use RemovalLogger;
+
   public const HARVEST_LOAD_NEW_ITEM = 0;
   public const HARVEST_LOAD_UPDATED_ITEM = 1;
   public const HARVEST_LOAD_UNCHANGED = 2;
@@ -48,6 +51,7 @@ class Harvester {
 
     $counter = 0;
     foreach ($ids as $id) {
+      $this->log('removed @count items', ['@count' => $counter]);
       $load->removeItem($id);
       $this->factory->hashStorage->remove($id);
       $counter++;

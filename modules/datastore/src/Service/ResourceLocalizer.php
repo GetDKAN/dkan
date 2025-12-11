@@ -3,6 +3,7 @@
 namespace Drupal\datastore\Service;
 
 use Contracts\FactoryInterface;
+use Drupal\common\RemovalLogger;
 use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
 use Drupal\common\UrlHostTokenResolver;
@@ -20,6 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Resource localizer.
  */
 class ResourceLocalizer {
+  use RemovalLogger;
 
   /**
    * Event sent when a resource is successfully localized.
@@ -216,6 +218,7 @@ class ResourceLocalizer {
   public function remove($identifier, $version = NULL): void {
     // Remove the LOCAL_URL_PERSPECTIVE if it exists.
     if ($local_url_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
+      $this->log('Remove local url resource, @resource_id', ['@resource_id' => $local_url_resource->getIdentifier()]);
       $this->resourceMapper->remove($local_url_resource);
     }
     // Remove the LOCAL_FILE_PERSPECTIVE if it exists.

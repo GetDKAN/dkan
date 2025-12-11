@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
+use Drupal\common\RemovalLogger;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
@@ -21,6 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Subscriber.
  */
 class DatastoreSubscriber implements EventSubscriberInterface {
+  use RemovalLogger;
 
   /**
    * Drupal Config Factory.
@@ -157,6 +159,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   public function purgeResources(Event $event) {
     $node = $event->getData();
     $this->resourcePurger->schedule([$node->getIdentifier()]);
+    $this->log('Schedule @nid for purging', ['@nid' => $node->getIdentifier()]);
   }
 
   /**

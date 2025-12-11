@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest\Commands;
 
+use Drupal\common\RemovalLogger;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\HarvestUtility;
 use Drupal\harvest\Load\Dataset;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 class HarvestCommands extends DrushCommands {
   use Helper;
+  use RemovalLogger;
 
   /**
    * Harvest.
@@ -202,6 +204,7 @@ class HarvestCommands extends DrushCommands {
    * @codeCoverageIgnore
    */
   public function run($plan_id) {
+    $this->log('RUN');
     $result = $this->harvestService->runHarvest($plan_id);
     $this->renderHarvestRunsInfo([$result]);
   }
@@ -281,6 +284,7 @@ class HarvestCommands extends DrushCommands {
    * @codeCoverageIgnore
    */
   public function revert($harvestId) {
+    $this->log('REVERT');
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
     $this->logger()->notice($result . ' items reverted for the \'' . $harvestId . '\' harvest plan.');
@@ -411,6 +415,8 @@ class HarvestCommands extends DrushCommands {
    * @codeCoverageIgnore
    */
   public function orphanDatasets(string $harvestId) : int {
+    $this->log('ORPHANDATASETS');
+
     $this->validateHarvestPlan($harvestId);
 
     try {
@@ -443,7 +449,8 @@ class HarvestCommands extends DrushCommands {
    *
    * @codeCoverageIgnore
    */
-  public function harvestCleanup(): int {
+  public function harvestcleanup(): int {
+    $this->log('HARVESTCLEANUP');
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
       $this->logger()->notice('Detected leftover harvest data for these plans: ' . implode(', ', $orphaned));

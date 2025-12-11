@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest;
 
+use Drupal\common\RemovalLogger;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
@@ -10,6 +11,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  * @package Drupal\harvest
  */
 trait OrphanDatasetsProcessor {
+  use RemovalLogger;
 
   /**
    * Entity type manager.
@@ -55,10 +57,12 @@ trait OrphanDatasetsProcessor {
     $nodeStorage = $this->entityTypeManager->getStorage('node');
 
     foreach ($orphanIds as $uuid) {
+      /** @var \Drupal\Core\Entity\EntityInterface $datasets */
       $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
       if (FALSE !== ($dataset = reset($datasets))) {
         $dataset->set('moderation_state', 'orphaned');
         $dataset->save();
+        $this->log('Set mod state to orphaned for @id', ['@id' => $dataset->id()]);
       }
     }
   }

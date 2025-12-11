@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore;
 
+use Drupal\common\RemovalLogger;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Events\Event;
@@ -15,6 +16,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Map resource URLs to local files.
  */
 class ResourceMapper {
+  use RemovalLogger;
 
   const EVENT_REGISTRATION = 'dkan_metastore_resource_mapper_registration';
 
@@ -246,8 +248,10 @@ class ResourceMapper {
         // Dispatch event to initiate removal of the datastore and local file.
         $event = new Event($resource);
         $this->eventDispatcher->dispatch($event, self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE);
+        $this->log('Dispatch EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE for resource, @resource_id', ['@resource_id' => $resource->getIdentifier()]);
       }
       // Remove the resource mapper perspective.
+      $this->log('Remove mapping, @mapping', ['@mapping' => $mapping->uuid() ?? 'NULL']);
       $this->mappingEntityStorage->delete([$mapping]);
     }
   }

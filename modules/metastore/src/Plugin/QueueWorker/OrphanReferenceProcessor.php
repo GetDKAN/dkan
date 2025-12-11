@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\metastore\Plugin\QueueWorker;
 
+use Drupal\common\RemovalLogger;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\common\Events\Event;
@@ -24,6 +25,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @codeCoverageIgnore
  */
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+
+  use RemovalLogger;
 
   const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
 
@@ -131,9 +134,11 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
       if ($property_id === 'distribution') {
         $event = new Event($uuid);
         $this->eventDispatcher->dispatch($event, self::EVENT_ORPHANING_DISTRIBUTION);
+        $this->log("Dispatching EVENT_ORPHANING_DISTRIBUTION for $uuid");
       }
       $reference->set('moderation_state', 'orphaned');
       $reference->save();
+      $this->log('Setting mod state to orphaned for node ' . $reference->id());
     }
   }
 

@@ -2,12 +2,14 @@
 
 namespace Drupal\Tests\common\Traits;
 
+use Drupal\common\RemovalLogger;
 use Drupal\node\Entity\Node;
 
 /**
  * @deprecated Will be removed in a future version of DKAN.
  */
 trait CleanUp {
+  use RemovalLogger;
 
   /**
    *
@@ -25,6 +27,11 @@ trait CleanUp {
    */
   private function removeAllNodes() {
     $nodes = Node::loadMultiple();
+    $this->log("Deleting nodes, @node_list",
+      [
+        '@node_list' => implode(', ', array_map(function ($node) {return $node->id();}, $nodes))
+      ]);
+
     foreach ($nodes as $node) {
       $node->delete();
     }
@@ -69,6 +76,9 @@ trait CleanUp {
       $queueFactory = \Drupal::service('queue');
       $queue = $queueFactory->get($queueName);
       $queue->deleteQueue();
+      if ($queueName === 'resource_purger') {
+        $this->log('Remove resource_purger queue with @count items', ['@count' => $queue->numberOfItems()]);
+      }
     }
   }
 
@@ -82,6 +92,7 @@ trait CleanUp {
       $path = DRUPAL_ROOT . "/sites/default/files/{$dir}";
       if (file_exists($path)) {
         `rm -rf {$path}`;
+        $this->log('Remove files from @path', ['@path' => $path]);
       }
     }
   }
@@ -95,6 +106,7 @@ trait CleanUp {
     $tables = $connection->schema()->findTables("datastore_%");
     foreach ($tables as $table) {
       $connection->schema()->dropTable($table);
+      $this->log('Drop db table, @table', ['@table' => $table]);
     }
   }
 

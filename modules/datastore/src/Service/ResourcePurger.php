@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
+use Drupal\common\RemovalLogger;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
@@ -17,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Resource purger service.
  */
 class ResourcePurger implements ContainerInjectionInterface {
+  use RemovalLogger;
 
   /**
    * The datastore.settings config.
@@ -174,6 +176,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Whether to include all prior revisions.
    */
   public function purgeMultiple(array $uuids, bool $prior = FALSE) {
+    $this->log('Calling purge helper for @uuid_list', ['@uuid_list' => implode(', ', $uuids)]);
     if ($this->validate()) {
       foreach ($uuids as $vid => $uuid) {
         $this->purgeHelper($vid, $uuid, $prior);
@@ -378,6 +381,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Resource version.
    */
   private function delete(string $id, string $version) {
+    $this->log('Deleting @id', ['@id' => $id]);
     if ($this->getPurgeTableSetting()) {
       $this->removeDatastoreStorage($id, $version);
     }

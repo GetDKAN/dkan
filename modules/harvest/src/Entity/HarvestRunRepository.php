@@ -73,6 +73,7 @@ class HarvestRunRepository {
       ->accessCheck(FALSE)
       ->execute()
     ) {
+
       foreach ($this->runStorage->loadMultiple($ids) as $entity) {
         $entity->delete();
       }
