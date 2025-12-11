@@ -6,13 +6,12 @@
  */
 
 /**
- * Implements hook_install().
+ * Remove the legacy metastore_admin module.
  */
-function dkan_metastore_admin_install() {
+function dkan_metastore_admin_update_10001() {
   // If the old metastore_admin module is still enabled, copy config and uninstall it.
   if (\Drupal::moduleHandler()->moduleExists('metastore_admin')) {
     \Drupal::service('module_installer')->uninstall(['metastore_admin']);
-    $message = t('The legacy metastore_admin module has been uninstalled.');
+    return t('The legacy metastore_admin module has been uninstalled.');
   }
-  return $message;  
 }
