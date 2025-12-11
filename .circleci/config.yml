@@ -59,6 +59,10 @@ commands:
                   # The following should be removed once the 2.x branch has the ddev add-on config.
                   git checkout $CIRCLE_BRANCH -- .ddev composer.json
 
+      - restore_cache:
+          keys:
+            - select2-v1-{{ checksum ".ddev/commands/web/select2" }}
+            - select2-v1-
       - run:
           name: Build site codebase
           command: |
@@ -84,6 +88,10 @@ commands:
             ddev config --update
             ddev restart
             ddev status
+      - save_cache:
+          key: select2-v1-{{ checksum ".ddev/commands/web/select2" }}
+          paths:
+            - web/libraries/select2
       - run:
           name: Install site
           command: |
