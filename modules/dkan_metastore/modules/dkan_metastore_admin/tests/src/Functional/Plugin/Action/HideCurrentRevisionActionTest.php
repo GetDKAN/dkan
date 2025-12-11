@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\metastore_admin\Functional\Plugin\Action;
+namespace Drupal\Tests\dkan_metastore_admin\Functional\Plugin\Action;
 
 use Drupal\Core\Session\AccountProxy;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\ValidMetadataFactory;
-use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
+use Drupal\dkan_metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use Drupal\user\Entity\User;
@@ -22,7 +22,7 @@ class HideCurrentRevisionActionTest extends BrowserTestBase {
 
   protected static $modules = [
     'datastore',
-    'metastore_admin',
+    'dkan_metastore_admin',
     'node',
   ];
 
@@ -66,7 +66,7 @@ class HideCurrentRevisionActionTest extends BrowserTestBase {
         'type' => 'node',
         'class' => HideCurrentRevisionAction::class,
         'confirm' => TRUE,
-        'provider' => 'metastore_admin',
+        'provider' => 'dkan_metastore_admin',
       ]
     );
 
@@ -102,7 +102,7 @@ class HideCurrentRevisionActionTest extends BrowserTestBase {
         'type' => 'node',
         'class' => HideCurrentRevisionAction::class,
         'confirm' => TRUE,
-        'provider' => 'metastore_admin',
+        'provider' => 'dkan_metastore_admin',
       ]
     );
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_admin\Plugin\Action;
+namespace Drupal\dkan_metastore_admin\Plugin\Action;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Action\ActionBase;

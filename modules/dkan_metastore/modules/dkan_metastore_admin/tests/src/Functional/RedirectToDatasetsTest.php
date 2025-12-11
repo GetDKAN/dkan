@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_admin\Tests\Functional;
+namespace Drupal\Tests\dkan_metastore_admin\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 
@@ -22,7 +22,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
   protected static $modules = [
     'dkan',
     'dkan_metastore',
-    'metastore_admin',
+    'dkan_metastore_admin',
     'node',
   ];
 

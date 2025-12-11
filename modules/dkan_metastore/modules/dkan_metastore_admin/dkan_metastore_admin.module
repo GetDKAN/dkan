@@ -13,7 +13,7 @@ use Drupal\Core\Url;
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function dkan_metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['#id'])
     && $form['#id'] == 'views-exposed-form-dkan-dataset-content-page-1'
     || $form['#id'] == 'views-exposed-form-dkan-dataset-content-page-2') {
@@ -36,7 +36,7 @@ function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterfac
 /**
  * Implements template_preprocess_views_view_fields().
  */
-function metastore_admin_preprocess_views_view_field(&$vars) {
+function dkan_metastore_admin_preprocess_views_view_field(&$vars) {
 
   if (isset($vars['view']) && ($vars['view']->id() == 'dkan_dataset_content')) {
     // To access current row entity.
@@ -136,7 +136,7 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
 /**
  * Create a text link.
  */
-function metastore_admin_create_text_link($linkText, $internalUri) {
+function dkan_metastore_admin_create_text_link($linkText, $internalUri) {
   $url = Url::fromUri($internalUri);
   $link = Link::fromTextAndUrl($linkText, $url);
   return $link->toString();
@@ -145,7 +145,7 @@ function metastore_admin_create_text_link($linkText, $internalUri) {
 /**
  * Add custom submit handler to redirect to datasets page.
  */
-function metastore_admin_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function dkan_metastore_admin_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if ($form_id === "node_data_form" || $form_id === "node_data_edit_form") {
     $form['actions']['submit']['#submit'][] = 'metastore_admin_form_submit';
   }
@@ -154,7 +154,7 @@ function metastore_admin_form_alter(&$form, FormStateInterface $form_state, $for
 /**
  * Submit handler to redirect after node save to dkan dataset content page.
  */
-function metastore_admin_form_submit($form, FormStateInterface &$form_state) {
+function dkan_metastore_admin_form_submit($form, FormStateInterface &$form_state) {
   $redirect_to_datasets = \Drupal::config('dkan_metastore.settings')->get('redirect_to_datasets');
 
   // If the setting is enabled, redirect to the dataset content page.
@@ -166,6 +166,6 @@ function metastore_admin_form_submit($form, FormStateInterface &$form_state) {
 /*
  * Implements hook_toolbar_alter()
  */
-function metastore_admin_toolbar_alter(&$items) {
+function dkan_metastore_admin_toolbar_alter(&$items) {
   $items['administration']['#attached']['library'][] = 'metastore_admin/toolbar-icon';
 }
