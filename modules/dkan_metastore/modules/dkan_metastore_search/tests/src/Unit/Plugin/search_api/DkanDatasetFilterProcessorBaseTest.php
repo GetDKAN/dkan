@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\Tests\metastore_search\Unit\Plugin\search_api;
+namespace Drupal\Tests\dkan_metastore_search\Unit\Plugin\search_api;
 
-use Drupal\metastore_search\Plugin\search_api\DkanDatasetFilterProcessorBase;
+use Drupal\dkan_metastore_search\Plugin\search_api\DkanDatasetFilterProcessorBase;
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\IndexInterface;
 

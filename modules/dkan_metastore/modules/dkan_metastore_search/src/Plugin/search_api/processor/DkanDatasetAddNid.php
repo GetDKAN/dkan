@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_search\Plugin\search_api\processor;
+namespace Drupal\dkan_metastore_search\Plugin\search_api\processor;
 
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\metastore_search\Plugin\search_api\processor;
+namespace Drupal\dkan_metastore_search\Plugin\search_api\processor;
 
-use Drupal\metastore_search\Plugin\search_api\DkanDatasetFilterProcessorBase;
+use Drupal\dkan_metastore_search\Plugin\search_api\DkanDatasetFilterProcessorBase;
 
 /**
  * Excludes unpublished datasets from data indexes.

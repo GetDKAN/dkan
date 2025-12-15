@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\metastore_search\Unit\Plugin\search_api\processor;
+namespace Drupal\Tests\dkan_metastore_search\Unit\Plugin\search_api\processor;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore_search\Plugin\search_api\processor\DkanDatasetAddNid;
+use Drupal\dkan_metastore_search\Plugin\search_api\processor\DkanDatasetAddNid;
 use Drupal\search_api\Item\ItemInterface;
 
 /**
@@ -23,7 +23,7 @@ class DkanDatasetAddNidTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'dkan_metastore',
-    'metastore_search',
+    'dkan_metastore_search',
     'search_api',
   ];
 

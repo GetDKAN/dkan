@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore_search\Unit\Plugin\search_api\datasource;
+namespace Drupal\Tests\dkan_metastore_search\Unit\Plugin\search_api\datasource;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -11,13 +11,13 @@ use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Storage\Data;
 use Drupal\dkan_metastore\Storage\DataFactory;
-use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
+use Drupal\dkan_metastore_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
-use Drupal\metastore_search\ComplexData\Dataset;
+use Drupal\dkan_metastore_search\ComplexData\Dataset;
 
 /**
  * Class DkanDatasetTest.

@@ -14,7 +14,7 @@ use Drupal\dkan_metastore\NodeWrapper\Data;
  * @return bool
  *   Whether the entity is a dataset.
  */
-function _metastore_search_is_dataset(EntityInterface $entity): bool {
+function _dkan_dkan_metastore_search_is_dataset(EntityInterface $entity): bool {
   try {
     // Attempt to check this entity's data type.
     return (new Data($entity, \Drupal::entityTypeManager()))->getDataType() === 'dataset';
@@ -30,10 +30,10 @@ function _metastore_search_is_dataset(EntityInterface $entity): bool {
  *
  * Track created datasets in the DKAN search api index.
  */
-function metastore_search_entity_insert(EntityInterface $entity): void {
+function dkan_metastore_search_entity_insert(EntityInterface $entity): void {
   // Ensure the entity in question is a dataset.
   // @todo Ensure it is not hidden or unpublished.
-  if (!_metastore_search_is_dataset($entity)) {
+  if (!_dkan_metastore_search_is_dataset($entity)) {
     return;
   }
 
@@ -47,9 +47,9 @@ function metastore_search_entity_insert(EntityInterface $entity): void {
  *
  * Track updated datasets in the DKAN search api index.
  */
-function metastore_search_entity_update(EntityInterface $entity): void {
+function dkan_metastore_search_entity_update(EntityInterface $entity): void {
   // Ensure the entity in question is a dataset.
-  if (!_metastore_search_is_dataset($entity)) {
+  if (!_dkan_metastore_search_is_dataset($entity)) {
     return;
   }
 
@@ -63,9 +63,9 @@ function metastore_search_entity_update(EntityInterface $entity): void {
  *
  * Track deleted datasets in the DKAN search api index.
  */
-function metastore_search_entity_delete(EntityInterface $entity): void {
+function dkan_metastore_search_entity_delete(EntityInterface $entity): void {
   // Ensure the entity in question is a dataset.
-  if (!_metastore_search_is_dataset($entity)) {
+  if (!_dkan_metastore_search_is_dataset($entity)) {
     return;
   }
 

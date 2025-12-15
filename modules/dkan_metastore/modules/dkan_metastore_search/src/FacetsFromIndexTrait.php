@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_search;
+namespace Drupal\dkan_metastore_search;
 
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\QueryInterface;

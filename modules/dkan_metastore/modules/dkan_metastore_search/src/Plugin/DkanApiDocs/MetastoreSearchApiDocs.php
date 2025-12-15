@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\metastore_search\Plugin\DkanApiDocs;
+namespace Drupal\dkan_metastore_search\Plugin\DkanApiDocs;
 
 use Drupal\dkan_common\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
-use Drupal\metastore_search\Search;
+use Drupal\dkan_metastore_search\Search;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

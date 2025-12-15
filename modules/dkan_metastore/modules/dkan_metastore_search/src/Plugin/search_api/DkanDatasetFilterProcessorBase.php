@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\metastore_search\Plugin\search_api;
+namespace Drupal\dkan_metastore_search\Plugin\search_api;
 
-use Drupal\metastore_search\ComplexData\Dataset;
+use Drupal\dkan_metastore_search\ComplexData\Dataset;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Processor\ProcessorPluginBase;
 use Drupal\search_api\Utility\Utility;

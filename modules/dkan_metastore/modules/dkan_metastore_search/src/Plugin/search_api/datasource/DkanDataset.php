@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metastore_search\Plugin\search_api\datasource;
+namespace Drupal\dkan_metastore_search\Plugin\search_api\datasource;
 
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Storage\DataFactory;
-use Drupal\metastore_search\ComplexData\Dataset;
+use Drupal\dkan_metastore_search\ComplexData\Dataset;
 use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;

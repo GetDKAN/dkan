@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_search\Commands;
+namespace Drupal\dkan_metastore_search\Commands;
 
 use Drush\Commands\DrushCommands;
 use Drupal\search_api\Entity\Index;

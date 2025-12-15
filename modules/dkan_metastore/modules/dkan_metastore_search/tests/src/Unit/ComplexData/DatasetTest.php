@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\metastore_search\Unit\ComplexData;
+namespace Drupal\Tests\dkan_metastore_search\Unit\ComplexData;
 
 use Drupal\Core\TypedData\TypedDataManagerInterface;
-use Drupal\metastore_search\ComplexData\Dataset;
+use Drupal\dkan_metastore_search\ComplexData\Dataset;
 use MockChain\Chain;
 use Drupal\dkan_metastore\SchemaRetriever;
 use PHPUnit\Framework\TestCase;

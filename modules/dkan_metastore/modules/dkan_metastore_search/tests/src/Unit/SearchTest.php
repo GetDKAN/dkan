@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\metastore_search\Unit;
+namespace Drupal\Tests\dkan_metastore_search\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore_search\Search;
+use Drupal\dkan_metastore_search\Search;
 use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\search_api\IndexInterface;

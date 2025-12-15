@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_search;
+namespace Drupal\dkan_metastore_search;
 
 use Drupal\dkan_common\Events\Event;
 use Drupal\search_api\IndexInterface;

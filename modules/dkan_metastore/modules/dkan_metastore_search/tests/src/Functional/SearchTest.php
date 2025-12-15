@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\metastore_search\Functional;
+namespace Drupal\Tests\dkan_metastore_search\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\metastore_search\Commands\RebuildTrackerCommands;
-use Drupal\metastore_search\Controller\SearchController;
+use Drupal\dkan_metastore_search\Commands\RebuildTrackerCommands;
+use Drupal\dkan_metastore_search\Controller\SearchController;
 use Drush\TestTraits\DrushTestTrait;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +22,7 @@ class SearchTest extends BrowserTestBase {
 
   protected static $modules = [
     'datastore',
-    'metastore_search',
+    'dkan_metastore_search',
     'node',
   ];
 

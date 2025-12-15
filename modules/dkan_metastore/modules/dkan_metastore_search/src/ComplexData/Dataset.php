@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metastore_search\ComplexData;
+namespace Drupal\dkan_metastore_search\ComplexData;
 
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\ListDataDefinition;
 use Drupal\Core\TypedData\Plugin\DataType\ItemList;
 use Drupal\Core\TypedData\Plugin\DataType\StringData;
-use Drupal\metastore_search\Facade\ComplexDataFacade;
+use Drupal\dkan_metastore_search\Facade\ComplexDataFacade;
 
 /**
  * Dataset facade for metastore search API facet.

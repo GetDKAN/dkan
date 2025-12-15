@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metastore_search\Controller;
+namespace Drupal\dkan_metastore_search\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\SchemaRetriever;
-use Drupal\metastore_search\Search;
+use Drupal\dkan_metastore_search\Search;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_search\Plugin\search_api;
+namespace Drupal\dkan_metastore_search\Plugin\search_api;
 
 use Drupal\search_api\Processor\ProcessorInterface;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_search;
+namespace Drupal\dkan_metastore_search;
 
 /**
  * Trait for shared search api facet functionality.
