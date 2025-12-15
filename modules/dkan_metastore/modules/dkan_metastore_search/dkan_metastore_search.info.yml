@@ -1,7 +1,0 @@
-name: DKAN Metastore Search (Transitional)
-description: Provides an endpoint to perform searches against DKAN's metadata.
-type: module
-core_version_requirement: ^10.4 || ^11
-dependencies:
-  - dkan:metastore_search
-package: DKAN 4.x Transition
