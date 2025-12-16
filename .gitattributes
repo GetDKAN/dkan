@@ -4,5 +4,5 @@
 .github/ export-ignore
 .qlty/ export-ignore
 .readthedocs.yaml export-ignore
-docs/ export-ignore
+/docs/ export-ignore
 ddev-init.sh export-ignore
