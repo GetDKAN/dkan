@@ -347,14 +347,13 @@ class LifeCycle {
    * @throws \Exception
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
-    $metadata = $data->getMetadata();
-
     // Trigger datastore import if applicable.
     // Needs to happen before updating references.
     if ($data instanceof MetastoreItemInterface) {
       $event = new Event($data);
       $this->eventDispatcher->dispatch($event, self::EVENT_PRE_REFERENCE);
     }
+    $metadata = $data->getMetadata();
 
     // Convert references in metadata to uuids.
     // Create new reference entities if they do not exist.
