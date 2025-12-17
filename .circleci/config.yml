@@ -247,37 +247,37 @@ workflows:
     jobs:
       - cypress:
           name: install_test_cypress
-          drupal_core_constraint: "~10.5"
+          drupal_core_constraint: "~10.5.0"
       - phpunit:
           name: "Install target (Drupal 10.5, PHP 8.3)"
           report_coverage: true
           matrix:
             parameters:
-              drupal_core_constraint: ["~10.5"]
+              drupal_core_constraint: ["~10.5.0"]
               php_version: ["8.3"]
               database_version: ["mysql:5.7"]
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~11.1"]
+              drupal_core_constraint: ["~11.1.0"]
               php_version: ["8.4"]
               database_version: ["mariadb:10.11"]
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~11.0", "~11.1", "~11.2"]
+              drupal_core_constraint: ["~11.0.0", "~11.1.0", "~11.2.0"]
               php_version: ["8.3"]
               database_version: ["mariadb:10.11"]
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~10.5"]
+              drupal_core_constraint: ["~10.5.0"]
               php_version: ["8.1", "8.2", "8.4"]
               database_version: ["mysql:5.7"]
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~10.4"]
+              drupal_core_constraint: ["~10.4.0"]
               php_version: ["8.3"]
               database_version: ["mysql:5.7"]
             
