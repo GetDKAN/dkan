@@ -61,8 +61,7 @@ commands:
 
       - restore_cache:
           keys:
-            - select2-v1-{{ checksum ".ddev/commands/web/select2" }}
-            - select2-v1-
+            - select2-{{ checksum ".ddev/commands/web/select2" }}
       - run:
           name: Build site codebase
           command: |
@@ -89,7 +88,7 @@ commands:
             ddev restart
             ddev status
       - save_cache:
-          key: select2-v1-{{ checksum ".ddev/commands/web/select2" }}
+          key: select2-{{ checksum ".ddev/commands/web/select2" }}
           paths:
             - web/libraries/select2
       - run:
