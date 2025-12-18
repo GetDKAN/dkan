@@ -12,6 +12,8 @@ if [ -d "$DOCROOT/libraries/select2" ]; then
   exit 0
 fi
 
+# TODO Update this when there's a formal release that supports jQuery 4.x.
+# Remember CircleCI cache key is based on checksum of this file.
 curl -L https://github.com/select2/select2/archive/595494a.tar.gz -o select2.tar.gz
 mkdir -p $DOCROOT/libraries
 tar xzf select2.tar.gz
