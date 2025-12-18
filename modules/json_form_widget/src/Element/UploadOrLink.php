@@ -339,7 +339,7 @@ class UploadOrLink extends ManagedFile {
    *
    * Sets up file entities created by upload element.
    */
-  public static function submit(array $form, FormStateInterface $form_state) {
+  public static function submit(array $form, FormStateInterface $form_state): void {
     $parents = $form_state->get('upload_or_link_element');
     if (empty($parents)) {
       return;
