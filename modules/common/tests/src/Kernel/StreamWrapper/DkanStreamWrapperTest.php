@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\common\Kernel\StreamWrapper;
 
+use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -25,10 +26,10 @@ class DkanStreamWrapperTest extends KernelTestBase {
     $manager = $this->container->get('stream_wrapper_manager');
     $scheme = $manager->getScheme($uri);
     $this->assertEquals('dkan', $scheme);
-    $descriptions = $manager->getDescriptions();
-    $this->assertStringContainsString('Simple way to request DKAN', $descriptions[$scheme]);
-    $names = $manager->getNames();
-    $this->assertEquals('DKAN documents', $names[$scheme]);
+
+    $wrapper = $manager->getViaScheme($scheme);
+    $this->assertStringContainsString('Simple way to request DKAN', $wrapper->getDescription());
+    $this->assertEquals('DKAN documents', $wrapper->getName());
 
     $path = $manager->getViaScheme($scheme)->getDirectoryPath();
     $this->assertStringContainsString('/api/1', $path);
