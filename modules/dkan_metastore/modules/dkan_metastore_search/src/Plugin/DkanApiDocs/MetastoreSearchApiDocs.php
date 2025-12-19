@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Docs plugin.
  *
  * @DkanApiDocs(
- *  id = "metastore_search_api_docs",
+ *  id = "dkan_metastore_search_api_docs",
  *  description = "Search docs"
  * )
  *
@@ -87,7 +87,7 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
    * {@inheritdoc}
    */
   public function spec() {
-    $spec = $this->getDoc('metastore_search');
+    $spec = $this->getDoc('dkan_metastore_search');
 
     $propList = $this->t('Available properties: %list', [
       '%list' => implode(", ", $this->getIndexedFields()),
