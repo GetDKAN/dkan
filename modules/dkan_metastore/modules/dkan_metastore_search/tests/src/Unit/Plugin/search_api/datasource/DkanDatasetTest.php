@@ -24,8 +24,8 @@ use Drupal\dkan_metastore_search\ComplexData\Dataset;
  *
  * @coversDefaultClass \Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset
  *
- * @package Drupal\Tests\metastore_search\Unit\Plugin\search_api\datasource
- * @group metastore_search
+ * @package Drupal\Tests\dkan_metastore_search\Unit\Plugin\search_api\datasource
+ * @group dkan_metastore_search
  * @group dkan-core
  */
 class DkanDatasetTest extends TestCase {

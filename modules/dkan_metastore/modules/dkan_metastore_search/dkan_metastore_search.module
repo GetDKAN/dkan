@@ -14,7 +14,7 @@ use Drupal\dkan_metastore\NodeWrapper\Data;
  * @return bool
  *   Whether the entity is a dataset.
  */
-function _dkan_dkan_metastore_search_is_dataset(EntityInterface $entity): bool {
+function _dkan_metastore_search_is_dataset(EntityInterface $entity): bool {
   try {
     // Attempt to check this entity's data type.
     return (new Data($entity, \Drupal::entityTypeManager()))->getDataType() === 'dataset';

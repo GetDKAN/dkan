@@ -13,8 +13,8 @@ use Drupal\Core\DependencyInjection\Container;
 /**
  * Class DatasetTest.
  *
- * @package Drupal\Tests\metastore_search\Unit\ComplexData
- * @group metastore_search
+ * @package Drupal\Tests\dkan_metastore_search\Unit\ComplexData
+ * @group dkan_metastore_search
  */
 class DatasetTest extends TestCase {
 

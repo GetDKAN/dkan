@@ -12,7 +12,7 @@ use Drupal\search_api\Item\ItemInterface;
  * @covers \Drupal\metastore_search\Plugin\search_api\processor\DkanDatasetAddNid
  * @coversDefaultClass \Drupal\metastore_search\Plugin\search_api\processor\DkanDatasetAddNid
  *
- * @group metastore_search
+ * @group dkan_metastore_search
  * @group kernel
  */
 class DkanDatasetAddNidTest extends KernelTestBase {

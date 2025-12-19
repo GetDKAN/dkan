@@ -12,8 +12,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests DkanDatasetFilterProcessorBase class.
  *
- * @package Drupal\Tests\metastore_search\Unit\Plugin\search_api
- * @group metastore_search
+ * @package Drupal\Tests\dkan_metastore_search\Unit\Plugin\search_api
+ * @group dkan_metastore_search
  */
 class DkanDatasetFilterProcessorBaseTest extends TestCase {
 

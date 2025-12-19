@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @group dkan
- * @group metastore_search
+ * @group dkan_metastore_search
  * @group functional
  * @group btb
  * @group functional2

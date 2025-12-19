@@ -1,6 +1,6 @@
 services:
   dkan.metastore_search.service:
-    class: \Drupal\metastore_search\Search
+    class: \Drupal\dkan_metastore_search\Search
     arguments:
       - '@dkan.metastore.service'
       - '@entity_type.manager'

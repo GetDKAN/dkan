@@ -23,8 +23,8 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  * Class SearchTest.
  *
- * @package Drupal\Tests\metastore_search\Unit
- * @group metastore_search
+ * @package Drupal\Tests\dkan_metastore_search\Unit
+ * @group dkan_metastore_search
  */
 class SearchTest extends TestCase {
   use ServiceCheckTrait;
