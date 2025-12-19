@@ -210,6 +210,7 @@ jobs:
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
+          drupal_core_constraint: << parameters.drupal_core_constraint >>
       - run:
           name: Run Cypress tests
           max_auto_reruns: 3
