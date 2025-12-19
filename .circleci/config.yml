@@ -34,7 +34,7 @@ commands:
         type: string
       drupal_core_constraint:
         description: "Branch of getdkan/recommended-project to use."
-        default: "~10.5"
+        default: "~10.5.0"
         type: string
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -55,7 +55,7 @@ commands:
             - run:
                 name: Switch to dev branch for upgrade testing
                 command: |
-                  git checkout 2.x-transition
+                  git checkout 2.x
 
       - restore_cache:
           keys:
@@ -207,10 +207,21 @@ jobs:
         description: "If true, will install the latest stable DKAN version and test upgrade"
         default: false
         type: boolean
+      php_version:
+        description: "PHP major.minor for DDev to use."
+        default: "8.3"
+        type: string
+      database_version:
+        description: "Database version for DDev to use."
+        default: "mysql:5.7"
+        type: string
+      drupal_core_constraint:
+        description: "Branch of getdkan/recommended-project to use."
+        default: "~10.5.0"
+        type: string
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
-          drupal_core_constraint: << parameters.drupal_core_constraint >>
       - run:
           name: Run Cypress tests
           max_auto_reruns: 3
