@@ -49,7 +49,8 @@
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
-            "tbachert/spi": true
+            "tbachert/spi": true,
+            "drupal/core-composer-scaffold": true
         }        
     },
     "extra": {
