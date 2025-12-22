@@ -134,12 +134,34 @@ jobs:
           drupal_core_constraint: << parameters.drupal_core_constraint >>
           upgrade: << parameters.upgrade >>
       - run:
-          name: Set up GROUP_ARG variable for paralallel tests
+          name: Set up GROUP_ARG variable for parallel tests
           command: |
-            EXCLUDES=$(seq -s, 1 $(($CIRCLE_NODE_TOTAL-1)) | sed 's/[0-9]\+/functional&/g')
-            [[ $CIRCLE_NODE_INDEX == 0 ]] \
-              && PHPUNIT_GROUP_ARG="exclude-group $EXCLUDES" \
-              || PHPUNIT_GROUP_ARG="group functional$CIRCLE_NODE_INDEX"
+            if [[ $CIRCLE_NODE_INDEX == 0 ]]; then
+              # Get phpunit major version
+              PHPUNIT_VERSION=$(ddev composer show phpunit/phpunit | grep versions | awk '{print $4}' | cut -d. -f1)
+              
+              if [[ $PHPUNIT_VERSION -lt 11 ]]; then
+                # For phpunit < 11, use comma-separated syntax
+                EXCLUDES="--exclude-group "
+                for i in $(seq 1 $(($CIRCLE_NODE_TOTAL-1))); do
+                  if [[ $i -gt 1 ]]; then
+                    EXCLUDES="${EXCLUDES},functional$i"
+                  else
+                    EXCLUDES="${EXCLUDES}functional$i"
+                  fi
+                done
+                PHPUNIT_GROUP_ARG="$EXCLUDES"
+              else
+                # For phpunit >= 11, use multiple --exclude-group flags
+                EXCLUDES=""
+                for i in $(seq 1 $(($CIRCLE_NODE_TOTAL-1))); do
+                  EXCLUDES="$EXCLUDES --exclude-group functional$i"
+                done
+                PHPUNIT_GROUP_ARG="$EXCLUDES"
+              fi
+            else
+              PHPUNIT_GROUP_ARG="--group functional$CIRCLE_NODE_INDEX"
+            fi
             echo "export PHPUNIT_GROUP_ARG=\"$PHPUNIT_GROUP_ARG\"" >> $BASH_ENV
       - when:
           condition: << parameters.report_coverage >>
@@ -154,7 +176,7 @@ jobs:
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/php
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/clover
                   ddev phpunit \
-                    --$PHPUNIT_GROUP_ARG \
+                    $PHPUNIT_GROUP_ARG \
                     --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.cov \
                     --log-junit /var/www/html/report/junit/junit.xml
@@ -187,7 +209,7 @@ jobs:
                 name: Run PHPUnit tests
                 command: |
                   ddev phpunit \
-                    --$PHPUNIT_GROUP_ARG \
+                    $PHPUNIT_GROUP_ARG \
                     --log-junit /var/www/html/report/junit/junit.xml
       - store_test_results:
           path: report/junit
