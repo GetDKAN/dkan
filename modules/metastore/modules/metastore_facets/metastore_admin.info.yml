@@ -1,0 +1,7 @@
+name: Metastore Facets (Legacy, deprecated)
+description: This module has been renamed to dkan_metastore_facets, and will be removed in a future release.
+type: module
+core_version_requirement: ^10.2 || ^11
+package: DKAN 2.x Legacy
+dependencies:
+  - dkan:dkan_metastore_facets
