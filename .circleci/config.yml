@@ -33,8 +33,8 @@ commands:
         default: "main"
         type: string
       drupal_core_constraint:
-        description: "Branch of getdkan/recommended-project to use."
-        default: "10.3.x-dev"
+        description: "Composer constraint to use for Drupal core version."
+        default: "10.5.*"
         type: string
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -124,8 +124,8 @@ jobs:
         default: "mysql:5.7"
         type: string
       drupal_core_constraint:
-        description: "Branch of getdkan/recommended-project to use."
-        default: "~10.4"
+        description: "Composer constraint to use for Drupal core version."
+        default: "~10.5.0"
         type: string
       report_coverage:
         description: "Generate coverage report and send it to Qlty"
@@ -214,8 +214,8 @@ jobs:
         default: "mysql:5.7"
         type: string
       drupal_core_constraint:
-        description: "Branch of getdkan/recommended-project to use."
-        default: "~10.5"
+        description: "Composer constraint to use for Drupal core version."
+        default: "~10.5.0"
         type: string
       upgrade:
         description: "If true, will install the latest stable DKAN version and test upgrade"
@@ -295,4 +295,4 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          drupal_core_constraint: "10.4.x-dev"
+          drupal_core_constraint: "~10.5.0"
