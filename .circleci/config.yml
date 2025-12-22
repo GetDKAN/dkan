@@ -81,8 +81,13 @@ commands:
               --xdebug-mode "coverage" \
               --composer-auth "$COMPOSER_AUTH"
             ddev start
-            ddev poser
-            ddev select2
+            if [ ! -d "web/core" ] || [ ! -d "vendor/drush" ]; then
+                echo "Dependencies not found, running ddev poser and ddev select2"
+                ddev poser
+                ddev select2
+            else
+                echo "Dependencies already exist in cache, skipping ddev poser and ddev select2"
+            fi
             ddev symlink-project
             ddev config --update
             ddev restart
