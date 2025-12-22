@@ -63,7 +63,10 @@ commands:
           keys:
             - drupal-<< parameters.drupal_core_constraint >>-php-<< parameters.php_version >>-{{ checksum "composer.json" }}
       - run:
-          name: Build site codebase
+            name: Create ddev version file for cache key
+            command: ddev --version | head -n1 > ddev-version.txt
+      - run:
+          name: Configure ddev project
           command: |
             # Help debug ddev install issues.
             which ddev
@@ -80,6 +83,19 @@ commands:
               --drupal-root "/var/www/html/web" \
               --xdebug-mode "coverage" \
               --composer-auth "$COMPOSER_AUTH"
+      - restore_cache:
+          keys:
+            - ddev-images-v1-{{ checksum ".ddev/config.yaml" }}-{{ checksum "ddev-version.txt" }}
+            - ddev-images-v1-
+      - run:
+          name: Load DDev images from cache
+          command: |
+              if [ -f ~/docker-cache/images.tar ]; then
+                  docker load -i ~/docker-cache/images.tar
+              fi
+      - run:
+          name: Start DDev and install dependencies if needed
+          command: |
             ddev start
             if [ ! -d "web/core" ] || [ ! -d "vendor/drush" ]; then
                 echo "Dependencies not found, running ddev poser and ddev select2"
@@ -97,6 +113,16 @@ commands:
           paths:
             - web
             - vendor
+      - run:
+          name: Save DDev images for cache
+          command: |
+              mkdir -p ~/docker-cache
+              docker save $(docker images --format '{{.Repository}}:{{.Tag}}' | grep ddev) -o ~/docker-cache/images.tar
+      - save_cache:
+          key: ddev-images-v1-{{ checksum ".ddev/config.yaml" }}-{{ checksum "ddev-version.txt" }}
+          paths:
+              - ~/docker-cache
+
       - run:
           name: Install site
           command: |
