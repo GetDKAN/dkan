@@ -226,6 +226,7 @@ jobs:
           name: Run Cypress tests
           max_auto_reruns: 3
           command: |
+            rm -rf cypress/tmp cypress/results
             mkdir cypress/tmp
             mkdir cypress/results
             mv $(circleci tests glob cypress/e2e/*.cy.js | circleci tests split --split-by=timings) cypress/tmp || true
