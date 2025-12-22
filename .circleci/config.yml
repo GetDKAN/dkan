@@ -88,7 +88,7 @@ commands:
             ddev restart
             ddev status
       - save_cache:
-          key: drupal-<< parameters.drupal_core_constraint >>-php-<< parameters.php_version >>-db-<< parameters.database_version >>-{{ checksum "composer.json" }}
+          key: drupal-<< parameters.drupal_core_constraint >>-php-<< parameters.php_version >>-{{ checksum "composer.json" }}
           paths:
             - web
             - vendor
