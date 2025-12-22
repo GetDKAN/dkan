@@ -61,8 +61,7 @@ commands:
 
       - restore_cache:
           keys:
-            - select2-v1-{{ checksum ".ddev/commands/web/select2" }}
-            - select2-v1-
+            - drupal-<< parameters.drupal_core_constraint >>-php-<< parameters.php_version >>-{{ checksum "composer.json" }}
       - run:
           name: Build site codebase
           command: |
@@ -89,9 +88,10 @@ commands:
             ddev restart
             ddev status
       - save_cache:
-          key: select2-v1-{{ checksum ".ddev/commands/web/select2" }}
+          key: drupal-<< parameters.drupal_core_constraint >>-php-<< parameters.php_version >>-db-<< parameters.database_version >>-{{ checksum "composer.json" }}
           paths:
-            - web/libraries/select2
+            - web
+            - vendor
       - run:
           name: Install site
           command: |
