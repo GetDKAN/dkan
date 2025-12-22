@@ -2,7 +2,7 @@
 
 This is an optional module for sites that are not using a decoupled frontend. It provides example Categories, Tags, and Publishers facet blocks that you can use with the *dkan_dataset_search* view.
 
-    drush en metastore_facets
+    drush en dkan_metastore_facets
 
 Use the block layout screen at /admin/structure/block, and place the facets into a sidebar region, restrict the display to the /dataset-search page only.
 
@@ -10,7 +10,7 @@ If you do not see the dataset search view, you will need to run the following to
 
     composer require drupal/facets:3.0.x-dev
 
-    drush en metastore_facets
+    drush en dkan_metastore_facets
 
     drush cim --partial --source=modules/contrib/dkan/modules/metastore/modules/metastore_search/config/install
 
