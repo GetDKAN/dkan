@@ -17,7 +17,7 @@ abstract class DkanDatasetFilterProcessorBase extends ProcessorPluginBase implem
   /**
    * Dataset data storage instance.
    *
-   * @var \Drupal\metastore\Storage\Data
+   * @var \Drupal\dkan_metastore\Storage\Data
    */
   protected $dataStorage;
 

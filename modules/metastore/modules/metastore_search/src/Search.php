@@ -5,7 +5,7 @@ namespace Drupal\metastore_search;
 use Drupal\dkan_common\Events\Event;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *
  * Provides search results and facets information from a SearchAPI index.
  *
- * @package Drupal\metastore_search
+ * @package Drupal\dkan_metastore_search
  */
 class Search implements ContainerInjectionInterface {
   use QueryBuilderTrait;
@@ -40,7 +40,7 @@ class Search implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   private $metastoreService;
 
@@ -68,7 +68,7 @@ class Search implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\metastore\MetastoreService $metastoreService
+   * @param \Drupal\dkan_metastore\MetastoreService $metastoreService
    *   Metastore service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager.

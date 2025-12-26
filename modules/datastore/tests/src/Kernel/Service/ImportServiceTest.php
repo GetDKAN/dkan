@@ -25,7 +25,7 @@ class ImportServiceTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
     'user',
     'field',
@@ -41,7 +41,7 @@ class ImportServiceTest extends KernelTestBase {
   public function testImport() {
     $this->installEntitySchema('node');
     $this->installConfig(['node']);
-    $this->installConfig(['metastore']);
+    $this->installConfig(['dkan_metastore']);
     // Mock some services and statuses.
     $result = new Result();
     $result->setStatus(Result::DONE);

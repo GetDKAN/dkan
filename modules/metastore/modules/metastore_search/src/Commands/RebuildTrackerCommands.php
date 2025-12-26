@@ -8,7 +8,7 @@ use Drupal\search_api\Entity\Index;
 /**
  * Class DkanSearchCommands.
  *
- * @package Drupal\metastore_search\RebuildTrackerCommands
+ * @package Drupal\dkan_metastore_search\RebuildTrackerCommands
  */
 class RebuildTrackerCommands extends DrushCommands {
 

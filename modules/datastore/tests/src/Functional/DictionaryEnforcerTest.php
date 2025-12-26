@@ -9,7 +9,7 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\datastore\Controller\ImportController;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use GuzzleHttp\Client;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,14 +59,14 @@ class DictionaryEnforcerTest extends BrowserTestBase {
   /**
    * Node data storage.
    *
-   * @var \Drupal\metastore\Storage\NodeData
+   * @var \Drupal\dkan_metastore\Storage\NodeData
    */
   protected $datasetStorage;
 
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
@@ -80,7 +80,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 
@@ -193,7 +193,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $this->assertFalse($this->metastore->publish('data-dictionary', $dict_id));
 
     // Set global data-dictionary in metastore config.
-    $metastore_config = $this->config('metastore.settings');
+    $metastore_config = $this->config('dkan_metastore.settings');
     $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_SITEWIDE)
       ->set('data_dictionary_sitewide', $dict_id)
       ->set('csv_headers_mode', 'dictionary_titles')

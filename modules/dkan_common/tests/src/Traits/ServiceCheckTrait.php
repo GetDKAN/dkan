@@ -49,9 +49,9 @@ trait ServiceCheckTrait {
   private function checkService($serviceName) {
     $dkanModules = [
       'dkan_common',
+      'dkan_metastore',
       'datastore',
       'harvest',
-      'metastore',
     ];
     $files = [];
 
