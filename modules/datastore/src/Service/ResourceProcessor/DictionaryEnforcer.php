@@ -6,8 +6,8 @@ use Drupal\dkan_common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use RootedData\RootedJsonData;
 
@@ -26,21 +26,21 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Data dictionary discovery service.
    *
-   * @var \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface
+   * @var \Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface
    */
   protected $dataDictionaryDiscovery;
 
   /**
    * The metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
   /**
    * The metastore resource mapper service.
    *
-   * @var \Drupal\metastore\ResourceMapper
+   * @var \Drupal\dkan_metastore\ResourceMapper
    */
   protected $resourceMapper;
 
@@ -56,9 +56,9 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
-   * @param \Drupal\metastore\MetastoreService $metastore
+   * @param \Drupal\dkan_metastore\MetastoreService $metastore
    *   The metastore service.
-   * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
+   * @param \Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $table_factory
    *   The datastore database table factory service.

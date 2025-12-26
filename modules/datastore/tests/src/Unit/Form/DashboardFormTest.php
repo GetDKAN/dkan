@@ -11,20 +11,20 @@ use Drupal\Core\Path\PathValidator;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\Core\Database\Connection;
 use Drupal\datastore\Form\DashboardForm;
 use Drupal\datastore\Service\PostImport;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\PostImportResultFactory;
 use Drupal\dkan_common\DataResource;
@@ -43,7 +43,7 @@ class DashboardFormTest extends TestCase {
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 

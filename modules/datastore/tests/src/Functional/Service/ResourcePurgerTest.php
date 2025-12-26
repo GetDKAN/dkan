@@ -6,7 +6,7 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\CleanUp;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 
 /**
  * Test ResourcePurger service.
@@ -25,7 +25,7 @@ class ResourcePurgerTest extends BrowserTestBase {
 
   protected static $modules = [
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 
@@ -34,21 +34,21 @@ class ResourcePurgerTest extends BrowserTestBase {
   /**
    * DKAN dataset storage service.
    *
-   * @var \Drupal\metastore\Storage\NodeData
+   * @var \Drupal\dkan_metastore\Storage\NodeData
    */
   protected $datasetStorage;
 
   /**
    * DKAN metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
   /**
    * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $validMetadataFactory;
 
