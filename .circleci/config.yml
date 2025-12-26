@@ -241,6 +241,18 @@ jobs:
         description: "If true, will install the latest stable DKAN version and test upgrade"
         default: false
         type: boolean
+      php_version:
+        description: "PHP major.minor for DDev to use."
+        default: "8.3"
+        type: string
+      database_version:
+        description: "Database version for DDev to use."
+        default: "mysql:5.7"
+        type: string
+      drupal_core_constraint:
+        description: "Branch of getdkan/recommended-project to use."
+        default: "~10.5.0"
+        type: string
     steps:
       - prepare_build:
           php_version: << parameters.php_version >>
@@ -248,6 +260,7 @@ jobs:
           name: Run Cypress tests
           max_auto_reruns: 3
           command: |
+            rm -rf cypress/tmp cypress/results
             mkdir cypress/tmp
             mkdir cypress/results
             mv $(circleci tests glob cypress/e2e/*.cy.js | circleci tests split --split-by=timings) cypress/tmp || true

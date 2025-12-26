@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore_search\Unit\ComplexData;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\metastore_search\ComplexData\Dataset;
 use MockChain\Chain;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\dkan_metastore\SchemaRetriever;
 use PHPUnit\Framework\TestCase;
 use MockChain\Options;
 use Drupal\Core\DependencyInjection\Container;

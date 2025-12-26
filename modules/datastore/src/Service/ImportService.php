@@ -10,7 +10,7 @@ use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -87,7 +87,7 @@ class ImportService {
   /**
    * Reference lookup service.
    *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
+   * @var \Drupal\dkan_metastore\Reference\ReferenceLookup
    */
   protected $referenceLookup;
 
@@ -104,7 +104,7 @@ class ImportService {
    *   DKAN logger channel service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   Event dispatcher service.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   * @param \Drupal\dkan_metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
    */
   public function __construct(
