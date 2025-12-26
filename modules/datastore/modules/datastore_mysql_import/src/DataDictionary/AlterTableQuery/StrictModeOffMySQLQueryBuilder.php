@@ -29,7 +29,7 @@ class StrictModeOffMySQLQueryBuilder extends MySQLQueryBuilder {
       $this->fields,
       $this->indexes,
     );
-    $query->setCsvHeaderMode($this->configFactory->get('metastore.settings')->get('csv_headers_mode'));
+    $query->setCsvHeaderMode($this->configFactory->get('dkan_metastore.settings')->get('csv_headers_mode'));
     return $query;
   }
 

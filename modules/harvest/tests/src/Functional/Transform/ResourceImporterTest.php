@@ -24,7 +24,7 @@ class ResourceImporterTest extends BrowserTestBase {
 
   protected static $modules = [
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected $defaultTheme = 'stark';

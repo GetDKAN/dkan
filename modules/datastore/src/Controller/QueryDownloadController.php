@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Query as QueryService;
-use Drupal\metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\MetastoreApiResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\StreamedJsonResponse;

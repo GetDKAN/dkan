@@ -25,7 +25,7 @@ class MySQLQueryBuilder extends AlterTableQueryBuilderBase implements AlterTable
       $this->indexes,
     );
 
-    $query->setCsvHeaderMode($this->configFactory->get('metastore.settings')->get('csv_headers_mode'));
+    $query->setCsvHeaderMode($this->configFactory->get('dkan_metastore.settings')->get('csv_headers_mode'));
     return $query;
   }
 

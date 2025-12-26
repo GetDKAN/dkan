@@ -20,7 +20,7 @@ class HarvestUtilityTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'harvest',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected function setUp() : void {

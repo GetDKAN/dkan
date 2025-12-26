@@ -16,7 +16,7 @@ use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\metastore\MetastoreItemInterface;
+use Drupal\dkan_metastore\MetastoreItemInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

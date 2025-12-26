@@ -50,7 +50,6 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
     $this->assertSession()->statusCodeEquals(200);
 
     $page = $this->getSession()->getPage();
-    $page->find('css', '[id^="edit-title-0-value"]')->setValue('Test Dictionary');
     $page->find('css', '[id^="edit-field-json-metadata-0-title"]')->setValue('Test Dictionary');
 
     // Add a new field to the dictionary.

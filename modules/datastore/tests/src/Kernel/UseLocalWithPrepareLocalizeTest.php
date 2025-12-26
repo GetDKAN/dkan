@@ -25,7 +25,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
     'user',
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected $defaultTheme = 'stark';
@@ -47,7 +47,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
       DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
     // Add our source data resource to the mapper.
-    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
     $mapper = $this->container->get('dkan.metastore.resource_mapper');
     $mapper->register($source_resource);
     $this->assertInstanceOf(
@@ -88,7 +88,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
     $this->assertStringEqualsFile($info['file'], $preexisting_file_contents);
 
     // Get the resource again.
-    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $resource_mapper */
     $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
     $localized_resource = $resource_mapper->get(
       $source_resource->getIdentifier(),

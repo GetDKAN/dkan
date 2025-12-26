@@ -3,7 +3,7 @@
 namespace Drupal\dkan_common;
 
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\ResourceMappingInterface;
+use Drupal\dkan_metastore\ResourceMappingInterface;
 use Procrastinator\JsonSerializeTrait;
 
 /**
@@ -40,7 +40,7 @@ use Procrastinator\JsonSerializeTrait;
  * 1. Resource::createNewVersion()
  * 2. Resource::createNewPerspective()
  *
- * @see \Drupal\metastore\Entity\ResourceMapping
+ * @see \Drupal\dkan_metastore\Entity\ResourceMapping
  */
 class DataResource implements \JsonSerializable {
 
@@ -127,7 +127,7 @@ class DataResource implements \JsonSerializable {
   /**
    * Create a DataResource object from a Drupal entity.
    *
-   * @param \Drupal\metastore\ResourceMappingInterface $mapping
+   * @param \Drupal\dkan_metastore\ResourceMappingInterface $mapping
    *   A resource_mapping entity.
    *
    * @return \Drupal\dkan_common\DataResource
@@ -386,7 +386,7 @@ class DataResource implements \JsonSerializable {
    *   JSON-decoded object.
    */
   private static function getDistribution(mixed $identifier) {
-    /** @var \Drupal\metastore\Storage\DataFactory $factory */
+    /** @var \Drupal\dkan_metastore\Storage\DataFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
     $storage = $factory->getInstance('distribution');
 
