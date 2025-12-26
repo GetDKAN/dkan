@@ -32,7 +32,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
     'user',
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected function setUp() : void {
@@ -67,7 +67,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
       'text/csv',
       DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
-    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
     $mapper = $this->container->get('dkan.metastore.resource_mapper');
     // Make sure the resource isn't registered already.
     $this->assertNull($mapper->get($source_resource->getIdentifier()));

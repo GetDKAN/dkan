@@ -21,7 +21,7 @@ class ImportLocalCopyOfRemoteFileTest extends ParentTest {
     'dkan_common',
     'datastore',
     'datastore_mysql_import',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 

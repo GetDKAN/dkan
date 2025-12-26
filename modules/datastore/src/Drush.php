@@ -9,8 +9,8 @@ use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\MetastoreService;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
 use Procrastinator\Result;
 
@@ -24,7 +24,7 @@ class Drush extends DrushCommands {
   /**
    * The metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastoreService;
 

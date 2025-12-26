@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Storage\Data;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Storage\Data;
 
 /**
  * Mock metastore controller for certain datastore tests.

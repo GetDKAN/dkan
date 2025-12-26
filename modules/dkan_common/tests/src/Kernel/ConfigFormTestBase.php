@@ -11,7 +11,7 @@ use Drupal\KernelTests\KernelTestBase;
  *
  * @see Drupal\KernelTests\ConfigFormTestBase
  *   For source of inspiration.
- * @see \Drupal\Tests\metastore\Kernel\DataDictionarySettingsFormTest
+ * @see \Drupal\Tests\dkan_metastore\Kernel\DataDictionarySettingsFormTest
  *   For an example implementation.
  */
 abstract class ConfigFormTestBase extends KernelTestBase {

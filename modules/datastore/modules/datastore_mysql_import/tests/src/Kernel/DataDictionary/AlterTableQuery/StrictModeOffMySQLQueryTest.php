@@ -28,7 +28,7 @@ class StrictModeOffMySQLQueryTest extends KernelTestBase {
     'dkan_common',
     'datastore',
     'datastore_mysql_import',
-    'metastore',
+    'dkan_metastore',
   ];
 
   /**

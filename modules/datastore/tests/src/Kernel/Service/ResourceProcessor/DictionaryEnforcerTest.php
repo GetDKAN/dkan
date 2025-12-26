@@ -6,7 +6,7 @@ use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 /**
  * @coversDefaultClass \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
@@ -21,7 +21,7 @@ class DictionaryEnforcerTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   /**
@@ -56,7 +56,7 @@ class DictionaryEnforcerTest extends KernelTestBase {
    */
   public function testProcessModeNone() {
     // Explicitly set to none.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_NONE)
       ->save();
 
