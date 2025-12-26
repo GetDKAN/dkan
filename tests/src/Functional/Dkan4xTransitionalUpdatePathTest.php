@@ -40,7 +40,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('harvest'));
 
     // Enable optional modules.
-    \Drupal::service('module_installer')->install(['metastore_facets']);
     \Drupal::service('module_installer')->install(['datastore_mysql_import']);
 
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
@@ -60,6 +59,8 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('common'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_admin'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_facets'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_search'));
     
     $config = \Drupal::configFactory()->getEditable('core.extension');
     $modules = $config->get('module');
