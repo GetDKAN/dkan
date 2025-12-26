@@ -9,8 +9,8 @@ use Drupal\datastore\DatastoreLookupInterface;
 use Drupal\datastore\DatastoreLookup;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\SelectInterface;
-use Drupal\metastore\Reference\ReferenceLookup;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\ResourceMapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drupal\Core\Database\StatementInterface;
@@ -66,10 +66,10 @@ class DatastoreLookupTest extends TestCase {
 
     // // Instantiate the Drush class with the mocked dependencies.
     // $this->drush = new Drush(
-    //   $this->createMock(\Drupal\metastore\MetastoreService::class),
+    //   $this->createMock(\Drupal\dkan_metastore\MetastoreService::class),
     //   $this->createMock(\Drupal\datastore\DatastoreService::class),
     //   $this->createMock(\Drupal\datastore\Service\ResourceLocalizer::class),
-    //   $this->createMock(\Drupal\metastore\ResourceMapper::class),
+    //   $this->createMock(\Drupal\dkan_metastore\ResourceMapper::class),
     //   $this->createMock(\Drupal\datastore\Service\Info\ImportInfoList::class),
     //   $this->createMock(\Drupal\datastore\PostImportResultFactory::class),
     //   $this->datastoreLookupInterface

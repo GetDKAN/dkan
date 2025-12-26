@@ -9,8 +9,8 @@ use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\datastore\Service\PostImport;
 
 /**
@@ -28,7 +28,7 @@ class PostImportTest extends KernelTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   /**
@@ -37,7 +37,7 @@ class PostImportTest extends KernelTestBase {
   public function testProcessResourceChangedResource() {
     $this->installEntitySchema('resource_mapping');
 
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
     ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
     ->save();
 
@@ -92,7 +92,7 @@ class PostImportTest extends KernelTestBase {
   public function testProcessResourceNonExistentResource() {
     $this->installEntitySchema('resource_mapping');
 
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
     ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
     ->save();
 
@@ -144,7 +144,7 @@ class PostImportTest extends KernelTestBase {
   public function testProcessResourceErrorWithFailingDrop() {
     $this->installEntitySchema('resource_mapping');
 
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
     ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
     ->save();
 
@@ -219,7 +219,7 @@ class PostImportTest extends KernelTestBase {
   public function testProcessResourceDropOnPostImportDisabled() {
     $this->installEntitySchema('resource_mapping');
 
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
     ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
     ->save();
 
@@ -284,7 +284,7 @@ class PostImportTest extends KernelTestBase {
   public function testProcessResourceErrorWithSuccessfulDrop() {
     $this->installEntitySchema('resource_mapping');
 
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
     ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
     ->save();
 
@@ -361,7 +361,7 @@ class PostImportTest extends KernelTestBase {
    * @covers ::processResource
    */
   public function testProcessResourceDataDictionaryDisabled() {
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_NONE)
       ->save();
 
@@ -401,7 +401,7 @@ class PostImportTest extends KernelTestBase {
    */
   public function testProcessResourceNoDictionary() {
     // Tell the processor to use reference mode for dictionary enforcement.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_REFERENCE)
       ->save();
 

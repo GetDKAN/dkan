@@ -7,4 +7,4 @@ configure: datastore.mysql_import.settings
 dependencies:
   - dkan:dkan_common
   - dkan:datastore
-  - dkan:metastore
+  - dkan:dkan_metastore

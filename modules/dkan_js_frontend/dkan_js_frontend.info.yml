@@ -5,5 +5,5 @@ core_version_requirement: ^10.2 || ^11
 dependencies:
   — drupal:config
   - drupal:field
-  - dkan:metastore
+  - dkan:dkan_metastore
 package: DKAN

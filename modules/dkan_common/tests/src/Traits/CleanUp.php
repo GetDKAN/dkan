@@ -34,7 +34,7 @@ trait CleanUp {
    *
    */
   private function removeAllMappedFiles() {
-    /** @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable $filemappertable */
+    /** @var \Drupal\dkan_metastore\Storage\ResourceMapperDatabaseTable $filemappertable */
     $filemappertable = \Drupal::service('dkan.metastore.resource_mapper_database_table');
     foreach ($filemappertable->retrieveAll() as $id) {
       $filemappertable->remove($id);

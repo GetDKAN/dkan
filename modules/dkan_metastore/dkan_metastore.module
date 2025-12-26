@@ -1,0 +1,206 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Drupal\Core\Database\Query\AlterableInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\dkan_metastore\NodeWrapper\Data;
+use Drupal\dkan_metastore\MetastoreService;
+
+/**
+ * Implements hook_entity_load().
+ *
+ * @see Drupal\dkan_metastore\LifeCycle\LifeCycle::datasetLoad()
+ * @see Drupal\dkan_metastore\LifeCycle\LifeCycle::distributionLoad()
+ */
+function dkan_metastore_entity_load(array $entities) {
+    dkan_metastore_data_lifecycle($entities, "load");
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function dkan_metastore_entity_presave(EntityInterface $entity) {
+  dkan_metastore_data_lifecycle([$entity], "presave");
+}
+
+/**
+ * Implements hook_entity_predelete().
+ */
+function dkan_metastore_entity_predelete(EntityInterface $entity) {
+  dkan_metastore_data_lifecycle([$entity], "predelete");
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function dkan_metastore_entity_update(EntityInterface $entity) {
+  dkan_metastore_data_lifecycle([$entity], "update");
+}
+
+/**
+ * Implements hook_entity_bundle_field_info_alter().
+ */
+function dkan_metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+  if ($bundle === 'data') {
+    if (isset($fields['field_json_metadata'])) {
+      $fields['field_json_metadata']->addConstraint('ProperJson', []);
+    }
+  }
+}
+
+/**
+ * Helper method to retrieve the static value for a resource's revisioning.
+ */
+function resource_mapper_new_revision() {
+  return drupal_static('dkan_metastore_resource_mapper_new_revision', 0);
+}
+
+/**
+ * Send some entities into their life cycle.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface[] $entities
+ *   The entities in question.
+ * @param string $stage
+ *   The entity hook stage, such as 'load' or 'update'.
+ */
+function dkan_metastore_data_lifecycle(array $entities, string $stage): void {
+  /** @var \Drupal\dkan_metastore\LifeCycle\LifeCycle $lifecycle */
+  $lifecycle = \Drupal::service('dkan.metastore.lifecycle');
+  /** @var \Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface $item_factory */
+  $item_factory = \Drupal::service('dkan.metastore.metastore_item_factory');
+  foreach ($entities as $entity) {
+    if (Data::validEntityType($entity)) {
+      $lifecycle->go($stage, $item_factory->wrap($entity));
+    }
+  }
+}
+
+/**
+ * Check if the entity is part of the metastore.
+ *
+ * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ *   A Drupal content entity.
+ *
+ * @return bool
+ *   Returns true if the entity is used by the metastore.
+ *
+ * @deprecated Use Data::validEntityType()
+ */
+function dkan_metastore_entity_is_valid_item(EntityInterface $entity) {
+  return Data::validEntityType($entity);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'node_data_form') {
+    $datatype = \Drupal::request()->get('schema') ?? 'dataset';
+    $form['#title'] = t('Create @datatype', ['@datatype' => $datatype]);
+  }
+  $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
+  if (isset($form[$fieldName]['widget'][0]['value']['#default_value'])) {
+    $json = $form[$fieldName]['widget'][0]['value']['#default_value'];
+    if (empty($json)) {
+      return;
+    }
+    // TODO: use an actual schema id.
+    $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
+    $object = MetastoreService::removeReferences($object);
+    $form[$fieldName]['widget'][0]['value']['#default_value'] = json_encode($object);
+  }
+}
+
+/**
+ * Implements hook_entity_view_alter.
+ */
+function dkan_metastore_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+  $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
+
+  if (isset($build[$fieldName][0]['#context']['value'])) {
+    $json = $build[$fieldName][0]['#context']['value'];
+    if (empty($json)) {
+      return;
+    }
+
+    $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
+    $object = MetastoreService::removeReferences($object);
+    $build[$fieldName][0]['#context']['value'] = (string) $object;
+  }
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Deletes outdated orphans according to metastore settings.
+ */
+function metastore_cron() {
+  // Run deletion process no more than once every 24 hours.
+  $last_run = \Drupal::state()->get('orphan_delete.last_run', 0);
+  $request_time = \Drupal::time()->getRequestTime();
+
+  if ($request_time - $last_run < OrphanNodeProcessor::SECONDS_PER_DAY) {
+    return;
+  }
+    try {
+      $nids = \Drupal::service('dkan.metastore.orphan_node_processor')
+        ->deleteOutdatedOrphans();
+      if (is_array($nids)) {
+        if (empty($nids)) {
+          $message = 'No orphaned nodes deleted';
+        }
+        else {
+          $max_displayed = 20;
+          $count_msg = '';
+          if (count($nids) > $max_displayed) {
+            $count_msg = ' (and ' . count($nids) - $max_displayed . ' more)';
+            $nids = array_slice($nids, 0, 20);
+          }
+          $message = 'Orphaned nodes ' . implode(',', $nids) . $count_msg . ' were deleted';
+        }
+        \Drupal::logger('metastore')->notice($message);
+      }
+
+      \Drupal::state()->set('orphan_delete.last_run', $request_time);
+    }
+    catch (Exception $exception) {
+      \Drupal::logger('metastore')->error($exception->getMessage());
+    }
+
+}
+
+
+/**
+ * Implements hook_query_TAG_alter().
+ *
+ * Adds filter to queries with 'orphan_filter' tag to restrict results to
+ * entities in 'orphaned' state.
+ */
+function metastore_query_dkan_orphan_filter_alter(AlterableInterface $query) {
+  $query->addJoin('LEFT', 'content_moderation_state_field_data', 'md', 'md.content_entity_revision_id = base_table.vid');
+  $query->condition('md.moderation_state', 'orphaned');
+}
+
+
+/**
+ * Get the name of the current module.
+ */
+function get_module_name(): string {
+  return basename(__FILE__, '.module');
+}
+
+function dkan_metastore_theme() {
+  return [
+    'node__data' => [
+      'template' => 'node--data',
+      'base hook' => 'node',
+      'file' => 'dkan_metastore.theme.inc',
+    ],
+  ];
+}

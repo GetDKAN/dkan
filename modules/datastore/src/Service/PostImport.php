@@ -7,7 +7,7 @@ use Drupal\datastore\DatastoreService;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\datastore\PostImportResult;
 use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Psr\Log\LoggerInterface;
 use Drupal\datastore\PostImportResultFactory;
 
@@ -55,7 +55,7 @@ class PostImport {
    *   The logger service.
    * @param \Drupal\datastore\Service\ResourceProcessorCollector $resourceProcessorCollector
    *   The resource processor collector service.
-   * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $dataDictionaryDiscovery
+   * @param \Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface $dataDictionaryDiscovery
    *   The data dictionary discovery interface.
    * @param \Drupal\datastore\DatastoreService $datastoreService
    *   The datastore service.

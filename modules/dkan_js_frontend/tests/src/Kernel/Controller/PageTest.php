@@ -7,8 +7,8 @@ namespace Drupal\Tests\dkan_js_frontend\Kernel;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\dkan_js_frontend\Controller\Page;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**

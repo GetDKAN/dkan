@@ -23,7 +23,7 @@ class HarvestServiceTest extends KernelTestBase {
     'user',
     'dkan_common',
     'harvest',
-    'metastore',
+    'dkan_metastore',
   ];
 
   protected function setUp() : void {
