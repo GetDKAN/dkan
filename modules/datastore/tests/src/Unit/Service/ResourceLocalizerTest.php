@@ -13,7 +13,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;

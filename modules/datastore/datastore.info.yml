@@ -5,5 +5,5 @@ core_version_requirement: ^10.2 || ^11
 package: DKAN
 dependencies:
   - dkan:dkan_common
-  - dkan:metastore
+  - dkan:dkan_metastore
   - dkan:dkan_datastore

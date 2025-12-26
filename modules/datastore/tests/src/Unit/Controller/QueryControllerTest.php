@@ -2,25 +2,24 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Drupal\dkan_common\DataResource;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\DatasetInfo;
-use Drupal\datastore\Controller\QueryController;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Query;
-use Drupal\datastore\Storage\SqliteDatabaseTable;
-use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\NodeWrapper\Data;
-use Drupal\metastore\NodeWrapper\NodeDataFactory;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_datastore\Controller\QueryController;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\Query;
+use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\NodeWrapper\Data;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use MockChain\Chain;
 use MockChain\Options;
-use Pdo\Sqlite;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -540,7 +539,7 @@ class QueryControllerTest extends TestCase {
     $pdo = match(TRUE) {
       \PHP_VERSION_ID >= 80400 && class_exists(SqliteConnection::class) => new SqliteConnection('sqlite::memory:'),
       default => new \PDO('sqlite::memory:'),
-    }; 
+    };
     $connection = new Connection($pdo, []);
     $storage = new SqliteDatabaseTable(
       $connection,

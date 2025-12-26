@@ -8,7 +8,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Query as QueryService;
-use Drupal\metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -167,7 +167,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
-   *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
+   *   Dependency array for use by \Drupal\dkan_metastore\MetastoreApiResponse.
    * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
    *   The parameter object from the request.
    */
@@ -185,7 +185,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The datastore query object.
    *
    * @return array
-   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
+   *   Dependency array for \Drupal\dkan_metastore\MetastoreApiResponse.
    */
   protected function extractMetastoreDependencies(DatastoreQuery $datastoreQuery): array {
     if (!isset($datastoreQuery->{'$.resources'})) {
@@ -349,7 +349,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   Array of strings for a CSV header row.
    */
   protected function getHeaderRow(DatastoreQuery $datastoreQuery, RootedJsonData &$result) {
-    $config = $this->configFactory->get('metastore.settings')->get('csv_headers_mode');
+    $config = $this->configFactory->get('dkan_metastore.settings')->get('csv_headers_mode');
     $schema_fields = $result->{'$.schema..fields'}[0] ?? [];
     if (empty($schema_fields)) {
       throw new \DomainException("Could not generate header for CSV.");

@@ -27,7 +27,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
     'user',
     'field',
@@ -72,7 +72,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
   public function testEvents() {
     $this->installEntitySchema('node');
     $this->installConfig(['node']);
-    $this->installConfig(['metastore']);
+    $this->installConfig(['dkan_metastore']);
     // Our result will be DONE.
     $result = new Result();
     $result->setStatus(Result::DONE);

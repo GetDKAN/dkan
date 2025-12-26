@@ -8,7 +8,7 @@ use Drupal\search_api\Query\QueryInterface;
 /**
  * Retrieves search API facets from search api indexes.
  *
- * @package Drupal\metastore_search
+ * @package Drupal\dkan_metastore_search
  */
 trait FacetsFromIndexTrait {
   use FacetsCommonTrait;

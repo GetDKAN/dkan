@@ -31,7 +31,7 @@ class DatastoreServiceTest extends BrowserTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 
@@ -63,7 +63,7 @@ class DatastoreServiceTest extends BrowserTestBase {
       DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
     // Add our source data resource to the mapper.
-    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
     $mapper = $this->container->get('dkan.metastore.resource_mapper');
     $mapper->register($source_resource);
     $this->assertInstanceOf(

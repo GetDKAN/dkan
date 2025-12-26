@@ -22,7 +22,7 @@ class ImportInfoTest extends KernelTestBase {
     'user',
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
   ];
 
   /**
@@ -46,7 +46,7 @@ class ImportInfoTest extends KernelTestBase {
       DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
     // Add our data resource to the mapper.
-    /** @var \Drupal\metastore\ResourceMapper $mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
     $mapper = $this->container->get('dkan.metastore.resource_mapper');
     $mapper->register($source_resource);
     $this->assertInstanceOf(

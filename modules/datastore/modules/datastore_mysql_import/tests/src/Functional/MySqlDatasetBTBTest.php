@@ -25,7 +25,7 @@ class MySqlDatasetBTBTest extends DatasetBTBTest {
     'datastore_mysql_import',
     'field',
     'harvest',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 

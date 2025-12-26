@@ -16,3 +16,4 @@ dependencies:
   - drupal:link
   - drupal:options
   - drupal:path
+  - json_form_widget:json_form_widget

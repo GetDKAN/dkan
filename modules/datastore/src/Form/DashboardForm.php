@@ -14,7 +14,7 @@ use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\harvest\HarvestService;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datastore\PostImportResultFactory;
 
@@ -46,7 +46,7 @@ class DashboardForm extends FormBase {
   /**
    * Metastore service.
    *
-   * @var \Drupal\metastore\MetastoreService
+   * @var \Drupal\dkan_metastore\MetastoreService
    */
   protected $metastore;
 
@@ -88,7 +88,7 @@ class DashboardForm extends FormBase {
    *   Harvest service.
    * @param \Drupal\dkan_common\DatasetInfo $datasetInfo
    *   Dataset information service.
-   * @param \Drupal\metastore\MetastoreService $metastoreService
+   * @param \Drupal\dkan_metastore\MetastoreService $metastoreService
    *   Metastore service.
    * @param \Drupal\Core\Pager\PagerManagerInterface $pagerManager
    *   Pager manager service.

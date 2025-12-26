@@ -12,7 +12,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountProxy;
 use Drupal\dkan_js_frontend\Routing\RouteProvider;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 
 use MockChain\Chain;
 use MockChain\Options;
