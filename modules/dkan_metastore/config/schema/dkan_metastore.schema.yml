@@ -23,6 +23,9 @@ dkan_metastore.settings:
       sequence:
         type: string
         label: 'Property'
+    html_allowed_html:
+      type: string
+      label: 'Allowed tags and elements for properties that allow HTML'
     resource_perspective_display:
       type: string
       label: 'Resource download url display'

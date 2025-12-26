@@ -7,7 +7,7 @@ use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -41,7 +41,7 @@ class MysqlImportFactory implements ImportFactoryInterface {
   /**
    * Reference lookup service.
    *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
+   * @var \Drupal\dkan_metastore\Reference\ReferenceLookup
    */
   protected $referenceLookup;
 

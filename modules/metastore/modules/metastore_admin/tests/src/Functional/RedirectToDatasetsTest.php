@@ -21,7 +21,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan',
-    'metastore',
+    'dkan_metastore',
     'metastore_admin',
     'node',
   ];
@@ -37,7 +37,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
    * Tests dataset form submission when redirect_to_datasets is enabled.
    */
   public function testDatasetRedirect() {
-    /** @var \Drupal\metastore\MetastoreService $metastore_service */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore_service */
     $metastore_service = $this->container->get('dkan.metastore.service');
 
     $this->drupalLogin(
@@ -70,7 +70,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
     );
 
     // Enable redirect option.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('redirect_to_datasets', TRUE)
       ->save();
 
@@ -96,7 +96,7 @@ class RedirectToDatasetsTest extends BrowserTestBase {
     $assert->pageTextContains('Data ' . $dataset_title . ' has been created.');
 
     // Disable redirect option.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('redirect_to_datasets', FALSE)
       ->save();
 

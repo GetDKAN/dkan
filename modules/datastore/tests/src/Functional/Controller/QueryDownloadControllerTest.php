@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Functional\Controller;
 
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
@@ -50,9 +50,9 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $resourceFile = 'longcolumn.csv';
     // Dependencies.
     $uuid = $this->container->get('uuid');
-    /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
-    /** @var \Drupal\metastore\MetastoreService $metastoreService */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastoreService */
     $metastoreService = $this->container->get('dkan.metastore.service');
     $resourceUrl = $this->setUpResourceFile($resourceFile);
 
@@ -88,7 +88,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->runQueues(['localize_import', 'datastore_import', 'post_import']);
 
     // Explicitly configure for the CSV's headers.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'resource_headers')
       ->save();
     $client = $this->getHttpClient();
@@ -107,7 +107,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     );
 
     // Re-request, but with machine name headers.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'machine_names')
       ->save();
 
@@ -170,21 +170,21 @@ class QueryDownloadControllerTest extends BrowserTestBase {
    */
   public function testDownloadWithDataDictionary() {
     // Set per-reference data-dictionary in metastore config.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
       ->save();
     $this->assertEquals(
       DataDictionaryDiscovery::MODE_REFERENCE,
-      $this->config('metastore.settings')->get('data_dictionary_mode')
+      $this->config('dkan_metastore.settings')->get('data_dictionary_mode')
     );
 
     $resourceFile = 'data-dict.csv';
 
     // Dependencies.
     $uuid = $this->container->get('uuid');
-    /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
-    /** @var \Drupal\metastore\MetastoreService $metastore */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
     $resourceUrl = $this->setUpResourceFile($resourceFile);
 
@@ -263,7 +263,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->assertEquals($date_format, $dictionary_fields[0]['format'] ?? 'not found');
 
     // Set the dictionary CSV header mode before the import.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'dictionary_titles')
       ->save();
 
@@ -283,7 +283,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->assertEquals('a,b_title,c,d,e', $lines[0]);
 
     // Set the machine name CSV header mode.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('csv_headers_mode', 'machine_names')
       ->save();
 

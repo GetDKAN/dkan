@@ -8,7 +8,7 @@ use Drupal\dkan_common\DatasetInfoPluginBase;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

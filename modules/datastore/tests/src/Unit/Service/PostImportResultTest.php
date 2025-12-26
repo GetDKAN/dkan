@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\Core\Database\Connection;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_common\DataResource;
 use Drupal\datastore\PostImportResultFactory;

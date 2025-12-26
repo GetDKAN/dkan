@@ -21,7 +21,7 @@ class HarvestCommandsTest extends BrowserTestBase {
 
   protected static $modules = [
     'harvest',
-    'metastore',
+    'dkan_metastore',
     'node',
   ];
 
