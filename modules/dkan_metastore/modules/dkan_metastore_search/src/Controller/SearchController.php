@@ -47,7 +47,7 @@ class SearchController implements ContainerInjectionInterface {
   public function __construct(
     Search $service,
     MetastoreApiResponse $metastoreApiResponse,
-    SchemaRetriever $schemaRetriever
+    SchemaRetriever $schemaRetriever,
   ) {
     $this->service = $service;
     $this->metastoreApiResponse = $metastoreApiResponse;

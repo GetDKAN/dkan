@@ -47,7 +47,7 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
-    Search $metastoreSearch
+    Search $metastoreSearch,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
     $this->metastoreSearch = $metastoreSearch;
@@ -71,7 +71,7 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
     ContainerInterface $container,
     array $configuration,
     $pluginId,
-    $pluginDefinition
+    $pluginDefinition,
   ) {
     return new static(
       $configuration,

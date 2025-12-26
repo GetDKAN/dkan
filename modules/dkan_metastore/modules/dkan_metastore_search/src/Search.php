@@ -81,7 +81,7 @@ class Search implements ContainerInjectionInterface {
     MetastoreService $metastoreService,
     EntityTypeManagerInterface $entityTypeManager,
     QueryHelperInterface $queryHelper,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->metastoreService = $metastoreService;
     $this->entityTypeManager = $entityTypeManager;

@@ -67,7 +67,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     LoggerInterface $loggerChannel,
     MessengerInterface $messenger,
     AccountInterface $currentUser,
-    TimeInterface $timeInterface
+    TimeInterface $timeInterface,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->logger = $loggerChannel;
@@ -83,7 +83,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     ContainerInterface $container,
     array $configuration,
     $plugin_id,
-    $plugin_definition
+    $plugin_definition,
   ) {
     return new static(
       $configuration,
