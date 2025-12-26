@@ -57,7 +57,7 @@ abstract class Api1TestBase extends BrowserTestBase {
   protected static $modules = [
     'dkan_common',
     'datastore',
-    'metastore',
+    'dkan_metastore',
     'node',
     'sample_content',
     'workflows',

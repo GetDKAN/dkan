@@ -10,10 +10,10 @@ use Drupal\datastore\Events\DatastorePreDropEvent;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -82,7 +82,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Reference lookup service.
    *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
+   * @var \Drupal\dkan_metastore\Reference\ReferenceLookup
    */
   protected $referenceLookup;
 
@@ -115,11 +115,11 @@ class DatastoreService implements ContainerInjectionInterface {
    *   Import jobstore factory service.
    * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
-   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   Event dispatcher service.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   * @param \Drupal\dkan_metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
    */
   public function __construct(
@@ -383,7 +383,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Return the resource mapper.
    *
-   * @return \Drupal\metastore\ResourceMapper
+   * @return \Drupal\dkan_metastore\ResourceMapper
    *   Resource mapper.
    */
   public function getResourceMapper(): ResourceMapper {
