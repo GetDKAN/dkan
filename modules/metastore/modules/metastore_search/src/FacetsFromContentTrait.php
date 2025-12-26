@@ -8,7 +8,7 @@ use RootedData\RootedJsonData;
 /**
  * Trait used to generate facets from search API query conditions.
  *
- * @package Drupal\metastore_search
+ * @package Drupal\dkan_metastore_search
  */
 trait FacetsFromContentTrait {
   use FacetsCommonTrait;

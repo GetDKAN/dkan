@@ -11,7 +11,7 @@ use Drupal\search_api\Utility\QueryHelperInterface;
 /**
  * Search API query builder trait.
  *
- * @package Drupal\metastore_search
+ * @package Drupal\dkan_metastore_search
  */
 trait QueryBuilderTrait {
 

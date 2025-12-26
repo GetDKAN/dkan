@@ -5,7 +5,7 @@ namespace Drupal\datastore\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\datastore\Controller\QueryController;
-use Drupal\metastore\SchemaPropertiesHelper;
+use Drupal\dkan_metastore\SchemaPropertiesHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -19,14 +19,14 @@ class DatastoreSettingsForm extends ConfigFormBase {
   /**
    * SchemaPropertiesHelper service.
    *
-   * @var \Drupal\metastore\SchemaPropertiesHelper
+   * @var \Drupal\dkan_metastore\SchemaPropertiesHelper
    */
   private $schemaHelper;
 
   /**
    * Constructs form.
    *
-   * @param \Drupal\metastore\SchemaPropertiesHelper $schemaHelper
+   * @param \Drupal\dkan_metastore\SchemaPropertiesHelper $schemaHelper
    *   The schema properties helper service.
    */
   public function __construct(SchemaPropertiesHelper $schemaHelper) {

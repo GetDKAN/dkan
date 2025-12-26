@@ -7,7 +7,7 @@ use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\metastore\ResourceMapper;
+use Drupal\dkan_metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
 use Procrastinator\Result;

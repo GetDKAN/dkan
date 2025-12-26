@@ -10,7 +10,7 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -58,20 +58,20 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       // Dependencies.
     $resourceFile = 'very_wide.csv';
     $uuid = $this->container->get('uuid');
-    /** @var \Drupal\metastore\ValidMetadataFactory $validMetadataFactory */
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $validMetadataFactory */
     $validMetadataFactory = $this->container->get('dkan.metastore.valid_metadata');
-    /** @var \Drupal\metastore\MetastoreService $metastore */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
     $resourceUrl = $this->setUpResourceFile($resourceFile);
     $importController = ImportController::create(\Drupal::getContainer());
 
     // Set per-reference data dictionary in metastore config.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
       ->save();
     $this->assertEquals(
       DataDictionaryDiscovery::MODE_REFERENCE,
-      $this->config('metastore.settings')->get('data_dictionary_mode')
+      $this->config('dkan_metastore.settings')->get('data_dictionary_mode')
     );
 
     // Create a data dictionary for very_wide.csv. The 300th (!) column will be
@@ -152,7 +152,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
     // Use the dictionary enforcer to do the post import, so we can see
     // exceptions and the like.
-    /** @var \Drupal\metastore\ResourceMapper $resource_mapper */
+    /** @var \Drupal\dkan_metastore\ResourceMapper $resource_mapper */
     $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
     $dictionary_enforcer->process(
       $resource_mapper->get(

@@ -12,12 +12,20 @@ use Drupal\datastore\Controller\QueryDownloadController;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
+<<<<<<< HEAD
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
+=======
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\NodeWrapper\Data;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
+>>>>>>> 367ab9ed5 (Refactor metastore module to dkan_metastore (#4634))
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

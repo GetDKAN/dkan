@@ -12,6 +12,7 @@
     "require": {
         "ext-json": "*",
         "drupal/facets": "^3.0.1",
+        "drupal/json_form_widget": "~1.0.0-alpha1",
         "drupal/moderated_content_bulk_publish": "~2.0.20",
         "drupal/search_api": "^1.15",
         "drupal/select2": "^2.0",

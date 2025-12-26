@@ -7,7 +7,7 @@ namespace Drupal\Tests\datastore\Unit\Service\Factory;
 use Drupal\datastore\Service\Factory\ImportServiceFactory;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
