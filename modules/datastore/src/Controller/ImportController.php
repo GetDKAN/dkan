@@ -8,8 +8,8 @@ use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfoList;
-use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -100,7 +100,7 @@ class ImportController implements ContainerInjectionInterface {
    *   Resource or distribution identifier.
    *
    * @return array
-   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
+   *   Dependency array for \Drupal\dkan_metastore\MetastoreApiResponse.
    */
   private function getDependencies($identifier) {
     // If a proper UUID, probably a distribution.

@@ -12,7 +12,7 @@ use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
-use Drupal\metastore\MetastoreService;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use MockChain\Options;

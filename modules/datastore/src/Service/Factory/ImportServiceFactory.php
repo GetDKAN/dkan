@@ -5,7 +5,7 @@ namespace Drupal\datastore\Service\Factory;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -39,7 +39,7 @@ class ImportServiceFactory implements ImportFactoryInterface {
   /**
    * Reference lookup service.
    *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
+   * @var \Drupal\dkan_metastore\Reference\ReferenceLookup
    */
   protected $referenceLookup;
 

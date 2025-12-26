@@ -4,8 +4,8 @@ namespace Drupal\metastore_search\Plugin\search_api\datasource;
 
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\TypedData\ComplexDataInterface;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\metastore_search\ComplexData\Dataset;
 use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
@@ -84,7 +84,7 @@ class DkanDataset extends DatasourcePluginBase {
    * {@inheritDoc}
    */
   public function loadMultiple(array $ids) {
-    /** @var \Drupal\metastore\Storage\Data $dataStorage */
+    /** @var \Drupal\dkan_metastore\Storage\Data $dataStorage */
     $dataStorage = $this->metastoreStorageService->getInstance('dataset');
 
     $items = [];

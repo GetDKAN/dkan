@@ -5,7 +5,7 @@ namespace Drupal\metastore_search;
 /**
  * Trait for shared search api facet functionality.
  *
- * @package Drupal\metastore_search
+ * @package Drupal\dkan_metastore_search
  */
 trait FacetsCommonTrait {
 
