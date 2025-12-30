@@ -28,7 +28,7 @@
         "getdkan/rooted-json-data": "^0.2.2",
         "guzzlehttp/guzzle": "^7.5",
         "ilbee/csv-response": "^1.2.0",
-        "justinrainbow/json-schema": "^5.2",
+        "justinrainbow/json-schema": "^5.2 || ^6.3.1",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
         "ramsey/uuid": "^3.8.0 || ^4",
         "stolt/json-merge-patch": "^2.0"
