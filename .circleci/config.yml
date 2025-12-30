@@ -107,6 +107,8 @@ commands:
                   ddev drush updb -y
                   ddev drush cr
                   ddev drush rq
+                  # Stopgap to restore config lost due to metastore module dependencies
+                  ddev drush config:import --partial --source ../config/install
 
 jobs:
   phpunit:
