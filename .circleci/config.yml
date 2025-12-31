@@ -303,4 +303,4 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
-          drupal_core_constraint: "10.4.x-dev"
+          drupal_core_constraint: "~10.5.0"
