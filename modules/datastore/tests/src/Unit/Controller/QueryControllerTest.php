@@ -15,7 +15,8 @@ use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
+use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use MockChain\Chain;
 use MockChain\Options;
@@ -536,8 +537,8 @@ class QueryControllerTest extends TestCase {
    *   A database table storage class useable for datastore queries.
    */
   public function mockDatastoreTable() {
-    $pdo = (class_exists(Sqlite::class)) ? new Sqlite('sqlite::memory:') : new \PDO('sqlite::memory:');
-    $connection = new SqliteConnection($pdo, []);
+    $pdo = (class_exists(SqliteConnection::class)) ? new SqliteConnection('sqlite::memory:') : new \PDO('sqlite::memory:');
+    $connection = new Connection($pdo, []);
     $storage = new SqliteDatabaseTable(
       $connection,
       $this->resource,

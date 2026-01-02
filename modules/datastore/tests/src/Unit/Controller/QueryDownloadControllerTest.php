@@ -16,7 +16,8 @@ use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
+use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
 use MockChain\Chain;
 use MockChain\Options;
 use Pdo\Sqlite;
@@ -401,8 +402,8 @@ class QueryDownloadControllerTest extends TestCase {
    *   MockChain mock object.
    */
   private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
-    $pdo = (class_exists(Sqlite::class)) ? new Sqlite('sqlite::memory:') : new \PDO('sqlite::memory:');
-    $connection = new SqliteConnection($pdo, []);
+    $pdo = (class_exists(SqliteConnection::class)) ? new SqliteConnection('sqlite::memory:') : new \PDO('sqlite::memory:');
+    $connection = new Connection($pdo, []);
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
