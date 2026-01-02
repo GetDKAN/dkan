@@ -20,7 +20,6 @@ use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
 use MockChain\Chain;
 use MockChain\Options;
-use Pdo\Sqlite;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -402,7 +401,10 @@ class QueryDownloadControllerTest extends TestCase {
    *   MockChain mock object.
    */
   private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
-    $pdo = (class_exists(SqliteConnection::class)) ? new SqliteConnection('sqlite::memory:') : new \PDO('sqlite::memory:');
+    $pdo = match(TRUE) {
+      \PHP_VERSION_ID >= 80400 && class_exists(SqliteConnection::class) => new SqliteConnection('sqlite::memory:'),
+      default => new \PDO('sqlite::memory:'),
+    }; 
     $connection = new Connection($pdo, []);
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)

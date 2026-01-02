@@ -537,7 +537,10 @@ class QueryControllerTest extends TestCase {
    *   A database table storage class useable for datastore queries.
    */
   public function mockDatastoreTable() {
-    $pdo = (class_exists(SqliteConnection::class)) ? new SqliteConnection('sqlite::memory:') : new \PDO('sqlite::memory:');
+    $pdo = match(TRUE) {
+      \PHP_VERSION_ID >= 80400 && class_exists(SqliteConnection::class) => new SqliteConnection('sqlite::memory:'),
+      default => new \PDO('sqlite::memory:'),
+    }; 
     $connection = new Connection($pdo, []);
     $storage = new SqliteDatabaseTable(
       $connection,
