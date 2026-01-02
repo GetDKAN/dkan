@@ -4,4 +4,8 @@ type: module
 core_version_requirement: ^10.2 || ^11
 package: DKAN 2.x Legacy
 dependencies:
-  - dkan:dkan_metastore_search
+  - dkan:dkan_metastore
+  - drupal:search_api
+  - drupal:views
+  - search_api:search_api_db
+package: DKAN

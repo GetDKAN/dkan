@@ -4,4 +4,12 @@ type: module
 core_version_requirement: ^10.2 || ^11
 package: DKAN 2.x Legacy
 dependencies:
-  - dkan:dkan_metastore_admin
+  - dkan:dkan_metastore
+  - drupal:breakpoint
+  - drupal:system
+  - drupal:toolbar
+  - drupal:user
+  - drupal:views
+  - views_bulk_operations
+  - moderated_content_bulk_publish
+package: DKAN
