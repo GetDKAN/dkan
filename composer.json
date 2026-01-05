@@ -29,7 +29,7 @@
         "getdkan/rooted-json-data": "^0.2.2",
         "guzzlehttp/guzzle": "^7.5",
         "ilbee/csv-response": "^1.2.0",
-        "justinrainbow/json-schema": "^5.2",
+        "justinrainbow/json-schema": "^5.2 || ^6.6.1",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
         "ramsey/uuid": "^3.8.0 || ^4",
         "stolt/json-merge-patch": "^2.0"
@@ -37,7 +37,7 @@
     "require-dev": {
         "colinodell/psr-testlogger": "^1.2",
         "drush/drush": "*",
-        "getdkan/mock-chain": "^1.4.0",
+        "getdkan/mock-chain": "dev-phpunit-11",
         "osteel/openapi-httpfoundation-testing": "^0.13",
         "drupal/admin_toolbar": "^3.0"
     },
@@ -50,7 +50,8 @@
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
-            "tbachert/spi": true
+            "tbachert/spi": true,
+            "drupal/core-composer-scaffold": true
         }        
     },
     "extra": {
