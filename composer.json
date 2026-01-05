@@ -36,7 +36,7 @@
     "require-dev": {
         "colinodell/psr-testlogger": "^1.2",
         "drush/drush": "*",
-        "getdkan/mock-chain": "dev-phpunit-11",
+        "getdkan/mock-chain": "~1.4.1",
         "osteel/openapi-httpfoundation-testing": "^0.13",
         "drupal/admin_toolbar": "^3.0"
     },
