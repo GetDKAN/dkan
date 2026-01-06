@@ -5,7 +5,10 @@ namespace Drupal\metastore;
 use Drupal\Core\Cache\CacheableDependencyInterface;
 
 /**
- * Data.
+ * Metastore item interface.
+ *
+ * Use an instance of \Drupal\metastore\Factory\MetastoreItemFactoryInterface
+ * to create these.
  */
 interface MetastoreItemInterface extends CacheableDependencyInterface {
 
@@ -20,7 +23,10 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function getIdentifier();
 
   /**
-   * The unaltered version of the metadata.
+   * Get the metadata that was present in this item at time of generation.
+   *
+   * @return mixed
+   *   The JSON-decoded metadata or NULL.
    */
   public function getRawMetadata();
 
@@ -33,12 +39,18 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function getSchemaId();
 
   /**
-   * Protected.
+   * Get the item's metadata.
+   *
+   * @return mixed
+   *   The JSON-decoded metadata or NULL.
    */
   public function getMetadata();
 
   /**
-   * Protected.
+   * Set the metadata for this item.
+   *
+   * @param $metadata mixed
+   *   The new metadata. Should be JSON encode-able.
    */
   public function setMetadata($metadata);
 
@@ -58,10 +70,9 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function isNew();
 
   /**
-   * Get the relevant entity.
+   * Get an entity which represents the metadata item.
    *
-   * If the implementation is an entity itself, this should simply
-   * return $this.
+   * If the implementation is that entity, it should return itself.
    *
    * @return \Drupal\Core\Entity\EntityInterface
    *   The wrapped entity.

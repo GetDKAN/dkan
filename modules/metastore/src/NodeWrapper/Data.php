@@ -20,7 +20,22 @@ use Drupal\node\NodeInterface;
 class Data implements MetastoreItemInterface {
 
   /**
-   * Node.
+   * The node field name for the metadata JSON string.
+   */
+  private const string JSON_METADATA_FIELD = 'field_json_metadata';
+
+  /**
+   * The field name for determining the schema/data type of the node.
+   */
+  private const string DATA_TYPE_FIELD = 'field_data_type';
+
+  /**
+   * The default data type for nodes that don't have one yet.
+   */
+  private const string DEFAULT_DATA_TYPE = 'dataset';
+
+  /**
+   * The data node we're wrapping.
    *
    * @var \Drupal\Core\Entity\EntityInterface
    */
@@ -58,6 +73,12 @@ class Data implements MetastoreItemInterface {
     $this->node = $entity;
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
+
+    // If our node is a new creation or otherwise doesn't have a type yet, we
+    // provide it with a default one.
+    if ($this->node->get(self::DATA_TYPE_FIELD)->isEmpty()) {
+      $this->node->set(self::DATA_TYPE_FIELD, self::DEFAULT_DATA_TYPE);
+    }
   }
 
   /**
@@ -87,7 +108,6 @@ class Data implements MetastoreItemInterface {
    * @todo Needing to call fix() on every method seems like a code smell.
    */
   protected function fix() {
-    $this->fixDataType();
     $this->saveRawMetadata();
   }
 
@@ -129,11 +149,11 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Protected.
+   * {@inheritDoc}
    */
-  public function getMetaData() {
+  public function getMetadata() {
     $this->fix();
-    return json_decode($this->node->get('field_json_metadata')->getString());
+    return json_decode($this->node->get(self::JSON_METADATA_FIELD)->getString());
   }
 
   /**
@@ -183,15 +203,6 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
-   */
-  private function fixDataType() {
-    if (empty($this->node->get('field_data_type')->getString())) {
-      $this->node->set('field_data_type', 'dataset');
-    }
-  }
-
-  /**
    * Protected.
    */
   public function getSchemaId() {
@@ -200,15 +211,11 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
-   *
-   * @todo Why do we do this?
+   * Temporarily save the raw json metadata, for later use.
    */
   private function saveRawMetadata() {
-    // Temporarily save the raw json metadata, for later use.
     if (!isset($this->node->rawMetadata)) {
-      $raw = $this->node->get('field_json_metadata')->value;
-      $this->node->rawMetadata = $raw;
+      $this->node->rawMetadata = $this->node->get('field_json_metadata')->value;
     }
   }
 

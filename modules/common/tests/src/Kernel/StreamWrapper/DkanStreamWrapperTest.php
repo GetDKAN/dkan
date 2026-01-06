@@ -20,7 +20,7 @@ class DkanStreamWrapperTest extends KernelTestBase {
   public function testPublicScheme() {
     $uri = 'dkan://metastore';
     $api = json_decode(file_get_contents('dkan://metastore'));
-    $this->assertEquals('API Documentation', $api->info->title);
+    $this->assertEquals('API Documentation', $api->info->title ?? '');
 
     /** @var \Drupal\Core\StreamWrapper\StreamWrapperManager $manager */
     $manager = $this->container->get('stream_wrapper_manager');
