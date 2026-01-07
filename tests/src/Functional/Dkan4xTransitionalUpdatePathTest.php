@@ -60,7 +60,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('common'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_admin'));
-    
+
     $config = \Drupal::configFactory()->getEditable('core.extension');
     $modules = $config->get('module');
     $this->assertArrayNotHasKey('common', $modules);
@@ -70,13 +70,13 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertEmpty(\Drupal::configFactory()->get('metastore.settings')->getRawData());
 
     // Misc checks to ensure config was migrated properly.
-  
+
     // Open /node/add/dataset and check that metastore fields exist.
     $this->drupalLogin($this->rootUser);
     $this->drupalGet('node/add/data');
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-title');
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-description');
-  
+
     // Visit /admin/dkan/datasets and check that the page loads, contains a
     // table with headers including "Title" and "Data Type".
     $this->drupalGet('admin/dkan/datasets');
