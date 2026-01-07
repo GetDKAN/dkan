@@ -4,3 +4,15 @@
  * @file
  * Install, update and uninstall functions for the dkan_metastore_search module.
  */
+
+/**
+ * Remove the legacy metastore_admin module.
+ */
+function dkan_metastore_search_update_10001() {
+  // If the old metastore_admin module is still enabled, copy config and
+  // uninstall it.
+  if (\Drupal::moduleHandler()->moduleExists('metastore_search')) {
+    \Drupal::service('module_installer')->uninstall(['metastore_search']);
+    return t('The legacy metastore_search module has been uninstalled.');
+  }
+}

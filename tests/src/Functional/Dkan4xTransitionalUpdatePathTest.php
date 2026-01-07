@@ -52,7 +52,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore_mysql_import'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_harvest'));
 
-
     // Run all updates.
     $this->runUpdates();
 
@@ -70,7 +69,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertEmpty(\Drupal::configFactory()->get('metastore.settings')->getRawData());
 
     // Misc checks to ensure config was migrated properly.
-
     // Open /node/add/dataset and check that metastore fields exist.
     $this->drupalLogin($this->rootUser);
     $this->drupalGet('node/add/data');
