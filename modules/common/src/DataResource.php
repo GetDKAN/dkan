@@ -167,6 +167,7 @@ class DataResource implements \JsonSerializable {
     // constructor, so we have to explicitly set the identifier.
     $resource->identifier = $mapping->get('identifier')->getString();
     $resource->version = $mapping->get('version')->getString();
+    $resource->checksum = $mapping->get('checksum')->getString();
     return $resource;
   }
 

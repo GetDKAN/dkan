@@ -191,18 +191,22 @@ class ResourceLocalizer {
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
     $localUrl = UrlHostTokenResolver::hostify($localUrl);
 
-    $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
-
+    $localFilePerspective = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
     try {
-      $this->resourceMapper->registerNewPerspective($new);
+      $this->resourceMapper->registerNewPerspective($localFilePerspective);
     }
     catch (AlreadyRegistered) {
     }
 
-    $localUrlPerspective = $resource->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl);
-
+    // createNewPerspective() will have calculated an MD5 hash for the
+    // LOCAL_FILE_PERSPECTIVE file if it exists, so we want to use that
+    // perspective to generate our LOCAL_URL_PERSPECTIVE and keep the hash.
+    // Since we can't explicitly set the checksum in the new DataResource, we
+    // rely on the side-effects of createNewPerspective().
     try {
-      $this->resourceMapper->registerNewPerspective($localUrlPerspective);
+      $this->resourceMapper->registerNewPerspective(
+        $localFilePerspective->createNewPerspective(self::LOCAL_URL_PERSPECTIVE, $localUrl)
+      );
     }
     catch (AlreadyRegistered) {
     }
