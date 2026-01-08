@@ -3,7 +3,6 @@
 namespace Drupal\dkan_metastore;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use Drupal\dkan_common\Events\Event;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
