@@ -9,6 +9,9 @@
  * Remove the legacy metastore_facets module.
  */
 function dkan_metastore_facets_update_10001() {
+  // Re-import default config for dkan_metastore_admin.
+  \Drupal::service('config.installer')->installDefaultConfig('module', 'dkan_metastore_facets');
+
   // If the old metastore_admin module is still enabled, copy config and
   // uninstall it.
   if (\Drupal::moduleHandler()->moduleExists('metastore_facets')) {
