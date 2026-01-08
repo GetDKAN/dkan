@@ -28,8 +28,9 @@ else
   echo "No package.json present, not trying to install."
 fi
 
+  # Commenting out until we get a lower roll worked out.
+  # {"name":"testapiuser","mail":"testapiuser@test.com","role":"api_user"},
 TEST_USERS_JSON='[
-  {"name":"testapiuser","mail":"testapiuser@test.com","role":"api_user"},
   {"name":"testadmin","mail":"testadmin@test.com","role":"administrator"}
 ]'
 readarray -t TU_TEST_USERS < <(jq -c '.[]' <<<"$TEST_USERS_JSON")
