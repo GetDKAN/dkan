@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
+namespace Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker;
 
 use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
@@ -10,7 +10,7 @@ use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -21,8 +21,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Unit tests for Importer class.
  *
- * @covers \Drupal\datastore\Plugin\QueueWorker\ImportJob
- * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\ImportJob
+ * @covers \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob
+ * @coversDefaultClass \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob
  *
  * @group dkan
  * @group dkan-core
@@ -69,7 +69,7 @@ class ImportJobTest extends TestCase {
    * @param \Drupal\dkan_common\DataResource $resource
    *   DataResource object.
    *
-   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
+   * @return \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob
    *   ImportJob object.
    */
   private function getImportJob(DataResource $resource): ImportJob {

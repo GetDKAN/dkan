@@ -12,7 +12,7 @@ use Drupal\dkan_common\Storage\Query;
  * in individually.
  *
  * @see \Drupal\Tests\dkan_common\Storage\SelectFactoryTest
- * @see \Drupal\Tests\datastore\Service\QueryTest
+ * @see \Drupal\Tests\dkan_datastore\Service\QueryTest
  */
 class QueryDataProvider {
 

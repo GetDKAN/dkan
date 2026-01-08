@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\harvest\HarvestService;
 use Drupal\harvest\Load\Dataset;
 use Drupal\dkan_metastore\MetastoreService;
@@ -603,7 +603,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   private function queryResource(string $queryString) {
-    /** @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
+    /** @var \Drupal\dkan_datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));

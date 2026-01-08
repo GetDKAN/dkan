@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Unit;
+namespace Drupal\Tests\dkan_datastore\Unit;
 
-use Drupal\datastore\Drush;
-use Drupal\datastore\DatastoreLookupInterface;
-use Drupal\datastore\DatastoreLookup;
+use Drupal\dkan_datastore\Drush;
+use Drupal\dkan_datastore\DatastoreLookupInterface;
+use Drupal\dkan_datastore\DatastoreLookup;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
@@ -17,12 +17,12 @@ use Drupal\Core\Database\StatementInterface;
 use Drush\Commands\DrushCommands;
 
 /**
- * @coversDefaultClass \Drupal\datastore\DatastoreLookup
+ * @coversDefaultClass \Drupal\dkan_datastore\DatastoreLookup
  */
 class DatastoreLookupTest extends TestCase {
 
   /**
-   * @var \Drupal\datastore\DatastoreLookupInterface|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_datastore\DatastoreLookupInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $datastoreLookupInterface;
 
@@ -32,7 +32,7 @@ class DatastoreLookupTest extends TestCase {
   protected $output;
 
   /**
-   * @var \Drupal\datastore\Drush
+   * @var \Drupal\dkan_datastore\Drush
    */
   protected $drush;
 
@@ -42,7 +42,7 @@ class DatastoreLookupTest extends TestCase {
   protected $database;
 
   /**
-   * @var \Drupal\datastore\DatastoreLookup
+   * @var \Drupal\dkan_datastore\DatastoreLookup
    */
   protected $datastoreLookup;
 
@@ -67,11 +67,11 @@ class DatastoreLookupTest extends TestCase {
     // // Instantiate the Drush class with the mocked dependencies.
     // $this->drush = new Drush(
     //   $this->createMock(\Drupal\dkan_metastore\MetastoreService::class),
-    //   $this->createMock(\Drupal\datastore\DatastoreService::class),
-    //   $this->createMock(\Drupal\datastore\Service\ResourceLocalizer::class),
+    //   $this->createMock(\Drupal\dkan_datastore\DatastoreService::class),
+    //   $this->createMock(\Drupal\dkan_datastore\Service\ResourceLocalizer::class),
     //   $this->createMock(\Drupal\dkan_metastore\ResourceMapper::class),
-    //   $this->createMock(\Drupal\datastore\Service\Info\ImportInfoList::class),
-    //   $this->createMock(\Drupal\datastore\PostImportResultFactory::class),
+    //   $this->createMock(\Drupal\dkan_datastore\Service\Info\ImportInfoList::class),
+    //   $this->createMock(\Drupal\dkan_datastore\PostImportResultFactory::class),
     //   $this->datastoreLookupInterface
     // );
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Form;
+namespace Drupal\Tests\dkan_datastore\Unit\Form;
 
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\DependencyInjection\Container;
@@ -14,8 +14,8 @@ use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\Core\Database\Connection;
-use Drupal\datastore\Form\DashboardForm;
-use Drupal\datastore\Service\PostImport;
+use Drupal\dkan_datastore\Form\DashboardForm;
+use Drupal\dkan_datastore\Service\PostImport;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\dkan_metastore\MetastoreService;
@@ -25,8 +25,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\dkan_metastore\ResourceMapper;
-use Drupal\datastore\PostImportResult;
-use Drupal\datastore\PostImportResultFactory;
+use Drupal\dkan_datastore\PostImportResult;
+use Drupal\dkan_datastore\PostImportResultFactory;
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;

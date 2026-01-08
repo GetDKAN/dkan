@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\datastore\Form;
+namespace Drupal\dkan_datastore\Form;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\RedundantEditableConfigNamesTrait;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 
 /**
  * DKAN resource settings form.
  *
- * @package Drupal\datastore\Form
+ * @package Drupal\dkan_datastore\Form
  * @codeCoverageIgnore
  */
 class ResourceSettingsForm extends ConfigFormBase {

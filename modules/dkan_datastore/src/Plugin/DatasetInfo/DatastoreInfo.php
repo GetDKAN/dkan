@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Drupal\datastore\Plugin\DatasetInfo;
+namespace Drupal\dkan_datastore\Plugin\DatasetInfo;
 
 use Drupal\dkan_common\DatasetInfoPluginBase;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Info\ImportInfo;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\Info\ImportInfo;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -44,9 +44,9 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    *   The plugin_id for the plugin instance.
    * @param mixed $pluginDefinition
    *   The plugin implementation definition.
-   * @param \Drupal\datastore\Service\Info\ImportInfo $importInfo
+   * @param \Drupal\dkan_datastore\Service\Info\ImportInfo $importInfo
    *   Import info datastoer service.
-   * @param \Drupal\datastore\DatastoreService $datastore
+   * @param \Drupal\dkan_datastore\DatastoreService $datastore
    *   Datastore service.
    */
   public function __construct(
@@ -147,7 +147,7 @@ class DatastoreInfo extends DatasetInfoPluginBase {
    * @param string $version
    *   Resource version timestamp.
    *
-   * @return null|\Drupal\datastore\Storage\DatabaseTable
+   * @return null|\Drupal\dkan_datastore\Storage\DatabaseTable
    *   The Database table object, or NULL.
    */
   protected function getStorage(string $identifier, string $version) {

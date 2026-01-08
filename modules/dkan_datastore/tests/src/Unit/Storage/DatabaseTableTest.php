@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Storage;
+namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Database\Connection;
@@ -9,7 +9,7 @@ use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_common\Storage\Query;
 use Drupal\Core\Database\StatementInterface;
-use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\mysql\Driver\Database\mysql\Schema;
 use MockChain\Chain;
 use MockChain\Sequence;
@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
+ * @coversDefaultClass \Drupal\dkan_datastore\Storage\DatabaseTable
  *
  * @group dkan
  * @group datastore

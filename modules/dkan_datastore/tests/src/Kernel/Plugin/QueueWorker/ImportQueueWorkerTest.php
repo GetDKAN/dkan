@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
+namespace Drupal\Tests\dkan_datastore\Kernel\Plugin\QueueWorker;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dkan_common\Storage\ImportedItemInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportQueueWorker;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker
- * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker
+ * @covers \Drupal\dkan_datastore\Plugin\QueueWorker\ImportQueueWorker
+ * @coversDefaultClass \Drupal\dkan_datastore\Plugin\QueueWorker\ImportQueueWorker
  *
  * @group dkan
  * @group datastore

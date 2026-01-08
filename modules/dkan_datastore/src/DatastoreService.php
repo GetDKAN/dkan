@@ -5,14 +5,14 @@ namespace Drupal\datastore;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Events\DatastoreDroppedEvent;
-use Drupal\datastore\Events\DatastorePreDropEvent;
-use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Events\DatastoreDroppedEvent;
+use Drupal\dkan_datastore\Events\DatastorePreDropEvent;
+use Drupal\dkan_datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\dkan_datastore\Service\ImportService;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -39,14 +39,14 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Resource localizer for handling remote resource URLs.
    *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
+   * @var \Drupal\dkan_datastore\Service\ResourceLocalizer
    */
   private $resourceLocalizer;
 
   /**
    * Datastore import factory class.
    *
-   * @var \Drupal\datastore\Service\Factory\ImportServiceFactory
+   * @var \Drupal\dkan_datastore\Service\Factory\ImportServiceFactory
    */
   private $importServiceFactory;
 
@@ -60,7 +60,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Datastore Query object for conversion.
    *
-   * @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+   * @var \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer
    */
   private $dictionaryEnforcer;
 
@@ -105,15 +105,15 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\datastore\Service\ResourceLocalizer $resourceLocalizer
+   * @param \Drupal\dkan_datastore\Service\ResourceLocalizer $resourceLocalizer
    *   Resource localizer service.
-   * @param \Drupal\datastore\Service\Factory\ImportFactoryInterface $importServiceFactory
+   * @param \Drupal\dkan_datastore\Service\Factory\ImportFactoryInterface $importServiceFactory
    *   Import factory service.
    * @param \Drupal\Core\Queue\QueueFactory $queue
    *   Queue factory service.
-   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   * @param \Drupal\dkan_datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
    *   Import jobstore factory service.
-   * @param \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
+   * @param \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionaryEnforcer
    *   Dictionary Enforcer object.
    * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
@@ -332,7 +332,7 @@ class DatastoreService implements ContainerInjectionInterface {
    * @param string|null $version
    *   The version of the resource.
    *
-   * @return \Drupal\datastore\Storage\DatabaseTable
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable
    *   Storage object.
    *
    * @throws \InvalidArgumentException
@@ -353,7 +353,7 @@ class DatastoreService implements ContainerInjectionInterface {
   /**
    * Return the resource localizer.
    *
-   * @return \Drupal\datastore\Service\ResourceLocalizer
+   * @return \Drupal\dkan_datastore\Service\ResourceLocalizer
    *   Resource localizer.
    */
   public function getResourceLocalizer() : ResourceLocalizer {

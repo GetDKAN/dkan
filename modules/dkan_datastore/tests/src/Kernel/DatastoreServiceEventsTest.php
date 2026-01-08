@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Kernel;
+namespace Drupal\Tests\dkan_datastore\Kernel;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\datastore\Events\DatastoreDroppedEvent;
-use Drupal\datastore\Events\DatastorePreDropEvent;
+use Drupal\dkan_datastore\Events\DatastoreDroppedEvent;
+use Drupal\dkan_datastore\Events\DatastorePreDropEvent;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\DatabaseTableInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @coversDefaultClass \Drupal\datastore\DatastoreService
+ * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
  * @group dkan
  * @group datastore
@@ -41,7 +41,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
   /**
    * Store the events we receive.
    *
-   * @var \Drupal\datastore\Events\DatastoreEventBase[]
+   * @var \Drupal\dkan_datastore\Events\DatastoreEventBase[]
    */
   protected array $events = [];
 
@@ -164,7 +164,7 @@ class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscrib
     // Assert that all of our events can return a DataResource object. We
     // can't assert against the id or version because our datastore doesn't
     // exist, so the mapper can't find it.
-    /** @var \Drupal\datastore\Events\DatastoreEventInterface $event */
+    /** @var \Drupal\dkan_datastore\Events\DatastoreEventInterface $event */
     foreach ($this->events as $event) {
       $this->assertInstanceOf(DataResource::class, $event->getDataResource());
     }

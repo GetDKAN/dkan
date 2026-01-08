@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\datastore\Service\ResourceProcessor;
+namespace Drupal\dkan_datastore\Service\ResourceProcessor;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
-use Drupal\datastore\Service\ResourceProcessorInterface;
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderInterface;
+use Drupal\dkan_datastore\Service\ResourceProcessorInterface;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
@@ -19,7 +19,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Alter table query builder service.
    *
-   * @var \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface
+   * @var \Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderInterface
    */
   protected $alterTableQueryBuilder;
 
@@ -47,20 +47,20 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Database table factory service.
    *
-   * @var \Drupal\datastore\Storage\DatabaseTableFactory
+   * @var \Drupal\dkan_datastore\Storage\DatabaseTableFactory
    */
   protected $databaseTableFactory;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
-   * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
+   * @param \Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
    * @param \Drupal\dkan_metastore\MetastoreService $metastore
    *   The metastore service.
    * @param \Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
-   * @param \Drupal\datastore\Storage\DatabaseTableFactory $table_factory
+   * @param \Drupal\dkan_datastore\Storage\DatabaseTableFactory $table_factory
    *   The datastore database table factory service.
    */
   public function __construct(
@@ -105,7 +105,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    * @return \RootedData\RootedJsonData
    *   Data-dictionary metadata.
    *
-   * @throws \Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
+   * @throws \Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
    *   Thrown when the resource does not have an associated data dictionary.
    */
   protected function getDataDictionaryForResource(DataResource $resource): RootedJsonData {

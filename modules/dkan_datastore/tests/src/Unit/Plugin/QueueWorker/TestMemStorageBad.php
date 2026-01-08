@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
+namespace Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker;
 
-class TestMemStorageBad { 
+class TestMemStorageBad {
 }

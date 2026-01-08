@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary;
+namespace Drupal\dkan_datastore\DataDictionary;
 
 use RootedData\RootedJsonData;
 
@@ -12,7 +12,7 @@ interface AlterTableQueryBuilderInterface {
   /**
    * Build alter table query instance.
    *
-   * @return \Drupal\datastore\DataDictionary\AlterTableQueryInterface
+   * @return \Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface
    *   An alter table query instance.
    */
   public function getQuery(): AlterTableQueryInterface;

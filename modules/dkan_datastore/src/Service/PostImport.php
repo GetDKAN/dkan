@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\dkan_datastore\Service;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\DatastoreService;
+use Drupal\dkan_datastore\DatastoreService;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\datastore\PostImportResult;
-use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
+use Drupal\dkan_datastore\PostImportResult;
+use Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Psr\Log\LoggerInterface;
-use Drupal\datastore\PostImportResultFactory;
+use Drupal\dkan_datastore\PostImportResultFactory;
 
 /**
  * Service to handle post-import resource processing.
@@ -53,13 +53,13 @@ class PostImport {
    *   The config factory service.
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger service.
-   * @param \Drupal\datastore\Service\ResourceProcessorCollector $resourceProcessorCollector
+   * @param \Drupal\dkan_datastore\Service\ResourceProcessorCollector $resourceProcessorCollector
    *   The resource processor collector service.
    * @param \Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface $dataDictionaryDiscovery
    *   The data dictionary discovery interface.
-   * @param \Drupal\datastore\DatastoreService $datastoreService
+   * @param \Drupal\dkan_datastore\DatastoreService $datastoreService
    *   The datastore service.
-   * @param \Drupal\datastore\Service\PostImportResultFactory $postImportResultFactory
+   * @param \Drupal\dkan_datastore\Service\PostImportResultFactory $postImportResultFactory
    *   The post import result factory.
    */
   public function __construct(
@@ -88,7 +88,7 @@ class PostImport {
    * @param \Drupal\dkan_common\DataResource $resource
    *   DKAN Resource.
    *
-   * @return \Drupal\datastore\PostImportResult
+   * @return \Drupal\dkan_datastore\PostImportResult
    *   The post import result service.
    */
   public function processResource(DataResource $resource): PostImportResult {
@@ -159,7 +159,7 @@ class PostImport {
    * @param \Drupal\dkan_common\DataResource $resource
    *   DKAN Resource.
    *
-   * @return \Drupal\datastore\PostImportResult|null
+   * @return \Drupal\dkan_datastore\PostImportResult|null
    *   Post import result if validation fails, or NULL if validation passes.
    */
   private function validateResource(DataResource $resource): ?PostImportResult {
@@ -193,7 +193,7 @@ class PostImport {
    * @param \Drupal\dkan_common\DataResource $resource
    *   The DKAN resource being imported.
    *
-   * @return \Drupal\datastore\PostImportResult
+   * @return \Drupal\dkan_datastore\PostImportResult
    *   The post import result service.
    */
   protected function createPostImportResult($status, $message, DataResource $resource): PostImportResult {

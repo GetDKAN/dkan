@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\dkan_datastore\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\DatastoreService;
+use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
@@ -35,7 +35,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\DatastoreService
+   * @var \Drupal\dkan_datastore\DatastoreService
    */
   private $datastore;
 
@@ -60,7 +60,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The dkan.metastore.reference_lookup service.
    * @param \Drupal\dkan_metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.storage service.
-   * @param \Drupal\datastore\DatastoreService $datastore
+   * @param \Drupal\dkan_datastore\DatastoreService $datastore
    *   The dkan.datastore.service service.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.

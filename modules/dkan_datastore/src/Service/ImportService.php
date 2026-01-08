@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\dkan_datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
-use Drupal\datastore\Events\DatastoreImportedEvent;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\Events\DatastoreImportedEvent;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
@@ -21,7 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Use the factory service (dkan.datastore.service.factory.import) to generate
  * these.
  *
- * @see \Drupal\datastore\Service\Factory\ImportServiceFactory::getInstance
+ * @see \Drupal\dkan_datastore\Service\Factory\ImportServiceFactory::getInstance
  */
 class ImportService {
 
@@ -96,9 +96,9 @@ class ImportService {
    *
    * @param \Drupal\dkan_common\DataResource $resource
    *   DKAN Resource.
-   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   * @param \Drupal\dkan_datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
    *   Import jobstore factory.
-   * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
+   * @param \Drupal\dkan_datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   DKAN logger channel service.
@@ -174,7 +174,7 @@ class ImportService {
   /**
    * Build an Importer.
    *
-   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
+   * @return \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob
    *   Importer.
    *
    * @throws \Exception
@@ -239,7 +239,7 @@ class ImportService {
   /**
    * Build a database table storage object.
    *
-   * @return \Drupal\datastore\Storage\DatabaseTable
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable
    *   DatabaseTable storage object.
    */
   public function getStorage(): DatabaseTable {

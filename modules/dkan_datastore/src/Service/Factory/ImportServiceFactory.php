@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\datastore\Service\Factory;
+namespace Drupal\dkan_datastore\Service\Factory;
 
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\Service\ImportService;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -22,7 +22,7 @@ class ImportServiceFactory implements ImportFactoryInterface {
   /**
    * Database table factory.
    *
-   * @var \Drupal\datastore\Storage\DatabaseTableFactory
+   * @var \Drupal\dkan_datastore\Storage\DatabaseTableFactory
    */
   private $databaseTableFactory;
 

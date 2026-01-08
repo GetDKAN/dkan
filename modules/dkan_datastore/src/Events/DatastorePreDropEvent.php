@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\datastore\Events;
+namespace Drupal\dkan_datastore\Events;
 
 /**
  * Event object for when we're about to drop a datastore.
  *
- * @see \Drupal\datastore\DatastoreService::EVENT_DATASTORE_PRE_DROP
+ * @see \Drupal\dkan_datastore\DatastoreService::EVENT_DATASTORE_PRE_DROP
  */
 class DatastorePreDropEvent extends DatastoreEventBase {
 

@@ -1,6 +1,6 @@
 services:
   dkan_datastore:commands:
-    class: \Drupal\datastore\Drush
+    class: \Drupal\dkan_datastore\Drush
     arguments:
       - '@dkan.metastore.service'
       - '@dkan.datastore.service'
@@ -12,13 +12,13 @@ services:
     tags:
       - { name: drush.command }
   dkan_datastore.purger.commands:
-    class: Drupal\datastore\Commands\PurgeCommands
+    class: Drupal\dkan_datastore\Commands\PurgeCommands
     arguments:
       - '@dkan.datastore.service.resource_purger'
     tags:
       - { name: drush.command }
   dkan_datastore.reimport.commands:
-    class: \Drupal\datastore\Commands\ReimportCommands
+    class: \Drupal\dkan_datastore\Commands\ReimportCommands
     arguments:
       - '@dkan.datastore.service'
       - '@dkan.common.dataset_info'

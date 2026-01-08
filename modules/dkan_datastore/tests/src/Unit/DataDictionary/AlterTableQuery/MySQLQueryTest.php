@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
+namespace Drupal\Tests\dkan_datastore\Unit\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\KeyValueStore\MemoryStorage;
-use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
-use Drupal\datastore\DataDictionary\IncompatibleTypeException;
-use Drupal\Tests\datastore\Unit\DataDictionary\UpdateQueryMock;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery;
+use Drupal\dkan_datastore\DataDictionary\IncompatibleTypeException;
+use Drupal\Tests\dkan_datastore\Unit\DataDictionary\UpdateQueryMock;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -17,9 +17,9 @@ use PDLT\ConverterInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery.
+ * Unit tests for Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery.
  *
- * @coversDefaultClass \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ * @coversDefaultClass \Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery
  *
  * @group dkan
  * @group datastore

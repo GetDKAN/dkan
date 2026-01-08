@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\datastore\Controller;
+namespace Drupal\dkan_datastore\Controller;
 
-use Drupal\datastore\Service\DatastoreQuery;
+use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Ilbee\CSVResponse\CSVResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -17,7 +17,7 @@ class QueryController extends AbstractQueryController {
   /**
    * Return correct JSON or CSV response.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
@@ -52,7 +52,7 @@ class QueryController extends AbstractQueryController {
    *
    * Alters the data array.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.

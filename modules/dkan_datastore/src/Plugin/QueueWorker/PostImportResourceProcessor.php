@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\datastore\Plugin\QueueWorker;
+namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\datastore\Service\PostImport;
+use Drupal\dkan_datastore\Service\PostImport;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -42,7 +42,7 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\datastore\Service\PostImport $post_import
+   * @param \Drupal\dkan_datastore\Service\PostImport $post_import
    *   The PostImport service.
    */
   public function __construct(

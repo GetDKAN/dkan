@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Functional;
+namespace Drupal\Tests\dkan_datastore\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
-use Drupal\datastore\Controller\ImportController;
+use Drupal\dkan_datastore\Controller\ImportController;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use GuzzleHttp\Client;
 use RootedData\RootedJsonData;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @group btb
  * @group functional1
  *
- * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
+ * @see \Drupal\Tests\dkan_datastore_mysql_import\Functional\DictionaryEnforcerTest
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
@@ -87,7 +87,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
   /**
    * Import controller.
    *
-   * @var \Drupal\datastore\Controller\ImportController
+   * @var \Drupal\dkan_datastore\Controller\ImportController
    */
   protected $importController;
 

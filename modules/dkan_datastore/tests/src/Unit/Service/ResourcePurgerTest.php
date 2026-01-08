@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Service;
+namespace Drupal\Tests\dkan_datastore\Unit\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
@@ -9,8 +9,8 @@ use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\ResourcePurger;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\ResourcePurger;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\Storage\Data;
 use Drupal\dkan_metastore\Storage\DataFactory;

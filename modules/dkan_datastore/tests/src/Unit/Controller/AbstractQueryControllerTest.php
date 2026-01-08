@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_common\Unit\Util;
 
-use Drupal\datastore\Controller\AbstractQueryController;
+use Drupal\dkan_datastore\Controller\AbstractQueryController;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 

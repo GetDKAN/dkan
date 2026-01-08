@@ -7,8 +7,8 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\dkan_common\DataResource;
 use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
-use Drupal\datastore\Service\Info\ImportInfoList;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\Info\ImportInfoList;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
@@ -31,7 +31,7 @@ class Drush extends DrushCommands {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\DatastoreService
+   * @var \Drupal\dkan_datastore\DatastoreService
    */
   protected $datastoreService;
 
@@ -58,7 +58,7 @@ class Drush extends DrushCommands {
   /**
    * The Datastore lookup service.
    *
-   * @var \Drupal\datastore\DatastoreLookupInterface
+   * @var \Drupal\dkan_datastore\DatastoreLookupInterface
    */
   protected DatastoreLookupInterface $datastoreLookup;
 

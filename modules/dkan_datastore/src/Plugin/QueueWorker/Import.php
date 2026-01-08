@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\datastore\Plugin\QueueWorker;
+namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\datastore\DatastoreService;
+use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 
 /**
  * Processes resource import.
  *
  * @deprecated
- * @see \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker
+ * @see \Drupal\dkan_datastore\Plugin\QueueWorker\ImportQueueWorker
  */
 class Import extends ImportQueueWorker {
 
@@ -27,7 +27,7 @@ class Import extends ImportQueueWorker {
    *   The plugin implementation definition.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   A config factory instance.
-   * @param \Drupal\datastore\DatastoreService $datastore
+   * @param \Drupal\dkan_datastore\DatastoreService $datastore
    *   A DKAN datastore service instance.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
    *   A logger channel factory instance.
@@ -50,7 +50,7 @@ class Import extends ImportQueueWorker {
     DatabaseConnectionFactoryInterface $datastoreConnectionFactory
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $configFactory, $datastore, $loggerFactory, $referenceLookup, $defaultConnectionFactory, $datastoreConnectionFactory);
-    @trigger_error(__NAMESPACE__ . '\Import is deprecated. Use \Drupal\datastore\Plugin\QueueWorker\ImportQueueWorker instead.', E_USER_DEPRECATED);
+    @trigger_error(__NAMESPACE__ . '\Import is deprecated. Use \Drupal\dkan_datastore\Plugin\QueueWorker\ImportQueueWorker instead.', E_USER_DEPRECATED);
   }
 
 }

@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Service;
+namespace Drupal\Tests\dkan_datastore\Kernel\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
  * @covers \Drupal\dkan_common\FileFetcher\FileFetcherFactory
- * @covers \Drupal\datastore\Service\ResourceLocalizer
- * @coversDefaultClass \Drupal\datastore\Service\ResourceLocalizer
+ * @covers \Drupal\dkan_datastore\Service\ResourceLocalizer
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourceLocalizer
  *
  * @group dkan
  * @group datastore
@@ -69,7 +69,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     );
 
     // OK, let's localize it.
-    /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $localizer */
     $localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     // Try to localize.
     $this->assertInstanceOf(
@@ -142,7 +142,7 @@ class ResourceLocalizerTest extends KernelTestBase {
 
     // OK, let's localize it, without registering the local perspective in the
     // mapper.
-    /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $localizer */
     $localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     // Try to localize.
     $this->assertInstanceOf(

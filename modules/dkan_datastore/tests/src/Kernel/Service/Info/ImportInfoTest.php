@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Service;
+namespace Drupal\Tests\dkan_datastore\Kernel\Service;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\datastore\Service\Info\ImportInfo
- * @coversDefaultClass \Drupal\datastore\Service\Info\ImportInfo
+ * @covers \Drupal\dkan_datastore\Service\Info\ImportInfo
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\Info\ImportInfo
  *
  * @group dkan
  * @group datastore
@@ -58,7 +58,7 @@ class ImportInfoTest extends KernelTestBase {
       $mapper->get($source_resource->getIdentifier(), ResourceLocalizer::LOCAL_FILE_PERSPECTIVE)
     );
 
-    /** @var \Drupal\datastore\Service\Info\ImportInfo $import_info */
+    /** @var \Drupal\dkan_datastore\Service\Info\ImportInfo $import_info */
     $import_info = $this->container->get('dkan.datastore.import_info');
 
     // Gather the item info before localization.
@@ -72,7 +72,7 @@ class ImportInfoTest extends KernelTestBase {
     $this->assertEquals(0, $import_info_item->fileFetcherBytes);
 
     // OK, let's localize it.
-    /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $resource_localizer */
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     // Try to localize.
     $this->assertInstanceOf(
@@ -109,11 +109,11 @@ class ImportInfoTest extends KernelTestBase {
 
     // Let's now examine the import job. It should be waiting, since we haven't
     // performed the import yet.
-    /** @var \Drupal\datastore\DatastoreService $datastore_service */
+    /** @var \Drupal\dkan_datastore\DatastoreService $datastore_service */
     $datastore_service = $this->container->get('dkan.datastore.service');
-    /** @var \Drupal\datastore\Service\ImportService $import_service */
+    /** @var \Drupal\dkan_datastore\Service\ImportService $import_service */
     $import_service = $datastore_service->getImportService($local_resource);
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+    /** @var \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_service->getImporter();
     $this->assertEquals(
       Result::WAITING,

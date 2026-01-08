@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Kernel\Service;
+namespace Drupal\Tests\dkan_datastore\Kernel\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\datastore\Events\DatastoreImportedEvent;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\ImportService;
+use Drupal\dkan_datastore\Events\DatastoreImportedEvent;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Service\ImportService;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @coversDefaultClass \Drupal\datastore\Service\ImportService
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\ImportService
  *
  * @group dkan
  * @group datastore
@@ -38,7 +38,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
   /**
    * Store the events we receive.
    *
-   * @var \Drupal\datastore\Events\DatastoreEventBase[]
+   * @var \Drupal\dkan_datastore\Events\DatastoreEventBase[]
    */
   protected array $events = [];
 
@@ -113,7 +113,7 @@ class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberI
     $this->assertCount(0, $this->events);
     $import_service->import();
     $this->assertCount(1, $this->events);
-    /** @var \Drupal\datastore\Events\DatastoreImportedEvent $event */
+    /** @var \Drupal\dkan_datastore\Events\DatastoreImportedEvent $event */
     $event = reset($this->events);
     $this->assertInstanceOf(
       DataResource::class,

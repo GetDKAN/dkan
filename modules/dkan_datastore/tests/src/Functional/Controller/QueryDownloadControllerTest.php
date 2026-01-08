@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Functional\Controller;
+namespace Drupal\Tests\dkan_datastore\Functional\Controller;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
@@ -10,7 +10,7 @@ use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use RootedData\RootedJsonData;
 
 /**
- * @coversDefaultClass \Drupal\datastore\Controller\QueryDownloadController
+ * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryDownloadController
  *
  * @group dkan
  * @group datastore
@@ -229,7 +229,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $distribution_id = $dataset->{'$["%Ref:distribution"][0].identifier'};
 
     // Dictionary fields are applied to the dataset.
-    /** @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
     $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
     $this->assertCount(
       1,

@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\datastore\Controller;
+namespace Drupal\dkan_datastore\Controller;
 
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Service\Query as QueryService;
+use Drupal\dkan_datastore\Service\DatastoreQuery;
+use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
 use RootedData\RootedJsonData;
@@ -162,7 +162,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *
    * Abstract method; override in specific implementations.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
@@ -181,7 +181,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   /**
    * Get metastore cache dependencies from a datastore query.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   The datastore query object.
    *
    * @return array
@@ -340,7 +340,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   /**
    * Build a CSV header row based on a query and result.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
    * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.

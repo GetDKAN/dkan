@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel;
+namespace Drupal\Tests\dkan_datastore\Kernel;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -13,7 +13,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @group btb
  * @group kernel
  *
- * @see \Drupal\Tests\datastore\Functional\UseLocalWithPrepareLocalizeTest
+ * @see \Drupal\Tests\dkan_datastore\Functional\UseLocalWithPrepareLocalizeTest
  */
 class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
 
@@ -65,7 +65,7 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
 
     // Run prepare-localized, emulating the Drush command.
     $identifier = $source_resource->getIdentifier();
-    /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $resource_localizer */
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     $info = $resource_localizer->prepareLocalized($identifier);
     $this->assertArrayHasKey('file', $info);

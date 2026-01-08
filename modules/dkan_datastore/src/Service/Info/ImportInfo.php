@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\datastore\Service\Info;
+namespace Drupal\dkan_datastore\Service\Info;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
@@ -20,7 +20,7 @@ class ImportInfo {
   /**
    * Resource localizer service.
    *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
+   * @var \Drupal\dkan_datastore\Service\ResourceLocalizer
    */
   private $resourceLocalizer;
 
@@ -95,7 +95,7 @@ class ImportInfo {
         $item->fileFetcherPercentDone = $this->getPercentDone($ff);
       }
 
-      /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+      /** @var \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob $import_job */
       if ($import_job = $this->getImporter($resource)) {
         $item->importerStatus = $import_job->getResult()->getStatus();
         $item->importerError = $import_job->getResult()->getError();
@@ -126,7 +126,7 @@ class ImportInfo {
    * @param \Drupal\dkan_common\DataResource $resource
    *   Resource object reperesenting the resource.
    *
-   * @return \Drupal\datastore\Plugin\QueueWorker\ImportJob
+   * @return \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob
    *   Import
    */
   protected function getImporter(DataResource $resource): ImportJob {

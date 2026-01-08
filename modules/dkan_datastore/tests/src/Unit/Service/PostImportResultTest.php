@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Service;
+namespace Drupal\Tests\dkan_datastore\Unit\Service;
 
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_metastore\ResourceMapper;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\PostImportResultFactory;
+use Drupal\dkan_datastore\PostImportResultFactory;
 
 /**
- * @covers \Drupal\datastore\PostImportResult
- * @coversDefaultClass \Drupal\datastore\PostImportResult
+ * @covers \Drupal\dkan_datastore\PostImportResult
+ * @coversDefaultClass \Drupal\dkan_datastore\PostImportResult
  *
  * @group dkan
  * @group datastore

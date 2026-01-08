@@ -1,23 +1,23 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Service;
+namespace Drupal\Tests\dkan_datastore\Kernel\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\PostImportResult;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
-use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\PostImportResult;
+use Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\dkan_metastore\ResourceMapper;
-use Drupal\datastore\Service\PostImport;
+use Drupal\dkan_datastore\Service\PostImport;
 
 /**
  * Tests the PostImport service.
  *
- * @covers \Drupal\datastore\Service\PostImport
- * @coversDefaultClass \Drupal\datastore\Service\PostImport
+ * @covers \Drupal\dkan_datastore\Service\PostImport
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\PostImport
  *
  * @group dkan
  * @group datastore
@@ -101,7 +101,7 @@ class PostImportTest extends KernelTestBase {
       ->disableOriginalConstructor()
       ->onlyMethods(['get'])
       ->getMock();
-    // Resource returns NULL  
+    // Resource returns NULL
     $resource_mapper->expects($this->once())
       ->method('get')
       ->willReturn(NULL);

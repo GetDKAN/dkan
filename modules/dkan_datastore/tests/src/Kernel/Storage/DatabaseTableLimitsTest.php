@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Storage;
+namespace Drupal\Tests\dkan_datastore\Kernel\Storage;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Service\Factory\ImportServiceFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 use org\bovigo\vfs\vfsStream;
 use Procrastinator\Result;
@@ -12,14 +12,14 @@ use Procrastinator\Result;
 /**
  * Find out and document what the limits are for table column names.
  *
- * @covers \Drupal\datastore\Storage\DatabaseTable
- * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
+ * @covers \Drupal\dkan_datastore\Storage\DatabaseTable
+ * @coversDefaultClass \Drupal\dkan_datastore\Storage\DatabaseTable
  *
  * @group dkan
  * @group datastore
  * @group kernel
  *
- * @see \Drupal\Tests\datastore_mysql_import\Kernel\Storage\MySqlDatabaseTableLimitsTest
+ * @see \Drupal\Tests\dkan_datastore_mysql_import\Kernel\Storage\MySqlDatabaseTableLimitsTest
  */
 class DatabaseTableLimitsTest extends KernelTestBase {
 
@@ -68,7 +68,7 @@ class DatabaseTableLimitsTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(ImportServiceFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+    /** @var \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
     $this->assertInstanceOf(DatabaseTable::class, $import_job->getStorage());

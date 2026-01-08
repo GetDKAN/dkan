@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\datastore\EventSubscriber;
+namespace Drupal\dkan_datastore\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\datastore\Service\ResourcePurger;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourcePurger;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\dkan_metastore\LifeCycle\LifeCycle;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 use Drupal\dkan_metastore\ResourceMapper;
@@ -79,11 +79,11 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   A ConfigFactory service instance.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   Logger channel.
-   * @param \Drupal\datastore\DatastoreService $service
+   * @param \Drupal\dkan_datastore\DatastoreService $service
    *   The dkan.datastore.service service.
-   * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
+   * @param \Drupal\dkan_datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_purger service.
-   * @param \Drupal\datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
+   * @param \Drupal\dkan_datastore\Storage\ImportJobStoreFactory $importJobStoreFactory
    *   The dkan.datastore.import_job_store_factory service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    *   The event dispatcher service.
@@ -233,7 +233,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * @param \Drupal\dkan_common\Events\Event $event
    *   The Event.
    *
-   * @see \Drupal\datastore\Service\ResourceLocalizer::EVENT_RESOURCE_LOCALIZED
+   * @see \Drupal\dkan_datastore\Service\ResourceLocalizer::EVENT_RESOURCE_LOCALIZED
    */
   public function onLocalizeComplete(Event $event) {
     $data = $event->getData();

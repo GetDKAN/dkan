@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Service\ResourceProcessor;
+namespace Drupal\Tests\dkan_datastore\Unit\Service\ResourceProcessor;
 
-use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
+use Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
- * @coversDefaultClass \Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
+ * @covers \Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
  *
  * @group dkan
  * @group datastore

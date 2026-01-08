@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Kernel\Storage;
+namespace Drupal\Tests\dkan_datastore\Kernel\Storage;
 
 use Drupal\Core\Database\Database;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\datastore\Storage\DatabaseConnectionFactory
- * @coversDefaultClass \Drupal\datastore\Storage\DatabaseConnectionFactory
+ * @covers \Drupal\dkan_datastore\Storage\DatabaseConnectionFactory
+ * @coversDefaultClass \Drupal\dkan_datastore\Storage\DatabaseConnectionFactory
  *
  * @group dkan
  * @group datastore
@@ -27,7 +27,7 @@ class DatabaseConnectionFactoryTest extends KernelTestBase {
   ];
 
   public function testConnectionInfo() {
-    /** @var \Drupal\datastore\Storage\DatabaseConnectionFactory $factory */
+    /** @var \Drupal\dkan_datastore\Storage\DatabaseConnectionFactory $factory */
     $factory = $this->container->get('dkan.datastore.database_connection_factory');
     // Just getting this service should have created the special connection
     // info target.

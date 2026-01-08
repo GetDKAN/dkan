@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Kernel\DataDictionary\AlterTableQuery;
+namespace Drupal\Tests\dkan_datastore\Kernel\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @coversDefaultClass \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery
+ * @coversDefaultClass \Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery
  *
  * @group dkan
  * @group datastore

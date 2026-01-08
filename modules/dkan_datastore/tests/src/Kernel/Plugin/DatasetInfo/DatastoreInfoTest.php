@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Kernel\Plugin\DatasetInfo;
+namespace Drupal\Tests\dkan_datastore\Kernel\Plugin\DatasetInfo;
 
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\Tests\dkan_common\Kernel\DatasetInfoTest;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\dkan_datastore\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Storage\QueryFactory;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Storage\QueryFactory;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -17,7 +17,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\DatastoreService
+   * @var \Drupal\dkan_datastore\DatastoreService
    */
   private $datastore;
 
@@ -33,7 +33,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\datastore\DatastoreService $datastore
+   * @param \Drupal\dkan_datastore\DatastoreService $datastore
    *   Main datastore service.
    */
   public function __construct(DatastoreService $datastore) {
@@ -43,7 +43,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Run query.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   DKAN Datastore Query API object.
    *
    * @return \RootedData\RootedJsonData
@@ -72,7 +72,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Get an a schema for each resource.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   DKAN Datastore Query API object.
    *
    * @return array
@@ -98,7 +98,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Retrieve storage objects for all resources, and map to their aliases.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
    *
    * @return array
@@ -117,7 +117,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Build query object for main "results query" for datastore.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
    * @param bool $fetch
    *   Perform fetchAll and return array if true, else just statement (cursor).
@@ -153,7 +153,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Return the datastore service.
    *
-   * @return \Drupal\datastore\DatastoreService
+   * @return \Drupal\dkan_datastore\DatastoreService
    *   Datastore Service.
    */
   protected function getDatastoreService() {
@@ -200,7 +200,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Build count query object for datastore.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
    */
   private function runCountQuery(DatastoreQuery $datastoreQuery) {
@@ -220,7 +220,7 @@ class Query implements ContainerInjectionInterface {
   /**
    * Under most circumstances, we want an explicit list of properties.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   Datastore query object to be modified.
    */
   private function getProperties(DatastoreQuery $datastoreQuery) {

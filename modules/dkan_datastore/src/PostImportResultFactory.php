@@ -46,7 +46,7 @@ class PostImportResultFactory {
    * @param \Drupal\dkan_common\DataResource $resource
    *   The DKAN resource being imported.
    *
-   * @return \Drupal\datastore\PostImportResult
+   * @return \Drupal\dkan_datastore\PostImportResult
    *   The PostImportResult object.
    */
   public function initializeFromResource($status, $message, DataResource $resource): PostImportResult {
@@ -67,7 +67,7 @@ class PostImportResultFactory {
    * @param array $distribution
    *   The distribution.
    *
-   * @return \Drupal\datastore\PostImportResult
+   * @return \Drupal\dkan_datastore\PostImportResult
    *   The PostImportResult object.
    */
   public function initializeFromDistribution(array $distribution): PostImportResult {

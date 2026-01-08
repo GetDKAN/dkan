@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Functional\Api1;
+namespace Drupal\Tests\dkan_datastore\Functional\Api1;
 
 use Drupal\Tests\dkan_common\Functional\Api1TestBase;
 use GuzzleHttp\RequestOptions;

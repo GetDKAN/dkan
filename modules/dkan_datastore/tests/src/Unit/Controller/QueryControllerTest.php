@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Controller;
+namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\dkan_common\DatasetInfo;
-use Drupal\datastore\Controller\QueryController;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Query;
-use Drupal\datastore\Storage\SqliteDatabaseTable;
+use Drupal\dkan_datastore\Controller\QueryController;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\Query;
+use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Storage;
+namespace Drupal\dkan_datastore\Storage;
 
 /**
  * Simple object for storing summary information.

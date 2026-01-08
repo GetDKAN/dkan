@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
+namespace Drupal\Tests\dkan_datastore\Unit\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\datastore\DataDictionary\AlterTableQueryBase;
-use Drupal\datastore\DataDictionary\AlterTableQueryBuilderBase;
-use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBase;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderBase;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
 
 use MockChain\Chain;
 use PDLT\ConverterInterface;
@@ -52,7 +52,7 @@ class TestBuilder extends AlterTableQueryBuilderBase {
 }
 
 /**
- * Unit tests for Drupal\datastore\DataDictionary\AlterTableQueryBuilderBase.
+ * Unit tests for Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderBase.
  */
 class BuilderTest extends TestCase {
 

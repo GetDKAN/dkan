@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
+namespace Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker;
 
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\datastore\Plugin\QueueWorker\ResourcePurgerWorker;
-use Drupal\datastore\Service\ResourcePurger;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ResourcePurgerWorker;
+use Drupal\dkan_datastore\Service\ResourcePurger;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

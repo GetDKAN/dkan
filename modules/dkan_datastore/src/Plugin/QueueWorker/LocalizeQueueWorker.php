@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\datastore\Plugin\QueueWorker;
+namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -43,7 +43,7 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
    *   A DKAN datastore service instance.
-   * @param \Drupal\datastore\Service\ResourceLocalizer $resourceLocalizer
+   * @param \Drupal\dkan_datastore\Service\ResourceLocalizer $resourceLocalizer
    *   Resource localizer service.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   A logger channel factory instance.

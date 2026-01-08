@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\EventSubscriber;
+namespace Drupal\Tests\dkan_datastore\Unit\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
@@ -9,13 +9,13 @@ use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
 use Drupal\dkan_common\Storage\JobStore;
 use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Service\ResourcePurger;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\EventSubscriber\DatastoreSubscriber;
+use Drupal\dkan_datastore\Service\Factory\ImportServiceFactory;
+use Drupal\dkan_datastore\Service\ImportService;
+use Drupal\dkan_datastore\Service\ResourcePurger;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 use MockChain\Chain;
 use MockChain\Options;
@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @coversDefaultClass \Drupal\datastore\EventSubscriber\DatastoreSubscriber
+ * @coversDefaultClass \Drupal\dkan_datastore\EventSubscriber\DatastoreSubscriber
  *
  * @group dkan
  * @group datastore

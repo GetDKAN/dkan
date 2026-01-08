@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\datastore\Functional;
+namespace Drupal\Tests\dkan_datastore\Functional;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use Procrastinator\Result;
 
@@ -15,8 +15,8 @@ use Procrastinator\Result;
  * kernel tests use SQLite.
  *
  * @covers \Drupal\dkan_common\FileFetcher\FileFetcherFactory
- * @covers \Drupal\datastore\DatastoreService
- * @coversDefaultClass \Drupal\datastore\DatastoreService
+ * @covers \Drupal\dkan_datastore\DatastoreService
+ * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
  * @group datastore
  * @group btb
@@ -49,7 +49,7 @@ class DatastoreServiceTest extends BrowserTestBase {
   /**
    * @dataProvider provideUseExisting
    *
-   * @see \Drupal\Tests\datastore\Kernel\Service\ResourceLocalizerTest::testLocalizeOverwriteExistingLocalFile()
+   * @see \Drupal\Tests\dkan_datastore\Kernel\Service\ResourceLocalizerTest::testLocalizeOverwriteExistingLocalFile()
    */
   public function testLocalizeOverwriteExistingLocalFile($use_existing) {
     // Config for overwrite.
@@ -92,7 +92,7 @@ class DatastoreServiceTest extends BrowserTestBase {
 
     // Now we perform the import using DatastoreService, never deferred because
     // this is a test.
-    /** @var \Drupal\datastore\DatastoreService $datastore_service */
+    /** @var \Drupal\dkan_datastore\DatastoreService $datastore_service */
     $datastore_service = $this->container->get('dkan.datastore.service');
     $response = $datastore_service->import($source_resource->getIdentifier(), FALSE);
 
@@ -105,7 +105,7 @@ class DatastoreServiceTest extends BrowserTestBase {
     }
 
     // What about our local perspective?
-    /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $localizer */
     $localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     $this->assertInstanceOf(
       DataResource::class,

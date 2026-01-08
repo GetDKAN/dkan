@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\datastore\Form;
+namespace Drupal\dkan_datastore\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\datastore\Controller\QueryController;
+use Drupal\dkan_datastore\Controller\QueryController;
 use Drupal\dkan_metastore\SchemaPropertiesHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Datastore settings form.
  *
- * @package Drupal\datastore\Form
+ * @package Drupal\dkan_datastore\Form
  * @codeCoverageIgnore
  */
 class DatastoreSettingsForm extends ConfigFormBase {

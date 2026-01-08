@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\dkan_datastore\Service;
 
 /**
  * Collector responsible for gathering processors to run after resource import.
@@ -10,14 +10,14 @@ class ResourceProcessorCollector {
   /**
    * Post import resource processors.
    *
-   * @var \Drupal\datastore\Service\ResourceProcessorInterface[]
+   * @var \Drupal\dkan_datastore\Service\ResourceProcessorInterface[]
    */
   protected array $processors;
 
   /**
    * Service collector add method.
    *
-   * @param \Drupal\datastore\Service\ResourceProcessorInterface $processor
+   * @param \Drupal\dkan_datastore\Service\ResourceProcessorInterface $processor
    *   Post import resource processor.
    * @param int $priority
    *   Priority to associate with processor.
@@ -29,7 +29,7 @@ class ResourceProcessorCollector {
   /**
    * Retrieve collected resource processors.
    *
-   * @return \Drupal\datastore\Service\ResourceProcessorInterface[]
+   * @return \Drupal\dkan_datastore\Service\ResourceProcessorInterface[]
    *   Collected resource processors sorted in ascending order of priority.
    */
   public function getResourceProcessors(): array {

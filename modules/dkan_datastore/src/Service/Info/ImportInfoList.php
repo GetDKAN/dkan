@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Service\Info;
+namespace Drupal\dkan_datastore\Service\Info;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\Storage\FileFetcherJobStoreFactory;
@@ -19,7 +19,7 @@ class ImportInfoList implements ContainerInjectionInterface {
   /**
    * Datastore import job info.
    *
-   * @var \Drupal\datastore\Service\Info\ImportInfo
+   * @var \Drupal\dkan_datastore\Service\Info\ImportInfo
    */
   private $importInfo;
 

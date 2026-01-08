@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\datastore\Traits;
+namespace Drupal\Tests\dkan_datastore\Traits;
 
 use MockChain\Options;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore\Service\Factory\Resource as ResourceServiceFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Service\Factory\Resource as ResourceServiceFactory;
 use Drupal\Core\Database\Connection;
 
 /**

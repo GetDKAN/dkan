@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Storage;
+namespace Drupal\dkan_datastore\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\DataResource;

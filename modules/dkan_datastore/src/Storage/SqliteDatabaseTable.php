@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Storage;
+namespace Drupal\dkan_datastore\Storage;
 
 /**
  * Database table storage class modified for SQLite.

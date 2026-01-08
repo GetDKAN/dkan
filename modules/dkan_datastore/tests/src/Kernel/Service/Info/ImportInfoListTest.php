@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Service\Info;
+namespace Drupal\Tests\dkan_datastore\Kernel\Service\Info;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\FileFetcherJobStoreFactory;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\dkan_common\Storage\JobStore;
-use Drupal\datastore\Service\Info\ImportInfo;
+use Drupal\dkan_datastore\Service\Info\ImportInfo;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dkan_metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
@@ -69,7 +69,7 @@ class ImportInfoListTest extends KernelTestBase {
     $this->container->set('dkan.common.filefetcher_job_store_factory', $job_store_factory);
 
     // Build the list.
-    /** @var \Drupal\datastore\Service\Info\ImportInfoList $import_info_list */
+    /** @var \Drupal\dkan_datastore\Service\Info\ImportInfoList $import_info_list */
     $import_info_list = $this->container->get('dkan.datastore.import_info_list');
     $list = $import_info_list->buildList();
 

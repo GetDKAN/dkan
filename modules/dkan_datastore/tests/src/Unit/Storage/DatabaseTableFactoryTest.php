@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Storage;
+namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;

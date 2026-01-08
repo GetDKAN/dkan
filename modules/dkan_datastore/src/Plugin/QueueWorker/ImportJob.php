@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Plugin\QueueWorker;
+namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use CsvParser\Parser\ParserInterface;
 use Drupal\dkan_common\Storage\DatabaseTableInterface;

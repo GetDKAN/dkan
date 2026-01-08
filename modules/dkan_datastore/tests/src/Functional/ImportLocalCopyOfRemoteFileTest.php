@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\datastore\Functional;
+namespace Drupal\Tests\dkan_datastore\Functional;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\FileFetcher\FileFetcherRemoteUseExisting;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use FileFetcher\FileFetcher;
 use FileFetcher\Processor\Remote;
@@ -107,7 +107,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
 
     // Interrogate the file fetcher. We want to test which processor class it
     // uses.
-    /** @var \Drupal\datastore\Service\ResourceLocalizer $resource_localizer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $resource_localizer */
     $resource_localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     $file_fetcher = $resource_localizer->getFileFetcher($source_resource);
     $ref_get_processor = new \ReflectionMethod($file_fetcher, 'getProcessor');

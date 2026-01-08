@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Service\ResourceProcessor;
+namespace Drupal\Tests\dkan_datastore\Kernel\Service\ResourceProcessor;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
-use Drupal\datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
+use Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 /**
- * @coversDefaultClass \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
- * @covers \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer
+ * @covers \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer
  *
  * @group dkan
  * @group datastore
@@ -41,7 +41,7 @@ class DictionaryEnforcerTest extends KernelTestBase {
 
     $this->container->set('dkan.metastore.data_dictionary_discovery', $discovery);
 
-    /** @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $enforcer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer $enforcer */
     $enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
     $ref_get = new \ReflectionMethod($enforcer, 'getDataDictionaryForResource');
     $ref_get->setAccessible(TRUE);

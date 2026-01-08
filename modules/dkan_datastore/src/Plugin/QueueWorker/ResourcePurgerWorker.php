@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\datastore\Plugin\QueueWorker;
+namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\datastore\Service\ResourcePurger;
+use Drupal\dkan_datastore\Service\ResourcePurger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -21,7 +21,7 @@ class ResourcePurgerWorker extends QueueWorkerBase implements ContainerFactoryPl
   /**
    * Resource purger service.
    *
-   * @var \Drupal\datastore\Service\ResourcePurger
+   * @var \Drupal\dkan_datastore\Service\ResourcePurger
    */
   private $resourcePurger;
 

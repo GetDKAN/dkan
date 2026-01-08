@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\dkan_datastore\Service;
 
 use Contracts\FactoryInterface;
 use Drupal\dkan_common\DataResource;

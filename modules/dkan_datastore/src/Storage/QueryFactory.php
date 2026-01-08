@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\datastore\Storage;
+namespace Drupal\dkan_datastore\Storage;
 
 use Drupal\dkan_common\Storage\Query;
-use Drupal\datastore\Service\DatastoreQuery;
+use Drupal\dkan_datastore\Service\DatastoreQuery;
 
 /**
  * Product a Query object based on a Datastore Query.
@@ -13,7 +13,7 @@ class QueryFactory {
   /**
    * Datastore Query object for conversion.
    *
-   * @var Drupal\datastore\Service\DatastoreQuery
+   * @var Drupal\dkan_datastore\Service\DatastoreQuery
    */
   private $datastoreQuery;
 
@@ -27,7 +27,7 @@ class QueryFactory {
   /**
    * Constructor.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   Datastore query request object.
    * @param array $storageMap
    *   Storage map array.
@@ -40,7 +40,7 @@ class QueryFactory {
   /**
    * Static factory create method.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   Datastore query request object.
    * @param array $storageMap
    *   Storage map array.

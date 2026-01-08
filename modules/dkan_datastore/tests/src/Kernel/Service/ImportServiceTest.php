@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Service;
+namespace Drupal\Tests\dkan_datastore\Kernel\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\ImportService;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Service\ImportService;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 use Symfony\Component\ErrorHandler\BufferingLogger;
 
 /**
- * @coversDefaultClass \Drupal\datastore\Service\ImportService
- * @covers \Drupal\datastore\Service\ImportService
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\ImportService
+ * @covers \Drupal\dkan_datastore\Service\ImportService
  *
  * @group dkan
  * @group datastore
@@ -55,7 +55,7 @@ class ImportServiceTest extends KernelTestBase {
     $import_job->method('getResult')
       ->willReturn($result);
 
-    /** @var \Drupal\datastore\Service\ImportService $import_service */
+    /** @var \Drupal\dkan_datastore\Service\ImportService $import_service */
     $import_service = $this->getMockBuilder(ImportService::class)
       ->onlyMethods(['getImporter'])
       ->setConstructorArgs([
@@ -64,7 +64,7 @@ class ImportServiceTest extends KernelTestBase {
         $this->container->get('dkan.datastore.database_table_factory'),
         $this->container->get('dkan.datastore.logger_channel'),
         $this->container->get('event_dispatcher'),
-        $this->container->get('dkan.metastore.reference_lookup'), 
+        $this->container->get('dkan.metastore.reference_lookup'),
       ])
       ->getMock();
     $import_service->method('getImporter')
@@ -106,7 +106,7 @@ class ImportServiceTest extends KernelTestBase {
     $this->container->set('logger.factory', $logger_factory);
 
     // Get an import service.
-    /** @var \Drupal\datastore\Service\Factory\ImportServiceFactory $import_service_factory */
+    /** @var \Drupal\dkan_datastore\Service\Factory\ImportServiceFactory $import_service_factory */
     $import_service_factory = $this->container->get('dkan.datastore.service.factory.import');
     $import_service = $import_service_factory->getInstance('id', [
       'resource' => new DataResource('abc.txt', 'text/csv'),

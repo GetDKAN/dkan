@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Service\ResourceProcessor;
+namespace Drupal\Tests\dkan_datastore\Unit\Service\ResourceProcessor;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Config;
@@ -8,15 +8,15 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
-use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\PostImport;
-use Drupal\datastore\Service\ResourceProcessorCollector;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\dkan_datastore\Plugin\QueueWorker\PostImportResourceProcessor;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\PostImport;
+use Drupal\dkan_datastore\Service\ResourceProcessorCollector;
+use Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Drupal\dkan_metastore\MetastoreService;
@@ -28,13 +28,13 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RootedData\RootedJsonData;
 use Drupal\Core\Database\Connection;
-use Drupal\datastore\PostImportResultFactory;
-use Drupal\datastore\PostImportResult;
+use Drupal\dkan_datastore\PostImportResultFactory;
+use Drupal\dkan_datastore\PostImportResult;
 
 /**
- * Test \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer.
+ * Test \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer.
  *
- * @coversDefaultClass \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer
  *
  * @group dkan
  * @group datastore

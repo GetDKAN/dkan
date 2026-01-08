@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\SqlParser;
+namespace Drupal\Tests\dkan_datastore\Unit\SqlParser;
 
 use PHPUnit\Framework\TestCase;
-use Drupal\datastore\SqlParser\SqlParser;
+use Drupal\dkan_datastore\SqlParser\SqlParser;
 
 /**
  * @group dkan
@@ -11,8 +11,8 @@ use Drupal\datastore\SqlParser\SqlParser;
  * @group sqlparser
  * @group unit
  *
- * @covers \Drupal\datastore\SqlParser\SqlParser
- * @coversDefaultClass \Drupal\datastore\SqlParser\SqlParser
+ * @covers \Drupal\dkan_datastore\SqlParser\SqlParser
+ * @coversDefaultClass \Drupal\dkan_datastore\SqlParser\SqlParser
  */
 class SqlParserTest extends TestCase {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Service\Factory;
+namespace Drupal\dkan_datastore\Service\Factory;
 
 use Contracts\FactoryInterface;
 

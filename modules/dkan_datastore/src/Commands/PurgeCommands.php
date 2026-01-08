@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\datastore\Commands;
+namespace Drupal\dkan_datastore\Commands;
 
-use Drupal\datastore\Service\ResourcePurger;
+use Drupal\dkan_datastore\Service\ResourcePurger;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
@@ -16,14 +16,14 @@ class PurgeCommands extends DrushCommands {
   /**
    * Resource purger.
    *
-   * @var \Drupal\datastore\Service\ResourcePurger
+   * @var \Drupal\dkan_datastore\Service\ResourcePurger
    */
   protected $resourcePurger;
 
   /**
    * PurgeCommands constructor.
    *
-   * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
+   * @param \Drupal\dkan_datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_localizer service.
    */
   public function __construct(ResourcePurger $resourcePurger) {

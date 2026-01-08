@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\AlterTableQuery;
+namespace Drupal\dkan_datastore\DataDictionary\AlterTableQuery;
 
-use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
-use Drupal\datastore\DataDictionary\AlterTableQueryBuilderBase;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
-use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBuilderBase;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery;
 
 /**
  * MySQL alter table query builder.

@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Kernel;
+namespace Drupal\Tests\dkan_datastore\Unit\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\datastore\Controller\ImportController;
+use Drupal\dkan_datastore\Controller\ImportController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @covers \Drupal\datastore\Controller\ImportController
- * @coversDefaultClass \Drupal\datastore\Controller\ImportController
+ * @covers \Drupal\dkan_datastore\Controller\ImportController
+ * @coversDefaultClass \Drupal\dkan_datastore\Controller\ImportController
  *
  * @group dkan
  * @group datastore

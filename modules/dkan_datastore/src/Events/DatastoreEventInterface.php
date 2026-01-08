@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Events;
+namespace Drupal\dkan_datastore\Events;
 
 use Drupal\dkan_common\DataResource;
 

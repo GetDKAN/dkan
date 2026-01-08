@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary;
+namespace Drupal\dkan_datastore\DataDictionary;
 
 use Drupal\Component\Uuid\UuidInterface;
 
 use Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
 
 use PDLT\ConverterInterface;
 use RootedData\RootedJsonData;

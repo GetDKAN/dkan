@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Service;
+namespace Drupal\Tests\dkan_datastore\Unit\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\FileFetcher\FileFetcherFactory;
@@ -12,7 +12,7 @@ use Drupal\Core\File\FileSystem;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use MockChain\Chain;

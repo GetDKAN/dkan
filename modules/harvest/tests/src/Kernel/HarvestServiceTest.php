@@ -84,7 +84,7 @@ class HarvestServiceTest extends KernelTestBase {
     );
 
     // Check the round-trip to the database.
-    /** @var \Drupal\datastore\Storage\DatabaseTableFactory $harvest_storage_factory */
+    /** @var \Drupal\dkan_datastore\Storage\DatabaseTableFactory $harvest_storage_factory */
     $harvest_storage_factory = $this->container->get('dkan.harvest.storage.database_table');
     $this->assertNotEmpty(
       $storedTestPlanJson = $harvest_storage_factory

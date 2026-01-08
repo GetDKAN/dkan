@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\datastore\Commands;
+namespace Drupal\dkan_datastore\Commands;
 
 use Drupal\dkan_common\DatasetInfo;
-use Drupal\datastore\DatastoreService;
+use Drupal\dkan_datastore\DatastoreService;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -16,7 +16,7 @@ class ReimportCommands extends DrushCommands {
   /**
    * The datastore service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\dkan_datastore\Service
    */
   protected DatastoreService $datastoreService;
 
@@ -28,7 +28,7 @@ class ReimportCommands extends DrushCommands {
   /**
    * Constructor for DkanDatastoreCommands.
    *
-   * @param \Drupal\datastore\DatastoreService $datastore_service
+   * @param \Drupal\dkan_datastore\DatastoreService $datastore_service
    *   The dkan.datastore.service service.
    * @param \Drupal\dkan_common\DatasetInfo $dataset_info
    *   Dataset information service.

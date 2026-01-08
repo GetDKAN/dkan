@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Kernel;
+namespace Drupal\Tests\dkan_datastore\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dkan_common\Storage\DatabaseTableInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 
 /**
- * @coversDefaultClass \Drupal\datastore\DatastoreService
+ * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
  * @group dkan
  * @group datastore

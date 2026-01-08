@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore\Unit\Service\Factory;
+namespace Drupal\Tests\dkan_datastore\Unit\Service\Factory;
 
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\Service\Factory\ImportServiceFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @covers \Drupal\datastore\Service\Factory\ImportServiceFactory
- * @coversDefaultClass \Drupal\datastore\Service\Factory\ImportServiceFactory
+ * @covers \Drupal\dkan_datastore\Service\Factory\ImportServiceFactory
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\Factory\ImportServiceFactory
  *
  * @group dkan
  * @group datastore

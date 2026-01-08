@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\datastore\Controller;
+namespace Drupal\dkan_datastore\Controller;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Info\ImportInfoList;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\Info\ImportInfoList;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Symfony\Component\DependencyInjection\ContainerInterface;

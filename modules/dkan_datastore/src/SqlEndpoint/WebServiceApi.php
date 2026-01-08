@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\SqlEndpoint;
+namespace Drupal\dkan_datastore\SqlEndpoint;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,7 +22,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * DKAN SQL Endpoint service.
    *
-   * @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService
+   * @var \Drupal\dkan_datastore\SqlEndpoint\DatastoreSqlEndpointService
    */
   private $service;
 

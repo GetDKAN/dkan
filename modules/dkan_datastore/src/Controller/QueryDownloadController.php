@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\datastore\Controller;
+namespace Drupal\dkan_datastore\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_common\DatasetInfo;
-use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Service\Query as QueryService;
+use Drupal\dkan_datastore\Service\DatastoreQuery;
+use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -68,7 +68,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Set up the Streamed Response callback.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
    * @param \RootedData\RootedJsonData $result
    *   Query result.
@@ -136,7 +136,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Set up the Streamed JSON Response.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
    * @param \RootedData\RootedJsonData $result
    *   Query result.
@@ -162,7 +162,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Set up the Stream query result as json objects.
    *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
    */
   protected function loadJson(DatastoreQuery $datastoreQuery) {

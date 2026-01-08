@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Controller;
+namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Storage\Data;

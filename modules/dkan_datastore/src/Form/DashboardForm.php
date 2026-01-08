@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Form;
+namespace Drupal\dkan_datastore\Form;
 
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -16,7 +16,7 @@ use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\harvest\HarvestService;
 use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\datastore\PostImportResultFactory;
+use Drupal\dkan_datastore\PostImportResultFactory;
 
 /**
  * Datastore Import Dashboard form.
@@ -94,7 +94,7 @@ class DashboardForm extends FormBase {
    *   Pager manager service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   Date formatter service.
-   * @param \Drupal\datastore\PostImportResultFactory $postImportResultFactory
+   * @param \Drupal\dkan_datastore\PostImportResultFactory $postImportResultFactory
    *   The PostImportResultFactory service..
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager service.

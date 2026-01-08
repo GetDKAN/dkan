@@ -1,21 +1,21 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit;
+namespace Drupal\Tests\dkan_datastore\Unit;
 
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\JobStore;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Service\Info\ImportInfoList;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\Factory\ImportServiceFactory;
+use Drupal\dkan_datastore\Service\ImportService;
+use Drupal\dkan_datastore\Service\Info\ImportInfoList;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
-use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use Drupal\dkan_metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
@@ -27,8 +27,8 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * @covers \Drupal\datastore\DatastoreService
- * @coversDefaultClass \Drupal\datastore\DatastoreService
+ * @covers \Drupal\dkan_datastore\DatastoreService
+ * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
  * @group dkan
  * @group datastore

@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\datastore\SqlEndpoint;
+namespace Drupal\dkan_datastore\SqlEndpoint;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\Storage\Query;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
-use Drupal\datastore\SqlParser\SqlParser;
-use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
+use Drupal\dkan_datastore\SqlParser\SqlParser;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Maquina\StateMachine\Machine;
 use Maquina\StateMachine\MachineOfMachines;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -28,7 +28,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * The datastore service object.
    *
-   * @var \Drupal\datastore\DatastoreService
+   * @var \Drupal\dkan_datastore\DatastoreService
    */
   private $datastoreService;
 
@@ -45,7 +45,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Constructor, sets the datastoreService and configFactory properties.
    *
-   * @param \Drupal\datastore\DatastoreService $datastoreService
+   * @param \Drupal\dkan_datastore\DatastoreService $datastoreService
    *   The datastore service object.
    * @param \Drupal\Core\Config\ConfigFactory $configFactory
    *   An instance of Drupal's configFactory.
@@ -146,7 +146,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
    * @param string $sqlString
    *   A string with a sql statement.
    *
-   * @return \Drupal\datastore\Storage\Query
+   * @return \Drupal\dkan_datastore\Storage\Query
    *   A query object.
    */
   private function getQueryObject(string $sqlString): Query {

@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Plugin\QueueWorker;
+namespace Drupal\Tests\dkan_datastore\Kernel\Plugin\QueueWorker;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Plugin\QueueWorker\LocalizeQueueWorker;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker
- * @coversDefaultClass \Drupal\datastore\Plugin\QueueWorker\LocalizeQueueWorker
+ * @covers \Drupal\dkan_datastore\Plugin\QueueWorker\LocalizeQueueWorker
+ * @coversDefaultClass \Drupal\dkan_datastore\Plugin\QueueWorker\LocalizeQueueWorker
  *
  * @group datastore
  * @group kernel
@@ -75,7 +75,7 @@ class LocalizeQueueWorkerTest extends KernelTestBase {
     $this->assertNotNull($mapper->get($source_resource->getIdentifier()));
 
     // Check the file system to be sure it's set the way it should be.
-    /** @var \Drupal\datastore\Service\ResourceLocalizer $localizer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $localizer */
     $localizer = $this->container->get('dkan.datastore.service.resource_localizer');
     // Compute the public file URI for the resource.
     $public_uri = $localizer->localizeFilePath($source_resource);

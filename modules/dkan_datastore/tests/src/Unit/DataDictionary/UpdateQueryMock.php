@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\DataDictionary;
+namespace Drupal\Tests\dkan_datastore\Unit\DataDictionary;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Update;

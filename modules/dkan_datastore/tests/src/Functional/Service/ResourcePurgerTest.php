@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Functional\Service;
+namespace Drupal\Tests\dkan_datastore\Functional\Service;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\CleanUp;
@@ -11,7 +11,7 @@ use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 /**
  * Test ResourcePurger service.
  *
- * @coversDefaultClass \Drupal\datastore\Service\ResourcePurger
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourcePurger
  *
  * @group dkan
  * @group datastore

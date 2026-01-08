@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\AlterTableQuery;
+namespace Drupal\dkan_datastore\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\StatementInterface;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\DataDictionary\AlterTableQueryBase;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
-use Drupal\datastore\DataDictionary\IncompatibleTypeException;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryBase;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\dkan_datastore\DataDictionary\IncompatibleTypeException;
 
 /**
  * MySQL table alter query.
@@ -289,7 +289,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * @return array
    *   MySQL type arguments.
    *
-   * @throws Drupal\datastore\DataDictionary\IncompatibleTypeException
+   * @throws Drupal\dkan_datastore\DataDictionary\IncompatibleTypeException
    *   When incompatible data is found in the table for the specified type.
    */
   protected function buildTypeArgs(string $type, string $column, string $table): array {

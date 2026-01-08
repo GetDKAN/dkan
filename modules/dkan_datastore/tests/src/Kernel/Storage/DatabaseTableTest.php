@@ -1,22 +1,22 @@
 <?php
 
-namespace Drupal\Tests\datastore\Kernel\Storage;
+namespace Drupal\Tests\dkan_datastore\Kernel\Storage;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\ImportedItemInterface;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Service\Factory\ImportServiceFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\dkan_common\Unit\Connection;
 use Procrastinator\Result;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @covers \Drupal\datastore\Storage\DatabaseTable
- * @coversDefaultClass \Drupal\datastore\Storage\DatabaseTable
+ * @covers \Drupal\dkan_datastore\Storage\DatabaseTable
+ * @coversDefaultClass \Drupal\dkan_datastore\Storage\DatabaseTable
  *
  * @group dkan
  * @group datastore

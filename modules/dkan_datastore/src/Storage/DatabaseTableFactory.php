@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Storage;
+namespace Drupal\dkan_datastore\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\dkan_common\DataResource;
@@ -51,7 +51,7 @@ class DatabaseTableFactory implements FactoryInterface {
    * @param array $config
    *   Must contain a 'resource' key, which is a DataResource object.
    *
-   * @return \Drupal\datastore\Storage\DatabaseTable
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable
    *   A DatabaseTable object.
    */
   public function getInstance(string $identifier, array $config = []) {
@@ -70,7 +70,7 @@ class DatabaseTableFactory implements FactoryInterface {
    * @param \Drupal\dkan_common\DataResource $resource
    *   A resource.
    *
-   * @return \Drupal\datastore\Storage\DatabaseTable
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable
    *   A DatabaseTable object.
    */
   protected function getDatabaseTable(DataResource $resource) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\SqlEndpoint\Helper;
+namespace Drupal\dkan_datastore\SqlEndpoint\Helper;
 
 /**
  * SQL Endpoint state machine processor.

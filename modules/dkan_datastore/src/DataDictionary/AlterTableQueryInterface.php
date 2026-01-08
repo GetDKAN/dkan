@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary;
+namespace Drupal\dkan_datastore\DataDictionary;
 
 /**
  * Alter table query interface.

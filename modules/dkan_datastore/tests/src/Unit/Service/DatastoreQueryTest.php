@@ -1,32 +1,32 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Service;
+namespace Drupal\Tests\dkan_datastore\Unit\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\dkan_metastore\ResourceMapper;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\Tests\datastore\Traits\TestHelperTrait;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
+use Drupal\Tests\dkan_datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Factory\ImportServiceFactory;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\Service\Factory\ImportServiceFactory;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Service\Info\ImportInfoList;
-use Drupal\datastore\Service\Query;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\QueryFactory;
+use Drupal\dkan_datastore\Service\DatastoreQuery;
+use Drupal\dkan_datastore\Service\ImportService;
+use Drupal\dkan_datastore\Service\Info\ImportInfoList;
+use Drupal\dkan_datastore\Service\Query;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\QueryFactory;
 use Drupal\dkan_metastore\Storage\Data;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\Tests\dkan_common\Unit\Storage\QueryDataProvider as QueryData;
-use Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer;
+use Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 

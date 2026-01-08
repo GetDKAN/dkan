@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\dkan_datastore\Service;
 
 use RootedData\RootedJsonData;
 

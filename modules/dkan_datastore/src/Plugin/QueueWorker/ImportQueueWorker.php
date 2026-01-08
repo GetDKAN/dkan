@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\datastore\Plugin\QueueWorker;
+namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\dkan_common\Storage\ImportedItemInterface;
-use Drupal\datastore\DatastoreService;
+use Drupal\dkan_datastore\DatastoreService;
 use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,7 +36,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
   /**
    * DKAN datastore service instance.
    *
-   * @var \Drupal\datastore\DatastoreService
+   * @var \Drupal\dkan_datastore\DatastoreService
    */
   protected $datastore;
 
@@ -70,7 +70,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
    *   The plugin implementation definition.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   A config factory instance.
-   * @param \Drupal\datastore\DatastoreService $datastore
+   * @param \Drupal\dkan_datastore\DatastoreService $datastore
    *   A DKAN datastore service instance.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   A logger channel factory instance.

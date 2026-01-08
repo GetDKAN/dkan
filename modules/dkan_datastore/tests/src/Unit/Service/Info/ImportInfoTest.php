@@ -1,19 +1,19 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Service\Info;
+namespace Drupal\Tests\dkan_datastore\Unit\Service\Info;
 
 use Contracts\Mock\Storage\Memory;
 use CsvParser\Parser\Csv;
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore\Service\Info\ImportInfo;
-use Drupal\Tests\datastore\Unit\Plugin\QueueWorker\TestMemStorage;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Service\Info\ImportInfo;
+use Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker\TestMemStorage;
 use FileFetcher\FileFetcher;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Job\Job;
 
 /**
- * @coversDefaultClass \Drupal\datastore\Service\Info\ImportInfo
+ * @coversDefaultClass \Drupal\dkan_datastore\Service\Info\ImportInfo
  *
  * @group dkan
  * @group dkan-core

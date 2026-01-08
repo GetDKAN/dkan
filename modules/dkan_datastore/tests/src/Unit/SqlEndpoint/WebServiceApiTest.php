@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\SqlEndpoint;
+namespace Drupal\Tests\dkan_datastore\Unit\SqlEndpoint;
 
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Tests\datastore\Traits\TestHelperTrait;
+use Drupal\Tests\dkan_datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\datastore\SqlEndpoint\WebServiceApi;
-use Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService;
+use Drupal\dkan_datastore\SqlEndpoint\WebServiceApi;
+use Drupal\dkan_datastore\SqlEndpoint\DatastoreSqlEndpointService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @coversDefaultClass \Drupal\datastore\SqlEndpoint\WebServiceApi
+ * @coversDefaultClass \Drupal\dkan_datastore\SqlEndpoint\WebServiceApi
  *
  * @group dkan
  * @group datastore
