@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Kernel\Service;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Kernel\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Service\ImportService;
-use Drupal\datastore_mysql_import\Factory\MysqlImportFactory;
-use Drupal\datastore_mysql_import\Service\MysqlImport;
-use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
+use Drupal\dkan_datastore_mysql_import\Factory\MysqlImportFactory;
+use Drupal\dkan_datastore_mysql_import\Service\MysqlImport;
+use Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\datastore_mysql_import\Service\MysqlImport
- * @coversDefaultClass \Drupal\datastore_mysql_import\Service\MysqlImport
+ * @covers \Drupal\dkan_datastore_mysql_import\Service\MysqlImport
+ * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Service\MysqlImport
  *
  * @group datastore_mysql_import
  */
@@ -46,7 +46,7 @@ class MysqlImportTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    /** @var \Drupal\dkan_datastore_mysql_import\Service\MysqlImport $mysql_import */
     $mysql_import = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]
@@ -83,7 +83,7 @@ class MysqlImportTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    /** @var \Drupal\dkan_datastore_mysql_import\Service\MysqlImport $mysql_import */
     $mysql_import = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]
@@ -148,7 +148,7 @@ class MysqlImportTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    /** @var \Drupal\dkan_datastore_mysql_import\Service\MysqlImport $mysql_import */
     $mysql_import = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]
@@ -163,7 +163,7 @@ class MysqlImportTest extends KernelTestBase {
     // Set up to run the import again, getting a fresh factory and a fresh
     // importer object.
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
-    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    /** @var \Drupal\dkan_datastore_mysql_import\Service\MysqlImport $mysql_import */
     $mysql_import = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]
@@ -192,7 +192,7 @@ class MysqlImportTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    /** @var \Drupal\dkan_datastore_mysql_import\Service\MysqlImport $mysql_import */
     $import_service = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]
@@ -225,7 +225,7 @@ class MysqlImportTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore_mysql_import\Service\MysqlImport $mysql_import */
+    /** @var \Drupal\dkan_datastore_mysql_import\Service\MysqlImport $mysql_import */
     $import_service = $import_factory->getInstance(
       $identifier,
       ['resource' => $data_resource]

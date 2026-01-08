@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore_mysql_import\Service;
+namespace Drupal\dkan_datastore_mysql_import\Service;
 
 use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;

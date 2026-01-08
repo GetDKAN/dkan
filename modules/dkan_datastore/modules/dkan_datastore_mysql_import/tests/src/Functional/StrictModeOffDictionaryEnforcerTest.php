@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore_mysql_import\Functional;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\datastore\Controller\ImportController;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @group functional
  * @group functional2
  *
- * @see \Drupal\Tests\datastore_mysql_import\Functional\DictionaryEnforcerTest
+ * @see \Drupal\Tests\dkan_datastore_mysql_import\Functional\DictionaryEnforcerTest
  */
 class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 

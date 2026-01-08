@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Kernel\Storage;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
+use Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
- * @coversDefaultClass \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+ * @covers \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+ * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
  *
  * @group datastore_mysql_import
  * @group kernel
@@ -26,7 +26,7 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
   ];
 
   public function testFactoryServiceResourceException() {
-    /** @var \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory $factory */
+    /** @var \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory $factory */
     $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
     $this->expectException(\Exception::class);
     $this->expectExceptionMessage("config['resource'] is required");
@@ -40,7 +40,7 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
       'text/csv'
     );
 
-    /** @var \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory $factory */
+    /** @var \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory $factory */
     $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
     $table = $factory->getInstance('id', ['resource' => $datastore_resource]);
     $this->assertInstanceOf(MySqlDatabaseTable::class, $table);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Functional;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Functional;
 
 use Drupal\Tests\datastore\Functional\ImportLocalCopyOfRemoteFileTest as ParentTest;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Functional\Controller;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Functional\Controller;
 
 use Drupal\Tests\datastore\Functional\Controller\QueryDownloadControllerTest;
 

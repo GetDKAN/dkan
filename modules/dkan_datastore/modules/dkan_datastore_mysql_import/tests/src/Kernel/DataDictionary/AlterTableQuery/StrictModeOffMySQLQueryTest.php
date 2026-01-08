@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore_mysql_import\Kernel\DataDictionary\AlterTableQuery;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Kernel\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
-use Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQuery;
+use Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQuery;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Test StrictModeOffMySQLQuery functionality.
  *
- * @coversDefaultClass \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQuery
+ * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQuery
  *
  * @group dkan
  * @group datastore_mysql_import

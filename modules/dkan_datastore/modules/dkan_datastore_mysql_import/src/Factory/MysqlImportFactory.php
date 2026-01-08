@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\datastore_mysql_import\Factory;
+namespace Drupal\dkan_datastore_mysql_import\Factory;
 
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ImportService;
 use Drupal\datastore\Storage\ImportJobStoreFactory;
-use Drupal\datastore_mysql_import\Service\MysqlImport;
-use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
+use Drupal\dkan_datastore_mysql_import\Service\MysqlImport;
+use Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,7 +24,7 @@ class MysqlImportFactory implements ImportFactoryInterface {
   /**
    * Database table factory service.
    *
-   * @var \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+   * @var \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
    */
   protected $databaseTableFactory;
 

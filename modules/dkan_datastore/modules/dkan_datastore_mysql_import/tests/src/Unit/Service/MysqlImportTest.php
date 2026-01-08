@@ -6,7 +6,7 @@ use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\JobStore;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore_mysql_import\Service\MysqlImport;
+use Drupal\dkan_datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use MockChain\Chain;
@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\datastore_mysql_import\Service\MysqlImport
+ * @covers \Drupal\dkan_datastore_mysql_import\Service\MysqlImport
  *
  * @group datastore_mysql_import
  */

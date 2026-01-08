@@ -1,6 +1,6 @@
-datastore_mysql_import.settings_form:
+dkan_datastore_mysql_import.settings_form:
   title: MySQL Import settings
   description: Setting for the MySQL Importer.
   parent: system.admin_dkan
-  route_name: datastore.mysql_import.settings
+  route_name: dkan_datastore.mysql_import.settings
   weight: 15

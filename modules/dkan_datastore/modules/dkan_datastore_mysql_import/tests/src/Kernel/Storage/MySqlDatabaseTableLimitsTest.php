@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\Tests\datastore_mysql_import\Kernel\Storage;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Kernel\Storage;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
-use Drupal\datastore_mysql_import\Factory\MysqlImportFactory;
-use Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable;
+use Drupal\dkan_datastore_mysql_import\Factory\MysqlImportFactory;
+use Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\search_api_db\DatabaseCompatibility\MySql;
 use Procrastinator\Result;
@@ -13,13 +13,13 @@ use Procrastinator\Result;
 /**
  * Find out and document what the limits are for table column names.
  *
- * @covers \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable
- * @coversDefaultClass \Drupal\datastore_mysql_import\Storage\MySqlDatabaseTable
+ * @covers \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable
+ * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable
  *
  * @group datastore
  * @group kernel
  *
- * @see \Drupal\Tests\datastore_mysql_import\Kernel\Storage\DatabaseTableLimitsTest
+ * @see \Drupal\Tests\dkan_datastore_mysql_import\Kernel\Storage\DatabaseTableLimitsTest
  */
 class MySqlDatabaseTableLimitsTest extends KernelTestBase {
 

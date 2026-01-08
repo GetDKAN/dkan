@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery;
+namespace Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery;
 
 use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;

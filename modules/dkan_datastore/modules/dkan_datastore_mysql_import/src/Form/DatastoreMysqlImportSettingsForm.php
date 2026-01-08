@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore_mysql_import\Form;
+namespace Drupal\dkan_datastore_mysql_import\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;

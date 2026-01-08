@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\datastore_mysql_import\Kernel\DataDictionary\AlterTableQuery;
+namespace Drupal\Tests\dkan_datastore_mysql_import\Kernel\DataDictionary\AlterTableQuery;
 
-use Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder;
+use Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
  * Test that our service decorator is set up properly.
  *
- * @coversDefaultClass \Drupal\datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder
+ * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder
  *
  * @group dkan
  * @group datastore_mysql_import

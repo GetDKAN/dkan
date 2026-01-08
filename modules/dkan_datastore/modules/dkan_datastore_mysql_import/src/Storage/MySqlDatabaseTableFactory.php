@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore_mysql_import\Storage;
+namespace Drupal\dkan_datastore_mysql_import\Storage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;

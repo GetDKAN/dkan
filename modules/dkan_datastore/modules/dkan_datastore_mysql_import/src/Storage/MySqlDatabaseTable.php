@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore_mysql_import\Storage;
+namespace Drupal\dkan_datastore_mysql_import\Storage;
 
 use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
@@ -103,7 +103,7 @@ class MySqlDatabaseTable extends DatabaseTable implements ImportedItemInterface 
    * in the database and has more than 0 rows. This is because the importer is
    * assumed to have used LOAD DATA LOCAL INFILE to import the data in one step.
    *
-   * @see \Drupal\datastore_mysql_import\Service\MysqlImport::getSqlStatement
+   * @see \Drupal\dkan_datastore_mysql_import\Service\MysqlImport::getSqlStatement
    */
   public function hasBeenImported(): bool {
     if ($this->tableExist($this->getTableName())) {

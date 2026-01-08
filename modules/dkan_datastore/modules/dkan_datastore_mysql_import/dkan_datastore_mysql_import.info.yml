@@ -6,5 +6,5 @@ package: DKAN
 configure: datastore.mysql_import.settings
 dependencies:
   - dkan:dkan_common
-  - dkan:datastore
+  - dkan:dkan_datastore
   - dkan:dkan_metastore
