@@ -1,20 +1,20 @@
-datastore.settings_form:
+dkan_datastore.settings_form:
   title: Datastore Settings
   description: Datastore settings.
   parent: system.admin_dkan
-  route_name: datastore.settings
+  route_name: dkan_datastore.settings
   weight: 12
 
-datastore.dkan_resource_settings:
+dkan_datastore.dkan_resource_settings:
   title: Resource Settings
   description: Resource options.
   parent: system.admin_dkan
-  route_name: datastore.dkan_resource_settings
+  route_name: dkan_datastore.dkan_resource_settings
   weight: 15
 
-datastore.datasets_import_status_dashboard:
+dkan_datastore.datasets_import_status_dashboard:
   title: 'Datastore Import Status'
   parent: system.admin_dkan
   description: 'View status information on DKAN datastore imports.'
-  route_name: datastore.datasets_import_status_dashboard
+  route_name: dkan_datastore.datasets_import_status_dashboard
   weight: 11

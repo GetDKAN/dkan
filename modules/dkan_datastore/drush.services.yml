@@ -1,5 +1,5 @@
 services:
-  datastore:commands:
+  dkan_datastore:commands:
     class: \Drupal\datastore\Drush
     arguments:
       - '@dkan.metastore.service'
@@ -11,13 +11,13 @@ services:
       - '@dkan.datastore.lookup'
     tags:
       - { name: drush.command }
-  datastore.purger.commands:
+  dkan_datastore.purger.commands:
     class: Drupal\datastore\Commands\PurgeCommands
     arguments:
       - '@dkan.datastore.service.resource_purger'
     tags:
       - { name: drush.command }
-  datastore.reimport.commands:
+  dkan_datastore.reimport.commands:
     class: \Drupal\datastore\Commands\ReimportCommands
     arguments:
       - '@dkan.datastore.service'

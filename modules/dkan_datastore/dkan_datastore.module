@@ -8,7 +8,7 @@
 /**
  * Implements hook_theme().
  */
-function datastore_theme($existing, $type, $theme, $path) {
+function dkan_datastore_theme($existing, $type, $theme, $path) {
   return [
     'datastore_dashboard_dataset_cell' => [
       'variables' => [

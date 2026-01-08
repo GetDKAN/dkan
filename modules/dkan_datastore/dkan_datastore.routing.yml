@@ -1,4 +1,4 @@
-datastore.1.datastore:
+dkan_datastore.1.datastore:
   path: '/api/1/datastore'
   methods: [GET]
   defaults:
@@ -8,7 +8,7 @@ datastore.1.datastore:
   options:
     _auth: [ 'basic_auth', 'cookie' ]
 
-datastore.1.imports:
+dkan_datastore.1.imports:
   path: '/api/1/datastore/imports'
   methods: [GET]
   defaults:
@@ -18,7 +18,7 @@ datastore.1.imports:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.imports.post:
+dkan_datastore.1.imports.post:
   path: '/api/1/datastore/imports'
   methods: [POST]
   defaults:
@@ -29,7 +29,7 @@ datastore.1.imports.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.imports.id:
+dkan_datastore.1.imports.id:
   path: '/api/1/datastore/imports/{identifier}'
   methods: [GET]
   defaults:
@@ -39,7 +39,7 @@ datastore.1.imports.id:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.imports.delete:
+dkan_datastore.1.imports.delete:
   path: '/api/1/datastore/imports'
   methods: [DELETE]
   defaults:
@@ -49,7 +49,7 @@ datastore.1.imports.delete:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.imports.id.delete:
+dkan_datastore.1.imports.id.delete:
   path: '/api/1/datastore/imports/{identifier}'
   methods: [DELETE]
   defaults:
@@ -59,7 +59,7 @@ datastore.1.imports.id.delete:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query:
+dkan_datastore.1.query:
   path: '/api/1/datastore/query'
   methods: [GET, POST]
   defaults:
@@ -69,7 +69,7 @@ datastore.1.query:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.download:
+dkan_datastore.1.query.download:
   path: '/api/1/datastore/query/download'
   methods: [GET, POST]
   defaults:
@@ -79,7 +79,7 @@ datastore.1.query.download:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.id:
+dkan_datastore.1.query.id:
   path: '/api/1/datastore/query/{identifier}'
   methods: [GET, POST]
   defaults:
@@ -89,7 +89,7 @@ datastore.1.query.id:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.id.download:
+dkan_datastore.1.query.id.download:
   path: '/api/1/datastore/query/{identifier}/download'
   methods: [GET, POST]
   defaults:
@@ -99,7 +99,7 @@ datastore.1.query.id.download:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.dataset.index:
+dkan_datastore.1.query.dataset.index:
   path: '/api/1/datastore/query/{dataset}/{index}'
   methods: [GET, POST]
   defaults:
@@ -109,7 +109,7 @@ datastore.1.query.dataset.index:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.dataset.index.download:
+dkan_datastore.1.query.dataset.index.download:
   path: '/api/1/datastore/query/{dataset}/{index}/download'
   methods: [GET, POST]
   defaults:
@@ -119,7 +119,7 @@ datastore.1.query.dataset.index.download:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.schema.get:
+dkan_datastore.1.query.schema.get:
   path: '/api/1/datastore/query/schema'
   methods: [GET]
   defaults:
@@ -129,7 +129,7 @@ datastore.1.query.schema.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.sql_endpoint.get.api:
+dkan_datastore.sql_endpoint.get.api:
   path: '/api/1/datastore/sql'
   methods: [GET]
   defaults:
@@ -139,7 +139,7 @@ datastore.sql_endpoint.get.api:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.sql_endpoint.post.api:
+dkan_datastore.sql_endpoint.post.api:
   path: '/api/1/datastore/sql'
   methods: [POST]
   defaults:
@@ -147,7 +147,7 @@ datastore.sql_endpoint.post.api:
   requirements:
     _access: 'TRUE'
 
-datastore.dkan_resource_settings:
+dkan_datastore.dkan_resource_settings:
   path: '/admin/dkan/resources'
   defaults:
     _title: 'Resource Settings'
@@ -155,7 +155,7 @@ datastore.dkan_resource_settings:
   requirements:
     _permission: 'administer site configuration'
 
-datastore.datasets_import_status_dashboard:
+dkan_datastore.datasets_import_status_dashboard:
   path: '/admin/dkan/datastore/status'
   methods: [ GET ]
   defaults:
@@ -166,7 +166,7 @@ datastore.datasets_import_status_dashboard:
   options:
     _auth: [ 'basic_auth', 'cookie' ]
 
-datastore.settings:
+dkan_datastore.settings:
   path: '/admin/dkan/datastore'
   defaults:
     _title: 'Datastore Settings'
