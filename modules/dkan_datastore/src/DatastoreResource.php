@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\dkan_datastore;
 
 /**
  * Basic datastore resource class.

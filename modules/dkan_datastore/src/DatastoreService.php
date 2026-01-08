@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\dkan_datastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;

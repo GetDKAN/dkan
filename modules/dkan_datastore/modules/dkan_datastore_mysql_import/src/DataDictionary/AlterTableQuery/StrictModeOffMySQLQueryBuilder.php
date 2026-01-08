@@ -2,13 +2,13 @@
 
 namespace Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery;
 
-use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
 
 /**
  * MySQL alter table query builder decorator.
  *
- * @see \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder
+ * @see \Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder
  */
 class StrictModeOffMySQLQueryBuilder extends MySQLQueryBuilder {
 

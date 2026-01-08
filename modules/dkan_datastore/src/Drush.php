@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\dkan_datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;

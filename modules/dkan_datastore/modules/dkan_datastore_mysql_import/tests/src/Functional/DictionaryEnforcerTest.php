@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dkan_datastore_mysql_import\Functional;
 
-use Drupal\Tests\datastore\Functional\DictionaryEnforcerTest as DatastoreDictionaryEnforcerTest;
+use Drupal\Tests\dkan_datastore\Functional\DictionaryEnforcerTest as DatastoreDictionaryEnforcerTest;
 
 /**
  * Ensure that datastore_mysql_import passes the same data dictionary test.

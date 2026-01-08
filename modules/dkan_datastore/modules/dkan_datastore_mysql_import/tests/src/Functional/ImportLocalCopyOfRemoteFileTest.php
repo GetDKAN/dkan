@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_datastore_mysql_import\Functional;
 
-use Drupal\Tests\datastore\Functional\ImportLocalCopyOfRemoteFileTest as ParentTest;
+use Drupal\Tests\dkan_datastore\Functional\ImportLocalCopyOfRemoteFileTest as ParentTest;
 
 /**
  * Test dataset import when using existing localized files.

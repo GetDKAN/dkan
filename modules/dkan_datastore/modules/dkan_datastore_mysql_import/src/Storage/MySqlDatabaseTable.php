@@ -4,7 +4,7 @@ namespace Drupal\dkan_datastore_mysql_import\Storage;
 
 use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
-use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 
 /**
  * MySQL import database table.

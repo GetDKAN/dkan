@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\datastore;
+namespace Drupal\dkan_datastore;
 
 /**
  * Various lookup utilities related to the datastore.

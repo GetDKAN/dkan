@@ -4,7 +4,7 @@ namespace Drupal\dkan_datastore_mysql_import\Service;
 
 use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\Core\Database\Database;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;

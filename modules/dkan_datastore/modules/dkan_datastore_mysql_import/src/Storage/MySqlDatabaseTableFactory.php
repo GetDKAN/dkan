@@ -5,7 +5,7 @@ namespace Drupal\dkan_datastore_mysql_import\Storage;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

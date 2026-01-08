@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Drupal\Tests\dkan_datastore_mysql_import\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\datastore\Controller\ImportController;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Controller\ImportController;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
@@ -136,7 +136,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
     );
 
     // Dictionary fields are applied to the dataset.
-    /** @var \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
+    /** @var \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
     $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
     $this->assertCount(
       count($dictionary_fields),

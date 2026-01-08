@@ -2,9 +2,9 @@
 
 namespace Drupal\dkan_datastore_mysql_import\Factory;
 
-use Drupal\datastore\Service\Factory\ImportFactoryInterface;
-use Drupal\datastore\Service\ImportService;
-use Drupal\datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\dkan_datastore\Service\ImportService;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
 use Drupal\dkan_datastore_mysql_import\Service\MysqlImport;
 use Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;

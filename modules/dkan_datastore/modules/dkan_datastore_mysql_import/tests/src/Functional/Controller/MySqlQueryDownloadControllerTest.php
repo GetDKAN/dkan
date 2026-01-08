@@ -2,13 +2,13 @@
 
 namespace Drupal\Tests\dkan_datastore_mysql_import\Functional\Controller;
 
-use Drupal\Tests\datastore\Functional\Controller\QueryDownloadControllerTest;
+use Drupal\Tests\dkan_datastore\Functional\Controller\QueryDownloadControllerTest;
 
 /**
  * Test streaming CSV downloads with data dictionaries.
  *
  * This is the same test as
- * \Drupal\Tests\datastore\Functional\Controller\QueryDownloadControllerTest,
+ * \Drupal\Tests\dkan_datastore\Functional\Controller\QueryDownloadControllerTest,
  * but using the mysql importer.
  *
  * @group dkan
@@ -17,7 +17,7 @@ use Drupal\Tests\datastore\Functional\Controller\QueryDownloadControllerTest;
  * @group btb
  * @group functional1
  *
- * @see \Drupal\Tests\datastore\Functional\Controller\QueryDownloadControllerTest
+ * @see \Drupal\Tests\dkan_datastore\Functional\Controller\QueryDownloadControllerTest
  */
 class MySqlQueryDownloadControllerTest extends QueryDownloadControllerTest {
 

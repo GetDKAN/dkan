@@ -3,8 +3,8 @@
 namespace Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Database;
-use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
-use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery;
+use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
 
 /**
  * MySQL table alter query for wide tables.

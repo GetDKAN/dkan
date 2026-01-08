@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\dkan_datastore;
 
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_metastore\ResourceMapper;

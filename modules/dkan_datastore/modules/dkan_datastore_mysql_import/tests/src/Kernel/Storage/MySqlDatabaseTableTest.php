@@ -43,7 +43,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+    /** @var \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
     $this->assertInstanceOf(MySqlDatabaseTable::class, $import_job->getStorage());
@@ -61,7 +61,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+    /** @var \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
     $this->assertInstanceOf(
@@ -86,7 +86,7 @@ class MySqlDatabaseTableTest extends KernelTestBase {
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
     $this->assertInstanceOf(MysqlImportFactory::class, $import_factory);
 
-    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $import_job */
+    /** @var \Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob $import_job */
     $import_job = $import_factory->getInstance($identifier, ['resource' => $data_resource])
       ->getImporter();
     $this->assertInstanceOf(

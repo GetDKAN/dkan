@@ -4,10 +4,10 @@ namespace Drupal\Tests\dastastore_mysql_import\Unit\Service;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\JobStore;
-use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore_mysql_import\Service\MysqlImport;
-use Drupal\datastore\Plugin\QueueWorker\ImportJob;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\dkan_common\Storage\AbstractJobStoreFactory;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
