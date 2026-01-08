@@ -1,5 +1,9 @@
-name: DKAN Datastore (transitional)
-description: Imports DKAN resources to a database, and provides an API for querying them.
+name: Datastore
+description: Provides integration with the datastore library.
 type: module
-core_version_requirement: ^10.4 || ^11
-package: DKAN 4.x Transition
+core_version_requirement: ^10.2 || ^11
+package: DKAN
+dependencies:
+  - dkan:dkan_common
+  - dkan:dkan_metastore
+  - dkan:dkan_datastore
