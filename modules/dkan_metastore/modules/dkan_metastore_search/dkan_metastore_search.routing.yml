@@ -1,0 +1,19 @@
+dkan_metastore_search.1.search:
+  path: '/api/1/search'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore_search\Controller\SearchController::search'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore_search.api.facets:
+  path: '/api/1/search/facets'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore_search\Controller\SearchController::facets'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
