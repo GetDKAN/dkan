@@ -37,7 +37,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
   protected const TEST_DATA_PATH = __DIR__ . '/../../../data/';
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'node',
   ];
 

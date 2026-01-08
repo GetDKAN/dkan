@@ -21,7 +21,7 @@ use RootedData\RootedJsonData;
 class HideCurrentRevisionActionTest extends BrowserTestBase {
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore_admin',
     'node',
   ];

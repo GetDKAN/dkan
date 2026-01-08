@@ -23,7 +23,7 @@ class ResourceLocalizerTest extends KernelTestBase {
     'node',
     'user',
     'dkan_common',
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
   ];
 

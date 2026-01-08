@@ -23,7 +23,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan_common',
-    'datastore',
+    'dkan_datastore',
     'dynamic_page_cache',
     'harvest',
     'dkan_metastore',

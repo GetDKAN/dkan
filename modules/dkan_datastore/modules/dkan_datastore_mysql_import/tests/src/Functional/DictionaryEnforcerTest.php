@@ -20,7 +20,7 @@ use Drupal\Tests\dkan_datastore\Functional\DictionaryEnforcerTest as DatastoreDi
 class DictionaryEnforcerTest extends DatastoreDictionaryEnforcerTest {
 
   protected static $modules = [
-    'datastore_mysql_import',
+    'dkan_datastore_mysql_import',
   ];
 
 }

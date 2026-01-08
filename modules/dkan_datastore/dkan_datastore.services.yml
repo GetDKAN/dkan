@@ -83,7 +83,7 @@ services:
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base
-    arguments: ['datastore']
+    arguments: ['dkan_datastore']
 
   dkan.datastore.database_connection_factory:
     class: \Drupal\dkan_datastore\Storage\DatabaseConnectionFactory

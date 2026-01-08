@@ -12,7 +12,7 @@ class DatabaseConnectionFactory extends CommonDatabaseConnectionFactory {
   /**
    * {@inheritdoc}
    */
-  protected string $key = 'datastore';
+  protected string $key = 'dkan_datastore';
 
   /**
    * {@inheritdoc}

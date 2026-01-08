@@ -21,8 +21,8 @@ class MySqlDatasetBTBTest extends DatasetBTBTest {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'datastore',
-    'datastore_mysql_import',
+    'dkan_datastore',
+    'dkan_datastore_mysql_import',
     'field',
     'harvest',
     'dkan_metastore',

@@ -24,7 +24,7 @@ class ResourcePurgerTest extends BrowserTestBase {
   use QueueRunnerTrait;
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
     'node',
   ];

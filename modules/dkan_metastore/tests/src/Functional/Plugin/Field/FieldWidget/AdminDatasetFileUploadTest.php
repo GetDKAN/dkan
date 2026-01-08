@@ -24,7 +24,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
    */
   protected static $modules = [
     'dkan',
-    'datastore',
+    'dkan_datastore',
     'json_form_widget',
     'node',
   ];

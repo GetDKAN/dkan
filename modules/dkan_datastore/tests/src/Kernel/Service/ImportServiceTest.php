@@ -24,7 +24,7 @@ class ImportServiceTest extends KernelTestBase {
 
   protected static $modules = [
     'dkan_common',
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
     'node',
     'user',
@@ -98,7 +98,7 @@ class ImportServiceTest extends KernelTestBase {
       ->method('get')
       ->with(
         $this->logicalOr(
-          $this->equalTo('datastore'),
+          $this->equalTo('dkan_datastore'),
           $this->equalTo('dkan')
         )
       )

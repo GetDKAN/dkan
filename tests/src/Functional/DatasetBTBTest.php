@@ -29,7 +29,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'field',
     'harvest',
     'dkan_metastore',

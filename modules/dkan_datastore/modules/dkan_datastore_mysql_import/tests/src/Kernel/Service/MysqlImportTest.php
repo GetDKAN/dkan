@@ -25,8 +25,8 @@ class MysqlImportTest extends KernelTestBase {
    */
   protected static $modules = [
     'dkan_common',
-    'datastore',
-    'datastore_mysql_import',
+    'dkan_datastore',
+    'dkan_datastore_mysql_import',
     'dkan_metastore',
   ];
 
@@ -250,7 +250,7 @@ class MysqlImportTest extends KernelTestBase {
    * The value TRUE or FALSE. TRUE to enable the row removal.
    */
   protected function toggleEmptyRowRemoval(bool $on):void {
-    $config = $this->config('datastore_mysql_import.settings');
+    $config = $this->config('dkan_datastore_mysql_import.settings');
     $config->set('remove_empty_rows', $on);
     $config->save();
   }

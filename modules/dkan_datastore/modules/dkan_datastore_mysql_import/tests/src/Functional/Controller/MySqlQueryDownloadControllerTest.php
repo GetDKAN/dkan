@@ -22,7 +22,7 @@ use Drupal\Tests\dkan_datastore\Functional\Controller\QueryDownloadControllerTes
 class MySqlQueryDownloadControllerTest extends QueryDownloadControllerTest {
 
   protected static $modules = [
-    'datastore_mysql_import',
+    'dkan_datastore_mysql_import',
   ];
 
 }

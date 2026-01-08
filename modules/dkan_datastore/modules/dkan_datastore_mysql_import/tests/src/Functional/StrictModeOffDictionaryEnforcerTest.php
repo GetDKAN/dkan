@@ -43,7 +43,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
   protected const TEST_DATA_PATH = __DIR__ . '/../../data/';
 
   protected static $modules = [
-    'datastore_mysql_import',
+    'dkan_datastore_mysql_import',
     'node',
   ];
 
@@ -51,7 +51,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
   public function testPostImport() {
     // Enable strict mode disabled for datastore MySQL import.
-    $this->config('datastore_mysql_import.settings')
+    $this->config('dkan_datastore_mysql_import.settings')
       ->set('strict_mode_disabled', TRUE)
       ->save();
 

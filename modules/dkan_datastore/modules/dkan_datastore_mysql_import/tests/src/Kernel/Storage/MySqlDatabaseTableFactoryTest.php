@@ -20,8 +20,8 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
    */
   protected static $modules = [
     'dkan_common',
-    'datastore',
-    'datastore_mysql_import',
+    'dkan_datastore',
+    'dkan_datastore_mysql_import',
     'dkan_metastore',
   ];
 
@@ -50,7 +50,7 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
    * Test that the factory service returns a table with strict mode disabled.
    */
   public function testFactoryServiceStrictModeDisabled() {
-    $this->installConfig(['datastore_mysql_import']);
+    $this->installConfig(['dkan_datastore_mysql_import']);
     $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
     $table = $factory->getInstance('id', [
       'resource' => new DataResource('php://temp', 'text/csv'),
@@ -60,7 +60,7 @@ class MySqlDatabaseTableFactoryTest extends KernelTestBase {
 
     // Now change the config and test whether the table is created with strict
     // mode disabled.
-    $this->config('datastore_mysql_import.settings')
+    $this->config('dkan_datastore_mysql_import.settings')
       ->set('strict_mode_disabled', TRUE)
       ->save();
     $this->container->get('kernel')->rebuildContainer();

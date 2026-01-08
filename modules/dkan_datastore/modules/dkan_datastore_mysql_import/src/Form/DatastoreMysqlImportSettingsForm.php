@@ -17,21 +17,21 @@ class DatastoreMysqlImportSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'datastore_mysql_import_settings_form';
+    return 'dkan_datastore_mysql_import_settings_form';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['datastore_mysql_import.settings'];
+    return ['dkan_datastore_mysql_import.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('datastore_mysql_import.settings');
+    $config = $this->config('dkan_datastore_mysql_import.settings');
     $form['remove_empty_rows'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable removal of empty rows in dataset.'),
@@ -52,7 +52,7 @@ class DatastoreMysqlImportSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('datastore_mysql_import.settings')
+    $this->config('dkan_datastore_mysql_import.settings')
       ->set('remove_empty_rows', $form_state->getValue('remove_empty_rows'))
       ->set('strict_mode_disabled', $form_state->getValue('strict_mode_disabled'))
       ->save();

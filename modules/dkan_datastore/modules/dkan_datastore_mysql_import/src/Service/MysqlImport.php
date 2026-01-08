@@ -277,7 +277,7 @@ class MysqlImport extends ImportJob {
    */
   protected function runOptionalPostImportCleanup(string $table_name, array $spec): void {
     // @todo this should use dependency injection, but this is not a service.
-    $config = \Drupal::config('datastore_mysql_import.settings');
+    $config = \Drupal::config('dkan_datastore_mysql_import.settings');
     if ($config->get('remove_empty_rows')) {
       $this->removeEmptyRows($table_name, $spec);
     }

@@ -27,7 +27,7 @@ class ImportLocalCopyOfRemoteFileTest extends BrowserTestBase {
    */
   protected static $modules = [
     'dkan_common',
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
     'node',
   ];

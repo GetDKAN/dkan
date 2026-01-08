@@ -31,7 +31,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'node',
   ];
 

@@ -14,7 +14,7 @@ use Drupal\Tests\BrowserTestBase;
 class OnPreReferenceTest extends BrowserTestBase {
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
     'node',
   ];

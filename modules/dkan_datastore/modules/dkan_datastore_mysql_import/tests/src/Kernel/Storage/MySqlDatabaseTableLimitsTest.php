@@ -28,8 +28,8 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
    */
   protected static $modules = [
     'dkan_common',
-    'datastore',
-    'datastore_mysql_import',
+    'dkan_datastore',
+    'dkan_datastore_mysql_import',
     'dkan_metastore',
   ];
 
@@ -49,8 +49,8 @@ class MySqlDatabaseTableLimitsTest extends KernelTestBase {
   }
 
   private function columnTestSetup(array $columns, bool $strict_mode_disabled): ImportJob {
-    $this->installConfig(['datastore_mysql_import']);
-    $this->config('datastore_mysql_import.settings')
+    $this->installConfig(['dkan_datastore_mysql_import']);
+    $this->config('dkan_datastore_mysql_import.settings')
       ->set('strict_mode_disabled', $strict_mode_disabled)
       ->save();
 

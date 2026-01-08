@@ -20,7 +20,7 @@ class DatastoreInfoTest extends DatasetInfoTest {
    * Re-run DatasetInfo test with datastore enabled, ensure plugin is working.
    */
   public function testDatasetInfo() {
-    $this->enableModules(['datastore']);
+    $this->enableModules(['dkan_datastore']);
     $datasetInfo = new DatasetInfo($this->container->get('plugin.manager.dataset_info'));
     $datasetInfo->setStorage($this->container->get('dkan.metastore.storage'));
     $datasetInfo->setResourceMapper($this->container->get('dkan.metastore.resource_mapper'));

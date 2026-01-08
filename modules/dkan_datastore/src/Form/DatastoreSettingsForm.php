@@ -46,7 +46,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'datastore_settings_form';
+    return 'dkan_datastore_settings_form';
   }
 
   /**

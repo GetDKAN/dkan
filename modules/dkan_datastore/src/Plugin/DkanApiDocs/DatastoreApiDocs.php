@@ -99,8 +99,8 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    * {@inheritdoc}
    */
   public function spec() {
-    $spec = $this->getDoc('datastore');
-    $querySchema = self::filterJsonSchemaUnsupported($this->replaceRefs($this->getDoc('datastore', 'query')));
+    $spec = $this->getDoc('dkan_datastore');
+    $querySchema = self::filterJsonSchemaUnsupported($this->replaceRefs($this->getDoc('dkan_datastore', 'query')));
 
     // Reformat definitions.
     foreach ($querySchema["definitions"] as $key => $def) {

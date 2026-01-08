@@ -33,7 +33,7 @@ class MySqlDatabaseTableFactory extends DatabaseTableFactory {
     $this->connection = $connection;
     $this->logger = $loggerChannel;
     $this->eventDispatcher = $eventDispatcher;
-    $this->config = $configFactory->get('datastore_mysql_import.settings');
+    $this->config = $configFactory->get('dkan_datastore_mysql_import.settings');
   }
 
   /**

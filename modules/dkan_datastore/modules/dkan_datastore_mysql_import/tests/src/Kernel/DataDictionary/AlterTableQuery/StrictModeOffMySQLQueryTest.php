@@ -26,8 +26,8 @@ class StrictModeOffMySQLQueryTest extends KernelTestBase {
    */
   protected static $modules = [
     'dkan_common',
-    'datastore',
-    'datastore_mysql_import',
+    'dkan_datastore',
+    'dkan_datastore_mysql_import',
     'dkan_metastore',
   ];
 

@@ -22,7 +22,7 @@ class DatastoreServiceTest extends KernelTestBase {
 
   protected static $modules = [
     'dkan_common',
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
   ];
 
