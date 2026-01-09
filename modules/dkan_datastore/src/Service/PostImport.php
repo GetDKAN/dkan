@@ -125,7 +125,7 @@ class PostImport {
   private function handleProcessingError(DataResource $resource, \Exception $exception): void {
     $identifier = $resource->getIdentifier();
 
-    if ($this->configFactory->get('datastore.settings')->get('drop_datastore_on_post_import_error')) {
+    if ($this->configFactory->get('dkan_datastore.settings')->get('drop_datastore_on_post_import_error')) {
       try {
         $this->drop($identifier, NULL, FALSE);
         $this->logger->notice('Successfully dropped the datastore for resource @identifier due to a post import error. Visit the Datastore Import Status dashboard for details.', [

@@ -36,23 +36,23 @@ class ResourceSettingsForm extends ConfigFormBase {
     $form['resources']['purge_table'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Datastore table'),
-      '#config_target' => 'datastore.settings:purge_table',
+      '#config_target' => 'dkan_datastore.settings:purge_table',
     ];
     $form['resources']['purge_file'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('File'),
-      '#config_target' => 'datastore.settings:purge_file',
+      '#config_target' => 'dkan_datastore.settings:purge_file',
     ];
     $form['delete_local_resource'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Delete local resource'),
-      '#config_target' => 'datastore.settings:delete_local_resource',
+      '#config_target' => 'dkan_datastore.settings:delete_local_resource',
       '#description' => $this->t('Delete local copy of remote files after the datastore import is complete'),
     ];
     $form['drop_datastore_on_post_import_error'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Drop the datastore table if the post import queue reports an error.'),
-      '#config_target' => 'datastore.settings:drop_datastore_on_post_import_error',
+      '#config_target' => 'dkan_datastore.settings:drop_datastore_on_post_import_error',
       '#description' => $this->t('The datastore import queue brings in all columns as strings. The post import
       queue will alter the table according to the data dictionary, if there is a problem during this step the
       error will be posted to the Datastore Import Status dashboard, and the datastore table will keep all

@@ -72,7 +72,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     DatastoreService $datastore,
     LoggerInterface $loggerChannel
   ) {
-    $this->config = $configFactory->get('datastore.settings');
+    $this->config = $configFactory->get('dkan_datastore.settings');
     $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');
     $this->datastore = $datastore;

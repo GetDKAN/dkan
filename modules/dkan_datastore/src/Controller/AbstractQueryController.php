@@ -57,7 +57,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     QueryService $queryService,
     DatasetInfo $datasetInfo,
     MetastoreApiResponse $metastoreApiResponse,
-    ConfigFactoryInterface $configFactory
+    ConfigFactoryInterface $configFactory,
   ) {
     $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
@@ -175,7 +175,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     DatastoreQuery $datastoreQuery,
     RootedJsonData $result,
     array $dependencies = [],
-    ?ParameterBag $params = NULL
+    ?ParameterBag $params = NULL,
   );
 
   /**
@@ -273,7 +273,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   API rows limit.
    */
   protected function getRowsLimit(): int {
-    return (int) ($this->configFactory->get('datastore.settings')->get('rows_limit') ?: self::DEFAULT_ROWS_LIMIT);
+    return (int) ($this->configFactory->get('dkan_datastore.settings')->get('rows_limit') ?: self::DEFAULT_ROWS_LIMIT);
   }
 
   /**

@@ -148,7 +148,7 @@ class PostImportTest extends KernelTestBase {
     ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
     ->save();
 
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('drop_datastore_on_post_import_error', TRUE)
       ->save();
 
@@ -224,7 +224,7 @@ class PostImportTest extends KernelTestBase {
     ->save();
 
     // Do NOT drop on post import error
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('drop_datastore_on_post_import_error', FALSE)
       ->save();
 
@@ -288,7 +288,7 @@ class PostImportTest extends KernelTestBase {
     ->set('data_dictionary_mode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE)
     ->save();
 
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('drop_datastore_on_post_import_error', TRUE)
       ->save();
 

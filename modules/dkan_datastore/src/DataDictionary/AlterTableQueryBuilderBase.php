@@ -6,7 +6,6 @@ use Drupal\Component\Uuid\UuidInterface;
 
 use Drupal\dkan_common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\dkan_datastore\DataDictionary\AlterTableQueryInterface;
 
 use PDLT\ConverterInterface;
 use RootedData\RootedJsonData;
@@ -112,7 +111,7 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
     DatabaseConnectionFactoryInterface $database_connection_factory,
     ConverterInterface $date_format_converter,
     UuidInterface $uuid,
-    ConfigFactory $configFactory
+    ConfigFactory $configFactory,
   ) {
     $this->databaseConnectionFactory = $database_connection_factory;
     $this->dateFormatConverter = $date_format_converter;

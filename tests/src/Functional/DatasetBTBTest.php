@@ -272,13 +272,12 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runDraftWorkflowUpdateDistributionTitle();
   }
 
-
   /**
    * Test cleanup of orphaned draft distributions.
    */
   public function testOrphanDraftDistributionCleanup() {
     // Set delete local resource files = false and modified as a triggering property.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->set('triggering_properties', ['modified'])
       ->save();
@@ -301,7 +300,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionTableExists = $databaseSchema->tableExists($distributionTable);
     $this->assertTrue($distributionTableExists, $distributionTable . ' exists.');
 
-    // Get the associated distribution's resource directory
+    // Get the associated distribution's resource directory.
     $resourceId = $metadata['latest_revision']['distributions'][0]['resource_id'];
     $resourceVersion = $metadata['latest_revision']['distributions'][0]['resource_version'];
     $resourceDirectory = $resourceId . '_' . $resourceVersion;
@@ -365,7 +364,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $id_2 = uniqid(__FUNCTION__ . '2');
 
     // delete_local_resource is on.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 1)
       ->save();
 
@@ -383,7 +382,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertDirectoryDoesNotExist('public://resources/' . $refUuid);
 
     // delete_local_resource is off.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->save();
 
@@ -427,6 +426,9 @@ class DatasetBTBTest extends BrowserTestBase {
     );
   }
 
+  /**
+   *
+   */
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);
@@ -451,13 +453,16 @@ class DatasetBTBTest extends BrowserTestBase {
     return $retrievedDataset;
   }
 
+  /**
+   *
+   */
   private function datastoreImportAndQuery() {
     $dataset = $this->datasetPostAndRetrieve();
     $resource = $this->getResourceFromDataset($dataset);
 
     $this->runQueues(['localize_import', 'datastore_import']);
 
-    // Assert dataset info shows 100%
+    // Assert dataset info shows 100%.
     $datasetInfoService = $this->container->get('dkan.common.dataset_info');
     $metadata = $datasetInfoService->gather($dataset->identifier);
     $dist = array_shift($metadata['latest_revision']['distributions']);
@@ -467,10 +472,16 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->queryResource($queryString);
   }
 
+  /**
+   *
+   */
   private function getResourceDatastoreTable(object $resource) {
     return $resource->identifier . '__' . $resource->version;
   }
 
+  /**
+   *
+   */
   private function getResourceFromDataset(object $dataset) {
     $this->assertTrue(isset($dataset->{'%Ref:distribution'}));
     $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]));
@@ -482,6 +493,9 @@ class DatasetBTBTest extends BrowserTestBase {
     return $dataset->{'%Ref:distribution'}[0]->data->{'%Ref:downloadURL'}[0]->data;
   }
 
+  /**
+   *
+   */
   private function getDownloadUrl(string $filename) {
     return self::S3_PREFIX . '/' . $filename;
   }
@@ -524,7 +538,6 @@ class DatasetBTBTest extends BrowserTestBase {
       $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
       // Don't provide mime type or format fields since they're not required.
-
       $data->distribution[] = $distribution;
     }
     $this->assertGreaterThan(
@@ -532,7 +545,7 @@ class DatasetBTBTest extends BrowserTestBase {
       count($data->distribution),
       'JSON Schema requires one or more distributions.'
     );
-    // @todo: Figure out how to assert against $factory->getResult()->getError()
+    // @todo Figure out how to assert against $factory->getResult()->getError()
     // so we can have a useful test fail message.
     return $valid_metadata_factory->get(json_encode($data), 'dataset');
   }
@@ -577,6 +590,9 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
   }
 
+  /**
+   *
+   */
   private function countTables() {
     /** @var \Drupal\Core\Database\Connection $db */
     $db = $this->container->get('database');
@@ -585,6 +601,9 @@ class DatasetBTBTest extends BrowserTestBase {
     return count($tables);
   }
 
+  /**
+   *
+   */
   private function checkFiles() {
     /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
     $fileSystem = $this->container->get('file_system');
@@ -602,6 +621,9 @@ class DatasetBTBTest extends BrowserTestBase {
     return $filenames;
   }
 
+  /**
+   *
+   */
   private function queryResource(string $queryString) {
     /** @var \Drupal\dkan_datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
@@ -609,6 +631,9 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertGreaterThan(0, count($results));
   }
 
+  /**
+   *
+   */
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
 
     if ($method == 'post') {
@@ -624,14 +649,23 @@ class DatasetBTBTest extends BrowserTestBase {
     return $identifier;
   }
 
+  /**
+   *
+   */
   private function getHarvester() : HarvestService {
     return $this->container->get('dkan.harvest.service');
   }
 
+  /**
+   *
+   */
   private function getNodeStorage(): NodeStorage {
     return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
+  /**
+   *
+   */
   private function getMetastore(): MetastoreService {
     return $this->container->get('dkan.metastore.service');
   }
@@ -641,7 +675,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   private function createInitialDraftDatasetAndPublish(string $identifier): void {
     // Set delete local resource files = false and modified as a triggering property.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->set('triggering_properties', ['modified'])
       ->save();
@@ -653,7 +687,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->storeDatasetRunQueues($identifier, '1', ['1.csv']);
 
-    // Publish the draft dataset
+    // Publish the draft dataset.
     $this->getMetastore()->publish('dataset', $identifier);
 
     // Simulate all possible queues post publish.
@@ -673,7 +707,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   private function confirmNewDatastoreImportDraftWorkflow(string $identifier): void {
     // Simulate all possible queues post update.
-    // Should include datastore_import, orphan_reference_processor and resource_purger
+    // Should include datastore_import, orphan_reference_processor and resource_purger.
     $this->runQueues([
       'localize_import',
       'datastore_import',
@@ -898,4 +932,5 @@ class DatasetBTBTest extends BrowserTestBase {
     // Run queues; check that datastore import and orphan cleanup worked as expected.
     $this->confirmNewDatastoreImportDraftWorkflow($id_1);
   }
+
 }

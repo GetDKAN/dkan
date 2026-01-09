@@ -50,7 +50,7 @@ class ImportController implements ContainerInjectionInterface {
     DatastoreService $datastoreService,
     MetastoreApiResponse $metastoreApiResponse,
     ReferenceLookup $referenceLookup,
-    ImportInfoList $importInfoList
+    ImportInfoList $importInfoList,
   ) {
     $this->datastoreService = $datastoreService;
     $this->metastoreApiResponse = $metastoreApiResponse;

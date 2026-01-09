@@ -27,7 +27,7 @@ class QueryDownloadController extends AbstractQueryController {
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
     // to cache the CSV stream for a reasonable amount of time.
-    $config = $configFactory->get('datastore.settings');
+    $config = $configFactory->get('dkan_datastore.settings');
     $this->cacheMaxAge = $config->get('response_stream_max_age');
   }
 

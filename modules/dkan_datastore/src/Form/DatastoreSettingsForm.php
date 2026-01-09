@@ -53,7 +53,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['datastore.settings'];
+    return ['dkan_datastore.settings'];
   }
 
   /**
@@ -64,7 +64,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
       '#type' => 'number',
       '#min' => 1,
       '#title' => $this->t('Rows limit'),
-      '#default_value' => $this->config('datastore.settings')->get('rows_limit'),
+      '#default_value' => $this->config('dkan_datastore.settings')->get('rows_limit'),
       '#description' => $this->t('Maximum number of rows the datastore endpoints can return
         in a single request. Caution: setting too high can lead to timeouts or memory issues.
         Default 500; values above 20,000 not recommended.'),
@@ -73,7 +73,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
     $form['response_stream_max_age'] = [
       '#type' => 'number',
       '#title' => $this->t('Response Stream Max-Age'),
-      '#default_value' => $this->config('datastore.settings')->get('response_stream_max_age'),
+      '#default_value' => $this->config('dkan_datastore.settings')->get('response_stream_max_age'),
       '#min' => 0,
       '#description' => $this->t('Set the cache max-age for streaming CSV responses, in seconds. Default: 3600 (1 hour).'),
     ];
@@ -84,7 +84,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Metadata properties whose change will trigger a re-import of
         an associated resource to the datastore.'),
       '#options' => $this->schemaHelper->retrieveSchemaProperties('dataset'),
-      '#default_value' => $this->config('datastore.settings')->get('triggering_properties'),
+      '#default_value' => $this->config('dkan_datastore.settings')->get('triggering_properties'),
     ];
     return parent::buildForm($form, $form_state);
   }
@@ -93,7 +93,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('rows_limit', $form_state->getValue('rows_limit') ?: QueryController::DEFAULT_ROWS_LIMIT)
       ->set('response_stream_max_age', $form_state->getValue('response_stream_max_age'))
       ->set('triggering_properties', $form_state->getValue('triggering_properties'))

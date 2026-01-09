@@ -214,7 +214,7 @@ class DictionaryEnforcerTest extends TestCase {
 
     $configFactoryMock
       ->method('get')
-      ->with('datastore.settings')
+      ->with('dkan_datastore.settings')
       ->willReturn($configMock);
 
     $configMock

@@ -79,7 +79,7 @@ class Drush extends DrushCommands {
     ResourceMapper $resourceMapper,
     ImportInfoList $importInfoList,
     PostImportResultFactory $postImportResultFactory,
-    DatastoreLookupInterface $datastoreLookup
+    DatastoreLookupInterface $datastoreLookup,
   ) {
     parent::__construct();
     $this->metastoreService = $metastoreService;

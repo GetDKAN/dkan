@@ -200,7 +200,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   }
 
   /**
-   * Remove query indexes with fields not found in the given table and copy over names.
+   * Remove query indexes with fields not found in table and copy over names.
    *
    * @param array $indexes
    *   Query indexes.

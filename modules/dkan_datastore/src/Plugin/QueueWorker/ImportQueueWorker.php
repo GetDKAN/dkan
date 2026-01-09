@@ -91,7 +91,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->datastore = $datastore;
-    $this->datastoreConfig = $configFactory->get('datastore.settings');
+    $this->datastoreConfig = $configFactory->get('dkan_datastore.settings');
     $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
     $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
     $this->logger = $loggerChannel;

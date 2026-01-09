@@ -35,7 +35,7 @@ class ReimportCommands extends DrushCommands {
    */
   public function __construct(
     DatastoreService $datastore_service,
-    DatasetInfo $dataset_info
+    DatasetInfo $dataset_info,
   ) {
     $this->datastoreService = $datastore_service;
     $this->datasetInfo = $dataset_info;

@@ -168,10 +168,10 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
   /**
    * Take an instantiated state machine build a query object.
    *
-   * @param Maquina\StateMachine\MachineOfMachines $state_machine
+   * @param \Maquina\StateMachine\MachineOfMachines $state_machine
    *   The state machine returned from the validate() function.
    *
-   * @return Drupal\dkan_common\Storage\Query
+   * @return \Drupal\dkan_common\Storage\Query
    *   A Drupal query object
    */
   private function getQueryObjectFromStateMachine(MachineOfMachines $state_machine): Query {
@@ -265,7 +265,7 @@ class DatastoreSqlEndpointService implements ContainerInjectionInterface {
 
     $limit = $limit[0];
 
-    $rows_limit = $this->configFactory->get('datastore.settings')->get('rows_limit');
+    $rows_limit = $this->configFactory->get('dkan_datastore.settings')->get('rows_limit');
     if (!$object->count && isset($limit) && $limit > $rows_limit) {
       $limit = $rows_limit;
     }
