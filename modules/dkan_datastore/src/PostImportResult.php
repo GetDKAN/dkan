@@ -66,7 +66,7 @@ class PostImportResult {
     ?int $timestamp,
     DataResource $resource,
     Connection $connection,
-    ) {
+  ) {
     $this->resourceIdentifier = $resource->getIdentifier();
     $this->resourceVersion = $resource->getVersion() ?? NULL;
     $this->postImportStatus = $status ?? '';

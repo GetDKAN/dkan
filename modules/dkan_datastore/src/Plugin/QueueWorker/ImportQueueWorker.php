@@ -87,7 +87,7 @@ class ImportQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugi
     DatastoreService $datastore,
     LoggerInterface $loggerChannel,
     DatabaseConnectionFactoryInterface $defaultConnectionFactory,
-    DatabaseConnectionFactoryInterface $datastoreConnectionFactory
+    DatabaseConnectionFactoryInterface $datastoreConnectionFactory,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->datastore = $datastore;

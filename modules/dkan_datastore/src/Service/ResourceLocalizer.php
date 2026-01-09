@@ -83,7 +83,7 @@ class ResourceLocalizer {
     DrupalFiles $drupalFiles,
     FileFetcherJobStoreFactory $fileFetcherJobStoreFactory,
     QueueFactory $queueFactory,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->resourceMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;

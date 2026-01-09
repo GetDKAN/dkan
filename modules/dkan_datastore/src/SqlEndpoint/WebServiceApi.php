@@ -73,7 +73,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     Connection $database,
     RequestStack $requestStack,
     MetastoreApiResponse $metastoreApiResponse,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->service = $service;
     $this->database = $database;

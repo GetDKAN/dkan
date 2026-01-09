@@ -61,7 +61,7 @@ class TableSummary implements \JsonSerializable {
     array $columns,
     ?array $indexes,
     ?array $fulltext_indexes,
-    int $numOfRows
+    int $numOfRows,
   ) {
     $this->numOfColumns = $numOfColumns;
     $this->columns = $columns;
@@ -74,6 +74,7 @@ class TableSummary implements \JsonSerializable {
    * Specify data which should be serialized to JSON.
    *
    * @return mixed
+   *   Structured data to serialize.
    */
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {

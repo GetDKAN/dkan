@@ -47,7 +47,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     Connection $connection,
     DataResource $resource,
     LoggerInterface $loggerChannel,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.

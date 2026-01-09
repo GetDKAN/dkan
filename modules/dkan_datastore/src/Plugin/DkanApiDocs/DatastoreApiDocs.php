@@ -57,7 +57,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
     MetastoreService $metastore,
-    ImportInfo $importInfo
+    ImportInfo $importInfo,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
     $this->metastore = $metastore;
@@ -82,7 +82,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     ContainerInterface $container,
     array $configuration,
     $pluginId,
-    $pluginDefinition
+    $pluginDefinition,
   ) {
     return new static(
       $configuration,

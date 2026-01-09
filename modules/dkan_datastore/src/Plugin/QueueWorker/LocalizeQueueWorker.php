@@ -53,7 +53,7 @@ class LocalizeQueueWorker extends QueueWorkerBase implements ContainerFactoryPlu
     $plugin_id,
     $plugin_definition,
     ResourceLocalizer $resourceLocalizer,
-    LoggerInterface $loggerChannel
+    LoggerInterface $loggerChannel,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->resourceLocalizer = $resourceLocalizer;
