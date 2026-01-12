@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Unit\Load;
+namespace Drupal\Tests\dkan_harvest\Unit\Load;
 
 use Contracts\Mock\Storage\Memory;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\harvest\Load\Dataset;
+use Drupal\dkan_harvest\Load\Dataset;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\ValidMetadataFactory;
 use Drupal\dkan_metastore\MetastoreService;
@@ -16,7 +16,7 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \Drupal\harvest\Load\Dataset
+ * @coversDefaultClass \Drupal\dkan_harvest\Load\Dataset
  *
  * @group dkan
  * @group harvest

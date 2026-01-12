@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\harvest\Entity\HarvestRunRepository;
-use Drupal\harvest\Storage\DatabaseTableFactory;
-use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Drupal\dkan_harvest\Entity\HarvestRunRepository;
+use Drupal\dkan_harvest\Storage\DatabaseTableFactory;
+use Drupal\dkan_harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Psr\Log\LoggerInterface;
 
 /**

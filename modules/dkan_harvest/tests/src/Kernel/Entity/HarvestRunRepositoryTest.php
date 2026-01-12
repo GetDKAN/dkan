@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel\Entity;
+namespace Drupal\Tests\dkan_harvest\Kernel\Entity;
 
-use Drupal\harvest\HarvestRunInterface;
+use Drupal\dkan_harvest\HarvestRunInterface;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\harvest\Entity\HarvestRunRepository
- * @coversDefaultClass \Drupal\harvest\Entity\HarvestRunRepository
+ * @covers \Drupal\dkan_harvest\Entity\HarvestRunRepository
+ * @coversDefaultClass \Drupal\dkan_harvest\Entity\HarvestRunRepository
  *
  * @group dkan
  * @group harvest
@@ -44,7 +44,7 @@ class HarvestRunRepositoryTest extends KernelTestBase {
         'extract' => 'AWESOME',
       ],
     ];
-    /** @var \Drupal\harvest\Entity\HarvestRunRepository $harvest_run_repo */
+    /** @var \Drupal\dkan_harvest\Entity\HarvestRunRepository $harvest_run_repo */
     $harvest_run_repo = $this->container->get('dkan.harvest.storage.harvest_run_repository');
     $run_data['identifier'] = $keep_timestamp;
     $harvest_run_repo->storeRun($run_data, $keep_this_plan_id, $keep_timestamp);
@@ -55,7 +55,7 @@ class HarvestRunRepositoryTest extends KernelTestBase {
 
     $this->assertCount(1, $harvest_run_repo->getUniqueHarvestPlanIds());
     $this->assertCount(1, $harvest_run_repo->retrieveAllRunIds($keep_this_plan_id));
-    /** @var \Drupal\harvest\HarvestRunInterface $run */
+    /** @var \Drupal\dkan_harvest\HarvestRunInterface $run */
     $this->assertInstanceOf(
       HarvestRunInterface::class,
       $run = $harvest_run_repo->loadEntity($keep_this_plan_id, $keep_timestamp)
@@ -68,7 +68,7 @@ class HarvestRunRepositoryTest extends KernelTestBase {
    * @covers ::retrieveAllRunsJson
    */
   public function testRetrieveJson() {
-    /** @var \Drupal\harvest\Entity\HarvestRunRepository $harvest_run_repo */
+    /** @var \Drupal\dkan_harvest\Entity\HarvestRunRepository $harvest_run_repo */
     $harvest_run_repo = $this->container->get('dkan.harvest.storage.harvest_run_repository');
 
     // There are no entities at this point, so trying to retrieve any should
@@ -111,7 +111,7 @@ class HarvestRunRepositoryTest extends KernelTestBase {
    * @covers ::getExtractedUuids
    */
   public function testGetExtractedUuids() {
-    /** @var \Drupal\harvest\Entity\HarvestRunRepository $harvest_run_repo */
+    /** @var \Drupal\dkan_harvest\Entity\HarvestRunRepository $harvest_run_repo */
     $harvest_run_repo = $this->container->get('dkan.harvest.storage.harvest_run_repository');
     $plan_id = 'plan';
     $non_existent_run_id = '123456777';

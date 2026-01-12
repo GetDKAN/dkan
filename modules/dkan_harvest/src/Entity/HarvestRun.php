@@ -1,13 +1,13 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Drupal\harvest\Entity;
+namespace Drupal\dkan_harvest\Entity;
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\harvest\HarvestRunInterface;
+use Drupal\dkan_harvest\HarvestRunInterface;
 
 /**
  * Defines the harvest run entity class.
@@ -37,9 +37,9 @@ use Drupal\harvest\HarvestRunInterface;
  *   ),
  *   handlers = {
  *     "views_data" = "Drupal\views\EntityViewsData",
- *     "access" = "Drupal\harvest\ContentAccessControlHandler",
+ *     "access" = "Drupal\dkan_harvest\ContentAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\harvest\Routing\HarvestDashboardHtmlRouteProvider",
+ *       "html" = "Drupal\dkan_harvest\Routing\HarvestDashboardHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "harvest_runs",
@@ -99,9 +99,9 @@ final class HarvestRun extends HarvestEntityBase implements HarvestRunInterface 
 
     // The 'data' field contains JSON which describes the result of the harvest
     // run not explicitly stored in other fields here. This is an arbitrary
-    // array created by Drupal\harvest\HarvestService::runHarvest() and
+    // array created by Drupal\dkan_harvest\HarvestService::runHarvest() and
     // Harvest\Harvester::harvest().
-    // @see \Drupal\harvest\HarvestService::runHarvest()
+    // @see \Drupal\dkan_harvest\HarvestService::runHarvest()
     // @see \Harvest\Harvester::harvest()
     $base_fields['data'] = static::getBaseFieldJsonData(
       new TranslatableMarkup('Data')

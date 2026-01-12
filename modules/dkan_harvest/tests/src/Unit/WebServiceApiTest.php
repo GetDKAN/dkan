@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Unit;
+namespace Drupal\Tests\dkan_harvest\Unit;
 
 use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
-use Drupal\harvest\Entity\HarvestPlanRepository;
-use Drupal\harvest\Entity\HarvestRunRepository;
-use Drupal\harvest\HarvestService;
-use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
-use Drupal\harvest\WebServiceApi;
+use Drupal\dkan_harvest\Entity\HarvestPlanRepository;
+use Drupal\dkan_harvest\Entity\HarvestRunRepository;
+use Drupal\dkan_harvest\HarvestService;
+use Drupal\dkan_harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Drupal\dkan_harvest\WebServiceApi;
 use Drupal\dkan_metastore\MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
@@ -24,8 +24,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @covers \Drupal\harvest\WebServiceApi
- * @coversDefaultClass \Drupal\harvest\WebServiceApi
+ * @covers \Drupal\dkan_harvest\WebServiceApi
+ * @coversDefaultClass \Drupal\dkan_harvest\WebServiceApi
  *
  * @group dkan
  * @group harvest

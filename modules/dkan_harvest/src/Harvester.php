@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
-use Drupal\harvest\ETL\Factory;
-use Drupal\harvest\ETL\Transform\Transform;
+use Drupal\dkan_harvest\ETL\Factory;
+use Drupal\dkan_harvest\ETL\Transform\Transform;
 
 /**
  * Executes harvests.
@@ -16,14 +16,14 @@ class Harvester {
   /**
    * The Factory object.
    *
-   * @var \Drupal\harvest\ETL\Factory
+   * @var \Drupal\dkan_harvest\ETL\Factory
    */
   private Factory $factory;
 
   /**
    * Class constructor.
    *
-   * @param \Drupal\harvest\ETL\Factory $factory
+   * @param \Drupal\dkan_harvest\ETL\Factory $factory
    *   ETL factory.
    */
   public function __construct(Factory $factory) {
@@ -206,7 +206,7 @@ class Harvester {
   /**
    * Transform an item.
    *
-   * @param \Drupal\harvest\ETL\Transform\Transform $transformer
+   * @param \Drupal\dkan_harvest\ETL\Transform\Transform $transformer
    *   The transformer to run.
    * @param object $item
    *   The item to transform.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 /**
  * Utilities for managing datasets.

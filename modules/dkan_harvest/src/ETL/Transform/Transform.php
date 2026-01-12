@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\ETL\Transform;
+namespace Drupal\dkan_harvest\ETL\Transform;
 
 /**
  * Abstract class for performing harvest transformations.

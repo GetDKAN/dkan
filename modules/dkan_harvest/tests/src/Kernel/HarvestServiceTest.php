@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel;
+namespace Drupal\Tests\dkan_harvest\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\harvest\ETL\Extract\DataJson;
-use Drupal\harvest\ETL\Load\Simple;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\ETL\Load\Simple;
 
 /**
- * @covers \Drupal\harvest\HarvestService
- * @coversDefaultClass \Drupal\harvest\HarvestService
+ * @covers \Drupal\dkan_harvest\HarvestService
+ * @coversDefaultClass \Drupal\dkan_harvest\HarvestService
  *
  * @group dkan
  * @group harvest
@@ -34,7 +34,7 @@ class HarvestServiceTest extends KernelTestBase {
   }
 
   public function testGetAllHarvestIds() {
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
 
     foreach (['100', '102', '101'] as $identifier) {
@@ -64,7 +64,7 @@ class HarvestServiceTest extends KernelTestBase {
 
   public function testPlanWithChangingDataset() {
     // Register a harvest.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $plan_identifier = 'test_plan';
     $plan = (object) [
@@ -111,7 +111,7 @@ class HarvestServiceTest extends KernelTestBase {
     $this->assertIsObject($storedObject);
 
     // Check the hashes.
-    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $hash_table */
+    /** @var \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable $hash_table */
     $hash_table = $this->container
       ->get('dkan.harvest.storage.hashes_database_table')
       ->getInstance($plan_identifier);
@@ -197,7 +197,7 @@ class HarvestServiceTest extends KernelTestBase {
   public function testGetHarvestRunResult() {
     // There should be no harvest runs at the beginning of this test method, so
     // getHarvestRunResult should return an empty array.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $any_harvest_run_id = '111';
     $this->assertEquals([], $harvest_service->getHarvestRunResult('any_plan', $any_harvest_run_id));

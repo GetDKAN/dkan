@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\ETL\Extract;
+namespace Drupal\dkan_harvest\ETL\Extract;
 
 /**
  * Abstract base class for harvest extraction.

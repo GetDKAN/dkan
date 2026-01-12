@@ -1,19 +1,19 @@
 <?php
 
-namespace Drupal\harvest\Entity;
+namespace Drupal\dkan_harvest\Entity;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\harvest\HarvestRunInterface;
+use Drupal\dkan_harvest\HarvestRunInterface;
 
 /**
  * Convenient queries for harvest_run entities.
  *
  * Avoid using this repository from anywhere but HarvestService.
  *
- * @see \Drupal\harvest\HarvestService
+ * @see \Drupal\dkan_harvest\HarvestService
  *
  * @internal
  */
@@ -95,7 +95,7 @@ class HarvestRunRepository {
    * @return string
    *   The run identifier.
    *
-   * @see \Drupal\harvest\Harvester::harvest()
+   * @see \Drupal\dkan_harvest\Harvester::harvest()
    *
    * @todo Eventually all the subsystems will be able to understand the entity
    *   rather than needing conversion to and from the array format.
@@ -192,7 +192,7 @@ class HarvestRunRepository {
   public function retrieveAllRunsJson(string $plan_id): array {
     $runs = [];
     if ($ids = $this->retrieveAllRunIds($plan_id)) {
-      /** @var \Drupal\harvest\HarvestRunInterface $entity */
+      /** @var \Drupal\dkan_harvest\HarvestRunInterface $entity */
       foreach ($this->runStorage->loadMultiple($ids) as $entity) {
         $runs[$entity->id()] = json_encode($entity->toResult());
       }
@@ -249,7 +249,7 @@ class HarvestRunRepository {
    * @param string $timestamp
    *   The timestamp for the run. Formerly the id.
    *
-   * @return \Drupal\harvest\HarvestRunInterface|\Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\dkan_harvest\HarvestRunInterface|\Drupal\Core\Entity\EntityInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
   public function loadEntity(string $plan_id, string $timestamp): ?HarvestRunInterface {
@@ -272,7 +272,7 @@ class HarvestRunRepository {
    * @param string $harvest_plan_id
    *   Plan ID.
    *
-   * @return \Drupal\harvest\HarvestRunInterface|null
+   * @return \Drupal\dkan_harvest\HarvestRunInterface|null
    *   The loaded harvest_run entity or NULL if none could be loaded.
    */
   public function loadRunByPlan($harvest_plan_id): ?HarvestRunInterface {
@@ -311,7 +311,7 @@ class HarvestRunRepository {
    */
   public function writeEntity(array $field_values, string $plan_id, mixed $timestamp) {
     $timestamp = (int) $timestamp;
-    /** @var \Drupal\harvest\HarvestRunInterface $entity */
+    /** @var \Drupal\dkan_harvest\HarvestRunInterface $entity */
     $entity = $this->loadEntity($plan_id, $timestamp);
     if ($entity) {
       // Modify entity.

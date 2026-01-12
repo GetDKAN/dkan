@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\harvest\ETL\Load;
+namespace Drupal\dkan_harvest\ETL\Load;
 
-use Drupal\harvest\Harvester;
-use Drupal\harvest\Util;
+use Drupal\dkan_harvest\Harvester;
+use Drupal\dkan_harvest\Util;
 
 /***
  * Abstract class for harvest loading.
@@ -101,7 +101,7 @@ abstract class Load {
    * @return int
    *   One of the various Harvester constants.
    *
-   * @see \Drupal\harvest\Harvester
+   * @see \Drupal\dkan_harvest\Harvester
    */
   protected function itemState(object $item): int {
     if (!isset($item->identifier)) {

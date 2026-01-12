@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\harvest\Transform;
+namespace Drupal\dkan_harvest\Transform;
 
 use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
-use Drupal\harvest\ETL\Transform\Transform;
+use Drupal\dkan_harvest\ETL\Transform\Transform;
 
 /**
  * Moves local files to public:// and alters the downloadUrl field.

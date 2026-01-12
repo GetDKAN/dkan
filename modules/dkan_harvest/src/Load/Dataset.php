@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\harvest\Load;
+namespace Drupal\dkan_harvest\Load;
 
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\MetastoreService;
-use Drupal\harvest\ETL\Load\Load;
+use Drupal\dkan_harvest\ETL\Load\Load;
 
 /**
  * Class.

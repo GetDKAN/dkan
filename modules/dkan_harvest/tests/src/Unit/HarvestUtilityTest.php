@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Unit;
+namespace Drupal\Tests\dkan_harvest\Unit;
 
-use Drupal\harvest\HarvestUtility;
+use Drupal\dkan_harvest\HarvestUtility;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\harvest\HarvestUtility
- * @coversDefaultClass \Drupal\harvest\HarvestUtility
+ * @covers \Drupal\dkan_harvest\HarvestUtility
+ * @coversDefaultClass \Drupal\dkan_harvest\HarvestUtility
  *
  * @group dkan
  * @group harvest

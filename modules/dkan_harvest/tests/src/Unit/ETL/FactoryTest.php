@@ -2,13 +2,13 @@
 
 namespace Drupal\Tests\Unit\harvest\ETL;
 
-use Drupal\harvest\ETL\Factory;
-use Drupal\Tests\harvest\MemStore;
+use Drupal\dkan_harvest\ETL\Factory;
+use Drupal\Tests\dkan_harvest\MemStore;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\harvest\ETL\Factory
- * @coversDefaultClass \Drupal\harvest\ETL\Factory
+ * @covers \Drupal\dkan_harvest\ETL\Factory
+ * @coversDefaultClass \Drupal\dkan_harvest\ETL\Factory
  *
  * @group dkan
  * @group harvest

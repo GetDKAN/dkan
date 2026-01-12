@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Storage;
+namespace Drupal\dkan_harvest\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
@@ -28,7 +28,7 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Database table data objects.
    *
-   * @var \Drupal\harvest\Storage\DatabaseTable
+   * @var \Drupal\dkan_harvest\Storage\DatabaseTable
    */
   private $storage = [];
 

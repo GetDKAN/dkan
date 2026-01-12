@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\harvest;
+namespace Drupal\Tests\dkan_harvest;
 
 use Contracts\Mock\Storage\Memory;
-use Drupal\harvest\Storage\StorageInterface;
+use Drupal\dkan_harvest\Storage\StorageInterface;
 
 class MemStore extends Memory implements StorageInterface {
 

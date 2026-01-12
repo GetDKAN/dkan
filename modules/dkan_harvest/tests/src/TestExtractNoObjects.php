@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\Tests\harvest;
+namespace Drupal\Tests\dkan_harvest;
 
-use Drupal\harvest\ETL\Extract\Extract;
+use Drupal\dkan_harvest\ETL\Extract\Extract;
 
 /**
  * Stub ETL extract class for testing.

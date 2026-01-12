@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\harvest\Entity;
+namespace Drupal\dkan_harvest\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\harvest\HarvestHashInterface;
+use Drupal\dkan_harvest\HarvestHashInterface;
 
 /**
  * Defines the harvest hash entity class.

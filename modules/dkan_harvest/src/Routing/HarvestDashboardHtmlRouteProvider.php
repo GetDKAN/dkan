@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Routing;
+namespace Drupal\dkan_harvest\Routing;
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Routing\AdminHtmlRouteProvider;

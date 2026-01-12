@@ -3,8 +3,8 @@
 namespace Drupal\sample_content;
 
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drupal\harvest\Commands\Helper;
-use Drupal\harvest\HarvestService;
+use Drupal\dkan_harvest\Commands\Helper;
+use Drupal\dkan_harvest\HarvestService;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -39,7 +39,7 @@ class Drush extends DrushCommands {
    *
    * @param \Drupal\sample_content\SampleContentService $sampleContentService
    *   Sample content service.
-   * @param \Drupal\harvest\HarvestService $harvestService
+   * @param \Drupal\dkan_harvest\HarvestService $harvestService
    *   Harvest service.
    */
   public function __construct(

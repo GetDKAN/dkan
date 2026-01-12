@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -20,7 +20,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Harvest.
    *
-   * @var \Drupal\harvest\HarvestService
+   * @var \Drupal\dkan_harvest\HarvestService
    */
   private $harvester;
 

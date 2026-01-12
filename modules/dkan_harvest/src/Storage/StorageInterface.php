@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Storage;
+namespace Drupal\dkan_harvest\Storage;
 
 /**
  * Interface for harvest storage.

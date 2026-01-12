@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel;
+namespace Drupal\Tests\dkan_harvest\Kernel;
 
-use Drupal\harvest\HarvestUtility;
+use Drupal\dkan_harvest\HarvestUtility;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\harvest\HarvestUtility
- * @coversDefaultClass \Drupal\harvest\HarvestUtility
+ * @covers \Drupal\dkan_harvest\HarvestUtility
+ * @coversDefaultClass \Drupal\dkan_harvest\HarvestUtility
  *
  * @group dkan
  * @group harvest
@@ -37,25 +37,25 @@ class HarvestUtilityTest extends KernelTestBase {
 
     // Use a database table to store a fake plan. The plan entity is the same
     // schema as the old table management.
-    /** @var \Drupal\harvest\Entity\HarvestPlanRepository $plan_repository */
+    /** @var \Drupal\dkan_harvest\Entity\HarvestPlanRepository $plan_repository */
     $plan_repository = $this->container->get('dkan.harvest.harvest_plan_repository');
     $plan_repository->storePlan((object) ['no' => 'plan'], $existing_plan_id);
 
     // Create harvest run data with a different plan ID, using entity API.
-    /** @var \Drupal\harvest\Entity\HarvestRunRepository $run_repository */
+    /** @var \Drupal\dkan_harvest\Entity\HarvestRunRepository $run_repository */
     $run_repository = $this->container->get('dkan.harvest.storage.harvest_run_repository');
     $run_id = (string) time();
     $run_repository->storeRun(['status' => ['extract' => 'neeto']], $entity_orphan_plan_id, $run_id);
     $this->assertNotNull($run_repository->retrieveRunJson($entity_orphan_plan_id, $run_id));
 
     // Create harvest run data with a different plan ID, using table API.
-    /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
+    /** @var \Drupal\dkan_harvest\Storage\DatabaseTableFactory $table_factory */
     $table_factory = $this->container->get('dkan.harvest.storage.database_table');
     $run_table = $table_factory->getInstance('harvest_' . $table_orphan_plan_id . '_runs');
     $run_table->store('{"fake_json"}', $run_id);
     $this->assertNotNull($run_table->retrieve($run_id));
 
-    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    /** @var \Drupal\dkan_harvest\HarvestUtility $harvest_utility */
     $harvest_utility = $this->container->get('dkan.harvest.utility');
     $orphaned = $harvest_utility->findOrphanedHarvestDataIds();
     $this->assertNotContains($existing_plan_id, $orphaned);
@@ -87,11 +87,11 @@ class HarvestUtilityTest extends KernelTestBase {
   public function testConvertHashTable() {
     $this->installEntitySchema('harvest_hash');
     $harvest_plan_id = 'TEST';
-    /** @var \Drupal\harvest\Storage\DatabaseTable $old_hash_table */
+    /** @var \Drupal\dkan_harvest\Storage\DatabaseTable $old_hash_table */
     $old_hash_table = $this->container
       ->get('dkan.harvest.storage.database_table')
       ->getInstance('harvest_' . $harvest_plan_id . '_hashes');
-    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $new_hash_table */
+    /** @var \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable $new_hash_table */
     $new_hash_table = $this->container
       ->get('dkan.harvest.storage.hashes_database_table')
       ->getInstance($harvest_plan_id);
@@ -108,7 +108,7 @@ class HarvestUtilityTest extends KernelTestBase {
     }
 
     // Convert the table.
-    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    /** @var \Drupal\dkan_harvest\HarvestUtility $harvest_utility */
     $harvest_utility = $this->container->get('dkan.harvest.utility');
     $harvest_utility->convertHashTable($harvest_plan_id);
 
@@ -136,7 +136,7 @@ class HarvestUtilityTest extends KernelTestBase {
     $orphaned_plan_id = 'orphanage';
     $orphaned_uuid = '24614086-9E33-4B09-B5B8-2ACAFE341AF9';
     $orphaned_hash = '1234567890';
-    /** @var \Drupal\harvest\Storage\DatabaseTableFactory $table_factory */
+    /** @var \Drupal\dkan_harvest\Storage\DatabaseTableFactory $table_factory */
     $table_factory = $this->container->get('dkan.harvest.storage.database_table');
     $orphaned_table = $table_factory->getInstance('harvest_' . $orphaned_plan_id . '_hashes');
     $this->assertCount(0, $orphaned_table->retrieveAll());
@@ -146,12 +146,12 @@ class HarvestUtilityTest extends KernelTestBase {
     ]), $orphaned_uuid);
 
     // Update the table using the utility.
-    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    /** @var \Drupal\dkan_harvest\HarvestUtility $harvest_utility */
     $harvest_utility = $this->container->get('dkan.harvest.utility');
     $harvest_utility->harvestHashUpdate();
 
     // Check that it happened.
-    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $new_hash_table */
+    /** @var \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable $new_hash_table */
     $new_hash_table = $this->container
       ->get('dkan.harvest.storage.hashes_database_table')
       ->getInstance($orphaned_plan_id);
@@ -185,15 +185,15 @@ class HarvestUtilityTest extends KernelTestBase {
     $orphaned_table->store(json_encode($orphaned_result), $orphaned_id);
 
     // Update the table using the utility.
-    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
+    /** @var \Drupal\dkan_harvest\HarvestUtility $harvest_utility */
     $harvest_utility = $this->container->get('dkan.harvest.utility');
     $harvest_utility->harvestRunsUpdate();
 
     // Check that it happened.
-    /** @var \Drupal\harvest\Entity\HarvestRunRepository $new_runs_repository */
+    /** @var \Drupal\dkan_harvest\Entity\HarvestRunRepository $new_runs_repository */
     $new_runs_repository = $this->container->get('dkan.harvest.storage.harvest_run_repository');
     $this->assertCount(1, $new_runs_repository->retrieveAllRunIds($orphaned_plan_id));
-    /** @var \Drupal\harvest\Entity\HarvestRun $run_entity */
+    /** @var \Drupal\dkan_harvest\Entity\HarvestRun $run_entity */
     $this->assertNotNull(
       $run_entity = $new_runs_repository->loadEntity($orphaned_plan_id, $orphaned_id)
     );

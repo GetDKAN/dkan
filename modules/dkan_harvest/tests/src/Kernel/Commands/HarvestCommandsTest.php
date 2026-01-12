@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel\Commands;
+namespace Drupal\Tests\dkan_harvest\Kernel\Commands;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\harvest\Commands\HarvestCommands;
-use Drupal\harvest\ETL\Extract\DataJson;
-use Drupal\harvest\Entity\HarvestPlanRepository;
-use Drupal\harvest\Load\Dataset;
+use Drupal\dkan_harvest\Commands\HarvestCommands;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\Entity\HarvestPlanRepository;
+use Drupal\dkan_harvest\Load\Dataset;
 use Drush\Log\DrushLoggerManager;
 
 /**
- * @covers \Drupal\harvest\Commands\HarvestCommands
- * @coversDefaultClass \Drupal\harvest\Commands\HarvestCommands
+ * @covers \Drupal\dkan_harvest\Commands\HarvestCommands
+ * @coversDefaultClass \Drupal\dkan_harvest\Commands\HarvestCommands
  *
  * @group dkan
  * @group harvest

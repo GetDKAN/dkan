@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel;
+namespace Drupal\Tests\dkan_harvest\Kernel;
 
-use Drupal\harvest\HarvestPlanListBuilder;
-use Drupal\harvest\HarvestService;
+use Drupal\dkan_harvest\HarvestPlanListBuilder;
+use Drupal\dkan_harvest\HarvestService;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\harvest\ETL\Extract\DataJson;
-use Drupal\harvest\ETL\Load\Simple;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\ETL\Load\Simple;
 
 /**
- * @covers \Drupal\harvest\HarvestPlanListBuilder
- * @coversDefaultClass \Drupal\harvest\HarvestPlanListBuilder
+ * @covers \Drupal\dkan_harvest\HarvestPlanListBuilder
+ * @coversDefaultClass \Drupal\dkan_harvest\HarvestPlanListBuilder
  *
  * @group dkan
  * @group harvest
@@ -65,7 +65,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   }
 
   public function testRegisteredHarvest() {
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->container->get('entity_type.manager');
@@ -88,7 +88,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   }
 
   public function testGoodHarvestRun() {
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->container->get('entity_type.manager');
@@ -110,7 +110,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
     $strings = array_merge(self::HARVEST_HEADERS, [
       'harvest_link',
       'SUCCESS',
-      json_encode(date('m/d/y H:m:s T', (int)$run_result['identifier'])),
+      json_encode(date('m/d/y H:m:s T', (int) $run_result['identifier'])),
       '2',
     ]);
     foreach ($strings as $string) {
@@ -126,9 +126,9 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   }
 
   public function testRegisteredPlanDatastore() {
-    // Enable datastore module
+    // Enable datastore module.
     $this->enableModules(['dkan_datastore']);
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->container->get('entity_type.manager');
@@ -162,7 +162,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   }
 
   public function testRegisteredPlanNoDatastore() {
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->container->get('entity_type.manager');

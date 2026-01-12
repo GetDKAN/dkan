@@ -1,6 +1,6 @@
 services:
   dkan.harvest.drush:
-    class: \Drupal\harvest\Commands\HarvestCommands
+    class: \Drupal\dkan_harvest\Commands\HarvestCommands
     arguments:
       - '@dkan.harvest.service'
       - '@dkan.harvest.utility'

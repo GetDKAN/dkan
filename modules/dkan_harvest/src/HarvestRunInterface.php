@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 
@@ -21,8 +21,8 @@ interface HarvestRunInterface extends ContentEntityInterface {
    *
    * @internal
    *
-   * @see \Drupal\harvest\Harvester::harvest()
-   * @see \Drupal\harvest\ResultInterpreter
+   * @see \Drupal\dkan_harvest\Harvester::harvest()
+   * @see \Drupal\dkan_harvest\ResultInterpreter
    *
    * @todo Refactor other areas of the harvest system so they know how to deal
    *   with the entity rather than the results array.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Storage;
+namespace Drupal\dkan_harvest\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
@@ -12,8 +12,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Currently handles these tables: harvest_[id]_runs, harvest_[id]_items,
  * harvest_[id]_hashes.
  *
- * @see \Drupal\harvest\Storage\DatabaseTableFactory::getDatabaseTable()
- * @see \Drupal\harvest\Entity\HarvestPlanRepository
+ * @see \Drupal\dkan_harvest\Storage\DatabaseTableFactory::getDatabaseTable()
+ * @see \Drupal\dkan_harvest\Entity\HarvestPlanRepository
  */
 class DatabaseTable extends AbstractDatabaseTable {
 
