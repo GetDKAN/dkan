@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\Unit\harvest\ETL\Extract;
 
-use Drupal\Tests\harvest\TestExtract;
-use Drupal\Tests\harvest\TestExtractNoObjects;
+use Drupal\Tests\dkan_harvest\TestExtract;
+use Drupal\Tests\dkan_harvest\TestExtractNoObjects;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,8 +11,8 @@ use PHPUnit\Framework\TestCase;
  * @group harvest
  * @group unit
  *
- * @covers \Drupal\harvest\ETL\Extract\Extract
- * @coversDefaultClass \Drupal\harvest\ETL\Extract\Extract
+ * @covers \Drupal\dkan_harvest\ETL\Extract\Extract
+ * @coversDefaultClass \Drupal\dkan_harvest\ETL\Extract\Extract
  */
 class ExtractTest extends TestCase {
 

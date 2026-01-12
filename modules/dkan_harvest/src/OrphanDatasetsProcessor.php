@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Handle dataset orphaning.
  *
- * @package Drupal\harvest
+ * @package Drupal\dkan_harvest
  */
 trait OrphanDatasetsProcessor {
 

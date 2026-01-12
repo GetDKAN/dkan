@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Unit\Storage;
+namespace Drupal\Tests\dkan_harvest\Unit\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Schema;
 use MockChain\Chain;
-use Drupal\harvest\Storage\DatabaseTable;
+use Drupal\dkan_harvest\Storage\DatabaseTable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @coversDefaultClass \Drupal\harvest\Storage\DatabaseTable
+ * @coversDefaultClass \Drupal\dkan_harvest\Storage\DatabaseTable
  *
  * @group dkan
  * @group harvest

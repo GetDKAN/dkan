@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\harvest\Storage;
+namespace Drupal\dkan_harvest\Storage;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use Drupal\dkan_common\Storage\Query;
-use Drupal\harvest\HarvestHashInterface;
+use Drupal\dkan_harvest\HarvestHashInterface;
 
 /**
  * Shim between the harvest_hash entity type and DKAN db table interface.
@@ -17,7 +17,7 @@ use Drupal\harvest\HarvestHashInterface;
  * Note: Our way of storing this data means that we can't have more than one
  * harvest plan ID per Data node.
  *
- * @see \Drupal\harvest\Entity\HarvestHash
+ * @see \Drupal\dkan_harvest\Entity\HarvestHash
  *
  * @todo Remove this in a refactor of the harvester.
  *
@@ -59,7 +59,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager service.
    *
-   * @see \Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory
+   * @see \Drupal\dkan_harvest\Storage\HarvestHashesDatabaseTableFactory
    */
   public function __construct(string $planId, EntityTypeManagerInterface $entityTypeManager) {
     $this->planId = $planId;
@@ -162,7 +162,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
         ->accessCheck(FALSE)
         ->execute()
     );
-    /** @var \Drupal\harvest\HarvestHashInterface  $entity*/
+    /** @var \Drupal\dkan_harvest\HarvestHashInterface  $entity*/
     foreach ($entities as $entity) {
       $uuid = $entity->get('data_uuid')->getString();
       $data_uuids[$uuid] = $uuid;
@@ -248,7 +248,7 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
    * @param string $data_uuid
    *   Entity ID.
    *
-   * @return \Drupal\harvest\HarvestHashInterface|null
+   * @return \Drupal\dkan_harvest\HarvestHashInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
   protected function loadEntity(string $data_uuid): ?HarvestHashInterface {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\harvest\Plugin\DkanApiDocs;
+namespace Drupal\dkan_harvest\Plugin\DkanApiDocs;
 
 use Drupal\dkan_common\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
-use Drupal\harvest\HarvestService;
+use Drupal\dkan_harvest\HarvestService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -21,7 +21,7 @@ class HarvestApiDocs extends DkanApiDocsBase {
   /**
    * The DKAN harvest service.
    *
-   * @var Drupal\harvest\Service
+   * @var Drupal\dkan_harvest\Service
    */
   private $harvest;
 
@@ -38,7 +38,7 @@ class HarvestApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
    *   The module handler service.
-   * @param \Drupal\harvest\HarvestService $harvest
+   * @param \Drupal\dkan_harvest\HarvestService $harvest
    *   The module handler service.
    */
   public function __construct(

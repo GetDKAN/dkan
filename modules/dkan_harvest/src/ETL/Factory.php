@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\ETL;
+namespace Drupal\dkan_harvest\ETL;
 
 use GuzzleHttp\ClientInterface;
 use Opis\JsonSchema\Schema;

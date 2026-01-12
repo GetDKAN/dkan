@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Unit\Storage;
+namespace Drupal\Tests\dkan_harvest\Unit\Storage;
 
 use Drupal\dkan_common\Storage\Query;
-use Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable;
+use Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
- * @coversDefaultClass \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+ * @covers \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable
+ * @coversDefaultClass \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable
  *
  * @group dkan
  * @group harvest

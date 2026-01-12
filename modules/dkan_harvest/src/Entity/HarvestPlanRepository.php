@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\harvest\Entity;
+namespace Drupal\dkan_harvest\Entity;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\harvest\HarvestPlanInterface;
+use Drupal\dkan_harvest\HarvestPlanInterface;
 
 /**
  * Repository for various queries related to harvest plans.
@@ -65,7 +65,7 @@ class HarvestPlanRepository {
    * @return string|null
    *   The plan record.
    *
-   * @see \Drupal\harvest\Entity\HarvestPlan::jsonSerialize()
+   * @see \Drupal\dkan_harvest\Entity\HarvestPlan::jsonSerialize()
    *
    * @todo Move away from expecting a plan to be JSON-encoded.
    */
@@ -81,7 +81,7 @@ class HarvestPlanRepository {
    *
    * @param object $plan
    *   The plan object. See components.schemas.harvestPlan within
-   *   modules/harvest/docs/openapi_spec.json for the schema of a plan.
+   *   modules/dkan_harvest/docs/openapi_spec.json for the schema of a plan.
    * @param string $plan_id
    *   The plan identifier.
    *
@@ -97,7 +97,7 @@ class HarvestPlanRepository {
    *
    * @param string $plan_data
    *   JSON-encoded plan data.See components.schemas.harvestPlan within
-   *    modules/harvest/docs/openapi_spec.json for the schema of a plan.
+   *    modules/dkan_harvest/docs/openapi_spec.json for the schema of a plan.
    * @param string $plan_id
    *   The plan identifier.
    *
@@ -144,7 +144,7 @@ class HarvestPlanRepository {
    * @param string $plan_id
    *   Entity ID.
    *
-   * @return \Drupal\harvest\HarvestPlanInterface|null
+   * @return \Drupal\dkan_harvest\HarvestPlanInterface|null
    *   The loaded entity or NULL if none could be loaded.
    */
   protected function loadEntity(string $plan_id): ?HarvestPlanInterface {

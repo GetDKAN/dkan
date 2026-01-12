@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\harvest\Tests\Functional\Api;
+namespace Drupal\dkan_harvest\Tests\Functional\Api;
 
-use Drupal\harvest\Load\Dataset;
+use Drupal\dkan_harvest\Load\Dataset;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\user\Entity\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use Drupal\harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
 
 /**
  * Test Harvest-related RESTful API.
@@ -72,7 +72,7 @@ class HarvestTest extends BrowserTestBase {
         'type' => Dataset::class,
       ],
     ];
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $this->assertNotNull($storage_id = $harvest_service->registerHarvest($harvest_plan));
     return $storage_id;
@@ -150,7 +150,7 @@ class HarvestTest extends BrowserTestBase {
     $endpoint = '/api/1/harvest/runs';
 
     // Run the harvest.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $result = $harvest_service->runHarvest($identifier);
     $this->assertEquals('SUCCESS', $result['status']['extract'] ?? 'test fail');
@@ -183,7 +183,7 @@ class HarvestTest extends BrowserTestBase {
 
     // Add a harvest plan and run it.
     $this->addHarvestPlan($identifier);
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $result = $harvest_service->runHarvest($identifier);
     $this->assertEquals('SUCCESS', $result['status']['extract'] ?? 'test fail');
@@ -204,7 +204,7 @@ class HarvestTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode());
     // Request the run info.
     $result = json_decode($response->getBody()->getContents());
-    // @see modules/harvest/docs/openapi_spec.json
+    // @see modules/dkan_harvest/docs/openapi_spec.json
     $this->assertIsArray($result);
     $response = $this->getApiClient($user)->get($runs_endpoint . '/' . $result[0] ?? 'bad_id', [
       RequestOptions::QUERY => $query,

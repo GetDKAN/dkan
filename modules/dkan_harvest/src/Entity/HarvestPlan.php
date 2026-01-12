@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\harvest\Entity;
+namespace Drupal\dkan_harvest\Entity;
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\harvest\HarvestPlanInterface;
+use Drupal\dkan_harvest\HarvestPlanInterface;
 
 /**
  * Defines the harvest plan entity class.
@@ -12,7 +12,7 @@ use Drupal\harvest\HarvestPlanInterface;
  * The entity stores an identifier for the plan ('id') and a blob of JSON to
  * represent the plan ('data'). This is not the JSON of the harvest, but the
  * DKAN harvest plan. See components.schemas.harvestPlan within
- * modules/harvest/docs/openapi_spec.json for the schema of a plan.
+ * modules/dkan_harvest/docs/openapi_spec.json for the schema of a plan.
  *
  * The plan JSON must contain an object with a property named 'identifier'. The
  * 'id' field of this entity must contain the same value as that identifier.
@@ -28,11 +28,11 @@ use Drupal\harvest\HarvestPlanInterface;
  *     plural = "@count harvest plans",
  *   ),
  *   handlers = {
- *     "list_builder" = "Drupal\harvest\HarvestPlanListBuilder",
+ *     "list_builder" = "Drupal\dkan_harvest\HarvestPlanListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
- *     "access" = "Drupal\harvest\ContentAccessControlHandler",
+ *     "access" = "Drupal\dkan_harvest\ContentAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\harvest\Routing\HarvestDashboardHtmlRouteProvider",
+ *       "html" = "Drupal\dkan_harvest\Routing\HarvestDashboardHtmlRouteProvider",
  *     }
  *   },
  *   base_table = "harvest_plans",

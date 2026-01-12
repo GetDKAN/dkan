@@ -1,35 +1,12 @@
 <?php
 
-use Drupal\user\Entity\Role;
-
 /**
  * @file
  * Install, update and uninstall functions for the DKAN harvest module.
  */
 
-function harvest_requirements($phase): array {
-  $requirements = [];
-  if ($phase == 'runtime') {
-    /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
-    if ($harvest_utility = \Drupal::service('dkan.harvest.utility')) {
-      if ($leftover_harvest_data_ids = $harvest_utility->findOrphanedHarvestDataIds()) {
-        $requirements['dkan harvest leftover data'] = [
-          'title' => t('DKAN Harvest Leftover Plan Data'),
-          'value' => t('Leftover harvest data for plans: @plans', [
-            '@plans' => implode(', ', $leftover_harvest_data_ids),
-          ]),
-          'description' => t(
-            'DKAN\'s harvest module has detected extra unneeded data tables.
-            You can remove them using this Drush command from the CLI:
-            <code>drush dkan:harvest:cleanup</code>'
-          ),
-          'severity' => REQUIREMENT_WARNING,
-        ];
-      }
-    }
-  }
-  return $requirements;
-}
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\user\Entity\Role;
 
 /**
  * Implements hook_install().
@@ -45,197 +22,15 @@ function harvest_install() {
     $role->save();
   }
 
-  // Only in DKAN 3.x: Run the update hooks to enable transitional modules.
-  harvest_update_10003();
 }
 
 /**
- * Uninstall obsolete submodule harvest_dashboard.
+ * Disable old harvest module.
  */
-function harvest_update_8001(&$sandbox) {
-  \Drupal::service('module_installer')->uninstall(['harvest_dashboard']);
-}
-
-/**
- * Remove tables if they exist: harvest_source, harvest_run, harvest_hash.
- */
-function harvest_update_8002(&$sandbox) {
-  foreach (['harvest_source', 'harvest_run', 'harvest_hash'] as $table) {
-    \Drupal::database()->schema()->dropTable($table);
+function dkan_harvest_update_10001() {
+  if (\Drupal::moduleHandler()->moduleExists('harvest')) {
+    \Drupal::service('module_installer')->uninstall(['harvest']);
+    $message = new TranslatableMarkup('The legacy harvest module has been uninstalled.');
   }
-}
-
-/**
- * Ensure the entity manager knows about harvest_plan entities.
- *
- * Note: The harvest_plans table might already exist in your
- * database. The harvest_plan entity is designed to use it without
- * modification.
- */
-function harvest_update_8003(&$sandbox) {
-  \Drupal::entityTypeManager()->clearCachedDefinitions();
-  \Drupal::entityDefinitionUpdateManager()
-    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_plan'));
-}
-
-/**
- * Ensure the entity manager knows about the harvest_hash entity.
- */
-function harvest_update_8004(&$sandbox) {
-  \Drupal::entityTypeManager()->clearCachedDefinitions();
-  \Drupal::entityDefinitionUpdateManager()
-    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_hash'));
-}
-
-/**
- * Ensure the entity manager knows about harvest_run entities.
- */
-function harvest_update_8006(&$sandbox) {
-  \Drupal::entityTypeManager()->clearCachedDefinitions();
-  \Drupal::entityDefinitionUpdateManager()
-    ->installEntityType(\Drupal::entityTypeManager()->getDefinition('harvest_run'));
-}
-
-/**
- * Move data from harvest_ID_hashes tables to harvest_hash entity.
- *
- * This will move all harvest hash information to the updated schema, including
- * data which does not have a corresponding hash plan ID.
- *
- * Outdated tables will be removed.
- */
-function harvest_update_8007(&$sandbox) {
-  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
-  $harvest_utility = \Drupal::service('dkan.harvest.utility');
-  $harvest_utility->harvestHashUpdate();
-}
-
-/**
- * Move entries from harvest_[ID]_runs to harvest_runs.
- *
- * This finishes the process started by harvest_update_8007.
- */
-function harvest_update_8008(&$sandbox) {
-  // Moved and repeated to 8010.
-}
-
-/**
- * Update harvest_run schema to add timestamp, uuid, and true id.
- *
- * @see https://github.com/GetDKAN/dkan/issues/4287
- */
-function harvest_update_8009(&$sandbox) {
-  $table_name = 'harvest_runs';
-  $table_name_temp = "{$table_name}_temp";
-  $entity_type_name = 'harvest_run';
-
-  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
-  $entity_type_manager = \Drupal::entityTypeManager();
-  $schema = \Drupal::database()->schema();
-
-  // Move the table so we can rebuild from it.
-  $schema->renameTable($table_name, $table_name_temp);
-  $messages = "Table {$table_name} moved to {$table_name_temp}. " . PHP_EOL;
-  // Uninstall the the original entity.
-  $original_type = $definition_update_manager->getEntityType($entity_type_name);
-  $definition_update_manager->uninstallEntityType($original_type);
-  $messages .= "Old harvest_run entity removed. " . PHP_EOL;
-  $entity_type_manager->clearCachedDefinitions();
-  // Install the new entity.
-  //$entity_type = $entity_type_manager->get($entity_type_name);
-  $entity_type_manager->clearCachedDefinitions();
-  $entity_type_def = $entity_type_manager->getDefinition($entity_type_name);
-  $definition_update_manager->installEntityType($entity_type_def);
-  $messages .= "New harvest_run entity installed. " . PHP_EOL;
-
-  return $messages;
-}
-
-/**
- * Move data from temp table back into harvest_run.
- *
- * @see https://github.com/GetDKAN/dkan/issues/4287
- */
-function harvest_update_8010(&$sandbox) {
-  $table_name = 'harvest_runs';
-  $table_name_temp = "{$table_name}_temp";
-  $messages = '';
-  $schema = \Drupal::database()->schema();
-  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
-  $harvest_utility = \Drupal::service('dkan.harvest.utility');
-
-  if (!isset($sandbox['total'])) {
-    // Sandbox has not been initiated, so initiate it.
-    $sandbox['items_to_process'] = $harvest_utility->getTempRunIdsForUpdate($table_name_temp);
-    $sandbox['total'] = count($sandbox['items_to_process']);
-    $sandbox['current'] = 0;
-  }
-  // Process them in batches of 25.
-  $harvest_runs_batch = array_slice($sandbox['items_to_process'], 0, 25, TRUE);
-  // Loop through all the entries in temp table and save them new.
-  foreach ($harvest_runs_batch as $key => $time_id) {
-    // Load the old row.
-    $row = $harvest_utility->readTempHarvestRunForUpdate($table_name_temp, $time_id);
-    // Write the new harvest run.
-    $harvest_utility->writeHarvestRunFromUpdate($row['id'], $row['harvest_plan_id'], $row['data'], $row['extract_status']);
-    // The item has been processed, remove it from the array.
-    unset($sandbox['items_to_process'][$key]);
-  }
-
-  // Determine when to stop batching.
-  $sandbox['current'] = ($sandbox['total'] - count($sandbox['items_to_process']));
-  $sandbox['#finished'] = (empty($sandbox['total'])) ? 1 : ($sandbox['current'] / $sandbox['total']);
-  $vars = [
-    '@completed' => $sandbox['current'],
-    '@total' => $sandbox['total'],
-  ];
-
-  $messages = t('Processed: @completed/@total.', $vars) . PHP_EOL;
-  // Log the all finished notice.
-  if ($sandbox['#finished'] === 1) {
-    // The update of the harvest_runs is complete.
-    $messages .= t('Data in harvest_runs updated to new schema:') . PHP_EOL;
-    $dropped = $schema->dropTable($table_name_temp);
-    if ($dropped) {
-      $messages .= t('Temporary table dropped.') . PHP_EOL;
-    }
-  }
-
-  return $messages;
-}
-
-/**
- * Move entries from harvest_[ID]_runs to harvest_runs.
- *
- * This finishes the process started by harvest_update_8007 and re-runs 8008.
-*/
-function harvest_update_8011(&$sandbox) {
-  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
-    $harvest_utility = \Drupal::service('dkan.harvest.utility');
-    $harvest_utility->harvestRunsUpdate();
-    return 'Harvest plan specific run tables coalesced into table harvest_runs.';
-}
-
-/**
- * Superceded by harvest_update_10002.
- */
-function harvest_update_10001() {}
-
-/**
- * Updates namespace for harvest type.
- */
-function harvest_update_10002()
-{
-  /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
-  $harvest_utility = \Drupal::service('dkan.harvest.utility');
-  $harvest_utility->harvestNammespaceUpdate();
-}
-
-/**
- * Enable transitional dkan_harvest module, in preparation for 4.x.
- */
-function harvest_update_10003() {
-  if (!\Drupal::service('module_handler')->moduleExists('dkan_harvest')) {
-    \Drupal::service('module_installer')->install(['dkan_harvest'], TRUE);
-  }
+  return $message;
 }

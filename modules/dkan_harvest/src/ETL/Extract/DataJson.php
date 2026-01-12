@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\harvest\ETL\Extract;
+namespace Drupal\dkan_harvest\ETL\Extract;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use Drupal\harvest\Util;
+use Drupal\dkan_harvest\Util;
 
 /**
  * Extract class for json data.

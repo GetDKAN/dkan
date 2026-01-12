@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel\Transform;
+namespace Drupal\Tests\dkan_harvest\Kernel\Transform;
 
 use Drupal\dkan_common\Util\DrupalFiles;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\harvest\Transform\ResourceImporter;
+use Drupal\dkan_harvest\Transform\ResourceImporter;
 
 /**
- * @covers \Drupal\harvest\Transform\ResourceImporter
- * @coversDefaultClass \Drupal\harvest\Transform\ResourceImporter
+ * @covers \Drupal\dkan_harvest\Transform\ResourceImporter
+ * @coversDefaultClass \Drupal\dkan_harvest\Transform\ResourceImporter
  *
  * @group dkan
  * @group harvest

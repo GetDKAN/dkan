@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel;
+namespace Drupal\Tests\dkan_harvest\Kernel;
 
-use Drupal\harvest\HarvestService;
-use Drupal\harvest\WebServiceApi;
+use Drupal\dkan_harvest\HarvestService;
+use Drupal\dkan_harvest\WebServiceApi;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\harvest\ETL\Extract\DataJson;
-use Drupal\harvest\ETL\Load\Simple;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\ETL\Load\Simple;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @covers \Drupal\harvest\WebServiceApi
- * @coversDefaultClass \Drupal\harvest\WebServiceApi
+ * @covers \Drupal\dkan_harvest\WebServiceApi
+ * @coversDefaultClass \Drupal\dkan_harvest\WebServiceApi
  *
  * @group dkan
  * @group harvest
  * @group kernel
  *
- * @see \Drupal\Tests\harvest\Unit\WebServiceApiTest
+ * @see \Drupal\Tests\dkan_harvest\Unit\WebServiceApiTest
  */
 class WebServiceApiTest extends KernelTestBase {
 
@@ -110,7 +110,7 @@ class WebServiceApiTest extends KernelTestBase {
    */
   public function testGetPlan() {
     // Register a harvest.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $plan_identifier = 'test_plan';
     $plan = $this->getHarvestPlan($plan_identifier);
@@ -161,7 +161,7 @@ class WebServiceApiTest extends KernelTestBase {
 
   public function testDeregister() {
     // Register a harvest.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $plan_identifier = 'test_plan';
     $plan = $this->getHarvestPlan($plan_identifier);
@@ -222,7 +222,7 @@ class WebServiceApiTest extends KernelTestBase {
    */
   public function testInfo() {
     // Register a harvest.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $plan_identifier = 'test_plan';
     $plan = $this->getHarvestPlan($plan_identifier);
@@ -291,7 +291,7 @@ class WebServiceApiTest extends KernelTestBase {
    */
   public function testInfoRun() {
     // Register a harvest.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $plan_identifier = 'test_plan';
     $plan = $this->getHarvestPlan($plan_identifier);
@@ -358,7 +358,7 @@ class WebServiceApiTest extends KernelTestBase {
    */
   public function testRevert() {
     // Register a harvest.
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     $plan_identifier = 'test_plan';
     $plan = $this->getHarvestPlan($plan_identifier);

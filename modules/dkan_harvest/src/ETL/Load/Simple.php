@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\ETL\Load;
+namespace Drupal\dkan_harvest\ETL\Load;
 
 /**
  * The most basic implementation of the harvest Load class.

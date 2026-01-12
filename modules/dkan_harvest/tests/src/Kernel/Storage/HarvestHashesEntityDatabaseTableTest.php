@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Kernel\Storage;
+namespace Drupal\Tests\dkan_harvest\Kernel\Storage;
 
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
- * @coversDefaultClass \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable
+ * @covers \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable
+ * @coversDefaultClass \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable
  *
  * @group dkan
  * @group harvest
@@ -33,7 +33,7 @@ class HarvestHashesEntityDatabaseTableTest extends KernelTestBase {
   public function testStoreIdMismatch() {
     $json_id = 'json_id';
     $table_id = 'different_id';
-    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $table */
+    /** @var \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable $table */
     $table = $this->container
       ->get('dkan.harvest.storage.hashes_database_table')
       ->getInstance($table_id);
@@ -57,7 +57,7 @@ class HarvestHashesEntityDatabaseTableTest extends KernelTestBase {
       'harvest_plan_id' => $harvest_plan_id,
       'hash' => 'yuck',
     ];
-    /** @var \Drupal\harvest\Storage\HarvestHashesEntityDatabaseTable $table */
+    /** @var \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable $table */
     $table = $this->container
       ->get('dkan.harvest.storage.hashes_database_table')
       ->getInstance($harvest_plan_id);

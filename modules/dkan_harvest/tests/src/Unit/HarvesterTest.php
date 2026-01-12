@@ -2,13 +2,13 @@
 
 namespace Drupal\Tests\Unit\harvest;
 
-use Drupal\harvest\ETL\Factory;
-use Drupal\harvest\Harvester;
-use Drupal\harvest\ResultInterpreter;
+use Drupal\dkan_harvest\ETL\Factory;
+use Drupal\dkan_harvest\Harvester;
+use Drupal\dkan_harvest\ResultInterpreter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Drupal\Tests\harvest\MemStore;
+use Drupal\Tests\dkan_harvest\MemStore;
 
 class HarvesterTest extends TestCase {
 

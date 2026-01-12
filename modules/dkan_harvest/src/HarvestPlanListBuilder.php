@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
-use Drupal\harvest\Entity\HarvestRunRepository;
+use Drupal\dkan_harvest\Entity\HarvestRunRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -81,13 +81,13 @@ class HarvestPlanListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var \Drupal\harvest\HarvestPlanInterface $entity */
+    /** @var \Drupal\dkan_harvest\HarvestPlanInterface $entity */
     $harvest_plan_id = $entity->get('id')->getString();
     $run_entity = NULL;
 
     if ($run_id = $this->harvestRunRepository->getLastHarvestRunId($harvest_plan_id)) {
       // There is a run identifier, so we should get that info.
-      /** @var \Drupal\harvest\HarvestRunInterface $run_entity */
+      /** @var \Drupal\dkan_harvest\HarvestRunInterface $run_entity */
       $run_entity = $this->harvestRunStorage->load($run_id);
     }
 

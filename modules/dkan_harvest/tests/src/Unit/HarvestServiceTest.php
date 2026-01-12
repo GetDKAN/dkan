@@ -2,34 +2,34 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Unit;
+namespace Drupal\Tests\dkan_harvest\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
-use Drupal\harvest\Entity\HarvestPlanRepository;
-use Drupal\harvest\Entity\HarvestRunRepository;
-use Drupal\harvest\HarvestService;
-use Drupal\harvest\Storage\DatabaseTableFactory;
-use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Drupal\dkan_harvest\Entity\HarvestPlanRepository;
+use Drupal\dkan_harvest\Entity\HarvestRunRepository;
+use Drupal\dkan_harvest\HarvestService;
+use Drupal\dkan_harvest\Storage\DatabaseTableFactory;
+use Drupal\dkan_harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
-use Drupal\harvest\Harvester;
+use Drupal\dkan_harvest\Harvester;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Drupal\harvest\HarvestService
- * @coversDefaultClass \Drupal\harvest\HarvestService
+ * @covers \Drupal\dkan_harvest\HarvestService
+ * @coversDefaultClass \Drupal\dkan_harvest\HarvestService
  *
  * @group dkan
  * @group harvest
  * @group unit
  *
- * @see \Drupal\Tests\harvest\Kernel\HarvestServiceTest
+ * @see \Drupal\Tests\dkan_harvest\Kernel\HarvestServiceTest
  */
 class HarvestServiceTest extends TestCase {
   use ServiceCheckTrait;

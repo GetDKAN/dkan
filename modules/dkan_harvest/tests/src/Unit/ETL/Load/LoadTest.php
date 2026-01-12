@@ -3,14 +3,14 @@
 namespace Drupal\Tests\Unit\harvest\ETL\Load;
 
 use Contracts\RetrieverInterface;
-use Drupal\harvest\ETL\Load\Load;
-use Drupal\harvest\Harvester;
-use Drupal\harvest\Storage\StorageInterface;
+use Drupal\dkan_harvest\ETL\Load\Load;
+use Drupal\dkan_harvest\Harvester;
+use Drupal\dkan_harvest\Storage\StorageInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\harvest\ETL\Load\Load
- * @coversDefaultClass \Drupal\harvest\ETL\Load\Load
+ * @covers \Drupal\dkan_harvest\ETL\Load\Load
+ * @coversDefaultClass \Drupal\dkan_harvest\ETL\Load\Load
  *
  * @group harvest
  * @group unit

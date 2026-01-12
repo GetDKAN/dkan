@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\harvest\Entity\HarvestPlanRepository;
-use Drupal\harvest\Entity\HarvestRunRepository;
-use Drupal\harvest\Storage\HarvestHashesDatabaseTableFactory;
+use Drupal\dkan_harvest\Entity\HarvestPlanRepository;
+use Drupal\dkan_harvest\Entity\HarvestRunRepository;
+use Drupal\dkan_harvest\Storage\HarvestHashesDatabaseTableFactory;
 use Drupal\dkan_metastore\MetastoreService;
-use Drupal\harvest\ETL\Factory;
+use Drupal\dkan_harvest\ETL\Factory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -27,7 +27,7 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @var \Contracts\FactoryInterface
    *
-   * @see \Drupal\harvest\Storage\DatabaseTableFactory
+   * @see \Drupal\dkan_harvest\Storage\DatabaseTableFactory
    */
   private $storeFactory;
 
@@ -46,14 +46,14 @@ class HarvestService implements ContainerInjectionInterface {
   /**
    * Harvest plan storage repository service.
    *
-   * @var \Drupal\harvest\Entity\HarvestPlanRepository
+   * @var \Drupal\dkan_harvest\Entity\HarvestPlanRepository
    */
   private HarvestPlanRepository $harvestPlanRepository;
 
   /**
    * Harvest run entity repository service.
    *
-   * @var \Drupal\harvest\Entity\HarvestRunRepository
+   * @var \Drupal\dkan_harvest\Entity\HarvestRunRepository
    */
   public HarvestRunRepository $runRepository;
 
@@ -153,7 +153,7 @@ class HarvestService implements ContainerInjectionInterface {
    *
    * @param object $plan
    *   The plan object. Must contain an 'identifier' property. See
-   *   modules/harvest/schema/schema.json for the schema of a harvest plan.
+   *   modules/dkan_harvest/schema/schema.json for the schema of a harvest plan.
    *
    * @return string
    *   The identifier for the harvest plan.
@@ -262,25 +262,6 @@ class HarvestService implements ContainerInjectionInterface {
   }
 
   /**
-   * Retrieve all run results for a given plan.
-   *
-   * @param string $plan_id
-   *   The harvest plan identifier.
-   *
-   * @return array
-   *   JSON-encoded result arrays, keyed by harvest run identifier.
-   *
-   * @deprecated Gather run IDs from getRunIdsForHarvest() and access specific
-   *   information based on those IDs.
-   *
-   * @see self::getRunIdsForHarvest()
-   * @see self::getHarvestRunInfo()
-   */
-  public function getAllHarvestRunInfo(string $plan_id): array {
-    return $this->runRepository->retrieveAllRunsJson($plan_id);
-  }
-
-  /**
    * Retrieve harvest run IDs for a given harvest plan.
    *
    * @param string $plan_id
@@ -291,21 +272,6 @@ class HarvestService implements ContainerInjectionInterface {
    */
   public function getRunIdsForHarvest(string $plan_id): array {
     return $this->runRepository->retrieveAllRunIds($plan_id);
-  }
-
-  /**
-   * Get a harvest's most recent run id. Passthrough for HarvestRunRepository.
-   *
-   * @param string $plan_id
-   *   The harvest plan identifier.
-   *
-   * @return string
-   *   The entity id of the most recent harvest run.
-   *
-   * @deprecated in dkan:2.19.11 and is removed from dkan:3.0.0 Use runStorage::load().
-   */
-  public function getLastHarvestRunId(string $plan_id): string {
-    return $this->runRepository->getLastHarvestRunId($plan_id);
   }
 
   /**
@@ -405,7 +371,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @throws \Exception
    *   Thrown on validation failure.
    *
-   * @see \Drupal\harvest\ETL\Factory::validateHarvestPlan()
+   * @see \Drupal\dkan_harvest\ETL\Factory::validateHarvestPlan()
    */
   public function validateHarvestPlan($plan): bool {
     return Factory::validateHarvestPlan($plan);
@@ -417,7 +383,7 @@ class HarvestService implements ContainerInjectionInterface {
    * @param string $plan_id
    *   Harvester ID.
    *
-   * @return \Drupal\harvest\Harvester
+   * @return \Drupal\dkan_harvest\Harvester
    *   Harvester object.
    */
   private function getHarvester(string $plan_id): Harvester {

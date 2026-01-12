@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 /**
  * Extracts information from an arroy of harvest result statuses.

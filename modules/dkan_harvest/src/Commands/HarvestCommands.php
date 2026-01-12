@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\harvest\Commands;
+namespace Drupal\dkan_harvest\Commands;
 
-use Drupal\harvest\HarvestService;
-use Drupal\harvest\HarvestUtility;
-use Drupal\harvest\Load\Dataset;
+use Drupal\dkan_harvest\HarvestService;
+use Drupal\dkan_harvest\HarvestUtility;
+use Drupal\dkan_harvest\Load\Dataset;
 use Drush\Commands\DrushCommands;
-use Drupal\harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 

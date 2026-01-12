@@ -67,7 +67,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
     }
 
     $harvest_plan_name = 'sample_content';
-    /** @var \Drupal\harvest\HarvestService $harvest_service */
+    /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
 
     // Run the create command.

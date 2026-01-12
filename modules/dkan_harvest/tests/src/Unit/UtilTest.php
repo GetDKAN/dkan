@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\Unit\harvest;
 
-use Drupal\harvest\Util;
+use Drupal\dkan_harvest\Util;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\harvest\Util
- * @coversDefaultClass \Drupal\harvest\Util
+ * @covers \Drupal\dkan_harvest\Util
+ * @coversDefaultClass \Drupal\dkan_harvest\Util
  *
  * @group harvest
  */

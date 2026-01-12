@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\harvest\Commands;
+namespace Drupal\dkan_harvest\Commands;
 
-use Drupal\harvest\ResultInterpreter;
+use Drupal\dkan_harvest\ResultInterpreter;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 

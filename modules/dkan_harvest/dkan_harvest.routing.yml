@@ -12,7 +12,7 @@ dkan.harvest.api.plans:
   path: '/api/1/harvest/plans'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::index'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::index'}
   requirements:
     _permission: 'harvest_api_index'
   options:
@@ -22,7 +22,7 @@ dkan.harvest.api.plans.post:
   path: '/api/1/harvest/plans'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::register'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::register'}
   requirements:
     _permission: 'harvest_api_register'
   options:
@@ -32,7 +32,7 @@ dkan.harvest.api.plans_id:
   path: '/api/1/harvest/plans/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::getPlan'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::getPlan'}
   requirements:
     _permission: 'harvest_api_index'
   options:
@@ -42,7 +42,7 @@ dkan.harvest.api.plans_id.delete:
   path: '/api/1/harvest/plans/{identifier}'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::deregister'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::deregister'}
   requirements:
     _permission: 'harvest_api_run'
   options:
@@ -52,7 +52,7 @@ dkan.harvest.api.runs:
   path: '/api/1/harvest/runs'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::info'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::info'}
   requirements:
     _permission: 'harvest_api_info'
   options:
@@ -62,7 +62,7 @@ dkan.harvest.api.runs.post:
   path: '/api/1/harvest/runs'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::run'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::run'}
   requirements:
     _permission: 'harvest_api_run'
   options:
@@ -72,7 +72,7 @@ dkan.harvest.api.runs.delete:
   path: '/api/1/harvest/runs'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::revert'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::revert'}
   requirements:
     _permission: 'harvest_api_run'
   options:
@@ -82,7 +82,7 @@ dkan.harvest.api.runs_id:
   path: '/api/1/harvest/runs/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\WebServiceApi::infoRun'}
+    { _controller: '\Drupal\dkan_harvest\WebServiceApi::infoRun'}
   requirements:
     _permission: 'harvest_api_info'
   options:

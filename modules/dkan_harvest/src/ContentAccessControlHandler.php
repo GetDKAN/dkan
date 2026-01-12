@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\harvest;
+namespace Drupal\dkan_harvest;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityAccessControlHandler;

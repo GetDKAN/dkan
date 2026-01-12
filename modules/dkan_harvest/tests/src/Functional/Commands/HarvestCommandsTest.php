@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\harvest\Functional\Commands;
+namespace Drupal\Tests\dkan_harvest\Functional\Commands;
 
 use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
- * @coversDefaultClass \Drupal\harvest\Commands\HarvestCommands
+ * @coversDefaultClass \Drupal\dkan_harvest\Commands\HarvestCommands
  *
  * @group dkan
  * @group harvest
