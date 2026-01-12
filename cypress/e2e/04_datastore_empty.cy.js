@@ -5,7 +5,7 @@ context('Datastore API - Empty', () => {
 
   it('GET empty <api>', () => {
     cy.request({
-      url: apiUri + '/dkan_datastore/imports/' + resource_identifier,
+      url: apiUri + '/datastore/imports/' + resource_identifier,
       failOnStatusCode: false
     }).then((response) => {
       expect(response.body.message).eql("A datastore for resource " + resource_identifier + " does not exist.")
