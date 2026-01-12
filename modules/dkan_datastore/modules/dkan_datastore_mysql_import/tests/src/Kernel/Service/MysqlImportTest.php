@@ -31,14 +31,6 @@ class MysqlImportTest extends KernelTestBase {
     'dkan_metastore',
   ];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    // This setUp method is used so we have access to $this->config.
-    parent::setUp();
-  }
-
   public function testTableDuplicateException() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
@@ -100,7 +92,7 @@ class MysqlImportTest extends KernelTestBase {
   /**
    * Test MysqlImport importer with a CSV file with new lines in it's headers.
    */
-  public function testMysqlImporterWithCSVFileWithNewLinesInHeaders() {
+  public function testMysqlImporterWithCsvFileWithNewLinesInHeaders() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 7) . '/tests/data/newlines_in_headers.csv';
     $data_resource = new DataResource($file_path, 'text/csv');
@@ -139,7 +131,7 @@ class MysqlImportTest extends KernelTestBase {
   }
 
   /**
-   * Tests that the import job can detect when the dataset already exists in the db.
+   * Tests that the import job can detect when dataset already exists in the db.
    */
   public function testHasBeenImported() {
     $identifier = 'my_id';
@@ -248,7 +240,7 @@ class MysqlImportTest extends KernelTestBase {
    * Toggle the empty row remover setting on or off.
    *
    * @param bool $on
-   * The value TRUE or FALSE. TRUE to enable the row removal.
+   *   The value TRUE or FALSE. TRUE to enable the row removal.
    */
   protected function toggleEmptyRowRemoval(bool $on):void {
     $config = $this->config('dkan_datastore_mysql_import.settings');
@@ -259,7 +251,7 @@ class MysqlImportTest extends KernelTestBase {
   /**
    * Test MysqlImport importer with an empty CSV file.
    */
-  public function testMysqlImporterWithEmptyCSVFile() {
+  public function testMysqlImporterWithEmptyCsvFile() {
     $identifier = 'my_id';
     $file_path = dirname(__FILE__, 7) . '/tests/data/empty.csv';
     $data_resource = new DataResource($file_path, 'text/csv');
@@ -285,10 +277,16 @@ class MysqlImportTest extends KernelTestBase {
 
 }
 
+/**
+ * Extent the MysqlImport for testing, allows mock to override sqlStatement (?).
+ */
 class MockQueryVisibilityImport extends MysqlImport {
 
   public $sqlStatement = '';
 
+  /**
+   * {@inheritdoc}
+   */
   protected function getSqlStatement(string $file_path, string $table_name, array $headers, string $eol, int $header_line_count, string $delimiter): string {
     $this->sqlStatement = parent::getSqlStatement($file_path, $table_name, $headers, $eol, $header_line_count, $delimiter);
     return $this->sqlStatement;
