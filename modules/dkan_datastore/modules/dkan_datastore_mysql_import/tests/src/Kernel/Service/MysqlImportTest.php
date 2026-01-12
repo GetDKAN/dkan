@@ -14,6 +14,7 @@ use Procrastinator\Result;
  * @covers \Drupal\dkan_datastore_mysql_import\Service\MysqlImport
  * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Service\MysqlImport
  *
+ * @group kernel
  * @group datastore_mysql_import
  */
 class MysqlImportTest extends KernelTestBase {
@@ -186,7 +187,7 @@ class MysqlImportTest extends KernelTestBase {
    */
   public function testMysqlImporterWithRemoveMultipleEmptyRows() {
     $identifier = 'my_id';
-    $file_path = dirname(__FILE__, 7) . '/modules/datastore_mysql_import/tests/data/multiple_empty_rows.csv';
+    $file_path = dirname(__FILE__, 7) . '/modules/dkan_datastore_mysql_import/tests/data/multiple_empty_rows.csv';
     $data_resource = new DataResource($file_path, 'text/csv');
 
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
@@ -219,7 +220,7 @@ class MysqlImportTest extends KernelTestBase {
    */
   public function testMysqlImporterWithoutRemoveMultipleEmptyRows() {
     $identifier = 'my_id';
-    $file_path = dirname(__FILE__, 7) . '/modules/datastore_mysql_import/tests/data/multiple_empty_rows.csv';
+    $file_path = dirname(__FILE__, 7) . '/modules/dkan_datastore_mysql_import/tests/data/multiple_empty_rows.csv';
     $data_resource = new DataResource($file_path, 'text/csv');
 
     $import_factory = $this->container->get('dkan.datastore.service.factory.import');
