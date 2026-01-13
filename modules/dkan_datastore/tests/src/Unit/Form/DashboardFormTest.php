@@ -633,7 +633,6 @@ class DashboardFormTest extends TestCase {
       ->add(HarvestService::class, 'getAllHarvestIds', ['test', 'dataset-1'])
       ->add(HarvestService::class, 'getRunIdsForHarvest', ['test'])
       ->add(HarvestService::class, 'getHarvestRunInfo', $runInfo)
-      ->add(HarvestService::class, 'getLastHarvestRunId', 'huh')
       ->add(HarvestService::class, 'getHarvestRunResult', $runStatus)
       ->add(MetastoreService::class, 'count', 0)
       ->add(MetastoreService::class, 'getIdentifiers', [])
