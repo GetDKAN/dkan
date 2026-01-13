@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Docs plugin.
  *
  * @DkanApiDocs(
- *  id = "dkan_metastore_search_api_docs",
+ *  id = "metastore_search_api_docs",
  *  description = "Search docs"
  * )
  *
@@ -38,7 +38,7 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
    *   The module handler service.
-   * @param \Drupal\metastore_search\Search $metastoreSearch
+   * @param \Drupal\dkan_metastore_search\Search $metastoreSearch
    *   The metastore search service.
    */
   public function __construct(

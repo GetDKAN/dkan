@@ -1,0 +1,76 @@
+<?php
+
+namespace Drupal\Tests\dkan_datastore_mysql_import\Kernel\Storage;
+
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable;
+use Drupal\KernelTests\KernelTestBase;
+
+/**
+ * @covers \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+ * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+ *
+ * @group datastore_mysql_import
+ * @group kernel
+ */
+class MySqlDatabaseTableFactoryTest extends KernelTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = [
+    'dkan_common',
+    'dkan_datastore',
+    'dkan_datastore_mysql_import',
+    'dkan_metastore',
+  ];
+
+  public function testFactoryServiceResourceException() {
+    /** @var \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory $factory */
+    $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage("config['resource'] is required");
+    $factory->getInstance('id', []);
+  }
+
+  public function testFactoryService() {
+    $file_path = dirname(__FILE__, 4) . '/data/columnspaces.csv';
+    $datastore_resource = new DataResource(
+      $file_path,
+      'text/csv'
+    );
+
+    /** @var \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory $factory */
+    $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
+    $table = $factory->getInstance('id', ['resource' => $datastore_resource]);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $table);
+  }
+
+  /**
+   * Test that the factory service returns a table with strict mode disabled.
+   */
+  public function testFactoryServiceStrictModeDisabled() {
+    $this->installConfig(['dkan_datastore_mysql_import']);
+    $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
+    $table = $factory->getInstance('id', [
+      'resource' => new DataResource('php://temp', 'text/csv'),
+    ]);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $table);
+    $this->assertFalse($table->isStrictModeDisabled());
+
+    // Now change the config and test whether the table is created with strict
+    // mode disabled.
+    $this->config('dkan_datastore_mysql_import.settings')
+      ->set('strict_mode_disabled', TRUE)
+      ->save();
+    $this->container->get('kernel')->rebuildContainer();
+
+    $factory = $this->container->get('dkan.datastore_mysql_import.database_table_factory');
+    $table = $factory->getInstance('id', [
+      'resource' => new DataResource('php://temp', 'text/csv'),
+    ]);
+    $this->assertInstanceOf(MySqlDatabaseTable::class, $table);
+    $this->assertTrue($table->isStrictModeDisabled());
+  }
+
+}
