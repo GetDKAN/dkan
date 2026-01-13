@@ -25,7 +25,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'node',
     'sample_content',
   ];

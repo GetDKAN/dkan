@@ -35,7 +35,7 @@ class FileFetcherFactoryTest extends KernelTestBase {
   /**
    * @dataProvider provideUseExisting
    *
-   * @see \Drupal\Tests\datastore\Kernel\Service\ResourceLocalizerTest::testLocalizeOverwriteExistingLocalFile()
+   * @see \Drupal\Tests\dkan_datastore\Kernel\Service\ResourceLocalizerTest::testLocalizeOverwriteExistingLocalFile()
    */
   public function testOurRemote($use_existing, $remote_class) {
     // Config for overwrite.

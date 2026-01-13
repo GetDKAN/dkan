@@ -50,7 +50,7 @@ trait ServiceCheckTrait {
     $dkanModules = [
       'dkan_common',
       'dkan_metastore',
-      'datastore',
+      'dkan_datastore',
       'harvest',
     ];
     $files = [];

@@ -1,0 +1,86 @@
+<?php
+
+namespace Drupal\dkan_datastore_mysql_import\Factory;
+
+use Drupal\dkan_datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\dkan_datastore\Service\ImportService;
+use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_datastore_mysql_import\Service\MysqlImport;
+use Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+/**
+ * Mysql importer factory.
+ */
+class MysqlImportFactory implements ImportFactoryInterface {
+
+  /**
+   * The JobStore Factory service.
+   */
+  protected ImportJobStoreFactory $importJobStoreFactory;
+
+  /**
+   * Database table factory service.
+   *
+   * @var \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+   */
+  protected $databaseTableFactory;
+
+  /**
+   * DKAN logger channel service.
+   */
+  protected LoggerInterface $logger;
+
+  /**
+   * Event dispatcher service.
+   */
+  protected EventDispatcherInterface $eventDispatcher;
+
+  /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\dkan_metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
+
+  /**
+   * Constructor.
+   */
+  public function __construct(
+    ImportJobStoreFactory $importJobStoreFactory,
+    MySqlDatabaseTableFactory $databaseTableFactory,
+    LoggerInterface $loggerChannel,
+    EventDispatcherInterface $eventDispatcher,
+    ReferenceLookup $referenceLookup,
+  ) {
+    $this->importJobStoreFactory = $importJobStoreFactory;
+    $this->databaseTableFactory = $databaseTableFactory;
+    $this->logger = $loggerChannel;
+    $this->eventDispatcher = $eventDispatcher;
+    $this->referenceLookup = $referenceLookup;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function getInstance(string $identifier, array $config = []) {
+    $resource = $config['resource'] ?? FALSE;
+    if (!$resource) {
+      throw new \Exception("config['resource'] is required");
+    }
+
+    $importer = new ImportService(
+      $resource,
+      $this->importJobStoreFactory,
+      $this->databaseTableFactory,
+      $this->logger,
+      $this->eventDispatcher,
+      $this->referenceLookup
+    );
+    $importer->setImporterClass(MysqlImport::class);
+    return $importer;
+  }
+
+}
