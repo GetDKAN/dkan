@@ -1,23 +1,8 @@
 # Circle CI script to run a matrix of tests in DDev.
 
 version: 2.1
-orbs:
-  docker: circleci/docker@2.5.0
 
 commands:
-  install-ddev:
-    steps:
-      - run:
-          name: Install DDev
-          command: |
-            set -e
-            sudo rm -rf /etc/apt/sources.list.d/heroku.list
-            sudo apt-get update
-            sudo apt-get install ca-certificates
-            curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
-            echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
-            sudo apt update && sudo apt install -y ddev
-
   prepare_build:
     parameters:
       php_version:
@@ -47,7 +32,6 @@ commands:
           command: |
             mkdir ~/.composer
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
-      - install-ddev
       - checkout
       - when:
           condition: << parameters.upgrade >>
@@ -57,7 +41,7 @@ commands:
                 command: |
                   git checkout 2.x
                   # The following should be removed once the 2.x branch has the ddev add-on config.
-                  git checkout $CIRCLE_BRANCH -- .ddev composer.json
+                  git checkout $CIRCLE_BRANCH -- composer.json
 
       - restore_cache:
           keys:
@@ -66,28 +50,14 @@ commands:
       - run:
           name: Build site codebase
           command: |
-            # Help debug ddev install issues.
-            which ddev
-            ddev --version
-            ddev config global --instrumentation-opt-in=false
-            # Set up the ddev project. See https://github.com/ddev/ddev-drupal-contrib
-            ddev config --project-type=drupal \
-              --docroot=web --database="<< parameters.database_version >>" \
-              --php-version="<< parameters.php_version >>" --corepack-enable
-            ddev add-on get ddev/ddev-drupal-contrib
-            # Set up env vars for Drupal version, composer, xdebug and drupal root.
-            ddev dotenv set .ddev/.env.web --drupal-core "<< parameters.drupal_core_constraint >>" \
-              --composer-no-interaction "1" \
-              --drupal-root "/var/www/html/web" \
-              --xdebug-mode "coverage" \
-              --composer-auth "$COMPOSER_AUTH"
-            ddev start
-            ddev poser
-            ddev select2
-            ddev symlink-project
-            ddev config --update
-            ddev restart
-            ddev status
+            set -ex
+            curl -OL https://git.drupalcode.org/project/gitlab_templates/-/raw/default-ref/scripts/expand_composer_json.php
+            php expand_composer_json.php dkan
+            rm -rf expand_composer_json.php
+            composer install
+            git restore composer.json
+            export DOCROOT=$CIRCLE_WORKING_DIRECTORY/web
+            .ddev/commands/web/select2
       - save_cache:
           key: select2-v1-{{ checksum ".ddev/commands/web/select2" }}
           paths:
@@ -95,8 +65,8 @@ commands:
       - run:
           name: Install site
           command: |
-            ddev dkan-site-install
-            ddev drush rq
+            .ddev/commands/web/dkan-site-install
+            drush rq
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -112,7 +82,9 @@ commands:
 
 jobs:
   phpunit:
-    executor: docker/machine
+    docker:
+      - image: cimg/php:<< parameters.php_version >>
+      - image: cimg/<< parameters.database_version >>
     parallelism: 4
     parameters:
       php_version:
@@ -146,8 +118,8 @@ jobs:
           command: |
             if [[ $CIRCLE_NODE_INDEX == 0 ]]; then
               # Get phpunit major version
-              PHPUNIT_VERSION=$(ddev composer show phpunit/phpunit | grep versions | awk '{print $4}' | cut -d. -f1)
-              
+              PHPUNIT_VERSION=$(composer show phpunit/phpunit | grep versions | awk '{print $4}' | cut -d. -f1)
+
               if [[ $PHPUNIT_VERSION -lt 11 ]]; then
                 # For phpunit < 11, use comma-separated syntax
                 EXCLUDES="--exclude-group "
@@ -180,11 +152,9 @@ jobs:
                   XDEBUG_MODE: coverage
                   QLTY_COVERAGE_TOKEN: ${QLTY_COVERAGE_TOKEN}
                 command: |
-                  ddev xdebug on
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/php
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/clover
-                  ddev phpunit \
-                    $PHPUNIT_GROUP_ARG \
+                  $CIRCLE_WORKING_DIRECTORY/vendor/bin/phpunit  $PHPUNIT_GROUP_ARG \
                     --coverage-clover /var/www/html/report/clover/clover-$CIRCLE_NODE_INDEX.xml \
                     --coverage-php /var/www/html/report/php/coverage-$CIRCLE_NODE_INDEX.cov \
                     --log-junit /var/www/html/report/junit/junit.xml
@@ -216,15 +186,16 @@ jobs:
             - run:
                 name: Run PHPUnit tests
                 command: |
-                  ddev phpunit \
+                  $CIRCLE_WORKING_DIRECTORY/vendor/bin/phpunit \
                     $PHPUNIT_GROUP_ARG \
                     --log-junit /var/www/html/report/junit/junit.xml
       - store_test_results:
           path: report/junit
 
   cypress:
-    machine:
-      image: ubuntu-2204:current
+    docker:
+      - image: cimg/php:<< parameters.php_version >>-browsers
+      - image: cimg/<< parameters.database_version >>
     parallelism: 4
     parameters:
       php_version:
@@ -258,8 +229,8 @@ jobs:
             mv $(circleci tests glob cypress/e2e/*.cy.js | circleci tests split --split-by=timings) cypress/tmp || true
             rm cypress/e2e/*
             mv cypress/tmp/* cypress/e2e
-            ddev npm install cypress --save-dev
-            ddev dkan-module-test-cypress \
+            npm install cypress --save-dev
+            ./.ddev/commands/host/dkan-module-test-cypress \
               --headless \
               --reporter junit \
               --reporter-options "mochaFile=cypress/results/cypress-results-[hash].xml"
@@ -304,7 +275,7 @@ workflows:
               drupal_core_constraint: ["~10.5.0"]
               php_version: ["8.1", "8.2", "8.4"]
               database_version: ["mysql:5.7"]
-            
+
 
   upgrade_and_test:
     jobs:
