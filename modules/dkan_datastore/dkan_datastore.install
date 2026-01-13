@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the datastore module.
+ */
+
+use Drupal\Core\Config\FileStorage;
+
+/**
+ * Enable transitional dkan_datastore module, in preparation for 4.x.
+ */
+function dkan_datastore_update_10001() {
+  // Re-import default config for dkan_datastore.
+  \Drupal::service('config.installer')->installDefaultConfig('module', 'dkan_datastore');
+
+  // Remove existing config for core.entity_form_display.node.data.default, then
+  // re-install from optional.
+  \Drupal::service('config.factory')->getEditable('core.entity_form_display.node.data.default')->delete();
+  $path_to_module = \Drupal::service('extension.list.module')->getPath('dkan_datastore');
+  $config_source = new FileStorage($path_to_module . '/config/optional');
+  \Drupal::service('config.installer')->installOptionalConfig($config_source);
+
+  // If the old datastore module is still enabled, copy config and uninstall it.
+  if (\Drupal::moduleHandler()->moduleExists('datastore')) {
+    $config = \Drupal::configFactory()->getEditable('datastore.settings');
+    $settings = $config->getRawData();
+    $dkan_config = \Drupal::configFactory()->getEditable('dkan_datastore.settings');
+    foreach ($settings as $key => $value) {
+      $dkan_config->set($key, $value);
+    }
+    $dkan_config->save();
+    \Drupal::service('module_installer')->uninstall(['datastore']);
+    $message = t('The legacy datastore module has been uninstalled.');
+    $config->delete();
+  }
+  return $message;
+}
