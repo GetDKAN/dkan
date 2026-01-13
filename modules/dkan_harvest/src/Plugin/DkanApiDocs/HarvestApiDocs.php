@@ -87,7 +87,7 @@ class HarvestApiDocs extends DkanApiDocsBase {
    * {@inheritdoc}
    */
   public function spec() {
-    $spec = $this->getDoc('harvest');
+    $spec = $this->getDoc('dkan_harvest');
 
     $ids = $this->harvest->getAllHarvestIds();
     $spec["components"]["parameters"]["harvestPlanId"]["example"] = $ids[0] ?? "h1";

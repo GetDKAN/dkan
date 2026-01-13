@@ -29,7 +29,7 @@ use Drupal\dkan_harvest\ETL\Extract\DataJson;
 class HarvestTest extends BrowserTestBase {
 
   protected static $modules = [
-    'harvest',
+    'dkan_harvest',
     'node',
     'user',
   ];

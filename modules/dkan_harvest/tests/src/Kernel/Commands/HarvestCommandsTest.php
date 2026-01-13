@@ -26,7 +26,7 @@ class HarvestCommandsTest extends KernelTestBase {
    */
   protected static $modules = [
     'dkan_common',
-    'harvest',
+    'dkan_harvest',
     'dkan_metastore',
   ];
 

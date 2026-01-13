@@ -20,7 +20,7 @@ class HarvestCommandsTest extends BrowserTestBase {
   use DrushTestTrait;
 
   protected static $modules = [
-    'harvest',
+    'dkan_harvest',
     'dkan_metastore',
     'node',
   ];
