@@ -95,6 +95,15 @@ class DataResourceTest extends TestCase {
       DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
 
+    // Set the checksum.
+    $checksum = 'fake_checksum';
+    $ref_checksum = new \ReflectionProperty(DataResource::class, 'checksum');
+    $ref_checksum->setAccessible(TRUE);
+    $ref_checksum->setValue($data_resource, $checksum);
+
+    // Ensure our test checksum is set correctly.
+    $this->assertSame($checksum, $data_resource->getChecksum());
+
     $clone_data_resource = $data_resource->createNewPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, 'uri://foo/bar');
 
     // Not the same object.
@@ -102,6 +111,10 @@ class DataResourceTest extends TestCase {
     // Clone contains 'local_url' perspective.
     $this->assertEquals(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $clone_data_resource->getPerspective());
     $this->assertEquals('uri://foo/bar', $clone_data_resource->getFilePath());
+
+    // A side-effect of createNewPerspective() is that the new object has the
+    // same checksum.
+    $this->assertSame($data_resource->getChecksum(), $clone_data_resource->getChecksum());
   }
 
   /**
