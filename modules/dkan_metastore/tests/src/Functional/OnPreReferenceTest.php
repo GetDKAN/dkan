@@ -14,7 +14,7 @@ use Drupal\Tests\BrowserTestBase;
 class OnPreReferenceTest extends BrowserTestBase {
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
     'node',
   ];
@@ -23,6 +23,9 @@ class OnPreReferenceTest extends BrowserTestBase {
 
   private $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
+  /**
+   *
+   */
   private function getData($downloadUrl) {
     return '
     {
@@ -42,9 +45,12 @@ class OnPreReferenceTest extends BrowserTestBase {
     }';
   }
 
+  /**
+   *
+   */
   public function test() {
     // Ensure the proper triggering properties are set for datastore comparison.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('triggering_properties', ['modified'])
       ->save();
 

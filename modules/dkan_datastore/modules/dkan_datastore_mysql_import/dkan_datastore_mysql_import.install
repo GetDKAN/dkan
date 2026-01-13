@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * Install file for the datastore_mysql_import module.
+ */
+
+/**
+ * Update hook to set new setting strict_mode_disabled to TRUE.
+ */
+function dkan_datastore_mysql_import_update_10001() {
+  // If the old datastore_mysql_import module is still enabled, copy config and
+  // uninstall it.
+  if (\Drupal::moduleHandler()->moduleExists('datastore_mysql_import')) {
+    \Drupal::service('module_installer')->uninstall(['datastore_mysql_import']);
+    return t('The legacy datastore_mysql_import module has been uninstalled.');
+  }
+}

@@ -6,7 +6,7 @@ use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\Exception\AlreadyRegistered;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

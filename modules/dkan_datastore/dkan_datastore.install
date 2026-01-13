@@ -1,21 +1,38 @@
 <?php
 
 /**
- * Implements hook_requirements().
+ * @file
+ * Install, update and uninstall functions for the datastore module.
  */
-// function dkan_datastore_requirements($phase) {
-//   $requirements = [];
 
-//   // Ensure that common module is enabled before enabling dkan_common.
-//   if ($phase == 'install') {
-//     if (!\Drupal::moduleHandler()->moduleExists('datastore')) {
-//       $requirements['dkan_datastore'] = [
-//         'title' => t('Datastore module is not enabled'),
-//         'description' => t('The "datastore" module must be enabled before installing dkan_datastore.'),
-//         'severity' => REQUIREMENT_ERROR,
-//       ];
-//     }
-//   }
+use Drupal\Core\Config\FileStorage;
 
-//   return $requirements;
-// }
+/**
+ * Enable transitional dkan_datastore module, in preparation for 4.x.
+ */
+function dkan_datastore_update_10001() {
+  // Re-import default config for dkan_datastore.
+  \Drupal::service('config.installer')->installDefaultConfig('module', 'dkan_datastore');
+
+  // Remove existing config for core.entity_form_display.node.data.default, then
+  // re-install from optional.
+  \Drupal::service('config.factory')->getEditable('core.entity_form_display.node.data.default')->delete();
+  $path_to_module = \Drupal::service('extension.list.module')->getPath('dkan_datastore');
+  $config_source = new FileStorage($path_to_module . '/config/optional');
+  \Drupal::service('config.installer')->installOptionalConfig($config_source);
+
+  // If the old datastore module is still enabled, copy config and uninstall it.
+  if (\Drupal::moduleHandler()->moduleExists('datastore')) {
+    $config = \Drupal::configFactory()->getEditable('datastore.settings');
+    $settings = $config->getRawData();
+    $dkan_config = \Drupal::configFactory()->getEditable('dkan_datastore.settings');
+    foreach ($settings as $key => $value) {
+      $dkan_config->set($key, $value);
+    }
+    $dkan_config->save();
+    \Drupal::service('module_installer')->uninstall(['datastore']);
+    $message = t('The legacy datastore module has been uninstalled.');
+    $config->delete();
+  }
+  return $message;
+}

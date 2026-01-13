@@ -23,7 +23,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan_common',
-    'datastore',
+    'dkan_datastore',
     'dynamic_page_cache',
     'harvest',
     'dkan_metastore',
@@ -41,11 +41,14 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
 
+  /**
+   *
+   */
   public function setUp(): void {
     parent::setUp();
 
     // Ensure the proper triggering properties are set for datastore comparison.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('triggering_properties', ['modified'])
       ->save();
 
@@ -130,7 +133,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody());
 
-    // Get the variants of the import endpoint
+    // Get the variants of the import endpoint.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier, ['show-reference-ids' => TRUE]);
     $dataset = json_decode($response->getBody()->getContents());
     $distributionId = $dataset->distribution[0]->identifier ?? '';
@@ -216,6 +219,9 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     return $valid_metadata_factory->get(json_encode($data), 'dataset');
   }
 
+  /**
+   *
+   */
   private function renderDatasetNodesForCache() {
     // Render all the dataset nodes to address cache.
     $renderer = $this->container->get('renderer');
@@ -234,6 +240,9 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     }
   }
 
+  /**
+   *
+   */
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
     $metastore_service = $this->container->get('dkan.metastore.service');
 

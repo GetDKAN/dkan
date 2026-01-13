@@ -6,7 +6,7 @@ namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\harvest\Entity\HarvestPlanRepository;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
