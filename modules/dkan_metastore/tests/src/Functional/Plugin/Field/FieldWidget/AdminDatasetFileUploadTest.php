@@ -24,7 +24,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
    */
   protected static $modules = [
     'dkan',
-    'datastore',
+    'dkan_datastore',
     'json_form_widget',
     'node',
   ];
@@ -106,7 +106,7 @@ class AdminDatasetFileUploadTest extends JsonFormTestBase {
    */
   public function testCreateDatasetWithFileUpload() {
     // The file we'll upload.
-    $upload_file = realpath(dirname(__DIR__, 7) . '/datastore/tests/data/Bike_Lane.csv');
+    $upload_file = realpath(dirname(__DIR__, 7) . '/dkan_datastore/tests/data/Bike_Lane.csv');
 
     $assert = $this->assertSession();
 

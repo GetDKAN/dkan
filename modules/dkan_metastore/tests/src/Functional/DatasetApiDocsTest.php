@@ -16,7 +16,7 @@ use Drupal\Tests\BrowserTestBase;
 class DatasetApiDocsTest extends BrowserTestBase {
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
     'node',
   ];

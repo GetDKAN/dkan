@@ -128,9 +128,9 @@ class HarvestPlanListBuilder extends EntityListBuilder {
   protected function getHarvestLink(string $harvest_plan_id) {
     try {
       // Test for presence of datastore.datasets_import_status_dashboard route.
-      $this->routeProvider->getRouteByName('datastore.datasets_import_status_dashboard');
+      $this->routeProvider->getRouteByName('dkan_datastore.datasets_import_status_dashboard');
       $harvest_link = Link::fromTextAndUrl($harvest_plan_id, Url::fromRoute(
-        'datastore.datasets_import_status_dashboard',
+        'dkan_datastore.datasets_import_status_dashboard',
         ['harvest_id' => $harvest_plan_id],
       ));
       return $harvest_link;
