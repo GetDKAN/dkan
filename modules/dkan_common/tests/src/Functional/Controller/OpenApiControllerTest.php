@@ -19,7 +19,7 @@ class OpenApiControllerTest extends BrowserTestBase {
 
   protected static $modules = [
     'dkan_common',
-    'datastore',
+    'dkan_datastore',
     'harvest',
     'node',
   ];

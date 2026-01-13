@@ -21,7 +21,7 @@ class SearchTest extends BrowserTestBase {
   use DrushTestTrait;
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore_search',
     'node',
   ];
