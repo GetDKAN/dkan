@@ -31,7 +31,7 @@ class DatasetBTBTest extends BrowserTestBase {
   protected static $modules = [
     'dkan_datastore',
     'field',
-    'harvest',
+    'dkan_harvest',
     'dkan_metastore',
     'metastore_search',
     'node',

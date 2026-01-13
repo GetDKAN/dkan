@@ -28,7 +28,7 @@ class WebServiceApiTest extends KernelTestBase {
     'node',
     'user',
     'dkan_common',
-    'harvest',
+    'dkan_harvest',
     'dkan_metastore',
   ];
 
