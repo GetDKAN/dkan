@@ -83,6 +83,8 @@ commands:
           environment:
             PATH: /home/circleci/project/vendor/bin:$PATH
           command: |
+            set -ex
+            cd web
             drush
             .ddev/commands/web/dkan-site-install
             drush rq
