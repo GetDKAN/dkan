@@ -80,6 +80,8 @@ commands:
             - web/libraries/select2
       - run:
           name: Install site
+          environment:
+            PATH: /home/circleci/project/vendor/bin:$PATH
           command: |
             .ddev/commands/web/dkan-site-install
             drush rq
