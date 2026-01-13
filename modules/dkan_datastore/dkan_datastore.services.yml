@@ -1,0 +1,168 @@
+services:
+  dkan.datastore.service:
+    class: \Drupal\dkan_datastore\DatastoreService
+    arguments:
+      - '@dkan.datastore.service.resource_localizer'
+      - '@dkan.datastore.service.factory.import'
+      - '@queue'
+      - '@dkan.datastore.import_job_store_factory'
+      - '@dkan.datastore.service.resource_processor.dictionary_enforcer'
+      - '@dkan.metastore.resource_mapper'
+      - '@event_dispatcher'
+      - '@dkan.metastore.reference_lookup'
+
+  dkan.datastore.lookup:
+    class: \Drupal\dkan_datastore\DatastoreLookup
+    arguments:
+      - '@database'
+      - '@dkan.metastore.reference_lookup'
+
+  dkan.datastore.service.post_import:
+    class: \Drupal\dkan_datastore\Service\PostImport
+    arguments:
+     - '@config.factory'
+     - '@dkan.datastore.logger_channel'
+     - '@dkan.datastore.service.resource_processor_collector'
+     - '@dkan.metastore.data_dictionary_discovery'
+     - '@dkan.datastore.service'
+     - '@dkan.datastore.post_import_result_factory'
+
+  dkan.datastore.post_import_result_factory:
+    class: Drupal\dkan_datastore\PostImportResultFactory
+    arguments:
+      - '@database'
+      - '@dkan.metastore.resource_mapper'
+
+  dkan.datastore.query:
+    class: \Drupal\dkan_datastore\Service\Query
+    arguments:
+      - '@dkan.datastore.service'
+
+  dkan.datastore.service.resource_localizer:
+    class: \Drupal\dkan_datastore\Service\ResourceLocalizer
+    arguments:
+      - '@dkan.metastore.resource_mapper'
+      - '@dkan.common.file_fetcher'
+      - '@dkan.common.drupal_files'
+      - '@dkan.common.filefetcher_job_store_factory'
+      - '@queue'
+      - '@event_dispatcher'
+
+  dkan.datastore.service.resource_processor_collector:
+    class: \Drupal\dkan_datastore\Service\ResourceProcessorCollector
+    tags:
+      - { name: service_collector, tag: resource_processor, call: addResourceProcessor }
+
+  dkan.datastore.service.resource_processor.dictionary_enforcer:
+    class: \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer
+    arguments:
+      - '@dkan.datastore.data_dictionary.alter_table_query_builder.mysql'
+      - '@dkan.metastore.service'
+      - '@dkan.metastore.data_dictionary_discovery'
+      - '@dkan.datastore.database_table_factory'
+    tags:
+      - { name: resource_processor, priority: 25 }
+
+  dkan.datastore.service.resource_purger:
+    class: \Drupal\dkan_datastore\Service\ResourcePurger
+    arguments:
+      - '@config.factory'
+      - '@dkan.metastore.reference_lookup'
+      - '@dkan.metastore.storage'
+      - '@dkan.datastore.service'
+      - '@dkan.datastore.logger_channel'
+
+  dkan.datastore.service.factory.import:
+    class: \Drupal\dkan_datastore\Service\Factory\ImportServiceFactory
+    arguments:
+      - '@dkan.datastore.import_job_store_factory'
+      - '@dkan.datastore.database_table_factory'
+      - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
+      - '@dkan.metastore.reference_lookup'
+
+  dkan.datastore.logger_channel:
+    parent: logger.channel_base
+    arguments: ['dkan_datastore']
+
+  dkan.datastore.database_connection_factory:
+    class: \Drupal\dkan_datastore\Storage\DatabaseConnectionFactory
+
+  dkan.datastore.data_dictionary.alter_table_query_builder.mysql:
+    class: \Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder
+    arguments:
+      - '@dkan.datastore.database_connection_factory'
+      - '@pdlt.converter.strptime_to_mysql'
+      - '@uuid'
+      - '@config.factory'
+
+  dkan.datastore.database:
+    class: \Drupal\Core\Database\Connection
+    factory: ['@dkan.datastore.database_connection_factory', 'getConnection']
+
+  dkan.datastore.database_table_factory:
+    class: \Drupal\dkan_datastore\Storage\DatabaseTableFactory
+    arguments:
+      - '@dkan.datastore.database'
+      - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
+
+  dkan.datastore.sql_endpoint.service:
+    class: \Drupal\dkan_datastore\SqlEndpoint\DatastoreSqlEndpointService
+    arguments:
+      - '@dkan.datastore.service'
+      - '@config.factory'
+
+  dkan.datastore.event_subscriber:
+    class: \Drupal\dkan_datastore\EventSubscriber\DatastoreSubscriber
+    arguments:
+      - '@config.factory'
+      - '@dkan.datastore.logger_channel'
+      - '@dkan.datastore.service'
+      - '@dkan.datastore.service.resource_purger'
+      - '@dkan.datastore.import_job_store_factory'
+      - '@event_dispatcher'
+    tags:
+      - { name: event_subscriber }
+
+  dkan.datastore.import_info:
+    class: \Drupal\dkan_datastore\Service\Info\ImportInfo
+    arguments:
+      - '@dkan.datastore.service.resource_localizer'
+      - '@dkan.datastore.service.factory.import'
+      - '@dkan.metastore.resource_mapper'
+      - '@dkan.datastore.service'
+
+  dkan.datastore.import_info_list:
+    class: \Drupal\dkan_datastore\Service\Info\ImportInfoList
+    arguments:
+      - '@dkan.common.filefetcher_job_store_factory'
+      - '@dkan.datastore.import_info'
+
+  dkan.datastore.import_job_store_factory:
+    class: \Drupal\dkan_datastore\Storage\ImportJobStoreFactory
+    arguments:
+      - '@database'
+      - '@event_dispatcher'
+
+  pdlt.converter.strptime_to_mysql:
+    class: \PDLT\Converter
+    arguments:
+      - '@pdlt.parser.strptime'
+      - '@pdlt.compiler.mysql'
+
+  pdlt.grammar.strptime:
+    class: \PDLT\Grammar\Strptime
+
+  pdlt.parser.strptime:
+    class: \PDLT\Parser
+    arguments:
+      - '@pdlt.grammar.strptime'
+
+  pdlt.compilation_map.mysql:
+    class: \PDLT\CompilationMap\MySQL
+
+  pdlt.compiler.mysql:
+    class: \PDLT\Compiler
+    arguments:
+      - '@pdlt.compilation_map.mysql'

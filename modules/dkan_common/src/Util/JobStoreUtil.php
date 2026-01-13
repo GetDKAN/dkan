@@ -16,7 +16,7 @@ class JobStoreUtil {
    * @var array|string[]
    */
   public array $fixableClassNames = [
-    'Drupal\datastore\Plugin\QueueWorker\ImportJob',
+    'Drupal\dkan_datastore\Plugin\QueueWorker\ImportJob',
     'FileFetcher\FileFetcher',
   ];
 

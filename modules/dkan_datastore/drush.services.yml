@@ -1,0 +1,27 @@
+services:
+  dkan_datastore:commands:
+    class: \Drupal\dkan_datastore\Drush
+    arguments:
+      - '@dkan.metastore.service'
+      - '@dkan.datastore.service'
+      - '@dkan.datastore.service.resource_localizer'
+      - '@dkan.metastore.resource_mapper'
+      - '@dkan.datastore.import_info_list'
+      - '@dkan.datastore.post_import_result_factory'
+      - '@dkan.datastore.lookup'
+    tags:
+      - { name: drush.command }
+  dkan_datastore.purger.commands:
+    class: Drupal\dkan_datastore\Commands\PurgeCommands
+    arguments:
+      - '@dkan.datastore.service.resource_purger'
+    tags:
+      - { name: drush.command }
+  dkan_datastore.reimport.commands:
+    class: \Drupal\dkan_datastore\Commands\ReimportCommands
+    arguments:
+      - '@dkan.datastore.service'
+      - '@dkan.common.dataset_info'
+      - '@dkan.datastore.logger_channel'
+    tags:
+      - { name: drush.command }

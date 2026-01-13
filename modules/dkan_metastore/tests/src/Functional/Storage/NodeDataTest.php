@@ -19,7 +19,7 @@ use RootedData\RootedJsonData;
 class NodeDataTest extends BrowserTestBase {
 
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'dkan_metastore',
     'node',
   ];

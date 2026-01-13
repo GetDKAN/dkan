@@ -76,7 +76,7 @@ class DatasetInfoTest extends KernelTestBase {
     $this->assertEquals(md5((string) $downloadUrl2), $info['latest_revision']['distributions'][1]['resource_id']);
 
     // Datastore isn't enabled, so file_path shouldn't be set.
-    // @see: \Drupal\Tests\datastore\Kernel\DatasetInfoTest
+    // @see: \Drupal\Tests\dkan_datastore\Kernel\DatasetInfoTest
     $this->assertArrayNotHasKey('file_path', $info['latest_revision']['distributions'][0]);
 
     // Publish the dataset, then patch it to get a published + latest revision.

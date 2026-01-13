@@ -4,7 +4,7 @@ namespace Drupal\Tests\dkan_common\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\NodeData;
 use MockChain\Chain;

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_metastore\Kernel;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
