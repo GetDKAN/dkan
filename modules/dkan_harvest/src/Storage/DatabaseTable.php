@@ -37,7 +37,7 @@ class DatabaseTable extends AbstractDatabaseTable {
   public function __construct(
     Connection $connection,
     string $identifier,
-    EventDispatcherInterface $eventDispatcher
+    EventDispatcherInterface $eventDispatcher,
   ) {
     $this->identifier = $identifier;
     $this->setOurSchema();

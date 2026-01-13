@@ -579,7 +579,7 @@ class DashboardFormTest extends TestCase {
 
     $form = DashboardForm::create($container)->buildForm([], new FormState());
     $this->assertEquals(2, count($form['table']['#rows']));
-    // First row has six columns and rowspan on first two
+    // First row has six columns and rowspan on first two.
     $this->assertEquals(7, count($form['table']['#rows'][0]));
     $this->assertEquals(2, $form['table']['#rows'][0][1]['rowspan']);
     // The second row has only three columns.

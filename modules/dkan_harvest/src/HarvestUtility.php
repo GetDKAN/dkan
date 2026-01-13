@@ -64,7 +64,7 @@ class HarvestUtility {
     HarvestRunRepository $runRepository,
     Connection $connection,
     LoggerInterface $loggerChannel,
-    UuidInterface $uuid_service
+    UuidInterface $uuid_service,
   ) {
     $this->harvestService = $harvestService;
     $this->storeFactory = $storeFactory;

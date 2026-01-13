@@ -381,6 +381,7 @@ class DashboardForm extends FormBase {
    */
   protected function buildDatasetRows(array $datasets): array {
     // Fetch the dataset status of all harvests.
+    /** @var array $harvestLoad */
     $harvestLoad = iterator_to_array($this->getHarvestLoadStatuses());
 
     $rows = [];
