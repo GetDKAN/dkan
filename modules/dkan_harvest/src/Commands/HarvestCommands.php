@@ -75,7 +75,7 @@ class HarvestCommands extends DrushCommands {
    * https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
    *
    * @param string $plan_json
-   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Drupal\\harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
+   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'.
    * @param array $opts
    *   Options array.
    *

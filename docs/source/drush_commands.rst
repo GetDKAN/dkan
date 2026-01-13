@@ -210,7 +210,7 @@ dkan:harvest:register
 
     **Usage**
 
-        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'``
+        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'``
 
     Or
 
