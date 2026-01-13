@@ -25,6 +25,7 @@ commands:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+    environment:
     steps:
       - run:
           # TODO: We might not need to do this.
@@ -48,16 +49,31 @@ commands:
             - select2-v1-{{ checksum ".ddev/commands/web/select2" }}
             - select2-v1-
       - run:
+          environment:
+            DRUPAL_CORE: << parameters.drupal_core_constraint >>
+            DRUPAL_PROJECTS_PATH: modules/custom
           name: Build site codebase
           command: |
             set -ex
+            # Here we replicate the ddev poser command
             curl -OL https://git.drupalcode.org/project/gitlab_templates/-/raw/default-ref/scripts/expand_composer_json.php
             php expand_composer_json.php dkan
             rm -rf expand_composer_json.php
             composer install
-            git restore composer.json
+            rm -f composer.contrib.json composer.contrib.lock
             export DOCROOT=$CIRCLE_WORKING_DIRECTORY/web
             .ddev/commands/web/select2
+
+            # Now replicate ddev symlink-project
+            curl -OL https://git.drupalcode.org/project/gitlab_templates/-/raw/default-ref/scripts/symlink_project.php
+            if [ -z "${PROJECT_FILES-}" ]; then
+              # Suppress a warning.
+              PROJECT_FILES=$(ls -A --ignore="web" --ignore="vendor" --ignore="symlink_project.php" --ignore=".ddev" --ignore=".idea")
+              export PROJECT_FILES
+            fi
+            export DRUPAL_PROJECT_FOLDER=${DOCROOT}/${DRUPAL_PROJECTS_PATH}/dkan//-/_}
+            php symlink_project.php
+            rm -f symlink_project.php
       - save_cache:
           key: select2-v1-{{ checksum ".ddev/commands/web/select2" }}
           paths:
