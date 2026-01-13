@@ -44,7 +44,7 @@ class Drush extends DrushCommands {
    */
   public function __construct(
     SampleContentService $sampleContentService,
-    HarvestService $harvestService
+    HarvestService $harvestService,
   ) {
     parent::__construct();
     $this->sampleContentService = $sampleContentService;

@@ -1,14 +1,14 @@
 {
   "identifier": "test",
   "extract": {
-    "type": "\\Drupal\\harvest\\ETL\\Extract\\DataJson",
+    "type": "\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson",
     "uri": ""
   },
   "transforms": [
-    "\\Drupal\\harvest\\ETL\\Transform\\AddId",
-    "\\Drupal\\harvest\\ETL\\Transform\\AddRandomNumber"
+    "\\Drupal\\dkan_harvest\\ETL\\Transform\\AddId",
+    "\\Drupal\\dkan_harvest\\ETL\\Transform\\AddRandomNumber"
   ],
   "load": {
-    "type": "\\Drupal\\harvest\\ETL\\Load\\Simple"
+    "type": "\\Drupal\\dkan_harvest\\ETL\\Load\\Simple"
   }
 }
