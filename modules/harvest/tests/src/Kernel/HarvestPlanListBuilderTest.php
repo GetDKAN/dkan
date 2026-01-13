@@ -127,7 +127,7 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
 
   public function testRegisteredPlanDatastore() {
     // Enable datastore module
-    $this->enableModules(['datastore']);
+    $this->enableModules(['dkan_datastore']);
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = $this->container->get('dkan.harvest.service');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */

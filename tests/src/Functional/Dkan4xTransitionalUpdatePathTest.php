@@ -57,6 +57,10 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('common'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_admin'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_search'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_facets'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
 
     $config = \Drupal::configFactory()->getEditable('core.extension');
     $modules = $config->get('module');
@@ -65,6 +69,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
 
     $this->assertEmpty(\Drupal::configFactory()->get('common.settings')->getRawData());
     $this->assertEmpty(\Drupal::configFactory()->get('metastore.settings')->getRawData());
+    $this->assertEmpty(\Drupal::configFactory()->get('datastore.settings')->getRawData());
 
     // Misc checks to ensure config was migrated properly.
     // Open /node/add/dataset and check that metastore fields exist.
