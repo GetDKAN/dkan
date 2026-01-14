@@ -4,6 +4,7 @@
  * @file
  */
 
+use Drupal\Core\Database\Query\AlterableInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -133,6 +134,26 @@ function metastore_entity_view_alter(array &$build, EntityInterface $entity, Ent
     $build[$fieldName][0]['#context']['value'] = (string) $object;
   }
 }
+
+/**
+ * Implements hook_cron().
+ */
+function metastore_cron() {
+  \Drupal::service('dkan.metastore.orphan_processor')->runCron();
+}
+
+
+/**
+ * Implements hook_query_TAG_alter().
+ *
+ * Adds filter to queries with 'orphan_filter' tab to restrict results to
+ * entities in 'orphaned' state.
+ */
+function metastore_query_orphan_filter_alter(AlterableInterface $query) {
+  $query->addJoin('LEFT', 'content_moderation_state_field_data', 'md', 'md.content_entity_revision_id = base_table.vid');
+  $query->condition('md.moderation_state', 'orphaned');
+}
+
 
 /**
  * Get the name of the current module.

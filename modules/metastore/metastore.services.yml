@@ -65,6 +65,14 @@ services:
       - '@config.factory'
       - '@queue'
 
+  dkan.metastore.orphan_processor:
+    class: \Drupal\metastore\Service\OrphanProcessor
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+      - '@state'
+      - '@datetime.time'
+
   dkan.metastore.resource_mapper:
     class: \Drupal\metastore\ResourceMapper
     arguments:
