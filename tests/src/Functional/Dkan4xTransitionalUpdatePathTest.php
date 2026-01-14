@@ -86,6 +86,10 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertSession()->elementTextContains('css', 'h1', 'DKAN Metastore (Datasets)');
     $this->assertSession()->elementExists('css', 'th a:contains("Title")');
     $this->assertSession()->elementExists('css', 'th a:contains("Data Type")');
+
+    // Check if harvest plan fixed.
+    $updated_plan = $harvest_service->getHarvestPlanObject('test_plan');
+    print_r($updated_plan);
   }
 
 }
