@@ -34,3 +34,12 @@ function dkan_harvest_update_10001() {
   }
   return $message;
 }
+
+/**
+ * Update namespaces in plans.
+ */
+function dkan_harvest_update_10002() {
+  /** @var \Drupal\dkan_harvest\HarvestUtility $harvest_utility */
+  $harvest_utility = \Drupal::service('dkan.harvest.utility');
+  $harvest_utility->harvestNammespaceUpdate();
+}

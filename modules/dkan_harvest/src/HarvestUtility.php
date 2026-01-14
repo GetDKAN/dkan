@@ -268,13 +268,19 @@ class HarvestUtility {
   public function updateTypeNamespace(string $plan_id) {
     try {
       $plan = $this->harvestService->getHarvestPlanObject($plan_id);
-      $this->logger->notice(json_encode($plan));
 
       if (isset($plan->extract->type)) {
-        $plan->extract->type = preg_replace('/^\\\\{0,1}Harvest\\\\ETL/i', '\\Drupal\\dkan_harvest\\ETL', $plan->extract->type);
-        $this->logger->notice($plan->extract->type);
-        $this->harvestService->registerHarvest($plan);
+        $plan->extract->type = preg_replace('/^\\\\{0,1}Harvest\\\\ETL/i', '\\Drupal\\harvest\\ETL', $plan->extract->type);
+        $plan->extract->type = preg_replace('/^\\\\{0,1}Drupal\\\\harvest\\\\ETL/i', '\\Drupal\\dkan_harvest\\ETL', $plan->extract->type);
       }
+      foreach (($plan->transforms ?? []) as $i => $transform) {
+        $plan->transforms[$i] = preg_replace('/^\\\\{0,1}Drupal\\\\harvest/i', '\\Drupal\\dkan_harvest', $transform);
+      }
+      if (isset($plan->load->type)) {
+        $plan->load->type = preg_replace('/^\\\\{0,1}Drupal\\\\harvest/i', '\\Drupal\\dkan_harvest', $plan->load->type);
+      }
+      $this->harvestService->registerHarvest($plan);
+      $this->logger->notice(json_encode($plan));
     }
     catch (\Exception $exception) {
       $this->logger->notice("Namespace update failed for %id: %msg",
