@@ -15,7 +15,7 @@
             <directory>modules/dkan_datastore/modules/dkan_datastore_mysql_import/tests</directory>
             <directory>modules/dkan_js_frontend/tests</directory>
             <directory>modules/frontend/tests</directory>
-            <directory>modules/harvest/tests</directory>
+            <directory>modules/dkan_harvest/tests</directory>
             <directory>modules/json_form_widget/tests</directory>
             <directory>modules/data_dictionary_widget/tests</directory>
             <directory>modules/dkan_metastore/tests</directory>
