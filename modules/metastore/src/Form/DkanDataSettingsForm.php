@@ -203,12 +203,12 @@ class DkanDataSettingsForm extends ConfigFormBase {
        them'),
       'delete' => [
         '#type' => 'checkbox',
-        '#title' => $this->t('Delete referenced content after a dataset is deleted.'),
+        '#title' => $this->t('Delete referenced content after a dataset is deleted'),
         '#default_value' => $config->get('orphan.delete') ?? 0,
       ],
       'retain_for' => [
         '#type' => 'number',
-        '#title' => $this->t('Number of days to keep referenced content before deletion.'),
+        '#title' => $this->t('Number of days to keep referenced content before deletion'),
         '#default_value' => $config->get('orphan.retain_for') ?? 0,
         '#min' => 0,
         '#max' => 999,
