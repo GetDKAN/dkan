@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dkan_common\Functional;
 
-<<<<<<< HEAD
 use Composer\Semver\VersionParser;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\Load\Dataset;
+use Drupal\dkan_harvest\Transform\ResourceImporter;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 
-=======
-use Drupal\FunctionalTests\Update\UpdatePathTestBase;
-
->>>>>>> c5e721447 (Add transitional modules and other updates)
 /**
  * Tests update functions for the metastore module.
  *
@@ -67,6 +65,8 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_search'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_sample_content'));
 
+    $this->fixHarvestPlanJsonEscapes();
+
     // Run all updates.
     $this->runUpdates();
 
@@ -101,6 +101,35 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertSession()->elementTextContains('css', 'h1', 'DKAN Metastore (Datasets)');
     $this->assertSession()->elementExists('css', 'th a:contains("Title")');
     $this->assertSession()->elementExists('css', 'th a:contains("Data Type")');
+
+    // Check if harvest plan fixed with correct namespaces.
+    $harvest_service = \Drupal::service('dkan.harvest.service');
+    $updated_plan = $harvest_service->getHarvestPlanObject('sample_content');
+    $this->assertEquals("\\" . DataJson::class, $updated_plan->extract->type);
+    $this->assertEquals("\\" . ResourceImporter::class, $updated_plan->transforms[0]);
+    $this->assertEquals("\\" . Dataset::class, $updated_plan->load->type);
+  }
+
+  /**
+   * Fix harvest plan JSON escapes.
+   *
+   * Restoring the DB from a dump will brake our PHP class name backslash
+   * escaping.Load all records from the harvest_plans table and modify the data
+   * to double any single backslashes.
+   */
+  private function fixHarvestPlanJsonEscapes(): void {
+    $database = \Drupal::database();
+    $query = $database->select('harvest_plans', 'hp')
+      ->fields('hp', ['id', 'data']);
+    $results = $query->execute();
+    foreach ($results as $record) {
+      $data = $record->data;
+      $data = preg_replace('/(?<!\\\\)\\\\/', '\\\\\\\\', $data);
+      $database->update('harvest_plans')
+        ->fields(['data' => $data])
+        ->condition('id', $record->id)
+        ->execute();
+    }
   }
 
 }

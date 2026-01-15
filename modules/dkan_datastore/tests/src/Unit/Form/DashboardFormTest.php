@@ -16,8 +16,8 @@ use Drupal\dkan_common\DatasetInfo;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Form\DashboardForm;
 use Drupal\dkan_datastore\Service\PostImport;
-use Drupal\harvest\Entity\HarvestRunRepository;
-use Drupal\harvest\HarvestService;
+use Drupal\dkan_harvest\Entity\HarvestRunRepository;
+use Drupal\dkan_harvest\HarvestService;
 use Drupal\dkan_metastore\MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
@@ -579,7 +579,7 @@ class DashboardFormTest extends TestCase {
 
     $form = DashboardForm::create($container)->buildForm([], new FormState());
     $this->assertEquals(2, count($form['table']['#rows']));
-    // First row has six columns and rowspan on first two
+    // First row has six columns and rowspan on first two.
     $this->assertEquals(7, count($form['table']['#rows'][0]));
     $this->assertEquals(2, $form['table']['#rows'][0][1]['rowspan']);
     // The second row has only three columns.
@@ -633,7 +633,6 @@ class DashboardFormTest extends TestCase {
       ->add(HarvestService::class, 'getAllHarvestIds', ['test', 'dataset-1'])
       ->add(HarvestService::class, 'getRunIdsForHarvest', ['test'])
       ->add(HarvestService::class, 'getHarvestRunInfo', $runInfo)
-      ->add(HarvestService::class, 'getLastHarvestRunId', 'huh')
       ->add(HarvestService::class, 'getHarvestRunResult', $runStatus)
       ->add(MetastoreService::class, 'count', 0)
       ->add(MetastoreService::class, 'getIdentifiers', [])
