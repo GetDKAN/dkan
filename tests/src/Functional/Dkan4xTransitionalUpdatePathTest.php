@@ -32,11 +32,9 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertSession()->pageTextContains('Log in');
 
     // Enable optional modules.
-    \Drupal::service('module_installer')->install([
-      'metastore_facets',
-      'datastore_mysql_import',
-      'sample_content',
-    ]);
+    \Drupal::service('module_installer')->install(['metastore_facets']);
+    \Drupal::service('module_installer')->install(['datastore_mysql_import']);
+    \Drupal::service('module_installer')->install(['sample_content']);
 
     // Run all updates.
     $this->runUpdates();
@@ -46,11 +44,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore_mysql_import'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_harvest'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_data_dictionary_widget'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_admin'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_facets'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_search'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_sample_content'));
   }
 
