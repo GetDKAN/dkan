@@ -13,7 +13,7 @@ use Drupal\Core\Url;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\UrlHostTokenResolver;
-use Drupal\harvest\HarvestService;
+use Drupal\dkan_harvest\HarvestService;
 use Drupal\dkan_metastore\MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\dkan_datastore\PostImportResultFactory;
@@ -32,7 +32,7 @@ class DashboardForm extends FormBase {
   /**
    * Harvest service.
    *
-   * @var \Drupal\harvest\HarvestService
+   * @var \Drupal\dkan_harvest\HarvestService
    */
   protected $harvest;
 
@@ -84,7 +84,7 @@ class DashboardForm extends FormBase {
   /**
    * DashboardController constructor.
    *
-   * @param \Drupal\harvest\HarvestService $harvestService
+   * @param \Drupal\dkan_harvest\HarvestService $harvestService
    *   Harvest service.
    * @param \Drupal\dkan_common\DatasetInfo $datasetInfo
    *   Dataset information service.
@@ -381,6 +381,7 @@ class DashboardForm extends FormBase {
    */
   protected function buildDatasetRows(array $datasets): array {
     // Fetch the dataset status of all harvests.
+    /** @var array $harvestLoad */
     $harvestLoad = iterator_to_array($this->getHarvestLoadStatuses());
 
     $rows = [];
