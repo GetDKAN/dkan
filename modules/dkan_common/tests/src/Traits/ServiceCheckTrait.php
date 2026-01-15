@@ -51,7 +51,7 @@ trait ServiceCheckTrait {
       'dkan_common',
       'dkan_metastore',
       'dkan_datastore',
-      'harvest',
+      'dkan_harvest',
     ];
     $files = [];
 

@@ -3,7 +3,7 @@
 namespace Drupal\sample_content;
 
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drupal\harvest\HarvestService;
+use Drupal\dkan_harvest\HarvestService;
 
 /**
  * Manage sample content for both demo purposes and for testing.
@@ -25,7 +25,7 @@ class SampleContentService {
    *
    * @param \Drupal\Core\Extension\ModuleExtensionList $moduleExtensionList
    *   Extension list.
-   * @param \Drupal\harvest\HarvestService $harvestService
+   * @param \Drupal\dkan_harvest\HarvestService $harvestService
    *   Harvest service.
    * @param string $appRoot
    *   The app root, equivalent to DRUPAL_ROOT.

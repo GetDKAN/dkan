@@ -58,6 +58,7 @@ abstract class Api1TestBase extends BrowserTestBase {
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',
+    'dkan_harvest',
     'node',
     'sample_content',
     'workflows',
