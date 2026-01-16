@@ -55,12 +55,16 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function setMetadata($metadata);
 
   /**
-   * Setter.
+   * Set the identifier for this item.
+   *
+   * @param mixed $identifier
    */
   public function setIdentifier($identifier);
 
   /**
-   * Setter.
+   * Set the title of this item.
+   *
+   * @param mixed $title
    */
   public function setTitle($title);
 
