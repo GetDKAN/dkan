@@ -27,7 +27,6 @@ use Symfony\Component\DependencyInjection\Container;
 class DataTest extends TestCase {
 
   public function testGetLatestRevisionGetUsAWrapper() {
-    $this->markTestIncomplete('The wrapper now sets default field values, so we have to mock translations.');
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
@@ -35,6 +34,10 @@ class DataTest extends TestCase {
       ->addd('isNew', false)
       ->addd('id', 123)
       ->addd('getLoadedRevisionId', 111)
+      ->addd(
+        'getTranslatedField',
+        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
@@ -64,12 +67,15 @@ class DataTest extends TestCase {
   }
 
   public function testGetLatestRevisionGiveUsNull() {
-    $this->markTestIncomplete('The wrapper now sets default field values, so we have to mock translations.');
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
       ->addd('__get', Node::class)
       ->addd('isNew', true)
+      ->addd(
+        'getTranslatedField',
+        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
@@ -92,7 +98,6 @@ class DataTest extends TestCase {
   }
 
   public function testGetPublishedRevisionGetUsAWrapper() {
-    $this->markTestIncomplete('The wrapper now sets default field values, so we have to mock translations.');
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
@@ -100,6 +105,10 @@ class DataTest extends TestCase {
       ->addd('isNew', false)
       ->addd('id', 123)
       ->addd('isPublished', true)
+      ->addd(
+        'getTranslatedField',
+        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
@@ -125,12 +134,15 @@ class DataTest extends TestCase {
   }
 
   public function testGetPublishedRevisionGiveUsNull() {
-    $this->markTestIncomplete('The wrapper now sets default field values, so we have to mock translations.');
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
       ->addd('__get', Node::class)
       ->addd('isNew', true)
+      ->addd(
+        'getTranslatedField',
+        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
