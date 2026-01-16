@@ -22,17 +22,17 @@ class Data implements MetastoreItemInterface {
   /**
    * The node field name for the metadata JSON string.
    */
-  private const string JSON_METADATA_FIELD = 'field_json_metadata';
+  private const JSON_METADATA_FIELD = 'field_json_metadata';
 
   /**
    * The field name for determining the schema/data type of the node.
    */
-  private const string DATA_TYPE_FIELD = 'field_data_type';
+  private const DATA_TYPE_FIELD = 'field_data_type';
 
   /**
    * The default data type for nodes that don't have one yet.
    */
-  private const string DEFAULT_DATA_TYPE = 'dataset';
+  private const DEFAULT_DATA_TYPE = 'dataset';
 
   /**
    * The data node we're wrapping.
