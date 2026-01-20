@@ -6,10 +6,11 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\State\StateInterface;
+use PHPUnit\Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class OrphanProcessor implements ContainerInjectionInterface {
+class OrphanNodeProcessor implements ContainerInjectionInterface {
 
   const SECONDS_PER_DAY = 60 * 60 * 24;
 
@@ -28,11 +29,9 @@ class OrphanProcessor implements ContainerInjectionInterface {
   private $entityTypeManager;
 
   /**
-   * The state object.
-   *
-   * @var \Drupal\Core\State\StateInterface
+   * DKAN logger channel service.
    */
-  private $state;
+  private LoggerInterface $logger;
 
   /**
    * The datetime component.
@@ -44,12 +43,12 @@ class OrphanProcessor implements ContainerInjectionInterface {
   public function __construct(
     ConfigFactoryInterface $configFactory,
     EntityTypeManager $entityTypeManager,
-    StateInterface $state,
+    LoggerInterface $loggerChannel,
     TimeInterface $time
   ) {
     $this->config = $configFactory->get('metastore.settings');
     $this->entityTypeManager = $entityTypeManager;
-    $this->state = $state;
+    $this->logger = $loggerChannel;
     $this->time = $time;
   }
 
@@ -60,7 +59,7 @@ class OrphanProcessor implements ContainerInjectionInterface {
     return new static(
       $container->get('config.factory'),
       $container->get('entity_type.manager'),
-      $container->get('state'),
+      $container->get('dkan.common.logger_channel'),
       $container->get('datetime.time')
     );
   }
@@ -68,16 +67,18 @@ class OrphanProcessor implements ContainerInjectionInterface {
   /**
    * Deletes orphaned nodes based on config settings.
    *
-   * @return void
+   * @return array|bool
+   *   Returns array containing any deleted node ids if it runs or false if
+   *   orphan deletion is disabled.
+   *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
-   *
-   * @see metastore_cron()
    */
-  public function runCron() {
-    if (!$this->cronShouldRun()) {
-      return;
+  public function deleteOutdatedOrphans() {
+    // Check metastore setting.
+    if (!$this->config->get('orphan.delete')) {
+      return FALSE;
     }
 
     $retain_days = $this->config->get('orphan.retain_for') ?? 0;
@@ -86,43 +87,14 @@ class OrphanProcessor implements ContainerInjectionInterface {
     $node_storage = $this->entityTypeManager->getStorage('node');
     $nids = $node_storage->getQuery()
       ->accessCheck(FALSE)
-      ->addTag('orphan_filter')
+      ->addTag('dkan_orphan_filter')
       ->condition('type', 'data')
       ->condition('changed', $this->time->getCurrentTime() - $retain_seconds, '<')
-      ->condition('status', 0)
       ->execute();
-
     foreach ($nids as $nid) {
-      $node = $node_storage->load($nid);
-      $node->delete();
+      $node_storage->load($nid)->delete();
     }
-  }
-
-  /**
-   * Check that orphan deletion is enabled and it's been at least 24 hours
-   * since last run.
-   *
-   * @return bool
-   *  True if cron job should run. Otherwise, false
-   */
-  private function cronShouldRun() : bool {
-
-    // Check metastore setting.
-    if (!$this->config->get('orphan.delete')) {
-      return FALSE;
-    }
-
-    // Check time since process last ran.
-    $last_run = $this->state->get('orphan_delete.last_run', 0);
-    $request_time = $this->time->getRequestTime();
-
-    if ($request_time - $last_run < self::SECONDS_PER_DAY) {
-      return FALSE;
-    }
-
-    $this->state->set('orphan_delete.last_run', $request_time);
-
-    return TRUE;
+    return $nids;
   }
 
 }
