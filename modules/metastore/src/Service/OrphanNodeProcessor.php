@@ -6,10 +6,11 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use PHPUnit\Exception;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Handle orphaned nodes.
+ */
 class OrphanNodeProcessor implements ContainerInjectionInterface {
 
   const SECONDS_PER_DAY = 60 * 60 * 24;
@@ -29,11 +30,6 @@ class OrphanNodeProcessor implements ContainerInjectionInterface {
   private $entityTypeManager;
 
   /**
-   * DKAN logger channel service.
-   */
-  private LoggerInterface $logger;
-
-  /**
    * The datetime component.
    *
    * @var \Drupal\Component\Datetime\TimeInterface
@@ -43,24 +39,21 @@ class OrphanNodeProcessor implements ContainerInjectionInterface {
   public function __construct(
     ConfigFactoryInterface $configFactory,
     EntityTypeManager $entityTypeManager,
-    LoggerInterface $loggerChannel,
     TimeInterface $time
   ) {
     $this->config = $configFactory->get('metastore.settings');
     $this->entityTypeManager = $entityTypeManager;
-    $this->logger = $loggerChannel;
     $this->time = $time;
   }
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
       $container->get('entity_type.manager'),
-      $container->get('dkan.common.logger_channel'),
-      $container->get('datetime.time')
+      $container->get('datetime.time'),
     );
   }
 

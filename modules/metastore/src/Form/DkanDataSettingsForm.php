@@ -212,7 +212,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
         '#default_value' => $config->get('orphan.retain_for') ?? 0,
         '#min' => 0,
         '#max' => 999,
-      ]
+      ],
     ];
   }
 
