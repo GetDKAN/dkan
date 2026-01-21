@@ -39,7 +39,7 @@ class OrphanNodeProcessor implements ContainerInjectionInterface {
   public function __construct(
     ConfigFactoryInterface $configFactory,
     EntityTypeManager $entityTypeManager,
-    TimeInterface $time
+    TimeInterface $time,
   ) {
     $this->config = $configFactory->get('metastore.settings');
     $this->entityTypeManager = $entityTypeManager;
