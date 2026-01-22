@@ -70,7 +70,6 @@ services:
     arguments:
       - '@config.factory'
       - '@entity_type.manager'
-      - '@dkan.common.logger_channel'
       - '@datetime.time'
 
   dkan.metastore.resource_mapper:
