@@ -19,7 +19,7 @@ use Drupal\Tests\common\Traits\QueueRunnerTrait;
 class OrphanNodeProcessorTest extends KernelTestBase {
   use QueueRunnerTrait;
 
-  protected const array DATASET_DATA = [
+  protected const DATASET_DATA = [
       'title' => 'Test Dataset',
       'identifier' => '123',
       'description' => 'Test Description',
