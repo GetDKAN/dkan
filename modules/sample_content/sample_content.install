@@ -18,5 +18,7 @@ function sample_content_install() {
 function sample_content_update_10001() {
   if (!\Drupal::service('module_handler')->moduleExists('dkan_sample_content')) {
     \Drupal::service('module_installer')->install(['dkan_sample_content'], TRUE);
+    // For some reason, dkan_sample_content still shows as disabled.
+    \Drupal::service('extension.list.module')->reset();
   }
 }
