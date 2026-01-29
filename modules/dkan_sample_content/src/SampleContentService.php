@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sample_content;
+namespace Drupal\dkan_sample_content;
 
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\dkan_harvest\HarvestService;
@@ -35,7 +35,7 @@ class SampleContentService {
     HarvestService $harvestService,
     string $appRoot
   ) {
-    $this->modulePath = $appRoot . '/' . $moduleExtensionList->getPath('sample_content');
+    $this->modulePath = $appRoot . '/' . $moduleExtensionList->getPath('dkan_sample_content');
     $this->harvestService = $harvestService;
   }
 
@@ -59,9 +59,9 @@ class SampleContentService {
    *   Absolute path to the sample content JSON file.
    */
   public function createDatasetJsonFileFromTemplate(): string {
-    $sample_content_template = $this->modulePath . '/sample_content.template.json';
+    $sample_content_template = $this->modulePath . '/dkan_sample_content.template.json';
     $content = file_get_contents($sample_content_template);
-    $sample_content_json = $this->modulePath . '/sample_content.json';
+    $sample_content_json = $this->modulePath . '/dkan_sample_content.json';
     file_put_contents($sample_content_json, $this->detokenize($content));
     return $sample_content_json;
   }
