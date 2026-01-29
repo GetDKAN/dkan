@@ -4,4 +4,4 @@ type: module
 core_version_requirement: ^10.4 || ^11
 package: DKAN
 dependencies:
-  - dkan:harvest
+  - dkan:dkan_harvest
