@@ -13,11 +13,9 @@ function dkan_sample_content_install() {
 }
 
 /**
- * Update hook to set new setting strict_mode_disabled to TRUE.
+ * Disable legacy sample_content module.
  */
 function dkan_sample_content_update_10001() {
-  // If the old datastore_mysql_import module is still enabled, copy config and
-  // uninstall it.
   if (\Drupal::moduleHandler()->moduleExists('sample_content')) {
     \Drupal::service('module_installer')->uninstall(['sample_content']);
     return t('The legacy sample_content module has been uninstalled.');
