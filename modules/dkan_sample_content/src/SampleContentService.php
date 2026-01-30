@@ -33,7 +33,7 @@ class SampleContentService {
   public function __construct(
     ModuleExtensionList $moduleExtensionList,
     HarvestService $harvestService,
-    string $appRoot
+    string $appRoot,
   ) {
     $this->modulePath = $appRoot . '/' . $moduleExtensionList->getPath('dkan_sample_content');
     $this->harvestService = $harvestService;
