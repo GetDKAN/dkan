@@ -12,7 +12,7 @@ use Drupal\dkan_harvest\ETL\Transform\Transform;
  *
  * Used by the sample_content harvest.
  *
- * @see modules/sample_content/harvest_plan.json
+ * @see modules/dkan_sample_content/harvest_plan.json
  */
 class ResourceImporter extends Transform {
 
