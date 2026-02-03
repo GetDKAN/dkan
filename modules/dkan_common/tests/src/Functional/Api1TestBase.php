@@ -59,8 +59,8 @@ abstract class Api1TestBase extends BrowserTestBase {
     'dkan_datastore',
     'dkan_metastore',
     'dkan_harvest',
+    'dkan_sample_content',
     'node',
-    'sample_content',
     'workflows',
   ];
 
@@ -117,7 +117,7 @@ abstract class Api1TestBase extends BrowserTestBase {
   }
 
   protected function getSampleDataset(int $n = 0) {
-    /** @var \Drupal\sample_content\SampleContentService $sample_content_service */
+    /** @var \Drupal\dkan_sample_content\SampleContentService $sample_content_service */
     $sample_content_service = $this->container->get('dkan.sample_content.service');
     $sampleJson = $sample_content_service->createDatasetJsonFileFromTemplate();
     $sampleDatasets = json_decode(file_get_contents($sampleJson));
