@@ -34,7 +34,7 @@ class ResourceImporterTest extends BrowserTestBase {
    */
   public function testSaveFileHappyPath() {
     $sample_content_module_path = $this->container->get('extension.list.module')
-      ->getPath('sample_content');
+      ->getPath('dkan_sample_content');
 
     $importer = new ResourceImporter('harvest_plan_id');
 
