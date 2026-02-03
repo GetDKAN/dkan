@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sample_content;
+namespace Drupal\dkan_sample_content;
 
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\dkan_harvest\Commands\Helper;
@@ -37,7 +37,7 @@ class Drush extends DrushCommands {
   /**
    * Constructor for the Sample Content commands.
    *
-   * @param \Drupal\sample_content\SampleContentService $sampleContentService
+   * @param \Drupal\dkan_sample_content\SampleContentService $sampleContentService
    *   Sample content service.
    * @param \Drupal\dkan_harvest\HarvestService $harvestService
    *   Harvest service.
