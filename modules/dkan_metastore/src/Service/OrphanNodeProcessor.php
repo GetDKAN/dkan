@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Service;
+namespace Drupal\dkan_metastore\Service;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -41,7 +41,7 @@ class OrphanNodeProcessor implements ContainerInjectionInterface {
     EntityTypeManager $entityTypeManager,
     TimeInterface $time,
   ) {
-    $this->config = $configFactory->get('metastore.settings');
+    $this->config = $configFactory->get('dkan_metastore.settings');
     $this->entityTypeManager = $entityTypeManager;
     $this->time = $time;
   }
