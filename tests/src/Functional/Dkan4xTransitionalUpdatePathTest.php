@@ -48,6 +48,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('metastore_admin'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('datastore'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('harvest'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('sample_content'));
 
     if ($constraint->matches($parser->parseConstraints(\Drupal::VERSION))) {
       // On Drupal ^11.3, it doesn't work to enable more modules before updb.
@@ -78,6 +79,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('metastore_facets'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('sample_content'));
 
     $config = \Drupal::configFactory()->getEditable('core.extension');
     $modules = $config->get('module');

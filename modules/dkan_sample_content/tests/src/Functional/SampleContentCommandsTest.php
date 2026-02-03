@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
 /**
- * @coversDefaultClass \Drupal\sample_content\Drush
+ * @coversDefaultClass \Drupal\dkan_sample_content\Drush
  *
  * @group dkan
  * @group sample_content
@@ -27,7 +27,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
   protected static $modules = [
     'dkan_datastore',
     'node',
-    'sample_content',
+    'dkan_sample_content',
   ];
 
   /**
