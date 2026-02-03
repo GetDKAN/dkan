@@ -85,6 +85,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
     $form['html_allowed_properties'] = $this->getHtmlAllowedProperties($config);
     $form['html_allowed_html'] = $this->getHtmlAllowedHtml($config);
     $form['property_list'] = $this->getPropertyList($config);
+    $form['orphan'] = $this->getOrphanCleanupFields($config);
 
     return parent::buildForm($form, $form_state);
   }
@@ -185,6 +186,36 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Builds the fields for orphan handling.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The metastore settings configuration.
+   *
+   * @return array
+   *   The form element array.
+   */
+  private function getOrphanCleanupFields(Config $config) {
+    return [
+      '#type' => 'fieldset',
+      '#title' => $this->t('When a dataset is deleted, the properties selected above
+       will be unpublished but remain in the system. Use the options below to delete
+       them'),
+      'delete' => [
+        '#type' => 'checkbox',
+        '#title' => $this->t('Delete referenced content after a dataset is deleted'),
+        '#default_value' => $config->get('orphan.delete') ?? 0,
+      ],
+      'retain_for' => [
+        '#type' => 'number',
+        '#title' => $this->t('Number of days to keep referenced content before deletion'),
+        '#default_value' => $config->get('orphan.retain_for') ?? 0,
+        '#min' => 0,
+        '#max' => 999,
+      ],
+    ];
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
@@ -195,6 +226,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
       ->set('property_list', $form_state->getValue('property_list'))
       ->set('html_allowed_properties', $form_state->getValue('html_allowed_properties'))
       ->set('html_allowed_html', $form_state->getValue('html_allowed_html'))
+      ->set('orphan.delete', $form_state->getValue('delete'))
+      ->set('orphan.retain_for', $form_state->getValue('retain_for'))
       ->save();
 
     // Rebuild routes, without clearing all caches.

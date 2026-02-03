@@ -4,12 +4,20 @@
  * @file
  */
 
+<<<<<<< HEAD
+=======
+use Drupal\Core\Database\Query\AlterableInterface;
+>>>>>>> 3.x
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\MetastoreService;
+<<<<<<< HEAD
+=======
+use Drupal\dkan_metastore\Service\OrphanNodeProcessor;
+>>>>>>> 3.x
 
 /**
  * Implements hook_entity_load().
@@ -135,6 +143,59 @@ function dkan_metastore_entity_view_alter(array &$build, EntityInterface $entity
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * Implements hook_cron().
+ *
+ * Deletes outdated orphans according to metastore settings.
+ */
+function dkan_metastore_cron() {
+  // Run deletion process no more than once every 24 hours.
+  $last_run = \Drupal::state()->get('orphan_delete.last_run', 0);
+  $request_time = \Drupal::time()->getRequestTime();
+
+  if ($request_time - $last_run < OrphanNodeProcessor::SECONDS_PER_DAY) {
+    return;
+  }
+  try {
+    $nids = \Drupal::service('dkan.metastore.orphan_node_processor')
+      ->deleteOutdatedOrphans();
+    if (is_array($nids)) {
+      if (empty($nids)) {
+        $message = 'No orphaned nodes deleted';
+      }
+      else {
+        $max_displayed = 20;
+        $count_msg = '';
+        if (count($nids) > $max_displayed) {
+          $count_msg = ' (and ' . count($nids) - $max_displayed . ' more)';
+          $nids = array_slice($nids, 0, 20);
+        }
+        $message = 'Orphaned nodes ' . implode(',', $nids) . $count_msg . ' were deleted';
+      }
+      \Drupal::logger('metastore')->notice($message);
+    }
+
+    \Drupal::state()->set('orphan_delete.last_run', $request_time);
+  }
+  catch (Exception $exception) {
+    \Drupal::logger('metastore')->error($exception->getMessage());
+  }
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ *
+ * Adds filter to queries with 'orphan_filter' tag to restrict results to
+ * entities in 'orphaned' state.
+ */
+function dkan_metastore_query_dkan_orphan_filter_alter(AlterableInterface $query) {
+  $query->addJoin('LEFT', 'content_moderation_state_field_data', 'md', 'md.content_entity_revision_id = base_table.vid');
+  $query->condition('md.moderation_state', 'orphaned');
+}
+
+/**
+>>>>>>> 3.x
  * Get the name of the current module.
  */
 function get_module_name(): string {
