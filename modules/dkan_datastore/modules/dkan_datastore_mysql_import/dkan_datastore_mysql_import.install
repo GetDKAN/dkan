@@ -6,6 +6,13 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function dkan_datastore_mysql_import_install() {
+  dkan_datastore_mysql_import_update_10001();
+}
+
+/**
  * Update hook to set new setting strict_mode_disabled to TRUE.
  */
 function dkan_datastore_mysql_import_update_10001() {

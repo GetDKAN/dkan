@@ -5,8 +5,8 @@ namespace Drupal\Tests\sample_content\Kernel;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @covers \Drupal\sample_content\SampleContentService
- * @coversDefaultClass \Drupal\sample_content\SampleContentService
+ * @covers \Drupal\dkan_sample_content\SampleContentService
+ * @coversDefaultClass \Drupal\dkan_sample_content\SampleContentService
  *
  * @group dkan
  * @group sample_content
@@ -15,7 +15,7 @@ use Drupal\KernelTests\KernelTestBase;
 class SampleContentServiceTest extends KernelTestBase {
 
   protected static $modules = [
-    'sample_content',
+    'dkan_sample_content',
     'dkan_harvest',
     'dkan_metastore',
     'dkan_common',
@@ -32,7 +32,7 @@ class SampleContentServiceTest extends KernelTestBase {
    * @covers ::registerSampleContentHarvest
    */
   public function testSampleContentService() {
-    /** @var \Drupal\sample_content\SampleContentService $sample_content_service */
+    /** @var \Drupal\dkan_sample_content\SampleContentService $sample_content_service */
     $sample_content_service = $this->container->get('dkan.sample_content.service');
 
     $this->assertFileExists(
