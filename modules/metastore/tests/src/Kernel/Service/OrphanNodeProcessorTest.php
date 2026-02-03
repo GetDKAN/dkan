@@ -1,48 +1,45 @@
 <?php
 
-
 declare(strict_types=1);
 
-namespace Drupal\Tests\metastore\Kernel\Service;
+namespace Drupal\Tests\dkan_metastore\Kernel\Service;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 
 /**
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group kernel
  *
- * @covers \Drupal\metastore\Service\OrphanNodeProcessor
- * @coversDefaultClass \Drupal\metastore\Service\OrphanNodeProcessor
+ * @covers \Drupal\dkan_metastore\Service\OrphanNodeProcessor
+ * @coversDefaultClass \Drupal\dkan_metastore\Service\OrphanNodeProcessor
  */
 class OrphanNodeProcessorTest extends KernelTestBase {
   use QueueRunnerTrait;
 
   protected const DATASET_DATA = [
-      'title' => 'Test Dataset',
-      'identifier' => '123',
-      'description' => 'Test Description',
-      'modified' => '2026-01-01',
-      'accessLevel' => 'public',
-      'keyword' => ['test'],
-      'distribution' => [
-        [
-          'title' => 'Test Distribution 1',
-          'downloadURL' => 'http://example.com/1.csv',
-        ],
+    'title' => 'Test Dataset',
+    'identifier' => '123',
+    'description' => 'Test Description',
+    'modified' => '2026-01-01',
+    'accessLevel' => 'public',
+    'keyword' => ['test'],
+    'distribution' => [
+      [
+        'title' => 'Test Distribution 1',
+        'downloadURL' => 'http://example.com/1.csv',
       ],
-      "publisher" =>
-        [
-          "@type" => "org:Organization",
-          "name" => "Test Org",
-        ],
-      "theme" =>
-        [
-          "Tag 1",
-          "Tag 2",
-        ],
-    ];
+    ],
+    "publisher" => [
+      "@type" => "org:Organization",
+      "name" => "Test Org",
+    ],
+    "theme" => [
+      "Tag 1",
+      "Tag 2",
+    ],
+  ];
 
 
   public static $modules = [
@@ -52,8 +49,8 @@ class OrphanNodeProcessorTest extends KernelTestBase {
     'field',
     'filter',
     'text',
-    'metastore',
-    'common',
+    'dkan_metastore',
+    'dkan_common',
     'dkan',
     'content_moderation',
     'workflows',
@@ -66,8 +63,8 @@ class OrphanNodeProcessorTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig('system');
     $this->installConfig('node');
-    $this->installConfig('common');
-    $this->installConfig('metastore');
+    $this->installConfig('dkan_common');
+    $this->installConfig('dkan_metastore');
     $this->installEntitySchema('node');
     $this->installSchema('node', ['node_access']);
     $this->installEntitySchema('content_moderation_state');
@@ -75,7 +72,7 @@ class OrphanNodeProcessorTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installEntitySchema('resource_mapping');
 
-    $config = $this->config('metastore.settings');
+    $config = $this->config('dkan_metastore.settings');
     $config->set('orphan.delete', TRUE);
     $config->save();
   }
@@ -85,7 +82,7 @@ class OrphanNodeProcessorTest extends KernelTestBase {
    */
   public function testOrphanNodeDeletion() {
     /**
-     * @var \Drupal\metastore\MetastoreService $metastore
+     * @var \Drupal\dkan_metastore\MetastoreService $metastore
      */
     $metastore = $this->container->get('dkan.metastore.service');
     $metadata = $metastore->getValidMetadataFactory()->get(json_encode(self::DATASET_DATA), 'dataset');
@@ -96,7 +93,7 @@ class OrphanNodeProcessorTest extends KernelTestBase {
     $this->assertEquals($this->getRelatedItemCount(), $this->getDataNodeCount());
 
     $this->runQueues(['orphan_reference_processor']);
-    /** @var \Drupal\metastore\Service\OrphanNodeProcessor $processor */
+    /** @var \Drupal\dkan_metastore\Service\OrphanNodeProcessor $processor */
     $processor = $this->container->get('dkan.metastore.orphan_node_processor');
     $deleted_nids = $processor->deleteOutdatedOrphans();
     $this->assertEquals($this->getRelatedItemCount(), count($deleted_nids));
@@ -104,7 +101,7 @@ class OrphanNodeProcessorTest extends KernelTestBase {
   }
 
   protected function getRelatedItemCount() {
-    // There can only be one publisher and it's stored as an array
+    // There can only be one publisher and it's stored as an array.
     $publisher = count(self::DATASET_DATA['publisher']) ? 1 : 0;
     return count(self::DATASET_DATA['keyword'])
       + count(self::DATASET_DATA['distribution'])
