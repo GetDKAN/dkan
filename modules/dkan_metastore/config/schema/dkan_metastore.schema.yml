@@ -29,8 +29,6 @@ dkan_metastore.settings:
     redirect_to_datasets:
       type: boolean
       label: 'Redirect to datasets view after form submit'
-<<<<<<< HEAD
-=======
     orphan:
       type: mapping
       label: 'Orphaned nodes'
@@ -41,4 +39,3 @@ dkan_metastore.settings:
         retain_for:
           type: integer
           label: 'Number of days to keep referenced content before deletion'
->>>>>>> 3.x
