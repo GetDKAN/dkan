@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Service\OrphanNodeProcessor;
 
 /**
  * Implements hook_entity_load().
@@ -140,7 +141,7 @@ function dkan_metastore_entity_view_alter(array &$build, EntityInterface $entity
  *
  * Deletes outdated orphans according to metastore settings.
  */
-function metastore_cron() {
+function dkan_metastore_cron() {
   // Run deletion process no more than once every 24 hours.
   $last_run = \Drupal::state()->get('orphan_delete.last_run', 0);
   $request_time = \Drupal::time()->getRequestTime();
@@ -148,33 +149,31 @@ function metastore_cron() {
   if ($request_time - $last_run < OrphanNodeProcessor::SECONDS_PER_DAY) {
     return;
   }
-    try {
-      $nids = \Drupal::service('dkan.metastore.orphan_node_processor')
-        ->deleteOutdatedOrphans();
-      if (is_array($nids)) {
-        if (empty($nids)) {
-          $message = 'No orphaned nodes deleted';
-        }
-        else {
-          $max_displayed = 20;
-          $count_msg = '';
-          if (count($nids) > $max_displayed) {
-            $count_msg = ' (and ' . count($nids) - $max_displayed . ' more)';
-            $nids = array_slice($nids, 0, 20);
-          }
-          $message = 'Orphaned nodes ' . implode(',', $nids) . $count_msg . ' were deleted';
-        }
-        \Drupal::logger('metastore')->notice($message);
+  try {
+    $nids = \Drupal::service('dkan.metastore.orphan_node_processor')
+      ->deleteOutdatedOrphans();
+    if (is_array($nids)) {
+      if (empty($nids)) {
+        $message = 'No orphaned nodes deleted';
       }
-
-      \Drupal::state()->set('orphan_delete.last_run', $request_time);
+      else {
+        $max_displayed = 20;
+        $count_msg = '';
+        if (count($nids) > $max_displayed) {
+          $count_msg = ' (and ' . count($nids) - $max_displayed . ' more)';
+          $nids = array_slice($nids, 0, 20);
+        }
+        $message = 'Orphaned nodes ' . implode(',', $nids) . $count_msg . ' were deleted';
+      }
+      \Drupal::logger('metastore')->notice($message);
     }
-    catch (Exception $exception) {
-      \Drupal::logger('metastore')->error($exception->getMessage());
-    }
 
+    \Drupal::state()->set('orphan_delete.last_run', $request_time);
+  }
+  catch (Exception $exception) {
+    \Drupal::logger('metastore')->error($exception->getMessage());
+  }
 }
-
 
 /**
  * Implements hook_query_TAG_alter().
@@ -182,11 +181,10 @@ function metastore_cron() {
  * Adds filter to queries with 'orphan_filter' tag to restrict results to
  * entities in 'orphaned' state.
  */
-function metastore_query_dkan_orphan_filter_alter(AlterableInterface $query) {
+function dkan_metastore_query_dkan_orphan_filter_alter(AlterableInterface $query) {
   $query->addJoin('LEFT', 'content_moderation_state_field_data', 'md', 'md.content_entity_revision_id = base_table.vid');
   $query->condition('md.moderation_state', 'orphaned');
 }
-
 
 /**
  * Get the name of the current module.
