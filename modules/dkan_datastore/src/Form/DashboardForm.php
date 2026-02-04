@@ -150,7 +150,7 @@ class DashboardForm extends FormBase {
     $params = $this->getParameters();
     // Add custom after_build method to remove unnecessary GET parameters.
     $form['#after_build'] = ['::afterBuild'];
-    $form['#attached'] = ['library' => ['datastore/style']];
+    $form['#attached'] = ['library' => ['dkan_datastore/style']];
 
     // Build dataset import status table render array.
     return $form + $this->buildFilters($params) + $this->buildTable($this->getDatasets($params));
@@ -249,7 +249,7 @@ class DashboardForm extends FormBase {
         '#header' => $this->getDatasetTableHeader(),
         '#rows' => $this->buildDatasetRows($datasets),
         '#attributes' => ['class' => 'dashboard-datasets'],
-        '#attached' => ['library' => ['harvest/style']],
+        '#attached' => ['library' => ['dkan_harvest/style']],
         '#empty' => 'No datasets found',
       ],
       'pager' => [
@@ -507,7 +507,7 @@ class DashboardForm extends FormBase {
       [
         'rowspan' => $resourceCount,
         'data' => [
-          '#theme' => 'datastore_dashboard_dataset_cell',
+          '#theme' => 'dkan_datastore_dashboard_dataset_cell',
           '#uuid' => $rev['uuid'],
           '#title' => $rev['title'],
           '#url' => Url::fromUri("internal:/dataset/$rev[uuid]"),
@@ -515,9 +515,9 @@ class DashboardForm extends FormBase {
       ],
       [
         'rowspan' => $resourceCount,
-        'class' => $moderation_class,
+        'class' => [$moderation_class],
         'data' => [
-          '#theme' => 'datastore_dashboard_revision_cell',
+          '#theme' => 'dkan_datastore_dashboard_revision_cell',
           '#revision_id' => $rev['revision_id'],
           '#modified' => $this->dateFormatter->format(strtotime((string) $rev['modified_date_dkan']), 'short'),
           '#moderation_state' => $rev['moderation_state'],
@@ -526,7 +526,7 @@ class DashboardForm extends FormBase {
       [
         'rowspan' => $resourceCount,
         'data' => $harvestStatus,
-        'class' => strtolower($harvestStatus),
+        'class' => [strtolower($harvestStatus)],
       ],
     ];
   }
@@ -574,12 +574,12 @@ class DashboardForm extends FormBase {
     $data = [
       [
         'data' => [
-          '#theme' => 'datastore_dashboard_resource_cell',
+          '#theme' => 'dkan_datastore_dashboard_resource_cell',
           '#uuid' => $dist['distribution_uuid'],
           '#file_name' => basename((string) $dist['source_path']),
           '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
         ],
-        'class' => $importable ? '' : 'unsupported',
+        'class' => [$importable ? '' : 'unsupported'],
       ],
 
       $this->buildStatusCell($importable ? $dist['fetcher_status'] : 'unsupported'),
@@ -607,12 +607,12 @@ class DashboardForm extends FormBase {
   protected function buildStatusCell(string $status, ?int $percentDone = NULL, ?string $error = NULL) {
     $statusCell = [
       'data' => [
-        '#theme' => 'datastore_dashboard_status_cell',
+        '#theme' => 'dkan_datastore_dashboard_status_cell',
         '#status' => $status === DashboardForm::RESOURCE_TYPE_UNSUPPORTED ? 'Data import is not supported for this resource type' : $status,
         '#percent' => $percentDone ?? NULL,
         '#error' => $error,
       ],
-      'class' => str_replace('_', '-', $status),
+      'class' => [str_replace('_', '-', $status)],
     ];
 
     // If the status is unsupported, we want to span the cell across
@@ -638,11 +638,11 @@ class DashboardForm extends FormBase {
   protected function buildPostImportStatusCell(string $status, ?string $error = NULL) {
     return [
       'data' => [
-        '#theme' => 'datastore_dashboard_post_import_status_cell',
+        '#theme' => 'dkan_datastore_dashboard_post_import_status_cell',
         '#status' => $status,
         '#error' => $error,
       ],
-      'class' => str_replace('_', '-', $status),
+      'class' => [str_replace('_', '-', $status)],
     ];
   }
 

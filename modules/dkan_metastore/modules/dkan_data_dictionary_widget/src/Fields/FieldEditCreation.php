@@ -1,6 +1,8 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Fields;
+namespace Drupal\dkan_data_dictionary_widget\Fields;
+
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Various operations for creating Data Dictionary Widget add fields.
@@ -18,7 +20,7 @@ class FieldEditCreation {
       '#value' => $current_fields[$key]['name'],
       '#required' => TRUE,
       '#title' => 'Name',
-      '#description' => t('Machine name of the field/column in the data table.'),
+      '#description' => new TranslatableMarkup('Machine name of the field/column in the data table.'),
     ];
     $edit_fields['title'] = [
       '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][title]',
@@ -26,7 +28,7 @@ class FieldEditCreation {
       '#value' => $current_fields[$key]['title'],
       '#required' => TRUE,
       '#title' => 'Title',
-      '#description' => t('A human-readable title.'),
+      '#description' => new TranslatableMarkup('A human-readable title.'),
     ];
     $edit_fields['type'] = self::createType($key, $current_fields);
     $edit_fields['format'] = self::createFormat($key, $current_fields);
@@ -52,7 +54,7 @@ class FieldEditCreation {
       '#op' => 'format_' . $key,
       '#options' => FieldOperations::setTypeOptions(),
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
+        'callback' => '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
         'method' => 'replace',
         'wrapper' => 'field-json-metadata-' . $key . '-format',
       ],
@@ -90,9 +92,9 @@ class FieldEditCreation {
     return [
       '#name' => 'field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][format_other]',
       '#type' => 'textfield',
-      '#title' => t('Other format'),
+      '#title' => new TranslatableMarkup('Other format'),
       '#value' => $value,
-      '#description' => t('A supported format'),
+      '#description' => new TranslatableMarkup('A supported format'),
       '#states' => [
         'required' => [
           ':input[name="field_json_metadata[0][dictionary_fields][data][' . $key . '][field_collection][format]"]' => ['value' => 'other'],

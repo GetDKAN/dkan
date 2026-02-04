@@ -1,7 +1,8 @@
-name: 'Data Dictionary Widget (Transitional)'
+name: 'DKAN Data Dictionary Widget'
 description: 'Provides a field widget to generate a data-dictionary form'
-package: DKAN 4.x Transition
+package: DKAN
 type: module
 core_version_requirement: ^10.4 || ^11
 dependencies:
-  - dkan:data_dictionary_widget
+  - drupal:field
+  - dkan:dkan_metastore
