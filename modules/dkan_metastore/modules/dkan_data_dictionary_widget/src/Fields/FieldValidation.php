@@ -1,8 +1,9 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Fields;
+namespace Drupal\dkan_data_dictionary_widget\Fields;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Validation of the data dictionary form fields.
@@ -20,7 +21,10 @@ class FieldValidation {
       $other_format_value = $input['group']['format_other'] ?? '';
       // Set 'format_other' error.
       if ($format_field === 'other' && empty($other_format_value)) {
-        $form_state->setErrorByName('field_json_metadata][0][dictionary_fields][field_collection][group][format_other', t('Other format is required when "Other" is selected as the format.'));
+        $form_state->setErrorByName(
+          'field_json_metadata][0][dictionary_fields][field_collection][group][format_other',
+          new TranslatableMarkup('Other format is required when "Other" is selected as the format.')
+        );
       }
     }
   }
@@ -72,11 +76,11 @@ class FieldValidation {
     ]);
 
     if ($field_value === "" && $field_key !== "format_other") {
-      $form_state->setErrorByName($error_field, t('@label is required.', ['@label' => $field_label]));
+      $form_state->setErrorByName($error_field, new TranslatableMarkup('@label is required.', ['@label' => $field_label]));
     }
 
     if ($field_key === "format_other" && $field_value === "" && $format === "other") {
-      $form_state->setErrorByName($error_field, t('@label is required when "Other" is selected as the format.', ['@label' => $field_label]));
+      $form_state->setErrorByName($error_field, new TranslatableMarkup('@label is required when "Other" is selected as the format.', ['@label' => $field_label]));
     }
   }
 

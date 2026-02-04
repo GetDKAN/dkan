@@ -3,7 +3,7 @@
 namespace Drupal\Tests\data_dictionary_widget\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Drupal\data_dictionary_widget\Fields\FieldCallbacks;
+use Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks;
 use Drupal\Core\Form\FormStateInterface;
 
 /**

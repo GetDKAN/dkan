@@ -1,6 +1,8 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Fields;
+namespace Drupal\dkan_data_dictionary_widget\Fields;
+
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Various operations for creating Data Dictionary Widget add fields.
@@ -14,7 +16,7 @@ class FieldAddCreation {
     $add_fields['#access'] = FALSE;
     $add_fields['group'] = [
       '#type' => 'fieldset',
-      '#title' => t('Add new field'),
+      '#title' => new TranslatableMarkup('Add new field'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
     ];
@@ -24,7 +26,7 @@ class FieldAddCreation {
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => 'Name',
-      '#description' => t('Machine name of the field/column in the data table.'),
+      '#description' => new TranslatableMarkup('Machine name of the field/column in the data table.'),
     ];
     $add_fields['group']['title'] = self::createTitle();
     $add_fields['group']['type'] = self::createType();
@@ -45,7 +47,7 @@ class FieldAddCreation {
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => 'Title',
-      '#description' => t('A human-readable title.'),
+      '#description' => new TranslatableMarkup('A human-readable title.'),
     ];
   }
 
@@ -61,16 +63,16 @@ class FieldAddCreation {
       '#default_value' => 'string',
       '#op' => 'type',
       '#options' => [
-        'string' => t('String'),
-        'date' => t('Date'),
-        'datetime' => t('Datetime'),
-        'integer' => t('Integer'),
-        'number' => t('Number'),
-        'year' => t('Year'),
-        'boolean' => t('Boolean'),
+        'string' => new TranslatableMarkup('String'),
+        'date' => new TranslatableMarkup('Date'),
+        'datetime' => new TranslatableMarkup('Datetime'),
+        'integer' => new TranslatableMarkup('Integer'),
+        'number' => new TranslatableMarkup('Number'),
+        'year' => new TranslatableMarkup('Year'),
+        'boolean' => new TranslatableMarkup('Boolean'),
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
+        'callback' => '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks::updateFormatOptions',
         'method' => 'replace',
         'wrapper' => 'field-json-metadata-format',
       ],
@@ -92,11 +94,11 @@ class FieldAddCreation {
       '#suffix' => '</div>',
       '#validated' => TRUE,
       '#options' => [
-        'default' => t('default'),
-        'email' => t('email'),
-        'uri' => t('uri'),
-        'binary' => t('binary'),
-        'uuid' => t('uuid'),
+        'default' => new TranslatableMarkup('default'),
+        'email' => new TranslatableMarkup('email'),
+        'uri' => new TranslatableMarkup('uri'),
+        'binary' => new TranslatableMarkup('binary'),
+        'uuid' => new TranslatableMarkup('uuid'),
       ],
     ];
   }
@@ -108,8 +110,8 @@ class FieldAddCreation {
     return [
       '#name' => 'field_json_metadata[0][dictionary_fields][field_collection][group][format_other]',
       '#type' => 'textfield',
-      '#title' => t('Other format'),
-      '#description' => t('A supported format'),
+      '#title' => new TranslatableMarkup('Other format'),
+      '#description' => new TranslatableMarkup('A supported format'),
       '#states' => [
         'visible' => [
           ':input[name="field_json_metadata[0][dictionary_fields][field_collection][group][format]"]' => ['value' => 'other'],
@@ -141,7 +143,7 @@ class FieldAddCreation {
       '#type' => 'textarea',
       '#required' => TRUE,
       '#title' => 'Description',
-      '#description' => t('Information about the field data.'),
+      '#description' => new TranslatableMarkup('Information about the field data.'),
     ];
   }
 
