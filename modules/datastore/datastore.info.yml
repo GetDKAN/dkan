@@ -1,9 +1,5 @@
-name: Datastore
+name: Datastore (Legacy, deprecated)
 description: Provides integration with the datastore library.
 type: module
 core_version_requirement: ^10.2 || ^11
-package: DKAN
-dependencies:
-  - dkan:dkan_common
-  - dkan:dkan_metastore
-  - dkan:dkan_datastore
+package: DKAN 2.x Legacy
