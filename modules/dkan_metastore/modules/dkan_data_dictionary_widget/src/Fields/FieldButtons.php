@@ -1,6 +1,8 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Fields;
+namespace Drupal\dkan_data_dictionary_widget\Fields;
+
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Various operations for creating Data Dictionary Widget fields.
@@ -18,12 +20,12 @@ class FieldButtons {
       '#op' => 'add_new_field',
       '#submit' => [
       [
-        '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+        '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks',
         'addSubformCallback',
       ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
+        'callback' => '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -44,16 +46,16 @@ class FieldButtons {
       '#src' => 'core/misc/icons/787878/cog.svg',
       '#attributes' => [
         'class' => ['field-plugin-settings-edit'],
-        'alt' => t('Edit'),
+        'alt' => new TranslatableMarkup('Edit'),
       ],
       '#submit' => [
           [
-            '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+            '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks',
             'editSubformCallback',
           ],
       ],
       '#ajax' => [
-        'callback' => '\Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
+        'callback' => '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -75,12 +77,12 @@ class FieldButtons {
       '#op' => $op,
       '#submit' => [
           [
-            '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+            '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks',
             $callbackClass,
           ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
+        'callback' => 'Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -98,7 +100,7 @@ class FieldButtons {
    * Assemble element validation property.
    */
   protected static function assembleValidation() {
-    return ['Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+    return ['Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks',
       'customValidationCallback',
     ];
   }
@@ -111,16 +113,16 @@ class FieldButtons {
     $op = $location == 'edit' && is_int($key) ? 'abort_' . $key : 'cancel';
     $cancel_button = [
       '#type' => 'submit',
-      '#value' => t('Cancel'),
+      '#value' => new TranslatableMarkup('Cancel'),
       '#op' => $op,
       '#submit' => [
             [
-              '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+              '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks',
               $callbackClass,
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
+        'callback' => 'Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],
@@ -140,16 +142,16 @@ class FieldButtons {
     return [
       '#type' => 'submit',
       '#name' => 'delete_' . $key,
-      '#value' => t('Delete'),
+      '#value' => new TranslatableMarkup('Delete'),
       '#op' => 'delete_' . $key,
       '#submit' => [
             [
-              '\Drupal\data_dictionary_widget\Fields\FieldCallbacks',
+              '\Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks',
               'editSubformCallback',
             ],
       ],
       '#ajax' => [
-        'callback' => 'Drupal\data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
+        'callback' => 'Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks::subformAjax',
         'wrapper' => 'field-json-metadata-dictionary-fields',
         'effect' => 'fade',
       ],

@@ -3,8 +3,3 @@ description: Provides integration with the metastore library and creates the "Da
 type: module
 core_version_requirement: ^10.2 || ^11
 package: DKAN 2.x Legacy
-dependencies:
-  - dkan:dkan_common
-  - drupal:basic_auth
-  - drupal:content_moderation
-  - drupal:node
