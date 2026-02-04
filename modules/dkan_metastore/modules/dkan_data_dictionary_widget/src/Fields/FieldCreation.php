@@ -1,8 +1,9 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Fields;
+namespace Drupal\dkan_data_dictionary_widget\Fields;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Various operations for creating Data Dictionary Widget fields.
@@ -20,10 +21,10 @@ class FieldCreation {
 
     $element['dictionary_fields'] = [
       '#type' => 'fieldset',
-      '#title' => t('Data Dictionary Fields'),
+      '#title' => new TranslatableMarkup('Data Dictionary Fields'),
       '#prefix' => '<div id = field-json-metadata-dictionary-fields>',
       '#suffix' => '</div>',
-      '#markup' => t('<div class="claro-details__description">A data dictionary for this resource, compliant with the <a href="https://specs.frictionlessdata.io/table-schema/" target="_blank">Table Schema</a> specification.</div>'),
+      '#markup' => new TranslatableMarkup('<div class="claro-details__description">A data dictionary for this resource, compliant with the <a href="https://specs.frictionlessdata.io/table-schema/" target="_blank">Table Schema</a> specification.</div>'),
     ];
 
     $element['dictionary_fields']['current_fields'] = $current_fields;
@@ -56,23 +57,23 @@ class FieldCreation {
         '#name' => 'field_json_metadata[0][title]',
         '#type' => 'textfield',
         '#required' => TRUE,
-        '#title' => t('Title'),
+        '#title' => new TranslatableMarkup('Title'),
         '#default_value' => $field_json_metadata['title'] ?? ($field_json_metadata['data']['title'] ?? ''),
       ],
       'identifier' => [
         '#name' => 'field_json_metadata[0][identifier]',
         '#type' => 'textfield',
         '#required' => TRUE,
-        '#title' => t('Identifier'),
+        '#title' => new TranslatableMarkup('Identifier'),
         '#attributes' => ['readonly' => 'readonly'],
         '#default_value' => $identifier_uuid ?? '',
-        '#description' => t('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),
+        '#description' => new TranslatableMarkup('<div class="form-item__description">This is the UUID of this Data Dictionary. To assign this data dictionary to a specific distribution use this <a href="@url" target="_blank">URL</a>.</div>', ['@url' => '/api/1/metastore/schemas/data-dictionary/items/' . $identifier_uuid]),
       ],
       'indexes' => [
         '#type' => 'textarea',
         '#access' => FALSE,
         '#required' => TRUE,
-        '#title' => t('Index'),
+        '#title' => new TranslatableMarkup('Index'),
         '#default_value' => isset($field_json_metadata['data']['indexes']) ? json_encode($field_json_metadata['data']['indexes']) : '',
       ],
     ];

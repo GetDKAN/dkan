@@ -60,7 +60,7 @@ class HarvestPlanListBuilder extends EntityListBuilder {
     $build = parent::render();
     // Add our styles.
     $build['table']['#attributes']['class'][] = 'dashboard-harvests';
-    $build['table']['#attached']['library'][] = 'harvest/style';
+    $build['table']['#attached']['library'][] = 'dkan_harvest/style';
     return $build;
   }
 
