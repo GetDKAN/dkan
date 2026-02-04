@@ -74,7 +74,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('sample_content'));
-    // $this->assertFalse(\Drupal::moduleHandler()->moduleExists('data_dictionary_widget'));
+    $this->assertFalse(\Drupal::moduleHandler()->moduleExists('data_dictionary_widget'));
 
     $config = \Drupal::configFactory()->getEditable('core.extension');
     $modules = $config->get('module');
