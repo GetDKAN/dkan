@@ -20,7 +20,7 @@ class DataDictionaryWidgetTest extends BrowserTestBase {
    */
   protected static $modules = [
     'node',
-    'data_dictionary_widget',
+    'dkan_data_dictionary_widget',
   ];
 
   /**

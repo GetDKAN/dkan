@@ -93,7 +93,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-description');
 
     // Add a data dictionary and make sure form loads.
-    $this->drupalGet('node/add/data', ['query' => [['schema' => 'data-dictionary']]]);
+    $this->drupalGet('node/add/data', ['query' => ['schema' => 'data-dictionary']]);
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-title');
     $this->assertSession()->buttonExists('edit-field-json-metadata-0-dictionary-fields-add-row-button');
 
