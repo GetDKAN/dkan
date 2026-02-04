@@ -1,8 +1,8 @@
-name: Datastore MySQL Import
+name: Datastore MySQL Import (Legacy, deprecated)
 description: Provides a MySQL Importer class.
 type: module
 core_version_requirement: ^10.2 || ^11
-package: DKAN
+package: DKAN 2.x Legacy
 configure: datastore.mysql_import.settings
 dependencies:
   - dkan:dkan_common

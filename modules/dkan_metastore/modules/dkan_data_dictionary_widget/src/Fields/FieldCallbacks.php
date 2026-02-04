@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_dictionary_widget\Fields;
+namespace Drupal\dkan_data_dictionary_widget\Fields;
 
 use Drupal\Core\Form\FormStateInterface;
 
