@@ -94,9 +94,8 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
 
     // Add a data dictionary and make sure form loads.
     $this->drupalGet('node/add/data', ['query' => [['schema' => 'data-dictionary']]]);
-    print_r("whate3ver");
-    print_r($this->getSession()->getPage()->getContent());
-    $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-data-data-title');
+    $this->assertSession()->fieldExists('edit-field-json-metadata-0-title');
+    $this->assertSession()->buttonExists('edit-field-json-metadata-0-dictionary-fields-add-row-button');
 
     // Visit /admin/dkan/datasets and check that the page loads, contains a
     // table with headers including "Title" and "Data Type".
