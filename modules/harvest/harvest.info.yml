@@ -2,4 +2,4 @@ name: Harvest (Legacy, deprecated)
 description: Provides integration with the harvest library.
 type: module
 core_version_requirement: ^10.2 || ^11
-package: DKAN DKAN 2.x Legacy
+package: DKAN 2.x Legacy
