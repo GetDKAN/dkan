@@ -486,11 +486,11 @@ class DashboardFormTest extends TestCase {
     // Rowspan on first two columns.
     $this->assertEquals(2, $form['table']['#rows'][0][1]['rowspan']);
     // Unsupported mime type class on resource column.
-    $this->assertEquals("unsupported", $form["table"]["#rows"][0][3]["class"]);
+    $this->assertEquals("unsupported", $form["table"]["#rows"][0][3]["class"][0]);
     // Colspan on last 3 columns.
     $this->assertEquals(3, $form["table"]["#rows"][0][4]["colspan"]);
     // Unsupported mime type class on last column.
-    $this->assertEquals("unsupported", $form["table"]["#rows"][0][4]["class"]);
+    $this->assertEquals("unsupported", $form["table"]["#rows"][0][4]["class"][0]);
     // Status on last column displays correct status for unsupported mime type.
     $this->assertEquals("Data import is not supported for this resource type", $form["table"]["#rows"][0][4]["data"]["#status"]);
 
@@ -501,15 +501,15 @@ class DashboardFormTest extends TestCase {
     // The second row fetch status is correct.
     $this->assertEquals('waiting', $form["table"]["#rows"][1][1]["data"]["#status"]);
     // The second row fetch class is correct.
-    $this->assertEquals('waiting', $form["table"]["#rows"][1][1]["class"]);
+    $this->assertEquals('waiting', $form["table"]["#rows"][1][1]["class"][0]);
     // The second row store status is correct.
     $this->assertEquals('waiting', $form["table"]["#rows"][1][2]["data"]["#status"]);
     // The second row store class is correct.
-    $this->assertEquals('waiting', $form["table"]["#rows"][1][2]["class"]);
+    $this->assertEquals('waiting', $form["table"]["#rows"][1][2]["class"][0]);
     // The second row post import status is correct.
     $this->assertEquals('done', $form["table"]["#rows"][1][3]["data"]["#status"]);
     // The second row post import class is correct.
-    $this->assertEquals('done', $form["table"]["#rows"][1][3]["class"]);
+    $this->assertEquals('done', $form["table"]["#rows"][1][3]["class"][0]);
   }
 
   /**
