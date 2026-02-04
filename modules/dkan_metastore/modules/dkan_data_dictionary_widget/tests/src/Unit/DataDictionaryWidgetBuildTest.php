@@ -3,16 +3,16 @@
 namespace Drupal\Tests\data_dictionary_widget\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Drupal\data_dictionary_widget\Fields\FieldAddCreation;
-use Drupal\data_dictionary_widget\Fields\FieldCallbacks;
-use Drupal\data_dictionary_widget\Fields\FieldCreation;
-use Drupal\data_dictionary_widget\Fields\FieldOperations;
+use Drupal\dkan_data_dictionary_widget\Fields\FieldAddCreation;
+use Drupal\dkan_data_dictionary_widget\Fields\FieldCallbacks;
+use Drupal\dkan_data_dictionary_widget\Fields\FieldCreation;
+use Drupal\dkan_data_dictionary_widget\Fields\FieldOperations;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget;
+use Drupal\dkan_data_dictionary_widget\Plugin\Field\FieldWidget\DataDictionaryWidget;
 
 /**
  * Test class for DataDictionaryWidget.
@@ -209,7 +209,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       ]
     ];
 
-    
+
 
     $dataDictionaryWidget = new DataDictionaryWidget (
       $plugin_id,
@@ -251,7 +251,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
 
     FieldCallbacks::addSubformCallback($form, $formState);
     $element['dictionary_fields']['data'] = FieldCreation::createDictionaryDataRows([], $data_results, $formState);
-    
+
     // Call the method under test.
     $json_data = $dataDictionaryWidget->massageFormValues(
       $values,
@@ -470,7 +470,7 @@ class DataDictionaryWidgetBuildTest extends TestCase {
       'description' => 'test_edit',
     ];
 
-    // Trigger callback function to save the edited fields. 
+    // Trigger callback function to save the edited fields.
     FieldCallbacks::editSubformCallback($form, $formState);
 
     // Second call to re-create data dictionary and apply the edits made to the fields.

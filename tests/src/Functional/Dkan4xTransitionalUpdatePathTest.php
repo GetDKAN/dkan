@@ -47,6 +47,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     \Drupal::service('module_installer')->install(['metastore_facets']);
     \Drupal::service('module_installer')->install(['datastore_mysql_import']);
     \Drupal::service('module_installer')->install(['sample_content']);
+    \Drupal::service('module_installer')->install(['data_dictionary_widget']);
 
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
@@ -57,6 +58,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore_mysql_import'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_harvest'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_sample_content'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_data_dictionary_widget'));
 
     $this->fixHarvestPlanJsonEscapes();
 
@@ -72,6 +74,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('sample_content'));
+    // $this->assertFalse(\Drupal::moduleHandler()->moduleExists('data_dictionary_widget'));
 
     $config = \Drupal::configFactory()->getEditable('core.extension');
     $modules = $config->get('module');
@@ -83,11 +86,17 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertEmpty(\Drupal::configFactory()->get('datastore.settings')->getRawData());
 
     // Misc checks to ensure config was migrated properly.
-    // Open /node/add/dataset and check that metastore fields exist.
+    // Open /node/add/data and check that metastore fields exist.
     $this->drupalLogin($this->rootUser);
     $this->drupalGet('node/add/data');
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-title');
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-description');
+
+    // Add a data dictionary and make sure form loads.
+    $this->drupalGet('node/add/data', ['query' => [['schema' => 'data-dictionary']]]);
+    print_r("whate3ver");
+    print_r($this->getSession()->getPage()->getContent());
+    $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-data-data-title');
 
     // Visit /admin/dkan/datasets and check that the page loads, contains a
     // table with headers including "Title" and "Data Type".
