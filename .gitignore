@@ -3,6 +3,7 @@
 .idea
 .swp
 .vscode
+.zed
 composer.lock
 package-lock.json
 tagfile
