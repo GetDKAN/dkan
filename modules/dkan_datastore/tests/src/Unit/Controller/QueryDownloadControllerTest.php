@@ -7,12 +7,6 @@ use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\dkan_common\DatasetInfo;
-<<<<<<< HEAD:modules/datastore/tests/src/Unit/Controller/QueryDownloadControllerTest.php
-use Drupal\datastore\Controller\QueryController;
-use Drupal\datastore\Controller\QueryDownloadController;
-use Drupal\datastore\DatastoreService;
-use Drupal\datastore\Service\Query;
-use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\dkan_datastore\Controller\QueryController;
 use Drupal\dkan_datastore\Controller\QueryDownloadController;
 use Drupal\dkan_datastore\DatastoreService;
@@ -22,8 +16,8 @@ use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Drupal\dkan_metastore\Storage\DataFactory;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
->>>>>>> 367ab9ed5 (Refactor metastore module to dkan_metastore (#4634))
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
+use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

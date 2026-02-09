@@ -56,14 +56,13 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     }
 
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_search'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_facets'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_admin'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_datastore_mysql_import'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_harvest'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_data_dictionary_widget'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_admin'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_facets'));
-    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore_search'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_sample_content'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_data_dictionary_widget'));
 
