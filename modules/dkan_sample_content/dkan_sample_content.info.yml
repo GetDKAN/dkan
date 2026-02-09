@@ -1,0 +1,5 @@
+name: DKAN Sample Content (transitional)
+description: Provides sample content for tests or standing up a demo instance.
+type: module
+core_version_requirement: ^10.4 || ^11
+package: DKAN 4.x Transition
