@@ -1,0 +1,22 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the data_dictionary_widget module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function data_dictionary_widget_install() {
+  // Only in DKAN 3.x: Run the update hook to enable the transitional module.
+  data_dictionary_widget_update_10001();
+}
+
+/**
+ * Enable transitional dkan_common module, in preparation for 4.x.
+ */
+function data_dictionary_widget_update_10001() {
+  if (!\Drupal::service('module_handler')->moduleExists('dkan_data_dictionary_widget')) {
+    \Drupal::service('module_installer')->install(['dkan_data_dictionary_widget'], TRUE);
+  }
+}
