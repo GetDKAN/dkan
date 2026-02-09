@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dkan_common\Functional;
 
+<<<<<<< HEAD
 use Composer\Semver\VersionParser;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 
+=======
+use Drupal\FunctionalTests\Update\UpdatePathTestBase;
+
+>>>>>>> c5e721447 (Add transitional modules and other updates)
 /**
  * Tests update functions for the metastore module.
  *
