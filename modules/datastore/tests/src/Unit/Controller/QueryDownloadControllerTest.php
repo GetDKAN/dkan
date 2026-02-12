@@ -133,7 +133,7 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
-   * Test json stream (without specifying csv format; shouldn't work).
+   * Test json stream.
    */
   public function testStreamedQueryJson() {
     $data = [
@@ -144,6 +144,24 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "json",
+    ];
+    // Need 2 json responses which get combined on output.
+    $this->queryResultCompareJson($data);
+  }
+
+  /**
+   * Test json stream w/o keys.
+   */
+  public function testStreamedQueryJsonNoKeys() {
+    $data = [
+      "resources" => [
+        [
+          "id" => $this->resources[2]->getIdentifier(),
+          "alias" => "t",
+        ],
+      ],
+      "format" => "json",
+      "keys" => "false",
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareJson($data);
@@ -404,7 +422,7 @@ class QueryDownloadControllerTest extends TestCase {
     $pdo = match(TRUE) {
       \PHP_VERSION_ID >= 80400 && class_exists(SqliteConnection::class) => new SqliteConnection('sqlite::memory:'),
       default => new \PDO('sqlite::memory:'),
-    }; 
+    };
     $connection = new Connection($pdo, []);
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)

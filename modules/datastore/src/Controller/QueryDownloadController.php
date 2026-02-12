@@ -150,6 +150,7 @@ class QueryDownloadController extends AbstractQueryController {
     foreach ($metadata_names as $metadata_name) {
       $data[$metadata_name] = $result->get('$.' . $metadata_name);
     }
+    $data = array_filter($data);
 
     $response = new StreamedJsonResponse($data);
     $response->headers->set('Content-Type', 'application/json');
@@ -172,6 +173,9 @@ class QueryDownloadController extends AbstractQueryController {
       // Get the result pointer and send each row to the stream one by one.
       $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE, TRUE);
       while ($row = $result->fetchAssoc()) {
+        if ($datastoreQuery->{"$.keys"} === FALSE) {
+          $row = $this->queryService->stripRowKeys($row);
+        }
         yield $row;
 
         if (0 === ++$count % 100) {
