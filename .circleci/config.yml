@@ -147,7 +147,7 @@ jobs:
             if [[ $CIRCLE_NODE_INDEX == 0 ]]; then
               # Get phpunit major version
               PHPUNIT_VERSION=$(ddev composer show phpunit/phpunit | grep versions | awk '{print $4}' | cut -d. -f1)
-              
+
               if [[ $PHPUNIT_VERSION -lt 11 ]]; then
                 # For phpunit < 11, use comma-separated syntax
                 EXCLUDES="--exclude-group "
@@ -289,13 +289,13 @@ workflows:
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["~10.6.0", "~11.2.0"]
+              drupal_core_constraint: ["~10.6.0", "~11.2.0", "11.3.0"]
               php_version: ["8.3"]
               database_version: ["mariadb:10.11"]
       - phpunit:
           matrix:
             parameters:
-              drupal_core_constraint: ["10.6.0", "~11.2.0"]
+              drupal_core_constraint: ["10.6.0", "~11.2.0", "~11.3.0"]
               php_version: ["8.4"]
               database_version: ["mariadb:10.11"]
       - phpunit:
@@ -304,7 +304,7 @@ workflows:
               drupal_core_constraint: ["~10.5.0"]
               php_version: ["8.1", "8.2", "8.4"]
               database_version: ["mysql:5.7"]
-            
+
 
   upgrade_and_test:
     jobs:
