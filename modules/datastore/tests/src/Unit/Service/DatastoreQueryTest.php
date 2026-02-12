@@ -146,6 +146,23 @@ class DatastoreQueryTest extends TestCase {
   }
 
   /**
+   * Simple test for the stripRowKeys() method, now that it's public.
+   */
+  public function testStripRowKeys() {
+    $container = $this->getCommonMockChain();
+    \Drupal::setContainer($container->getMock());
+    $queryService = new Query(DatastoreService::create($container->getMock()));
+
+    $testRow = (object) [
+      'field1' => 'foo',
+      'field2' => 'bar',
+    ];
+
+    $result = $queryService->stripRowKeys($testRow);
+    $this->assertEquals(['foo', 'bar'], $result);
+  }
+
+  /**
    * Ensure if an invalid limit is specified, the query fails.
    */
   public function testInvalidLimitQuery() {
@@ -249,7 +266,6 @@ class DatastoreQueryTest extends TestCase {
       ->add(DatabaseTable::class, "primaryKey", "record_number")
       ->add(ReferenceLookup::class, 'getReferencers', [$resource->getIdentifier()])
       ->add(ReferenceLookup::class, 'invalidateReferencerCacheTags');
-
   }
 
 }
