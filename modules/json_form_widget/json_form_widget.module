@@ -35,7 +35,7 @@ function json_form_widget_form_alter(&$form, FormStateInterface $form_state, $fo
     return;
   }
   if ($form_state->get('has_json_form_widget')) {
-    $form['actions']['submit']['#submit'][] = [UploadOrLink::class, 'submit'];
+    $form['actions']['submit']['#submit'][] = [UploadOrLink::class, 'formSubmit'];
   }
 }
 
