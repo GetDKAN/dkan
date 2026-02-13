@@ -2,37 +2,36 @@
 
 namespace Drupal\Tests\datastore\Unit\Form;
 
-use Drupal\common\DataResource;
-use Drupal\common\DatasetInfo;
-use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Pager\Pager;
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\Path\PathValidator;
-use Drupal\Core\Routing\UrlGenerator;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
+use Drupal\common\DatasetInfo;
+use Drupal\Core\Database\Connection;
 use Drupal\datastore\Form\DashboardForm;
-use Drupal\datastore\PostImportResult;
-use Drupal\datastore\PostImportResultFactory;
 use Drupal\datastore\Service\PostImport;
 use Drupal\harvest\Entity\HarvestRunRepository;
 use Drupal\harvest\HarvestService;
 use Drupal\metastore\MetastoreService;
-use Drupal\metastore\ResourceMapper;
-use Drupal\node\NodeInterface;
-use Drupal\Tests\metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Drupal\metastore\ResourceMapper;
+use Drupal\datastore\PostImportResult;
+use Drupal\datastore\PostImportResultFactory;
+use Drupal\common\DataResource;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\node\NodeInterface;
 
 /**
  * @group dkan
@@ -146,7 +145,6 @@ class DashboardFormTest extends TestCase {
       ->add(RequestStack::class, 'getCurrentRequest', new Request(['harvest_id' => 'dataset-1']))
       ->add(DatasetInfo::class, 'gather', ['latest_revision' => $info + ['distributions' => [$distribution]]])
       ->add(PostImportResultFactory::class, 'initializeFromDistribution', $postImportResultMock)
-      ->add(UrlGenerator::class, 'generateFromRoute', 'http://example.com/node/1')
       ->getMock();
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
@@ -326,6 +324,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Non-Harvest Dataset',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 3,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-2',
