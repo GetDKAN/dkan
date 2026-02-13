@@ -502,7 +502,7 @@ class DashboardForm extends FormBase {
     if ($moderation_class == 'hidden') {
       $moderation_class = 'published-hidden';
     }
-$play = Url::fromRoute('entity.node.canonical', ['node' => $rev['node_id']], ['absolute' => TRUE]);
+
     return [
       [
         'rowspan' => $resourceCount,

@@ -110,6 +110,7 @@ class DashboardFormTest extends TestCase {
       'moderation_state' => 'published',
       'modified_date_metadata' => '2020-01-15',
       'modified_date_dkan' => '2021-02-11',
+      'node_id' => 1,
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
@@ -167,6 +168,7 @@ class DashboardFormTest extends TestCase {
       'moderation_state' => 'published',
       'modified_date_metadata' => '2020-01-15',
       'modified_date_dkan' => '2021-02-11',
+      'node_id' => 2,
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
@@ -235,6 +237,7 @@ class DashboardFormTest extends TestCase {
       'moderation_state' => 'published',
       'modified_date_metadata' => '2020-01-15',
       'modified_date_dkan' => '2021-02-11',
+      'node_id' => 3,
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
@@ -295,6 +298,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Dataset 1',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 3,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
@@ -395,6 +399,7 @@ class DashboardFormTest extends TestCase {
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
         'distributions' => ['Not found'],
+        'node_id' => 1,
       ],
     ];
 
@@ -421,6 +426,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Dataset 1',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 5,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
@@ -524,6 +530,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Dataset 1',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 7,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
