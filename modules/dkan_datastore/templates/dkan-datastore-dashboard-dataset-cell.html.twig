@@ -1,2 +1,8 @@
-<div class="datastore-status-dataset-uuid">{{ uuid }}</div>
-<div class="datastore-status-dataset-link">{{ link(title, url) }}</div>
+  <div class="datastore-status-dataset-link">
+    {{title}} <a href="{{ path('entity.node.canonical', {'node': node_id}) }}" aria-label="{{ 'admin'|t }}: {{title}}">{{ 'admin'|t }}</a>
+    {% if url is not empty %}
+      {% set link_attributes = create_attribute({'aria-label': 'view: @title'|t({'@title': title})}) %}
+        | {{ link('view', url, {'attributes': link_attributes}) }}
+      {% endif %}
+  </div>
+  <div class="datastore-status-dataset-uuid">{{ uuid }}</div>
