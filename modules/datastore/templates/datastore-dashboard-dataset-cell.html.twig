@@ -1,2 +1,9 @@
 <div class="datastore-status-dataset-uuid">{{ uuid }}</div>
-<div class="datastore-status-dataset-link">{{ link(title, url) }}</div>
+<ul>
+  <li>
+    <div class="datastore-status-dataset-link">{{ link(title, url) }}</div>
+  </li>
+  <li>
+    <div class="datastore-status-dataset-node-link">{{ link("node " ~ node_id, node_url) }}</div>
+  </li>
+</ul>
