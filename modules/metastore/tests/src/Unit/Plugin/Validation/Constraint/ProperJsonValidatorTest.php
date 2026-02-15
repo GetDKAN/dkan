@@ -3,17 +3,24 @@
 namespace Drupal\Tests\metastore\Unit\Plugin\Validation\Constraint;
 
 use Drupal\metastore\Plugin\Validation\Constraint\ProperJsonValidator;
-use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\ValidMetadataFactory;
+use Drupal\Tests\UnitTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Context\ExecutionContext;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class.
  */
-class ProperJsonValidatorTest extends TestCase {
+class ProperJsonValidatorTest extends UnitTestCase {
+
+  /**
+   * The config factory used for testing.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
 
   /**
    * The schema retriever used for testing.
@@ -57,14 +64,22 @@ class ProperJsonValidatorTest extends TestCase {
       ->getMock();
     $this->validMetadataFactory->method('getSchemaRetriever')->willReturn($this->schemaRetriever);
 
+    $this->configFactory = $this->getConfigFactoryStub([
+      'metastore.settings' => [
+        'disable_json_validation' => FALSE,
+      ],
+    ]);
+
     $this->container = $this->getMockBuilder(ContainerInterface::class)
       ->onlyMethods(['get'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
     $this->container->method('get')
-      ->with('dkan.metastore.valid_metadata')
-      ->willReturn($this->validMetadataFactory);
+      ->willReturnMap([
+        ['config.factory', ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, $this->configFactory],
+        ['dkan.metastore.valid_metadata', ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, $this->validMetadataFactory],
+      ]);
 
     $this->context = $this->getMockBuilder(ExecutionContext::class)
       ->onlyMethods(["addViolation"])

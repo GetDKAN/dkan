@@ -205,3 +205,24 @@ function metastore_theme() {
     ],
   ];
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function metastore_requirements($phase) {
+  $requirements = [];
+
+  if ($phase === 'runtime') {
+    $config = \Drupal::config('metastore.settings');
+    if ($config->get('disable_json_validation')) {
+      $requirements['metastore_validation_disabled'] = [
+        'title' => t('DKAN data validation is disabled'),
+        'value' => t('Validation is disabled'),
+        'description' => t('Data validation is currently disabled in DKAN Metastore Settings. This may allow invalid data to be saved. It is recommended to enable validation as soon as possible.'),
+        'severity' => REQUIREMENT_WARNING,
+      ];
+    }
+  }
+
+  return $requirements;
+}
