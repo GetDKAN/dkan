@@ -5,10 +5,11 @@
  */
 
 use Drupal\Core\Database\Query\AlterableInterface;
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\dkan_metastore\Factory\MetastoreEntityItemFactoryInterface;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\Service\OrphanNodeProcessor;
@@ -27,6 +28,15 @@ function dkan_metastore_entity_load(array $entities) {
  * Implements hook_entity_presave().
  */
 function dkan_metastore_entity_presave(EntityInterface $entity) {
+  // Check if the entity is a data entity and a new revision is being created.
+  /** @var MetastoreEntityItemFactoryInterface $storage */
+  $metastore_service = \Drupal::service('dkan.metastore.metastore_item_factory');
+  if ($entity->getEntityTypeId() === $metastore_service::getEntityType() && in_array($entity->bundle(), $metastore_service::getBundles()) && $entity->isNewRevision()) {
+    // Set revision creation time to the current time because programmatically
+    // saved revisions will reuse the previous revision's timestamp if not
+    // explicitly set.
+    $entity->setRevisionCreationTime(\Drupal::time()->getCurrentTime());
+  }
   dkan_metastore_data_lifecycle([$entity], "presave");
 }
 
