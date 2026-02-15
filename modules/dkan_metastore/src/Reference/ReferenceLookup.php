@@ -5,6 +5,7 @@ namespace Drupal\dkan_metastore\Reference;
 use Contracts\FactoryInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
@@ -36,24 +37,42 @@ class ReferenceLookup implements ReferenceLookupInterface {
   private CacheTagsInvalidatorInterface $invalidator;
 
   /**
+   * Module configuration.
+   *
+   * @var \Drupal\Core\Config\ConfigInterface
+   */
+  protected $metastoreConfig;
+
+  /**
    * Module handler service.
    */
   private ModuleHandlerInterface $moduleHandler;
 
   /**
-   * Module Handler service.
+   * ReferenceLookup constructor.
    *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   * @param \Contracts\FactoryInterface $metastoreStorage
+   *   The metastore storage service.
+   * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
+   *   The metastore item factory service.
+   * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $invalidator
+   *   The cache tags invalidator service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory service.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+   *   The module handler service.
    */
   public function __construct(
     FactoryInterface $metastoreStorage,
     MetastoreItemFactoryInterface $metastoreItemFactory,
     CacheTagsInvalidatorInterface $invalidator,
+    ConfigFactoryInterface $config_factory,
     ModuleHandlerInterface $moduleHandler,
   ) {
     $this->metastoreStorage = $metastoreStorage;
     $this->metastoreItemFactory = $metastoreItemFactory;
     $this->invalidator = $invalidator;
+    $this->metastoreConfig = $config_factory->get('metastore.settings');
     $this->moduleHandler = $moduleHandler;
   }
 
@@ -142,13 +161,21 @@ class ReferenceLookup implements ReferenceLookupInterface {
     $identifier = $metadata->identifier;
     // Get raw metadata using identifier.
     $metadata = $this->metastoreItemFactory->getInstance($identifier)->getRawMetadata();
-    // Validate JSON against legacy schema.
-    $validation_result = RootedJsonData::validate(json_encode($metadata), $legacy_schema);
-    // If the JSON metadata matches the legacy schema, extract the content of
-    // the "data" property.
-    if ($validation_result->isValid()) {
+    // Make sure validation is not disabled.
+    if (!$this->metastoreConfig->get('disable_json_validation')) {
+      // Validate JSON against legacy schema.
+      $validation_result = RootedJsonData::validate(json_encode($metadata), $legacy_schema);
+      // If the JSON metadata matches the legacy schema, extract the content of
+      // the "data" property.
+      if ($validation_result->isValid()) {
+        $metadata = $metadata->data;
+      }
+    }
+    else {
+      // Do no validation, move it all along.
       $metadata = $metadata->data;
     }
+
 
     return [$identifier, $metadata];
   }

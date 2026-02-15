@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_metastore\Plugin\Validation\Constraint;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\ValidMetadataFactory;
 use Opis\JsonSchema\Errors\ErrorFormatter;
@@ -17,6 +18,13 @@ use Symfony\Component\Validator\ConstraintValidator;
 class ProperJsonValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
   /**
+   * Module configuration.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $metastoreConfig;
+
+  /**
    * Service dkan.metastore.valid_metadata.
    *
    * @var \Drupal\dkan_metastore\ValidMetadataFactory
@@ -26,10 +34,13 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   /**
    * ProperJsonValidator constructor.
    *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   Config factory service.
    * @param \Drupal\dkan_metastore\ValidMetadataFactory $valid_metadata_factory
    *   Service dkan.metastore.valid_metadata.
    */
-  public function __construct(ValidMetadataFactory $valid_metadata_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, ValidMetadataFactory $valid_metadata_factory) {
+    $this->metastoreConfig = $config_factory->get('metastore.settings');
     $this->validMetadataFactory = $valid_metadata_factory;
   }
 
@@ -38,7 +49,8 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.metastore.valid_metadata')
+      $container->get('config.factory'),
+      $container->get('dkan.metastore.valid_metadata'),
     );
   }
 
@@ -47,8 +59,22 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    *
    * {@inheritdoc}
    */
-  public function validate($items, Constraint $constraint) {
+  public function validate($items, Constraint $constraint): void {
+    // Bypass validation if the setting to disable it is enabled.
+    if (!$this->metastoreConfig->get('disable_json_validation')) {
+      $this->validateItems($items);
+    }
+  }
+
+  /**
+   * Validates items and adds violations if needed.
+   *
+   * @param object|mixed $items
+   *   Items to validate.
+   */
+  protected function validateItems($items): void {
     $schema_id = $this->getSchemaIdFromEntity($items);
+    // Loop through items, validating each and collecting errors.
     foreach ($items as $item) {
       $errors = $this->doValidate($schema_id, $item);
       if (!empty($errors)) {

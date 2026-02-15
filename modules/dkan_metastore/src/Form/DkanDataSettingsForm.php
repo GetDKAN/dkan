@@ -92,6 +92,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
     $form['html_allowed_html'] = $this->getHtmlAllowedHtml($config);
     $form['property_list'] = $this->getPropertyList($config);
     $form['orphan'] = $this->getOrphanCleanupFields($config);
+    $form['disable_json_validation'] = $this->getValidationCheckbox($config);
 
     return parent::buildForm($form, $form_state);
   }
@@ -123,6 +124,24 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Redirect to datasets view after form submit'),
       '#default_value' => $config->get('redirect_to_datasets'),
       '#description' => $this->t("Disable this option if you want to use Drupal's default or your own custom redirect after submitting a metadata form."),
+    ];
+  }
+
+  /**
+   * Builds the checkbox form element for disabling json validation.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The metastore settings configuration.
+   *
+   * @return array
+   *   The form element array.
+   */
+  private function getValidationCheckbox(Config $config) {
+    return [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Temporarily disable JSON validation.'),
+      '#default_value' => $config->get('disable_json_validation') ?? FALSE,
+      '#description' => $this->t('If you are having a problem due to invalid data and are unable to remove it, use this option to temporarily disable JSON validation and allow the invalid data to be removed. Use with caution, and consider fixing the underlying data issue as soon as possible.'),
     ];
   }
 
@@ -235,6 +254,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       ->set('html_allowed_html', $form_state->getValue('html_allowed_html'))
       ->set('orphan.delete', $form_state->getValue('delete'))
       ->set('orphan.retain_for', $form_state->getValue('retain_for'))
+      ->set('disable_json_validation', $form_state->getValue('disable_json_validation'))
       ->save();
 
     // Rebuild routes, without clearing all caches.

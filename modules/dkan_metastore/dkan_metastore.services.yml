@@ -119,6 +119,7 @@ services:
       - '@dkan.metastore.storage'
       - '@dkan.metastore.metastore_item_factory'
       - '@cache_tags.invalidator'
+      - '@config.factory'
       - '@module_handler'
 
   dkan.metastore.url_generator:

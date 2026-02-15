@@ -8,6 +8,9 @@ dkan_metastore.settings:
     data_dictionary_sitewide:
       type: string
       label: 'Sitewide Dictionary ID'
+    disable_json_validation:
+      type: boolean
+      label: 'Disable JSON Validation'
     csv_headers_mode:
       type: string
       label: 'CSV Headers Mode'
