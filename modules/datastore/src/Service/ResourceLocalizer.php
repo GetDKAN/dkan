@@ -164,17 +164,18 @@ class ResourceLocalizer {
    * @param string $version
    *   The resource version.
    * @param string $perspective
-   *   The resource perspective. Defaults to LOCAL_FILE_PERSPECTIVE
+   *   The resource perspective. Defaults to LOCAL_FILE_PERSPECTIVE.
    * @param bool $create
    *   If true, creates directory for local file and adds perspective to mapper.
    *
    * @return \Drupal\common\DataResource|null
    *   Return the perspective, or NULL if the source perspective did not exist.
    */
-  public function get(string $identifier,
-                      ?string $version = NULL,
-                      string $perspective = self::LOCAL_FILE_PERSPECTIVE,
-                      bool $create = TRUE
+  public function get(
+    string $identifier,
+    ?string $version = NULL,
+    string $perspective = self::LOCAL_FILE_PERSPECTIVE,
+    bool $create = TRUE,
   ): ?DataResource {
     $resource = $this->getResourceSource($identifier, $version);
 
