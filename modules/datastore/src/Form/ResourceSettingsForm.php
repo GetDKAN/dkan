@@ -45,9 +45,9 @@ class ResourceSettingsForm extends ConfigFormBase {
     ];
     $form['delete_local_resource'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Delete local resource'),
+      '#title' => $this->t('Delete localized resource'),
       '#config_target' => 'datastore.settings:delete_local_resource',
-      '#description' => $this->t('Delete local copy of remote files after the datastore import is complete'),
+      '#description' => $this->t('Delete localized copy of remote files after the datastore import is complete. If your catalog will rely on the remote source for downloads this can keep your web server file storage lean. <p>Note that when a dataset is deleted, any localized resource for that dataset will also be deleted.</p>'),
     ];
     $form['drop_datastore_on_post_import_error'] = [
       '#type' => 'checkbox',
