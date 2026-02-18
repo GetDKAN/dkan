@@ -155,6 +155,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
     $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
+    $this->assertEquals(1, $form['table']['#rows'][0][0]['data']['#node_id']);
   }
 
   /**
@@ -224,6 +225,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
     $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
+    $this->assertEquals(2, $form['table']['#rows'][0][0]['data']['#node_id']);
   }
 
   /**
@@ -517,6 +519,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('done', $form["table"]["#rows"][1][3]["data"]["#status"]);
     // The second row post import class is correct.
     $this->assertEquals('done', $form["table"]["#rows"][1][3]["class"]);
+    $this->assertEquals(5, $form['table']['#rows'][0][0]['data']['#node_id']);
   }
 
   /**
