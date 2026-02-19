@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dkan_common\Functional;
 
-use Composer\Semver\VersionParser;
 use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use Drupal\dkan_harvest\Load\Dataset;
 use Drupal\dkan_harvest\Transform\ResourceImporter;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
-
 
 /**
  * Tests update functions for the metastore module.
@@ -36,11 +34,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->drupalGet('<front>');
     $this->assertSession()->pageTextContains('Log in');
 
-    $parser = new VersionParser();
-    $constraint = $parser->parseConstraints('^11.3.0');
-    $optional = ['metastore_facets', 'datastore_mysql_import', 'sample_content'];
-
-    // Assert transitional modules are now installed.
     // Ensure legacy modules are still installed.
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('common'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('metastore'));
@@ -49,11 +42,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('datastore'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('harvest'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('sample_content'));
-
-    if ($constraint->matches($parser->parseConstraints(\Drupal::VERSION))) {
-      // On Drupal ^11.3, it doesn't work to enable more modules before updb.
-      \Drupal::service('module_installer')->install($optional);
-    }
 
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
