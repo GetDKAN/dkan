@@ -19,7 +19,15 @@ function dkan_datastore_mysql_import_update_10001() {
   // If the old datastore_mysql_import module is still enabled, copy config and
   // uninstall it.
   if (\Drupal::moduleHandler()->moduleExists('datastore_mysql_import')) {
+    $config = \Drupal::configFactory()->getEditable('datastore_mysql_import.settings');
+    $settings = $config->getRawData();
+    $dkan_config = \Drupal::configFactory()->getEditable('dkan_datastore_mysql_import.settings');
+    foreach ($settings as $key => $value) {
+      $dkan_config->set($key, $value);
+    }
+    $dkan_config->save();
     \Drupal::service('module_installer')->uninstall(['datastore_mysql_import']);
+    $dkan_config->delete();
     return t('The legacy datastore_mysql_import module has been uninstalled.');
   }
 }

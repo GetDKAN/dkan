@@ -7,6 +7,7 @@ namespace Drupal\Tests\dkan_common\Functional;
 use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use Drupal\dkan_harvest\Load\Dataset;
 use Drupal\dkan_harvest\Transform\ResourceImporter;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 /**
@@ -42,6 +43,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('datastore'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('harvest'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('sample_content'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
 
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
@@ -55,6 +57,31 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_data_dictionary_widget'));
 
     $this->fixHarvestPlanJsonEscapes();
+
+    // Set some sample config values to make sure they come out the other side.
+    $common_config = \Drupal::configFactory()->getEditable('common.settings');
+    $common_config->set('always_use_existing_local_perspective', TRUE);
+    $common_config->save();
+
+    $metastore_config = \Drupal::configFactory()->getEditable('metastore.settings');
+    $property_list = $metastore_config->get('property_list');
+    $property_list['distribution'] = 0;
+    $metastore_config->set('property_list', $property_list);
+    $metastore_config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
+    $metastore_config->save();
+
+    $datastore_config = \Drupal::configFactory()->getEditable('datastore.settings');
+    $triggering = $datastore_config->get('triggering_properties');
+    $triggering['modified'] = 'modified';
+    $datastore_config->set('triggering_properties', $triggering);
+    $datastore_config->set('rows_limit', 1000);
+    $datastore_config->save();
+
+    $mysql_config = \Drupal::configFactory()->getEditable('datastore_mysql_import.settings');
+    $mysql_config->set('strict_mode_disabled', TRUE);
+    $mysql_config->save();
+
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('datastore_mysql_import'));
 
     // Run all updates.
     $this->runUpdates();
@@ -104,6 +131,25 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertEquals("\\" . DataJson::class, $updated_plan->extract->type);
     $this->assertEquals("\\" . ResourceImporter::class, $updated_plan->transforms[0]);
     $this->assertEquals("\\" . Dataset::class, $updated_plan->load->type);
+
+    // Check migrated config to see if it matches values set in legacy modules.
+    $dkan_common_config = \Drupal::configFactory()->get('dkan_common.settings');
+    $this->assertTrue($dkan_common_config->get('always_use_existing_local_perspective'));
+
+    $dkan_metastore_config = \Drupal::configFactory()->get('dkan_metastore.settings');
+    $property_list = $dkan_metastore_config->get('property_list');
+    $this->assertEquals(0, $property_list['distribution']);
+    $this->assertEquals('publisher', $property_list['publisher']);
+    $this->assertEquals(DataDictionaryDiscovery::MODE_REFERENCE, $dkan_metastore_config->get('data_dictionary_mode'));
+
+    $dkan_datastore_config = \Drupal::configFactory()->get('dkan_datastore.settings');
+    $triggering = $dkan_datastore_config->get('triggering_properties');
+    $this->assertEquals('modified', $triggering['modified']);
+    $this->assertEquals(1000, $dkan_datastore_config->get('rows_limit'));
+
+    $dkan_mysql_config = \Drupal::configFactory()->getEditable('dkan_datastore_mysql_import.settings');
+    $this->assertTrue($dkan_mysql_config->get('strict_mode_disabled'));
+
   }
 
   /**
