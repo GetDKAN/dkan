@@ -4,7 +4,3 @@ type: module
 core_version_requirement: ^10.2 || ^11
 package: DKAN 2.x Legacy
 configure: datastore.mysql_import.settings
-dependencies:
-  - dkan:dkan_common
-  - dkan:datastore
-  - dkan:dkan_metastore
