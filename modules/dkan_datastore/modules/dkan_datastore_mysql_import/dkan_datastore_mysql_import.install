@@ -27,7 +27,7 @@ function dkan_datastore_mysql_import_update_10001() {
     }
     $dkan_config->save();
     \Drupal::service('module_installer')->uninstall(['datastore_mysql_import']);
-    $dkan_config->delete();
+    $config->delete();
     return t('The legacy datastore_mysql_import module has been uninstalled.');
   }
 }
