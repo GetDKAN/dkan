@@ -83,6 +83,18 @@ final class ConfigImportRenameDependenciesSubscriber implements EventSubscriberI
         $changed = $changed || ($before !== $data['dependencies']['module']);
       }
 
+      // Special handling for core.extension: rename module keys.
+      if ($name == 'core.extension' && is_array($data['module'] ?? NULL)) {
+        $before = $data['module'];
+        $updated_modules = [];
+        foreach ($data['module'] as $module_name => $weight) {
+          $new_module_name = self::MAP[$module_name] ?? $module_name;
+          $updated_modules[$new_module_name] = $weight;
+        }
+        $data['module'] = $updated_modules;
+        $changed = $changed || ($before !== $data['module']);
+      }
+
       if ($changed) {
         // Write the modified config back into the import source storage.
         $storage->write($name, $data);
