@@ -43,7 +43,28 @@ final class ConfigImportRenameDependenciesSubscriber implements EventSubscriberI
   public function onStorageTransformImport(StorageTransformEvent $event): void {
     $storage = $event->getStorage();
 
-    // Read all config names from the source being imported.
+    // First pass: rename config objects themselves.
+    $renames = [];
+    foreach ($storage->listAll() as $name) {
+      foreach (self::MAP as $old => $new) {
+        if (str_starts_with($name, $old . '.')) {
+          $new_name = $new . substr($name, strlen($old));
+          $renames[$name] = $new_name;
+          break;
+        }
+      }
+    }
+
+    // Execute renames: read from old name, write to new name, delete old.
+    foreach ($renames as $old_name => $new_name) {
+      $data = $storage->read($old_name);
+      if (is_array($data)) {
+        $storage->write($new_name, $data);
+        $storage->delete($old_name);
+      }
+    }
+
+    // Second pass: update dependencies within all config.
     foreach ($storage->listAll() as $name) {
       $data = $storage->read($name);
       if (!is_array($data)) {
@@ -60,18 +81,6 @@ final class ConfigImportRenameDependenciesSubscriber implements EventSubscriberI
           $data['dependencies']['module']
         ));
         $changed = $changed || ($before !== $data['dependencies']['module']);
-      }
-
-      // Update $data['id'] if it matches a renamed module, to prevent import failure due to config name conflicts.
-      if (!empty($data['id']) && is_string($data['id'])) {
-        $before = $data['id'];
-        foreach (self::MAP as $old => $new) {
-          if (str_starts_with($data['id'], $old . '.')) {
-            $data['id'] = $new . substr($data['id'], strlen($old));
-            break;
-          }
-        }
-        $changed = $changed || ($before !== $data['id']);
       }
 
       if ($changed) {
