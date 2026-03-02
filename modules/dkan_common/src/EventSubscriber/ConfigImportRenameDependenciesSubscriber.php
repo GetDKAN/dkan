@@ -21,6 +21,7 @@ final class ConfigImportRenameDependenciesSubscriber implements EventSubscriberI
     'common' => 'dkan_common',
     'datastore' => 'dkan_datastore',
     'datastore_mysql_import' => 'dkan_datastore_mysql_import',
+    'data_dictionary_widget' => 'dkan_data_dictionary_widget',
     'metastore' => 'dkan_metastore',
     'metastore_search' => 'dkan_metastore_search',
     'metastore_facets' => 'dkan_metastore_facets',
