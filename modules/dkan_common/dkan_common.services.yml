@@ -45,6 +45,11 @@ services:
     parent: logger.channel_base
     arguments: [ 'dkan' ]
 
+  dkan.common.config_import_rename_dependencies_subscriber:
+    class: Drupal\dkan_common\EventSubscriber\ConfigImportRenameDependenciesSubscriber
+    tags:
+      - { name: event_subscriber }
+
   # @deprecated
   common.docs:
     class: \Drupal\dkan_common\Controller\OpenApiController
