@@ -1,6 +1,15 @@
 Upgrading from DKAN 2.x
 ========================
 
+.. important::
+
+    These are tentative upgrade instructions intended to be followed once DKAN
+    4.0 is released on the Drupal.org composer repository. If these words are still
+    visible in the DKAN 3.x docs, that means the release has not happened yet,
+    and you will not be able to complete the instructions.
+    
+    Please hold off on upgrading until a full DKAN 4.0 release is out.
+
 Background
 ----------
 
@@ -13,20 +22,20 @@ programming and PSR namespacing. Specifically, there was an assumption that
 submodules could inherit the namespace of their parent module, so that under
 ``Drupal\dkan`` we could have submodules like ``Drupal\dkan\harvest`` and
 ``Drupal\dkan\datastore``. This was not the case, and we ended up with some very
-generic top-level namepsaces like ``Drupal\harvest`` and ``Drupal\datastore``.
+generic top-level namespaces like ``Drupal\harvest`` and ``Drupal\datastore``.
 
 Aside from the confusion and aesthetic issues this caused, we also started to
-encounter problems with colisions on the Drupal.org module registry. Even if
+encounter problems with collisions on the Drupal.org module registry. Even if
 one were not to install the ``drupal/datastore`` module, Drupal's packaging
 tools caused issues when people tried to create DKAN extensions to release on
 Drupal.org that had dependencies on specific DKAN submodules.
 
-Paralell to this, there has been a long-standing desire to release DKAN on
+Parallel to this, there has been a long-standing desire to release DKAN on
 Drupal.org. The 7.x-1.x version of DKAN did not meet the requirements to publish
-there, due to some licencing issues with some of its dependencies. We got into
-the habit of developing DKAN on GitHub and releasing via packagist, and this
-continued when we moved to DKAN 2 and Drupal 8, even though licencing was no
-longer an issue.
+there, due to some licensing issues with some of its dependencies. We got into
+the habit of developing DKAN on GitHub and releasing via `packagist <https://packagist.org/>`_,
+and this continued when we moved to DKAN 2 and Drupal 8, even though 
+licensing was no longer an issue.
 
 Getting it right in DKAN 4
 ##########################
@@ -35,20 +44,40 @@ In 2025 we decided to "rip the band-aid off" and rename our submodules to meet
 namespacing conventions. This is a much bigger change than it might initially
 sound like, as it requires:
 
-#. Changing the namepsaces in every `use` statement, touching almost every file
+#. Changing the namespaces in every `use` statement, touching almost every file
 #. Designing a multi-step upgrade path so that at no point does Drupal expect a module that is no longer present.
 #. Properly handling config from the old modules, and custom config on existing sites that depends on the renamed modules.
 
 For this reason, we are jumping two major versions of DKAN at once.
 
-* DKAN 2.23 will introduce the new, renamed modules (they will not yet be functional)
-* DKAN 3.0 will move all the code from the new modules to the old, provide all the update functions to migrate existing sites, and deprecate the old modules.
-* DKAN 4.0 will remove the legacy modules from the codebase. This will also be the first release on drupal.org, and the package name in composer will change from `getdkan/dkan` to `drupal/dkan`.
+* **DKAN 2.23** will introduce the new, renamed modules (they will not yet be functional)
+* **DKAN 3.0** will move all the code from the new modules to the old, provide all 
+  the update functions to migrate existing sites, and deprecate the old modules.
+  We do not plan to release any updates to 3.0, as it is intended purely as a
+  transition to DKAN 4.0.
+* **DKAN 4.0** will remove the legacy modules from the codebase. This will also
+  be the first release on drupal.org, and the package name in composer will change
+  from ``getdkan/dkan`` to ``drupal/dkan``.
+
+Soon after 4.0.0 is released we will wind  down work on the 2.x branch. We will
+consider backports and especially security updates but expect most new bugfixes
+and new features exclusively on DKAN 4.x.
 
 Detailed instructions
 ---------------------
 
-.. warning::
+Summary
+#######
+
+We err on the side of over-explaining in the sections below, so the process may
+seem intimidating. However, the process is fairly straightforward:
+
+* Upgrade to latest 2.x
+* Upgrade to 3.0
+* Upgrade to latest 4.x
+
+
+.. caution::
    
    This process makes many non-recoverable changes to your database. Do at least one dry-run of this in a development environment before attempting in production. It is also highly recommended that you take backups at each step to ensure you can roll back if something goes wrong.
 
@@ -57,7 +86,7 @@ Step 1: Get to latest 2.x
 
 Before jumping a major version, make sure you are on the latest release of DKAN
 2.23.x. Make sure your version constraint for ``getdkan/dkan`` is ``~2.23.0``, ``^2``,
-or somethiung equivilant.
+or something equivalent.
 
 Run:
 
@@ -122,13 +151,60 @@ removed because their dependencies on legacy modules are no longer met.
 Fortunately, your original configuration is preserved in your sync directory if you followed step 2.
 
 Before you import, you can inspect the difference between your current site
-config and the sync directory by visiting the Drupal UI at ``/admin/config/development/configuration``. This will allow you to see any differences and get a sense of what will be changed when you import.
+config and the sync directory by visiting the Drupal UI at ``/admin/config/development/configuration``.
+You will possibly see a number of configuration items being added, because they
+were removed the legacy modules were disabled.
 
-When you're ready, run:
+DKAN 3.x includes an `event subscriber <https://github.com/GetDKAN/dkan/blob/3.x/modules/dkan_common/src/EventSubscriber/ConfigImportRenameDependenciesSubscriber.php>`_
+that modifies config on import to attempt to re-map old module names to new ones. 
+Unexpected changes to config you see in this UI screen may be a result of that
+subscriber modifying config items on import.
 
-Import your configuration from your sync directory:
+.. seealso::
+
+    For more information on this approach to config migration, see
+    the Drupal documentation page for `Configuration Import Export Transformation <https://www.drupal.org/docs/drupal-apis/configuration-api/configuration-import-export-transformation>`_.
+
+When you're ready, import your configuration from your sync directory:
 
 .. prompt:: bash $
 
     drush config:import
 
+You will see a confirmation screen showing a summarized version of the differences
+listed in the UI. Accept the changes and continue.
+
+Step 7: Re-export configuration
+###############################
+
+It's time to lock in your migrated config. Now run
+
+.. prompt:: bash $
+
+    drush config:export
+
+...to re-export your config to the sync directory.
+
+If you are managing your sync directory in version control (recommended), you
+have another opportunity to inspect what changed before committing.
+
+Step 8: DKAN 4.0
+################
+
+The newly namespaced modules are now enabled, the legacy modules disabled, and
+all config migrated. We can now upgrade to DKAN 4. Note that the vendor name
+must also be updated:
+
+.. prompt:: bash $
+
+    composer require drupal/dkan:~4.0.0
+    drush update:db
+
+.. note::
+
+    The exact process by which ``drupal/dkan`` will replace ``getdkan/dkan`` is
+    a bit TBD. As of the writing of these docs, we have not released yet on
+    drupal.org, and have therefore not tested the exact composer workflow yet.
+
+While there should be no pending database updates at this point, it is always a
+good idea to run ``drush update:db`` after any change to ``composer.json``.
