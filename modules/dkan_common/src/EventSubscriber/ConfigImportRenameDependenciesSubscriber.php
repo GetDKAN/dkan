@@ -14,6 +14,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * This runs early in the import pipeline, before dependency validation, so
  * config that used to depend on "datastore" will instead depend on
  * "dkan_datastore" during the import.
+ *
+ * @codeCoverageIgnore
  */
 final class ConfigImportRenameDependenciesSubscriber implements EventSubscriberInterface {
 
