@@ -6,4 +6,3 @@ package: DKAN
 dependencies:
   - dkan:common
   - dkan:metastore
-  - dkan:dkan_datastore
