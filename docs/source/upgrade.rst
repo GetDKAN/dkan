@@ -109,7 +109,7 @@ Run:
     composer update getdkan/dkan
     drush update:db
 
-Commit the changes to `composer.json`` and `composer.lock` if these are under
+Commit the changes to ``composer.json`` and ``composer.lock`` if these are under
 version control.
 
 .. admonition:: Deployment notes
