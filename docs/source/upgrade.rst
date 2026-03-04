@@ -71,8 +71,8 @@ Summary
 
 Due to limitations in how database and config updates are performed by Drupal,  
 it will not be possible to upgrade directly from 2.23 to 4.  It **must** be done 
-in separate upgrades.   The process may seem intimidating. However, the process
- is fairly straightforward:
+in separate upgrades. The process as described here may seem intimidating. 
+However, it is fairly straightforward:
 
 * Upgrade to latest 2.x
 * Upgrade to 3.0
@@ -81,7 +81,10 @@ in separate upgrades.   The process may seem intimidating. However, the process
 
 .. caution::
    
-   This process makes many non-recoverable changes to your database. Do at least one dry-run of this in a development environment before attempting in production. It is also highly recommended that you take backups at each step to ensure you can roll back if something goes wrong.
+   This process makes many non-recoverable changes to your database. Do at least
+   one dry-run of this in a development environment before attempting in
+   production. It is also highly recommended that you take backups at each step
+   to ensure you can roll back if something goes wrong.
 
 Step 1: Get to latest 2.x
 #########################
@@ -102,8 +105,8 @@ Step 2: Export configuration
 
 It is highly recommended that before upgrading to DKAN 3.x, you export your site
 settings using the Drupal UI or the ``drush config:export`` command. If you are
-not familiar with this workflow, it is highly recommended that you read
-the `configuration management section <https://www.drupal.org/docs/administering-a-drupal-site/configuration-management>`_
+not familiar with this workflow, please read the
+`configuration management section <https://www.drupal.org/docs/administering-a-drupal-site/configuration-management>`_
 of the Drupal documentation.
 
 Step 3: Get to DKAN 3.x
