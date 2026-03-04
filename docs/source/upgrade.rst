@@ -90,8 +90,7 @@ However, it is fairly straightforward:
 
     In most workflows for a site in production, you will not be performing
     composer and git commands directly on your production server. Throughout
-    these instructions, there are notes like this that can be expanded (with a
-    mouse click or tab+enter) to reveal additional considerations when
+    these instructions, there are notes like this with additional considerations when
     performing these actions on a codebase you are editing locally but deploying
     to a production server.
 
@@ -113,7 +112,6 @@ Commit the changes to ``composer.json`` and ``composer.lock`` if these are under
 version control.
 
 .. admonition:: Deployment notes
-    :collapsible: closed
 
     Under most workflows, you would deploy this latest release to production and
     run the database updates on your server if they go smoothly on your local
@@ -132,7 +130,6 @@ not familiar with this workflow, please read the
 of the Drupal documentation.
 
 .. admonition:: Deployment notes
-    :collapsible: closed
 
     Usually, you will be exporting config in your local environment, but you
     want it to reflect the latest state of your production instance. Make sure
@@ -155,7 +152,6 @@ which had previously been included as a submodule of DKAN. Composer should bring
 in this new dependency automatically for you.
 
 .. admonition:: Deployment notes
-    :collapsible: closed
 
     Do not deploy these code changes to production until you have completed
     steps 4-7 or you may lose functionality on your live site.
@@ -232,7 +228,6 @@ If you are managing your sync directory in version control (recommended), you
 have another opportunity to inspect what changed before committing.
 
 .. admonition:: Deployment notes
-    :collapsible: closed
 
     It is at this point we recommend committing your changes and deploying the
     new commit to production. Your updated DKAN version, refactored custom code,
