@@ -69,8 +69,10 @@ Detailed instructions
 Summary
 #######
 
-We err on the side of over-explaining in the sections below, so the process may
-seem intimidating. However, the process is fairly straightforward:
+Due to limitations in how database and config updates are performed by Drupal,  
+it will not be possible to upgrade directly from 2.23 to 4.  It **must** be done 
+in separate upgrades.   The process may seem intimidating. However, the process
+ is fairly straightforward:
 
 * Upgrade to latest 2.x
 * Upgrade to 3.0
