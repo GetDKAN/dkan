@@ -25,9 +25,8 @@
     </coverage>
     <testsuites>
         <testsuite name="default">
-            <directory>.</directory>
-            <exclude>vendor</exclude>
-            <exclude>web</exclude>
+            <directory>tests</directory>
+            <directory>modules</directory>
         </testsuite>
     </testsuites>
 </phpunit>
