@@ -8,7 +8,8 @@ Upgrading from DKAN 2.x
     visible in the DKAN 3.x docs, that means the release has not happened yet,
     and you will not be able to complete the instructions.
     
-    Please hold off on upgrading until a full DKAN 4.0 release is out.
+    You may begin preliminary testing up to step 7 below, but please hold off on
+    upgrading until a full DKAN 4.0 release is out.
 
 Background
 ----------
@@ -78,13 +79,21 @@ However, it is fairly straightforward:
 * Upgrade to 3.0
 * Upgrade to latest 4.x
 
-
 .. caution::
    
    This process makes many non-recoverable changes to your database. Do at least
    one dry-run of this in a development environment before attempting in
    production. It is also highly recommended that you take backups at each step
    to ensure you can roll back if something goes wrong.
+
+.. admonition:: Deployment notes
+
+    In most workflows for a site in production, you will not be performing
+    composer and git commands directly on your production server. Throughout
+    these instructions, there are notes like this that can be expanded (with a
+    mouse click or tab+enter) to reveal additional considerations when
+    performing these actions on a codebase you are editing locally but deploying
+    to a production server.
 
 Step 1: Get to latest 2.x
 #########################
@@ -100,6 +109,19 @@ Run:
     composer update getdkan/dkan
     drush update:db
 
+Commit the changes to `composer.json`` and `composer.lock` if these are under
+version control.
+
+.. admonition:: Deployment notes
+    :collapsible: closed
+
+    Under most workflows, you would deploy this latest release to production and
+    run the database updates on your server if they go smoothly on your local
+    copy. Depending on your setup, this may be something you have to do manually (for instance, by
+    visiting /update.php or running ``drush @your_alias update:db``), or it may be
+    part of a post-deploy hook or script that runs automatically after any new
+    code deployment.
+
 Step 2: Export configuration
 ############################
 
@@ -108,6 +130,16 @@ settings using the Drupal UI or the ``drush config:export`` command. If you are
 not familiar with this workflow, please read the
 `configuration management section <https://www.drupal.org/docs/administering-a-drupal-site/configuration-management>`_
 of the Drupal documentation.
+
+.. admonition:: Deployment notes
+    :collapsible: closed
+
+    Usually, you will be exporting config in your local environment, but you
+    want it to reflect the latest state of your production instance. Make sure
+    you have a recent copy of the production database before your export,
+    particularly one that reflects the updates from Step 1.
+
+If you keep your configuration in version control, commit the changes.
 
 Step 3: Get to DKAN 3.x
 #######################
@@ -121,6 +153,12 @@ Now you should be ready to upgrade the DKAN module. Run:
 Note that DKAN 3 also uses the now-standalone `JSON Form Widget module <https://www.drupal.org/project/issues/json_form_widget>`_,
 which had previously been included as a submodule of DKAN. Composer should bring
 in this new dependency automatically for you.
+
+.. admonition:: Deployment notes
+    :collapsible: closed
+
+    Do not deploy these code changes to production until you have completed
+    steps 4-7 or you may lose functionality on your live site.
 
 Step 4: Refactor custom code
 ############################
@@ -193,6 +231,19 @@ It's time to lock in your migrated config. Now run
 If you are managing your sync directory in version control (recommended), you
 have another opportunity to inspect what changed before committing.
 
+.. admonition:: Deployment notes
+    :collapsible: closed
+
+    It is at this point we recommend committing your changes and deploying the
+    new commit to production. Your updated DKAN version, refactored custom code,
+    and updated configuration files will all hit at the same time. Hopefully,
+    at this point your specific deployment workflow will run the database updates
+    and re-import the updated site configuration (in that order!).
+
+    Also, you should have performed one or more local dry-runs before attempting
+    this in production. Still, if anything goes wrong, be prepared to roll back
+    both the code and the database to a previous tag and backup, respectively.
+
 Step 8: DKAN 4.0
 ################
 
@@ -204,12 +255,6 @@ must also be updated:
 
     composer require drupal/dkan:~4.0.0
     drush update:db
-
-.. note::
-
-    The exact process by which ``drupal/dkan`` will replace ``getdkan/dkan`` is
-    a bit TBD. As of the writing of these docs, we have not released yet on
-    drupal.org, and have therefore not tested the exact composer workflow yet.
 
 While there should be no pending database updates at this point, it is always a
 good idea to run ``drush update:db`` after any change to ``composer.json``.
