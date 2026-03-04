@@ -32,7 +32,6 @@ class DkanJsonFormWidgetTest extends BrowserTestBase {
   protected static $modules = [
     'json_form_widget',
     'file',
-    'dkan',
   ];
 
   /**
