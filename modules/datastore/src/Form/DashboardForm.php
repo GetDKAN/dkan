@@ -577,6 +577,8 @@ class DashboardForm extends FormBase {
           '#uuid' => $dist['distribution_uuid'],
           '#file_name' => basename((string) $dist['source_path']),
           '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
+          '#resource_id' => $importable ? $dist['resource_id'] . '__' . $dist['resource_version'] : NULL,
+          '#preview_url' => $importable ? $this->buildPreviewUrl($dist['resource_id'] . '__' . $dist['resource_version']) : NULL,
         ],
         'class' => $importable ? '' : 'unsupported',
       ],
@@ -643,6 +645,27 @@ class DashboardForm extends FormBase {
       ],
       'class' => str_replace('_', '-', $status),
     ];
+  }
+
+  /**
+   * Build a preview URL for a resource, if the preview module is available.
+   *
+   * @param string $resource_id
+   *   The resource ID in "identifier__version" format.
+   *
+   * @return string|null
+   *   The preview URL, or NULL if the preview module is not installed.
+   */
+  protected function buildPreviewUrl(string $resource_id): ?string {
+    if (!$this->moduleHandler()->moduleExists('datastore_data_preview')) {
+      return NULL;
+    }
+    try {
+      return Url::fromRoute('datastore_data_preview.preview', ['resource_id' => $resource_id])->toString();
+    }
+    catch (\Exception $e) {
+      return NULL;
+    }
   }
 
   /**

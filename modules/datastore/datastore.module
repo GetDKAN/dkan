@@ -29,6 +29,8 @@ function datastore_theme($existing, $type, $theme, $path) {
         'uuid' => NULL,
         'file_name' => NULL,
         'file_path' => NULL,
+        'resource_id' => NULL,
+        'preview_url' => NULL,
       ],
     ],
     'datastore_dashboard_status_cell' => [

@@ -1,0 +1,9 @@
+datastore_data_preview.preview:
+  path: '/admin/dkan/data-preview/{resource_id}'
+  defaults:
+    _controller: '\Drupal\datastore_data_preview\Controller\DataPreviewController::preview'
+    _title_callback: '\Drupal\datastore_data_preview\Controller\DataPreviewController::title'
+  requirements:
+    _permission: 'administer dkan'
+  options:
+    _admin_route: TRUE

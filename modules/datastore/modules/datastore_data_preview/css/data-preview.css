@@ -1,0 +1,40 @@
+.data-preview-wrapper {
+  margin: 1em 0;
+}
+
+.data-preview-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-bottom: 0.75em;
+}
+
+.data-preview-page-size-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.data-preview-page-size-select {
+  padding: 0.2em 0.4em;
+  font-size: inherit;
+}
+
+.data-preview-summary {
+  color: #555;
+  font-size: 0.9em;
+}
+
+.data-preview-table-wrapper {
+  overflow-x: auto;
+}
+
+.data-preview-table-wrapper table {
+  width: 100%;
+}
+
+.data-preview-footer {
+  margin-top: 0.75em;
+}

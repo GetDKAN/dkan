@@ -1,0 +1,22 @@
+services:
+  dkan.data_preview.resource_resolver:
+    class: \Drupal\datastore_data_preview\Service\ResourceIdResolver
+    arguments:
+      - '@dkan.metastore.service'
+
+  dkan.data_preview.builder:
+    class: \Drupal\datastore_data_preview\Service\DataPreviewBuilder
+    arguments:
+      - '@request_stack'
+      - '@pager.manager'
+
+  dkan.data_preview.datasource.database:
+    class: \Drupal\datastore_data_preview\DataSource\DatabaseDataSource
+    arguments:
+      - '@dkan.datastore.service'
+
+  dkan.data_preview.datasource.api:
+    class: \Drupal\datastore_data_preview\DataSource\ApiDataSource
+    arguments:
+      - '@http_client'
+      - '@request_stack'

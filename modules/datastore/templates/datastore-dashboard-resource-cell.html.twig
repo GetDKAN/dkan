@@ -1,2 +1,7 @@
 <div class="datastore-status-distribution-uuid">{{ uuid }}</div>
 <div class="datastore-status-distribution-path">{{ link(file_name, file_path) }}</div>
+{% if preview_url %}
+  <div class="datastore-status-distribution-preview">
+    <a href="{{ preview_url }}">Preview</a>
+  </div>
+{% endif %}

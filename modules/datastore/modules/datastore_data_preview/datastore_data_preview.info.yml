@@ -1,0 +1,9 @@
+name: Datastore Data Preview
+description: Provides a reusable paginated, sortable HTML table for previewing datastore data.
+type: module
+core_version_requirement: ^10.2 || ^11
+package: DKAN
+dependencies:
+  - dkan:common
+  - dkan:datastore
+  - dkan:metastore
