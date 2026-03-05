@@ -31,6 +31,7 @@ use Drupal\common\DataResource;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\node\NodeInterface;
 
 /**
@@ -612,6 +613,7 @@ class DashboardFormTest extends TestCase {
       ->add('dkan.datastore.post_import_result_factory', PostImportResultFactory::class)
       ->add('entity.storage.interface', EntityStorageInterface::class)
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
+      ->add('module_handler', ModuleHandlerInterface::class)
       ->index(0);
 
     $runStatus = [
@@ -643,7 +645,8 @@ class DashboardFormTest extends TestCase {
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
       ->add(PublicStream::class, 'getExternalUrl', 'http://example.com')
       ->add(Pager::class, 'getCurrentPage', 0)
-      ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class);
+      ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class)
+      ->add(ModuleHandlerInterface::class, 'moduleExists', FALSE);
   }
 
 }

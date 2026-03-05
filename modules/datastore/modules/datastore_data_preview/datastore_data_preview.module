@@ -6,12 +6,9 @@
  */
 
 use Drupal\common\DataResource;
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_theme().
@@ -27,49 +24,6 @@ function datastore_data_preview_theme() {
       ],
       'template' => 'datastore-data-preview',
     ],
-  ];
-}
-
-/**
- * Implements hook_entity_extra_field_info().
- */
-function datastore_data_preview_entity_extra_field_info() {
-  $extra = [];
-  $extra['node']['data']['display']['datastore_data_preview'] = [
-    'label' => t('Data Preview Table'),
-    'description' => t('Paginated, sortable table of datastore data for distribution nodes.'),
-    'weight' => 100,
-    'visible' => FALSE,
-  ];
-  return $extra;
-}
-
-/**
- * Implements hook_ENTITY_TYPE_view() for node entities.
- */
-function datastore_data_preview_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
-  if (!$display->getComponent('datastore_data_preview')) {
-    return;
-  }
-
-  if (!$entity instanceof NodeInterface) {
-    return;
-  }
-
-  if ($entity->bundle() !== 'data' || ($entity->get('field_data_type')->value ?? '') !== 'distribution') {
-    return;
-  }
-
-  /** @var \Drupal\datastore_data_preview\Service\ResourceIdResolver $resolver */
-  $resolver = \Drupal::service('dkan.data_preview.resource_resolver');
-  $resource_id = $resolver->resolveFromNode($entity);
-  if (!$resource_id) {
-    return;
-  }
-
-  $build['datastore_data_preview'] = [
-    '#type' => 'data_preview',
-    '#resource_id' => $resource_id,
   ];
 }
 

@@ -657,7 +657,7 @@ class DashboardForm extends FormBase {
    *   The preview URL, or NULL if the preview module is not installed.
    */
   protected function buildPreviewUrl(string $resource_id): ?string {
-    if (!$this->moduleHandler()->moduleExists('datastore_data_preview')) {
+    if (!\Drupal::moduleHandler()->moduleExists('datastore_data_preview')) {
       return NULL;
     }
     try {

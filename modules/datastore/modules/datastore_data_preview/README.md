@@ -33,14 +33,6 @@ When editing a dataset node, inline **Preview data** links appear next to the Do
 
 The datastore dashboard at `/admin/dkan/datastore/status` also shows preview links, but only for importable (tabular) file types.
 
-### Extra Field (Manage Display)
-
-For distribution nodes, a **Data Preview Table** extra field is available. Enable it via `/admin/structure/types/manage/data/display` — no block placement needed.
-
-- Only renders on `distribution` data nodes with imported datastore data
-- Hidden by default — admins must opt-in via Manage Display
-- Uses `DatabaseDataSource` to query the datastore directly
-
 ### Render Element
 
 Use `#type => 'data_preview'` in any render array:
