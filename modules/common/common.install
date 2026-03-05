@@ -7,7 +7,7 @@ use Drupal\Core\Database\Database;
  * Implements hook_install().
  */
 function common_install() {
-  // Only in DKAN 3.x: Run the update hooks to enable transitional modules.
+  // If fresh 2.23 install: Run the update hooks to enable transitional modules.
   common_update_90203();
 }
 

@@ -9,10 +9,7 @@
  * Implements hook_install().
  */
 function datastore_mysql_import_install() {
-  // Set the schema version to ensure update hooks run properly.
-  \Drupal::service('update.update_hook_registry')->setInstalledVersion('datastore_mysql_import', 10001);
-
-  // Only in DKAN 3.x: Run the update hooks to enable transitional modules.
+  // If fresh 2.23 install: Run the update hooks to enable transitional modules.
   datastore_mysql_import_update_10002();
 }
 

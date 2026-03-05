@@ -45,7 +45,7 @@ function harvest_install() {
     $role->save();
   }
 
-  // Only in DKAN 3.x: Run the update hooks to enable transitional modules.
+  // If fresh 2.23 install: Run the update hooks to enable transitional modules.
   harvest_update_10003();
 }
 

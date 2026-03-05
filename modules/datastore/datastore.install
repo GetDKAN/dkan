@@ -20,7 +20,7 @@ function datastore_install() {
     $role->save();
   }
 
-  // Only in DKAN 3.x: Run the update hooks to enable transitional modules.
+  // If fresh 2.23 install: Run the update hooks to enable transitional modules.
   datastore_update_9006();
 }
 
