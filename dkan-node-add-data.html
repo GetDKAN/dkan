@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+<meta name="Generator" content="Drupal 11 (https://www.drupal.org)" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<noscript><link rel="stylesheet" href="/core/themes/claro/css/components/dropbutton-noscript.css?tbhqox" />
+</noscript><noscript><link rel="stylesheet" href="/core/themes/claro/css/components/views-ui-noscript.css?tbhqox" />
+</noscript><link rel="icon" href="/core/misc/favicon.ico" type="image/vnd.microsoft.icon" />
+
+    <title>Create dataset | DKAN</title>
+    <link rel="stylesheet" media="all" href="/core/assets/vendor/normalize-css/normalize.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/assets/vendor/jquery.ui/themes/base/core.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/assets/vendor/jquery.ui/themes/base/autocomplete.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/assets/vendor/jquery.ui/themes/base/menu.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/assets/vendor/jquery.ui/themes/base/controlgroup.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/assets/vendor/jquery.ui/themes/base/checkboxradio.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/assets/vendor/jquery.ui/themes/base/resizable.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/assets/vendor/jquery.ui/themes/base/button.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/misc/components/progress.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/ajax-progress.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/modules/system/css/components/align.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/modules/system/css/components/container-inline.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/modules/system/css/components/clearfix.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/modules/system/css/components/hidden.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/modules/system/css/components/js.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/autocomplete-loading.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/misc/components/resize.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/toolbar.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/state/toolbar.menu.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/theme/toolbar.theme.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/theme/toolbar.icons.theme.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/modules/contrib/admin_toolbar/css/admin.toolbar.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/modules/contrib/admin_toolbar/admin_toolbar_tools/css/admin_toolbar_tools.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/modules/custom/dkan/modules/dkan_metastore/modules/dkan_metastore_admin/css/toolbar.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/modules/user/css/user.icons.admin.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/base/variables.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/base/elements.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/base/typography.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/base/print.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/layout/system-admin--layout.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/layout/form-two-columns.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/layout/breadcrumb.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/layout/local-actions.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/layout/layout.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/system-admin--admin-list.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/system-admin--links.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/system-admin--modules.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/system-admin--panel.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/jquery.ui/theme.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/progress.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/layout/card-list.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/card.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/container-inline.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/exposed-filters.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/field.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/icons.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/inline-form.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/link.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/links.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/menu.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/more-link.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/textarea.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/classy/components/ui-dialog.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/accordion.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/action-link.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/content-header.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/ckeditor5.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/container-inline.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/container-inline.module.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/breadcrumb.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/button.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/details.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/divider.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/messages.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/entity-meta.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/fieldset.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/form.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/form--checkbox-radio.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/form--field-multiple.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/form--managed-file.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/form--text.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/form--select.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/help.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/image-preview.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/menus-and-lists.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/modules-page.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/node.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/page-title.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/pager.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/skip-link.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/tables.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/table--file-multiple-widget.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/search-admin-settings.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/tableselect.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/tabs.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/theme/colors.css?tbhqox" />
+<link rel="stylesheet" media="all" href="/core/themes/claro/css/components/dialog.css?tbhqox" />
+
+    <script src="/core/misc/touchevents-test.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/toolbar.anti-flicker.js?v=11.3.5"></script>
+
+  </head>
+  <body class="toolbar-loading user-logged-in path-node">
+        <a href="#main-content" class="visually-hidden focusable skip-link">
+      Skip to main content
+    </a>
+    <div id="toolbar-administration" role="group" aria-label="Site administration toolbar" data-drupal-claro-processed-toolbar class="toolbar">
+  <nav id="toolbar-bar" role="navigation" aria-label="Toolbar items" class="toolbar-bar clearfix">
+    <h2 class="visually-hidden">Toolbar items</h2>
+                <div class="home-toolbar-tab toolbar-tab">
+        <a href="/" class="toolbar-icon toolbar-icon-escape-admin toolbar-item" title="Return to site content" data-toolbar-escape-admin>Back to site</a>
+        <div>
+                      <nav class="toolbar-lining clearfix" role="navigation">
+          </nav>
+        </div>
+      </div>
+                <div class="toolbar-tab">
+        <a href="/admin" class="toolbar-icon toolbar-icon-menu trigger toolbar-item" title="Admin menu" data-drupal-subtrees="" id="toolbar-item-administration" data-toolbar-tray="toolbar-item-administration-tray" role="button" aria-pressed="false">Manage</a>
+        <div id="toolbar-item-administration-tray" data-toolbar-tray="toolbar-item-administration-tray" class="toolbar-tray">
+                      <nav class="toolbar-lining clearfix" role="navigation" aria-label="Administration menu">
+              <h3 class="toolbar-tray-name visually-hidden">Administration menu</h3>
+          <div class="toolbar-menu-administration">
+              <ul class="toolbar-menu claro-toolbar-menu">
+                    <li class="menu-item menu-item--expanded">
+        <a href="/" class="toolbar-icon toolbar-icon-admin-toolbar-tools-help" title="" data-drupal-link-system-path="&lt;front&gt;">Front page</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/index" class="toolbar-icon toolbar-icon-system-admin-index" title="" data-drupal-link-system-path="admin/index">Index</a>
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/flush?token=U2iS8JRZdCYe6HcmbBQDwWVd1ekHkos_0zuTfVA8i9A" class="toolbar-icon toolbar-icon-admin-toolbar-tools-flush" title="" data-drupal-link-system-path="admin/flush">Flush all caches</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/flush/cssjs?token=T2L0xKIEiVskF2Kk58VI-wh1AFgj1nmKwq2em4goSro" class="toolbar-icon toolbar-icon-admin-toolbar-tools-cssjs" title="" data-drupal-link-system-path="admin/flush/cssjs">Flush CSS and JavaScript</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/flush/plugin?token=9agtca5NleNc02XFhaMtDZeLU-ShrruTpZuk8on7uys" class="toolbar-icon toolbar-icon-admin-toolbar-tools-plugin" title="" data-drupal-link-system-path="admin/flush/plugin">Flush plugins cache</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/flush/rendercache?token=UHNQznHwTeb_2-RS_9HTNT3PVcZEwEgEkCf29AvaBRg" class="toolbar-icon toolbar-icon-admin-toolbar-tools-flush-rendercache" title="" data-drupal-link-system-path="admin/flush/rendercache">Flush render cache</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/flush/menu?token=3M1T65EflWxwqOC6COTbozrAql24aYqmXeCOo9qK_js" class="toolbar-icon toolbar-icon-admin-toolbar-tools-flush-menu" title="" data-drupal-link-system-path="admin/flush/menu">Flush routing and links cache</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/flush/static-caches?token=BfWvDL4_DHg09alHNqlYwfR5RiKdFwxCFG7EeLqVYyw" class="toolbar-icon toolbar-icon-admin-toolbar-tools-flush-static" title="" data-drupal-link-system-path="admin/flush/static-caches">Flush static cache</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/flush/twig?token=_p2X3DvQSEQSPyo5dyEFVPf-OjfbFOfZ3BYvqcVJGZI" class="toolbar-icon toolbar-icon-admin-toolbar-tools-flush-twig" title="" data-drupal-link-system-path="admin/flush/twig">Flush twig cache</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/flush/views?token=GAzZswkhUmA8gusVjtWk1_2rGa11a0oHzse3FYQnnoY" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksflush-views" title="" data-drupal-link-system-path="admin/flush/views">Flush views cache</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/flush/theme_rebuild?token=eVM3T1TTI6oBxoAVp0ThOXZ5jPMko7JMqUfMzuky_40" class="toolbar-icon toolbar-icon-admin-toolbar-tools-theme-rebuild" title="" data-drupal-link-system-path="admin/flush/theme_rebuild">Rebuild theme registry</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item">
+        <a href="/run-cron?token=tmGXYgYZTmmg4c3IIilnwuHsxB6ezJg3Ke79wzGNRBs" class="toolbar-icon toolbar-icon-system-run-cron" title="" data-drupal-link-system-path="run-cron">Run cron</a>
+              </li>
+                <li class="menu-item">
+        <a href="/update.php" class="toolbar-icon toolbar-icon-system-db-update" title="" data-drupal-link-system-path="update.php">Run updates</a>
+              </li>
+                <li class="menu-item">
+        <a href="/user/logout?token=5jo9ctHN3YSV_QYI4coMQPERaJa_V5183wansFTa5J8" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksuser-logout" title="" data-drupal-link-system-path="user/logout">Logout</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/content" title="Find and manage content." class="toolbar-icon toolbar-icon-system-admin-content" data-drupal-link-system-path="admin/content">Content</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item menu-item--expanded">
+        <a href="/node/add" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksnode-add" title="" data-drupal-link-system-path="node/add">Add content</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/node/add/data" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksnode-add-data" title="" data-drupal-link-system-path="node/add/data">Data</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item">
+        <a href="/admin/content/files" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksview-files" title="" data-drupal-link-system-path="admin/content/files">Files</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/structure" title="Administer blocks, content types, menus, etc." class="toolbar-icon toolbar-icon-system-admin-structure" data-drupal-link-system-path="admin/structure">Structure</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/structure/block" title="Configure what block content appears in your site&#039;s sidebars and other regions." class="toolbar-icon toolbar-icon-block-admin-display" data-drupal-link-system-path="admin/structure/block">Block layout</a>
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/structure/types" title="Create and manage fields, forms, and display settings for your content." class="toolbar-icon toolbar-icon-entity-node-type-collection" data-drupal-link-system-path="admin/structure/types">Content types</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/structure/types/add" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksnode-type-add" title="" data-drupal-link-system-path="admin/structure/types/add">Add content type</a>
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/structure/types/manage/data" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-node-type-edit-form-data" title="" data-drupal-link-system-path="admin/structure/types/manage/data">Data</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/structure/types/manage/data/delete" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-node-type-delete-form-data" title="" data-drupal-link-system-path="admin/structure/types/manage/data/delete">Delete</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/appearance" title="Select and configure themes." class="toolbar-icon toolbar-icon-system-themes-page" data-drupal-link-system-path="admin/appearance">Appearance</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item menu-item--expanded">
+        <a href="/admin/appearance/settings" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linkssystem-theme-settings" title="" data-drupal-link-system-path="admin/appearance/settings">Settings</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/appearance/settings/claro" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linkssystem-theme-settings-theme-claro" title="" data-drupal-link-system-path="admin/appearance/settings/claro">Claro</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/appearance/settings/stark" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linkssystem-theme-settings-theme-stark" title="" data-drupal-link-system-path="admin/appearance/settings/stark">Stark</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/modules" title="Add and install modules to extend site functionality." class="toolbar-icon toolbar-icon-system-modules-list" data-drupal-link-system-path="admin/modules">Extend</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/modules/uninstall" class="toolbar-icon toolbar-icon-system-modules-uninstall" title="" data-drupal-link-system-path="admin/modules/uninstall">Uninstall module</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config" title="Administer settings." class="toolbar-icon toolbar-icon-system-admin-config" data-drupal-link-system-path="admin/config">Configuration</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/people" title="Configure user accounts." class="toolbar-icon toolbar-icon-user-admin-index" data-drupal-link-system-path="admin/config/people">People</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/people/accounts" title="Configure default user account settings, including fields, registration requirements, and email messages." class="toolbar-icon toolbar-icon-entity-user-admin-form" data-drupal-link-system-path="admin/config/people/accounts">Account settings</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/system" title="Configure basic site settings, actions, and cron." class="toolbar-icon toolbar-icon-system-admin-config-system" data-drupal-link-system-path="admin/config/system">System</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/system/site-information" title="Change site name, email address, slogan, default front page, and error pages." class="toolbar-icon toolbar-icon-system-site-information-settings" data-drupal-link-system-path="admin/config/system/site-information">Basic site settings</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/system/cron" title="Manage automatic site maintenance tasks." class="toolbar-icon toolbar-icon-system-cron-settings" data-drupal-link-system-path="admin/config/system/cron">Cron</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/content" title="Configure content formatting and authoring." class="toolbar-icon toolbar-icon-system-admin-config-content" data-drupal-link-system-path="admin/config/content">Content authoring</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/content/moderated-content-bulk-publish" title="Configure settings for Moderated content bulk publish." class="toolbar-icon toolbar-icon-moderated-content-bulk-publish-settings" data-drupal-link-system-path="admin/config/content/moderated-content-bulk-publish">Moderated content bulk publish</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/content/formats" title="Configure how content is filtered when displayed, including which HTML tags are rendered, and enable module-provided filters." class="toolbar-icon toolbar-icon-filter-admin-overview" data-drupal-link-system-path="admin/config/content/formats">Text formats</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/user-interface" title="Configure the administrative user interface." class="toolbar-icon toolbar-icon-system-admin-config-ui" data-drupal-link-system-path="admin/config/user-interface">User interface</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/user-interface/admin-toolbar" title="Configure the Admin Toolbar module." class="toolbar-icon toolbar-icon-admin-toolbar-settings" data-drupal-link-system-path="admin/config/user-interface/admin-toolbar">Admin Toolbar</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/user-interface/admin-toolbar-tools" title="Configure the Admin Toolbar Tools module." class="toolbar-icon toolbar-icon-admin-toolbar-tools-settings" data-drupal-link-system-path="admin/config/user-interface/admin-toolbar-tools">Admin Toolbar Tools</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/development" title="Configure and use development tools." class="toolbar-icon toolbar-icon-system-admin-config-development" data-drupal-link-system-path="admin/config/development">Development</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/development/performance" title="Configure caching and bandwidth optimization." class="toolbar-icon toolbar-icon-system-performance-settings" data-drupal-link-system-path="admin/config/development/performance">Performance</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/development/settings" title="Configure theme development settings" class="toolbar-icon toolbar-icon-system-development-settings" data-drupal-link-system-path="admin/config/development/settings">Development settings</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/development/logging" title="Configure the display of error messages and database logging." class="toolbar-icon toolbar-icon-system-logging-settings" data-drupal-link-system-path="admin/config/development/logging">Logging and errors</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/development/maintenance" title="Take the site offline for updates and other maintenance tasks." class="toolbar-icon toolbar-icon-system-site-maintenance-mode" data-drupal-link-system-path="admin/config/development/maintenance">Maintenance mode</a>
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/development/configuration" title="Import and export your configuration." class="toolbar-icon toolbar-icon-config-sync" data-drupal-link-system-path="admin/config/development/configuration">Configuration synchronization</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/development/configuration/full/import" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksconfig-import" title="" data-drupal-link-system-path="admin/config/development/configuration/full/import">Import</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/development/configuration/full/export" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksconfig-export" title="" data-drupal-link-system-path="admin/config/development/configuration/full/export">Export</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/media" class="toolbar-icon toolbar-icon-system-admin-config-media" title="" data-drupal-link-system-path="admin/config/media">Media</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/media/file-system" title="Configure the location of uploaded files and how they are accessed." class="toolbar-icon toolbar-icon-system-file-system-settings" data-drupal-link-system-path="admin/config/media/file-system">File system</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/media/image-toolkit" title="Choose which image toolkit to use if you have installed optional toolkits." class="toolbar-icon toolbar-icon-system-image-toolkit-settings" data-drupal-link-system-path="admin/config/media/image-toolkit">Image toolkit</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/search" title="Configure site search, metadata, and search engine optimization." class="toolbar-icon toolbar-icon-system-admin-config-search" data-drupal-link-system-path="admin/config/search">Search and metadata</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/search/path" title="Add custom URLs to existing paths." class="toolbar-icon toolbar-icon-entity-path-alias-collection" data-drupal-link-system-path="admin/config/search/path">URL aliases</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/search/search-api" title="Create and configure search indexes and servers." class="toolbar-icon toolbar-icon-search-api-overview" data-drupal-link-system-path="admin/config/search/search-api">Search API</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/search/facets" title="Create and configure facets and configure existing facet sources." class="toolbar-icon toolbar-icon-entity-facets-facet-collection" data-drupal-link-system-path="admin/config/search/facets">Facets</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/regional" title="Configure regional settings, localization, and translation." class="toolbar-icon toolbar-icon-system-admin-config-regional" data-drupal-link-system-path="admin/config/regional">Region and language</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/regional/settings" title="Configure the locale and timezone settings." class="toolbar-icon toolbar-icon-system-regional-settings" data-drupal-link-system-path="admin/config/regional/settings">Regional settings</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/config/regional/date-time" title="Configure how dates and times are displayed." class="toolbar-icon toolbar-icon-entity-date-format-collection" data-drupal-link-system-path="admin/config/regional/date-time">Date and time formats</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/services" class="toolbar-icon toolbar-icon-system-admin-config-services" title="" data-drupal-link-system-path="admin/config/services">Web services</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/services/linkset" title="Enable or disable the menu linkset endpoint" class="toolbar-icon toolbar-icon-system-linkset-settings" data-drupal-link-system-path="admin/config/services/linkset">Menu Linkset Settings</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/config/workflow" title="Manage the content workflow." class="toolbar-icon toolbar-icon-system-admin-config-workflow" data-drupal-link-system-path="admin/config/workflow">Workflow</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/config/workflow/workflows" title="Configure workflows." class="toolbar-icon toolbar-icon-entity-workflow-collection" data-drupal-link-system-path="admin/config/workflow/workflows">Workflows</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/dkan" title="Administer DKAN catalog." class="toolbar-icon toolbar-icon-system-admin-dkan" data-drupal-link-system-path="admin/dkan">DKAN</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item menu-item--expanded">
+        <a href="/admin/dkan/datasets" title="Administer DKAN metastore content." class="toolbar-icon toolbar-icon-dkan-metastore-datasets" data-drupal-link-system-path="admin/dkan/datasets">Datasets</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/node/add/data?schema=dataset" title="Create Dataset." class="toolbar-icon toolbar-icon-dkan-metastore-datasets-create" data-drupal-link-system-path="node/add/data">Create</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item">
+        <a href="/admin/dkan/datastore/status" title="View status information on DKAN datastore imports." class="toolbar-icon toolbar-icon-dkan-datastore-datasets-import-status-dashboard" data-drupal-link-system-path="admin/dkan/datastore/status">Datastore Import Status</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/dkan/datastore" title="Datastore settings." class="toolbar-icon toolbar-icon-dkan-datastore-settings-form" data-drupal-link-system-path="admin/dkan/datastore">Datastore Settings</a>
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/dkan/data-dictionaries" title="Data Dictionary List." class="toolbar-icon toolbar-icon-dkan-metastore-data-dictionary" data-drupal-link-system-path="admin/dkan/data-dictionaries">Data Dictionary</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/node/add/data?schema=data-dictionary" title="Create Data Dictionary." class="toolbar-icon toolbar-icon-dkan-metastore-data-dictionary-create" data-drupal-link-system-path="node/add/data">Create</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/dkan/data-dictionary/settings" title="Data Dictionary Settings." class="toolbar-icon toolbar-icon-dkan-metastore-data-dictionary-settings-form" data-drupal-link-system-path="admin/dkan/data-dictionary/settings">Settings</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item">
+        <a href="/admin/dkan/harvest" title="View status information on DKAN harvests." class="toolbar-icon toolbar-icon-dkan-harvest-dashboard" data-drupal-link-system-path="admin/dkan/harvest">Harvests</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/dkan/properties" title="Configure dataset properties for referencing sub-schemas and for HTML sanitization." class="toolbar-icon toolbar-icon-dkan-metastore-config-properties" data-drupal-link-system-path="admin/dkan/properties">Metastore Settings</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/dkan/resources" title="Resource options." class="toolbar-icon toolbar-icon-dkan-datastore-dkan-resource-settings" data-drupal-link-system-path="admin/dkan/resources">Resource Settings</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/people" title="Manage user accounts, roles, and permissions." class="toolbar-icon toolbar-icon-entity-user-collection" data-drupal-link-system-path="admin/people">People</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/people/create" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksuser-admin-create" title="" data-drupal-link-system-path="admin/people/create">Add user</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/people/permissions" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksuser-admin-permissions" title="" data-drupal-link-system-path="admin/people/permissions">Permissions</a>
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/people/roles" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-collection" title="" data-drupal-link-system-path="admin/people/roles">Roles</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/people/roles/add" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksuser-role-add" title="" data-drupal-link-system-path="admin/people/roles/add">Add role</a>
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/people/roles/manage/anonymous" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-edit-form-anonymous" title="" data-drupal-link-system-path="admin/people/roles/manage/anonymous">Anonymous user</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/people/permissions/anonymous" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-edit-permissions-form-anonymous" title="" data-drupal-link-system-path="admin/people/permissions/anonymous">Edit permissions</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/people/roles/manage/authenticated" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-edit-form-authenticated" title="" data-drupal-link-system-path="admin/people/roles/manage/authenticated">Authenticated user</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/people/permissions/authenticated" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-edit-permissions-form-authenticated" title="" data-drupal-link-system-path="admin/people/permissions/authenticated">Edit permissions</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/people/roles/manage/administrator" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-edit-form-administrator" title="" data-drupal-link-system-path="admin/people/roles/manage/administrator">Administrator</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/people/permissions/administrator" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-edit-permissions-form-administrator" title="" data-drupal-link-system-path="admin/people/permissions/administrator">Edit permissions</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/people/roles/manage/administrator/delete" class="toolbar-icon toolbar-icon-admin-toolbar-tools-extra-linksentity-user-role-delete-form-administrator" title="" data-drupal-link-system-path="admin/people/roles/manage/administrator/delete">Delete</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item menu-item--expanded">
+        <a href="/admin/reports" title="View reports, updates, and errors." class="toolbar-icon toolbar-icon-system-admin-reports" data-drupal-link-system-path="admin/reports">Reports</a>
+                                <ul class="toolbar-menu">
+                    <li class="menu-item">
+        <a href="/admin/reports/status" title="Get a status report about your site&#039;s operation." class="toolbar-icon toolbar-icon-system-status" data-drupal-link-system-path="admin/reports/status">Status report</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/reports/updates" title="Get a status report about available updates for your installed modules and themes." class="toolbar-icon toolbar-icon-update-status" data-drupal-link-system-path="admin/reports/updates">Available updates</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/reports/dblog" title="View events that have recently been logged." class="toolbar-icon toolbar-icon-dblog-overview" data-drupal-link-system-path="admin/reports/dblog">Recent log messages</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/reports/access-denied" title="View &#039;access denied&#039; errors (403s)." class="toolbar-icon toolbar-icon-dblog-access-denied" data-drupal-link-system-path="admin/reports/access-denied">Top &#039;access denied&#039; errors</a>
+              </li>
+                <li class="menu-item">
+        <a href="/admin/reports/page-not-found" title="View &#039;page not found&#039; errors (404s)." class="toolbar-icon toolbar-icon-dblog-page-not-found" data-drupal-link-system-path="admin/reports/page-not-found">Top &#039;page not found&#039; errors</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+
+</div>
+</nav>
+        </div>
+      </div>
+                <div class="toolbar-tab">
+        
+        <div>
+                      <nav class="toolbar-lining clearfix" role="navigation">
+          </nav>
+        </div>
+      </div>
+                <div class="toolbar-tab">
+        <a href="/user" class="toolbar-icon toolbar-icon-user trigger toolbar-item" title="My account" id="toolbar-item-user" data-toolbar-tray="toolbar-item-user-tray" role="button" aria-pressed="false">admin</a>
+        <div id="toolbar-item-user-tray" data-toolbar-tray="toolbar-item-user-tray" class="toolbar-tray">
+                      <nav class="toolbar-lining clearfix" role="navigation" aria-label="User account actions">
+              <h3 class="toolbar-tray-name visually-hidden">User account actions</h3>
+          <ul class="toolbar-menu"><li class="account"><a href="/user" title="User account">View profile</a></li><li class="account-edit"><a href="/user/1/edit" title="Edit user account">Edit profile</a></li><li class="logout"><a href="/user/logout?token=5jo9ctHN3YSV_QYI4coMQPERaJa_V5183wansFTa5J8">Log out</a></li></ul></nav>
+        </div>
+      </div>
+      </nav>
+  
+</div>
+
+      <div class="page-wrapper dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+      <main>
+    <div class="visually-hidden"><a id="main-content" tabindex="-1"></a></div>
+          <header class="content-header clearfix">
+        <div class="layout-container">
+          <div class="region region-breadcrumb">
+  <div id="block-claro-breadcrumbs" class="block block-system block-system-breadcrumb-block">
+  
+    
+        <nav class="breadcrumb" role="navigation" aria-labelledby="system-breadcrumb">
+    <h2 id="system-breadcrumb" class="visually-hidden">Breadcrumb</h2>
+    <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+                  <a href="/" class="breadcrumb__link">Home</a>
+              </li>
+          <li class="breadcrumb__item">
+                  <a href="/node/add" class="breadcrumb__link">Add content item</a>
+              </li>
+        </ol>
+  </nav>
+
+  </div>
+
+</div>
+
+            <div class="region region-header">
+    <div id="block-claro-page-title" class="block block-core block-page-title-block">
+  
+    
+      
+  <h1 class="page-title">Create dataset</h1>
+
+
+  </div>
+
+  </div>
+
+        </div>
+      </header>
+    
+    <div class="layout-container">
+        <div class="region region-pre-content">
+    
+  </div>
+
+      <div class="page-content clearfix">
+          <div class="region region-highlighted">
+    <div data-drupal-messages-fallback class="hidden messages-list"></div>
+
+  </div>
+
+                  <div class="region region-content">
+    <div id="block-claro-content" class="block block-system block-system-main-block">
+  
+    
+      <form class="node-data-form node-form" data-drupal-selector="node-data-form" action="/node/add/data" method="post" id="node-data-form" accept-charset="UTF-8">
+  <div class="layout-form clearfix">
+  <div class="layout-region layout-region--main">
+    <div class="layout-region__content">
+        <div class="field--type-string field--name-title field--widget-string-textfield js-form-wrapper form-wrapper" data-drupal-selector="edit-title-wrapper" id="edit-title-wrapper">      <div class="js-form-item form-item js-form-type-textfield form-type--textfield js-form-item-title-0-value form-item--title-0-value">
+      <label for="edit-title-0-value" class="form-item__label js-form-required form-required">Title</label>
+          <input class="js-text-full text-full form-text required form-element form-element--type-text form-element--api-textfield" data-drupal-selector="edit-title-0-value" type="text" id="edit-title-0-value" name="title[0][value]" value="" size="60" maxlength="255" placeholder="" required="required"/>
+        </div>
+
+  </div>
+  <input data-drupal-selector="edit-changed" type="hidden" name="changed" value="1772822709"/>  <input autocomplete="off" data-drupal-selector="form-k0slvnuwypnku3r6nepawy-xd1cxcedudjvqujy8asa" type="hidden" name="form_build_id" value="form-k0SLvNUWyPNKu3R6nePaWY-XD1CXceduDJvQujY8ASA"/>  <input data-drupal-selector="edit-node-data-form-form-token" type="hidden" name="form_token" value="MCVX1UZjclqBtnzmaGM3o_OQ5F6gNUqvpiIBTJYV2fw"/>  <input data-drupal-selector="edit-node-data-form" type="hidden" name="form_id" value="node_data_form"/><div class="field--type-language field--name-langcode field--widget-language-select js-form-wrapper form-wrapper" data-drupal-selector="edit-langcode-wrapper" id="edit-langcode-wrapper">      
+  </div>
+<div class="field--type-path field--name-path field--widget-path js-form-wrapper form-wrapper" data-drupal-selector="edit-path-wrapper" id="edit-path-wrapper">      
+  </div>
+
+    </div>
+  </div>
+  <div class="layout-region layout-region--secondary">
+    <div class="layout-region__content">
+        <div class="entity-meta accordion js-form-wrapper form-wrapper" data-drupal-selector="edit-advanced" id="edit-advanced"><div class="entity-meta__header accordion__item js-form-wrapper form-wrapper" data-drupal-selector="edit-meta" id="edit-meta"><div class="entity-meta__last-saved js-form-item form-item js-form-type-item form-type--item js-form-item-meta-changed form-item--meta-changed" id="edit-meta-changed">
+      <label for="edit-meta-changed" class="form-item__label">Last saved</label>
+        Not saved yet
+        </div>
+<div class="entity-meta__author js-form-item form-item js-form-type-item form-type--item js-form-item-meta-author form-item--meta-author" id="edit-meta-author">
+      <label for="edit-meta-author" class="form-item__label">Author</label>
+        admin
+        </div>
+<div class="entity-content-form-revision-information entity-meta__revision js-form-wrapper form-wrapper" data-drupal-selector="edit-revision-information" id="edit-revision-information"><div class="field--type-string-long field--name-revision-log field--widget-string-textarea js-form-wrapper form-wrapper" data-drupal-selector="edit-revision-log-wrapper" data-drupal-states="{&quot;visible&quot;:{&quot;:input[name=\u0022revision\u0022]&quot;:{&quot;checked&quot;:true}}}" id="edit-revision-log-wrapper">      <div class="js-form-item form-item js-form-type-textarea form-type--textarea js-form-item-revision-log-0-value form-item--revision-log-0-value">
+      <label for="edit-revision-log-0-value" class="form-item__label">Revision log message</label>
+        <div class="form-textarea-wrapper">
+  <textarea class="js-text-full text-full form-textarea resize-vertical form-element form-element--type-textarea form-element--api-textarea" data-drupal-selector="edit-revision-log-0-value" aria-describedby="edit-revision-log-0-value--description" id="edit-revision-log-0-value" name="revision_log[0][value]" rows="4" cols="60" placeholder=""></textarea>
+</div>
+
+            <div id="edit-revision-log-0-value--description" class="form-item__description">
+      Briefly describe the changes you have made.
+    </div>
+  </div>
+
+  </div>
+</div>
+</div>
+<details class="path-form accordion__item js-form-wrapper form-wrapper claro-details claro-details--accordion-item" data-drupal-selector="edit-path-0" id="edit-path-0">    <summary role="button" aria-controls="edit-path-0" aria-expanded="false" class="claro-details__summary claro-details__summary--accordion-item">URL alias</summary><div class="claro-details__wrapper details-wrapper claro-details__wrapper--accordion-item">
+        <div class="claro-details__content claro-details__content--accordion-item">
+    
+      <div class="js-form-item form-item js-form-type-textfield form-type--textfield js-form-item-path-0-alias form-item--path-0-alias">
+      <label for="edit-path-0-alias" class="form-item__label">URL alias</label>
+          <input data-drupal-selector="edit-path-0-alias" aria-describedby="edit-path-0-alias--description" type="text" id="edit-path-0-alias" name="path[0][alias]" value="" size="60" maxlength="255" class="form-text form-element form-element--type-text form-element--api-textfield"/>
+            <div id="edit-path-0-alias--description" class="form-item__description">
+      Specify an alternative path by which this data can be accessed. For example, type "/about" when writing an about page.
+    </div>
+  </div>
+    </div>
+      </div>
+</details>
+<details class="node-form-author accordion__item js-form-wrapper form-wrapper claro-details claro-details--accordion-item" data-drupal-selector="edit-author" id="edit-author">    <summary role="button" aria-controls="edit-author" aria-expanded="false" class="claro-details__summary claro-details__summary--accordion-item">Authoring information</summary><div class="claro-details__wrapper details-wrapper claro-details__wrapper--accordion-item">
+        <div class="claro-details__content claro-details__content--accordion-item">
+    
+      <div class="field--type-entity-reference field--name-uid field--widget-entity-reference-autocomplete js-form-wrapper form-wrapper" data-drupal-selector="edit-uid-wrapper" id="edit-uid-wrapper">      <div class="js-form-item form-item js-form-type-entity-autocomplete form-type--entity-autocomplete js-form-item-uid-0-target-id form-item--uid-0-target-id">
+      <label for="edit-uid-0-target-id" class="form-item__label">Authored by</label>
+          <div class="claro-autocomplete">
+    <input data-drupal-selector="edit-uid-0-target-id" aria-describedby="edit-uid-0-target-id--description" class="form-autocomplete form-text form-element form-element--type-text form-element--api-entity-autocomplete" data-autocomplete-path="/entity_reference_autocomplete/user/default/umxGuPi_CwIiq881wxmMcYlH72ak6RA02eHojJ4H8Zw" type="text" id="edit-uid-0-target-id" name="uid[0][target_id]" value="admin (1)" size="60" maxlength="1024" placeholder=""/><div class="claro-autocomplete__message hidden" data-drupal-selector="autocomplete-message">Loading…</div>
+  </div>
+            <div id="edit-uid-0-target-id--description" class="form-item__description">
+      The username of the content author.
+    </div>
+  </div>
+
+  </div>
+<div class="field--type-created field--name-created field--widget-datetime-timestamp js-form-wrapper form-wrapper" data-drupal-selector="edit-created-wrapper" id="edit-created-wrapper">      <div class="form-item form-datetime-wrapper">
+  <h4 class="form-item__label">Authored on</h4>
+<div id="edit-created-0-value" class="form-items-inline">
+  <div class="js-form-item form-item js-form-type-date form-type--date js-form-item-created-0-value-date form-item--created-0-value-date form-item--no-label">
+      <label for="edit-created-0-value-date" class="form-item__label visually-hidden">Date</label>
+          <input data-drupal-selector="edit-created-0-value-date" aria-describedby="edit-created-0-value--description" type="date" min="1902-01-01" max="2037-12-31" id="edit-created-0-value-date" name="created[0][value][date]" value="2026-03-06" size="12" class="form-date form-element form-element--type-date form-element--api-date"/>
+        </div>
+<div class="js-form-item form-item js-form-type-date form-type--date js-form-item-created-0-value-time form-item--created-0-value-time form-item--no-label">
+      <label for="edit-created-0-value-time" class="form-item__label visually-hidden">Time</label>
+          <input data-drupal-selector="edit-created-0-value-time" aria-describedby="edit-created-0-value--description" type="time" step="1" id="edit-created-0-value-time" name="created[0][value][time]" value="13:45:09" size="12" class="form-time form-element form-element--type-time form-element--api-date"/>
+        </div>
+
+</div>
+
+  <div id="edit-created-0-value--description" data-drupal-field-elements="description" class="form-item__description">
+    The date and time that the content was created.
+  </div>
+</div>
+
+  </div>
+    </div>
+      </div>
+</details>
+</div>
+
+    </div>
+  </div>
+  <div class="layout-region layout-region--footer">
+    <div class="layout-region__content">
+        <div class="entity-content-form-footer js-form-wrapper form-wrapper" data-drupal-selector="edit-footer" id="edit-footer"><div class="field--type-string field--name-moderation-state field--widget-moderation-state-default js-form-wrapper form-wrapper" data-drupal-selector="edit-moderation-state-wrapper" id="edit-moderation-state-wrapper">      <div data-drupal-selector="edit-moderation-state-0" aria-describedby="edit-moderation-state-0--description" id="edit-moderation-state-0" class="js-form-wrapper form-wrapper"><div class="container-inline js-form-item form-item js-form-type-select form-type--select js-form-item-moderation-state-0-state form-item--moderation-state-0-state">
+      <label for="edit-moderation-state-0-state" class="form-item__label">Save as</label>
+        <select data-drupal-selector="edit-moderation-state-0-state" id="edit-moderation-state-0-state" name="moderation_state[0][state]" class="form-select form-element form-element--type-select">
+            <option value="draft">Draft</option>
+                <option value="published" selected="selected">Published</option>
+                <option value="orphaned">Orphaned</option>
+                <option value="archived">Archived</option>
+                <option value="hidden">Published (hidden)</option>
+      </select>
+
+        </div>
+</div>
+
+  </div>
+</div>
+
+  <div data-drupal-selector="edit-actions" class="form-actions js-form-wrapper form-wrapper" id="edit-actions">  <input data-drupal-selector="edit-submit" type="submit" id="edit-submit" name="op" value="Save" class="button button--primary js-form-submit form-submit"/>  <input data-drupal-selector="edit-preview" type="submit" id="edit-preview" name="op" value="Preview" class="button js-form-submit form-submit"/></div>
+
+    </div>
+  </div>
+</div>
+
+</form>
+
+  </div>
+
+  </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  </div>
+
+    
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"node\/add\/data","currentPathIsAdmin":true,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"eJxdkGtuxDAIhC9kJ2foSSzi0I0VbCzA28fpa6fJqukvYL4RgoE1pxKMmRaQ-ayTCeK08RMlFcNiDv7ajqovc4pcXCQQnt9ZsrcP9pGp5aKn_CBegLzaF6XycJEF51VaBZogWnqi7_p-15tx5FwJDW-gbyaoehfVwFBvkuGngSB4QU3fp730-4DGuO5QQkYDtQ7C8d_1kT8-yryi9LVr6NMIISyN9lDbQkm3-YX9if3A_sSudHydMvpfYeTjKth2odG7_-mjRqj4Nk5yTVEu8-iPtPUHdi-qQg","theme":"claro","theme_token":"19rvc_pXkvfsRaNSEVLraATRRQr7V70RqT4U8kKqSoQ"},"ajaxTrustedUrl":{"form_action_p_pvdeGsVG5zNF_XLGPTvYSKCf43t8qZYSwcfZl2uzM":true},"moderated_content_bulk_publish":{"enable_dialog_node_edit_form":true},"toolbar":{"breakpoints":{"toolbar.narrow":"only screen and (min-width: 16.5em)","toolbar.standard":"only screen and (min-width: 38.125em)","toolbar.wide":"only screen and (min-width: 61em)"},"subtreesHash":"YN9lSAJjph4QUCZR-06tr0_mZAUXXhGZzLuvO4k96Hk"},"hoverIntentTimeout":500,"user":{"uid":"1","permissionsHash":"is-admin"}}</script>
+<script src="/core/assets/vendor/jquery/jquery.min.js?v=4.0.0"></script>
+<script src="/core/assets/vendor/underscore/underscore-min.js?v=1.13.7"></script>
+<script src="/core/assets/vendor/once/once.min.js?v=1.0.1"></script>
+<script src="/core/assets/vendor/backbone/backbone-min.js?v=1.6.1"></script>
+<script src="/core/misc/drupalSettingsLoader.js?v=11.3.5"></script>
+<script src="/core/misc/drupal.js?v=11.3.5"></script>
+<script src="/core/misc/drupal.init.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/version-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/data-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/disable-selection-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/jquery-patch-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/scroll-parent-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/unique-id-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/focusable-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/keycode-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/plugin-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widget-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/labels-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/autocomplete-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/menu-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/controlgroup-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/form-reset-mixin-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/mouse-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/checkboxradio-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/draggable-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/resizable-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/button-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/jquery.ui/ui/widgets/dialog-min.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/tabbable/index.umd.min.js?v=6.3.0"></script>
+<script src="/core/misc/autocomplete.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/tua-body-scroll-lock/tua-bsl.umd.min.js?v=11.3.5"></script>
+<script src="/core/misc/progress.js?v=11.3.5"></script>
+<script src="/core/assets/vendor/loadjs/loadjs.min.js?v=4.3.0"></script>
+<script src="/core/misc/debounce.js?v=11.3.5"></script>
+<script src="/core/misc/announce.js?v=11.3.5"></script>
+<script src="/core/misc/message.js?v=11.3.5"></script>
+<script src="/core/themes/claro/js/messages.js?tbhqox"></script>
+<script src="/core/misc/ajax.js?v=11.3.5"></script>
+<script src="/core/themes/claro/js/ajax.js?tbhqox"></script>
+<script src="/core/misc/displace.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/toolbar.menu.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/toolbar.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/models/MenuModel.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/models/ToolbarModel.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/views/BodyVisualView.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/views/MenuVisualView.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/views/ToolbarAuralView.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/views/ToolbarVisualView.js?v=11.3.5"></script>
+<script src="/modules/contrib/admin_toolbar/js/admin_toolbar.js?tbhqox"></script>
+<script src="/modules/contrib/admin_toolbar/js/jquery.hoverIntent.js?tbhqox"></script>
+<script src="/modules/contrib/admin_toolbar/js/admin_toolbar.hoverintent.js?tbhqox"></script>
+<script src="/core/misc/active-link.js?v=11.3.5"></script>
+<script src="/core/misc/position.js?v=11.3.5"></script>
+<script src="/core/themes/claro/js/autocomplete.js?v=11.3.5"></script>
+<script src="/core/misc/form.js?v=11.3.5"></script>
+<script src="/core/misc/details-summarized-content.js?v=11.3.5"></script>
+<script src="/core/misc/details-aria.js?v=11.3.5"></script>
+<script src="/core/misc/details.js?v=11.3.5"></script>
+<script src="/core/themes/claro/js/details.js?tbhqox"></script>
+<script src="/core/misc/states.js?v=11.3.5"></script>
+<script src="/core/misc/dialog/dialog-deprecation.js?v=11.3.5"></script>
+<script src="/core/misc/dialog/dialog.js?v=11.3.5"></script>
+<script src="/core/misc/dialog/dialog.position.js?v=11.3.5"></script>
+<script src="/core/misc/dialog/dialog.jquery-ui.js?v=11.3.5"></script>
+<script src="/core/misc/dialog/dialog.ajax.js?v=11.3.5"></script>
+<script src="/modules/contrib/moderated_content_bulk_publish/js/moderated_content_bulk_publish.js?tbhqox"></script>
+<script src="/core/misc/entity-form.js?v=11.3.5"></script>
+<script src="/core/modules/node/js/node.js?v=11.3.5"></script>
+<script src="/core/modules/path/js/path.js?v=11.3.5"></script>
+<script src="/core/modules/toolbar/js/escapeAdmin.js?v=11.3.5"></script>
+
+  </body>
+</html>

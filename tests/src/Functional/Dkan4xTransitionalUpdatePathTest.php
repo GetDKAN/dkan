@@ -42,6 +42,9 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('datastore'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('harvest'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('sample_content'));
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('json_form_widget'));
+
+
 
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
@@ -70,6 +73,8 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('sample_content'));
     $this->assertFalse(\Drupal::moduleHandler()->moduleExists('data_dictionary_widget'));
 
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('json_form_widget'));
+
     $config = \Drupal::configFactory()->getEditable('core.extension');
     $modules = $config->get('module');
     $this->assertArrayNotHasKey('common', $modules);
@@ -83,6 +88,8 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     // Open /node/add/data and check that metastore fields exist.
     $this->drupalLogin($this->rootUser);
     $this->drupalGet('node/add/data');
+    // $dump_file = sys_get_temp_dir() . '/dkan-node-add-data.html';
+    // file_put_contents($dump_file, $this->getSession()->getPage()->getContent());
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-title');
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-description');
 
