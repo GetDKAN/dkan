@@ -3,4 +3,3 @@ description: Provides a MySQL Importer class.
 type: module
 core_version_requirement: ^10.4 || ^11
 package: DKAN 4.x Transition
-configure: datastore.mysql_import.settings
