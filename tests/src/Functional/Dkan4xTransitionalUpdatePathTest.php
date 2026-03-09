@@ -97,8 +97,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     // Open /node/add/data and check that metastore fields exist.
     $this->drupalLogin($this->rootUser);
     $this->drupalGet('node/add/data');
-    // $dump_file = sys_get_temp_dir() . '/dkan-node-add-data.html';
-    // file_put_contents($dump_file, $this->getSession()->getPage()->getContent());
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-title');
     $this->assertSession()->fieldExists('edit-field-json-metadata-0-value-description');
 
