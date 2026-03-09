@@ -8,7 +8,7 @@
 /**
  * Update core.extension config to remove old common module.
  */
-function dkan_common_update_10000(&$sandbox) {
+function dkan_common_update_11301(&$sandbox) {
   // If old common module is installed, copy setting
   // always_use_existing_local_perspective.
   if (\Drupal::moduleHandler()->moduleExists('common')) {

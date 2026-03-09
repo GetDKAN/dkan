@@ -27,7 +27,7 @@ function harvest_install() {
 /**
  * Disable old harvest module.
  */
-function dkan_harvest_update_10001() {
+function dkan_harvest_update_11301() {
   if (\Drupal::moduleHandler()->moduleExists('harvest')) {
     \Drupal::service('module_installer')->uninstall(['harvest']);
     $message = new TranslatableMarkup('The legacy harvest module has been uninstalled.');
@@ -38,7 +38,7 @@ function dkan_harvest_update_10001() {
 /**
  * Update namespaces in plans.
  */
-function dkan_harvest_update_10002() {
+function dkan_harvest_update_11302() {
   /** @var \Drupal\dkan_harvest\HarvestUtility $harvest_utility */
   $harvest_utility = \Drupal::service('dkan.harvest.utility');
   $harvest_utility->harvestNammespaceUpdate();
