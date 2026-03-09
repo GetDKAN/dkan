@@ -23,7 +23,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
    */
   protected function setDatabaseDumpFiles() {
     $this->databaseDumpFiles = [
-      dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition.php.gz',
+      dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition-10.5.php.gz',
     ];
   }
 
@@ -133,6 +133,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
         ->condition('id', $record->id)
         ->execute();
     }
+
   }
 
 }
