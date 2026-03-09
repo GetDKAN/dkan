@@ -9,7 +9,7 @@
  * Implements hook_install().
  */
 function dkan_datastore_mysql_import_install() {
-  dkan_datastore_mysql_import_update_10001();
+  dkan_datastore_mysql_import_update_11301();
 }
 
 /**
