@@ -22,9 +22,18 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
    * {@inheritdoc}
    */
   protected function setDatabaseDumpFiles() {
-    $this->databaseDumpFiles = [
-      dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition-10.5.php.gz',
-    ];
+    // If Drupal core version is 11.2 or higher, use the 11.2 dump file.
+    // Otherwise, use the 10.5 dump file.
+    if (version_compare(\Drupal::VERSION, '11.2.0', '>=')) {
+      $this->databaseDumpFiles = [
+        dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition-11.2.php.gz',
+      ];
+    }
+    else {
+      $this->databaseDumpFiles = [
+        dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition-10.5.php.gz',
+      ];
+    }
   }
 
   /**
