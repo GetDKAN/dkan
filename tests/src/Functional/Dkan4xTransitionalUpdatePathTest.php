@@ -22,11 +22,11 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
    * {@inheritdoc}
    */
   protected function setDatabaseDumpFiles() {
-    // If Drupal core version is 11.2 or higher, use the 11.2 dump file.
+    // If Drupal core version is 11.3 or higher, use the 11.3 dump file.
     // Otherwise, use the 10.5 dump file.
-    if (version_compare(\Drupal::VERSION, '11.2.0', '>=')) {
+    if (version_compare(\Drupal::VERSION, '11.3.0', '>=')) {
       $this->databaseDumpFiles = [
-        dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition-11.2.php.gz',
+        dirname(__DIR__, 2) . '/fixtures/update/update-2.x-transition-11.3.php.gz',
       ];
     }
     else {
@@ -52,8 +52,6 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('harvest'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('sample_content'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('json_form_widget'));
-
-
 
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_common'));
     $this->assertTrue(\Drupal::moduleHandler()->moduleExists('dkan_metastore'));
