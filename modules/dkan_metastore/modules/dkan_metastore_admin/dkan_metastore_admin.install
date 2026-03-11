@@ -8,7 +8,7 @@
 /**
  * Remove the legacy metastore_admin module.
  */
-function dkan_metastore_admin_update_10001() {
+function dkan_metastore_admin_update_11301() {
   // Re-import default config for dkan_metastore_admin.
   \Drupal::service('config.installer')->installDefaultConfig('module', 'dkan_metastore_admin');
 
