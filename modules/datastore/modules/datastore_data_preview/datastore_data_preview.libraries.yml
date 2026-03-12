@@ -1,8 +1,0 @@
-data_preview:
-  css:
-    component:
-      css/data-preview.css: {}
-  js:
-    js/page-size-select.js: {}
-  dependencies:
-    - core/drupal
