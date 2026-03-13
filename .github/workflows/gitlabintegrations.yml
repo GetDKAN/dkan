@@ -1,0 +1,25 @@
+name: Github to Drupal.org (Gitlab)
+
+on:
+  push:
+    branches:
+      - 4.x
+
+jobs:
+  to_drupalcode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.DRUPAL_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t rsa,ed25519 git.drupal.org >> ~/.ssh/known_hosts
+      - name: Push triggering ref
+        run: |
+          git remote add drupal git@git.drupal.org:project/dkan.git
+          git push --force drupal "${GITHUB_REF}:${GITHUB_REF}"
