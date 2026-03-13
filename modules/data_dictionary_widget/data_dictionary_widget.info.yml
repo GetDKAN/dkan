@@ -1,5 +1,0 @@
-name: 'Data Dictionary Widget (Legacy, deprecated)'
-description: 'Provides a field widget to generate a data-dictionary form'
-package: DKAN 2.x legacy
-type: module
-core_version_requirement: ^10.2 || ^11
