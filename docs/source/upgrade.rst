@@ -145,11 +145,11 @@ Now you should be ready to upgrade the DKAN module. Run:
 
 .. prompt:: bash $
 
-    composer require getdkan/dkan:~3.0.0
+    composer require getdkan/dkan:~3.0.0 -W
 
 Note that DKAN 3 also uses the now-standalone `JSON Form Widget module <https://www.drupal.org/project/issues/json_form_widget>`_,
-which had previously been included as a submodule of DKAN. Composer should bring
-in this new dependency automatically for you.
+which had previously been included as a submodule of DKAN. Adding `-W` to the
+composer command ensures that this new dependency will also be added.
 
 .. admonition:: Deployment notes
 
