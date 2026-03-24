@@ -1,0 +1,25 @@
+<?php
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_uninstall().
+ */
+function harvest_uninstall() {
+  // For each role, remove permissions granted by the harvest module.
+  $roles = Role::loadMultiple();
+  $permissions_to_remove = [];
+  foreach ($roles as $rid => $role_name) {
+    /** @var \Drupal\user\Entity\Role $role */
+    $role = Role::load($rid);
+    $permissions = $role->getPermissions();
+    $permissions_to_remove = array_filter($permissions, function ($permission) {
+      return strpos($permission, 'harvest') === 0;
+    });
+    foreach ($permissions_to_remove as $permission) {
+      // Remove dependency on the harvest module for each permission.
+      $role->revokePermission($permission);
+    }
+    $role->save();
+  }
+}
