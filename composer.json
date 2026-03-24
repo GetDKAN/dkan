@@ -1,5 +1,5 @@
 {
-    "name": "getdkan/dkan",
+    "name": "drupal/dkan",
     "description": "DKAN Open Data Catalog",
     "license": "GPL-2.0-or-later",
     "type": "drupal-module",
