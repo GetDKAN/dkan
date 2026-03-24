@@ -1,25 +1,53 @@
 <?php
 
 use Drupal\user\Entity\Role;
+use Drush\Drush;
 
 /**
  * Implements hook_uninstall().
  */
 function metastore_uninstall() {
+
+  $permissions_to_remove = [
+    'post put delete datasets through the api',
+    'administer data dictionary settings',
+    'administer metastore settings',
+    'administer resource mapping',
+  ];
+
   // For each role, remove permissions granted by the metastore module.
-  $roles = Role::loadMultiple();
-  $permissions_to_remove = [];
-  foreach ($roles as $rid => $role_name) {
+  $roles = array_keys(Role::loadMultiple());
+
+  foreach ($roles as $rid) {
     /** @var \Drupal\user\Entity\Role $role */
     $role = Role::load($rid);
-    $permissions = $role->getPermissions();
-    $permissions_to_remove = array_filter($permissions, function ($permission) {
-      return strpos($permission, 'metastore') === 0;
-    });
+    $changed = FALSE;
     foreach ($permissions_to_remove as $permission) {
-      // Remove dependency on the metastore module for each permission.
+      if (!$role->hasPermission($permission)) {
+        continue;
+      }
+
+      // Remove metastore-specific permissions for each role.
       $role->revokePermission($permission);
+      $changed = TRUE;
     }
-    $role->save();
+    if ($changed) {
+      $message = sprintf('Revoked metastore permissions from role %s on uninstall.', $role->id());
+      \Drupal::logger('metastore')->notice($message);
+      _metastore_uninstall_drush_log($message);
+      $role->save();
+    }
+  }
+}
+
+/**
+ * Log a message to Drush if Drush is available.
+ *
+ * @param string $message
+ *   The message to log.
+ */
+function _metastore_uninstall_drush_log($message) {
+  if (class_exists(Drush::class)) {
+    Drush::logger()->notice($message);
   }
 }
