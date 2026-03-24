@@ -1,13 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Install, update and uninstall functions for the harvest module.
+ */
+
 use Drupal\user\Entity\Role;
-use Drush\Drush;
 
 /**
  * Implements hook_uninstall().
  */
 function harvest_uninstall() {
-
   // All permissions provided by the harvest module should be removed.
   $permissions_to_remove = [
     'harvest_api_index',
@@ -43,20 +46,7 @@ function harvest_uninstall() {
     if ($changed) {
       $message = sprintf('Revoked harvest permissions from role %s on uninstall.', $role->id());
       \Drupal::logger('harvest')->notice($message);
-      _harvest_uninstall_drush_log($message);
       $role->save();
     }
-  }
-}
-
-/**
- * Log a message to Drush if Drush is available.
- *
- * @param string $message
- *   The message to log.
- */
-function _harvest_uninstall_drush_log($message) {
-  if (class_exists(Drush::class)) {
-    Drush::logger()->notice($message);
   }
 }

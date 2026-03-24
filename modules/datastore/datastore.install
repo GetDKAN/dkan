@@ -1,12 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Install, update and uninstall functions for the datastore module.
+ */
+
 use Drupal\user\Entity\Role;
-use Drush\Drush;
 
 /**
  * Implements hook_uninstall().
  */
 function datastore_uninstall() {
+  // All permissions provided by the harvest module should be removed.
   $permissions_to_remove = [
     'datastore_api_import',
     'datastore_api_drop',
@@ -31,21 +36,7 @@ function datastore_uninstall() {
     if ($changed) {
       $message = sprintf('Revoked datastore permissions from role %s on uninstall.', $role->id());
       \Drupal::logger('datastore')->notice($message);
-      _datastore_uninstall_drush_log($message);
       $role->save();
     }
   }
 }
-
-/**
- * Log a message to Drush if Drush is available.
- *
- * @param string $message
- *   The message to log.
- */
-function _datastore_uninstall_drush_log($message) {
-  if (class_exists(Drush::class)) {
-    Drush::logger()->notice($message);
-  }
-}
-
