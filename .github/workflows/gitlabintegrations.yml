@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - 4.x
+    tags:
+      - '4.*'
 
 jobs:
   to_drupalcode:
