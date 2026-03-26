@@ -34,7 +34,7 @@ commands:
         type: string
       drupal_core_constraint:
         description: "Branch of getdkan/recommended-project to use."
-        default: "~10.5.0"
+        default: "~10.5"
         type: string
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -122,8 +122,8 @@ jobs:
         default: "mysql:5.7"
         type: string
       drupal_core_constraint:
-        description: "Branch of getdkan/recommended-project to use."
-        default: "~10.4"
+        description: "Version constraint to use for Drupal core."
+        default: "~10.5"
         type: string
       report_coverage:
         description: "Generate coverage report and send it to Qlty"
@@ -238,12 +238,12 @@ jobs:
         default: "mysql:5.7"
         type: string
       drupal_core_constraint:
-        description: "Branch of getdkan/recommended-project to use."
+        description: "Version constraint to use for Drupal core."
         default: "~10.5.0"
         type: string
     steps:
       - prepare_build:
-          upgrade: << parameters.upgrade >>
+          php_version: << parameters.php_version >>
       - run:
           name: Run Cypress tests
           max_auto_reruns: 3

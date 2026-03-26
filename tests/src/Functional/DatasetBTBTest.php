@@ -33,7 +33,7 @@ class DatasetBTBTest extends BrowserTestBase {
     'field',
     'dkan_harvest',
     'dkan_metastore',
-    'metastore_search',
+    'dkan_metastore_search',
     'node',
     'search_api',
   ];

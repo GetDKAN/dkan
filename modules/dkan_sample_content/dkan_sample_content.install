@@ -6,16 +6,9 @@
  */
 
 /**
- * Implements hook_install().
- */
-function dkan_sample_content_install() {
-  dkan_sample_content_update_10001();
-}
-
-/**
  * Disable legacy sample_content module.
  */
-function dkan_sample_content_update_10001() {
+function dkan_sample_content_update_11301() {
   if (\Drupal::moduleHandler()->moduleExists('sample_content')) {
     \Drupal::service('module_installer')->uninstall(['sample_content']);
     return t('The legacy sample_content module has been uninstalled.');
