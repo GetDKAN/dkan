@@ -12,7 +12,7 @@ dkan:dataset-info
 ~~~~~~
 
 dkan:datastore:reverse-dataset-lookup
------------------
+-------------------------------------
    Takes an argument of the table name and returns the dataset uuid.
 
   **Arguments**
