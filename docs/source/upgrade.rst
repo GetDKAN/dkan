@@ -181,6 +181,12 @@ and enable the new, renamed ones (e.g. ``dkan_harvest``, ``dkan_datastore``).
 It will also run all the necessary update hooks to migrate the old modules'
 settings to the new modules.
 
+The update hooks will also go through each role on your site and remove any
+permissions defined in the disabled modules. This prevents the roles from being
+deleted completely due to missing dependencies. If you have exported your config,
+these permissions should be re-added to the roles when you re-import your config
+(see next step).
+
 Step 6: Re-import configuration
 ###############################
 
