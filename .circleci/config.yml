@@ -225,10 +225,6 @@ jobs:
       image: ubuntu-2204:current
     parallelism: 4
     parameters:
-      upgrade:
-        description: "If true, will install the latest stable DKAN version and test upgrade"
-        default: false
-        type: boolean
       php_version:
         description: "PHP major.minor for DDev to use."
         default: "8.3"
@@ -241,6 +237,10 @@ jobs:
         description: "Version constraint to use for Drupal core."
         default: "~10.5.0"
         type: string
+      upgrade:
+        description: "If true, will install the latest stable DKAN version and test upgrade"
+        default: false
+        type: boolean
     steps:
       - prepare_build:
           php_version: << parameters.php_version >>

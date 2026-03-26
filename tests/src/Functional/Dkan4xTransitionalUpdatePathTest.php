@@ -138,6 +138,7 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
         ->condition('id', $record->id)
         ->execute();
     }
+
   }
 
 }

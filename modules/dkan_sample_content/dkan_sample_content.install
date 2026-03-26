@@ -5,7 +5,7 @@
  * Install file for the datastore_mysql_import module.
  */
 
-/**
+  /**
  * Disable legacy sample_content module.
  */
 function dkan_sample_content_update_11301() {

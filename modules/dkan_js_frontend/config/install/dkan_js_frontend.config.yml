@@ -1,0 +1,16 @@
+css_folder: '/frontend/build/static/css/'
+js_folder: '/frontend/build/static/js/'
+minified: true
+preprocess: true
+datastore_query_api: false
+routes:
+  - home,/home
+  - about,/about
+  - api,/api
+  - dataset,/dataset/{id}
+  - datasetapi,/dataset/{id}/api
+  - search,/search
+  - publishers,/publishers
+js:
+  attributes:
+    - type,module
