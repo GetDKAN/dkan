@@ -6,3 +6,4 @@ sphinxcontrib-mermaid>=1.0.0
 sphinxcontrib-phpdomain>=0.11.1
 pygments>=2.14
 sphinx-prompt>=1.8.0
+sphinx-togglebutton>=0.4.4
