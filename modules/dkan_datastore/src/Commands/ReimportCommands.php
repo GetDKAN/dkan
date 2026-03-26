@@ -89,7 +89,7 @@ class ReimportCommands extends DrushCommands {
       if ($resource_id = $distribution['resource_id'] ?? FALSE) {
         $this->datastoreService->drop($resource_id);
         $this->logger()->notice('Reimporting distribution: ' . $resource_id);
-        $result = $this->datastoreService->import($resource_id, FALSE, $distribution['resource_version']);
+        $result = $this->datastoreService->import($resource_id, FALSE, $distribution['resource_version'] ?? NULL);
         $status = $result['ImportService'] ? $result['ImportService']->getStatus() : 'failed, resource not found';
         $this->logger()->notice("Ran import for $resource_id; status: $status");
       }
