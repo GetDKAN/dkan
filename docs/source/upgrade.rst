@@ -201,7 +201,7 @@ Fortunately, your original configuration is preserved in your sync directory if 
 Before you import, you can inspect the difference between your current site
 config and the sync directory by visiting the Drupal UI at ``/admin/config/development/configuration``.
 You will possibly see a number of configuration items being added, because they
-were removed the legacy modules were disabled.
+were removed when the legacy modules were disabled.
 
 DKAN 3.x includes an `event subscriber <https://github.com/GetDKAN/dkan/blob/3.x/modules/dkan_common/src/EventSubscriber/ConfigImportRenameDependenciesSubscriber.php>`_
 that modifies config on import to attempt to re-map old module names to new ones. 
