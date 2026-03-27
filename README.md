@@ -43,10 +43,10 @@ Guide in the [DKAN v2 documentation site](https://dkan.readthedocs.io/en/4.x/).
 
 ## Contributing
 
-- [Code of conduct](https://dkan.readthedocs.io/en/latest/contributing/code_of_conduct.html)
-- [Submission guidelines](https://dkan.readthedocs.io/en/latest/contributing/submission_guidelines.html)
+- [Code of conduct](https://dkan.readthedocs.io/en/4.x/contributing/code_of_conduct.html)
+- [Submission guidelines](https://dkan.readthedocs.io/en/4.x/contributing/submission_guidelines.html)
 - [Create an issue](https://github.com/GetDKAN/dkan/issues/new/choose)
-- [Set up local sandbox with DDEV](https://dkan.readthedocs.io/en/latest/developer-guide/dev_local_setup.html)
+- [Set up local sandbox with DDEV](https://dkan.readthedocs.io/en/4.x/developer-guide/dev_local_setup.html)
 
 ## License
 
