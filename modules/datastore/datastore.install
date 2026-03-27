@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the datastore module.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_uninstall().
+ */
+function datastore_uninstall() {
+  // All permissions provided by the harvest module should be removed.
+  $permissions_to_remove = [
+    'datastore_api_import',
+    'datastore_api_drop',
+  ];
+
+  // For each role, remove permissions granted by the datastore module.
+  $roles = array_keys(Role::loadMultiple());
+
+  foreach ($roles as $rid) {
+    /** @var \Drupal\user\Entity\Role $role */
+    $role = Role::load($rid);
+    $changed = FALSE;
+    foreach ($permissions_to_remove as $permission) {
+      if (!$role->hasPermission($permission)) {
+        continue;
+      }
+
+      // Remove datastore-specific permissions for each role.
+      $role->revokePermission($permission);
+      $changed = TRUE;
+    }
+    if ($changed) {
+      $message = sprintf('Revoked datastore permissions from role %s on uninstall.', $role->id());
+      \Drupal::logger('datastore')->notice($message);
+      $role->save();
+    }
+  }
+}

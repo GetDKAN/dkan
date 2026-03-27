@@ -8,6 +8,7 @@ use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use Drupal\dkan_harvest\Load\Dataset;
 use Drupal\dkan_harvest\Transform\ResourceImporter;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
+use Drupal\user\Entity\Role;
 
 /**
  * Tests update functions for the metastore module.
@@ -66,6 +67,10 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
 
     $this->fixHarvestPlanJsonEscapes();
 
+    // Assert that api_user role is present.
+    $roles = Role::loadMultiple();
+    $this->assertArrayHasKey('api_user', $roles);
+
     // Run all updates.
     $this->runUpdates();
 
@@ -116,6 +121,12 @@ class Dkan4xTransitionalUpdatePathTest extends UpdatePathTestBase {
     $this->assertEquals("\\" . DataJson::class, $updated_plan->extract->type);
     $this->assertEquals("\\" . ResourceImporter::class, $updated_plan->transforms[0]);
     $this->assertEquals("\\" . Dataset::class, $updated_plan->load->type);
+
+    // Assert that api_user role still present (minimal test of the
+    // hook_uninstall functions in the harvest, datastore, and metastore
+    // modules).
+    $roles = Role::loadMultiple();
+    $this->assertArrayHasKey('api_user', $roles);
   }
 
   /**
