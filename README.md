@@ -1,5 +1,5 @@
 # DKAN
-[DKAN](https://dkan.readthedocs.io/en/latest) - An Open Data Catalog built on [Drupal 9/10](https://www.drupal.org/documentation)
+[DKAN](https://dkan.readthedocs.io/en/2.x) - An Open Data Catalog module for [Drupal 10/11](https://www.drupal.org/documentation)
 
 [![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/2.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/2.x)
 [![Maintainability](https://qlty.sh/gh/GetDKAN/projects/dkan/maintainability.svg)](https://qlty.sh/gh/GetDKAN/projects/dkan)
@@ -9,9 +9,7 @@
 ---
 
 ## Documentation
-DKAN's documentation can be found at https://dkan.readthedocs.io/en/latest
-
-Requirements: https://dkan.readthedocs.io/en/latest/installation/index.html#requirements
+DKAN's full documentation can be found at [dkan.readthedocs.io](https://dkan.readthedocs.io/en/2.x)
 
 ---
 
