@@ -38,7 +38,8 @@ extensions = [
   'sphinxcontrib.httpdomain',
   'sphinxcontrib.mermaid',
   'sphinx_rtd_theme',
-  'sphinx_prompt'
+  'sphinx_prompt',
+  'sphinx_togglebutton'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
