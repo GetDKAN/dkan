@@ -1,16 +1,6 @@
 Upgrading from DKAN 2.x
 ========================
 
-.. important::
-
-    These are tentative upgrade instructions intended to be followed once DKAN
-    4.0 is released on the Drupal.org composer repository. If these words are still
-    visible in the DKAN 3.x docs, that means the release has not happened yet,
-    and you will not be able to complete the instructions.
-    
-    You may begin preliminary testing up to step 7 below, but please hold off on
-    upgrading until a full DKAN 4.0 release is out.
-
 Background
 ----------
 
