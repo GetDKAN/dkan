@@ -54,7 +54,7 @@ DKAN and related modules are freely-available under the ["GNU General Public Lic
 
 ## Security
 
-If you have found a vulnerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
+DKAN is covered by the [Drupal Security Advisory Policy](https://www.drupal.org/drupal-security-team/security-advisory-process-and-permissions-policy). If you have found a vulnerability in DKAN, please [report it confidentially](https://www.drupal.org/docs/develop/issues/issue-procedures-and-etiquette/reporting-a-security-issue).
 
 ## History
 

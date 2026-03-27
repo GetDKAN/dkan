@@ -15,4 +15,6 @@ Be patient. DKAN maintainers work full time on projects that support the develop
 
 Reporting a security issue
 --------------------------
-If you have found a vunerability in DKAN, please report this by e-mailing dkan-security@civicactions.com.
+
+DKAN is covered by the `Drupal Security Advisory Policy <https://www.drupal.org/drupal-security-team/security-advisory-process-and-permissions-policy>`_.
+If you have found a vulnerability in DKAN, please `report it confidentially <https://www.drupal.org/docs/develop/issues/issue-procedures-and-etiquette/reporting-a-security-issue>`_.
