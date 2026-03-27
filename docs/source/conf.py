@@ -11,6 +11,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import subprocess
 import sys
 #sys.path.insert(0, os.path.abspath('../../modules/'))
 #sys.path.append(os.path.abspath('..'))
@@ -23,8 +24,31 @@ copyright = '2024, CivicActions'
 author = 'CivicActions'
 
 # The full version, including alpha/beta/rc tags
-release = '2.19.2'
-version = '2.x'
+def _rtd_version():
+  rtd_version = os.getenv("READTHEDOCS_VERSION")
+  rtd_type = os.getenv("READTHEDOCS_VERSION_TYPE")
+  # If RTD is building a tag, use it directly.
+  if rtd_type == "tag" and rtd_version:
+    return rtd_version
+  # If RTD is building "latest", show the most recent tag on the branch.
+  if rtd_version == "latest":
+    try:
+      return subprocess.check_output(
+        ["git", "describe", "--tags", "--abbrev=0"],
+        text=True
+      ).strip()
+    except Exception:
+      try:
+        return subprocess.check_output(
+          ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+          text=True
+        ).strip()
+      except Exception:
+        pass
+  return rtd_version or "dev"
+
+release = _rtd_version()
+version = release
 
 # -- General configuration ---------------------------------------------------
 
