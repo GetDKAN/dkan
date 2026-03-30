@@ -18,15 +18,27 @@ If you're creating a new web project that will ultimately go into production,
 use your workflow of choice for starting a new Drupal project. DKAN is a Drupal
 module and can be installed into any Drupal 10+ site using `Composer <https://getcomposer.org/>`_.
 
-DKAN currently lives on Composer's main package repository, and can be added to
+DKAN is distributed via the Drupal composer repository, and can be added to
 a project by running:
 
   .. prompt:: bash $
 
-    composer require 'getdkan/dkan'
+    composer require 'drupal/dkan'
 
-.. warning::
-   A bug in Drupal 10.x core cron may cause problems with data imports, and applying `this patch <https://www.drupal.org/project/drupal/issues/3274931>`_ is highly recommended. The patch will be applied automatically if you use the `recommended project <https://github.com/GetDKAN/recommended-project>`_.
+See Drupal's `composer documentation <https://www.drupal.org/docs/develop/using-composer/manage-dependencies>`_ for more information.
+
+DKAN depends on the JSON Form Widget module, which in turn depends on the Select2
+module and companion library. The module will be added automatically by composer,
+but you should follow the steps in the `Select2 project's Readme <https://git.drupalcode.org/project/select2/-/blob/2.x/README.md?ref_type=heads#installation>`_
+to install the library.
+
+Upgrading
+---------
+
+Keep DKAN upgraded with composer like any other Drupal module. But, if you are
+already using DKAN 2.x and need to upgrade to 4.x, please be sure to follow the
+detailed upgrade instructions in the :doc:`upgrade guide <upgrade>`.
+
 
 Requirements
 ------------
@@ -40,13 +52,8 @@ DKAN is based on `Drupal software <https://www.drupal.org/docs/getting-started/s
 -  Drush: minimum version 11.x.
 -  Node: minimum version 18 (if using the decoupled frontend)
 
-.. note::
-   DKAN has several functions that expect MySQL/MariaDB database connections;
-   running on other databases (e.g. PostgreSQL) is not recommended at this time.
-
-.. note::
-   DKAN requires some additional composer changes due to a dependency on the Select2 library. You should follow the steps in the `Select2 project's Readme <https://git.drupalcode.org/project/select2/-/blob/2.x/README.md?ref_type=heads#installation>`_.
-
+DKAN has several functions that expect MySQL/MariaDB database connections;
+running on other databases (e.g. PostgreSQL) is not recommended at this time.
 
 Add some example datasets to your site
 --------------------------------------

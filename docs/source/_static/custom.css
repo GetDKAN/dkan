@@ -1,3 +1,12 @@
 .wy-side-nav-search > div.version {
   color: white;
 }
+button.toggle-button::before {
+  vertical-align: top;
+  color: white;
+}
+.tb-icon {
+  height: 1.1em;
+  width: 1.1em;
+  color: white;
+}
