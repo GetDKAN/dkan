@@ -18,12 +18,14 @@ If you're creating a new web project that will ultimately go into production,
 use your workflow of choice for starting a new Drupal project. DKAN is a Drupal
 module and can be installed into any Drupal 10+ site using `Composer <https://getcomposer.org/>`_.
 
-DKAN currently lives on Composer's main package repository, and can be added to
+DKAN is distributed via the Drupal composer repository, and can be added to
 a project by running:
 
   .. prompt:: bash $
 
     composer require 'drupal/dkan'
+
+See Drupal's `composer documentation <https://www.drupal.org/docs/develop/using-composer/manage-dependencies>`_ for more information.
 
 DKAN depends on the JSON Form Widget module, which in turn depends on the Select2
 module and companion library. The module will be added automatically by composer,
