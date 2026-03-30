@@ -23,7 +23,7 @@ a project by running:
 
   .. prompt:: bash $
 
-    composer require 'getdkan/dkan'
+    composer require 'drupal/dkan'
 
 DKAN depends on the JSON Form Widget module, which in turn depends on the Select2
 module and companion library. The module will be added automatically by composer,

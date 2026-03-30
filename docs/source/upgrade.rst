@@ -7,7 +7,7 @@ Background
 DKAN 2
 ######
 
-DKAN 2 was a major rewrite of DKAN 7.x-1.x for Drupal 8, and we misunderstood a
+DKAN 2 was a major rewrite of DKAN 7.x-1.x for Drupal 8, and we misinterpreted a
 few aspects of the newly-introduced conventions around object-oriented
 programming and PSR namespacing. Specifically, there was an assumption that
 submodules could inherit the namespace of their parent module, so that under
@@ -42,7 +42,7 @@ sound like, as it requires:
 For this reason, we are jumping two major versions of DKAN at once.
 
 * **DKAN 2.23** will introduce the new, renamed modules (they will not yet be functional)
-* **DKAN 3.0** will move all the code from the new modules to the old, provide all 
+* **DKAN 3.0** will move all the code from the old modules to the new, provide all 
   the update functions to migrate existing sites, and deprecate the old modules.
   We do not plan to release any updates to 3.0, as it is intended purely as a
   transition to DKAN 4.0.
