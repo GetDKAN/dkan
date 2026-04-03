@@ -65,12 +65,8 @@ trait QueryBuilderTrait {
       return [$query, FALSE];
     }
 
-    $conditions = [];
-    foreach ($fulltextFields as $field) {
-      $conditions[$field][] = $params['fulltext'];
-    }
-
-    $query = $this->createConditionGroup($query, $conditions, 'OR');
+    // Use Search API fulltext parsing to avoid phrase-only matching.
+    $query->keys($params['fulltext'], $fulltextFields);
 
     return [$query, TRUE];
   }
