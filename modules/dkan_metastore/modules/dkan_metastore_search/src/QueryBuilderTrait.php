@@ -58,7 +58,7 @@ trait QueryBuilderTrait {
     if (!isset($params['fulltext']) || empty($params['fulltext']) || empty($index->getFulltextFields())) {
       return [$query, FALSE];
     }
- 
+
     // Use Search API fulltext parsing.
     $query->keys($params['fulltext']);
 
