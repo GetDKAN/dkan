@@ -467,7 +467,7 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach ($datasetInfo as $rev) {
-      $distributions = $rev['distributions'];
+      $distributions = $rev['distributions'] ?? [];
       // For first distribution, combine with revision information.
       $rows[] = array_merge(
         $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
@@ -499,7 +499,7 @@ class DashboardForm extends FormBase {
     // Moderation state can be 'hidden', which is not a good CSS class if we
     // don't want data to be hidden. We hijack the 'registered' class for use
     // here.
-    $moderation_class = $rev['moderation_state'];
+    $moderation_class = $rev['moderation_state'] ?? NULL;
     if ($moderation_class == 'hidden') {
       $moderation_class = 'published-hidden';
     }
@@ -508,9 +508,9 @@ class DashboardForm extends FormBase {
         'rowspan' => $resourceCount,
         'data' => [
           '#theme' => 'dkan_datastore_dashboard_dataset_cell',
-          '#uuid' => $rev['uuid'],
-          '#title' => $rev['title'],
-          '#url' => Url::fromUri("internal:/dataset/$rev[uuid]"),
+          '#uuid' => $rev['uuid'] ?? NULL,
+          '#title' => $rev['title'] ?? $this->t('unknown'),
+          '#url' => (!empty($rev['uuid'])) ? Url::fromUri("internal:/dataset/{$rev['uuid']}") : NULL,
         ],
       ],
       [
@@ -518,9 +518,9 @@ class DashboardForm extends FormBase {
         'class' => [$moderation_class],
         'data' => [
           '#theme' => 'dkan_datastore_dashboard_revision_cell',
-          '#revision_id' => $rev['revision_id'],
-          '#modified' => $this->dateFormatter->format(strtotime((string) $rev['modified_date_dkan']), 'short'),
-          '#moderation_state' => $rev['moderation_state'],
+          '#revision_id' => $rev['revision_id'] ?? NULL,
+          '#modified' => (!empty($rev['modified_date_dkan'])) ? $this->dateFormatter->format(strtotime((string) $rev['modified_date_dkan']), 'short') : NULL,
+          '#moderation_state' => $rev['moderation_state'] ?? NULL,
         ],
       ],
       [
