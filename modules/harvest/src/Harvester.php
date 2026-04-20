@@ -4,6 +4,7 @@ namespace Drupal\harvest;
 
 use Drupal\harvest\ETL\Factory;
 use Drupal\harvest\ETL\Transform\Transform;
+use Drupal\metastore\Exception\MissingObjectException;
 
 /**
  * Executes harvests.
@@ -48,7 +49,14 @@ class Harvester {
 
     $counter = 0;
     foreach ($ids as $id) {
-      $load->removeItem($id);
+      try {
+        $load->removeItem($id);
+      }
+      // Catch missing datasets without incident, because we wanted them
+      // removed anyway.
+      catch (MissingObjectException $exception) {
+        \Drupal::logger('harvest')->error($exception->getMessage());
+      }
       $this->factory->hashStorage->remove($id);
       $counter++;
     }
