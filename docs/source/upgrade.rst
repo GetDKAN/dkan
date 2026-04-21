@@ -116,7 +116,8 @@ version control.
     instance, with an Acquia post-deploy cloud hook), you also need to export your
     ``core.extension`` and add it to the commit that upgrades DKAN to 2.23.x. 
     Otherwise, the new DKAN modules that are enabled via the database updates will be
-    disabled again when your old config is imported.
+    disabled again when your old config is imported. If this happens, re-enable them
+    manually on your production server before proceeding to the next step.
 
 Step 2: Export configuration
 ############################
