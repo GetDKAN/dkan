@@ -13,14 +13,16 @@ DKAN's full documentation can be found at [dkan.readthedocs.io](https://dkan.rea
 ## Update: DKAN v4
 
 DKAN v1 and v2 were published on Github. DKAN 2 was available as a composer package
-but from packagist.org, as `getdkan/dkan`.  In March 2026 we released DKAN 4 on Drupal.org.
-It can now be added to any Drupal project as `drupal/dkan`. For now, we continue
-to use Github for development, and create PRs and issues there. However, we are
-not creating 4.x releases on Github. The 4.x branch is mirrored to git.drupalcode.org, and
-we create tags and releases there.
+but from packagist.org, as `getdkan/dkan`.  In March 2026 we released 
+[DKAN 4 on Drupal.org](https://www.drupal.org/project/dkan). It can now be added to any Drupal
+project as `drupal/dkan`. For now, we continue to use Github for development, and create PRs 
+and issues there. However, we are not creating 4.x releases on Github. The 4.x branch is
+mirrored to git.drupalcode.org, and we create tags and
+[releases](https://www.drupal.org/project/dkan/releases) there.
 
 Our long-term plan is to move issues and MRs to Drupal.org as well. We are going to wait,
-at minimum, until [the new Gitlab-based issue system becomes available](https://www.drupal.org/project/drupalorg/issues/3409678). For now, please submit issues, questions or PRs to [our Github repository](https://github.com/GetDKAN/dkan/).
+at minimum, until [the new Gitlab-based issue system becomes available](https://www.drupal.org/project/drupalorg/issues/3409678). 
+For now, please submit issues, questions or PRs to [our Github repository](https://github.com/GetDKAN/dkan/).
 
 Besides moving to the new repository, DKAN 4 introduces the following changes:
 
@@ -30,7 +32,9 @@ has a "datastore" module; that is now "dkan_datastore".
 * Several classes and methods marked as deprecated in v2 are now removed.
 
 If you are already using DKAN v2, please to not upgrade before reading the Upgrade 
-Guide in the [DKAN v2 documentation site](https://dkan.readthedocs.io/en/4.x/).
+Guide in the [DKAN v2 documentation site](https://dkan.readthedocs.io/en/4.x/). However, 
+**do upgrade soon, as all new features and most bugfixes will be exclusive to version 4
+going forward**.
 
 ## Features
 
