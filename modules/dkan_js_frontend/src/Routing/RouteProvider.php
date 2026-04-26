@@ -11,6 +11,8 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class RouteProvider {
 
+  const string ROUTE_PREFIX = 'dkan_js_frontend.';
+
   /**
    * Route-URL pairs, separated by a comma.
    *
@@ -62,10 +64,13 @@ class RouteProvider {
         [
           '_controller' => '\Drupal\dkan_js_frontend\Controller\Page::content',
           'name' => 'dkan_js_frontend',
-        ]
+        ],
       );
       $route->setMethods(['GET']);
-      $routes->add($possible_page[0], $route);
+      $route->addRequirements([
+        '_permission' => 'access content',
+      ]);
+      $routes->add(self::ROUTE_PREFIX . $possible_page[0], $route);
     }
   }
 

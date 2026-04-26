@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dkan_js_frontend\Kernel;
 
-use Drupal\Core\Path\CurrentPathStack;
-use Drupal\dkan_js_frontend\Controller\Page;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\dkan_js_frontend\Routing\RouteProvider;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\dkan_js_frontend\Controller\Page;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -35,52 +37,44 @@ class PageTest extends KernelTestBase {
 
     $this->container->set('dkan.metastore.service', $metastore_service);
 
-    $current_path = $this->getMockBuilder(CurrentPathStack::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['getPath'])
-      ->getMock();
-    $current_path->expects($this->once())
-      ->method('getPath')
-      // Always use leading slash.
-      // @see \Symfony\Component\HttpFoundation\Request::getPathInfo()
-      ->willReturn('/dataset/123');
-
-    $this->container->set('path.current', $current_path);
+    $route_match = $this->getMockBuilder(RouteMatchInterface::class)
+      ->getMockForAbstractClass();
+    $route_match->expects($this->once())
+      ->method('getRouteName')
+      ->willReturn(RouteProvider::ROUTE_PREFIX . 'dataset');
 
     $page = Page::create($this->container);
     $this->expectException(NotFoundHttpException::class);
-    $page->content();
+    $page->content($route_match, (new Request()));
   }
 
   /**
    * @covers ::content
    */
   public function testPathPresent() {
-    // Mock
+    // Metastore service does not throw MissingObjectException, so the dataset
+    // exists.
     $metastore_service = $this->getMockBuilder(MetastoreService::class)
       ->disableOriginalConstructor()
       ->getMock();
 
     $this->container->set('dkan.metastore.service', $metastore_service);
 
-    $current_path = $this->getMockBuilder(CurrentPathStack::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['getPath'])
-      ->getMock();
-    $current_path->expects($this->once())
-      ->method('getPath')
-      // Always use leading slash.
-      // @see \Symfony\Component\HttpFoundation\Request::getPathInfo()
-      ->willReturn('/dataset/123');
-
-    $this->container->set('path.current', $current_path);
+    $route_match = $this->getMockBuilder(RouteMatchInterface::class)
+      ->getMockForAbstractClass();
+    $route_match->expects($this->once())
+      ->method('getRouteName')
+      ->willReturn(RouteProvider::ROUTE_PREFIX . 'dataset');
+    $route_match->expects($this->once())
+      ->method('getRawParameter')
+      ->willReturn('123');
 
     $page = Page::create($this->container);
     $this->assertEquals(
       [
         '#theme' => 'page__dkan_js_frontend',
       ],
-      $page->content(),
+      $page->content($route_match, (new Request())),
     );
   }
 

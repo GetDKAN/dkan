@@ -2,90 +2,127 @@
 
 namespace Drupal\dkan_js_frontend\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\dkan_js_frontend\Routing\RouteProvider;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
-use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * The Page controller.
+ * Page controller.
+ *
+ * Routes defined in the dkan_js_frontend.config.routes configuration use this
+ * controller.
+ *
+ * For datastore routes, we check if the datastore identifier is valid, and if
+ * not throw an exception signaling a 404 response.
  */
-class Page extends ControllerBase implements ContainerInjectionInterface {
+class Page implements ContainerInjectionInterface {
 
   /**
-   * Metastore service.
-   */
-  private MetastoreService $metastoreService;
-
-  /**
-   * The request stack.
-   */
-  protected RequestStack $requestStack;
-
-  /**
-   * The current path.
-   */
-  protected CurrentPathStack $currentPath;
-
-  /**
-   * Inherited.
+   * Config for dkan_js_frontend.
    *
-   * {@inheritdoc}
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected readonly ImmutableConfig $frontendConfig;
+
+  /**
+   * Renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected readonly RendererInterface $renderer;
+
+  /**
+   * Node data factory service.
+   *
+   * @var \Drupal\dkan_metastore\NodeWrapper\NodeDataFactory
+   */
+  protected readonly NodeDataFactory $nodeDataFactory;
+
+  /**
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.metastore.service'),
-      $container->get('path.current'),
-      $container->get('request_stack'),
+      $container->get('config.factory'),
+      $container->get('renderer'),
+      $container->get('dkan.metastore.metastore_item_factory'),
     );
   }
 
   /**
    * Constructor.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   Config factory service.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   Renderer service.
+   * @param \Drupal\dkan_metastore\NodeWrapper\NodeDataFactory $nodeDataFactory
+   *   Node data factory service.
    */
-  public function __construct(MetastoreService $service, CurrentPathStack $current_path, RequestStack $request_stack) {
-    $this->metastoreService = $service;
-    $this->currentPath = $current_path;
-    $this->requestStack = $request_stack;
+  public function __construct(
+    ConfigFactoryInterface $configFactory,
+    RendererInterface $renderer,
+    NodeDataFactory $nodeDataFactory,
+  ) {
+    $this->frontendConfig = $configFactory->get('dkan_js_frontend.config');
+    $this->renderer = $renderer;
+    $this->nodeDataFactory = $nodeDataFactory;
   }
 
   /**
-   * Returns a render-able array.
+   * Make a renderable page.
+   *
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   Route match for this request.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   This request.
+   *
+   * @return array
+   *   Render array.
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+   *   Throws a not-found exception for dataset routes which have an invalid
+   *   identifier.
    */
-  public function content() {
-    // Checking for 404 prevents an infinite loop.
-    if ($this->requestStack->getCurrentRequest()->query->get('_exception_statuscode') !== 404) {
-      $this->handleInvalidDatasetId();
-    }
-
-    return [
-      '#theme' => 'page__dkan_js_frontend',
-    ];
-  }
-
-  /**
-   * If a dataset with an invalid ID is being requested, throw a 404 error.
-   */
-  protected function handleInvalidDatasetId() {
-    // Path should always have leading slash.
-    // @see \Symfony\Component\HttpFoundation\Request::getPathInfo()
-    // Match any path that equals or begins with /dataset/[ID].
-    $dataset_path_match = '/^\/dataset\/(?P<id>[^\/]+)/';
-
-    $path = $this->currentPath->getPath();
-
-    if (preg_match($dataset_path_match, $path, $matches)) {
+  public function content(RouteMatchInterface $route_match, Request $request) {
+    $dataset_node = NULL;
+    // Check for valid dataset identifier on the dataset route.
+    // Checking for 404 prevents an infinite loop from the 404 we might cause
+    // later.
+    if (($route_match->getRouteName() === RouteProvider::ROUTE_PREFIX . 'dataset') &&
+      ($request->query->get('_exception_statuscode') !== 404)
+      ) {
       try {
-        $this->metastoreService->get('dataset', $matches['id']);
+        // @todo Figure out a way to find if the identifier exists without
+        //   triggering the lifecycle loading of tertiary nodes, etc.
+        $dataset_node = $this->nodeDataFactory->getInstance(
+          $route_match->getRawParameter('id') ?? ''
+        );
       }
+      // Handle if the dataset does not exist.
       catch (MissingObjectException) {
+        // Throw the exception that tells Drupal send back a 404.
         throw new NotFoundHttpException();
       }
     }
+
+    $build = [
+      '#theme' => 'page__dkan_js_frontend',
+    ];
+    $this->renderer->addCacheableDependency($build, $this->frontendConfig);
+    if ($dataset_node) {
+      $this->renderer->addCacheableDependency($build, $dataset_node);
+    }
+
+    return $build;
   }
 
 }
