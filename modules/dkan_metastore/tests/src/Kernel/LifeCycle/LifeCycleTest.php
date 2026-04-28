@@ -6,7 +6,6 @@ namespace Drupal\Tests\dkan_metastore\LifeCycle;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use RootedData\Exception\ValidationException;
 
 /**
@@ -20,8 +19,6 @@ use RootedData\Exception\ValidationException;
  * @coversDefaultClass \Drupal\dkan_metastore\LifeCycle\LifeCycle
  */
 class LifeCycleTest extends KernelTestBase {
-  use QueueRunnerTrait;
-
   protected const DATASET_DATA = [
     'title' => 'Test Dataset',
     'identifier' => '123',
