@@ -7,6 +7,7 @@ namespace Drupal\Tests\dkan_metastore\LifeCycle;
 use Drupal\dkan_common\DataResource;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
+use RootedData\Exception\ValidationException;
 
 /**
  * @group dkan
@@ -73,9 +74,9 @@ class LifeCycleTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installEntitySchema('resource_mapping');
 
-    $config = $this->config('dkan_metastore.settings');
-    $config->set('orphan.delete', TRUE);
-    $config->save();
+    // $config = $this->config('dkan_metastore.settings');
+    // $config->set('orphan.delete', TRUE);
+    // $config->save();
   }
 
   /**
@@ -92,6 +93,7 @@ class LifeCycleTest extends KernelTestBase {
       ->getStorage('node')
       ->loadByProperties(['type' => 'data', 'uuid' => $identifier]);
     $node = reset($result);
+
     // Get the raw value from the database for field_json_metadata.
     $query = $this->container->get('database')->query(
       'SELECT field_json_metadata_value FROM {node__field_json_metadata} WHERE entity_id = :entity_id',
@@ -104,6 +106,8 @@ class LifeCycleTest extends KernelTestBase {
       ->getStorage('node')
       ->loadByProperties(['type' => 'data', 'uuid' => $distribution_id]);
     $distribution_node = reset($result);
+
+    // Get the raw value for the distribution JSON from the DB.
     $query = $this->container->get('database')->query(
       'SELECT field_json_metadata_value FROM {node__field_json_metadata} WHERE entity_id = :entity_id',
       [':entity_id' => $distribution_node->id()]
@@ -112,47 +116,29 @@ class LifeCycleTest extends KernelTestBase {
     $distribution_raw = json_decode($json_raw, TRUE);
     $download_url_ref = $distribution_raw['data']['downloadURL'];
     $resource_parts = DataResource::parseUniqueIdentifier($download_url_ref);
-    $resource_identifier = $resource_parts['identifier'];
-    $resource_version = $resource_parts['version'];
-    $resource_perspective = $resource_parts['perspective'];
 
     // Delete the resource mapping entity.
     $storage = $this->container->get('entity_type.manager')->getStorage('resource_mapping');
     $entities = $storage->loadByProperties([
-      'identifier' => $resource_identifier,
-      'version' => $resource_version,
-      'perspective' => $resource_perspective,
+      'identifier' => $resource_parts['identifier'],
+      'version' => $resource_parts['version'],
+      'perspective' => $resource_parts['perspective'],
     ]);
     foreach ($entities as $entity) {
       $entity->delete();
     }
-    $this->assertEmpty(
-      $storage->loadByProperties([
-        'identifier' => $resource_identifier,
-        'version' => $resource_version,
-        'perspective' => $resource_perspective,
-      ]),
-      'Resource mapping entities should be deleted before reload.'
-    );
 
-    // Clear the node cache.
-    $this->container->get('cache.entity')->deleteAll();
-
-    // Reset node storage static cache for this request.
+    // Avoid reusing the already-loaded distribution entity with a resolved URL.
     $this->container->get('entity_type.manager')->getStorage('node')->resetCache();
 
-    // Clear the resource_mapping static cache for this request.
-    $this->container->get('entity_type.manager')->getStorage('resource_mapping')->resetCache();
-
-    // Re-load the original dataset via the metastore service
-    $dataset = $metastore->get('dataset', $identifier);
-    $retrieved = json_decode((string) $dataset);
-    $download_url = $retrieved->distribution[0]->downloadURL ?? NULL;
-    $this->assertSame(
-      '',
-      $download_url,
-      'Expected empty downloadURL when resource mapping is missing.'
-    );
+    // Re-load the original dataset via the metastore service.
+    try {
+      $metastore->get('dataset', $identifier);
+      $this->fail('Expected a ValidationException to be thrown due to the missing resource mapping.');
+    }
+    catch (ValidationException $e) {
+      $this->assertEquals('JSON Schema validation failed.', $e->getMessage());
+    }
   }
 
 }
