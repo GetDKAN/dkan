@@ -231,7 +231,14 @@ class LifeCycle {
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
-    $metadata->data->downloadURL = $downloadUrl;
+
+    $unset_downloadUrl = $this->configFactory->get('dkan_metastore.settings')->get('unset_download_url_if_empty') ?? FALSE;
+    if (!$downloadUrl && $unset_downloadUrl) {
+      unset($metadata->data->downloadURL);
+    }
+    else {
+      $metadata->data->downloadURL = $downloadUrl;
+    }
 
     // If describedBy contains dkan:// URI, convert to absolute URL.
     if (StreamWrapperManager::getScheme($metadata->data->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {

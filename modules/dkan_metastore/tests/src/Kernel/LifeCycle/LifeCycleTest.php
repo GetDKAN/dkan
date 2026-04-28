@@ -10,6 +10,8 @@ use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use RootedData\Exception\ValidationException;
 
 /**
+ * Some tests for LifeCycle hooks.
+ *
  * @group dkan
  * @group dkan_metastore
  * @group kernel
@@ -73,10 +75,6 @@ class LifeCycleTest extends KernelTestBase {
     $this->installConfig('field');
     $this->installEntitySchema('user');
     $this->installEntitySchema('resource_mapping');
-
-    // $config = $this->config('dkan_metastore.settings');
-    // $config->set('orphan.delete', TRUE);
-    // $config->save();
   }
 
   /**
@@ -139,6 +137,16 @@ class LifeCycleTest extends KernelTestBase {
     catch (ValidationException $e) {
       $this->assertEquals('JSON Schema validation failed.', $e->getMessage());
     }
+
+    // Enable the unset_download_url_if_empty setting and try again.
+    $config = $this->container->get('config.factory')->getEditable('dkan_metastore.settings');
+    $config->set('unset_download_url_if_empty', TRUE);
+    $config->save();
+    $this->container->get('config.factory')->reset('dkan_metastore.settings');
+    $this->container->get('entity_type.manager')->getStorage('node')->resetCache();
+
+    $dataset = $metastore->get('dataset', $identifier);
+    $this->assertArrayNotHasKey('downloadURL', $dataset->{"$.distribution[0]"});
   }
 
 }
