@@ -42,3 +42,6 @@ dkan_metastore.settings:
         retain_for:
           type: integer
           label: 'Number of days to keep referenced content before deletion'
+    unset_download_url_if_empty:
+      type: boolean
+      label: 'Unset download URL if empty'
