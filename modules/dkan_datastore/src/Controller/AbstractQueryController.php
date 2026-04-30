@@ -154,7 +154,26 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponse((object) ['message' => "No resource found for dataset $dataset at index $index"], 404);
     }
 
-    return $this->queryResource($distribution_uuid, $request);
+    try {
+      $datastoreQuery = $this->buildDatastoreQuery($request, $distribution_uuid);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 400);
+    }
+    try {
+      $result = $this->queryService->runQuery($datastoreQuery);
+    }
+    catch (\Exception $e) {
+      $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
+      return $this->getResponseFromException($e, $code);
+    }
+
+    $dependencies = [
+      'distribution' => [$distribution_uuid],
+      'dataset' => [$dataset],
+    ];
+
+    return $this->formatResponse($datastoreQuery, $result, $dependencies, $request->query);
   }
 
   /**
