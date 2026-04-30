@@ -87,8 +87,8 @@ class ImportCacheInvalidationTest extends BrowserTestBase {
     $identifier = '111';
 
     // Before we've done anything, GET should yield a 404.
-    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
-    $this->assertEquals(404, $response->getStatusCode(), $response->getBody());
+    $metastoreResponse = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
+    $this->assertEquals(404, $metastoreResponse->getStatusCode(), $metastoreResponse->getBody());
 
     $datasetRootedJsonData = $this->getData($identifier, '1', ['1.csv']);
 
@@ -102,13 +102,7 @@ class ImportCacheInvalidationTest extends BrowserTestBase {
     $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
     $this->assertEquals(400, $response->getStatusCode(), $response->getBody());
 
-    $queues = [
-      'localize_import',
-      'datastore_import',
-      'resource_purger',
-      // 'orphan_reference_processor',
-      // 'orphan_resource_remover',
-    ];
+    $queues = ['localize_import', 'datastore_import'];
 
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
@@ -132,12 +126,16 @@ class ImportCacheInvalidationTest extends BrowserTestBase {
       $this->httpVerbHandler('put', $datasetRootedJsonData, json_decode($datasetRootedJsonData))
     );
 
+    // We haven't run an import yet, the dataset query should return error.
+    $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
+    $this->assertEquals(400, $response->getStatusCode(), $response->getBody());
+
     $this->runQueues($queues);
 
+    // Now we should get a 200 and a cache MISS.
     $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
-
   }
 
   /**
