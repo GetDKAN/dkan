@@ -37,8 +37,6 @@ class ImportCacheInvalidationTest extends BrowserTestBase {
    */
   protected $httpClient;
 
-  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-
   /**
    * {@inheritdoc}
    */
