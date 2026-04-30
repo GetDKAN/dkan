@@ -165,8 +165,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     }
 
     $result = $this->runDatastoreQuery($datastoreQuery);
-    return ($result instanceof JsonResponse) 
-      ? $result 
+    return ($result instanceof JsonResponse)
+      ? $result
       : $this->formatResponse(
         $datastoreQuery,
         $result,
