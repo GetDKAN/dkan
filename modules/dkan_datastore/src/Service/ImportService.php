@@ -255,6 +255,10 @@ class ImportService {
    */
   protected function invalidateCacheTags(mixed $resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
+    $distributionIds = $this->referenceLookup->getReferencers('distribution', $resourceId, 'downloadURL');
+    foreach ($distributionIds as $id) {
+      $this->referenceLookup->invalidateReferencerCacheTags('dataset', $id, 'distribution');
+    }
   }
 
 }
