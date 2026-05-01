@@ -192,8 +192,8 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
    * @param array $downloadUrls
    *   Array of resource files URLs for this dataset.
    *
-   * @return string|false
-   *   Json encoded string of this dataset's metadata, or FALSE if error.
+   * @return \RootedData\RootedJsonData
+   *   RootedJsonData object containing the dataset metadata.
    */
   private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
 
