@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
+use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Http\Exception\CacheableTooManyRequestsHttpException;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -15,6 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
  * Abstract Controller providing base functionality used to query datastores.
@@ -255,6 +258,19 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected function runDatastoreQuery(DatastoreQuery $datastoreQuery) {
     try {
       return $this->queryService->runQuery($datastoreQuery);
+    }
+    catch (\PDOException $e) {
+      switch ($e->getCode()) {
+        // @see https://dev.mysql.com/doc/mysql-errors/8.4/en/server-error-reference.html#error_er_too_many_user_connections
+        case 1203:
+          // @todo Use CacheableTooManyRequestsHttpException when
+          //   getResponseFromException() can handle caching.
+          $too_many = new TooManyRequestsHttpException(60, $e->getMessage());
+          return $this->getResponseFromException($e, $too_many->getStatusCode());
+
+        default:
+          throw $e;
+      }
     }
     catch (\Exception $e) {
       $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
