@@ -3,6 +3,7 @@
 namespace Drupal\dkan_datastore\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
@@ -11,6 +12,7 @@ use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\StreamedJsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Controller providing functionality used to stream datastore queries.
@@ -22,8 +24,24 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * {@inheritDoc}
    */
-  public function __construct(QueryService $queryService, DatasetInfo $datasetInfo, MetastoreApiResponse $metastoreApiResponse, ConfigFactoryInterface $configFactory) {
-    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory);
+  public function __construct(
+    QueryService $queryService,
+    DatasetInfo $datasetInfo,
+    MetastoreApiResponse $metastoreApiResponse,
+    ConfigFactoryInterface $configFactory,
+    StateInterface $state,
+  ) {
+    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory, $state);
+    // Throw 503 error immediately if in degraded service mode, as all streaming
+    // responses are blocked.
+    $blocked = $state->get('dkan_datastore.degraded_service_mode', FALSE);
+    if ($blocked) {
+      throw new HttpException(
+        503,
+        'Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.'
+      );
+    }
+
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
     // to cache the CSV stream for a reasonable amount of time.

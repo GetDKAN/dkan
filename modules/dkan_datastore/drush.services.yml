@@ -9,6 +9,7 @@ services:
       - '@dkan.datastore.import_info_list'
       - '@dkan.datastore.post_import_result_factory'
       - '@dkan.datastore.lookup'
+      - '@state'
     tags:
       - { name: drush.command }
   dkan_datastore.purger.commands:
