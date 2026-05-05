@@ -48,7 +48,7 @@ class QueryControllerTest extends TestCase {
   protected function setUp(): void {
     parent::setUp();
     // Set cache services.
-    $options = (new Options)
+    $options = (new Options())
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->add('event_dispatcher', EventDispatcher::class)
       ->index(0);
@@ -198,7 +198,6 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
-
   public function testResourceQueryInvalidJson() {
     $data = "{[";
 
@@ -324,7 +323,7 @@ class QueryControllerTest extends TestCase {
   }
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
-    $container = $this->getQueryContainer($info, true)->getMock();
+    $container = $this->getQueryContainer($info, TRUE)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
