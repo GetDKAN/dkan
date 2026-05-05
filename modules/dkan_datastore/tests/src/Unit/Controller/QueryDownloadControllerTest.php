@@ -6,6 +6,7 @@ use Drupal\dkan_common\DataResource;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\State\State;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_datastore\Controller\QueryController;
 use Drupal\dkan_datastore\Controller\QueryDownloadController;
@@ -432,6 +433,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add('state', State::class)
       ->index(0);
 
     $schema2 = [
@@ -490,7 +492,8 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
       // @todo Use an Options or Sequence return here; this will only work for one arg at a time.
       ->add(ImmutableConfig::class, 'get', $rowLimit)
-      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge);
+      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge)
+      ->add(State::class, 'get', FALSE);
 
     return $chain->getMock();
   }

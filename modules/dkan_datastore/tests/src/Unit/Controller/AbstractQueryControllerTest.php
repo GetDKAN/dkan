@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AbstractQueryControllerTest extends TestCase {
 
   /**
-   * Make sure we get what we expect with a GET
+   * Make sure we get what we expect with a GET.
    */
   public function testGetNormalizer() {
     $queryString = "conditions[0][property]=state&conditions[0][value]=AL&conditions[0][operator]==&conditions[1][property]=record_number&conditions[1][value]=%1%&conditions[1][operator]=LIKE&sort[0][property]=record_number&sort[0][order]=asc&sort[1][property]=state&sort[1][order]=desc&limit=50&offset=25&results=true";

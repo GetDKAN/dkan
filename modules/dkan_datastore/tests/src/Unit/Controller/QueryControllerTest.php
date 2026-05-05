@@ -5,9 +5,11 @@ namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\State\State;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_datastore\Controller\QueryController;
+use Drupal\dkan_datastore\Controller\QueryDownloadController;
 use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_datastore\Service\Query;
 use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
@@ -90,10 +92,12 @@ class QueryControllerTest extends TestCase {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
+      ->add("state", State::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(DataFactory::class, 'getInstance', MockStorage::class)
+      ->add(State::class, 'get', FALSE)
       ->getMock();
     \Drupal::setContainer($container);
 
@@ -493,6 +497,7 @@ class QueryControllerTest extends TestCase {
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add("state", State::class)
       ->index(0);
 
     $chain = (new Chain($this))
@@ -505,13 +510,75 @@ class QueryControllerTest extends TestCase {
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', 500);
+      ->add(ImmutableConfig::class, 'get', 500)
+      ->add(State::class, 'get', FALSE);
 
     if ($mockMap) {
       $chain->add(Query::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
     }
 
     return $chain;
+  }
+
+  /**
+   * Make sure degraded service mode causes resource query to fail.
+   *
+   * 503 error if there are conditions.
+   */
+  public function testDegradedServiceModeQuery() {
+    $container = $this->getQueryContainer()
+      ->add(State::class, 'get', TRUE)
+      ->add(DatasetInfo::class, "getDistributionUuid", "456")
+      ->getMock();
+
+    \Drupal::setContainer($container);
+    $webServiceApi = QueryController::create($container);
+
+    $data = json_encode([
+      "results" => TRUE,
+      "conditions" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+          "operator" => "=",
+          "value" => "Alabama",
+        ],
+      ],
+    ]);
+
+    // Test resource query.
+    $request = $this->mockRequest($data);
+    $result = $webServiceApi->query($request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', $result->getContent());
+
+    // Test resource query.
+    $request = $this->mockRequest($data);
+    $result = $webServiceApi->queryResource($this->resource->getIdentifier(), $request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', $result->getContent());
+
+    // Test dataset query.
+    $result = $webServiceApi->queryDatasetResource("abc", 0, $request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', $result->getContent());
+
+  }
+
+  /**
+   * Make sure degraded service mode causes downloads to fail with 503.
+   */
+  public function testDegradedServiceModeDownloads() {
+    $container = $this->getQueryContainer()
+      ->add(State::class, 'get', TRUE)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $this->expectExceptionMessage("Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.");
+    QueryDownloadController::create($container);
   }
 
   /**
