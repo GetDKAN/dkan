@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * Abstract Controller providing base functionality used to query datastores.
@@ -102,6 +102,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     try {
       $datastoreQuery = $this->buildDatastoreQuery($request);
     }
+    catch (HttpException $e) {
+      return $this->getResponseFromException($e, $e->getStatusCode());
+    }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
     }
@@ -131,6 +134,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public function queryResource(string $identifier, Request $request) {
     try {
       $datastoreQuery = $this->buildDatastoreQuery($request, $identifier);
+    }
+    catch (HttpException $e) {
+      return $this->getResponseFromException($e, $e->getStatusCode());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -165,11 +171,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     if (empty($distribution_uuid)) {
       return $this->getResponse((object) ['message' => "No resource found for dataset $dataset at index $index"], 404);
     }
-
     $dependencies = ['distribution' => [$distribution_uuid], 'dataset' => [$dataset]];
 
     try {
       $datastoreQuery = $this->buildDatastoreQuery($request, $distribution_uuid);
+    }
+    catch (HttpException $e) {
+      return $this->getResponseFromException($e, $e->getStatusCode());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -268,7 +276,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     try {
       return $this->queryService->runQuery($datastoreQuery);
     }
-    catch (HttpExceptionInterface $e) {
+    catch (HttpException $e) {
       return $this->getResponseFromException($e, $e->getStatusCode());
     }
     catch (\Exception $e) {
@@ -309,8 +317,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     }
 
     if ($blocked) {
-      throw new HttpException(
-        503,
+      throw new ServiceUnavailableHttpException(
+        60,
         'Datastore queries are temporarily limited due to high server load. Remove conditions, joins, groupings, sorts, and offsets to retry.'
       );
     }
