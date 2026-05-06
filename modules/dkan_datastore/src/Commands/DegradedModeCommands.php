@@ -7,8 +7,6 @@ use Drush\Commands\DrushCommands;
 
 /**
  * Datastore-related Drush commands.
- *
- * @codeCoverageIgnore
  */
 class DegradedModeCommands extends DrushCommands {
 
