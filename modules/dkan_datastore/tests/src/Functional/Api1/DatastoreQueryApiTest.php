@@ -71,4 +71,48 @@ use GuzzleHttp\RequestOptions;
     $this->validator->validate($response, "/api/1/datastore/query/{datasetId}/{index}", 'get');
   }
 
-}
+  /**
+   * Test that we get a 503 and retry-after header when in degraded mode.
+   */
+  public function testDegradedMode() {
+    \Drupal::state()->set('dkan_datastore.degraded_performance', TRUE);
+
+    $dataset = $this->getSampleDataset();
+    $this->post($dataset, FALSE);
+    $dataset_id = $dataset->identifier;
+
+    $dataset_info = \Drupal::service('dkan.common.dataset_info')->gather($dataset_id);
+    $resource_id = $dataset_info['latest_revision']['distributions'][0]['resource_id'];
+    \Drupal::service('dkan.datastore.service')->import($resource_id, FALSE);
+
+    $query = [
+      'format' => 'json',
+      'conditions' => [
+        [
+          'property' => 'id',
+          'operator' => '=',
+          'value' => 1,
+        ],
+      ],
+    ];
+
+    $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0", [
+      RequestOptions::QUERY => $query,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(503, $response->getStatusCode());
+    $this->assertEquals(120, $response->getHeaderLine('Retry-After'));
+    $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', (string) $response->getBody());
+    $this->validator->validate($response, "/api/1/datastore/query/{datasetId}/{index}", 'get');
+
+    $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0/download", [
+      RequestOptions::QUERY => $query,
+      RequestOptions::HTTP_ERRORS => FALSE,
+    ]);
+    $this->assertEquals(503, $response->getStatusCode());
+    $this->assertEquals(120, $response->getHeaderLine('Retry-After'));
+    $this->assertStringContainsString('Datastore downloads are temporarily limited due to high server load', (string) $response->getBody());
+    $this->validator->validate($response, "/api/1/datastore/query/{datasetId}/{index}", 'get');
+  }
+
+  }

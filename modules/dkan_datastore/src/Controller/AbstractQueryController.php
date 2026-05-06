@@ -27,6 +27,8 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 abstract class AbstractQueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
+  const DEGRADE_MODE_RETRY_AFTER = 120;
+
   /**
    * Datastore query service.
    */
@@ -318,7 +320,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
 
     if ($blocked) {
       throw new ServiceUnavailableHttpException(
-        60,
+        static::DEGRADE_MODE_RETRY_AFTER,
         'Datastore queries are temporarily limited due to high server load. Remove conditions, joins, groupings, sorts, and offsets to retry.'
       );
     }

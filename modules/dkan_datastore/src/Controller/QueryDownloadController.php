@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\StreamedJsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * Controller providing functionality used to stream datastore queries.
@@ -32,16 +33,6 @@ class QueryDownloadController extends AbstractQueryController {
     StateInterface $state,
   ) {
     parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory, $state);
-    // Throw 503 error immediately if in degraded service mode, as all streaming
-    // responses are blocked.
-    $blocked = $state->get('dkan_datastore.degraded_service_mode', FALSE);
-    if ($blocked) {
-      throw new HttpException(
-        503,
-        'Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.'
-      );
-    }
-
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
     // to cache the CSV stream for a reasonable amount of time.
@@ -74,6 +65,7 @@ class QueryDownloadController extends AbstractQueryController {
   protected function buildDatastoreQuery($request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
+    $this->assertDegradedModeAllowed($data);
     $this->additionalPayloadValidation($data);
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
@@ -81,6 +73,18 @@ class QueryDownloadController extends AbstractQueryController {
     }
     $data->results = FALSE;
     return new DatastoreQuery(json_encode($data));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function assertDegradedModeAllowed(object $data): void {
+    if ($this->state->get('dkan_datastore.degraded_performance', FALSE)) {
+      throw new ServiceUnavailableHttpException(
+        static::DEGRADE_MODE_RETRY_AFTER,
+        'Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.'
+      );
+    }
   }
 
   /**

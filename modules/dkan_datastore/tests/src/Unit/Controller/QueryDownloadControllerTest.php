@@ -27,6 +27,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -417,8 +418,13 @@ class QueryDownloadControllerTest extends TestCase {
       ->getMock();
     \Drupal::setContainer($container);
 
-    $this->expectExceptionMessage("Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.");
-    QueryDownloadController::create($container);
+    $request = $this->mockRequest('{}');
+    $dController = QueryDownloadController::create($container);
+    $result = $dController->query($request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore downloads are temporarily limited due to high server load.', $result->getContent());
+
   }
 
   /**
