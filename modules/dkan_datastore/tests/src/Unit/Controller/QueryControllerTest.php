@@ -9,7 +9,6 @@ use Drupal\Core\State\State;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_datastore\Controller\QueryController;
-use Drupal\dkan_datastore\Controller\QueryDownloadController;
 use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_datastore\Service\Query;
 use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
