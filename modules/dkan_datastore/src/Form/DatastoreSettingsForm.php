@@ -36,6 +36,8 @@ class DatastoreSettingsForm extends ConfigFormBase {
    *
    * @param \Drupal\dkan_metastore\SchemaPropertiesHelper $schemaHelper
    *   The schema properties helper service.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
   public function __construct(SchemaPropertiesHelper $schemaHelper, StateInterface $state) {
     $this->schemaHelper = $schemaHelper;
