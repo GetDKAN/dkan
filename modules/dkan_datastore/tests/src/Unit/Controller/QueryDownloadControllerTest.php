@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @covers \Drupal\dkan_datastore\Controller\QueryDownloadController
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryDownloadController
+ * @covers \Drupal\dkan_datastore\Controller\AbstractQueryController
  * @group dkan
  * @group datastore
  * @group unit
