@@ -8,6 +8,8 @@ use GuzzleHttp\RequestOptions;
 /**
  * Tests the Datastore Query API.
  *
+ * @covers \Drupal\dkan_datastore\Controller\QueryController
+ * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryController
  * @group dkan
  * @group datastore
  * @group api1
