@@ -305,16 +305,16 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     if (!empty($data->conditions)) {
       $blocked = TRUE;
     }
-    elseif (!empty($data->joins)) {
+    if (!empty($data->joins)) {
       $blocked = TRUE;
     }
-    elseif (!empty($data->groupings)) {
+    if (!empty($data->groupings)) {
       $blocked = TRUE;
     }
-    elseif (!empty($data->sorts)) {
+    if (!empty($data->sorts)) {
       $blocked = TRUE;
     }
-    elseif ((int) ($data->offset ?? 0) !== 0) {
+    if ((int) ($data->offset ?? 0) !== 0) {
       $blocked = TRUE;
     }
 

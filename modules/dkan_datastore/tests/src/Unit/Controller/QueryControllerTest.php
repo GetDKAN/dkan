@@ -545,6 +545,33 @@ class QueryControllerTest extends TestCase {
           "value" => "Alabama",
         ],
       ],
+      "joins" => [
+        [
+          "resource" => "r",
+          "condition" => [
+            "resource" => "t",
+            "property" => "record_number",
+            "value" => [
+              "resource" => "t",
+              "property" => "record_number",
+            ],
+          ],
+        ],
+      ],
+      "groupings" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+      ],
+      "sorts" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+          "order" => "desc",
+        ],
+      ],
+      "offset" => 1,
     ]);
 
     // Test resource query.
