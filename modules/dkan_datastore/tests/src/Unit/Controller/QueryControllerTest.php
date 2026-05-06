@@ -32,6 +32,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @covers \Drupal\dkan_datastore\Controller\QueryController
+ * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryController
  * @group dkan
  * @group datastore
  * @group unit
@@ -565,19 +567,6 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(503, $result->getStatusCode());
     $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', $result->getContent());
 
-  }
-
-  /**
-   * Make sure degraded service mode causes downloads to fail with 503.
-   */
-  public function testDegradedServiceModeDownloads() {
-    $container = $this->getQueryContainer()
-      ->add(State::class, 'get', TRUE)
-      ->getMock();
-    \Drupal::setContainer($container);
-
-    $this->expectExceptionMessage("Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.");
-    QueryDownloadController::create($container);
   }
 
   /**

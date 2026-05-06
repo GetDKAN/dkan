@@ -25,7 +25,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a POST
+   * Make sure we get what we expect with a POST.
    */
   public function testPostNormalizer() {
     $sampleJson = $this->getSampleJson();
@@ -36,7 +36,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a PATCH
+   * Make sure we get what we expect with a PATCH.
    */
   public function testPatchNormalizer() {
     $sampleJson = $this->getSampleJson();
@@ -48,7 +48,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a DELETE
+   * Make sure we get what we expect with a DELETE.
    */
   public function testDeleteNormalizer() {
     $this->expectExceptionMessage("Only POST, PUT, PATCH and GET requests can be normalized");
@@ -59,7 +59,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a PUT
+   * Make sure we get what we expect with a PUT.
    */
   public function testPutNormalizer() {
     $sampleJson = $this->getSampleJson();

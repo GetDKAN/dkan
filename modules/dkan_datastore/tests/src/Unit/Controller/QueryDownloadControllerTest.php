@@ -81,11 +81,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompareCsv($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $qController = QueryController::create($this->getQueryContainer(500));
+    $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $csv = $response->getContent() ?? '';
 
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
@@ -101,11 +101,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompareJson($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $qController = QueryController::create($this->getQueryContainer(500));
+    $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $json = $response->getContent() ?? '';
 
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
@@ -289,7 +289,7 @@ class QueryDownloadControllerTest extends TestCase {
       "limit" => $queryLimit,
     ]);
     // Set the row limit to 50 even though we're requesting 1000.
-    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge);
+    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge)->getMock();
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start(self::getBuffer(...));
@@ -386,7 +386,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ];
     $request = $this->mockRequest($data);
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
@@ -409,6 +409,19 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   * Make sure degraded service mode causes downloads to fail with 503.
+   */
+  public function testDegradedServiceModeDownloads() {
+    $container = $this->getQueryContainer(25)
+      ->add(State::class, 'get', TRUE)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $this->expectExceptionMessage("Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.");
+    QueryDownloadController::create($container);
+  }
+
+  /**
    * Create a mock chain for the main container passed to the controller.
    *
    * @param int $rowLimit
@@ -416,8 +429,8 @@ class QueryDownloadControllerTest extends TestCase {
    * @param int|null $responseStreamMaxAge
    *   The max age for the response stream in cache, or NULL to use the default.
    *
-   * @return \PHPUnit\Framework\MockObject\MockObject
-   *   MockChain mock object.
+   * @return \MockChain\Chain
+   *   MockChain (needs getMock() before use).
    */
   private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
     $pdo = match(TRUE) {
@@ -495,7 +508,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge)
       ->add(State::class, 'get', FALSE);
 
-    return $chain->getMock();
+    return $chain;
   }
 
   /**
