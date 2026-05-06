@@ -7,7 +7,6 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\dkan_common\DataResource;
 use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
-use Drupal\Core\State\StateInterface;
 use Drupal\dkan_datastore\Service\Info\ImportInfoList;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\MetastoreService;
@@ -64,13 +63,6 @@ class Drush extends DrushCommands {
   protected DatastoreLookupInterface $datastoreLookup;
 
   /**
-   * State service.
-   *
-   * @var \Drupal\Core\State\StateInterface
-   */
-  protected StateInterface $state;
-
-  /**
    * Database connection service.
    *
    * @var \Drupal\Core\Database\Connection
@@ -88,7 +80,6 @@ class Drush extends DrushCommands {
     ImportInfoList $importInfoList,
     PostImportResultFactory $postImportResultFactory,
     DatastoreLookupInterface $datastoreLookup,
-    StateInterface $state,
   ) {
     parent::__construct();
     $this->metastoreService = $metastoreService;
@@ -98,7 +89,6 @@ class Drush extends DrushCommands {
     $this->importInfoList = $importInfoList;
     $this->postImportResultFactory = $postImportResultFactory;
     $this->datastoreLookup = $datastoreLookup;
-    $this->state = $state;
   }
 
   /**
