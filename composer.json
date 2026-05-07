@@ -39,8 +39,7 @@
         "drush/drush": "*",
         "getdkan/mock-chain": "~1.4.1",
         "osteel/openapi-httpfoundation-testing": "^0.13",
-        "drupal/admin_toolbar": "^3.0",
-        "phpunit/phpunit": "^9.6"
+        "drupal/admin_toolbar": "^3.0"
     },
     "repositories": {
         "drupal": {
