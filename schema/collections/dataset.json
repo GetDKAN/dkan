@@ -141,8 +141,8 @@
       "minLength": 1
     },
     "publisher": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
       "title": "Organization",
       "description": "A Dataset Publisher Organization.",
       "type": "object",
@@ -169,8 +169,8 @@
       }
     },
     "contactPoint": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "id": "https://project-open-data.cio.gov/v1.1/schema/vcard.json#",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "https://project-open-data.cio.gov/v1.1/schema/vcard.json#",
       "title": "Project Open Data ContactPoint vCard",
       "description": "A Dataset ContactPoint as a vCard object.",
       "type": "object",
