@@ -4,9 +4,8 @@ namespace Drupal\dkan_metastore\Plugin\Validation\Constraint;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\ValidMetadataFactory;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
+use Opis\JsonSchema\Errors\ErrorFormatter;
+use Opis\JsonSchema\Errors\ValidationError;
 use RootedData\Exception\ValidationException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
@@ -25,13 +24,6 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   protected $validMetadataFactory;
 
   /**
-   * ValidationErrorPresenter.
-   *
-   * @var \OpisErrorPresenter\Implementation\ValidationErrorPresenter
-   */
-  protected $presenter;
-
-  /**
    * ProperJsonValidator constructor.
    *
    * @param \Drupal\dkan_metastore\ValidMetadataFactory $valid_metadata_factory
@@ -39,11 +31,6 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    */
   public function __construct(ValidMetadataFactory $valid_metadata_factory) {
     $this->validMetadataFactory = $valid_metadata_factory;
-    $this->presenter = new ValidationErrorPresenter(
-      new PresentedValidationErrorFactory(
-        new MessageFormatterFactory()
-      )
-    );
   }
 
   /**
@@ -107,7 +94,10 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
       $this->validMetadataFactory->get($item->value, $schema_id);
     }
     catch (ValidationException $e) {
-      $errors = $this->getValidationErrorsMessages($e->getResult()->getErrors());
+      $rootError = $e->getResult()->error();
+      if ($rootError) {
+        $errors = $this->getValidationErrorsMessages($rootError);
+      }
     }
     catch (InvalidArgumentException $e) {
       $errors[] = $e->getMessage();
@@ -116,22 +106,22 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   }
 
   /**
-   * Presents errors.
+   * Flatten the v2 validation error tree into one message per leaf.
    *
-   * @param array $errors
-   *   Validation errors array.
-   *
-   * @return array
-   *   Presented errors array.
+   * Uses ErrorFormatter::formatKeyed() to walk leaves only (avoiding the
+   * redundancy of formatFlat() which also includes container errors), then
+   * collapses the pointer-keyed groups into the array<string> shape that
+   * addViolation() expects.
    */
-  private function getValidationErrorsMessages(array $errors): array {
-    $presented = $this->presenter->present(...$errors);
-    return array_map(
-      function ($presented_error) {
-        return $presented_error->message();
-      },
-      $presented
-    );
+  private function getValidationErrorsMessages(ValidationError $error): array {
+    $formatter = new ErrorFormatter();
+    $messages = [];
+    foreach ($formatter->formatKeyed($error) as $errs) {
+      foreach ($errs as $msg) {
+        $messages[] = $msg;
+      }
+    }
+    return $messages;
   }
 
   /**

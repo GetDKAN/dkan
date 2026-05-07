@@ -2,12 +2,9 @@
 
 namespace Drupal\dkan_common;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
+use Opis\JsonSchema\Errors\ErrorFormatter;
 use RootedData\Exception\ValidationException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -61,15 +58,11 @@ trait JsonResponseTrait {
    */
   protected function getExceptionData(\Exception $e) {
     if ($e instanceof ValidationException) {
-      $errors = $e->getResult()->getErrors();
-      $presenter = new ValidationErrorPresenter(
-        new PresentedValidationErrorFactory(
-          new MessageFormatterFactory()
-        ),
-        new BestMatchError()
-      );
-      $presented = $presenter->present(...$errors);
-      return $presented[0];
+      $error = $e->getResult()->error();
+      if ($error) {
+        $formatter = new ErrorFormatter();
+        return $formatter->format($error);
+      }
     }
 
     return FALSE;

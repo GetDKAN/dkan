@@ -3,7 +3,6 @@
 namespace Drupal\dkan_harvest\ETL;
 
 use GuzzleHttp\ClientInterface;
-use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 
 /**
@@ -144,19 +143,22 @@ class Factory {
     $path_to_schema = __DIR__ . "/../../schema/schema.json";
     $json_schema = file_get_contents($path_to_schema);
 
+    // Opis v2: Validator::validate() accepts a JSON-string schema; pre-decode
+    // to bypass v2's URI-first parse path.
     $data = $harvest_plan;
-    $schema = Schema::fromJsonString($json_schema);
     $validator = new Validator();
-
-    /** @var ValidationResult $result */
-    $result = $validator->schemaValidation($data, $schema);
+    $result = $validator->validate($data, json_decode($json_schema, FALSE));
 
     if (!$result->isValid()) {
-      /** @var ValidationError $error */
-      $error = $result->getFirstError();
+      // Walk to a leaf — v2's root is a container (e.g. `properties`); the
+      // actionable error (path + args like `missing`) lives at a leaf.
+      $error = $result->error();
+      while (!empty($subs = $error->subErrors())) {
+        $error = $subs[0];
+      }
       throw new \Exception(
-            "Invalid harvest plan. " . implode("->", $error->dataPointer()) .
-            " " . json_encode($error->keywordArgs())
+            "Invalid harvest plan. " . implode("->", $error->data()->fullPath()) .
+            " " . json_encode($error->args())
         );
     }
 
