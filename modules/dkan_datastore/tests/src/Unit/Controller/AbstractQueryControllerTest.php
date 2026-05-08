@@ -3,6 +3,7 @@
 namespace Drupal\Tests\dkan_common\Unit\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_datastore\Controller\AbstractQueryController;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
@@ -129,6 +130,7 @@ class AbstractQueryControllerTest extends TestCase {
         $this->createMock(DatasetInfo::class),
         $this->createMock(MetastoreApiResponse::class),
         $this->createMock(ConfigFactoryInterface::class),
+        $this->createMock(StateInterface::class),
       ],
     );
 
@@ -142,7 +144,7 @@ class AbstractQueryControllerTest extends TestCase {
 
     // Did we get a 503 with the message we added?
     $this->assertSame(503, $result->getStatusCode());
-    $this->assertSame('60', $result->headers->get('retry-after'));
+    $this->assertSame('120', $result->headers->get('retry-after'));
     $this->assertStringContainsString($message, $result->getContent());
   }
 
