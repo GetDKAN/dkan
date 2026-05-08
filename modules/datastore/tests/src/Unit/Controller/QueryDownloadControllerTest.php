@@ -7,6 +7,7 @@ use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\State\State;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\Controller\QueryDownloadController;
 use Drupal\datastore\DatastoreService;
@@ -26,9 +27,13 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @covers \Drupal\dkan_datastore\Controller\QueryDownloadController
+ * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryDownloadController
+ * @covers \Drupal\dkan_datastore\Controller\AbstractQueryController
  * @group dkan
  * @group datastore
  * @group unit
@@ -80,11 +85,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompareCsv($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $qController = QueryController::create($this->getQueryContainer(500));
+    $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $csv = $response->getContent() ?? '';
 
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
@@ -100,11 +105,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompareJson($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $qController = QueryController::create($this->getQueryContainer(500));
+    $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $json = $response->getContent() ?? '';
 
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
@@ -288,7 +293,7 @@ class QueryDownloadControllerTest extends TestCase {
       "limit" => $queryLimit,
     ]);
     // Set the row limit to 50 even though we're requesting 1000.
-    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge);
+    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge)->getMock();
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start(self::getBuffer(...));
@@ -385,7 +390,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ];
     $request = $this->mockRequest($data);
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
@@ -408,6 +413,24 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   * Make sure degraded service mode causes downloads to fail with 503.
+   */
+  public function testDegradedServiceModeDownloads() {
+    $container = $this->getQueryContainer(25)
+      ->add(State::class, 'get', TRUE)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $request = $this->mockRequest('{}');
+    $dController = QueryDownloadController::create($container);
+    $result = $dController->query($request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore downloads are temporarily limited due to high server load.', $result->getContent());
+
+  }
+
+  /**
    * Create a mock chain for the main container passed to the controller.
    *
    * @param int $rowLimit
@@ -415,8 +438,8 @@ class QueryDownloadControllerTest extends TestCase {
    * @param int|null $responseStreamMaxAge
    *   The max age for the response stream in cache, or NULL to use the default.
    *
-   * @return \PHPUnit\Framework\MockObject\MockObject
-   *   MockChain mock object.
+   * @return \MockChain\Chain
+   *   MockChain (needs getMock() before use).
    */
   private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
     $pdo = match(TRUE) {
@@ -432,6 +455,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add('state', State::class)
       ->index(0);
 
     $schema2 = [
@@ -490,9 +514,10 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
       // @todo Use an Options or Sequence return here; this will only work for one arg at a time.
       ->add(ImmutableConfig::class, 'get', $rowLimit)
-      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge);
+      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge)
+      ->add(State::class, 'get', FALSE);
 
-    return $chain->getMock();
+    return $chain;
   }
 
   /**
