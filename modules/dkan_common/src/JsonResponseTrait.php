@@ -9,7 +9,6 @@ use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
 use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use RootedData\Exception\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 /**
  * Json Response Trait.
