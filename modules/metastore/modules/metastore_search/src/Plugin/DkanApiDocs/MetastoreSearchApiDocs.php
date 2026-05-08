@@ -109,13 +109,14 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
   }
 
   /**
-   * Get names of availale facets.
+   * Get names of available facets.
    *
    * @return array
    *   Array of facet names.
    */
   private function getFacetTypes(): array {
     $facets = $this->metastoreSearch->facets();
+    shuffle($facets);
     $types = [];
     foreach ($facets as $facet) {
       $types[$facet->type] = $facet->name;
