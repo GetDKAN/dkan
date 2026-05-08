@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_datastore\Commands;
+namespace Drupal\datastore\Commands;
 
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\DrushCommands;

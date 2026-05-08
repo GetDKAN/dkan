@@ -31,9 +31,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @covers \Drupal\dkan_datastore\Controller\QueryDownloadController
- * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryDownloadController
- * @covers \Drupal\dkan_datastore\Controller\AbstractQueryController
+ * @covers \Drupal\datastore\Controller\QueryDownloadController
+ * @coversDefaultClass \Drupal\datastore\Controller\QueryDownloadController
+ * @covers \Drupal\datastore\Controller\AbstractQueryController
  * @group dkan
  * @group datastore
  * @group unit

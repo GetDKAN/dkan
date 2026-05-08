@@ -13,7 +13,7 @@ services:
     tags:
       - { name: drush.command }
   datastore.purger.commands:
-    class: Drupal\datastore\Commands\PurgeCommands
+    class: \Drupal\datastore\Commands\PurgeCommands
     arguments:
       - '@dkan.datastore.service.resource_purger'
     tags:
@@ -26,8 +26,8 @@ services:
       - '@dkan.datastore.logger_channel'
     tags:
       - { name: drush.command }
-  dkan_datastore.degraded_mode.commands:
-    class: \Drupal\dkan_datastore\Commands\DegradedModeCommands
+  datastore.degraded_mode.commands:
+    class: \Drupal\datastore\Commands\DegradedModeCommands
     arguments:
       - '@state'
     tags:
