@@ -19,12 +19,15 @@ class JsonResponseTraitTest extends TestCase {
   /**
    * @covers ::getExceptionData
    *
-   * Verifies the v2 ErrorFormatter::format() shape — array keyed by JSON
-   * pointer, values are arrays of message strings. This is the BC-impacting
-   * shape change downstream consumers parsing validation error responses
-   * need to be aware of.
+   * Locks down the historical v1/m1x0n response shape:
+   *   { "keyword": <string>, "pointer": <string>, "message": <string> }
+   *
+   * The v2 migration preserves this shape (the values are sourced from
+   * opis v2's API instead of m1x0n, and message wording may differ
+   * slightly, but the keys and types match) so downstream consumers
+   * parsing validation errors keep working unchanged.
    */
-  public function testGetExceptionDataReturnsPointerKeyedShape(): void {
+  public function testGetExceptionDataReturnsV1CompatibleShape(): void {
     $schema = (object) [
       'type' => 'object',
       'properties' => (object) [
@@ -40,16 +43,16 @@ class JsonResponseTraitTest extends TestCase {
     $data = (new ClassUsingJsonResponseTrait())->callGetExceptionData($exception);
 
     $this->assertIsArray($data);
-    $this->assertNotEmpty($data);
-    foreach ($data as $pointer => $messages) {
-      $this->assertIsString($pointer, 'response keys are JSON pointers');
-      $this->assertIsArray($messages, 'response values are arrays of strings');
-      $this->assertNotEmpty($messages);
-      foreach ($messages as $message) {
-        $this->assertIsString($message);
-        $this->assertNotEmpty($message);
-      }
-    }
+    $this->assertSame(['keyword', 'pointer', 'message'], array_keys($data));
+    $this->assertIsString($data['keyword']);
+    $this->assertNotEmpty($data['keyword']);
+    $this->assertIsString($data['pointer']);
+    $this->assertIsString($data['message']);
+    $this->assertNotEmpty($data['message']);
+    // Pointer should reference the failing field.
+    $this->assertStringContainsString('title', $data['pointer']);
+    // Keyword should name the failing constraint.
+    $this->assertSame('minLength', $data['keyword']);
   }
 
   /**
