@@ -45,10 +45,6 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
-        },
-        "rooted-json-data-fork": {
-            "type": "vcs",
-            "url": "https://github.com/GetDKAN/RootedJsonData"
         }
     },
     "minimum-stability": "dev",
