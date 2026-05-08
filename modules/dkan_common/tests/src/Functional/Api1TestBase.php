@@ -98,7 +98,6 @@ abstract class Api1TestBase extends BrowserTestBase {
   }
 
   protected function assertJsonIsValid($schema, $json) {
-    // Opis v2: Schema::fromJsonString is gone (Schema is an interface).
     // Validator::validate() accepts a decoded schema (object/bool) directly.
     $decodedSchema = is_string($schema) ? json_decode($schema, FALSE) : $schema;
     $data = is_string($json) ? json_decode($json) : $json;
