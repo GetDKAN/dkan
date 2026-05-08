@@ -67,8 +67,12 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    *
    * @return \Drupal\dkan_metastore\MetastoreItemInterface
    *   Metastore data node object.
+   *
+   * @throws \Drupal\dkan_metastore\Exception\MissingObjectException
+   *   Thrown when the input is null or otherwise empty.
    */
   public function wrap($input): MetastoreItemInterface {
+    // Check $input so we don't even have to start creating a new Data object.
     if ($input) {
       return new Data($input, $this->entityTypeManager);
     }
