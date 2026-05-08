@@ -2,12 +2,10 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
-use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Http\Exception\CacheableTooManyRequestsHttpException;
-use Drupal\dkan_common\DatasetInfo;
-use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_common\DatasetInfo;
+use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
@@ -17,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * Abstract Controller providing base functionality used to query datastores.
@@ -26,6 +24,11 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
  */
 abstract class AbstractQueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
+
+  /**
+   * Wait time for new request if the DB server reports busy.
+   */
+  protected const int BUSY_RETRY_AFTER = 60;
 
   /**
    * Datastore query service.
@@ -263,10 +266,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       switch ($e->getCode()) {
         // @see https://dev.mysql.com/doc/mysql-errors/8.4/en/server-error-reference.html#error_er_too_many_user_connections
         case 1203:
-          // @todo Use CacheableTooManyRequestsHttpException when
-          //   getResponseFromException() can handle caching.
-          $too_many = new TooManyRequestsHttpException(60, $e->getMessage());
-          return $this->getResponseFromException($e, $too_many->getStatusCode());
+          $http_exception = new ServiceUnavailableHttpException(self::BUSY_RETRY_AFTER, $e->getMessage());
+          return $this->getResponseFromException($http_exception, $http_exception->getStatusCode());
 
         default:
           throw $e;

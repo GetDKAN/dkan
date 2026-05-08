@@ -139,8 +139,9 @@ class AbstractQueryControllerTest extends TestCase {
       [$this->createMock(DatastoreQuery::class)]
     );
 
-    // Did we get a 429 with the message we added?
-    $this->assertSame(429, $result->getStatusCode());
+    // Did we get a 503 with the message we added?
+    $this->assertSame(503, $result->getStatusCode());
+    $this->assertSame('60', $result->headers->get('retry-after'));
     $this->assertStringContainsString($message, $result->getContent());
   }
 
