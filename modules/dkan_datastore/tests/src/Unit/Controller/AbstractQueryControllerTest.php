@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @covers \Drupal\dkan_datastore\Controller\AbstractQueryController
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\AbstractQueryController
  *
  * @group dkan

@@ -36,7 +36,7 @@ threshold = 4
 threshold = 5
 
 [smells.duplication]
-threshold = 22
+nodes_threshold = 22
 
 [[source]]
 name = "default"
@@ -45,3 +45,6 @@ default = true
 [[plugin]]
 name = "php-codesniffer"
 package_file = ".qlty/configs/composer.json"
+
+[runtimes.enabled]
+php = "8.4"
