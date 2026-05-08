@@ -8,9 +8,9 @@ use Drush\TestTraits\DrushTestTrait;
 /**
  * Tests for degraded mode Drush commands.
  *
- * @covers \Drupal\dkan_datastore\Commands\DegradedModeCommands
- * @coversDefaultClass \Drupal\dkan_datastore\Commands\DegradedModeCommands
- * @group dkan_datastore
+ * @covers \Drupal\datastore\Commands\DegradedModeCommands
+ * @coversDefaultClass \Drupal\datastore\Commands\DegradedModeCommands
+ * @group datastore
  * @group functional
  * @group btb
  * @group functional2
@@ -21,7 +21,7 @@ class DegradedModeCommandsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['dkan_datastore'];
+  protected static $modules = ['datastore'];
 
   protected $defaultTheme = 'stark';
 
