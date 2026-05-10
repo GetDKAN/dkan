@@ -2,9 +2,12 @@
 
 namespace Drupal\dkan_js_frontend\Controller;
 
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Http\Exception\CacheableNotFoundHttpException;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\dkan_js_frontend\Routing\RouteProvider;
@@ -33,13 +36,6 @@ class Page implements ContainerInjectionInterface {
   protected readonly ImmutableConfig $frontendConfig;
 
   /**
-   * Renderer service.
-   *
-   * @var \Drupal\Core\Render\RendererInterface
-   */
-  protected readonly RendererInterface $renderer;
-
-  /**
    * Node data factory service.
    *
    * @var \Drupal\dkan_metastore\NodeWrapper\NodeDataFactory
@@ -52,7 +48,6 @@ class Page implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('renderer'),
       $container->get('dkan.metastore.metastore_item_factory'),
     );
   }
@@ -69,11 +64,9 @@ class Page implements ContainerInjectionInterface {
    */
   public function __construct(
     ConfigFactoryInterface $configFactory,
-    RendererInterface $renderer,
     NodeDataFactory $nodeDataFactory,
   ) {
     $this->frontendConfig = $configFactory->get('dkan_js_frontend.config');
-    $this->renderer = $renderer;
     $this->nodeDataFactory = $nodeDataFactory;
   }
 
@@ -93,14 +86,29 @@ class Page implements ContainerInjectionInterface {
    *   identifier.
    */
   public function content(RouteMatchInterface $route_match, Request $request) {
+    $cacheable_metadata = (new CacheableMetadata())
+      // Keep as long as possible. In practice, this will probably be
+      // overridden by other theming elements during render.
+      ->setCacheMaxAge(Cache::PERMANENT)
+      // Allow cache invalidation if we change config for this module.
+      ->addCacheableDependency($this->frontendConfig);
     $dataset_node = NULL;
     // Check for valid dataset identifier on the dataset route.
     // Checking for 404 prevents an infinite loop from the 404 we might cause
     // later.
-    if (($route_match->getRouteName() === RouteProvider::ROUTE_PREFIX . 'dataset') &&
+    // @todo Make the dataset and dataset API routes a special case.
+    if (
+      in_array($route_match->getRouteName(), [
+        RouteProvider::ROUTE_PREFIX . 'dataset',
+        RouteProvider::ROUTE_PREFIX . 'datasetapi'
+      ]) &&
       ($request->query->get('_exception_statuscode') !== 404)
-      ) {
+    ) {
       try {
+        // Allow cache invalidation if our dataset module changes at all.
+        // @todo Ideally DKAN would give us a way to also get cacheability
+        //   metadata from other related nodes, such as distribution.
+        $cacheable_metadata->addCacheableDependency($dataset_node);
         // @todo Figure out a way to find if the identifier exists without
         //   triggering the lifecycle loading of tertiary nodes, etc.
         $dataset_node = $this->nodeDataFactory->getInstance(
@@ -109,18 +117,17 @@ class Page implements ContainerInjectionInterface {
       }
       // Handle if the dataset does not exist.
       catch (MissingObjectException) {
-        // Throw the exception that tells Drupal send back a 404.
-        throw new NotFoundHttpException();
+        // Throw an exception that tells Drupal send back a 404. Also enforce
+        // the same caching, so that we won't ever query the DB until the cache
+        // is invalidated.
+        throw new CacheableNotFoundHttpException($cacheable_metadata);
       }
     }
 
     $build = [
       '#theme' => 'page__dkan_js_frontend',
     ];
-    $this->renderer->addCacheableDependency($build, $this->frontendConfig);
-    if ($dataset_node) {
-      $this->renderer->addCacheableDependency($build, $dataset_node);
-    }
+    $cacheable_metadata->applyTo($build);
 
     return $build;
   }
