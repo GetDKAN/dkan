@@ -22,3 +22,18 @@ can select other "triggers" to ensure that the old datastore is dropped and a ne
 For example, if you select "Last Update (modified)", any change to this value will add
 jobs to the queue when the dataset is saved. These jobs will drop the existing datastore
 table and generate a new datastore when cron runs or when the queue is run directly.
+
+Degraded service mode
+----------------------
+Degraded service mode blocks requests to the datastore API that contain conditions,
+joins, groupings, sorts, and offsets. The datastore API allows people to make potentially
+very complex and expensive queries against the database. Partiularly when a DKAN
+site become the target of a large amount of bot traffic, even when not intentionally
+malicious, MySQL servers can become overwhelmed. Placing the site in degraded
+service mode can help the server to "cool down", and return to a state where
+the database can be responsive, without having to take the site offline entirely.
+
+Toggle degraded service mode on the datastore settings page, or use the Drush command
+``drush dkan:datastore:degraded-mode 1`` to turn on, and 
+``drush dkan:datastore:degraded-mode 0`` to turn off. Run 
+``drush dkan:datastore:degraded-mode`` with no arguments to check the current status.

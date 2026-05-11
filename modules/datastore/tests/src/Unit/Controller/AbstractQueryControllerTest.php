@@ -7,6 +7,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @covers \Drupal\datastore\Controller\AbstractQueryController
+ * @coversDefaultClass \Drupal\datastore\Controller\AbstractQueryController
  * @group dkan
  * @group datastore
  * @group unit
@@ -14,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AbstractQueryControllerTest extends TestCase {
 
   /**
-   * Make sure we get what we expect with a GET
+   * Make sure we get what we expect with a GET.
    */
   public function testGetNormalizer() {
     $queryString = "conditions[0][property]=state&conditions[0][value]=AL&conditions[0][operator]==&conditions[1][property]=record_number&conditions[1][value]=%1%&conditions[1][operator]=LIKE&sort[0][property]=record_number&sort[0][order]=asc&sort[1][property]=state&sort[1][order]=desc&limit=50&offset=25&results=true";
@@ -25,7 +27,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a POST
+   * Make sure we get what we expect with a POST.
    */
   public function testPostNormalizer() {
     $sampleJson = $this->getSampleJson();
@@ -36,7 +38,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a PATCH
+   * Make sure we get what we expect with a PATCH.
    */
   public function testPatchNormalizer() {
     $sampleJson = $this->getSampleJson();
@@ -48,7 +50,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a DELETE
+   * Make sure we get what we expect with a DELETE.
    */
   public function testDeleteNormalizer() {
     $this->expectExceptionMessage("Only POST, PUT, PATCH and GET requests can be normalized");
@@ -59,7 +61,7 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
-   * Make sure we get what we expect with a PUT
+   * Make sure we get what we expect with a PUT.
    */
   public function testPutNormalizer() {
     $sampleJson = $this->getSampleJson();
