@@ -97,6 +97,16 @@ This can be achieved in markdown like this:
     **`This text`** will be code-styled and bold
 
 
+Architectural Decision Records
+------------------------------
+
+Major architectural decisions are documented in the :ref:`adr` section of the docs.
+The easiest way to add a new ADR is with the `adr-tools <https://github.com/npryce/adr-tools>`_ command line utility. Install it locally and then run the following command from the root of the repository:
+
+  .. prompt:: console $
+
+    adr new "Title of your ADR"
+
 Building these docs
 -------------------
 If you contribute significantly to this documentation, at some point you will want build them locally
@@ -175,7 +185,15 @@ Autobuilding
 
 You can have the documentation automatically rebuild when you make
 changes to the source files using the ``sphinx-autobuild`` command 
-instead of ``make``:
+instead of ``make``.
+
+First, install ``sphinx-autobuild`` in your virtual environment (we have not 
+added it as an explicit dependency in ``requirements.txt``):
+  .. prompt:: console $
+
+    pip install sphinx-autobuild
+
+Then run the following command from the `/docs` directory:
 
   .. prompt:: console $
 
