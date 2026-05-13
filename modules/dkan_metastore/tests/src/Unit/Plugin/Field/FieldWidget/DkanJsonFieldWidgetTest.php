@@ -41,7 +41,7 @@ class DkanJsonFieldWidgetTest extends TestCase {
       ->add('json_form.string_helper', StringHelper::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('plugin.manager.json_form_option_source', JsonFormOptionSourcePluginManager::class)
-      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
+      ->add('json_form.logger_channel', LoggerInterface::class)
       ->index(0);
 
     $metastoreGetAllOptions = (new Options())
@@ -225,7 +225,7 @@ class DkanJsonFieldWidgetTest extends TestCase {
     $widget_router = WidgetRouter::create($this->getContainerChain()->getMock());
     $options = (new Options())
       ->add('json_form.string_helper', StringHelper::class)
-      ->add('dkan.json_form.logger_channel', LoggerInterface::class)
+      ->add('json_form.logger_channel', LoggerInterface::class)
       ->add('uuid', Php::class)
       ->add('json_form.widget_router', $widget_router)
       ->index(0);
