@@ -2,7 +2,8 @@ dkan.harvest.1.harvest:
   path: '/api/1/harvest'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'}
+    _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -12,7 +13,8 @@ dkan.harvest.api.plans:
   path: '/api/1/harvest/plans'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::index'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::index'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_index'
   options:
@@ -22,7 +24,8 @@ dkan.harvest.api.plans.post:
   path: '/api/1/harvest/plans'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::register'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::register'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_register'
   options:
@@ -32,7 +35,8 @@ dkan.harvest.api.plans_id:
   path: '/api/1/harvest/plans/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::getPlan'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::getPlan'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_index'
   options:
@@ -42,7 +46,8 @@ dkan.harvest.api.plans_id.delete:
   path: '/api/1/harvest/plans/{identifier}'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::deregister'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::deregister'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_run'
   options:
@@ -52,7 +57,8 @@ dkan.harvest.api.runs:
   path: '/api/1/harvest/runs'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::info'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::info'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_info'
   options:
@@ -62,7 +68,8 @@ dkan.harvest.api.runs.post:
   path: '/api/1/harvest/runs'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::run'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::run'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_run'
   options:
@@ -72,7 +79,8 @@ dkan.harvest.api.runs.delete:
   path: '/api/1/harvest/runs'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::revert'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::revert'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_run'
   options:
@@ -82,7 +90,8 @@ dkan.harvest.api.runs_id:
   path: '/api/1/harvest/runs/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_harvest\WebServiceApi::infoRun'}
+    _controller: '\Drupal\dkan_harvest\WebServiceApi::infoRun'
+    is_dkan_api_route: true
   requirements:
     _permission: 'harvest_api_info'
   options:

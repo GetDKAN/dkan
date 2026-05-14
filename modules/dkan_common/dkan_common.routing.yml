@@ -10,7 +10,8 @@ dkan.common.api:
   path: '/api'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_common\Controller\OpenApiController::getVersions'}
+    _controller: '\Drupal\dkan_common\Controller\OpenApiController::getVersions'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -20,7 +21,8 @@ dkan.common.api.version:
   path: '/api/1'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'}
+    _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -31,6 +33,7 @@ dkan.common.api.version.yaml:
   methods: [GET]
   defaults:
     _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'
+    is_dkan_api_route: true
     format: yaml
   requirements:
     _permission: 'access content'

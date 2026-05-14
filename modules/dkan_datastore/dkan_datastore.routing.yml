@@ -2,7 +2,8 @@ dkan_datastore.1.datastore:
   path: '/api/1/datastore'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'}
+    _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -13,6 +14,7 @@ dkan_datastore.1.imports:
   methods: [GET]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\ImportController::list'
+    is_dkan_api_route: true
   requirements:
     _permission: 'datastore_api_import'
   options:
@@ -23,6 +25,7 @@ dkan_datastore.1.imports.post:
   methods: [POST]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\ImportController::import'
+    is_dkan_api_route: true
     deferred: false
   requirements:
     _permission: 'datastore_api_import'
@@ -34,6 +37,7 @@ dkan_datastore.1.imports.id:
   methods: [GET]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\ImportController::summary'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -44,6 +48,7 @@ dkan_datastore.1.imports.delete:
   methods: [DELETE]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\ImportController::deleteMultiple'
+    is_dkan_api_route: true
   requirements:
     _permission: 'datastore_api_drop'
   options:
@@ -54,6 +59,7 @@ dkan_datastore.1.imports.id.delete:
   methods: [DELETE]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\ImportController::delete'
+    is_dkan_api_route: true
   requirements:
     _permission: 'datastore_api_drop'
   options:
@@ -64,6 +70,7 @@ dkan_datastore.1.query:
   methods: [GET, POST]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\QueryController::query'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -74,6 +81,7 @@ dkan_datastore.1.query.download:
   methods: [GET, POST]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\QueryDownloadController::query'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -84,6 +92,7 @@ dkan_datastore.1.query.id:
   methods: [GET, POST]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\QueryController::queryResource'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -94,6 +103,7 @@ dkan_datastore.1.query.id.download:
   methods: [GET, POST]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\QueryDownloadController::queryResource'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -104,6 +114,7 @@ dkan_datastore.1.query.dataset.index:
   methods: [GET, POST]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\QueryController::queryDatasetResource'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -114,6 +125,7 @@ dkan_datastore.1.query.dataset.index.download:
   methods: [GET, POST]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\QueryDownloadController::queryDatasetResource'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -124,6 +136,7 @@ dkan_datastore.1.query.schema.get:
   methods: [GET]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\QueryController::querySchema'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -133,7 +146,8 @@ dkan_datastore.sql_endpoint.get.api:
   path: '/api/1/datastore/sql'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_datastore\SqlEndpoint\WebServiceApi::runQueryGet'}
+    _controller: '\Drupal\dkan_datastore\SqlEndpoint\WebServiceApi::runQueryGet'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -143,7 +157,8 @@ dkan_datastore.sql_endpoint.post.api:
   path: '/api/1/datastore/sql'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\dkan_datastore\SqlEndpoint\WebServiceApi::runQueryPost'}
+    _controller: '\Drupal\dkan_datastore\SqlEndpoint\WebServiceApi::runQueryPost'
+    is_dkan_api_route: true
   requirements:
     _access: 'TRUE'
 

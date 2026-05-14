@@ -69,3 +69,11 @@ services:
   plugin.manager.dkan_api_docs:
     class: \Drupal\dkan_common\Plugin\DkanApiDocsPluginManager
     parent: default_plugin_manager
+
+  dkan_common.exception_subscriber:
+    class: Drupal\dkan_common\EventSubscriber\DkanExceptionSubscriber
+    arguments:
+      - '@logger.factory'
+      - '@current_route_match'
+    tags:
+      - { name: event_subscriber }

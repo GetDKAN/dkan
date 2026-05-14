@@ -2,7 +2,8 @@ dkan_metastore.1.metastore:
   path: '/api/1/metastore'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'}
+    _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -12,7 +13,8 @@ dkan_metastore.1.metastore.schemas:
   path: '/api/1/metastore/schemas'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getSchemas'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getSchemas'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -22,7 +24,8 @@ dkan_metastore.1.metastore.schemas.id:
   path: '/api/1/metastore/schemas/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getSchema'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getSchema'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -32,7 +35,8 @@ dkan_metastore.1.metastore.schemas.id.items:
   path: '/api/1/metastore/schemas/{schema_id}/items'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getAll'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getAll'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -42,7 +46,8 @@ dkan_metastore.1.metastore.schemas.id.items.post:
   path: '/api/1/metastore/schemas/{schema_id}/items'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::post'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::post'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canCreate'
   options:
@@ -52,7 +57,8 @@ dkan_metastore.1.metastore.schemas.id.items.id:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::get'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::get'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -62,7 +68,8 @@ dkan_metastore.1.metastore.schemas.id.items.id.publish:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/publish'
   methods: [PUT]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::publish'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::publish'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
@@ -72,7 +79,8 @@ dkan_metastore.1.metastore.schemas.id.items.id.put:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [PUT]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::put'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::put'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
@@ -82,7 +90,8 @@ dkan_metastore.1.metastore.schemas.id.items.id.patch:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [PATCH]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::patch'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::patch'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
@@ -92,7 +101,8 @@ dkan_metastore.1.metastore.schemas.id.items.id.delete:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::delete'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::delete'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canDelete'
   options:
@@ -102,7 +112,8 @@ dkan_metastore.1.metastore.schemas.id.items.id.revisions:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::getAll'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::getAll'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canViewRevisionList'
   options:
@@ -112,7 +123,8 @@ dkan_metastore.1.metastore.schemas.id.items.id.revisions.id:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions/{revision_id}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::get'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::get'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canViewRevision'
   options:
@@ -122,7 +134,8 @@ dkan_metastore.1.metastore.schemas.id.items.id.revisions.post:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::post'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::post'
+    is_dkan_api_route: true
   requirements:
     _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
   options:
@@ -133,7 +146,8 @@ dkan_metastore.1.metastore.schemas.dataset.items.id.docs:
   path: '/api/1/metastore/schemas/dataset/items/{identifier}/docs'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getDocs'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getDocs'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
@@ -143,7 +157,8 @@ dkan_metastore.data_json:
   path: '/data.json'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getCatalog'}
+    _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getCatalog'
+    is_dkan_api_route: true
   requirements:
     _permission: 'access content'
   options:
