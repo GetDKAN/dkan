@@ -129,10 +129,20 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $this->setTable();
     // Check if the table has any rows. For empty tables in the datastore, we
     // want to throw an exception instead of just returning an empty result.
-    if ($this->count() == 0) {
+    if ($this->tableIsEmpty()) {
       throw new EmptyResourceException($this->resource->getUniqueIdentifier());
     }
     return parent::query($query, $alias, $fetch);
+  }
+
+  /**
+   * Check if the table is empty.
+   */
+  protected function tableIsEmpty(): bool {
+    $query = $this->connection->select($this->getTableName())
+      ->range(0, 1);
+    $query->addExpression('1');
+    return !(bool) $query->execute()->fetchField();
   }
 
   /**

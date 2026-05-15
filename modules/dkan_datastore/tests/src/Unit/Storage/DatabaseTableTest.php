@@ -349,6 +349,7 @@ class DatabaseTableTest extends TestCase {
    * Test that an empty table will throw an exception.
    *
    * @covers ::query()
+   * @covers ::tableIsEmpty()
    */
   public function testQueryCountZero() {
     $query = new Query();
