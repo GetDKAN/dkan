@@ -9,6 +9,7 @@ use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_common\Storage\Query;
 use Drupal\Core\Database\StatementInterface;
+use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\mysql\Driver\Database\mysql\Schema;
 use MockChain\Chain;
@@ -122,7 +123,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::__construct()
    */
   public function testConstruction() {
 
@@ -136,7 +137,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::getSchema()
    */
   public function testGetSchema() {
     $connectionChain = $this->getConnectionChain();
@@ -187,7 +188,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::retrieveAll()
    */
   public function testRetrieveAll() {
 
@@ -217,7 +218,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::store()
    */
   public function testStore() {
     $connectionChain = $this->getConnectionChain()
@@ -241,7 +242,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::store()
    */
   public function testStoreFieldCountException() {
     $connectionChain = $this->getConnectionChain()
@@ -266,7 +267,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::storeMultiple()
    */
   public function testStoreMultiple() {
     $connectionChain = $this->getConnectionChain()
@@ -295,7 +296,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::storeMultiple()
    */
   public function testStoreMultipleFieldCountException() {
     $connectionChain = $this->getConnectionChain()
@@ -325,7 +326,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::count()
    */
   public function testCount() {
     $connectionChain = $this->getConnectionChain()
@@ -345,7 +346,32 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
+   * Test that an empty table will throw an exception.
    *
+   * @covers ::query()
+   */
+  public function testQueryCountZero() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'countQuery', Select::class)
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchField', 0);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
+    );
+    $this->expectException(EmptyResourceException::class);
+    $databaseTable->query($query);
+  }
+
+  /**
+   * @covers ::getSummary
    */
   public function testGetSummary() {
     $connectionChain = $this->getConnectionChain()
