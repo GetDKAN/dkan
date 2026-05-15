@@ -356,8 +356,6 @@ class DatabaseTableTest extends TestCase {
 
     $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'select', Select::class, 'select_1')
-      ->add(Select::class, 'fields', Select::class)
-      ->add(Select::class, 'countQuery', Select::class)
       ->add(Select::class, 'execute', StatementInterface::class)
       ->add(StatementInterface::class, 'fetchField', 0);
 
@@ -477,6 +475,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
       ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchField', 1)
       ->add(StatementInterface::class, 'fetchAll', []);
 
     $databaseTable = new DatabaseTable(
@@ -495,11 +494,16 @@ class DatabaseTableTest extends TestCase {
   public function testQueryExceptionDatabaseInternalError() {
     $query = new Query();
 
+    $executeSequence = (new Sequence())
+      ->add(StatementInterface::class)
+      ->add(new DatabaseExceptionWrapper("Integrity constraint violation"));
+
     $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("Integrity constraint violation"));
+      ->add(Select::class, 'execute', $executeSequence)
+      ->add(StatementInterface::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -541,11 +545,16 @@ class DatabaseTableTest extends TestCase {
   public function testNoFulltextIndexFound() {
     $query = new Query();
 
+    $executeSequence = (new Sequence())
+      ->add(StatementInterface::class)
+      ->add(new DatabaseExceptionWrapper("SQLSTATE[HY000]: General error: 1191 Can't find FULLTEXT index matching the column list..."));
+
     $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("SQLSTATE[HY000]: General error: 1191 Can't find FULLTEXT index matching the column list..."));
+      ->add(Select::class, 'execute', $executeSequence)
+      ->add(StatementInterface::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
