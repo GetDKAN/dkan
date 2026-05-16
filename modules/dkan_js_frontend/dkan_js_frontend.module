@@ -98,14 +98,14 @@ function dkan_js_frontend_library_info_build() {
 /**
  * Implements hook_page_attachments().
  *
- * Any route with a 'name' default with a value of dkan_js_frontend gets the
- * library attached.
+ * Any route with a '_is_dkan_js_frontend' default with a value of true gets
+ * the library attached.
  *
  * @see \Drupal\dkan_js_frontend\Routing\RouteProvider::addRoutesFromConfig()
  */
 function dkan_js_frontend_page_attachments(array &$page) {
   if (
-    \Drupal::routeMatch()->getRouteObject()->getDefault('name') === 'dkan_js_frontend'
+    \Drupal::routeMatch()->getRouteObject()->getDefault('_is_dkan_js_frontend') === 'true'
   ) {
     $page['#attached']['library'][] = 'dkan_js_frontend/dkan_js_frontend';
   }
@@ -116,7 +116,7 @@ function dkan_js_frontend_page_attachments(array &$page) {
  */
 function dkan_js_frontend_theme_suggestions_page_alter(array &$suggestions, array $variables) {
   if (
-    \Drupal::routeMatch()->getRouteObject()->getDefault('name') === 'dkan_js_frontend'
+    \Drupal::routeMatch()->getRouteObject()->getDefault('_is_dkan_js_frontend') === 'true'
   ) {
     $suggestions[] = 'page__dkan_js_frontend';
   }

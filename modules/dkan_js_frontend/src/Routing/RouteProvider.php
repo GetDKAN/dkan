@@ -48,8 +48,9 @@ class RouteProvider {
   /**
    * Add all the routes specified in configuration.
    *
-   * Routes added here are marked with a default property 'name' with a value
-   * of 'dkan_js_frontend'. This allows for select attachment of libraries.
+   * Routes added here are marked with a default property
+   * '_is_dkan_js_frontend' with a value of 'true'. This allows for select
+   * attachment of libraries.
    *
    * @param \Symfony\Component\Routing\RouteCollection $routes
    *   The collection to add config routes to.
@@ -63,7 +64,7 @@ class RouteProvider {
         '/' . $possible_page[1],
         [
           '_controller' => '\Drupal\dkan_js_frontend\Controller\Page::content',
-          'name' => 'dkan_js_frontend',
+          '_is_dkan_js_frontend' => 'true',
         ],
       );
       $route->setMethods(['GET']);

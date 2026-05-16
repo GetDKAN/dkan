@@ -87,16 +87,20 @@ class Page implements ContainerInjectionInterface {
    */
   public function content(RouteMatchInterface $route_match, Request $request) {
     $cacheable_metadata = (new CacheableMetadata())
-      // Keep as long as possible. In practice, this will probably be
-      // overridden by other theming elements during render.
+      // This is the default but let's make it explicit.
       ->setCacheMaxAge(Cache::PERMANENT)
       // Allow cache invalidation if we change config for this module.
-      ->addCacheableDependency($this->frontendConfig);
-    $dataset_node = NULL;
-    // Check for valid dataset identifier on the dataset route.
+      ->addCacheableDependency($this->frontendConfig)
+      // Allow cache invalidation per NodeDataFactory. In practice, this is any
+      // change to any data nodes. This is a wide net to allow for reasonably
+      // easy cache invalidation.
+      ->addCacheTags(NodeDataFactory::getCacheTags());
+
+    // Check for valid dataset identifier on the dataset/api routes.
     // Checking for 404 prevents an infinite loop from the 404 we might cause
     // later.
-    // @todo Make the dataset and dataset API routes a special case.
+    // @todo Make the dataset and dataset API routes their own controller and
+    //   config.
     if (
       in_array($route_match->getRouteName(), [
         RouteProvider::ROUTE_PREFIX . 'dataset',
@@ -105,21 +109,23 @@ class Page implements ContainerInjectionInterface {
       ($request->query->get('_exception_statuscode') !== 404)
     ) {
       try {
-        // Allow cache invalidation if our dataset module changes at all.
-        // @todo Ideally DKAN would give us a way to also get cacheability
-        //   metadata from other related nodes, such as distribution.
-        $cacheable_metadata->addCacheableDependency($dataset_node);
+        // Does this dataset exist?
         // @todo Figure out a way to find if the identifier exists without
         //   triggering the lifecycle loading of tertiary nodes, etc.
-        $dataset_node = $this->nodeDataFactory->getInstance(
+        $dataset_item = $this->nodeDataFactory->getInstance(
           $route_match->getRawParameter('id') ?? ''
         );
+        // Allow cache invalidation if our dataset item changes at all.
+        // @todo Ideally DKAN would give us an easy way to also get
+        //   cacheability metadata from other related nodes, such as
+        //   distribution.
+        $cacheable_metadata->addCacheableDependency($dataset_item);
       }
       // Handle if the dataset does not exist.
       catch (MissingObjectException) {
-        // Throw an exception that tells Drupal send back a 404. Also enforce
-        // the same caching, so that we won't ever query the DB until the cache
-        // is invalidated.
+        // Throw an exception that tells Drupal send back a 404. Also use the
+        // same caching, so that we won't query the DB about a given known-bad
+        // identifier until after the cache is invalidated.
         throw new CacheableNotFoundHttpException($cacheable_metadata);
       }
     }
