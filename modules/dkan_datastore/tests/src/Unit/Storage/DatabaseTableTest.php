@@ -350,6 +350,7 @@ class DatabaseTableTest extends TestCase {
    *
    * @covers ::query()
    * @covers ::tableIsEmpty()
+   * @covers \Drupal\dkan_datastore\Exception\EmptyResourceException
    */
   public function testQueryCountZero() {
     $query = new Query();
@@ -440,7 +441,8 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::prepareData()
+   * @covers ::store()
    */
   public function testPrepareDataNonArray() {
     $connectionChain = $this->getConnectionChain()
@@ -465,7 +467,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
    */
   public function testQuery() {
     $query = new Query();
@@ -489,7 +491,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
    */
   public function testQueryExceptionDatabaseInternalError() {
     $query = new Query();
@@ -517,7 +519,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
    */
   public function testQueryColumnNotFound() {
     $query = new Query();
@@ -540,7 +542,8 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
+   * @covers \Drupal\dkan_common\Storage\AbstractDatabaseTable::sanitizedErrorMessage()
    */
   public function testNoFulltextIndexFound() {
     $query = new Query();
