@@ -7,6 +7,7 @@ use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\State\StateInterface;
+use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
@@ -280,6 +281,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     }
     catch (HttpException $e) {
       return $this->getResponseFromException($e, $e->getStatusCode());
+    }
+    catch (EmptyResourceException $e) {
+      return $this->getResponseFromException($e, 404);
     }
     catch (\Exception $e) {
       $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;

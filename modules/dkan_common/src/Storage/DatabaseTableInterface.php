@@ -63,4 +63,12 @@ interface DatabaseTableInterface extends
    */
   public function getTableName();
 
+  /**
+   * Check if the table is empty.
+   *
+   * @return bool
+   *   TRUE if the table is empty, FALSE otherwise.
+   */
+  public function tableIsEmpty(): bool;
+
 }
