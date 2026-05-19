@@ -421,6 +421,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * {@inheritdoc}
    */
   public function tableIsEmpty(): bool {
+    if (!$this->tableExist($this->getTableName())) {
+      return TRUE;
+    }
     $query = $this->connection->select($this->getTableName())
       ->range(0, 1);
     $query->addExpression('1');
