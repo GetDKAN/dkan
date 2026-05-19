@@ -5,6 +5,7 @@ namespace Drupal\dkan_datastore\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
+use Drupal\dkan_common\Storage\ImportedItemInterface;
 use Drupal\dkan_common\Storage\Query;
 use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Psr\Log\LoggerInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * actually MySQL-specific. In the future it should probably be a base class
  * with a MySQL-specific subclass.
  */
-class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
+class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable, ImportedItemInterface {
 
   /**
    * Datastore resource object.
@@ -129,16 +130,20 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $this->setTable();
     // Check if the table has any rows. For empty tables in the datastore, we
     // want to throw an exception instead of just returning an empty result.
-    if ($this->tableIsEmpty()) {
+    if ($this->hasBeenImported()) {
       throw new EmptyResourceException($this->resource->getUniqueIdentifier());
     }
     return parent::query($query, $alias, $fetch);
   }
 
   /**
-   * Check if the table is empty.
+   * Check if the table has been imported -- ie, if it has any rows.
    */
-  protected function tableIsEmpty(): bool {
+  public function hasBeenImported(): bool {
+    if (!$this->tableExist($this->getTableName())) {
+      return FALSE;
+    }
+
     $query = $this->connection->select($this->getTableName())
       ->range(0, 1);
     $query->addExpression('1');
