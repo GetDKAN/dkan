@@ -92,7 +92,7 @@ class MysqlImportTest extends TestCase {
   protected function getDatabaseTableFactoryMock() {
     return (new Chain($this))
       ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
-      ->add(DatabaseTable::class, 'hasBeenImported', TRUE)
+      ->add(DatabaseTable::class, 'tableIsEmpty', TRUE)
       ->add(DatabaseTable::class, 'getTableName', self::TABLE_NAME)
       ->getMock();
   }
