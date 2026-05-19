@@ -417,4 +417,14 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     return substr($md5, 0, 4);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function tableIsEmpty(): bool {
+    $query = $this->connection->select($this->getTableName())
+      ->range(0, 1);
+    $query->addExpression('1');
+    return !(bool) $query->execute()->fetchField();
+  }
+
 }

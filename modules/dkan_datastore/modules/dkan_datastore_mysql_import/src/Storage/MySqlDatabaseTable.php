@@ -96,4 +96,17 @@ class MySqlDatabaseTable extends DatabaseTable implements ImportedItemInterface 
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * For datastore_mysql_import, at this point we only check if the table exists
+   * in the database and has more than 0 rows. This is because the importer is
+   * assumed to have used LOAD DATA LOCAL INFILE to import the data in one step.
+   *
+   * @see \Drupal\dkan_datastore_mysql_import\Service\MysqlImport::getSqlStatement
+   */
+  public function hasBeenImported(): bool {
+    return !$this->tableIsEmpty();
+  }
+
 }

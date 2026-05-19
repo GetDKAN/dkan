@@ -134,4 +134,8 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         return "test_mem_storage";
     }
 
-  }
+    public function tableIsEmpty(): bool {
+        throw new \Exception('Not implemented');
+    }
+
+}
