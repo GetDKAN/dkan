@@ -6,14 +6,18 @@ use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use JsonSchema\Validator;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * Abstract Controller providing base functionality used to query datastores.
@@ -22,6 +26,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractQueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
+
+  const DEGRADE_MODE_RETRY_AFTER = 120;
 
   /**
    * Datastore query service.
@@ -44,6 +50,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected MetastoreApiResponse $metastoreApiResponse;
 
   /**
+   * State service.
+   */
+  protected StateInterface $state;
+
+  /**
    * Default API rows limit.
    *
    * @var int
@@ -58,11 +69,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     DatasetInfo $datasetInfo,
     MetastoreApiResponse $metastoreApiResponse,
     ConfigFactoryInterface $configFactory,
+    StateInterface $state,
   ) {
     $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->configFactory = $configFactory;
+    $this->state = $state;
   }
 
   /**
@@ -73,7 +86,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $container->get('dkan.datastore.query'),
       $container->get('dkan.common.dataset_info'),
       $container->get('dkan.metastore.api_response'),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('state'),
     );
   }
 
@@ -89,6 +103,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public function query(Request $request) {
     try {
       $datastoreQuery = $this->buildDatastoreQuery($request);
+    }
+    catch (HttpException $e) {
+      return $this->getResponseFromException($e, $e->getStatusCode());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -119,6 +136,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public function queryResource(string $identifier, Request $request) {
     try {
       $datastoreQuery = $this->buildDatastoreQuery($request, $identifier);
+    }
+    catch (HttpException $e) {
+      return $this->getResponseFromException($e, $e->getStatusCode());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -154,7 +174,25 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponse((object) ['message' => "No resource found for dataset $dataset at index $index"], 404);
     }
 
-    return $this->queryResource($distribution_uuid, $request);
+    try {
+      $datastoreQuery = $this->buildDatastoreQuery($request, $distribution_uuid);
+    }
+    catch (HttpException $e) {
+      return $this->getResponseFromException($e, $e->getStatusCode());
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 400);
+    }
+
+    $result = $this->runDatastoreQuery($datastoreQuery);
+    return ($result instanceof JsonResponse)
+      ? $result
+      : $this->formatResponse(
+        $datastoreQuery,
+        $result,
+        ['distribution' => [$distribution_uuid]],
+        $request->query
+      );
   }
 
   /**
@@ -213,6 +251,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected function buildDatastoreQuery(Request $request, mixed $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
+    $this->assertDegradedModeAllowed($data);
     $this->additionalPayloadValidation($data, $identifier);
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
@@ -223,6 +262,67 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $data->schema = TRUE;
     }
     return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
+  }
+
+  /**
+   * Run a datastore query with standard error handling.
+   *
+   * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
+   *   The datastore query object.
+   *
+   * @return \RootedData\RootedJsonData|\Symfony\Component\HttpFoundation\JsonResponse
+   *   The query result or an error response.
+   */
+  protected function runDatastoreQuery(DatastoreQuery $datastoreQuery) {
+    try {
+      return $this->queryService->runQuery($datastoreQuery);
+    }
+    catch (HttpException $e) {
+      return $this->getResponseFromException($e, $e->getStatusCode());
+    }
+    catch (\Exception $e) {
+      $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
+      return $this->getResponseFromException($e, $code);
+    }
+  }
+
+  /**
+   * Block expensive queries when degraded performance mode is enabled.
+   *
+   * @param object $data
+   *   The decoded request data.
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+   *   When a blocked query is detected.
+   */
+  protected function assertDegradedModeAllowed(object $data): void {
+    if (!$this->state->get('dkan_datastore.degraded_performance', FALSE)) {
+      return;
+    }
+
+    $blocked = FALSE;
+    if (!empty($data->conditions)) {
+      $blocked = TRUE;
+    }
+    if (!empty($data->joins)) {
+      $blocked = TRUE;
+    }
+    if (!empty($data->groupings)) {
+      $blocked = TRUE;
+    }
+    if (!empty($data->sorts)) {
+      $blocked = TRUE;
+    }
+    if ((int) ($data->offset ?? 0) !== 0) {
+      $blocked = TRUE;
+    }
+
+    if ($blocked) {
+      throw new ServiceUnavailableHttpException(
+        static::DEGRADE_MODE_RETRY_AFTER,
+        'Datastore queries are temporarily limited due to high server load. Remove conditions, joins, groupings, sorts, and offsets to retry.'
+      );
+    }
   }
 
   /**
