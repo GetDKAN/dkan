@@ -14,6 +14,14 @@ use Drupal\dkan_datastore\Storage\DatabaseTable;
  */
 class DatastoreTableCreateEvent extends DatastoreEventBase {
 
+  /**
+   * Constructor.
+   *
+   * @param array $schema
+   *   A Drupal Schema API array to describe the table schema.
+   * @param DataResource $dataResource
+   *   DataResource object for the table we're creating.
+   */
   public function __construct(
     protected array $schema,
     DataResource $dataResource,
@@ -21,11 +29,23 @@ class DatastoreTableCreateEvent extends DatastoreEventBase {
     parent::__construct($dataResource);
   }
 
-  public function setSchema($schema) {
+  /**
+   * Set the schema for this event.
+   *
+   * @param $schema
+   *   Drupal Schema API schema array.
+   */
+  public function setSchema($schema): void {
     $this->schema = $schema;
   }
 
-  public function getSchema() {
+  /**
+   * Get the schema we're changing.
+   *
+   * @return array
+   *   Drupal Schema API schema array.
+   */
+  public function getSchema(): array {
     return $this->schema;
   }
 

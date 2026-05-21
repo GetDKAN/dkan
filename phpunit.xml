@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="web/core/tests/bootstrap.php"
-         verbose="true"
-         colors="true">
-    <coverage>
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="depends,defects"
+         shortenArraysForExportThreshold="10"
+         beStrictAboutOutputDuringTests="true">
+    <testsuites>
+        <testsuite name="default">
+            <directory>tests</directory>
+            <directory>modules</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
         <include>
             <directory>src</directory>
             <directory>modules</directory>
@@ -13,21 +23,13 @@
             <directory>modules/dkan_common/tests</directory>
             <directory>modules/dkan_datastore/tests</directory>
             <directory>modules/dkan_datastore/modules/dkan_datastore_mysql_import/tests</directory>
-            <directory>modules/dkan_js_frontend/tests</directory>
             <directory>modules/dkan_harvest/tests</directory>
+            <directory>modules/dkan_js_frontend/tests</directory>
             <directory>modules/dkan_metastore/tests</directory>
-            <directory>modules/dkan_metastore/modules/dkan_metastore_admin/tests</directory>
             <directory>modules/dkan_metastore/modules/dkan_data_dictionary_widget/tests</directory>
+            <directory>modules/dkan_metastore/modules/dkan_metastore_admin/tests</directory>
             <directory>modules/dkan_metastore/modules/dkan_metastore_search/tests</directory>
             <directory>modules/dkan_sample_content/tests</directory>
-            <directory suffix="TestBase.php">./</directory>
         </exclude>
-    </coverage>
-    <testsuites>
-        <testsuite name="default">
-            <directory>.</directory>
-            <exclude>vendor</exclude>
-            <exclude>web</exclude>
-        </testsuite>
-    </testsuites>
+    </source>
 </phpunit>

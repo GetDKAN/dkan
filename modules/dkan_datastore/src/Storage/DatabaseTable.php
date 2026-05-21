@@ -17,8 +17,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @see \Drupal\dkan_common\Storage\DatabaseTableInterface
  *
  * @todo This class name suggests it is a generic database table but it is
- * actually MySQL-specific. In the future it should probably be a base class
- * with a MySQL-specific subclass.
+ *   actually MySQL-specific. In the future it should probably be a base class
+ *   with a MySQL-specific subclass.
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
@@ -99,7 +99,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // @todo Send MORE information.
     $event = new DatastoreTableCreateEvent($schema, $this->dataResource);
     $this->eventDispatcher->dispatch($event, self::EVENT_DATABASE_TABLE_CREATE);
-    parent::tableCreate($table_name, $event->getSchema());
+    $this->setSchema($event->getSchema());
+
+    parent::tableCreate($table_name, $this->getSchema());
   }
 
   /**
