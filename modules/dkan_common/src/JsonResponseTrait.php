@@ -58,8 +58,9 @@ trait JsonResponseTrait {
    */
   protected function getExceptionData(\Exception $e) {
     if ($e instanceof ValidationException) {
-      $error = $e->getResult()->error();
-      if ($error) {
+      $result = $e->getResult();
+      if ($result->hasError()) {
+        $error = $result->error();
         // Walk to a leaf — v2's root error is a container keyword (e.g.
         // `properties`); the actionable error lives at a leaf.
         while (!empty($subs = $error->subErrors())) {

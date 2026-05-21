@@ -142,12 +142,18 @@ class Factory {
 
     $path_to_schema = __DIR__ . "/../../schema/schema.json";
     $json_schema = file_get_contents($path_to_schema);
-
+    if ($json_schema === FALSE) {
+      throw new \Exception("Harvest plan schema not readable at: {$path_to_schema}");
+    }
     // Opis v2: Validator::validate() accepts a JSON-string schema; pre-decode
     // to bypass v2's URI-first parse path.
+    $schema = json_decode($json_schema, FALSE);
+    if ($schema === NULL && json_last_error() !== JSON_ERROR_NONE) {
+      throw new \Exception("Harvest plan schema is not valid JSON: " . json_last_error_msg());
+    }
     $data = $harvest_plan;
     $validator = new Validator();
-    $result = $validator->validate($data, json_decode($json_schema, FALSE));
+    $result = $validator->validate($data, $schema);
 
     if (!$result->isValid()) {
       // Walk to a leaf — v2's root is a container (e.g. `properties`); the

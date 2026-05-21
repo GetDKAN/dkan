@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_common\Unit;
 
-use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\Tests\dkan_common\Unit\Mocks\ClassUsingJsonResponseTrait;
 use Opis\JsonSchema\Validator;
 use PHPUnit\Framework\TestCase;
 use RootedData\Exception\ValidationException;
@@ -81,20 +81,6 @@ class JsonResponseTraitTest extends TestCase {
     $this->assertFalse(
       (new ClassUsingJsonResponseTrait())->callGetExceptionData($exception)
     );
-  }
-
-}
-
-/**
- * Stub exposing the protected trait method for tests.
- *
- * Mirrors the pattern in CacheableResponseTraitTest.
- */
-class ClassUsingJsonResponseTrait {
-  use JsonResponseTrait;
-
-  public function callGetExceptionData(\Exception $e) {
-    return $this->getExceptionData($e);
   }
 
 }

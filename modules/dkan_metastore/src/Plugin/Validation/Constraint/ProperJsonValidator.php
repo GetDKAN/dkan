@@ -94,9 +94,9 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
       $this->validMetadataFactory->get($item->value, $schema_id);
     }
     catch (ValidationException $e) {
-      $rootError = $e->getResult()->error();
-      if ($rootError) {
-        $errors = $this->getValidationErrorsMessages($rootError);
+      $result = $e->getResult();
+      if ($result->hasError()) {
+        $errors = $this->getValidationErrorsMessages($result->error());
       }
     }
     catch (InvalidArgumentException $e) {
@@ -112,6 +112,12 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    * redundancy of formatFlat() which also includes container errors), then
    * collapses the pointer-keyed groups into the array<string> shape that
    * addViolation() expects.
+   *
+   * @param \Opis\JsonSchema\Errors\ValidationError $error
+   *   Root validation error to flatten.
+   *
+   * @return array
+   *   Per-leaf message strings ready to pass to addViolation().
    */
   private function getValidationErrorsMessages(ValidationError $error): array {
     $formatter = new ErrorFormatter();
