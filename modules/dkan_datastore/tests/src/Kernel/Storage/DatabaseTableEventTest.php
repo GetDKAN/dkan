@@ -106,6 +106,12 @@ class DatabaseTableEventTest extends KernelTestBase implements EventSubscriberIn
     // EVENT_DATABASE_TABLE_CREATE happened first.
     $this->assertArrayHasKey('on_database_table_create_was_first', $schema['fields'] ?? []);
     $this->assertArrayNotHasKey('on_table_create_was_first', $schema['fields'] ?? []);
+
+    // Data resource made it through.
+    $this->assertEquals(
+      'd6fe1d0be6347b8ef2427fa629c04485',
+      $schema['fields']['data_resource']['description'] ?? NULL
+    );
   }
 
   /**
@@ -116,6 +122,12 @@ class DatabaseTableEventTest extends KernelTestBase implements EventSubscriberIn
     $schema['fields']['on_database_table_create'] = ['type' => 'text'];
     if ($schema['fields']['on_table_create'] ?? FALSE) {
       $schema['fields']['on_table_create_was_first'] = ['type' => 'text'];
+    }
+    if ($data_resource = $event->getDataResource()) {
+      $schema['fields']['data_resource'] = [
+        'type' => 'text',
+        'description' => $data_resource->getIdentifier(),
+      ];
     }
     $event->setSchema($schema);
   }
