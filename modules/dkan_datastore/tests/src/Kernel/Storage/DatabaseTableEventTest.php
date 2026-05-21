@@ -85,7 +85,7 @@ class DatabaseTableEventTest extends KernelTestBase implements EventSubscriberIn
 
     $schema = $data_table->getSchema();
 
-    // AbstractDatabaseTable added this primary key.
+    // DatabaseTable added this primary key.
     $this->assertSame(['record_number'], $schema['primary key']);
     $this->assertSame([
       'type' => 'serial',
