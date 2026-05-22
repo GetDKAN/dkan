@@ -11,7 +11,7 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class RouteProvider {
 
-  const string ROUTE_PREFIX = 'dkan_js_frontend.';
+  const ROUTE_PREFIX = 'dkan_js_frontend.';
 
   /**
    * Route-URL pairs, separated by a comma.
