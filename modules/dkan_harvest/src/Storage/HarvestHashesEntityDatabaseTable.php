@@ -274,4 +274,17 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
     throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function tableIsEmpty(): bool {
+    // Check if there are any entities at all in the table.
+    $ids = $this->entityStorage->getQuery()
+      ->condition('harvest_plan_id', $this->planId)
+      ->range(0, 1)
+      ->accessCheck(FALSE)
+      ->execute();
+    return empty($ids);
+  }
+
 }
