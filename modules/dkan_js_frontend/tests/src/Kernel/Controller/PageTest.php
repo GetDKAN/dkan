@@ -98,6 +98,7 @@ class PageTest extends KernelTestBase {
           'contexts' => [],
           'tags' => [
             'config:dkan_js_frontend.config',
+            'node_list:data',
             'node:' . $nid,
           ],
         ],
