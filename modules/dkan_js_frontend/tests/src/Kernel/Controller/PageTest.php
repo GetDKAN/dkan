@@ -29,6 +29,7 @@ class PageTest extends KernelTestBase {
     'node',
     'user',
     'field',
+    'text',
     'dkan_js_frontend',
     'dkan_metastore',
     'dkan_common',
