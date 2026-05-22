@@ -5,6 +5,8 @@ namespace Drupal\dkan_datastore\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
+use Drupal\dkan_common\Storage\Query;
+use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -118,6 +120,19 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return $decoded;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function query(Query $query, string $alias = 't', $fetch = TRUE) {
+    $this->setTable();
+    // Check if the table has any rows. For empty tables in the datastore, we
+    // want to throw an exception instead of just returning an empty result.
+    if ($this->tableIsEmpty()) {
+      throw new EmptyResourceException($this->resource->getUniqueIdentifier());
+    }
+    return parent::query($query, $alias, $fetch);
   }
 
   /**

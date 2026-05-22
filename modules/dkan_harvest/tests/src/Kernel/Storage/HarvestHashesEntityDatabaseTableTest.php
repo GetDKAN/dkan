@@ -100,4 +100,22 @@ class HarvestHashesEntityDatabaseTableTest extends KernelTestBase {
     $this->assertEquals(0, $table->count());
   }
 
+  public function testTableIsEmpty() {
+    $harvest_plan_id = 'test_harvest';
+    /** @var \Drupal\dkan_harvest\Storage\HarvestHashesEntityDatabaseTable $table */
+    $table = $this->container
+      ->get('dkan.harvest.storage.hashes_database_table')
+      ->getInstance($harvest_plan_id);
+
+    $this->assertTrue($table->tableIsEmpty());
+
+    $dataset_uuid = '9110349C-65CB-4187-984C-E33A0F27DA39';
+    $hash_data = [
+      'harvest_plan_id' => $harvest_plan_id,
+      'hash' => 'yuck',
+    ];
+    $table->store(json_encode($hash_data), $dataset_uuid);
+    $this->assertFalse($table->tableIsEmpty());
+  }
+
 }

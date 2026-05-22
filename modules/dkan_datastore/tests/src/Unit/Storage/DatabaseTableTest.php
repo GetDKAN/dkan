@@ -9,6 +9,7 @@ use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_common\Storage\Query;
 use Drupal\Core\Database\StatementInterface;
+use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\mysql\Driver\Database\mysql\Schema;
 use MockChain\Chain;
@@ -122,7 +123,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::__construct()
    */
   public function testConstruction() {
 
@@ -136,7 +137,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::getSchema()
    */
   public function testGetSchema() {
     $connectionChain = $this->getConnectionChain();
@@ -187,7 +188,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::retrieveAll()
    */
   public function testRetrieveAll() {
 
@@ -217,7 +218,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::store()
    */
   public function testStore() {
     $connectionChain = $this->getConnectionChain()
@@ -241,7 +242,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::store()
    */
   public function testStoreFieldCountException() {
     $connectionChain = $this->getConnectionChain()
@@ -266,7 +267,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::storeMultiple()
    */
   public function testStoreMultiple() {
     $connectionChain = $this->getConnectionChain()
@@ -295,7 +296,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::storeMultiple()
    */
   public function testStoreMultipleFieldCountException() {
     $connectionChain = $this->getConnectionChain()
@@ -325,7 +326,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::count()
    */
   public function testCount() {
     $connectionChain = $this->getConnectionChain()
@@ -345,7 +346,32 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
+   * Test that an empty table will throw an exception.
    *
+   * @covers ::query()
+   * @covers ::hasBeenImported()
+   * @covers \Drupal\dkan_datastore\Exception\EmptyResourceException
+   */
+  public function testQueryCountZero() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchField', 0);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource(),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(EventDispatcherInterface::class)
+    );
+    $this->expectException(EmptyResourceException::class);
+    $databaseTable->query($query);
+  }
+
+  /**
+   * @covers ::getSummary
    */
   public function testGetSummary() {
     $connectionChain = $this->getConnectionChain()
@@ -415,7 +441,8 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::prepareData()
+   * @covers ::store()
    */
   public function testPrepareDataNonArray() {
     $connectionChain = $this->getConnectionChain()
@@ -440,7 +467,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
    */
   public function testQuery() {
     $query = new Query();
@@ -450,6 +477,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
       ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchField', 1)
       ->add(StatementInterface::class, 'fetchAll', []);
 
     $databaseTable = new DatabaseTable(
@@ -463,16 +491,21 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
    */
   public function testQueryExceptionDatabaseInternalError() {
     $query = new Query();
+
+    $executeSequence = (new Sequence())
+      ->add(StatementInterface::class)
+      ->add(new DatabaseExceptionWrapper("Integrity constraint violation"));
 
     $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("Integrity constraint violation"));
+      ->add(Select::class, 'execute', $executeSequence)
+      ->add(StatementInterface::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -486,7 +519,7 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
    */
   public function testQueryColumnNotFound() {
     $query = new Query();
@@ -509,16 +542,22 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::query()
+   * @covers \Drupal\dkan_common\Storage\AbstractDatabaseTable::sanitizedErrorMessage()
    */
   public function testNoFulltextIndexFound() {
     $query = new Query();
+
+    $executeSequence = (new Sequence())
+      ->add(StatementInterface::class)
+      ->add(new DatabaseExceptionWrapper("SQLSTATE[HY000]: General error: 1191 Can't find FULLTEXT index matching the column list..."));
 
     $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("SQLSTATE[HY000]: General error: 1191 Can't find FULLTEXT index matching the column list..."));
+      ->add(Select::class, 'execute', $executeSequence)
+      ->add(StatementInterface::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
