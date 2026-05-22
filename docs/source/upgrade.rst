@@ -111,6 +111,14 @@ version control.
     part of a post-deploy hook or script that runs automatically after any new
     code deployment.
 
+    Ensure that after deployment, the new transitional DKAN modules (for instance,
+    ``dkan_metastore``) are enabled. Note that if you automatically import configuration as part of your deployment (for
+    instance, with an Acquia post-deploy cloud hook), you also need to export your
+    ``core.extension`` and add it to the commit that upgrades DKAN to 2.23.x. 
+    Otherwise, the new DKAN modules that are enabled via the database updates will be
+    disabled again when your old config is imported. If this happens, re-enable them
+    manually on your production server before proceeding to the next step.
+
 Step 2: Export configuration
 ############################
 
@@ -148,6 +156,11 @@ composer command ensures that this new dependency will also be added.
 
     Do not deploy these code changes to production until you have completed
     steps 4-7 or you may lose functionality on your live site.
+
+    As detailed in the deployment notes for step 1, ensure that the transitional
+    namespaced DKAN modules are enabled before deploying DKAN 3. If they were
+    disabled inadvertently during the upgrade to 2.23.x, reenable them manually or
+    via config before deploying DKAN 3.
 
 Step 4: Refactor custom code
 ############################
