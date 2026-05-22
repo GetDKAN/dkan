@@ -79,7 +79,7 @@ class Factory {
    */
   public function get(string $type) {
     switch ($type) {
-      case  "extract":
+      case "extract":
         $class = $this->harvestPlan->extract->type;
         $this->validateClass($class);
 
