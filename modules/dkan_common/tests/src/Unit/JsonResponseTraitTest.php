@@ -19,13 +19,8 @@ class JsonResponseTraitTest extends TestCase {
   /**
    * @covers ::getExceptionData
    *
-   * Locks down the historical v1/m1x0n response shape:
-   *   { "keyword": <string>, "pointer": <string>, "message": <string> }
-   *
-   * The v2 migration preserves this shape (the values are sourced from
-   * opis v2's API instead of m1x0n, and message wording may differ
-   * slightly, but the keys and types match) so downstream consumers
-   * parsing validation errors keep working unchanged.
+   * Makes sure that getExceptionData returns an array with the expected shape
+   * when a ValidationException is passed.
    */
   public function testGetExceptionDataReturnsV1CompatibleShape(): void {
     $schema = (object) [

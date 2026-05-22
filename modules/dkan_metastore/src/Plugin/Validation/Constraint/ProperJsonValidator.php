@@ -99,19 +99,14 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
         $errors = $this->getValidationErrorsMessages($result->error());
       }
     }
-    catch (InvalidArgumentException $e) {
+    catch (\InvalidArgumentException $e) {
       $errors[] = $e->getMessage();
     }
     return $errors;
   }
 
   /**
-   * Flatten the v2 validation error tree into one message per leaf.
-   *
-   * Uses ErrorFormatter::formatKeyed() to walk leaves only (avoiding the
-   * redundancy of formatFlat() which also includes container errors), then
-   * collapses the pointer-keyed groups into the array<string> shape that
-   * addViolation() expects.
+   * Flatten the validation error tree into one message per leaf.
    *
    * @param \Opis\JsonSchema\Errors\ValidationError $error
    *   Root validation error to flatten.

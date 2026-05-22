@@ -14,7 +14,17 @@ trait JsonResponseTrait {
   use CacheableResponseTrait;
 
   /**
-   * Private.
+   * Get a JSON response from a message, code, and headers.
+   *
+   * @param string|object|array $message
+   *   The message to include in the response body.
+   * @param int $code
+   *   The HTTP status code for the response.
+   * @param array $headers
+   *   An array of headers to include in the response.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   A Symfony JSON response.
    */
   protected function getResponse($message, int $code = 200, array $headers = []): JsonResponse {
     $response = new JsonResponse($message, $code, $headers);
@@ -66,10 +76,7 @@ trait JsonResponseTrait {
         while (!empty($subs = $error->subErrors())) {
           $error = $subs[0];
         }
-        // Emit the historical v1/m1x0n shape so existing downstream
-        // consumers (frontend, external API clients) parse the response
-        // unchanged across the opis v1 -> v2 migration. Message wording
-        // comes from opis v2 templates and may differ slightly from v1.
+        // Normalize and simplify the error shape.
         $formatter = new ErrorFormatter();
         return [
           'keyword' => $error->keyword(),
