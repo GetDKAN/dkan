@@ -15,7 +15,6 @@ use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Page controller.
@@ -57,8 +56,6 @@ class Page implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Config factory service.
-   * @param \Drupal\Core\Render\RendererInterface $renderer
-   *   Renderer service.
    * @param \Drupal\dkan_metastore\NodeWrapper\NodeDataFactory $nodeDataFactory
    *   Node data factory service.
    */
@@ -104,7 +101,7 @@ class Page implements ContainerInjectionInterface {
     if (
       in_array($route_match->getRouteName(), [
         RouteProvider::ROUTE_PREFIX . 'dataset',
-        RouteProvider::ROUTE_PREFIX . 'datasetapi'
+        RouteProvider::ROUTE_PREFIX . 'datasetapi',
       ]) &&
       ($request->query->get('_exception_statuscode') !== 404)
     ) {
