@@ -9,6 +9,7 @@ use Drupal\dkan_common\Storage\AbstractDatabaseTable;
 use Drupal\dkan_datastore\Events\DatastoreTableCreateEvent;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -36,7 +37,7 @@ class DatabaseTableEventTest extends KernelTestBase implements EventSubscriberIn
     parent::setUp();
     // Add this object as an event subscriber.
     $this->container
-      ->get(\Symfony\Contracts\EventDispatcher\EventDispatcherInterface::class)
+      ->get(EventDispatcherInterface::class)
       ->addSubscriber($this);
   }
 
@@ -78,7 +79,7 @@ class DatabaseTableEventTest extends KernelTestBase implements EventSubscriberIn
       ],
     ];
 
-    $ref_table_create->invokeArgs($data_table,[
+    $ref_table_create->invokeArgs($data_table, [
       'table_name',
       $id_schema
     ]);
