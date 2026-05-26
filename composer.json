@@ -35,7 +35,6 @@
         "stolt/json-merge-patch": "^2.0"
     },
     "require-dev": {
-        "symfony/polyfill-intl-idn": "1.38.1 as 1.37.0",
         "colinodell/psr-testlogger": "^1.2",
         "drush/drush": "*",
         "getdkan/mock-chain": "~1.4.1",
@@ -53,6 +52,11 @@
             "php-http/discovery": true,
             "tbachert/spi": true,
             "drupal/core-composer-scaffold": true
+        },
+        "audit": {
+            "ignore": {
+                "PKSA-dwsq-ppd2-mb1x": "Temporarily ignoring this advisory until core-recommended is updated to bring in symfony/polyfill-intl-idn 1.28."
+            }
         }
     },
     "extra": {
