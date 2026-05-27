@@ -15,8 +15,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
   /**
    * The event name we send when we create a table.
-   *
-   * @todo This is unused.
    */
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
 
@@ -51,6 +49,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
   /**
    * Get the primary key used in the table.
+   *
+   * @return string
+   *   The name of the primary key.
    */
   public function primaryKey() {
     return 'id';
@@ -180,7 +181,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Private.
+   * Gather fields from the schema which are not serial.
+   *
+   * Use this information to skip specifying values for those fields when they
+   * are updated or inserted.
+   *
+   * @return array
+   *   An array of field names which are not serial.
    */
   protected function getNonSerialFields() {
     $fields = [];
@@ -193,9 +200,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Inherited.
+   * {@inheritDoc}
    *
-   * @inheritdoc
+   * Remove the table.
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();
@@ -311,9 +318,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     // Opportunity to further alter the schema before table creation.
     $event = new Event($schema);
     $this->eventDispatcher->dispatch($event, self::EVENT_TABLE_CREATE);
-    $modified_schema = $event->getData();
+    $this->setSchema($event->getData());
 
-    $this->connection->schema()->createTable($table_name, $modified_schema);
+    $this->connection->schema()->createTable($table_name, $this->getSchema());
   }
 
   /**
