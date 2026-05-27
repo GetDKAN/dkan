@@ -73,11 +73,10 @@ commands:
               --docroot=web --database="<< parameters.database_version >>" \
               --php-version="<< parameters.php_version >>" --corepack-enable
             ddev add-on get ddev/ddev-drupal-contrib
-            # Set up env vars for Drupal version, composer, xdebug and drupal root.
+            # Set up env vars for Drupal version, composer, pcov and drupal root.
             ddev dotenv set .ddev/.env.web --drupal-core "<< parameters.drupal_core_constraint >>" \
               --composer-no-interaction "1" \
               --drupal-root "/var/www/html/web" \
-              --xdebug-mode "coverage" \
               --composer-auth "$COMPOSER_AUTH"
             ddev start
             ddev poser
@@ -175,10 +174,8 @@ jobs:
             - run:
                 name: Run PHPUnit tests with coverage report
                 environment:
-                  XDEBUG_MODE: coverage
                   QLTY_COVERAGE_TOKEN: ${QLTY_COVERAGE_TOKEN}
                 command: |
-                  ddev xdebug on
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/php
                   mkdir -p $CIRCLE_WORKING_DIRECTORY/report/clover
                   ddev phpunit \
