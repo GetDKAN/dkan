@@ -187,6 +187,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * are updated or inserted.
    *
    * @return array
+   *   An array of field names which are not serial.
    */
   protected function getNonSerialFields() {
     $fields = [];

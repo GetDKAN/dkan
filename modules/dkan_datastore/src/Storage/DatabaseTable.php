@@ -91,7 +91,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritdoc}
    */
   #[\Override]
   protected function tableCreate($table_name, $schema) {

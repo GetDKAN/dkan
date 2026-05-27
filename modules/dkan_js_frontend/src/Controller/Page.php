@@ -8,7 +8,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Http\Exception\CacheableNotFoundHttpException;
-use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\dkan_js_frontend\Routing\RouteProvider;
 use Drupal\dkan_metastore\Exception\MissingObjectException;

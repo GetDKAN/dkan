@@ -3,8 +3,6 @@
 namespace Drupal\dkan_datastore\Events;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\dkan_common\Storage\AbstractDatabaseTable;
-use Drupal\dkan_datastore\Storage\DatabaseTable;
 
 /**
  * Event for when we're about to create a datastore table.
