@@ -36,4 +36,7 @@ docs/.venv
 !/.ddev/php/
 /.ddev/php/*
 !/.ddev/php/pcov.ini
+!/.ddev/web-build/
+/.ddev/web-build/*
+!/.ddev/web-build/Dockerfile
 tmp

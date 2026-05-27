@@ -85,6 +85,11 @@ commands:
             ddev config --update
             ddev restart
             ddev status
+      - run:
+          name: Verify pcov is available
+          command: |
+            ddev exec php -m | grep -i pcov
+            ddev exec php -r 'echo "pcov loaded: ", extension_loaded("pcov") ? "yes" : "no", "\n";'
       - save_cache:
           key: select2-v1-{{ checksum ".ddev/commands/web/select2" }}
           paths:
