@@ -3,7 +3,6 @@
 namespace Drupal\dkan_harvest\ETL;
 
 use GuzzleHttp\ClientInterface;
-use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 
 /**
@@ -80,7 +79,7 @@ class Factory {
    */
   public function get(string $type) {
     switch ($type) {
-      case  "extract":
+      case "extract":
         $class = $this->harvestPlan->extract->type;
         $this->validateClass($class);
 
@@ -143,20 +142,22 @@ class Factory {
 
     $path_to_schema = __DIR__ . "/../../schema/schema.json";
     $json_schema = file_get_contents($path_to_schema);
+    if ($json_schema === FALSE) {
+      throw new \Exception("Harvest plan schema not readable at: {$path_to_schema}");
+    }
 
-    $data = $harvest_plan;
-    $schema = Schema::fromJsonString($json_schema);
+    $schema = json_decode($json_schema, FALSE, 512, JSON_THROW_ON_ERROR);
     $validator = new Validator();
-
-    /** @var ValidationResult $result */
-    $result = $validator->schemaValidation($data, $schema);
+    $result = $validator->validate($harvest_plan, $schema);
 
     if (!$result->isValid()) {
-      /** @var ValidationError $error */
-      $error = $result->getFirstError();
+      $error = $result->error();
+      while (!empty($subs = $error->subErrors())) {
+        $error = $subs[0];
+      }
       throw new \Exception(
-            "Invalid harvest plan. " . implode("->", $error->dataPointer()) .
-            " " . json_encode($error->keywordArgs())
+            "Invalid harvest plan. " . implode("->", $error->data()->fullPath()) .
+            " " . json_encode($error->args())
         );
     }
 

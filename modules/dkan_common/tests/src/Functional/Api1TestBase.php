@@ -6,7 +6,6 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 use Osteel\OpenApi\Testing\ValidatorBuilder;
 
@@ -99,10 +98,11 @@ abstract class Api1TestBase extends BrowserTestBase {
   }
 
   protected function assertJsonIsValid($schema, $json) {
-    $opiSchema = is_string($schema) ? Schema::fromJsonString($schema) : new Schema($schema);
-    $validator = new Validator();
+    // Validator::validate() accepts a decoded schema (object/bool) directly.
+    $decodedSchema = is_string($schema) ? json_decode($schema, FALSE) : $schema;
     $data = is_string($json) ? json_decode($json) : $json;
-    $result = $validator->schemaValidation($data, $opiSchema);
+    $validator = new Validator();
+    $result = $validator->validate($data, $decodedSchema);
     $this->assertTrue($result->isValid());
   }
 

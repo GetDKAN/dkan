@@ -2,12 +2,9 @@
 
 namespace Drupal\dkan_common;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
+use Opis\JsonSchema\Errors\ErrorFormatter;
 use RootedData\Exception\ValidationException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -17,7 +14,17 @@ trait JsonResponseTrait {
   use CacheableResponseTrait;
 
   /**
-   * Private.
+   * Get a JSON response from a message, code, and headers.
+   *
+   * @param string|object|array $message
+   *   The message to include in the response body.
+   * @param int $code
+   *   The HTTP status code for the response.
+   * @param array $headers
+   *   An array of headers to include in the response.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   A Symfony JSON response.
    */
   protected function getResponse($message, int $code = 200, array $headers = []): JsonResponse {
     $response = new JsonResponse($message, $code, $headers);
@@ -61,15 +68,22 @@ trait JsonResponseTrait {
    */
   protected function getExceptionData(\Exception $e) {
     if ($e instanceof ValidationException) {
-      $errors = $e->getResult()->getErrors();
-      $presenter = new ValidationErrorPresenter(
-        new PresentedValidationErrorFactory(
-          new MessageFormatterFactory()
-        ),
-        new BestMatchError()
-      );
-      $presented = $presenter->present(...$errors);
-      return $presented[0];
+      $result = $e->getResult();
+      if ($result->hasError()) {
+        $error = $result->error();
+        // Walk to a leaf — v2's root error is a container keyword (e.g.
+        // `properties`); the actionable error lives at a leaf.
+        while (!empty($subs = $error->subErrors())) {
+          $error = $subs[0];
+        }
+        // Normalize and simplify the error shape.
+        $formatter = new ErrorFormatter();
+        return [
+          'keyword' => $error->keyword(),
+          'pointer' => implode('/', $error->data()->fullPath()),
+          'message' => $formatter->formatErrorMessage($error),
+        ];
+      }
     }
 
     return FALSE;

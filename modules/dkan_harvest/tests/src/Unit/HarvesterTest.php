@@ -13,7 +13,8 @@ use Drupal\Tests\dkan_harvest\MemStore;
 class HarvesterTest extends TestCase {
 
   public function testPlanValidation(): void {
-    $this->expectExceptionMessage("Invalid harvest plan. load {\"missing\":\"type\"}");
+    // opis v2 represents missing required fields as an array.
+    $this->expectExceptionMessage("Invalid harvest plan. load {\"missing\":[\"type\"]}");
     $plan = $this->getPlan("badplan");
     $this->getHarvester($plan, new MemStore(), new MemStore());
   }

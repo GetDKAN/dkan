@@ -26,11 +26,11 @@
         "getdkan/file-fetcher": "^5.1.0",
         "getdkan/pdlt": "^0.1.7",
         "getdkan/procrastinator": "^5.0.3",
-        "getdkan/rooted-json-data": "^0.2.2",
+        "getdkan/rooted-json-data": "^1.0",
         "guzzlehttp/guzzle": "^7.5",
         "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2 || ^6.6.1",
-        "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
+        "opis/json-schema": "^2.4",
         "ramsey/uuid": "^3.8.0 || ^4",
         "stolt/json-merge-patch": "^2.0"
     },
@@ -47,6 +47,8 @@
             "url": "https://packages.drupal.org/8"
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
