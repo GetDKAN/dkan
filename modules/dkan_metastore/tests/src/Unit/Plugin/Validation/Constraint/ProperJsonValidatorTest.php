@@ -99,7 +99,15 @@ class ProperJsonValidatorTest extends TestCase {
 
     $validator = ProperJsonValidator::create($this->container);
 
-    $this->context->expects($this->once())->method("addViolation");
+    // Assert addViolation is invoked with a non-empty string referencing the
+    // failing field. This catches regressions where ErrorFormatter output
+    // becomes empty or malformed.
+    $this->context->expects($this->once())
+      ->method('addViolation')
+      ->with($this->logicalAnd(
+        $this->isType('string'),
+        $this->stringContains('number')
+      ));
 
     $validator->initialize($this->context);
 

@@ -111,6 +111,14 @@ version control.
     part of a post-deploy hook or script that runs automatically after any new
     code deployment.
 
+    Ensure that after deployment, the new transitional DKAN modules (for instance,
+    ``dkan_metastore``) are enabled. Note that if you automatically import configuration as part of your deployment (for
+    instance, with an Acquia post-deploy cloud hook), you also need to export your
+    ``core.extension`` and add it to the commit that upgrades DKAN to 2.23.x. 
+    Otherwise, the new DKAN modules that are enabled via the database updates will be
+    disabled again when your old config is imported. If this happens, re-enable them
+    manually on your production server before proceeding to the next step.
+
 Step 2: Export configuration
 ############################
 
@@ -148,6 +156,11 @@ composer command ensures that this new dependency will also be added.
 
     Do not deploy these code changes to production until you have completed
     steps 4-7 or you may lose functionality on your live site.
+
+    As detailed in the deployment notes for step 1, ensure that the transitional
+    namespaced DKAN modules are enabled before deploying DKAN 3. If they were
+    disabled inadvertently during the upgrade to 2.23.x, reenable them manually or
+    via config before deploying DKAN 3.
 
 Step 4: Refactor custom code
 ############################
@@ -239,7 +252,7 @@ have another opportunity to inspect what changed before committing.
     this in production. Still, if anything goes wrong, be prepared to roll back
     both the code and the database to a previous tag and backup, respectively.
 
-Step 8: DKAN 4.0
+Step 8: DKAN 4
 ################
 
 The newly namespaced modules are now enabled, the legacy modules disabled, and
@@ -253,3 +266,23 @@ must also be updated:
 
 While there should be no pending database updates at this point, it is always a
 good idea to run ``drush update:db`` after any change to ``composer.json``.
+
+A note on DKAN 4.1
+******************
+
+By the time you read this, DKAN 4.1 may already be out. You may wish to upgrade
+directly to 4.1 instead of 4.0. DKAN 4.1 introduces 
+`breaking changes <https://github.com/GetDKAN/dkan/pull/4706>`_ to JSON
+validation, so make sure to read the release notes for that version before
+upgrading (they will be linked directly in a future version of this document).
+It is possible that you will need to make some minor adjustments to your
+metastore schemas to ensure they are compatible with JSON Schema draft-07 or
+later.
+
+To upgrade to 4.1, simply change the composer command in step 8 to:
+
+.. prompt:: bash $
+
+    composer require drupal/dkan:~4.1.0
+
+Or use a loser constraint like ``^4`` to allow for any 4.x release.

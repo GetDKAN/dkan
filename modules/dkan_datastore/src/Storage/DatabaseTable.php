@@ -5,6 +5,9 @@ namespace Drupal\dkan_datastore\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
+use Drupal\dkan_common\Storage\Query;
+use Drupal\dkan_datastore\Events\DatastoreTableCreateEvent;
+use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -14,17 +17,24 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @see \Drupal\dkan_common\Storage\DatabaseTableInterface
  *
  * @todo This class name suggests it is a generic database table but it is
- * actually MySQL-specific. In the future it should probably be a base class
- * with a MySQL-specific subclass.
+ *   actually MySQL-specific. In the future it should probably be a base class
+ *   with a MySQL-specific subclass.
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
+
+  /**
+   * Event which has metastore information available.
+   *
+   * @see self::EVENT_TABLE_CREATE
+   */
+  const EVENT_DATABASE_TABLE_CREATE = 'dkan_datstore_database_table_create';
 
   /**
    * Datastore resource object.
    *
    * @var \Drupal\dkan_common\DataResource
    */
-  protected $resource;
+  protected $dataResource;
 
   /**
    * DKAN logger channel service.
@@ -52,7 +62,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->connection = $connection;
-    $this->resource = $resource;
+    $this->dataResource = $resource;
     $this->logger = $loggerChannel;
     parent::__construct($connection, $eventDispatcher);
 
@@ -83,17 +93,31 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * {@inheritdoc}
    */
+  #[\Override]
+  protected function tableCreate($table_name, $schema) {
+    // Overriding this method so we can send an extra event with a resource.
+    // @todo Send MORE information.
+    $event = new DatastoreTableCreateEvent($schema, $this->dataResource);
+    $this->eventDispatcher->dispatch($event, self::EVENT_DATABASE_TABLE_CREATE);
+    $this->setSchema($event->getSchema());
+
+    parent::tableCreate($table_name, $this->getSchema());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   #[\ReturnTypeWillChange]
   public function jsonSerialize(): mixed {
-    return (object) ['resource' => $this->resource];
+    return (object) ['resource' => $this->dataResource];
   }
 
   /**
    * {@inheritdoc}
    */
   public function getTableName() {
-    if ($this->resource) {
-      return 'datastore_' . md5($this->resource->getUniqueIdentifier());
+    if ($this->dataResource) {
+      return 'datastore_' . md5($this->dataResource->getUniqueIdentifier());
     }
     return 'datastore_does_not_exist';
   }
@@ -118,6 +142,19 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       throw new \Exception('Import for ' . $id . ' returned an error when preparing table header: ' . $data);
     }
     return $decoded;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function query(Query $query, string $alias = 't', $fetch = TRUE) {
+    $this->setTable();
+    // Check if the table has any rows. For empty tables in the datastore, we
+    // want to throw an exception instead of just returning an empty result.
+    if ($this->tableIsEmpty()) {
+      throw new EmptyResourceException($this->dataResource->getUniqueIdentifier());
+    }
+    return parent::query($query, $alias, $fetch);
   }
 
   /**

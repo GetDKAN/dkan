@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Factory\MetastoreEntityItemFactoryInterface;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 
@@ -54,7 +55,7 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []): MetastoreItemInterface {
     return $this->wrap(
-      $this->entityRepository->loadEntityByUuid('node', $identifier)
+      $this->entityRepository->loadEntityByUuid(static::getEntityType(), $identifier)
     );
   }
 
@@ -66,9 +67,16 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    *
    * @return \Drupal\dkan_metastore\MetastoreItemInterface
    *   Metastore data node object.
+   *
+   * @throws \Drupal\dkan_metastore\Exception\MissingObjectException
+   *   Thrown when the input is null or otherwise empty.
    */
   public function wrap($input): MetastoreItemInterface {
-    return new Data($input, $this->entityTypeManager);
+    // Check $input so we don't even have to start creating a new Data object.
+    if ($input) {
+      return new Data($input, $this->entityTypeManager);
+    }
+    throw new MissingObjectException();
   }
 
   /**
@@ -89,7 +97,11 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
    * {@inheritdoc}
    */
   public static function getCacheTags() {
-    return ['node_list:data'];
+    $tags = [];
+    foreach (static::getBundles() as $bundle) {
+      $tags[] = static::getEntityType() . '_list:' . $bundle;
+    }
+    return $tags;
   }
 
   /**

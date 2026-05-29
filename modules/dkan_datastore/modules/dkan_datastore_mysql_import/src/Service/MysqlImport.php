@@ -62,7 +62,7 @@ class MysqlImport extends ImportJob {
   protected function runIt() {
     // If the storage table already exists, we already performed an import and
     // can stop here.
-    if ($this->dataStorage->hasBeenImported()) {
+    if ($this->dataStorage instanceof ImportedItemInterface && $this->dataStorage->hasBeenImported()) {
       $this->setStatus(Result::DONE);
       return NULL;
     }

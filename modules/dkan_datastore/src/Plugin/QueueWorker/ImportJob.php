@@ -186,6 +186,9 @@ class ImportJob extends AbstractPersistentJob {
 
   /**
    * Get the storage object.
+   *
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable
+   *   A datastore table.
    */
   public function getStorage() {
     return $this->dataStorage;
