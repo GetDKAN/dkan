@@ -127,6 +127,17 @@ dkan:datastore:reimport
 
 ~~~~~~
 
+dkan:datastore:degraded-mode
+----------------------------
+
+    Turn degraded service mode on or off for the datastore. Blocks requests to the datastore API that contain conditions, joins, groupings, sorts, and offsets.
+
+    **Arguments**
+
+    - **state** The state of the degraded mode (1 to turn on, 0 to turn off, leave blank to see current state).
+
+~~~~~~
+
 dkan:harvest:archive
 ---------------------
 

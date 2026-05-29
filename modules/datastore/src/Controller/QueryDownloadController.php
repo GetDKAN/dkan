@@ -4,6 +4,7 @@ namespace Drupal\datastore\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\State\StateInterface;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Query as QueryService;
 use Drupal\metastore\MetastoreApiResponse;
@@ -11,6 +12,7 @@ use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\StreamedJsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * Controller providing functionality used to stream datastore queries.
@@ -22,8 +24,14 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * {@inheritDoc}
    */
-  public function __construct(QueryService $queryService, DatasetInfo $datasetInfo, MetastoreApiResponse $metastoreApiResponse, ConfigFactoryInterface $configFactory) {
-    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory);
+  public function __construct(
+    QueryService $queryService,
+    DatasetInfo $datasetInfo,
+    MetastoreApiResponse $metastoreApiResponse,
+    ConfigFactoryInterface $configFactory,
+    StateInterface $state,
+  ) {
+    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory, $state);
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
     // to cache the CSV stream for a reasonable amount of time.
@@ -56,6 +64,7 @@ class QueryDownloadController extends AbstractQueryController {
   protected function buildDatastoreQuery($request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
+    $this->assertDegradedModeAllowed($data);
     $this->additionalPayloadValidation($data);
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
@@ -63,6 +72,18 @@ class QueryDownloadController extends AbstractQueryController {
     }
     $data->results = FALSE;
     return new DatastoreQuery(json_encode($data));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function assertDegradedModeAllowed(object $data): void {
+    if ($this->state->get('dkan_datastore.degraded_performance', FALSE)) {
+      throw new ServiceUnavailableHttpException(
+        static::DEGRADE_MODE_RETRY_AFTER,
+        'Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.'
+      );
+    }
   }
 
   /**

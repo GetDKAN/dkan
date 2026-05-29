@@ -9,10 +9,11 @@ services:
       - '@dkan.datastore.import_info_list'
       - '@dkan.datastore.post_import_result_factory'
       - '@dkan.datastore.lookup'
+      - '@state'
     tags:
       - { name: drush.command }
   datastore.purger.commands:
-    class: Drupal\datastore\Commands\PurgeCommands
+    class: \Drupal\datastore\Commands\PurgeCommands
     arguments:
       - '@dkan.datastore.service.resource_purger'
     tags:
@@ -23,5 +24,11 @@ services:
       - '@dkan.datastore.service'
       - '@dkan.common.dataset_info'
       - '@dkan.datastore.logger_channel'
+    tags:
+      - { name: drush.command }
+  datastore.degraded_mode.commands:
+    class: \Drupal\datastore\Commands\DegradedModeCommands
+    arguments:
+      - '@state'
     tags:
       - { name: drush.command }

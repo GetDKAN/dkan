@@ -85,6 +85,33 @@
                         }
                     }
                 }
+            },
+            "503ServiceUnavailable": {
+                "description": "Service unavailable. Datastore queries are temporarily limited due to high server load.",
+                "headers": {
+                    "Retry-After": {
+                        "description": "Seconds to tell client to wait until retrying",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 120
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["message"],
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Human-readable error message",
+                                    "example": "Datastore queries are temporarily limited due to high server load. Remove conditions, joins, groupings, sorts, and offsets to retry."
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
@@ -247,7 +274,8 @@
                 },
                 "responses": {
                     "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk" },
-                    "400": { "$ref": "#/components/responses/400BadJson" }
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             },
             "get": {
@@ -258,7 +286,8 @@
                 "parameters": [],
                 "responses": {
                     "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
-                    "400": { "$ref": "#/components/responses/400BadJson" }
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             }
         },
@@ -278,7 +307,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200DatastoreCsvOk" },
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             },
             "get": {
@@ -290,7 +320,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200DatastoreCsvOk" },
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             }
         },
@@ -315,7 +346,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             },
             "get": {
@@ -331,7 +363,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             }
         },
@@ -359,7 +392,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             },
             "get": {
@@ -378,7 +412,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             }
         },
@@ -407,7 +442,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200DatastoreCsvOk"},
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             }
         },
@@ -439,7 +475,8 @@
                 "responses": {
                     "200": { "$ref": "#/components/responses/200DatastoreCsvOk"},
                     "400": { "$ref": "#/components/responses/400BadJson" },
-                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                    "404": { "$ref": "#/components/responses/404IdNotFound" },
+                    "503": { "$ref": "#/components/responses/503ServiceUnavailable" }
                 }
             }
         },
