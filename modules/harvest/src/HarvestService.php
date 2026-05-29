@@ -205,9 +205,15 @@ class HarvestService implements ContainerInjectionInterface {
     $timestamp = (string) time();
     $result = $harvester->harvest();
 
+    // Report extraction failures. This can be an unparseable JSON source file.
+    if ($result['status']['extract'] === 'FAILURE') {
+      throw new \Exception($result['errors']['extract'] ?? 'Error in extraction.');
+    }
+    // Report no extracted items.
     if (empty($result['status']['extracted_items_ids'])) {
       throw new \Exception('No items found to extract, review your harvest plan.');
     }
+
     $result['status']['orphan_ids'] =
       $this->getOrphanIdsFromResult($plan_id, $result['status']['extracted_items_ids']);
     $this->processOrphanIds($result['status']['orphan_ids']);

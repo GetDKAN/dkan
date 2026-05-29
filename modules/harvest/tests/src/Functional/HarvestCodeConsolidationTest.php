@@ -33,8 +33,8 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
     // Create the JSON file in case it doesn't exist.
     $sample_content_service->createDatasetJsonFileFromTemplate();
 
-    // HarvestRun() should fail before update because harvest library
-    // namespaces are included in class names stored in the database.
+    // HarvestRun() should fail before the update because the deprecated
+    // harvest library class names are stored in the database.
     /** @var \Drupal\harvest\HarvestService $harvest_service */
     $harvest_service = \Drupal::service('dkan.harvest.service');
     try {
@@ -43,7 +43,7 @@ class HarvestCodeConsolidationTest extends UpdatePathTestBase {
     catch (\Exception $exception) {
       $exception_msg = $exception->getMessage();
     }
-    $this->assertSame('No items found to extract, review your harvest plan.', $exception_msg);
+    $this->assertSame('Class \Harvest\ETL\Extract\DataJson does not exist', $exception_msg);
 
     // Run update and recreate harvest service with updated data.
     $this->runUpdates();
