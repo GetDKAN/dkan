@@ -7,6 +7,7 @@ use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\State\State;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\Controller\QueryDownloadController;
 use Drupal\datastore\DatastoreService;
@@ -16,19 +17,23 @@ use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
+use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
 use MockChain\Chain;
 use MockChain\Options;
-use Pdo\Sqlite;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @covers \Drupal\datastore\Controller\QueryDownloadController
+ * @coversDefaultClass \Drupal\datastore\Controller\QueryDownloadController
+ * @covers \Drupal\datastore\Controller\AbstractQueryController
  * @group dkan
  * @group datastore
  * @group unit
@@ -80,11 +85,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompareCsv($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $qController = QueryController::create($this->getQueryContainer(500));
+    $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $csv = $response->getContent() ?? '';
 
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
@@ -100,11 +105,11 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private function queryResultCompareJson($data, $resource = NULL) {
     $request = $this->mockRequest($data);
-    $qController = QueryController::create($this->getQueryContainer(500));
+    $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
     $json = $response->getContent() ?? '';
 
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
@@ -133,7 +138,7 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
-   * Test json stream (without specifying csv format; shouldn't work).
+   * Test json stream.
    */
   public function testStreamedQueryJson() {
     $data = [
@@ -144,6 +149,24 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "json",
+    ];
+    // Need 2 json responses which get combined on output.
+    $this->queryResultCompareJson($data);
+  }
+
+  /**
+   * Test json stream w/o keys.
+   */
+  public function testStreamedQueryJsonNoKeys() {
+    $data = [
+      "resources" => [
+        [
+          "id" => $this->resources[2]->getIdentifier(),
+          "alias" => "t",
+        ],
+      ],
+      "format" => "json",
+      "keys" => "false",
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareJson($data);
@@ -270,7 +293,7 @@ class QueryDownloadControllerTest extends TestCase {
       "limit" => $queryLimit,
     ]);
     // Set the row limit to 50 even though we're requesting 1000.
-    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge);
+    $container = $this->getQueryContainer($pageLimit, $responseStreamMaxAge)->getMock();
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start(self::getBuffer(...));
@@ -367,7 +390,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ];
     $request = $this->mockRequest($data);
-    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
@@ -390,6 +413,24 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   * Make sure degraded service mode causes downloads to fail with 503.
+   */
+  public function testDegradedServiceModeDownloads() {
+    $container = $this->getQueryContainer(25)
+      ->add(State::class, 'get', TRUE)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $request = $this->mockRequest('{}');
+    $dController = QueryDownloadController::create($container);
+    $result = $dController->query($request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore downloads are temporarily limited due to high server load.', $result->getContent());
+
+  }
+
+  /**
    * Create a mock chain for the main container passed to the controller.
    *
    * @param int $rowLimit
@@ -397,12 +438,15 @@ class QueryDownloadControllerTest extends TestCase {
    * @param int|null $responseStreamMaxAge
    *   The max age for the response stream in cache, or NULL to use the default.
    *
-   * @return \PHPUnit\Framework\MockObject\MockObject
-   *   MockChain mock object.
+   * @return \MockChain\Chain
+   *   MockChain (needs getMock() before use).
    */
   private function getQueryContainer(int $rowLimit, ?int $responseStreamMaxAge = NULL) {
-    $pdo = (class_exists(Sqlite::class)) ? new Sqlite('sqlite::memory:') : new \PDO('sqlite::memory:');
-    $connection = new SqliteConnection($pdo, []);
+    $pdo = match(TRUE) {
+      \PHP_VERSION_ID >= 80400 && class_exists(SqliteConnection::class) => new SqliteConnection('sqlite::memory:'),
+      default => new \PDO('sqlite::memory:'),
+    };
+    $connection = new Connection($pdo, []);
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
@@ -411,6 +455,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add('state', State::class)
       ->index(0);
 
     $schema2 = [
@@ -469,9 +514,10 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(DatastoreService::class, 'getDataDictionaryFields', NULL)
       // @todo Use an Options or Sequence return here; this will only work for one arg at a time.
       ->add(ImmutableConfig::class, 'get', $rowLimit)
-      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge);
+      ->add(ImmutableConfig::class, 'get', $responseStreamMaxAge)
+      ->add(State::class, 'get', FALSE);
 
-    return $chain->getMock();
+    return $chain;
   }
 
   /**

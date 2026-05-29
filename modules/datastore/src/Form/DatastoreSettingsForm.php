@@ -6,6 +6,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\metastore\SchemaPropertiesHelper;
+use Drupal\Core\State\StateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -24,13 +25,23 @@ class DatastoreSettingsForm extends ConfigFormBase {
   private $schemaHelper;
 
   /**
+   * State service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  private StateInterface $state;
+
+  /**
    * Constructs form.
    *
    * @param \Drupal\metastore\SchemaPropertiesHelper $schemaHelper
    *   The schema properties helper service.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
-  public function __construct(SchemaPropertiesHelper $schemaHelper) {
+  public function __construct(SchemaPropertiesHelper $schemaHelper, StateInterface $state) {
     $this->schemaHelper = $schemaHelper;
+    $this->state = $state;
   }
 
   /**
@@ -39,6 +50,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.metastore.schema_properties_helper'),
+      $container->get('state'),
     );
   }
 
@@ -78,6 +90,13 @@ class DatastoreSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Set the cache max-age for streaming CSV responses, in seconds. Default: 3600 (1 hour).'),
     ];
 
+    $form['datastore_degraded_performance'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable degraded datastore query mode'),
+      '#default_value' => $this->state->get('dkan_datastore.degraded_performance', FALSE),
+      '#description' => $this->t('When enabled, datastore query endpoints reject requests with conditions, joins, groupings, sorts, offsets, or limits above the configured rows limit.'),
+    ];
+
     $form['triggering_properties'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Datastore triggering properties'),
@@ -98,6 +117,10 @@ class DatastoreSettingsForm extends ConfigFormBase {
       ->set('response_stream_max_age', $form_state->getValue('response_stream_max_age'))
       ->set('triggering_properties', $form_state->getValue('triggering_properties'))
       ->save();
+    $this->state->set(
+      'dkan_datastore.degraded_performance',
+      (bool) $form_state->getValue('datastore_degraded_performance')
+    );
     parent::submitForm($form, $form_state);
   }
 

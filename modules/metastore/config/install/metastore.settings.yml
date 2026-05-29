@@ -23,3 +23,7 @@ property_list:
   'isPartOf': '0'
 html_allowed_properties: []
 resource_perspective_display: source
+orphan:
+  delete: false
+  retain_for: 0
+html_allowed_html: ''

@@ -8,6 +8,7 @@ use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
 use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
 use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use RootedData\Exception\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Json Response Trait.
@@ -18,8 +19,8 @@ trait JsonResponseTrait {
   /**
    * Private.
    */
-  protected function getResponse($message, int $code = 200): JsonResponse {
-    $response = new JsonResponse($message, $code, []);
+  protected function getResponse($message, int $code = 200, array $headers = []): JsonResponse {
+    $response = new JsonResponse($message, $code, $headers);
     return $this->addCacheHeaders($response);
   }
 
@@ -43,7 +44,8 @@ trait JsonResponseTrait {
     if ($data = $this->getExceptionData($e)) {
       $body['data'] = $data;
     }
-    return $this->getResponse((object) $body, $code);
+    $headers = ($e instanceof HttpException) ? $e->getHeaders() : [];
+    return $this->getResponse((object) $body, $code, $headers);
   }
 
   /**

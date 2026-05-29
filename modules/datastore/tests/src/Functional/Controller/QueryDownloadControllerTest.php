@@ -91,9 +91,9 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     $this->config('metastore.settings')
       ->set('csv_headers_mode', 'resource_headers')
       ->save();
+    $client = $this->getHttpClient();
 
     // Query for the dataset, as a streaming CSV.
-    $client = $this->getHttpClient();
     $response = $client->request(
       'GET',
       $this->baseUrl . '/api/1/datastore/query/' . $dataset_id . '/0/download',
@@ -111,7 +111,6 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       ->set('csv_headers_mode', 'machine_names')
       ->save();
 
-    $client = $this->getHttpClient();
     $response = $client->request(
       'GET',
       $this->baseUrl . '/api/1/datastore/query/' . $dataset_id . '/0/download',
@@ -127,17 +126,43 @@ class QueryDownloadControllerTest extends BrowserTestBase {
 
     // Test for valid field names in json output
     // Query for the dataset, as a streaming JSON.
-    $client = $this->getHttpClient();
     $response = $client->request(
       'GET',
       $this->baseUrl . '/api/1/datastore/query/' . $dataset_id . '/0/download',
       ['query' => ['format' => 'json']]
     );
 
-    $json_content = json_decode($response->getBody()->getContents())->results[0];
-    $titles = array_keys(get_object_vars($json_content));
-    $this->assertEquals('id,name,extra_long_column_name_with_tons_of_characters_that_will_ne_e872,extra_long_column_name_with_tons_of_characters_that_will_ne_5127',
-      implode(',',$titles));
+    $json_content = json_decode($response->getBody()->getContents());
+    $titles = array_keys(get_object_vars($json_content->results[0]));
+    $this->assertEquals([
+      'id',
+      'name',
+      'extra_long_column_name_with_tons_of_characters_that_will_ne_e872',
+      'extra_long_column_name_with_tons_of_characters_that_will_ne_5127',
+    ], $titles);
+    // Confirm schema, query and count are present.
+    $this->assertEquals(2, $json_content->count);
+    $this->assertEquals('json', $json_content->query->format);
+    $this->assertIsObject($json_content->schema);
+
+    // Test that we can get just values by setting keys to false, and can
+    // exclude the schema or the count..
+    $response = $client->request(
+      'GET',
+      $this->baseUrl . '/api/1/datastore/query/' . $dataset_id . '/0/download', [
+        'query' => [
+          'format' => 'json',
+          'keys' => 'false',
+          'schema' => 'false',
+          'count' => 'false',
+        ],
+      ]
+    );
+    $json_content = json_decode($response->getBody()->getContents());
+    $this->assertIsArray($json_content->results[0]);
+    $this->assertEquals(['1', 'Greg', '45.6', '4'], $json_content->results[0]);
+    $this->assertFalse(isset($json_content->schema));
+    $this->assertFalse(isset($json_content->count));
   }
 
   /**
