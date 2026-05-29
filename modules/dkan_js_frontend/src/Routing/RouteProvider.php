@@ -7,7 +7,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * DKAN JS frontend route provider.
+ * DKAN JS frontend route provider service.
  */
 class RouteProvider {
 
@@ -16,58 +16,56 @@ class RouteProvider {
    *
    * @var string[]
    */
-  protected $routes;
+  protected $configRouteMap;
 
   /**
    * Constructor.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   Config factory service.
    */
   public function __construct(ConfigFactoryInterface $configFactory) {
-    $this->routes = $configFactory->get('dkan_js_frontend.config')->get('routes');
+    $this->configRouteMap = $configFactory->get('dkan_js_frontend.config')->get('routes') ?? [];
   }
 
   /**
-   * Routes.
+   * Provide routes derived from configuration.
+   *
+   * @return \Symfony\Component\Routing\RouteCollection
+   *   Collection of routes derived from configuration.
    */
   public function routes(): RouteCollection {
     $routes = new RouteCollection();
-    $this->addIndexPage($routes);
+    $this->addRoutesFromConfig($routes);
+    // @todo Either create an access controller or perform some access checking
+    //   in the controller.
     $routes->addRequirements(['_access' => 'TRUE']);
     return $routes;
   }
 
   /**
-   * Route Helper.
+   * Add all the routes specified in configuration.
    *
-   * @param string $path
-   *   Path.
-   * @param string $name
-   *   Name.
+   * Routes added here are marked with a default property 'name' with a value
+   * of 'dkan_js_frontend'. This allows for select attachment of libraries.
    *
-   * @return \Symfony\Component\Routing\Route
-   *   Route.
+   * @param \Symfony\Component\Routing\RouteCollection $routes
+   *   The collection to add config routes to.
+   *
+   * @see dkan_js_frontend_page_attachments()
    */
-  private function routeHelper(string $path, string $name) : Route {
-    $route = new Route(
-      "/$path",
-      [
-        '_controller' => '\Drupal\dkan_js_frontend\Controller\Page::content',
-        'name' => $name,
-      ]
-    );
-    $route->setMethods(['GET']);
-    return $route;
-  }
-
-  /**
-   * Private. All routes tagged with dkan_js_frontend.
-   *
-   * This allows for select attachment of libraries.
-   */
-  private function addIndexPage(RouteCollection $routes) {
-    $config_routes = $this->routes;
-    foreach ($config_routes as $config_route) {
-      $possible_page = explode(",", $config_route);
-      $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "dkan_js_frontend"));
+  private function addRoutesFromConfig(RouteCollection $routes): void {
+    foreach ($this->configRouteMap as $config_route) {
+      $possible_page = explode(',', $config_route);
+      $route = new Route(
+        '/' . $possible_page[1],
+        [
+          '_controller' => '\Drupal\dkan_js_frontend\Controller\Page::content',
+          'name' => 'dkan_js_frontend',
+        ]
+      );
+      $route->setMethods(['GET']);
+      $routes->add($possible_page[0], $route);
     }
   }
 

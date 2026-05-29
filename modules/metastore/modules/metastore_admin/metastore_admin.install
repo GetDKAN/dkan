@@ -2,7 +2,16 @@
 
 /**
  * @file
+ * Install, update and uninstall functions for the DKAN metastore_admin module.
  */
+
+/**
+ * Implements hook_install().
+ */
+function metastore_admin_install() {
+  // If fresh 2.23 install: Run the update hooks to enable transitional modules.
+  metastore_admin_update_10003();
+}
 
 /**
  * Disable metastore_form and enable json_form_widget.
@@ -131,4 +140,23 @@ function metastore_admin_update_10001() {
   return t('~~~~~ IMPORTANT ~~~~~ There are updates to the DKAN admin view.
   If you have not made customizations to the existing view, pull in the latest updates with
   drush cim --partial --source=modules/contrib/dkan/modules/metastore/modules/metastore_admin/config/install -y');
+}
+
+/**
+ * Notification DKAN admin view permissions change (info only).
+ */
+function metastore_admin_update_10002() {
+  return t('~~~~~ IMPORTANT ~~~~~ There are permission changes to the DKAN admin
+  view; re-import the default configuration if you have not customized the view.
+  
+  See https://github.com/GetDKAN/dkan/releases/tag/2.21.2 for more information.');
+}
+
+/**
+ * Enable transitional dkan_metastore_admin module, in preparation for 4.x.
+ */
+function metastore_admin_update_10003() {
+  if (!\Drupal::moduleHandler()->moduleExists('dkan_metastore_admin')) {
+    \Drupal::service('module_installer')->install(['dkan_metastore_admin']);
+  }
 }

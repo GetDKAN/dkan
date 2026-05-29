@@ -8,6 +8,7 @@ use Drupal\Core\Database\Query\Select;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Drupal\Tests\common\Unit\Connection;
+use Pdo\Sqlite;
 
 /**
  * @coversDefaultClass \Drupal\common\Storage\SelectFactory
@@ -107,11 +108,12 @@ class SelectFactoryTest extends TestCase {
    *
    */
   private function getConnection() {
+    $pdo = (class_exists(Sqlite::class)) ? new Sqlite('sqlite::memory:') : new \PDO('sqlite::memory:');
     return (new Chain($this))
       ->add(
         Connection::class,
         "select",
-        new Select(new Connection(new \PDO('sqlite::memory:'), []), "table", "t")
+        new Select(new Connection($pdo, []), "table", "t")
       )
       ->getMock();
   }

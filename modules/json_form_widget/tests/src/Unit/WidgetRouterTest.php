@@ -4,15 +4,21 @@ namespace Drupal\Tests\json_form_widget\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
+use Drupal\json_form_widget\Plugin\JsonFormOptionSource\TaxonomySource;
 use Drupal\json_form_widget\StringHelper;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\WidgetRouter;
-use Drupal\metastore\MetastoreService;
+use Drupal\taxonomy\TermStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;
 
 /**
  * Test class for ValueHandlerTest.
+ *
+ * @group json_form_widget
+ * @coversDefaultClass \Drupal\json_form_widget\WidgetRouter
  */
 class WidgetRouterTest extends TestCase {
 
@@ -31,17 +37,17 @@ class WidgetRouterTest extends TestCase {
     $containerGetOptions = (new Options())
       ->add('uuid', Php::class)
       ->add('json_form.string_helper', StringHelper::class)
-      ->add('dkan.metastore.service', MetastoreService::class)
-      ->index(0);
-
-    $metastoreGetAllOptions = (new Options())
-      ->add('publisher', self::publishers())
-      ->add('data-dictionary', self::dataDictionaries())
+      ->add('plugin.manager.json_form_option_source', JsonFormOptionSourcePluginManager::class)
       ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, 'get', $containerGetOptions)
-      ->add(MetastoreService::class, 'getAll', $metastoreGetAllOptions);
+      ->add(JsonFormOptionSourcePluginManager::class, 'createInstance', TaxonomySource::class)
+      ->add(TaxonomySource::class, 'getEntityTypeManager', EntityTypeManager::class)
+      ->add(EntityTypeManager::class, 'getStorage', (new Options())
+        ->add('taxonomy_term', TermStorageInterface::class)
+        ->index(0))
+      ->add(TermStorageInterface::class, 'loadTree', static::terms());
   }
 
   /**
@@ -102,30 +108,6 @@ class WidgetRouterTest extends TestCase {
           '#allowed_formats' => ['html'],
         ],
       ],
-      'tagField' => [
-        (object) [
-          'widget' => 'list',
-          'type' => 'autocomplete',
-          'allowComplete' => TRUE,
-          'multiple' => TRUE,
-          'source' => [
-            'metastoreSchema' => 'theme',
-          ],
-        ],
-        [
-          '#type' => 'textfield',
-          '#title' => 'tags',
-        ],
-        [
-          '#type' => 'select2',
-          '#title' => 'tags',
-          '#options' => [],
-          '#other_option' => FALSE,
-          '#multiple' => TRUE,
-          '#autocreate' => FALSE,
-          '#target_type' => 'node',
-        ],
-      ],
       // Number field includes constraints and a "step" for up/down controlls.
       'numberField' => [
         (object) [
@@ -175,110 +157,187 @@ class WidgetRouterTest extends TestCase {
           '#input_type' => 'textfield',
         ],
       ],
-      // Publisher popualtes from metastore but returns whole object,
-      // is wrapped in a details element.
-      'publisherField' => [
+      'taxonomyOptionsField' => [
         (object) [
           "widget" => "list",
           "type" => "autocomplete",
-          "allowCreate" => TRUE,
-          "titleProperty" => "name",
+          "allowCreate" => FALSE,
           "source" => (object) [
-            "metastoreSchema" => "publisher",
-          ],
-        ],
-        [
-          '#type' => 'details',
-          '#title' => 'Organization',
-          'name' => [
-            '#type' => 'textfield',
-            '#title' => "Publisher Name",
-            "#default_value" => NULL,
-            "#required" => TRUE,
-          ],
-        ],
-        [
-          '#type' => 'details',
-          '#title' => 'Organization',
-          'name' => [
-            '#type' => 'select2',
-            '#title' => 'Publisher Name',
-            '#default_value' => NULL,
-            '#required' => TRUE,
-            '#options' => [
-              'Publisher 1' => 'Publisher 1',
-              'Publisher 2' => 'Publisher 2',
+            "plugin" => "taxonomy",
+            "config" => (object) [
+              "vocabulary" => "test_vocabulary",
             ],
-            '#other_option' => FALSE,
-            '#multiple' => FALSE,
-            '#autocreate' => TRUE,
-            '#target_type' => 'node',
           ],
+        ],
+        [
+          '#type' => 'textfield',
+          '#title' => 'Taxonomy Options',
+        ],
+        [
+          '#type' => 'select2',
+          '#title' => 'Taxonomy Options',
+          '#options' => [
+            'Term 1' => 'Term 1',
+            'Term 2' => 'Term 2',
+            'Term 3' => 'Term 3',
+          ],
+          '#other_option' => FALSE,
+          '#multiple' => FALSE,
+          '#autocreate' => FALSE,
+          '#target_type' => 'taxonomy_term',
         ],
       ],
-      // Data dict field draws from metastore but just shows URLs.
-      'dataDict' => [
+      'listWithNoOptions' => [
         (object) [
-          "widget" => "list",
-          "type" => "select",
-          "titleProperty" => "title",
-          "source" => (object) [
-            "metastoreSchema" => "data-dictionary",
-            "returnValue" => "url",
-          ],
+          'widget' => 'list',
+          'type' => 'autocomplete',
+          'source' => (object) [],
         ],
         [
-          '#type' => 'url',
-          '#title' => 'Data Dictionary',
+          '#type' => 'textfield',
+          '#title' => 'List With No Options',
         ],
         [
-          '#type' => 'select',
-          '#title' => 'Data Dictionary',
-          '#options' => [
-            'dkan://metastore/schemas/data-dictionary/items/111' => 'Data dictionary 1',
-            'dkan://metastore/schemas/data-dictionary/items/222' => 'Data dictionary 2',
-          ],
+          '#type' => 'select2',
+          '#title' => 'List With No Options',
+          '#options' => [],
+          '#multiple' => FALSE,
+          '#autocreate' => FALSE,
+          '#target_type' => NULL,
           '#other_option' => FALSE,
         ],
       ],
     ];
   }
 
-  public static function publishers() {
+  public static function terms(): array {
     return [
-      json_encode((object) [
-        'identifier' => '111',
-        'data' => (object) [
-          '@type' => 'org:Organization',
-          'name' => 'Publisher 1',
-        ],
-      ]),
-      json_encode((object) [
-        'identifier' => '222',
-        'data' => (object) [
-          '@type' => 'org:Organization',
-          'name' => 'Publisher 2',
-        ],
-      ]),
+      (object) [
+        'tid' => 1,
+        'name' => 'Term 1',
+        'vid' => 'test_vocabulary',
+      ],
+      (object) [
+        'tid' => 2,
+        'name' => 'Term 2',
+        'vid' => 'test_vocabulary',
+      ],
+      (object) [
+        'tid' => 3,
+        'name' => 'Term 3',
+        'vid' => 'test_vocabulary',
+      ],
     ];
   }
 
-  public static function dataDictionaries() {
-    return [
-      json_encode((object) [
-        'identifier' => '111',
-        'data' => (object) [
-          'title' => 'Data dictionary 1',
-        ],
-      ]),
-      json_encode((object) [
-        'identifier' => '222',
-        'data' => (object) [
-          'title' => 'Data dictionary 2',
-        ],
-      ]),
-    ];
+  /**
+   * Test the getDropdownOptions method.
+   *
+   * @dataProvider fixOptionSourceDataProvider
+   * @covers ::fixOptionSource
+   */
+  public function testFixOptionSource($spec, $expected) {
+    $router = WidgetRouter::create($this->getContainerChain()->getMock());
+
+    // Use reflection to access the protected method.
+    $reflection = new \ReflectionClass($router);
+    $method = $reflection->getMethod('fixOptionSource');
+    $method->setAccessible(TRUE);
+
+    $fixed = $method->invokeArgs($router, [$spec]);
+    $this->assertEquals($expected, $fixed);
   }
 
+  /**
+   * Data provider for testFixOptionSource.
+   *
+   * @return array
+   *   Array of test data with spec and expected values.
+   */
+  public static function fixOptionSourceDataProvider(): array {
+    return [
+      'metastoreSchema and titleProperty' => [
+        (object) [
+          'titleProperty' => 'name',
+          'source' => (object) [
+            'metastoreSchema' => 'publisher',
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'titleProperty' => 'name',
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+      ],
+      'no titleProperty' => [
+        (object) [
+          'source' => (object) [
+            'metastoreSchema' => 'publisher',
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+      ],
+      'has returnValue' => [
+        (object) [
+          'source' => (object) [
+            'returnValue' => 'url',
+            'metastoreSchema' => 'data-dictionary',
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'schema' => 'data-dictionary',
+              'returnValue' => 'url',
+            ],
+          ],
+        ],
+      ],
+      'already correct' => [
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'titleProperty' => 'name',
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'plugin' => 'metastoreSchema',
+            'config' => (object) [
+              'titleProperty' => 'name',
+              'schema' => 'publisher',
+            ],
+          ],
+        ],
+      ],
+      'just enum' => [
+        (object) [
+          'source' => (object) [
+            'enum' => ['option1', 'option2'],
+          ],
+        ],
+        (object) [
+          'source' => (object) [
+            'enum' => ['option1', 'option2'],
+          ],
+        ],
+      ],
+    ];
+  }
 
 }

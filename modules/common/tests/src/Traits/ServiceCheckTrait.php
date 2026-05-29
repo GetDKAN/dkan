@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\common\Traits;
 
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\Serialization\Yaml;
 use MockChain\Chain;
 use MockChain\Options;
 
@@ -50,7 +50,6 @@ trait ServiceCheckTrait {
     $dkanModules = [
       'common',
       'datastore',
-      'frontend',
       'harvest',
       'metastore',
     ];
@@ -116,7 +115,11 @@ trait ServiceCheckTrait {
    * Private.
    */
   private function getRelativeDrupalPath() {
-    return getenv('DRUPAL_ROOT');
+    $root = getenv('DRUPAL_ROOT');
+    if (!$root) {
+      throw new \Exception('DRUPAL_ROOT environment variable not set. If using ddev, try `ddev dotenv set .ddev/.env.web --drupal-root /var/www/html/web`');
+    }
+    return $root;
   }
 
 }

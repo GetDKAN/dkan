@@ -37,7 +37,7 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
           .find('.select2-selection')
           .click({ force:true })
-        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]').type('DKANTEST Publisher{enter}')
+        cy.get('span[aria-owns="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]').type('DKANTEST Publisher{enter}')
         // End filling up publisher.
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST Contact Name', { force:true } )
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force:true } )
@@ -45,7 +45,7 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
         .find('.select2-selection')
         .click({ force: true })
-        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
+        cy.get('span[aria-owns="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
         cy.get('#edit-submit').click({ force:true })
         cy.wait(2000)

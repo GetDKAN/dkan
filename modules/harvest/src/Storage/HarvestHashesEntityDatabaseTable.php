@@ -267,4 +267,11 @@ class HarvestHashesEntityDatabaseTable implements DatabaseTableInterface {
     return NULL;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getTableName() {
+    throw new \RuntimeException(__METHOD__ . ' not yet implemented.');
+  }
+
 }

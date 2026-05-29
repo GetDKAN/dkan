@@ -31,7 +31,10 @@ dkan:datastore:drop
 
     **Arguments**
 
-    - **uuid** The uuid of a dataset.
+    - **identifier** The uuid of a dataset.
+
+    **Options**
+    - **--keep-local** Do not remove localized resource, only drop the datastore table.
 
 ~~~~~~
 
@@ -54,8 +57,11 @@ dkan:datastore:import
 
     **Arguments**
 
-    - **uuid** The uuid of a resource.
-    - **deferred** Whether or not the process should be deferred to a queue.
+    - **identifier** The resource identifier; usually an MD5 hash of the resource URI.
+
+    **Options**
+
+    - **--deferred** Whether or not the process should be deferred to a queue.
 
 ~~~~~~
 
@@ -72,8 +78,11 @@ dkan:datastore:localize
 
     **Arguments**
 
-    - **uuid** The uuid of a resource.
-    - **deferred** Whether or not the process should be deferred to a queue.
+    - **identifier** The resource identifier; usually an MD5 hash of the resource URI.
+
+    **Options**
+
+    - **--deferred** Whether or not the process should be deferred to a queue.
 
 ~~~~~~
 
@@ -115,6 +124,17 @@ dkan:datastore:reimport
     **Arguments**
 
     - **uuid** The uuid of a dataset.
+
+~~~~~~
+
+dkan:datastore:degraded-mode
+----------------------------
+
+    Turn degraded service mode on or off for the datastore. Blocks requests to the datastore API that contain conditions, joins, groupings, sorts, and offsets.
+
+    **Arguments**
+
+    - **state** The state of the degraded mode (1 to turn on, 0 to turn off, leave blank to see current state).
 
 ~~~~~~
 
@@ -300,20 +320,3 @@ dkan:sample-content:create
 --------------------------
 
     Create sample content.
-
-~~~~~~
-
-dkan-test-users
----------------
-
-    If you are using the `DKAN DDEV Add-On <https://github.com/GetDKAN/ddev-dkan>`_, you can create and delete test user accounts with the following commands.
-
-    **Add users**
-
-    ``ddev dkan-test-users``
-
-    **Remove users**
-
-    ``ddev dkan-test-users --remove``
-
-    You can define your own custom test users by adding a testuser.json file to the root of your project. These commands will generate and remove the users specified, if no file is found, the DKAN default user accounts will be used.

@@ -1,0 +1,6 @@
+dkan_js_frontend.settings:
+  title: JS Frontend Settings
+  description: Configuration settings for a decoupled JS front end.
+  parent: system.admin_dkan
+  route_name: dkan_js_frontend.settings
+  weight: 20

@@ -5,7 +5,7 @@ namespace Drupal\json_form_widget;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\MetastoreService;
+use Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -28,24 +28,9 @@ class WidgetRouter implements ContainerInjectionInterface {
   protected $stringHelper;
 
   /**
-   * Metastore Service.
-   *
-   * @var \Drupal\metastore\MetastoreService
+   * Option source plugin manager.
    */
-  protected $metastore;
-
-  /**
-   * Inherited.
-   *
-   * @{inheritdocs}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('uuid'),
-      $container->get('json_form.string_helper'),
-      $container->get('dkan.metastore.service')
-    );
-  }
+  protected JsonFormOptionSourcePluginManager $pluginManager;
 
   /**
    * Constructor.
@@ -54,13 +39,28 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   Uuid service.
    * @param \Drupal\json_form_widget\StringHelper $string_helper
    *   String Helper service.
-   * @param \Drupal\metastore\MetastoreService $metastore
-   *   Metastore service.
+   * @param \Drupal\json_form_widget\OptionSource\JsonFormOptionSourcePluginManager $plugin_manager
+   *   Option source plugin manager.
    */
-  public function __construct(UuidInterface $uuid, StringHelper $string_helper, MetastoreService $metastore) {
+  public function __construct(
+    UuidInterface $uuid,
+    StringHelper $string_helper,
+    JsonFormOptionSourcePluginManager $plugin_manager,
+  ) {
     $this->uuidService = $uuid;
     $this->stringHelper = $string_helper;
-    $this->metastore = $metastore;
+    $this->pluginManager = $plugin_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('uuid'),
+      $container->get('json_form.string_helper'),
+      $container->get('plugin.manager.json_form_option_source')
+    );
   }
 
   /**
@@ -115,16 +115,17 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The element configured as a list element.
    */
   public function handleListElement(mixed $spec, array $element) {
-    $title_property = ($spec->titleProperty ?? FALSE);
+    $this->fixOptionSource($spec);
+    $title_property = ($spec->source->config->titleProperty ?? FALSE);
 
     if (isset($title_property, $element[$title_property])) {
       $element[$title_property] = $this->getDropdownElement($element[$title_property], $spec, $title_property);
     }
 
-    if (isset($spec->source->returnValue)) {
+    if (isset($spec->source->config->returnValue)) {
       $element = $this->getDropdownElement($element, $spec, $title_property);
     }
-    elseif (!isset($spec->titleProperty)) {
+    elseif (!isset($spec->source->config->titleProperty)) {
       $element = $this->getDropdownElement($element, $spec);
     }
 
@@ -159,16 +160,40 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
       $element['#input_type'] = $spec->other_type ?? 'textfield';
     }
-    $element['#other_option'] = isset($element['#other_option']) ?? FALSE;
+    $element['#other_option'] = $element['#other_option'] ?? FALSE;
 
     if ($element['#type'] === 'select2') {
-      $element['#multiple'] = isset($spec->multiple) ? TRUE : FALSE;
-      $element['#autocreate'] = isset($spec->allowCreate) ? TRUE : FALSE;
+      $element['#multiple'] = ($spec->multiple ?? FALSE) ? TRUE : FALSE;
+      $element['#autocreate'] = ($spec->allowCreate ?? FALSE) ? TRUE : FALSE;
     }
     if (isset($element['#autocreate']) && $spec->type !== 'select2') {
-      $element['#target_type'] = 'node';
+      $element['#target_type'] = $this->getTargetType($spec->source);
     }
     return $element;
+  }
+
+  /**
+   * Fix legacy "metastoreSchema" source property, move titleProperty to config.
+   *
+   * @param object $spec
+   *   The spec object to fix.
+   *
+   * @return object
+   *   The fixed spec object.
+   */
+  protected function fixOptionSource(object $spec): object {
+    if (is_object($spec->source ?? NULL) && is_string($spec->source->metastoreSchema ?? NULL)) {
+      $spec->source = (object) [
+        'plugin' => 'metastoreSchema',
+        'config' => (object) array_filter([
+          'schema' => $spec->source->metastoreSchema,
+          'titleProperty' => $spec->titleProperty ?? NULL,
+          'returnValue' => $spec->source->returnValue ?? NULL,
+        ]),
+      ];
+      unset($spec->titleProperty, $spec->source->metastoreSchema, $spec->source->returnValue);
+    }
+    return $spec;
   }
 
   /**
@@ -193,87 +218,41 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Helper function to get options for dropdowns.
    *
-   * @param mixed $source
+   * @param object $source
    *   Source object from UI options.
-   * @param mixed $titleProperty
+   * @param string|false $titleProperty
    *   The title property name in which the dropdown should be added (or FALSE).
    *
    * @return array
    *   Array with options for the dropdown.
    */
-  public function getDropdownOptions(mixed $source, mixed $titleProperty = FALSE) {
+  public function getDropdownOptions(object $source, string|false $titleProperty = FALSE) {
     $options = [];
     if (isset($source->enum)) {
       $options = $this->stringHelper->getSelectOptions($source);
     }
-    if (isset($source->metastoreSchema)) {
-      $options = $this->getOptionsFromMetastore($source, $titleProperty);
+    elseif (is_string($source->plugin ?? NULL)) {
+      $option_source = $this->pluginManager->createInstance($source->plugin);
+      $options = $option_source->getOptions((array) $source->config ?? []);
     }
     return $options;
   }
 
   /**
-   * Helper function to get options from metastore.
+   * Get the target type for the dropdown based on the source.
    *
    * @param mixed $source
-   *   Source object from UI options.
-   * @param mixed $titleProperty
-   *   The title property name in which the dropdown should be added (or FALSE).
+   *   The source object from UI options.
    *
-   * @return array
-   *   Array with options from metastore for the dropdown.
+   * @return string|null
+   *   The target type for the dropdown.
    */
-  public function getOptionsFromMetastore(mixed $source, mixed $titleProperty = FALSE) {
-    $options = [];
-    $metastore_items = $this->metastore->getAll($source->metastoreSchema);
-    foreach ($metastore_items as $item) {
-      $item = json_decode((string) $item);
-      $title = $this->metastoreOptionTitle($item, $titleProperty);
-      $value = $this->metastoreOptionValue($item, $source, $titleProperty);
-      $options[$value] = $title;
+  public function getTargetType(mixed $source): ?string {
+    if (is_string($source->plugin ?? NULL)) {
+      $option_source = $this->pluginManager->createInstance($source->plugin);
+      return $option_source->getTargetType((array) $source->config ?? []);
     }
-    return $options;
-  }
-
-  /**
-   * Determine the title for the select option.
-   *
-   * @param object|string $item
-   *   Single item from Metastore::getAll()
-   * @param string|false $titleProperty
-   *   Title property defined in UI schema.
-   *
-   * @return string
-   *   String to be used in title.
-   */
-  protected function metastoreOptionTitle($item, $titleProperty): string {
-    if ($titleProperty) {
-      return is_object($item) ? $item->data->$titleProperty : $item;
-    }
-    return $item->data;
-  }
-
-  /**
-   * Determine the value for the select option.
-   *
-   * @param object|string $item
-   *   Single item from Metastore::getAll()
-   * @param object $source
-   *   Source defintion from UI schema.
-   * @param string|false $titleProperty
-   *   Title property defined in UI schema.
-   *
-   * @return string
-   *   String to be used as option value.
-   */
-  protected function metastoreOptionValue($item, object $source, $titleProperty): string {
-    if (($source->returnValue ?? NULL) == 'url') {
-      return 'dkan://metastore/schemas/' . $source->metastoreSchema . '/items/' . $item->identifier;
-    }
-    if ($titleProperty) {
-      return is_object($item) ? $item->data->$titleProperty : $item;
-    }
-    return $item->data;
+    return NULL;
   }
 
   /**

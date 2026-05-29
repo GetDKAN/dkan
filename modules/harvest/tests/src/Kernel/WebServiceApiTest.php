@@ -25,10 +25,11 @@ use Symfony\Component\HttpFoundation\Response;
 class WebServiceApiTest extends KernelTestBase {
 
   protected static $modules = [
+    'node',
+    'user',
     'common',
     'harvest',
     'metastore',
-    'node',
   ];
 
   protected function setUp() : void {

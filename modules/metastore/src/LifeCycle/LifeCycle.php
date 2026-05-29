@@ -322,6 +322,9 @@ class LifeCycle {
    * @throws \Exception
    */
   protected function datasetPresave(MetastoreItemInterface $data): void {
+    $storage = $this->dataFactory->getInstance('dataset');
+    $metadata = $storage->filterHtml($data->getMetadata());
+    $data->setMetadata($metadata);
     $this->setNodeValuesFromMetadata($data);
     $this->referenceMetadata($data);
 

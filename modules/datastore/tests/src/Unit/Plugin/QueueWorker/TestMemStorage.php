@@ -130,4 +130,8 @@ class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
         return substr($md5, 0, 4);
     }
 
+    public function getTableName() {
+        return "test_mem_storage";
+    }
+
   }

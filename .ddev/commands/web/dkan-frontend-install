@@ -1,0 +1,55 @@
+#!/bin/bash
+#ddev-generated
+
+## Description: Add the decoupled frontend for DKAN.
+## Usage: dkan-frontend-install
+
+# TODO: Make a CI flag.
+
+FRONTEND_TMP='tmp'
+FRONTEND_DOCROOT_DIR="$DDEV_DOCROOT/frontend"
+FRONTEND_VCS_URL='https://github.com/GetDKAN/data-catalog-app/'
+
+if [[ -L $FRONTEND_DOCROOT_DIR ]]; then
+  echo "ERROR: Symlink $FRONTEND_DOCROOT_DIR already exists."
+  exit 1
+fi
+
+# Glean frontend spec from dkan module.
+DKAN_MODULE_PATH=$(composer show --format=json getdkan/dkan | jq -r '.path')
+if [ ! -z "$DKAN_MODULE_PATH" ]; then
+  DKAN_MODULE_EXTRA=$(composer config extra -d $DKAN_MODULE_PATH)
+  if [ ! -z "$DKAN_MODULE_EXTRA" ]; then
+    DKAN_FRONTEND_CONFIG=$(jq '."dkan-frontend"' <<<$DKAN_MODULE_EXTRA)
+    if [ ! -z "$DKAN_FRONTEND_CONFIG" ]; then
+      FRONTEND_VCS_REF=$(jq -r --arg DEFAULT "$FRONTEND_VCS_REF" '."ref" // $DEFAULT' <<< $DKAN_FRONTEND_CONFIG)
+      FRONTEND_VCS_URL=$(jq -r --arg DEFAULT "$FRONTEND_VCS_URL" '."url" // $DEFAULT' <<< $DKAN_FRONTEND_CONFIG)
+    fi
+  fi
+fi
+
+echo " ** Finding latest tag for $FRONTEND_VCS_URL"
+
+FRONTEND_VCS_REF=$(curl -s https://api.github.com/repos/getdkan/data-catalog-app/releases/latest | jq -r '.tag_name')
+
+echo " ** Gathering frontend application: $FRONTEND_VCS_REF from $FRONTEND_VCS_URL"
+
+mkdir -p $FRONTEND_TMP
+wget -O $FRONTEND_TMP/data-catalog-app-$FRONTEND_VCS_REF.zip "$FRONTEND_VCS_URL"/archive/"$FRONTEND_VCS_REF".zip
+unzip $FRONTEND_TMP/data-catalog-app-$FRONTEND_VCS_REF.zip -d "$DDEV_DOCROOT/"
+mv $DDEV_DOCROOT/data-catalog-app-$FRONTEND_VCS_REF "$FRONTEND_DOCROOT_DIR"
+rmdir tmp
+
+cd $FRONTEND_DOCROOT_DIR || exit
+# Don't fill the screen with warnings, only errors.
+# TODO: Make sure we don't miss important warnings.
+npm --loglevel=error install
+
+drush pm-enable dkan_js_frontend -y
+drush config-set system.site page.front '/home' -y
+drush config-set system.site page.403 '/home' -y
+drush config-set system.site page.404 '/home' -y
+
+drush cr
+
+echo " ** Frontend install complete."

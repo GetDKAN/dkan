@@ -3,6 +3,8 @@
 namespace Drupal\Tests\common\Unit;
 
 use Drupal\Core\Database\Connection as CoreConnection;
+use Drupal\Core\Database\Query\Condition;
+use Drupal\Core\Database\Query\Select;
 
 /**
  * A fake Connection class for testing purposes.
@@ -26,6 +28,14 @@ class Connection extends CoreConnection {
    * {@inheritdoc}
    */
   protected $statementClass;
+
+  public function select($table, $alias = NULL, array $options = []) {
+    return new Select($this, $table, $alias, $options);
+  }
+
+  public function condition($conjunction = 'AND') {
+    return new Condition($conjunction, $this);
+  }
 
   public function upsert($table, array $options = []) { }
 

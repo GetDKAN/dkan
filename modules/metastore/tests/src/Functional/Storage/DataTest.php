@@ -6,6 +6,7 @@ use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystem;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\metastore\Storage\Data;
 use Psr\Log\LoggerInterface;
@@ -57,16 +58,13 @@ class DataTest extends BrowserTestBase {
       ->method('getTempDirectory')
       ->willReturn($temp_dir->url());
 
-    // Let's keep the old filesystem object so we can set it back.
-    $old_fs = $this->container->get('file_system');
-    $this->container->set('file_system', $fs);
-
     // Create a Data object with a testable logger.
     $logger = new TestLogger();
     $data = new StubData(
       'dataset',
       $this->container->get('entity_type.manager'),
       $this->container->get('config.factory'),
+      $fs,
       $logger
     );
 
@@ -74,23 +72,19 @@ class DataTest extends BrowserTestBase {
 
     // Since filterHtml() and htmlPurifier() are private, we call in from
     // store() with crafted data.
-    $identifier = $data->store(json_encode((object) [
+    $data->filterHtml((object) [
       'identifier' => $uuid,
       'title' => 'title',
       'data' => (object) [
         'description' => 'purify me',
       ],
-    ]));
+    ]);
 
-    // We stored a node.
-    $this->assertSame($uuid, $identifier);
     // We logged that the cache directory was not created.
     $this->assertTrue(
       $logger->hasErrorThatContains('Failed to create cache directory for HTML purifier')
     );
 
-    // Test can't clean up if we don't set back the old file system service.
-    $this->container->set('file_system', $old_fs);
   }
 
 }
@@ -102,14 +96,14 @@ class DataTest extends BrowserTestBase {
  */
 class StubData extends Data {
 
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory, LoggerInterface $loggerChannel) {
+  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory, FileSystemInterface $file_system, LoggerInterface $loggerChannel) {
     $this->entityType = 'node';
     $this->bundle = 'data';
     $this->bundleKey = 'type';
     $this->labelKey = 'title';
     $this->schemaIdField = 'field_data_type';
     $this->metadataField = 'field_json_metadata';
-    parent::__construct($schemaId, $entityTypeManager, $config_factory, $loggerChannel);
+    parent::__construct($schemaId, $entityTypeManager, $config_factory, $file_system, $loggerChannel);
   }
 
   public function retrieveContains(string $string, bool $caseSensitive): array {

@@ -1,68 +1,35 @@
-<?xml version="1.0"?>
-<phpunit
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
-  colors="true"
-  verbose="true">
-  <coverage>
-    <include>
-      <directory>.</directory>
-    </include>
-    <exclude>
-      <file>rector.php</file>
-      <directory>tests</directory>
-      <directory>modules/common/tests</directory>
-      <directory>modules/datastore/tests</directory>
-      <directory>modules/datastore/modules/datastore_mysql_import/tests</directory>
-      <directory>modules/dkan_js_frontend/tests</directory>
-      <directory>modules/frontend/tests</directory>
-      <directory>modules/harvest/tests</directory>
-      <directory>modules/json_form_widget/tests</directory>
-      <directory>modules/data_dictionary_widget/tests</directory>
-      <directory>modules/metastore/tests</directory>
-      <directory>modules/metastore/modules/metastore_admin/tests</directory>
-      <directory>modules/metastore/modules/metastore_search/tests</directory>
-      <directory>modules/sample_content/tests</directory>
-      <directory suffix="TestBase.php">./</directory>
-    </exclude>
-  </coverage>
-  <testsuites>
-    <testsuite name="DKAN Test Suite">
-      <directory>.</directory>
-    </testsuite>
-    <testsuite name="DkanUnitTests">
-      <directory>modules/common/tests/src/Unit</directory>
-      <directory>modules/metastore/modules/metastore_search/tests/src/Unit</directory>
-      <directory>modules/datastore/tests/src/Unit</directory>
-      <directory>modules/datastore/modules/datastore_mysql_import/tests/src/Unit</directory>
-      <directory>modules/frontend/tests/src/Unit</directory>
-      <directory>modules/dkan_js_frontend/tests/src/Unit</directory>
-      <directory>modules/harvest/tests/src/Unit</directory>
-      <directory>modules/json_form_widget/tests/src/Unit</directory>
-    </testsuite>
-    <testsuite name="DkanFunctionalTests">
-      <directory>modules/common/tests/src/Functional</directory>
-      <directory>modules/metastore/tests/src/Functional</directory>
-      <directory>modules/metastore/modules/metastore_search/tests/src/Functional</directory>
-      <directory>modules/metastore/modules/metastore_admin/tests/src/Functional</directory>
-      <directory>modules/datastore/tests/src/Functional</directory>
-      <directory>modules/dkan_js_frontend/tests/src/Functional</directory>
-      <directory>tests/src/Functional</directory>
-    </testsuite>
-  </testsuites>
-  <groups>
-    <exclude>
-      <group>requires-database</group>
-    </exclude>
-  </groups>
-  <php>
-    <!-- These variables may alternatively be set as environment variables. -->
-    <!-- E.g., `DRUPAL_VERSION=V8 ./vendor/bin/phpunit` -->
-    <env name="DRUPAL_ROOT" value="/var/www/docroot"/>
-    <env name="DTT_BASE_URL" value="http://web"/>
-    <env name="SIMPLETEST_BASE_URL" value="http://web"/>
-    <env name="SIMPLETEST_DB" value="mysql://drupal:123@db/drupal"/>
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
-    <!-- env name="SYMFONY_DEPRECATIONS_HELPER" value="max[total]=0&amp;max[self]=0&amp;max[direct]=0"/ -->
-  </php>
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         bootstrap="web/core/tests/bootstrap.php"
+         verbose="true"
+         colors="true">
+    <coverage>
+        <include>
+            <directory>src</directory>
+            <directory>modules</directory>
+        </include>
+        <exclude>
+            <directory>modules/common/tests</directory>
+            <directory>modules/datastore/tests</directory>
+            <directory>modules/datastore/modules/datastore_mysql_import/tests</directory>
+            <directory>modules/dkan_js_frontend/tests</directory>
+            <directory>modules/frontend/tests</directory>
+            <directory>modules/harvest/tests</directory>
+            <directory>modules/json_form_widget/tests</directory>
+            <directory>modules/data_dictionary_widget/tests</directory>
+            <directory>modules/metastore/tests</directory>
+            <directory>modules/metastore/modules/metastore_admin/tests</directory>
+            <directory>modules/metastore/modules/metastore_search/tests</directory>
+            <directory>modules/sample_content/tests</directory>
+            <directory suffix="TestBase.php">./</directory>
+        </exclude>
+    </coverage>
+    <testsuites>
+        <testsuite name="default">
+            <directory>.</directory>
+            <exclude>vendor</exclude>
+            <exclude>web</exclude>
+        </testsuite>
+    </testsuites>
 </phpunit>

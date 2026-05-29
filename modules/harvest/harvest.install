@@ -1,10 +1,10 @@
 <?php
 
-use Drupal\harvest\HarvestUtility;
 use Drupal\user\Entity\Role;
 
 /**
  * @file
+ * Install, update and uninstall functions for the DKAN harvest module.
  */
 
 function harvest_requirements($phase): array {
@@ -44,6 +44,9 @@ function harvest_install() {
     $role->grantPermission('harvest_api_info');
     $role->save();
   }
+
+  // If fresh 2.23 install: Run the update hooks to enable transitional modules.
+  harvest_update_10003();
 }
 
 /**
@@ -214,11 +217,25 @@ function harvest_update_8011(&$sandbox) {
 }
 
 /**
+ * Superceded by harvest_update_10002.
+ */
+function harvest_update_10001() {}
+
+/**
  * Updates namespace for harvest type.
  */
-function harvest_update_10001()
+function harvest_update_10002()
 {
   /** @var \Drupal\harvest\HarvestUtility $harvest_utility */
   $harvest_utility = \Drupal::service('dkan.harvest.utility');
   $harvest_utility->harvestNammespaceUpdate();
+}
+
+/**
+ * Enable transitional dkan_harvest module, in preparation for 4.x.
+ */
+function harvest_update_10003() {
+  if (!\Drupal::service('module_handler')->moduleExists('dkan_harvest')) {
+    \Drupal::service('module_installer')->install(['dkan_harvest'], TRUE);
+  }
 }

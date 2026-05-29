@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\json_form_widget\Tests\Kernel\Element;
+namespace Drupal\Tests\json_form_widget\Kernel\Element;
 
 use Drupal\json_form_widget\Element\UploadOrLink;
 use Drupal\KernelTests\KernelTestBase;
@@ -13,8 +13,6 @@ class UploadOrLinkTest extends KernelTestBase {
     'json_form_widget',
     'file',
     'node',
-    'metastore',
-    'common',
     'user',
     'system',
   ];

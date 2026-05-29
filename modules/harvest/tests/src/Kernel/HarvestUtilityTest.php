@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\harvest\Kernel;
 
+use Drupal\harvest\HarvestUtility;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -197,6 +198,72 @@ class HarvestUtilityTest extends KernelTestBase {
       $run_entity = $new_runs_repository->loadEntity($orphaned_plan_id, $orphaned_id)
     );
     $this->assertEquals('AWESOME', $run_entity->get('extract_status')->getString());
+  }
+
+  /**
+   * Ensure an exception during DB handling does not stop further updates.
+   *
+   * @covers ::harvestRunsUpdate
+   */
+  public function testHarvestRunException() {
+    // Mock HarvestUtility so we can have one method throw an exception.
+    $utility = $this->getMockBuilder(HarvestUtility::class)
+      ->setConstructorArgs([
+        $this->container->get('dkan.harvest.service'),
+        $this->container->get('dkan.harvest.storage.database_table'),
+        $this->container->get('dkan.harvest.storage.hashes_database_table'),
+        $this->container->get('dkan.harvest.storage.harvest_run_repository'),
+        $this->container->get('database'),
+        $this->container->get('dkan.harvest.logger_channel'),
+        $this->container->get('uuid'),
+      ])
+      ->onlyMethods(['findOrphanedHarvestDataIds', 'convertRunTable'])
+      ->getMock();
+
+    // findOrphanedHarvestDataIds will return two fake IDs to loop over.
+    $utility->expects($this->atLeast(1))
+      ->method('findOrphanedHarvestDataIds')
+      ->willReturn(['FAKE_PLAN_ID', 'ANOTHER_FAKE_PLAN_ID']);
+    // DB work will throw an exception. We expect it to be called twice because
+    // there are two plan IDs.
+    $utility->expects($this->atLeast(2))
+      ->method('convertRunTable')
+      ->willThrowException(new \Exception('Hello.'));
+
+    $utility->harvestRunsUpdate();
+  }
+
+  /**
+   * Ensure an exception during DB handling does not stop further updates.
+   *
+   * @covers ::harvestHashUpdate
+   */
+  public function testHarvestHashException() {
+    // Mock HarvestUtility so we can mock some methods.
+    $utility = $this->getMockBuilder(HarvestUtility::class)
+      ->setConstructorArgs([
+        $this->container->get('dkan.harvest.service'),
+        $this->container->get('dkan.harvest.storage.database_table'),
+        $this->container->get('dkan.harvest.storage.hashes_database_table'),
+        $this->container->get('dkan.harvest.storage.harvest_run_repository'),
+        $this->container->get('database'),
+        $this->container->get('dkan.harvest.logger_channel'),
+        $this->container->get('uuid'),
+      ])
+      ->onlyMethods(['findOrphanedHarvestDataIds', 'convertHashTable'])
+      ->getMock();
+
+    // findOrphanedHarvestDataIds will return two fake IDs to loop over.
+    $utility->expects($this->atLeast(1))
+      ->method('findOrphanedHarvestDataIds')
+      ->willReturn(['FAKE_PLAN_ID', 'ANOTHER_FAKE_PLAN_ID']);
+    // DB work will throw an exception. We expect it to be called twice because
+    // there are two plan IDs.
+    $utility->expects($this->atLeast(2))
+      ->method('convertHashTable')
+      ->willThrowException(new \Exception('Hello.'));
+
+    $utility->harvestHashUpdate();
   }
 
 }

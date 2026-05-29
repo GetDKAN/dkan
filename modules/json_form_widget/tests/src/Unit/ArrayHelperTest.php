@@ -12,7 +12,6 @@ use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
-use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -44,7 +43,6 @@ class ArrayHelperTest extends TestCase {
 
     $array_helper = ArrayHelper::create($chain);
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.router', FieldTypeRouter::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('json_form.object_helper', ObjectHelper::class)
@@ -58,7 +56,6 @@ class ArrayHelperTest extends TestCase {
     $distribution_schema = $this->getSchema();
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', $distribution_schema)
       ->add(SchemaUiHandler::class, 'setSchemaUi')
       ->add(ObjectHelper::class, 'handleObjectElement', $object)
       ->add(ObjectHelper::class, 'setBuilder')

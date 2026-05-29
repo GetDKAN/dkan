@@ -11,6 +11,12 @@
             "property": "field1",
             "value": "%value%",
             "operator": "like"
+        },
+        {
+            "resource": "t",
+            "property": "field1",
+            "value": "%value%",
+            "operator": "LIKE"
         }
     ]
 }

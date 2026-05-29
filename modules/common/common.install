@@ -3,6 +3,14 @@
 use Drupal\common\Util\JobStoreUtil;
 use Drupal\Core\Database\Database;
 
+/**
+ * Implements hook_install().
+ */
+function common_install() {
+  // If fresh 2.23 install: Run the update hooks to enable transitional modules.
+  common_update_90203();
+}
+
 function common_requirements($phase): array {
   $requirements = [];
   if ($phase == 'runtime') {
@@ -111,5 +119,14 @@ function common_update_90202(&$sandbox) {
   if ($config->get('always_use_existing_local_perspective') === NULL) {
     $config->set('always_use_existing_local_perspective', FALSE);
     $config->save(TRUE);
+  }
+}
+
+/**
+ * Enable transitional dkan_common module, in preparation for 4.x.
+ */
+function common_update_90203() {
+  if (!\Drupal::service('module_handler')->moduleExists('dkan_common')) {
+    \Drupal::service('module_installer')->install(['dkan_common'], TRUE);
   }
 }

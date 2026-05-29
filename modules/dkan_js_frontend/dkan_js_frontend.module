@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * This is the DKAN JS Frontend module for using a decoupled frontend w/ DKAN.
+ */
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -19,65 +24,67 @@ const DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK = [
 
 /**
  * Implements hook_library_info_build().
- * Collects all CSS/JS files in the paths set in config 
- * and adds them the dkan_js_frontend.
  *
- * @return array
+ * Collects all CSS/JS files in the paths set in config and adds them to
+ * dkan_js_frontend.
  */
 function dkan_js_frontend_library_info_build() {
   $libraries = [];
-  $minified = \Drupal::config('dkan_js_frontend.config')->get('minified');
-  $preprocess = \Drupal::config('dkan_js_frontend.config')->get('preprocess');
-  $js_path = \Drupal::config('dkan_js_frontend.config')->get('js_folder');
-  $css_path = \Drupal::config('dkan_js_frontend.config')->get('css_folder');
-  $js = \Drupal::config('dkan_js_frontend.config')->get('js');
-  $css = \Drupal::config('dkan_js_frontend.config')->get('js');
 
-  foreach(glob(\Drupal::root() . $js_path . '*.js') as $full_path) {
+  $config = \Drupal::config('dkan_js_frontend.config');
+  $minified = $config->get('minified') ?? FALSE;
+  $preprocess = $config->get('preprocess') ?? TRUE;
+  $js_path = $config->get('js_folder');
+  $css_path = $config->get('css_folder');
+  $js = $config->get('js');
+  $css = $config->get('css');
+
+  foreach (glob(\Drupal::root() . $js_path . '*.js') as $full_path) {
     $basename = basename($full_path);
-    if(isset($js)) {
+    if (isset($js)) {
       // Overwrite global minified with JS specific.
-      if(isset($js['minified'])) {
+      if (isset($js['minified'])) {
         $minified = $js['minified'];
       }
       // Overwrite global preprocess with JS specific.
-      if(isset($js['preprocess'])) {
+      if (isset($js['preprocess'])) {
         $preprocess = $js['preprocess'];
       }
       // Set the weight if available.
-      if(isset($js['weight'])) {
+      if (isset($js['weight'])) {
         $libraries['dkan_js_frontend']['js'][$js_path . $basename]['weight'] = $js['weight'];
       }
       // Loop through JS attributes and add to library.
-      if(isset($js['attributes'])) {
-        foreach($js['attributes'] as $attr) {
+      if (isset($js['attributes'])) {
+        $js_attributes = [];
+        foreach ($js['attributes'] as $attr) {
           $exploded_attr = explode(',', (string) $attr);
           $js_attributes[$exploded_attr[0]] = $exploded_attr[1];
         }
         $libraries['dkan_js_frontend']['js'][$js_path . $basename]['attributes'] = $js_attributes;
       }
     }
-    $libraries['dkan_js_frontend']['js'][$js_path . $basename]['minified'] = $minified ?? false;
-    $libraries['dkan_js_frontend']['js'][$js_path . $basename]['preprocess'] = $preprocess ?? true;
+    $libraries['dkan_js_frontend']['js'][$js_path . $basename]['minified'] = $minified ?? FALSE;
+    $libraries['dkan_js_frontend']['js'][$js_path . $basename]['preprocess'] = $preprocess ?? TRUE;
   }
-  foreach(glob(\Drupal::root() . $css_path . '*.css') as $full_path) {
+  foreach (glob(\Drupal::root() . $css_path . '*.css') as $full_path) {
     $basename = basename($full_path);
-    if(isset($css)) {
+    if (isset($css)) {
       // Overwrite global minified with CSS specific.
-      if(isset($css['minified'])) {
+      if (isset($css['minified'])) {
         $minified = $css['minified'];
       }
       // Overwrite global preprocess with CSS specific.
-      if(isset($css['preprocess'])) {
+      if (isset($css['preprocess'])) {
         $preprocess = $css['preprocess'];
       }
       // Set the weight if available.
-      if(isset($css['weight'])) {
-        $libraries['dkan_js_frontend']['css']['theme'][$js_pcss_pathath . $basename]['weight'] = $css['weight'];
+      if (isset($css['weight'])) {
+        $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['weight'] = $css['weight'];
       }
     }
-    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['minified'] = $minified ?? false;
-    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['preprocess'] = $preprocess ?? true;
+    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['minified'] = $minified ?? FALSE;
+    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename]['preprocess'] = $preprocess ?? TRUE;
   }
   $libraries['dkan_js_frontend']['dependencies'] = [
     'core/drupal',
@@ -88,10 +95,12 @@ function dkan_js_frontend_library_info_build() {
 /**
  * Implements hook_page_attachments().
  *
+ * Any route with a 'name' default with a value of dkan_js_frontend gets the
+ * library attached.
  */
 function dkan_js_frontend_page_attachments(array &$page) {
   $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
-  if($request == 'dkan_js_frontend') {
+  if ($request == 'dkan_js_frontend') {
     $page['#attached']['library'][] = 'dkan_js_frontend/dkan_js_frontend';
   }
 }
@@ -101,19 +110,19 @@ function dkan_js_frontend_page_attachments(array &$page) {
  */
 function dkan_js_frontend_theme_suggestions_page_alter(array &$suggestions, array $variables) {
   $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
-  if($request == 'dkan_js_frontend') {
+  if ($request == 'dkan_js_frontend') {
     $suggestions[] = 'page__dkan_js_frontend';
   }
 }
 
 /**
  * Implements hook_theme().
- * 
+ *
  * Register a module or theme's theme implementations.
  * The implementations declared by this hook specify how a particular render array is to be rendered as HTML.
- * 
+ *
  * See: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/function/hook_theme/8.2.x
- * 
+ *
  * If you change this method, clear theme registry and routing table 'drush cc theme-registry' and 'drush cc router'.
  */
 function dkan_js_frontend_theme($existing, $type, $theme, $path) {
@@ -172,7 +181,7 @@ function _dkan_js_frontend_build_request_context(): RequestContext {
  *   Multi-dimensional array for storing arbitrary site links.
  * @param \Symfony\Component\Routing\RouteCollection $routes
  *   Collection of DKAN routes.
- * @param \Drupal\Core\Routing\RequestContext
+ * @param \Drupal\Core\Routing\RequestContext $request_context
  *   Request context containing base URL for sitemap URL generation.
  */
 function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollection $routes, RequestContext $request_context): void {
@@ -194,9 +203,9 @@ function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollec
  *
  * @param array $arbitrary_links
  *   Multi-dimensional array for storing arbitrary site links.
- * @param \Symfony\Component\Routing\Route $routes
+ * @param \Symfony\Component\Routing\Route $dataset_route
  *   Collection of DKAN routes.
- * @param \Drupal\Core\Routing\RequestContext
+ * @param \Drupal\Core\Routing\RequestContext $request_context
  *   Request context containing base URL for sitemap URL generation.
  */
 function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dataset_route, RequestContext $request_context): void {
@@ -214,4 +223,14 @@ function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dat
       'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL),
     ];
   }
+
+}
+
+/**
+ * Implements hook_preprocess_html().
+ * @param $variables
+ */
+function dkan_js_frontend_preprocess_html(&$variables) {
+  $config = \Drupal::config('dkan_js_frontend.config');
+  $variables['#attached']['drupalSettings']['datastore_query_api'] = $config->get('datastore_query_api');
 }

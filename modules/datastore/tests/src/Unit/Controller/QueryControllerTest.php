@@ -3,10 +3,11 @@
 namespace Drupal\Tests\datastore\Unit\Controller;
 
 use Drupal\common\DataResource;
+use Drupal\common\DatasetInfo;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\common\DatasetInfo;
+use Drupal\Core\State\State;
 use Drupal\datastore\Controller\QueryController;
 use Drupal\datastore\DatastoreService;
 use Drupal\datastore\Service\Query;
@@ -15,10 +16,12 @@ use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\sqlite\Driver\Database\sqlite\Connection as SqliteConnection;
+use Drupal\sqlite\Driver\Database\sqlite\Connection;
+use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use MockChain\Chain;
 use MockChain\Options;
+use Pdo\Sqlite;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -29,6 +32,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @covers \Drupal\datastore\Controller\QueryController
+ * @coversDefaultClass \Drupal\datastore\Controller\QueryController
+ * @covers \Drupal\datastore\Controller\AbstractQueryController
  * @group dkan
  * @group datastore
  * @group unit
@@ -45,7 +51,7 @@ class QueryControllerTest extends TestCase {
   protected function setUp(): void {
     parent::setUp();
     // Set cache services.
-    $options = (new Options)
+    $options = (new Options())
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->add('event_dispatcher', EventDispatcher::class)
       ->index(0);
@@ -89,10 +95,12 @@ class QueryControllerTest extends TestCase {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
+      ->add("state", State::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(DataFactory::class, 'getInstance', MockStorage::class)
+      ->add(State::class, 'get', FALSE)
       ->getMock();
     \Drupal::setContainer($container);
 
@@ -192,7 +200,6 @@ class QueryControllerTest extends TestCase {
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
   }
-
 
   public function testResourceQueryInvalidJson() {
     $data = "{[";
@@ -319,7 +326,7 @@ class QueryControllerTest extends TestCase {
   }
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
-    $container = $this->getQueryContainer($info, true)->getMock();
+    $container = $this->getQueryContainer($info, TRUE)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
@@ -492,6 +499,7 @@ class QueryControllerTest extends TestCase {
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add("state", State::class)
       ->index(0);
 
     $chain = (new Chain($this))
@@ -504,13 +512,89 @@ class QueryControllerTest extends TestCase {
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', 500);
+      ->add(ImmutableConfig::class, 'get', 500)
+      ->add(State::class, 'get', FALSE);
 
     if ($mockMap) {
       $chain->add(Query::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
     }
 
     return $chain;
+  }
+
+  /**
+   * Make sure degraded service mode causes resource query to fail.
+   *
+   * 503 error if there are conditions.
+   */
+  public function testDegradedServiceModeQuery() {
+    $container = $this->getQueryContainer()
+      ->add(State::class, 'get', TRUE)
+      ->add(DatasetInfo::class, "getDistributionUuid", "456")
+      ->getMock();
+
+    \Drupal::setContainer($container);
+    $webServiceApi = QueryController::create($container);
+
+    $data = json_encode([
+      "results" => TRUE,
+      "conditions" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+          "operator" => "=",
+          "value" => "Alabama",
+        ],
+      ],
+      "joins" => [
+        [
+          "resource" => "r",
+          "condition" => [
+            "resource" => "t",
+            "property" => "record_number",
+            "value" => [
+              "resource" => "t",
+              "property" => "record_number",
+            ],
+          ],
+        ],
+      ],
+      "groupings" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+      ],
+      "sorts" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+          "order" => "desc",
+        ],
+      ],
+      "offset" => 1,
+    ]);
+
+    // Test resource query.
+    $request = $this->mockRequest($data);
+    $result = $webServiceApi->query($request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', $result->getContent());
+
+    // Test resource query.
+    $request = $this->mockRequest($data);
+    $result = $webServiceApi->queryResource($this->resource->getIdentifier(), $request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', $result->getContent());
+
+    // Test dataset query.
+    $result = $webServiceApi->queryDatasetResource("abc", 0, $request);
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(503, $result->getStatusCode());
+    $this->assertStringContainsString('Datastore queries are temporarily limited due to high server load', $result->getContent());
+
   }
 
   /**
@@ -535,8 +619,11 @@ class QueryControllerTest extends TestCase {
    *   A database table storage class useable for datastore queries.
    */
   public function mockDatastoreTable() {
-    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
-    // $connection->query('CREATE TABLE `datastore_2` (`record_number` INTEGER NOT NULL, state TEXT, year INT);');
+    $pdo = match(TRUE) {
+      \PHP_VERSION_ID >= 80400 && class_exists(SqliteConnection::class) => new SqliteConnection('sqlite::memory:'),
+      default => new \PDO('sqlite::memory:'),
+    }; 
+    $connection = new Connection($pdo, []);
     $storage = new SqliteDatabaseTable(
       $connection,
       $this->resource,

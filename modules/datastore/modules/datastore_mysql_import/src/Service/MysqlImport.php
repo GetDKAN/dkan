@@ -294,9 +294,10 @@ class MysqlImport extends ImportJob {
   protected function removeEmptyRows(string $table_name, array $fields): void {
     $connection = \Drupal::database();
     $query = $connection->delete($table_name);
-    foreach ($fields as $field) {
+    $field_names = array_keys($fields);
+    foreach ($field_names as $field_name) {
       // Build query to look for records with all empty values for all fields.
-      $query->condition($field['description'], '', '=');
+      $query->condition($field_name, '', '=');
     }
     $num_deleted = $query->execute();
     if ($num_deleted > 0) {

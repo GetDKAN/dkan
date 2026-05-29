@@ -4,12 +4,15 @@ namespace Drupal\datastore\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\State\StateInterface;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Query as QueryService;
 use Drupal\metastore\MetastoreApiResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\StreamedJsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * Controller providing functionality used to stream datastore queries.
@@ -21,8 +24,14 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * {@inheritDoc}
    */
-  public function __construct(QueryService $queryService, DatasetInfo $datasetInfo, MetastoreApiResponse $metastoreApiResponse, ConfigFactoryInterface $configFactory) {
-    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory);
+  public function __construct(
+    QueryService $queryService,
+    DatasetInfo $datasetInfo,
+    MetastoreApiResponse $metastoreApiResponse,
+    ConfigFactoryInterface $configFactory,
+    StateInterface $state,
+  ) {
+    parent::__construct($queryService, $datasetInfo, $metastoreApiResponse, $configFactory, $state);
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
     // to cache the CSV stream for a reasonable amount of time.
@@ -37,12 +46,13 @@ class QueryDownloadController extends AbstractQueryController {
     DatastoreQuery $datastoreQuery,
     RootedJsonData $result,
     array $dependencies = [],
-    ?ParameterBag $params = NULL
+    ?ParameterBag $params = NULL,
   ) {
     return match ($datastoreQuery->{"$.format"}) {
       'csv' => $this->streamCsvResponse($datastoreQuery, $result),
+      'json' => $this->streamJsonResponse($datastoreQuery, $result),
       default => $this->getResponseFromException(
-        new \UnexpectedValueException('Streaming not currently available for JSON responses'),
+        new \UnexpectedValueException('Streaming not currently available for ' . $datastoreQuery->{"$.format"} . 'responses'),
         400
       ),
     };
@@ -54,6 +64,7 @@ class QueryDownloadController extends AbstractQueryController {
   protected function buildDatastoreQuery($request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
+    $this->assertDegradedModeAllowed($data);
     $this->additionalPayloadValidation($data);
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
@@ -61,6 +72,18 @@ class QueryDownloadController extends AbstractQueryController {
     }
     $data->results = FALSE;
     return new DatastoreQuery(json_encode($data));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function assertDegradedModeAllowed(object $data): void {
+    if ($this->state->get('dkan_datastore.degraded_performance', FALSE)) {
+      throw new ServiceUnavailableHttpException(
+        static::DEGRADE_MODE_RETRY_AFTER,
+        'Datastore downloads are temporarily limited due to high server load. All streaming responses are currently unavailable.'
+      );
+    }
   }
 
   /**
@@ -129,6 +152,61 @@ class QueryDownloadController extends AbstractQueryController {
     fputcsv($handle, $row, escape: "\\");
     ob_flush();
     flush();
+  }
+
+  /**
+   * Set up the Streamed JSON Response.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore Query object.
+   * @param \RootedData\RootedJsonData $result
+   *   Query result.
+   *
+   * @return \Symfony\Component\HttpFoundation\StreamedJsonResponse
+   *   Return the StreamedResponse object.
+   */
+  protected function streamJsonResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
+    $data = ['results' => $this->loadJson($datastoreQuery)];
+    $metadata_names = ['count', 'schema', 'query'];
+    foreach ($metadata_names as $metadata_name) {
+      $data[$metadata_name] = $result->get('$.' . $metadata_name);
+    }
+    $data = array_filter($data);
+
+    $response = new StreamedJsonResponse($data);
+    $response->headers->set('Content-Type', 'application/json');
+    $response->headers->set('Content-Disposition', "attachment; filename=\"data.json\"");
+    $response->headers->set('X-Accel-Buffering', 'no');
+    // Ensure one hour max-age plus public status.
+    return $this->addCacheHeaders($response);
+  }
+
+  /**
+   * Set up the Stream query result as json objects.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore Query object.
+   */
+  protected function loadJson(DatastoreQuery $datastoreQuery) {
+    $count = 0;
+
+    try {
+      // Get the result pointer and send each row to the stream one by one.
+      $result = $this->queryService->runResultsQuery($datastoreQuery, FALSE, TRUE);
+      while ($row = $result->fetchAssoc()) {
+        if ($datastoreQuery->{"$.keys"} === FALSE) {
+          $row = $this->queryService->stripRowKeys($row);
+        }
+        yield $row;
+
+        if (0 === ++$count % 100) {
+          flush();
+        }
+      }
+    }
+    catch (\Exception $e) {
+      yield json_encode(['error' => $e->getMessage()]);
+    }
   }
 
 }

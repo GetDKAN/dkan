@@ -182,14 +182,15 @@ class Query implements ContainerInjectionInterface {
   /**
    * Strip keys from results row, convert to array.
    *
-   * @param object $row
+   * @param object|array $row
    *   Query result row.
    *
    * @return array
    *   Values only array.
    */
-  private function stripRowKeys($row) {
+  public function stripRowKeys($row): array {
     $arrayRow = (array) $row;
+    // @todo Shouldn't this just be array_values($arrayRow)?
     $newRow = [];
     foreach ($arrayRow as $value) {
       $newRow[] = $value;

@@ -34,7 +34,7 @@ class DataDictionaryWidget extends WidgetBase implements TrustedCallbackInterfac
     $op = $form_state->getTriggeringElement()['#op'] ?? NULL;
     $field_json_metadata = !empty($items[0]->value) ? json_decode($items[0]->value, TRUE) : [];
     $op_index = isset($form_state->getTriggeringElement()['#op']) ? explode("_", (string) $form_state->getTriggeringElement()['#op']) : NULL;
-    $data_results = $field_json_metadata ? $field_json_metadata["data"]["fields"] : [];
+    $data_results = $field_json_metadata['data']['fields'] ?? [];
 
     // Build the data_results array to display the rows in the data table.
     $data_results = FieldOperations::processDataResults($data_results, $current_fields, $field_values, $op);

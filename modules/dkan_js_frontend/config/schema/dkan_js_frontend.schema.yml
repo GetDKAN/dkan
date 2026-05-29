@@ -3,21 +3,24 @@ dkan_js_frontend.config:
   mapping:
     css_folder:
       type: string
-      label: 'css folder'
+      label: 'CSS Directory'
     js_folder:
       type: string
-      label: 'css folder'
-    routes:
-      type: sequence
-      label: 'Routes'
-      sequence:
-        type: label
+      label: 'JS Directory'
     minified:
       type: boolean
       label: 'Is minified'
     preprocess:
       type: boolean
       label: 'Preprocess'
+    datastore_query_api:
+      type: boolean
+      label: 'Datastore Query API Source'
+    routes:
+      type: sequence
+      label: 'Routes'
+      sequence:
+        type: label
     js:
       type: mapping
       label: 'js'

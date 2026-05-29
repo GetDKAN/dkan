@@ -11,7 +11,7 @@
     ],
     "require": {
         "ext-json": "*",
-        "drupal/facets": "^3.0@beta",
+        "drupal/facets": "^3.0.1",
         "drupal/moderated_content_bulk_publish": "~2.0.20",
         "drupal/search_api": "^1.15",
         "drupal/select2": "^2.0",
@@ -26,39 +26,36 @@
         "getdkan/pdlt": "^0.1.7",
         "getdkan/procrastinator": "^5.0.3",
         "getdkan/rooted-json-data": "^0.2.2",
-        "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5",
+        "guzzlehttp/guzzle": "^7.5",
         "ilbee/csv-response": "^1.2.0",
-        "justinrainbow/json-schema": "^5.2",
+        "justinrainbow/json-schema": "^5.2 || ^6.6.1",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.3",
-        "npm-asset/select2": "^4.0 || dev-develop",
-        "oomphinc/composer-installers-extender": "^2.0",
         "ramsey/uuid": "^3.8.0 || ^4",
-        "stolt/json-merge-patch": "^2.0",
-        "symfony/polyfill-php80": "^1.27"
+        "stolt/json-merge-patch": "^2.0"
     },
     "require-dev": {
         "colinodell/psr-testlogger": "^1.2",
-        "drush/drush": "^12@stable",
-        "getdkan/mock-chain": "^1.4.0",
-        "osteel/openapi-httpfoundation-testing": "<1.0",
-        "phpunit/phpunit": "^9.6"
+        "drush/drush": "*",
+        "getdkan/mock-chain": "~1.4.1",
+        "osteel/openapi-httpfoundation-testing": "^0.13",
+        "drupal/admin_toolbar": "^3.0"
     },
     "repositories": {
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
-        },
-        "asset": {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
         }
     },
-    "minimum-stability": "dev",
     "config": {
         "allow-plugins": {
-            "composer/installers": true,
-            "cweagans/composer-patches": true,
-            "oomphinc/composer-installers-extender": true
+            "php-http/discovery": true,
+            "tbachert/spi": true,
+            "drupal/core-composer-scaffold": true
+        },
+        "audit": {
+            "ignore": {
+                "PKSA-dwsq-ppd2-mb1x": "Temporarily ignoring this advisory until core-recommended is updated to bring in symfony/polyfill-intl-idn 1.28."
+            }
         }
     },
     "extra": {
@@ -67,10 +64,12 @@
             "type": "vcs",
             "url": "https://github.com/GetDKAN/data-catalog-app"
         },
-        "installer-types": [
-            "bower-asset",
-            "npm-asset"
-        ]
-    },
-    "discard-changes": true
+        "drupal-scaffold": {
+            "file-mapping": {
+                "[project-root]/.gitattributes": {
+                    "mode": "skip"
+                }
+            }
+        }
+    }
 }

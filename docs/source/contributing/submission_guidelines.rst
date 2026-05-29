@@ -21,8 +21,7 @@ and it is not a security issue, we encourage you to reach out on the
 Setting up a local development sandbox
 --------------------------------------
 
-We recomend using DDEV with the DDEV-DKAN add-on as there are many helpful commands that will make it easier to get started.
-Once you have composer, docker, and DDEV `installed <https://dkan.readthedocs.io/en/latest/installation/index.html>`_, head over to `Getting Started with DDEV-DKAN <https://getdkan.github.io/ddev-dkan/getting-started.html>`_.
+See :doc:`Local development <../developer-guide/dev_local_setup>` for instructions on setting up a local development environment for DKAN.
 
 Issues tagged Good First Issue
 ------------------------------
