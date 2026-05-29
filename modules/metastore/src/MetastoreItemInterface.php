@@ -49,7 +49,7 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   /**
    * Set the metadata for this item.
    *
-   * @param $metadata mixed
+   * @param mixed $metadata
    *   The new metadata. Should be JSON encode-able.
    */
   public function setMetadata($metadata);
@@ -58,6 +58,7 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
    * Set the identifier for this item.
    *
    * @param mixed $identifier
+   *   Metastore item identifier.
    */
   public function setIdentifier($identifier);
 
@@ -65,6 +66,7 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
    * Set the title of this item.
    *
    * @param mixed $title
+   *   Metastore item title.
    */
   public function setTitle($title);
 
