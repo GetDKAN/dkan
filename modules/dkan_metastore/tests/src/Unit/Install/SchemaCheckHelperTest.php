@@ -51,17 +51,14 @@ class SchemaCheckHelperTest extends TestCase {
   }
 
   /**
-   * $schema must be a string; opis throws ParseException eagerly at the
-   * root-level parse step (loadObjectSchema).
+   * Non-string $schema throws eagerly at the root parse step.
    */
   public function testRootLevelStructuralErrorReturnsError(): void {
     $this->assertNotNull(_dkan_metastore_validate_schema_json('{"$schema": 42}'));
   }
 
   /**
-   * Sub-schema errors are deferred by opis's LazySchema and surface during
-   * the validate() phase. The helper covers this with the trivial validate
-   * call.
+   * A root-level keyword parse error is caught by strict-parsing the root node.
    */
   public function testDeepStructuralErrorReturnsError(): void {
     $this->assertNotNull(
@@ -70,14 +67,65 @@ class SchemaCheckHelperTest extends TestCase {
   }
 
   /**
-   * Draft-04 declaration — opis v2 rejects (only draft-06+ supported).
-   * This is the headline failure mode this hook exists to detect.
+   * Draft-04 declaration — opis v2 supports only draft-06+.
    */
   public function testDraft04SchemaReturnsError(): void {
     $msg = _dkan_metastore_validate_schema_json(
       '{"$schema": "http://json-schema.org/draft-04/schema#", "type": "object"}'
     );
     $this->assertNotNull($msg);
+  }
+
+  /**
+   * Draft-04 or structural errors buried in sub-schemas must be reported.
+   *
+   * @dataProvider buriedErrorProvider
+   */
+  public function testBuriedErrorReturnsError(string $json): void {
+    $this->assertNotNull(_dkan_metastore_validate_schema_json($json));
+  }
+
+  public static function buriedErrorProvider(): array {
+    $d04 = '{"$schema":"http://json-schema.org/draft-04/schema#"}';
+    $d7 = 'http://json-schema.org/draft-07/schema#';
+    return [
+      'properties' => ['{"type":"object","properties":{"foo":' . $d04 . '}}'],
+      '$defs' => ['{"$defs":{"thing":' . $d04 . '}}'],
+      'items (object form)' => ['{"items":' . $d04 . '}'],
+      'dependentSchemas' => ['{"dependentSchemas":{"a":' . $d04 . '}}'],
+      'dependencies (object value)' => ['{"dependencies":{"a":' . $d04 . '}}'],
+      'structural error in properties' => ['{"properties":{"foo":{"type":"array","items":42}}}'],
+      // Short-circuited branches validate(NULL) would not have parsed fully.
+      'allOf[1] behind null-failing allOf[0]' => [
+        '{"$schema":"' . $d7 . '","allOf":[{"type":"string"},' . $d04 . ']}',
+      ],
+      'non-matching anyOf branch' => [
+        '{"$schema":"' . $d7 . '","anyOf":[{"type":"null"},' . $d04 . ']}',
+      ],
+      'unselected else branch' => [
+        '{"$schema":"' . $d7 . '","if":{"type":"null"},"then":{},"else":' . $d04 . '}',
+      ],
+    ];
+  }
+
+  /**
+   * Genuine schema positions only — non-schema containers must not be flagged.
+   *
+   * @dataProvider noFalsePositiveProvider
+   */
+  public function testNoFalsePositive(string $json): void {
+    $this->assertNull(_dkan_metastore_validate_schema_json($json));
+  }
+
+  public static function noFalsePositiveProvider(): array {
+    return [
+      // The properties map contains a key named "format"; it must not be read
+      // as the format keyword.
+      'property named format' => ['{"type":"object","properties":{"format":{"type":"string"}}}'],
+      // Dependencies array values are property-name lists, not schemas.
+      'dependencies array form' => ['{"dependencies":{"a":["b","c"]}}'],
+      'nested clean properties' => ['{"type":"object","properties":{"a":{"type":"string"},"b":{"type":"integer"}}}'],
+    ];
   }
 
 }
