@@ -58,8 +58,11 @@ function dkan_metastore_requirements(string $phase): array {
       'severity' => REQUIREMENT_WARNING,
       'value' => t('@n schema(s) cannot be parsed', ['@n' => count($problems)]),
       'description' => t(
-        'The following metastore schemas could not be parsed under opis/json-schema v2: @list. They will fail at runtime when used. See the DKAN upgrade docs for the draft-04 → draft-07 migration steps.',
-        ['@list' => implode(', ', array_keys($problems))]
+        'The following metastore schemas could not be parsed under opis/json-schema v2: @list. They will fail at runtime when used. See <a href=":change_record_url">DKAN change record</a> for the draft-04 -> draft-07 migration steps.',
+        [
+          '@list' => implode(', ', array_keys($problems)),
+          ':change_record_url' => 'https://www.drupal.org/node/3593097',
+        ]
       ),
     ],
   ];
