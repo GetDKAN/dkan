@@ -1,51 +1,72 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Unit\Install;
+namespace Drupal\Tests\dkan_metastore\Unit;
 
+use Drupal\dkan_metastore\SchemaRetriever;
+use Drupal\dkan_metastore\SchemaValidator;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Covers the pure schema-parse helper in dkan_metastore.install.
+ * Covers SchemaValidator schema-parse behavior.
  *
  * @group dkan
  * @group dkan_metastore
  * @group unit
  */
-class SchemaCheckHelperTest extends TestCase {
+class SchemaValidatorTest extends TestCase {
+
+  protected SchemaValidator $validator;
 
   protected function setUp(): void {
     parent::setUp();
-    // The install file's helper functions aren't autoloaded; pull them in
-    // explicitly. Path: tests/src/Unit/Install -> module root is ../../../..
-    require_once __DIR__ . '/../../../../dkan_metastore.install';
+
+    $datasetSchemaPath = realpath(__DIR__ . '/../docs/dataset.json');
+    $this->assertNotFalse($datasetSchemaPath, 'Could not resolve dataset schema path.');
+    $datasetSchema = file_get_contents($datasetSchemaPath);
+    $this->assertNotFalse($datasetSchema, 'Could not read dataset schema JSON.');
+
+    $retriever = $this->getMockBuilder(SchemaRetriever::class)
+      ->disableOriginalConstructor()
+      ->onlyMethods(['getAllIds', 'retrieve'])
+      ->getMock();
+
+    $retriever->method('getAllIds')->willReturn(['dataset']);
+    $retriever->method('retrieve')->willReturnCallback(function (string $id) use ($datasetSchema): string {
+      if ($id !== 'dataset') {
+        throw new \Exception("Schema {$id} not found.");
+      }
+      return $datasetSchema;
+    });
+
+    $this->validator = new SchemaValidator($retriever);
   }
 
   public function testValidObjectSchemaReturnsNull(): void {
-    $this->assertNull(_dkan_metastore_validate_schema_json('{"type":"object"}'));
+    $this->assertNull($this->validator->validateSchemaJson('{"type":"object"}'));
   }
 
   public function testBooleanSchemaTrueReturnsNull(): void {
-    $this->assertNull(_dkan_metastore_validate_schema_json('true'));
+    $this->assertNull($this->validator->validateSchemaJson('true'));
   }
 
   public function testBooleanSchemaFalseReturnsNull(): void {
-    $this->assertNull(_dkan_metastore_validate_schema_json('false'));
+    $this->assertNull($this->validator->validateSchemaJson('false'));
   }
 
   public function testMalformedJsonReturnsError(): void {
-    $msg = _dkan_metastore_validate_schema_json('{not json');
+    $msg = $this->validator->validateSchemaJson('{not json');
     $this->assertNotNull($msg);
     $this->assertStringContainsString('not valid JSON', $msg);
   }
 
   public function testStringSchemaReturnsError(): void {
-    $msg = _dkan_metastore_validate_schema_json('"hello"');
+    $msg = $this->validator->validateSchemaJson('"hello"');
     $this->assertNotNull($msg);
     $this->assertStringContainsString('object or boolean', $msg);
   }
 
   public function testNumberSchemaReturnsError(): void {
-    $msg = _dkan_metastore_validate_schema_json('42');
+    $msg = $this->validator->validateSchemaJson('42');
     $this->assertNotNull($msg);
     $this->assertStringContainsString('object or boolean', $msg);
   }
@@ -54,7 +75,7 @@ class SchemaCheckHelperTest extends TestCase {
    * Non-string $schema throws eagerly at the root parse step.
    */
   public function testRootLevelStructuralErrorReturnsError(): void {
-    $this->assertNotNull(_dkan_metastore_validate_schema_json('{"$schema": 42}'));
+    $this->assertNotNull($this->validator->validateSchemaJson('{"$schema": 42}'));
   }
 
   /**
@@ -62,7 +83,7 @@ class SchemaCheckHelperTest extends TestCase {
    */
   public function testDeepStructuralErrorReturnsError(): void {
     $this->assertNotNull(
-      _dkan_metastore_validate_schema_json('{"type":"object","properties":"not-an-object"}')
+      $this->validator->validateSchemaJson('{"type":"object","properties":"not-an-object"}')
     );
   }
 
@@ -70,7 +91,7 @@ class SchemaCheckHelperTest extends TestCase {
    * Draft-04 declaration — opis v2 supports only draft-06+.
    */
   public function testDraft04SchemaReturnsError(): void {
-    $msg = _dkan_metastore_validate_schema_json(
+    $msg = $this->validator->validateSchemaJson(
       '{"$schema": "http://json-schema.org/draft-04/schema#", "type": "object"}'
     );
     $this->assertNotNull($msg);
@@ -82,7 +103,7 @@ class SchemaCheckHelperTest extends TestCase {
    * @dataProvider buriedErrorProvider
    */
   public function testBuriedErrorReturnsError(string $json): void {
-    $this->assertNotNull(_dkan_metastore_validate_schema_json($json));
+    $this->assertNotNull($this->validator->validateSchemaJson($json));
   }
 
   public static function buriedErrorProvider(): array {
@@ -114,7 +135,7 @@ class SchemaCheckHelperTest extends TestCase {
    * @dataProvider noFalsePositiveProvider
    */
   public function testNoFalsePositive(string $json): void {
-    $this->assertNull(_dkan_metastore_validate_schema_json($json));
+    $this->assertNull($this->validator->validateSchemaJson($json));
   }
 
   public static function noFalsePositiveProvider(): array {
@@ -126,6 +147,21 @@ class SchemaCheckHelperTest extends TestCase {
       'dependencies array form' => ['{"dependencies":{"a":["b","c"]}}'],
       'nested clean properties' => ['{"type":"object","properties":{"a":{"type":"string"},"b":{"type":"integer"}}}'],
     ];
+  }
+
+  public function testOldsDatasetSchemaThrowsDraft04Error(): void {
+    $this->assertEquals('Unsupported draft-04', $this->validator->validateSchemaId('dataset'));
+  }
+
+  public function testNonexistentSchemaIdReturnsError(): void {
+    $this->assertStringContainsString('Could not retrieve schema', $this->validator->validateSchemaId('nonexistent'));
+  }
+
+  public function testCheckAllSchemas(): void {
+    $problems = $this->validator->checkAllSchemas();
+    $this->assertIsArray($problems);
+    $this->assertArrayHasKey('dataset', $problems);
+    $this->assertStringContainsString('Unsupported draft-04', $problems['dataset']);
   }
 
 }

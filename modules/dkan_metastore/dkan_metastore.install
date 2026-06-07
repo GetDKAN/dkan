@@ -7,11 +7,6 @@
 
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Opis\JsonSchema\Exceptions\SchemaException;
-use Opis\JsonSchema\Info\SchemaInfo;
-use Opis\JsonSchema\Parsers\SchemaParser;
-use Opis\JsonSchema\SchemaLoader;
-use Opis\JsonSchema\Schemas\ExceptionSchema;
 
 /**
  * Update hook to uninstall the legacy metastore module.
@@ -44,196 +39,6 @@ function dkan_metastore_update_11301() {
 }
 
 /**
- * Validate a JSON Schema document under opis/json-schema v2.
- *
- * Opis defers sub-schema parsing (LazySchema), and validating trivial data only
- * reaches schema positions a given instance walks into — so buried draft-04 or
- * structural errors (e.g. in properties, $defs, items, or short-circuited
- * allOf/anyOf/then/else branches) go unnoticed. This walks every genuine schema
- * position and forces each through opis's throwing parse path.
- *
- * @param string $json
- *   Schema JSON string.
- *
- * @return string|null
- *   NULL on success; an error message string if the schema cannot be parsed.
- */
-function _dkan_metastore_validate_schema_json(string $json): ?string {
-  $decoded = json_decode($json, FALSE);
-  if ($decoded === NULL && json_last_error() !== JSON_ERROR_NONE) {
-    return 'Schema is not valid JSON: ' . json_last_error_msg();
-  }
-  if (!is_object($decoded) && !is_bool($decoded)) {
-    return 'Schema must be a JSON object or boolean.';
-  }
-  if (is_bool($decoded)) {
-    return NULL;
-  }
-
-  // Opis's public parseSchema() swallows SchemaException into an
-  // ExceptionSchema whose wrapped exception is private; this subclass exposes
-  // the throwing path so we can report the real message. Default construction
-  // inherits opis's registered drafts and formats.
-  $parser = new class() extends SchemaParser {
-
-    /**
-     * Re-parse a node through the throwing path to surface its error.
-     */
-    public function parseStrict(SchemaInfo $info): void {
-      $this->parseSchemaObject($info);
-    }
-
-  };
-  $loader = new SchemaLoader($parser);
-
-  // Build and cache the full lazy schema tree once. This throws eagerly only
-  // for root-level structural errors raised by parseRootSchema() (non-string
-  // $schema, non-absolute or duplicate $id). Ordinary keyword parse errors are
-  // deferred and surfaced by the walk below.
-  try {
-    $loader->loadObjectSchema($decoded);
-  }
-  catch (SchemaException $e) {
-    return $e->getMessage();
-  }
-
-  // Visit every genuine schema position (root first) and resolve it against
-  // the cached tree, which preserves each node's draft/base/root/$ref context.
-  // A bad node resolves to an ExceptionSchema; re-parse it for the message.
-  $nodes = [];
-  _dkan_metastore_collect_schema_nodes($decoded, '#', $nodes);
-  foreach ($nodes as [$node, $pointer]) {
-    if (!($loader->loadObjectSchema($node) instanceof ExceptionSchema)) {
-      continue;
-    }
-    try {
-      $parser->parseStrict($loader->loadObjectSchema($node)->info());
-      $message = 'cannot be parsed under opis/json-schema v2.';
-    }
-    catch (SchemaException $e) {
-      $message = $e->getMessage();
-    }
-    return $pointer === '#' ? $message : "Sub-schema at {$pointer}: {$message}";
-  }
-
-  return NULL;
-}
-
-/**
- * Collect every genuine JSON Schema position in a decoded schema document.
- *
- * Descends only through applicator keywords, so non-schema containers (the
- * properties map, default/const values, a property literally named "format")
- * are never mistaken for schemas.
- *
- * @param mixed $node
- *   Current node. Only objects are schema positions worth checking; booleans
- *   are valid schemas with nothing to descend into; anything else is ignored.
- * @param string $pointer
- *   JSON pointer of $node, for error reporting.
- * @param array $out
- *   Accumulator of [object $node, string $pointer] pairs.
- */
-function _dkan_metastore_collect_schema_nodes($node, string $pointer, array &$out): void {
-  if (!is_object($node)) {
-    return;
-  }
-  $out[] = [$node, $pointer];
-
-  // Keywords whose value is a single sub-schema.
-  $schema_valued = [
-    'additionalProperties', 'additionalItems', 'unevaluatedProperties',
-    'unevaluatedItems', 'contains', 'propertyNames', 'not', 'if', 'then',
-    'else', 'contentSchema',
-  ];
-  foreach ($schema_valued as $kw) {
-    if (isset($node->$kw)) {
-      _dkan_metastore_collect_schema_nodes($node->$kw, "{$pointer}/{$kw}", $out);
-    }
-  }
-
-  // Keywords whose value is a map of name => sub-schema.
-  $schema_map = [
-    'properties', 'patternProperties', '$defs', 'definitions',
-    'dependentSchemas',
-  ];
-  foreach ($schema_map as $kw) {
-    if (isset($node->$kw) && is_object($node->$kw)) {
-      foreach ($node->$kw as $name => $sub) {
-        _dkan_metastore_collect_schema_nodes($sub, "{$pointer}/{$kw}/{$name}", $out);
-      }
-    }
-  }
-
-  // Keywords whose value is a list of sub-schemas.
-  $schema_list = ['allOf', 'anyOf', 'oneOf', 'prefixItems'];
-  foreach ($schema_list as $kw) {
-    if (isset($node->$kw) && is_array($node->$kw)) {
-      foreach ($node->$kw as $i => $sub) {
-        _dkan_metastore_collect_schema_nodes($sub, "{$pointer}/{$kw}/{$i}", $out);
-      }
-    }
-  }
-
-  // items: a single schema (object/bool) or a tuple (array of schemas).
-  if (isset($node->items)) {
-    if (is_array($node->items)) {
-      foreach ($node->items as $i => $sub) {
-        _dkan_metastore_collect_schema_nodes($sub, "{$pointer}/items/{$i}", $out);
-      }
-    }
-    else {
-      _dkan_metastore_collect_schema_nodes($node->items, "{$pointer}/items", $out);
-    }
-  }
-
-  // The dependencies keyword (draft 6/7): an object/bool value is a sub-schema;
-  // an array value is a list of property names — not a schema, so skip it.
-  if (isset($node->dependencies) && is_object($node->dependencies)) {
-    foreach ($node->dependencies as $name => $sub) {
-      if (is_object($sub) || is_bool($sub)) {
-        _dkan_metastore_collect_schema_nodes($sub, "{$pointer}/dependencies/{$name}", $out);
-      }
-    }
-  }
-
-  // The $slots opis extension (allowSlots defaults on): object/bool fallbacks
-  // are sub-schemas; string fallbacks are slot names — skip those.
-  if (isset($node->{'$slots'}) && is_object($node->{'$slots'})) {
-    foreach ($node->{'$slots'} as $name => $fallback) {
-      if (is_object($fallback) || is_bool($fallback)) {
-        _dkan_metastore_collect_schema_nodes($fallback, "{$pointer}/\$slots/{$name}", $out);
-      }
-    }
-  }
-}
-
-/**
- * Collect schema-parse problems across the metastore's registered schema IDs.
- *
- * @return array
- *   Map of schema id => error message. Empty when all schemas are clean.
- */
-function _dkan_metastore_check_schemas(): array {
-  /** @var \Drupal\dkan_metastore\SchemaRetriever $retriever */
-  $retriever = \Drupal::service('dkan.metastore.schema_retriever');
-  $problems = [];
-  foreach ($retriever->getAllIds() as $id) {
-    try {
-      $json = $retriever->retrieve($id);
-    }
-    catch (\Throwable $e) {
-      $problems[$id] = 'Could not retrieve schema: ' . $e->getMessage();
-      continue;
-    }
-    if ($error = _dkan_metastore_validate_schema_json($json)) {
-      $problems[$id] = $error;
-    }
-  }
-  return $problems;
-}
-
-/**
  * Implements hook_requirements().
  *
  * Surfaces draft-04 (or otherwise unparseable) metastore schemas on
@@ -243,7 +48,7 @@ function dkan_metastore_requirements(string $phase): array {
   if ($phase !== 'runtime') {
     return [];
   }
-  $problems = _dkan_metastore_check_schemas();
+  $problems = \Drupal::service('dkan.metastore.schema_validator')->checkAllSchemas();
   if (empty($problems)) {
     return [];
   }
@@ -269,7 +74,7 @@ function dkan_metastore_requirements(string $phase): array {
  * output. hook_requirements keeps the warning visible until resolved.
  */
 function dkan_metastore_update_11302(): TranslatableMarkup {
-  $problems = _dkan_metastore_check_schemas();
+  $problems = \Drupal::service('dkan.metastore.schema_validator')->checkAllSchemas();
   if (empty($problems)) {
     return t('All metastore schemas parse cleanly under opis/json-schema v2.');
   }
