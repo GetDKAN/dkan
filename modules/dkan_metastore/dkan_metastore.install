@@ -35,7 +35,7 @@ function dkan_metastore_update_11301() {
     $message = t('The legacy metastore module has been uninstalled.');
     $config->delete();
   }
-  return $message;
+  return $message ?? NULL;
 }
 
 /**
