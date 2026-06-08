@@ -268,6 +268,8 @@ class SchemaValidator {
       $this->collectNodes($node->items, "{$pointer}/items", $out);
       return;
     }
+    // We collect this despite knowing it will fail, as items arrays are a 
+    // common draft-04 -> v2 migration pain point.
     foreach ($node->items as $i => $sub) {
       $this->collectNodes($sub, "{$pointer}/items/{$i}", $out);
     }

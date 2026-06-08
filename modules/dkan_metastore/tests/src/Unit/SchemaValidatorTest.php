@@ -45,6 +45,82 @@ class SchemaValidatorTest extends TestCase {
     $this->assertNull($this->validator->validateSchemaJson('{"type":"object"}'));
   }
 
+  public function testSchemaKeywordSubSchemas(): void {
+    $schema = [
+      'type' => 'object',
+      'properties' => [
+        'foo' => [
+          'type' => 'object',
+          'properties' => [
+            'bar' => ['type' => 'string'],
+          ],
+          'additionalProperties' => [
+            'type' => 'object',
+            'properties' => [
+              'bar' => [
+                'type' => 'integer',
+              ],
+            ],
+          ],
+        ],
+      ],
+    ];
+    $this->assertNull($this->validator->validateSchemaJson(json_encode($schema)));
+
+    // A structural error in a sub-schema must be reported.
+    $schema['properties']['foo']['additionalProperties']['properties']['bar']['type'] = 42;
+    $msg = $this->validator->validateSchemaJson(json_encode($schema));
+    $this->assertStringContainsString('type can only be a string or an array of string', $msg);
+  }
+
+  public function testNestedItemsSchema(): void {
+    $schema = [
+      'type' => 'object',
+      'properties' => [
+        'foo' => [
+          'type' => 'array',
+          'items' => [
+            [
+              'type' => 'object',
+              'properties' => [
+                'bar' => ['type' => 'string'],
+              ],
+            ],
+            [
+              'type' => 'object',
+              'properties' => [
+                'bar' => ['type' => 'integer'],
+              ],
+            ],
+          ],
+        ],
+      ],
+    ];
+    // Items can no longer be an array of schemas; prefixItems must be used.
+    $msg = $this->validator->validateSchemaJson(json_encode($schema));
+    $this->assertStringContainsString('items must contain a valid json schema', $msg);
+  }
+
+  public function testSlotsSchemaValidation(): void {
+    $schema = [
+      'type' => 'object',
+      '$slots' => [
+        'foo' => [
+          'type' => 'object',
+          'properties' => [
+            'bar' => ['type' => 'string'],
+          ],
+        ],
+      ],
+    ];
+    $this->assertNull($this->validator->validateSchemaJson(json_encode($schema)));
+
+    // A structural error in a $slots sub-schema must be reported.
+    $schema['$slots']['foo']['properties']['bar']['type'] = 42;
+    $msg = $this->validator->validateSchemaJson(json_encode($schema));
+    $this->assertStringContainsString('type can only be a string or an array of string', $msg);
+  }
+
   public function testBooleanSchemaTrueReturnsNull(): void {
     $this->assertNull($this->validator->validateSchemaJson('true'));
   }
