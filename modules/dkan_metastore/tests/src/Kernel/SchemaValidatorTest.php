@@ -11,7 +11,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @group dkan_metastore
  * @group kernel
  */
-class SchemaCheckTest extends KernelTestBase {
+class SchemaValidatorTest extends KernelTestBase {
 
   protected static $modules = [
     'dkan',
