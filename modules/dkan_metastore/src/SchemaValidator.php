@@ -13,7 +13,11 @@ use Opis\JsonSchema\ValidationContext;
  * Tool to validate a JSON schema recursively.
  *
  * Compensates for the fact that opis/json-schema v2's SchemaLoader only reports
- * validation errors at the root level.
+ * validation errors at the root level. Recurses through entire JSON Schema
+ * document to find every "node" (usually a nested object) that behaves like a
+ * schema and validates it.
+ *
+ * This may be worth releasing as a standalone library some day.
  */
 class SchemaValidator {
 
@@ -103,6 +107,19 @@ class SchemaValidator {
     // the cached tree, which preserves each node's draft/base/root/$ref.
     $nodes = [];
     $this->collectNodes($decoded, '#', $nodes);
+    return $this->validateCollectedNodes($nodes);
+  }
+
+  /**
+   * Validate collected schema nodes and return the first parse failure.
+   *
+   * @param array $nodes
+   *   Collected [object $node, string $pointer] pairs.
+   *
+   * @return string|null
+   *   First parse error found, or NULL when all nodes are valid.
+   */
+  protected function validateCollectedNodes(array $nodes): ?string {
     foreach ($nodes as [$node, $pointer]) {
       $schema = $this->loader->loadObjectSchema($node);
       if (!($schema instanceof ExceptionSchema)) {
@@ -164,9 +181,9 @@ class SchemaValidator {
       'else',
       'contentSchema',
     ];
-    foreach ($schema_valued as $kw) {
-      if (isset($node->$kw)) {
-        $this->collectNodes($node->$kw, "{$pointer}/{$kw}", $out);
+    foreach ($schema_valued as $keyword) {
+      if (isset($node->$keyword)) {
+        $this->collectNodes($node->$keyword, "{$pointer}/{$keyword}", $out);
       }
     }
   }
@@ -183,10 +200,10 @@ class SchemaValidator {
       'definitions',
       'dependentSchemas',
     ];
-    foreach ($schema_map as $kw) {
-      if (isset($node->$kw) && is_object($node->$kw)) {
-        foreach ($node->$kw as $name => $sub) {
-          $this->collectNodes($sub, "{$pointer}/{$kw}/{$name}", $out);
+    foreach ($schema_map as $keyword) {
+      if (isset($node->$keyword) && is_object($node->$keyword)) {
+        foreach ($node->$keyword as $name => $sub) {
+          $this->collectNodes($sub, "{$pointer}/{$keyword}/{$name}", $out);
         }
       }
     }
@@ -198,11 +215,13 @@ class SchemaValidator {
   protected function collectSchemaListNodes(object $node, string $pointer, array &$out): void {
     // Keywords whose value is a list of sub-schemas.
     $schema_list = ['allOf', 'anyOf', 'oneOf', 'prefixItems'];
-    foreach ($schema_list as $kw) {
-      if (isset($node->$kw) && is_array($node->$kw)) {
-        foreach ($node->$kw as $i => $sub) {
-          $this->collectNodes($sub, "{$pointer}/{$kw}/{$i}", $out);
-        }
+    foreach ($schema_list as $keyword) {
+      $sub_schemas = $node->$keyword ?? NULL;
+      if (!is_array($sub_schemas)) {
+        continue;
+      }
+      foreach ($sub_schemas as $i => $sub) {
+        $this->collectNodes($sub, "{$pointer}/{$keyword}/{$i}", $out);
       }
     }
   }
@@ -212,15 +231,15 @@ class SchemaValidator {
    */
   protected function collectItemsNodes(object $node, string $pointer, array &$out): void {
     // items: a single schema (object/bool) or an array of schemas.
-    if (isset($node->items)) {
-      if (is_array($node->items)) {
-        foreach ($node->items as $i => $sub) {
-          $this->collectNodes($sub, "{$pointer}/items/{$i}", $out);
-        }
-      }
-      else {
-        $this->collectNodes($node->items, "{$pointer}/items", $out);
-      }
+    if (!isset($node->items)) {
+      return;
+    }
+    if (!is_array($node->items)) {
+      $this->collectNodes($node->items, "{$pointer}/items", $out);
+      return;
+    }
+    foreach ($node->items as $i => $sub) {
+      $this->collectNodes($sub, "{$pointer}/items/{$i}", $out);
     }
   }
 
@@ -230,11 +249,13 @@ class SchemaValidator {
   protected function collectDependenciesNodes(object $node, string $pointer, array &$out): void {
     // The dependencies keyword (draft 6/7): an object/bool value is a schema;
     // an array value is a list of property names — not a schema, so skip it.
-    if (isset($node->dependencies) && is_object($node->dependencies)) {
-      foreach ($node->dependencies as $name => $sub) {
-        if (is_object($sub) || is_bool($sub)) {
-          $this->collectNodes($sub, "{$pointer}/dependencies/{$name}", $out);
-        }
+    $dependencies = $node->dependencies ?? NULL;
+    if (!is_object($dependencies)) {
+      return;
+    }
+    foreach ($dependencies as $name => $sub) {
+      if (is_object($sub) || is_bool($sub)) {
+        $this->collectNodes($sub, "{$pointer}/dependencies/{$name}", $out);
       }
     }
   }
@@ -245,11 +266,13 @@ class SchemaValidator {
   protected function collectSlotsNodes(object $node, string $pointer, array &$out): void {
     // The $slots opis extension (allowSlots defaults on): object/bool fallbacks
     // are sub-schemas; string fallbacks are slot names — skip those.
-    if (isset($node->{'$slots'}) && is_object($node->{'$slots'})) {
-      foreach ($node->{'$slots'} as $name => $fallback) {
-        if (is_object($fallback) || is_bool($fallback)) {
-          $this->collectNodes($fallback, "{$pointer}/\$slots/{$name}", $out);
-        }
+    $slots = $node->{'$slots'} ?? NULL;
+    if (!is_object($slots)) {
+      return;
+    }
+    foreach ($slots as $name => $fallback) {
+      if (is_object($fallback) || is_bool($fallback)) {
+        $this->collectNodes($fallback, "{$pointer}/\$slots/{$name}", $out);
       }
     }
   }
