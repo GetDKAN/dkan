@@ -165,6 +165,13 @@ class SchemaValidator {
 
   /**
    * Collect single-value sub-schema keywords.
+   *
+   * @param object $node
+   *   Current node.
+   * @param string $pointer
+   *   JSON pointer of $node, for error reporting.
+   * @param array $out
+   *   Accumulator of [object $node, string $pointer] pairs.
    */
   protected function collectSchemaValuedNodes(object $node, string $pointer, array &$out): void {
     // Keywords whose value is a single sub-schema.
@@ -190,6 +197,13 @@ class SchemaValidator {
 
   /**
    * Collect object-map sub-schema keywords.
+   *
+   * @param object $node
+   *   Current node.
+   * @param string $pointer
+   *   JSON pointer of $node, for error reporting.
+   * @param array $out
+   *   Accumulator of [object $node, string $pointer] pairs.
    */
   protected function collectSchemaMapNodes(object $node, string $pointer, array &$out): void {
     // Keywords whose value is a map of name => sub-schema.
@@ -211,6 +225,13 @@ class SchemaValidator {
 
   /**
    * Collect list-of-sub-schema keywords.
+   *
+   * @param object $node
+   *   Current node.
+   * @param string $pointer
+   *   JSON pointer of $node, for error reporting.
+   * @param array $out
+   *   Accumulator of [object $node, string $pointer] pairs.
    */
   protected function collectSchemaListNodes(object $node, string $pointer, array &$out): void {
     // Keywords whose value is a list of sub-schemas.
@@ -228,6 +249,13 @@ class SchemaValidator {
 
   /**
    * Collect item sub-schemas.
+   *
+   * @param object $node
+   *   Current node.
+   * @param string $pointer
+   *   JSON pointer of $node, for error reporting.
+   * @param array $out
+   *   Accumulator of [object $node, string $pointer] pairs.
    */
   protected function collectItemsNodes(object $node, string $pointer, array &$out): void {
     // items: a single schema (object/bool) or an array of schemas.
@@ -245,6 +273,13 @@ class SchemaValidator {
 
   /**
    * Collect dependency sub-schemas.
+   *
+   * @param object $node
+   *   Current node.
+   * @param string $pointer
+   *   JSON pointer of $node, for error reporting.
+   * @param array $out
+   *   Accumulator of [object $node, string $pointer] pairs.
    */
   protected function collectDependenciesNodes(object $node, string $pointer, array &$out): void {
     // The dependencies keyword (draft 6/7): an object/bool value is a schema;
@@ -262,6 +297,13 @@ class SchemaValidator {
 
   /**
    * Collect $slots fallback sub-schemas.
+   *
+   * @param object $node
+   *   Current node.
+   * @param string $pointer
+   *   JSON pointer of $node, for error reporting.
+   * @param array $out
+   *   Accumulator of [object $node, string $pointer] pairs.
    */
   protected function collectSlotsNodes(object $node, string $pointer, array &$out): void {
     // The $slots opis extension (allowSlots defaults on): object/bool fallbacks
