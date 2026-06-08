@@ -138,6 +138,18 @@ class SchemaValidator {
     }
     $out[] = [$node, $pointer];
 
+    $this->collectSchemaValuedNodes($node, $pointer, $out);
+    $this->collectSchemaMapNodes($node, $pointer, $out);
+    $this->collectSchemaListNodes($node, $pointer, $out);
+    $this->collectItemsNodes($node, $pointer, $out);
+    $this->collectDependenciesNodes($node, $pointer, $out);
+    $this->collectSlotsNodes($node, $pointer, $out);
+  }
+
+  /**
+   * Collect single-value sub-schema keywords.
+   */
+  protected function collectSchemaValuedNodes(object $node, string $pointer, array &$out): void {
     // Keywords whose value is a single sub-schema.
     $schema_valued = [
       'additionalProperties',
@@ -157,7 +169,12 @@ class SchemaValidator {
         $this->collectNodes($node->$kw, "{$pointer}/{$kw}", $out);
       }
     }
+  }
 
+  /**
+   * Collect object-map sub-schema keywords.
+   */
+  protected function collectSchemaMapNodes(object $node, string $pointer, array &$out): void {
     // Keywords whose value is a map of name => sub-schema.
     $schema_map = [
       'properties',
@@ -173,7 +190,12 @@ class SchemaValidator {
         }
       }
     }
+  }
 
+  /**
+   * Collect list-of-sub-schema keywords.
+   */
+  protected function collectSchemaListNodes(object $node, string $pointer, array &$out): void {
     // Keywords whose value is a list of sub-schemas.
     $schema_list = ['allOf', 'anyOf', 'oneOf', 'prefixItems'];
     foreach ($schema_list as $kw) {
@@ -183,7 +205,12 @@ class SchemaValidator {
         }
       }
     }
+  }
 
+  /**
+   * Collect item sub-schemas.
+   */
+  protected function collectItemsNodes(object $node, string $pointer, array &$out): void {
     // items: a single schema (object/bool) or an array of schemas.
     if (isset($node->items)) {
       if (is_array($node->items)) {
@@ -195,7 +222,12 @@ class SchemaValidator {
         $this->collectNodes($node->items, "{$pointer}/items", $out);
       }
     }
+  }
 
+  /**
+   * Collect dependency sub-schemas.
+   */
+  protected function collectDependenciesNodes(object $node, string $pointer, array &$out): void {
     // The dependencies keyword (draft 6/7): an object/bool value is a schema;
     // an array value is a list of property names — not a schema, so skip it.
     if (isset($node->dependencies) && is_object($node->dependencies)) {
@@ -205,7 +237,12 @@ class SchemaValidator {
         }
       }
     }
+  }
 
+  /**
+   * Collect $slots fallback sub-schemas.
+   */
+  protected function collectSlotsNodes(object $node, string $pointer, array &$out): void {
     // The $slots opis extension (allowSlots defaults on): object/bool fallbacks
     // are sub-schemas; string fallbacks are slot names — skip those.
     if (isset($node->{'$slots'}) && is_object($node->{'$slots'})) {
