@@ -84,9 +84,11 @@ class SchemaValidator {
    *   NULL on success; an error message string if the schema cannot be parsed.
    */
   public function validateSchemaJson(string $json): ?string {
-    $decoded = json_decode($json, FALSE);
-    if ($decoded === NULL && json_last_error() !== JSON_ERROR_NONE) {
-      return 'Schema is not valid JSON: ' . json_last_error_msg();
+    try {
+      $decoded = json_decode($json, FALSE, 512, JSON_THROW_ON_ERROR);
+    }
+    catch (\JsonException $e) {
+      return 'Schema is not valid JSON: ' . $e->getMessage();
     }
     if (!is_object($decoded) && !is_bool($decoded)) {
       return 'Schema must be a JSON object or boolean.';
