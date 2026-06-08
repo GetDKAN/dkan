@@ -128,13 +128,12 @@ class SchemaValidator {
         continue;
       }
       try {
-        $error = $schema->validate($this->genericContext);
-        $message = $error ? $error->message() : 'Could not parse schema at ' . $pointer;
+        $schema->validate($this->genericContext);
       }
       catch (SchemaException $e) {
         $message = $e->getMessage();
       }
-      return $message;
+      return $message ?? NULL;
     }
 
     return NULL;
