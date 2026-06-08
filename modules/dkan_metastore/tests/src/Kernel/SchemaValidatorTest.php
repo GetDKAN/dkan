@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Kernel\Install;
+namespace Drupal\Tests\dkan_metastore\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 
