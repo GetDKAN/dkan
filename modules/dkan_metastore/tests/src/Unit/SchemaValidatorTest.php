@@ -70,7 +70,8 @@ class SchemaValidatorTest extends TestCase {
     // A structural error in a sub-schema must be reported.
     $schema['properties']['foo']['additionalProperties']['properties']['bar']['type'] = 42;
     $msg = $this->validator->validateSchemaJson(json_encode($schema));
-    $this->assertStringContainsString('type can only be a string or an array of string', $msg);
+    $expected = '#/properties/foo/additionalProperties/properties/bar: type can only be a string or an array of string';
+    $this->assertEquals($expected, $msg);
   }
 
   public function testNestedItemsSchema(): void {
@@ -98,7 +99,7 @@ class SchemaValidatorTest extends TestCase {
     ];
     // Items can no longer be an array of schemas; prefixItems must be used.
     $msg = $this->validator->validateSchemaJson(json_encode($schema));
-    $this->assertStringContainsString('items must contain a valid json schema', $msg);
+    $this->assertEquals('#/properties/foo: items must contain a valid json schema', $msg);
   }
 
   public function testSlotsSchemaValidation(): void {
@@ -118,7 +119,8 @@ class SchemaValidatorTest extends TestCase {
     // A structural error in a $slots sub-schema must be reported.
     $schema['$slots']['foo']['properties']['bar']['type'] = 42;
     $msg = $this->validator->validateSchemaJson(json_encode($schema));
-    $this->assertStringContainsString('type can only be a string or an array of string', $msg);
+    $expected = '#/$slots/foo/properties/bar: type can only be a string or an array of string';
+    $this->assertEquals($expected, $msg);
   }
 
   public function testBooleanSchemaTrueReturnsNull(): void {
@@ -132,19 +134,19 @@ class SchemaValidatorTest extends TestCase {
   public function testMalformedJsonReturnsError(): void {
     $msg = $this->validator->validateSchemaJson('{not json');
     $this->assertNotNull($msg);
-    $this->assertStringContainsString('not valid JSON', $msg);
+    $this->assertEquals('Schema is not valid JSON: Syntax error', $msg);
   }
 
   public function testStringSchemaReturnsError(): void {
     $msg = $this->validator->validateSchemaJson('"hello"');
     $this->assertNotNull($msg);
-    $this->assertStringContainsString('object or boolean', $msg);
+    $this->assertEquals('Schema must be a JSON object or boolean.', $msg);
   }
 
   public function testNumberSchemaReturnsError(): void {
     $msg = $this->validator->validateSchemaJson('42');
     $this->assertNotNull($msg);
-    $this->assertStringContainsString('object or boolean', $msg);
+    $this->assertEquals('Schema must be a JSON object or boolean.', $msg);
   }
 
   /**
@@ -226,7 +228,7 @@ class SchemaValidatorTest extends TestCase {
   }
 
   public function testOldsDatasetSchemaThrowsDraft04Error(): void {
-    $this->assertEquals('Unsupported draft-04', $this->validator->validateSchemaId('dataset'));
+    $this->assertEquals('#/properties/publisher: Unsupported draft-04', $this->validator->validateSchemaId('dataset'));
   }
 
   public function testNonexistentSchemaIdReturnsError(): void {
@@ -237,7 +239,7 @@ class SchemaValidatorTest extends TestCase {
     $problems = $this->validator->checkAllSchemas();
     $this->assertIsArray($problems);
     $this->assertArrayHasKey('dataset', $problems);
-    $this->assertStringContainsString('Unsupported draft-04', $problems['dataset']);
+    $this->assertEquals('#/properties/publisher: Unsupported draft-04', $problems['dataset']);
   }
 
 }
