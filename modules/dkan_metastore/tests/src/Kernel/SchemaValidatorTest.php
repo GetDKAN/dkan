@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Kernel\Install;
+namespace Drupal\Tests\dkan_metastore\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 
@@ -11,7 +11,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @group dkan_metastore
  * @group kernel
  */
-class SchemaCheckTest extends KernelTestBase {
+class SchemaValidatorTest extends KernelTestBase {
 
   protected static $modules = [
     'dkan',
@@ -29,8 +29,8 @@ class SchemaCheckTest extends KernelTestBase {
   public function testBundledSchemasParseCleanly(): void {
     $module_path = \Drupal::service('extension.list.module')->getPath('dkan_metastore');
     require_once DRUPAL_ROOT . '/' . $module_path . '/dkan_metastore.install';
-    $problems = _dkan_metastore_check_schemas();
-    $this->assertSame([], $problems, 'Bundled DKAN schemas all parse under opis/json-schema v2');
+    $problems = \Drupal::service('dkan.metastore.schema_validator')->checkAllSchemas();
+    $this->assertSame([], $problems);
   }
 
 }

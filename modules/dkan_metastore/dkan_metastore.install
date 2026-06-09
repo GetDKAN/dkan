@@ -7,8 +7,6 @@
 
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Opis\JsonSchema\Exceptions\SchemaException;
-use Opis\JsonSchema\Validator;
 
 /**
  * Update hook to uninstall the legacy metastore module.
@@ -37,66 +35,7 @@ function dkan_metastore_update_11301() {
     $message = t('The legacy metastore module has been uninstalled.');
     $config->delete();
   }
-  return $message;
-}
-
-/**
- * Validate a JSON Schema document under opis/json-schema v2.
- *
- * @param string $json
- *   Schema JSON string.
- *
- * @return string|null
- *   NULL on success; an error message string if the schema cannot be parsed.
- */
-function _dkan_metastore_validate_schema_json(string $json): ?string {
-  $decoded = json_decode($json, FALSE);
-  if ($decoded === NULL && json_last_error() !== JSON_ERROR_NONE) {
-    return 'Schema is not valid JSON: ' . json_last_error_msg();
-  }
-  if (!is_object($decoded) && !is_bool($decoded)) {
-    return 'Schema must be a JSON object or boolean.';
-  }
-  if (is_bool($decoded)) {
-    return NULL;
-  }
-  try {
-    // Force eager parse — catches root-level structural errors (non-string
-    // $schema, non-absolute $id, etc.).
-    (new Validator())->loader()->loadObjectSchema($decoded);
-    // Force LazySchema resolution by validating trivial data — opis defers
-    // sub-schema parsing until the validator walks into them.
-    (new Validator())->validate(NULL, $decoded);
-  }
-  catch (SchemaException $e) {
-    return $e->getMessage();
-  }
-  return NULL;
-}
-
-/**
- * Collect schema-parse problems across the metastore's registered schema IDs.
- *
- * @return array
- *   Map of schema id => error message. Empty when all schemas are clean.
- */
-function _dkan_metastore_check_schemas(): array {
-  /** @var \Drupal\dkan_metastore\SchemaRetriever $retriever */
-  $retriever = \Drupal::service('dkan.metastore.schema_retriever');
-  $problems = [];
-  foreach ($retriever->getAllIds() as $id) {
-    try {
-      $json = $retriever->retrieve($id);
-    }
-    catch (\Throwable $e) {
-      $problems[$id] = 'Could not retrieve schema: ' . $e->getMessage();
-      continue;
-    }
-    if ($error = _dkan_metastore_validate_schema_json($json)) {
-      $problems[$id] = $error;
-    }
-  }
-  return $problems;
+  return $message ?? NULL;
 }
 
 /**
@@ -109,7 +48,7 @@ function dkan_metastore_requirements(string $phase): array {
   if ($phase !== 'runtime') {
     return [];
   }
-  $problems = _dkan_metastore_check_schemas();
+  $problems = \Drupal::service('dkan.metastore.schema_validator')->checkAllSchemas();
   if (empty($problems)) {
     return [];
   }
@@ -119,8 +58,11 @@ function dkan_metastore_requirements(string $phase): array {
       'severity' => REQUIREMENT_WARNING,
       'value' => t('@n schema(s) cannot be parsed', ['@n' => count($problems)]),
       'description' => t(
-        'The following metastore schemas could not be parsed under opis/json-schema v2: @list. They will fail at runtime when used. See the DKAN upgrade docs for the draft-04 → draft-07 migration steps.',
-        ['@list' => implode(', ', array_keys($problems))]
+        'The following metastore schemas could not be parsed under opis/json-schema v2: @list. They will fail at runtime when used. See <a href=":change_record_url">DKAN change record</a> for the draft-04 -> draft-07 migration steps.',
+        [
+          '@list' => implode(', ', array_keys($problems)),
+          ':change_record_url' => 'https://www.drupal.org/node/3593097',
+        ]
       ),
     ],
   ];
@@ -135,7 +77,7 @@ function dkan_metastore_requirements(string $phase): array {
  * output. hook_requirements keeps the warning visible until resolved.
  */
 function dkan_metastore_update_11302(): TranslatableMarkup {
-  $problems = _dkan_metastore_check_schemas();
+  $problems = \Drupal::service('dkan.metastore.schema_validator')->checkAllSchemas();
   if (empty($problems)) {
     return t('All metastore schemas parse cleanly under opis/json-schema v2.');
   }

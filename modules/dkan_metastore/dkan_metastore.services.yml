@@ -132,3 +132,8 @@ services:
       - '@dkan.metastore.service'
       - '@dkan.metastore.reference_lookup'
       - '@dkan.metastore.url_generator'
+
+  dkan.metastore.schema_validator:
+    class: \Drupal\dkan_metastore\SchemaValidator
+    arguments:
+      - '@dkan.metastore.schema_retriever'
