@@ -10,6 +10,7 @@ services:
       - '@dkan.harvest.logger_channel'
     calls:
       - [ setEntityTypeManager, [ '@entity_type.manager' ] ]
+  Drupal\dkan_harvest\HarvestService: '@dkan.harvest.service'
   dkan.harvest.utility:
     class: Drupal\dkan_harvest\HarvestUtility
     arguments:

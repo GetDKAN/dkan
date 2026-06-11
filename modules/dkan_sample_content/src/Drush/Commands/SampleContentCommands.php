@@ -1,11 +1,13 @@
 <?php
 
-namespace Drupal\dkan_sample_content;
+namespace Drupal\dkan_sample_content\Drush\Commands;
 
-use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\dkan_harvest\Drush\Commands\HelperTrait;
 use Drupal\dkan_harvest\HarvestService;
+use Drupal\dkan_sample_content\SampleContentService;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Attributes as CLI;
 
 /**
  * Drush commands for the sample content module.
@@ -14,49 +16,28 @@ use Drush\Commands\DrushCommands;
  *
  * @todo Figure out why DrushTestTraits don't count as coverage for commands.
  */
-class Drush extends DrushCommands {
+final class SampleContentCommands extends DrushCommands {
+
+  use AutowireTrait;
   use HelperTrait;
 
   protected const HARVEST_ID = 'sample_content';
 
   /**
-   * The core extension module list service.
-   */
-  protected ModuleExtensionList $moduleExtensionList;
-
-  /**
-   * Harvest service.
-   */
-  private HarvestService $harvestService;
-
-  /**
-   * Sample content service.
-   */
-  private SampleContentService $sampleContentService;
-
-  /**
    * Constructor for the Sample Content commands.
-   *
-   * @param \Drupal\dkan_sample_content\SampleContentService $sampleContentService
-   *   Sample content service.
-   * @param \Drupal\dkan_harvest\HarvestService $harvestService
-   *   Harvest service.
    */
   public function __construct(
-    SampleContentService $sampleContentService,
-    HarvestService $harvestService,
+    private SampleContentService $sampleContentService,
+    private HarvestService $harvestService,
   ) {
     parent::__construct();
-    $this->sampleContentService = $sampleContentService;
-    $this->harvestService = $harvestService;
   }
 
   /**
    * Create sample content.
-   *
-   * @command dkan:sample-content:create
    */
-  public function create() {
+  #[CLI\Command(name: 'dkan:sample-content:create', description: 'Create sample content.')]
+  public function createSampleContent() {
     $this->logger()->notice('Setting up harvest: ' . static::HARVEST_ID);
     $this->sampleContentService->registerSampleContentHarvest(static::HARVEST_ID);
     $this->renderHarvestRunsInfo([
@@ -67,9 +48,8 @@ class Drush extends DrushCommands {
 
   /**
    * Remove sample content.
-   *
-   * @command dkan:sample-content:remove
    */
+  #[CLI\Command(name: 'dkan:sample-content:remove', description: 'Remove sample content.')]
   public function remove() {
     if (!$this->harvestService->getHarvestPlanObject(static::HARVEST_ID)) {
       $this->logger()->notice('Harvest plan ' . static::HARVEST_ID . ' is not available. Re-registering it so we can revert it.');
