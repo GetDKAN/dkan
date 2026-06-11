@@ -10,6 +10,7 @@ services:
       - '@dkan.metastore.resource_mapper'
       - '@event_dispatcher'
       - '@dkan.metastore.reference_lookup'
+  Drupal\dkan_datastore\DatastoreService: '@dkan.datastore.service'
 
   dkan.datastore.lookup:
     class: \Drupal\dkan_datastore\DatastoreLookup

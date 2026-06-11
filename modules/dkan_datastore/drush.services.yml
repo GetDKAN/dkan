@@ -12,11 +12,3 @@ services:
       - '@state'
     tags:
       - { name: drush.command }
-  dkan_datastore.reimport.commands:
-    class: \Drupal\dkan_datastore\Commands\ReimportCommands
-    arguments:
-      - '@dkan.datastore.service'
-      - '@dkan.common.dataset_info'
-      - '@dkan.datastore.logger_channel'
-    tags:
-      - { name: drush.command }
