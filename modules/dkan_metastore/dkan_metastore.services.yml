@@ -42,6 +42,7 @@ services:
       - '@file_system'
       - '@dkan.common.logger_channel'
       - '@event_dispatcher'
+  Drupal\dkan_metastore\Storage\DataFactory: '@dkan.metastore.storage'
 
   dkan.metastore.referencer:
     class: \Drupal\dkan_metastore\Reference\Referencer
