@@ -3,7 +3,7 @@
 namespace Drupal\dkan_sample_content;
 
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drupal\dkan_harvest\Commands\Helper;
+use Drupal\dkan_harvest\Drush\Commands\HelperTrait;
 use Drupal\dkan_harvest\HarvestService;
 use Drush\Commands\DrushCommands;
 
@@ -15,7 +15,7 @@ use Drush\Commands\DrushCommands;
  * @todo Figure out why DrushTestTraits don't count as coverage for commands.
  */
 class Drush extends DrushCommands {
-  use Helper;
+  use HelperTrait;
 
   protected const HARVEST_ID = 'sample_content';
 

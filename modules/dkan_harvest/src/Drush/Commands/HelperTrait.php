@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_harvest\Commands;
+namespace Drupal\dkan_harvest\Drush\Commands;
 
 use Drupal\dkan_harvest\ResultInterpreter;
 use Symfony\Component\Console\Helper\Table;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  *
  * @codeCoverageIgnore
  */
-trait Helper {
+trait HelperTrait {
 
   /**
    * Return Processed, Created, Updated, Failed counts from Harvest Run Result.
