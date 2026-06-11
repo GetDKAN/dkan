@@ -8,7 +8,7 @@ use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
- * @coversDefaultClass \Drupal\dkan_harvest\Commands\HarvestCommands
+ * @coversDefaultClass \Drupal\dkan_harvest\Drush\Commands\HarvestCommands
  *
  * @group dkan
  * @group harvest

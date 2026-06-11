@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit\Commands;
 
-use Drupal\dkan_metastore\Commands\MetastoreCommands;
+use Drupal\dkan_metastore\Drush\Commands\MetastoreCommands;
 use Drupal\dkan_metastore\Storage\Data;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drush\Log\DrushLoggerManager;

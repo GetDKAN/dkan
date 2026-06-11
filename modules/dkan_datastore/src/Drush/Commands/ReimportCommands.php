@@ -1,64 +1,43 @@
 <?php
 
-namespace Drupal\dkan_datastore\Commands;
+namespace Drupal\dkan_datastore\Drush\Commands;
 
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_datastore\DatastoreService;
+use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 
 /**
- * Drush command file for data store reimportation.
+ * Drush command file for datastore reimportation.
  *
  * @codeCoverageIgnore
  */
-class ReimportCommands extends DrushCommands {
+final class ReimportCommands extends DrushCommands {
 
-  /**
-   * The datastore service.
-   *
-   * @var \Drupal\dkan_datastore\Service
-   */
-  protected DatastoreService $datastoreService;
+  use AutowireTrait;
 
-  /**
-   * Dataset info service.
-   */
-  protected DatasetInfo $datasetInfo;
-
-  /**
-   * Constructor for DkanDatastoreCommands.
-   *
-   * @param \Drupal\dkan_datastore\DatastoreService $datastore_service
-   *   The dkan.datastore.service service.
-   * @param \Drupal\dkan_common\DatasetInfo $dataset_info
-   *   Dataset information service.
-   */
   public function __construct(
-    DatastoreService $datastore_service,
-    DatasetInfo $dataset_info,
+    protected DatastoreService $datastoreService,
+    protected DatasetInfo $datasetInfo,
   ) {
-    $this->datastoreService = $datastore_service;
-    $this->datasetInfo = $dataset_info;
     parent::__construct();
   }
 
   /**
    * Re-import distribution based on dataset UUID.
    *
-   * @param string $uuid
-   *   The UUID of the dataset.
-   *
-   * @usage dkan:datastore-reimport C66A2DF6-7BB2-40D2-8551-6E1104BBCC57
-   *   Drop and import the distribution based on the dataset UUID.
-   *
-   * @command dkan:datastore:reimport
-   *
    * Sample bash:
+   * ```
    * for i in `cat ./uuid-list.txt`
    * do
    *   ddev drush dkan:datastore:reimport $i
    * done
+   * ```
    */
+  #[CLI\Command(name: 'dkan:datastore:reimport', description: 'Re-import distribution based on dataset UUID.')]
+  #[CLI\Argument(name: 'uuid', description: 'The UUID of the dataset.')]
+  #[CLI\Usage(name: 'dkan:datastore:reimport cedcd327-4e5d-43f9-8eb1-c11850fa7c55', description: 'Drop and import the distribution based on the dataset UUID.')]
   public function datastoreReimport(string $uuid) {
     // Find distributions for the given UUID.
     if ($info = $this->datasetInfo->gather($uuid) ?? FALSE) {

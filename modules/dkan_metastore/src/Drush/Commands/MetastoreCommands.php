@@ -1,41 +1,32 @@
 <?php
 
-namespace Drupal\dkan_metastore\Commands;
+namespace Drupal\dkan_metastore\Drush\Commands;
 
 use Drupal\dkan_metastore\Storage\DataFactory;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Attributes as CLI;
 
 /**
  * Metastore drush commands.
  */
 class MetastoreCommands extends DrushCommands {
 
-  /**
-   * Metastore data storage service.
-   *
-   * @var \Drupal\dkan_metastore\Storage\DataFactory
-   */
-  protected $factory;
+  use AutowireTrait;
 
   /**
    * Drush constructor.
-   *
-   * @param \Drupal\dkan_metastore\Storage\DataFactory $factory
-   *   A data factory.
    */
-  public function __construct(DataFactory $factory) {
+  public function __construct(protected DataFactory $factory) {
     parent::__construct();
-    $this->factory = $factory;
   }
 
   /**
    * Publish the latest version of a dataset.
-   *
-   * @param string $uuid
-   *   Dataset identifier.
-   *
-   * @command dkan:metastore:publish
    */
+  #[CLI\Command(name: 'dkan:metastore:publish', description: 'Publish the latest version of a dataset.')]
+  #[CLI\Argument(name: 'uuid', description: 'Dataset identifier.')]
+  #[CLI\Usage(name: 'dkan:metastore:publish cedcd327-4e5d-43f9-8eb1-c11850fa7c55', description: 'Publish the latest version of the dataset with the given UUID.')]
   public function publish(string $uuid) {
     try {
       $storage = $this->factory->getInstance('dataset');

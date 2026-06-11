@@ -1,41 +1,30 @@
 <?php
 
-namespace Drupal\dkan_datastore\Commands;
+namespace Drupal\dkan_datastore\Drush\Commands;
 
 use Drupal\Core\State\StateInterface;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Attributes as CLI;
 
 /**
  * Datastore-related Drush commands.
  *
  * @codeCoverageIgnore
  */
-class DegradedModeCommands extends DrushCommands {
+final class DegradedModeCommands extends DrushCommands {
 
-  /**
-   * State service.
-   */
-  protected StateInterface $state;
+  use AutowireTrait;
 
-  /**
-   * DegradedModeCommands constructor.
-   *
-   * @param \Drupal\Core\State\StateInterface $state
-   *   The state service.
-   */
-  public function __construct(StateInterface $state) {
+  public function __construct(protected StateInterface $state) {
     parent::__construct();
-    $this->state = $state;
   }
 
   /**
    * Enable or disable degraded datastore query mode.
-   *
-   * @param string|null $state
-   *   Optional state: 1 or 0. If omitted, current status shown.
-   *
-   * @command dkan:datastore:degraded-mode
    */
+  #[CLI\Command(name: 'dkan:datastore:degraded-mode', description: 'Enable or disable degraded datastore query mode.')]
+  #[CLI\Argument(name: 'state', description: 'Set to 1 to enable degraded mode, or 0 to disable. Omit to check current status.')]
   public function degradedMode(?string $state = NULL) {
     $current = (bool) $this->state->get('dkan_datastore.degraded_performance', FALSE);
 

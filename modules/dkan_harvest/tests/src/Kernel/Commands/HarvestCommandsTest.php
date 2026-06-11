@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Drupal\Tests\dkan_harvest\Kernel\Commands;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\dkan_harvest\Commands\HarvestCommands;
+use Drupal\dkan_harvest\Drush\Commands\HarvestCommands;
 use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use Drupal\dkan_harvest\Entity\HarvestPlanRepository;
 use Drupal\dkan_harvest\Load\Dataset;
 use Drush\Log\DrushLoggerManager;
 
 /**
- * @covers \Drupal\dkan_harvest\Commands\HarvestCommands
- * @coversDefaultClass \Drupal\dkan_harvest\Commands\HarvestCommands
+ * @covers \Drupal\dkan_harvest\Drush\Commands\HarvestCommands
+ * @coversDefaultClass \Drupal\dkan_harvest\Drush\Commands\HarvestCommands
  *
  * @group dkan
  * @group harvest

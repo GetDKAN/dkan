@@ -1,53 +1,42 @@
 <?php
 
-namespace Drupal\dkan_harvest\Commands;
+namespace Drupal\dkan_harvest\Drush\Commands;
 
 use Drupal\dkan_harvest\HarvestService;
 use Drupal\dkan_harvest\HarvestUtility;
-use Drupal\dkan_harvest\Load\Dataset;
-use Drush\Commands\DrushCommands;
 use Drupal\dkan_harvest\ETL\Extract\DataJson;
+use Drupal\dkan_harvest\Load\Dataset;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
+use Drush\Commands\DrushCommands;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Harvest-related Drush commands.
  */
-class HarvestCommands extends DrushCommands {
-  use Helper;
+final class HarvestCommands extends DrushCommands {
+  use AutowireTrait;
+  use HelperTrait;
 
-  /**
-   * Harvest.
-   */
-  protected HarvestService $harvestService;
-
-  /**
-   * Harvest utility service.
-   */
-  protected HarvestUtility $harvestUtility;
-
-  /**
-   * Constructor.
-   */
   public function __construct(
-    HarvestService $service,
-    HarvestUtility $harvestUtility,
+    #[Autowire(service: 'dkan.harvest.service')]
+    protected HarvestService $harvestService,
+    #[Autowire(service: 'dkan.harvest.utility')]
+    protected HarvestUtility $harvestUtility,
   ) {
     parent::__construct();
-    $this->harvestService = $service;
-    $this->harvestUtility = $harvestUtility;
   }
 
   /**
    * List available harvest plans.
    *
-   * @command dkan:harvest:list
-   *
-   * @usage dkan:harvest:list
-   *   List available harvests.
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:list', description: 'List available harvest plans.')]
+  #[CLI\Usage(name: 'dkan:harvest:list', description: 'List available harvests.')]
   public function index() {
     // Each row needs to be an array for display.
     $rows = array_map(
@@ -78,17 +67,15 @@ class HarvestCommands extends DrushCommands {
    *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'.
    * @param array $opts
    *   Options array.
-   *
-   * @option identifier Identifier
-   * @option extract-type Extract type
-   * @option extract-uri Extract URI
-   * @option transform A transform class to apply. You may pass multiple transforms.
-   * @option load-type Load class
-   *
-   * @command dkan:harvest:register
-   *
-   * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
    */
+  #[CLI\Command(name: 'dkan:harvest:register', description: 'Register a new harvest plan.')]
+  #[CLI\Argument(name: 'plan_json', description: 'Harvest plan configuration as JSON string.')]
+  #[CLI\Option(name: 'identifier', description: 'Identifier')]
+  #[CLI\Option(name: 'extract-type', description: 'Extract type')]
+  #[CLI\Option(name: 'extract-uri', description: 'Extract URI')]
+  #[CLI\Option(name: 'transform', description: 'A transform class to apply. You may pass multiple transforms.')]
+  #[CLI\Option(name: 'load-type', description: 'Load class')]
+  #[CLI\Usage(name: 'dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json', description: 'Register a data.json harvest using options.')]
   public function register(
     string $plan_json = '',
     array $opts = [
@@ -143,14 +130,12 @@ class HarvestCommands extends DrushCommands {
    * @param array $options
    *   Options.
    *
-   * @command dkan:harvest:deregister
-   * @option revert Revert the harvest plan (remove all harvested datasets) before deregistering it.
-   * @usage dkan:harvest:deregister --revert PLAN_ID
-   *   Deregister the PLAN_ID plan, after reverting all the datasets
-   *   associated with it.
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:deregister', description: 'Deregister (delete) a harvest plan, optionally reverting it.')]
+  #[CLI\Argument(name: 'plan_id', description: 'The harvest plan ID to deregister.')]
+  #[CLI\Option(name: 'revert', description: 'Revert the harvest plan (remove all harvested datasets) before deregistering it.')]
+  #[CLI\Usage(name: 'dkan:harvest:deregister --revert PLAN_ID', description: 'Deregister the PLAN_ID plan, after reverting all the datasets associated with it.')]
   public function deregister($plan_id, array $options = ['revert' => FALSE]) {
     // Short circuit if the plan doesn't exist.
     try {
@@ -194,13 +179,11 @@ class HarvestCommands extends DrushCommands {
    * @param string $plan_id
    *   The harvest plan id.
    *
-   * @command dkan:harvest:run
-   *
-   * @usage dkan:harvest:run
-   *   Runs a harvest.
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:run', description: 'Run a harvest.')]
+  #[CLI\Argument(name: 'plan_id', description: 'The harvest plan id.')]
+  #[CLI\Usage(name: 'dkan:harvest:run', description: 'Runs a harvest.')]
   public function run($plan_id) {
     $result = $this->harvestService->runHarvest($plan_id);
     $this->renderHarvestRunsInfo([$result]);
@@ -209,15 +192,11 @@ class HarvestCommands extends DrushCommands {
   /**
    * Run all registered harvest plans.
    *
-   * @option new Run only harvests which haven't run before.
-   *
-   * @command dkan:harvest:run-all
-   *
-   * @usage dkan:harvest:run-all
-   *   Runs all harvests.
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:run-all', description: 'Run all registered harvest plans.')]
+  #[CLI\Option(name: 'new', description: "Run only harvests which haven't run before.")]
+  #[CLI\Usage(name: 'dkan:harvest:run-all', description: 'Runs all harvests.')]
   public function runAll($options = ['new' => FALSE]) {
     $plan_ids = $this->harvestService->getAllHarvestIds(FALSE);
     if ($options['new']) {
@@ -241,10 +220,11 @@ class HarvestCommands extends DrushCommands {
    * @param string $runId
    *   A harvest run ID. If not provided, all runs will be shown.
    *
-   * @command dkan:harvest:info
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:info', description: 'Show a harvest plan and information about its runs.')]
+  #[CLI\Argument(name: 'harvestId', description: 'The harvest plan id.')]
+  #[CLI\Argument(name: 'runId', description: 'A harvest run ID. If not provided, all runs will be shown.')]
   public function info($harvestId, $runId = NULL) {
     try {
       $this->validateHarvestPlan($harvestId);
@@ -273,13 +253,11 @@ class HarvestCommands extends DrushCommands {
    * @param string $harvestId
    *   The source to revert.
    *
-   * @command dkan:harvest:revert
-   *
-   * @usage dkan:harvest:revert
-   *   Removes harvested entities.
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:revert', description: 'Revert a harvest, i.e. remove all of its harvested entities.')]
+  #[CLI\Argument(name: 'harvestId', description: 'The source to revert.')]
+  #[CLI\Usage(name: 'dkan:harvest:revert', description: 'Removes harvested entities.')]
   public function revert($harvestId) {
     $this->validateHarvestPlan($harvestId);
     $result = $this->harvestService->revertHarvest($harvestId);
@@ -292,30 +270,26 @@ class HarvestCommands extends DrushCommands {
    * @param string $harvestId
    *   The source to archive harvests for.
    *
-   * @command dkan:harvest:archive
-   *
-   * @usage dkan:harvest:archive
-   *   Archives harvested entities.
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:archive', description: 'Archive all harvested datasets for a single harvest.')]
+  #[CLI\Argument(name: 'harvestId', description: 'The source to archive harvests for.')]
+  #[CLI\Usage(name: 'dkan:harvest:archive', description: 'Archives harvested entities.')]
   public function archive($harvestId) {
     $this->archiveOrPublish($harvestId, 'archive');
   }
 
   /**
-   * Archive all harvested datasets for a single harvest.
+   * Publish all harvested datasets for a single harvest.
    *
    * @param string $harvestId
    *   The source to archive harvests for.
    *
-   * @command dkan:harvest:publish
-   *
-   * @usage dkan:harvest:publish
-   *   Publishes harvested entities.
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:publish', description: 'Publish all harvested datasets for a single harvest.')]
+  #[CLI\Argument(name: 'harvestId', description: 'The source to archive harvests for.')]
+  #[CLI\Usage(name: 'dkan:harvest:publish', description: 'Publishes harvested entities.')]
   public function publish($harvestId) {
     $this->archiveOrPublish($harvestId, 'publish');
   }
@@ -347,7 +321,7 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Show status of of a particular harvest run.
+   * Show status of a particular harvest run.
    *
    * @param string $harvestId
    *   The id of the harvest source.
@@ -355,13 +329,12 @@ class HarvestCommands extends DrushCommands {
    *   The run's id. Optional. Show the status for the latest run if not
    *   provided.
    *
-   * @command dkan:harvest:status
-   *
-   * @usage dkan:harvest:status
-   *   test 1599157120
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:status', description: 'Show status of a particular harvest run.')]
+  #[CLI\Argument(name: 'harvestId', description: 'The id of the harvest source.')]
+  #[CLI\Argument(name: 'runId', description: "The run's id. Optional. Show the status for the latest run if not provided.")]
+  #[CLI\Usage(name: 'dkan:harvest:status test 1599157120', description: 'Show status of a particular harvest run.')]
   public function status($harvestId, $runId = NULL) {
     $this->validateHarvestPlan($harvestId);
 
@@ -405,11 +378,10 @@ class HarvestCommands extends DrushCommands {
    * @return int
    *   Exit code.
    *
-   * @command dkan:harvest:orphan-datasets
-   * @alias dkan:harvest:orphan
-   *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:orphan-datasets', aliases: ['dkan:harvest:orphan'], description: 'Orphan datasets from every run of a harvest.')]
+  #[CLI\Argument(name: 'harvestId', description: 'Harvest identifier.')]
   public function orphanDatasets(string $harvestId) : int {
     $this->validateHarvestPlan($harvestId);
 
@@ -434,15 +406,13 @@ class HarvestCommands extends DrushCommands {
    * Will print a report. Add -y or --no-interaction to automatically perform
    * this cleanup.
    *
-   * @command dkan:harvest:cleanup
-   *
    * @return int
    *   Bash status code.
-   *
-   * @bootstrap full
-   *
+  *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:cleanup', description: 'Report and cleanup harvest data which may be cluttering your database.')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
   public function harvestCleanup(): int {
     $orphaned = $this->harvestUtility->findOrphanedHarvestDataIds();
     if ($orphaned) {
@@ -498,15 +468,13 @@ class HarvestCommands extends DrushCommands {
    *
    * Outdated tables will be removed.
    *
-   * @command dkan:harvest:update
-   *
    * @return int
    *   Bash status code.
-   *
-   * @bootstrap full
-   *
+  *
    * @codeCoverageIgnore
    */
+  #[CLI\Command(name: 'dkan:harvest:update', description: 'Update all harvest-related database tables to the latest version.')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
   public function harvestUpdate(): int {
     $this->harvestUtility->harvestHashUpdate();
     $this->harvestUtility->harvestRunsUpdate();
