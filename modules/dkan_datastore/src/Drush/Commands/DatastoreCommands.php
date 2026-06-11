@@ -1,16 +1,21 @@
 <?php
 
-namespace Drupal\dkan_datastore;
+namespace Drupal\dkan_datastore\Drush\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Drupal\dkan_common\DataResource;
 use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_datastore\DatastoreLookupInterface;
+use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_datastore\PostImportResultFactory;
 use Drupal\dkan_datastore\Service\Info\ImportInfoList;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\ResourceMapper;
+use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Procrastinator\Result;
 
@@ -19,76 +24,20 @@ use Procrastinator\Result;
  *
  * @codeCoverageIgnore
  */
-class Drush extends DrushCommands {
+final class DatastoreCommands extends DrushCommands {
 
-  /**
-   * The metastore service.
-   *
-   * @var \Drupal\dkan_metastore\MetastoreService
-   */
-  protected $metastoreService;
+  use AutowireTrait;
 
-  /**
-   * The datastore service.
-   *
-   * @var \Drupal\dkan_datastore\DatastoreService
-   */
-  protected $datastoreService;
-
-  /**
-   * The datastore resource localizer.
-   */
-  protected ResourceLocalizer $resourceLocalizer;
-
-  /**
-   * Resource mapper service.
-   */
-  protected ResourceMapper $resourceMapper;
-
-  /**
-   * Import info list service.
-   */
-  private ImportInfoList $importInfoList;
-
-  /**
-   * The PostImportResultFactory service.
-   */
-  protected PostImportResultFactory $postImportResultFactory;
-
-  /**
-   * The Datastore lookup service.
-   *
-   * @var \Drupal\dkan_datastore\DatastoreLookupInterface
-   */
-  protected DatastoreLookupInterface $datastoreLookup;
-
-  /**
-   * Database connection service.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected $database;
-
-  /**
-   * Constructor for DkanDatastoreCommands.
-   */
   public function __construct(
-    MetastoreService $metastoreService,
-    DatastoreService $datastoreService,
-    ResourceLocalizer $resourceLocalizer,
-    ResourceMapper $resourceMapper,
-    ImportInfoList $importInfoList,
-    PostImportResultFactory $postImportResultFactory,
-    DatastoreLookupInterface $datastoreLookup,
+    protected MetastoreService $metastoreService,
+    protected DatastoreService $datastoreService,
+    protected ResourceLocalizer $resourceLocalizer,
+    protected ResourceMapper $resourceMapper,
+    private ImportInfoList $importInfoList,
+    protected PostImportResultFactory $postImportResultFactory,
+    protected DatastoreLookupInterface $datastoreLookup,
   ) {
     parent::__construct();
-    $this->metastoreService = $metastoreService;
-    $this->datastoreService = $datastoreService;
-    $this->resourceLocalizer = $resourceLocalizer;
-    $this->resourceMapper = $resourceMapper;
-    $this->importInfoList = $importInfoList;
-    $this->postImportResultFactory = $postImportResultFactory;
-    $this->datastoreLookup = $datastoreLookup;
   }
 
   /**
@@ -104,18 +53,12 @@ class Drush extends DrushCommands {
    * so the import will see them as "done" and go straight to the actual DB
    * import job.
    *
-   * @param string $identifier
-   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
-   * @param array $options
-   *   Command line options.
-   *
-   * @option deferred
-   *   Add the import to the datastore_import queue, rather than importing now.
-   *
    * @todo pass configurable options for csv delimiter, quote, and escape
    *   characters.
-   * @command dkan:datastore:import
    */
+  #[CLI\Command(name: 'dkan:datastore:import', description: 'Import a datastore resource.')]
+  #[CLI\Argument(name: 'identifier', description: 'Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".')]
+  #[CLI\Option(name: 'deferred', description: 'Add the import to the datastore_import queue, rather than importing now.')]
   public function import(string $identifier, array $options = ['deferred' => FALSE]) {
     $deferred = (bool) $options['deferred'];
 
@@ -143,21 +86,26 @@ class Drush extends DrushCommands {
 
   /**
    * List information about all datastores.
-   *
-   * @field-labels
-   *   uuid: Resource UUID
-   *   fileName: File Name
-   *   fileFetcherStatus: FileFetcher
-   *   fileFetcherBytes: Processed
-   *   importerStatus: Importer
-   *   importerBytes: Processed
-   *
-   * @options format The format of the data.
-   * @options status Show imports of the given status.
-   * @options uuid-only Only the list of uuids.
-   *
-   * @command dkan:datastore:list
    */
+  #[CLI\Command(name: 'dkan:datastore:list', description: 'List information about all datastores.')]
+  #[CLI\FieldLabels(labels: [
+    'uuid' => 'Resource UUID',
+    'fileName' => 'File Name',
+    'fileFetcherStatus' => 'FileFetcher',
+    'fileFetcherBytes' => 'Processed',
+    'importerStatus' => 'Importer',
+    'importerBytes' => 'Processed',
+  ])]
+  #[CLI\DefaultTableFields(fields: [
+    'uuid',
+    'fileName',
+    'fileFetcherStatus',
+    'fileFetcherBytes',
+    'importerStatus',
+    'importerBytes',
+  ])]
+  #[CLI\Option(name: 'status', description: 'Show imports of the given status.')]
+  #[CLI\Option(name: 'uuid-only', description: 'Only the list of uuids.')]
   public function list(
     $options = [
       'format' => 'table',
@@ -194,7 +142,15 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Private.
+   * Create row helper function.
+   *
+   * @param string $uuid
+   *   The resource uuid.
+   * @param \Drupal\dkan_datastore\Service\Info\ImportInfoItem $item
+   *   The item to create the row from.
+   *
+   * @return array
+   *   The created row.
    */
   private function createRow($uuid, $item) {
     // Using deprecation helper.
@@ -233,17 +189,10 @@ class Drush extends DrushCommands {
    * Note that if you have "Delete local resource" checked in
    * /admin/dkan/resources, the file may already be deleted and therefore
    * --keep-local may not have the desired effect.
-   *
-   * @param string $identifier
-   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
-   * @param array $options
-   *   Options array.
-   *
-   * @option keep-local
-   *   Do not remove localized resource, only datastore.
-   *
-   * @command dkan:datastore:drop
    */
+  #[CLI\Command(name: 'dkan:datastore:drop', description: 'Drop a resource from the datastore.')]
+  #[CLI\Argument(name: 'identifier', description: 'Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".')]
+  #[CLI\Option(name: 'keep-local', description: 'Do not remove localized resource, only datastore.')]
   public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
     $local_resource = $options['keep-local'] ? FALSE : TRUE;
     try {
@@ -262,10 +211,9 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Drop a ALL datastore tables.
-   *
-   * @command dkan:datastore:drop-all
+   * Drop all datastore tables.
    */
+  #[CLI\Command(name: 'dkan:datastore:drop-all', description: 'Drop all datastore tables.')]
   public function dropAll() {
     /** @var \RootedData\RootedJsonData $distribution*/
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
@@ -283,12 +231,9 @@ class Drush extends DrushCommands {
    * - Add the local_url perspective to the resource mapper. Note this is
    *   missing the file checksum.
    * - Display the info necessary to perform an external file fetch.
-   *
-   * @param string $identifier
-   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
-   *
-   * @command dkan:datastore:prepare-localized
    */
+  #[CLI\Command(name: 'dkan:datastore:prepare-localized', description: 'Prepare the local perspective for a resource.')]
+  #[CLI\Argument(name: 'identifier', description: 'Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".')]
   public function prepareLocalized(string $identifier) {
     $info = $this->resourceLocalizer->prepareLocalized($identifier);
     if ($info) {
@@ -301,20 +246,11 @@ class Drush extends DrushCommands {
 
   /**
    * Localize a resource (copy from source to the local file system).
-   *
-   * @param string $identifier
-   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
-   * @param string $version
-   *   (Optional) The version to localize. If not supplied, will use the latest
-   *   version.
-   * @param array $options
-   *   Command options.
-   *
-   * @command dkan:datastore:localize
-   *
-   * @option deferred
-   *   Add the localization to the  queue, rather than localizing now.
    */
+  #[CLI\Command(name: 'dkan:datastore:localize', description: 'Localize a resource (copy from source to the local file system).')]
+  #[CLI\Argument(name: 'identifier', description: 'Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".')]
+  #[CLI\Argument(name: 'version', description: 'Optional version to localize. If not supplied, will use the latest version.')]
+  #[CLI\Option(name: 'deferred', description: 'Add the localization to the queue, rather than localizing now.')]
   public function localize(string $identifier, $version = NULL, array $options = ['deferred' => FALSE]) {
     $deferred = $options['deferred'] ? TRUE : FALSE;
 
@@ -334,13 +270,9 @@ class Drush extends DrushCommands {
 
   /**
    * Return the dataset uuid associated with the provided datastore table name.
-   *
-   * @param string $table_name
-   *   Datastore Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".
-   *
-   * @command dkan:datastore:reverse-dataset-lookup
-   * @aliases dkan:datastore:rdl
    */
+  #[CLI\Command(name: 'dkan:datastore:reverse-dataset-lookup', aliases: ['dkan:datastore:rdl'], description: 'Return the dataset uuid associated with the provided datastore table name.')]
+  #[CLI\Argument(name: 'table_name', description: 'Datastore Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".')]
   public function reverseDatasetLookup(string $table_name) {
     $resource_id = '';
     $distribution_uuid = '';

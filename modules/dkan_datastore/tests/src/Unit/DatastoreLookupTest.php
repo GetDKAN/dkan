@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dkan_datastore\Unit;
 
-use Drupal\dkan_datastore\Drush;
 use Drupal\dkan_datastore\DatastoreLookupInterface;
 use Drupal\dkan_datastore\DatastoreLookup;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
-use Drupal\dkan_metastore\ResourceMapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drupal\Core\Database\StatementInterface;
-use Drush\Commands\DrushCommands;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\DatastoreLookup
@@ -30,11 +27,6 @@ class DatastoreLookupTest extends TestCase {
    * @var \Symfony\Component\Console\Output\OutputInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $output;
-
-  /**
-   * @var \Drupal\dkan_datastore\Drush
-   */
-  protected $drush;
 
   /**
    * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
@@ -61,22 +53,6 @@ class DatastoreLookupTest extends TestCase {
     // Mock the database connection.
     $this->database = $this->createMock(Connection::class);
 
-    // // Instantiate the DatastoreLookup with the mocked database connection.
-    // $this->datastoreLookup = new DatastoreLookup($this->database);
-
-    // // Instantiate the Drush class with the mocked dependencies.
-    // $this->drush = new Drush(
-    //   $this->createMock(\Drupal\dkan_metastore\MetastoreService::class),
-    //   $this->createMock(\Drupal\dkan_datastore\DatastoreService::class),
-    //   $this->createMock(\Drupal\dkan_datastore\Service\ResourceLocalizer::class),
-    //   $this->createMock(\Drupal\dkan_metastore\ResourceMapper::class),
-    //   $this->createMock(\Drupal\dkan_datastore\Service\Info\ImportInfoList::class),
-    //   $this->createMock(\Drupal\dkan_datastore\PostImportResultFactory::class),
-    //   $this->datastoreLookupInterface
-    // );
-
-    // // Set the output property.
-    // $this->drush->setOutput($this->output);
   }
 
   /**

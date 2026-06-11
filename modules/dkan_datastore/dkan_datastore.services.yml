@@ -17,6 +17,7 @@ services:
     arguments:
       - '@database'
       - '@dkan.metastore.reference_lookup'
+  Drupal\dkan_datastore\DatastoreLookupInterface: '@dkan.datastore.lookup'
 
   dkan.datastore.service.post_import:
     class: \Drupal\dkan_datastore\Service\PostImport
@@ -33,6 +34,7 @@ services:
     arguments:
       - '@database'
       - '@dkan.metastore.resource_mapper'
+  Drupal\dkan_datastore\PostImportResultFactory: '@dkan.datastore.post_import_result_factory'
 
   dkan.datastore.query:
     class: \Drupal\dkan_datastore\Service\Query
@@ -48,6 +50,7 @@ services:
       - '@dkan.common.filefetcher_job_store_factory'
       - '@queue'
       - '@event_dispatcher'
+  Drupal\dkan_datastore\Service\ResourceLocalizer: '@dkan.datastore.service.resource_localizer'
 
   dkan.datastore.service.resource_processor_collector:
     class: \Drupal\dkan_datastore\Service\ResourceProcessorCollector
@@ -140,6 +143,7 @@ services:
     arguments:
       - '@dkan.common.filefetcher_job_store_factory'
       - '@dkan.datastore.import_info'
+  Drupal\dkan_datastore\Service\Info\ImportInfoList: '@dkan.datastore.import_info_list'
 
   dkan.datastore.import_job_store_factory:
     class: \Drupal\dkan_datastore\Storage\ImportJobStoreFactory
