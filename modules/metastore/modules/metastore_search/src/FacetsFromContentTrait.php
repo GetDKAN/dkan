@@ -130,11 +130,13 @@ trait FacetsFromContentTrait {
 
         $facet = isset($field) ? $facet->{"$.data." . $field} : $facet->{"$.data"};
 
-        $facets["{$type}:{$facet}"] = (object) [
-          'type' => $type,
-          'name' => $facet,
-          'total' => 0,
-        ];
+        if (!empty($facet)) {
+          $facets["{$type}:{$facet}"] = (object) [
+            'type' => $type,
+            'name' => $facet,
+            'total' => 0,
+          ];
+        }
       }
     }
 
