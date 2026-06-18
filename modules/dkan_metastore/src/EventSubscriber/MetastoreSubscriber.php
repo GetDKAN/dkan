@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore\EventSubscriber;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
+use Drupal\dkan_metastore\LifeCycle\LifeCycle as Dkan_metastoreLifeCycle;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
@@ -74,11 +75,12 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents(): array {
     $events = [];
     $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
+    $events[Dkan_metastoreLifeCycle::EVENT_DELETING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
     return $events;
   }
 
   /**
-   * React to a distribution being orphaned.
+   * React to a distribution being orphaned or deleted.
    *
    * Removes resources associated with the orphaned distribution.
    *

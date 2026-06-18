@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class OrphanNodeProcessor implements ContainerInjectionInterface {
 
-  const SECONDS_PER_DAY = 60 * 60 * 24;
+  const SECONDS_PER_DAY = 30;
 
   /**
    * The datastore.settings config.
