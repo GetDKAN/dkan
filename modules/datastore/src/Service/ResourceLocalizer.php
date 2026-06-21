@@ -157,29 +157,43 @@ class ResourceLocalizer {
   }
 
   /**
-   * Create local file and URL perspectives in the mapper, get a perspective.
+   * Get a perspective, and optionally reate local file and URL perspectives.
    *
-   * Requires the localized file to exist so it can be checksummed.
+   * @param string $identifier
+   *   The resource id.
+   * @param string $version
+   *   The resource version.
+   * @param string $perspective
+   *   The resource perspective. Defaults to LOCAL_FILE_PERSPECTIVE.
+   * @param bool $create
+   *   If true, creates directory for local file and adds perspective to mapper.
    *
    * @return \Drupal\common\DataResource|null
    *   Return the perspective, or NULL if the source perspective did not exist.
    */
-  public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?DataResource {
+  public function get(
+    string $identifier,
+    ?string $version = NULL,
+    string $perspective = self::LOCAL_FILE_PERSPECTIVE,
+    bool $create = TRUE,
+  ): ?DataResource {
     $resource = $this->getResourceSource($identifier, $version);
 
     if (!$resource) {
       return NULL;
     }
 
-    $ff = $this->getFileFetcher($resource);
+    if ($create) {
+      $ff = $this->getFileFetcher($resource);
 
-    if ($ff->getResult()->getStatus() != Result::DONE) {
-      return NULL;
+      if ($ff->getResult()->getStatus() != Result::DONE) {
+        return NULL;
+      }
+
+      $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
     }
 
-    $this->registerNewPerspectives($resource, $ff->getStateProperty('destination'));
-
-    return $this->resourceMapper->get($resource->getIdentifier(), $perpective, $resource->getVersion());
+    return $this->resourceMapper->get($resource->getIdentifier(), $perspective, $resource->getVersion());
   }
 
   /**
@@ -215,11 +229,11 @@ class ResourceLocalizer {
    */
   public function remove($identifier, $version = NULL): void {
     // Remove the LOCAL_URL_PERSPECTIVE if it exists.
-    if ($local_url_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
+    if ($local_url_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE, FALSE)) {
       $this->resourceMapper->remove($local_url_resource);
     }
     // Remove the LOCAL_FILE_PERSPECTIVE if it exists.
-    if ($resource = $this->get($identifier, $version, self::LOCAL_FILE_PERSPECTIVE)) {
+    if ($resource = $this->get($identifier, $version, self::LOCAL_FILE_PERSPECTIVE, FALSE)) {
       // Remove the file.
       if (file_exists($resource->getFilePath())) {
         $this->drupalFiles->getFilesystem()
