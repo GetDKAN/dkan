@@ -108,16 +108,16 @@ class DataResource implements \JsonSerializable {
    *
    * @param string $file_path
    *   Path to the file.
-   * @param string $mime_type
+   * @param string $mimeType
    *   File mime type.
    * @param string $perspective
    *   Can be one of "local_file", "local_url", or "source".
    */
-  public function __construct($file_path, $mime_type, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
+  public function __construct($file_path, $mimeType, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
     // @todo generate UUID instead.
     $this->identifier = md5($file_path);
     $this->filePath = $file_path;
-    $this->mimeType = $mime_type;
+    $this->mimeType = $mimeType;
     $this->perspective = $perspective;
     // @todo Create a timestamp property and generate uuid for version.
     $this->version = time();
