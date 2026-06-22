@@ -151,6 +151,9 @@ services:
       - '@database'
       - '@event_dispatcher'
 
+  dkan.datastore.dispatcher:
+    class: \Drupal\dkan_datastore\Dispatch\Dispatcher
+
   pdlt.converter.strptime_to_mysql:
     class: \PDLT\Converter
     arguments:
