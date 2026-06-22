@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Unit\LifeCycle;
+namespace Drupal\Tests\dkan_metastore\Unit\LifeCycle\ResourceDiscovery;
 
 use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\ResourceDiscoveryResult;
 use PHPUnit\Framework\TestCase;
