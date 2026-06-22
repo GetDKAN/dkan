@@ -63,4 +63,14 @@ class ResourceDiscoveryResult {
     return $this->skippedEntries;
   }
 
+  /**
+   * Get the discovered resources.
+   *
+   * @return \Drupal\dkan_common\DataResource[]
+   *   The discovered resources.
+   */
+  public function getDiscoveredResources(): array {
+    return $this->discoveredResources;
+  }
+
 }
