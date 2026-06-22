@@ -6,6 +6,7 @@ namespace Drupal\dkan_datastore\Dispatch;
  * Datastore dispatcher service interface.
  */
 interface DispatcherInterface {
+
   /**
    * Dispatches the given input.
    *
@@ -16,4 +17,5 @@ interface DispatcherInterface {
    *   The result of the dispatch process.
    */
   public function dispatch(DispatchInput $input): DispatchResult;
+
 }
