@@ -78,7 +78,10 @@ class DatasetResourceDiscoveryTest extends TestCase {
     $this->assertEquals(0, count($result->getSkippedEntries()));
   }
 
-  public function validUrlProvider(): array {
+  /**
+   * Data provider for valid URL scenarios.
+   */
+  public static function validUrlProvider(): array {
     return [
       ['public://something.csv'],
       ['file:///path/to/file.csv'],
@@ -124,7 +127,10 @@ class DatasetResourceDiscoveryTest extends TestCase {
     $this->assertSame($reason, $result->getSkippedEntries()[0]->reason);
   }
 
-  public function invalidUrlProvider(): array {
+  /**
+   * Data provider for invalid URL scenarios.
+   */
+  public static function invalidUrlProvider(): array {
     return [
       ['invalid-url'],
       ['http://'],
