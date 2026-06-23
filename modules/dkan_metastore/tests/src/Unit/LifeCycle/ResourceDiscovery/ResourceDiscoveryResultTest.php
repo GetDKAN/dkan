@@ -12,13 +12,18 @@ use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntryReasons;
  * Test class for ResourceDiscoveryResult.
  *
  * @coversDefaultClass \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\ResourceDiscoveryResult
+ *
+ * @group unit
+ * @group dkan_metastore
  */
 class ResourceDiscoveryResultTest extends TestCase {
 
   /**
-   * @covers ::__construct
-   * @covers ::addDiscoveredResource
-   * @covers ::addSkippedEntry
+   * @covers ::__construct()
+   * @covers ::addDiscoveredResource()
+   * @covers ::addSkippedEntry()
+   * @covers ::getDiscoveredResources()
+   * @covers ::getSkippedEntries()
    */
   public function testResourceDiscoveryResult() {
     $result = new ResourceDiscoveryResult(

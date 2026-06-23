@@ -7,6 +7,11 @@ use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntryReasons;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Test class for DatasetResourceDiscovery.
+ *
+ * @group unit
+ * @group dkan_metastore
+ *
  * @coversDefaultClass \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\DatasetResourceDiscovery
  */
 class DatasetResourceDiscoveryTest extends TestCase {
@@ -48,6 +53,20 @@ class DatasetResourceDiscoveryTest extends TestCase {
     $this->assertEquals(SkippedEntryReasons::UnsupportedType, $result->getSkippedEntries()[0]->reason);
     $this->assertEquals($metadata->distribution[1]->downloadURL, $result->getSkippedEntries()[0]->filePath);
     $this->assertEquals($metadata->distribution[1]->mediaType, $result->getSkippedEntries()[0]->mimeType);
+  }
+
+  public function testDiscoverResourcesWithMissingIdentifier() {
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Metadata object must contain an identifier property.');
+
+    $discovery = new DatasetResourceDiscovery();
+
+    $metadata = (object) [
+      'title' => 'Test Dataset',
+      'distribution' => [],
+    ];
+
+    $discovery->discoverResources($metadata);
   }
 
   /**
@@ -98,6 +117,7 @@ class DatasetResourceDiscoveryTest extends TestCase {
    * @dataProvider invalidUrlProvider
    *
    * @covers ::discoverResources
+   * @covers ::processDistribution
    */
   public function testDiscoverResourcesSkipped(?string $url) {
     $reason = SkippedEntryReasons::InvalidUrl;
