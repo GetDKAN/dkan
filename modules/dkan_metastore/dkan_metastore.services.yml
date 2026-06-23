@@ -140,3 +140,6 @@ services:
     class: \Drupal\dkan_metastore\SchemaValidator
     arguments:
       - '@dkan.metastore.schema_retriever'
+
+  dkan.metastore.resource_discovery:
+    class: \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\DatasetResourceDiscovery

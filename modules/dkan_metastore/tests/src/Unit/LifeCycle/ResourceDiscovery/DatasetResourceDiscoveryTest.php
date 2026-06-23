@@ -13,6 +13,7 @@ class DatasetResourceDiscoveryTest extends TestCase {
 
   /**
    * @covers ::discoverResources
+   * @covers ::processDistribution
    */
   public function testDiscoverResources() {
     $discovery = new DatasetResourceDiscovery();
@@ -55,6 +56,7 @@ class DatasetResourceDiscoveryTest extends TestCase {
    * @dataProvider validUrlProvider
    *
    * @covers ::discoverResources
+   * @covers ::processDistribution
    */
   public function testDiscoverResourcesWithValidUrl(string $url) {
     $discovery = new DatasetResourceDiscovery();
@@ -141,6 +143,7 @@ class DatasetResourceDiscoveryTest extends TestCase {
 
   /**
    * @covers ::discoverResources
+   * @covers ::processDistribution
    */
   public function testDiscoverResourcesOtherTopLevelKey() {
     $discovery = new DatasetResourceDiscovery();
