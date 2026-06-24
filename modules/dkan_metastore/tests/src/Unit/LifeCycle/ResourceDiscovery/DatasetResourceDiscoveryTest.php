@@ -35,8 +35,8 @@ class DatasetResourceDiscoveryTest extends TestCase {
         ],
         (object) [
           'title' => 'Resource 2',
-          'downloadURL' => 'http://example.com/resource-2.tar',
-          'mediaType' => 'application/x-tar',
+          'downloadURL' => 'http://example.com/resource-2.csv',
+          'mediaType' => 'text/csv',
           'format' => 'csv',
         ],
       ],
@@ -45,14 +45,13 @@ class DatasetResourceDiscoveryTest extends TestCase {
     $result = $discovery->discoverResources($metadata);
 
     $this->assertEquals('550e8400-e29b-41d4-a716-446655440000', $result->datasetId);
-    $this->assertEquals(1, count($result->getDiscoveredResources()));
+    $this->assertEquals(2, count($result->getDiscoveredResources()));
     $this->assertEquals($metadata->distribution[0]->downloadURL, $result->getDiscoveredResources()[0]->getFilePath());
     $this->assertEquals($metadata->distribution[0]->mediaType, $result->getDiscoveredResources()[0]->getMimeType());
+    $this->assertEquals($metadata->distribution[1]->downloadURL, $result->getDiscoveredResources()[1]->getFilePath());
+    $this->assertEquals($metadata->distribution[1]->mediaType, $result->getDiscoveredResources()[1]->getMimeType());
 
-    $this->assertEquals(1, count($result->getSkippedEntries()));
-    $this->assertEquals(SkippedEntryReasons::UnsupportedType, $result->getSkippedEntries()[0]->reason);
-    $this->assertEquals($metadata->distribution[1]->downloadURL, $result->getSkippedEntries()[0]->filePath);
-    $this->assertEquals($metadata->distribution[1]->mediaType, $result->getSkippedEntries()[0]->mimeType);
+    $this->assertEquals(0, count($result->getSkippedEntries()));
   }
 
   public function testDiscoverResourcesWithMissingIdentifier() {

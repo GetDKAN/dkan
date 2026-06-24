@@ -9,10 +9,6 @@ use Drupal\dkan_common\DataResource;
  */
 class DatasetResourceDiscovery implements ResourceDiscoveryInterface {
 
-  const SUPPORTED_MIME_TYPES = [
-    'text/csv',
-  ];
-
   /**
    * {@inheritdoc}
    */
@@ -53,15 +49,6 @@ class DatasetResourceDiscovery implements ResourceDiscoveryInterface {
         $distribution->downloadURL,
         $distribution->mediaType ?? 'unknown',
         SkippedEntryReasons::InvalidUrl,
-      ));
-      return;
-    }
-
-    if (!isset($distribution->mediaType) || !in_array($distribution->mediaType, self::SUPPORTED_MIME_TYPES)) {
-      $result->addSkippedEntry(new SkippedEntry(
-        $distribution->downloadURL,
-        $distribution->mediaType ?? 'unknown',
-        SkippedEntryReasons::UnsupportedType,
       ));
       return;
     }

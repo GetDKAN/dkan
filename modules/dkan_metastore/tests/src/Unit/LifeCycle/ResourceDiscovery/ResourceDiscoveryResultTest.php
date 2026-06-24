@@ -37,9 +37,9 @@ class ResourceDiscoveryResultTest extends TestCase {
     $result->addDiscoveredResource($resource);
 
     $skippedEntry = new SkippedEntry(
-      filePath: 'https://example.com/resource/2.tar',
+      filePath: 'htp:/example.com/resource/2.tar',
       mimeType: 'application/x-tar',
-      reason: SkippedEntryReasons::UnsupportedType,
+      reason: SkippedEntryReasons::InvalidUrl,
     );
     $result->addSkippedEntry($skippedEntry);
 
