@@ -84,6 +84,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Helper function to compare output of streaming vs normal query controller.
    */
   private function queryResultCompareCsv($data, $resource = NULL) {
+    $this->buffer = '';
     $request = $this->mockRequest($data);
     $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
@@ -93,8 +94,8 @@ class QueryDownloadControllerTest extends TestCase {
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
-    $streamedCsv = $this->buffer ?? '';
     ob_get_clean();
+    $streamedCsv = $this->buffer ?? '';
 
     $this->assertEquals(count(explode("\n", (string) $csv)), count(explode("\n", $streamedCsv)));
     $this->assertEquals($csv, $streamedCsv);
@@ -394,8 +395,8 @@ class QueryDownloadControllerTest extends TestCase {
     ob_start(self::getBuffer(...));
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
-    $streamedCsv = $this->buffer;
     ob_get_clean();
+    $streamedCsv = $this->buffer ?? '';
 
     $this->assertStringContainsString("Could not generate header", $streamedCsv);
   }
