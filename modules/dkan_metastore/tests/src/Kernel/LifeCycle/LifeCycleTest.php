@@ -75,6 +75,83 @@ class LifeCycleTest extends KernelTestBase {
   }
 
   /**
+   * Test dataset save, primarily looking at distribution behavior.
+   *
+   * @param string|null $download_url
+   *   The download URL to use for the distribution.
+   * @param string $dist_reference
+   *   The distribution reference setting to use.
+   *
+   * @dataProvider testDatasetSaveProvider
+   * @covers ::datasetSave
+   */
+  public function testDatasetSave(?string $download_url, string $dist_reference) {
+    // Set the "distribution" property list item to use references or not.
+    $property_list = $this->config('dkan_metastore.settings')->get('property_list');
+    $property_list['distribution'] = $dist_reference;
+    $this->config('dkan_metastore.settings')
+      ->set('property_list', $property_list)
+      ->save();
+
+    $dataset_data = self::DATASET_DATA;
+    $dataset_data['distribution'][0]['downloadURL'] = $download_url;
+    $dataset_data['distribution'][0] = array_filter($dataset_data['distribution'][0]);
+
+    /**
+     * @var \Drupal\dkan_metastore\MetastoreService $metastore
+     */
+    $metastore = $this->container->get('dkan.metastore.service');
+    $metadata = $metastore->getValidMetadataFactory()->get(json_encode($dataset_data), 'dataset');
+    $identifier = $metastore->post('dataset', $metadata);
+    $new_dataset = $metastore->get('dataset', $identifier);
+
+    $this->assertEquals($download_url, $new_dataset->{"$.distribution[0].downloadURL"});
+    $this->assertEquals(self::DATASET_DATA['distribution'][0]['title'], $new_dataset->{"$.distribution[0].title"});
+
+    if ($download_url) {
+      // Assert a resource mapping entity was created for the distribution.
+      $identifier = md5($download_url);
+      $storage = $this->container->get('entity_type.manager')->getStorage('resource_mapping');
+      $entities = $storage->loadByProperties([
+        'identifier' => $identifier,
+      ]);
+      $this->assertNotEmpty($entities, 'Resource mapping entity was created successfully.');
+    }
+    else {
+      // Assert no resource mapping entities exist.
+      $storage = $this->container->get('entity_type.manager')->getStorage('resource_mapping');
+      $ids = $storage->getQuery()
+        ->accessCheck(FALSE)
+        ->execute();
+      $this->assertEmpty($ids, 'No resource mapping entities exist.');
+    }
+  }
+
+  /**
+   * Two versions of metastore settings.
+   *
+   * Setting dkan_metastore.settings.property_list.distribution to "0" means
+   * we don't reference distributions. Tests that the pre-reference event
+   * subscriber still works in that case.
+   */
+  public static function testDatasetSaveProvider() {
+    $configs = ['distribution', '0'];
+    $download_urls = [
+      'http://example.com/1.csv',
+      'http://example.com/2.tar',
+      NULL,
+      // '',
+    ];
+    $data = [];
+    foreach ($configs as $config) {
+      foreach ($download_urls as $url) {
+        $data[] = [$url, $config];
+      }
+    }
+    return $data;
+  }
+
+  /**
    * Make sure that distributionLoad properly creates references.
    */
   public function testDistributionLoad() {
