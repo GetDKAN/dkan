@@ -349,7 +349,6 @@ class DatabaseTableTest extends TestCase {
    * Test that an empty table will throw an exception.
    *
    * @covers ::query()
-   * @covers ::hasBeenImported()
    * @covers \Drupal\dkan_datastore\Exception\EmptyResourceException
    */
   public function testQueryCountZero() {
