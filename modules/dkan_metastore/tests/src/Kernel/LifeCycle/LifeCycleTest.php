@@ -94,8 +94,11 @@ class LifeCycleTest extends KernelTestBase {
       ->save();
 
     $dataset_data = self::DATASET_DATA;
-    $dataset_data['distribution'][0]['downloadURL'] = $download_url;
-    $dataset_data['distribution'][0] = array_filter($dataset_data['distribution'][0]);
+    $dist_2 = [
+      'title' => 'Test Distribution 2',
+      'downloadURL' => $download_url,
+    ];
+    $dataset_data['distribution'][1] = array_filter($dist_2);
 
     /**
      * @var \Drupal\dkan_metastore\MetastoreService $metastore
@@ -105,8 +108,8 @@ class LifeCycleTest extends KernelTestBase {
     $identifier = $metastore->post('dataset', $metadata);
     $new_dataset = $metastore->get('dataset', $identifier);
 
-    $this->assertEquals($download_url, $new_dataset->{"$.distribution[0].downloadURL"});
-    $this->assertEquals(self::DATASET_DATA['distribution'][0]['title'], $new_dataset->{"$.distribution[0].title"});
+    $this->assertEquals($download_url, $new_dataset->{"$.distribution[1].downloadURL"});
+    $this->assertEquals($dataset_data['distribution'][1]['title'], $new_dataset->{"$.distribution[1].title"});
 
     if ($download_url) {
       // Assert a resource mapping entity was created for the distribution.
@@ -123,7 +126,7 @@ class LifeCycleTest extends KernelTestBase {
       $ids = $storage->getQuery()
         ->accessCheck(FALSE)
         ->execute();
-      $this->assertEmpty($ids, 'No resource mapping entities exist.');
+      $this->assertEquals(1, count($ids), 'Only one resource mapping entity exists.');
     }
   }
 
@@ -138,9 +141,11 @@ class LifeCycleTest extends KernelTestBase {
     $configs = ['distribution', '0'];
     $download_urls = [
       'http://example.com/1.csv',
+      'http://example.com/2.csv',
       'http://example.com/2.tar',
+      'public://files/local.csv',
+      'file:///home/user/data.csv',
       NULL,
-      // '',
     ];
     $data = [];
     foreach ($configs as $config) {
