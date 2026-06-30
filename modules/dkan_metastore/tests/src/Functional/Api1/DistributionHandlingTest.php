@@ -19,12 +19,21 @@ class DistributionHandlingTest extends Api1TestBase {
 
   /**
    * Post a data dictionary and reference from describedBy.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDescribedByDataDictionary() {
+  public function testDescribedByDataDictionary(string $distribution_reference) {
     // Set data dictionary discovery mode to reference.
     $config = $this->config('dkan_metastore.settings');
     $config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
     $config->save();
+
+    // Set the "distribution" property list item to use references or not.
+    $property_list = $this->config('dkan_metastore.settings')->get('property_list');
+    $property_list['distribution'] = $distribution_reference;
+    $this->config('dkan_metastore.settings')
+      ->set('property_list', $property_list)
+      ->save();
 
     // Create a data dictionary.
     $dictionaryId = $this->postDataDictionary();
@@ -84,6 +93,20 @@ class DistributionHandlingTest extends Api1TestBase {
     $response = $this->httpClient->get("$dataset_endpoint/$datasetId");
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($pdf_url, $responseBody->distribution[0]->describedBy);
+  }
+
+  /**
+   * Two versions of metastore settings.
+   *
+   * Setting dkan_metastore.settings.property_list.distribution to "0" means
+   * we don't reference distributions. Tests that the pre-reference event
+   * subscriber still works in that case.
+   */
+  public static function distributionReferenceProvider() {
+    return [
+      ['distribution'],
+      ['0'],
+    ];
   }
 
   /**
