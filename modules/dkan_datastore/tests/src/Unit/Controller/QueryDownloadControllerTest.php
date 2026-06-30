@@ -84,7 +84,6 @@ class QueryDownloadControllerTest extends TestCase {
    * Helper function to compare output of streaming vs normal query controller.
    */
   private function queryResultCompareCsv($data, $resource = NULL) {
-    $this->buffer = '';
     $request = $this->mockRequest($data);
     $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
