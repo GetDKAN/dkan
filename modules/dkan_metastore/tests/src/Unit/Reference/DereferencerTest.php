@@ -10,6 +10,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Reference\Dereferencer;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Service\Uuid5;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\NodeData;
@@ -46,11 +47,18 @@ class DereferencerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', ['publisher'])
       ->getMock();
 
+    $resourceMapper = $this->createStub(ResourceMapper::class);
+
     (new Chain($this))
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerInterface::class));
+    $valueReferencer = new Dereferencer(
+      $configService,
+      $storageFactory,
+      $resourceMapper,
+      $this->createStub(LoggerInterface::class)
+    );
     $referenced = $valueReferencer->dereference((object) ['publisher' => $uuid]);
 
     $this->assertTrue(is_object($referenced));
@@ -73,7 +81,12 @@ class DereferencerTest extends TestCase {
 
     $logger = new TestLogger();
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory, $logger);
+    $valueReferencer = new Dereferencer(
+      $configService,
+      $storageFactory,
+      $this->createStub(ResourceMapper::class),
+      $logger
+    );
     $referenced = $valueReferencer->dereference((object) ['distribution' => $uuid]);
     // Make sure we get the type we expect.
     $this->assertIsObject($referenced);
@@ -113,7 +126,12 @@ class DereferencerTest extends TestCase {
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $storageFactory, $this->createStub(LoggerInterface::class));
+    $valueReferencer = new Dereferencer(
+      $configService,
+      $storageFactory,
+      $this->createStub(ResourceMapper::class),
+      $this->createStub(LoggerInterface::class)
+    );
     $referenced = $valueReferencer->dereference((object) ['keyword' => ['123456789', '987654321']]);
 
     $this->assertTrue(is_object($referenced));
@@ -130,6 +148,7 @@ class DereferencerTest extends TestCase {
     $dereferencer = new Dereferencer(
       $this->getMockForAbstractClass(ConfigFactoryInterface::class),
       $this->getMockForAbstractClass(FactoryInterface::class),
+      $this->createStub(ResourceMapper::class),
       $logger
     );
 

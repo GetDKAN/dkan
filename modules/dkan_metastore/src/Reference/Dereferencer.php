@@ -7,7 +7,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\UrlHostTokenResolver;
 use Psr\Log\LoggerInterface;
-
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\ResourceMapper;
 
