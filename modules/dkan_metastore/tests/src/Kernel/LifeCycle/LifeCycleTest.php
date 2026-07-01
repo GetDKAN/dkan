@@ -43,7 +43,9 @@ class LifeCycleTest extends KernelTestBase {
     ],
   ];
 
-
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     'system',
     'node',
@@ -80,6 +82,8 @@ class LifeCycleTest extends KernelTestBase {
    *
    * @param string|null $download_url
    *   The download URL to use for the distribution.
+   * @param string|null $media_type
+   *   The media type to use for the distribution.
    * @param string $dist_reference
    *   The distribution reference setting to use.
    *
@@ -147,7 +151,7 @@ class LifeCycleTest extends KernelTestBase {
       ['http://example.com/2.tar', 'application/x-tar'],
       ['public://files/local.csv', 'text/csv'],
       ['file:///home/user/data.csv', 'text/csv'],
-      [NULL, NULL]
+      [NULL, NULL],
     ];
     $data = [];
     foreach ($configs as $config) {
