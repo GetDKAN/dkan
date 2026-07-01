@@ -129,7 +129,10 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Protected.
+   * Get the decoded JSON from the metadata field on the node.
+   *
+   * @return object
+   *   Decoded JSON object from the field_json_metadata field on the node.
    */
   public function getMetaData() {
     $this->fix();
@@ -137,7 +140,10 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Protected.
+   * Replaces the value of field_json_metadata with new JSON data.
+   *
+   * @param object $metadata
+   *   Decoded JSON to replace the value of field_json_metadata.
    */
   public function setMetadata($metadata) {
     $this->fix();
@@ -145,7 +151,10 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Setter.
+   * Set the UUID.
+   *
+   * @param string $identifier
+   *   The UUID to set on the node.
    */
   public function setIdentifier($identifier) {
     $this->fix();
@@ -153,7 +162,10 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Setter.
+   * Set the title.
+   *
+   * @param string $title
+   *   The title to set on the node.
    */
   public function setTitle($title) {
     $this->fix();
@@ -161,7 +173,10 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Is New.
+   * Check if the node is new.
+   *
+   * @return bool
+   *   TRUE if the node is new, FALSE otherwise.
    */
   public function isNew() {
     return $this->node->isNew();

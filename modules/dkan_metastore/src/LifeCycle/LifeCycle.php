@@ -37,91 +37,38 @@ class LifeCycle {
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
 
   /**
-   * Referencer service.
-   *
-   * @var \Drupal\dkan_metastore\Reference\Referencer
-   */
-  protected $referencer;
-
-  /**
-   * Dereferencer.
-   *
-   * @var \Drupal\dkan_metastore\Reference\Dereferencer
-   */
-  protected $dereferencer;
-
-  /**
-   * OrphanChecker service.
-   *
-   * @var \Drupal\dkan_metastore\Reference\OrphanChecker
-   */
-  protected $orphanChecker;
-
-  /**
-   * ResourceMapper service.
-   *
-   * @var \Drupal\dkan_metastore\ResourceMapper
-   */
-  protected $resourceMapper;
-
-  /**
-   * DateFormatter service.
-   *
-   * @var \Drupal\Core\Datetime\DateFormatter
-   */
-  protected $dateFormatter;
-
-  /**
-   * Metastore storage service.
-   *
-   * @var \Drupal\dkan_metastore\Storage\DataFactory
-   */
-  protected $dataFactory;
-
-  /**
-   * Queue service.
-   *
-   * @var \Drupal\Core\Queue\QueueFactory
-   */
-  protected $queueFactory;
-
-  /**
-   * The config factory service.
-   *
-   * @var \Drupal\Core\Config\ConfigFactory
-   */
-  protected $configFactory;
-
-  /**
-   * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected $eventDispatcher;
-
-  /**
    * Constructor.
+   *
+   * @param \Drupal\dkan_metastore\Reference\Referencer $referencer
+   *   The dkan.metastore.referencer service.
+   * @param \Drupal\dkan_metastore\Reference\Dereferencer $dereferencer
+   *   The dkan.metastore.dereferencer service.
+   * @param \Drupal\dkan_metastore\Reference\OrphanChecker $orphanChecker
+   *   The dkan.metastore.orphan_checker service.
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
+   *   The dkan.metastore.resource_mapper service.
+   * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
+   *   The date.formatter service.
+   * @param \Drupal\dkan_metastore\Storage\DataFactory $dataFactory
+   *   The dkan.metastore.data_factory service.
+   * @param \Drupal\Core\Queue\QueueFactory $queueFactory
+   *   The queue.factory service.
+   * @param \Drupal\Core\Config\ConfigFactory $configFactory
+   *   The config.factory service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event_dispatcher service.
    */
   public function __construct(
-    Referencer $referencer,
-    Dereferencer $dereferencer,
-    OrphanChecker $orphanChecker,
-    ResourceMapper $resourceMapper,
-    DateFormatter $dateFormatter,
-    DataFactory $dataFactory,
-    QueueFactory $queueFactory,
-    ConfigFactory $configFactory,
-    EventDispatcherInterface $eventDispatcher,
+    protected Referencer $referencer,
+    protected Dereferencer $dereferencer,
+    protected OrphanChecker $orphanChecker,
+    protected ResourceMapper $resourceMapper,
+    protected DateFormatter $dateFormatter,
+    protected DataFactory $dataFactory,
+    protected QueueFactory $queueFactory,
+    protected ConfigFactory $configFactory,
+    protected EventDispatcherInterface $eventDispatcher,
   ) {
-    $this->referencer = $referencer;
-    $this->dereferencer = $dereferencer;
-    $this->orphanChecker = $orphanChecker;
-    $this->resourceMapper = $resourceMapper;
-    $this->dateFormatter = $dateFormatter;
-    $this->dataFactory = $dataFactory;
-    $this->queueFactory = $queueFactory;
-    $this->configFactory = $configFactory;
-    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -484,7 +431,15 @@ class LifeCycle {
   }
 
   /**
-   * Private.
+   * Add a modified date value to the metadata as a '%modified' property.
+   *
+   * @param object $metadata
+   *   The metadata object to add the modified date to.
+   * @param string $date
+   *   The modified date to add to the metadata.
+   *
+   * @return object
+   *   The metadata object with the modified date added.
    */
   private function addDatasetModifiedDate($metadata, $date) {
     $formattedChangedDate = $this->dateFormatter->format($date, 'html_datetime');
