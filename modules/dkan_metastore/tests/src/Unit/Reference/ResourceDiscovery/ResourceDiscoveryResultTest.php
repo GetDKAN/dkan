@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Unit\LifeCycle\ResourceDiscovery;
+namespace Drupal\Tests\dkan_metastore\Unit\Reference\ResourceDiscovery;
 
-use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\ResourceDiscoveryResult;
+use Drupal\dkan_metastore\Reference\ResourceDiscovery\ResourceDiscoveryResult;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_common\DataResource;
-use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntry;
-use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntryReasons;
+use Drupal\dkan_metastore\Reference\ResourceDiscovery\SkippedEntry;
+use Drupal\dkan_metastore\Reference\ResourceDiscovery\SkippedEntryReasons;
 
 /**
  * Test class for ResourceDiscoveryResult.
  *
- * @coversDefaultClass \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\ResourceDiscoveryResult
+ * @coversDefaultClass \Drupal\dkan_metastore\Reference\ResourceDiscovery\ResourceDiscoveryResult
  *
  * @group unit
  * @group dkan_metastore

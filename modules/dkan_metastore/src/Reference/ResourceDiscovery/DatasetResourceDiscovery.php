@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metastore\LifeCycle\ResourceDiscovery;
+namespace Drupal\dkan_metastore\Reference\ResourceDiscovery;
 
 use Drupal\dkan_common\DataResource;
 
@@ -30,7 +30,7 @@ class DatasetResourceDiscovery implements ResourceDiscoveryInterface {
    *
    * @param object $distribution
    *   The distribution object from the metadata.
-   * @param \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\ResourceDiscoveryResult $result
+   * @param \Drupal\dkan_metastore\Reference\ResourceDiscovery\ResourceDiscoveryResult $result
    *   The result object to which resources and entries will be added.
    */
   protected function processDistribution(object $distribution, ResourceDiscoveryResult $result): void {

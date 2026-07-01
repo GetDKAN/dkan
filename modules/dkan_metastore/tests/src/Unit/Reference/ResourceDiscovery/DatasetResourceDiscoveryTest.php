@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Unit\LifeCycle\ResourceDiscovery;
+namespace Drupal\Tests\dkan_metastore\Unit\Reference\ResourceDiscovery;
 
-use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\DatasetResourceDiscovery;
-use Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntryReasons;
+use Drupal\dkan_metastore\Reference\ResourceDiscovery\DatasetResourceDiscovery;
+use Drupal\dkan_metastore\Reference\ResourceDiscovery\SkippedEntryReasons;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @group unit
  * @group dkan_metastore
  *
- * @coversDefaultClass \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\DatasetResourceDiscovery
+ * @coversDefaultClass \Drupal\dkan_metastore\Reference\ResourceDiscovery\DatasetResourceDiscovery
  */
 class DatasetResourceDiscoveryTest extends TestCase {
 

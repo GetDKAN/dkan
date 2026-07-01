@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metastore\LifeCycle\ResourceDiscovery;
+namespace Drupal\dkan_metastore\Reference\ResourceDiscovery;
 
 use Drupal\dkan_common\DataResource;
 
@@ -18,7 +18,7 @@ class ResourceDiscoveryResult {
   /**
    * An array of skipped entries.
    *
-   * @var \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntry[]
+   * @var \Drupal\dkan_metastore\Reference\ResourceDiscovery\SkippedEntry[]
    */
   protected array $skippedEntries;
 
@@ -46,7 +46,7 @@ class ResourceDiscoveryResult {
   /**
    * Add a skipped entry to the result.
    *
-   * @param \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntry $entry
+   * @param \Drupal\dkan_metastore\Reference\ResourceDiscovery\SkippedEntry $entry
    *   The skipped entry.
    */
   public function addSkippedEntry(SkippedEntry $entry): void {
@@ -56,7 +56,7 @@ class ResourceDiscoveryResult {
   /**
    * Get the skipped entries.
    *
-   * @return \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntry[]
+   * @return \Drupal\dkan_metastore\Reference\ResourceDiscovery\SkippedEntry[]
    *   The skipped entries.
    */
   public function getSkippedEntries(): array {

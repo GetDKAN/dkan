@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metastore\LifeCycle\ResourceDiscovery;
+namespace Drupal\dkan_metastore\Reference\ResourceDiscovery;
 
 /**
  * Enum for reasons why a resource discovery entry was skipped.

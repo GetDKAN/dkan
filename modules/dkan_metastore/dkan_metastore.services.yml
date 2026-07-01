@@ -142,4 +142,4 @@ services:
       - '@dkan.metastore.schema_retriever'
 
   dkan.metastore.resource_discovery:
-    class: \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\DatasetResourceDiscovery
+    class: \Drupal\dkan_metastore\Reference\ResourceDiscovery\DatasetResourceDiscovery

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metastore\LifeCycle\ResourceDiscovery;
+namespace Drupal\dkan_metastore\Reference\ResourceDiscovery;
 
 /**
  * Skipped Entry; a data object for use in resource discovery.
@@ -17,7 +17,7 @@ class SkippedEntry {
    *   The URL or filepath raw input value of the entry that was skipped.
    * @param string $mimeType
    *   The raw input value for MIME type of the entry that was skipped.
-   * @param \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\SkippedEntryReasons $reason
+   * @param \Drupal\dkan_metastore\Reference\ResourceDiscovery\SkippedEntryReasons $reason
    *   The reason why the entry was skipped.
    */
   public function __construct(
