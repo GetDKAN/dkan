@@ -15,7 +15,6 @@ services:
       - '@dkan.metastore.referencer'
       - '@dkan.metastore.dereferencer'
       - '@dkan.metastore.orphan_checker'
-      - '@dkan.metastore.resource_mapper'
       - '@date.formatter'
       - '@dkan.metastore.storage'
       - '@queue'
@@ -59,6 +58,7 @@ services:
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.resource_mapper'
       - '@dkan.common.logger_channel'
 
   dkan.metastore.orphan_checker:

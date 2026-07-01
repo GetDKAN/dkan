@@ -47,7 +47,7 @@ class Referencer {
   public function __construct(
     ConfigFactoryInterface $configService,
     private FactoryInterface $storageFactory,
-    private MetastoreUrlGenerator $metastoreUrlGenerator,
+    public MetastoreUrlGenerator $metastoreUrlGenerator,
     private Client $httpClient,
     protected MimeTypeGuesserInterface $mimeTypeGuesser,
     private LoggerInterface $logger,
@@ -64,10 +64,9 @@ class Referencer {
    * @return object
    *   Json object modified with references to some of its properties' values.
    */
-  public function reference($data) {
-    if (!is_object($data)) {
-      throw new \Exception('data must be an object.');
-    }
+  public function reference(object $data): object {
+    // Process resource references first.
+    $this->referenceResources($data);
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -78,6 +77,44 @@ class Referencer {
       }
     }
     return $data;
+  }
+
+  /**
+   * Recurses through distributions to find resources to reference in dataset.
+   *
+   * This may be parameterized someday to find the exact path to resources from
+   * config or schema definition.
+   *
+   * @param object $data
+   *   Dataset JSON object.
+   */
+  public function referenceResources(object $data): void {
+    foreach (($data->distribution ?? []) as &$distribution) {
+      $this->processDistributionResources($distribution);
+    }
+    unset($distribution);
+  }
+
+  /**
+   * Process a single distribution and replace URLs with resource IDs.
+   *
+   * @param object $distribution
+   *   The distribution object from the metadata.
+   */
+  protected function processDistributionResources(object $distribution): void {
+    if (!isset($distribution->downloadURL)) {
+      return;
+    }
+
+    // Check that URL is valid.
+    if (filter_var($distribution->downloadURL, FILTER_VALIDATE_URL) === FALSE) {
+      return;
+    }
+
+    $distribution->downloadURL = $this->registerWithResourceMapper(
+      UrlHostTokenResolver::hostify($distribution->downloadURL),
+      $this->getMimeType($distribution)
+    );
   }
 
   /**
@@ -170,21 +207,10 @@ class Referencer {
    *   The supplied distribution with an updated resource download URL.
    */
   public function distributionHandling($distribution): object {
-    // Ensure the supplied distribution has a valid resource before attempting
-    // to register it with the resource mapper.
-    if (isset($distribution->downloadURL)) {
-      // Register this distribution's resource with the resource mapper and
-      // replace the download URL with a unique ID registered in the resource
-      // mapper.
-      $distribution->downloadURL = $this->registerWithResourceMapper(
-        UrlHostTokenResolver::hostify($distribution->downloadURL), $this->getMimeType($distribution));
-    }
-
     // If there is a describedBy value, convert to dkan:// URL if appropriate.
     if ($distribution->describedBy ?? FALSE) {
       $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);
     }
-
     return $distribution;
   }
 

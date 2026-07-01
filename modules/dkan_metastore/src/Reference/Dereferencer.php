@@ -4,9 +4,12 @@ namespace Drupal\dkan_metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_common\UrlHostTokenResolver;
 use Psr\Log\LoggerInterface;
 
 use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\ResourceMapper;
 
 /**
  * Metastore dereferencer.
@@ -15,28 +18,15 @@ class Dereferencer {
   use HelperTrait;
 
   /**
-   * Storage factory interface service.
-   *
-   * @var \Contracts\FactoryInterface
-   */
-  private $storageFactory;
-
-  /**
-   * DKAN logger channel service.
-   */
-  private LoggerInterface $logger;
-
-  /**
    * Constructor.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
-    FactoryInterface $storageFactory,
-    LoggerInterface $loggerChannel,
+    protected FactoryInterface $storageFactory,
+    protected ResourceMapper $resourceMapper,
+    protected LoggerInterface $logger,
   ) {
     $this->setConfigService($configService);
-    $this->storageFactory = $storageFactory;
-    $this->logger = $loggerChannel;
   }
 
   /**
@@ -57,6 +47,7 @@ class Dereferencer {
         $this->dereferenceProperty($propertyId, $data);
       }
     }
+    $this->dereferenceResources($data);
     return $data;
   }
 
@@ -171,6 +162,114 @@ class Dereferencer {
     ]);
 
     return [NULL, NULL];
+  }
+
+  /**
+   * Replaces resource references in a dataset with their actual values.
+   *
+   * @param object $data
+   *   The json metadata object.
+   */
+  public function dereferenceResources($data) {
+    if (!isset($data->distribution) || !is_array($data->distribution)) {
+      return;
+    }
+    foreach ($data->distribution as &$distribution) {
+      $this->dereferenceDistributionResource($distribution);
+    }
+    unset($distribution);
+  }
+
+  /**
+   * Dereference a distribution resource.
+   *
+   * @param object $distribution
+   *   The distribution object.
+   */
+  protected function dereferenceDistributionResource($distribution) {
+    if (!isset($distribution->downloadURL)) {
+      return;
+    }
+
+    $downloadUrl = $distribution->downloadURL;
+
+    if (!empty($downloadUrl) && filter_var($downloadUrl, FILTER_VALIDATE_URL) === FALSE) {
+      $ref = NULL;
+      $original = NULL;
+      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($downloadUrl);
+
+      $downloadUrl = $original ?? "";
+
+      $refProperty = "%Ref:downloadURL";
+      $distribution->{$refProperty} = count($ref) == 0 ? NULL : $ref;
+    }
+
+    if (is_string($downloadUrl)) {
+      $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
+    }
+
+    $unset_downloadUrl = $this->configService->get('dkan_metastore.settings')->get('unset_download_url_if_empty') ?? FALSE;
+    if (!$downloadUrl && $unset_downloadUrl) {
+      unset($distribution->downloadURL);
+    }
+    else {
+      $distribution->downloadURL = $downloadUrl;
+    }
+  }
+
+  /**
+   * Get a download URL.
+   *
+   * @param string $resourceIdentifier
+   *   Identifier for resource.
+   *
+   * @return array
+   *   Array of reference and original.
+   */
+  protected function retrieveDownloadUrlFromResourceMapper(string $resourceIdentifier) {
+    $reference = [];
+    $original = NULL;
+
+    $info = DataResource::parseUniqueIdentifier($resourceIdentifier);
+
+    // Load resource object.
+    $sourceResource = $this->resourceMapper->get($info['identifier'], DataResource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
+
+    if (!$sourceResource) {
+      return [$reference, $original];
+    }
+
+    $reference[] = $this->createResourceReference($sourceResource);
+    $perspective = $this->configService->get('dkan_metastore.settings')->get('resource_perspective_display')
+      ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE;
+    $resource = $sourceResource;
+
+    if (
+      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
+      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
+    ) {
+      $resource = $new;
+      $reference[] = $this->createResourceReference($resource);
+    }
+    $original = $resource->getFilePath();
+
+    return [$reference, $original];
+  }
+
+  /**
+   * Create a resource reference object.
+   *
+   * @param \Drupal\dkan_common\DataResource $resource
+   *   The data resource.
+   *
+   * @return object
+   *   The resource reference object.
+   */
+  protected function createResourceReference(DataResource $resource): object {
+    return (object) [
+      "identifier" => $resource->getUniqueIdentifier(),
+      "data" => $resource,
+    ];
   }
 
   /**

@@ -8,16 +8,13 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\dkan_common\Events\Event;
-use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\Reference\OrphanChecker;
 use Drupal\dkan_metastore\Reference\Referencer;
-use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -45,8 +42,6 @@ class LifeCycle {
    *   The dkan.metastore.dereferencer service.
    * @param \Drupal\dkan_metastore\Reference\OrphanChecker $orphanChecker
    *   The dkan.metastore.orphan_checker service.
-   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
-   *   The dkan.metastore.resource_mapper service.
    * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
    *   The date.formatter service.
    * @param \Drupal\dkan_metastore\Storage\DataFactory $dataFactory
@@ -62,7 +57,6 @@ class LifeCycle {
     protected Referencer $referencer,
     protected Dereferencer $dereferencer,
     protected OrphanChecker $orphanChecker,
-    protected ResourceMapper $resourceMapper,
     protected DateFormatter $dateFormatter,
     protected DataFactory $dataFactory,
     protected QueueFactory $queueFactory,
@@ -158,35 +152,6 @@ class LifeCycle {
   protected function distributionLoad(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
 
-    if (!isset($metadata->data->downloadURL)) {
-      return;
-    }
-
-    $downloadUrl = $metadata->data->downloadURL;
-
-    if (!empty($downloadUrl) && filter_var($downloadUrl, FILTER_VALIDATE_URL) === FALSE) {
-      $ref = NULL;
-      $original = NULL;
-      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($downloadUrl);
-
-      $downloadUrl = $original ?? "";
-
-      $refProperty = "%Ref:downloadURL";
-      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
-    }
-
-    if (is_string($downloadUrl)) {
-      $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
-    }
-
-    $unset_downloadUrl = $this->configFactory->get('dkan_metastore.settings')->get('unset_download_url_if_empty') ?? FALSE;
-    if (!$downloadUrl && $unset_downloadUrl) {
-      unset($metadata->data->downloadURL);
-    }
-    else {
-      $metadata->data->downloadURL = $downloadUrl;
-    }
-
     // If describedBy contains dkan:// URI, convert to absolute URL.
     if (StreamWrapperManager::getScheme($metadata->data->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {
       $metadata->data->describedBy = $this->referencer->metastoreUrlGenerator->absoluteString($metadata->data->describedBy);
@@ -216,55 +181,6 @@ class LifeCycle {
         $version,
       ]);
     }
-  }
-
-  /**
-   * Get a download URL.
-   *
-   * @param string $resourceIdentifier
-   *   Identifier for resource.
-   *
-   * @return array
-   *   Array of reference and original.
-   */
-  private function retrieveDownloadUrlFromResourceMapper(string $resourceIdentifier) {
-    $reference = [];
-    $original = NULL;
-
-    $info = DataResource::parseUniqueIdentifier($resourceIdentifier);
-
-    // Load resource object.
-    $sourceResource = $this->resourceMapper->get($info['identifier'], DataResource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
-
-    if (!$sourceResource) {
-      return [$reference, $original];
-    }
-
-    $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = $this->configFactory->get('dkan_metastore.settings')->get('resource_perspective_display')
-      ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE;
-    $resource = $sourceResource;
-
-    if (
-      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
-    ) {
-      $resource = $new;
-      $reference[] = $this->createResourceReference($resource);
-    }
-    $original = $resource->getFilePath();
-
-    return [$reference, $original];
-  }
-
-  /**
-   * Private.
-   */
-  private function createResourceReference(DataResource $resource): object {
-    return (object) [
-      "identifier" => $resource->getUniqueIdentifier(),
-      "data" => $resource,
-    ];
   }
 
   /**
