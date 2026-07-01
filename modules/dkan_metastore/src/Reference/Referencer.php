@@ -29,35 +29,6 @@ class Referencer {
   public const DEFAULT_MIME_TYPE = 'text/plain';
 
   /**
-   * Storage factory interface service.
-   *
-   * @var \Contracts\FactoryInterface
-   */
-  private $storageFactory;
-
-  /**
-   * Metastore URL Generator service.
-   */
-  public MetastoreUrlGenerator $metastoreUrlGenerator;
-
-  /**
-   * Guzzle HTTP client.
-   */
-  private Client $httpClient;
-
-  /**
-   * The MIME type guesser.
-   *
-   * @var \Symfony\Component\Mime\MimeTypeGuesserInterface
-   */
-  protected $mimeTypeGuesser;
-
-  /**
-   * DKAN logger channel service.
-   */
-  private LoggerInterface $logger;
-
-  /**
    * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
@@ -70,23 +41,18 @@ class Referencer {
    *   Guzzle http client.
    * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mimeTypeGuesser
    *   The MIME type guesser.
-   * @param \Psr\Log\LoggerInterface $loggerChannel
+   * @param \Psr\Log\LoggerInterface $logger
    *   DKAN logger channel service.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
-    FactoryInterface $storageFactory,
-    MetastoreUrlGenerator $metastoreUrlGenerator,
-    Client $httpClient,
-    MimeTypeGuesserInterface $mimeTypeGuesser,
-    LoggerInterface $loggerChannel,
+    private FactoryInterface $storageFactory,
+    private MetastoreUrlGenerator $metastoreUrlGenerator,
+    private Client $httpClient,
+    protected MimeTypeGuesserInterface $mimeTypeGuesser,
+    private LoggerInterface $logger,
   ) {
     $this->setConfigService($configService);
-    $this->storageFactory = $storageFactory;
-    $this->metastoreUrlGenerator = $metastoreUrlGenerator;
-    $this->httpClient = $httpClient;
-    $this->mimeTypeGuesser = $mimeTypeGuesser;
-    $this->logger = $loggerChannel;
   }
 
   /**
