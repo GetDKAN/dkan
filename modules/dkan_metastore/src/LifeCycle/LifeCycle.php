@@ -35,6 +35,7 @@ class LifeCycle {
 
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
+  const EVENT_DELETING_DISTRIBUTION = 'dkan_metastore_deleting_distribution';
 
   /**
    * Referencer service.
@@ -253,22 +254,9 @@ class LifeCycle {
   protected function distributionPredelete(MetastoreItemInterface $data): void {
     $distributionUuid = $data->getIdentifier();
 
-    $storage = $this->dataFactory->getInstance('distribution');
-    $resource = $storage->retrieve($distributionUuid);
-    $resource = json_decode((string) $resource);
+    $event = new Event($distributionUuid);
+    $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DISTRIBUTION);
 
-    $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
-
-    // Ensure a valid resource ID was found since it's required.
-    if (isset($id)) {
-      $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
-      $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
-      $this->queueFactory->get('orphan_resource_remover')->createItem([
-        $id,
-        $perspective,
-        $version,
-      ]);
-    }
   }
 
   /**

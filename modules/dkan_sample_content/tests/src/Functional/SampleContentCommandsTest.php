@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
 /**
- * @coversDefaultClass \Drupal\dkan_sample_content\Drush
+ * @coversDefaultClass \Drupal\dkan_sample_content\Drush\Commands\SampleContentCommands
  *
  * @group dkan
  * @group sample_content

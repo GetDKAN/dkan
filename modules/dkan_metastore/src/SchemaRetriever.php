@@ -8,21 +8,19 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class.
+ * DKAN schema retriever service.
  */
 class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface {
 
   /**
-   * Directory.
+   * Directory where schema files are stored.
    *
    * @var string
    */
   protected $directory;
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     $appRoot = $container->getParameter('app.root');
@@ -32,14 +30,24 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
   }
 
   /**
-   * Public.
+   * Constructor.
+   *
+   * @param string $appRoot
+   *   Drupal app root, for locating schema directory.
+   * @param \Drupal\Core\Extension\ModuleExtensionList $extensionList
+   *   Drupal extension list.
    */
   public function __construct($appRoot, ModuleExtensionList $extensionList) {
     $this->findSchemaDirectory($appRoot, $extensionList);
   }
 
   /**
-   * Public.
+   * Get all available schema IDs.
+   *
+   * @todo Make this dynamic.
+   *
+   * @return array
+   *   List of schema IDs.
    */
   public function getAllIds() {
     return [
@@ -59,14 +67,26 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
   }
 
   /**
-   * Public.
+   * Get the directory where schema files are stored.
+   *
+   * @return string
+   *   Directory path.
    */
   public function getSchemaDirectory() {
     return $this->directory;
   }
 
   /**
-   * Public.
+   * Retrieve a schema by ID.
+   *
+   * @param string $id
+   *   Schema ID.
+   *
+   * @return string|null
+   *   Schema content or null if not found.
+   *
+   * @throws \Exception
+   *   If the schema is not found.
    */
   public function retrieve(string $id): ?string {
 
@@ -81,7 +101,15 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
   }
 
   /**
-   * Private.
+   * Find the schema directory.
+   *
+   * @param string $appRoot
+   *   Drupal app root.
+   * @param \Drupal\Core\Extension\ModuleExtensionList $extensionList
+   *   Drupal extension list.
+   *
+   * @throws \Exception
+   *   If no schema directory is found.
    */
   protected function findSchemaDirectory($appRoot, $extensionList) {
 

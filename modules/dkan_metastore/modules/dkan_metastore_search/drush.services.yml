@@ -1,5 +1,0 @@
-services:
-  dkan:metastore_search:drush:
-    class: \Drupal\dkan_metastore_search\Commands\RebuildTrackerCommands
-    tags:
-      - { name: drush.command }

@@ -1,8 +1,0 @@
-services:
-  dkan.harvest.drush:
-    class: \Drupal\dkan_harvest\Commands\HarvestCommands
-    arguments:
-      - '@dkan.harvest.service'
-      - '@dkan.harvest.utility'
-    tags:
-      - { name: drush.command }

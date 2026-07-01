@@ -40,6 +40,7 @@ services:
     calls:
       - [setStorage, ['@?dkan.metastore.storage']]
       - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
+  Drupal\dkan_common\DatasetInfo: '@dkan.common.dataset_info'
 
   dkan.common.logger_channel:
     parent: logger.channel_base

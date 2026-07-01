@@ -157,21 +157,25 @@ function dkan_metastore_cron() {
         $message = 'No orphaned nodes deleted';
       }
       else {
-        $max_displayed = 20;
-        $count_msg = '';
-        if (count($nids) > $max_displayed) {
-          $count_msg = ' (and ' . count($nids) - $max_displayed . ' more)';
-          $nids = array_slice($nids, 0, 20);
+        $max_displayed = 10;
+        $count_msg = '1 orphaned node was deleted.';
+        $extra = '';
+        if (count($nids) > 1) {
+          $count_msg = count($nids) . ' orphaned nodes were deleted.';
         }
-        $message = 'Orphaned nodes ' . implode(',', $nids) . $count_msg . ' were deleted';
+        if (count($nids) > $max_displayed) {
+          $extra = ' (and ' . count($nids) - $max_displayed . ' more)';
+          $nids = array_slice($nids, 0, 10);
+        }
+        $message = $count_msg . ' Node id(s): ' . implode(', ', $nids) . $extra;
       }
-      \Drupal::logger('metastore')->notice($message);
+      \Drupal::logger('dkan_metastore')->notice($message);
     }
 
     \Drupal::state()->set('orphan_delete.last_run', $request_time);
   }
   catch (Exception $exception) {
-    \Drupal::logger('metastore')->error($exception->getMessage());
+    \Drupal::logger('dkan_metastore')->error($exception->getMessage());
   }
 }
 

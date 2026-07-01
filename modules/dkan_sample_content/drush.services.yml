@@ -1,8 +1,0 @@
-services:
-  dkan.sample_content.drush:
-    class: \Drupal\dkan_sample_content\Drush
-    arguments:
-      - '@dkan.sample_content.service'
-      - '@dkan.harvest.service'
-    tags:
-      - { name: drush.command }
