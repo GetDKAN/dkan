@@ -30,6 +30,7 @@ class LifeCycleTest extends KernelTestBase {
       [
         'title' => 'Test Distribution 1',
         'downloadURL' => 'http://example.com/1.csv',
+        'mediaType' => 'text/csv',
       ],
     ],
     "publisher" => [
@@ -85,7 +86,7 @@ class LifeCycleTest extends KernelTestBase {
    * @dataProvider testDatasetSaveProvider
    * @covers ::datasetSave
    */
-  public function testDatasetSave(?string $download_url, string $dist_reference) {
+  public function testDatasetSave(?string $download_url, ?string $media_type, string $dist_reference) {
     // Set the "distribution" property list item to use references or not.
     $property_list = $this->config('dkan_metastore.settings')->get('property_list');
     $property_list['distribution'] = $dist_reference;
@@ -97,6 +98,7 @@ class LifeCycleTest extends KernelTestBase {
     $dist_2 = [
       'title' => 'Test Distribution 2',
       'downloadURL' => $download_url,
+      'mediaType' => $media_type,
     ];
     $dataset_data['distribution'][1] = array_filter($dist_2);
 
@@ -139,18 +141,18 @@ class LifeCycleTest extends KernelTestBase {
    */
   public static function testDatasetSaveProvider() {
     $configs = ['distribution', '0'];
-    $download_urls = [
-      'http://example.com/1.csv',
-      'http://example.com/2.csv',
-      'http://example.com/2.tar',
-      'public://files/local.csv',
-      'file:///home/user/data.csv',
-      NULL,
+    $distro_data = [
+      ['http://example.com/1.csv', 'text/csv'],
+      ['http://example.com/2.csv', 'text/csv'],
+      ['http://example.com/2.tar', 'application/x-tar'],
+      ['public://files/local.csv', 'text/csv'],
+      ['file:///home/user/data.csv', 'text/csv'],
+      [NULL, NULL]
     ];
     $data = [];
     foreach ($configs as $config) {
-      foreach ($download_urls as $url) {
-        $data[] = [$url, $config];
+      foreach ($distro_data as $distro) {
+        $data[] = [$distro[0], $distro[1], $config];
       }
     }
     return $data;
