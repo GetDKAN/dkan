@@ -45,6 +45,11 @@ use Symfony\Component\Mime\MimeTypeGuesserInterface;
 class ReferencerTest extends TestCase {
 
   /**
+   * Chain for the injected resource mapper mock.
+   */
+  protected Chain $resourceMapperChain;
+
+  /**
    * HTTP file path for testing download URL.
    *
    * @var string
@@ -75,7 +80,7 @@ class ReferencerTest extends TestCase {
     'modified' => 0,
   ];
 
-  private function mockReferencer($existing = TRUE) {
+  private function mockReferencer($existing = TRUE, ?ResourceMapper $resourceMapper = NULL) {
     if ($existing) {
       $node = (new Chain($this))
         ->add(Node::class, 'get', FieldItemListInterface::class)
@@ -115,12 +120,19 @@ class ReferencerTest extends TestCase {
       ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
       ->getMock();
 
+    if (!$resourceMapper) {
+      $this->resourceMapperChain = (new Chain($this))
+        ->add(ResourceMapper::class, 'register', TRUE, 'resource');
+      $resourceMapper = $this->resourceMapperChain->getMock();
+    }
+
     return new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
       new Client(),
       $mimeTypeGuesser,
+      $resourceMapper,
       $this->createStub(LoggerInterface::class)
     );
   }
@@ -149,7 +161,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceResources
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
-   * @covers ::getFileMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
    * @covers ::referenceMultiple
@@ -180,7 +191,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
+    $this->assertEquals('text/csv', $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType());
   }
 
   /**
@@ -190,7 +201,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceResources
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
-   * @covers ::getFileMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
    * @covers ::referenceMultiple
@@ -223,7 +233,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $this->assertEquals('text/tab-separated-values', $container_chain->getStoredInput('resource')[0]->getMimeType());
+    $this->assertEquals('text/tab-separated-values', $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType());
   }
 
   /**
@@ -233,7 +243,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceResources
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
-   * @covers ::getFileMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
    * @covers ::referenceMultiple
@@ -265,7 +274,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
+    $this->assertEquals('text/csv', $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType());
   }
 
   public static function formatProvider() {
@@ -282,7 +291,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceResources
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
-   * @covers ::getFileMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
    * @covers ::referenceMultiple
@@ -315,7 +323,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $this->assertEquals($expected_mime, $container_chain->getStoredInput('resource')[0]->getMimeType());
+    $this->assertEquals($expected_mime, $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType());
   }
 
   /**
@@ -325,7 +333,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceResources
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
-   * @covers ::getFileMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
    * @covers ::referenceMultiple
@@ -369,7 +376,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceResources
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
-   * @covers ::getFileMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
    * @covers ::referenceMultiple
@@ -412,7 +418,6 @@ class ReferencerTest extends TestCase {
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
    * @covers ::handleExistingResource
-   * @covers ::getFileMapper
    * @covers ::getMimeType
    */
   public function testReferenceResourcesAlreadyRegisteredUsesExistingResource(): void {
@@ -429,24 +434,18 @@ class ReferencerTest extends TestCase {
       ->method('getAlreadyRegistered')
       ->willReturn([$resourceEntity]);
 
-    $options = (new Options())
-      ->add('stream_wrapper_manager', StreamWrapperManager::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('request_stack', RequestStack::class)
-      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->add('file_system', FileSystem::class)
-      ->index(0);
-
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getHost', 'test.test')
-      ->add(ResourceMapper::class, 'register', $alreadyRegistered)
-      ->add(ResourceMapper::class, 'get', $stored)
-      ->add(FileSystem::class, 'getTempDirectory', '/tmp');
+    $container_chain = $this->getContainer();
     \Drupal::setContainer($container_chain->getMock());
 
-    $referencer = $this->mockReferencer(TRUE);
+    $resourceMapper = $this->createMock(ResourceMapper::class);
+    $resourceMapper
+      ->method('register')
+      ->willThrowException($alreadyRegistered);
+    $resourceMapper
+      ->method('get')
+      ->willReturn($stored);
+
+    $referencer = $this->mockReferencer(TRUE, $resourceMapper);
     $data = (object) [
       'distribution' => [
         (object) [
@@ -489,7 +488,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceResources
    * @covers ::processDistributionResources
    * @covers ::registerWithResourceMapper
-   * @covers ::getFileMapper
    * @covers ::getLocalMimeType
    * @covers ::getMimeType
    * @covers ::getRemoteMimeType
@@ -554,32 +552,38 @@ class ReferencerTest extends TestCase {
       ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
       ->getMock();
 
+    $this->resourceMapperChain = (new Chain($this))
+      ->add(ResourceMapper::class, 'register', TRUE, 'resource')
+      ;
+    $resourceMapper = $this->resourceMapperChain->getMock();
+
     $referencer = new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
       new Client(),
       $mimeTypeGuesser,
+      $resourceMapper,
       $this->createStub(LoggerInterface::class)
     );
 
     // Test Mime Type detection using the resource `mediaType` property.
     $data = $this->getData(self::HOST . '/' . self::FILE_PATH, self::MIME_TYPE);
     $referencer->reference($data);
-    $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type from `mediaType` property');
+    $this->assertEquals(self::MIME_TYPE, $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type from `mediaType` property');
     // Test Mime Type detection on a local file.
     $data = $this->getData(self::HOST . '/' . self::FILE_PATH);
     $referencer->reference($data);
-    $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for local file');
+    $this->assertEquals(self::MIME_TYPE, $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for local file');
     // Test Mime Type detection on a remote file.
     $data = $this->getData('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv');
     $referencer->reference($data);
-    $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
+    $this->assertEquals(self::MIME_TYPE, $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
     // Test Mime Type detection on a invalid remote file path. Defaults to
     // text/plain.
     $data = $this->getData('http://invalid');
     $referencer->reference($data);
-    $this->assertEquals(Referencer::DEFAULT_MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Did not use default MIME type for inaccessible remote file.');
+    $this->assertEquals(Referencer::DEFAULT_MIME_TYPE, $this->resourceMapperChain->getStoredInput('resource')[0]->getMimeType(), 'Did not use default MIME type for inaccessible remote file.');
   }
 
   /**
@@ -622,12 +626,18 @@ class ReferencerTest extends TestCase {
       ->add(MimeTypeGuesserInterface::class, 'guessMimeType', self::MIME_TYPE)
       ->getMock();
 
+    $this->resourceMapperChain = (new Chain($this))
+      ->add(ResourceMapper::class, 'register', TRUE, 'resource')
+      ;
+    $resourceMapper = $this->resourceMapperChain->getMock();
+
     $referencer = new Referencer(
       $configService,
       $storageFactory,
       $urlGenerator,
       $http_client,
       $mimeTypeGuesser,
+      $resourceMapper,
       $this->createStub(LoggerInterface::class)
     );
 

@@ -51,6 +51,7 @@ services:
       - '@dkan.metastore.url_generator'
       - '@http_client'
       - '@file.mime_type.guesser.extension'
+      - '@dkan.metastore.resource_mapper'
       - '@dkan.common.logger_channel'
 
   dkan.metastore.dereferencer:
