@@ -243,10 +243,8 @@ class Dereferencer {
       ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE;
     $resource = $sourceResource;
 
-    if (
-      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
-    ) {
+    $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version']);
+    if ($perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE && $new) {
       $resource = $new;
       $reference[] = $this->createResourceReference($resource);
     }

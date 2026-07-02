@@ -7,7 +7,6 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_common\DataResource;
@@ -20,7 +19,6 @@ use Drupal\dkan_metastore\Storage\NodeData;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -35,11 +33,6 @@ use Symfony\Component\DependencyInjection\Container;
 class DereferencerTest extends TestCase {
 
   /**
-   * Mock config factory.
-   */
-  protected MockObject $configMock;
-
-  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
@@ -51,10 +44,19 @@ class DereferencerTest extends TestCase {
   }
 
   /**
+   * Config mock returning FALSE for all settings queries.
+   *
+   * @var \PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $configMock;
+
+  /**
+   * @covers ::__construct
    * @covers ::dereference
    * @covers ::dereferenceProperty
    * @covers ::dereferencePropertyUuid
    * @covers ::dereferenceSingle
+   * @covers ::validate
    */
   public function testDereference() {
     $metadata = '{"data":{"name":"Gerardo","company":"CivicActions"}}';
@@ -74,10 +76,6 @@ class DereferencerTest extends TestCase {
 
     $resourceMapper = $this->createStub(ResourceMapper::class);
 
-    (new Chain($this))
-      ->add(QueueFactory::class)
-      ->getMock();
-
     $valueReferencer = new Dereferencer(
       $configService,
       $storageFactory,
@@ -88,6 +86,24 @@ class DereferencerTest extends TestCase {
 
     $this->assertTrue(is_object($dereferenced));
     $this->assertEquals((object) ['name' => 'Gerardo', 'company' => 'CivicActions'], $dereferenced->publisher);
+  }
+
+  /**
+   * Test dereferencing invalid data (in this case, a string).
+   *
+   * @covers ::dereference
+   * @covers ::validate
+   */
+  public function testDereferenceInvalid() {
+
+    $valueReferencer = new Dereferencer(
+      $this->createStub(ConfigFactory::class),
+      $this->createStub(DataFactory::class),
+      $this->createStub(ResourceMapper::class),
+      $this->createStub(LoggerInterface::class)
+    );
+    $this->expectExceptionMessage('data must be an object');
+    $valueReferencer->dereference('{"foo":"bar"}');
   }
 
   /**
@@ -133,14 +149,12 @@ class DereferencerTest extends TestCase {
   /**
    * @covers ::dereference
    * @covers ::dereferenceMultiple
+   * @covers ::dereferencePropertyUuid
    */
   public function testDereferenceMultiple() {
-    $keyword1 = '{"data":"Gerardo"}';
-    $keyword2 = '{"data":"CivicActions"}';
-
     $keywords = (new Sequence())
-      ->add($keyword1)
-      ->add($keyword2);
+      ->add('{"data":"Gerardo"}')
+      ->add('{"data":"CivicActions"}');
 
     $storageFactory = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', NodeData::class)
@@ -152,10 +166,6 @@ class DereferencerTest extends TestCase {
     $configService = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', ['keyword'])
-      ->getMock();
-
-    (new Chain($this))
-      ->add(QueueFactory::class)
       ->getMock();
 
     $valueReferencer = new Dereferencer(
@@ -208,13 +218,8 @@ class DereferencerTest extends TestCase {
    * @covers ::dereferenceDistributionResource
    */
   public function testDereferenceResourcesNoDownloadUrl() {
-    $configService = (new Chain($this))
-      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', FALSE)
-      ->getMock();
-
     $dereferencer = new Dereferencer(
-      $configService,
+      $this->createStub(ConfigFactory::class),
       $this->getMockForAbstractClass(FactoryInterface::class),
       $this->createStub(ResourceMapper::class),
       $this->createStub(LoggerInterface::class)
@@ -236,35 +241,132 @@ class DereferencerTest extends TestCase {
     $this->assertFalse(property_exists($data->distribution[0], '%Ref:downloadURL'));
   }
 
-
   /**
    * Test dereferencing a download URL that is a reference.
    *
    * @covers ::dereferenceResources
    * @covers ::dereferenceDistributionResource
+   * @covers ::retrieveDownloadUrlFromResourceMapper
+   * @covers ::createResourceReference
+   * @dataProvider dereferenceResourcesWithIdentifierProvider
    */
-  public function testDereferenceResourcesWithIdentifier() {
-    $this->setContainerForUrlResolver();
-
-    $configService = (new Chain($this))
-      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', FALSE)
-      ->getMock();
-
+  public function testDereferenceResourcesWithIdentifier($expected, $return) {
     $resourceMapper = $this->createMock(ResourceMapper::class);
     $resourceMapper
       ->method('get')
-      ->willReturn(new DataResource(
-        'http://example.com/test.csv',
-        'text/csv')
-      );
+      ->willReturn($return);
 
-    $dereferencer = new Dereferencer(
-      $configService,
-      $this->getMockForAbstractClass(FactoryInterface::class),
-      $resourceMapper,
-      $this->createStub(LoggerInterface::class)
-    );
+    $dereferencer = $this->createDereferencer($resourceMapper);
+
+    $data = (object) [
+      'distribution' => [
+        (object) [
+          'downloadURL' => '5d41402abc4b2a76b9719d911017c592__1783014536__source',
+          'mediaType' => 'text/csv',
+        ],
+      ],
+    ];
+
+    $dereferencer->dereferenceResources($data);
+    $this->assertEquals($expected, $data->distribution[0]->downloadURL);
+    $this->assertTrue(property_exists($data->distribution[0], '%Ref:downloadURL'));
+  }
+
+  /**
+   * Test dereferencing a distribution resource with an empty download URL.
+   *
+   * @covers ::dereferenceResources
+   * @covers ::dereferenceDistributionResource
+   * @dataProvider dereferenceEmptyDownloadUrlProvider
+   */
+  public function testDereferenceEmptyDownloadUrl($setting, $expected) {
+    $config = (new Chain($this))
+      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', (new Options())
+        ->add('unset_download_url_if_empty', $setting)
+        ->index(0)
+      )
+      ->getMock();
+
+    $dereferencer = $this->createDereferencer(NULL, $config);
+
+    $data = (object) [
+      'distribution' => [
+        (object) [
+          'downloadURL' => '',
+          'mediaType' => 'text/csv',
+        ],
+      ],
+    ];
+
+    $dereferencer->dereferenceResources($data);
+    $this->assertEquals($expected, property_exists($data->distribution[0], 'downloadURL'));
+  }
+
+  /**
+   * Data provider for testDereferenceEmptyDownloadUrl.
+   *
+   * @return array
+   *   Test data.
+   */
+  private function dereferenceEmptyDownloadUrlProvider() {
+    return [
+      'unset_download_url_if_empty is TRUE' => [
+        'setting' => TRUE,
+        'expected' => FALSE,
+      ],
+      'unset_download_url_if_empty is FALSE' => [
+        'setting' => FALSE,
+        'expected' => TRUE,
+      ],
+    ];
+  }
+
+  /**
+   * Data provider for testDereferenceResourcesWithIdentifier.
+   *
+   * We expect a proper dereference if resource mapper returns a DataResource,
+   * and we expect an empty string if the resource mapper returns NULL.
+   *
+   * @return array
+   *   Test data.
+   */
+  private function dereferenceResourcesWithIdentifierProvider() {
+    return [
+      'resource mapping entity exists' => [
+        'http://example.com/test.csv',
+        new DataResource('http://example.com/test.csv','text/csv'),
+      ],
+      'resource mapping entity does not exist' => [
+        "",
+        NULL,
+      ],
+    ];
+  }
+
+  /**
+   * Test that a non-default display perspective adds a second reference entry.
+   *
+   * @covers ::dereferenceResources
+   * @covers ::dereferenceDistributionResource
+   * @covers ::retrieveDownloadUrlFromResourceMapper
+   * @covers ::createResourceReference
+   */
+  public function testDereferenceResourcesWithNonDefaultPerspective() {
+    $config = (new Chain($this))
+      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', (new Options())
+        ->add('resource_perspective_display', 'local_url')
+        ->add('unset_download_url_if_empty', FALSE)
+        ->index(0)
+      )
+      ->getMock();
+
+    $resource = new DataResource('http://example.com/test.csv', 'text/csv');
+    $mapper = $this->createStub(ResourceMapper::class);
+    $mapper->method('get')->willReturn($resource);
+
+    $dereferencer = $this->createDereferencer($mapper, $config);
 
     $data = (object) [
       'distribution' => [
@@ -277,8 +379,8 @@ class DereferencerTest extends TestCase {
 
     $dereferencer->dereferenceResources($data);
 
-    $this->assertEquals('http://example.com/test.csv', $data->distribution[0]->downloadURL);
-    $this->assertTrue(property_exists($data->distribution[0], '%Ref:downloadURL'));
+    // Both the source reference and the perspective reference are present.
+    $this->assertCount(2, $data->distribution[0]->{'%Ref:downloadURL'});
   }
 
   /**
@@ -289,21 +391,10 @@ class DereferencerTest extends TestCase {
    *
    * @covers ::dereferenceResources
    * @covers ::dereferenceDistributionResource
+   * @covers ::retrieveDownloadUrlFromResourceMapper
    */
   public function testDereferenceResourcesWithValidDownloadUrl() {
-    $this->setContainerForUrlResolver();
-
-    $configService = (new Chain($this))
-      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', FALSE)
-      ->getMock();
-
-    $dereferencer = new Dereferencer(
-      $configService,
-      $this->getMockForAbstractClass(FactoryInterface::class),
-      $this->createStub(ResourceMapper::class),
-      $this->createStub(LoggerInterface::class)
-    );
+    $dereferencer = $this->createDereferencer();
 
     $data = (object) [
       'distribution' => [
@@ -318,6 +409,31 @@ class DereferencerTest extends TestCase {
 
     $this->assertEquals('http://example.com/test.csv', $data->distribution[0]->downloadURL);
     $this->assertFalse(property_exists($data->distribution[0], '%Ref:downloadURL'));
+  }
+
+  /**
+   * Build a Dereferencer wired for resource URL tests.
+   *
+   * Sets up the Drupal container for UrlHostTokenResolver and uses the shared
+   * $this->configMock (returns FALSE for all settings queries) unless an
+   * alternative config factory is supplied.
+   *
+   * @param \Drupal\dkan_metastore\ResourceMapper|null $resourceMapper
+   *   Optional resource mapper mock. A stub is used when not supplied.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface|null $config
+   *   Optional config factory override. Defaults to $this->configMock.
+   *
+   * @return \Drupal\dkan_metastore\Reference\Dereferencer
+   *   Configured dereferencer instance.
+   */
+  private function createDereferencer(?ResourceMapper $resourceMapper = NULL, ?ConfigFactoryInterface $config = NULL): Dereferencer {
+    $this->setContainerForUrlResolver();
+    return new Dereferencer(
+      $config ?? $this->configMock,
+      $this->getMockForAbstractClass(FactoryInterface::class),
+      $resourceMapper ?? $this->createStub(ResourceMapper::class),
+      $this->createStub(LoggerInterface::class)
+    );
   }
 
   /**
