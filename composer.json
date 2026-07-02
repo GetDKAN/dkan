@@ -39,7 +39,8 @@
         "drush/drush": "*",
         "getdkan/mock-chain": "~1.4.1",
         "osteel/openapi-httpfoundation-testing": "^0.13",
-        "drupal/admin_toolbar": "^3.0"
+        "drupal/admin_toolbar": "^3.0",
+        "drupal/ai_best_practices": "@dev"
     },
     "repositories": {
         "drupal": {
@@ -53,7 +54,8 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "tbachert/spi": true,
-            "drupal/core-composer-scaffold": true
+            "drupal/core-composer-scaffold": true,
+            "drupal/ai_best_practices": true
         }
     },
     "extra": {
@@ -69,5 +71,8 @@
                 }
             }
         }
+    },
+    "scripts": {
+        "drupal-ai": "Drupal\\AiBestPractices\\Console\\AiBestPracticesApplication::runFromComposer"
     }
 }

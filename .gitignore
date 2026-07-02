@@ -40,3 +40,9 @@ docs/.venv
 /.ddev/web-build/*
 !/.ddev/web-build/Dockerfile
 tmp
+# For now, ignore any artifacts from Drupal AI Best Practices.
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/.agents
+/ai_best_practices.yaml
