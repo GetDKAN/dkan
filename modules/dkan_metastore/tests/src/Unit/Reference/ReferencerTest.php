@@ -12,10 +12,12 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\dkan_metastore\Exception\AlreadyRegistered;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\Reference\Referencer;
+use Drupal\dkan_metastore\ResourceMappingInterface;
 use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\NodeData;
@@ -77,27 +79,21 @@ class ReferencerTest extends TestCase {
     if ($existing) {
       $node = (new Chain($this))
         ->add(Node::class, 'get', FieldItemListInterface::class)
-          ->addd('uuid', '0398f054-d712-4e20-ad1e-a03193d6ab33')
+        ->addd('uuid', '0398f054-d712-4e20-ad1e-a03193d6ab33')
         ->add(FieldItemListInterface::class, 'getString', 'orphaned')
         ->add(Node::class, 'set')
         ->add(Node::class, 'save')
         ->getMock();
+      $nodes = [$node];
     }
     else {
-      $node = (new Chain($this))
-        ->add(Node::class, 'get', FieldItemListInterface::class)
-          ->addd('uuid', null)
-        ->add(FieldItemListInterface::class, 'getString', 'orphaned')
-        ->add(Node::class, 'set')
-        ->add(Node::class, 'save')
-        ->add(Node::class, 'setRevisionLogMessage')
-        ->getMock();
+      $nodes = [];
     }
 
     $storageFactory = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', NodeData::class)
       ->add(NodeData::class, 'getEntityStorage', NodeStorage::class)
-      ->add(NodeStorage::class, 'loadByProperties', [$node])
+      ->add(NodeStorage::class, 'loadByProperties', $nodes)
       ->add(NodeData::class, 'getEntityIdFromUuid', "1")
       ->add(NodeData::class, 'getEntityLatestRevision', NULL)
       ->add(NodeData::class, 'store', "abc")
@@ -149,7 +145,16 @@ class ReferencerTest extends TestCase {
   /**
    * Test file mime type.
    *
-   * @var string
+   * @covers ::reference
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::getFileMapper
+   * @covers ::getMimeType
+   * @covers ::referenceProperty
+   * @covers ::referenceMultiple
+   * @covers ::referenceSingle
+   * @covers ::checkExistingReference
    */
   public function testNoMediaType() {
     $container_chain = $this->getContainer();
@@ -179,7 +184,18 @@ class ReferencerTest extends TestCase {
   }
 
   /**
-   * Test that CSV format translates to correct mediatype if mediatype not supplied
+   * Test that CSV format translates to correct mediatype if not supplied.
+   *
+   * @covers ::reference
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::getFileMapper
+   * @covers ::getMimeType
+   * @covers ::referenceProperty
+   * @covers ::referenceMultiple
+   * @covers ::referenceSingle
+   * @covers ::checkExistingReference
    */
   public function testWithMediaTypeConflictingFormat() {
     $container_chain = $this->getContainer();
@@ -211,7 +227,18 @@ class ReferencerTest extends TestCase {
   }
 
   /**
-   * Test that CSV format translates to correct mediatype if mediatype not supplied
+   * Test that CSV format translates to correct mediatype if not supplied.
+   *
+   * @covers ::reference
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::getFileMapper
+   * @covers ::getMimeType
+   * @covers ::referenceProperty
+   * @covers ::referenceMultiple
+   * @covers ::referenceSingle
+   * @covers ::checkExistingReference
    */
   public function testNoMediaTypeWitCsvFormat() {
     $container_chain = $this->getContainer();
@@ -251,6 +278,16 @@ class ReferencerTest extends TestCase {
   /**
    * Test that format translates to correct mediatype if mediatype not supplied.
    *
+   * @covers ::reference
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::getFileMapper
+   * @covers ::getMimeType
+   * @covers ::referenceProperty
+   * @covers ::referenceMultiple
+   * @covers ::referenceSingle
+   * @covers ::checkExistingReference
    * @dataProvider formatProvider
    */
   public function testNoMediaTypeWithFormat($format, $expected_mime) {
@@ -283,6 +320,19 @@ class ReferencerTest extends TestCase {
 
   /**
    * Test that a new reference is created when needed.
+   *
+   * @covers ::reference
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::getFileMapper
+   * @covers ::getMimeType
+   * @covers ::referenceProperty
+   * @covers ::referenceMultiple
+   * @covers ::referenceSingle
+   * @covers ::checkExistingReference
+   * @covers ::createPropertyReference
+   * @covers ::distributionHandling
    */
   public function testNewReference() {
     $container_chain = $this->getContainer();
@@ -313,21 +363,120 @@ class ReferencerTest extends TestCase {
   }
 
   /**
+   * Test that an existing reference is used when available.
+   *
+   * @covers ::reference
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::getFileMapper
+   * @covers ::getMimeType
+   * @covers ::referenceProperty
+   * @covers ::referenceMultiple
+   * @covers ::referenceSingle
+   * @covers ::checkExistingReference
+   * @covers ::distributionHandling
+   */
+  public function testExistingReference() {
+    $container_chain = $this->getContainer();
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $referencer = $this->mockReferencer(TRUE);
+
+    $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+    $json = '
+    {
+      "title": "Test Dataset No Media Type",
+      "description": "Hi",
+      "identifier": "12345",
+      "accessLevel": "public",
+      "modified": "06-04-2020",
+      "keyword": ["hello"],
+        "distribution": [
+          {
+            "title": "blah",
+            "downloadURL": "' . $downloadUrl . '",
+            "format": "tsv"
+          }
+        ]
+    }';
+    $data = json_decode($json);
+    $referencer->reference($data);
+    $this->assertEquals('0398f054-d712-4e20-ad1e-a03193d6ab33', $data->distribution[0]);
+  }
+
+  /**
+   * Test resource mapping fallback when registration throws AlreadyRegistered.
+   *
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::handleExistingResource
+   * @covers ::getFileMapper
+   * @covers ::getMimeType
+   */
+  public function testReferenceResourcesAlreadyRegisteredUsesExistingResource(): void {
+    $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+    $stored = new \Drupal\dkan_common\DataResource($downloadUrl, self::MIME_TYPE);
+
+    $resourceEntity = (new Chain($this))
+      ->add(ResourceMappingInterface::class, 'get', FieldItemListInterface::class)
+      ->add(FieldItemListInterface::class, 'getString', '5d41402abc4b2a76b9719d911017c592')
+      ->getMock();
+
+    $alreadyRegistered = $this->createMock(AlreadyRegistered::class);
+    $alreadyRegistered
+      ->method('getAlreadyRegistered')
+      ->willReturn([$resourceEntity]);
+
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('request_stack', RequestStack::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('file_system', FileSystem::class)
+      ->index(0);
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getHost', 'test.test')
+      ->add(ResourceMapper::class, 'register', $alreadyRegistered)
+      ->add(ResourceMapper::class, 'get', $stored)
+      ->add(FileSystem::class, 'getTempDirectory', '/tmp');
+    \Drupal::setContainer($container_chain->getMock());
+
+    $referencer = $this->mockReferencer(TRUE);
+    $data = (object) [
+      'distribution' => [
+        (object) [
+          'downloadURL' => $downloadUrl,
+          'mediaType' => self::MIME_TYPE,
+        ],
+      ],
+    ];
+
+    $referencer->referenceResources($data);
+
+    $this->assertEquals($stored->getUniqueIdentifier(), $data->distribution[0]->downloadURL);
+  }
+
+  /**
    * Create a test dataset using the supplied download URL.
    */
   private function getData(string $downloadUrl, ?string $mediaType = NULL): object {
     return (object) [
       'title' => 'Test Dataset No Media Type',
       'description' => 'Hi',
-      'identifier'=> '12345',
-      'accessLevel'=> 'public',
-      'modified'=> '06-04-2020',
-      'keyword'=> ['hello'],
-      'distribution'=> [
+      'identifier' => '12345',
+      'accessLevel' => 'public',
+      'modified' => '06-04-2020',
+      'keyword' => ['hello'],
+      'distribution' => [
         (object) array_filter([
-          'title'=> 'blah',
+          'title' => 'blah',
           'mediaType' => $mediaType,
-          'downloadURL'=> $downloadUrl,
+          'downloadURL' => $downloadUrl,
         ]),
       ],
     ];
@@ -336,6 +485,11 @@ class ReferencerTest extends TestCase {
   /**
    * Test the remote/local file mime type detection logic.
    *
+   * @covers ::reference
+   * @covers ::referenceResources
+   * @covers ::processDistributionResources
+   * @covers ::registerWithResourceMapper
+   * @covers ::getFileMapper
    * @covers ::getLocalMimeType
    * @covers ::getMimeType
    * @covers ::getRemoteMimeType
@@ -355,8 +509,10 @@ class ReferencerTest extends TestCase {
       public function loadByProperties() {
         return [
           new class {
-            public function getMimeType() { return ReferencerTest::MIME_TYPE; }
-          }
+            public function getMimeType() {
+              return ReferencerTest::MIME_TYPE;
+            }
+          },
         ];
       }
     };
@@ -427,6 +583,8 @@ class ReferencerTest extends TestCase {
   }
 
   /**
+   * @covers ::distributionHandling
+   * @covers ::normalizeDictionaryValue
    * @dataProvider provideDataDictionaryData
    */
   public function testDistributionHandlingDataDict($distribution, $describedBy) {
@@ -452,7 +610,7 @@ class ReferencerTest extends TestCase {
       ->add(MetastoreService::class, 'get', (new Options())
         ->add('111', RootedJsonData::class)
         ->add('222', new MissingObjectException())
-      ->index(1)
+        ->index(1)
       )
       ->getMock();
 
