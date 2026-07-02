@@ -40,7 +40,10 @@ class Dereferencer {
   public function dereference($data) {
     $this->validate($data);
 
-    // Cycle through the dataset properties we seek to dereference.
+    // Cycle through the dataset properties we seek to dereference. If
+    // distributions are referenced, this has already been handled in the
+    // LifeCycle::distributionLoad() method, and will skip the already-
+    // dereferenced distributions.
     foreach ($this->getPropertyList() as $propertyId) {
       if (isset($data->{$propertyId})) {
         $this->dereferenceProperty($propertyId, $data);
@@ -185,7 +188,7 @@ class Dereferencer {
    * @param object $distribution
    *   The distribution object.
    */
-  protected function dereferenceDistributionResource($distribution) {
+  public function dereferenceDistributionResource($distribution) {
     if (!isset($distribution->downloadURL)) {
       return;
     }

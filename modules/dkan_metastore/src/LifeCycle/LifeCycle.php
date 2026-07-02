@@ -152,6 +152,8 @@ class LifeCycle {
   protected function distributionLoad(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
 
+    $this->dereferencer->dereferenceDistributionResource($metadata->data);
+
     // If describedBy contains dkan:// URI, convert to absolute URL.
     if (StreamWrapperManager::getScheme($metadata->data->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {
       $metadata->data->describedBy = $this->referencer->metastoreUrlGenerator->absoluteString($metadata->data->describedBy);
