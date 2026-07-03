@@ -342,18 +342,30 @@ class LifeCycle {
    * @throws \Exception
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
-    $metadata = $data->getMetadata();
+    $create_new_resource_version = NULL;
 
     // Trigger datastore import if applicable.
     // Needs to happen before updating references.
     if ($data instanceof MetastoreItemInterface) {
-      $event = new Event($data);
+      $event = new Event((object) [
+        'item' => $data,
+        'createNewResourceVersion' => NULL,
+      ]);
       $this->eventDispatcher->dispatch($event, self::EVENT_PRE_REFERENCE);
+
+      $event_data = $event->getData();
+      if (is_object($event_data) && property_exists($event_data, 'createNewResourceVersion')) {
+        $create_new_resource_version = is_null($event_data->createNewResourceVersion)
+          ? NULL
+          : (bool) $event_data->createNewResourceVersion;
+      }
     }
+
+    $metadata = $data->getMetadata();
 
     // Convert references in metadata to uuids.
     // Create new reference entities if they do not exist.
-    $metadata = $this->referencer->reference($metadata);
+    $metadata = $this->referencer->reference($metadata, $create_new_resource_version);
 
     // Re-add metadata to data object with uuids.
     $data->setMetadata($metadata);
