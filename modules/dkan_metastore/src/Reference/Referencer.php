@@ -85,9 +85,6 @@ class Referencer {
   /**
    * Recurses through distributions to find resources to reference in dataset.
    *
-   * This may be parameterized someday to find the exact path to resources from
-   * config or schema definition.
-   *
    * @param object $data
    *   Dataset JSON object.
    */

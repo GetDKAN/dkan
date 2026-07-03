@@ -42,15 +42,13 @@ class Dereferencer {
   public function dereference($data) {
     $this->validate($data);
 
-    // Cycle through the dataset properties we seek to dereference. If
-    // distributions are referenced, this has already been handled in the
-    // LifeCycle::distributionLoad() method, and will skip the already-
-    // dereferenced distributions.
     foreach ($this->getPropertyList() as $propertyId) {
       if (isset($data->{$propertyId})) {
         $this->dereferenceProperty($propertyId, $data);
       }
     }
+    // We dereference the properties within distributions next, agnostic to
+    // weather or not the distribution itself is a reference.
     $this->dereferenceDistributions($data);
     return $data;
   }
@@ -204,16 +202,13 @@ class Dereferencer {
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($downloadUrl);
 
       $downloadUrl = $original ?? "";
-
-      $refProperty = "%Ref:downloadURL";
-      $distribution->{$refProperty} = count($ref) == 0 ? NULL : $ref;
+      $distribution->{"%Ref:downloadURL"} = count($ref) == 0 ? NULL : $ref;
     }
-
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
-
-    $unset_downloadUrl = $this->configService->get('dkan_metastore.settings')->get('unset_download_url_if_empty') ?? FALSE;
+    $unset_downloadUrl = $this->configService->get('dkan_metastore.settings')
+      ->get('unset_download_url_if_empty') ?? FALSE;
     if (!$downloadUrl && $unset_downloadUrl) {
       unset($distribution->downloadURL);
     }
@@ -222,6 +217,12 @@ class Dereferencer {
     }
   }
 
+  /**
+   * Dereference/normalize a distribution data dictionary.
+   *
+   * @param object $distribution
+   *   The distribution object.
+   */
   public function dereferenceDataDictionary($distribution) {
     if (!isset($distribution->describedBy)) {
       return;
