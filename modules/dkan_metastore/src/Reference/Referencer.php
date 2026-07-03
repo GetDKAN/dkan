@@ -69,7 +69,7 @@ class Referencer {
    */
   public function reference(object $data): object {
     // Process resource references first.
-    $this->referenceResources($data);
+    $this->referenceDistributions($data);
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -91,9 +91,10 @@ class Referencer {
    * @param object $data
    *   Dataset JSON object.
    */
-  public function referenceResources(object $data): void {
+  public function referenceDistributions(object $data): void {
     foreach (($data->distribution ?? []) as &$distribution) {
-      $this->processDistributionResources($distribution);
+      $this->referenceResource($distribution);
+      $this->referenceDataDictionary($distribution);
     }
     unset($distribution);
   }
@@ -104,11 +105,12 @@ class Referencer {
    * @param object $distribution
    *   The distribution object from the metadata.
    */
-  protected function processDistributionResources(object $distribution): void {
+  public function referenceResource(object $distribution): void {
+    // Clean up any reference metadata if it exists.
+    unset($distribution->{'%Ref:downloadURL'});
     if (!isset($distribution->downloadURL)) {
       return;
     }
-
     // Check that URL is valid.
     if (filter_var($distribution->downloadURL, FILTER_VALIDATE_URL) === FALSE) {
       return;
@@ -175,10 +177,6 @@ class Referencer {
    *   The Uuid reference, or NULL on failure.
    */
   protected function referenceSingle(string $property_id, $value) {
-    if ($property_id == 'distribution') {
-      $value = $this->distributionHandling($value);
-    }
-
     $uuid = $this->checkExistingReference($property_id, $value);
     if (!$uuid) {
       $uuid = $this->createPropertyReference($property_id, $value);
@@ -209,7 +207,7 @@ class Referencer {
    * @return object
    *   The supplied distribution with an updated resource download URL.
    */
-  public function distributionHandling($distribution): object {
+  public function referenceDataDictionary($distribution): object {
     // If there is a describedBy value, convert to dkan:// URL if appropriate.
     if ($distribution->describedBy ?? FALSE) {
       $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);

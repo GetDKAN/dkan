@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore\Reference;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\UrlHostTokenResolver;
 use Psr\Log\LoggerInterface;
@@ -22,6 +23,7 @@ class Dereferencer {
   public function __construct(
     ConfigFactoryInterface $configService,
     protected FactoryInterface $storageFactory,
+    protected MetastoreUrlGenerator $metastoreUrlGenerator,
     protected ResourceMapper $resourceMapper,
     protected LoggerInterface $logger,
   ) {
@@ -49,7 +51,7 @@ class Dereferencer {
         $this->dereferenceProperty($propertyId, $data);
       }
     }
-    $this->dereferenceResources($data);
+    $this->dereferenceDistributions($data);
     return $data;
   }
 
@@ -167,17 +169,18 @@ class Dereferencer {
   }
 
   /**
-   * Replaces resource references in a dataset with their actual values.
+   * For each distribution in the dataset, dereference downloadURL, describedBy.
    *
    * @param object $data
    *   The json metadata object.
    */
-  public function dereferenceResources($data) {
+  public function dereferenceDistributions($data) {
     if (!isset($data->distribution) || !is_array($data->distribution)) {
       return;
     }
     foreach ($data->distribution as &$distribution) {
-      $this->dereferenceDistributionResource($distribution);
+      $this->dereferenceResource($distribution);
+      $this->dereferenceDataDictionary($distribution);
     }
     unset($distribution);
   }
@@ -188,7 +191,7 @@ class Dereferencer {
    * @param object $distribution
    *   The distribution object.
    */
-  public function dereferenceDistributionResource($distribution) {
+  public function dereferenceResource($distribution) {
     if (!isset($distribution->downloadURL)) {
       return;
     }
@@ -216,6 +219,17 @@ class Dereferencer {
     }
     else {
       $distribution->downloadURL = $downloadUrl;
+    }
+  }
+
+  public function dereferenceDataDictionary($distribution) {
+    if (!isset($distribution->describedBy)) {
+      return;
+    }
+
+    // If describedBy contains dkan:// URI, convert to absolute URL.
+    if (StreamWrapperManager::getScheme($distribution->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {
+      $distribution->describedBy = $this->metastoreUrlGenerator->absoluteString($distribution->describedBy);
     }
   }
 

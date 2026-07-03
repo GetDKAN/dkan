@@ -59,6 +59,7 @@ services:
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.url_generator'
       - '@dkan.metastore.resource_mapper'
       - '@dkan.common.logger_channel'
 

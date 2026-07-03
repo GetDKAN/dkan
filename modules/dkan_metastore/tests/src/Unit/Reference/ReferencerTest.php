@@ -158,8 +158,8 @@ class ReferencerTest extends TestCase {
    * Test file mime type.
    *
    * @covers ::reference
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
@@ -198,8 +198,8 @@ class ReferencerTest extends TestCase {
    * Test that CSV format translates to correct mediatype if not supplied.
    *
    * @covers ::reference
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
@@ -240,8 +240,8 @@ class ReferencerTest extends TestCase {
    * Test that CSV format translates to correct mediatype if not supplied.
    *
    * @covers ::reference
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
@@ -288,8 +288,8 @@ class ReferencerTest extends TestCase {
    * Test that format translates to correct mediatype if mediatype not supplied.
    *
    * @covers ::reference
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
@@ -330,8 +330,8 @@ class ReferencerTest extends TestCase {
    * Test that a new reference is created when needed.
    *
    * @covers ::reference
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
@@ -373,8 +373,8 @@ class ReferencerTest extends TestCase {
    * Test that an existing reference is used when available.
    *
    * @covers ::reference
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
@@ -414,8 +414,8 @@ class ReferencerTest extends TestCase {
   /**
    * Test resource mapping fallback when registration throws AlreadyRegistered.
    *
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::handleExistingResource
    * @covers ::getMimeType
@@ -455,7 +455,7 @@ class ReferencerTest extends TestCase {
       ],
     ];
 
-    $referencer->referenceResources($data);
+    $referencer->referenceDistributions($data);
 
     $this->assertEquals($stored->getUniqueIdentifier(), $data->distribution[0]->downloadURL);
   }
@@ -485,8 +485,8 @@ class ReferencerTest extends TestCase {
    * Test the remote/local file mime type detection logic.
    *
    * @covers ::reference
-   * @covers ::referenceResources
-   * @covers ::processDistributionResources
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
    * @covers ::registerWithResourceMapper
    * @covers ::getLocalMimeType
    * @covers ::getMimeType

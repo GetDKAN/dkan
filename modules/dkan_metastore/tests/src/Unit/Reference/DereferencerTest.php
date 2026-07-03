@@ -12,6 +12,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Reference\Dereferencer;
+use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Service\Uuid5;
 use Drupal\dkan_metastore\Storage\DataFactory;
@@ -79,6 +80,7 @@ class DereferencerTest extends TestCase {
     $valueReferencer = new Dereferencer(
       $configService,
       $storageFactory,
+      $this->createStub(MetastoreUrlGenerator::class),
       $resourceMapper,
       $this->createStub(LoggerInterface::class)
     );
@@ -99,6 +101,7 @@ class DereferencerTest extends TestCase {
     $valueReferencer = new Dereferencer(
       $this->createStub(ConfigFactory::class),
       $this->createStub(DataFactory::class),
+      $this->createStub(MetastoreUrlGenerator::class),
       $this->createStub(ResourceMapper::class),
       $this->createStub(LoggerInterface::class)
     );
@@ -131,6 +134,7 @@ class DereferencerTest extends TestCase {
     $valueReferencer = new Dereferencer(
       $configService,
       $storageFactory,
+      $this->createStub(MetastoreUrlGenerator::class),
       $this->createStub(ResourceMapper::class),
       $logger
     );
@@ -171,6 +175,7 @@ class DereferencerTest extends TestCase {
     $valueReferencer = new Dereferencer(
       $configService,
       $storageFactory,
+      $this->createStub(MetastoreUrlGenerator::class),
       $this->createStub(ResourceMapper::class),
       $this->createStub(LoggerInterface::class)
     );
@@ -190,6 +195,7 @@ class DereferencerTest extends TestCase {
     $dereferencer = new Dereferencer(
       $this->getMockForAbstractClass(ConfigFactoryInterface::class),
       $this->getMockForAbstractClass(FactoryInterface::class),
+      $this->createStub(MetastoreUrlGenerator::class),
       $this->createStub(ResourceMapper::class),
       $logger
     );
@@ -215,12 +221,13 @@ class DereferencerTest extends TestCase {
    * Test dereferencing a distribution resource with no download URL.
    *
    * @covers ::dereferenceResources
-   * @covers ::dereferenceDistributionResource
+   * @covers ::dereferenceResource
    */
   public function testDereferenceResourcesNoDownloadUrl() {
     $dereferencer = new Dereferencer(
       $this->createStub(ConfigFactory::class),
       $this->getMockForAbstractClass(FactoryInterface::class),
+      $this->createStub(MetastoreUrlGenerator::class),
       $this->createStub(ResourceMapper::class),
       $this->createStub(LoggerInterface::class)
     );
@@ -234,7 +241,7 @@ class DereferencerTest extends TestCase {
       ],
     ];
 
-    $dereferencer->dereferenceResources($data);
+    $dereferencer->dereferenceDistributions($data);
 
     $this->assertEquals('No download URL', $data->distribution[0]->title);
     $this->assertFalse(property_exists($data->distribution[0], 'downloadURL'));
@@ -245,7 +252,7 @@ class DereferencerTest extends TestCase {
    * Test dereferencing a download URL that is a reference.
    *
    * @covers ::dereferenceResources
-   * @covers ::dereferenceDistributionResource
+   * @covers ::dereferenceResource
    * @covers ::retrieveDownloadUrlFromResourceMapper
    * @covers ::createResourceReference
    * @dataProvider dereferenceResourcesWithIdentifierProvider
@@ -267,7 +274,7 @@ class DereferencerTest extends TestCase {
       ],
     ];
 
-    $dereferencer->dereferenceResources($data);
+    $dereferencer->dereferenceDistributions($data);
     $this->assertEquals($expected, $data->distribution[0]->downloadURL);
     $this->assertTrue(property_exists($data->distribution[0], '%Ref:downloadURL'));
   }
@@ -276,7 +283,7 @@ class DereferencerTest extends TestCase {
    * Test dereferencing a distribution resource with an empty download URL.
    *
    * @covers ::dereferenceResources
-   * @covers ::dereferenceDistributionResource
+   * @covers ::dereferenceResource
    * @dataProvider dereferenceEmptyDownloadUrlProvider
    */
   public function testDereferenceEmptyDownloadUrl($setting, $expected) {
@@ -299,7 +306,7 @@ class DereferencerTest extends TestCase {
       ],
     ];
 
-    $dereferencer->dereferenceResources($data);
+    $dereferencer->dereferenceDistributions($data);
     $this->assertEquals($expected, property_exists($data->distribution[0], 'downloadURL'));
   }
 
@@ -348,7 +355,7 @@ class DereferencerTest extends TestCase {
    * Test that a non-default display perspective adds a second reference entry.
    *
    * @covers ::dereferenceResources
-   * @covers ::dereferenceDistributionResource
+   * @covers ::dereferenceResource
    * @covers ::retrieveDownloadUrlFromResourceMapper
    * @covers ::createResourceReference
    */
@@ -377,7 +384,7 @@ class DereferencerTest extends TestCase {
       ],
     ];
 
-    $dereferencer->dereferenceResources($data);
+    $dereferencer->dereferenceDistributions($data);
 
     // Both the source reference and the perspective reference are present.
     $this->assertCount(2, $data->distribution[0]->{'%Ref:downloadURL'});
@@ -390,7 +397,7 @@ class DereferencerTest extends TestCase {
    * make sure it doesn't get dereferenced or modified.
    *
    * @covers ::dereferenceResources
-   * @covers ::dereferenceDistributionResource
+   * @covers ::dereferenceResource
    * @covers ::retrieveDownloadUrlFromResourceMapper
    */
   public function testDereferenceResourcesWithValidDownloadUrl() {
@@ -405,7 +412,7 @@ class DereferencerTest extends TestCase {
       ],
     ];
 
-    $dereferencer->dereferenceResources($data);
+    $dereferencer->dereferenceDistributions($data);
 
     $this->assertEquals('http://example.com/test.csv', $data->distribution[0]->downloadURL);
     $this->assertFalse(property_exists($data->distribution[0], '%Ref:downloadURL'));
@@ -431,6 +438,7 @@ class DereferencerTest extends TestCase {
     return new Dereferencer(
       $config ?? $this->configMock,
       $this->getMockForAbstractClass(FactoryInterface::class),
+      $this->createStub(MetastoreUrlGenerator::class),
       $resourceMapper ?? $this->createStub(ResourceMapper::class),
       $this->createStub(LoggerInterface::class)
     );

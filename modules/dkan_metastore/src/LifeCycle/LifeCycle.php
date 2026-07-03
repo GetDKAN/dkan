@@ -7,12 +7,10 @@ use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\dkan_common\Events\Event;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 use Drupal\dkan_metastore\Reference\Dereferencer;
-use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\Reference\OrphanChecker;
 use Drupal\dkan_metastore\Reference\Referencer;
 use Drupal\dkan_metastore\Storage\DataFactory;
@@ -151,13 +149,8 @@ class LifeCycle {
    */
   protected function distributionLoad(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
-
-    $this->dereferencer->dereferenceDistributionResource($metadata->data);
-
-    // If describedBy contains dkan:// URI, convert to absolute URL.
-    if (StreamWrapperManager::getScheme($metadata->data->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {
-      $metadata->data->describedBy = $this->referencer->metastoreUrlGenerator->absoluteString($metadata->data->describedBy);
-    }
+    $this->dereferencer->dereferenceResource($metadata->data);
+    $this->dereferencer->dereferenceDataDictionary($metadata->data);
     $data->setMetadata($metadata);
   }
 
@@ -327,24 +320,8 @@ class LifeCycle {
    */
   protected function distributionPresave(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
-
-    // If updating an existing distribution, re-reference it.
-    if (!$data->isNew()) {
-      $distributionUuid = $data->getIdentifier();
-      $storage = $this->dataFactory->getInstance('distribution');
-      $resource = $storage->retrieve($distributionUuid);
-      $resource = json_decode((string) $resource);
-
-      $resourceId = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
-
-      // Replace download url with the resource reference ID again.
-      if (isset($resourceId)) {
-        $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
-        $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
-        $metadata->data->downloadURL = $resourceId . '__' . $version . '__' . $perspective;
-        unset($metadata->data->{'%Ref:downloadURL'});
-      }
-    }
+    $this->referencer->referenceResource($metadata->data);
+    $this->referencer->referenceDataDictionary($metadata->data);
     $data->setMetadata($metadata);
   }
 
