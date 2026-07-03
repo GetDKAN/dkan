@@ -39,9 +39,19 @@ class UrlHostTokenResolverTest extends TestCase {
   public const FILE_PATH = 'tmp/mycsv.csv';
 
   /**
+   * {@inheritdoc}
+   */
+  protected function tearDown(): void {
+    if (\Drupal::hasContainer()) {
+      \Drupal::unsetContainer();
+    }
+    parent::tearDown();
+  }
+
+  /**
    *
    */
-  public function test() {
+  public function test(): void {
     $options = (new Options())
       ->add('request_stack', RequestStack::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
@@ -49,6 +59,7 @@ class UrlHostTokenResolverTest extends TestCase {
 
     $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'replacement')
       ->getMock();

@@ -401,8 +401,18 @@ class DataResource implements \JsonSerializable {
    * Generates MD5 checksum for a file.
    */
   public function generateChecksum() {
+    $filePath = $this->getFilePath();
+
+    // File might not be fully fetched yet. Don't attempt checksum if not.
+    if (
+      $this->getPerspective() === ResourceLocalizer::LOCAL_FILE_PERSPECTIVE &&
+      (!file_exists($filePath) || !is_readable($filePath))
+    ) {
+      return;
+    }
+
     try {
-      $this->checksum = md5_file($this->getFilePath());
+      $this->checksum = md5_file($filePath);
     }
     catch (\Throwable $throwable) {
       // Re-throw the throwable if we're not in the perspective of a local file
@@ -410,7 +420,7 @@ class DataResource implements \JsonSerializable {
       // circumstances.
       if (!(
         $this->getPerspective() === ResourceLocalizer::LOCAL_FILE_PERSPECTIVE &&
-        !file_exists($this->getFilePath())
+        !file_exists($filePath)
       )) {
         throw $throwable;
       }

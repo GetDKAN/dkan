@@ -160,6 +160,8 @@ class ReferencerTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'test.test')
       ->add(ResourceMapper::class, 'register', TRUE, 'resource')

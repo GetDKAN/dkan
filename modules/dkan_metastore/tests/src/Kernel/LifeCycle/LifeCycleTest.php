@@ -90,7 +90,7 @@ class LifeCycleTest extends KernelTestBase {
    * @param string $dist_reference
    *   The distribution reference setting to use.
    *
-   * @dataProvider testDatasetSaveProvider
+   * @dataProvider datasetSaveProvider
    * @covers ::datasetSave
    */
   public function testDatasetSave(?string $download_url, ?string $media_type, string $dist_reference) {
@@ -141,7 +141,7 @@ class LifeCycleTest extends KernelTestBase {
    * we don't reference distributions. Tests that the pre-reference event
    * subscriber still works in that case.
    */
-  public static function testDatasetSaveProvider() {
+  public static function datasetSaveProvider() {
     $configs = ['distribution', '0'];
     $distro_data = [
       ['http://example.com/1.csv', 'text/csv'],
