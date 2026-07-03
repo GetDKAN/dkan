@@ -56,13 +56,6 @@ function dkan_metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInter
 }
 
 /**
- * Helper method to retrieve the static value for a resource's revisioning.
- */
-function resource_mapper_new_revision() {
-  return drupal_static('dkan_metastore_resource_mapper_new_revision', 0);
-}
-
-/**
  * Send some entities into their life cycle.
  *
  * @param \Drupal\Core\Entity\EntityInterface[] $entities

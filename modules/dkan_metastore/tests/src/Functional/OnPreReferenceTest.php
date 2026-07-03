@@ -60,6 +60,7 @@ class OnPreReferenceTest extends BrowserTestBase {
     $metastore = $this->container->get('dkan.metastore.service');
     $dataset = $metastore->getValidMetadataFactory()->get($data, 'dataset');
     $metastore->post('dataset', $dataset);
+    $beforeRef = $this->getDistributionDownloadUrlReference('123');
 
     $decoded = json_decode((string) $data);
     $decoded->modified = '06-04-2021';
@@ -68,8 +69,40 @@ class OnPreReferenceTest extends BrowserTestBase {
     $dataset = $metastore->getValidMetadataFactory()->get($edited, 'dataset');
     $metastore->patch('dataset', '123', $dataset);
 
-    $rev = drupal_static('metastore_resource_mapper_new_revision');
-    $this->assertEquals(1, $rev);
+    $afterRef = $this->getDistributionDownloadUrlReference('123');
+    $this->assertNotSame($beforeRef, $afterRef);
+  }
+
+  /**
+   * Get the raw downloadURL reference stored on a dataset's first distribution.
+   */
+  private function getDistributionDownloadUrlReference(string $datasetUuid): string {
+    $storage = $this->container->get('entity_type.manager')->getStorage('node');
+
+    $result = $storage->loadByProperties(['type' => 'data', 'uuid' => $datasetUuid]);
+    $datasetNode = reset($result);
+    $this->assertNotFalse($datasetNode);
+
+    $query = $this->container->get('database')->query(
+      'SELECT field_json_metadata_value FROM {node__field_json_metadata} WHERE entity_id = :entity_id',
+      [':entity_id' => $datasetNode->id()]
+    );
+    $datasetRaw = json_decode($query->fetchField(), TRUE);
+
+    $distributionUuid = $datasetRaw['distribution'][0] ?? NULL;
+    $this->assertNotNull($distributionUuid);
+
+    $result = $storage->loadByProperties(['type' => 'data', 'uuid' => $distributionUuid]);
+    $distributionNode = reset($result);
+    $this->assertNotFalse($distributionNode);
+
+    $query = $this->container->get('database')->query(
+      'SELECT field_json_metadata_value FROM {node__field_json_metadata} WHERE entity_id = :entity_id',
+      [':entity_id' => $distributionNode->id()]
+    );
+    $distributionRaw = json_decode($query->fetchField(), TRUE);
+
+    return $distributionRaw['data']['downloadURL'] ?? '';
   }
 
 }

@@ -23,11 +23,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class DatastoreSubscriber implements EventSubscriberInterface {
 
   /**
-   * Drupal Config Factory.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   * Config factory service.
    */
-  protected $configFactory;
+  private ConfigFactoryInterface $configFactory;
 
   /**
    * Datastore logger channel service.
@@ -59,7 +57,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Inherited.
    *
-   * @{inheritdocs}
+  * @inheritdoc
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -75,8 +73,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Constructor.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   A ConfigFactory service instance.
+    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+    *   Config factory.
    * @param \Psr\Log\LoggerInterface $loggerChannel
    *   Logger channel.
    * @param \Drupal\dkan_datastore\DatastoreService $service
@@ -89,14 +87,14 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The event dispatcher service.
    */
   public function __construct(
-    ConfigFactoryInterface $config_factory,
+    ConfigFactoryInterface $configFactory,
     LoggerInterface $loggerChannel,
     DatastoreService $service,
     ResourcePurger $resourcePurger,
     ImportJobStoreFactory $importJobStoreFactory,
     EventDispatcherInterface $eventDispatcher,
   ) {
-    $this->configFactory = $config_factory;
+    $this->configFactory = $configFactory;
     $this->logger = $loggerChannel;
     $this->datastoreService = $service;
     $this->resourcePurger = $resourcePurger;
@@ -196,30 +194,58 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * React to a preReference to check if datastore update should be triggered.
    *
    * @param \Drupal\dkan_common\Events\Event $event
-   *   The event object containing the resource uuid.
+   *   The event object containing pre-reference context.
    */
   public function onPreReference(Event $event) {
-    // Attempt to retrieve new and original revisions of metadata object.
-    $data = $event->getData();
-    $original = $data->getLatestRevision();
-    // Retrieve a list of metadata properties which, when changed, should
-    // trigger a new metadata resource revision.
-    $datastore_settings = $this->configFactory->get('dkan_datastore.settings');
-    $triggers = array_filter($datastore_settings->get('triggering_properties') ?? []);
-    // Ensure at least one trigger has been selected in datastore settings, and
-    // that a valid MetastoreItem data object was found for the previous version
-    // of the wrapped node.
-    // If a change was found in one of the triggering elements, change the
-    // "new revision" flag to true in order to trigger a datastore update.
-    $rev = &drupal_static('metastore_resource_mapper_new_revision');
-    if (!empty($triggers) && $original instanceof MetastoreItemInterface &&
-      $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers)) {
-      // Update static to reflect that a new resource is needed.
-      $rev = 1;
+    $eventData = $event->getData();
+    $item = NULL;
+
+    // New explicit form passes a payload object with the item and decision.
+    if (is_object($eventData) && isset($eventData->item) && $eventData->item instanceof MetastoreItemInterface) {
+      $item = $eventData->item;
     }
-    else {
-      // Set static back to default value of false.
-      $rev = 0;
+    // Backward compatibility for direct MetastoreItem event payloads.
+    elseif ($eventData instanceof MetastoreItemInterface) {
+      $item = $eventData;
+    }
+
+    if (!$item) {
+      return;
+    }
+
+    $triggers = array_filter($this->configFactory->get('dkan_datastore.settings')->get('triggering_properties') ?? []);
+    if (empty($triggers)) {
+      return;
+    }
+
+    $baseline = NULL;
+    if (method_exists($item, 'getLatestRevision')) {
+      $latest = $item->getLatestRevision();
+      if ($latest instanceof MetastoreItemInterface) {
+        $baseline = $latest->getMetadata();
+      }
+    }
+
+    if (!is_object($baseline)) {
+      $baseline = $item->getRawMetadata();
+    }
+
+    if (!is_object($baseline)) {
+      return;
+    }
+
+    $shouldCreateNewResourceVersion = FALSE;
+    $metadata = $item->getMetadata();
+    foreach ($triggers as $property) {
+      if (($baseline->{$property} ?? NULL) != ($metadata->{$property} ?? NULL)) {
+        $shouldCreateNewResourceVersion = TRUE;
+        break;
+      }
+    }
+
+    if (is_object($eventData)) {
+      $eventData->createNewResourceVersion = $shouldCreateNewResourceVersion;
+      $event->setData($eventData);
     }
   }
 
@@ -242,31 +268,6 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       TRUE,
       $data['version'] ?? NULL
     );
-  }
-
-  /**
-   * Determine differences in the supplied objects in the given property scope.
-   *
-   * @param object $a
-   *   The first object being compared.
-   * @param object $b
-   *   The second object being compared.
-   * @param array $scope
-   *   Shared object properties being compared.
-   *
-   * @returns bool
-   *   Whether any differences were found in the scoped two objects.
-   */
-  protected function lazyDiffObject($a, $b, array $scope): bool {
-    $changed = FALSE;
-    foreach ($scope as $property) {
-      if ($a->{$property} != $b->{$property}) {
-        $changed = TRUE;
-        break;
-      }
-    }
-
-    return $changed;
   }
 
 }

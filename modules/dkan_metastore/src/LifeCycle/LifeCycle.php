@@ -342,18 +342,28 @@ class LifeCycle {
    * @throws \Exception
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
-    $metadata = $data->getMetadata();
+    $createNewResourceVersion = FALSE;
 
     // Trigger datastore import if applicable.
     // Needs to happen before updating references.
     if ($data instanceof MetastoreItemInterface) {
-      $event = new Event($data);
+      $event = new Event((object) [
+        'item' => $data,
+        'createNewResourceVersion' => FALSE,
+      ]);
       $this->eventDispatcher->dispatch($event, self::EVENT_PRE_REFERENCE);
+
+      $eventData = $event->getData();
+      if (is_object($eventData) && isset($eventData->createNewResourceVersion)) {
+        $createNewResourceVersion = (bool) $eventData->createNewResourceVersion;
+      }
     }
+
+    $metadata = $data->getMetadata();
 
     // Convert references in metadata to uuids.
     // Create new reference entities if they do not exist.
-    $metadata = $this->referencer->reference($metadata);
+    $metadata = $this->referencer->reference($metadata, $createNewResourceVersion);
 
     // Re-add metadata to data object with uuids.
     $data->setMetadata($metadata);
@@ -451,23 +461,9 @@ class LifeCycle {
   protected function distributionPresave(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
 
-    // If updating an existing distribution, re-reference it.
-    if (!$data->isNew()) {
-      $distributionUuid = $data->getIdentifier();
-      $storage = $this->dataFactory->getInstance('distribution');
-      $resource = $storage->retrieve($distributionUuid);
-      $resource = json_decode((string) $resource);
-
-      $resourceId = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
-
-      // Replace download url with the resource reference ID again.
-      if (isset($resourceId)) {
-        $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
-        $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
-        $metadata->data->downloadURL = $resourceId . '__' . $version . '__' . $perspective;
-        unset($metadata->data->{'%Ref:downloadURL'});
-      }
-    }
+    // A distribution save by itself should not force resource re-versioning.
+    // Re-versioning decisions are made at dataset pre-reference time.
+    $this->referencer->distributionHandling($metadata->data, FALSE);
     $data->setMetadata($metadata);
   }
 
