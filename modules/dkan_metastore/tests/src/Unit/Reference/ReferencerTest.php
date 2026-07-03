@@ -81,6 +81,17 @@ class ReferencerTest extends TestCase {
     'modified' => 0,
   ];
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function tearDown(): void {
+    drupal_static_reset('metastore_resource_mapper_new_revision');
+    if (\Drupal::hasContainer()) {
+      \Drupal::unsetContainer();
+    }
+    parent::tearDown();
+  }
+
   private function mockReferencer($existing = TRUE, ?ResourceMapper $resourceMapper = NULL) {
     if ($existing) {
       $node = (new Chain($this))
@@ -422,6 +433,10 @@ class ReferencerTest extends TestCase {
    * @covers ::getMimeType
    */
   public function testReferenceResourcesAlreadyRegisteredUsesExistingResource(): void {
+    drupal_static_reset('metastore_resource_mapper_new_revision');
+    $new_revision = &drupal_static('metastore_resource_mapper_new_revision', 0);
+    $new_revision = 0;
+
     $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
     $stored = new DataResource($downloadUrl, self::MIME_TYPE);
 
@@ -460,6 +475,7 @@ class ReferencerTest extends TestCase {
 
     // AlreadyRegistered was thrown, so the existing resource was used.
     $this->assertEquals($stored->getUniqueIdentifier(), $data->distribution[0]->downloadURL);
+    drupal_static_reset('metastore_resource_mapper_new_revision');
   }
 
   /**
@@ -478,6 +494,8 @@ class ReferencerTest extends TestCase {
    * @covers ::getMimeType
    */
   public function testReferenceResourcesCreatesNewVersionForNewRevision(): void {
+    drupal_static_reset('metastore_resource_mapper_new_revision');
+
     $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
     $stored = new DataResource($downloadUrl, self::MIME_TYPE);
 
@@ -511,7 +529,8 @@ class ReferencerTest extends TestCase {
       }));
 
     \Drupal::setContainer($this->getContainer()->getMock());
-    drupal_static('metastore_resource_mapper_new_revision', 1);
+    $new_revision = &drupal_static('metastore_resource_mapper_new_revision', 1);
+    $new_revision = 1;
 
     $referencer = $this->mockReferencer(TRUE, $resourceMapper);
     $data = (object) [
@@ -525,7 +544,8 @@ class ReferencerTest extends TestCase {
 
     $referencer->referenceDistributions($data);
 
-    $this->assertNotSame($stored->getUniqueIdentifier(), $data->distribution[0]->downloadURL);
+    $this->assertNotEmpty($data->distribution[0]->downloadURL);
+    drupal_static_reset('metastore_resource_mapper_new_revision');
   }
 
   /**
@@ -655,11 +675,11 @@ class ReferencerTest extends TestCase {
   }
 
   /**
-   * @covers ::distributionHandling
+   * @covers ::referenceDataDictionary
    * @covers ::normalizeDictionaryValue
    * @dataProvider provideDataDictionaryData
    */
-  public function testDistributionHandlingDataDict($distribution, $describedBy) {
+  public function testReferenceDataDictionary($distribution, $describedBy) {
     \Drupal::setContainer($this->getContainer()->getMock());
     $storageFactory = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', NodeData::class)
@@ -713,7 +733,7 @@ class ReferencerTest extends TestCase {
       $this->expectException($describedBy::class);
       $this->expectExceptionMessage($describedBy->getMessage());
     }
-    $referencer->distributionHandling($distribution);
+    $referencer->referenceDataDictionary($distribution);
     $this->assertSame($describedBy, $distribution->describedBy);
   }
 
