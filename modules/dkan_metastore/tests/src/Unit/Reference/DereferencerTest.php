@@ -316,7 +316,7 @@ class DereferencerTest extends TestCase {
    * @return array
    *   Test data.
    */
-  private function dereferenceEmptyDownloadUrlProvider() {
+  public static function dereferenceEmptyDownloadUrlProvider() {
     return [
       'unset_download_url_if_empty is TRUE' => [
         'setting' => TRUE,
@@ -338,7 +338,7 @@ class DereferencerTest extends TestCase {
    * @return array
    *   Test data.
    */
-  private function dereferenceResourcesWithIdentifierProvider() {
+  public static function dereferenceResourcesWithIdentifierProvider() {
     return [
       'resource mapping entity exists' => [
         'http://example.com/test.csv',
