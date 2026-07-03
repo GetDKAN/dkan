@@ -17,6 +17,7 @@ use Drupal\dkan_datastore\Service\ImportService;
 use Drupal\dkan_datastore\Service\ResourcePurger;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 use MockChain\Chain;
 use MockChain\Options;
@@ -181,6 +182,78 @@ class DatastoreSubscriberTest extends TestCase {
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $voidReturn = $subscriber->purgeResources($mockDatasetPublication);
     $this->assertNull($voidReturn);
+  }
+
+  /**
+   * Ensure onPreReference compares current metadata against latest revision.
+   *
+   * @see https://github.com/GetDKAN/dkan/pull/4002
+   *
+   * @dataProvider onPreReferenceDataProvider
+   */
+  public function testOnPreReferenceUsesLatestRevision(array $current_metadata, array $latest_metadata, int $expected_revision_flag): void {
+    $config = $this->createMock(ImmutableConfig::class);
+    $config->expects($this->once())
+      ->method('get')
+      ->with('triggering_properties')
+      ->willReturn(['title']);
+
+    $config_factory = $this->createMock(ConfigFactoryInterface::class);
+    $config_factory->expects($this->once())
+      ->method('get')
+      ->with('dkan_datastore.settings')
+      ->willReturn($config);
+
+    $latest_revision = $this->createMetastoreItem($latest_metadata);
+    $data = $this->createMetastoreItem($current_metadata, $latest_revision);
+
+    $subscriber = new DatastoreSubscriber(
+      $config_factory,
+      $this->createMock(LoggerInterface::class),
+      $this->createMock(DatastoreService::class),
+      $this->createMock(ResourcePurger::class),
+      $this->createMock(ImportJobStoreFactory::class),
+      $this->createMock(EventDispatcherInterface::class),
+    );
+
+    drupal_static_reset('metastore_resource_mapper_new_revision');
+    $subscriber->onPreReference(new Event($data));
+
+    $this->assertSame($expected_revision_flag, drupal_static('metastore_resource_mapper_new_revision'));
+  }
+
+  /**
+   * Test cases for latest-revision comparison.
+   */
+  public static function onPreReferenceDataProvider(): array {
+    return [
+      'unchanged latest revision' => [
+        ['title' => 'Original title', 'modified' => '2026-01-01'],
+        ['title' => 'Original title', 'modified' => '2026-01-01'],
+        0,
+      ],
+      'changed latest revision' => [
+        ['title' => 'Updated title', 'modified' => '2026-01-01'],
+        ['title' => 'Original title', 'modified' => '2026-01-01'],
+        1,
+      ],
+    ];
+  }
+
+  /**
+   * Build a minimal Data wrapper for onPreReference tests.
+   */
+  private function createMetastoreItem(array $metadata, ?Data $latest_revision = NULL): Data {
+    $data = $this->getMockBuilder(Data::class)
+      ->disableOriginalConstructor()
+      ->onlyMethods(['getMetadata', 'getLatestRevision'])
+      ->getMock();
+    $data->method('getMetadata')
+      ->willReturn((object) $metadata);
+    $data->method('getLatestRevision')
+      ->willReturn($latest_revision);
+
+    return $data;
   }
 
   /**

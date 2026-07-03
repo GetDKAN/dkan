@@ -58,10 +58,14 @@ class ResourceMapper {
   }
 
   /**
-   * Helper method to retrieve the static value for a resource's display.
+   * Get current "new revision" flag used during resource reference handling.
+   *
+   * Certain Referencer methods read this flag when deciding whether
+   * a matching existing resource should be reused as-is or if a new resource
+   * version should be created.
    *
    * @return string
-   *   A resource perspective.
+   *   The current new-revision flag value.
    */
   public static function newRevision() {
     return \drupal_static('metastore_resource_mapper_new_revision', 0);

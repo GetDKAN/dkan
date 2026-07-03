@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\dkan_metastore\LifeCycle;
 
 use Drupal\dkan_common\DataResource;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\KernelTests\KernelTestBase;
 use RootedData\Exception\ValidationException;
 
@@ -19,6 +20,8 @@ use RootedData\Exception\ValidationException;
  * @coversDefaultClass \Drupal\dkan_metastore\LifeCycle\LifeCycle
  */
 class LifeCycleTest extends KernelTestBase {
+  use DistributionReferenceModeTrait;
+
   protected const DATASET_DATA = [
     'title' => 'Test Dataset',
     'identifier' => '123',
@@ -91,12 +94,7 @@ class LifeCycleTest extends KernelTestBase {
    * @covers ::datasetSave
    */
   public function testDatasetSave(?string $download_url, ?string $media_type, string $dist_reference) {
-    // Set the "distribution" property list item to use references or not.
-    $property_list = $this->config('dkan_metastore.settings')->get('property_list');
-    $property_list['distribution'] = $dist_reference;
-    $this->config('dkan_metastore.settings')
-      ->set('property_list', $property_list)
-      ->save();
+    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $dist_reference);
 
     $dataset_data = self::DATASET_DATA;
     $dist_2 = [
@@ -232,6 +230,75 @@ class LifeCycleTest extends KernelTestBase {
 
     $dataset = $metastore->get('dataset', $identifier);
     $this->assertArrayNotHasKey('downloadURL', $dataset->{"$.distribution[0]"});
+  }
+
+  /**
+   * Test title-only distribution patch behavior in both reference modes.
+   *
+   * Unlikely real-life scenario, but demonstrates/confirms that patching works
+   * on the root level of a metadata item only, and that its behavior is
+   * consistent between referenced and non-referenced modes.
+   *
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testDistributionPatchWithoutDownloadUrl(string $distribution_reference): void {
+    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
+
+    $metastore = $this->container->get('dkan.metastore.service');
+    $identifier = $this->createDataset($metastore, uniqid(__FUNCTION__));
+
+    $patch = (object) [
+      'distribution' => [
+        (object) [
+          'title' => 'Updated title only',
+        ],
+      ],
+    ];
+    $metastore->patch('dataset', $identifier, json_encode($patch));
+
+    $after = json_decode((string) $metastore->get('dataset', $identifier));
+    $this->assertFalse(isset($after->distribution[0]->downloadURL));
+    $this->assertFalse(isset($after->distribution[0]->{'%Ref:downloadURL'}));
+    $this->assertEquals('Updated title only', $after->distribution[0]->title);
+  }
+
+  /**
+   * Test patching with a pre-referenced downloadURL identifier string.
+   *
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testDistributionPatchWithReferencedDownloadUrl(string $distribution_reference): void {
+    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
+
+    $metastore = $this->container->get('dkan.metastore.service');
+    $identifier = $this->createDataset($metastore, uniqid(__FUNCTION__));
+
+    $patch = (object) [
+      'distribution' => [
+        (object) [
+          'title' => 'Invalid referenced URL',
+          'downloadURL' => '5d41402abc4b2a76b9719d911017c592__123__source',
+        ],
+      ],
+    ];
+
+    $this->expectException(ValidationException::class);
+    $this->expectExceptionMessage('JSON Schema validation failed');
+    $metastore->patch('dataset', $identifier, json_encode($patch));
+  }
+
+  /**
+   * Create a dataset for patch tests and return its identifier.
+   */
+  private function createDataset($metastore, string $identifier): string {
+    $dataset_data = self::DATASET_DATA;
+    $dataset_data['identifier'] = $identifier;
+    $dataset_data['distribution'][0]['title'] = 'Original title';
+    $dataset_data['distribution'][0]['downloadURL'] = 'http://example.com/1.csv';
+    $dataset_data['distribution'][0]['mediaType'] = 'text/csv';
+
+    $metadata = $metastore->getValidMetadataFactory()->get(json_encode($dataset_data), 'dataset');
+    return $metastore->post('dataset', $metadata);
   }
 
 }

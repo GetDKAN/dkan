@@ -3,6 +3,7 @@
 namespace Drupal\Tests\dkan_metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 
 /**
  * Test the pre-reference event subscriber.
@@ -13,6 +14,8 @@ use Drupal\Tests\BrowserTestBase;
  * @group functional1
  */
 class OnPreReferenceTest extends BrowserTestBase {
+  use DistributionReferenceModeTrait;
+
 
   protected static $modules = [
     'dkan_datastore',
@@ -56,12 +59,7 @@ class OnPreReferenceTest extends BrowserTestBase {
       ->set('triggering_properties', ['modified'])
       ->save();
 
-    // Set the "distribution" property list item to use references or not.
-    $property_list = $this->config('dkan_metastore.settings')->get('property_list');
-    $property_list['distribution'] = $distribution_reference;
-    $this->config('dkan_metastore.settings')
-      ->set('property_list', $property_list)
-      ->save();
+    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
 
     // Test posting a dataset to the metastore.
     $data = $this->getData($this->downloadUrl);
@@ -79,20 +77,6 @@ class OnPreReferenceTest extends BrowserTestBase {
 
     $rev = drupal_static('metastore_resource_mapper_new_revision');
     $this->assertEquals(1, $rev);
-  }
-
-  /**
-   * Two versions of metastore settings.
-   *
-   * Setting dkan_metastore.settings.property_list.distribution to "0" means
-   * we don't reference distributions. Tests that the pre-reference event
-   * subscriber still works in that case.
-   */
-  public static function distributionReferenceProvider() {
-    return [
-      ['distribution'],
-      ['0'],
-    ];
   }
 
 }

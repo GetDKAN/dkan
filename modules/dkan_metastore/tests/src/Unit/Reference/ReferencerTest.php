@@ -11,6 +11,7 @@ use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\dkan_common\DataResource;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\dkan_metastore\Exception\AlreadyRegistered;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
@@ -422,7 +423,7 @@ class ReferencerTest extends TestCase {
    */
   public function testReferenceResourcesAlreadyRegisteredUsesExistingResource(): void {
     $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
-    $stored = new \Drupal\dkan_common\DataResource($downloadUrl, self::MIME_TYPE);
+    $stored = new DataResource($downloadUrl, self::MIME_TYPE);
 
     $resourceEntity = (new Chain($this))
       ->add(ResourceMappingInterface::class, 'get', FieldItemListInterface::class)
@@ -457,7 +458,74 @@ class ReferencerTest extends TestCase {
 
     $referencer->referenceDistributions($data);
 
+    // AlreadyRegistered was thrown, so the existing resource was used.
     $this->assertEquals($stored->getUniqueIdentifier(), $data->distribution[0]->downloadURL);
+  }
+
+  /**
+   * Test that new revision reuses existing resource but creates a new version.
+   *
+   * This covers the workflow case where a distribution is being resaved during
+   * a moderation-state transition. The old pre-save logic pulled the previous
+   * revision's %Ref metadata directly; the refactored path goes through
+   * referenceResource(), which must still create a new version when the static
+   * new-revision flag is set.
+   *
+   * @covers ::referenceDistributions
+   * @covers ::referenceResource
+   * @covers ::registerWithResourceMapper
+   * @covers ::handleExistingResource
+   * @covers ::getMimeType
+   */
+  public function testReferenceResourcesCreatesNewVersionForNewRevision(): void {
+    $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+    $stored = new DataResource($downloadUrl, self::MIME_TYPE);
+
+    $resourceEntity = (new Chain($this))
+      ->add(ResourceMappingInterface::class, 'get', FieldItemListInterface::class)
+      ->add(FieldItemListInterface::class, 'getString', '5d41402abc4b2a76b9719d911017c592')
+      ->getMock();
+
+    $alreadyRegistered = $this->createMock(AlreadyRegistered::class);
+    $alreadyRegistered
+      ->method('getAlreadyRegistered')
+      ->willReturn([$resourceEntity]);
+
+    $resourceMapper = $this->createMock(ResourceMapper::class);
+    $resourceMapper
+      ->expects($this->once())
+      ->method('register')
+      ->willThrowException($alreadyRegistered);
+    $resourceMapper
+      ->expects($this->once())
+      ->method('get')
+      ->willReturn($stored);
+    $resourceMapper
+      ->expects($this->once())
+      ->method('registerNewVersion')
+      ->with($this->callback(function ($resource) use ($stored) {
+        return $resource instanceof DataResource
+          && $resource->getIdentifier() === $stored->getIdentifier()
+          && $resource->getPerspective() === $stored->getPerspective()
+          && $resource->getVersion() !== $stored->getVersion();
+      }));
+
+    \Drupal::setContainer($this->getContainer()->getMock());
+    drupal_static('metastore_resource_mapper_new_revision', 1);
+
+    $referencer = $this->mockReferencer(TRUE, $resourceMapper);
+    $data = (object) [
+      'distribution' => [
+        (object) [
+          'downloadURL' => $downloadUrl,
+          'mediaType' => self::MIME_TYPE,
+        ],
+      ],
+    ];
+
+    $referencer->referenceDistributions($data);
+
+    $this->assertNotSame($stored->getUniqueIdentifier(), $data->distribution[0]->downloadURL);
   }
 
   /**

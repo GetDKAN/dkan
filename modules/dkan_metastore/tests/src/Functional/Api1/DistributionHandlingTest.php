@@ -4,6 +4,7 @@ namespace Drupal\Tests\dkan_metastore\Functional\Api1;
 
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\dkan_common\Functional\Api1TestBase;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use GuzzleHttp\RequestOptions;
 
 /**
@@ -12,6 +13,8 @@ use GuzzleHttp\RequestOptions;
  * @group functional3
  */
 class DistributionHandlingTest extends Api1TestBase {
+  use DistributionReferenceModeTrait;
+
 
   public function getEndpoint():string {
     return 'api/1/metastore/schemas/dataset/items';
@@ -28,12 +31,7 @@ class DistributionHandlingTest extends Api1TestBase {
     $config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
     $config->save();
 
-    // Set the "distribution" property list item to use references or not.
-    $property_list = $this->config('dkan_metastore.settings')->get('property_list');
-    $property_list['distribution'] = $distribution_reference;
-    $this->config('dkan_metastore.settings')
-      ->set('property_list', $property_list)
-      ->save();
+    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
 
     // Create a data dictionary.
     $dictionaryId = $this->postDataDictionary();
@@ -93,20 +91,6 @@ class DistributionHandlingTest extends Api1TestBase {
     $response = $this->httpClient->get("$dataset_endpoint/$datasetId");
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($pdf_url, $responseBody->distribution[0]->describedBy);
-  }
-
-  /**
-   * Two versions of metastore settings.
-   *
-   * Setting dkan_metastore.settings.property_list.distribution to "0" means
-   * we don't reference distributions. Tests that the pre-reference event
-   * subscriber still works in that case.
-   */
-  public static function distributionReferenceProvider() {
-    return [
-      ['distribution'],
-      ['0'],
-    ];
   }
 
   /**
