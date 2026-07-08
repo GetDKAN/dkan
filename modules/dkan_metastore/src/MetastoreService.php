@@ -550,24 +550,40 @@ class MetastoreService implements ContainerInjectionInterface {
    *
    * @todo Probably remove the prefix param and just always use "%Ref".
    */
-  public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
+  public static function removeReferences(RootedJsonData $object, $prefix = "%Ref"): RootedJsonData {
     $array = $object->get('$');
 
-    foreach ($array as $property => $value) {
-      if (substr_count((string) $property, $prefix) > 0) {
-        unset($array[$property]);
-      }
-    }
-
-    if (!empty($array['distribution'])) {
-      $array['distribution'] = array_map(function ($dist) {
-        unset($dist['%Ref:downloadURL']);
-        return $dist;
-      }, $array['distribution']);
-    }
+    // Recurse through the metadata and remove any nested references.
+    $array = static::removeReferencesRecursive($array, $prefix);
 
     $object->set('$', $array);
     return $object;
+  }
+
+  /**
+   * Remove references from metadata JSON recursively.
+   *
+   * Meant to be used on output of RootedJsonData::get(), so expects an array
+   * rather than an object or RootedJsonData.
+   *
+   * @param array $array
+   *   Metadata JSON array.
+   * @param string $prefix
+   *   Property prefix, defaults to "%Ref" per DKAN convention.
+   *
+   * @return array
+   *   The metadata without any reference artifacts.
+   */
+  protected static function removeReferencesRecursive($array, $prefix) {
+    foreach ($array as $property => $value) {
+      if (substr_count((string) $property, "{$prefix}:") > 0) {
+        unset($array[$property]);
+      }
+      elseif (is_array($value)) {
+        $array[$property] = static::removeReferencesRecursive($value, $prefix);
+      }
+    }
+    return $array;
   }
 
   /**

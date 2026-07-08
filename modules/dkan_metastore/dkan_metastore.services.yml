@@ -15,7 +15,6 @@ services:
       - '@dkan.metastore.referencer'
       - '@dkan.metastore.dereferencer'
       - '@dkan.metastore.orphan_checker'
-      - '@date.formatter'
       - '@dkan.metastore.storage'
       - '@queue'
       - '@config.factory'

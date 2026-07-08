@@ -153,7 +153,7 @@ class DatasetInfo {
       'moderation_state' => $node->get('moderation_state')->getString(),
       'title' => $metadata->title ?? 'Not found',
       'modified_date_metadata' => $metadata->modified ?? 'Not found',
-      'modified_date_dkan' => $metadata->{'%modified'} ?? 'Not found',
+      'modified_date_dkan' => $node->getChangedTime(),
       'distributions' => $this->getDistributionsInfo($metadata),
     ];
   }

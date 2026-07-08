@@ -4,20 +4,19 @@ namespace Drupal\Tests\dkan_metastore\Unit;
 
 use ColinODell\PsrTestLogger\TestLogger;
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\dkan_common\Events\Event;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\SchemaRetriever;
+use Drupal\dkan_metastore\Storage\Data;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\MetastoreStorageInterface;
 use Drupal\dkan_metastore\Storage\NodeData;
 use Drupal\dkan_metastore\ValidMetadataFactory;
 use MockChain\Chain;
 use MockChain\Options;
-use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -38,6 +37,9 @@ class MetastoreServiceTest extends TestCase {
    */
   protected $validMetadataFactory;
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp(): void {
     parent::setUp();
     $this->validMetadataFactory = self::getValidMetadataFactory($this);
@@ -45,6 +47,8 @@ class MetastoreServiceTest extends TestCase {
 
   /**
    * Test \Drupal\dkan_metastore\Service::isPublished() method.
+   *
+   * @covers ::isPublished
    */
   public function testIsPublished() {
     $service = (new Chain($this))
@@ -57,6 +61,8 @@ class MetastoreServiceTest extends TestCase {
 
   /**
    * Get a dataset.
+   *
+   * @covers ::get
    */
   public function testGet() {
     $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
@@ -73,7 +79,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::getSchemas
    */
   public function testGetSchemas() {
     $container = self::getCommonMockChain($this)
@@ -84,7 +90,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::getSchema
    */
   public function testGetSchema() {
     $container = self::getCommonMockChain($this);
@@ -94,7 +100,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::getAll
    */
   public function testGetAll() {
     $expected = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
@@ -112,6 +118,8 @@ class MetastoreServiceTest extends TestCase {
 
   /**
    * Test getAll() with an exception.
+   *
+   * @covers ::getAll
    */
   public function testGetAllException() {
     // Add a logger we can assert against.
@@ -133,7 +141,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::post
    */
   public function testPost() {
     $container = self::getCommonMockChain($this)
@@ -146,7 +154,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::post
    */
   public function testPostAlreadyExisting() {
     $container = self::getCommonMockChain($this)
@@ -161,7 +169,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::put
    */
   public function testPut() {
     $existing = '{"identifier":"1","title":"Foo"}';
@@ -182,7 +190,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::put
    */
   public function testPutModifyIdentifierException() {
     $existing = '{"identifier":"1","title":"Foo"}';
@@ -200,7 +208,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::put
    */
   public function testPutResultingInNewData() {
     $container = self::getCommonMockChain($this)
@@ -215,7 +223,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::put
    */
   public function testPutObjectUnchangedException() {
     $existing = '{"identifier":"1","title":"Foo"}';
@@ -232,7 +240,7 @@ class MetastoreServiceTest extends TestCase {
   }
 
   /**
-   *
+   * @covers ::put
    */
   public function testPutEquivalentDataObjectUnchangedException() {
     $existing = '{"identifier":"1","title":"Foo"}';
@@ -256,7 +264,9 @@ EOF;
   }
 
   /**
+   * Test the patch method.
    *
+   * @covers ::patch
    */
   public function testPatch() {
     $container = self::getCommonMockChain($this)
@@ -270,7 +280,9 @@ EOF;
   }
 
   /**
+   * Test patch() method with a missing object exception.
    *
+   * @covers ::patch
    */
   public function testPatchObjectNotFoundException() {
     $data = '{"identifier":"1","title":"FooBar"}';
@@ -284,7 +296,9 @@ EOF;
   }
 
   /**
+   * Test the publish () method.
    *
+   * @covers ::publish
    */
   public function testPublish() {
     $container = self::getCommonMockChain($this)
@@ -297,7 +311,9 @@ EOF;
   }
 
   /**
+   * Test the archive method.
    *
+   * @covers ::archive
    */
   public function testArchive() {
     $container = self::getCommonMockChain($this)
@@ -310,7 +326,9 @@ EOF;
   }
 
   /**
+   * Test publish() method with a missing object exception.
    *
+   * @covers ::publish
    */
   public function testPublishMissingObjectExpection() {
     $container = self::getCommonMockChain($this)
@@ -324,6 +342,8 @@ EOF;
 
   /**
    * Test \Drupal\dkan_metastore\Service::count() method.
+   *
+   * @covers ::count
    */
   public function testCount(): void {
     // Set constant which should be returned by the ::count() method.
@@ -341,6 +361,8 @@ EOF;
 
   /**
    * Test \Drupal\dkan_metastore\Service::getIdentifiers() method.
+   *
+   * @covers ::getIdentifiers
    */
   public function testGetIdentifiers(): void {
     // Set constant which should be returned by the ::getIdentifiers() method.
@@ -357,7 +379,7 @@ EOF;
   }
 
   /**
-   *
+   * @covers ::delete
    */
   public function testDelete() {
     $container = self::getCommonMockChain($this)
@@ -370,7 +392,7 @@ EOF;
   }
 
   /**
-   *
+   * @covers ::getCatalog
    */
   public function testGetCatalog() {
     $dataset = $this->validMetadataFactory->get(json_encode(["foo" => "bar"]), 'blah');
@@ -396,7 +418,10 @@ EOF;
   }
 
   /**
+   * Get a common container mock chain for testing.
+   *
    * @return \MockChain\Chain
+   *   A MockChain container.
    */
   public static function getCommonMockChain(TestCase $case, ?Options $services = NULL, $logger = NULL) {
 
@@ -430,6 +455,45 @@ EOF;
       ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
 
     return ValidMetadataFactory::create($container->getMock());
+  }
+
+  /**
+   * Test removeReferences() method.
+   *
+   * @covers ::removeReferences
+   * @covers ::removeReferncesRecursive
+   */
+  public function testRemoveReferences() {
+    $input = new RootedJsonData(json_encode((object) [
+      "distribution" => [
+        (object) [
+          "downloadURL" => "http://example.com/file.csv",
+          "%Ref:downloadURL" => ["foo" => "bar"],
+          "describedBy" => (object) [
+            "downloadURL" => "http://example.com/schema.json",
+            "%Ref:downloadURL" => ["foo" => "bar"],
+          ],
+        ],
+      ],
+      "%Ref:distribution" => [
+        "foo" => "bar",
+      ],
+      "%modified" => "2024-06-05T00:00:00Z",
+    ]));
+
+    $expected = new RootedJsonData(json_encode([
+      "distribution" => [
+        (object) [
+          "downloadURL" => "http://example.com/file.csv",
+          "describedBy" => (object) [
+            "downloadURL" => "http://example.com/schema.json",
+          ],
+        ],
+      ],
+      "%modified" => "2024-06-05T00:00:00Z",
+    ]));
+
+    $this->assertEquals($expected, MetastoreService::removeReferences($input));
   }
 
 }

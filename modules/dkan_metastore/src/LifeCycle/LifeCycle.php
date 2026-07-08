@@ -56,7 +56,6 @@ class LifeCycle {
     protected Referencer $referencer,
     protected Dereferencer $dereferencer,
     protected OrphanChecker $orphanChecker,
-    protected DateFormatter $dateFormatter,
     protected DataFactory $dataFactory,
     protected QueueFactory $queueFactory,
     protected ConfigFactory $configFactory,
@@ -116,8 +115,6 @@ class LifeCycle {
 
     // Dereference dataset properties.
     $metadata = $this->dereferencer->dereference($metadata);
-    $metadata = $this->addDatasetModifiedDate($metadata, $data->getModifiedDate());
-
     $data->setMetadata($metadata);
   }
 
@@ -311,23 +308,6 @@ class LifeCycle {
     $this->referencer->referenceResource($metadata->data);
     $this->referencer->referenceDataDictionary($metadata->data);
     $data->setMetadata($metadata);
-  }
-
-  /**
-   * Add a modified date value to the metadata as a '%modified' property.
-   *
-   * @param object $metadata
-   *   The metadata object to add the modified date to.
-   * @param string $date
-   *   The modified date to add to the metadata.
-   *
-   * @return object
-   *   The metadata object with the modified date added.
-   */
-  private function addDatasetModifiedDate($metadata, $date) {
-    $formattedChangedDate = $this->dateFormatter->format($date, 'html_datetime');
-    $metadata->{'%modified'} = $formattedChangedDate;
-    return $metadata;
   }
 
 }
