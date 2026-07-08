@@ -8,6 +8,7 @@ use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\node\Entity\Node;
+use Drupal\Core\Datetime\DateFormatterInterface;
 
 /**
  * Extract helpful information from a dataset identifier.
@@ -33,6 +34,11 @@ class DatasetInfo {
    * DatasetInfoPluginManager.
    */
   protected DatasetInfoPluginManager $pluginManager;
+
+  /**
+   * Date formatter service.
+   */
+  protected DateFormatterInterface $dateFormatter;
 
   /**
    * DatasetInfo constructor.
@@ -66,6 +72,16 @@ class DatasetInfo {
    */
   public function setResourceMapper(ResourceMapper $resourceMapper) {
     $this->resourceMapper = $resourceMapper;
+  }
+
+  /**
+   * Inject the date formatter service.
+   *
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $dateFormatter
+   *   Date formatter service.
+   */
+  public function setDateFormatter(DateFormatterInterface $dateFormatter) {
+    $this->dateFormatter = $dateFormatter;
   }
 
   /**
@@ -145,6 +161,8 @@ class DatasetInfo {
   protected function getRevisionInfo(Node $node) : array {
 
     $metadata = json_decode($node->get('field_json_metadata')->getString());
+    $timestamp = (int) $node->get('changed')->value;
+    $modified = $this->dateFormatter->format($timestamp, 'custom', 'Y-m-d\TH:i:sP');
 
     return [
       'uuid' => $node->uuid(),
@@ -153,7 +171,7 @@ class DatasetInfo {
       'moderation_state' => $node->get('moderation_state')->getString(),
       'title' => $metadata->title ?? 'Not found',
       'modified_date_metadata' => $metadata->modified ?? 'Not found',
-      'modified_date_dkan' => $node->getChangedTime(),
+      'modified_date_dkan' => $modified,
       'distributions' => $this->getDistributionsInfo($metadata),
     ];
   }
