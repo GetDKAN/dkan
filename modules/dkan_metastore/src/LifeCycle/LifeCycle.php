@@ -5,7 +5,6 @@ namespace Drupal\dkan_metastore\LifeCycle;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\dkan_common\Events\Event;
@@ -41,8 +40,6 @@ class LifeCycle {
    *   The dkan.metastore.dereferencer service.
    * @param \Drupal\dkan_metastore\Reference\OrphanChecker $orphanChecker
    *   The dkan.metastore.orphan_checker service.
-   * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
-   *   The date.formatter service.
    * @param \Drupal\dkan_metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.data_factory service.
    * @param \Drupal\Core\Queue\QueueFactory $queueFactory
