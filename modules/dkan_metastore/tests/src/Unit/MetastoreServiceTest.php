@@ -461,7 +461,6 @@ EOF;
    * Test removeReferences() method.
    *
    * @covers ::removeReferences
-   * @covers ::removeReferncesRecursive
    */
   public function testRemoveReferences() {
     $input = new RootedJsonData(json_encode((object) [
@@ -469,10 +468,6 @@ EOF;
         (object) [
           "downloadURL" => "http://example.com/file.csv",
           "%Ref:downloadURL" => ["foo" => "bar"],
-          "describedBy" => (object) [
-            "downloadURL" => "http://example.com/schema.json",
-            "%Ref:downloadURL" => ["foo" => "bar"],
-          ],
         ],
       ],
       "%Ref:distribution" => [
@@ -485,9 +480,6 @@ EOF;
       "distribution" => [
         (object) [
           "downloadURL" => "http://example.com/file.csv",
-          "describedBy" => (object) [
-            "downloadURL" => "http://example.com/schema.json",
-          ],
         ],
       ],
       "%modified" => "2024-06-05T00:00:00Z",

@@ -76,7 +76,7 @@ class Referencer {
         $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
 
         // Remove de-referenced info from metadata.
-        unset($data->{'%Ref:' . $property_id});
+        unset($data->{Dereferencer::REF_PREFIX . $property_id});
       }
     }
     return $data;

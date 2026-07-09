@@ -7,6 +7,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
@@ -351,12 +352,12 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function getResources(NodeInterface $dataset) : array {
     $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
-    $distributions = $metadata->{'%Ref:distribution'} ?? [];
+    $distributions = $metadata->{Dereferencer::REF_PREFIX . 'distribution'} ?? [];
 
     foreach ($distributions as $distribution) {
       // Retrieve and validate the resource for this distribution before adding
       // it to the resources list.
-      $resource = $distribution->data->{'%Ref:downloadURL'}[0] ?? NULL;
+      $resource = $distribution->data->{Dereferencer::REF_PREFIX . 'downloadURL'}[0] ?? NULL;
       if (isset($resource->data->identifier, $resource->data->version)) {
         $resources[] = json_encode([
           $resource->data->identifier,

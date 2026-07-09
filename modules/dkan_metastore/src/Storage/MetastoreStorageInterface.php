@@ -104,6 +104,17 @@ interface MetastoreStorageInterface {
   public function publish(string $uuid): bool;
 
   /**
+   * Archive.
+   *
+   * @param string $uuid
+   *   The identifier for the data.
+   *
+   * @return bool
+   *   True if success.
+   */
+  public function archive(string $uuid): bool;
+
+  /**
    * Remove.
    *
    * @param string $id

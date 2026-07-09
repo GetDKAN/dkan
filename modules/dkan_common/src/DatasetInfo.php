@@ -9,6 +9,7 @@ use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 
 /**
  * Extract helpful information from a dataset identifier.
@@ -188,11 +189,11 @@ class DatasetInfo {
   protected function getDistributionsInfo(\stdClass $metadata) : array {
     $distributions = [];
 
-    if (!isset($metadata->{'%Ref:distribution'})) {
+    if (!isset($metadata->{Dereferencer::REF_PREFIX . 'distribution'})) {
       return ['Not found'];
     }
 
-    foreach ($metadata->{'%Ref:distribution'} as $distribution) {
+    foreach ($metadata->{Dereferencer::REF_PREFIX . 'distribution'} as $distribution) {
       $distributions[] = $this->getResourcesInfo($distribution);
     }
 
@@ -210,13 +211,13 @@ class DatasetInfo {
    */
   protected function getResourcesInfo(\stdClass $distribution) : array {
 
-    if (!isset($distribution->data->{'%Ref:downloadURL'})) {
+    if (!isset($distribution->data->{Dereferencer::REF_PREFIX . 'downloadURL'})) {
       return ['No resource found'];
     }
 
     // A distribution's first resource, regardless of perspective or index,
     // should provide the information needed.
-    $resource = array_shift($distribution->data->{'%Ref:downloadURL'});
+    $resource = array_shift($distribution->data->{Dereferencer::REF_PREFIX . 'downloadURL'});
     $identifier = $resource->data->identifier;
     $version = $resource->data->version;
 

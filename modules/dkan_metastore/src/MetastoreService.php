@@ -8,6 +8,7 @@ use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\MetastoreStorageInterface;
 use Psr\Log\LoggerInterface;
@@ -481,21 +482,31 @@ class MetastoreService implements ContainerInjectionInterface {
   public function swapReferences(RootedJsonData $object): RootedJsonData {
     $no_schema_object = $this->getValidMetadataFactory()->get("$object", NULL);
     foreach ($no_schema_object->get('$') as $property => $value) {
-      if (substr_count((string) $property, "%Ref:") > 0) {
+      if (substr_count((string) $property, Dereferencer::REF_PREFIX) > 0) {
         $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
       }
     }
-
-    return self::removeReferences($no_schema_object, "%Ref");
+    return $no_schema_object;
   }
 
   /**
-   * Private.
+   * Swap a single reference and remove %Ref property.
+   *
+   * @param string $property
+   *   The property name, including the %Ref prefix.
+   * @param mixed $value
+   *   The value of the %Ref property.
+   * @param \RootedData\RootedJsonData $object
+   *   The metadata object to swap the reference in.
+   *
+   * @return \RootedData\RootedJsonData
+   *   The metadata object with the reference swapped.
    */
   private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
-    $original = str_replace("%Ref:", "", $property);
+    $original = str_replace(Dereferencer::REF_PREFIX, "", $property);
     if ($object->__isset("$.{$original}")) {
-      $object->set("$.{$original}", $value);
+      $object->{"$.{$original}"} = $value;
+      unset($object->{"$.{$property}"});
     }
     return $object;
   }
@@ -542,19 +553,15 @@ class MetastoreService implements ContainerInjectionInterface {
    *
    * @param \RootedData\RootedJsonData $object
    *   Metadata JSON object.
-   * @param string $prefix
-   *   Property prefix.
    *
    * @return \RootedData\RootedJsonData
    *   The metadata without any reference artifacts.
-   *
-   * @todo Probably remove the prefix param and just always use "%Ref".
    */
-  public static function removeReferences(RootedJsonData $object, $prefix = "%Ref"): RootedJsonData {
+  public static function removeReferences(RootedJsonData $object): RootedJsonData {
     $array = $object->get('$');
 
     // Recurse through the metadata and remove any nested references.
-    $array = static::removeReferencesRecursive($array, $prefix);
+    $array = static::removeReferencesRecursive($array);
 
     $object->set('$', $array);
     return $object;
@@ -568,21 +575,20 @@ class MetastoreService implements ContainerInjectionInterface {
    *
    * @param array $array
    *   Metadata JSON array.
-   * @param string $prefix
-   *   Property prefix, defaults to "%Ref" per DKAN convention.
    *
    * @return array
    *   The metadata without any reference artifacts.
    */
-  protected static function removeReferencesRecursive($array, $prefix) {
+  protected static function removeReferencesRecursive($array) {
     foreach ($array as $property => $value) {
-      if (substr_count((string) $property, "{$prefix}:") > 0) {
+      if (substr_count((string) $property, Dereferencer::REF_PREFIX) > 0) {
         unset($array[$property]);
       }
       elseif (is_array($value)) {
-        $array[$property] = static::removeReferencesRecursive($value, $prefix);
+        $array[$property] = static::removeReferencesRecursive($value);
       }
     }
+
     return $array;
   }
 
@@ -600,11 +606,11 @@ class MetastoreService implements ContainerInjectionInterface {
   public static function metadataHash($data) {
     if ($data instanceof RootedJsonData) {
       $normalizedData = $data;
-      self::removeReferences($normalizedData);
+      static::removeReferences($normalizedData);
     }
     elseif (is_object($data)) {
       $normalizedData = new RootedJsonData(json_encode($data));
-      self::removeReferences($normalizedData);
+      static::removeReferences($normalizedData);
     }
     elseif (is_string($data)) {
       $normalizedData = $data;

@@ -15,7 +15,12 @@ use GuzzleHttp\RequestOptions;
 class DistributionHandlingTest extends Api1TestBase {
   use DistributionReferenceModeTrait;
 
-
+  /**
+   * Get the endpoint for the Distribution API.
+   *
+   * @return string
+   *   The endpoint path, relative to site root.
+   */
   public function getEndpoint():string {
     return 'api/1/metastore/schemas/dataset/items';
   }

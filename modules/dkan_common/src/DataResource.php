@@ -3,6 +3,7 @@
 namespace Drupal\dkan_common;
 
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ResourceMappingInterface;
 use Procrastinator\JsonSerializeTrait;
 
@@ -368,8 +369,8 @@ class DataResource implements \JsonSerializable {
     $distribution = self::getDistribution($string);
 
     // Are we dealing with a distribution id?
-    if (isset($distribution->data->{'%Ref:downloadURL'})) {
-      $resource = $distribution->data->{'%Ref:downloadURL'}[0]->data;
+    if (isset($distribution->data->{Dereferencer::REF_PREFIX . "downloadURL"})) {
+      $resource = $distribution->data->{Dereferencer::REF_PREFIX . "downloadURL"}[0]->data;
       return [$resource->identifier, $resource->version];
     }
 

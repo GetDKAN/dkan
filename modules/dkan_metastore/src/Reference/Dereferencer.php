@@ -17,6 +17,8 @@ use Drupal\dkan_metastore\ResourceMapper;
 class Dereferencer {
   use HelperTrait;
 
+  const REF_PREFIX = '%Ref:';
+
   /**
    * Constructor.
    */
@@ -62,7 +64,7 @@ class Dereferencer {
    *   Modified json metadata object.
    */
   private function dereferenceProperty(string $propertyId, $data) {
-    $referenceProperty = "%Ref:{$propertyId}";
+    $referenceProperty = self::REF_PREFIX . "{$propertyId}";
     $ref = NULL;
     $actual = NULL;
     [$ref, $actual] = $this->dereferencePropertyUuid($propertyId, $data->{$propertyId});
@@ -202,7 +204,7 @@ class Dereferencer {
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($downloadUrl);
 
       $downloadUrl = $original ?? "";
-      $distribution->{"%Ref:downloadURL"} = count($ref) == 0 ? NULL : $ref;
+      $distribution->{self::REF_PREFIX . "downloadURL"} = count($ref) == 0 ? NULL : $ref;
     }
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
