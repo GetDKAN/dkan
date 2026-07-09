@@ -29,8 +29,8 @@ trait DistributionReferenceModeTrait {
    */
   public static function distributionReferenceProvider(): array {
     return [
-      ['distribution'],
-      ['0'],
+      'referenced distributions' => ['distribution'],
+      'non-referenced distributions' => ['0'],
     ];
   }
 
@@ -47,6 +47,17 @@ trait DistributionReferenceModeTrait {
     $config
       ->set('property_list', $property_list)
       ->save();
+  }
+
+  /**
+   * Check if referenced distributions are being used.
+   *
+   * @return bool
+   *   TRUE if referenced distributions are being used, FALSE otherwise.
+   */
+  protected function usingReferencedDistributions(): bool {
+    $config = $this->config('dkan_metastore.settings');
+    return $config->get('property_list.distribution') !== '0';
   }
 
 }

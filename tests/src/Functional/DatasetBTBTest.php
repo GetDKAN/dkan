@@ -7,6 +7,7 @@ use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_harvest\HarvestService;
 use Drupal\dkan_harvest\Load\Dataset;
 use Drupal\dkan_metastore\MetastoreService;
+use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
@@ -101,7 +102,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $index->clear();
     $index->indexItems();
 
-    // Verify search results contain the '1.2' version of $id_1, $id_2 but not $id_3.
+    // Verify results contain the '1.2' version of $id_1, $id_2 but not $id_3.
     $searchResults = $this->container->get('dkan.metastore_search.service')
       ->search();
     $this->assertEquals(2, $searchResults->total);
@@ -223,99 +224,68 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Test draft moderation workflow with distribution url update and default source resource perspective.
-   *
-   * @dataProvider distributionReferenceProvider
+   * Provide draft workflow/perspective combinations for both dist modes.
    */
-  public function testDraftWorkflowDistributionUrlSourcePerspective(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+  public static function draftWorkflowPerspectiveProvider(): array {
+    $cases = [
+      'url_source' => [
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionUrl',
+      ],
+      'url_local_url' => [
+        ResourceLocalizer::LOCAL_URL_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionUrl',
+      ],
+      'modified_source' => [
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+        'runDraftWorkflowModifiedTrigger',
+      ],
+      'modified_local_url' => [
+        ResourceLocalizer::LOCAL_URL_PERSPECTIVE,
+        'runDraftWorkflowModifiedTrigger',
+      ],
+      'title_source' => [
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionTitle',
+      ],
+      'title_local_url' => [
+        ResourceLocalizer::LOCAL_URL_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionTitle',
+      ],
+    ];
 
-    // Set resource perspective to source.
-    $this->config('dkan_metastore.settings')
-      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
-      ->save();
+    $data = [];
+    foreach (self::distributionReferenceProvider() as $distribution_mode_row) {
+      $distribution_mode = $distribution_mode_row[0];
+      foreach ($cases as $case_name => [$perspective, $method]) {
+        $data[$case_name . '_' . $distribution_mode] = [
+          $distribution_mode,
+          $perspective,
+          $method,
+        ];
+      }
+    }
 
-    $this->runDraftWorkflowUpdateDistributionUrl();
+    return $data;
   }
 
   /**
-   * Test draft moderation workflow with distribution url update and local_url source resource perspective.
+   * Test draft workflows across resource perspectives and dist modes.
    *
-   * @dataProvider distributionReferenceProvider
+   * @dataProvider draftWorkflowPerspectiveProvider
    */
-  public function testDraftWorkflowDistributionUrlLocalPerspective(string $distribution_reference) {
+  public function testDraftWorkflowScenarios(
+    string $distribution_reference,
+    string $resource_perspective_display,
+    string $workflow_method
+  ): void {
     $this->setDistributionReferenceMode($distribution_reference);
 
-    // Set resource perspective to source.
     $this->config('dkan_metastore.settings')
-      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
+      ->set('resource_perspective_display', $resource_perspective_display)
       ->save();
 
-    $this->runDraftWorkflowUpdateDistributionUrl();
-  }
-
-  /**
-   * Test draft moderation workflow with modified trigger and default source resource perspective.
-   *
-   * @dataProvider distributionReferenceProvider
-   */
-  public function testDraftWorkflowModifiedTriggerSourcePerspective(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
-
-    // Set resource perspective to source.
-    $this->config('dkan_metastore.settings')
-      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowModifiedTrigger();
-  }
-
-  /**
-   * Test draft moderation workflow with modified trigger and local_url resource perspective.
-   *
-   * @dataProvider distributionReferenceProvider
-   */
-  public function testDraftWorkflowModifiedTriggerLocalPerspective(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
-
-    // Set resource perspective to local_url.
-    $this->config('dkan_metastore.settings')
-      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowModifiedTrigger();
-  }
-
-  /**
-   * Test draft moderation workflow with distribution title update and source resource perspective.
-   *
-   * @dataProvider distributionReferenceProvider
-   */
-  public function testDraftWorkflowUpdateDistributionTitleSourcePerspective(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
-
-    // Set resource perspective to local_url.
-    $this->config('dkan_metastore.settings')
-      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowUpdateDistributionTitle();
-  }
-
-  /**
-   * Test draft moderation workflow with distribution title update and local_url resource perspective.
-   *
-   * @dataProvider distributionReferenceProvider
-   */
-  public function testDraftWorkflowUpdateDistributionTitleLocalPerspective(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
-
-    // Set resource perspective to local_url.
-    $this->config('dkan_metastore.settings')
-      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowUpdateDistributionTitle();
+    $this->{$workflow_method}();
   }
 
   /**
@@ -368,6 +338,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'datastore_import',
       'orphan_reference_processor',
       'orphan_resource_remover',
+      'resource_purger',
     ]);
 
     // Confirm original distribution table removed.
@@ -393,18 +364,27 @@ class DatasetBTBTest extends BrowserTestBase {
     // Post a dataset with a single distribution.
     $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv']);
 
-    // Get distribution id.
-    $dataset = $this->getMetastore()->get('dataset', $id_1);
-    $datasetMetadata = $dataset->{'$'};
-    $distributionId = $datasetMetadata['%Ref:distribution'][0]['identifier'];
+    if ($this->usingReferencedDistributions()) {
+      // Get distribution id.
+      $dataset = $this->getMetastore()->get('dataset', $id_1);
+      $datasetMetadata = $dataset->{'$'};
+      $distributionId = $datasetMetadata['%Ref:distribution'][0]['identifier'];
 
-    // Load distribution node.
-    $distributionNode = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $distributionId]);
-    $distributionNode = reset($distributionNode);
+      // Load distribution node.
+      $distributionNode = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $distributionId]);
+      $distributionNode = reset($distributionNode);
 
-    // Delete distribution node.
-    $distributionNode->delete();
-    $this->runQueues(['orphan_resource_remover']);
+      // Delete distribution node.
+      $distributionNode->delete();
+    }
+    // If not in distribution reference mode, simply remove the distribution
+    // from the dataset and update it.
+    else {
+      $dataset = $this->getMetastore()->get('dataset', $id_1);
+      unset($dataset->{'$.distribution'});
+      $this->getMetastore()->put('dataset', $id_1, $dataset);
+    }
+    $this->runQueues(['resource_purger', 'orphan_resource_remover']);
 
     // Verify that the resources are deleted.
     $this->assertEquals([], $this->checkFiles());
@@ -433,7 +413,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Get local resource folder name.
     $dataset = $this->getMetastore()->get('dataset', $id_1);
     $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', (string) $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $resourceId = explode('__', (string) $datasetMetadata['distribution'][0]['%Ref:downloadURL'][0]['identifier']);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder doesn't exist.
@@ -451,7 +431,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Get local resource folder name.
     $dataset = $this->getMetastore()->get('dataset', $id_2);
     $datasetMetadata = $dataset->{'$'};
-    $resourceId = explode('__', (string) $datasetMetadata['%Ref:distribution'][0]['data']['%Ref:downloadURL'][0]['identifier']);
+    $resourceId = explode('__', (string) $datasetMetadata['distribution'][0]['%Ref:downloadURL'][0]['identifier']);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder exists.
@@ -490,7 +470,10 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Post a basic dataset and retrieve it.
    *
+   * @return object
+   *   The retrieved dataset.
    */
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
@@ -517,7 +500,7 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   *
+   * Import dataset into datastore perform a basic query.
    */
   private function datastoreImportAndQuery() {
     $dataset = $this->datasetPostAndRetrieve();
@@ -536,28 +519,46 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Get the datastore table name for a resource.
    *
+   * @param object $resource
+   *   The resource object.
+   *
+   * @return string
+   *   The datastore table name.
    */
   private function getResourceDatastoreTable(object $resource) {
     return $resource->identifier . '__' . $resource->version;
   }
 
   /**
+   * Get the resource (downloadURL reference) object from a dataset.
    *
+   * @param object $dataset
+   *   The dataset object.
+   *
+   * @return object
+   *   The resource object.
    */
   private function getResourceFromDataset(object $dataset) {
-    $this->assertTrue(isset($dataset->{'%Ref:distribution'}));
-    $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]));
-    $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]->data));
-    $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]->data->{'%Ref:downloadURL'}));
-    $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]->data->{'%Ref:downloadURL'}[0]));
-    $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]->data->{'%Ref:downloadURL'}[0]->data));
+    $this->assertTrue(isset($dataset->distribution));
+    $this->assertTrue(isset($dataset->distribution[0]));
+    $this->assertTrue(isset($dataset->distribution[0]->downloadURL));
+    $this->assertTrue(isset($dataset->distribution[0]->{'%Ref:downloadURL'}));
+    $this->assertTrue(isset($dataset->distribution[0]->{'%Ref:downloadURL'}[0]));
+    $this->assertTrue(isset($dataset->distribution[0]->{'%Ref:downloadURL'}[0]->data));
 
-    return $dataset->{'%Ref:distribution'}[0]->data->{'%Ref:downloadURL'}[0]->data;
+    return $dataset->distribution[0]->{'%Ref:downloadURL'}[0]->data;
   }
 
   /**
+   * Get the download URL for a resource file.
    *
+   * @param string $filename
+   *   The filename of the resource.
+   *
+   * @return string
+   *   The download URL for the resource file from S3 bucket.
    */
   private function getDownloadUrl(string $filename) {
     return self::S3_PREFIX . '/' . $filename;
@@ -643,7 +644,7 @@ class DatasetBTBTest extends BrowserTestBase {
   private function getModerationState(string $uuid) : string {
     $nodeStorage = $this->getNodeStorage();
     $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
-    if (FALSE !== ($dataset = reset($datasets))) {
+    if (FALSE !== ($dataset = reset($datasets)) && $dataset instanceof NodeInterface) {
       return $dataset->get('moderation_state')->getString();
     }
     return '';
@@ -661,7 +662,10 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Count the number of datastore tables.
    *
+   * @return int
+   *   The number of datastore tables.
    */
   private function countTables() {
     /** @var \Drupal\Core\Database\Connection $db */
@@ -672,7 +676,10 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Return normalized CSV filenames found under public://resources.
    *
+   * @return array
+   *   Sorted array of CSV filenames (without paths or prefixes).
    */
   private function checkFiles() {
     /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
@@ -692,7 +699,10 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Query a resource using the SQL endpoint service.
    *
+   * @param string $queryString
+   *   The SQL-esque query string to run.
    */
   private function queryResource(string $queryString) {
     /** @var \Drupal\dkan_datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
@@ -702,7 +712,17 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Handle HTTP verbs for dataset operations.
    *
+   * @param string $method
+   *   The HTTP method to use ('post' or 'put').
+   * @param \RootedData\RootedJsonData $json
+   *   The JSON data for the dataset.
+   * @param object $dataset
+   *   The dataset object.
+   *
+   * @return string
+   *   The dataset identifier.
    */
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
 
@@ -720,21 +740,30 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
+   * Get the harvester service from the container.
    *
+   * @return \Drupal\dkan_harvest\HarvestService
+   *   The harvester service.
    */
-  private function getHarvester() : HarvestService {
+  private function getHarvester(): HarvestService {
     return $this->container->get('dkan.harvest.service');
   }
 
   /**
+   * Get the node storage handler from the container.
    *
+   * @return \Drupal\node\NodeStorage
+   *   The node storage handler.
    */
   private function getNodeStorage(): NodeStorage {
     return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
   /**
+   * Get the metastore service from the container.
    *
+   * @return \Drupal\dkan_metastore\MetastoreService
+   *   The metastore service.
    */
   private function getMetastore(): MetastoreService {
     return $this->container->get('dkan.metastore.service');
@@ -744,7 +773,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * Create a draft dataset and publish it.
    */
   private function createInitialDraftDatasetAndPublish(string $identifier): void {
-    // Set delete local resource files = false and modified as a triggering property.
+    // Set delete local resource files = false; modified as a trigger.
     $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->set('triggering_properties', ['modified'])
@@ -773,11 +802,14 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Confirm a new datastore import took place after an update to an existing dataset (draft workflow).
+   * Confirm draft workflow led to a new datastore import and orphan cleanup.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
    */
   private function confirmNewDatastoreImportDraftWorkflow(string $identifier): void {
-    // Simulate all possible queues post update.
-    // Should include datastore_import, orphan_reference_processor and resource_purger.
+    // Simulate all possible queues post update. Should include datastore
+    // import, orphan_reference_processor and resource_purger.
     $this->runQueues([
       'localize_import',
       'datastore_import',
@@ -794,7 +826,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionTablePublished = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
     $distributionUuidOld = $metadata['published_revision']['distributions'][0]['distribution_uuid'] ?? '';
 
-    // Make sure there are both latest and published versions with different tables.
+    // Make sure there are latest and published versions with different tables.
     $this->assertNotEmpty($distributionTablePublished, 'Draft revision exists.');
     $this->assertNotEquals($distributionTableLatest, $distributionTablePublished, 'Separate distribution tables exist for latest and published revisions.');
 
@@ -821,18 +853,23 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionUuidLatestNew = $metadata['latest_revision']['distributions'][0]['distribution_uuid'];
     $distributionTablePublishedUpdated = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
 
-    // Load previous distribution node and its moderation state.
-    $entityManager = $this->getNodeStorage();
-    $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
-    $distributionNodeOld = reset($distributionNodeOld);
-    $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();
-    $this->assertEquals('orphaned', $distributionStateOld, 'Old distribution orphaned.');
+    // Load previous distribution node and its moderation state. Only execute
+    // this part if we are using referenced distributions.
+    if ($this->usingReferencedDistributions()) {
+      $entityManager = $this->getNodeStorage();
+      /** @var \Drupal\node\NodeInterface $distributionNodeOld */
+      $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
+      $distributionNodeOld = reset($distributionNodeOld);
+      $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();
+      $this->assertEquals('orphaned', $distributionStateOld, 'Old distribution orphaned.');
 
-    // Load new distribution node and its moderation state.
-    $distributionNodeNew = $entityManager->loadByProperties(['uuid' => $distributionUuidLatestNew]);
-    $distributionNodeNew = reset($distributionNodeNew);
-    $distributionStateNew = $distributionNodeNew->get('moderation_state')->getString();
-    $this->assertEquals('published', $distributionStateNew, 'New distribution published.');
+      // Load new distribution node and its moderation state.
+      $distributionNodeNew = $entityManager->loadByProperties(['uuid' => $distributionUuidLatestNew]);
+      /** @var \Drupal\node\NodeInterface $distributionNodeNew */
+      $distributionNodeNew = reset($distributionNodeNew);
+      $distributionStateNew = $distributionNodeNew->get('moderation_state')->getString();
+      $this->assertEquals('published', $distributionStateNew, 'New distribution published.');
+    }
 
     // Make sure there is only a single latest revision.
     $this->assertEmpty($distributionTablePublishedUpdated, 'Only published revision listed.');
@@ -847,7 +884,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Confirm original published distribution table removed.
     $this->assertFalse(
       $databaseSchema->tableExists($distributionTablePublished),
-      'Distribution table exists: ' . $distributionTablePublished
+      'Distribution table does not exist: ' . $distributionTablePublished
     );
   }
 
@@ -954,17 +991,22 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionUuidLatestNew = $metadata['latest_revision']['distributions'][0]['distribution_uuid'];
     $distributionTablePublishedUpdated = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
 
-    // Load previous distribution node and its moderation state.
-    $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
-    $distributionNodeOld = reset($distributionNodeOld);
-    $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();
-    $this->assertEquals('orphaned', $distributionStateOld, 'Old distribution orphaned.');
+    // In non-referenced mode, distribution nodes are not present,so skip this.
+    if ($this->usingReferencedDistributions()) {
+      // Load previous distribution node and its moderation state.
+      $distributionNodeOld = $entityManager->loadByProperties(['uuid' => $distributionUuidOld]);
+      /** @var \Drupal\node\NodeInterface $distributionNodeOld */
+      $distributionNodeOld = reset($distributionNodeOld);
+      $distributionStateOld = $distributionNodeOld->get('moderation_state')->getString();
+      $this->assertEquals('orphaned', $distributionStateOld, 'Old distribution orphaned.');
 
-    // Load new distribution node and its moderation state.
-    $distributionNodeNew = $entityManager->loadByProperties(['uuid' => $distributionUuidLatestNew]);
-    $distributionNodeNew = reset($distributionNodeNew);
-    $distributionStateNew = $distributionNodeNew->get('moderation_state')->getString();
-    $this->assertEquals('published', $distributionStateNew, 'New distribution published.');
+      // Load new distribution node and its moderation state.
+      $distributionNodeNew = $entityManager->loadByProperties(['uuid' => $distributionUuidLatestNew]);
+      /** @var \Drupal\node\NodeInterface $distributionNodeNew */
+      $distributionNodeNew = reset($distributionNodeNew);
+      $distributionStateNew = $distributionNodeNew->get('moderation_state')->getString();
+      $this->assertEquals('published', $distributionStateNew, 'New distribution published.');
+    }
 
     // Make sure there is only a single latest revision.
     $this->assertEmpty($distributionTablePublishedUpdated, 'Only published revision listed.');
@@ -987,7 +1029,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Create initial draft dataset and then publish it.
     $this->createInitialDraftDatasetAndPublish($id_1);
 
-    // Use same values for distribution as original getData() with new file path.
+    // Use same values for distribution as original getData() with new filepath.
     $distribution = new \stdClass();
     $distribution->title = 'Distribution #0 for ' . $id_1;
     $distribution->downloadURL = $this->getDownloadUrl('2.csv');
@@ -999,7 +1041,7 @@ class DatasetBTBTest extends BrowserTestBase {
       ['distribution' => [$distribution]]
     ));
 
-    // Run queues; check that datastore import and orphan cleanup worked as expected.
+    // Run queues; check datastore import and orphan cleanup worked as expected.
     $this->confirmNewDatastoreImportDraftWorkflow($id_1);
   }
 
