@@ -2,12 +2,24 @@
 
 namespace Drupal\Tests\dkan_common\Traits;
 
-use Drupal\Core\Config\Config;
-
 /**
  * Helpers for tests that run with distribution references on/off.
+ *
+ * Must be used on BrowserTestBase, KernelTestBase or similar classes that
+ * implement a config() method.
  */
 trait DistributionReferenceModeTrait {
+
+  /**
+   * Return an configuration object; ensures we're using on correct class.
+   *
+   * @param string $name
+   *   Configuration name.
+   *
+   * @return \Drupal\Core\Config\Config
+   *   Editable configuration.
+   */
+  abstract protected function config($name);
 
   /**
    * Two versions of metastore settings.
@@ -24,8 +36,12 @@ trait DistributionReferenceModeTrait {
 
   /**
    * Set distribution reference mode in metastore settings.
+   *
+   * @param string $distribution_reference
+   *   The distribution reference mode to set.
    */
-  protected static function setDistributionReferenceModeFromConfig(Config $config, string $distribution_reference): void {
+  protected function setDistributionReferenceModeFromConfig(string $distribution_reference): void {
+    $config = $this->config('dkan_metastore.settings');
     $property_list = $config->get('property_list');
     $property_list['distribution'] = $distribution_reference;
     $config

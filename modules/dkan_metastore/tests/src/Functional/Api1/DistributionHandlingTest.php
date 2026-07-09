@@ -36,7 +36,7 @@ class DistributionHandlingTest extends Api1TestBase {
     $config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
     $config->save();
 
-    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Create a data dictionary.
     $dictionaryId = $this->postDataDictionary();

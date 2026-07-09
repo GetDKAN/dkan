@@ -94,7 +94,7 @@ class LifeCycleTest extends KernelTestBase {
    * @covers ::datasetSave
    */
   public function testDatasetSave(?string $download_url, ?string $media_type, string $dist_reference) {
-    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $dist_reference);
+    $this->setDistributionReferenceModeFromConfig($dist_reference);
 
     $dataset_data = self::DATASET_DATA;
     $dist_2 = [
@@ -242,7 +242,7 @@ class LifeCycleTest extends KernelTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testDistributionPatchWithoutDownloadUrl(string $distribution_reference): void {
-    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $metastore = $this->container->get('dkan.metastore.service');
     $identifier = $this->createDataset($metastore, uniqid(__FUNCTION__));
@@ -268,7 +268,7 @@ class LifeCycleTest extends KernelTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testDistributionPatchWithReferencedDownloadUrl(string $distribution_reference): void {
-    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $metastore = $this->container->get('dkan.metastore.service');
     $identifier = $this->createDataset($metastore, uniqid(__FUNCTION__));

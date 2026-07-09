@@ -10,6 +10,7 @@ use Drupal\dkan_metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
@@ -24,6 +25,7 @@ use RootedData\RootedJsonData;
 class DatasetBTBTest extends BrowserTestBase {
 
   use QueueRunnerTrait;
+  use DistributionReferenceModeTrait;
 
   /**
    * {@inheritdoc}
@@ -56,8 +58,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test the resource purger when the default moderation state is 'draft'.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testResourcePurgeDraft() {
+  public function testResourcePurgeDraft(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
     $id_3 = uniqid(__FUNCTION__ . '3');
@@ -107,8 +113,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test the resource purger when the default moderation state is 'published'.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testResourcePurgePublished() {
+  public function testResourcePurgePublished(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post then update a dataset with multiple, changing resources.
@@ -122,8 +132,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test that the downloadURL is different when using local url perspective.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testChangingDatasetResourcePerspectiveOnOutput() {
+  public function testChangingDatasetResourcePerspectiveOnOutput(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     $this->datastoreImportAndQuery();
 
     drupal_flush_all_caches();
@@ -145,8 +159,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test archiving of datasets after a harvest.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testHarvestArchive() {
+  public function testHarvestArchive(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
     $harvester->registerHarvest($plan);
@@ -169,8 +187,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test removal of datasets by a subsequent harvest.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testHarvestOrphan() {
+  public function testHarvestOrphan(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
     $harvester->registerHarvest($plan);
@@ -202,8 +224,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution url update and default source resource perspective.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDraftWorkflowDistributionUrlSourcePerspective() {
+  public function testDraftWorkflowDistributionUrlSourcePerspective(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     // Set resource perspective to source.
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
@@ -214,8 +240,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution url update and local_url source resource perspective.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDraftWorkflowDistributionUrlLocalPerspective() {
+  public function testDraftWorkflowDistributionUrlLocalPerspective(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     // Set resource perspective to source.
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
@@ -226,8 +256,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with modified trigger and default source resource perspective.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDraftWorkflowModifiedTriggerSourcePerspective() {
+  public function testDraftWorkflowModifiedTriggerSourcePerspective(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     // Set resource perspective to source.
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
@@ -238,8 +272,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with modified trigger and local_url resource perspective.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDraftWorkflowModifiedTriggerLocalPerspective() {
+  public function testDraftWorkflowModifiedTriggerLocalPerspective(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     // Set resource perspective to local_url.
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
@@ -250,8 +288,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution title update and source resource perspective.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDraftWorkflowUpdateDistributionTitleSourcePerspective() {
+  public function testDraftWorkflowUpdateDistributionTitleSourcePerspective(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     // Set resource perspective to local_url.
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
@@ -262,8 +304,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test draft moderation workflow with distribution title update and local_url resource perspective.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDraftWorkflowUpdateDistributionTitleLocalPerspective() {
+  public function testDraftWorkflowUpdateDistributionTitleLocalPerspective(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     // Set resource perspective to local_url.
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
@@ -274,9 +320,14 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test cleanup of orphaned draft distributions.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testOrphanDraftDistributionCleanup() {
-    // Set delete local resource files = false and modified as a triggering property.
+  public function testOrphanDraftDistributionCleanup(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
+    // Set delete local resource files = false and modified as a triggering
+    // property.
     $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->set('triggering_properties', ['modified'])
@@ -331,8 +382,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test resource removal on distribution deleting.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDeleteDistribution() {
+  public function testDeleteDistribution(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post a dataset with a single distribution.
@@ -358,8 +413,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test local resource removal on datastore import.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDatastoreImportDeleteLocalResource() {
+  public function testDatastoreImportDeleteLocalResource(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
 
@@ -401,8 +460,12 @@ class DatasetBTBTest extends BrowserTestBase {
 
   /**
    * Test sanitization of dataset properties.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testSanitizeDatasetProperties() {
+  public function testSanitizeDatasetProperties(string $distribution_reference) {
+    $this->setDistributionReferenceMode($distribution_reference);
+
     // Set HTML allowed on dataset description.
     $this->config('dkan_metastore.settings')
       ->set('html_allowed_properties', ['dataset_description'])
@@ -498,6 +561,13 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   private function getDownloadUrl(string $filename) {
     return self::S3_PREFIX . '/' . $filename;
+  }
+
+  /**
+   * Set metastore distribution reference mode for this test run.
+   */
+  private function setDistributionReferenceMode(string $distribution_reference): void {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
   }
 
   /**

@@ -189,11 +189,15 @@ class DatasetInfo {
   protected function getDistributionsInfo(\stdClass $metadata) : array {
     $distributions = [];
 
-    if (!isset($metadata->{Dereferencer::REF_PREFIX . 'distribution'})) {
+    if (!isset($metadata->{'distribution'})) {
       return ['Not found'];
     }
 
-    foreach ($metadata->{Dereferencer::REF_PREFIX . 'distribution'} as $distribution) {
+    foreach ($metadata->{'distribution'} as $index => $distribution) {
+      if (isset($metadata->{Dereferencer::REF_PREFIX . "distribution"})) {
+        $distribution_id = $metadata->{Dereferencer::REF_PREFIX . "distribution"}[$index]->identifier;
+        $distribution->identifier = $distribution_id;
+      }
       $distributions[] = $this->getResourcesInfo($distribution);
     }
 
@@ -211,20 +215,20 @@ class DatasetInfo {
    */
   protected function getResourcesInfo(\stdClass $distribution) : array {
 
-    if (!isset($distribution->data->{Dereferencer::REF_PREFIX . 'downloadURL'})) {
+    if (!isset($distribution->{Dereferencer::REF_PREFIX . 'downloadURL'})) {
       return ['No resource found'];
     }
 
     // A distribution's first resource, regardless of perspective or index,
     // should provide the information needed.
-    $resource = array_shift($distribution->data->{Dereferencer::REF_PREFIX . 'downloadURL'});
+    $resource = array_shift($distribution->{Dereferencer::REF_PREFIX . 'downloadURL'});
     $identifier = $resource->data->identifier;
     $version = $resource->data->version;
 
     $source = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
 
     return [
-      'distribution_uuid' => $distribution->identifier,
+      'distribution_uuid' => $distribution->identifier ?? 'n/a',
       'resource_id' => $identifier,
       'resource_version' => $version,
       'mime_type' => isset($source) ? $source->getMimeType() : '',

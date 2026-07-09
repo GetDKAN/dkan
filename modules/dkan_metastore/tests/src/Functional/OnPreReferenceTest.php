@@ -59,7 +59,7 @@ class OnPreReferenceTest extends BrowserTestBase {
       ->set('triggering_properties', ['modified'])
       ->save();
 
-    self::setDistributionReferenceModeFromConfig($this->config('dkan_metastore.settings'), $distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Test posting a dataset to the metastore.
     $data = $this->getData($this->downloadUrl);
