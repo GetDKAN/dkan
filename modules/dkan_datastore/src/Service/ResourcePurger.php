@@ -352,22 +352,77 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function getResources(NodeInterface $dataset) : array {
     $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
-    $distributions = $metadata->{Dereferencer::REF_PREFIX . 'distribution'} ?? [];
+    $distributions = $this->getDistributionObjects($metadata);
 
     foreach ($distributions as $distribution) {
-      // Retrieve and validate the resource for this distribution before adding
-      // it to the resources list.
-      $resource = $distribution->data->{Dereferencer::REF_PREFIX . 'downloadURL'}[0] ?? NULL;
-      if (isset($resource->data->identifier, $resource->data->version)) {
-        $resources[] = json_encode([
-          $resource->data->identifier,
-          $resource->data->version,
-          $resource->data->perspective,
-        ]);
+      $resource = $this->getDistributionResource($distribution);
+      if ($resource) {
+        $resources[] = json_encode($resource);
       }
     }
 
     return $resources;
+  }
+
+  /**
+   * Get distribution objects from metadata.
+   */
+  private function getDistributionObjects(\stdClass $metadata): array {
+    $distributions = [];
+
+    if (isset($metadata->distribution) && is_array($metadata->distribution)) {
+      foreach ($metadata->distribution as $distribution) {
+        if (is_object($distribution)) {
+          $distributions[] = $distribution;
+        }
+      }
+    }
+
+    if (!empty($distributions)) {
+      return $distributions;
+    }
+
+    return [];
+  }
+
+  /**
+   * Extract [identifier, version, perspective] from a distribution object.
+   *
+   * @param \stdClass $distribution
+   *   A distribution object from dataset metadata.
+   *
+   * @return array|null
+   *   An array containing the resource identifier, version, and perspective.
+   */
+  private function getDistributionResource(\stdClass $distribution): ?array {
+    $ref = $distribution->{Dereferencer::REF_PREFIX . 'downloadURL'}[0]->data ?? NULL;
+    if (isset($ref->identifier, $ref->version, $ref->perspective)) {
+      return [$ref->identifier, $ref->version, $ref->perspective];
+    }
+
+    // If the distribution does not have a dereferenced downloadURL, check if
+    // it has a referenced downloadURL, and if so parse it.
+    $downloadUrl = $distribution->downloadURL ?? NULL;
+    if (!is_string($downloadUrl)) {
+      return NULL;
+    }
+
+    // Only parse mapper IDs; plain URLs do not encode identifier/version.
+    if (filter_var($downloadUrl, FILTER_VALIDATE_URL) !== FALSE) {
+      return NULL;
+    }
+
+    try {
+      $resource = DataResource::parseUniqueIdentifier($downloadUrl);
+      return [
+        $resource['identifier'],
+        $resource['version'],
+        $resource['perspective'],
+      ];
+    }
+    catch (\Exception) {
+      return NULL;
+    }
   }
 
   /**
