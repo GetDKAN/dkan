@@ -69,11 +69,14 @@ class ReferenceLookup implements ReferenceLookupInterface {
     $referencers = [];
     foreach ($metastoreItems as $item) {
       [$identifier, $metadata] = $this->decodeJsonMetadata($item);
-      $propertyValue = $metadata->{$propertyId};
-      // Check if uuid is found either directly or in an array.
-      $idIsValue = is_string($propertyValue) && str_starts_with($propertyValue, $referenceId);
-      $idInArray = is_array($propertyValue) && self::hasElementStartsWith($referenceId, $propertyValue);
-      $referencers[] = ($idIsValue || $idInArray) ? $identifier : NULL;
+      $propertyValue = NULL;
+      if (is_array($metadata)) {
+        $propertyValue = $metadata[$propertyId] ?? NULL;
+      }
+      elseif (is_object($metadata)) {
+        $propertyValue = $metadata->{$propertyId} ?? NULL;
+      }
+      $referencers[] = self::valueContainsStartsWith($referenceId, $propertyValue) ? $identifier : NULL;
     }
 
     return array_filter($referencers);
@@ -96,6 +99,43 @@ class ReferenceLookup implements ReferenceLookupInterface {
       $idInArray = str_starts_with($value, $needle) ? TRUE : $idInArray;
     });
     return $idInArray;
+  }
+
+  /**
+   * Check recursively whether a value contains a string with the ID prefix.
+   *
+   * @param string $needle
+   *   The ID or ID fragment.
+   * @param mixed $value
+   *   Any metadata value to inspect.
+   *
+   * @return bool
+   *   TRUE when a nested string starts with the supplied fragment.
+   */
+  private static function valueContainsStartsWith(string $needle, $value): bool {
+    if (is_string($value)) {
+      return str_starts_with($value, $needle);
+    }
+
+    if (is_array($value)) {
+      foreach ($value as $item) {
+        if (self::valueContainsStartsWith($needle, $item)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+
+    if (is_object($value)) {
+      foreach (get_object_vars($value) as $item) {
+        if (self::valueContainsStartsWith($needle, $item)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+
+    return FALSE;
   }
 
   /**
