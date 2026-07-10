@@ -214,21 +214,32 @@ class ResourceLocalizer {
    * Also remove local perspectives from mapping DB.
    */
   public function remove($identifier, $version = NULL): void {
-    // Remove the LOCAL_URL_PERSPECTIVE if it exists.
-    if ($local_url_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE)) {
-      $this->resourceMapper->remove($local_url_resource);
-    }
-    // Remove the LOCAL_FILE_PERSPECTIVE if it exists.
-    if ($resource = $this->get($identifier, $version, self::LOCAL_FILE_PERSPECTIVE)) {
-      // Remove the file.
-      if (file_exists($resource->getFilePath())) {
-        $this->drupalFiles->getFilesystem()
-          ->deleteRecursive($this->getPublicLocalizedDirectory($resource));
+    // Remove the local perspective mapping rows if they still exist. Look them
+    // up directly in the resource mapper so removal does not depend on the
+    // source perspective, which orphan processing may remove before the
+    // resource purger runs.
+    $found = FALSE;
+    foreach ([self::LOCAL_URL_PERSPECTIVE, self::LOCAL_FILE_PERSPECTIVE] as $perspective) {
+      if ($resource = $this->resourceMapper->get($identifier, $perspective, $version)) {
+        // Capture the concrete version, in case none was supplied.
+        $version = $resource->getVersion();
+        $found = TRUE;
+        $this->resourceMapper->remove($resource);
       }
-      // Remove the fetcher job.
-      $this->removeJob($resource->getUniqueIdentifierNoPerspective());
-      // Remove the LOCAL_FILE_PERSPECTIVE.
-      $this->resourceMapper->remove($resource);
+    }
+
+    // Only a localized resource has files and a fetcher job to clean up. Build
+    // the paths directly from the identifier and version so the files are
+    // removed even when the source perspective is already gone.
+    if (!$found || $version === NULL) {
+      return;
+    }
+    $uniqueId = $identifier . '_' . $version;
+    $this->removeJob($uniqueId);
+    $directory = 'public://resources/' . $uniqueId;
+    $realpath = $this->drupalFiles->getFilesystem()->realpath($directory);
+    if ($realpath && is_dir($realpath)) {
+      $this->drupalFiles->getFilesystem()->deleteRecursive($directory);
     }
   }
 
