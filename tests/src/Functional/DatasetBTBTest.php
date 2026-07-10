@@ -341,14 +341,68 @@ class DatasetBTBTest extends BrowserTestBase {
       'resource_purger',
     ]);
 
+    // @todo Temporary diagnostics for the intermittent CI failure. Remove once
+    //   the orphan-draft purge flake is understood.
+    $diagnostics = $this->purgeDiagnostics($resourceDirectory);
+
     // Confirm original distribution table removed.
     $this->assertFalse(
       $databaseSchema->tableExists($distributionTable),
-      'Distribution table exists: ' . $distributionTable
+      'Distribution table exists: ' . $distributionTable . "\n" . $diagnostics
     );
 
     // Confirm original distribution local directory removed.
-    $this->assertDirectoryDoesNotExist('public://resources/' . $resourceDirectory);
+    $this->assertDirectoryDoesNotExist(
+      'public://resources/' . $resourceDirectory,
+      $diagnostics
+    );
+  }
+
+  /**
+   * Build a diagnostic string for the orphan-draft purge flake.
+   *
+   * @param string $resourceDirectory
+   *   The resource directory expected to be removed.
+   *
+   * @return string
+   *   Human-readable diagnostics: dblog watchdog messages plus the current
+   *   contents of the public://resources directory.
+   */
+  private function purgeDiagnostics(string $resourceDirectory): string {
+    $lines = ['--- Purge diagnostics ---'];
+    $lines[] = 'Expected removed resource dir: ' . $resourceDirectory;
+
+    // Collect relevant watchdog log messages, if dblog is available.
+    try {
+      $database = $this->container->get('database');
+      if ($database->schema()->tableExists('watchdog')) {
+        $rows = $database->select('watchdog', 'w')
+          ->fields('w', ['message', 'variables'])
+          ->condition('message', '%ResourcePurger%', 'LIKE')
+          ->orderBy('wid')
+          ->execute();
+        foreach ($rows as $row) {
+          $variables = @unserialize($row->variables) ?: [];
+          $lines[] = 'LOG: ' . strtr($row->message, is_array($variables) ? $variables : []);
+        }
+      }
+    }
+    catch (\Exception $e) {
+      $lines[] = 'LOG lookup failed: ' . $e->getMessage();
+    }
+
+    // List the current contents of public://resources.
+    $fileSystem = $this->container->get('file_system');
+    $resourcesDir = $fileSystem->realpath('public://resources');
+    if ($resourcesDir && is_dir($resourcesDir)) {
+      $entries = array_values(array_diff(scandir($resourcesDir) ?: [], ['.', '..']));
+      $lines[] = 'public://resources contents: ' . (empty($entries) ? '(empty)' : implode(', ', $entries));
+    }
+    else {
+      $lines[] = 'public://resources does not exist.';
+    }
+
+    return implode("\n", $lines);
   }
 
   /**
