@@ -264,13 +264,14 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function resourceNotShared(string $resource_details): bool {
     // Extract the identifier and version from the supplied resource details.
     $identifier = DataResource::buildUniqueIdentifier(...json_decode($resource_details));
-    // Referenced distributions: the distribution belonging to the dataset being
-    // purged lingers as orphaned item, so shared resource has >= 1 referencer.
-    $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
 
-    if ($this->distributionsAreReferenced() || count($distributions) > 0) {
+    if ($this->distributionsAreReferenced()) {
+      // In referenced mode, shared means more than one distribution references
+      // the resource.
+      $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
       return count($distributions) <= 1;
     }
+
     // Non-referenced: if getReferencers() returns 1 dataset = shared resource.
     $datasets = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
     return count($datasets) < 1;
