@@ -20,25 +20,21 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ResourcePurger implements ContainerInjectionInterface {
 
   /**
-   * The datastore.settings config.
-   *
-   * @var \Drupal\Core\Config\ImmutableConfig
+   * Config factory service.
    */
-  private $config;
+  private ConfigFactoryInterface $configFactory;
 
   /**
-   * The dkan.metastore.reference_lookup service.
-   *
-   * @var \Drupal\dkan_metastore\ReferenceLookupInterface
+    * Reference lookup service.
    */
-  private $referenceLookup;
+  private ReferenceLookupInterface $referenceLookup;
 
   /**
    * The datastore service.
    *
    * @var \Drupal\dkan_datastore\DatastoreService
    */
-  private $datastore;
+  private DatastoreService $datastore;
 
   /**
    * The dataset storage.
@@ -73,7 +69,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     DatastoreService $datastore,
     LoggerInterface $loggerChannel,
   ) {
-    $this->config = $configFactory->get('dkan_datastore.settings');
+    $this->configFactory = $configFactory;
     $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');
     $this->datastore = $datastore;
@@ -271,12 +267,24 @@ class ResourcePurger implements ContainerInjectionInterface {
     // Referenced distributions: the distribution belonging to the dataset being
     // purged lingers as orphaned item, so shared resource has >= 1 referencer.
     $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
-    if (count($distributions) > 0) {
+
+    if ($this->distributionsAreReferenced() || count($distributions) > 0) {
       return count($distributions) <= 1;
     }
     // Non-referenced: if getReferencers() returns 1 dataset = shared resource.
     $datasets = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
     return count($datasets) < 1;
+  }
+
+  /**
+   * Determine whether distributions are configured to be referenced.
+   */
+  private function distributionsAreReferenced(): bool {
+    $distributionProperty = $this->configFactory
+      ->get('dkan_metastore.settings')
+      ->get('property_list.distribution');
+
+    return $distributionProperty !== '0';
   }
 
   /**
@@ -483,14 +491,14 @@ class ResourcePurger implements ContainerInjectionInterface {
    * Get the purge_table value from datastore.settings config.
    */
   private function getPurgeTableSetting() : bool {
-    return (bool) $this->config->get('purge_table');
+    return (bool) $this->configFactory->get('dkan_datastore.settings')->get('purge_table');
   }
 
   /**
    * Get the purge_file value from datastore.settings config.
    */
   private function getPurgeFileSetting() : bool {
-    return (bool) $this->config->get('purge_file');
+    return (bool) $this->configFactory->get('dkan_datastore.settings')->get('purge_file');
   }
 
   /**
