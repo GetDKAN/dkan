@@ -21,7 +21,7 @@ use RootedData\RootedJsonData;
  *
  * @group dkan
  * @group functional
- * @group functional3
+ * @group functional4
  */
 class DatasetBTBTest extends BrowserTestBase {
 
@@ -33,6 +33,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   protected static $modules = [
     'dkan_datastore',
+    'dblog',
     'field',
     'dkan_harvest',
     'dkan_metastore',

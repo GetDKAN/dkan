@@ -350,6 +350,14 @@ class ResourcePurger implements ContainerInjectionInterface {
       $resourcesToKeep = array_merge($resourcesToKeep, $this->getResources($currentlyPublished));
     }
 
+    // @todo Temporary diagnostic logging for the orphan-draft purge flake.
+    $this->logger->notice('ResourcePurger keep uuid:%uuid latestVid:%latest publishedVid:%published keep:%keep', [
+      '%uuid' => $uuid,
+      '%latest' => $latestRevision ? $latestRevision->getRevisionId() : 'none',
+      '%published' => $currentlyPublished ? $currentlyPublished->getRevisionId() : 'none',
+      '%keep' => implode(' | ', array_unique($resourcesToKeep)),
+    ]);
+
     return array_unique($resourcesToKeep);
   }
 

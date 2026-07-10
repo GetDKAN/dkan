@@ -115,7 +115,7 @@ commands:
 jobs:
   phpunit:
     executor: docker/machine
-    parallelism: 4
+    parallelism: 5
     parameters:
       php_version:
         description: "PHP major.minor for DDev to use."
