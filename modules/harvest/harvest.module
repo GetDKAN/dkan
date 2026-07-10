@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Harvest module file.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_entity_operation().
+ */
+function harvest_entity_operation(EntityInterface $entity) {
+  $operations = [];
+  if ($entity->getEntityTypeId() === 'harvest_plan') {
+    $operations['run'] = [
+      'title' => t('Run'),
+      'url' => $entity->toUrl('run-form'),
+      'weight' => 0,
+    ];
+  }
+  return $operations;
+}

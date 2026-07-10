@@ -18,13 +18,15 @@ administer harvest_plan:
   title: 'Administer harvest plans'
   restrict access: true
 view harvest_plan:
-  title: 'View harvest plan'
+  title: 'View harvest plans'
 edit harvest_plan:
-  title: 'Edit harvest plan'
+  title: 'Edit harvest plans'
 delete harvest_plan:
-  title: 'Delete harvest plan'
+  title: 'Delete harvest plans'
 create harvest_plan:
-  title: 'Create harvest plan'
+  title: 'Create harvest plans'
+harvest_plan.run:
+  title: "Run harvest plans"
 
 # These permissions refer to harvest_run entities, not the act of running a
 # harvest.

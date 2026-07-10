@@ -33,6 +33,9 @@ use Drupal\harvest\HarvestPlanInterface;
  *     "access" = "Drupal\harvest\ContentAccessControlHandler",
  *     "route_provider" = {
  *       "html" = "Drupal\harvest\Routing\HarvestDashboardHtmlRouteProvider",
+ *     },
+ *     "form" = {
+ *       "run" = "Drupal\harvest\Form\HarvestPlanRunForm",
  *     }
  *   },
  *   base_table = "harvest_plans",
@@ -44,6 +47,7 @@ use Drupal\harvest\HarvestPlanInterface;
  *   links = {
  *     "collection" = "/admin/dkan/harvest",
  *     "canonical" = "/harvest-plan/{harvest_plan}",
+ *     "run-form" = "/admin/harvest-plan/{harvest_plan}/run",
  *   },
  *   internal = TRUE,
  * )
@@ -64,6 +68,7 @@ final class HarvestPlan extends HarvestEntityBase implements HarvestPlanInterfac
    * Provides identifier and JSON data base fields.
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
+    // Get base fields based on annotated config above.
     $base_fields = parent::baseFieldDefinitions($entity_type);
 
     // The 'id' field is the unique identifier for each harvest plan row.
