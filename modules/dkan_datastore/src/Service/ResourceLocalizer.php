@@ -214,23 +214,19 @@ class ResourceLocalizer {
    * Also remove local perspectives from mapping DB.
    */
   public function remove($identifier, $version = NULL): void {
-    // Remove the local perspective mapping rows if they still exist. Look them
-    // up directly in the resource mapper so removal does not depend on the
-    // source perspective, which orphan processing may remove before the
-    // resource purger runs.
+    // Remove the local perspective mapping rows if they still exist.
     $found = FALSE;
     foreach ([self::LOCAL_URL_PERSPECTIVE, self::LOCAL_FILE_PERSPECTIVE] as $perspective) {
       if ($resource = $this->resourceMapper->get($identifier, $perspective, $version)) {
         // Capture the concrete version, in case none was supplied.
         $version = $resource->getVersion();
+        // Flag that we found a mapping row, so we remove the file and job.
         $found = TRUE;
         $this->resourceMapper->remove($resource);
       }
     }
 
-    // Only a localized resource has files and a fetcher job to clean up. Build
-    // the paths directly from the identifier and version so the files are
-    // removed even when the source perspective is already gone.
+    // A localized resource has files and a fetcher job to clean up.
     if (!$found || $version === NULL) {
       return;
     }

@@ -214,19 +214,8 @@ class ResourcePurger implements ContainerInjectionInterface {
     }
     $keep = $this->getResourcesToKeep($uuid);
     $purge = $this->getResourcesToPurge($vid, $node, $prior);
-    $toDelete = array_diff($purge, $keep);
 
-    // @todo Temporary diagnostic logging for the orphan-draft purge flake.
-    //   Remove once the intermittent CI failure is understood.
-    $this->logger->notice('ResourcePurger diagnostics uuid:%uuid vid:%vid keep:%keep purge:%purge delete:%delete', [
-      '%uuid' => $uuid,
-      '%vid' => $vid,
-      '%keep' => implode(' | ', $keep),
-      '%purge' => implode(' | ', $purge),
-      '%delete' => implode(' | ', $toDelete),
-    ]);
-
-    foreach ($toDelete as $idAndVersion) {
+    foreach (array_diff($purge, $keep) as $idAndVersion) {
       // $idAndVersion is a json encoded array with resource's id and version.
       [$id, $version] = json_decode((string) $idAndVersion);
       $this->delete($id, $version);
@@ -280,23 +269,11 @@ class ResourcePurger implements ContainerInjectionInterface {
       // In referenced mode, shared means more than one distribution references
       // the resource.
       $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
-      // @todo Temporary diagnostic logging for the orphan-draft purge flake.
-      $this->logger->notice('ResourcePurger resourceNotShared referenced id:%id distributions:%count [%refs]', [
-        '%id' => $identifier,
-        '%count' => count($distributions),
-        '%refs' => implode(', ', $distributions),
-      ]);
       return count($distributions) <= 1;
     }
 
     // Non-referenced: if getReferencers() returns 1 dataset = shared resource.
     $datasets = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
-    // @todo Temporary diagnostic logging for the orphan-draft purge flake.
-    $this->logger->notice('ResourcePurger resourceNotShared non-ref id:%id datasets:%count [%refs]', [
-      '%id' => $identifier,
-      '%count' => count($datasets),
-      '%refs' => implode(', ', $datasets),
-    ]);
     return count($datasets) < 1;
   }
 
@@ -349,14 +326,6 @@ class ResourcePurger implements ContainerInjectionInterface {
     if ($currentlyPublished) {
       $resourcesToKeep = array_merge($resourcesToKeep, $this->getResources($currentlyPublished));
     }
-
-    // @todo Temporary diagnostic logging for the orphan-draft purge flake.
-    $this->logger->notice('ResourcePurger keep uuid:%uuid latestVid:%latest publishedVid:%published keep:%keep', [
-      '%uuid' => $uuid,
-      '%latest' => $latestRevision ? $latestRevision->getRevisionId() : 'none',
-      '%published' => $currentlyPublished ? $currentlyPublished->getRevisionId() : 'none',
-      '%keep' => implode(' | ', array_unique($resourcesToKeep)),
-    ]);
 
     return array_unique($resourcesToKeep);
   }
