@@ -151,6 +151,38 @@ class DatasetInfo {
   }
 
   /**
+   * Get the current/true resource identifier for a dataset's distribution.
+   *
+   * Helper function to deal with nuances in the draft workflow, to get the
+   * canonical resource identifier for a dataset given a distribution index.
+   * This function can be used when draft workflow is not in place, and with or
+   * without referenced distributions, and will be correct (though not always)
+   * necessary.
+   *
+   * @param string $dataset_uuid
+   *   The uuid of a dataset.
+   * @param string $index
+   *   The index of the resource in the dataset array. Defaults to first.
+   *
+   * @return string|null
+   *   The resource identifier as "id__version", or NULL if none.
+   */
+  public function getResourceIdentifier(string $dataset_uuid, string $index = '0'): ?string {
+    $dataset_info = $this->gather($dataset_uuid);
+
+    $dataset_revision = $dataset_info['published_revision'] ?? $dataset_info['latest_revision'] ?? NULL;
+    $distribution = $dataset_revision['distributions'][$index] ?? NULL;
+    $resource_id = $distribution['resource_id'] ?? NULL;
+    $resource_version = $distribution['resource_version'] ?? NULL;
+
+    if (empty($resource_id) || $resource_version === NULL) {
+      return NULL;
+    }
+
+    return $resource_id . '__' . $resource_version;
+  }
+
+  /**
    * Get various information from a dataset node's specific revision.
    *
    * @param \Drupal\node\Entity\Node $node

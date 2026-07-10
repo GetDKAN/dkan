@@ -16,6 +16,7 @@ use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
@@ -452,6 +453,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add("dkan.datastore.service", DatastoreService::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
@@ -508,6 +510,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ReferenceLookup::class, 'getReferencers', [])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
       ->add(Query::class, 'getDatastoreService', DatastoreService::class)
