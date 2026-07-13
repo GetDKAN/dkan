@@ -228,7 +228,7 @@ class ArrayHelper implements ContainerInjectionInterface {
         '#title'         => $definition['schema']->items->title ?? NULL,
         '#default_value' => $data,
       ]),
-      'actions' => $this->buildElementActions($definition['name'], self::buildContextName($context)),
+      'actions' => empty($definition['schema']->no_actions) ? $this->buildElementActions($definition['name'], self::buildContextName($context)) : [],
     ];
   }
 
@@ -255,7 +255,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       'schema' => $definition['schema']->items,
     ];
     $element = $this->objectHelper->handleObjectElement($subdefinition, $data, $form_state, $context, $this->builder);
-    $element[$definition['name']]['actions'] = $this->buildElementActions($definition['name'], self::buildContextName($context));
+    $element[$definition['name']]['actions'] = empty($definition['schema']->no_actions) ? $this->buildElementActions($definition['name'], self::buildContextName($context)) : [];
     return $element;
   }
 
