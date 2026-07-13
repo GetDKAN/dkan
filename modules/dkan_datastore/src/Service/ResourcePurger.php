@@ -380,57 +380,43 @@ class ResourcePurger implements ContainerInjectionInterface {
    * Get distribution objects from metadata.
    */
   private function getDistributionObjects(\stdClass $metadata): array {
-    $distributions = [];
+    if (!isset($metadata->distribution) || !is_array($metadata->distribution)) {
+      return [];
+    }
 
-    if (isset($metadata->distribution) && is_array($metadata->distribution)) {
-      foreach ($metadata->distribution as $distribution) {
-        if (is_object($distribution)) {
-          $distributions[] = $distribution;
-        }
+    $distributions = [];
+    foreach ($metadata->distribution as $distribution) {
+      if (is_object($distribution)) {
+        $distributions[] = $distribution;
       }
     }
-
-    if (!empty($distributions)) {
-      return $distributions;
-    }
-
-    return [];
+    return $distributions;
   }
 
   /**
    * Extract [identifier, version, perspective] from a distribution object.
    *
-   * @param \stdClass $distribution
+   * @param object $distribution
    *   A distribution object from dataset metadata.
    *
    * @return array|null
    *   An array containing the resource identifier, version, and perspective.
    */
-  private function getDistributionResource(\stdClass $distribution): ?array {
+  private function getDistributionResource(object $distribution): ?array {
     $ref = $distribution->{Dereferencer::REF_PREFIX . 'downloadURL'}[0]->data ?? NULL;
-    if (isset($ref->identifier, $ref->version, $ref->perspective)) {
+    if (is_object($ref) && isset($ref->identifier, $ref->version, $ref->perspective)) {
       return [$ref->identifier, $ref->version, $ref->perspective];
     }
 
-    // If the distribution does not have a dereferenced downloadURL, check if
-    // it has a referenced downloadURL, and if so parse it.
+    // Check check if it has a referenced downloadURL, and if so parse it.
     $downloadUrl = $distribution->downloadURL ?? NULL;
-    if (!is_string($downloadUrl)) {
-      return NULL;
-    }
-
-    // Only parse mapper IDs; plain URLs do not encode identifier/version.
-    if (filter_var($downloadUrl, FILTER_VALIDATE_URL) !== FALSE) {
+    if (!is_string($downloadUrl) || filter_var($downloadUrl, FILTER_VALIDATE_URL) !== FALSE) {
       return NULL;
     }
 
     try {
       $resource = DataResource::parseUniqueIdentifier($downloadUrl);
-      return [
-        $resource['identifier'],
-        $resource['version'],
-        $resource['perspective'],
-      ];
+      return [$resource['identifier'], $resource['version'], $resource['perspective']];
     }
     catch (\Exception) {
       return NULL;
