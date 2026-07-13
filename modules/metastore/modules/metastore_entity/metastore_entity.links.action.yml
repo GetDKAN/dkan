@@ -1,0 +1,12 @@
+metastore_entity.metastore_schema_add:
+  route_name: metastore_entity.metastore_schema_add
+  title: 'Add schema'
+    # Where will the link appear, defined by route name.
+  appears_on:
+    - entity.metastore_schema.collection
+metastore_entity.add_page:
+  route_name: metastore_entity.add_page
+  title: 'Add schema'
+    # Where will the link appear, defined by route name.
+  appears_on:
+    - entity.metastore_schema.collection

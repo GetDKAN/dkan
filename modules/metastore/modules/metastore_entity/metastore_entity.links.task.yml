@@ -1,0 +1,15 @@
+metastore_item.view:
+  route_name: entity.metastore_item.canonical
+  base_route: entity.metastore_item.canonical
+  title: View
+
+metastore_item.page_edit:
+  route_name: entity.metastore_item.edit_form
+  base_route: entity.metastore_item.canonical
+  title: Edit
+
+metastore_item.delete_confirm:
+  route_name:  entity.metastore_item.delete_form
+  base_route:  entity.metastore_item.canonical
+  title: Delete
+  weight: 10

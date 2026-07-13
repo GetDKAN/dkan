@@ -1,0 +1,12 @@
+# Define the menu links for this module
+
+entity.metastore_item.collection:
+  title: 'Metastore'
+  route_name: entity.metastore_item.collection
+  description: 'List metastore content'
+  parent: system.admin_content
+entity.metastore_schema.collection:
+  title: Metastore Schemas
+  description: 'Configure metastore schemas'
+  route_name:  entity.metastore_schema.collection
+  parent: system.admin_structure
