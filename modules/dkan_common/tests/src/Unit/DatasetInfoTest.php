@@ -49,4 +49,34 @@ class DatasetInfoTest extends TestCase {
     return $datasetInfo;
   }
 
+  /**
+   * @covers ::getResourceIdentifier
+   */
+  public function testGetResourceIdentifier() {
+    // Only latest revision present.
+    $info['latest_revision']['distributions'][0]['resource_id'] = '123';
+    $info['latest_revision']['distributions'][0]['resource_version'] = '1';
+    $datasetInfo = $this->getGatherMock($info);
+
+    // Check that when only have latest revision, we get that resourceID.
+    $result = $datasetInfo->getResourceIdentifier('dataset1');
+    $this->assertEquals('123__1', $result);
+
+    // Add a published revision.
+    $info['published_revision']['distributions'][0]['resource_id'] = '456';
+    $info['published_revision']['distributions'][0]['resource_version'] = '2';
+    $datasetInfo = $this->getGatherMock($info);
+
+    // Check that when published revision present, now we get that resourceID.
+    $result = $datasetInfo->getResourceIdentifier('dataset1');
+    $this->assertEquals('456__2', $result);
+
+    $info['published_revision']['distributions'][0]['resource_id'] = NULL;
+    $info['published_revision']['distributions'][0]['resource_version'] = NULL;
+    $datasetInfo = $this->getGatherMock($info);
+
+    $result = $datasetInfo->getResourceIdentifier('dataset1');
+    $this->assertNull($result);
+  }
+
 }
