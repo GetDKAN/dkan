@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\dkan_datastore;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Statement\FetchAs;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 
 /**
@@ -53,12 +52,10 @@ class DatastoreLookup implements DatastoreLookupInterface {
       'CONCAT(\'datastore_\', MD5(CONCAT(identifier, \'__\', version, \'__\', perspective))) = :table_name',
       [':table_name' => $table_name]
     );
-    // Execute the query and fetch the results as an associative array.
-    $resource_result = $resource_query->execute()->fetchAll(FetchAs::Associative);
-    // Extract the identifier value.
-    if ($resource_result) {
-      $resource_identifier = $resource_result[0]['identifier'];
-      return $resource_identifier;
+    // Fetch the first identifier directly for Drupal 10/11 compatibility.
+    $resource_identifier = $resource_query->execute()->fetchField();
+    if ($resource_identifier !== FALSE && $resource_identifier !== NULL) {
+      return (string) $resource_identifier;
     }
     else {
       throw new \Exception("Resource lookup: Can not map datastore table name {$table_name}
