@@ -10,3 +10,10 @@
 function json_form_widget_update_8001() {
   \Drupal::service('module_installer')->install(['select_or_other', 'select2']);
 }
+
+/**
+ * Install tagify.
+ */
+function json_form_widget_update_8002() {
+  \Drupal::service('module_installer')->install(['tagify']);
+}
