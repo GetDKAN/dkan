@@ -4,6 +4,7 @@ namespace Drupal\dkan_harvest;
 
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Statement\FetchAs;
 use Drupal\dkan_harvest\Entity\HarvestRunRepository;
 use Drupal\dkan_harvest\Storage\DatabaseTableFactory;
 use Drupal\dkan_harvest\Storage\HarvestHashesDatabaseTableFactory;
@@ -342,7 +343,7 @@ class HarvestUtility {
       ->fields('hrt', ['id', 'harvest_plan_id', 'data', 'extract_status'])
       ->condition('id', $timestamp, '=')
       ->orderBy('id', 'ASC');
-    $result = $query->execute()->fetchAll(\PDO::FETCH_ASSOC);
+    $result = $query->execute()->fetchAll(FetchAs::Associative);
     return reset($result);
   }
 
