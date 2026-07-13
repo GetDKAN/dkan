@@ -813,9 +813,9 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues([
       'localize_import',
       'datastore_import',
-      'resource_purger',
       'orphan_reference_processor',
       'orphan_resource_remover',
+      'resource_purger',
       'post_import',
     ]);
 
