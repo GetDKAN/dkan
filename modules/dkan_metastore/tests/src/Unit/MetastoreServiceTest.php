@@ -461,6 +461,7 @@ EOF;
    * Test removeReferences() method.
    *
    * @covers ::removeReferences
+   * @covers ::removeReferencesRecursive
    */
   public function testRemoveReferences() {
     $input = new RootedJsonData(json_encode((object) [
@@ -486,6 +487,60 @@ EOF;
     ]));
 
     $this->assertEquals($expected, MetastoreService::removeReferences($input));
+  }
+
+  /**
+   * @covers ::metadataHash
+   * @dataProvider metadataHashProvider
+   */
+  public function testMetadataHash($data) {
+    try {
+      $hash = MetastoreService::metadataHash($data);
+      $this->assertIsString($hash);
+      $this->assertEquals(32, strlen($hash));
+    }
+    catch (\InvalidArgumentException $e) {
+      $this->assertEquals("Invalid metadata argument.", $e->getMessage());
+    }
+  }
+
+  /**
+   * Data provider for testMetadataHash().
+   *
+   * @return array
+   *   An array of test cases.
+   */
+  public static function metadataHashProvider() {
+    return [
+      'RootedJsonData' => [
+        new RootedJsonData(json_encode((object) [
+          "distribution" => [
+            (object) [
+              "downloadURL" => "http://example.com/file.csv",
+              "%Ref:downloadURL" => ["foo" => "bar"],
+            ],
+          ],
+        ])),
+      ],
+      'stdClass' => [
+        (object) [
+          "distribution" => [
+            (object) [
+              "downloadURL" => "http://example.com/file.csv",
+            ],
+          ],
+        ],
+      ],
+      'string' => ['foo'],
+      'array' => [
+        [
+          "downloadURL" => "http://example.com/file.csv",
+        ],
+        [
+          "downloadURL" => "http://example.com/file2.csv",
+        ],
+      ],
+    ];
   }
 
 }
