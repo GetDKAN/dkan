@@ -10,7 +10,7 @@ use Drupal\dkan_metastore\Storage\Data;
  */
 class MockStorage extends Data {
 
-  public function retrieveContains(string $string, bool $caseSensitive): array {
+  public function retrieveContains(string $string, bool $caseSensitive = TRUE): array {
     return [];
   }
 

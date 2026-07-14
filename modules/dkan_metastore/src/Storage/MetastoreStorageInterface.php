@@ -79,7 +79,7 @@ interface MetastoreStorageInterface {
    * @return array
    *   An array of metadata objects.
    */
-  public function retrieveContains(string $string, bool $caseSensitive): array;
+  public function retrieveContains(string $string, bool $caseSensitive = TRUE): array;
 
   /**
    * Determine whether the given metastore item is published.
