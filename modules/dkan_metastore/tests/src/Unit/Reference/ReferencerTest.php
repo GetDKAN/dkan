@@ -353,7 +353,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceSingle
    * @covers ::checkExistingReference
    * @covers ::createPropertyReference
-   * @covers ::distributionHandling
    */
   public function testNewReference() {
     $container_chain = $this->getContainer();
@@ -395,7 +394,6 @@ class ReferencerTest extends TestCase {
    * @covers ::referenceMultiple
    * @covers ::referenceSingle
    * @covers ::checkExistingReference
-   * @covers ::distributionHandling
    */
   public function testExistingReference() {
     $container_chain = $this->getContainer();

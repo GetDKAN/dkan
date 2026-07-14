@@ -220,7 +220,7 @@ class DereferencerTest extends TestCase {
   /**
    * Test dereferencing a distribution resource with no download URL.
    *
-   * @covers ::dereferenceResources
+   * @covers ::dereferenceDistributions
    * @covers ::dereferenceResource
    */
   public function testDereferenceResourcesNoDownloadUrl() {
@@ -251,7 +251,7 @@ class DereferencerTest extends TestCase {
   /**
    * Test dereferencing a download URL that is a reference.
    *
-   * @covers ::dereferenceResources
+   * @covers ::dereferenceDistributions
    * @covers ::dereferenceResource
    * @covers ::retrieveDownloadUrlFromResourceMapper
    * @covers ::createResourceReference
@@ -282,7 +282,7 @@ class DereferencerTest extends TestCase {
   /**
    * Test dereferencing a distribution resource with an empty download URL.
    *
-   * @covers ::dereferenceResources
+   * @covers ::dereferenceDistributions
    * @covers ::dereferenceResource
    * @dataProvider dereferenceEmptyDownloadUrlProvider
    */
@@ -354,7 +354,7 @@ class DereferencerTest extends TestCase {
   /**
    * Test that a non-default display perspective adds a second reference entry.
    *
-   * @covers ::dereferenceResources
+   * @covers ::dereferenceDistributions
    * @covers ::dereferenceResource
    * @covers ::retrieveDownloadUrlFromResourceMapper
    * @covers ::createResourceReference
@@ -396,7 +396,7 @@ class DereferencerTest extends TestCase {
    * Just incase there is a regular URL in the downloadURL field, we want to
    * make sure it doesn't get dereferenced or modified.
    *
-   * @covers ::dereferenceResources
+   * @covers ::dereferenceDistributions
    * @covers ::dereferenceResource
    * @covers ::retrieveDownloadUrlFromResourceMapper
    */
