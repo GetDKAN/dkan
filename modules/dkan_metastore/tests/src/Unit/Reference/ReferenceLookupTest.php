@@ -35,7 +35,7 @@ class ReferenceLookupTest extends TestCase {
       'item-id-5',
     ];
 
-    $metastoreStorageFactory = new Chain($this)
+    $metastoreStorageFactory = (new Chain($this))
       ->add(FactoryInterface::class, 'getInstance', MetastoreStorageInterface::class)
       ->add(MetastoreStorageInterface::class, 'retrieveContains', $contains_items)
       ->getMock();
