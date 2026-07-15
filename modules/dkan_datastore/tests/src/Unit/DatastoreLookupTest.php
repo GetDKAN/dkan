@@ -67,14 +67,11 @@ class DatastoreLookupTest extends TestCase {
     // Mock the SelectInterface.
     $select = $this->createMock(SelectInterface::class);
 
-    // Mock the query result.
-    $query_result = [['identifier' => $expected_identifier]];
-
     // Mock the StatementInterface.
     $statement = $this->createMock(StatementInterface::class);
     $statement->expects($this->once())
-      ->method('fetchAll')
-      ->willReturn($query_result);
+      ->method('fetchField')
+      ->willReturn($expected_identifier);
 
     // Set up the expectations for the database select query.
     $this->database->expects($this->once())
@@ -117,14 +114,11 @@ class DatastoreLookupTest extends TestCase {
     // Mock the SelectInterface.
     $select = $this->createMock(SelectInterface::class);
 
-    // Mock the query result.
-    $query_result = [];
-
     // Mock the StatementInterface.
     $statement = $this->createMock(StatementInterface::class);
     $statement->expects($this->once())
-      ->method('fetchAll')
-      ->willReturn($query_result);
+      ->method('fetchField')
+      ->willReturn(FALSE);
 
     // Set up the expectations for the database select query.
     $this->database->expects($this->once())

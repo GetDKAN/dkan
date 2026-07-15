@@ -49,6 +49,7 @@ class UrlHostTokenResolverTest extends TestCase {
 
     $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', FALSE)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'replacement')
       ->getMock();
