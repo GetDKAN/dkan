@@ -613,7 +613,9 @@ class DatasetBTBTest extends BrowserTestBase {
       $distribution = new \stdClass();
       $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      // Don't provide mime type or format fields since they're not required.
+      if (str_ends_with(strtolower($downloadUrl), '.csv')) {
+        $distribution->mediaType = 'text/csv';
+      }
       $data->distribution[] = $distribution;
     }
     $this->assertGreaterThan(
