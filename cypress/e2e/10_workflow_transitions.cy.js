@@ -144,8 +144,12 @@ context('DKAN Workflow', () => {
       cy.get('#edit-submit').click()
       cy.get('.messages--status').should('contain', 'has been updated')
 
-      // Ensure dataset is now hidden from search
-      dkan.searchMetastore({fulltext: dataset_title, facets: ''}).then((response) => {
+      // Ensure dataset is now hidden from search (poll until index reflects the
+      // state change, since search-index updates can be asynchronous in CI)
+      dkan.searchMetastoreUntil(
+        {fulltext: dataset_title, facets: ''},
+        (body) => !body.results || body.results.length === 0
+      ).then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body.results).to.be.empty
       })
