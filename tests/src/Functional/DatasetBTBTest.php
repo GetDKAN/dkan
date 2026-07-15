@@ -54,9 +54,6 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   protected $strictConfigSchema = FALSE;
 
-  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
-
   /**
    * Test the resource purger when the default moderation state is 'draft'.
    *
@@ -566,7 +563,7 @@ class DatasetBTBTest extends BrowserTestBase {
    *   The download URL for the resource file from S3 bucket.
    */
   private function getDownloadUrl(string $filename) {
-    return self::S3_PREFIX . '/' . $filename;
+    return 'file://' . __DIR__ . '/../../files/' . $filename;
   }
 
   /**
@@ -698,9 +695,10 @@ class DatasetBTBTest extends BrowserTestBase {
       return [];
     }
     $filesObjects = $fileSystem->scanDirectory($dir, '/.*\.csv$/i', ['recurse' => TRUE]);
-    $filenames = array_values(array_map(function ($obj) {
-      return str_replace(self::FILENAME_PREFIX, '', $obj->filename);
-    }, $filesObjects));
+    $filenames = [];
+    foreach ($filesObjects as $object) {
+      $filenames[] = $object->filename;
+    }
     sort($filenames);
     return $filenames;
   }
