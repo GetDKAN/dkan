@@ -13,7 +13,7 @@ use Drupal\Tests\dkan\Functional\DatasetBTBTest;
  * @group dkan
  * @group datastore_mysql_import
  * @group functional
- * @group functional3
+ * @group functional4
  */
 class MySqlDatasetBTBTest extends DatasetBTBTest {
 
