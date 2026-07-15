@@ -346,6 +346,7 @@ class ReferencerTest extends TestCase {
    * @covers ::reference
    * @covers ::referenceDistributions
    * @covers ::referenceResource
+   * @covers ::normalizeDictionaryValue
    * @covers ::registerWithResourceMapper
    * @covers ::getMimeType
    * @covers ::referenceProperty
@@ -675,7 +676,6 @@ class ReferencerTest extends TestCase {
   }
 
   /**
-   * @covers ::referenceDataDictionary
    * @covers ::normalizeDictionaryValue
    * @dataProvider provideDataDictionaryData
    */
@@ -733,7 +733,7 @@ class ReferencerTest extends TestCase {
       $this->expectException($describedBy::class);
       $this->expectExceptionMessage($describedBy->getMessage());
     }
-    $referencer->referenceDataDictionary($distribution);
+    $referencer->normalizeDictionaryValue($distribution);
     $this->assertSame($describedBy, $distribution->describedBy);
   }
 

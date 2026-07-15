@@ -490,6 +490,46 @@ EOF;
   }
 
   /**
+   * @covers ::swapReferences
+   */
+  public function testSwapReferences() {
+    $input = new RootedJsonData(json_encode((object) [
+      "distribution" => [
+        (object) [
+          "downloadURL" => "http://example.com/file.csv",
+        ],
+      ],
+      "%Ref:distribution" => [
+        "identifier" => "123",
+        "data" => [
+          "downloadURL" => "http://example.com/file.csv",
+          "%Ref:downloadURL" => ["foo" => "bar"],
+        ],
+      ],
+    ]));
+
+    $expected = new RootedJsonData(json_encode([
+      "distribution" => [
+        "identifier" => "123",
+        "data" => [
+          "downloadURL" => "http://example.com/file.csv",
+          "%Ref:downloadURL" => ["foo" => "bar"],
+        ],
+      ],
+    ]));
+
+    $metastore = new MetastoreService(
+      $this->createStub(SchemaRetriever::class),
+      $this->createStub(DataFactory::class),
+      $this->validMetadataFactory,
+      $this->createStub(LoggerChannelInterface::class),
+      $this->createStub(EventDispatcher::class),
+    );
+
+    $this->assertEquals($expected, $metastore->swapReferences($input));
+  }
+
+  /**
    * @covers ::metadataHash
    * @dataProvider metadataHashProvider
    */

@@ -91,7 +91,7 @@ class Referencer {
   public function referenceDistributions(object $data): void {
     foreach (($data->distribution ?? []) as &$distribution) {
       $this->referenceResource($distribution);
-      $this->referenceDataDictionary($distribution);
+      $this->normalizeDictionaryValue($distribution);
     }
     unset($distribution);
   }
@@ -104,7 +104,7 @@ class Referencer {
    */
   public function referenceResource(object $distribution): void {
     // Clean up any reference metadata if it exists.
-    unset($distribution->{'%Ref:downloadURL'});
+    unset($distribution->{Dereferencer::REF_PREFIX . 'downloadURL'});
     if (!isset($distribution->downloadURL)) {
       return;
     }
@@ -193,48 +193,33 @@ class Referencer {
   }
 
   /**
-   * Attempt to register this distribution's resource with the resource mapper.
-   *
-   * If this distribution has a resource, register it with the resource mapper
-   * and replace the download URL with a resource ID.
+   * Normalize an incoming URL to a domain-agnostic dkan:// URL.
    *
    * @param object $distribution
    *   A dataset distribution object.
    *
    * @return object
-   *   The supplied distribution with an updated resource download URL.
+   *   The supplied distribution with an describedBy value.
    */
-  public function referenceDataDictionary($distribution): object {
+  public function normalizeDictionaryValue($distribution): object {
     // If there is a describedBy value, convert to dkan:// URL if appropriate.
-    if ($distribution->describedBy ?? FALSE) {
-      $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);
+    if (!($distribution->describedBy ?? FALSE)) {
+      return $distribution;
     }
-    return $distribution;
-  }
-
-  /**
-   * Normalize an incoming URL to a reference ID.
-   *
-   * @param string $value
-   *   Value for describedBy field, usually a URL.
-   *
-   * @return string
-   *   Metastore Item ID.
-   */
-  protected function normalizeDictionaryValue(string $value): string {
-    $incoming_scheme = StreamWrapperManager::getScheme($value);
+    $incoming_scheme = StreamWrapperManager::getScheme($distribution->describedBy);
     try {
-      $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
+      $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($distribution->describedBy) : $distribution->describedBy;
     }
     // If the URL cannot be converted to a DKAN URI, pass it through.
     catch (\DomainException) {
-      return $value;
+      return $distribution;
     }
     // If it was converted to DKAN URI, validate it as a data dictionary.
     if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
-      throw new \DomainException("The value $value, is not a valid data-dictionary URI.");
+      throw new \DomainException("The value {$distribution->describedBy}, is not a valid data-dictionary URI.");
     }
-    return $uri;
+    $distribution->describedBy = $uri;
+    return $distribution;
   }
 
   /**

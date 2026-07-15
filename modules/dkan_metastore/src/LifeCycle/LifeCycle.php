@@ -303,7 +303,7 @@ class LifeCycle {
   protected function distributionPresave(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
     $this->referencer->referenceResource($metadata->data);
-    $this->referencer->referenceDataDictionary($metadata->data);
+    $this->referencer->normalizeDictionaryValue($metadata->data);
     $data->setMetadata($metadata);
   }
 
