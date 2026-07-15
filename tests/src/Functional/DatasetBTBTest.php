@@ -21,7 +21,7 @@ use RootedData\RootedJsonData;
  *
  * @group dkan
  * @group functional
- * @group functional3
+ * @group functional2
  */
 class DatasetBTBTest extends BrowserTestBase {
 
@@ -76,8 +76,11 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Post, update and publish a dataset with multiple, changing resources.
     $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv'], 'post');
+    // These updates reuse 1.csv, so guard against version timestamp collisions.
+    $this->avoidResourceVersionCollision();
     $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
     $this->getMetastore()->publish('dataset', $id_1);
+    $this->avoidResourceVersionCollision();
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
     /** @var \Drupal\dkan_common\DatasetInfo $datasetInfo */
@@ -329,7 +332,9 @@ class DatasetBTBTest extends BrowserTestBase {
     // Confirm distribution local directory exists.
     $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
 
-    // Update the modified date for the dataset.
+    // Update the modified date for the dataset. Guard against reusing the same
+    // resource version timestamp as the original import.
+    $this->avoidResourceVersionCollision();
     $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
 
     // Simulate datastore_import and cleanup queues post update.
@@ -899,6 +904,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->createInitialDraftDatasetAndPublish($id_1);
 
     // Create a new draft with an updated modified date.
+    $this->avoidResourceVersionCollision();
     $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
 
     // Run queues; check that datastore import and orphan cleanup worked as expected.
@@ -934,6 +940,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * Separate distribution title update to allow for multiple runs.
    */
   private function runDistributionTitleUpdate(string $identifier, \stdClass $distribution, bool $skip_cron = FALSE) {
+    $this->avoidResourceVersionCollision();
     // Create a new draft with the new distribution title.
     $this->getMetastore()->patch('dataset', $identifier, json_encode(
       ['distribution' => [$distribution]]
@@ -1043,6 +1050,15 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Run queues; check datastore import and orphan cleanup worked as expected.
     $this->confirmNewDatastoreImportDraftWorkflow($id_1);
+  }
+
+  /**
+   * Sleep briefly to avoid resource version collisions in draft workflows.
+   *
+   * @todo Remove once resource versions are guaranteed unique.
+   */
+  private function avoidResourceVersionCollision(): void {
+    sleep(1);
   }
 
 }
