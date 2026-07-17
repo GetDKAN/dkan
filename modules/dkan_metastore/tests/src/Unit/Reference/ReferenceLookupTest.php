@@ -33,6 +33,7 @@ class ReferenceLookupTest extends TestCase {
       'item-id-3',
       'item-id-4',
       'item-id-5',
+      'item-id-6',
     ];
 
     $metastoreStorageFactory = (new Chain($this))
@@ -56,6 +57,7 @@ class ReferenceLookupTest extends TestCase {
       ->willReturnOnConsecutiveCalls(
         ['ref-array', ['identifier' => ['other', 'abc-array']]],
         ['ref-object', (object) ['identifier' => (object) ['value' => 'abc-object']]],
+        ['ref-string', (object) ['identifier' => 'abc-object']],
         ['array-not-match', ['identifier' => ['other', 'still-other']]],
         ['object-not-match', (object) ['identifier' => (object) ['value' => 'other']]],
         ['unknown-shape', 'not-array-or-object']
@@ -65,7 +67,7 @@ class ReferenceLookupTest extends TestCase {
 
     $this->assertIsArray($referencers);
     // The first two returns matched the reference.
-    $this->assertSame(['ref-array', 'ref-object'], array_values($referencers));
+    $this->assertSame(['ref-array', 'ref-object', 'ref-string'], array_values($referencers));
   }
 
 }

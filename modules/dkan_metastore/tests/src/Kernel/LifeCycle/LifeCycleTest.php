@@ -81,7 +81,7 @@ class LifeCycleTest extends KernelTestBase {
   }
 
   /**
-   * Test dataset save, primarily looking at distribution behavior.
+   * Test dataset save, primarily looking at distribution/resource behavior.
    *
    * @param string|null $download_url
    *   The download URL to use for the distribution.
@@ -96,22 +96,25 @@ class LifeCycleTest extends KernelTestBase {
   public function testDatasetSave(?string $download_url, ?string $media_type, string $dist_reference) {
     $this->setDistributionReferenceModeFromConfig($dist_reference);
 
+    // Build a two-distribution dataset, with the second distribution having the
+    // provided downloadURL and mediaType.
     $dataset_data = self::DATASET_DATA;
     $dist_2 = [
       'title' => 'Test Distribution 2',
       'downloadURL' => $download_url,
       'mediaType' => $media_type,
     ];
+    // Use array_filter to remove null values, so we can test the behavior of
+    // distributions with missing downloadURL and/or mediaType.
     $dataset_data['distribution'][1] = array_filter($dist_2);
 
-    /**
-     * @var \Drupal\dkan_metastore\MetastoreService $metastore
-     */
+    /** @var \Drupal\dkan_metastore\MetastoreService $metastore  */
     $metastore = $this->container->get('dkan.metastore.service');
     $metadata = $metastore->getValidMetadataFactory()->get(json_encode($dataset_data), 'dataset');
     $identifier = $metastore->post('dataset', $metadata);
     $new_dataset = $metastore->get('dataset', $identifier);
 
+    // Test that the distribution now appears in the dataset.
     $this->assertEquals($download_url, $new_dataset->{"$.distribution[1].downloadURL"});
     $this->assertEquals($dataset_data['distribution'][1]['title'], $new_dataset->{"$.distribution[1].title"});
 
@@ -125,7 +128,7 @@ class LifeCycleTest extends KernelTestBase {
       $this->assertNotEmpty($entities, 'Resource mapping entity was created successfully.');
     }
     else {
-      // Assert no resource mapping entities exist.
+      // If there was no downloadURL, assert no resource mapping entities exist.
       $storage = $this->container->get('entity_type.manager')->getStorage('resource_mapping');
       $ids = $storage->getQuery()
         ->accessCheck(FALSE)
@@ -135,7 +138,7 @@ class LifeCycleTest extends KernelTestBase {
   }
 
   /**
-   * Two versions of metastore settings.
+   * Two versions of metastore settings, with multiple downloadURL values.
    *
    * Setting dkan_metastore.settings.property_list.distribution to "0" means
    * we don't reference distributions. Tests that the pre-reference event

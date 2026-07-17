@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Functional;
 
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
@@ -147,9 +148,9 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     // Get the variants of the import endpoint.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier, ['show-reference-ids' => TRUE]);
     $dataset = json_decode($response->getBody()->getContents());
-    $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier
+    $resourceId = $dataset->distribution[0]->data->{Dereferencer::REF_PREFIX . 'downloadURL'}[0]->identifier
       // If distributions not referenced, distribution has no "data" structure.
-      ?? $dataset->distribution[0]->{'%Ref:downloadURL'}[0]->identifier
+      ?? $dataset->distribution[0]->{Dereferencer::REF_PREFIX . 'downloadURL'}[0]->identifier
       ?? '';
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());

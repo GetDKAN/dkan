@@ -42,6 +42,8 @@ class UrlHostTokenResolverTest extends TestCase {
    * {@inheritdoc}
    */
   protected function tearDown(): void {
+    // Unset the container after each test to avoid contamination between tests
+    // via drupal_static calls.
     if (\Drupal::hasContainer()) {
       \Drupal::unsetContainer();
     }
