@@ -39,8 +39,7 @@
         "drush/drush": "*",
         "getdkan/mock-chain": "~1.4.1",
         "osteel/openapi-httpfoundation-testing": "^0.13",
-        "drupal/admin_toolbar": "^3.0",
-        "drupal/ai_best_practices": "@dev"
+        "drupal/admin_toolbar": "^3.0"
     },
     "repositories": {
         "drupal": {
@@ -71,8 +70,5 @@
                 }
             }
         }
-    },
-    "scripts": {
-        "drupal-ai": "Drupal\\AiBestPractices\\Console\\AiBestPracticesApplication::runFromComposer"
     }
 }
