@@ -55,7 +55,7 @@
             "php-http/discovery": true,
             "tbachert/spi": true,
             "drupal/core-composer-scaffold": true,
-            "drupal/ai_best_practices": true
+            "symfony/runtime": true
         }
     },
     "extra": {

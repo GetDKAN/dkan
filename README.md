@@ -1,7 +1,7 @@
 # DKAN
 An Open Data Catalog module for [Drupal 10+](https://www.drupal.org/documentation).
 
-[![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/2.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/2.x)
+[![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/4.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/4.x)
 [![Maintainability](https://qlty.sh/gh/GetDKAN/projects/dkan/maintainability.svg)](https://qlty.sh/gh/GetDKAN/projects/dkan)
 [![Code Coverage](https://qlty.sh/gh/GetDKAN/projects/dkan/coverage.svg)](https://qlty.sh/gh/GetDKAN/projects/dkan)
 [![GPL license](https://img.shields.io/badge/License-GPL(>=2)-blue.svg)](http://www.gnu.org/licenses/gpl.html)

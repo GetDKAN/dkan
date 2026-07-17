@@ -610,9 +610,7 @@ class DatasetBTBTest extends BrowserTestBase {
       $distribution = new \stdClass();
       $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
       $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      if (str_ends_with(strtolower($downloadUrl), '.csv')) {
-        $distribution->mediaType = 'text/csv';
-      }
+      $distribution->mediaType = 'text/csv';
       $data->distribution[] = $distribution;
     }
     $this->assertGreaterThan(
@@ -908,6 +906,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
 
     // Run queues; check that datastore import and orphan cleanup worked as expected.
+    $this->avoidResourceVersionCollision();
     $this->confirmNewDatastoreImportDraftWorkflow($id_1);
   }
 
@@ -921,14 +920,14 @@ class DatasetBTBTest extends BrowserTestBase {
     // Create initial draft dataset and then publish it.
     $this->createInitialDraftDatasetAndPublish($id_1);
 
-    // Use same values for distribution as original getData() with updated title.
+    // Use same values for distribution as original getData() with new filepath.
     $distribution = new \stdClass();
     $distribution->title = 'Updated Distribution #0 for ' . $id_1;
     $distribution->downloadURL = $this->getDownloadUrl('1.csv');
     $distribution->format = 'csv';
     $distribution->mediaType = 'text/csv';
 
-    // Run distribution title update with cron run between update and publish events.
+    // Create a new draft with the new distribution title.
     $this->runDistributionTitleUpdate($id_1, $distribution);
 
     // Run distribution title update with cron run only after publish.
