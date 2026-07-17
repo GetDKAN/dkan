@@ -225,7 +225,7 @@ jobs:
   cypress:
     machine:
       image: ubuntu-2204:current
-    parallelism: 5
+    parallelism: 4
     parameters:
       php_version:
         description: "PHP major.minor for DDev to use."
