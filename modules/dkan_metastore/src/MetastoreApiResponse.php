@@ -5,6 +5,7 @@ namespace Drupal\dkan_metastore;
 use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -137,7 +138,7 @@ class MetastoreApiResponse {
     $metadata = $item->getMetaData();
     $ids = [];
     foreach ($metadata as $propertyId => $value) {
-      if (str_starts_with((string) $propertyId, '%Ref')) {
+      if (str_starts_with((string) $propertyId, Dereferencer::REF_PREFIX)) {
         $this->addReferenceIdentifier($ids, $value);
       }
     }

@@ -168,7 +168,9 @@ abstract class Data implements MetastoreEntityStorageInterface {
   public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
     $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
     return array_map(function ($entity) {
-      return $entity->get($this->metadataField)->getString();
+      return ($entity instanceof ContentEntityInterface)
+        ? $entity->get($this->metadataField)->getString()
+        : NULL;
     }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
@@ -508,6 +510,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     if ($workflow instanceof WorkflowInterface) {
       return $workflow->getTypePlugin()->getConfiguration()['default_moderation_state'];
     }
+    throw new \RuntimeException('Failed to retrieve default moderation state.');
   }
 
 }

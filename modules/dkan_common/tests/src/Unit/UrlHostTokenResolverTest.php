@@ -39,9 +39,21 @@ class UrlHostTokenResolverTest extends TestCase {
   public const FILE_PATH = 'tmp/mycsv.csv';
 
   /**
+   * {@inheritdoc}
+   */
+  protected function tearDown(): void {
+    // Unset the container after each test to avoid contamination between tests
+    // via drupal_static calls.
+    if (\Drupal::hasContainer()) {
+      \Drupal::unsetContainer();
+    }
+    parent::tearDown();
+  }
+
+  /**
    *
    */
-  public function test() {
+  public function test(): void {
     $options = (new Options())
       ->add('request_stack', RequestStack::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)

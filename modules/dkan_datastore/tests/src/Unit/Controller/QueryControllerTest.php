@@ -15,6 +15,7 @@ use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
@@ -325,7 +326,7 @@ class QueryControllerTest extends TestCase {
   }
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
-    $container = $this->getQueryContainer($info, TRUE)->getMock();
+    $container = $this->getQueryContainer($info, TRUE, $index)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
@@ -416,7 +417,8 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "results" => TRUE,
     ]);
-    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+    $info['latest_revision']['distributions'][0]['resource_id'] = 'resource-123';
+    $info['latest_revision']['distributions'][0]['resource_version'] = 1;
 
     $result = $this->getQueryResult($data, "2", 1, $info);
 
@@ -431,7 +433,8 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "results" => TRUE,
     ]);
-    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+    $info['latest_revision']['distributions'][0]['resource_id'] = 'resource-123';
+    $info['latest_revision']['distributions'][0]['resource_version'] = 1;
 
     $result = $this->getQueryResult($data, "2", 0, $info);
 
@@ -488,13 +491,20 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  private function getQueryContainer(array $info = [], $mockMap = TRUE) {
+  private function getQueryContainer(array $info = [], $mockMap = TRUE, $requestedIndex = NULL) {
+
+    $resource_identifier = NULL;
+    $effectiveIndex = $requestedIndex ?? 0;
+    if (isset($info['latest_revision']['distributions'][$effectiveIndex]['resource_id']) && isset($info['latest_revision']['distributions'][$effectiveIndex]['resource_version'])) {
+      $resource_identifier = $info['latest_revision']['distributions'][$effectiveIndex]['resource_id'] . '__' . $info['latest_revision']['distributions'][$effectiveIndex]['resource_version'];
+    }
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", DatastoreService::class)
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
@@ -504,12 +514,14 @@ class QueryControllerTest extends TestCase {
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(DatasetInfo::class, "gather", $info)
+      ->add(DatasetInfo::class, 'getResourceIdentifier', $resource_identifier)
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ReferenceLookup::class, 'getReferencers', [])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 500)
       ->add(State::class, 'get', FALSE);
@@ -529,7 +541,7 @@ class QueryControllerTest extends TestCase {
   public function testDegradedServiceModeQuery() {
     $container = $this->getQueryContainer()
       ->add(State::class, 'get', TRUE)
-      ->add(DatasetInfo::class, "getDistributionUuid", "456")
+      ->add(DatasetInfo::class, 'getResourceIdentifier', '456__1')
       ->getMock();
 
     \Drupal::setContainer($container);

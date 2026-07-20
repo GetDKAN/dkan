@@ -24,6 +24,7 @@ class DatastoreInfoTest extends DatasetInfoTest {
     $datasetInfo = new DatasetInfo($this->container->get('plugin.manager.dataset_info'));
     $datasetInfo->setStorage($this->container->get('dkan.metastore.storage'));
     $datasetInfo->setResourceMapper($this->container->get('dkan.metastore.resource_mapper'));
+    $datasetInfo->setDateFormatter($this->container->get('date.formatter'));
 
     $metastore = $this->container->get('dkan.metastore.service');
     $metadata = $metastore->getValidMetadataFactory()->get(json_encode($this->getDataset('foo')), 'dataset');

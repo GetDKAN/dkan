@@ -3,6 +3,7 @@
 namespace Drupal\dkan_common;
 
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ResourceMappingInterface;
 use Procrastinator\JsonSerializeTrait;
 
@@ -368,8 +369,8 @@ class DataResource implements \JsonSerializable {
     $distribution = self::getDistribution($string);
 
     // Are we dealing with a distribution id?
-    if (isset($distribution->data->{'%Ref:downloadURL'})) {
-      $resource = $distribution->data->{'%Ref:downloadURL'}[0]->data;
+    if (isset($distribution->data->{Dereferencer::REF_PREFIX . "downloadURL"})) {
+      $resource = $distribution->data->{Dereferencer::REF_PREFIX . "downloadURL"}[0]->data;
       return [$resource->identifier, $resource->version];
     }
 
@@ -401,8 +402,18 @@ class DataResource implements \JsonSerializable {
    * Generates MD5 checksum for a file.
    */
   public function generateChecksum() {
+    $filePath = $this->getFilePath();
+
+    // File might not be fully fetched yet. Don't attempt checksum if not.
+    if (
+      $this->getPerspective() === ResourceLocalizer::LOCAL_FILE_PERSPECTIVE &&
+      (!file_exists($filePath) || !is_readable($filePath))
+    ) {
+      return;
+    }
+
     try {
-      $this->checksum = md5_file($this->getFilePath());
+      $this->checksum = md5_file($filePath);
     }
     catch (\Throwable $throwable) {
       // Re-throw the throwable if we're not in the perspective of a local file
@@ -410,7 +421,7 @@ class DataResource implements \JsonSerializable {
       // circumstances.
       if (!(
         $this->getPerspective() === ResourceLocalizer::LOCAL_FILE_PERSPECTIVE &&
-        !file_exists($this->getFilePath())
+        !file_exists($filePath)
       )) {
         throw $throwable;
       }

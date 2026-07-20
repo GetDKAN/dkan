@@ -106,7 +106,7 @@ class StubData extends Data {
     parent::__construct($schemaId, $entityTypeManager, $config_factory, $file_system, $loggerChannel);
   }
 
-  public function retrieveContains(string $string, bool $caseSensitive): array {
+  public function retrieveContains(string $string, bool $caseSensitive = TRUE): array {
     return [];
   }
 

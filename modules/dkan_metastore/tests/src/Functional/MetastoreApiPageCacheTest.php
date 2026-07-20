@@ -2,7 +2,9 @@
 
 namespace Drupal\Tests\dkan_metastore\Functional;
 
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
@@ -20,6 +22,7 @@ use RootedData\RootedJsonData;
 class MetastoreApiPageCacheTest extends BrowserTestBase {
 
   use QueueRunnerTrait;
+  use DistributionReferenceModeTrait;
 
   protected static $modules = [
     'dkan_common',
@@ -83,8 +86,12 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
   /**
    * Test dataset page caching.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDatasetApiPageCache() {
+  public function testDatasetApiPageCache(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $identifier = '111';
 
     // Before we've done anything, GET should yield a 404.
@@ -111,17 +118,22 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
-    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
-    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
+    // @todo Fix the docs for non-referenced distributions.
+    if ($this->usingReferencedDistributions()) {
+      $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+      $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+      $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0] ?? '', $response->getBody());
+    }
 
     // Request again, should return cached version.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
-    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
-    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+    if ($this->usingReferencedDistributions()) {
+      $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+      $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
+      $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
+    }
 
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
@@ -136,24 +148,22 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     // Get the variants of the import endpoint.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier, ['show-reference-ids' => TRUE]);
     $dataset = json_decode($response->getBody()->getContents());
-    $distributionId = $dataset->distribution[0]->identifier ?? '';
-    $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier ?? '';
-    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
-    $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
+    $resourceId = $dataset->distribution[0]->data->{Dereferencer::REF_PREFIX . 'downloadURL'}[0]->identifier
+      // If distributions not referenced, distribution has no "data" structure.
+      ?? $dataset->distribution[0]->{Dereferencer::REF_PREFIX . 'downloadURL'}[0]->identifier
+      ?? '';
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
+    $this->assertEquals(200, $response->getStatusCode(), $response->getBody()->getContents());
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Request again, should return cached version.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
-    $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals('HIT', $response->getHeaders()['X-Drupal-Cache'][0]);
@@ -170,14 +180,14 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
-    $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
+    if ($this->usingReferencedDistributions()) {
+      $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
+      $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
+    }
     $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody()->getContents());
 
     // The import endpoints shouldn't be there at all anymore.
-    $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
-    $this->assertEquals(404, $response->getStatusCode());
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $resourceId);
     $this->assertEquals(404, $response->getStatusCode());
   }

@@ -17,28 +17,9 @@ class ReferenceLookup implements ReferenceLookupInterface {
   use HelperTrait;
 
   /**
-   * Metastore Storage service.
-   *
-   * @var \Contracts\FactoryInterface
+   * DKAN metastore module name.
    */
-  protected $metastoreStorage;
-
-  /**
-   * Metastore Item Factory service.
-   *
-   * @var \Drupal\dkan_metastore\Factory\MetastoreItemFactoryInterface
-   */
-  protected $metastoreItemFactory;
-
-  /**
-   * Cache tags invalidator service.
-   */
-  private CacheTagsInvalidatorInterface $invalidator;
-
-  /**
-   * Module handler service.
-   */
-  private ModuleHandlerInterface $moduleHandler;
+  private const MODULE_NAME = 'dkan_metastore';
 
   /**
    * Module Handler service.
@@ -46,15 +27,11 @@ class ReferenceLookup implements ReferenceLookupInterface {
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   public function __construct(
-    FactoryInterface $metastoreStorage,
-    MetastoreItemFactoryInterface $metastoreItemFactory,
-    CacheTagsInvalidatorInterface $invalidator,
-    ModuleHandlerInterface $moduleHandler,
+    protected FactoryInterface $metastoreStorage,
+    protected MetastoreItemFactoryInterface $metastoreItemFactory,
+    protected CacheTagsInvalidatorInterface $invalidator,
+    protected ModuleHandlerInterface $moduleHandler,
   ) {
-    $this->metastoreStorage = $metastoreStorage;
-    $this->metastoreItemFactory = $metastoreItemFactory;
-    $this->invalidator = $invalidator;
-    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -69,33 +46,54 @@ class ReferenceLookup implements ReferenceLookupInterface {
     $referencers = [];
     foreach ($metastoreItems as $item) {
       [$identifier, $metadata] = $this->decodeJsonMetadata($item);
-      $propertyValue = $metadata->{$propertyId};
-      // Check if uuid is found either directly or in an array.
-      $idIsValue = is_string($propertyValue) && str_starts_with($propertyValue, $referenceId);
-      $idInArray = is_array($propertyValue) && self::hasElementStartsWith($referenceId, $propertyValue);
-      $referencers[] = ($idIsValue || $idInArray) ? $identifier : NULL;
+      $propertyValue = NULL;
+      if (is_array($metadata)) {
+        $propertyValue = $metadata[$propertyId] ?? NULL;
+      }
+      elseif (is_object($metadata)) {
+        $propertyValue = $metadata->{$propertyId} ?? NULL;
+      }
+      $referencers[] = self::valueContainsStartsWith($referenceId, $propertyValue) ? $identifier : NULL;
     }
 
     return array_filter($referencers);
   }
 
   /**
-   * Check each element in array for starts with ID fragment.
+   * Check recursively whether a value contains a string with the ID prefix.
    *
    * @param string $needle
    *   The ID or ID fragment.
-   * @param array $haystack
-   *   Array of ID references.
+   * @param mixed $value
+   *   Any metadata value to inspect.
    *
    * @return bool
-   *   True if array contains reference.
+   *   TRUE when a nested string starts with the supplied fragment.
    */
-  private static function hasElementStartsWith(string $needle, array $haystack): bool {
-    $idInArray = FALSE;
-    array_walk($haystack, function ($value) use (&$idInArray, $needle) {
-      $idInArray = str_starts_with($value, $needle) ? TRUE : $idInArray;
-    });
-    return $idInArray;
+  private static function valueContainsStartsWith(string $needle, $value): bool {
+    if (is_string($value)) {
+      return str_starts_with($value, $needle);
+    }
+
+    if (is_array($value)) {
+      foreach ($value as $item) {
+        if (self::valueContainsStartsWith($needle, $item)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+
+    if (is_object($value)) {
+      foreach (get_object_vars($value) as $item) {
+        if (self::valueContainsStartsWith($needle, $item)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+
+    return FALSE;
   }
 
   /**
@@ -131,7 +129,7 @@ class ReferenceLookup implements ReferenceLookupInterface {
     // Decode the supplied JSON metadata string.
     $metadata = json_decode($json);
     // Determine the path to the legacy metadata schema file.
-    $module_path = $this->moduleHandler->getModule(get_module_name())->getPath();
+    $module_path = $this->moduleHandler->getModule(self::MODULE_NAME)->getPath();
     $legacy_schema_path = $module_path . '/docs/legacy_metadata.json';
     // Fetch the legacy metadata schema.
     // @todo This file load happens for every metadata item that is processed.
