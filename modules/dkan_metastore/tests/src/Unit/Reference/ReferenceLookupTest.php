@@ -55,19 +55,30 @@ class ReferenceLookupTest extends TestCase {
       ->expects($this->exactly(count($contains_items)))
       ->method('decodeJsonMetadata')
       ->willReturnOnConsecutiveCalls(
-        ['ref-array', [(object) ['foo' => 'bar'], (object) ['identifier' => 'abc-array']]],
-        ['ref-object', (object) ['identifier' => (object) ['value' => 'abc-object']]],
         ['ref-string', (object) ['identifier' => 'abc-object']],
+        ['ref-array', (object) ['identifier' => ['other', 'abc-array']]],
+        ['ref-object', (object) ['identifier' => (object) ['value' => 'abc-object']]],
+        ['ref-nested-object', (object) ['nested' => (object) ['identifier' => 'abc-nested-object']]],
+        ['ref-nested-in-array-of-objects', [(object) ['foo' => 'bar'], (object) ['identifier' => 'abc-array']]],
         ['array-not-match', ['identifier' => ['other', 'still-other']]],
         ['object-not-match', (object) ['identifier' => (object) ['value' => 'other']]],
         ['unknown-shape', 'not-array-or-object']
       );
 
+    // The expected IDs to pass.
+    $expected = [
+      'ref-string',
+      'ref-array',
+      'ref-object',
+      'ref-nested-object',
+      'ref-nested-in-array-of-objects',
+    ];
+
     $referencers = $referenceLookup->getReferencers('test-identifier', 'abc', 'identifier');
 
     $this->assertIsArray($referencers);
     // The first two returns matched the reference.
-    $this->assertSame(['ref-array', 'ref-object', 'ref-string'], array_values($referencers));
+    $this->assertSame($expected, array_values($referencers));
   }
 
 }
