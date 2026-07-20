@@ -8,6 +8,7 @@ use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\dkan_metastore\Storage\MetastoreStorageInterface;
 use Psr\Log\LoggerInterface;
@@ -66,6 +67,8 @@ class MetastoreService implements ContainerInjectionInterface {
 
   /**
    * {@inheritDoc}
+   *
+   * @todo Factor this out, no reason this class needs a static ::create
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -469,6 +472,9 @@ class MetastoreService implements ContainerInjectionInterface {
   /**
    * Insert full references with identifiers into metadata fields.
    *
+   * Note, "swap" is a bit of a misnomer, as the original %Ref: property is
+   * removed once its contents replace the original property.
+   *
    * @param \RootedData\RootedJsonData $object
    *   The valid metastore item.
    *
@@ -481,23 +487,16 @@ class MetastoreService implements ContainerInjectionInterface {
   public function swapReferences(RootedJsonData $object): RootedJsonData {
     $no_schema_object = $this->getValidMetadataFactory()->get("$object", NULL);
     foreach ($no_schema_object->get('$') as $property => $value) {
-      if (substr_count((string) $property, "%Ref:") > 0) {
-        $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
+      $original = str_replace(Dereferencer::REF_PREFIX, "", $property);
+      if (
+        str_starts_with((string) $property, Dereferencer::REF_PREFIX)
+        && isset($object->{"$.{$original}"})
+      ) {
+        $no_schema_object->{"$.{$original}"} = $value;
+        unset($no_schema_object->{"$.{$property}"});
       }
     }
-
-    return self::removeReferences($no_schema_object, "%Ref");
-  }
-
-  /**
-   * Private.
-   */
-  private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
-    $original = str_replace("%Ref:", "", $property);
-    if ($object->__isset("$.{$original}")) {
-      $object->set("$.{$original}", $value);
-    }
-    return $object;
+    return $no_schema_object;
   }
 
   /**
@@ -542,32 +541,43 @@ class MetastoreService implements ContainerInjectionInterface {
    *
    * @param \RootedData\RootedJsonData $object
    *   Metadata JSON object.
-   * @param string $prefix
-   *   Property prefix.
    *
    * @return \RootedData\RootedJsonData
    *   The metadata without any reference artifacts.
-   *
-   * @todo Probably remove the prefix param and just always use "%Ref".
    */
-  public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
+  public static function removeReferences(RootedJsonData $object): RootedJsonData {
     $array = $object->get('$');
 
-    foreach ($array as $property => $value) {
-      if (substr_count((string) $property, $prefix) > 0) {
-        unset($array[$property]);
-      }
-    }
-
-    if (!empty($array['distribution'])) {
-      $array['distribution'] = array_map(function ($dist) {
-        unset($dist['%Ref:downloadURL']);
-        return $dist;
-      }, $array['distribution']);
-    }
+    // Recurse through the metadata and remove any nested references.
+    $array = static::removeReferencesRecursive($array);
 
     $object->set('$', $array);
     return $object;
+  }
+
+  /**
+   * Remove references from metadata JSON recursively.
+   *
+   * Meant to be used on output of RootedJsonData::get(), so expects an array
+   * rather than an object or RootedJsonData.
+   *
+   * @param array $array
+   *   Metadata JSON array.
+   *
+   * @return array
+   *   The metadata without any reference artifacts.
+   */
+  protected static function removeReferencesRecursive($array) {
+    foreach ($array as $property => $value) {
+      if (str_starts_with((string) $property, Dereferencer::REF_PREFIX)) {
+        unset($array[$property]);
+      }
+      elseif (is_array($value)) {
+        $array[$property] = static::removeReferencesRecursive($value);
+      }
+    }
+
+    return $array;
   }
 
   /**
@@ -584,11 +594,11 @@ class MetastoreService implements ContainerInjectionInterface {
   public static function metadataHash($data) {
     if ($data instanceof RootedJsonData) {
       $normalizedData = $data;
-      self::removeReferences($normalizedData);
+      static::removeReferences($normalizedData);
     }
     elseif (is_object($data)) {
       $normalizedData = new RootedJsonData(json_encode($data));
-      self::removeReferences($normalizedData);
+      static::removeReferences($normalizedData);
     }
     elseif (is_string($data)) {
       $normalizedData = $data;

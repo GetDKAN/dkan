@@ -3,6 +3,7 @@
 namespace Drupal\Tests\dkan_datastore\Unit\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\DataResource;
@@ -16,6 +17,7 @@ use Drupal\dkan_datastore\Service\ImportService;
 use Drupal\dkan_datastore\Service\ResourcePurger;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\ImportJobStoreFactory;
+use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 use MockChain\Chain;
 use MockChain\Options;
@@ -34,9 +36,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class DatastoreSubscriberTest extends TestCase {
 
   /**
-   *
+   * Test the onRegistration method of the DatastoreSubscriber.
    */
-  public function test() {
+  public function testOnRegistration() {
     $url = 'http://hello.world/file.csv';
     $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
@@ -73,6 +75,99 @@ class DatastoreSubscriberTest extends TestCase {
   }
 
   /**
+   * Test that only source + importable resources are imported across events.
+   */
+  public function testOnRegistrationMultiResourceContractCoverage() {
+    $resource_a = new DataResource('http://hello.world/a.csv', 'text/csv');
+    $resource_b = new DataResource('http://hello.world/b.tsv', 'text/tab-separated-values');
+    $resource_c = new DataResource('http://hello.world/c.json', 'application/json');
+    $resource_d = new DataResource('public://files/local.csv', 'text/csv', 'local_file');
+
+    $config_factory = $this->createMock(ConfigFactoryInterface::class);
+    $logger = $this->createMock(LoggerInterface::class);
+    $datastore = $this->createMock(DatastoreService::class);
+    $resource_purger = $this->createMock(ResourcePurger::class);
+    $import_job_store_factory = $this->createMock(ImportJobStoreFactory::class);
+    $dispatcher = $this->createMock(EventDispatcherInterface::class);
+
+    $calls = [];
+    // Only resource a and b should trigger imports.
+    $expectations = [
+      [$resource_a->getIdentifier(), TRUE, $resource_a->getVersion()],
+      [$resource_b->getIdentifier(), TRUE, $resource_b->getVersion()],
+    ];
+
+    $datastore->expects($this->exactly(count($expectations)))
+      ->method('import')
+      ->willReturnCallback(function ($identifier, $queue, $version) use (&$calls) {
+        $calls[] = [$identifier, $queue, $version];
+        return [];
+      });
+
+    $subscriber = new DatastoreSubscriber(
+      $config_factory,
+      $logger,
+      $datastore,
+      $resource_purger,
+      $import_job_store_factory,
+      $dispatcher,
+    );
+
+    $subscriber->onRegistration(new Event($resource_a));
+    $subscriber->onRegistration(new Event($resource_b));
+    $subscriber->onRegistration(new Event($resource_c));
+    $subscriber->onRegistration(new Event($resource_d));
+
+    $this->assertSame($expectations, $calls);
+  }
+
+  /**
+   * Test that processing continues after an import exception.
+   */
+  public function testOnRegistrationMultiResourceContinuesAfterFailure() {
+    $resource_a = new DataResource('http://hello.world/a.csv', 'text/csv');
+    $resource_b = new DataResource('http://hello.world/b.tsv', 'text/tab-separated-values');
+
+    $config_factory = $this->createMock(ConfigFactoryInterface::class);
+    $logger = $this->createMock(LoggerInterface::class);
+    $datastore = $this->createMock(DatastoreService::class);
+    $resource_purger = $this->createMock(ResourcePurger::class);
+    $import_job_store_factory = $this->createMock(ImportJobStoreFactory::class);
+    $dispatcher = $this->createMock(EventDispatcherInterface::class);
+
+    $calls = [];
+    $datastore->expects($this->exactly(2))
+      ->method('import')
+      ->willReturnCallback(function ($identifier, $queue, $version) use (&$calls, $resource_a) {
+        $calls[] = [$identifier, $queue, $version];
+        if ($identifier === $resource_a->getIdentifier()) {
+          throw new \Exception('simulated import failure');
+        }
+        return [];
+      });
+
+    $logger->expects($this->once())
+      ->method('error')
+      ->with('simulated import failure');
+
+    $subscriber = new DatastoreSubscriber(
+      $config_factory,
+      $logger,
+      $datastore,
+      $resource_purger,
+      $import_job_store_factory,
+      $dispatcher,
+    );
+
+    $subscriber->onRegistration(new Event($resource_a));
+    $subscriber->onRegistration(new Event($resource_b));
+
+    $this->assertCount(2, $calls);
+    $this->assertEquals($resource_a->getIdentifier(), $calls[0][0]);
+    $this->assertEquals($resource_b->getIdentifier(), $calls[1][0]);
+  }
+
+  /**
    * Test ResourcePurger-related parts.
    */
   public function testResourcePurging() {
@@ -87,6 +182,78 @@ class DatastoreSubscriberTest extends TestCase {
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $voidReturn = $subscriber->purgeResources($mockDatasetPublication);
     $this->assertNull($voidReturn);
+  }
+
+  /**
+   * Ensure onPreReference compares current metadata against latest revision.
+   *
+   * @see https://github.com/GetDKAN/dkan/pull/4002
+   *
+   * @dataProvider onPreReferenceDataProvider
+   */
+  public function testOnPreReferenceUsesLatestRevision(array $current_metadata, array $latest_metadata, int $expected_revision_flag): void {
+    $config = $this->createMock(ImmutableConfig::class);
+    $config->expects($this->once())
+      ->method('get')
+      ->with('triggering_properties')
+      ->willReturn(['title']);
+
+    $config_factory = $this->createMock(ConfigFactoryInterface::class);
+    $config_factory->expects($this->once())
+      ->method('get')
+      ->with('dkan_datastore.settings')
+      ->willReturn($config);
+
+    $latest_revision = $this->createMetastoreItem($latest_metadata);
+    $data = $this->createMetastoreItem($current_metadata, $latest_revision);
+
+    $subscriber = new DatastoreSubscriber(
+      $config_factory,
+      $this->createMock(LoggerInterface::class),
+      $this->createMock(DatastoreService::class),
+      $this->createMock(ResourcePurger::class),
+      $this->createMock(ImportJobStoreFactory::class),
+      $this->createMock(EventDispatcherInterface::class),
+    );
+
+    drupal_static_reset('metastore_resource_mapper_new_revision');
+    $subscriber->onPreReference(new Event($data));
+
+    $this->assertSame($expected_revision_flag, drupal_static('metastore_resource_mapper_new_revision'));
+  }
+
+  /**
+   * Test cases for latest-revision comparison.
+   */
+  public static function onPreReferenceDataProvider(): array {
+    return [
+      'unchanged latest revision' => [
+        ['title' => 'Original title', 'modified' => '2026-01-01'],
+        ['title' => 'Original title', 'modified' => '2026-01-01'],
+        0,
+      ],
+      'changed latest revision' => [
+        ['title' => 'Updated title', 'modified' => '2026-01-01'],
+        ['title' => 'Original title', 'modified' => '2026-01-01'],
+        1,
+      ],
+    ];
+  }
+
+  /**
+   * Build a minimal Data wrapper for onPreReference tests.
+   */
+  private function createMetastoreItem(array $metadata, ?Data $latest_revision = NULL): Data {
+    $data = $this->getMockBuilder(Data::class)
+      ->disableOriginalConstructor()
+      ->onlyMethods(['getMetadata', 'getLatestRevision'])
+      ->getMock();
+    $data->method('getMetadata')
+      ->willReturn((object) $metadata);
+    $data->method('getLatestRevision')
+      ->willReturn($latest_revision);
+
+    return $data;
   }
 
   /**

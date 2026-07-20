@@ -79,7 +79,7 @@ interface MetastoreStorageInterface {
    * @return array
    *   An array of metadata objects.
    */
-  public function retrieveContains(string $string, bool $caseSensitive): array;
+  public function retrieveContains(string $string, bool $caseSensitive = TRUE): array;
 
   /**
    * Determine whether the given metastore item is published.
@@ -102,6 +102,17 @@ interface MetastoreStorageInterface {
    *   True if success.
    */
   public function publish(string $uuid): bool;
+
+  /**
+   * Archive.
+   *
+   * @param string $uuid
+   *   The identifier for the data.
+   *
+   * @return bool
+   *   True if success.
+   */
+  public function archive(string $uuid): bool;
 
   /**
    * Remove.

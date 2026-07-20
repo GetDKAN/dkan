@@ -7,6 +7,7 @@ use Drupal\dkan_common\Events\Event;
 use Drupal\dkan_metastore\LifeCycle\LifeCycle as Dkan_metastoreLifeCycle;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -92,7 +93,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
     // Use the metastore service to build a distribution object.
     $distribution = $this->service->get('distribution', $distribution_id, FALSE);
     // Attempt to extract all resources for the given distribution.
-    $resources = $distribution->{'$.data["%Ref:downloadURL"]..data'} ?? [];
+    $resources = $distribution->{'$.data["' . Dereferencer::REF_PREFIX . 'downloadURL"]..data'} ?? [];
 
     // Remove all resource entries associated with this distribution from the
     // metadata resource mapper.

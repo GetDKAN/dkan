@@ -4,6 +4,7 @@ namespace Drupal\Tests\dkan_metastore\Functional\Api1;
 
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\dkan_common\Functional\Api1TestBase;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use GuzzleHttp\RequestOptions;
 
 /**
@@ -12,19 +13,30 @@ use GuzzleHttp\RequestOptions;
  * @group functional3
  */
 class DistributionHandlingTest extends Api1TestBase {
+  use DistributionReferenceModeTrait;
 
+  /**
+   * Get the endpoint for the Distribution API.
+   *
+   * @return string
+   *   The endpoint path, relative to site root.
+   */
   public function getEndpoint():string {
     return 'api/1/metastore/schemas/dataset/items';
   }
 
   /**
    * Post a data dictionary and reference from describedBy.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDescribedByDataDictionary() {
+  public function testDescribedByDataDictionary(string $distribution_reference) {
     // Set data dictionary discovery mode to reference.
     $config = $this->config('dkan_metastore.settings');
     $config->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE);
     $config->save();
+
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Create a data dictionary.
     $dictionaryId = $this->postDataDictionary();

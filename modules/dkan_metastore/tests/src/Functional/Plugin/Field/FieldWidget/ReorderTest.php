@@ -11,6 +11,7 @@ namespace Drupal\Tests\dkan_metastore\Functional\Plugin\Field\FieldWidget;
  * @group dkan
  * @group json_form_widget
  * @group functional
+ * @group functional2
  */
 class ReorderTest extends JsonFormTestBase {
 

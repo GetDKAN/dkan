@@ -61,6 +61,8 @@ class OrphanNodeProcessorTest extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+    drupal_static_reset('metastore_resource_mapper_new_revision');
+
     $this->installConfig('system');
     $this->installConfig('node');
     $this->installConfig('dkan_common');

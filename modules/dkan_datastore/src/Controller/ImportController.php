@@ -117,7 +117,21 @@ class ImportController implements ContainerInjectionInterface {
     else {
       $distributions = [];
     }
-    return empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
+
+    $dependencies = [];
+    if (!empty($distributions)) {
+      $dependencies['distribution'] = $distributions;
+    }
+
+    // In non-referenced mode there are no distribution items; the resource is
+    // referenced inline by the dataset. Tag the response with those datasets so
+    // that editing a dataset invalidates the cached response.
+    $datasets = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
+    if (!empty($datasets)) {
+      $dependencies['dataset'] = $datasets;
+    }
+
+    return empty($dependencies) ? ['distribution'] : $dependencies;
   }
 
   /**
