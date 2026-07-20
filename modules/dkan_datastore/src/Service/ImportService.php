@@ -255,7 +255,10 @@ class ImportService {
    */
   protected function invalidateCacheTags(mixed $resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
+    // In non-referenced mode, datasets reference resources inline.
+    $this->referenceLookup->invalidateReferencerCacheTags('dataset', $resourceId, 'distribution');
     $distributionIds = $this->referenceLookup->getReferencers('distribution', $resourceId, 'downloadURL');
+    // When there are referenced distributions, we want to iterate through them.
     foreach ($distributionIds as $id) {
       $this->referenceLookup->invalidateReferencerCacheTags('dataset', $id, 'distribution');
     }

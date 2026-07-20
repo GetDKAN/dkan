@@ -7,6 +7,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
@@ -19,25 +20,21 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ResourcePurger implements ContainerInjectionInterface {
 
   /**
-   * The datastore.settings config.
-   *
-   * @var \Drupal\Core\Config\ImmutableConfig
+   * Config factory service.
    */
-  private $config;
+  private ConfigFactoryInterface $configFactory;
 
   /**
-   * The dkan.metastore.reference_lookup service.
-   *
-   * @var \Drupal\dkan_metastore\ReferenceLookupInterface
+   * Reference lookup service.
    */
-  private $referenceLookup;
+  private ReferenceLookupInterface $referenceLookup;
 
   /**
    * The datastore service.
    *
    * @var \Drupal\dkan_datastore\DatastoreService
    */
-  private $datastore;
+  private DatastoreService $datastore;
 
   /**
    * The dataset storage.
@@ -72,7 +69,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     DatastoreService $datastore,
     LoggerInterface $loggerChannel,
   ) {
-    $this->config = $configFactory->get('dkan_datastore.settings');
+    $this->configFactory = $configFactory;
     $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');
     $this->datastore = $datastore;
@@ -267,12 +264,28 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function resourceNotShared(string $resource_details): bool {
     // Extract the identifier and version from the supplied resource details.
     $identifier = DataResource::buildUniqueIdentifier(...json_decode($resource_details));
-    // Determine the number of distributions making use of the current
-    // resource.
-    $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
-    // If more than one distribution is using this resource, remove it from
-    // the purge list.
-    return count($distributions) <= 1;
+
+    if ($this->distributionsAreReferenced()) {
+      // In referenced mode, shared means more than one distribution references
+      // the resource.
+      $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
+      return count($distributions) <= 1;
+    }
+
+    // Non-referenced: if getReferencers() returns 1 dataset = shared resource.
+    $datasets = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
+    return count($datasets) < 1;
+  }
+
+  /**
+   * Determine whether distributions are configured to be referenced.
+   */
+  private function distributionsAreReferenced(): bool {
+    $distributionProperty = $this->configFactory
+      ->get('dkan_metastore.settings')
+      ->get('property_list.distribution');
+
+    return $distributionProperty !== '0';
   }
 
   /**
@@ -351,22 +364,63 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function getResources(NodeInterface $dataset) : array {
     $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
-    $distributions = $metadata->{'%Ref:distribution'} ?? [];
+    $distributions = $this->getDistributionObjects($metadata);
 
     foreach ($distributions as $distribution) {
-      // Retrieve and validate the resource for this distribution before adding
-      // it to the resources list.
-      $resource = $distribution->data->{'%Ref:downloadURL'}[0] ?? NULL;
-      if (isset($resource->data->identifier, $resource->data->version)) {
-        $resources[] = json_encode([
-          $resource->data->identifier,
-          $resource->data->version,
-          $resource->data->perspective,
-        ]);
+      $resource = $this->getDistributionResource($distribution);
+      if ($resource) {
+        $resources[] = json_encode($resource);
       }
     }
 
     return $resources;
+  }
+
+  /**
+   * Get distribution objects from metadata.
+   */
+  private function getDistributionObjects(\stdClass $metadata): array {
+    if (!isset($metadata->distribution) || !is_array($metadata->distribution)) {
+      return [];
+    }
+
+    $distributions = [];
+    foreach ($metadata->distribution as $distribution) {
+      if (is_object($distribution)) {
+        $distributions[] = $distribution;
+      }
+    }
+    return $distributions;
+  }
+
+  /**
+   * Extract [identifier, version, perspective] from a distribution object.
+   *
+   * @param object $distribution
+   *   A distribution object from dataset metadata.
+   *
+   * @return array|null
+   *   An array containing the resource identifier, version, and perspective.
+   */
+  private function getDistributionResource(object $distribution): ?array {
+    $ref = $distribution->{Dereferencer::REF_PREFIX . 'downloadURL'}[0]->data ?? NULL;
+    if (is_object($ref) && isset($ref->identifier, $ref->version, $ref->perspective)) {
+      return [$ref->identifier, $ref->version, $ref->perspective];
+    }
+
+    // Check check if it has a referenced downloadURL, and if so parse it.
+    $downloadUrl = $distribution->downloadURL ?? NULL;
+    if (!is_string($downloadUrl) || filter_var($downloadUrl, FILTER_VALIDATE_URL) !== FALSE) {
+      return NULL;
+    }
+
+    try {
+      $resource = DataResource::parseUniqueIdentifier($downloadUrl);
+      return [$resource['identifier'], $resource['version'], $resource['perspective']];
+    }
+    catch (\Exception) {
+      return NULL;
+    }
   }
 
   /**
@@ -424,14 +478,14 @@ class ResourcePurger implements ContainerInjectionInterface {
    * Get the purge_table value from datastore.settings config.
    */
   private function getPurgeTableSetting() : bool {
-    return (bool) $this->config->get('purge_table');
+    return (bool) $this->configFactory->get('dkan_datastore.settings')->get('purge_table');
   }
 
   /**
    * Get the purge_file value from datastore.settings config.
    */
   private function getPurgeFileSetting() : bool {
-    return (bool) $this->config->get('purge_file');
+    return (bool) $this->configFactory->get('dkan_datastore.settings')->get('purge_file');
   }
 
   /**

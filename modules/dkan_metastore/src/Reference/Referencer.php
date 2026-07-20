@@ -29,35 +29,6 @@ class Referencer {
   public const DEFAULT_MIME_TYPE = 'text/plain';
 
   /**
-   * Storage factory interface service.
-   *
-   * @var \Contracts\FactoryInterface
-   */
-  private $storageFactory;
-
-  /**
-   * Metastore URL Generator service.
-   */
-  public MetastoreUrlGenerator $metastoreUrlGenerator;
-
-  /**
-   * Guzzle HTTP client.
-   */
-  private Client $httpClient;
-
-  /**
-   * The MIME type guesser.
-   *
-   * @var \Symfony\Component\Mime\MimeTypeGuesserInterface
-   */
-  protected $mimeTypeGuesser;
-
-  /**
-   * DKAN logger channel service.
-   */
-  private LoggerInterface $logger;
-
-  /**
    * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
@@ -70,23 +41,21 @@ class Referencer {
    *   Guzzle http client.
    * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mimeTypeGuesser
    *   The MIME type guesser.
-   * @param \Psr\Log\LoggerInterface $loggerChannel
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
+   *   The resource mapper service.
+   * @param \Psr\Log\LoggerInterface $logger
    *   DKAN logger channel service.
    */
   public function __construct(
     ConfigFactoryInterface $configService,
-    FactoryInterface $storageFactory,
-    MetastoreUrlGenerator $metastoreUrlGenerator,
-    Client $httpClient,
-    MimeTypeGuesserInterface $mimeTypeGuesser,
-    LoggerInterface $loggerChannel,
+    private FactoryInterface $storageFactory,
+    public MetastoreUrlGenerator $metastoreUrlGenerator,
+    private Client $httpClient,
+    protected MimeTypeGuesserInterface $mimeTypeGuesser,
+    protected ResourceMapper $resourceMapper,
+    private LoggerInterface $logger,
   ) {
     $this->setConfigService($configService);
-    $this->storageFactory = $storageFactory;
-    $this->metastoreUrlGenerator = $metastoreUrlGenerator;
-    $this->httpClient = $httpClient;
-    $this->mimeTypeGuesser = $mimeTypeGuesser;
-    $this->logger = $loggerChannel;
   }
 
   /**
@@ -98,20 +67,56 @@ class Referencer {
    * @return object
    *   Json object modified with references to some of its properties' values.
    */
-  public function reference($data) {
-    if (!is_object($data)) {
-      throw new \Exception('data must be an object.');
-    }
+  public function reference(object $data): object {
+    // Process resource references first.
+    $this->referenceDistributions($data);
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
         $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
 
         // Remove de-referenced info from metadata.
-        unset($data->{'%Ref:' . $property_id});
+        unset($data->{Dereferencer::REF_PREFIX . $property_id});
       }
     }
     return $data;
+  }
+
+  /**
+   * Recurses through distributions to find resources to reference in dataset.
+   *
+   * @param object $data
+   *   Dataset JSON object.
+   */
+  public function referenceDistributions(object $data): void {
+    foreach (($data->distribution ?? []) as &$distribution) {
+      $this->referenceResource($distribution);
+      $this->normalizeDictionaryValue($distribution);
+    }
+    unset($distribution);
+  }
+
+  /**
+   * Process a single distribution and replace URLs with resource IDs.
+   *
+   * @param object $distribution
+   *   The distribution object from the metadata.
+   */
+  public function referenceResource(object $distribution): void {
+    // Clean up any reference metadata if it exists.
+    unset($distribution->{Dereferencer::REF_PREFIX . 'downloadURL'});
+    if (!isset($distribution->downloadURL)) {
+      return;
+    }
+    // Check that URL is valid.
+    if (filter_var($distribution->downloadURL, FILTER_VALIDATE_URL) === FALSE) {
+      return;
+    }
+
+    $distribution->downloadURL = $this->registerWithResourceMapper(
+      UrlHostTokenResolver::hostify($distribution->downloadURL),
+      $this->getMimeType($distribution)
+    );
   }
 
   /**
@@ -169,10 +174,6 @@ class Referencer {
    *   The Uuid reference, or NULL on failure.
    */
   protected function referenceSingle(string $property_id, $value) {
-    if ($property_id == 'distribution') {
-      $value = $this->distributionHandling($value);
-    }
-
     $uuid = $this->checkExistingReference($property_id, $value);
     if (!$uuid) {
       $uuid = $this->createPropertyReference($property_id, $value);
@@ -192,59 +193,33 @@ class Referencer {
   }
 
   /**
-   * Attempt to register this distribution's resource with the resource mapper.
-   *
-   * If this distribution has a resource, register it with the resource mapper
-   * and replace the download URL with a resource ID.
+   * Normalize an incoming URL to a domain-agnostic dkan:// URL.
    *
    * @param object $distribution
    *   A dataset distribution object.
    *
    * @return object
-   *   The supplied distribution with an updated resource download URL.
+   *   The supplied distribution with an describedBy value.
    */
-  public function distributionHandling($distribution): object {
-    // Ensure the supplied distribution has a valid resource before attempting
-    // to register it with the resource mapper.
-    if (isset($distribution->downloadURL)) {
-      // Register this distribution's resource with the resource mapper and
-      // replace the download URL with a unique ID registered in the resource
-      // mapper.
-      $distribution->downloadURL = $this->registerWithResourceMapper(
-        UrlHostTokenResolver::hostify($distribution->downloadURL), $this->getMimeType($distribution));
-    }
-
+  public function normalizeDictionaryValue($distribution): object {
     // If there is a describedBy value, convert to dkan:// URL if appropriate.
-    if ($distribution->describedBy ?? FALSE) {
-      $distribution->describedBy = $this->normalizeDictionaryValue($distribution->describedBy);
+    if (!($distribution->describedBy ?? FALSE)) {
+      return $distribution;
     }
-
-    return $distribution;
-  }
-
-  /**
-   * Normalize an incoming URL to a reference ID.
-   *
-   * @param string $value
-   *   Value for describedBy field, usually a URL.
-   *
-   * @return string
-   *   Metastore Item ID.
-   */
-  protected function normalizeDictionaryValue(string $value): string {
-    $incoming_scheme = StreamWrapperManager::getScheme($value);
+    $incoming_scheme = StreamWrapperManager::getScheme($distribution->describedBy);
     try {
-      $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($value) : $value;
+      $uri = ($incoming_scheme) ? $this->metastoreUrlGenerator->uriFromUrl($distribution->describedBy) : $distribution->describedBy;
     }
     // If the URL cannot be converted to a DKAN URI, pass it through.
     catch (\DomainException) {
-      return $value;
+      return $distribution;
     }
     // If it was converted to DKAN URI, validate it as a data dictionary.
     if (!$this->metastoreUrlGenerator->validateUri($uri, 'data-dictionary')) {
-      throw new \DomainException("The value $value, is not a valid data-dictionary URI.");
+      throw new \DomainException("The value {$distribution->describedBy}, is not a valid data-dictionary URI.");
     }
-    return $uri;
+    $distribution->describedBy = $uri;
+    return $distribution;
   }
 
   /**
@@ -264,7 +239,7 @@ class Referencer {
       $resource = new DataResource($downloadUrl, $mimeType);
 
       // Attempt to register the url with the resource file mapper.
-      if ($this->getFileMapper()->register($resource)) {
+      if ($this->resourceMapper->register($resource)) {
         // Upon successful registration, replace the download URL with a unique
         // ID generated by the resource mapper.
         $downloadUrl = $resource->getUniqueIdentifier();
@@ -276,7 +251,7 @@ class Referencer {
       // being registered, generate a new version of the resource and update the
       // download URL with the new version ID.
       if ($entity = reset($already_registered) ?? FALSE) {
-        $stored = $this->getFileMapper()->get(
+        $stored = $this->resourceMapper->get(
           $entity->get('identifier')->getString(),
           DataResource::DEFAULT_SOURCE_PERSPECTIVE
         );
@@ -306,25 +281,13 @@ class Referencer {
       // Update the MIME type, since this may be updated by the user.
       $new->changeMimeType($mimeType);
 
-      $this->getFileMapper()->registerNewVersion($new);
+      $this->resourceMapper->registerNewVersion($new);
       $downloadUrl = $new->getUniqueIdentifier();
     }
     else {
       $downloadUrl = $existing->getUniqueIdentifier();
     }
     return $downloadUrl;
-  }
-
-  /**
-   * Get the resource mapper service.
-   *
-   * @return \Drupal\dkan_metastore\ResourceMapper
-   *   The resource mapper service.
-   *
-   * @todo Inject this service.
-   */
-  protected function getFileMapper(): ResourceMapper {
-    return \Drupal::service('dkan.metastore.resource_mapper');
   }
 
   /**

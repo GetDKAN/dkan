@@ -3,20 +3,23 @@
 namespace Drupal\Tests\dkan_metastore\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 
 /**
+ * Test the pre-reference event subscriber.
+ *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group functional
- * @group btb
  * @group functional1
  */
 class OnPreReferenceTest extends BrowserTestBase {
+  use DistributionReferenceModeTrait;
+
 
   protected static $modules = [
     'dkan_datastore',
     'dkan_metastore',
-    'node',
   ];
 
   protected $defaultTheme = 'stark';
@@ -24,9 +27,9 @@ class OnPreReferenceTest extends BrowserTestBase {
   private $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 
   /**
-   *
+   * Get the dataset metadata for testing.
    */
-  private function getData($downloadUrl) {
+  private function getData(string $downloadUrl): string {
     return '
     {
       "title": "Test #1",
@@ -46,13 +49,17 @@ class OnPreReferenceTest extends BrowserTestBase {
   }
 
   /**
+   * Test the pre-reference event subscriber.
    *
+   * @dataProvider distributionReferenceProvider
    */
-  public function test() {
+  public function testPreReference($distribution_reference) {
     // Ensure the proper triggering properties are set for datastore comparison.
     $this->config('dkan_datastore.settings')
       ->set('triggering_properties', ['modified'])
       ->save();
+
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Test posting a dataset to the metastore.
     $data = $this->getData($this->downloadUrl);

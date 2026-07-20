@@ -5,19 +5,13 @@ namespace Drupal\dkan_metastore\LifeCycle;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
-use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\StreamWrapper\StreamWrapperManager;
-use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\dkan_common\Events\Event;
-use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\dkan_metastore\MetastoreItemInterface;
 use Drupal\dkan_metastore\Reference\Dereferencer;
-use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\Reference\OrphanChecker;
 use Drupal\dkan_metastore\Reference\Referencer;
-use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -38,91 +32,32 @@ class LifeCycle {
   const EVENT_DELETING_DISTRIBUTION = 'dkan_metastore_deleting_distribution';
 
   /**
-   * Referencer service.
-   *
-   * @var \Drupal\dkan_metastore\Reference\Referencer
-   */
-  protected $referencer;
-
-  /**
-   * Dereferencer.
-   *
-   * @var \Drupal\dkan_metastore\Reference\Dereferencer
-   */
-  protected $dereferencer;
-
-  /**
-   * OrphanChecker service.
-   *
-   * @var \Drupal\dkan_metastore\Reference\OrphanChecker
-   */
-  protected $orphanChecker;
-
-  /**
-   * ResourceMapper service.
-   *
-   * @var \Drupal\dkan_metastore\ResourceMapper
-   */
-  protected $resourceMapper;
-
-  /**
-   * DateFormatter service.
-   *
-   * @var \Drupal\Core\Datetime\DateFormatter
-   */
-  protected $dateFormatter;
-
-  /**
-   * Metastore storage service.
-   *
-   * @var \Drupal\dkan_metastore\Storage\DataFactory
-   */
-  protected $dataFactory;
-
-  /**
-   * Queue service.
-   *
-   * @var \Drupal\Core\Queue\QueueFactory
-   */
-  protected $queueFactory;
-
-  /**
-   * The config factory service.
-   *
-   * @var \Drupal\Core\Config\ConfigFactory
-   */
-  protected $configFactory;
-
-  /**
-   * Event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected $eventDispatcher;
-
-  /**
    * Constructor.
+   *
+   * @param \Drupal\dkan_metastore\Reference\Referencer $referencer
+   *   The dkan.metastore.referencer service.
+   * @param \Drupal\dkan_metastore\Reference\Dereferencer $dereferencer
+   *   The dkan.metastore.dereferencer service.
+   * @param \Drupal\dkan_metastore\Reference\OrphanChecker $orphanChecker
+   *   The dkan.metastore.orphan_checker service.
+   * @param \Drupal\dkan_metastore\Storage\DataFactory $dataFactory
+   *   The dkan.metastore.data_factory service.
+   * @param \Drupal\Core\Queue\QueueFactory $queueFactory
+   *   The queue.factory service.
+   * @param \Drupal\Core\Config\ConfigFactory $configFactory
+   *   The config.factory service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event_dispatcher service.
    */
   public function __construct(
-    Referencer $referencer,
-    Dereferencer $dereferencer,
-    OrphanChecker $orphanChecker,
-    ResourceMapper $resourceMapper,
-    DateFormatter $dateFormatter,
-    DataFactory $dataFactory,
-    QueueFactory $queueFactory,
-    ConfigFactory $configFactory,
-    EventDispatcherInterface $eventDispatcher,
+    protected Referencer $referencer,
+    protected Dereferencer $dereferencer,
+    protected OrphanChecker $orphanChecker,
+    protected DataFactory $dataFactory,
+    protected QueueFactory $queueFactory,
+    protected ConfigFactory $configFactory,
+    protected EventDispatcherInterface $eventDispatcher,
   ) {
-    $this->referencer = $referencer;
-    $this->dereferencer = $dereferencer;
-    $this->orphanChecker = $orphanChecker;
-    $this->resourceMapper = $resourceMapper;
-    $this->dateFormatter = $dateFormatter;
-    $this->dataFactory = $dataFactory;
-    $this->queueFactory = $queueFactory;
-    $this->configFactory = $configFactory;
-    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -177,8 +112,6 @@ class LifeCycle {
 
     // Dereference dataset properties.
     $metadata = $this->dereferencer->dereference($metadata);
-    $metadata = $this->addDatasetModifiedDate($metadata, $data->getModifiedDate());
-
     $data->setMetadata($metadata);
   }
 
@@ -211,40 +144,8 @@ class LifeCycle {
    */
   protected function distributionLoad(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
-
-    if (!isset($metadata->data->downloadURL)) {
-      return;
-    }
-
-    $downloadUrl = $metadata->data->downloadURL;
-
-    if (!empty($downloadUrl) && filter_var($downloadUrl, FILTER_VALIDATE_URL) === FALSE) {
-      $ref = NULL;
-      $original = NULL;
-      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($downloadUrl);
-
-      $downloadUrl = $original ?? "";
-
-      $refProperty = "%Ref:downloadURL";
-      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
-    }
-
-    if (is_string($downloadUrl)) {
-      $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
-    }
-
-    $unset_downloadUrl = $this->configFactory->get('dkan_metastore.settings')->get('unset_download_url_if_empty') ?? FALSE;
-    if (!$downloadUrl && $unset_downloadUrl) {
-      unset($metadata->data->downloadURL);
-    }
-    else {
-      $metadata->data->downloadURL = $downloadUrl;
-    }
-
-    // If describedBy contains dkan:// URI, convert to absolute URL.
-    if (StreamWrapperManager::getScheme($metadata->data->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {
-      $metadata->data->describedBy = $this->referencer->metastoreUrlGenerator->absoluteString($metadata->data->describedBy);
-    }
+    $this->dereferencer->dereferenceResource($metadata->data);
+    $this->dereferencer->dereferenceDataDictionary($metadata->data);
     $data->setMetadata($metadata);
   }
 
@@ -257,55 +158,6 @@ class LifeCycle {
     $event = new Event($distributionUuid);
     $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DISTRIBUTION);
 
-  }
-
-  /**
-   * Get a download URL.
-   *
-   * @param string $resourceIdentifier
-   *   Identifier for resource.
-   *
-   * @return array
-   *   Array of reference and original.
-   */
-  private function retrieveDownloadUrlFromResourceMapper(string $resourceIdentifier) {
-    $reference = [];
-    $original = NULL;
-
-    $info = DataResource::parseUniqueIdentifier($resourceIdentifier);
-
-    // Load resource object.
-    $sourceResource = $this->resourceMapper->get($info['identifier'], DataResource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
-
-    if (!$sourceResource) {
-      return [$reference, $original];
-    }
-
-    $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = $this->configFactory->get('dkan_metastore.settings')->get('resource_perspective_display')
-      ?: DataResource::DEFAULT_SOURCE_PERSPECTIVE;
-    $resource = $sourceResource;
-
-    if (
-      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
-    ) {
-      $resource = $new;
-      $reference[] = $this->createResourceReference($resource);
-    }
-    $original = $resource->getFilePath();
-
-    return [$reference, $original];
-  }
-
-  /**
-   * Private.
-   */
-  private function createResourceReference(DataResource $resource): object {
-    return (object) [
-      "identifier" => $resource->getUniqueIdentifier(),
-      "data" => $resource,
-    ];
   }
 
   /**
@@ -450,34 +302,9 @@ class LifeCycle {
    */
   protected function distributionPresave(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
-
-    // If updating an existing distribution, re-reference it.
-    if (!$data->isNew()) {
-      $distributionUuid = $data->getIdentifier();
-      $storage = $this->dataFactory->getInstance('distribution');
-      $resource = $storage->retrieve($distributionUuid);
-      $resource = json_decode((string) $resource);
-
-      $resourceId = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
-
-      // Replace download url with the resource reference ID again.
-      if (isset($resourceId)) {
-        $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
-        $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
-        $metadata->data->downloadURL = $resourceId . '__' . $version . '__' . $perspective;
-        unset($metadata->data->{'%Ref:downloadURL'});
-      }
-    }
+    $this->referencer->referenceResource($metadata->data);
+    $this->referencer->normalizeDictionaryValue($metadata->data);
     $data->setMetadata($metadata);
-  }
-
-  /**
-   * Private.
-   */
-  private function addDatasetModifiedDate($metadata, $date) {
-    $formattedChangedDate = $this->dateFormatter->format($date, 'html_datetime');
-    $metadata->{'%modified'} = $formattedChangedDate;
-    return $metadata;
   }
 
 }

@@ -13,6 +13,7 @@ use Drupal\dkan_datastore\PostImportResultFactory;
 use Drupal\dkan_datastore\Service\Info\ImportInfoList;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ResourceMapper;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -217,7 +218,7 @@ final class DatastoreCommands extends DrushCommands {
   public function dropAll() {
     /** @var \RootedData\RootedJsonData $distribution*/
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      if ($uuid = $distribution->get('$[data]["%Ref:downloadURL"][0][data][identifier]') ?? FALSE) {
+      if ($uuid = $distribution->get('$[data]["' . Dereferencer::REF_PREFIX . 'downloadURL"][0][data][identifier]') ?? FALSE) {
         $this->drop($uuid);
       }
     }

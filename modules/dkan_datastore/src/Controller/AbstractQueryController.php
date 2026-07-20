@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
+use Drupal\Component\Uuid\Uuid;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -11,6 +12,7 @@ use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use JsonSchema\Validator;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -56,6 +58,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected StateInterface $state;
 
   /**
+   * Reference lookup service.
+   */
+  protected ReferenceLookup $referenceLookup;
+
+  /**
    * Default API rows limit.
    *
    * @var int
@@ -71,12 +78,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     MetastoreApiResponse $metastoreApiResponse,
     ConfigFactoryInterface $configFactory,
     StateInterface $state,
+    ReferenceLookup $referenceLookup,
   ) {
     $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->configFactory = $configFactory;
     $this->state = $state;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -89,6 +98,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $container->get('dkan.metastore.api_response'),
       $container->get('config.factory'),
       $container->get('state'),
+      $container->get('dkan.metastore.reference_lookup'),
     );
   }
 
@@ -145,15 +155,56 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 400);
     }
     $result = $this->runDatastoreQuery($datastoreQuery);
+    $dependencies = $this->resolveResourceDependencies($identifier);
 
     return ($result instanceof JsonResponse)
       ? $result
       : $this->formatResponse(
         $datastoreQuery,
         $result,
-        ['distribution' => [$identifier]],
+        $dependencies,
         $request->query
       );
+  }
+
+  /**
+   * Resolve cache dependencies for a single-resource query identifier.
+   *
+   * @param string $identifier
+   *   Distribution UUID or resource identifier.
+   *
+   * @return array
+   *   Dependency array for \Drupal\dkan_metastore\MetastoreApiResponse.
+   */
+  protected function resolveResourceDependencies(string $identifier): array {
+    $distributionIds = Uuid::isValid($identifier)
+      ? [$identifier]
+      : $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
+    $distributionIds = array_values(array_unique($distributionIds));
+
+    $datasetIds = [];
+    if (!empty($distributionIds)) {
+      foreach ($distributionIds as $distributionId) {
+        $datasetIds = array_merge(
+          $datasetIds,
+          $this->referenceLookup->getReferencers('dataset', $distributionId, 'distribution')
+        );
+      }
+    }
+    else {
+      // Non-referenced mode: resource IDs are used directly in dataset metadata.
+      $datasetIds = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
+    }
+    $datasetIds = array_values(array_unique($datasetIds));
+
+    $dependencies = [];
+    if (!empty($distributionIds)) {
+      $dependencies['distribution'] = $distributionIds;
+    }
+    if (!empty($datasetIds)) {
+      $dependencies['dataset'] = $datasetIds;
+    }
+    return $dependencies;
   }
 
   /**
@@ -170,14 +221,16 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json response.
    */
   public function queryDatasetResource(string $dataset, string $index, Request $request) {
-    $distribution_uuid = $this->datasetInfo->getDistributionUuid($dataset, $index);
-    if (empty($distribution_uuid)) {
+    $resource_identifier = $this->datasetInfo->getResourceIdentifier($dataset, $index);
+    if ($resource_identifier === NULL) {
       return $this->getResponse((object) ['message' => "No resource found for dataset $dataset at index $index"], 404);
     }
-    $dependencies = ['distribution' => [$distribution_uuid], 'dataset' => [$dataset]];
+    // Note: additional dependencies such as distribution IDs are added via
+    // MetastoreApiResponse::addItemDependencies().
+    $dependencies = ['dataset' => [$dataset]];
 
     try {
-      $datastoreQuery = $this->buildDatastoreQuery($request, $distribution_uuid);
+      $datastoreQuery = $this->buildDatastoreQuery($request, $resource_identifier);
     }
     catch (HttpException $e) {
       return $this->getResponseFromException($e, $e->getStatusCode());

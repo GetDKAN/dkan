@@ -5,6 +5,7 @@ namespace Drupal\Tests\dkan_datastore\Functional\Service;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 
 /**
@@ -15,12 +16,12 @@ use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
  * @group dkan
  * @group datastore
  * @group functional
- * @group btb
  * @group functional1
  */
 class ResourcePurgerTest extends BrowserTestBase {
   use GetLocalDataTrait;
   use QueueRunnerTrait;
+  use DistributionReferenceModeTrait;
 
   protected static $modules = [
     'dkan_datastore',
@@ -61,8 +62,12 @@ class ResourcePurgerTest extends BrowserTestBase {
 
   /**
    * Test deleting a dataset doesn't delete other datasets sharing a resource.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDatasetsWithSharedResourcesAreNotDeletedPrematurely(): void {
+  public function testDatasetsWithSharedResourcesAreNotDeletedPrematurely($distribution_reference): void {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     // Make sure the default moderation state is "published".
     $this->config('workflows.workflow.dkan_publishing')
       ->set('type_settings.default_moderation_state', 'published')
@@ -106,13 +111,13 @@ class ResourcePurgerTest extends BrowserTestBase {
   protected function getResourcesForDataset(string $dataset_identifier): array {
     // Retrieve dataset metastore storage service.
     $metadata = $this->datasetStorage->retrieve($dataset_identifier);
-    $distributions = json_decode((string) $metadata)->{'%Ref:distribution'} ?? [];
+    $distributions = json_decode((string) $metadata)->distribution ?? [];
 
     $resources = [];
     foreach ($distributions as $distribution) {
       // Retrieve and validate the resource for this distribution before adding
       // it to the resources list.
-      $resource = $distribution->data->{'%Ref:downloadURL'}[0] ?? NULL;
+      $resource = $distribution->{'%Ref:downloadURL'}[0] ?? NULL;
       if (isset($resource->data->identifier, $resource->data->version)) {
         $resources[] = $resource->data;
       }

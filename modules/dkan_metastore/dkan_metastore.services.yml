@@ -15,8 +15,6 @@ services:
       - '@dkan.metastore.referencer'
       - '@dkan.metastore.dereferencer'
       - '@dkan.metastore.orphan_checker'
-      - '@dkan.metastore.resource_mapper'
-      - '@date.formatter'
       - '@dkan.metastore.storage'
       - '@queue'
       - '@config.factory'
@@ -52,6 +50,7 @@ services:
       - '@dkan.metastore.url_generator'
       - '@http_client'
       - '@file.mime_type.guesser.extension'
+      - '@dkan.metastore.resource_mapper'
       - '@dkan.common.logger_channel'
 
   dkan.metastore.dereferencer:
@@ -59,6 +58,8 @@ services:
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.url_generator'
+      - '@dkan.metastore.resource_mapper'
       - '@dkan.common.logger_channel'
 
   dkan.metastore.orphan_checker:
@@ -140,6 +141,3 @@ services:
     class: \Drupal\dkan_metastore\SchemaValidator
     arguments:
       - '@dkan.metastore.schema_retriever'
-
-  dkan.metastore.resource_discovery:
-    class: \Drupal\dkan_metastore\LifeCycle\ResourceDiscovery\DatasetResourceDiscovery

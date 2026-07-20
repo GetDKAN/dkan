@@ -378,6 +378,8 @@ class DatastoreService implements ContainerInjectionInterface {
    */
   public function invalidateCacheTags(mixed $resourceId) {
     $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
+    // In non-referenced mode, resource references are inline on datasets.
+    $this->referenceLookup->invalidateReferencerCacheTags('dataset', $resourceId, 'distribution');
   }
 
   /**

@@ -3,6 +3,7 @@
 namespace Drupal\Tests\dkan_metastore\Functional\Api1;
 
 use Drupal\Tests\dkan_common\Functional\Api1TestBase;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use GuzzleHttp\RequestOptions;
 
 /**
@@ -13,11 +14,18 @@ use GuzzleHttp\RequestOptions;
  */
 class DatasetItemTest extends Api1TestBase {
 
+  use DistributionReferenceModeTrait;
+
   public function getEndpoint():string {
     return 'api/1/metastore/schemas/dataset/items';
   }
 
-  public function testGet() {
+  /**
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testGet(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $dataset = $this->getSampleDataset();
 
     $response = $this->post($dataset, FALSE);
@@ -42,7 +50,12 @@ class DatasetItemTest extends Api1TestBase {
     $this->validator->validate($response, "$this->endpoint/$datasetId", 'get');
   }
 
-  public function testPost() {
+  /**
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testPost(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $dataset = $this->getSampleDataset();
     $response = $this->post($dataset);
     $this->assertEquals(201, $response->getStatusCode());
@@ -64,7 +77,12 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(403, $response->getStatusCode());
   }
 
-  public function testPatch() {
+  /**
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testPatch(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $dataset = $this->getSampleDataset();
     $this->post($dataset);
     $datasetId = $dataset->identifier;
@@ -112,7 +130,12 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(404, $response->getStatusCode());
   }
 
-  public function testPut() {
+  /**
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testPut(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $dataset = $this->getSampleDataset();
     $this->post($dataset);
 
@@ -169,7 +192,12 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(201, $response->getStatusCode());
   }
 
-  public function testDelete() {
+  /**
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testDelete(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $dataset = $this->getSampleDataset();
     $this->post($dataset);
     $datasetId = $dataset->identifier;
