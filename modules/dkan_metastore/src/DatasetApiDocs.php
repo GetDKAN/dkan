@@ -49,6 +49,7 @@ class DatasetApiDocs {
     '404IdNotFound',
     '200JsonOrCsvQueryOk',
     '400BadJson',
+    '503ServiceUnavailable',
   ];
 
   /**
