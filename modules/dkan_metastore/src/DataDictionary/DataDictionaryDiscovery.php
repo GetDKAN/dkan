@@ -4,9 +4,11 @@ namespace Drupal\dkan_metastore\DataDictionary;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\dkan_metastore\Reference\HelperTrait;
 use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\MetastoreService;
+use RootedData\RootedJsonData;
 
 /**
  * Data dictionary service.
@@ -14,6 +16,10 @@ use Drupal\dkan_metastore\MetastoreService;
  * Find the correct data dictionary for a dataset or distribution.
  */
 class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
+
+  use HelperTrait;
+
+  const DICT_MIMETYPE = 'application/vnd.tableschema+json';
 
   /**
    * Metastore settings config object.
@@ -68,47 +74,48 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
    */
   public function getReferenceDictionaryId(string $resourceId, int $resourceIdVersion): ?string {
     $resource_id = $resourceId . "__" . $resourceIdVersion;
-    $distributionId = $this->getDistributionId($resource_id);
-    if ($distributionId === NULL) {
+    $datasetId = $this->getDatasetId($resource_id);
+    if ($datasetId === NULL) {
       return NULL;
     }
-    $distribution = $this->metastore->get('distribution', $distributionId);
-    if (!$this->hasValidDescribedBy($distribution)) {
-      return NULL;
-    }
-    return $this->extractDictionaryId($distribution->{"$.data.describedBy"});
+    $dataset = $this->metastore->get('dataset', $datasetId);
+    return $this->extractDictionaryId($dataset);
   }
 
   /**
-   * Get the distribution ID for a given resource ID.
+   * Get the dataset ID for a given resource ID.
    */
-  private function getDistributionId(string $resource_id): ?string {
-    $referencers = $this->lookup->getReferencers('distribution', $resource_id, 'downloadURL');
+  private function getDatasetId(string $resource_id): ?string {
+    $referencers = $this->lookup->getReferencers('dataset', $resource_id, 'downloadURL');
     if (empty($referencers)) {
-      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
+      throw new \RuntimeException("Dataset lookup: Can not map resource ID {$resource_id} to dataset UUID. Please make sure your resource exists in the database.");
     }
     return $referencers[0] ?? NULL;
   }
 
   /**
-   * Verify that the distribution has a valid describedBy URL.
+   * Extract the data dictionary ID from the describedBy URL or a dataset.
+   *
+   * @param RootedData\RootedJsonData $dataset
+   *   The dataset.
+   *
+   * @return string|null
+   *   The data dictionary ID or NULL if none exists.
    */
-  private function hasValidDescribedBy($distribution): bool {
-    return isset($distribution->{"$.data.describedBy"})
-      && (($distribution->{"$.data.describedByType"} ?? NULL) === 'application/vnd.tableschema+json');
-  }
-
-  /**
-   * Extract the data dictionary ID from the describedBy URL.
-   */
-  private function extractDictionaryId(string $describedBy): ?string {
-    try {
-      $uri = $this->urlGenerator->uriFromUrl($describedBy);
-      return $this->urlGenerator->extractItemId($uri, "data-dictionary");
+  protected function extractDictionaryId(RootedJsonData $dataset): ?string {
+    foreach ($dataset->{'$.distribution'} ?? [] as $distribution) {
+      if ($distribution['describedByType'] ?? NULL === self::DICT_MIMETYPE) {
+        $describedBy = $distribution['describedBy'] ?? '';
+        try {
+          $uri = $this->urlGenerator->uriFromUrl($describedBy);
+          return $this->urlGenerator->extractItemId($uri, "data-dictionary");
+        }
+        catch (\DomainException) {
+          continue;
+        }
+      }
     }
-    catch (\DomainException) {
-      return NULL;
-    }
+    return NULL;
   }
 
   /**

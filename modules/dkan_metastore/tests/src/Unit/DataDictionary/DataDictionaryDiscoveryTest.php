@@ -2,16 +2,15 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit\DataDictionary;
 
-use DomainException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery as Discovery;
+use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
 use MockChain\Chain;
 use MockChain\Options;
-use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;
 
@@ -88,7 +87,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
       $this->getUrlGenerator()
     );
 
-    $this->expectException(OutOfRangeException::class);
+    $this->expectException(\OutOfRangeException::class);
     $discovery->dictionaryIdFromResource('resource1', 1);
   }
   private function getLookup() {
@@ -142,7 +141,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
   private function getUrlGenerator() {
     $extract = (new Options())
       ->add('dkan://metastore/schemas/data-dictionary/items/111', '111')
-      ->add('dkan://metastore/schemas/dataset/items/444', new DomainException())
+      ->add('dkan://metastore/schemas/dataset/items/444', new \DomainException())
       ->index(0);
     $uriFromUrl = (new Options())
       ->add('https://example.com/api/1/metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
@@ -152,6 +151,59 @@ class DataDictionaryDiscoveryTest extends TestCase {
       ->add(MetastoreUrlGenerator::class, 'uriFromUrl', $uriFromUrl)
       ->add(MetastoreUrlGenerator::class, 'extractItemId', $extract)
       ->getMock();
+  }
+
+  /**
+   * Test extracting dictionary ID from various URL formats.
+   *
+   * @dataProvider extractDictionaryIdProvider
+   */
+  public function testExtractDictionaryId($dataset, $expected) {
+    $discovery = new DataDictionaryDiscovery(
+      $this->getConfigFactoryMock(DataDictionaryDiscovery::MODE_SITEWIDE, 'abc-123'),
+      $this->getMetastoreService(),
+      $this->getLookup(),
+      $this->getUrlGenerator()
+    );
+
+    // Use reflection to call the protected method.
+    $reflection = new \ReflectionMethod($discovery, 'extractDictionaryId');
+    $reflection->setAccessible(TRUE);
+
+    // Test valid data-dictionary URL.
+    $id = $reflection->invoke($discovery, $dataset);
+    $this->assertEquals($expected, $id);
+  }
+
+  /**
+   * Data provider for testExtractDictionaryId.
+   */
+  public static function extractDictionaryIdProvider(): array {
+    return [
+      'valid' => [new RootedJsonData(json_encode((object) [
+        'distribution' => [
+          (object) [
+            'describedBy' => "https://example.com/api/1/metastore/schemas/data-dictionary/items/111",
+            'describedByType' => 'application/vnd.tableschema+json',
+          ],
+        ],
+      ]), "{}"), '111'],
+      'missingType' => [new RootedJsonData(json_encode((object) [
+        'distribution' => [
+          (object) [
+            'describedBy' => "https://example.com/api/1/metastore/schemas/data-dictionary/items/111",
+          ],
+        ],
+      ])), NULL],
+      'wrongSchema' => [new RootedJsonData(json_encode((object) [
+        'distribution' => [
+          (object) [
+            'describedBy' => "dkan://metastore/schemas/dataset/items/444",
+            'describedByType' => 'application/vnd.tableschema+json',
+          ],
+        ],
+      ])), NULL],
+    ];
   }
 
 }
