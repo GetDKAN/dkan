@@ -55,7 +55,7 @@ class ReferenceLookupTest extends TestCase {
       ->expects($this->exactly(count($contains_items)))
       ->method('decodeJsonMetadata')
       ->willReturnOnConsecutiveCalls(
-        ['ref-array', ['identifier' => ['other', 'abc-array']]],
+        ['ref-array', [(object) ['foo' => 'bar'], (object) ['identifier' => 'abc-array']]],
         ['ref-object', (object) ['identifier' => (object) ['value' => 'abc-object']]],
         ['ref-string', (object) ['identifier' => 'abc-object']],
         ['array-not-match', ['identifier' => ['other', 'still-other']]],

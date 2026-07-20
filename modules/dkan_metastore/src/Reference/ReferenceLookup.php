@@ -48,12 +48,17 @@ class ReferenceLookup implements ReferenceLookupInterface {
       [$identifier, $metadata] = $this->decodeJsonMetadata($item);
       $propertyValue = NULL;
       if (is_array($metadata)) {
-        $propertyValue = $metadata[$propertyId] ?? NULL;
+        foreach ($metadata as $object) {
+          if (is_object($object)) {
+            $propertyValue = $object->{$propertyId} ?? NULL;
+            $referencers[] = self::valueContainsStartsWith($referenceId, $propertyValue) ? $identifier : NULL;
+          }
+        }
       }
       elseif (is_object($metadata)) {
         $propertyValue = $metadata->{$propertyId} ?? NULL;
+        $referencers[] = self::valueContainsStartsWith($referenceId, $propertyValue) ? $identifier : NULL;
       }
-      $referencers[] = self::valueContainsStartsWith($referenceId, $propertyValue) ? $identifier : NULL;
     }
 
     return array_filter($referencers);
