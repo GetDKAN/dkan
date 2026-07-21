@@ -23,6 +23,7 @@ class ReferenceLookupTest extends TestCase {
 
   /**
    * @covers ::getReferencers
+   * @covers ::propertyContainsReference
    * @covers ::valueContainsStartsWith
    */
   public function testGetReferencers() {
