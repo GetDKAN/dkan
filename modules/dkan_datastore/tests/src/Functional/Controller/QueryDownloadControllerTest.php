@@ -1,7 +1,7 @@
 <?php
 
 namespace Drupal\Tests\dkan_datastore\Functional\Controller;
-
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\BrowserTestBase;
@@ -20,7 +20,7 @@ use RootedData\RootedJsonData;
  */
 class QueryDownloadControllerTest extends BrowserTestBase {
 
-  use GetDataTrait, QueueRunnerTrait;
+  use GetDataTrait, QueueRunnerTrait, DistributionReferenceModeTrait;
 
   /**
    * Uploaded resource file destination.
@@ -167,8 +167,11 @@ class QueryDownloadControllerTest extends BrowserTestBase {
 
   /**
    * Test application of data dictionary schema to CSV generated for download.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDownloadWithDataDictionary() {
+  public function testDownloadWithDataDictionary($distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
     // Set per-reference data-dictionary in metastore config.
     $this->config('dkan_metastore.settings')
       ->set('data_dictionary_mode', DataDictionaryDiscovery::MODE_REFERENCE)
@@ -248,17 +251,18 @@ class QueryDownloadControllerTest extends BrowserTestBase {
     // URL-style reference.
     $this->assertStringContainsString(
       $dict_id,
-      $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
+      $dataset->{'$.distribution[0].describedBy'}
     );
-    // Get the distribution ID.
-    $distribution_id = $dataset->{'$["%Ref:distribution"][0].identifier'};
+    // Get the resource identifier.
+    $resource_id = $dataset->{'$[distribution][0]["%Ref:downloadURL"][0].identifier'};
+    $this->assertNotEmpty($resource_id);
 
     // Dictionary fields are applied to the dataset.
     /** @var \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer $dictionary_enforcer */
     $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
     $this->assertCount(
       1,
-      $dictionary_fields = $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
+      $dictionary_fields = $dictionary_enforcer->returnDataDictionaryFields($resource_id)
     );
     $this->assertEquals($date_format, $dictionary_fields[0]['format'] ?? 'not found');
 
