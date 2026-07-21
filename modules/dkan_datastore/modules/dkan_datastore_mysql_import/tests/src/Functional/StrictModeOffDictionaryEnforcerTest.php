@@ -140,7 +140,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
       $dictionary_id,
       $dataset->{'$.distribution[0].describedBy'}
     );
-    // Get the distribution ID.
+    // Get the resource ID.
     $this->assertNotEmpty(
       $resource_id = $dataset->{'$[distribution][0]["%Ref:downloadURL"][0].identifier'} ?? NULL
     );
