@@ -8,7 +8,6 @@ use Drupal\dkan_metastore\Reference\HelperTrait;
 use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\MetastoreService;
-use RootedData\RootedJsonData;
 
 /**
  * Data dictionary service.
