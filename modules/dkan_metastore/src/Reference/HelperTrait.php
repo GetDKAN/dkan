@@ -50,7 +50,7 @@ trait HelperTrait {
    */
   protected function distributionsAreReferenced(): bool {
     $propertyList = $this->getPropertyList();
-    return ($propertyList['distribution'] ?? NULL == 'distribution');
+    return in_array('distribution', $propertyList);
   }
 
   /**
