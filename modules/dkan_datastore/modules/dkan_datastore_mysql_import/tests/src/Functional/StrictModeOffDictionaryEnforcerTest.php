@@ -11,6 +11,7 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,7 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait, QueueRunnerTrait;
+  use GetDataTrait, QueueRunnerTrait, DistributionReferenceModeTrait;
 
   /**
    * Uploaded resource file destination.
@@ -49,13 +50,22 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
   protected $defaultTheme = 'stark';
 
-  public function testPostImport() {
-    // Enable strict mode disabled for datastore MySQL import.
+  /**
+   * Test that we can apply a data dictionary to a dataset with 300 columns.
+   *
+   * @param string $distribution_reference
+   *   The distribution reference mode to use for the test.
+   *
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testPostImport($distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);    // Enable strict mode disabled for datastore MySQL import.
+
     $this->config('dkan_datastore_mysql_import.settings')
       ->set('strict_mode_disabled', TRUE)
       ->save();
 
-      // Dependencies.
+    // Dependencies.
     $resourceFile = 'very_wide.csv';
     $uuid = $this->container->get('uuid');
     /** @var \Drupal\dkan_metastore\ValidMetadataFactory $validMetadataFactory */
@@ -128,11 +138,11 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
     // https URL-style reference.
     $this->assertStringContainsString(
       $dictionary_id,
-      $dataset->{'$["%Ref:distribution"][0].data.describedBy'}
+      $dataset->{'$.distribution[0].describedBy'}
     );
     // Get the distribution ID.
     $this->assertNotEmpty(
-      $distribution_id = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL
+      $resource_id = $dataset->{'$[distribution][0]["%Ref:downloadURL"][0].identifier'} ?? NULL
     );
 
     // Dictionary fields are applied to the dataset.
@@ -140,10 +150,10 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
     $dictionary_enforcer = $this->container->get('dkan.datastore.service.resource_processor.dictionary_enforcer');
     $this->assertCount(
       count($dictionary_fields),
-      $dictionary_enforcer->returnDataDictionaryFields($distribution_id)
+      $dictionary_enforcer->returnDataDictionaryFields($resource_id)
     );
 
-    $distribution_data = $dataset->{'$["%Ref:distribution"][0].data'} ?? NULL;
+    $distribution_data = $dataset->{'$.distribution[0]'} ?? NULL;
     $resource_identifier = $distribution_data['%Ref:downloadURL'][0]['data']['identifier'] ?? NULL;
     $resource_version = $distribution_data['%Ref:downloadURL'][0]['data']['version'] ?? NULL;
 
@@ -164,7 +174,7 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
     // Retrieve schema for dataset resource.
     $response = $importController->summary(
-      $distribution_id,
+      $resource_id,
       Request::create('http://blah/api')
     );
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
