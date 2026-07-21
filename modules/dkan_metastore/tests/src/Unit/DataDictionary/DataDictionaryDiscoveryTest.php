@@ -16,7 +16,9 @@ use RootedData\RootedJsonData;
 
 class DataDictionaryDiscoveryTest extends TestCase {
 
-  // If mode is set to "none", we should get NULL no matter what.
+  /**
+   * If mode is set to "none", we should get NULL no matter what.
+   */
   public function testModeNone() {
     $discovery = new Discovery(
       $this->getConfigFactoryMock(Discovery::MODE_NONE, 'abc-123'),
@@ -28,8 +30,9 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $this->assertEquals("Disabled", $id);
   }
 
-  // If mode is sitewide, and we have a sitewide dictionary ID set, it should be
-  // returned, no matter what resource we pass to the method.
+  /**
+   * Test that if mode is sitewide we should always get the sitewide ID.
+   */
   public function testSitewideId() {
     $discovery = new Discovery(
       $this->getConfigFactoryMock(Discovery::MODE_SITEWIDE, 'abc-123'),
@@ -43,7 +46,9 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $this->assertEquals('abc-123', $idVersion);
   }
 
-  // If mode is sitewide but sitewide ID unset, we should get an exception.
+  /**
+   * If mode is sitewide but sitewide ID unset, we should get an exception.
+   */
   public function testSitewideIdUnset() {
     // Need to use 0 because MockChain\Options doesn't support NULL returns.
     $discovery = new Discovery(
@@ -57,7 +62,9 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $discovery->dictionaryIdFromResource('resource1', 1);
   }
 
-  // Test the reference type, four different flows:
+  /**
+   * Test the reference type, four different flows.
+   */
   public function testGetReferenceDictId() {
     $discovery = new Discovery(
       $this->getConfigFactoryMock(Discovery::MODE_REFERENCE, 'abc-123'),
@@ -78,7 +85,9 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $id = $discovery->dictionaryIdFromResource('resource2', 2);
   }
 
-  // Test if bad mode in settings
+  /**
+   * Test if bad mode in settings.
+   */
   public function testDictBadMode() {
     $discovery = new Discovery(
       $this->getConfigFactoryMock('foo', 'abc-123'),
@@ -90,6 +99,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $this->expectException(\OutOfRangeException::class);
     $discovery->dictionaryIdFromResource('resource1', 1);
   }
+
   private function getLookup() {
     $options = (new Options())
       ->add('resource1__1', ['111'])
@@ -102,7 +112,9 @@ class DataDictionaryDiscoveryTest extends TestCase {
       ->getMock();
   }
 
-  // Build mock config service, based on arguments for mode and sitewide ID.
+  /**
+   * Build mock config service, based on arguments for mode and sitewide ID.
+   */
   private function getConfigFactoryMock($mode, $sitewideId) {
     $options = (new Options())
       ->add('data_dictionary_mode', $mode)
