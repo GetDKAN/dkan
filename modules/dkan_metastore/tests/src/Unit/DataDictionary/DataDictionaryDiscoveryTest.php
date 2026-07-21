@@ -119,6 +119,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
     $options = (new Options())
       ->add('data_dictionary_mode', $mode)
       ->add('data_dictionary_sitewide', $sitewideId)
+      ->add('property_list', ['distribution', 'identifier', 'downloadURL'])
       ->index(0);
 
     return (new Chain($this))
@@ -134,6 +135,11 @@ class DataDictionaryDiscoveryTest extends TestCase {
         'describedByType' => 'application/vnd.tableschema+json',
       ],
     ]);
+    $json3 = json_encode((object) [
+      'data' => (object) [
+        'describedBy' => "https://example.com/api/1/metastore/schemas/data-dictionary/items/333",
+      ],
+    ]);
     $json4 = json_encode((object) [
       'data' => (object) [
         'describedBy' => "dkan://metastore/schemas/dataset/items/444",
@@ -142,7 +148,7 @@ class DataDictionaryDiscoveryTest extends TestCase {
     ]);
     $sequence = (new options())
       ->add('111', new RootedJsonData($json1, "{}"))
-      ->add('333', new RootedJsonData())
+      ->add('333', new RootedJsonData($json3, "{}"))
       ->add('444', new RootedJsonData($json4, "{}"))
       ->index(1);
     return (new Chain($this))
@@ -153,10 +159,13 @@ class DataDictionaryDiscoveryTest extends TestCase {
   private function getUrlGenerator() {
     $extract = (new Options())
       ->add('dkan://metastore/schemas/data-dictionary/items/111', '111')
+      ->add('dkan://metastore/schemas/data-dictionary/items/222', '222')
       ->add('dkan://metastore/schemas/dataset/items/444', new \DomainException())
       ->index(0);
     $uriFromUrl = (new Options())
       ->add('https://example.com/api/1/metastore/schemas/data-dictionary/items/111', 'dkan://metastore/schemas/data-dictionary/items/111')
+      ->add('https://example.com/api/1/metastore/schemas/data-dictionary/items/222', 'dkan://metastore/schemas/data-dictionary/items/222')
+      ->add('dkan://metastore/schemas/data-dictionary/items/222', 'dkan://metastore/schemas/data-dictionary/items/222')
       ->add('dkan://metastore/schemas/dataset/items/444', 'dkan://metastore/schemas/dataset/items/444');
 
     return (new Chain($this))
@@ -166,11 +175,11 @@ class DataDictionaryDiscoveryTest extends TestCase {
   }
 
   /**
-   * Test extracting dictionary ID from various URL formats.
+   * Test extracting dictionary ID from describedBy URL.
    *
    * @dataProvider extractDictionaryIdProvider
    */
-  public function testExtractDictionaryId($dataset, $expected) {
+  public function testExtractDictionaryId($describedBy, $expected) {
     $discovery = new DataDictionaryDiscovery(
       $this->getConfigFactoryMock(DataDictionaryDiscovery::MODE_SITEWIDE, 'abc-123'),
       $this->getMetastoreService(),
@@ -178,12 +187,12 @@ class DataDictionaryDiscoveryTest extends TestCase {
       $this->getUrlGenerator()
     );
 
-    // Use reflection to call the protected method.
+    // Use reflection to call the private method.
     $reflection = new \ReflectionMethod($discovery, 'extractDictionaryId');
     $reflection->setAccessible(TRUE);
 
-    // Test valid data-dictionary URL.
-    $id = $reflection->invoke($discovery, $dataset);
+    // Test extracting dictionary ID from describedBy URL.
+    $id = $reflection->invoke($discovery, $describedBy);
     $this->assertEquals($expected, $id);
   }
 
@@ -192,29 +201,18 @@ class DataDictionaryDiscoveryTest extends TestCase {
    */
   public static function extractDictionaryIdProvider(): array {
     return [
-      'valid' => [new RootedJsonData(json_encode((object) [
-        'distribution' => [
-          (object) [
-            'describedBy' => "https://example.com/api/1/metastore/schemas/data-dictionary/items/111",
-            'describedByType' => 'application/vnd.tableschema+json',
-          ],
-        ],
-      ]), "{}"), '111'],
-      'missingType' => [new RootedJsonData(json_encode((object) [
-        'distribution' => [
-          (object) [
-            'describedBy' => "https://example.com/api/1/metastore/schemas/data-dictionary/items/111",
-          ],
-        ],
-      ])), NULL],
-      'wrongSchema' => [new RootedJsonData(json_encode((object) [
-        'distribution' => [
-          (object) [
-            'describedBy' => "dkan://metastore/schemas/dataset/items/444",
-            'describedByType' => 'application/vnd.tableschema+json',
-          ],
-        ],
-      ])), NULL],
+      'valid https url' => [
+        "https://example.com/api/1/metastore/schemas/data-dictionary/items/111",
+        '111'
+      ],
+      'valid dkan uri' => [
+        "dkan://metastore/schemas/data-dictionary/items/222",
+        '222'
+      ],
+      'wrong schema type' => [
+        "dkan://metastore/schemas/dataset/items/444",
+        NULL
+      ],
     ];
   }
 
