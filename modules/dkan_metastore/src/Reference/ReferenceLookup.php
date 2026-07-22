@@ -37,7 +37,8 @@ class ReferenceLookup implements ReferenceLookupInterface {
   /**
    * {@inheritdoc}
    *
-   * @todo Refactor when this storage vs item factory mess is resolved.
+   * @todo Refactor when this storage vs item factory mess is resolved. Should
+   * probably also use JSON path syntax rather than property ID and recursion.
    */
   public function getReferencers(string $schemaId, string $referenceId, string $propertyId) {
     // This will give us a smaller subset of metastore items to parse through.
@@ -46,17 +47,49 @@ class ReferenceLookup implements ReferenceLookupInterface {
     $referencers = [];
     foreach ($metastoreItems as $item) {
       [$identifier, $metadata] = $this->decodeJsonMetadata($item);
-      $propertyValue = NULL;
-      if (is_array($metadata)) {
-        $propertyValue = $metadata[$propertyId] ?? NULL;
+      if (self::propertyContainsReference($propertyId, $referenceId, $metadata)) {
+        $referencers[] = $identifier;
       }
-      elseif (is_object($metadata)) {
-        $propertyValue = $metadata->{$propertyId} ?? NULL;
-      }
-      $referencers[] = self::valueContainsStartsWith($referenceId, $propertyValue) ? $identifier : NULL;
     }
 
     return array_filter($referencers);
+  }
+
+  /**
+   * Recurse through a metadata object.
+   *
+   * Look for keys matching a property ID, and check whether any matching value
+   * contains a reference to the given ID.
+   *
+   * @param string $propertyId
+   *   The metadata property key to search for.
+   * @param string $referenceId
+   *   The reference ID fragment to look for.
+   * @param mixed $metadata
+   *   The metadata object or array to recurse through.
+   *
+   * @return bool
+   *   TRUE if a matching property contains the reference ID.
+   */
+  protected static function propertyContainsReference(string $propertyId, string $referenceId, $metadata): bool {
+    if (is_object($metadata)) {
+      foreach (get_object_vars($metadata) as $key => $value) {
+        if ($key == $propertyId && self::valueContainsStartsWith($referenceId, $value)) {
+          return TRUE;
+        }
+        if (self::propertyContainsReference($propertyId, $referenceId, $value)) {
+          return TRUE;
+        }
+      }
+    }
+    if (is_array($metadata)) {
+      foreach ($metadata as $value) {
+        if (self::propertyContainsReference($propertyId, $referenceId, $value)) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
   }
 
   /**
