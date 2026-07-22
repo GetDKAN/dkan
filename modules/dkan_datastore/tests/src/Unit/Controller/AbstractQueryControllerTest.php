@@ -1,9 +1,13 @@
 <?php
 
-namespace Drupal\Tests\dkan_common\Unit\Util;
+namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
 use Drupal\dkan_datastore\Controller\AbstractQueryController;
+use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Drupal\dkan_datastore\Service\DatastoreQuery;
 use PHPUnit\Framework\TestCase;
+use RootedData\RootedJsonData;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -82,6 +86,62 @@ class AbstractQueryControllerTest extends TestCase {
     $schema = $this->getSampleSchema();
     $request = Request::create("http://example.com", "POST", [], [], [], [], $sampleJson);
     AbstractQueryController::getPayloadJson($request, $schema);
+  }
+
+  /**
+   * Test the ::resolveResourceDependencies method using reflection.
+   */
+  public function testResolveResourceDependencies() {
+    // Create mock for referenceLookup service.
+    $mockReferenceLookup = $this->createMock(ReferenceLookup::class);
+    $mockReferenceLookup->method('getReferencers')
+      ->willReturnCallback(function ($schemaId, $identifier): array {
+        return match ([$schemaId, $identifier]) {
+          ['distribution', 'thereAreDistributions_1_source'] => ['distribution1', 'distribution2'],
+          ['distribution', 'noDistributions_1_source'] => [],
+          ['dataset', 'noDistributions_1_source'] => ['dataset1', 'dataset2'],
+          default => [],
+        };
+      });
+
+    // Create anonymous class extending AbstractQueryController for testing.
+    $controller = new class($mockReferenceLookup) extends AbstractQueryController {
+
+      public function __construct(protected ReferenceLookup $referenceLookup) {
+        // No-op constructor for testing.
+      }
+
+      /**
+       * Format response implementation.
+       */
+      public function formatResponse(
+        DatastoreQuery $datastoreQuery,
+        RootedJsonData $result,
+        array $dependencies = [],
+        ?ParameterBag $params = NULL,
+      ) {
+        // No-op for testing.
+      }
+
+    };
+
+    $ref_method = new \ReflectionMethod($controller, 'resolveResourceDependencies');
+    $ref_method->setAccessible(TRUE);
+
+    $resource_id = 'thereAreDistributions_1_source';
+    $result = $ref_method->invokeArgs($controller, [$resource_id]);
+    $expected = ['distribution' => ['distribution1', 'distribution2']];
+    $this->assertEquals($expected, $result);
+
+    $resource_id = 'noDistributions_1_source';
+    $result = $ref_method->invokeArgs($controller, [$resource_id]);
+    $expected = ['dataset' => ['dataset1', 'dataset2']];
+    $this->assertEquals($expected, $result);
+
+    $valid_distribution_uuid = '123e4567-e89b-12d3-a456-426614174000';
+    $result = $ref_method->invokeArgs($controller, [$valid_distribution_uuid]);
+    $expected = ['distribution' => [$valid_distribution_uuid]];
+    $this->assertEquals($expected, $result);
   }
 
   private function getSampleJson() {
