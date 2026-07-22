@@ -43,6 +43,17 @@ trait HelperTrait {
   }
 
   /**
+   * Read from the config service whether distributions are referenced.
+   *
+   * @return bool
+   *   True if the distribution property is referenced.
+   */
+  protected function distributionsAreReferenced(): bool {
+    $propertyList = $this->getPropertyList();
+    return in_array('distribution', $propertyList);
+  }
+
+  /**
    * Normalize an "empty" property against an array.
    *
    * @param mixed $data
