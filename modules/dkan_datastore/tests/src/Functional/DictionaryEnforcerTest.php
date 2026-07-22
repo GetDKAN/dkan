@@ -8,6 +8,7 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\dkan_datastore\Controller\ImportController;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use GuzzleHttp\Client;
@@ -26,7 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetLocalDataTrait, QueueRunnerTrait;
+  use GetLocalDataTrait, QueueRunnerTrait, DistributionReferenceModeTrait;
 
   protected $defaultTheme = 'stark';
 
@@ -134,8 +135,11 @@ class DictionaryEnforcerTest extends BrowserTestBase {
 
   /**
    * Test dictionary enforcement.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDictionaryEnforcement(): void {
+  public function testDictionaryEnforcement(string $distribution_reference): void {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
     // Build data-dictionary.
     $dict_id = $this->uuid->generate();
     $fields = [
@@ -222,11 +226,13 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       $dataset = $this->metastore->get('dataset', $dataset_id)
     );
     $this->assertNotEmpty(
-      $dist_id = $dataset->{'$["%Ref:distribution"][0].identifier'} ?? NULL
+      $resource_id = $dataset->{'$.distribution[0]["%Ref:downloadURL"][0].data.identifier'}
     );
+    $resource_version = $dataset->{'$.distribution[0]["%Ref:downloadURL"][0].data.version'};
+    $resource_identifier = $resource_id . '__' . $resource_version;
     // Retrieve schema for dataset resource.
     $response = $this->importController->summary(
-      $dist_id,
+      $resource_identifier,
       Request::create('http://blah/api')
     );
     $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
@@ -284,11 +290,11 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       'numOfRows' => 8,
     ], $result);
 
-    //  Validate boolean values
+    // Validate boolean values.
     $column_e = [];
     $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0");
     if ($response->getStatusCode() === 200) {
-      $data = json_decode($response->getBody()->getContents(), true);
+      $data = json_decode($response->getBody()->getContents(), TRUE);
       if (isset($data['results']) && is_array($data['results'])) {
         $column_e = array_column($data['results'], 'e');
       }

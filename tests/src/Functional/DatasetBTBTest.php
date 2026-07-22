@@ -61,7 +61,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testResourcePurgeDraft(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
@@ -119,7 +119,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testResourcePurgePublished(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
 
@@ -138,7 +138,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testChangingDatasetResourcePerspectiveOnOutput(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $this->datastoreImportAndQuery();
 
@@ -165,7 +165,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testHarvestArchive(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
@@ -193,7 +193,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testHarvestOrphan(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
@@ -280,7 +280,7 @@ class DatasetBTBTest extends BrowserTestBase {
     string $resource_perspective_display,
     string $workflow_method
   ): void {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', $resource_perspective_display)
@@ -295,7 +295,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testOrphanDraftDistributionCleanup(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Set delete local resource files = false and modified as a triggering
     // property.
@@ -360,7 +360,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testDeleteDistribution(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
 
@@ -400,7 +400,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testDatastoreImportDeleteLocalResource(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
@@ -447,7 +447,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testSanitizeDatasetProperties(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Set HTML allowed on dataset description.
     $this->config('dkan_metastore.settings')

@@ -1,7 +1,7 @@
 <?php
 
 namespace Drupal\Tests\dkan_datastore\Kernel\Service\ResourceProcessor;
-
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer;
 use Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary;
@@ -18,6 +18,8 @@ use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
  */
 class DictionaryEnforcerTest extends KernelTestBase {
 
+  use DistributionReferenceModeTrait;
+
   protected static $modules = [
     'dkan_common',
     'dkan_datastore',
@@ -27,9 +29,12 @@ class DictionaryEnforcerTest extends KernelTestBase {
   /**
    * Test exception thrown if no dictionary is found for resource.
    *
+   * @dataProvider distributionReferenceProvider
+   *
    * @covers ::getDataDictionaryForResource
    */
-  public function testNoDictionaryIdFoundForResourceException() {
+  public function testNoDictionaryIdFoundForResourceException(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
     $resource = new DataResource('test.csv', 'text/csv');
 
     $discovery = $this->getMockBuilder(DataDictionaryDiscoveryInterface::class)

@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore\DataDictionary;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\dkan_metastore\Reference\HelperTrait;
 use Drupal\dkan_metastore\Reference\MetastoreUrlGenerator;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\MetastoreService;
@@ -15,39 +16,26 @@ use Drupal\dkan_metastore\MetastoreService;
  */
 class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
 
+  use HelperTrait;
+
+  const DICT_MIMETYPE = 'application/vnd.tableschema+json';
+
   /**
    * Metastore settings config object.
    */
   protected Config $config;
 
   /**
-   * Metastore service.
-   */
-  protected MetastoreService $metastore;
-
-  /**
-   * Reference lookup service.
-   */
-  protected ReferenceLookupInterface $lookup;
-
-  /**
-   * URL generator service.
-   */
-  protected MetastoreUrlGenerator $urlGenerator;
-
-  /**
    * Constructor.
    */
   public function __construct(
-    ConfigFactoryInterface $configFactory,
-    MetastoreService $metastore,
-    ReferenceLookupInterface $lookup,
-    MetastoreUrlGenerator $urlGenerator,
+    ConfigFactoryInterface $configService,
+    protected MetastoreService $metastore,
+    protected ReferenceLookupInterface $lookup,
+    protected MetastoreUrlGenerator $urlGenerator,
   ) {
-    $this->config = $configFactory->get('dkan_metastore.settings');
-    $this->metastore = $metastore;
-    $this->lookup = $lookup;
-    $this->urlGenerator = $urlGenerator;
+    $this->config = $configService->get('dkan_metastore.settings');
+    $this->setConfigService($configService);
   }
 
   /**
@@ -68,34 +56,48 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
    */
   public function getReferenceDictionaryId(string $resourceId, int $resourceIdVersion): ?string {
     $resource_id = $resourceId . "__" . $resourceIdVersion;
-    $distributionId = $this->getDistributionId($resource_id);
-    if ($distributionId === NULL) {
+
+    $distribution = $this->getDistributionObject($resource_id);
+    if ($distribution === NULL) {
       return NULL;
     }
-    $distribution = $this->metastore->get('distribution', $distributionId);
     if (!$this->hasValidDescribedBy($distribution)) {
       return NULL;
     }
-    return $this->extractDictionaryId($distribution->{"$.data.describedBy"});
+    return $this->extractDictionaryId($distribution->describedBy);
   }
 
   /**
    * Get the distribution ID for a given resource ID.
    */
-  private function getDistributionId(string $resource_id): ?string {
-    $referencers = $this->lookup->getReferencers('distribution', $resource_id, 'downloadURL');
-    if (empty($referencers)) {
-      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
+  private function getDistributionObject(string $resource_id): ?object {
+    if ($this->distributionsAreReferenced()) {
+      $referencers = $this->lookup->getReferencers('distribution', $resource_id, 'downloadURL');
+      if (empty($referencers)) {
+        throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
+      }
+      $distribution = $this->metastore->get("distribution", $referencers[0]);
+      return (object) $distribution->{"$.data"};
     }
-    return $referencers[0] ?? NULL;
+    // Otherwise look for a dataset that references the resource ID.
+    $referencers = $this->lookup->getReferencers('dataset', $resource_id, 'downloadURL');
+    if (empty($referencers)) {
+      throw new \RuntimeException("Dataset lookup: Can not map resource ID {$resource_id} to dataset UUID. Please make sure your resource exists in the database.");
+    }
+    $dataset = $this->metastore->get("dataset", $referencers[0]);
+    foreach ($dataset->{"$.distribution"} ?? [] as $distribution) {
+      if ($distribution['downloadURL'] ?? NULL === $resource_id) {
+        return (object) $distribution;
+      }
+    }
+    return NULL;
   }
 
   /**
    * Verify that the distribution has a valid describedBy URL.
    */
-  private function hasValidDescribedBy($distribution): bool {
-    return isset($distribution->{"$.data.describedBy"})
-      && (($distribution->{"$.data.describedByType"} ?? NULL) === 'application/vnd.tableschema+json');
+  private function hasValidDescribedBy(object $distribution): bool {
+    return isset($distribution->describedBy) && (($distribution->describedByType ?? NULL) == self::DICT_MIMETYPE);
   }
 
   /**
