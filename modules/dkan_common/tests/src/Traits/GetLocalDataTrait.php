@@ -12,22 +12,7 @@ trait GetLocalDataTrait {
    *
    * @param string $filename
    *   The filename to get the download URL for. There are a number of test
-   *   files available in modules/dkan_common/tests/files:
-   *    - 1.csv
-   *    - 2.csv
-   *    - Bike_Lane.csv
-   *    - columnspaces.csv
-   *    - countries.csv
-   *    - data-dict.csv
-   *    - duplicate-headers.csv
-   *    - empty.csv
-   *    - hello.txt
-   *    - longcolumn.csv
-   *    - newlines_in_headers.csv
-   *    - non-text.csv
-   *    - states_with_dupes.csv
-   *    - states_with_dupes_link.csv
-   *    - years_colors.csv.
+   *   files available in modules/dkan_common/tests/files.
    *
    * @return string
    *   The download URL for the file.
@@ -73,11 +58,17 @@ trait GetLocalDataTrait {
       'fn' => 'Test Name',
       'hasEmail' => 'test@example.com',
     ];
-  
+
     foreach ($filenames as $key => $filename) {
+      if (str_contains($filename, '://')) {
+        $downloadUrl = $filename;
+      }
+      else {
+        $downloadUrl = $this->getDownloadUrl($filename);
+      }
       $distribution = new \stdClass();
       $distribution->title = "Distribution #{$key} for {$identifier}";
-      $distribution->downloadURL = $this->getDownloadUrl($filename);
+      $distribution->downloadURL = $downloadUrl;
       $distribution->mediaType = "text/csv";
       if ($describedBy) {
         $distribution->describedBy = $describedBy;
