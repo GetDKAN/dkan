@@ -215,11 +215,18 @@ final class DatastoreCommands extends DrushCommands {
    * Drop all datastore tables.
    */
   #[CLI\Command(name: 'dkan:datastore:drop-all', description: 'Drop all datastore tables.')]
-  public function dropAll() {
-    /** @var \RootedData\RootedJsonData $distribution*/
-    foreach ($this->metastoreService->getAll('distribution') as $distribution) {
-      if ($uuid = $distribution->get('$[data]["' . Dereferencer::REF_PREFIX . 'downloadURL"][0][data][identifier]') ?? FALSE) {
-        $this->drop($uuid);
+  #[CLI\Option(name: 'keep-local', description: 'Do not remove localized resource, only datastore.')]
+  public function dropAll(array $options = ['keep-local' => FALSE]) {
+    $local_resource = $options['keep-local'] ? FALSE : TRUE;
+    $list = $this->importInfoList->buildList();
+    foreach ($list as $id => $item) {
+      if ($item->fileFetcherStatus === 'done' || $item->importerStatus === 'done') {
+        [$id, $version] = explode('_', $id);
+        $this->datastoreService->drop($id, $version, $local_resource);
+        $this->logger->notice('Successfully dropped the datastore for resource ' . $id);
+      }
+      else {
+        $this->logger->warning('Unable to drop datastore for ' . $id . ' because it was never imported.');
       }
     }
   }
