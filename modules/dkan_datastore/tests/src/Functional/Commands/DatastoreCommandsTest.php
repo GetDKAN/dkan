@@ -9,6 +9,13 @@ use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 use Procrastinator\Result;
 
+/**
+ * Datastore Commands functional rests.
+ *
+ * @group dkan
+ * @group functional
+ * @group functional2
+ */
 class DatastoreCommandsTest extends BrowserTestBase {
   use DrushTestTrait, GetLocalDataTrait, QueueRunnerTrait;
 
