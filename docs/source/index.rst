@@ -8,7 +8,8 @@ DKAN is a Drupal-based open data portal and catalog. Development sponsored by `C
    :maxdepth: 1
 
    introduction/index
-   installation/index
+   installation
+   upgrade
    components/index
    drush_commands
    user-guide/index

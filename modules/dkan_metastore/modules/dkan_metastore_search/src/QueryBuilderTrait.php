@@ -55,22 +55,12 @@ trait QueryBuilderTrait {
    *   active as the second. Example: [$query, TRUE].
    */
   private function setFullText(QueryInterface $query, array $params, IndexInterface $index): array {
-    if (!isset($params['fulltext']) || empty($params['fulltext'])) {
+    if (!isset($params['fulltext']) || empty($params['fulltext']) || empty($index->getFulltextFields())) {
       return [$query, FALSE];
     }
 
-    $fulltextFields = $index->getFulltextFields();
-
-    if (empty($fulltextFields)) {
-      return [$query, FALSE];
-    }
-
-    $conditions = [];
-    foreach ($fulltextFields as $field) {
-      $conditions[$field][] = $params['fulltext'];
-    }
-
-    $query = $this->createConditionGroup($query, $conditions, 'OR');
+    // Use Search API fulltext parsing.
+    $query->keys($params['fulltext']);
 
     return [$query, TRUE];
   }

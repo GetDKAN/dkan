@@ -1,5 +1,0 @@
-name: Sample Content (Legacy, deprecated)
-description: Provides sample content for tests or standing up a demo instance.
-type: module
-core_version_requirement: ^10.2 || ^11
-package: DKAN 2.x Legacy

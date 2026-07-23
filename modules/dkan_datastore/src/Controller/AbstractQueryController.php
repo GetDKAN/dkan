@@ -7,6 +7,7 @@ use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\State\StateInterface;
+use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
@@ -110,16 +111,16 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
     }
-    try {
-      $result = $this->queryService->runQuery($datastoreQuery);
-    }
-    catch (\Exception $e) {
-      $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
-      return $this->getResponseFromException($e, $code);
-    }
+    $result = $this->runDatastoreQuery($datastoreQuery);
 
-    $dependencies = $this->extractMetastoreDependencies($datastoreQuery);
-    return $this->formatResponse($datastoreQuery, $result, $dependencies, $request->query);
+    return ($result instanceof JsonResponse)
+      ? $result
+      : $this->formatResponse(
+        $datastoreQuery,
+        $result,
+        $this->extractMetastoreDependencies($datastoreQuery),
+        $request->query
+      );
   }
 
   /**
@@ -143,15 +144,16 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
     }
-    try {
-      $result = $this->queryService->runQuery($datastoreQuery);
-    }
-    catch (\Exception $e) {
-      $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
-      return $this->getResponseFromException($e, $code);
-    }
+    $result = $this->runDatastoreQuery($datastoreQuery);
 
-    return $this->formatResponse($datastoreQuery, $result, ['distribution' => [$identifier]], $request->query);
+    return ($result instanceof JsonResponse)
+      ? $result
+      : $this->formatResponse(
+        $datastoreQuery,
+        $result,
+        ['distribution' => [$identifier]],
+        $request->query
+      );
   }
 
   /**
@@ -169,10 +171,10 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   public function queryDatasetResource(string $dataset, string $index, Request $request) {
     $distribution_uuid = $this->datasetInfo->getDistributionUuid($dataset, $index);
-
     if (empty($distribution_uuid)) {
       return $this->getResponse((object) ['message' => "No resource found for dataset $dataset at index $index"], 404);
     }
+    $dependencies = ['distribution' => [$distribution_uuid], 'dataset' => [$dataset]];
 
     try {
       $datastoreQuery = $this->buildDatastoreQuery($request, $distribution_uuid);
@@ -190,7 +192,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       : $this->formatResponse(
         $datastoreQuery,
         $result,
-        ['distribution' => [$distribution_uuid]],
+        $dependencies,
         $request->query
       );
   }
@@ -279,6 +281,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     }
     catch (HttpException $e) {
       return $this->getResponseFromException($e, $e->getStatusCode());
+    }
+    catch (EmptyResourceException $e) {
+      return $this->getResponseFromException($e, 404);
     }
     catch (\Exception $e) {
       $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;

@@ -106,10 +106,7 @@ class MySqlDatabaseTable extends DatabaseTable implements ImportedItemInterface 
    * @see \Drupal\dkan_datastore_mysql_import\Service\MysqlImport::getSqlStatement
    */
   public function hasBeenImported(): bool {
-    if ($this->tableExist($this->getTableName())) {
-      return $this->count() > 0;
-    }
-    return FALSE;
+    return !$this->tableIsEmpty();
   }
 
 }

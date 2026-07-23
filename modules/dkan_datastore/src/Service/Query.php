@@ -101,10 +101,10 @@ class Query implements ContainerInjectionInterface {
    * @param \Drupal\dkan_datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
    *
-   * @return array
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable[]
    *   Array of storage objects, keyed to resource aliases.
    */
-  public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
+  public function getQueryStorageMap(DatastoreQuery $datastoreQuery): array {
     $storageMap = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       [$identifier, $version] = DataResource::getIdentifierAndVersion($resource["id"]);

@@ -35,6 +35,7 @@ class LifeCycle {
 
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
+  const EVENT_DELETING_DISTRIBUTION = 'dkan_metastore_deleting_distribution';
 
   /**
    * Referencer service.
@@ -231,7 +232,14 @@ class LifeCycle {
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
-    $metadata->data->downloadURL = $downloadUrl;
+
+    $unset_downloadUrl = $this->configFactory->get('dkan_metastore.settings')->get('unset_download_url_if_empty') ?? FALSE;
+    if (!$downloadUrl && $unset_downloadUrl) {
+      unset($metadata->data->downloadURL);
+    }
+    else {
+      $metadata->data->downloadURL = $downloadUrl;
+    }
 
     // If describedBy contains dkan:// URI, convert to absolute URL.
     if (StreamWrapperManager::getScheme($metadata->data->describedBy ?? '') == MetastoreUrlGenerator::DKAN_SCHEME) {
@@ -246,22 +254,9 @@ class LifeCycle {
   protected function distributionPredelete(MetastoreItemInterface $data): void {
     $distributionUuid = $data->getIdentifier();
 
-    $storage = $this->dataFactory->getInstance('distribution');
-    $resource = $storage->retrieve($distributionUuid);
-    $resource = json_decode((string) $resource);
+    $event = new Event($distributionUuid);
+    $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DISTRIBUTION);
 
-    $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
-
-    // Ensure a valid resource ID was found since it's required.
-    if (isset($id)) {
-      $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
-      $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
-      $this->queueFactory->get('orphan_resource_remover')->createItem([
-        $id,
-        $perspective,
-        $version,
-      ]);
-    }
   }
 
   /**

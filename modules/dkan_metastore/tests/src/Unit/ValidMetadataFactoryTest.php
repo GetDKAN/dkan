@@ -11,7 +11,9 @@ use PHPUnit\Framework\TestCase;
 use RootedData\Exception\ValidationException;
 
 /**
- *
+ * @group unit
+ * @group dkan_metastore
+ * @coversDefaultClass \Drupal\dkan_metastore\ValidMetadataFactory
  */
 class ValidMetadataFactoryTest extends TestCase {
 
@@ -39,7 +41,8 @@ class ValidMetadataFactoryTest extends TestCase {
    */
   public function testInvalidJson() {
     $validMetadataFactory = ValidMetadataFactory::create($this->getCommonMockChain()->getMock());
-    $this->expectExceptionMessage("Invalid JSON: Syntax error");
+    $this->expectException(\JsonException::class);
+    $this->expectExceptionMessage("Syntax error");
     $validMetadataFactory->get('{"foo": "bar",}');
   }
 

@@ -10,7 +10,10 @@ use Drupal\Tests\dkan_common\Traits\ServiceCheckTrait;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Item;
+use Drupal\search_api\ParseMode\ParseModePluginManager;
+use Drupal\search_api\Plugin\search_api\parse_mode\Terms;
 use Drupal\search_api\Query\ConditionGroup;
+use Drupal\search_api\Query\Query;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
@@ -70,7 +73,19 @@ class SearchTest extends TestCase {
     ]));
   }
 
-  public function testSearchParameterWithComma() {
+  /**
+   * Test two things.
+   *
+   * 1. That commas in non-fulltext parameters get properly handled and don't
+   *    mess up parsing.
+   * 2. That fulltext parameters get sent to keys()
+   *
+   * Because none of the functions we can test here return the query object, we
+   * can't test that the keys() are being parsed as expected, but we should be
+   * able to trust that if the input is sent to keys(), it will be handled
+   * as expected by Search API.
+   */
+  public function testSearchParameterWithCommaAndFulltext() {
     $options = (new Options())
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('entity_type.manager', EntityTypeManager::class)
@@ -88,6 +103,7 @@ class SearchTest extends TestCase {
       ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', ResultSet::class)
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
+      ->add(QueryInterface::class, 'keys', null, 'keys')
       ->add(ConditionGroup::class, 'addCondition', null, 'condition_group');
 
     \Drupal::setContainer($container->getMock());
@@ -101,6 +117,15 @@ class SearchTest extends TestCase {
     $this->assertEquals(
       'Steve, and someone else',
       $container->getStoredInput('condition_group')[1]
+    );
+
+    // Now assert fulltext ends up getting sent to keys()
+    $service->search([
+      'fulltext' => 'Fulltext Param, "Steve, and someone else"',
+    ]);
+    $this->assertEquals(
+      'Fulltext Param, "Steve, and someone else"',
+      $container->getStoredInput('keys')[0]
     );
   }
 

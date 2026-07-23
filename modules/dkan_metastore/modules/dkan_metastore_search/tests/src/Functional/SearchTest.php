@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_metastore_search\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\dkan_metastore_search\Commands\RebuildTrackerCommands;
+use Drupal\dkan_metastore_search\Drush\Commands\RebuildTrackerCommands;
 use Drupal\dkan_metastore_search\Controller\SearchController;
 use Drush\TestTraits\DrushTestTrait;
 use GuzzleHttp\Client;

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Drupal\Tests\dkan_harvest\Kernel\Commands;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\dkan_harvest\Commands\HarvestCommands;
+use Drupal\dkan_harvest\Drush\Commands\HarvestCommands;
 use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use Drupal\dkan_harvest\Entity\HarvestPlanRepository;
 use Drupal\dkan_harvest\Load\Dataset;
 use Drush\Log\DrushLoggerManager;
 
 /**
- * @covers \Drupal\dkan_harvest\Commands\HarvestCommands
- * @coversDefaultClass \Drupal\dkan_harvest\Commands\HarvestCommands
+ * @covers \Drupal\dkan_harvest\Drush\Commands\HarvestCommands
+ * @coversDefaultClass \Drupal\dkan_harvest\Drush\Commands\HarvestCommands
  *
  * @group dkan
  * @group harvest
@@ -108,7 +108,7 @@ class HarvestCommandsTest extends KernelTestBase {
   public static function providePlanOpts(): array {
     return [
       'no identifier key' => [
-        'Invalid harvest plan.  {"missing":"identifier"}', [
+        'Invalid harvest plan.  {"missing":["identifier"]}', [
           'extract-type' => DataJson::class,
           'extract-uri' => 'uri',
           'transform' => [],
@@ -116,7 +116,7 @@ class HarvestCommandsTest extends KernelTestBase {
         ],
       ],
       'no identifier' => [
-        'Invalid harvest plan.  {"missing":"identifier"}', [
+        'Invalid harvest plan.  {"missing":["identifier"]}', [
           'identifier' => '',
           'extract-type' => DataJson::class,
           'extract-uri' => 'uri',
@@ -125,7 +125,7 @@ class HarvestCommandsTest extends KernelTestBase {
         ],
       ],
       'no extract-type' => [
-        'Invalid harvest plan. extract {"missing":"type"}', [
+        'Invalid harvest plan. extract {"missing":["type"]}', [
           'identifier' => 'id',
           'extract-uri' => '',
           'extract-type' => '',
@@ -134,7 +134,7 @@ class HarvestCommandsTest extends KernelTestBase {
         ],
       ],
       'no extract-uri' => [
-        'Invalid harvest plan. extract {"missing":"uri"}', [
+        'Invalid harvest plan. extract {"missing":["uri"]}', [
           'identifier' => 'id',
           'extract-uri' => '',
           'extract-type' => DataJson::class,
@@ -143,7 +143,7 @@ class HarvestCommandsTest extends KernelTestBase {
         ],
       ],
       'no load' => [
-        'Invalid harvest plan. load {"missing":"type"}', [
+        'Invalid harvest plan. load {"missing":["type"]}', [
           'identifier' => 'id',
           'extract-type' => DataJson::class,
           'extract-uri' => 'uri',

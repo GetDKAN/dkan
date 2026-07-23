@@ -1,5 +1,5 @@
-Contributing to DKAN documentation
-==================================
+Documentation
+=============
 
 What follows is a style guide for the DKAN documentation. Use it both to follow the conventions used throughout the site,
 and for your own contributions. DKAN's documentation is written in a combination of `Markdown <https://daringfireball.net/projects/markdown>`_
@@ -97,27 +97,47 @@ This can be achieved in markdown like this:
     **`This text`** will be code-styled and bold
 
 
-Building this documentation
----------------------------
-If you contribute significantly to this documentation, at some point you will want to be able to build them locally
+Building these docs
+-------------------
+If you contribute significantly to this documentation, at some point you will want build them locally
 to preview your formatting and other markup. This will require some degree of comfort with command-line tools but is
 otherwise fairly straightforward.
 
 Sphinx
 ^^^^^^
-`Sphinx <http://www.sphinx-doc.org/en/1.5.1/>`_ is the Python application that generates the HTML from the documentation markup.
+`Sphinx`_ is the Python tool that generates the HTML from the documentation RST
+files. 
 
-To work on Sphinx documentation locally, you will need to install `Python3 <https://docs.python-guide.org/>`_.
+.. seealso::
 
-Then follow the `Sphinx installation instructions <https://www.sphinx-doc.org/en/master/usage/installation.html>`_ that match your
-local platform.
+    Refer to the `Sphinx installation instructions <https://www.sphinx-doc.org/en/master/usage/installation.html>`_
+    for more information if the instructions here are not sufficient.
 
-Install the dependencies for this project. Make sure you are in the `/docs` directory:
+To build Sphinx documentation, you will need to have a `Python 3 <https://docs.python-guide.org/>`_ 
+runtime installed locally. You can also install Sphinx and the other dependencies
+(listed in ``docs/requirements.txt``) at the local system level, but we recommend
+using a Python virtual environment:
+
+.. prompt:: console $
+
+    cd docs
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+You will now see a ``(.venv)`` prefix in your terminal, indicating that the
+virtual environment is active. You can deactivate it at any time by running the
+``deactivate`` command.
+
+Now that your virtual environment is active, install the dependencies. Make sure you are in the `/docs` directory:
 
   .. prompt:: console $
 
-    cd docs
     pip install -r requirements.txt
+
+If you need to activate your virtual environment again in the future, just run
+the ``source .venv/bin/activate`` command again from the `/docs` directory. The
+dependencies only need to be installed once, but the virtual environment is only
+active for the current terminal session.
 
 Now you should be able to build the Sphinx site by typing
 
@@ -127,7 +147,7 @@ Now you should be able to build the Sphinx site by typing
 
 .. tip::
 
-  Depending on your local environment, the tools installed by pip may not be available in the make process' PATH.
+  Depending on your local environment, the tools installed by pip may not be available in the make process' ``$PATH``.
   If the ``make`` command produces an error like
 
     .. code-block:: console
@@ -140,13 +160,28 @@ Now you should be able to build the Sphinx site by typing
 
       SPHINXBUILD=$(which sphinx-build) make html
 
-The documentation will build in `docs/build/html`, you can then open the
-`dkan/docs/build/html/index.html` file in a browser to preview your changes.
-
+The documentation will build in ``docs/build/html``, you can then open the
+``docs/build/html/index.html`` file in a browser to preview your changes.
 
 Sometimes changes to indexes are not picked up very well. If you see issues with the sidebar
-table of contents, delete the `docs/build` directory by running:
+table of contents, delete the ``docs/build`` directory by running:
 
   .. prompt:: console $
 
     make clean
+
+Autobuilding
+^^^^^^^^^^^^
+
+You can have the documentation automatically rebuild when you make
+changes to the source files using the ``sphinx-autobuild`` command 
+instead of ``make``:
+
+  .. prompt:: console $
+
+    sphinx-autobuild ./source ./build/html
+
+The process will stay attached to your terminal. You should see a link to a
+local server where you can now see the live documentation, usually at http://127.0.0.1:8000.
+Whenever you make changes to the source files, the documentation will
+automatically rebuild and refresh in the browser.

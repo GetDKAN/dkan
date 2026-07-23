@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Update hook to uninstall the legacy metastore module.
@@ -34,5 +35,58 @@ function dkan_metastore_update_11301() {
     $message = t('The legacy metastore module has been uninstalled.');
     $config->delete();
   }
-  return $message;
+  return $message ?? NULL;
+}
+
+/**
+ * Implements hook_requirements().
+ *
+ * Surfaces draft-04 (or otherwise unparseable) metastore schemas on
+ * the status report.
+ */
+function dkan_metastore_requirements(string $phase): array {
+  if ($phase !== 'runtime') {
+    return [];
+  }
+  $problems = \Drupal::service('dkan.metastore.schema_validator')->checkAllSchemas();
+  if (empty($problems)) {
+    return [];
+  }
+  return [
+    'dkan_metastore_schema_parse' => [
+      'title' => t('DKAN metastore schemas'),
+      'severity' => REQUIREMENT_WARNING,
+      'value' => t('@n schema(s) cannot be parsed', ['@n' => count($problems)]),
+      'description' => t(
+        'The following metastore schemas could not be parsed under opis/json-schema v2: @list. They will fail at runtime when used. See <a href=":change_record_url">DKAN change record</a> for the draft-04 -> draft-07 migration steps.',
+        [
+          '@list' => implode(', ', array_keys($problems)),
+          ':change_record_url' => 'https://www.drupal.org/node/3593097',
+        ]
+      ),
+    ],
+  ];
+}
+
+/**
+ * One-shot opis/json-schema v2 compatibility report for metastore schemas.
+ *
+ * Reports on any metastore schema that can no longer be parsed (typically
+ * site-overridden schemas still declaring JSON Schema draft-04). Does not
+ * block the upgrade — sites can fix offending schemas after seeing this
+ * output. hook_requirements keeps the warning visible until resolved.
+ */
+function dkan_metastore_update_11302(): TranslatableMarkup {
+  $problems = \Drupal::service('dkan.metastore.schema_validator')->checkAllSchemas();
+  if (empty($problems)) {
+    return t('All metastore schemas parse cleanly under opis/json-schema v2.');
+  }
+  $lines = [];
+  foreach ($problems as $id => $msg) {
+    $lines[] = "- {$id}: {$msg}";
+  }
+  return t(
+    "DKAN's JSON Validator has been updated, and some metastore schemas could not be parsed under opis/json-schema v2:\n@list\nThese schemas will fail at runtime when used. Please update your schemas to ensure they are compatible with JSON Schema draft-07 or later.",
+    ['@list' => implode("\n", $lines)]
+  );
 }

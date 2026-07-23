@@ -82,6 +82,12 @@ class DkanDataSettingsForm extends ConfigFormBase {
 
     $form['description'] = $this->getDescriptionMarkup();
     $form['redirect_to_datasets'] = $this->getRedirectCheckbox($config);
+    $form['unset_download_url_if_empty'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Unset download URL if empty'),
+      '#default_value' => $config->get('unset_download_url_if_empty') ?? 0,
+      '#description' => $this->t('If enabled, and a dataset contains a distribution[].downloadURL property, the property will be unset if it is empty. For DCAT-US dataset schemas, this prevents a validation error in rare cases when a resource mapper entity is inadvertently deleted, leaving an empty downloadURL that fails validation. Leave this unchecked unless you are experiencing fatal validation errors on dataset load.'),
+    ];
     $form['html_allowed_properties'] = $this->getHtmlAllowedProperties($config);
     $form['html_allowed_html'] = $this->getHtmlAllowedHtml($config);
     $form['property_list'] = $this->getPropertyList($config);
@@ -223,6 +229,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
 
     $this->config('dkan_metastore.settings')
       ->set('redirect_to_datasets', $form_state->getValue('redirect_to_datasets'))
+      ->set('unset_download_url_if_empty', $form_state->getValue('unset_download_url_if_empty'))
       ->set('property_list', $form_state->getValue('property_list'))
       ->set('html_allowed_properties', $form_state->getValue('html_allowed_properties'))
       ->set('html_allowed_html', $form_state->getValue('html_allowed_html'))

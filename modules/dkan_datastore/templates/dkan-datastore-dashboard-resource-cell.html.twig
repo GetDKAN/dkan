@@ -1,2 +1,8 @@
 <div class="datastore-status-distribution-uuid">{{ uuid }}</div>
-<div class="datastore-status-distribution-path">{{ link(file_name, file_path) }}</div>
+<div class="datastore-status-distribution-path">
+{% if file_name is not empty and file_path is not empty %}
+  {{ link(file_name, file_path) }}
+{% else %}
+  {{ 'Resource file not available.'|t }}
+{% endif %}
+</div>
