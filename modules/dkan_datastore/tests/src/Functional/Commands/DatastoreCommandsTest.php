@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_datastore\Functional\Commands;
 
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\Tests\BrowserTestBase;
@@ -17,6 +18,45 @@ class DatastoreCommandsTest extends BrowserTestBase {
   protected static $modules = ['dkan_datastore', 'dkan_metastore'];
 
   protected $defaultTheme = 'stark';
+
+  /**
+   * Tests the dkan:datastore:import command.
+   */
+  public function testImportCommand() {
+    // Create a single dataset. Do not run any queues, so the resource is not
+    // yet localized or imported.
+    $dataset_id = $this->createDataset('1.csv', 'test-dataset-import');
+    $resource = $this->getResourceIdentifier($dataset_id);
+
+    // Run the import command directly against the resource identifier. This
+    // is not deferred, so the import should complete immediately.
+    $this->drush('dkan:datastore:import', [$resource['resource_id']]);
+
+    // Assert the drush command logged a successful run.
+    $this->assertStringContainsString(
+      'Ran import for ' . $resource['resource_id'],
+      $this->getErrorOutput()
+    );
+
+    // Now that the import has run, get the full resource info (including the
+    // table name) in a single call.
+    $resource = $this->getResourceInfo($dataset_id);
+
+    // ImportInfo should now report the import as done.
+    $import_info = \Drupal::service('dkan.datastore.import_info');
+    $item = $import_info->getItem($resource['resource_id'], $resource['resource_version']);
+    $this->assertEquals(
+      Result::DONE,
+      $item->importerStatus,
+      "ImportInfo should report a completed import for resource {$resource['resource_id']}."
+    );
+
+    // Verify the datastore table now exists.
+    $this->assertTrue(
+      \Drupal::database()->schema()->tableExists($resource['table_name']),
+      "Datastore table {$resource['table_name']} should exist after import."
+    );
+  }
 
   /**
    * Tests the dkan:datastore:list command.
@@ -42,25 +82,24 @@ class DatastoreCommandsTest extends BrowserTestBase {
   }
 
   /**
-   * Tests the dkan:datastore:import command.
+   * Tests the dkan:datastore:drop command.
    */
-  public function testImportCommand() {
-    // Create a single dataset. Do not run any queues, so the resource is not
-    // yet localized or imported.
-    $dataset_id = $this->createDataset('1.csv', 'test-dataset-import');
+  public function testDropCommand() {
+    // Create a single dataset and import it.
+    $dataset_id = $this->createDataset('1.csv', 'test-dataset-drop');
     $resource = $this->getResourceIdentifier($dataset_id);
-
-    // Run the import command directly against the resource identifier. This
-    // is not deferred, so the import should complete immediately.
     $this->drush('dkan:datastore:import', [$resource['resource_id']]);
 
-    // Assert the drush command logged a successful run.
-    $this->assertStringContainsString(
-      'Ran import for ' . $resource['resource_id'],
-      $this->getErrorOutput()
-    );
+    // Get the full resource info now that the import has run.
+    $resource = $this->getResourceInfo($dataset_id);
 
-    // ImportInfo should now report the import as done.
+    // Verify the table exists, and ImportInfo reflects a completed import,
+    // before dropping.
+    $connection = \Drupal::database();
+    $this->assertTrue(
+      $connection->schema()->tableExists($resource['table_name']),
+      "Datastore table {$resource['table_name']} should exist after import."
+    );
     $import_info = \Drupal::service('dkan.datastore.import_info');
     $item = $import_info->getItem($resource['resource_id'], $resource['resource_version']);
     $this->assertEquals(
@@ -69,11 +108,35 @@ class DatastoreCommandsTest extends BrowserTestBase {
       "ImportInfo should report a completed import for resource {$resource['resource_id']}."
     );
 
-    // Verify the datastore table now exists.
-    $table_name = $this->getResourceInfo($dataset_id)['table_name'];
-    $this->assertTrue(
-      \Drupal::database()->schema()->tableExists($table_name),
-      "Datastore table $table_name should exist after import."
+    // Run the drop command.
+    $this->drush('dkan:datastore:drop', [$resource['resource_id']]);
+
+    // Assert the drop command logged both success notices.
+    $this->assertStringContainsString(
+      'Successfully dropped the datastore for resource ' . $resource['resource_id'],
+      $this->getErrorOutput()
+    );
+    $this->assertStringContainsString(
+      'Successfully removed the post import job status for resource ' . $resource['resource_id'],
+      $this->getErrorOutput()
+    );
+
+    // Verify the table no longer exists, and ImportInfo no longer reflects a
+    // completed import.
+    $this->assertFalse(
+      $connection->schema()->tableExists($resource['table_name']),
+      "Datastore table {$resource['table_name']} should not exist after drop."
+    );
+    $item = $import_info->getItem($resource['resource_id'], $resource['resource_version']);
+    $this->assertNotEquals(
+      Result::DONE,
+      $item->importerStatus,
+      "ImportInfo should not report a completed import for resource {$resource['resource_id']} after drop."
+    );
+    $this->assertNotEquals(
+      Result::DONE,
+      $item->fileFetcherStatus,
+      "ImportInfo should not report a completed file fetch for resource {$resource['resource_id']} after drop."
     );
   }
 
@@ -138,6 +201,109 @@ class DatastoreCommandsTest extends BrowserTestBase {
         "ImportInfo should not report a completed file fetch for resource {$info['resource_id']} after drop-all."
       );
     }
+  }
+
+  /**
+   * Tests the dkan:datastore:prepare-localized command.
+   */
+  public function testPrepareLocalizedCommand() {
+    // Create a single dataset. Do not run any queues, so the resource is not
+    // yet localized.
+    $dataset_id = $this->createDataset('1.csv', 'test-dataset-prepare-localized');
+    $resource = $this->getResourceIdentifier($dataset_id);
+
+    // The resource should not yet be registered under the local file
+    // perspective.
+    $resource_mapper = \Drupal::service('dkan.metastore.resource_mapper');
+    $this->assertNull(
+      $resource_mapper->get($resource['resource_id'], ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource['resource_version']),
+      "Resource {$resource['resource_id']} should not have a local file perspective registered before running prepare-localized."
+    );
+
+    // Run the prepare-localized command.
+    $this->drush('dkan:datastore:prepare-localized', [$resource['resource_id']]);
+
+    // Assert the command output the expected localization paths as JSON.
+    $output = $this->getOutput();
+    $this->assertStringContainsString('"source":', $output);
+    $this->assertStringContainsString('"path_uri":', $output);
+    $this->assertStringContainsString('"path":', $output);
+    $this->assertStringContainsString('"file_uri":', $output);
+    $this->assertStringContainsString('"file":', $output);
+
+    // The resource should now be registered under the local file
+    // perspective, though the file itself has not actually been fetched yet.
+    $local_file_resource = $resource_mapper->get($resource['resource_id'], ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource['resource_version']);
+    $this->assertNotNull(
+      $local_file_resource,
+      "Resource {$resource['resource_id']} should have a local file perspective registered after running prepare-localized."
+    );
+  }
+
+  /**
+   * Tests the dkan:datastore:localize command.
+   */
+  public function testLocalizeCommand() {
+    // Create a single dataset. Do not run any queues, so the resource is not
+    // yet localized.
+    $dataset_id = $this->createDataset('1.csv', 'test-dataset-localize');
+    $resource = $this->getResourceIdentifier($dataset_id);
+
+    // The resource should not yet be registered under the local file
+    // perspective.
+    $resource_mapper = \Drupal::service('dkan.metastore.resource_mapper');
+    $this->assertNull(
+      $resource_mapper->get($resource['resource_id'], ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource['resource_version']),
+      "Resource {$resource['resource_id']} should not have a local file perspective registered before running localize."
+    );
+
+    // Run the localize command directly against the resource identifier.
+    $this->drush('dkan:datastore:localize', [$resource['resource_id']]);
+
+    // Confirm the local file perspective is registered by reading it back
+    // from the resource mapper.
+    $localized_resource = $resource_mapper->get($resource['resource_id'], ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $resource['resource_version']);
+    $this->assertNotNull(
+      $localized_resource,
+      "Resource {$resource['resource_id']} should be localized after running localize."
+    );
+
+    // Verify the localized file actually exists on disk.
+    $this->assertFileExists(
+      $localized_resource->getFilePath(),
+      "Localized file {$localized_resource->getFilePath()} should exist after running localize."
+    );
+  }
+
+  /**
+   * Tests the dkan:datastore:reverse-dataset-lookup command.
+   */
+  public function testReverseDatasetLookupCommand() {
+    // Create a single dataset and import it, so the datastore table exists.
+    $dataset_id = $this->createDataset('1.csv', 'test-dataset-rdl');
+    $resource = $this->getResourceIdentifier($dataset_id);
+    $this->drush('dkan:datastore:import', [$resource['resource_id']]);
+
+    // Get the full resource info now that the import has run, including the
+    // table name.
+    $resource = $this->getResourceInfo($dataset_id);
+
+    // Run the reverse-dataset-lookup command against the datastore table
+    // name, and confirm it works backwards to find the correct dataset.
+    $this->drush('dkan:datastore:reverse-dataset-lookup', [$resource['table_name']]);
+    $this->assertStringContainsString(
+      'Dataset UUID = ' . $dataset_id,
+      $this->getOutput()
+    );
+
+    // A table name that cannot be mapped to a resource throws an exception
+    // (rather than the command's own "Can not map..." failure message,
+    // since tableToResourceLookup() never returns an empty string).
+    $this->drush('dkan:datastore:reverse-dataset-lookup', ['datastore_nonexistent'], [], NULL, NULL, 1);
+    $this->assertStringContainsString(
+      'Can not map datastore table name datastore_nonexistent',
+      $this->getErrorOutput()
+    );
   }
 
   /**
