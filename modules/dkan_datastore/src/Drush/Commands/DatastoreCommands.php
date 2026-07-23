@@ -288,6 +288,9 @@ final class DatastoreCommands extends DrushCommands {
       $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
       return DrushCommands::EXIT_SUCCESS;
     }
+    // @todo This is dead code because if there is no dataset, the command will
+    // exit with a failure before this point. We should probably try to catch
+    // the exception.
     $this->output()->writeln('Can not map datastore table to dataset: ' . $table_name);
     return DrushCommands::EXIT_FAILURE;
   }
