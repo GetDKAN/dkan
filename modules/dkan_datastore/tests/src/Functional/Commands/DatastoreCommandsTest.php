@@ -24,6 +24,9 @@ class DatastoreCommandsTest extends BrowserTestBase {
    */
   protected static $modules = ['dkan_datastore', 'dkan_metastore'];
 
+  /**
+   * {@inheritdoc}
+   */
   protected $defaultTheme = 'stark';
 
   /**
