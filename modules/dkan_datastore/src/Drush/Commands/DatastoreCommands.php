@@ -13,7 +13,6 @@ use Drupal\dkan_datastore\PostImportResultFactory;
 use Drupal\dkan_datastore\Service\Info\ImportInfoList;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\MetastoreService;
-use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ResourceMapper;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -163,13 +162,13 @@ final class DatastoreCommands extends DrushCommands {
         \Drupal::VERSION,
         '10.2.0',
         fn() => ByteSizeMarkup::create($item->fileFetcherBytes),
-        fn() => \format_size($item->fileFetcherBytes)
+        fn() => ByteSizeMarkup::create($item->fileFetcherBytes)
       ) . " ($item->fileFetcherPercentDone%)",
       'importerStatus' => $item->importerStatus,
       'importerBytes' => DeprecationHelper::backwardsCompatibleCall(
         \Drupal::VERSION, '10.2.0',
         fn() => ByteSizeMarkup::create($item->importerBytes),
-        fn() => \format_size($item->importerBytes)
+        fn() => ByteSizeMarkup::create($item->importerBytes)
       ) . " ($item->importerPercentDone%)",
     ];
   }
