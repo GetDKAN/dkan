@@ -21,6 +21,8 @@ use Drupal\dkan_metastore\Reference\Dereferencer;
  */
 class DatasetInfo {
 
+  const NO_IDENTIFIER = 'n/a';
+
   /**
    * Metastore storage.
    */
@@ -260,7 +262,7 @@ class DatasetInfo {
     $source = $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
 
     return [
-      'distribution_uuid' => $distribution->identifier ?? 'n/a',
+      'distribution_uuid' => $distribution->identifier ?? self::NO_IDENTIFIER,
       'resource_id' => $identifier,
       'resource_version' => $version,
       'mime_type' => isset($source) ? $source->getMimeType() : '',

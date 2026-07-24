@@ -6,13 +6,15 @@ namespace Drupal\Tests\dkan_common\Kernel;
 
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\KernelTests\KernelTestBase;
-
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 /**
  * @group dkan
  * @group dkan_common
  * @group kernel
  */
 class DatasetInfoTest extends KernelTestBase {
+
+  use DistributionReferenceModeTrait;
 
   public static $modules = [
     'system',
@@ -46,7 +48,14 @@ class DatasetInfoTest extends KernelTestBase {
     $this->installEntitySchema('resource_mapping');
   }
 
-  public function testDatasetInfo() {
+  /**
+   * Test DatasetInfo basics.
+   *
+   * @dataProvider distributionReferenceProvider
+   */
+  public function testDatasetInfo($distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $datasetInfo = new DatasetInfo($this->container->get('plugin.manager.dataset_info'));
     $datasetInfo->setStorage($this->container->get('dkan.metastore.storage'));
     $datasetInfo->setResourceMapper($this->container->get('dkan.metastore.resource_mapper'));
@@ -106,6 +115,9 @@ class DatasetInfoTest extends KernelTestBase {
     $this->assertEquals('No resource found', $info["latest_revision"]["distributions"][1][0]);
   }
 
+  /**
+   * Since DatasetInfo lives in common, test when metastore not enabled.
+   */
   public function testDatasetInfoNoMetastore() {
     $this->disableModules(['dkan_metastore']);
     $datasetInfo = new DatasetInfo($this->container->get('plugin.manager.dataset_info'));
