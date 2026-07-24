@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_datastore\Functional\Service;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\dkan_common\Traits\GetDataTrait;
+use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
@@ -19,7 +19,7 @@ use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
  * @group functional1
  */
 class ResourcePurgerTest extends BrowserTestBase {
-  use GetDataTrait;
+  use GetLocalDataTrait;
   use QueueRunnerTrait;
   use DistributionReferenceModeTrait;
 
