@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
+use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_harvest\HarvestService;
@@ -25,6 +26,7 @@ use RootedData\RootedJsonData;
  */
 class DatasetBTBTest extends BrowserTestBase {
 
+  use GetLocalDataTrait;
   use QueueRunnerTrait;
   use DistributionReferenceModeTrait;
 
@@ -60,7 +62,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testResourcePurgeDraft(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
@@ -118,7 +120,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testResourcePurgePublished(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
 
@@ -137,7 +139,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testChangingDatasetResourcePerspectiveOnOutput(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $this->datastoreImportAndQuery();
 
@@ -164,7 +166,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testHarvestArchive(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
@@ -192,7 +194,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testHarvestOrphan(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
@@ -279,7 +281,7 @@ class DatasetBTBTest extends BrowserTestBase {
     string $resource_perspective_display,
     string $workflow_method
   ): void {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', $resource_perspective_display)
@@ -294,7 +296,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testOrphanDraftDistributionCleanup(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Set delete local resource files = false and modified as a triggering
     // property.
@@ -359,7 +361,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testDeleteDistribution(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
 
@@ -399,7 +401,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testDatastoreImportDeleteLocalResource(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     $id_1 = uniqid(__FUNCTION__ . '1');
     $id_2 = uniqid(__FUNCTION__ . '2');
@@ -446,7 +448,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * @dataProvider distributionReferenceProvider
    */
   public function testSanitizeDatasetProperties(string $distribution_reference) {
-    $this->setDistributionReferenceMode($distribution_reference);
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
 
     // Set HTML allowed on dataset description.
     $this->config('dkan_metastore.settings')
@@ -554,19 +556,6 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Get the download URL for a resource file.
-   *
-   * @param string $filename
-   *   The filename of the resource.
-   *
-   * @return string
-   *   The download URL for the resource file from S3 bucket.
-   */
-  private function getDownloadUrl(string $filename) {
-    return 'file://' . __DIR__ . '/../../files/' . $filename;
-  }
-
-  /**
    * Set metastore distribution reference mode for this test run.
    */
   private function setDistributionReferenceMode(string $distribution_reference): void {
@@ -580,47 +569,21 @@ class DatasetBTBTest extends BrowserTestBase {
    *   Dataset identifier.
    * @param string $title
    *   Dataset title.
-   * @param array $downloadUrls
+   * @param array $filenames
    *   Array of resource files URLs for this dataset.
    *
    * @return \RootedData\RootedJsonData
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
+  private function getData(string $identifier, string $title, array $filenames): RootedJsonData {
     /** @var \Drupal\dkan_metastore\ValidMetadataFactory $valid_metadata_factory */
     $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
-    $data = new \stdClass();
-    $data->title = $title;
-    $data->description = 'This & that description. <a onauxclick=prompt(document.domain)>Right click me</a>.';
-    $data->identifier = $identifier;
-    $data->accessLevel = 'public';
-    $data->modified = '06-04-2020';
-    $data->keyword = ['some keyword'];
-    $data->distribution = [];
-    $data->publisher = (object) [
-      'name' => 'Test Publisher',
-    ];
-    $data->contactPoint = (object) [
-      'fn' => 'Test Name',
-      'hasEmail' => 'test@example.com',
-    ];
+    $json = $this->getDataset($identifier, $title, $filenames);
 
-    foreach ($downloadUrls as $key => $downloadUrl) {
-      $distribution = new \stdClass();
-      $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
-      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->mediaType = 'text/csv';
-      $data->distribution[] = $distribution;
-    }
-    $this->assertGreaterThan(
-      0,
-      count($data->distribution),
-      'JSON Schema requires one or more distributions.'
-    );
     // @todo Figure out how to assert against $factory->getResult()->getError()
     // so we can have a useful test fail message.
-    return $valid_metadata_factory->get(json_encode($data), 'dataset');
+    return $valid_metadata_factory->get($json, 'dataset');
   }
 
   /**

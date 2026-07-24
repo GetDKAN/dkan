@@ -3,17 +3,26 @@
 namespace Drupal\Tests\dkan_common\Traits;
 
 /**
- * Trait for getting data remote for tests.
- *
- * @deprecated Use GetLocalDataTrait instead.
+ * Trait for getting local data for tests.
  */
-trait GetDataTrait {
+trait GetLocalDataTrait {
 
-  private $S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-  private $FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
-
+  /**
+   * Get the download URL for a file.
+   *
+   * @param string $filename
+   *   The filename to get the download URL for. There are a number of test
+   *   files available in modules/dkan_common/tests/files.
+   *
+   * @return string
+   *   The download URL for the file.
+   */
   private function getDownloadUrl(string $filename) {
-    return $this->S3_PREFIX . '/' . $filename;
+    $files_dir = realpath(__DIR__ . '/../../files');
+    if (!$files_dir || !is_dir($files_dir)) {
+      throw new \RuntimeException("Test files directory not found relative to trait location: " . __DIR__);
+    }
+    return 'file://' . $files_dir . '/' . $filename;
   }
 
   /**
@@ -23,10 +32,8 @@ trait GetDataTrait {
    *   Dataset identifier.
    * @param string $title
    *   Dataset title.
-   * @param array $downloadUrls
+   * @param array $filenames
    *   Array of resource files URLs for this dataset.
-   * @param bool $localFiles
-   *   Whether the resource files are local.
    * @param string|null $describedBy
    *   (Optional) URI for describedBy for all the download URLs. describedByType
    *   will be set to 'application/vnd.tableschema+json' if present.
@@ -34,21 +41,34 @@ trait GetDataTrait {
    * @return string|false
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getDataset(string $identifier, string $title, array $downloadUrls, bool $localFiles = FALSE, ?string $describedBy = NULL) {
+  private function getDataset(string $identifier, string $title, array $filenames, ?string $describedBy = NULL) {
 
     $data = new \stdClass();
     $data->title = $title;
-    $data->description = "Some description.";
+    $data->description = 'This & that description. <a onauxclick=prompt(document.domain)>Right click me</a>.';
     $data->identifier = $identifier;
     $data->accessLevel = "public";
     $data->modified = "06-04-2020";
     $data->keyword = ["some keyword"];
     $data->distribution = [];
+    $data->publisher = (object) [
+      'name' => 'Test Publisher',
+    ];
+    $data->contactPoint = (object) [
+      'fn' => 'Test Name',
+      'hasEmail' => 'test@example.com',
+    ];
 
-    foreach ($downloadUrls as $key => $downloadUrl) {
+    foreach ($filenames as $key => $filename) {
+      if (str_contains($filename, '://')) {
+        $downloadUrl = $filename;
+      }
+      else {
+        $downloadUrl = $this->getDownloadUrl($filename);
+      }
       $distribution = new \stdClass();
       $distribution->title = "Distribution #{$key} for {$identifier}";
-      $distribution->downloadURL = $localFiles ? $downloadUrl : $this->getDownloadUrl($downloadUrl);
+      $distribution->downloadURL = $downloadUrl;
       $distribution->mediaType = "text/csv";
       if ($describedBy) {
         $distribution->describedBy = $describedBy;

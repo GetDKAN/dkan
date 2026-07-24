@@ -28,15 +28,9 @@ else
   echo "No package.json present, not trying to install."
 fi
 
-  # Commenting out until we get a lower roll worked out.
-  # {"name":"testapiuser","mail":"testapiuser@test.com","role":"api_user"},
 TEST_USERS_JSON='[
   {"name":"testadmin","mail":"testadmin@test.com","role":"administrator"}
 ]'
-TEST_USER_NAMES=""
-jq -r '.[] | .name' <<<"$TEST_USERS_JSON" | while read -r name; do
-  TEST_USER_NAMES="$TEST_USER_NAMES $name"
-done
 
 jq -c '.[]' <<<"$TEST_USERS_JSON" | while read -r TU_TEST_USER; do
   name=$(jq -r '.name' <<<"$TU_TEST_USER")
