@@ -27,6 +27,7 @@ function dkan_datastore_theme($existing, $type, $theme, $path) {
     'dkan_datastore_dashboard_resource_cell' => [
       'variables' => [
         'uuid' => NULL,
+        'resource_id' => NULL,
         'file_name' => NULL,
         'file_path' => NULL,
       ],
