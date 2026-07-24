@@ -13,6 +13,7 @@ use Drupal\dkan_datastore\PostImportResultFactory;
 use Drupal\dkan_datastore\Service\Info\ImportInfoList;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\ResourceMapper;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
