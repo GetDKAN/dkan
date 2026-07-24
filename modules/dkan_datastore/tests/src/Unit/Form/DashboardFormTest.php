@@ -285,8 +285,10 @@ class DashboardFormTest extends TestCase {
 
   /**
    * Test building the dashboard table without a filter.
+   *
+   * @dataProvider referencedDistributionsProvider
    */
-  public function testBuildTableRowsWithAllDatasets() {
+  public function testBuildTableRowsWithAllDatasets(bool $referenced_distributions = TRUE) {
     $datasetInfo = [
       'latest_revision' => [
         'uuid' => 'dataset-1',
@@ -297,7 +299,7 @@ class DashboardFormTest extends TestCase {
         'modified_date_dkan' => '2021-07-08',
         'distributions' => [
           [
-            'distribution_uuid' => 'dist-1',
+            'distribution_uuid' => $referenced_distributions ? 'dist-1' : DatasetInfo::NO_IDENTIFIER,
             'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535f',
             'resource_version' => '1679508886',
             'fetcher_status' => 'waiting',
@@ -322,7 +324,7 @@ class DashboardFormTest extends TestCase {
         'modified_date_dkan' => '2021-07-08',
         'distributions' => [
           [
-            'distribution_uuid' => 'dist-2',
+            'distribution_uuid' => $referenced_distributions ? 'dist-2' : DatasetInfo::NO_IDENTIFIER,
             'resource_id' => '9ad17d45894f823c6a8e4f6d32b9535e',
             'resource_version' => '1679508885',
             'fetcher_status' => 'done',
@@ -373,13 +375,23 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
 
-    // Assert that the post import process failed with an error
+    // Assert that the post import process failed with an error.
     $this->assertEquals('error', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals($postImportInfo['post_import_error'], $form['table']['#rows'][0][6]['data']['#error']);
 
     $this->assertEquals('non-harvest-dataset', $form['table']['#rows'][1][0]['data']['#uuid']);
     $this->assertEquals('Non-Harvest Dataset', $form['table']['#rows'][1][0]['data']['#title']);
     $this->assertEquals('N/A', $form['table']['#rows'][1][2]['data']);
+  }
+
+  /**
+   * Data provider for referenced distributions.
+   */
+  public static function referencedDistributionsProvider(): array {
+    return [
+      'referenced distributions' => [TRUE],
+      'unreferenced distributions' => [FALSE],
+    ];
   }
 
   /**
