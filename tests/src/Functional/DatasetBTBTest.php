@@ -556,13 +556,6 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Set metastore distribution reference mode for this test run.
-   */
-  private function setDistributionReferenceMode(string $distribution_reference): void {
-    $this->setDistributionReferenceModeFromConfig($distribution_reference);
-  }
-
-  /**
    * Generate dataset metadata, possibly with multiple distributions.
    *
    * @param string $identifier
