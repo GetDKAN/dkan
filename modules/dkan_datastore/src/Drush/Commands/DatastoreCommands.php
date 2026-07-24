@@ -223,6 +223,9 @@ final class DatastoreCommands extends DrushCommands {
         [$id, $version] = explode('_', $id);
         $this->datastoreService->drop($id, $version, $local_resource);
         $this->logger->notice('Successfully dropped the datastore for resource ' . $id);
+        $post_import_result = $this->postImportResultFactory->initializeFromDistribution(['resource_id' => $id]);
+        $post_import_result->removeJobStatus();
+        $this->logger->notice('Successfully removed the post import job status for resource ' . $id);
       }
       else {
         $this->logger->warning('Unable to drop datastore for ' . $id . ' because it was never imported.');

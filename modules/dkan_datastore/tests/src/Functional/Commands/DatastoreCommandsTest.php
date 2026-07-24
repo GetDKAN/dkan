@@ -188,7 +188,11 @@ class DatastoreCommandsTest extends BrowserTestBase {
     // Assert that the drop command's "removed" notice was logged for each
     // dropped resource.
     $this->assertStringContainsString(
-      'Successfully removed the post import job status for resource',
+      'Successfully dropped the datastore for resource ' . $info['resource_id'],
+      $this->getErrorOutput()
+    );
+    $this->assertStringContainsString(
+      'Successfully removed the post import job status for resource ' . $info['resource_id'],
       $this->getErrorOutput()
     );
 
