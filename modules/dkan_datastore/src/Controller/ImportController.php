@@ -103,35 +103,27 @@ class ImportController implements ContainerInjectionInterface {
    *   Dependency array for \Drupal\dkan_metastore\MetastoreApiResponse.
    */
   private function getDependencies($identifier) {
-    // If a proper UUID, probably a distribution.
-    if (Uuid::isValid($identifier)) {
-      $distributions = [$identifier];
-    }
-    elseif (strlen($identifier) == 52) {
-      $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
-    }
-    elseif (strlen($identifier) == 44) {
-      $resourceId = "{$identifier}__source";
-      $distributions = $this->referenceLookup->getReferencers('distribution', $resourceId, 'downloadURL');
-    }
-    else {
-      $distributions = [];
-    }
-
     $dependencies = [];
-    if (!empty($distributions)) {
-      $dependencies['distribution'] = $distributions;
+    foreach (['distribution', 'dataset'] as $schemaId) {
+      if (Uuid::isValid($identifier)) {
+        $referencers = [$identifier];
+      }
+      elseif (strlen($identifier) == 52) {
+        $referencers = $this->referenceLookup->getReferencers($schemaId, $identifier, 'downloadURL');
+      }
+      elseif (strlen($identifier) == 44) {
+        $resourceId = "{$identifier}__source";
+        $referencers = $this->referenceLookup->getReferencers($schemaId, $resourceId, 'downloadURL');
+      }
+      else {
+        $referencers = [];
+      }
+      if (!empty($referencers)) {
+        $dependencies[$schemaId] = $referencers;
+      }
     }
 
-    // In non-referenced mode there are no distribution items; the resource is
-    // referenced inline by the dataset. Tag the response with those datasets so
-    // that editing a dataset invalidates the cached response.
-    $datasets = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
-    if (!empty($datasets)) {
-      $dependencies['dataset'] = $datasets;
-    }
-
-    return empty($dependencies) ? ['distribution'] : $dependencies;
+    return empty($dependencies) ? ['distribution', 'dataset'] : $dependencies;
   }
 
   /**
