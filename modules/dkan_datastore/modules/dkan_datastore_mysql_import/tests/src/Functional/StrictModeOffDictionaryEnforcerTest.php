@@ -8,7 +8,7 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\dkan_datastore\Controller\ImportController;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\dkan_common\Traits\GetDataTrait;
+use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use RootedData\RootedJsonData;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait, QueueRunnerTrait;
+  use GetLocalDataTrait, QueueRunnerTrait;
 
   /**
    * Uploaded resource file destination.
@@ -105,7 +105,6 @@ class StrictModeOffDictionaryEnforcerTest extends BrowserTestBase {
           $dataset_id,
           'Test ' . $dataset_id,
           [$resourceUrl],
-          TRUE,
           'dkan://metastore/schemas/data-dictionary/items/' . $dictionary_id
         ),
         'dataset'
