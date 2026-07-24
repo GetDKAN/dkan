@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\Tests\dkan\Functional;
+
 use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;

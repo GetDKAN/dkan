@@ -192,7 +192,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       }
     }
     else {
-      // Non-referenced mode: resource IDs are used directly in dataset metadata.
+      // Non-referenced mode: resource IDs are used directly in dataset.
       $datasetIds = $this->referenceLookup->getReferencers('dataset', $identifier, 'distribution');
     }
     $datasetIds = array_values(array_unique($datasetIds));
