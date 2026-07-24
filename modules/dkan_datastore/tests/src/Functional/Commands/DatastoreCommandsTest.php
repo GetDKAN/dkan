@@ -326,6 +326,16 @@ class DatastoreCommandsTest extends BrowserTestBase {
       $this->getOutput()
     );
 
+    // Now delete the related dataset, and confirm the reverse-dataset-lookup
+    // command fails with an exception.
+    $metastore = \Drupal::service('dkan.metastore.service');
+    $metastore->delete('dataset', $dataset_id);
+    $this->drush('dkan:datastore:reverse-dataset-lookup', [$resource['table_name']], [], NULL, NULL, 1);
+    $this->assertStringContainsString(
+      'Can not map resource ID ' . $resource['resource_id'] . ' to dataset UUID',
+      $this->getErrorOutput()
+    );
+
     // A table name that cannot be mapped to a resource throws an exception
     // (rather than the command's own "Can not map..." failure message,
     // since tableToResourceLookup() never returns an empty string).

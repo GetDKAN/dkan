@@ -281,25 +281,18 @@ final class DatastoreCommands extends DrushCommands {
   #[CLI\Command(name: 'dkan:datastore:reverse-dataset-lookup', aliases: ['dkan:datastore:rdl'], description: 'Return the dataset uuid associated with the provided datastore table name.')]
   #[CLI\Argument(name: 'table_name', description: 'Datastore Table name, e.g., "datastore_8b7a21d442d603b113f1a17beac8bcdd".')]
   public function reverseDatasetLookup(string $table_name) {
-    $resource_id = '';
-    $distribution_uuid = '';
-    if ($table_name) {
-      $resource_id = $this->datastoreLookup->tableToResourceLookup($table_name);
-    }
-    if ($resource_id) {
+    $resource_id = $this->datastoreLookup->tableToResourceLookup($table_name);
+    try {
       $distribution_uuid = $this->datastoreLookup->resourceToDistribution($resource_id);
-    }
-    if ($distribution_uuid) {
       $dataset_uuid = $this->datastoreLookup->distributionToDataset($distribution_uuid);
-      // Output to console and end command.
       $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
       return DrushCommands::EXIT_SUCCESS;
     }
-    // @todo This is dead code because if there is no dataset, the command will
-    // exit with a failure before this point. We should probably try to catch
-    // the exception.
-    $this->output()->writeln('Can not map datastore table to dataset: ' . $table_name);
-    return DrushCommands::EXIT_FAILURE;
+    catch (\RuntimeException $e) {
+      $dataset_uuid = $this->datastoreLookup->resourceToDataset($resource_id);
+      $this->output()->writeln('Dataset UUID = ' . $dataset_uuid);
+      return DrushCommands::EXIT_SUCCESS;
+    }
   }
 
 }
