@@ -192,11 +192,12 @@ final class DatastoreCommands extends DrushCommands {
    */
   #[CLI\Command(name: 'dkan:datastore:drop', description: 'Drop a resource from the datastore.')]
   #[CLI\Argument(name: 'identifier', description: 'Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".')]
+  #[CLI\Argument(name: 'version', description: 'Datastore resource version, e.g., "1784842477".')]
   #[CLI\Option(name: 'keep-local', description: 'Do not remove localized resource, only datastore.')]
-  public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
+  public function drop(string $identifier, $version = NULL, array $options = ['keep-local' => FALSE]) {
     $local_resource = $options['keep-local'] ? FALSE : TRUE;
     try {
-      $this->datastoreService->drop($identifier, NULL, $local_resource);
+      $this->datastoreService->drop($identifier, $version, $local_resource);
       $this->logger->notice('Successfully dropped the datastore for resource ' . $identifier);
     }
     catch (\InvalidArgumentException) {
@@ -221,11 +222,7 @@ final class DatastoreCommands extends DrushCommands {
     foreach ($list as $id => $item) {
       if ($item->fileFetcherStatus === 'done' || $item->importerStatus === 'done') {
         [$id, $version] = explode('_', $id);
-        $this->datastoreService->drop($id, $version, $local_resource);
-        $this->logger->notice('Successfully dropped the datastore for resource ' . $id);
-        $post_import_result = $this->postImportResultFactory->initializeFromDistribution(['resource_id' => $id]);
-        $post_import_result->removeJobStatus();
-        $this->logger->notice('Successfully removed the post import job status for resource ' . $id);
+        $this->drop($id, $version, ['keep-local' => !$local_resource]);
       }
       else {
         $this->logger->warning('Unable to drop datastore for ' . $id . ' because it was never imported.');
