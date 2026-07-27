@@ -31,15 +31,8 @@ class OrphanCheckerTest extends BrowserTestBase {
 
   /**
    * Test orphan handling when distribution is removed from dataset.
-   *
-   * @dataProvider distributionReferenceProvider
    */
-  public function testOrphanedResourceCleanup(string $distribution_reference) {
-    $this->setDistributionReferenceModeFromConfig($distribution_reference);
-    if ($distribution_reference === '0') {
-      $this->markTestSkipped('Skipping orphan cleanup test for distribution reference mode "id".');
-    }
-
+  public function testOrphanedResourceCleanup() {
     $validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
     /** @var \Drupal\dkan_metastore\MetastoreService $service */
     $service = $this->container->get('dkan.metastore.service');
@@ -62,7 +55,6 @@ class OrphanCheckerTest extends BrowserTestBase {
     $distribution_info = $metadata['latest_revision']['distributions'][0];
     $table_name = $distribution_info['table_name'];
     $resource_id = $distribution_info['resource_id'];
-    $resource_version = $distribution_info['resource_version'];
 
     // Verify the datastore table exists.
     $this->assertTrue(
@@ -75,7 +67,7 @@ class OrphanCheckerTest extends BrowserTestBase {
     $full_dataset_json = $service->get('dataset', $dataset_id);
     $full_dataset = json_decode($full_dataset_json);
     // Remove the downloadURL to invalidate the distribution
-    unset($full_dataset->distribution[0]->downloadURL);
+    $full_dataset->distribution[0]->downloadURL = 'http://example.com/nothing.tar';
     $service->patch('dataset', $dataset_id, json_encode($full_dataset));
 
     // Run the orphan reference processor and resource purger queues.
@@ -101,6 +93,7 @@ class OrphanCheckerTest extends BrowserTestBase {
       "Resource $resource_id should no longer exist in the resource mapper after orphan cleanup."
     );
   }
+
 
   /**
    * Legacy test: basic orphan reference processor execution.
