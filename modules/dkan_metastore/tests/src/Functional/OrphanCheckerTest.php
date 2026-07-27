@@ -7,7 +7,6 @@ use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
-use RootedData\RootedJsonData;
 
 /**
  * @group dkan
@@ -31,8 +30,11 @@ class OrphanCheckerTest extends BrowserTestBase {
 
   /**
    * Test orphan handling when distribution is removed from dataset.
+   * 
+   * @dataProvider distributionReferenceProvider
    */
-  public function testOrphanedResourceCleanup() {
+  public function testOrphanedResourceCleanup(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
     $validMetadataFactory = MetastoreServiceTest::getValidMetadataFactory($this);
     /** @var \Drupal\dkan_metastore\MetastoreService $service */
     $service = $this->container->get('dkan.metastore.service');
@@ -55,12 +57,15 @@ class OrphanCheckerTest extends BrowserTestBase {
     $distribution_info = $metadata['latest_revision']['distributions'][0];
     $table_name = $distribution_info['table_name'];
     $resource_id = $distribution_info['resource_id'];
+    $resource_version = $distribution_info['resource_version'];
 
     // Verify the datastore table exists.
     $this->assertTrue(
       $connection->schema()->tableExists($table_name),
       "Datastore table $table_name should exist after initial import."
     );
+
+    sleep(1); // Ensure a time difference for versioning.
 
     // Now make the distribution orphaned by removing the downloadURL
     // (making it non-viable for import).
@@ -87,7 +92,7 @@ class OrphanCheckerTest extends BrowserTestBase {
     // Query for the latest version of the resource (without specifying version,
     // which avoids the timestamp stale-version issue).
     $resource_mapper = $this->container->get('dkan.metastore.resource_mapper');
-    $resource = $resource_mapper->get($resource_id, 'source');
+    $resource = $resource_mapper->get($resource_id, 'source', $resource_version);
     $this->assertNull(
       $resource,
       "Resource $resource_id should no longer exist in the resource mapper after orphan cleanup."
