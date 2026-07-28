@@ -2,7 +2,6 @@
 
 namespace Drupal\dkan_metastore\LifeCycle;
 
-use Drupal\dkan_metastore\MetastoreItemInterface;
 use Drupal\Component\EventDispatcher\Event;
 
 /**
@@ -12,13 +11,6 @@ use Drupal\Component\EventDispatcher\Event;
  * @see \Drupal\dkan_metastore\EventSubscriber\MetastoreSubscriber
  */
 class LifeCycleEvent extends Event {
-
-  /**
-   * The Metastore item for the event.
-   *
-   * @var \Drupal\dkan_metastore\MetastoreItemInterface
-   */
-  protected MetastoreItemInterface $item;
 
   /**
    * LifeCycleEvent constructor.
