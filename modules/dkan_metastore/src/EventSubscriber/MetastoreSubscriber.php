@@ -3,8 +3,8 @@
 namespace Drupal\dkan_metastore\EventSubscriber;
 
 use Drupal\dkan_common\DataResource;
-use Drupal\dkan_common\Events\Event;
-use Drupal\dkan_metastore\LifeCycle\LifeCycle as Dkan_metastoreLifeCycle;
+use Drupal\dkan_metastore\LifeCycle\LifeCycle;
+use Drupal\dkan_metastore\LifeCycle\LifeCycleEvent;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\dkan_metastore\Reference\Dereferencer;
@@ -69,15 +69,36 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public static function getSubscribedEvents(): array {
     $events = [];
-    $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
-    $events[Dkan_metastoreLifeCycle::EVENT_DELETING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
+    $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['clearDistributionResources'];
+    $events[LifeCycle::EVENT_DELETING_DISTRIBUTION][] = ['clearDistributionResources'];
+    // $events[LifeCycle::EVENT_DELETING_DATASET][] = ['clearDistributionResources'];
     return $events;
+  }
+
+  /**
+   * Clear resources associated with a distribution.
+   *
+   * @param \Drupal\dkan_metastore\LifeCycle\LifeCycleEvent $event
+   *   The event object containing the distribution identifier.
+   */
+  public function clearDistributionResources(LifeCycleEvent $event) {
+    $resources = [];
+    $schema_id = $event->getSchemaId();
+    $identifier = $event->getIdentifier();
+    $item = $this->service->get($schema_id, $identifier, FALSE);
+    // Attempt to extract all resources for the given distribution.
+    $resource_refs = $item->{'$.data["' . Dereferencer::REF_PREFIX . 'downloadURL"]..data'} ?? [];
+    foreach ($resource_refs as $resourceParams) {
+      $resource_id = $resourceParams['identifier'] ?? NULL;
+      $perspective = $resourceParams['perspective'] ?? NULL;
+      $version = $resourceParams['version'] ?? NULL;
+      $resources[] = $this->resourceMapper->get($resource_id, $perspective, $version);
+    }
+    $this->cleanResourceMapperTable($resources, $schema_id, $identifier);
   }
 
   /**
@@ -85,29 +106,24 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * Removes resources associated with the orphaned distribution.
    *
-   * @param \Drupal\dkan_common\Events\Event $event
-   *   The event object containing the resource uuid.
+   * @param \Drupal\dkan_common\DataResource[] $resources
+   *   The resources associated with the orphaned distribution.
+   * @param string $schema_id
+   *   The schema ID of the distribution.
+   * @param string $item_id
+   *   The identifier of the distribution item.
    */
-  public function cleanResourceMapperTable(Event $event) {
-    $distribution_id = $event->getData();
-    // Use the metastore service to build a distribution object.
-    $distribution = $this->service->get('distribution', $distribution_id, FALSE);
-    // Attempt to extract all resources for the given distribution.
-    $resources = $distribution->{'$.data["' . Dereferencer::REF_PREFIX . 'downloadURL"]..data'} ?? [];
-
+  public function cleanResourceMapperTable(array $resources, string $schema_id, string $item_id): void {
     // Remove all resource entries associated with this distribution from the
     // metadata resource mapper.
-    foreach ($resources as $resourceParams) {
-      // Retrieve the distributions ID, perspective, and version metadata.
-      $resource_id = $resourceParams['identifier'] ?? NULL;
-      $perspective = $resourceParams['perspective'] ?? NULL;
-      $version = $resourceParams['version'] ?? NULL;
-      $resource_id_wo_perspective = $resource_id . '__' . $version;
-      $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
-
+    foreach ($resources as $resource) {
+      if (!$resource instanceof DataResource) {
+        throw new \InvalidArgumentException("Expected DataResource, got " . gettype($resource));
+      }
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($distribution_id, $resource_id_wo_perspective)) {
+      $resource_id_wo_perspective = $resource->getIdentifier() . '__' . $resource->getVersion();
+      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($schema_id, $item_id, $resource_id_wo_perspective)) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
@@ -117,8 +133,10 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   /**
    * Determine if a resource is in use in another distribution.
    *
-   * @param string $dist_id
-   *   The uuid of the distribution where this resource is know to be in use.
+   * @param string $schema_id
+   *   The schema ID of the distribution.
+   * @param string $item_id
+   *   The identifier of the distribution item.
    * @param string $resource_id
    *   The identifier of the resource.
    *
@@ -127,12 +145,12 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @todo Abstract out "distribution" and field_data_type.
    */
-  private function resourceInUseElsewhere(string $dist_id, string $resource_id): bool {
-    $distributions = $this->referenceLookup->getReferencers('distribution', $resource_id, 'downloadURL');
+  private function resourceInUseElsewhere(string $schema_id, string $item_id, string $resource_id): bool {
+    $referencers = $this->referenceLookup->getReferencers($schema_id, $resource_id, 'downloadURL');
 
     // Check if any other distributions reference it.
-    foreach ($distributions as $distribution) {
-      if ($distribution != $dist_id) {
+    foreach ($referencers as $referencer) {
+      if ($referencer != $item_id) {
         return TRUE;
       }
     }

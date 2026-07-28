@@ -7,6 +7,7 @@ namespace Drupal\dkan_metastore\Plugin\QueueWorker;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\dkan_common\Events\Event;
+use Drupal\dkan_metastore\LifeCycle\LifeCycleEvent;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -119,6 +120,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The uuid.
    */
   protected function unpublishReference(string $property_id, string $uuid) {
+    /** @var \Drupal\node\NodeInterface[] $references */
     $references = $this->nodeStorage->loadByProperties(
       [
         'uuid' => $uuid,
@@ -129,7 +131,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     if (FALSE !== ($reference = reset($references))) {
       // When orphaning distribution nodes, trigger database clean up.
       if ($property_id === 'distribution') {
-        $event = new Event($uuid);
+        $event = new LifeCycleEvent('distribution', $uuid);
         $this->eventDispatcher->dispatch($event, self::EVENT_ORPHANING_DISTRIBUTION);
       }
       $reference->set('moderation_state', 'orphaned');
