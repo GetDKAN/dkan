@@ -216,9 +216,10 @@ class ResourcePurger implements ContainerInjectionInterface {
     $purge = $this->getResourcesToPurge($vid, $node, $prior);
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
-      // $idAndVersion is a json encoded array with resource's id and version.
-      [$id, $version] = json_decode((string) $idAndVersion);
-      $this->delete($id, $version);
+      // $idAndVersion is a json encoded array with resource's id, version,
+      // and perspective.
+      [$id, $version, $perspective] = json_decode((string) $idAndVersion);
+      $this->delete($id, $version, $perspective);
     }
   }
 
@@ -424,19 +425,57 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Delete a resource's file and/or table, based on enabled config settings.
+   * Delete a resource's file, table, and resource-mapper entry.
+   *
+   * File and table removal are based on enabled config settings. The
+   * resource-mapper entry is only removed here in non-referenced mode; in
+   * referenced mode, that cleanup already happens via
+   * MetastoreSubscriber::clearItemResources() when the distribution node
+   * that owned the resource is orphaned or deleted, and removing it here too
+   * (which can run before that happens) would break that mechanism, since it
+   * still needs to dereference the orphaned distribution's metadata.
    *
    * @param string $id
    *   Resource identifier.
    * @param string $version
    *   Resource version.
+   * @param string $perspective
+   *   Resource perspective.
+   *
+   * @see \Drupal\dkan_metastore\EventSubscriber\MetastoreSubscriber::clearItemResources()
    */
-  private function delete(string $id, string $version) {
+  private function delete(string $id, string $version, string $perspective) {
     if ($this->getPurgeTableSetting()) {
       $this->removeDatastoreStorage($id, $version);
     }
     if ($this->getPurgeFileSetting()) {
       $this->removeResourceLocalizer($id, $version);
+    }
+    if (!$this->distributionsAreReferenced()) {
+      $this->removeResourceMapperEntry($id, $version, $perspective);
+    }
+  }
+
+  /**
+   * Helper to remove a resource's entry from the resource mapper.
+   *
+   * @param string $id
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   * @param string $perspective
+   *   Resource perspective.
+   */
+  private function removeResourceMapperEntry(string $id, string $version, string $perspective) {
+    try {
+      $resourceMapper = $this->datastore->getResourceMapper();
+      $resource = $resourceMapper->get($id, $perspective, $version);
+      if ($resource) {
+        $resourceMapper->remove($resource);
+      }
+    }
+    catch (\Exception $e) {
+      $this->logger->error("Error removing resource mapper entry id {$id}, version {$version}: " . $e->getMessage());
     }
   }
 
