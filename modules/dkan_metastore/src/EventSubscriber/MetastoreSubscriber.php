@@ -73,25 +73,28 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents(): array {
     $events = [];
-    $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['clearDistributionResources'];
-    $events[LifeCycle::EVENT_DELETING_DISTRIBUTION][] = ['clearDistributionResources'];
-    // $events[LifeCycle::EVENT_DELETING_DATASET][] = ['clearDistributionResources'];
+    $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['clearItemResources'];
+    $events[LifeCycle::EVENT_DELETING_DISTRIBUTION][] = ['clearItemResources'];
+    $events[LifeCycle::EVENT_DELETING_DATASET][] = ['clearItemResources'];
     return $events;
   }
 
   /**
-   * Clear resources associated with a distribution.
+   * Clear resources associated with a metastore item.
+   *
+   * This will almost always be for a distribution or dataset, depending on
+   * whether distributions are set to be referenced.
    *
    * @param \Drupal\dkan_metastore\LifeCycle\LifeCycleEvent $event
    *   The event object containing the distribution identifier.
    */
-  public function clearDistributionResources(LifeCycleEvent $event) {
+  public function clearItemResources(LifeCycleEvent $event) {
     $resources = [];
     $schema_id = $event->getSchemaId();
     $identifier = $event->getIdentifier();
     $item = $this->service->get($schema_id, $identifier, FALSE);
-    // Attempt to extract all resources for the given distribution.
-    $resource_refs = $item->{'$.data["' . Dereferencer::REF_PREFIX . 'downloadURL"]..data'} ?? [];
+    // Attempt to extract all resources for the given metastore item.
+    $resource_refs = $item->{'$..["' . Dereferencer::REF_PREFIX . 'downloadURL"]..data'} ?? [];
     foreach ($resource_refs as $resourceParams) {
       $resource_id = $resourceParams['identifier'] ?? NULL;
       $perspective = $resourceParams['perspective'] ?? NULL;
@@ -102,28 +105,28 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * React to a distribution being orphaned or deleted.
+   * React to a metastore item being orphaned or deleted.
    *
-   * Removes resources associated with the orphaned distribution.
+   * Removes resources associated with the orphaned metastore item.
    *
    * @param \Drupal\dkan_common\DataResource[] $resources
-   *   The resources associated with the orphaned distribution.
+   *   The resources associated with the orphaned metastore item.
    * @param string $schema_id
-   *   The schema ID of the distribution.
-   * @param string $item_id
-   *   The identifier of the distribution item.
+   *   The schema ID of the metastore item.
+   * @param string $identifier
+   *   The identifier of the metastore item.
    */
-  public function cleanResourceMapperTable(array $resources, string $schema_id, string $item_id): void {
-    // Remove all resource entries associated with this distribution from the
+  public function cleanResourceMapperTable(array $resources, string $schema_id, string $identifier): void {
+    // Remove all resource entries associated with this item from the
     // metadata resource mapper.
     foreach ($resources as $resource) {
       if (!$resource instanceof DataResource) {
         throw new \InvalidArgumentException("Expected DataResource, got " . gettype($resource));
       }
       // Ensure a valid ID, perspective, and version were found for the given
-      // distribution.
+      // item.
       $resource_id_wo_perspective = $resource->getIdentifier() . '__' . $resource->getVersion();
-      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($schema_id, $item_id, $resource_id_wo_perspective)) {
+      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($schema_id, $identifier, $resource_id_wo_perspective)) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
@@ -131,30 +134,28 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Determine if a resource is in use in another distribution.
+   * Determine if a resource is in use in another metastore item.
    *
    * @param string $schema_id
-   *   The schema ID of the distribution.
+   *   The schema ID of the metastore item.
    * @param string $item_id
-   *   The identifier of the distribution item.
+   *   The identifier of the metastore item.
    * @param string $resource_id
    *   The identifier of the resource.
    *
    * @return bool
    *   Whether the resource is in use elsewhere.
-   *
-   * @todo Abstract out "distribution" and field_data_type.
    */
   private function resourceInUseElsewhere(string $schema_id, string $item_id, string $resource_id): bool {
     $referencers = $this->referenceLookup->getReferencers($schema_id, $resource_id, 'downloadURL');
 
-    // Check if any other distributions reference it.
+    // Check if any other metastore items of the same schema reference it.
     foreach ($referencers as $referencer) {
       if ($referencer != $item_id) {
         return TRUE;
       }
     }
-    // No other distributions were found using this resource.
+    // No other metastore items were found using this resource.
     return FALSE;
   }
 

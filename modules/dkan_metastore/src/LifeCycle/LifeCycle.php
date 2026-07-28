@@ -96,11 +96,8 @@ class LifeCycle {
     if (is_object($raw)) {
       $this->orphanChecker->processReferencesInDeletedDataset($raw);
     }
-
-    // $datasetUuid = $data->getIdentifier();
-
-    // $event = new Event($datasetUuid);
-    // $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DATASET);
+    $event = new LifeCycleEvent($data->getSchemaId(), $data->getIdentifier());
+    $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DATASET);
 
   }
 
@@ -161,7 +158,7 @@ class LifeCycle {
    * Distribution predelete.
    */
   protected function distributionPredelete(MetastoreItemInterface $data): void {
-    $event = new LifeCycleEvent($data);
+    $event = new LifeCycleEvent($data->getSchemaId(), $data->getIdentifier());
     $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DISTRIBUTION);
 
   }
