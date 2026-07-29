@@ -341,7 +341,6 @@ class DatasetBTBTest extends BrowserTestBase {
       'localize_import',
       'datastore_import',
       'orphan_reference_processor',
-      'orphan_resource_remover',
       'resource_purger',
     ]);
 
@@ -753,9 +752,8 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues([
       'localize_import',
       'datastore_import',
-      'resource_purger',
       'orphan_reference_processor',
-      'orphan_resource_remover',
+      'resource_purger',
       'post_import',
     ]);
   }
@@ -773,7 +771,6 @@ class DatasetBTBTest extends BrowserTestBase {
       'localize_import',
       'datastore_import',
       'orphan_reference_processor',
-      'orphan_resource_remover',
       'resource_purger',
       'post_import',
     ]);
@@ -796,15 +793,17 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionTablePublishedExists = $databaseSchema->tableExists($distributionTablePublished);
     $this->assertTrue($distributionTablePublishedExists, $distributionTablePublished . ' exists.');
 
+    // Guard against version collisions between draft update and publish.
+    $this->avoidResourceVersionCollision();
+
     // Publish the draft dataset revision.
     $this->getMetastore()->publish('dataset', $identifier);
 
     // Simulate all possible queues post update.
     $this->runQueues([
       'datastore_import',
-      'resource_purger',
       'orphan_reference_processor',
-      'orphan_resource_remover',
+      'resource_purger',
     ]);
 
     $metadata = $datasetInfoService->gather($identifier);
@@ -913,7 +912,6 @@ class DatasetBTBTest extends BrowserTestBase {
         'datastore_import',
         'resource_purger',
         'orphan_reference_processor',
-        'orphan_resource_remover',
         'post_import',
       ]);
     }
@@ -941,9 +939,8 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues([
       'localize_import',
       'datastore_import',
-      'resource_purger',
       'orphan_reference_processor',
-      'orphan_resource_remover',
+      'resource_purger',
       'post_import',
     ]);
 
@@ -998,10 +995,17 @@ class DatasetBTBTest extends BrowserTestBase {
     $distribution->format = 'csv';
     $distribution->mediaType = 'text/csv';
 
+    // Guard against reusing the same second-based resource version.
+    $this->avoidResourceVersionCollision();
+
     // Create a new draft with the new distribution title.
     $this->getMetastore()->patch('dataset', $id_1, json_encode(
       ['distribution' => [$distribution]]
     ));
+
+    // Ensure publish in confirmNewDatastoreImportDraftWorkflow() cannot
+    // reuse the patch second in slower/faster CI environments.
+    $this->avoidResourceVersionCollision();
 
     // Run queues; check datastore import and orphan cleanup worked as expected.
     $this->confirmNewDatastoreImportDraftWorkflow($id_1);
