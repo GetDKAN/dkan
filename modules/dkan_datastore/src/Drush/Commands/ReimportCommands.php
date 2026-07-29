@@ -35,7 +35,7 @@ final class ReimportCommands extends DrushCommands {
    * done
    * ```
    */
-  #[CLI\Command(name: 'dkan:datastore:reimport', description: 'Re-import distribution based on dataset UUID.')]
+  #[CLI\Command(name: 'dkan:datastore:reimport', description: 'Re-import resources based on dataset UUID.')]
   #[CLI\Argument(name: 'uuid', description: 'The UUID of the dataset.')]
   #[CLI\Usage(name: 'dkan:datastore:reimport cedcd327-4e5d-43f9-8eb1-c11850fa7c55', description: 'Drop and import the distribution based on the dataset UUID.')]
   public function datastoreReimport(string $uuid) {

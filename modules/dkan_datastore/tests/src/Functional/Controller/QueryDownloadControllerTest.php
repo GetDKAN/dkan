@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\Tests\dkan_datastore\Functional\Controller;
+
 use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;

@@ -65,7 +65,8 @@ class PostImportResultFactory {
    * Passes the distribution when initialized.
    *
    * @param array $distribution
-   *   The distribution.
+   *   The distribution array from a datasetInfo response. Should contain a
+   *   resource_id key.
    *
    * @return \Drupal\dkan_datastore\PostImportResult
    *   The PostImportResult object.

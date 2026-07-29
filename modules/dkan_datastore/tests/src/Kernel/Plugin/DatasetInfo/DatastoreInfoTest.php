@@ -6,7 +6,7 @@ namespace Drupal\Tests\dkan_datastore\Kernel\Plugin\DatasetInfo;
 
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\Tests\dkan_common\Kernel\DatasetInfoTest;
-
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 /**
  * Tests the DatastoreInfo plugin for DatasetInfo.
  *
@@ -16,10 +16,16 @@ use Drupal\Tests\dkan_common\Kernel\DatasetInfoTest;
  */
 class DatastoreInfoTest extends DatasetInfoTest {
 
+  use DistributionReferenceModeTrait;
+
   /**
    * Re-run DatasetInfo test with datastore enabled, ensure plugin is working.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDatasetInfo() {
+  public function testDatasetInfo($distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     $this->enableModules(['dkan_datastore']);
     $datasetInfo = new DatasetInfo($this->container->get('plugin.manager.dataset_info'));
     $datasetInfo->setStorage($this->container->get('dkan.metastore.storage'));

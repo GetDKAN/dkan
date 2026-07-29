@@ -5,6 +5,7 @@ namespace Drupal\Tests\dkan_datastore\Functional\Commands;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
+use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 use Procrastinator\Result;
@@ -17,7 +18,10 @@ use Procrastinator\Result;
  * @group functional2
  */
 class DatastoreCommandsTest extends BrowserTestBase {
-  use DrushTestTrait, GetLocalDataTrait, QueueRunnerTrait;
+  use DrushTestTrait;
+  use GetLocalDataTrait;
+  use QueueRunnerTrait;
+  use DistributionReferenceModeTrait;
 
   /**
    * {@inheritdoc}
@@ -31,8 +35,12 @@ class DatastoreCommandsTest extends BrowserTestBase {
 
   /**
    * Tests the dkan:datastore:import command.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testImportCommand() {
+  public function testImportCommand(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     // Create a single dataset. Do not run any queues, so the resource is not
     // yet localized or imported.
     $dataset_id = $this->createDataset('1.csv', 'test-dataset-import');
@@ -93,8 +101,12 @@ class DatastoreCommandsTest extends BrowserTestBase {
 
   /**
    * Tests the dkan:datastore:drop command.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testDropCommand() {
+  public function testDropCommand(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     // Create a single dataset and import it.
     $dataset_id = $this->createDataset('1.csv', 'test-dataset-drop');
     $resource = $this->getResourceIdentifier($dataset_id);
@@ -188,7 +200,11 @@ class DatastoreCommandsTest extends BrowserTestBase {
     // Assert that the drop command's "removed" notice was logged for each
     // dropped resource.
     $this->assertStringContainsString(
-      'Successfully removed the post import job status for resource',
+      'Successfully dropped the datastore for resource ' . $info['resource_id'],
+      $this->getErrorOutput()
+    );
+    $this->assertStringContainsString(
+      'Successfully removed the post import job status for resource ' . $info['resource_id'],
       $this->getErrorOutput()
     );
 
@@ -287,8 +303,12 @@ class DatastoreCommandsTest extends BrowserTestBase {
 
   /**
    * Tests the dkan:datastore:reverse-dataset-lookup command.
+   *
+   * @dataProvider distributionReferenceProvider
    */
-  public function testReverseDatasetLookupCommand() {
+  public function testReverseDatasetLookupCommand(string $distribution_reference) {
+    $this->setDistributionReferenceModeFromConfig($distribution_reference);
+
     // Create a single dataset and import it, so the datastore table exists.
     $dataset_id = $this->createDataset('1.csv', 'test-dataset-rdl');
     $resource = $this->getResourceIdentifier($dataset_id);
@@ -304,6 +324,16 @@ class DatastoreCommandsTest extends BrowserTestBase {
     $this->assertStringContainsString(
       'Dataset UUID = ' . $dataset_id,
       $this->getOutput()
+    );
+
+    // Now delete the related dataset, and confirm the reverse-dataset-lookup
+    // command fails with an exception.
+    $metastore = \Drupal::service('dkan.metastore.service');
+    $metastore->delete('dataset', $dataset_id);
+    $this->drush('dkan:datastore:reverse-dataset-lookup', [$resource['table_name']], [], NULL, NULL, 1);
+    $this->assertStringContainsString(
+      'Can not map resource ID ' . $resource['resource_id'] . ' to dataset UUID',
+      $this->getErrorOutput()
     );
 
     // A table name that cannot be mapped to a resource throws an exception

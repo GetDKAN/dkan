@@ -229,6 +229,32 @@ class DatastoreLookupTest extends TestCase {
     $this->assertEquals($expected_dataset_id, $result);
   }
 
+  /**
+   * Tests the resourceToDataset method.
+   *
+   * @covers ::resourceToDataset
+   */
+  public function testResourceToDataset() {
+    $resource_id = 'resource-id';
+    $expected_dataset_id = 'dataset-uuid';
+
+    // Mock the referenceLookup service.
+    $referenceLookup = $this->createMock(ReferenceLookup::class);
+
+    // Set expectations for getReferencers to use correct arguments and return
+    // dataset ID.
+    $referenceLookup->expects($this->once())
+      ->method('getReferencers')
+      ->with('dataset', $resource_id, 'downloadURL')
+      ->willReturn([$expected_dataset_id]);
+
+    // Perform the lookup.
+    $datastoreLookup = new DatastoreLookup($this->database, $referenceLookup);
+
+    // Call the method and assert the result.
+    $result = $datastoreLookup->resourceToDataset($resource_id);
+    $this->assertEquals($expected_dataset_id, $result);
+  }
 
   /**
    * Tests the distributionToDataset method.

@@ -541,7 +541,7 @@ class DashboardForm extends FormBase {
    *   Distribution table render array.
    */
   protected function buildResourcesRow($dist): array {
-    if (is_array($dist) && isset($dist['distribution_uuid'])) {
+    if (is_array($dist) && isset($dist['resource_id'])) {
       $postImportResult = $this->postImportResultFactory->initializeFromDistribution($dist);
       $postImportInfo = $postImportResult->retrieveJobStatus();
       $postImportStatus = $postImportInfo ? $postImportInfo['post_import_status'] : "waiting";
@@ -575,7 +575,8 @@ class DashboardForm extends FormBase {
       [
         'data' => [
           '#theme' => 'dkan_datastore_dashboard_resource_cell',
-          '#uuid' => $dist['distribution_uuid'],
+          '#uuid' => $dist['distribution_uuid'] == DatasetInfo::NO_IDENTIFIER ? NULL : $dist['distribution_uuid'],
+          '#resource_id' => $dist['resource_id'],
           '#file_name' => basename((string) $dist['source_path']),
           '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
         ],

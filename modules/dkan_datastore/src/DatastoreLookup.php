@@ -13,21 +13,6 @@ use Drupal\dkan_metastore\Reference\ReferenceLookup;
 class DatastoreLookup implements DatastoreLookupInterface {
 
   /**
-   * Database connection service.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected $database;
-
-  /**
-   * Reference lookup service.
-   *
-   * @var \Drupal\dkan_metastore\Reference\ReferenceLookup
-   */
-
-  protected $referenceLookup;
-
-  /**
    * DataStoreLookupService constructor.
    *
    * @param \Drupal\Core\Database\Connection $database
@@ -35,9 +20,10 @@ class DatastoreLookup implements DatastoreLookupInterface {
    * @param \Drupal\dkan_metastore\Reference\ReferenceLookup $referenceLookup
    *   Reference lookup service.
    */
-  public function __construct(Connection $database, ReferenceLookup $referenceLookup) {
-    $this->database = $database;
-    $this->referenceLookup = $referenceLookup;
+  public function __construct(
+    protected Connection $database,
+    protected ReferenceLookup $referenceLookup,
+  ) {
   }
 
   /**
@@ -58,56 +44,49 @@ class DatastoreLookup implements DatastoreLookupInterface {
       return (string) $resource_identifier;
     }
     else {
-      throw new \Exception("Resource lookup: Can not map datastore table name {$table_name}
-      to resource ID. Please make sure your datastore table name exists as a table in the database.");
+      throw new \Exception("Resource lookup: Can not map datastore table name {$table_name} to resource ID. Please make sure your datastore table name exists as a table in the database.");
     }
   }
 
   /**
-   * Get the distribution UUID for a given resource ID.
-   *
-   * @param string $resource_id
-   *   The UUID of the resource node.
-   *
-   * @return string
-   *   The UUID of the related distribution node.
-   *
-   * @throws \RuntimeException
-   *   If no distribution is found.
+   * {@inheritDoc}
    */
   public function resourceToDistribution(string $resource_id): string {
     // Maps the resource ID to the distribution ID.
     $referencers = $this->referenceLookup->getReferencers('distribution', $resource_id, 'downloadURL');
     if (empty($referencers)) {
-      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id}
-      to distribution UUID. Please make sure your resource exists in the database.");
+      throw new \RuntimeException("Distribution lookup: Can not map resource ID {$resource_id} to distribution UUID. Please make sure your resource exists in the database.");
     }
 
     return $referencers[0];
   }
 
   /**
-   * Get the dataset UUID for a given distribution UUID.
-   *
-   * @param string $distribution_id
-   *   The UUID of the distribution node.
-   *
-   * @return string
-   *   The UUID of the dataset node.
-   *
-   * @throws \RuntimeException
-   *   If no dataset is found.
+   * {@inheritDoc}
    */
-  public function distributionToDataset(string $distribution_id): string {
+  public function resourceToDataset(string $resource_id): string {
+    // Maps the resource ID to the dataset.
+    $referencers = $this->referenceLookup->getReferencers('dataset', $resource_id, 'downloadURL');
+    if (empty($referencers)) {
+      throw new \RuntimeException("Dataset lookup: Can not map resource ID {$resource_id} to dataset UUID. Please make sure your resource exists in the database.");
+    }
+
+    return $referencers[0];
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function distributionToDataset(string $distribution_uuid): string {
     // Maps the distribution ID to the dataset.
-    if (strlen($distribution_id) !== 36) {
+    if (strlen($distribution_uuid) !== 36) {
       throw new \InvalidArgumentException("Dataset lookup: Distribution UUID must be 36 characters.");
     }
 
-    $referencers = $this->referenceLookup->getReferencers('dataset', $distribution_id, 'distribution');
+    $referencers = $this->referenceLookup->getReferencers('dataset', $distribution_uuid, 'distribution');
 
     if (empty($referencers)) {
-      throw new \RuntimeException("No dataset found for distribution ID: {$distribution_id}");
+      throw new \RuntimeException("No dataset found for distribution ID: {$distribution_uuid}");
     }
 
     return $referencers[0];
