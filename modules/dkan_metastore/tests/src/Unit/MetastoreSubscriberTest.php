@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit\EventSubscriber;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
@@ -127,6 +129,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
+      ->add('config.factory', ConfigFactoryInterface::class)
       ->add('database', Connection::class)
       ->index(0);
     $chain = (new Chain($this))
@@ -136,6 +139,8 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \Exception($removal_message))
       ->add(ReferenceLookupInterface::class, 'getReferencers', [$distribution->{'$.identifier'}])
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', [])
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
@@ -177,6 +182,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
+      ->add('config.factory', ConfigFactoryInterface::class)
       ->add('database', Connection::class)
       ->index(0);
 
@@ -187,6 +193,8 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \LogicException('Erroneous attempt to remove resource which is in use elsewhere'))
       ->add(ReferenceLookupInterface::class, 'getReferencers', [$distribution_1->{'$.identifier'}, $distribution_2->{'$.identifier'}])
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', [])
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 

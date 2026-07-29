@@ -2,12 +2,14 @@
 
 namespace Drupal\dkan_metastore\EventSubscriber;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_metastore\LifeCycle\LifeCycle;
 use Drupal\dkan_metastore\LifeCycle\LifeCycleEvent;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\dkan_metastore\Reference\Dereferencer;
+use Drupal\dkan_metastore\Reference\HelperTrait;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,6 +19,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Event subscriber for Metastore.
  */
 class MetastoreSubscriber implements EventSubscriberInterface {
+
+  use HelperTrait;
 
   /**
    * Metastore service.
@@ -44,7 +48,8 @@ class MetastoreSubscriber implements EventSubscriberInterface {
     return new static(
       $container->get('dkan.metastore.service'),
       $container->get('dkan.metastore.resource_mapper'),
-      $container->get('dkan.metastore.reference_lookup')
+      $container->get('dkan.metastore.reference_lookup'),
+      $container->get('config.factory')
     );
   }
 
@@ -57,15 +62,19 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.metastore.resource_mapper.
    * @param \Drupal\dkan_metastore\ReferenceLookupInterface $referenceLookup
    *   The dkan.metastore.reference_lookup service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   The config.factory service.
    */
   public function __construct(
     MetastoreService $service,
     ResourceMapper $resourceMapper,
     ReferenceLookupInterface $referenceLookup,
+    ConfigFactoryInterface $configFactory,
   ) {
     $this->service = $service;
     $this->resourceMapper = $resourceMapper;
     $this->referenceLookup = $referenceLookup;
+    $this->setConfigService($configFactory);
   }
 
   /**
@@ -89,9 +98,14 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *   The event object containing the distribution identifier.
    */
   public function clearItemResources(LifeCycleEvent $event) {
-    $resources = [];
     $schema_id = $event->getSchemaId();
     $identifier = $event->getIdentifier();
+    // In referenced mode, a deleted dataset's distributions get orphaned
+    // (and their resources cleaned up) separately.
+    if ($schema_id === 'dataset' && $this->distributionsAreReferenced()) {
+      return;
+    }
+    $resources = [];
     $item = $this->service->get($schema_id, $identifier, FALSE);
     // Attempt to extract all resources for the given metastore item.
     $resource_refs = $item->{'$..["' . Dereferencer::REF_PREFIX . 'downloadURL"]..data'} ?? [];
@@ -149,7 +163,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   private function resourceInUseElsewhere(string $schema_id, string $item_id, string $resource_id): bool {
     $referencers = $this->referenceLookup->getReferencers($schema_id, $resource_id, 'downloadURL');
 
-    // Check if any other metastore items of the same schema reference it.
+    // Check if any other metastore items reference it.
     foreach ($referencers as $referencer) {
       if ($referencer != $item_id) {
         return TRUE;
