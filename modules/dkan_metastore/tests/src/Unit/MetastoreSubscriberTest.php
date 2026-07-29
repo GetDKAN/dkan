@@ -10,6 +10,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Events\Event;
 use Drupal\dkan_metastore\EventSubscriber\MetastoreSubscriber;
+use Drupal\dkan_metastore\LifeCycle\LifeCycleEvent;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\ReferenceLookupInterface;
 use Drupal\dkan_metastore\ResourceMapper;
@@ -142,9 +143,9 @@ class MetastoreSubscriberTest extends TestCase {
     // the successful removal exception message.
     $this->expectException(\Exception::class);
     $this->expectExceptionMessage($removal_message);
-    // Test `MetastoreSubscriber::cleanResourceMapperTable()`.
+    // Test `MetastoreSubscriber::clearItemResources()`.
     $subscriber = MetastoreSubscriber::create($chain->getMock());
-    $subscriber->cleanResourceMapperTable(new Event($distribution->{'$.identifier'}));
+    $subscriber->clearItemResources(new LifeCycleEvent('distribution', $distribution->{'$.identifier'}));
   }
 
   /**
@@ -190,6 +191,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
     $subscriber = MetastoreSubscriber::create($chain->getMock());
-    $subscriber->cleanResourceMapperTable(new Event($distribution_1->{'$.identifier'}));
+    $dist_id = $distribution_1->{'$.identifier'};
+    $subscriber->clearItemResources(new LifeCycleEvent('distribution', $dist_id));
   }
 }
