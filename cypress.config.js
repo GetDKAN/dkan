@@ -2,6 +2,8 @@ const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
   apiUri: 'api/1',
+  experimentalMemoryManagement: true,
+  numTestsKeptInMemory: 0,
   env: {
     TEST_USER_CREDENTIALS: {
       user: 'testadmin',
