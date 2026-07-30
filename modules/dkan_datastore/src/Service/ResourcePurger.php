@@ -218,9 +218,9 @@ class ResourcePurger implements ContainerInjectionInterface {
     foreach (array_diff($purge, $keep) as $idAndVersion) {
       [$id, $version, $perspective] = json_decode((string) $idAndVersion);
       $this->purgeStorage($id, $version);
-      // If distributions are referenced, the resource-mapper entry is cleaned 
+      // If distributions are referenced, the resource mapper entry is cleaned
       // up separately, when the distribution node it belongs to is orphaned or
-      // deleted (see MetastoreSubscriber::clearItemResources()). 
+      // deleted (see MetastoreSubscriber::clearItemResources()).
       if (!$this->distributionsAreReferenced()) {
         $this->removeResourceMapperEntry($id, $version, $perspective);
       }
