@@ -216,10 +216,14 @@ class ResourcePurger implements ContainerInjectionInterface {
     $purge = $this->getResourcesToPurge($vid, $node, $prior);
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
-      // $idAndVersion is a json encoded array with resource's id, version,
-      // and perspective.
       [$id, $version, $perspective] = json_decode((string) $idAndVersion);
-      $this->delete($id, $version, $perspective);
+      $this->purgeStorage($id, $version);
+      // If distributions are referenced, the resource-mapper entry is cleaned 
+      // up separately, when the distribution node it belongs to is orphaned or
+      // deleted (see MetastoreSubscriber::clearItemResources()). 
+      if (!$this->distributionsAreReferenced()) {
+        $this->removeResourceMapperEntry($id, $version, $perspective);
+      }
     }
   }
 
@@ -425,34 +429,19 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Delete a resource's file, table, and resource-mapper entry.
-   *
-   * File and table removal are based on enabled config settings. The
-   * resource-mapper entry is only removed here in non-referenced mode; in
-   * referenced mode, that cleanup already happens via
-   * MetastoreSubscriber::clearItemResources() when the distribution node
-   * that owned the resource is orphaned or deleted, and removing it here too
-   * (which can run before that happens) would break that mechanism, since it
-   * still needs to dereference the orphaned distribution's metadata.
+   * Purge a resource's datastore table and/or localized file.
    *
    * @param string $id
    *   Resource identifier.
    * @param string $version
    *   Resource version.
-   * @param string $perspective
-   *   Resource perspective.
-   *
-   * @see \Drupal\dkan_metastore\EventSubscriber\MetastoreSubscriber::clearItemResources()
    */
-  private function delete(string $id, string $version, string $perspective) {
+  private function purgeStorage(string $id, string $version): void {
     if ($this->getPurgeTableSetting()) {
       $this->removeDatastoreStorage($id, $version);
     }
     if ($this->getPurgeFileSetting()) {
       $this->removeResourceLocalizer($id, $version);
-    }
-    if (!$this->distributionsAreReferenced()) {
-      $this->removeResourceMapperEntry($id, $version, $perspective);
     }
   }
 
