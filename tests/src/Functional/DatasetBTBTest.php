@@ -341,6 +341,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'localize_import',
       'datastore_import',
       'orphan_reference_processor',
+      'orphan_resource_remover',
       'resource_purger',
     ]);
 
@@ -753,6 +754,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'localize_import',
       'datastore_import',
       'orphan_reference_processor',
+      'orphan_resource_remover',
       'resource_purger',
       'post_import',
     ]);
@@ -771,6 +773,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'localize_import',
       'datastore_import',
       'orphan_reference_processor',
+      'orphan_resource_remover',
       'resource_purger',
       'post_import',
     ]);
@@ -912,6 +915,7 @@ class DatasetBTBTest extends BrowserTestBase {
         'datastore_import',
         'resource_purger',
         'orphan_reference_processor',
+        'orphan_resource_remover',
         'post_import',
       ]);
     }
@@ -940,6 +944,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'localize_import',
       'datastore_import',
       'orphan_reference_processor',
+      'orphan_resource_remover',
       'resource_purger',
       'post_import',
     ]);

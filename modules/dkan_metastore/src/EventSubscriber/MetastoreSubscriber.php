@@ -119,8 +119,6 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * React to a metastore item being orphaned or deleted.
-   *
    * Removes resources associated with the orphaned metastore item.
    *
    * @param \Drupal\dkan_common\DataResource[] $resources

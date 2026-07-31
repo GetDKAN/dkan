@@ -3,6 +3,7 @@
 namespace Drupal\dkan_metastore\LifeCycle;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
@@ -190,7 +191,6 @@ class LifeCycle {
 
   /**
    * Trigger datastore import and reference metadata with uuids.
-   *
    *
    * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Metastore item.
