@@ -31,6 +31,7 @@ services:
     class: \Drupal\dkan_metastore\SchemaPropertiesHelper
     arguments:
       - '@dkan.metastore.schema_retriever'
+  Drupal\dkan_metastore\SchemaPropertiesHelper: '@dkan.metastore.schema_properties_helper'
 
   dkan.metastore.storage:
     class: \Drupal\dkan_metastore\Storage\DataFactory
@@ -61,6 +62,7 @@ services:
       - '@dkan.metastore.url_generator'
       - '@dkan.metastore.resource_mapper'
       - '@dkan.common.logger_channel'
+  Drupal\dkan_metastore\Reference\Dereferencer: '@dkan.metastore.dereferencer'
 
   dkan.metastore.orphan_checker:
     class: \Drupal\dkan_metastore\Reference\OrphanChecker
