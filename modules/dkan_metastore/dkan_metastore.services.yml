@@ -88,6 +88,7 @@ services:
       - '@dkan.metastore.service'
       - '@dkan.metastore.resource_mapper'
       - '@dkan.metastore.reference_lookup'
+      - '@config.factory'
     tags:
       - { name: event_subscriber }
 

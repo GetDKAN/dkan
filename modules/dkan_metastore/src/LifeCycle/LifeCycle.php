@@ -30,6 +30,7 @@ class LifeCycle {
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
   const EVENT_DELETING_DISTRIBUTION = 'dkan_metastore_deleting_distribution';
+  const EVENT_DELETING_DATASET = 'dkan_metastore_deleting_dataset';
 
   /**
    * Constructor.
@@ -96,6 +97,9 @@ class LifeCycle {
     if (is_object($raw)) {
       $this->orphanChecker->processReferencesInDeletedDataset($raw);
     }
+    $event = new LifeCycleEvent($data->getSchemaId(), $data->getIdentifier());
+    $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DATASET);
+
   }
 
   /**
@@ -117,6 +121,8 @@ class LifeCycle {
 
   /**
    * Purge resources (if unneeded) of any updated dataset.
+   *
+   * @todo use LifeCycleEvent instead of Event.
    */
   protected function datasetUpdate(MetastoreItemInterface $data): void {
     $event = new Event($data);
@@ -153,9 +159,7 @@ class LifeCycle {
    * Distribution predelete.
    */
   protected function distributionPredelete(MetastoreItemInterface $data): void {
-    $distributionUuid = $data->getIdentifier();
-
-    $event = new Event($distributionUuid);
+    $event = new LifeCycleEvent($data->getSchemaId(), $data->getIdentifier());
     $this->eventDispatcher->dispatch($event, self::EVENT_DELETING_DISTRIBUTION);
 
   }
@@ -191,7 +195,7 @@ class LifeCycle {
    * @param \Drupal\dkan_metastore\MetastoreItemInterface $data
    *   Metastore item.
    *
-   * @throws \Exception
+   * @todo use LifeCycleEvent instead of Event.
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
     $metadata = $data->getMetadata();
