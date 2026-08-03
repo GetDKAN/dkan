@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Functional\Commands;
 
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\dkan_common\Traits\DistributionReferenceModeTrait;
 use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
@@ -21,14 +22,22 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
   use GetLocalDataTrait;
   use DistributionReferenceModeTrait;
 
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = ['dkan_datastore', 'dkan_metastore'];
 
+  /**
+   * {@inheritdoc}
+   */
   protected $defaultTheme = 'stark';
 
   /**
    * Tests that the command unreferences distributions and updates state.
+   *
+   * @dataProvider unrefDatasetsOptionsProvider
    */
-  public function testUnrefDatasets(): void {
+  public function testUnrefDatasets(array $options): void {
     // Start with referencing enabled for distribution.
     $this->setDistributionReferenceModeFromConfig('distribution');
 
@@ -48,13 +57,15 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $raw2 = json_decode($this->getRawDatasetJson($uuid2));
     $this->assertDistributionsAreReferenced($raw1, 'Dataset 1 should have referenced distributions before command.');
     $this->assertDistributionsAreReferenced($raw2, 'Dataset 2 should have referenced distributions before command.');
+    $dist1_uuid = $raw1->{Dereferencer::REF_PREFIX . 'distribution'}[0]->identifier;
+    $dist2_uuid = $raw2->{Dereferencer::REF_PREFIX . 'distribution'}[0]->identifier;
 
     // Run the command targeting the distribution property.
-    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], ['xdebug' => NULL]);
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => TRUE]);
 
     // Reset the config factory so we see what Drush wrote to the DB.
     $this->container->get('config.factory')->reset();
-    // Reset entity cache so retrieve() reloads from DB rather than serving stale data.
+    // Reset entity cache so retrieve() reloads from DB.
     $this->container->get('entity_type.manager')->getStorage('node')->resetCache();
 
     // Referencing should now be disabled in config.
@@ -65,11 +76,22 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
       'Referencing for distribution should be disabled after command.'
     );
 
-    // Both datasets should now have embedded (non-UUID) distribution objects.
+    // Both datasets should now have embedded distribution objects.
     $raw1 = json_decode($this->getRawDatasetJson($uuid1));
     $raw2 = json_decode($this->getRawDatasetJson($uuid2));
     $this->assertDistributionsAreEmbedded($raw1, 'Dataset 1 distributions should be embedded after command.');
     $this->assertDistributionsAreEmbedded($raw2, 'Dataset 2 distributions should be embedded after command.');
+
+    if (!empty($options['delete-orphans'])) {
+      // Assert the two original referenced distributions are now deleted.
+      $this->assertDistributionsAreDeleted($dist1_uuid);
+      $this->assertDistributionsAreDeleted($dist2_uuid);
+    }
+    else {
+      // Assert the two original referenced distributions are now orphaned.
+      $this->assertDistributionsAreOrphaned($dist1_uuid);
+      $this->assertDistributionsAreOrphaned($dist2_uuid);
+    }
 
     // Status output should mention both dataset titles and count.
     $output = $this->getOutput();
@@ -79,13 +101,65 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
   }
 
   /**
+   * Data provider for testUnrefDatasets.
+   *
+   * Drush command options.
+   *
+   * @return array
+   *   Test cases.
+   */
+  public static function unrefDatasetsOptionsProvider(): array {
+    return [
+      'default' => [
+        'options' => [],
+      ],
+      'delete-orphans' => [
+        'options' => ['delete-orphans' => TRUE],
+      ],
+    ];
+  }
+
+  /**
+   * Tests that the command fails gracefully with an invalid property.
+   */
+  public function testUnrefDatasetsWithInvalidProperty(): void {
+    $this->setDistributionReferenceModeFromConfig('distribution');
+
+    // Run the command targeting an invalid property.
+    $this->drush('dkan:metastore:unreference-datasets', ['invalid_property'], ['yes' => TRUE]);
+
+    // Status output should mention the unknown property.
+    $output = $this->getErrorOutput();
+    $this->assertStringContainsString('Unknown property: invalid_property', $output);
+  }
+
+  /**
+   * Assert that a distribution node is orphaned.
+   */
+  private function assertDistributionsAreOrphaned(string $uuid): void {
+    $node = $this->container->get('entity_type.manager')->getStorage('node')->loadByProperties(['uuid' => $uuid]);
+    $node = reset($node);
+    $this->assertNotNull($node, "Distribution node with UUID {$uuid} should exist.");
+    $this->assertEquals('orphaned', $node->get('moderation_state')->value, "Distribution node with UUID {$uuid} should be orphaned.");
+  }
+
+  /**
+   * Assert that a distribution node is deleted.
+   */
+  private function assertDistributionsAreDeleted(string $uuid): void {
+    $node = $this->container->get('entity_type.manager')->getStorage('node')->loadByProperties(['uuid' => $uuid]);
+    $node = reset($node);
+    $this->assertFalse($node, "Distribution node with UUID {$uuid} should be deleted.");
+  }
+
+  /**
    * Assert that the dataset was stored with referenced distributions.
    *
    * When referenced, node-load dereferencing adds a '%Ref:distribution' key
    * containing metadata objects (with 'identifier' UUID and 'data' fields).
    */
   private function assertDistributionsAreReferenced(object $data, string $message): void {
-    $ref_key = '%Ref:distribution';
+    $ref_key = Dereferencer::REF_PREFIX . 'distribution';
     $this->assertTrue(isset($data->{$ref_key}), $message . " (expected '{$ref_key}' key to be present)");
     $refs = $data->{$ref_key};
     $this->assertIsArray($refs, $message . ' (reference key should be an array)');
@@ -99,7 +173,7 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
    * Assert every distribution in $data is an embedded object (not a UUID).
    */
   private function assertDistributionsAreEmbedded(object $data, string $message): void {
-    $ref_key = '%Ref:distribution';
+    $ref_key = Dereferencer::REF_PREFIX . 'distribution';
     $this->assertFalse(isset($data->{$ref_key}), $message . " ('{$ref_key}' key should be absent after embedding)");
     $this->assertIsArray($data->distribution ?? NULL, $message);
     foreach ($data->distribution as $dist) {

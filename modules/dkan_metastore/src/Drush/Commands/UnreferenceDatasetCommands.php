@@ -14,8 +14,6 @@ use Drush\Commands\DrushCommands;
 
 /**
  * Drush command to unreference dataset properties.
- *
- * @codeCoverageIgnore
  */
 final class UnreferenceDatasetCommands extends DrushCommands {
 
@@ -44,25 +42,25 @@ final class UnreferenceDatasetCommands extends DrushCommands {
   /**
    * Convert referenced dataset property values to embedded values.
    */
-  #[CLI\Command(name: 'dkan:metastore:unreference-datasets', description: 'Convert referenced dataset property values to embedded (non-referenced) values.')]
+  #[CLI\Command(name: 'dkan:metastore:unreference-datasets', description: 'Convert referenced dataset property values to embedded (non-referenced) values.', aliases: ['dkan:unref'])]
   #[CLI\Argument(name: 'target_property', description: 'Dataset property to unreference (e.g. "distribution"). Prompted interactively if omitted.')]
   #[CLI\Option(name: 'delete-orphans', description: 'Immediately delete orphaned referenced entities instead of queuing them.')]
   public function unrefDatasets(
-    ?string $target_property = NULL,
+    ?string $target_property = 'distribution',
     array $options = ['delete-orphans' => FALSE],
   ): void {
     $properties = $this->schemaPropertiesHelper->retrieveSchemaProperties();
     $this->storage = $this->factory->getInstance('dataset');
 
-    if ($target_property === NULL) {
-      $target_property = $this->io()->choice(
-        'Select the dataset property to unreference',
-        array_combine(array_keys($properties), array_values($properties)),
-      );
-    }
-
     if (!array_key_exists($target_property, $properties)) {
       $this->logger()->error("Unknown property: {$target_property}");
+      return;
+    }
+
+    // Warn the user that this operation is irreversible.
+    $this->io()->warning("You are about to overwrite references for the \"{$target_property}\" property for all datasets. This operation is irreversible.");
+    if (!$this->io()->confirm('Do you want to continue?', FALSE)) {
+      $this->logger()->notice('Operation cancelled.');
       return;
     }
 
@@ -86,42 +84,38 @@ final class UnreferenceDatasetCommands extends DrushCommands {
    * Re-save one dataset with the target property embedded, then handle orphans.
    */
   private function processDataset(string $uuid, string $target_property, bool $delete_orphans): void {
-    try {
-      $entity = $this->storage->getEntityLatestRevision($uuid);
-      if (!$entity) {
-        return;
-      }
-
-      $data = json_decode($this->storage->retrieve($uuid));
-      $orphan_uuids = $this->collectReferenceUuids($data, $target_property);
-      $title = $data->title ?? $data->name ?? $uuid;
-      $count = count($orphan_uuids);
-
-      $this->output()->writeln(sprintf('[%s] Un-referencing %d %s value(s).', $title, $count, $target_property));
-      if ($count === 0) {
-        return;
-      }
-
-      // Dereference the target property and re-save the dataset.
-      $this->dereferencer->dereferenceProperty($target_property, $data);
-      $dataset = $this->metastoreService->getValidMetadataFactory()->get(json_encode($data), 'dataset');
-      $this->metastoreService->removeReferences($dataset);
-      $this->storage->store((string) $dataset, $uuid);
-
-      foreach ($orphan_uuids as $orphan_uuid) {
-        if ($delete_orphans) {
-          $this->metastoreService->delete($target_property, $orphan_uuid);
-          $this->output()->writeln(sprintf('[%s] Deleting orphaned %s: %s', $title, $target_property, $orphan_uuid));
-        }
-        else {
-          // Use OrphanReferenceProcessor directly on the referenced entity.
-          $this->output()->writeln(sprintf('[%s] Orphaning %s: %s', $title, $target_property, $orphan_uuid));
-          $this->storage->orphan($target_property, $orphan_uuid);
-        }
-      }
+    $entity = $this->storage->getEntityLatestRevision($uuid);
+    if (!$entity) {
+      return;
     }
-    catch (\Exception $e) {
-      $this->logger()->error("Failed processing dataset {$uuid}: " . $e->getMessage());
+
+    $data = json_decode($this->storage->retrieve($uuid));
+    $orphan_uuids = $this->collectReferenceUuids($data, $target_property);
+    $title = $data->title ?? $data->name ?? $uuid;
+    $count = count($orphan_uuids);
+
+    $this->output()->writeln(sprintf('[%s] Un-referencing %d %s value(s).', $title, $count, $target_property));
+    if ($count === 0) {
+      return;
+    }
+
+    // Dereference the target property and re-save the dataset.
+    $this->dereferencer->dereferenceProperty($target_property, $data);
+    $dataset = $this->metastoreService->getValidMetadataFactory()->get(json_encode($data), 'dataset');
+    $this->metastoreService->removeReferences($dataset);
+    $this->storage->store((string) $dataset, $uuid);
+
+    foreach ($orphan_uuids as $orphan_uuid) {
+      if ($delete_orphans) {
+        $this->metastoreService->delete($target_property, $orphan_uuid);
+        $this->output()->writeln(sprintf('[%s] Deleting orphaned %s: %s', $title, $target_property, $orphan_uuid));
+      }
+      else {
+        $ref_storage = $this->factory->getInstance($target_property);
+        // Use OrphanReferenceProcessor directly on the referenced entity.
+        $this->output()->writeln(sprintf('[%s] Orphaning %s: %s', $title, $target_property, $orphan_uuid));
+        $ref_storage->orphan($orphan_uuid);
+      }
     }
   }
 
