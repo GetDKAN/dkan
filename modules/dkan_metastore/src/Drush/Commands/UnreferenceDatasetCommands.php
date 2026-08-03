@@ -47,10 +47,10 @@ final class UnreferenceDatasetCommands extends DrushCommands {
    */
   #[CLI\Command(name: 'dkan:metastore:unreference-datasets', description: 'Convert referenced dataset property values to embedded (non-referenced) values.', aliases: ['dkan:unref'])]
   #[CLI\Argument(name: 'target_property', description: 'Dataset property to unreference (e.g. "distribution"). Prompted interactively if omitted.')]
-  #[CLI\Option(name: 'delete-orphans', description: 'Immediately delete orphaned referenced entities instead of queuing them.')]
+  #[CLI\Option(name: 'delete', description: 'Immediately delete orphaned referenced entities instead of queuing them.')]
   public function unrefDatasets(
     ?string $target_property = 'distribution',
-    array $options = ['delete-orphans' => FALSE],
+    array $options = ['delete' => FALSE],
   ): void {
     $properties = $this->schemaPropertiesHelper->retrieveSchemaProperties();
     $this->storage = $this->factory->getInstance('dataset');
@@ -75,7 +75,7 @@ final class UnreferenceDatasetCommands extends DrushCommands {
       $this->logger()->notice("Disabled referencing for \"{$target_property}\" in dkan_metastore.settings.");
     }
 
-    $delete_orphans = (bool) ($options['delete-orphans'] ?? FALSE);
+    $delete_orphans = (bool) ($options['delete'] ?? FALSE);
     $uuids = $this->metastoreService->getIdentifiers('dataset', unpublished: TRUE);
 
     foreach ($uuids as $uuid) {

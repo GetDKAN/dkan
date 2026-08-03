@@ -73,7 +73,7 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $this->assertStringContainsString('Operation cancelled.', $output);
 
     // Run the command targeting the distribution property.
-    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => TRUE]);
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => TRUE, 'xdebug' => NULL]);
 
     // Reset the config factory so we see what Drush wrote to the DB.
     $this->container->get('config.factory')->reset();
@@ -94,7 +94,7 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $this->assertDistributionsAreEmbedded($raw1, 'Dataset 1 distributions should be embedded after command.');
     $this->assertDistributionsAreEmbedded($raw2, 'Dataset 2 distributions should be embedded after command.');
 
-    if (!empty($options['delete-orphans'])) {
+    if (array_key_exists('delete', $options)) {
       // Assert the two original referenced distributions are now deleted.
       $this->assertDistributionsAreDeleted($dist1_uuid);
       $this->assertDistributionsAreDeleted($dist2_uuid);
@@ -125,8 +125,8 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
       'default' => [
         'options' => [],
       ],
-      'delete-orphans' => [
-        'options' => ['delete-orphans' => TRUE],
+      'delete' => [
+        'options' => ['delete' => NULL],
       ],
     ];
   }
