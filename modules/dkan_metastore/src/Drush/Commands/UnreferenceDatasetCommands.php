@@ -14,6 +14,9 @@ use Drush\Commands\DrushCommands;
 
 /**
  * Drush command to unreference dataset properties.
+ *
+ * @codeCoverageIgnore
+ * @see \Drupal\Tests\dkan_metastore\Functional\Drush\Commands\UnreferenceDatasetCommandsTest
  */
 final class UnreferenceDatasetCommands extends DrushCommands {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Functional\Commands;
+namespace Drupal\Tests\dkan_metastore\Functional\Drush\Commands;
 
 use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\Tests\BrowserTestBase;
