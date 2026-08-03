@@ -2,10 +2,9 @@
 
 namespace Drupal\dkan_metastore\Drush\Commands;
 
-use Drupal\dkan_metastore\Storage\MetastoreStorageInterface;
+use Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_metastore\MetastoreService;
-use Drupal\dkan_metastore\ValidMetadataFactory;
 use Drupal\dkan_metastore\SchemaPropertiesHelper;
 use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\Storage\DataFactory;
@@ -22,7 +21,12 @@ final class EmbedDistributionsCommands extends DrushCommands {
 
   use AutowireTrait;
 
-  private MetastoreStorageInterface $storage;
+  /**
+   * Metastore storage object.
+   *
+   * @var \Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface
+   */
+  private MetastoreEntityStorageInterface $storage;
 
   /**
    * Constructor.
@@ -31,7 +35,6 @@ final class EmbedDistributionsCommands extends DrushCommands {
     private readonly DataFactory $factory,
     private readonly MetastoreService $metastoreService,
     private readonly SchemaPropertiesHelper $schemaPropertiesHelper,
-    private readonly ValidMetadataFactory $validMetadataFactory,
     private readonly ConfigFactoryInterface $configFactory,
     private readonly Dereferencer $dereferencer,
   ) {
@@ -49,7 +52,7 @@ final class EmbedDistributionsCommands extends DrushCommands {
     array $options = ['delete-orphans' => FALSE],
   ): void {
     $properties = $this->schemaPropertiesHelper->retrieveSchemaProperties();
-    $this->storage = $this->factory->getInstance($target_property ?? 'dataset');
+    $this->storage = $this->factory->getInstance('dataset');
 
     if ($target_property === NULL) {
       $target_property = $this->io()->choice(
@@ -89,7 +92,7 @@ final class EmbedDistributionsCommands extends DrushCommands {
         return;
       }
 
-      $data = json_decode($storage->retrieve($uuid));
+      $data = json_decode($this->storage->retrieve($uuid));
       $orphan_uuids = $this->collectReferenceUuids($data, $target_property);
       $title = $data->title ?? $data->name ?? $uuid;
       $count = count($orphan_uuids);
@@ -101,7 +104,7 @@ final class EmbedDistributionsCommands extends DrushCommands {
 
       // Dereference the target property and re-save the dataset.
       $this->dereferencer->dereferenceProperty($target_property, $data);
-      $dataset = $this->validMetadataFactory->get(json_encode($data), 'dataset');
+      $dataset = $this->metastoreService->getValidMetadataFactory()->get(json_encode($data), 'dataset');
       $this->metastoreService->removeReferences($dataset);
       $this->storage->store((string) $dataset, $uuid);
 
