@@ -116,17 +116,13 @@ final class UnreferenceDatasetCommands extends DrushCommands {
         else {
           // Use OrphanReferenceProcessor directly on the referenced entity.
           $this->output()->writeln(sprintf('[%s] Orphaning %s: %s', $title, $target_property, $orphan_uuid));
-          $this->orphanDereferencedEntity($target_property, $orphan_uuid);
+          $this->storage->orphan($target_property, $orphan_uuid);
         }
       }
     }
     catch (\Exception $e) {
       $this->logger()->error("Failed processing dataset {$uuid}: " . $e->getMessage());
     }
-  }
-
-  private function orphanDereferencedEntity(string $property_id, string $uuid): void {
-    $this->storage->orphan($uuid);
   }
 
   /**
