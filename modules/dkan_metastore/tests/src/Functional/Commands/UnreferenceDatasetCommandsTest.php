@@ -8,14 +8,14 @@ use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
- * Functional test for dkan:metastore:embed-distributions.
+ * Functional test for dkan:metastore:unreference-datasets.
  *
  * @group dkan
  * @group dkan_metastore
  * @group functional
  * @group functional1
  */
-class EmbedDistributionsCommandsTest extends BrowserTestBase {
+class UnreferenceDatasetCommandsTest extends BrowserTestBase {
 
   use DrushTestTrait;
   use GetLocalDataTrait;
@@ -26,9 +26,9 @@ class EmbedDistributionsCommandsTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
-   * Tests that the command embeds referenced distributions and updates state.
+   * Tests that the command unreferences distributions and updates state.
    */
-  public function testEmbedDistributions(): void {
+  public function testUnrefDatasets(): void {
     // Start with referencing enabled for distribution.
     $this->setDistributionReferenceModeFromConfig('distribution');
 
@@ -50,7 +50,7 @@ class EmbedDistributionsCommandsTest extends BrowserTestBase {
     $this->assertDistributionsAreReferenced($raw2, 'Dataset 2 should have referenced distributions before command.');
 
     // Run the command targeting the distribution property.
-    $this->drush('dkan:metastore:embed-distributions', ['distribution'], ['xdebug' => NULL]);
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], ['xdebug' => NULL]);
 
     // Reset the config factory so we see what Drush wrote to the DB.
     $this->container->get('config.factory')->reset();

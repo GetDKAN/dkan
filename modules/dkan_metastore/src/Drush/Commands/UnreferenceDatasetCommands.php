@@ -13,11 +13,11 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 
 /**
- * Drush command to convert referenced distributions to embedded distributions.
+ * Drush command to unreference dataset properties.
  *
  * @codeCoverageIgnore
  */
-final class EmbedDistributionsCommands extends DrushCommands {
+final class UnreferenceDatasetCommands extends DrushCommands {
 
   use AutowireTrait;
 
@@ -42,12 +42,12 @@ final class EmbedDistributionsCommands extends DrushCommands {
   }
 
   /**
-   * Convert referenced distributions to embedded distributions.
+   * Convert referenced dataset property values to embedded values.
    */
-  #[CLI\Command(name: 'dkan:metastore:embed-distributions', aliases: ['dkan:metastore:unref'], description: 'Convert referenced distributions to embedded (non-referenced) distributions.')]
-  #[CLI\Argument(name: 'target_property', description: 'Dataset property to embed (e.g. "distribution"). Prompted interactively if omitted.')]
+  #[CLI\Command(name: 'dkan:metastore:unreference-datasets', description: 'Convert referenced dataset property values to embedded (non-referenced) values.')]
+  #[CLI\Argument(name: 'target_property', description: 'Dataset property to unreference (e.g. "distribution"). Prompted interactively if omitted.')]
   #[CLI\Option(name: 'delete-orphans', description: 'Immediately delete orphaned referenced entities instead of queuing them.')]
-  public function embedDistributions(
+  public function unrefDatasets(
     ?string $target_property = NULL,
     array $options = ['delete-orphans' => FALSE],
   ): void {
@@ -56,7 +56,7 @@ final class EmbedDistributionsCommands extends DrushCommands {
 
     if ($target_property === NULL) {
       $target_property = $this->io()->choice(
-        'Select the dataset property to embed',
+        'Select the dataset property to unreference',
         array_combine(array_keys($properties), array_values($properties)),
       );
     }
