@@ -41,6 +41,12 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     // Start with referencing enabled for distribution.
     $this->setDistributionReferenceModeFromConfig('distribution');
 
+    // Run the command targeting an invalid property.
+    $this->setDistributionReferenceModeFromConfig('distribution');
+    $this->drush('dkan:metastore:unreference-datasets', ['invalid_property'], ['yes' => TRUE]);
+    $output = $this->getErrorOutput();
+    $this->assertStringContainsString('Unknown property: invalid_property', $output);
+
     /** @var \Drupal\dkan_metastore\MetastoreService $metastore */
     $metastore = $this->container->get('dkan.metastore.service');
     $factory = $metastore->getValidMetadataFactory();
@@ -59,6 +65,12 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $this->assertDistributionsAreReferenced($raw2, 'Dataset 2 should have referenced distributions before command.');
     $dist1_uuid = $raw1->{Dereferencer::REF_PREFIX . 'distribution'}[0]->identifier;
     $dist2_uuid = $raw2->{Dereferencer::REF_PREFIX . 'distribution'}[0]->identifier;
+
+    // Check we get a confirmation before proceeding with the operation.
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options);
+    $output = $this->getOutput() . $this->getErrorOutput();
+    $this->assertStringContainsString('WARNING] You are about to overwrite references', $output);
+    $this->assertStringContainsString('Operation cancelled.', $output);
 
     // Run the command targeting the distribution property.
     $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => TRUE]);
@@ -117,20 +129,6 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
         'options' => ['delete-orphans' => TRUE],
       ],
     ];
-  }
-
-  /**
-   * Tests that the command fails gracefully with an invalid property.
-   */
-  public function testUnrefDatasetsWithInvalidProperty(): void {
-    $this->setDistributionReferenceModeFromConfig('distribution');
-
-    // Run the command targeting an invalid property.
-    $this->drush('dkan:metastore:unreference-datasets', ['invalid_property'], ['yes' => TRUE]);
-
-    // Status output should mention the unknown property.
-    $output = $this->getErrorOutput();
-    $this->assertStringContainsString('Unknown property: invalid_property', $output);
   }
 
   /**
