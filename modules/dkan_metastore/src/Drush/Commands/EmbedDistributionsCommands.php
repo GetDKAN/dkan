@@ -2,12 +2,12 @@
 
 namespace Drupal\dkan_metastore\Drush\Commands;
 
+use Drupal\dkan_metastore\Storage\MetastoreStorageInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\RevisionLogInterface;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\dkan_metastore\MetastoreService;
-use Drupal\dkan_metastore\Reference\Dereferencer;
+use Drupal\dkan_metastore\ValidMetadataFactory;
 use Drupal\dkan_metastore\SchemaPropertiesHelper;
+use Drupal\dkan_metastore\Reference\Dereferencer;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -22,12 +22,17 @@ final class EmbedDistributionsCommands extends DrushCommands {
 
   use AutowireTrait;
 
+  private MetastoreStorageInterface $storage;
+
+  /**
+   * Constructor.
+   */
   public function __construct(
     private readonly DataFactory $factory,
     private readonly MetastoreService $metastoreService,
     private readonly SchemaPropertiesHelper $schemaPropertiesHelper,
+    private readonly ValidMetadataFactory $validMetadataFactory,
     private readonly ConfigFactoryInterface $configFactory,
-    private readonly QueueFactory $queueFactory,
     private readonly Dereferencer $dereferencer,
   ) {
     parent::__construct();
@@ -44,6 +49,7 @@ final class EmbedDistributionsCommands extends DrushCommands {
     array $options = ['delete-orphans' => FALSE],
   ): void {
     $properties = $this->schemaPropertiesHelper->retrieveSchemaProperties();
+    $this->storage = $this->factory->getInstance($target_property ?? 'dataset');
 
     if ($target_property === NULL) {
       $target_property = $this->io()->choice(
@@ -66,20 +72,19 @@ final class EmbedDistributionsCommands extends DrushCommands {
     }
 
     $delete_orphans = (bool) ($options['delete-orphans'] ?? FALSE);
-    $storage = $this->factory->getInstance('dataset');
     $uuids = $this->metastoreService->getIdentifiers('dataset', unpublished: TRUE);
 
     foreach ($uuids as $uuid) {
-      $this->processDataset($uuid, $target_property, $delete_orphans, $storage);
+      $this->processDataset($uuid, $target_property, $delete_orphans);
     }
   }
 
   /**
    * Re-save one dataset with the target property embedded, then handle orphans.
    */
-  private function processDataset(string $uuid, string $target_property, bool $delete_orphans, $storage): void {
+  private function processDataset(string $uuid, string $target_property, bool $delete_orphans): void {
     try {
-      $entity = $storage->getEntityLatestRevision($uuid);
+      $entity = $this->storage->getEntityLatestRevision($uuid);
       if (!$entity) {
         return;
       }
@@ -89,40 +94,26 @@ final class EmbedDistributionsCommands extends DrushCommands {
       $title = $data->title ?? $data->name ?? $uuid;
       $count = count($orphan_uuids);
 
+      $this->output()->writeln(sprintf('[%s] Un-referencing %d %s value(s).', $title, $count, $target_property));
       if ($count === 0) {
         return;
       }
 
-      $this->output()->writeln(sprintf('[%s] Un-referencing %d %s value(s).', $title, $count, $target_property));
-
-      $original_uid = $entity->getOwnerId();
-
-      // Data from retrieve() is already dereferenced by the node-load hook.
-      // Drop the %Ref marker so the property is stored as embedded.
-      unset($data->{'%Ref:' . $target_property});
-      // store() expects a JSON string, not a decoded object.
-      $storage->store(json_encode($data), $uuid);
-
-      // Restore original author and set log message on the new revision.
-      $updated = $storage->getEntityLatestRevision($uuid);
-      if ($updated instanceof RevisionLogInterface) {
-        $updated->setRevisionUserId($original_uid);
-        $updated->setRevisionLogMessage('Automatically re-saved to remove distribution references.');
-        $updated->save();
-      }
+      // Dereference the target property and re-save the dataset.
+      $this->dereferencer->dereferenceProperty($target_property, $data);
+      $dataset = $this->validMetadataFactory->get(json_encode($data), 'dataset');
+      $this->metastoreService->removeReferences($dataset);
+      $this->storage->store((string) $dataset, $uuid);
 
       foreach ($orphan_uuids as $orphan_uuid) {
         if ($delete_orphans) {
-          try {
-            $this->metastoreService->delete($target_property, $orphan_uuid);
-          }
-          catch (\Exception) {
-            // Already gone; safe to continue.
-          }
+          $this->metastoreService->delete($target_property, $orphan_uuid);
+          $this->output()->writeln(sprintf('[%s] Deleting orphaned %s: %s', $title, $target_property, $orphan_uuid));
         }
         else {
-          $this->queueFactory->get('orphan_reference_processor')
-            ->createItem(['uuid' => $orphan_uuid, 'schema_id' => $target_property]);
+          // Use OrphanReferenceProcessor directly on the referenced entity.
+          $this->output()->writeln(sprintf('[%s] Orphaning %s: %s', $title, $target_property, $orphan_uuid));
+          $this->orphanDereferencedEntity($target_property, $orphan_uuid);
         }
       }
     }
@@ -131,10 +122,20 @@ final class EmbedDistributionsCommands extends DrushCommands {
     }
   }
 
+  private function orphanDereferencedEntity(string $property_id, string $uuid): void {
+    $this->storage->orphan($uuid);
+  }
+
   /**
-   * Collect UUIDs from the %Ref:<property> key set by the node-load dereferencer.
+   * Collect UUIDs from reference key.
+   *
+   * @param object $data
+   *   The dataset data object.
+   * @param string $property
+   *   The property to check for references.
    *
    * @return string[]
+   *   An array of UUIDs.
    */
   private function collectReferenceUuids(object $data, string $property): array {
     if (!isset($data->{$property}) || !is_array($data->{$property})) {

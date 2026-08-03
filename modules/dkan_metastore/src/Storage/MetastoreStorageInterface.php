@@ -115,6 +115,17 @@ interface MetastoreStorageInterface {
   public function archive(string $uuid): bool;
 
   /**
+   * Orphan.
+   *
+   * @param string $uuid
+   *   The identifier for the data.
+   *
+   * @return bool
+   *   True if success.
+   */
+  public function orphan(string $uuid): bool;
+
+  /**
    * Remove.
    *
    * @param string $id

@@ -63,7 +63,7 @@ class Dereferencer {
    * @param object $data
    *   Modified json metadata object.
    */
-  private function dereferenceProperty(string $propertyId, $data) {
+  public function dereferenceProperty(string $propertyId, $data) {
     $referenceProperty = self::REF_PREFIX . "{$propertyId}";
     $ref = NULL;
     $actual = NULL;

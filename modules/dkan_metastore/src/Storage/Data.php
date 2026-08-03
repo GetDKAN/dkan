@@ -233,6 +233,13 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
+  public function orphan(string $uuid): bool {
+    return $this->setWorkflowState($uuid, 'orphaned');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function archive(string $uuid): bool {
     return $this->setWorkflowState($uuid, 'archived');
   }

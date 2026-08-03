@@ -98,12 +98,14 @@ services:
     class: \Drupal\dkan_metastore\ValidMetadataFactory
     arguments:
       - '@dkan.metastore.schema_retriever'
+  \Drupal\dkan_metastore\ValidMetadataFactory: '@dkan.metastore.valid_metadata'
 
   dkan.metastore.metastore_item_factory:
     class: \Drupal\dkan_metastore\NodeWrapper\NodeDataFactory
     arguments:
       - '@entity.repository'
       - '@entity_type.manager'
+  Drupal\dkan_metastore\NodeWrapper\NodeDataFactory: '@dkan.metastore.metastore_item_factory'
 
   dkan.metastore.dataset_api_docs:
     class: \Drupal\dkan_metastore\DatasetApiDocs
