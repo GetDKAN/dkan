@@ -46,8 +46,8 @@ final class UnreferenceDatasetCommands extends DrushCommands {
    * Convert referenced dataset property values to embedded values.
    */
   #[CLI\Command(name: 'dkan:metastore:unreference-datasets', description: 'Convert referenced dataset property values to embedded (non-referenced) values.', aliases: ['dkan:unref'])]
-  #[CLI\Argument(name: 'target_property', description: 'Dataset property to unreference (e.g. "distribution"). Prompted interactively if omitted.')]
-  #[CLI\Option(name: 'delete', description: 'Immediately delete orphaned referenced entities instead of queuing them.')]
+  #[CLI\Argument(name: 'target_property', description: 'Dataset property to unreference (e.g. "distribution").')]
+  #[CLI\Option(name: 'delete', description: 'Immediately delete orphaned referenced entities instead of orphaning them.')]
   public function unrefDatasets(
     ?string $target_property = 'distribution',
     array $options = ['delete' => FALSE],
