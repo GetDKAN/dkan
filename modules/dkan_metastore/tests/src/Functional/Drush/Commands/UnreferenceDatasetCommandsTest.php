@@ -43,7 +43,7 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
 
     // Run the command targeting an invalid property.
     $this->setDistributionReferenceModeFromConfig('distribution');
-    $this->drush('dkan:metastore:unreference-datasets', ['invalid_property'], ['yes' => TRUE]);
+    $this->drush('dkan:metastore:unreference-datasets', ['invalid_property'], ['yes' => NULL]);
     $output = $this->getErrorOutput();
     $this->assertStringContainsString('Unknown property: invalid_property', $output);
 
@@ -73,7 +73,7 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $this->assertStringContainsString('Operation cancelled.', $output);
 
     // Run the command targeting the distribution property.
-    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => TRUE, 'xdebug' => NULL]);
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => NULL]);
 
     // Reset the config factory so we see what Drush wrote to the DB.
     $this->container->get('config.factory')->reset();
@@ -110,6 +110,12 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $this->assertStringContainsString('Embed Test 1', $output);
     $this->assertStringContainsString('Embed Test 2', $output);
     $this->assertStringContainsString('1 distribution', $output);
+
+    // Assert that the command can be run again without error, even if no
+    // datasets have referenced distributions.
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => NULL]);
+    $output = $this->getOutput();
+    $this->assertEquals(2, substr_count($output, 'Un-referencing 0 distribution value(s)'));
   }
 
   /**
