@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @group dkan
  * @group dkan-core
- * @group datastore
+ * @group dkan_datastore
  * @group unit
  */
 class ImportJobTest extends TestCase {

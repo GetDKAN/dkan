@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * DictionaryEnforcer QueueWorker test.
  *
- * @group datastore
+ * @group dkan_datastore
  * @group functional
  * @group btb
  * @group functional1
