@@ -31,7 +31,7 @@ dkan:datastore:drop
 
     **Arguments**
 
-    - **identifier** The uuid of a dataset.
+    - **identifier** The resource identifier.
 
     **Options**
     - **--keep-local** Do not remove localized resource, only drop the datastore table.
