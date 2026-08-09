@@ -13,15 +13,17 @@ dkan:dataset-info
 
 dkan:datastore:reverse-dataset-lookup
 -------------------------------------
-   Takes an argument of the table name and returns the dataset uuid.
+    Takes an argument of the table name and returns the dataset uuid.
 
-  **Arguments**
+    **Arguments**
 
     - ``table_name`` The datastore table name in the database.
 
-  **Usage**
+    **Usage**
 
-        ``drush dkan:datastore:reverse-dataset-lookup datastore_abcdefghijklmnop``
+    .. prompt:: console $
+
+        drush dkan:datastore:reverse-dataset-lookup datastore_abcdefghijklmnop
 
 ~~~~~~
 
@@ -168,7 +170,9 @@ dkan:harvest:deregister
 
     **Usage**
 
-        ``drush dkan:harvest:deregister --revert myHarvestId``
+    .. prompt:: console $
+
+        drush dkan:harvest:deregister --revert myHarvestId
 
 ~~~~~~
 
@@ -222,11 +226,15 @@ dkan:harvest:register
 
     **Usage**
 
-        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'``
+    .. prompt:: console $
 
-    Or
+        drush dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
 
-        ``dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json``
+    ...or
+
+    .. prompt:: console $
+    
+        drush dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
 
 ~~~~~~
 
@@ -243,7 +251,9 @@ dkan:harvest:revert
 
     **Usage**
 
-        ``drush dkan:harvest:revert myHarvestId``
+    .. prompt:: console $
+        
+        drush dkan:harvest:revert myHarvestId
 
 ~~~~~~
 
@@ -260,7 +270,9 @@ dkan:harvest:run-all
 
     **Usage**
 
-        ``drush dkan:harvest:run-all --new``
+    .. prompt:: console $
+
+        drush dkan:harvest:run-all --new
 
 ~~~~~~
 
@@ -287,8 +299,9 @@ dkan:harvest:status
 
     **Usage**
 
-        ``drush dkan:harvest:status myHarvestId 1599157120``
+    .. prompt:: console $
 
+        drush dkan:harvest:status myHarvestId 1599157120
 ~~~~~~
 
 dkan:metadata-form:sync
@@ -327,6 +340,21 @@ dkan:metastore:unreference-datasets
     **Options**
 
     - ``--delete`` Immediately delete the referenced entities instead of orphaning them.
+  
+    **Usage**
+
+    Unreference the ``distribution`` property and delete the referenced entities:
+
+    .. prompt:: console $
+
+        drush dkan:metastore:unreference-datasets distribution --delete
+
+    Use alias and default settings (unreference ``distribution`` and orphan the referenced entities):
+
+    .. prompt:: console $
+
+        drush dkan:unref distribution
+
 ~~~~~~
 
 dkan:metastore-search:rebuild-tracker

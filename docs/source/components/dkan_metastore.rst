@@ -104,7 +104,13 @@ Migrating to Embedded Distributions
 
 If you have an existing DKAN site that has been referencing distributions (or any property),
 and want to change your site to embed distributions instead, you can use the ``dkan:metastore:unreference-datasets``
-:ref:`Drush command <drush-metastore-unreference-datasets>`.
+:ref:`Drush command <drush-metastore-unreference-datasets>`. This command will open,
+dereference and resave the datasets overwriting the references with the actual embedded data.
+The command also includes an option either to orphan the old referenced entities or to delete them immediately.
+
+Obviously, before any process that will modify a large amount of content on your site,
+perform this migration with caution. Do a dry run on a staging environment, and 
+ensure you have a recent database backup and a reliable rollback plan in place.
 
 
 Data Dictionaries
