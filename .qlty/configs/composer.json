@@ -6,7 +6,8 @@
         }
     ],
     "require": {
-        "drupal/coder": "^9.0.0"
+        "drupal/coder": "^9.0.0",
+        "squizlabs/php_codesniffer": "^3.13.6"
     },
     "config": {
         "allow-plugins": {
