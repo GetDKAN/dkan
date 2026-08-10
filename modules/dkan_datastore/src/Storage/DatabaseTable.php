@@ -189,6 +189,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * {@inheritdoc}
    */
+  #[\Override]
   public function setSchema($schema): void {
     $fields = $schema['fields'];
     $new_field = [
