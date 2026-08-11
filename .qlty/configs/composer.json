@@ -6,7 +6,7 @@
         }
     ],
     "require": {
-        "drupal/coder": "^8.3.13"
+        "drupal/coder": "^9.0.0"
     },
     "config": {
         "allow-plugins": {
