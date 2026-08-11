@@ -283,10 +283,10 @@ workflows:
               php_version: ["8.4"]
               database_version: ["mariadb:10.11"]
       - phpunit:
+          report_coverage: true
           matrix:
             parameters:
               drupal_core_constraint: ["~11.4.0"]
-              report_coverage: true
               php_version: ["8.4"]
               database_version: ["mariadb:10.11"]
       - phpunit:
