@@ -46,4 +46,4 @@ default = true
 name = "php-codesniffer"
 
 [runtimes.enabled]
-php = "8.4"
+php = "8.3"
