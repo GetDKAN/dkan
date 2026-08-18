@@ -12,7 +12,7 @@ use Drupal\Tests\dkan_datastore\Functional\Controller\QueryDownloadControllerTes
  * but using the mysql importer.
  *
  * @group dkan
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  * @group functional
  * @group btb
  * @group functional1

@@ -37,7 +37,7 @@ use Drupal\dkan_datastore\PostImportResult;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group unit
  */
 class DictionaryEnforcerTest extends TestCase {

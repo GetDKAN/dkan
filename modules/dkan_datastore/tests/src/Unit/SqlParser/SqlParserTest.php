@@ -7,7 +7,7 @@ use Drupal\dkan_datastore\SqlParser\SqlParser;
 
 /**
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group sqlparser
  * @group unit
  *

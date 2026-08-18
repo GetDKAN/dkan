@@ -10,7 +10,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @covers \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
  * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
  *
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  * @group kernel
  */
 class MySqlDatabaseTableFactoryTest extends KernelTestBase {
