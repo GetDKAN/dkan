@@ -35,7 +35,7 @@ use Drupal\node\NodeInterface;
 
 /**
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class DashboardFormTest extends TestCase {

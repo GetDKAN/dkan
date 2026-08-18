@@ -13,7 +13,7 @@ use RootedData\RootedJsonData;
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryDownloadController
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group functional
  * @group btb
  * @group functional3

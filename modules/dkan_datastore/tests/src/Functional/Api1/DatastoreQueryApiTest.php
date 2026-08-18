@@ -11,7 +11,7 @@ use GuzzleHttp\RequestOptions;
  * @covers \Drupal\dkan_datastore\Controller\QueryController
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryController
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group api1
  * @group functional
  * @group functional2

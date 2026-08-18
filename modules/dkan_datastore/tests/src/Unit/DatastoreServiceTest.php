@@ -31,7 +31,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class DatastoreServiceTest extends TestCase {

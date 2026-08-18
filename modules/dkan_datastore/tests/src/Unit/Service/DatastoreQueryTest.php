@@ -32,7 +32,7 @@ use Drupal\dkan_metastore\Reference\ReferenceLookup;
 
 /**
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class DatastoreQueryTest extends TestCase {

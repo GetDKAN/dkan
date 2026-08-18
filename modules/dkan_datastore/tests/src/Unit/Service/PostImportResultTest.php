@@ -13,7 +13,7 @@ use Drupal\dkan_datastore\PostImportResultFactory;
  * @coversDefaultClass \Drupal\dkan_datastore\PostImportResult
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class PostImportResultTest extends TestCase {

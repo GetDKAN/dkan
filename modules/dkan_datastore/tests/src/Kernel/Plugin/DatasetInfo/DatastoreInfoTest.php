@@ -11,7 +11,7 @@ use Drupal\Tests\dkan_common\Kernel\DatasetInfoTest;
  * Tests the DatastoreInfo plugin for DatasetInfo.
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class DatastoreInfoTest extends DatasetInfoTest {

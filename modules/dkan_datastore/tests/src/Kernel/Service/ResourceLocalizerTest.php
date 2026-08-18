@@ -14,7 +14,7 @@ use Procrastinator\Result;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourceLocalizer
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class ResourceLocalizerTest extends KernelTestBase {

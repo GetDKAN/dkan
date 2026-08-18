@@ -17,7 +17,7 @@ use Procrastinator\Job\Job;
  *
  * @group dkan
  * @group dkan-core
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class ImportInfoTest extends TestCase {

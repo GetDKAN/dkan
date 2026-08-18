@@ -15,7 +15,7 @@ use RootedData\RootedJsonData;
 /**
  * Test dataset import when using existing localized files.
  *
- * @group dkan_datastore
+ * @group datastore
  * @group btb
  * @group functional
  * @group functional2

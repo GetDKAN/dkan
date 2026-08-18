@@ -14,7 +14,7 @@ use Procrastinator\Result;
  * @covers \Drupal\dkan_datastore\Plugin\QueueWorker\LocalizeQueueWorker
  * @coversDefaultClass \Drupal\dkan_datastore\Plugin\QueueWorker\LocalizeQueueWorker
  *
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  *
  * @todo Expand test to ensure that no file is localized on ERROR, after

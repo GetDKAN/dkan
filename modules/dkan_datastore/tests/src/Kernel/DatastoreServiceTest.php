@@ -13,7 +13,7 @@ use Drupal\dkan_datastore\Service\ResourceLocalizer;
  * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class DatastoreServiceTest extends KernelTestBase {
