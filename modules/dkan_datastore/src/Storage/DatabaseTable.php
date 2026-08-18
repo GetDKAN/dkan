@@ -99,9 +99,8 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // @todo Send MORE information.
     $event = new DatastoreTableCreateEvent($schema, $this->dataResource);
     $this->eventDispatcher->dispatch($event, self::EVENT_DATABASE_TABLE_CREATE);
-    $this->setSchema($event->getSchema());
 
-    parent::tableCreate($table_name, $this->getSchema());
+    parent::tableCreate($table_name, $event->getSchema());
   }
 
   /**
@@ -188,8 +187,9 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * {@inheritdoc}
+   * {@inheritDoc}
    */
+  #[\Override]
   public function setSchema($schema): void {
     $fields = $schema['fields'];
     $new_field = [
