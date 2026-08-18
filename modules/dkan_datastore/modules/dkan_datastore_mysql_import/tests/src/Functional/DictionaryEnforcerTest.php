@@ -12,7 +12,7 @@ use Drupal\Tests\dkan_datastore\Functional\DictionaryEnforcerTest as DatastoreDi
  * We do this because datastore_mysql_import decorates the alter query system
  * that data dictionary uses.
  *
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  * @group functional
  * @group btb
  * @group functional2

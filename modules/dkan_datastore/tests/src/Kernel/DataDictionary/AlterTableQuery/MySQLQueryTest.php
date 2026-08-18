@@ -14,7 +14,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @coversDefaultClass \Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  */
 class MySQLQueryTest extends KernelTestBase {

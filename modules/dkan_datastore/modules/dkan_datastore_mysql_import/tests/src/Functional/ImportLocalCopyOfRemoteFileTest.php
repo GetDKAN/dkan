@@ -7,7 +7,7 @@ use Drupal\Tests\dkan_datastore\Functional\ImportLocalCopyOfRemoteFileTest as Pa
 /**
  * Test dataset import when using existing localized files.
  *
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  * @group btb
  * @group functional
  * @group functional3

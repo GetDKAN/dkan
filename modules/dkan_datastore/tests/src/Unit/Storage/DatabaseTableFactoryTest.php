@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group unit
  */
 class DatabaseTableFactoryTest extends TestCase {

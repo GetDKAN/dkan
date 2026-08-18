@@ -12,7 +12,7 @@ use Procrastinator\Result;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\Info\ImportInfo
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  */
 class ImportInfoTest extends KernelTestBase {
