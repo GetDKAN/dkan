@@ -15,7 +15,7 @@ use Procrastinator\Result;
 
 /**
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class ImportInfoListTest extends KernelTestBase {

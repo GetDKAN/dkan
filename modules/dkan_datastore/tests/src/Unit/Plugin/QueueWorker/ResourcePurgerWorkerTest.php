@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class ResourcePurgerWorkerTest extends TestCase {

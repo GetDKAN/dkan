@@ -20,7 +20,7 @@ use Drupal\dkan_datastore\Service\PostImport;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\PostImport
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class PostImportTest extends KernelTestBase {

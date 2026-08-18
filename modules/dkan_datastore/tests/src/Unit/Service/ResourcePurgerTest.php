@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class ResourcePurgerTest extends TestCase {

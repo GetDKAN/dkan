@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourceProcessor\ResourceDoesNotHaveDictionary
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class ResourceDoesNotHaveDictionaryTest extends TestCase {

@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @coversDefaultClass \Drupal\dkan_datastore\DataDictionary\AlterTableQuery\MySQLQuery
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class MySQLQueryTest extends TestCase {

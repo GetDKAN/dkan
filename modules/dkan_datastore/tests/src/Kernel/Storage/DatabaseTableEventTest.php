@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @runTestsInSeparateProcesses
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class DatabaseTableEventTest extends KernelTestBase implements EventSubscriberInterface {

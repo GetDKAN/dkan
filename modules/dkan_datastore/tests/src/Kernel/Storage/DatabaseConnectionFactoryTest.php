@@ -12,7 +12,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @coversDefaultClass \Drupal\dkan_datastore\Storage\DatabaseConnectionFactory
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class DatabaseConnectionFactoryTest extends KernelTestBase {

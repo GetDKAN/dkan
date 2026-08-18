@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
  * @coversDefaultClass \Drupal\dkan_datastore\Plugin\QueueWorker\ImportQueueWorker
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class ImportQueueWorkerTest extends KernelTestBase {

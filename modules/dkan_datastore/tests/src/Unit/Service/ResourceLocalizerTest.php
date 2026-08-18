@@ -25,7 +25,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group unit
  */
 class ResourceLocalizerTest extends TestCase {

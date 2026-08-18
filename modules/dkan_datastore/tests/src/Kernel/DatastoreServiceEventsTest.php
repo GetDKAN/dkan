@@ -20,7 +20,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group kernel
  */
 class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscriberInterface {

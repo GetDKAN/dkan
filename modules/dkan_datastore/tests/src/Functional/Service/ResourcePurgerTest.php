@@ -13,7 +13,7 @@ use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\ResourcePurger
  *
  * @group dkan
- * @group dkan_datastore
+ * @group datastore
  * @group functional
  * @group btb
  * @group functional1
