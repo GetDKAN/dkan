@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @coversDefaultClass \Drupal\dkan_datastore\SqlEndpoint\WebServiceApi
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group unit
  */
 class WebServiceApiTest extends TestCase {

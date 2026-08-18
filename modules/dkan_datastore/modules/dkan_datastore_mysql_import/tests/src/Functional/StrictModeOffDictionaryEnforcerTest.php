@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Ensure we can apply a data dictionary to a dataset with too many columns.
  *
  * @group dkan
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  * @group functional
  * @group functional2
  *

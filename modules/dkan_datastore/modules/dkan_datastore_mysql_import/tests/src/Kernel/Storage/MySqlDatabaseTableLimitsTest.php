@@ -16,7 +16,7 @@ use Procrastinator\Result;
  * @covers \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable
  * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTable
  *
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  *
  * @see \Drupal\Tests\dkan_datastore_mysql_import\Kernel\Storage\DatabaseTableLimitsTest

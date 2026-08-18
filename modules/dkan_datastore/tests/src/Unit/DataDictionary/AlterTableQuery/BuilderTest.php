@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group unit
  */
 class TestQuery extends AlterTableQueryBase {

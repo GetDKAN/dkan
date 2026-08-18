@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\ImportService
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  */
 class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberInterface {
