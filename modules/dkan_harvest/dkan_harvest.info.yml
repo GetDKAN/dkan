@@ -1,0 +1,8 @@
+name: DKAN Harvest
+description: Provides integration with the harvest library.
+type: module
+core_version_requirement: ^10.4 || ^11
+package: DKAN
+dependencies:
+  - dkan:dkan_common
+  - dkan:dkan_metastore

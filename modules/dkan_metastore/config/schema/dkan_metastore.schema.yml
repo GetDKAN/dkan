@@ -1,0 +1,47 @@
+dkan_metastore.settings:
+  type: config_object
+  label: 'Metastore Settings'
+  mapping:
+    data_dictionary_mode:
+      type: string
+      label: 'Dictionary Mode'
+    data_dictionary_sitewide:
+      type: string
+      label: 'Sitewide Dictionary ID'
+    csv_headers_mode:
+      type: string
+      label: 'CSV Headers Mode'
+    property_list:
+      type: sequence
+      label: 'Property List'
+      sequence:
+        type: string
+        label: 'Property'
+    html_allowed_properties:
+      type: sequence
+      label: 'HTML Allowed Properties'
+      sequence:
+        type: string
+        label: 'Property'
+    html_allowed_html:
+      type: string
+      label: 'Allowed tags and elements for properties that allow HTML'
+    resource_perspective_display:
+      type: string
+      label: 'Resource download url display'
+    redirect_to_datasets:
+      type: boolean
+      label: 'Redirect to datasets view after form submit'
+    orphan:
+      type: mapping
+      label: 'Orphaned nodes'
+      mapping:
+        delete:
+          type: boolean
+          label: 'Delete referenced content after a dataset is deleted'
+        retain_for:
+          type: integer
+          label: 'Number of days to keep referenced content before deletion'
+    unset_download_url_if_empty:
+      type: boolean
+      label: 'Unset download URL if empty'

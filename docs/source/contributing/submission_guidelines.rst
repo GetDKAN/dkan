@@ -18,6 +18,8 @@ Our efforts will be focused on the 2.x version of DKAN. If you are reporting a b
 and it is not a security issue, we encourage you to reach out on the
 `DKAN Discussions <https://github.com/GetDKAN/dkan/discussions>`_.
 
+If you have found a vulnerability in DKAN, please `report it confidentially <https://www.drupal.org/docs/develop/issues/issue-procedures-and-etiquette/reporting-a-security-issue>`_.
+
 Setting up a local development sandbox
 --------------------------------------
 

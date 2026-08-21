@@ -5,6 +5,7 @@
  * This is the DKAN JS Frontend module for using a decoupled frontend w/ DKAN.
  */
 
+use Drupal\dkan_js_frontend\Routing\RouteProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -13,10 +14,12 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 const DKAN_JS_FRONTEND_MISSING_DATASET_ROUTE_ERROR = 'Missing required DKAN route "dataset"; unable to build sitemap for dataset URLs.';
+
 const DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK = [
   'priority' => '0.7',
   'changefreq' => 'daily',
 ];
+
 const DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK = [
   'priority' => '0.5',
   'changefreq' => 'weekly',
@@ -95,12 +98,15 @@ function dkan_js_frontend_library_info_build() {
 /**
  * Implements hook_page_attachments().
  *
- * Any route with a 'name' default with a value of dkan_js_frontend gets the
- * library attached.
+ * Any route with a '_is_dkan_js_frontend' default with a value of true gets
+ * the library attached.
+ *
+ * @see \Drupal\dkan_js_frontend\Routing\RouteProvider::addRoutesFromConfig()
  */
 function dkan_js_frontend_page_attachments(array &$page) {
-  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
-  if ($request == 'dkan_js_frontend') {
+  if (
+    \Drupal::routeMatch()->getRouteObject()->getDefault('_is_dkan_js_frontend') === 'true'
+  ) {
     $page['#attached']['library'][] = 'dkan_js_frontend/dkan_js_frontend';
   }
 }
@@ -109,8 +115,9 @@ function dkan_js_frontend_page_attachments(array &$page) {
  * Implements hook_theme_suggestions_HOOK_alter().
  */
 function dkan_js_frontend_theme_suggestions_page_alter(array &$suggestions, array $variables) {
-  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
-  if ($request == 'dkan_js_frontend') {
+  if (
+    \Drupal::routeMatch()->getRouteObject()->getDefault('_is_dkan_js_frontend') === 'true'
+  ) {
     $suggestions[] = 'page__dkan_js_frontend';
   }
 }
@@ -151,7 +158,7 @@ function dkan_js_frontend_simple_sitemap_arbitrary_links_alter(array &$arbitrary
   $request_context = _dkan_js_frontend_build_request_context();
   _dkan_js_frontend_add_static_links($arbitrary_links, $routes, $request_context);
   // If the 'dataset' route exists, add links for the dataset route.
-  if ($dataset_route = $routes->get('dataset')) {
+  if ($dataset_route = $routes->get(RouteProvider::ROUTE_PREFIX . 'dataset')) {
     _dkan_js_frontend_add_dataset_links($arbitrary_links, $dataset_route, $request_context);
   }
   else {
@@ -209,9 +216,10 @@ function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollec
  *   Request context containing base URL for sitemap URL generation.
  */
 function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dataset_route, RequestContext $request_context): void {
+  $dataset_route_name = RouteProvider::ROUTE_PREFIX . 'dataset';
   // Build route collection.
   $routes = new RouteCollection();
-  $routes->add('dataset', $dataset_route);
+  $routes->add($dataset_route_name, $dataset_route);
   // Build route URL generator.
   $url_generator = new UrlGenerator($routes, $request_context);
 
@@ -220,7 +228,7 @@ function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dat
   // Add dataset routes using the fetched UUIDs.
   foreach ($dataset_uuids as $uuid) {
     $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + [
-      'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL),
+      'url' => $url_generator->generate($dataset_route_name, ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL),
     ];
   }
 

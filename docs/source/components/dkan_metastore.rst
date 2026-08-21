@@ -21,14 +21,10 @@ Some more details of DKAN's metastore:
   :width: 400
   :alt: Dataset Structure
 
-.. note::
+.. seealso::
 
-  Read the documentation on :doc:`How to add a Dataset <../user-guide/guide_dataset>` to get started adding information to the metastore.
-
-
-.. note::
-
-  Read the documentation on :doc:`Changing your dataset schema <../user-guide/guide_custom_schemas>` to learn how to add custom fields.
+  * Read the documentation on :doc:`How to add a Dataset <../user-guide/guide_dataset>` to get started adding information to the metastore.
+  * Read the documentation on :doc:`Changing your dataset schema <../user-guide/guide_custom_schemas>` to learn how to add custom fields.
 
 
 Data Dictionaries

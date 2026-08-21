@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the DKAN harvest module.
+ */
+
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_install().
+ */
+function harvest_install() {
+  // If we have the built-in api_user role, add some harvest permissions.
+  $role = Role::load('api_user');
+  if ($role) {
+    $role->grantPermission('harvest_api_index');
+    $role->grantPermission('harvest_api_register');
+    $role->grantPermission('harvest_api_run');
+    $role->grantPermission('harvest_api_info');
+    $role->save();
+  }
+
+}
+
+/**
+ * Disable old harvest module.
+ */
+function dkan_harvest_update_11301() {
+  if (\Drupal::moduleHandler()->moduleExists('harvest')) {
+    \Drupal::service('module_installer')->uninstall(['harvest']);
+    $message = new TranslatableMarkup('The legacy harvest module has been uninstalled.');
+  }
+  return $message;
+}
+
+/**
+ * Update namespaces in plans.
+ */
+function dkan_harvest_update_11302() {
+  /** @var \Drupal\dkan_harvest\HarvestUtility $harvest_utility */
+  $harvest_utility = \Drupal::service('dkan.harvest.utility');
+  $harvest_utility->harvestNammespaceUpdate();
+}

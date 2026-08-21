@@ -19,7 +19,7 @@ project in the folder you've cloned DKAN to. Follow these steps:
    ``ddev-init.sh`` in the root.
 3. Run ``./ddev-init.sh``. If you want to build a specific version of Drupal,
    provide that version as an argument. E.g. ``./ddev-init.sh 11.1``. The default
-   is currently 10.4.
+   is currently 10.5.
 4. You now have a full site codebase (the Drupal root) lives in a new subfolder
    of the module called ``web``.
 5. Set up a working database by running ``ddev dkan-site-install``.

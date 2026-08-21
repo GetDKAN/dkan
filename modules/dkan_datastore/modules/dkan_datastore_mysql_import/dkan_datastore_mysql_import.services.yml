@@ -1,0 +1,27 @@
+services:
+  dkan.datastore_mysql_import.service.factory.import:
+    decorates: dkan.datastore.service.factory.import
+    class: \Drupal\dkan_datastore_mysql_import\Factory\MysqlImportFactory
+    arguments:
+      - '@dkan.datastore.import_job_store_factory'
+      - '@dkan.datastore_mysql_import.database_table_factory'
+      - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
+      - '@dkan.metastore.reference_lookup'
+
+  dkan.datastore_mysql_import.database_table_factory:
+    class: \Drupal\dkan_datastore_mysql_import\Storage\MySqlDatabaseTableFactory
+    arguments:
+      - '@dkan.datastore.database'
+      - '@dkan.datastore.logger_channel'
+      - '@event_dispatcher'
+      - '@config.factory'
+
+  dkan.datastore_mysql_import.data_dictionary.alter_table_query_builder.mysql:
+    class: \Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder
+    decorates: dkan.datastore.data_dictionary.alter_table_query_builder.mysql
+    arguments:
+      - '@dkan.datastore.database_connection_factory'
+      - '@pdlt.converter.strptime_to_mysql'
+      - '@uuid'
+      - '@config.factory'

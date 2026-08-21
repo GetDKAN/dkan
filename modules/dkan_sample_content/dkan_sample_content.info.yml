@@ -1,0 +1,7 @@
+name: DKAN Sample Content
+description: Provides sample content for tests or standing up a demo instance.
+type: module
+core_version_requirement: ^10.4 || ^11
+package: DKAN
+dependencies:
+  - dkan:dkan_harvest

@@ -4,15 +4,15 @@ type: module
 core_version_requirement: ^10.2 || ^11
 package: DKAN
 dependencies:
-  - dkan:metastore
-  - dkan:metastore_admin
-  - dkan:metastore_search
-  - dkan:common
-  - dkan:json_form_widget
-  - dkan:data_dictionary_widget
+  - dkan:dkan_metastore
+  - dkan:dkan_metastore_admin
+  - dkan:dkan_metastore_search
+  - dkan:dkan_common
+  - dkan:dkan_data_dictionary_widget
   - drupal:config
   - drupal:field
   - drupal:file
   - drupal:link
   - drupal:options
   - drupal:path
+  - json_form_widget:json_form_widget

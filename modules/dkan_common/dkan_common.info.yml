@@ -1,0 +1,5 @@
+name: Common
+description: Provides common utilities, functions, and base api endpoints used by other DKAN modules.
+type: module
+core_version_requirement: ^10.4 || ^11
+package: DKAN

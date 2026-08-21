@@ -1,17 +1,17 @@
 <?php
 
 namespace Drupal\Tests\dkan\Functional;
-
-use Drupal\common\DataResource;
-use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\harvest\HarvestService;
-use Drupal\harvest\Load\Dataset;
-use Drupal\metastore\MetastoreService;
+use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
+use Drupal\dkan_common\DataResource;
+use Drupal\dkan_datastore\Service\ResourceLocalizer;
+use Drupal\dkan_harvest\HarvestService;
+use Drupal\dkan_harvest\Load\Dataset;
+use Drupal\dkan_metastore\MetastoreService;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\common\Traits\QueueRunnerTrait;
-use Drupal\harvest\ETL\Extract\DataJson;
+use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
+use Drupal\dkan_harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 
 /**
@@ -23,17 +23,18 @@ use RootedData\RootedJsonData;
  */
 class DatasetBTBTest extends BrowserTestBase {
 
+  use GetLocalDataTrait;
   use QueueRunnerTrait;
 
   /**
    * {@inheritdoc}
    */
   protected static $modules = [
-    'datastore',
+    'dkan_datastore',
     'field',
-    'harvest',
-    'metastore',
-    'metastore_search',
+    'dkan_harvest',
+    'dkan_metastore',
+    'dkan_metastore_search',
     'node',
     'search_api',
   ];
@@ -51,9 +52,6 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   protected $strictConfigSchema = FALSE;
 
-  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
-
   /**
    * Test the resource purger when the default moderation state is 'draft'.
    */
@@ -69,11 +67,14 @@ class DatasetBTBTest extends BrowserTestBase {
 
     // Post, update and publish a dataset with multiple, changing resources.
     $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv'], 'post');
+    // These updates reuse 1.csv, so guard against version timestamp collisions.
+    $this->avoidResourceVersionCollision();
     $this->storeDatasetRunQueues($id_1, '1.2', ['3.csv', '1.csv'], 'put');
     $this->getMetastore()->publish('dataset', $id_1);
+    $this->avoidResourceVersionCollision();
     $this->storeDatasetRunQueues($id_1, '1.3', ['1.csv', '5.csv'], 'put');
 
-    /** @var \Drupal\common\DatasetInfo $datasetInfo */
+    /** @var \Drupal\dkan_common\DatasetInfo $datasetInfo */
     $datasetInfo = $this->container->get('dkan.common.dataset_info');
     $info = $datasetInfo->gather($id_1);
     $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
@@ -128,7 +129,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
     drupal_flush_all_caches();
 
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
       ->save();
 
@@ -201,84 +202,59 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Test draft moderation workflow with distribution url update and default source resource perspective.
+   * Provide draft workflow/perspective combinations.
    */
-  public function testDraftWorkflowDistributionUrlSourcePerspective() {
-    // Set resource perspective to source.
-    $this->config('metastore.settings')
-      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowUpdateDistributionUrl();
+  public static function draftWorkflowPerspectiveProvider(): array {
+    $cases = [
+      'url_source' => [
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionUrl',
+      ],
+      'url_local_url' => [
+        ResourceLocalizer::LOCAL_URL_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionUrl',
+      ],
+      'modified_source' => [
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+        'runDraftWorkflowModifiedTrigger',
+      ],
+      'modified_local_url' => [
+        ResourceLocalizer::LOCAL_URL_PERSPECTIVE,
+        'runDraftWorkflowModifiedTrigger',
+      ],
+      'title_source' => [
+        DataResource::DEFAULT_SOURCE_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionTitle',
+      ],
+      'title_local_url' => [
+        ResourceLocalizer::LOCAL_URL_PERSPECTIVE,
+        'runDraftWorkflowUpdateDistributionTitle',
+      ],
+    ];
+    return $cases;
   }
 
   /**
-   * Test draft moderation workflow with distribution url update and local_url source resource perspective.
+   * Test draft workflows across resource perspectives and dist modes.
+   *
+   * @dataProvider draftWorkflowPerspectiveProvider
    */
-  public function testDraftWorkflowDistributionUrlLocalPerspective() {
-    // Set resource perspective to source.
-    $this->config('metastore.settings')
-      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
+  public function testDraftWorkflowScenarios(
+    string $resource_perspective_display,
+    string $workflow_method,
+  ): void {
+    $this->config('dkan_metastore.settings')
+      ->set('resource_perspective_display', $resource_perspective_display)
       ->save();
-
-    $this->runDraftWorkflowUpdateDistributionUrl();
+    $this->{$workflow_method}();
   }
-
-  /**
-   * Test draft moderation workflow with modified trigger and default source resource perspective.
-   */
-  public function testDraftWorkflowModifiedTriggerSourcePerspective() {
-    // Set resource perspective to source.
-    $this->config('metastore.settings')
-      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowModifiedTrigger();
-  }
-
-  /**
-   * Test draft moderation workflow with modified trigger and local_url resource perspective.
-   */
-  public function testDraftWorkflowModifiedTriggerLocalPerspective() {
-    // Set resource perspective to local_url.
-    $this->config('metastore.settings')
-      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowModifiedTrigger();
-  }
-
-  /**
-   * Test draft moderation workflow with distribution title update and source resource perspective.
-   */
-  public function testDraftWorkflowUpdateDistributionTitleSourcePerspective() {
-    // Set resource perspective to local_url.
-    $this->config('metastore.settings')
-      ->set('resource_perspective_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowUpdateDistributionTitle();
-  }
-
-  /**
-   * Test draft moderation workflow with distribution title update and local_url resource perspective.
-   */
-  public function testDraftWorkflowUpdateDistributionTitleLocalPerspective() {
-    // Set resource perspective to local_url.
-    $this->config('metastore.settings')
-      ->set('resource_perspective_display', ResourceLocalizer::LOCAL_URL_PERSPECTIVE)
-      ->save();
-
-    $this->runDraftWorkflowUpdateDistributionTitle();
-  }
-
 
   /**
    * Test cleanup of orphaned draft distributions.
    */
   public function testOrphanDraftDistributionCleanup() {
     // Set delete local resource files = false and modified as a triggering property.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->set('triggering_properties', ['modified'])
       ->save();
@@ -301,7 +277,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionTableExists = $databaseSchema->tableExists($distributionTable);
     $this->assertTrue($distributionTableExists, $distributionTable . ' exists.');
 
-    // Get the associated distribution's resource directory
+    // Get the associated distribution's resource directory.
     $resourceId = $metadata['latest_revision']['distributions'][0]['resource_id'];
     $resourceVersion = $metadata['latest_revision']['distributions'][0]['resource_version'];
     $resourceDirectory = $resourceId . '_' . $resourceVersion;
@@ -309,7 +285,9 @@ class DatasetBTBTest extends BrowserTestBase {
     // Confirm distribution local directory exists.
     $this->assertDirectoryExists('public://resources/' . $resourceDirectory);
 
-    // Update the modified date for the dataset.
+    // Update the modified date for the dataset. Guard against reusing the same
+    // resource version timestamp as the original import.
+    $this->avoidResourceVersionCollision();
     $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
 
     // Simulate datastore_import and cleanup queues post update.
@@ -318,6 +296,7 @@ class DatasetBTBTest extends BrowserTestBase {
       'datastore_import',
       'orphan_reference_processor',
       'orphan_resource_remover',
+      'resource_purger',
     ]);
 
     // Confirm original distribution table removed.
@@ -365,7 +344,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $id_2 = uniqid(__FUNCTION__ . '2');
 
     // delete_local_resource is on.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 1)
       ->save();
 
@@ -383,7 +362,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->assertDirectoryDoesNotExist('public://resources/' . $refUuid);
 
     // delete_local_resource is off.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->save();
 
@@ -405,7 +384,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   public function testSanitizeDatasetProperties() {
     // Set HTML allowed on dataset description.
-    $this->config('metastore.settings')
+    $this->config('dkan_metastore.settings')
       ->set('html_allowed_properties', ['dataset_description'])
       ->save();
 
@@ -427,6 +406,12 @@ class DatasetBTBTest extends BrowserTestBase {
     );
   }
 
+  /**
+   * Post a basic dataset and retrieve it.
+   *
+   * @return object
+   *   The retrieved dataset.
+   */
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);
@@ -451,13 +436,16 @@ class DatasetBTBTest extends BrowserTestBase {
     return $retrievedDataset;
   }
 
+  /**
+   * Import dataset into datastore perform a basic query.
+   */
   private function datastoreImportAndQuery() {
     $dataset = $this->datasetPostAndRetrieve();
     $resource = $this->getResourceFromDataset($dataset);
 
     $this->runQueues(['localize_import', 'datastore_import']);
 
-    // Assert dataset info shows 100%
+    // Assert dataset info shows 100%.
     $datasetInfoService = $this->container->get('dkan.common.dataset_info');
     $metadata = $datasetInfoService->gather($dataset->identifier);
     $dist = array_shift($metadata['latest_revision']['distributions']);
@@ -467,10 +455,16 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->queryResource($queryString);
   }
 
+  /**
+   *
+   */
   private function getResourceDatastoreTable(object $resource) {
     return $resource->identifier . '__' . $resource->version;
   }
 
+  /**
+   *
+   */
   private function getResourceFromDataset(object $dataset) {
     $this->assertTrue(isset($dataset->{'%Ref:distribution'}));
     $this->assertTrue(isset($dataset->{'%Ref:distribution'}[0]));
@@ -482,10 +476,6 @@ class DatasetBTBTest extends BrowserTestBase {
     return $dataset->{'%Ref:distribution'}[0]->data->{'%Ref:downloadURL'}[0]->data;
   }
 
-  private function getDownloadUrl(string $filename) {
-    return self::S3_PREFIX . '/' . $filename;
-  }
-
   /**
    * Generate dataset metadata, possibly with multiple distributions.
    *
@@ -493,48 +483,21 @@ class DatasetBTBTest extends BrowserTestBase {
    *   Dataset identifier.
    * @param string $title
    *   Dataset title.
-   * @param array $downloadUrls
+   * @param array $filenames
    *   Array of resource files URLs for this dataset.
    *
    * @return \RootedData\RootedJsonData
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
-    /** @var \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory */
+  private function getData(string $identifier, string $title, array $filenames): RootedJsonData {
+    /** @var \Drupal\dkan_metastore\ValidMetadataFactory $valid_metadata_factory */
     $valid_metadata_factory = $this->container->get('dkan.metastore.valid_metadata');
 
-    $data = new \stdClass();
-    $data->title = $title;
-    $data->description = 'This & that description. <a onauxclick=prompt(document.domain)>Right click me</a>.';
-    $data->identifier = $identifier;
-    $data->accessLevel = 'public';
-    $data->modified = '06-04-2020';
-    $data->keyword = ['some keyword'];
-    $data->distribution = [];
-    $data->publisher = (object) [
-      'name' => 'Test Publisher',
-    ];
-    $data->contactPoint = (object) [
-      'fn' => 'Test Name',
-      'hasEmail' => 'test@example.com',
-    ];
+    $json = $this->getDataset($identifier, $title, $filenames);
 
-    foreach ($downloadUrls as $key => $downloadUrl) {
-      $distribution = new \stdClass();
-      $distribution->title = 'Distribution #' . $key . ' for ' . $identifier;
-      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      // Don't provide mime type or format fields since they're not required.
-
-      $data->distribution[] = $distribution;
-    }
-    $this->assertGreaterThan(
-      0,
-      count($data->distribution),
-      'JSON Schema requires one or more distributions.'
-    );
-    // @todo: Figure out how to assert against $factory->getResult()->getError()
+    // @todo Figure out how to assert against $factory->getResult()->getError()
     // so we can have a useful test fail message.
-    return $valid_metadata_factory->get(json_encode($data), 'dataset');
+    return $valid_metadata_factory->get($json, 'dataset');
   }
 
   /**
@@ -577,6 +540,12 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->runQueues(['localize_import', 'datastore_import', 'resource_purger']);
   }
 
+  /**
+   * Count the number of datastore tables.
+   *
+   * @return int
+   *   The number of datastore tables.
+   */
   private function countTables() {
     /** @var \Drupal\Core\Database\Connection $db */
     $db = $this->container->get('database');
@@ -585,6 +554,12 @@ class DatasetBTBTest extends BrowserTestBase {
     return count($tables);
   }
 
+  /**
+   * Return normalized CSV filenames found under public://resources.
+   *
+   * @return array
+   *   Sorted array of CSV filenames (without paths or prefixes).
+   */
   private function checkFiles() {
     /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
     $fileSystem = $this->container->get('file_system');
@@ -595,20 +570,40 @@ class DatasetBTBTest extends BrowserTestBase {
       return [];
     }
     $filesObjects = $fileSystem->scanDirectory($dir, '/.*\.csv$/i', ['recurse' => TRUE]);
-    $filenames = array_values(array_map(function ($obj) {
-      return str_replace(self::FILENAME_PREFIX, '', $obj->filename);
-    }, $filesObjects));
+    $filenames = [];
+    foreach ($filesObjects as $object) {
+      $filenames[] = $object->filename;
+    }
     sort($filenames);
     return $filenames;
   }
 
+  /**
+   * Query a resource using the SQL endpoint service.
+   *
+   * @param string $queryString
+   *   The SQL-esque query string to run.
+   */
   private function queryResource(string $queryString) {
-    /** @var \Drupal\datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
+    /** @var \Drupal\dkan_datastore\SqlEndpoint\DatastoreSqlEndpointService $sqlEndpoint */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));
   }
 
+  /**
+   * Handle HTTP verbs for dataset operations.
+   *
+   * @param string $method
+   *   The HTTP method to use ('post' or 'put').
+   * @param \RootedData\RootedJsonData $json
+   *   The JSON data for the dataset.
+   * @param object $dataset
+   *   The dataset object.
+   *
+   * @return string
+   *   The dataset identifier.
+   */
   private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
 
     if ($method == 'post') {
@@ -624,14 +619,32 @@ class DatasetBTBTest extends BrowserTestBase {
     return $identifier;
   }
 
+  /**
+   * Get the harvester service from the container.
+   *
+   * @return \Drupal\dkan_harvest\HarvestService
+   *   The harvester service.
+   */
   private function getHarvester() : HarvestService {
     return $this->container->get('dkan.harvest.service');
   }
 
+  /**
+   * Get the node storage handler from the container.
+   *
+   * @return \Drupal\node\NodeStorage
+   *   The node storage handler.
+   */
   private function getNodeStorage(): NodeStorage {
     return $this->container->get('entity_type.manager')->getStorage('node');
   }
 
+  /**
+   * Get the metastore service from the container.
+   *
+   * @return \Drupal\dkan_metastore\MetastoreService
+   *   The metastore service.
+   */
   private function getMetastore(): MetastoreService {
     return $this->container->get('dkan.metastore.service');
   }
@@ -641,7 +654,7 @@ class DatasetBTBTest extends BrowserTestBase {
    */
   private function createInitialDraftDatasetAndPublish(string $identifier): void {
     // Set delete local resource files = false and modified as a triggering property.
-    $this->config('datastore.settings')
+    $this->config('dkan_datastore.settings')
       ->set('delete_local_resource', 0)
       ->set('triggering_properties', ['modified'])
       ->save();
@@ -653,7 +666,7 @@ class DatasetBTBTest extends BrowserTestBase {
 
     $this->storeDatasetRunQueues($identifier, '1', ['1.csv']);
 
-    // Publish the draft dataset
+    // Publish the draft dataset.
     $this->getMetastore()->publish('dataset', $identifier);
 
     // Simulate all possible queues post publish.
@@ -669,11 +682,14 @@ class DatasetBTBTest extends BrowserTestBase {
   }
 
   /**
-   * Confirm a new datastore import took place after an update to an existing dataset (draft workflow).
+   * Confirm draft workflow led to a new datastore import and orphan cleanup.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
    */
   private function confirmNewDatastoreImportDraftWorkflow(string $identifier): void {
-    // Simulate all possible queues post update.
-    // Should include datastore_import, orphan_reference_processor and resource_purger
+    // Simulate all possible queues post update. Should include datastore
+    // import, orphan_reference_processor and resource_purger.
     $this->runQueues([
       'localize_import',
       'datastore_import',
@@ -690,7 +706,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $distributionTablePublished = $metadata['published_revision']['distributions'][0]['table_name'] ?? '';
     $distributionUuidOld = $metadata['published_revision']['distributions'][0]['distribution_uuid'] ?? '';
 
-    // Make sure there are both latest and published versions with different tables.
+    // Make sure there are latest and published versions with different tables.
     $this->assertNotEmpty($distributionTablePublished, 'Draft revision exists.');
     $this->assertNotEquals($distributionTableLatest, $distributionTablePublished, 'Separate distribution tables exist for latest and published revisions.');
 
@@ -761,6 +777,7 @@ class DatasetBTBTest extends BrowserTestBase {
     $this->getMetastore()->patch('dataset', $id_1, json_encode(['modified' => '06-05-2222']));
 
     // Run queues; check that datastore import and orphan cleanup worked as expected.
+    $this->avoidResourceVersionCollision();
     $this->confirmNewDatastoreImportDraftWorkflow($id_1);
   }
 
@@ -774,14 +791,14 @@ class DatasetBTBTest extends BrowserTestBase {
     // Create initial draft dataset and then publish it.
     $this->createInitialDraftDatasetAndPublish($id_1);
 
-    // Use same values for distribution as original getData() with updated title.
+    // Use same values for distribution as original getData() with new filepath.
     $distribution = new \stdClass();
     $distribution->title = 'Updated Distribution #0 for ' . $id_1;
     $distribution->downloadURL = $this->getDownloadUrl('1.csv');
     $distribution->format = 'csv';
     $distribution->mediaType = 'text/csv';
 
-    // Run distribution title update with cron run between update and publish events.
+    // Create a new draft with the new distribution title.
     $this->runDistributionTitleUpdate($id_1, $distribution);
 
     // Run distribution title update with cron run only after publish.
@@ -793,6 +810,7 @@ class DatasetBTBTest extends BrowserTestBase {
    * Separate distribution title update to allow for multiple runs.
    */
   private function runDistributionTitleUpdate(string $identifier, \stdClass $distribution, bool $skip_cron = FALSE) {
+    $this->avoidResourceVersionCollision();
     // Create a new draft with the new distribution title.
     $this->getMetastore()->patch('dataset', $identifier, json_encode(
       ['distribution' => [$distribution]]
@@ -883,7 +901,7 @@ class DatasetBTBTest extends BrowserTestBase {
     // Create initial draft dataset and then publish it.
     $this->createInitialDraftDatasetAndPublish($id_1);
 
-    // Use same values for distribution as original getData() with new file path.
+    // Use same values for distribution as original getData() with new filepath.
     $distribution = new \stdClass();
     $distribution->title = 'Distribution #0 for ' . $id_1;
     $distribution->downloadURL = $this->getDownloadUrl('2.csv');
@@ -895,7 +913,17 @@ class DatasetBTBTest extends BrowserTestBase {
       ['distribution' => [$distribution]]
     ));
 
-    // Run queues; check that datastore import and orphan cleanup worked as expected.
+    // Run queues; check datastore import and orphan cleanup worked as expected.
     $this->confirmNewDatastoreImportDraftWorkflow($id_1);
   }
+
+  /**
+   * Sleep briefly to avoid resource version collisions in draft workflows.
+   *
+   * @todo Remove once resource versions are guaranteed unique.
+   */
+  private function avoidResourceVersionCollision(): void {
+    sleep(1);
+  }
+
 }

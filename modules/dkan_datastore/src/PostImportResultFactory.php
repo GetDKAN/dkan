@@ -1,0 +1,92 @@
+<?php
+
+namespace Drupal\dkan_datastore;
+
+use Drupal\Core\Database\Connection;
+use Drupal\dkan_metastore\ResourceMapper;
+use Drupal\dkan_common\DataResource;
+
+/**
+ * Factory class to create PostImportResult objects.
+ */
+class PostImportResultFactory {
+
+  /**
+   * The database connection.
+   */
+  protected Connection $connection;
+
+  /**
+   * The metastore resource mapper service.
+   */
+  protected ResourceMapper $resourceMapper;
+
+  /**
+   * Constructs a PostImportResultFactory instance.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   The database connection.
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
+   *   The resource mapper service.
+   */
+  public function __construct(Connection $connection, ResourceMapper $resourceMapper) {
+    $this->connection = $connection;
+    $this->resourceMapper = $resourceMapper;
+  }
+
+  /**
+   * Creates a PostImportResult instance.
+   *
+   * Passes status, message and the resource when initialized.
+   *
+   * @param string $status
+   *   Status of the post import process.
+   * @param string $message
+   *   Messages retrieved during the post import process.
+   * @param \Drupal\dkan_common\DataResource $resource
+   *   The DKAN resource being imported.
+   *
+   * @return \Drupal\dkan_datastore\PostImportResult
+   *   The PostImportResult object.
+   */
+  public function initializeFromResource($status, $message, DataResource $resource): PostImportResult {
+    return new PostImportResult(
+      $status,
+      $message,
+      $this->getCurrentTime(),
+      $resource,
+      $this->connection,
+    );
+  }
+
+  /**
+   * Creates a PostImportResult instance.
+   *
+   * Passes the distribution when initialized.
+   *
+   * @param array $distribution
+   *   The distribution.
+   *
+   * @return \Drupal\dkan_datastore\PostImportResult
+   *   The PostImportResult object.
+   */
+  public function initializeFromDistribution(array $distribution): PostImportResult {
+    // Retrieve the data resource object.
+    $resource = $this->resourceMapper->get($distribution['resource_id']);
+    return new PostImportResult(
+      NULL,
+      NULL,
+      NULL,
+      $resource,
+      $this->connection,
+    );
+  }
+
+  /**
+   * Return current Unix timestamp.
+   */
+  protected function getCurrentTime(): int {
+    return time();
+  }
+
+}
