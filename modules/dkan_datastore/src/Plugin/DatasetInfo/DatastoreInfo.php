@@ -132,6 +132,7 @@ class DatastoreInfo extends DatasetInfoPluginBase {
       'fetcher_status' => $import_info->fileFetcherStatus,
       'fetcher_percent_done' => $import_info->fileFetcherPercentDone ?? 0,
       'file_path' => isset($fileMapper) ? $fileMapper->getFilePath() : 'not found',
+      'file_checksum' => isset($fileMapper) ? $fileMapper->getChecksum() : 'not found',
       'importer_percent_done' => $import_info->importerPercentDone ?? 0,
       'importer_status' => $import_info->importerStatus,
       'importer_error' => $import_info->importerError,
