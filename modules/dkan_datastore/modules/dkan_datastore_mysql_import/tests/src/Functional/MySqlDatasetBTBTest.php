@@ -1,0 +1,32 @@
+<?php
+
+namespace Drupal\Tests\dkan_datastore_mysql_import\Functional;
+
+use Drupal\Tests\dkan\Functional\DatasetBTBTest;
+
+/**
+ * Dataset tests with the datastore_mysql_import module enabled.
+ *
+ * This test is a subclass of \Drupal\Tests\dkan\Functional\DatasetBTBTest, so
+ * we get the same tests, except with datastore_mysql_import enabled.
+ *
+ * @group dkan
+ * @group dkan_datastore_mysql_import
+ * @group functional
+ * @group functional1
+ */
+class MySqlDatasetBTBTest extends DatasetBTBTest {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = [
+    'dkan_datastore',
+    'dkan_datastore_mysql_import',
+    'field',
+    'dkan_harvest',
+    'dkan_metastore',
+    'node',
+  ];
+
+}

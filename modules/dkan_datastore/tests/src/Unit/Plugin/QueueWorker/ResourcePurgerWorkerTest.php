@@ -1,0 +1,35 @@
+<?php
+
+namespace Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker;
+
+use Drupal\Core\DependencyInjection\Container;
+use Drupal\dkan_datastore\Plugin\QueueWorker\ResourcePurgerWorker;
+use Drupal\dkan_datastore\Service\ResourcePurger;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @group dkan
+ * @group dkan_datastore
+ * @group unit
+ */
+class ResourcePurgerWorkerTest extends TestCase {
+
+  public function test() {
+
+    $options = (new Options())
+      ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
+      ->index(0);
+
+    $containerMock = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(ResourcePurger::class, 'purgeMultiple', NULL)
+      ->getMock();
+
+    $worker = ResourcePurgerWorker::create($containerMock, [], '', '');
+    $voidReturn = $worker->processItem(['uuids' => [], 'prior' => FALSE]);
+    $this->assertNull($voidReturn);
+  }
+
+}

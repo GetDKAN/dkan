@@ -29,7 +29,7 @@ and a new import will be triggered.
 
 .. _mysql_import:
 
-.. include:: ../../../modules/datastore/modules/datastore_mysql_import/README.md
+.. include:: ../../../modules/dkan_datastore/modules/dkan_datastore_mysql_import/README.md
    :parser: myst_parser.sphinx_
 
 Datastore Settings

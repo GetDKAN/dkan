@@ -1,5 +1,10 @@
-name: DKAN Datastore MySQL Import (transitional)
+name: Datastore MySQL Import
 description: Provides a MySQL Importer class.
 type: module
 core_version_requirement: ^10.4 || ^11
-package: DKAN 4.x Transition
+package: DKAN
+configure: dkan_datastore.mysql_import.settings
+dependencies:
+  - dkan:dkan_common
+  - dkan:dkan_datastore
+  - dkan:dkan_metastore

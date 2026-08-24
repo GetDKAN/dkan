@@ -1,0 +1,181 @@
+dkan_metastore.1.metastore:
+  path: '/api/1/metastore'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_common\Controller\OpenApiController::getComplete'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas:
+  path: '/api/1/metastore/schemas'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getSchemas'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id:
+  path: '/api/1/metastore/schemas/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getSchema'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items:
+  path: '/api/1/metastore/schemas/{schema_id}/items'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getAll'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.post:
+  path: '/api/1/metastore/schemas/{schema_id}/items'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::post'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canCreate'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::get'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id.publish:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/publish'
+  methods: [PUT]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::publish'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id.put:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [PUT]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::put'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id.patch:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [PATCH]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::patch'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id.delete:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [DELETE]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::delete'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canDelete'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id.revisions:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::getAll'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canViewRevisionList'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id.revisions.id:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions/{revision_id}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::get'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canViewRevision'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.1.metastore.schemas.id.items.id.revisions.post:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreRevisionController::post'}
+  requirements:
+    _custom_access: '\Drupal\dkan_metastore\Controller\MetastoreAccessManager::canUpdate'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+
+dkan_metastore.1.metastore.schemas.dataset.items.id.docs:
+  path: '/api/1/metastore/schemas/dataset/items/{identifier}/docs'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getDocs'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.data_json:
+  path: '/data.json'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\MetastoreController::getCatalog'}
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan_metastore.config_properties:
+  path: '/admin/dkan/properties'
+  defaults:
+    _form: '\Drupal\dkan_metastore\Form\DkanDataSettingsForm'
+    _title: 'Metastore Settings'
+  requirements:
+    _permission: 'administer metastore settings'
+  options:
+    _admin_route: TRUE
+
+dkan_metastore.data_dictionary:
+  path: '/admin/dkan/data-dictionaries'
+  defaults:
+    _title: 'Data Dictionary List'
+  requirements:
+    _permission: 'create data content'
+
+dkan_metastore.data_dictionary.settings:
+  path: '/admin/dkan/data-dictionary/settings'
+  defaults:
+    _title: 'Data Dictionary Settings'
+    _form: '\Drupal\dkan_metastore\Form\DataDictionarySettingsForm'
+  requirements:
+    _permission: 'administer data dictionary settings'
+
+dkan_metastore.datasets:
+  path: '/admin/dkan/datasets'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Datasets'

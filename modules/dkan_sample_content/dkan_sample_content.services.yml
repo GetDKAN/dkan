@@ -1,0 +1,8 @@
+services:
+  dkan.sample_content.service:
+    class: \Drupal\dkan_sample_content\SampleContentService
+    arguments:
+      - '@extension.list.module'
+      - '@dkan.harvest.service'
+      - '%app.root%'
+  Drupal\dkan_sample_content\SampleContentService: '@dkan.sample_content.service'
