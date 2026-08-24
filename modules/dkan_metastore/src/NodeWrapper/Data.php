@@ -161,7 +161,7 @@ class Data implements MetastoreItemInterface {
    */
   public function setMetadata($metadata) {
     $this->fix();
-    $this->node->set('field_json_metadata', json_encode($metadata));
+    $this->node->set(self::JSON_METADATA_FIELD, json_encode($metadata));
   }
 
   /**
@@ -215,7 +215,7 @@ class Data implements MetastoreItemInterface {
    */
   private function saveRawMetadata() {
     if (!isset($this->node->rawMetadata)) {
-      $this->node->rawMetadata = $this->node->get('field_json_metadata')->value;
+      $this->node->rawMetadata = $this->node->get(self::JSON_METADATA_FIELD)->value;
     }
   }
 
