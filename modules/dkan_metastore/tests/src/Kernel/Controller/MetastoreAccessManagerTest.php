@@ -80,7 +80,7 @@ class MetastoreAccessManagerTest extends KernelTestBase {
         ->add('345', NULL)
         ->index(0)
       )
-      ->add(Data::class, 'fix', NULL)
+      ->add(Data::class, 'saveRawMetadata', NULL)
       ->add(Data::class, 'getEntity', NodeInterface::class)
       ->add(NodeInterface::class, 'bundle', 'data')
       ->add(NodeInterface::class, 'get', FieldItemListInterface::class)
@@ -163,7 +163,7 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $can_update = $accessManager->canUpdate($schema_id, '345', $this->unprivilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
 
-    // Now try with a PUT request, which should check for create permissions if 
+    // Now try with a PUT request, which should check for create permissions if
     // non-existant node.
     $request->setMethod('PUT');
     $can_update = $accessManager->canUpdate($schema_id, '123', $privilegedUser, $request);
