@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for dkan_data_dictionary_widget.
+ */
+
+/**
+ * Disable legacy data_dictionary_widget module, in preparation for 4.x.
+ */
+function dkan_data_dictionary_widget_update_11301() {
+  if (\Drupal::service('module_handler')->moduleExists('data_dictionary_widget')) {
+    \Drupal::service('module_installer')->uninstall(['data_dictionary_widget']);
+    return t('The legacy data_dictionary_widget module has been uninstalled.');
+  }
+}

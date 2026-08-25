@@ -12,7 +12,7 @@ dkan:dataset-info
 ~~~~~~
 
 dkan:datastore:reverse-dataset-lookup
------------------
+-------------------------------------
    Takes an argument of the table name and returns the dataset uuid.
 
   **Arguments**
@@ -31,7 +31,7 @@ dkan:datastore:drop
 
     **Arguments**
 
-    - **identifier** The uuid of a dataset.
+    - **identifier** The resource identifier.
 
     **Options**
     - **--keep-local** Do not remove localized resource, only drop the datastore table.
@@ -221,7 +221,7 @@ dkan:harvest:register
 
     **Usage**
 
-        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'``
+        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'``
 
     Or
 

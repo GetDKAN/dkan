@@ -12,6 +12,7 @@ tagfile
 /cypress/screenshots
 /libraries
 /modules/sample_content/sample_content.json
+/modules/dkan_sample_content/dkan_sample_content.json
 /node_modules
 /vendor
 /report
@@ -32,4 +33,10 @@ docs/.venv
 !/.ddev/commands/host/
 /.ddev/commands/host/*
 !/.ddev/commands/host/dkan-*
+!/.ddev/php/
+/.ddev/php/*
+!/.ddev/php/pcov.ini
+!/.ddev/web-build/
+/.ddev/web-build/*
+!/.ddev/web-build/Dockerfile
 tmp

@@ -1,7 +1,7 @@
-name: DKAN Metastore Facets (transitional)
+name: DKAN Metastore Facets
 description: Provides facet blocks for DKAN Metastore Search.
 type: module
 core_version_requirement: ^10.4 || ^11
 dependencies:
-  - dkan:metastore_facets
-package: DKAN 4.x Transition
+  - facets:facets
+package: DKAN
