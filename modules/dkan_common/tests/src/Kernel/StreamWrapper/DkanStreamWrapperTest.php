@@ -29,7 +29,7 @@ class DkanStreamWrapperTest extends KernelTestBase {
       'functional tests, or test the /api/1 endpoint directly. ' .
       "Full error message:\n\n" . $e->getMessage());
     }
-    $this->assertEquals('API Documentation', $api->info->title) ?? '';
+    $this->assertEquals('API Documentation', $api->info->title);
 
     /** @var \Drupal\Core\StreamWrapper\StreamWrapperManager $manager */
     $manager = $this->container->get('stream_wrapper_manager');

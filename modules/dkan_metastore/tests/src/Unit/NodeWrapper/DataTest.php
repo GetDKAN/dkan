@@ -36,7 +36,7 @@ class DataTest extends TestCase {
       ->addd('getLoadedRevisionId', 111)
       ->addd(
         'getTranslatedField',
-        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+        $this->createMock(FieldItemListInterface::class),
       )
       ->getMock();
 
@@ -74,7 +74,7 @@ class DataTest extends TestCase {
       ->addd('isNew', true)
       ->addd(
         'getTranslatedField',
-        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+        $this->createMock(FieldItemListInterface::class),
       )
       ->getMock();
 
@@ -107,7 +107,7 @@ class DataTest extends TestCase {
       ->addd('isPublished', true)
       ->addd(
         'getTranslatedField',
-        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+        $this->createMock(FieldItemListInterface::class),
       )
       ->getMock();
 
@@ -141,7 +141,7 @@ class DataTest extends TestCase {
       ->addd('isNew', true)
       ->addd(
         'getTranslatedField',
-        $this->getMockBuilder(FieldItemListInterface::class)->getMockForAbstractClass()
+        $this->createMock(FieldItemListInterface::class),
       )
       ->getMock();
 
