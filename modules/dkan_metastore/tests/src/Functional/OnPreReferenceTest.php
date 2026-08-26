@@ -6,7 +6,7 @@ use Drupal\Tests\BrowserTestBase;
 
 /**
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group functional
  * @group btb
  * @group functional1

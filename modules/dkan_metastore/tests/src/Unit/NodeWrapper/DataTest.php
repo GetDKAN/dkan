@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Container;
  * @covers \Drupal\dkan_metastore\NodeWrapper\Data
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group unit
  */
 class DataTest extends TestCase {

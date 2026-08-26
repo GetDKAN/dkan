@@ -26,7 +26,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @coversDefaultClass \Drupal\dkan_metastore\MetastoreService
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group unit
  */
 class MetastoreServiceTest extends TestCase {

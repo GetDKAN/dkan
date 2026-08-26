@@ -23,7 +23,7 @@ use function PHPUnit\Framework\assertEquals;
  * @coversDefaultClass \Drupal\dkan_metastore\Storage\Data
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group unit
  */
 class DataTest extends TestCase {

@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
  * @coversDefaultClass \Drupal\dkan_metastore\Reference\Dereferencer
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group unit
  */
 class DereferencerTest extends TestCase {
