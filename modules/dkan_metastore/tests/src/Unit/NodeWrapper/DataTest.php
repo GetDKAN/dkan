@@ -34,6 +34,10 @@ class DataTest extends TestCase {
       ->addd('isNew', false)
       ->addd('id', 123)
       ->addd('getLoadedRevisionId', 111)
+      ->addd(
+        'getTranslatedField',
+        $this->createMock(FieldItemListInterface::class),
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
@@ -68,6 +72,10 @@ class DataTest extends TestCase {
       ->addd('__isset', true)
       ->addd('__get', Node::class)
       ->addd('isNew', true)
+      ->addd(
+        'getTranslatedField',
+        $this->createMock(FieldItemListInterface::class),
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
@@ -97,6 +105,10 @@ class DataTest extends TestCase {
       ->addd('isNew', false)
       ->addd('id', 123)
       ->addd('isPublished', true)
+      ->addd(
+        'getTranslatedField',
+        $this->createMock(FieldItemListInterface::class),
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
@@ -127,6 +139,10 @@ class DataTest extends TestCase {
       ->addd('__isset', true)
       ->addd('__get', Node::class)
       ->addd('isNew', true)
+      ->addd(
+        'getTranslatedField',
+        $this->createMock(FieldItemListInterface::class),
+      )
       ->getMock();
 
     $entityTypeManager = (new Chain($this))
