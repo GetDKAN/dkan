@@ -447,6 +447,12 @@ class Referencer {
       // If an existing referenced node is found but unpublished, publish it.
       if ($node->get('moderation_state')->value !== 'published') {
         $node->set('moderation_state', 'published');
+        if ($node->getEntityType()->isRevisionable() && $node->isNewRevision()) {
+          // Set revision creation time to the current time because
+          // revisions will reuse the previous revision's timestamp if not set.
+          $time = new \DateTimeImmutable();
+          $node->setRevisionCreationTime($time->getTimestamp());
+        }
         $node->save();
       }
       return $node->uuid();

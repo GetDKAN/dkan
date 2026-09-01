@@ -289,6 +289,12 @@ class Data implements MetastoreItemInterface {
    * service's POST and PUT functions rather than saving the node directly.
    */
   public function save() {
+    if ($this->node->getEntityType()->isRevisionable() && $this->node->isNewRevision()) {
+      // Set revision creation time to the current time because
+      // revisions will reuse the previous revision's timestamp if not set.
+      $time = new \DateTimeImmutable();
+      $this->node->setRevisionCreationTime($time->getTimestamp());
+    }
     $this->node->save();
   }
 
