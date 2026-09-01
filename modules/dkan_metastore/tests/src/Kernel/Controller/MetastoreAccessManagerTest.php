@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @coversDefaultClass \Drupal\dkan_metastore\Controller\MetastoreAccessManager
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group kernel
  */
 class MetastoreAccessManagerTest extends KernelTestBase {
@@ -163,7 +163,7 @@ class MetastoreAccessManagerTest extends KernelTestBase {
     $can_update = $accessManager->canUpdate($schema_id, '345', $this->unprivilegedUser, $request);
     $this->assertTrue($can_update->isAllowed());
 
-    // Now try with a PUT request, which should check for create permissions if 
+    // Now try with a PUT request, which should check for create permissions if
     // non-existant node.
     $request->setMethod('PUT');
     $can_update = $accessManager->canUpdate($schema_id, '123', $privilegedUser, $request);

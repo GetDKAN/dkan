@@ -9,7 +9,7 @@ use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 
 /**
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group functional
  * @group btb
  * @group functional1

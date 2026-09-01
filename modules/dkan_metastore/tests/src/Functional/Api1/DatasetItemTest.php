@@ -8,7 +8,7 @@ use GuzzleHttp\RequestOptions;
 /**
  * Tests the DatasetItem API.
  *
- * @group metastore
+ * @group dkan_metastore
  * @group functional1
  */
 class DatasetItemTest extends Api1TestBase {

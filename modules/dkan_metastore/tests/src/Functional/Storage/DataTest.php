@@ -22,7 +22,7 @@ use org\bovigo\vfs\vfsStream;
  * @coversDefaultClass \Drupal\dkan_metastore\Storage\Data
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group functional
  * @group btb
  * @group functional2
