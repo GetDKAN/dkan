@@ -1,0 +1,20 @@
+services:
+  dkan.datastore_preview.builder:
+    class: \Drupal\dkan_datastore_preview\Service\DataPreviewBuilder
+    arguments:
+      - '@request_stack'
+      - '@pager.manager'
+  Drupal\dkan_datastore_preview\Service\DataPreviewBuilder: '@dkan.datastore_preview.builder'
+
+  dkan.datastore_preview.data_source.database:
+    class: \Drupal\dkan_datastore_preview\DataSource\DatabaseDataSource
+    arguments:
+      - '@dkan.datastore.service'
+  Drupal\dkan_datastore_preview\DataSource\DatabaseDataSource: '@dkan.datastore_preview.data_source.database'
+
+  dkan.datastore_preview.import_status_message:
+    class: \Drupal\dkan_datastore_preview\Service\ImportStatusMessage
+    arguments:
+      - '@dkan.datastore.import_info'
+      - '@dkan.metastore.resource_mapper'
+  Drupal\dkan_datastore_preview\Service\ImportStatusMessage: '@dkan.datastore_preview.import_status_message'

@@ -1,0 +1,150 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for the DKAN Datastore Preview module.
+ */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\dkan_common\DataResource;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function dkan_datastore_preview_theme() {
+  return [
+    'dkan_datastore_preview' => [
+      'variables' => [
+        'table' => NULL,
+        'pager' => NULL,
+        'page_size_form' => NULL,
+        'result_summary' => NULL,
+      ],
+      'template' => 'dkan-datastore-preview',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function dkan_datastore_preview_entity_extra_field_info() {
+  $extra = [];
+  if (\Drupal::entityTypeManager()->getStorage('node_type')->load('data')) {
+    $extra['node']['data']['display']['data_preview'] = [
+      'label' => t('Data Preview'),
+      'description' => t('Paginated preview tables for tabular distributions.'),
+      'weight' => 100,
+      'visible' => TRUE,
+    ];
+  }
+  return $extra;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view() for node entities.
+ *
+ * Adds a data preview table for each importable distribution on dataset
+ * nodes. Rendered on the server-side dataset page via the data_preview
+ * extra field printed by dkan_metastore's node--data template.
+ */
+function dkan_datastore_preview_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if (!$entity instanceof NodeInterface) {
+    return;
+  }
+  if ($entity->bundle() !== 'data') {
+    return;
+  }
+  if (($entity->get('field_data_type')->value ?? '') !== 'dataset') {
+    return;
+  }
+  if (!$display->getComponent('data_preview')) {
+    return;
+  }
+
+  // During node preview of a new (unsaved) node, datastore tables don't exist.
+  if (!empty($entity->in_preview) && $entity->isNew()) {
+    $build['data_preview'] = [
+      '#markup' => '<p>' . t('Data preview is available after the dataset is saved and data is imported.') . '</p>',
+    ];
+    return;
+  }
+
+  /** @var \Drupal\dkan_common\DatasetInfo $datasetInfo */
+  $datasetInfo = \Drupal::service('dkan.common.dataset_info');
+  $info = $datasetInfo->gather($entity->uuid());
+
+  $revision = $info['published_revision'] ?? $info['latest_revision'] ?? NULL;
+  if (!$revision || empty($revision['distributions'])) {
+    return;
+  }
+
+  $previews = [];
+  $index = 0;
+  foreach ($revision['distributions'] as $dist) {
+    if (!is_array($dist) || empty($dist['resource_id']) || empty($dist['resource_version'])) {
+      continue;
+    }
+    if (!in_array($dist['mime_type'] ?? '', DataResource::IMPORTABLE_FILE_TYPES)) {
+      continue;
+    }
+
+    $resourceId = $dist['resource_id'] . '__' . $dist['resource_version'];
+
+    $preview = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['dkan-datastore-preview-distribution']],
+      '#cache' => [
+        'tags' => _dkan_datastore_preview_distribution_cache_tags($dist['distribution_uuid'] ?? ''),
+      ],
+    ];
+
+    // Caption the table with the source filename.
+    $label = '';
+    if (!empty($dist['source_path'])) {
+      $label = basename(parse_url($dist['source_path'], PHP_URL_PATH) ?: $dist['source_path']);
+    }
+
+    $preview['table'] = [
+      '#type' => 'dkan_datastore_preview',
+      '#resource_id' => $resourceId,
+      '#pager_element' => $index,
+      '#query_prefix' => 'dp' . $index . '_',
+      '#caption' => $label ? t('Preview: @label', ['@label' => $label]) : NULL,
+    ];
+    $previews[] = $preview;
+    $index++;
+  }
+
+  if ($previews) {
+    $build['data_preview'] = $previews;
+  }
+}
+
+/**
+ * Get the cache tags for a distribution metastore item.
+ *
+ * The datastore invalidates the distribution node's cache tags after an
+ * import completes (via PostImport), so attaching them here flips a "not yet
+ * available" message to the data table without a manual cache rebuild.
+ *
+ * @param string $distribution_uuid
+ *   The distribution's UUID.
+ *
+ * @return array
+ *   Cache tags, or an empty array when the item cannot be loaded.
+ */
+function _dkan_datastore_preview_distribution_cache_tags(string $distribution_uuid): array {
+  if ($distribution_uuid === '') {
+    return [];
+  }
+  try {
+    $item = \Drupal::service('dkan.metastore.metastore_item_factory')->getInstance($distribution_uuid);
+    return $item->getCacheTags();
+  }
+  catch (\Throwable) {
+    return [];
+  }
+}
