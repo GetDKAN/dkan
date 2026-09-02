@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore\Drush\Commands;
 
 use Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\SchemaPropertiesHelper;
 use Drupal\dkan_metastore\Reference\Dereferencer;
@@ -110,8 +111,13 @@ final class UnreferenceDatasetCommands extends DrushCommands {
 
     foreach ($orphan_uuids as $orphan_uuid) {
       if ($delete_orphans) {
-        $this->metastoreService->delete($target_property, $orphan_uuid);
-        $this->output()->writeln(sprintf('[%s] Deleting orphaned %s: %s', $title, $target_property, $orphan_uuid));
+        try {
+          $this->metastoreService->delete($target_property, $orphan_uuid);
+          $this->output()->writeln(sprintf('[%s] Deleting orphaned %s: %s', $title, $target_property, $orphan_uuid));
+        }
+        catch (MissingObjectException $e) {
+          $this->logger()->warning(sprintf('[%s] Attempted to delete orphan but doesn\'t exist: %s: %s', $title, $target_property, $orphan_uuid));
+        }
       }
       else {
         $ref_storage = $this->factory->getInstance($target_property);
