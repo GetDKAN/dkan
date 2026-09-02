@@ -43,35 +43,30 @@ class PreviewIntegrationTest extends KernelTestBase {
   }
 
   /**
-   * Register, localize, and import the fixture CSV; return its resource id.
+   * Register and import the fixture CSV; return its resource id.
+   *
+   * The local_file perspective points straight at the fixture's filesystem
+   * path (as DatabaseTableTest does) rather than going through the localizer:
+   * ImportJob::assertTextFile() calls mime_content_type(), which cannot read
+   * a public:// stream and turns the import into an error on some stacks.
    */
   protected function importFixture(): string {
-    $path = 'file://' . dirname(__DIR__, 2) . '/data/preview_sample.csv';
-    $resource = new DataResource($path, 'text/csv', DataResource::DEFAULT_SOURCE_PERSPECTIVE);
+    $path = dirname(__DIR__, 2) . '/data/preview_sample.csv';
+    $source = new DataResource($path, 'text/csv', DataResource::DEFAULT_SOURCE_PERSPECTIVE);
 
     /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
     $mapper = $this->container->get('dkan.metastore.resource_mapper');
-    $mapper->register($resource);
+    $mapper->register($source);
+    $local = $source->createNewPerspective(ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $path);
+    $mapper->registerNewPerspective($local);
 
-    $identifier = $resource->getIdentifier();
-    $version = $resource->getVersion();
-
-    /** @var \Drupal\dkan_datastore\Service\ResourceLocalizer $localizer */
-    $localizer = $this->container->get('dkan.datastore.service.resource_localizer');
-    $result = $localizer->localizeTask($identifier, $version, FALSE);
-    $this->assertEquals(Result::DONE, $result->getStatus(), $result->getError() ?? '');
-
-    // Run the import job directly (as DatabaseTableTest does) instead of
-    // DatastoreService::import(), whose cache invalidation needs metastore
-    // node fields this kernel environment doesn't install.
-    $local = $localizer->get($identifier, $version, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE);
     $importJob = $this->container->get('dkan.datastore.service.factory.import')
       ->getInstance($local->getUniqueIdentifier(), ['resource' => $local])
       ->getImporter();
     $importResult = $importJob->run();
     $this->assertEquals(Result::DONE, $importResult->getStatus(), $importResult->getError() ?? '');
 
-    return $identifier . '__' . $version;
+    return $source->getIdentifier() . '__' . $source->getVersion();
   }
 
   /**
