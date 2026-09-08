@@ -196,6 +196,8 @@ class MetastoreService implements ContainerInjectionInterface {
       return reset($data) instanceof RootedJsonData;
     };
 
+    // @todo Just validate the data here rather than as a side-effect of
+    //   creating an event object.
     $event = new Event($objects, $validator);
     $this->eventDispatcher->dispatch($event, self::EVENT_DATA_GET_ALL);
 
@@ -212,8 +214,6 @@ class MetastoreService implements ContainerInjectionInterface {
    *
    * @return array
    *   Array of objects.
-   *
-   * @todo Exception should not be caught; let controller handle it.
    */
   private function jsonStringsArrayToObjects(array $jsonStringsArray, string $schema_id) {
     return array_map(
@@ -229,11 +229,13 @@ class MetastoreService implements ContainerInjectionInterface {
 
           return $event->getData();
         }
+        // @todo Be more specific about exception type.
         catch (\Exception) {
           $this->logger->error('A JSON string failed validation.', [
             '@schema_id' => $schema_id,
             '@json' => $jsonString,
           ]);
+          // @todo Re-throw some exceptions.
           return NULL;
         }
       }, $jsonStringsArray);
@@ -458,10 +460,17 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public function getCatalog() {
     $catalog = $this->getSchema('catalog');
+
+    $jsonStringsArray = $this->storageFactory->getInstance('dataset')
+      ->retrieveAllForCatalog();
+    $objects = array_filter(
+      $this->jsonStringsArrayToObjects($jsonStringsArray, 'dataset')
+    );
+
     $catalog->dataset = array_map(function ($object) {
       $modified_object = static::removeReferences($object);
       return (object) $modified_object->get('$');
-    }, $this->getAll('dataset'));
+    }, $objects);
 
     return $catalog;
   }

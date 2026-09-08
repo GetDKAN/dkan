@@ -49,6 +49,8 @@ interface MetastoreStorageInterface {
    */
   public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array;
 
+  public function retrieveAllForCatalog(): array;
+
   /**
    * Retrieve just identifiers.
    *

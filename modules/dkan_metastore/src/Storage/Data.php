@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore\Storage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
@@ -170,6 +171,36 @@ abstract class Data implements MetastoreEntityStorageInterface {
     return array_map(function ($entity) {
       return $entity->get($this->metadataField)->getString();
     }, array_values($this->entityStorage->loadMultiple($entityIds)));
+  }
+
+  public function retrieveAllForCatalog(): array {
+    // Listquerybase will give us all nodes where status=published by default.
+    $item_ids = $this->listQueryBase()->execute();
+    // Query some content moderation state entities...
+    $cm_storage = $this->entityTypeManager
+      ->getStorage('content_moderation_state');
+    $cm_query = $cm_storage->getQuery()
+      // @todo Perform access check against anonymous user.
+      ->accessCheck(FALSE)
+      // Data nodes only.
+      ->condition('content_entity_type_id', $this->entityType)
+      // Node IDs we found already.
+      ->condition('id', $item_ids, 'IN');
+
+    // @todo check if workflow module is enabled.
+    // @todo Get list of workflow states from config.
+    if ($visible_list = ['hidden']) {
+      $cm_query->condition('moderation_state', $visible_list, 'IN');
+    }
+
+    $moderated_ids = array_map(function ($entity) {
+      return $entity->get('id')->getString();
+    }, array_values($cm_storage->loadMultiple($cm_query->execute())));
+
+    // Load all the nodes and grab their metadata.
+    return array_map(function ($entity) {
+      return $entity->get($this->metadataField)->getString();
+    }, array_values($this->entityStorage->loadMultiple($moderated_ids)));
   }
 
   /**
