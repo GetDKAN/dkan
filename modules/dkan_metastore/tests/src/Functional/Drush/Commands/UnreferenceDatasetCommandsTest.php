@@ -34,10 +34,8 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
 
   /**
    * Tests that the command unreferences distributions and updates state.
-   *
-   * @dataProvider unrefDatasetsOptionsProvider
    */
-  public function testUnrefDatasets(array $options): void {
+  public function testUnrefDatasets(): void {
     // Start with referencing enabled for distribution.
     $this->setDistributionReferenceModeFromConfig('distribution');
 
@@ -67,13 +65,13 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $dist2_uuid = $raw2->{Dereferencer::REF_PREFIX . 'distribution'}[0]->identifier;
 
     // Check we get a confirmation before proceeding with the operation.
-    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options);
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution']);
     $output = $this->getOutput() . $this->getErrorOutput();
     $this->assertStringContainsString('WARNING] You are about to overwrite references', $output);
     $this->assertStringContainsString('Operation cancelled.', $output);
 
     // Run the command targeting the distribution property.
-    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => NULL]);
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], ['yes' => NULL]);
 
     // Reset the config factory so we see what Drush wrote to the DB.
     $this->container->get('config.factory')->reset();
@@ -94,16 +92,9 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $this->assertDistributionsAreEmbedded($raw1, 'Dataset 1 distributions should be embedded after command.');
     $this->assertDistributionsAreEmbedded($raw2, 'Dataset 2 distributions should be embedded after command.');
 
-    if (array_key_exists('delete', $options)) {
-      // Assert the two original referenced distributions are now deleted.
-      $this->assertDistributionsAreDeleted($dist1_uuid);
-      $this->assertDistributionsAreDeleted($dist2_uuid);
-    }
-    else {
-      // Assert the two original referenced distributions are now orphaned.
-      $this->assertDistributionsAreOrphaned($dist1_uuid);
-      $this->assertDistributionsAreOrphaned($dist2_uuid);
-    }
+    // Assert the two original referenced distributions are now orphaned.
+    $this->assertDistributionsAreOrphaned($dist1_uuid);
+    $this->assertDistributionsAreOrphaned($dist2_uuid);
 
     // Status output should mention both dataset titles and count.
     $output = $this->getOutput();
@@ -113,28 +104,9 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
 
     // Assert that the command can be run again without error, even if no
     // datasets have referenced distributions.
-    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], $options + ['yes' => NULL]);
+    $this->drush('dkan:metastore:unreference-datasets', ['distribution'], ['yes' => NULL]);
     $output = $this->getOutput();
     $this->assertEquals(2, substr_count($output, 'Un-referencing 0 distribution value(s)'));
-  }
-
-  /**
-   * Data provider for testUnrefDatasets.
-   *
-   * Drush command options.
-   *
-   * @return array
-   *   Test cases.
-   */
-  public static function unrefDatasetsOptionsProvider(): array {
-    return [
-      'default' => [
-        'options' => [],
-      ],
-      'delete' => [
-        'options' => ['delete' => NULL],
-      ],
-    ];
   }
 
   /**
@@ -145,15 +117,6 @@ class UnreferenceDatasetCommandsTest extends BrowserTestBase {
     $node = reset($node);
     $this->assertNotNull($node, "Distribution node with UUID {$uuid} should exist.");
     $this->assertEquals('orphaned', $node->get('moderation_state')->value, "Distribution node with UUID {$uuid} should be orphaned.");
-  }
-
-  /**
-   * Assert that a distribution node is deleted.
-   */
-  private function assertDistributionsAreDeleted(string $uuid): void {
-    $node = $this->container->get('entity_type.manager')->getStorage('node')->loadByProperties(['uuid' => $uuid]);
-    $node = reset($node);
-    $this->assertFalse($node, "Distribution node with UUID {$uuid} should be deleted.");
   }
 
   /**

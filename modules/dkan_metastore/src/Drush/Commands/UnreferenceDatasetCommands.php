@@ -4,7 +4,6 @@ namespace Drupal\dkan_metastore\Drush\Commands;
 
 use Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\dkan_metastore\SchemaPropertiesHelper;
 use Drupal\dkan_metastore\Reference\Dereferencer;
@@ -48,11 +47,7 @@ final class UnreferenceDatasetCommands extends DrushCommands {
    */
   #[CLI\Command(name: 'dkan:metastore:unreference-datasets', description: 'Convert referenced dataset property values to embedded (non-referenced) values.', aliases: ['dkan:unref'])]
   #[CLI\Argument(name: 'target_property', description: 'Dataset property to unreference (e.g. "distribution").')]
-  #[CLI\Option(name: 'delete', description: 'Immediately delete orphaned referenced entities instead of orphaning them.')]
-  public function unrefDatasets(
-    ?string $target_property = 'distribution',
-    array $options = ['delete' => FALSE],
-  ): void {
+  public function unrefDatasets(?string $target_property = 'distribution'): void {
     $properties = $this->schemaPropertiesHelper->retrieveSchemaProperties();
     $this->storage = $this->factory->getInstance('dataset');
 
@@ -76,18 +71,17 @@ final class UnreferenceDatasetCommands extends DrushCommands {
       $this->logger()->notice("Disabled referencing for \"{$target_property}\" in dkan_metastore.settings.");
     }
 
-    $delete_orphans = (bool) ($options['delete'] ?? FALSE);
     $uuids = $this->metastoreService->getIdentifiers('dataset', unpublished: TRUE);
 
     foreach ($uuids as $uuid) {
-      $this->processDataset($uuid, $target_property, $delete_orphans);
+      $this->processDataset($uuid, $target_property);
     }
   }
 
   /**
    * Re-save one dataset with the target property embedded, then handle orphans.
    */
-  private function processDataset(string $uuid, string $target_property, bool $delete_orphans): void {
+  private function processDataset(string $uuid, string $target_property): void {
     $entity = $this->storage->getEntityLatestRevision($uuid);
     if (!$entity) {
       return;
@@ -110,21 +104,10 @@ final class UnreferenceDatasetCommands extends DrushCommands {
     $this->storage->store((string) $dataset, $uuid);
 
     foreach ($orphan_uuids as $orphan_uuid) {
-      if ($delete_orphans) {
-        try {
-          $this->metastoreService->delete($target_property, $orphan_uuid);
-          $this->output()->writeln(sprintf('[%s] Deleting orphaned %s: %s', $title, $target_property, $orphan_uuid));
-        }
-        catch (MissingObjectException $e) {
-          $this->logger()->warning(sprintf('[%s] Attempted to delete orphan but doesn\'t exist: %s: %s', $title, $target_property, $orphan_uuid));
-        }
-      }
-      else {
-        $ref_storage = $this->factory->getInstance($target_property);
-        // Use OrphanReferenceProcessor directly on the referenced entity.
-        $this->output()->writeln(sprintf('[%s] Orphaning %s: %s', $title, $target_property, $orphan_uuid));
-        $ref_storage->orphan($orphan_uuid);
-      }
+      $ref_storage = $this->factory->getInstance($target_property);
+      // Use OrphanReferenceProcessor directly on the referenced entity.
+      $this->output()->writeln(sprintf('[%s] Orphaning %s: %s', $title, $target_property, $orphan_uuid));
+      $ref_storage->orphan($orphan_uuid);
     }
   }
 
