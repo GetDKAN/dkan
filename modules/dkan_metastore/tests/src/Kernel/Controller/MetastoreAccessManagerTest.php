@@ -80,7 +80,6 @@ class MetastoreAccessManagerTest extends KernelTestBase {
         ->add('345', NULL)
         ->index(0)
       )
-      ->add(Data::class, 'saveRawMetadata', NULL)
       ->add(Data::class, 'getEntity', NodeInterface::class)
       ->add(NodeInterface::class, 'bundle', 'data')
       ->add(NodeInterface::class, 'get', FieldItemListInterface::class)
