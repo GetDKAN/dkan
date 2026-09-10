@@ -129,6 +129,7 @@ class Data implements MetastoreItemInterface {
     if (isset($this->node->rawMetadata)) {
       return json_decode($this->node->rawMetadata);
     }
+    return NULL;
   }
 
   /**
