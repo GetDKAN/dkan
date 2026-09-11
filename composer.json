@@ -11,6 +11,7 @@
     ],
     "require": {
         "ext-json": "*",
+        "ext-filter": "*",
         "drupal/facets": "^3.0.1",
         "drupal/json_form_widget": "^1.0.1",
         "drupal/moderated_content_bulk_publish": "~2.0.20",
@@ -31,6 +32,7 @@
         "ilbee/csv-response": "^1.2.0",
         "justinrainbow/json-schema": "^5.2 || ^6.6.1",
         "opis/json-schema": "^2.4",
+        "league/csv": "^9.28.0",
         "ramsey/uuid": "^3.8.0 || ^4",
         "stolt/json-merge-patch": "^2.0"
     },

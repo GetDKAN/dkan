@@ -93,8 +93,8 @@ class QueryDownloadControllerTest extends TestCase {
     ob_start(self::getBuffer(...));
     $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
     $streamResponse->sendContent();
-    $streamedCsv = $this->buffer ?? '';
     ob_get_clean();
+    $streamedCsv = $this->buffer ?? '';
 
     $this->assertEquals(count(explode("\n", (string) $csv)), count(explode("\n", $streamedCsv)));
     $this->assertEquals($csv, $streamedCsv);
@@ -394,8 +394,8 @@ class QueryDownloadControllerTest extends TestCase {
     ob_start(self::getBuffer(...));
     $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
-    $streamedCsv = $this->buffer;
     ob_get_clean();
+    $streamedCsv = $this->buffer ?? '';
 
     $this->assertStringContainsString("Could not generate header", $streamedCsv);
   }
