@@ -24,14 +24,9 @@ final class UnreferenceDatasetCommands extends DrushCommands {
 
   /**
    * Metastore storage object.
-   *
-   * @var \Drupal\dkan_metastore\Storage\MetastoreEntityStorageInterface
    */
   private MetastoreEntityStorageInterface $storage;
 
-  /**
-   * Constructor.
-   */
   public function __construct(
     private readonly DataFactory $factory,
     private readonly MetastoreService $metastoreService,
@@ -43,9 +38,9 @@ final class UnreferenceDatasetCommands extends DrushCommands {
   }
 
   /**
-   * Convert referenced dataset property values to embedded values.
+   * Convert referenced dataset values to embedded (non-referenced) values.
    */
-  #[CLI\Command(name: 'dkan:metastore:unreference-datasets', description: 'Convert referenced dataset property values to embedded (non-referenced) values.', aliases: ['dkan:unref'])]
+  #[CLI\Command(name: 'dkan:metastore:unreference-datasets', aliases: ['dkan:unref'])]
   #[CLI\Argument(name: 'target_property', description: 'Dataset property to unreference (e.g. "distribution").')]
   public function unrefDatasets(?string $target_property = 'distribution'): void {
     $properties = $this->schemaPropertiesHelper->retrieveSchemaProperties();
@@ -80,6 +75,11 @@ final class UnreferenceDatasetCommands extends DrushCommands {
 
   /**
    * Re-save one dataset with the target property embedded, then handle orphans.
+   *
+   * @param string $uuid
+   *   The UUID of the dataset to process.
+   * @param string $target_property
+   *   The property to unreference and embed (e.g. 'distribution').
    */
   private function processDataset(string $uuid, string $target_property): void {
     $entity = $this->storage->getEntityLatestRevision($uuid);
@@ -112,7 +112,7 @@ final class UnreferenceDatasetCommands extends DrushCommands {
   }
 
   /**
-   * Collect UUIDs from reference key.
+   * Collect UUIDs from the reference property.
    *
    * @param object $data
    *   The dataset data object.
