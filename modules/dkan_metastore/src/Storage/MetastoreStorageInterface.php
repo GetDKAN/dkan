@@ -104,7 +104,11 @@ interface MetastoreStorageInterface {
   public function publish(string $uuid): bool;
 
   /**
-   * Archive.
+   * Archive a metastore item.
+   *
+   * "Archived" is generally assumed to be a state in which the item is no
+   * longer published, but is intended to be kept in the storage system for an
+   * indefinite amount of time.
    *
    * @param string $uuid
    *   The identifier for the data.
@@ -115,21 +119,38 @@ interface MetastoreStorageInterface {
   public function archive(string $uuid): bool;
 
   /**
-   * Remove.
+   * Orphan a metastore item.
    *
-   * @param string $id
+   * When a metastore item is "orphaned", it is no longer associated with any
+   * parent item. For instance, if a distribution is changed, a new distribution
+   * entity may be created, and the old one becomes orphaned. Orphaned items may
+   * be retained indefinitely in the interest of transparency, or queued for
+   * deletion.
+   *
+   * @param string $uuid
    *   The identifier for the data.
+   *
+   * @return bool
+   *   True if success.
    */
-  public function remove(string $id);
+  public function orphan(string $uuid): bool;
 
   /**
-   * Store.
+   * Remove (delete) a metastore item.
+   *
+   * @param string $uuid
+   *   The identifier for the metastore item.
+   */
+  public function remove(string $uuid);
+
+  /**
+   * Store metadata as a metastore item.
    *
    * @param string $data
    *   The data to be stored.
-   * @param string|null $id
+   * @param string|null $uuid
    *   The identifier for the data. If the act of storing generates the
-   *   id, there is no need to pass one.
+   *   uuid, there is no need to pass one.
    *
    * @return string
    *   The identifier.
@@ -137,7 +158,7 @@ interface MetastoreStorageInterface {
    * @throws \Exception
    *   Issues storing the data.
    */
-  public function store(string $data, ?string $id = NULL): string;
+  public function store(string $data, ?string $uuid = NULL): string;
 
   /**
    * Retrieve by hash.

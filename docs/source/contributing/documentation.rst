@@ -179,6 +179,7 @@ instead of ``make``:
 
   .. prompt:: console $
 
+    pip install sphinx-autobuild
     sphinx-autobuild ./source ./build/html
 
 The process will stay attached to your terminal. You should see a link to a
