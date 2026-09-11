@@ -102,7 +102,7 @@ class MetastoreController implements ContainerInjectionInterface {
         ? $this->service->swapReferences($object)
         : $this->service->removeReferences($object);
       return (object) $modified_object->get('$');
-    }, $this->service->getAll($schema_id));
+    }, $this->service->getAll($schema_id, $this->wantLimitedAmountOfItems($request) ? 0 : NULL, $this->wantLimitedAmountOfItems($request) ?? NULL));
 
     $output = array_values($output);
     return $this->apiResponse->cachedJsonResponse($output, 200, [$schema_id], $request->query);
@@ -157,6 +157,23 @@ class MetastoreController implements ContainerInjectionInterface {
       return FALSE;
     }
     return TRUE;
+  }
+
+  /**
+   * Determine if we want to limit the number of items in the response.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
+   *
+   * @return ?integer
+   *   number of items or NULL if we want no limit.
+   */
+  private function wantLimitedAmountOfItems(Request $request) {
+    $param = $request->get('limit', FALSE);
+    if ($param === FALSE) {
+      return NULL;
+    }
+    return (int) $param;
   }
 
   /**

@@ -22,6 +22,17 @@
                 "required": true,
                 "allowEmptyValue": false,
                 "examples": []
+            },
+            "limit": {
+                "name": "limit",
+                "in": "query",
+                "description": "Limit the output of items, mainly for testing purposes.",
+                "schema": {
+                    "type": "integer",
+                    "default": 10
+                },
+                "style": "form",
+                "allowEmptyValue": true
             }
         },
         "responses": {
@@ -203,7 +214,8 @@
                 "tags": [ "Metastore" ],
                 "parameters": [
                     { "$ref": "#/components/parameters/schemaId" },
-                    { "$ref": "#/components/parameters/showReferenceIds" }
+                    { "$ref": "#/components/parameters/showReferenceIds" },
+                    { "$ref": "#/components/parameters/limit" }
 
                 ],
                 "responses": {
