@@ -15,6 +15,7 @@ function dkan_datastore_theme($existing, $type, $theme, $path) {
         'uuid' => NULL,
         'title' => NULL,
         'url' => NULL,
+        'node_id' => NULL,
       ],
     ],
     'dkan_datastore_dashboard_revision_cell' => [
