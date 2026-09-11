@@ -330,22 +330,26 @@ dkan:metastore:unreference-datasets
     **Alias**: ``dkan:unref``
 
     Turn off references for a property in metastore configuration, update datasets
-    to embed the property instead of referencing it, and orphan the
+    to embed the property instead of referencing it, and orphan or delete the
     referenced entities.
 
     **Arguments**
 
     - ``target_property`` Dataset property to unreference (e.g. "distribution"). (default: ``distribution``)
 
+    **Options**
+
+    - ``--delete`` Immediately delete the referenced entities instead of orphaning them.
+  
     **Usage**
 
-    Unreference the ``distribution`` property and orphan the referenced entities:
+    Unreference the ``distribution`` property and delete the referenced entities:
 
     .. prompt:: console $
 
-        drush dkan:metastore:unreference-datasets distribution
+        drush dkan:metastore:unreference-datasets distribution --delete
 
-    Use alias:
+    Use alias and default settings (unreference ``distribution`` and orphan the referenced entities):
 
     .. prompt:: console $
 
