@@ -171,6 +171,6 @@ interface MetastoreStorageInterface {
    * @return string|null
    *   The uuid of the item with that hash.
    */
-  public function retrieveByHash(string $hash, string $schemaId): ?string;
+  public function retrieveByHash($hash, $schemaId);
 
 }
