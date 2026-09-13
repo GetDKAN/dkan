@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_datastore_preview\Service;
+namespace Drupal\dkan_datastore_preview;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\dkan_common\DataResource;
@@ -15,7 +15,7 @@ use Procrastinator\Result;
  * processed by the localize_import and datastore_import queues), so instead
  * of rendering nothing the preview explains the state.
  */
-class ImportStatusMessage {
+class ImportStatusMessage implements ImportStatusMessageInterface {
 
   use StringTranslationTrait;
 
@@ -28,18 +28,12 @@ class ImportStatusMessage {
    *   The DKAN resource mapper.
    */
   public function __construct(
-    protected ImportInfo $importInfo,
-    protected ResourceMapper $resourceMapper,
+    protected readonly ImportInfo $importInfo,
+    protected readonly ResourceMapper $resourceMapper,
   ) {}
 
   /**
-   * Build a status message render array for a resource without a table.
-   *
-   * @param string $resource_id
-   *   Resource id in "identifier__version" format.
-   *
-   * @return array
-   *   Render array with a message describing the import state.
+   * {@inheritdoc}
    */
   public function build(string $resource_id): array {
     return [

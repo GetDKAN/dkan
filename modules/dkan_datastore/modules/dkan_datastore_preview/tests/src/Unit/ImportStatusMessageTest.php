@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\Tests\dkan_datastore_preview\Unit\Service;
+namespace Drupal\Tests\dkan_datastore_preview\Unit;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_datastore\Service\Info\ImportInfo;
-use Drupal\dkan_datastore_preview\Service\ImportStatusMessage;
+use Drupal\dkan_datastore_preview\ImportStatusMessage;
 use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\Tests\UnitTestCase;
 use Procrastinator\Result;
 
 /**
- * @covers \Drupal\dkan_datastore_preview\Service\ImportStatusMessage
- * @coversDefaultClass \Drupal\dkan_datastore_preview\Service\ImportStatusMessage
+ * @covers \Drupal\dkan_datastore_preview\ImportStatusMessage
+ * @coversDefaultClass \Drupal\dkan_datastore_preview\ImportStatusMessage
  *
  * @group dkan
  * @group dkan_datastore_preview

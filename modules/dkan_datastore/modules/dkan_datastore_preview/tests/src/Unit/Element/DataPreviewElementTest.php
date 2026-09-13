@@ -7,8 +7,8 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\dkan_datastore_preview\DataSource\DataSourceInterface;
 use Drupal\dkan_datastore_preview\Element\DataPreview;
-use Drupal\dkan_datastore_preview\Service\DataPreviewBuilder;
-use Drupal\dkan_datastore_preview\Service\ImportStatusMessage;
+use Drupal\dkan_datastore_preview\DataPreviewBuilderInterface;
+use Drupal\dkan_datastore_preview\ImportStatusMessageInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -24,7 +24,7 @@ class DataPreviewElementTest extends UnitTestCase {
   /**
    * The mocked builder.
    *
-   * @var \Drupal\dkan_datastore_preview\Service\DataPreviewBuilder|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\dkan_datastore_preview\DataPreviewBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $builder;
 
@@ -46,14 +46,14 @@ class DataPreviewElementTest extends UnitTestCase {
   protected function setContainerWithBuilder(callable $buildCallback): void {
     $this->builderOptions = NULL;
 
-    $this->builder = $this->createMock(DataPreviewBuilder::class);
+    $this->builder = $this->createMock(DataPreviewBuilderInterface::class);
     $this->builder->method('build')
       ->willReturnCallback(function ($dataSource, $resourceId, $options) use ($buildCallback) {
         $this->builderOptions = $options;
         return $buildCallback($dataSource, $resourceId, $options);
       });
 
-    $statusMessage = $this->createMock(ImportStatusMessage::class);
+    $statusMessage = $this->createMock(ImportStatusMessageInterface::class);
     $statusMessage->method('build')->willReturn([
       '#tag' => 'p',
       '#value' => 'Data preview is not yet available.',

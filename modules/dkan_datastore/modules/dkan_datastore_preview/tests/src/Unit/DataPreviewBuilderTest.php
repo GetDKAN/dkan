@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\Tests\dkan_datastore_preview\Unit\Service;
+namespace Drupal\Tests\dkan_datastore_preview\Unit;
 
 use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\dkan_datastore_preview\DataSource\DataSourceInterface;
 use Drupal\dkan_datastore_preview\DataSource\DataSourceResult;
-use Drupal\dkan_datastore_preview\Service\DataPreviewBuilder;
+use Drupal\dkan_datastore_preview\DataPreviewBuilder;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @covers \Drupal\dkan_datastore_preview\Service\DataPreviewBuilder
- * @coversDefaultClass \Drupal\dkan_datastore_preview\Service\DataPreviewBuilder
+ * @covers \Drupal\dkan_datastore_preview\DataPreviewBuilder
+ * @coversDefaultClass \Drupal\dkan_datastore_preview\DataPreviewBuilder
  *
  * @group dkan
  * @group dkan_datastore_preview

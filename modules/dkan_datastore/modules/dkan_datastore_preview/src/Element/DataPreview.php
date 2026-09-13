@@ -82,7 +82,7 @@ class DataPreview extends RenderElementBase {
     ];
 
     try {
-      /** @var \Drupal\dkan_datastore_preview\Service\DataPreviewBuilder $builder */
+      /** @var \Drupal\dkan_datastore_preview\DataPreviewBuilderInterface $builder */
       $builder = \Drupal::service('dkan.datastore_preview.builder');
       $buildResult = $builder->build($dataSource, $element['#resource_id'], $options);
 
@@ -107,7 +107,7 @@ class DataPreview extends RenderElementBase {
    * Build the import status message for an unavailable preview.
    */
   protected static function statusMessage(string $resource_id): array {
-    /** @var \Drupal\dkan_datastore_preview\Service\ImportStatusMessage $statusMessage */
+    /** @var \Drupal\dkan_datastore_preview\ImportStatusMessageInterface $statusMessage */
     $statusMessage = \Drupal::service('dkan.datastore_preview.import_status_message');
     return $statusMessage->build($resource_id);
   }

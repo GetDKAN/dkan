@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @covers \Drupal\dkan_datastore_preview\DataSource\DatabaseDataSource
  * @covers \Drupal\dkan_datastore_preview\Element\DataPreview
- * @covers \Drupal\dkan_datastore_preview\Service\DataPreviewBuilder
+ * @covers \Drupal\dkan_datastore_preview\DataPreviewBuilder
  *
  * @group dkan
  * @group dkan_datastore_preview

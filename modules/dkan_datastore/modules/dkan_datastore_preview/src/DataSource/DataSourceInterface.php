@@ -25,8 +25,10 @@ interface DataSourceInterface {
    * @return array
    *   Schema array with a 'fields' key mapping machine names to field info
    *   ('type', 'description'). MUST return an empty array when the resource
-   *   has no queryable table (not yet imported, unknown, etc.) and MUST NOT
-   *   include self::HIDDEN_FIELD.
+   *   has no queryable table yet and MUST NOT include self::HIDDEN_FIELD.
+   *
+   * @throws \Exception
+   *   When the resource id cannot be resolved at all (malformed or unknown).
    */
   public function getSchema(string $resource_id): array;
 

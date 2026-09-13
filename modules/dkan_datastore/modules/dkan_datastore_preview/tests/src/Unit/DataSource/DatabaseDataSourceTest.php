@@ -2,8 +2,11 @@
 
 namespace Drupal\Tests\dkan_datastore_preview\Unit\DataSource;
 
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\dkan_common\Storage\DatabaseTableInterface;
 use Drupal\dkan_datastore\DatastoreService;
+use Drupal\dkan_metastore\Storage\DataFactory;
+use Drupal\dkan_metastore\Storage\NodeData;
 use Drupal\dkan_datastore_preview\DataSource\DatabaseDataSource;
 use Drupal\Tests\UnitTestCase;
 
@@ -55,15 +58,66 @@ class DatabaseDataSourceTest extends UnitTestCase {
   }
 
   /**
-   * A resource id without a version passes NULL as the version.
+   * Set a container whose metastore returns the given distribution JSON.
    */
-  public function testGetSchemaNoVersion(): void {
+  protected function setMetastoreContainer(?string $distributionJson): void {
+    $storage = $this->createMock(NodeData::class);
+    $storage->method('retrieve')->willReturn($distributionJson);
+    $factory = $this->createMock(DataFactory::class);
+    $factory->method('getInstance')->with('distribution')->willReturn($storage);
+    $container = new ContainerBuilder();
+    $container->set('dkan.metastore.storage', $factory);
+    \Drupal::setContainer($container);
+  }
+
+  /**
+   * A full unique identifier (with perspective) resolves to id and version.
+   */
+  public function testGetSchemaUniqueIdentifier(): void {
     $storage = $this->createMock(DatabaseTableInterface::class);
     $storage->method('getSchema')->willReturn(['fields' => ['name' => []]]);
 
     $calls = [];
-    $this->getDataSource($storage, $calls)->getSchema('abc');
-    $this->assertSame([['abc', NULL]], $calls);
+    $this->getDataSource($storage, $calls)->getSchema('abc__123__local_file');
+    $this->assertSame([['abc', '123']], $calls);
+  }
+
+  /**
+   * A bare distribution UUID resolves through the metastore.
+   */
+  public function testGetSchemaDistributionUuid(): void {
+    $this->setMetastoreContainer(json_encode([
+      'data' => [
+        '%Ref:downloadURL' => [
+          ['data' => ['identifier' => 'abc', 'version' => '123']],
+        ],
+      ],
+    ]));
+    $storage = $this->createMock(DatabaseTableInterface::class);
+    $storage->method('getSchema')->willReturn(['fields' => ['name' => []]]);
+
+    $calls = [];
+    $this->getDataSource($storage, $calls)->getSchema('7f5c4b2e-0000-4000-8000-000000000000');
+    $this->assertSame([['abc', '123']], $calls);
+  }
+
+  /**
+   * An id that resolves to nothing throws rather than reading as "no table".
+   */
+  public function testGetSchemaUnresolvableIdThrows(): void {
+    $this->setMetastoreContainer(NULL);
+    $storage = $this->createMock(DatabaseTableInterface::class);
+
+    $calls = [];
+    $dataSource = $this->getDataSource($storage, $calls);
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Could not find identifier and version');
+    try {
+      $dataSource->getSchema('not-a-resource');
+    }
+    finally {
+      $this->assertSame([], $calls);
+    }
   }
 
   /**

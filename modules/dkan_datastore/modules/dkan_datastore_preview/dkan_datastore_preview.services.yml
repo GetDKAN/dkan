@@ -1,20 +1,27 @@
 services:
   dkan.datastore_preview.builder:
-    class: \Drupal\dkan_datastore_preview\Service\DataPreviewBuilder
+    class: \Drupal\dkan_datastore_preview\DataPreviewBuilder
     arguments:
       - '@request_stack'
       - '@pager.manager'
-  Drupal\dkan_datastore_preview\Service\DataPreviewBuilder: '@dkan.datastore_preview.builder'
+  Drupal\dkan_datastore_preview\DataPreviewBuilderInterface: '@dkan.datastore_preview.builder'
 
   dkan.datastore_preview.data_source.database:
     class: \Drupal\dkan_datastore_preview\DataSource\DatabaseDataSource
     arguments:
       - '@dkan.datastore.service'
-  Drupal\dkan_datastore_preview\DataSource\DatabaseDataSource: '@dkan.datastore_preview.data_source.database'
+  Drupal\dkan_datastore_preview\DataSource\DataSourceInterface: '@dkan.datastore_preview.data_source.database'
 
   dkan.datastore_preview.import_status_message:
-    class: \Drupal\dkan_datastore_preview\Service\ImportStatusMessage
+    class: \Drupal\dkan_datastore_preview\ImportStatusMessage
     arguments:
       - '@dkan.datastore.import_info'
       - '@dkan.metastore.resource_mapper'
-  Drupal\dkan_datastore_preview\Service\ImportStatusMessage: '@dkan.datastore_preview.import_status_message'
+  Drupal\dkan_datastore_preview\ImportStatusMessageInterface: '@dkan.datastore_preview.import_status_message'
+
+  Drupal\dkan_datastore_preview\Hook\DataPreviewHooks:
+    class: \Drupal\dkan_datastore_preview\Hook\DataPreviewHooks
+    arguments:
+      - '@entity_type.manager'
+      - '@dkan.common.dataset_info'
+      - '@dkan.metastore.metastore_item_factory'

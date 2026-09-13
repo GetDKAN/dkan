@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_datastore_preview\DataSource;
 
+use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\Storage\Query;
 use Drupal\dkan_datastore\DatastoreService;
 
@@ -11,9 +12,12 @@ use Drupal\dkan_datastore\DatastoreService;
 class DatabaseDataSource implements DataSourceInterface {
 
   /**
-   * Memoized storage objects, keyed by resource id.
+   * Database table storage objects, keyed by resource id.
    *
-   * @var array
+   * The $storages array is populated as ::getStorage is called; the array
+   * memoizes it for later use.
+   *
+   * @var \Drupal\dkan_datastore\Storage\DatabaseTable[]
    */
   protected array $storages = [];
 
@@ -24,7 +28,7 @@ class DatabaseDataSource implements DataSourceInterface {
    *   The DKAN datastore service.
    */
   public function __construct(
-    protected DatastoreService $datastoreService,
+    protected readonly DatastoreService $datastoreService,
   ) {}
 
   /**
@@ -75,39 +79,27 @@ class DatabaseDataSource implements DataSourceInterface {
    * Get the datastore storage for a resource id, or NULL if none exists.
    *
    * @param string $resource_id
-   *   Resource id, optionally in "identifier__version" format.
+   *   Resource id: "identifier__version", a full unique identifier, or a
+   *   distribution UUID (see DataResource::getIdentifierAndVersion()).
    *
    * @return \Drupal\dkan_datastore\Storage\DatabaseTable|null
-   *   The storage, or NULL when the resource has no datastore table.
+   *   The storage, or NULL when the resource has no datastore table yet.
+   *
+   * @throws \Exception
+   *   When the resource id cannot be resolved to an identifier and version.
    */
   protected function getStorage(string $resource_id) {
     if (!array_key_exists($resource_id, $this->storages)) {
-      [$identifier, $version] = $this->parseResourceId($resource_id);
+      [$identifier, $version] = DataResource::getIdentifierAndVersion($resource_id);
       try {
         $this->storages[$resource_id] = $this->datastoreService->getStorage($identifier, $version);
       }
       catch (\InvalidArgumentException) {
+        // No local_file perspective yet: the expected pre-import state.
         $this->storages[$resource_id] = NULL;
       }
     }
     return $this->storages[$resource_id];
-  }
-
-  /**
-   * Parse a resource id into identifier and version components.
-   *
-   * @param string $resource_id
-   *   Resource id, optionally in "identifier__version" format.
-   *
-   * @return array
-   *   [identifier, version|null].
-   */
-  protected function parseResourceId(string $resource_id): array {
-    if (str_contains($resource_id, '__')) {
-      $parts = explode('__', $resource_id, 2);
-      return [$parts[0], $parts[1]];
-    }
-    return [$resource_id, NULL];
   }
 
   /**
