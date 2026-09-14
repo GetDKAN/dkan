@@ -86,6 +86,8 @@ final class UnreferenceDatasetCommands extends DrushCommands {
    *   The UUID of the dataset to process.
    * @param string $target_property
    *   The property to unreference and embed (e.g. 'distribution').
+   * @param bool $delete_orphans
+   *   Whether to delete referenced entities (vs orphaning them).
    */
   private function processDataset(string $uuid, string $target_property, bool $delete_orphans): void {
     $entity = $this->storage->getEntityLatestRevision($uuid);
