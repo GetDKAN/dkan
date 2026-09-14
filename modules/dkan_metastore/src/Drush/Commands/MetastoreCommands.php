@@ -3,9 +3,9 @@
 namespace Drupal\dkan_metastore\Drush\Commands;
 
 use Drupal\dkan_metastore\Storage\DataFactory;
+use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Attributes as CLI;
 
 /**
  * Metastore drush commands.
@@ -14,9 +14,6 @@ class MetastoreCommands extends DrushCommands {
 
   use AutowireTrait;
 
-  /**
-   * Drush constructor.
-   */
   public function __construct(protected DataFactory $factory) {
     parent::__construct();
   }

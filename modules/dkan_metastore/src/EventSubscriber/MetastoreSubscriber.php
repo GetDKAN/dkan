@@ -159,7 +159,11 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *   Whether the resource is in use elsewhere.
    */
   private function resourceInUseElsewhere(string $schema_id, string $item_id, string $resource_id): bool {
-    $referencers = $this->referenceLookup->getReferencers($schema_id, $resource_id, 'downloadURL');
+    $schemas_to_check = array_unique(['dataset', $schema_id]);
+    $referencers = [];
+    foreach ($schemas_to_check as $schema) {
+      $referencers = array_merge($referencers, $this->referenceLookup->getReferencers($schema, $resource_id, 'downloadURL'));
+    }
 
     // Check if any other metastore items reference it.
     foreach ($referencers as $referencer) {

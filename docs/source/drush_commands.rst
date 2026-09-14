@@ -7,21 +7,23 @@ dkan:dataset-info
 
   **Arguments**
 
-  - **uuid** The uuid of a dataset.
+    - ``uuid`` The uuid of a dataset.
 
 ~~~~~~
 
 dkan:datastore:reverse-dataset-lookup
 -------------------------------------
-   Takes an argument of the table name and returns the dataset uuid.
+    Takes an argument of the table name and returns the dataset uuid.
 
-  **Arguments**
+    **Arguments**
 
-  - **table_name** The datastore table name in the database.
+    - ``table_name`` The datastore table name in the database.
 
-  **Usage**
+    **Usage**
 
-        ``drush dkan:datastore:reverse-dataset-lookup datastore_abcdefghijklmnop``
+    .. prompt:: console $
+
+        drush dkan:datastore:reverse-dataset-lookup datastore_abcdefghijklmnop
 
 ~~~~~~
 
@@ -31,10 +33,11 @@ dkan:datastore:drop
 
     **Arguments**
 
-    - **identifier** The uuid of a dataset.
+    - ``identifier`` The uuid of a dataset.
 
     **Options**
-    - **--keep-local** Do not remove localized resource, only drop the datastore table.
+
+    - ``--keep-local`` Do not remove localized resource, only drop the datastore table.
 
 ~~~~~~
 
@@ -57,11 +60,11 @@ dkan:datastore:import
 
     **Arguments**
 
-    - **identifier** The resource identifier; usually an MD5 hash of the resource URI.
+    - ``identifier`` The resource identifier; usually an MD5 hash of the resource URI.
 
     **Options**
 
-    - **--deferred** Whether or not the process should be deferred to a queue.
+    - ``--deferred`` Whether or not the process should be deferred to a queue.
 
 ~~~~~~
 
@@ -78,11 +81,11 @@ dkan:datastore:localize
 
     **Arguments**
 
-    - **identifier** The resource identifier; usually an MD5 hash of the resource URI.
+    - ``identifier`` The resource identifier; usually an MD5 hash of the resource URI.
 
     **Options**
 
-    - **--deferred** Whether or not the process should be deferred to a queue.
+    - ``--deferred`` Whether or not the process should be deferred to a queue.
 
 ~~~~~~
 
@@ -93,9 +96,9 @@ dkan:datastore:list
 
     **Options**
 
-    - **format** The format of the data. (default: **table**)
-    - **status** Show imports of the given status.
-    - **uuid-only** Only the list of uuids.
+    - ``format`` The format of the data. (default: ``table``)
+    - ``status`` Show imports of the given status.
+    - ``uuid-only`` Only the list of uuids.
 
 ~~~~~~
 
@@ -112,7 +115,7 @@ dkan:datastore:prepare-localized
 
     **Arguments**
 
-    - **identifier** Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+    - ``identifier`` Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
 
 ~~~~~~
 
@@ -123,7 +126,7 @@ dkan:datastore:reimport
 
     **Arguments**
 
-    - **uuid** The uuid of a dataset.
+    - ``uuid`` The uuid of a dataset.
 
 ~~~~~~
 
@@ -134,7 +137,7 @@ dkan:datastore:degraded-mode
 
     **Arguments**
 
-    - **state** The state of the degraded mode (1 to turn on, 0 to turn off, leave blank to see current state).
+    - ``state`` The state of the degraded mode (1 to turn on, 0 to turn off, leave blank to see current state).
 
 ~~~~~~
 
@@ -145,7 +148,7 @@ dkan:harvest:archive
 
     **Arguments**
 
-    - **harvestId** The id of the harvest source.
+    - ``harvestId`` The id of the harvest source.
 
 ~~~~~~
 
@@ -162,12 +165,14 @@ dkan:harvest:deregister
 
     **Arguments**
 
-    - **harvestId** The harvest id
-    - **revert** Perform a revert before deregistering.
+    - ``harvestId`` The harvest id
+    - ``revert`` Perform a revert before deregistering.
 
     **Usage**
 
-        ``drush dkan:harvest:deregister --revert myHarvestId``
+    .. prompt:: console $
+
+        drush dkan:harvest:deregister --revert myHarvestId
 
 ~~~~~~
 
@@ -179,8 +184,8 @@ dkan:harvest:info
 
     **Arguments**
 
-    - **harvestId** The harvest id.
-    - **runId** The run's id.
+    - ``harvestId`` The harvest id.
+    - ``runId`` The run's id.
 
 ~~~~~~
 
@@ -198,7 +203,7 @@ dkan:harvest:publish
 
     **Arguments**
 
-    - **harvestId**. The id of the harvest source.
+    - ``harvestId``. The id of the harvest source.
 
 ~~~~~~
 
@@ -213,19 +218,23 @@ dkan:harvest:register
 
     **Options**
 
-    - **identifier** The harvest id.
-    - **extract-type** Extract type.
-    - **extract-uri** Extract URI.
-    - **transform** A transform class to apply. You may pass multiple transforms.
-    - **load-type** Load class.
+    - ``identifier`` The harvest id.
+    - ``extract-type`` Extract type.
+    - ``extract-uri`` Extract URI.
+    - ``transform`` A transform class to apply. You may pass multiple transforms.
+    - ``load-type`` Load class.
 
     **Usage**
 
-        ``dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'``
+    .. prompt:: console $
 
-    Or
+        drush dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Drupal\\dkan_harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
 
-        ``dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json``
+    ...or
+
+    .. prompt:: console $
+    
+        drush dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
 
 ~~~~~~
 
@@ -238,11 +247,13 @@ dkan:harvest:revert
 
     **Arguments**
 
-    - **harvestId** The source to revert.
+    - ``harvestId`` The source to revert.
 
     **Usage**
 
-        ``drush dkan:harvest:revert myHarvestId``
+    .. prompt:: console $
+        
+        drush dkan:harvest:revert myHarvestId
 
 ~~~~~~
 
@@ -255,11 +266,13 @@ dkan:harvest:run-all
 
     **Options**
 
-    - **new** Only run harvests which have not been run before.
+    - ``new`` Only run harvests which have not been run before.
 
     **Usage**
 
-        ``drush dkan:harvest:run-all --new``
+    .. prompt:: console $
+
+        drush dkan:harvest:run-all --new
 
 ~~~~~~
 
@@ -270,7 +283,7 @@ dkan:harvest:run
 
     **Arguments**
 
-    - **harvestId** The harvest id.
+    - ``harvestId`` The harvest id.
 
 ~~~~~~
 
@@ -281,13 +294,14 @@ dkan:harvest:status
 
     **Arguments**
 
-    - **harvestId** The id of the harvest source.
-    - **runId** The run's id. Optional. Show the status for the latest run if not provided.
+    - ``harvestId`` The id of the harvest source.
+    - ``runId`` The run's id. Optional. Show the status for the latest run if not provided.
 
     **Usage**
 
-        ``drush dkan:harvest:status myHarvestId 1599157120``
+    .. prompt:: console $
 
+        drush dkan:harvest:status myHarvestId 1599157120
 ~~~~~~
 
 dkan:metadata-form:sync
@@ -297,14 +311,6 @@ dkan:metadata-form:sync
 
 ~~~~~~
 
-dkan:metastore-search:rebuild-tracker
--------------------------------------
-
-    Rebuild the search api tracker for the dkan index.
-
-~~~~~~
-
-
 dkan:metastore:publish
 ----------------------
 
@@ -312,7 +318,49 @@ dkan:metastore:publish
 
     **Arguments**
 
-    - **uuid** Dataset identifier.
+    - ``uuid`` Dataset identifier.
+
+~~~~~~
+
+.. _drush-metastore-unreference-datasets:
+
+dkan:metastore:unreference-datasets
+----------------------
+
+    **Alias**: ``dkan:unref``
+
+    Turn off references for a property in metastore configuration, update datasets
+    to embed the property instead of referencing it, and orphan or delete the
+    referenced entities.
+
+    **Arguments**
+
+    - ``target_property`` Dataset property to unreference (e.g. "distribution"). (default: ``distribution``)
+
+    **Options**
+
+    - ``--delete`` Immediately delete the referenced entities instead of orphaning them.
+  
+    **Usage**
+
+    Unreference the ``distribution`` property and delete the referenced entities:
+
+    .. prompt:: console $
+
+        drush dkan:metastore:unreference-datasets distribution --delete
+
+    Use alias and default settings (unreference ``distribution`` and orphan the referenced entities):
+
+    .. prompt:: console $
+
+        drush dkan:unref distribution
+
+~~~~~~
+
+dkan:metastore-search:rebuild-tracker
+-------------------------------------
+
+    Rebuild the search api tracker for the dkan index.
 
 ~~~~~~
 
