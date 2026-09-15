@@ -4,7 +4,7 @@
             "datastoreUuid": {
                 "name": "identifier",
                 "in": "path",
-                "description": "A datastore identifier. Note: there is an inconsistency in this API that will be addressed in the future: The expected format is different from the format supplied in /api/1/datastore/imports.",
+                "description": "A datastore id. Note: there is an inconsistency in this API that will be addressed in the future: The expected format is different from the format supplied in /api/1/datastore/imports.",
                 "required": true,
                 "schema": {
                     "type": "string"
@@ -13,7 +13,7 @@
             "datastoreResourceIdentifier": {
                 "name": "identifier",
                 "in": "path",
-                "description": "A datastore resource identifier (or distribution UUID, though the former is preferred). To find the correct resource identifier for a dataset, refer to the metastore API response for the dataset (e.g., /api/1/metastore/schemas/dataset/items/{datasetId?show-reference-ids).",
+                "description": "A datastore resource identifier (or distribution UUID, though the former is preferred and distribution UUID support may be deprecated in the future). To find the correct resource identifier for a dataset, refer to the metastore API response for the dataset (e.g., /api/1/metastore/schemas/dataset/items/{datasetId?show-reference-ids).",
                 "required": true,
                 "schema": {
                     "type": "string"
@@ -31,7 +31,7 @@
             "datastoreDistributionIndex": {
                 "name": "index",
                 "in": "path",
-                "description": "The index of a resource in a dataset's distribution array. For instance, the first distribution in a dataset would have an index of \"0,\" the second would have \"1\", etc.",
+                "description": "The index of a distribution containing the desired resource, in a dataset's distribution array. For instance, the first distribution in a dataset would have an index of \"0,\" the second would have \"1\", etc.",
                 "required": true,
                 "schema": {
                     "type": "string"
