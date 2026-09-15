@@ -14,7 +14,7 @@
                 "properties": {
                     "id": {
                         "type": "string",
-                        "description": "UUID of resource or distribution."
+                        "description": "Identifier of resource (or legacy distribution UUID)."
                     },
                     "alias": {
                         "type": "string",
