@@ -292,7 +292,6 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return array_merge(
       [
         'resource' => '00000000000000000000000000000000__0000000000',
-        'distribution' => "00000000-0000-0000-0000-000000000000",
         'dataset' => "00000000-0000-0000-0000-000000000000",
         'datasetDistributionIndex' => 0,
       ],
