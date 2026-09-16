@@ -45,3 +45,9 @@ dkan_metastore.settings:
     unset_download_url_if_empty:
       type: boolean
       label: 'Unset download URL if empty'
+    catalog_include_workflow_states:
+      type: sequence
+      label: 'Workflow states viewable in the data.json catalog.'
+      sequence:
+        type: string
+        label: 'State'
