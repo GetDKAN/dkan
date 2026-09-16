@@ -183,10 +183,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Retrieve metadata for all datasets, for presentation as data.json.
-   *
-   * Items retrieved will account for moderation workflow states configured in
-   * catalog_include_workflow_states.
+   * {@inheritDoc}
    */
   public function retrieveAllForCatalog(): array {
     $moderated_ids = [];

@@ -49,6 +49,12 @@ interface MetastoreStorageInterface {
    */
   public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array;
 
+  /**
+   * Retrieve metadata for all datasets, for presentation as data.json.
+   *
+   * Items retrieved will account for moderation workflow states configured in
+   * catalog_include_workflow_states.
+   */
   public function retrieveAllForCatalog(): array;
 
   /**
