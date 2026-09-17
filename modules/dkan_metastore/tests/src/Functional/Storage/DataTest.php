@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\dkan_metastore\ContentModeration\ContentModerationHelper;
 use Drupal\dkan_metastore\Storage\Data;
 use Psr\Log\LoggerInterface;
 use org\bovigo\vfs\vfsStream;
@@ -65,7 +66,8 @@ class DataTest extends BrowserTestBase {
       $this->container->get('entity_type.manager'),
       $this->container->get('config.factory'),
       $fs,
-      $logger
+      $logger,
+      $this->container->get('dkan.metastore.content_moderation_helper'),
     );
 
     $uuid = '05aea36e-9e24-452e-9cf9-9727ab90c198';
@@ -96,14 +98,21 @@ class DataTest extends BrowserTestBase {
  */
 class StubData extends Data {
 
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory, FileSystemInterface $file_system, LoggerInterface $loggerChannel) {
+  public function __construct(
+    string $schemaId,
+    EntityTypeManagerInterface $entityTypeManager,
+    ConfigFactoryInterface $config_factory,
+    FileSystemInterface $file_system,
+    LoggerInterface $loggerChannel,
+    ContentModerationHelper $contentModerationHelper,
+  ) {
     $this->entityType = 'node';
     $this->bundle = 'data';
     $this->bundleKey = 'type';
     $this->labelKey = 'title';
     $this->schemaIdField = 'field_data_type';
     $this->metadataField = 'field_json_metadata';
-    parent::__construct($schemaId, $entityTypeManager, $config_factory, $file_system, $loggerChannel);
+    parent::__construct($schemaId, $entityTypeManager, $config_factory, $file_system, $loggerChannel, $contentModerationHelper);
   }
 
   public function retrieveContains(string $string, bool $caseSensitive): array {
