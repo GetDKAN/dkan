@@ -1,17 +1,8 @@
 {
     "components": {
         "parameters": {
-            "datastoreUuid": {
-                "name": "identifier",
-                "in": "path",
-                "description": "A datastore id. Note: there is an inconsistency in this API that will be addressed in the future: The expected format is different from the format supplied in /api/1/datastore/imports.",
-                "required": true,
-                "schema": {
-                    "type": "string"
-                }
-            },
             "datastoreResourceIdentifier": {
-                "name": "identifier",
+                "name": "resourceId",
                 "in": "path",
                 "description": "A datastore resource identifier (or distribution UUID, though the former is preferred and distribution UUID support may be deprecated in the future). To find the correct resource identifier for a dataset, refer to the metastore API response for the dataset (e.g., /api/1/metastore/schemas/dataset/items/{datasetId?show-reference-ids).",
                 "required": true,
@@ -186,7 +177,7 @@
                 }
             }
         },
-        "/api/1/datastore/imports/{identifier}": {
+        "/api/1/datastore/imports/{resourceId}": {
             "get": {
                 "operationId": "datastore-get",
                 "summary": "Datastore statistics",
@@ -194,7 +185,7 @@
                 "tags": ["Datastore: import"],
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/datastoreUuid"
+                        "$ref": "#/components/parameters/datastoreResourceIdentifier"
                     }
                 ],
                 "responses": {
@@ -325,7 +316,7 @@
                 }
             }
         },
-        "/api/1/datastore/query/{identifier}": {
+        "/api/1/datastore/query/{resourceId}": {
             "post": {
                 "operationId": "datastore-resource-query-post",
                 "summary": "Query a single datastore resource",
@@ -417,7 +408,7 @@
                 }
             }
         },
-        "/api/1/datastore/query/{identifier}/download": {
+        "/api/1/datastore/query/{resourceId}/download": {
             "get": {
                 "operationId": "datastore-resource-query-download-get",
                 "summary": "Query a single datastore resource for file download",

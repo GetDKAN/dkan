@@ -78,7 +78,7 @@ class DatasetApiDocsTest extends TestCase {
             'required' => true,
             'schema' => ['type' => 'string'],
           ],
-          'datastoreResourceID' => [
+          'datastoreResourceIdentifier' => [
             'name' => 'identifier',
             'in' => 'path',
             'required' => true,
@@ -130,7 +130,7 @@ class DatasetApiDocsTest extends TestCase {
         '/api/1/datastore/query/{identifier}' => [
           'get' => [
             'operationId' => 'datastore-resource-query-get',
-            'parameters' => [0 => ['$ref' => '#/components/parameters/datastoreResourceID']],
+            'parameters' => [0 => ['$ref' => '#/components/parameters/datastoreResourceIdentifier']],
             'responses' => ['200' => ['$ref' => '#/components/responses/200JsonOrCsvQueryOk']]
           ]
         ],

@@ -127,7 +127,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       = $this->queryExample($exampleIds['resource']);
     $spec["paths"]["/api/1/datastore/query/download"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample($exampleIds['resource'], "csv");
-    $spec["paths"]["/api/1/datastore/query/{identifier}"]["post"]["requestBody"]["content"]["application/json"]["example"]
+    $spec["paths"]["/api/1/datastore/query/{resourceId}"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample();
     $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample();
@@ -164,7 +164,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $ref = ['$ref' => "#/components/parameters/$propertyKey"];
       $spec["paths"]["/api/1/datastore/query"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/download"]["get"]["parameters"][] = $ref;
-      $spec["paths"]["/api/1/datastore/query/{identifier}"]["get"]["parameters"][] = $ref;
+      $spec["paths"]["/api/1/datastore/query/{resourceId}"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["get"]["parameters"][] = $ref;
     }
 
