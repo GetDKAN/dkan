@@ -98,7 +98,7 @@ class ResourceLocalizer {
    *
    * As a side effect, register new perspectives to the mapper DB.
    */
-  protected function localize($identifier, $version = NULL): Result {
+  protected function localize(mixed $identifier, $version = NULL): Result {
     if ($resource = $this->getResourceSource($identifier, $version)) {
       $ff = $this->getFileFetcher($resource);
       $result = $ff->run();
@@ -157,7 +157,7 @@ class ResourceLocalizer {
   }
 
   /**
-   * Get a perspective, and optionally reate local file and URL perspectives.
+   * Get a perspective, and optionally create local file and URL perspectives.
    *
    * @param string $identifier
    *   The resource id.
@@ -227,7 +227,7 @@ class ResourceLocalizer {
    *
    * Also remove local perspectives from mapping DB.
    */
-  public function remove($identifier, $version = NULL): void {
+  public function remove(mixed $identifier, $version = NULL): void {
     // Remove the LOCAL_URL_PERSPECTIVE if it exists.
     if ($local_url_resource = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE, FALSE)) {
       $this->resourceMapper->remove($local_url_resource);
@@ -249,7 +249,7 @@ class ResourceLocalizer {
   /**
    * Remove the filefetcher job record.
    */
-  private function removeJob($uuid) {
+  private function removeJob(mixed $uuid) {
     if ($uuid) {
       $this->fileFetcherJobStoreFactory->getInstance()->remove($uuid);
     }
@@ -258,7 +258,7 @@ class ResourceLocalizer {
   /**
    * Private.
    */
-  private function getResourceSource($identifier, $version = NULL): ?DataResource {
+  private function getResourceSource(mixed $identifier, $version = NULL): ?DataResource {
     return $this->resourceMapper->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
   }
 
