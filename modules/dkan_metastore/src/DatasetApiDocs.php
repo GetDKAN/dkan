@@ -114,7 +114,7 @@ class DatasetApiDocs {
       = $this->getDatastoreIndexPath($fullSpec);
 
     $datasetSpec['paths']['/api/1/datastore/query/{identifier}'] =
-      $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{identifier}'];
+      $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{resourceId}'];
 
     $datasetSpec['paths']['/api/1/datastore/sql'] =
       $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/sql'];

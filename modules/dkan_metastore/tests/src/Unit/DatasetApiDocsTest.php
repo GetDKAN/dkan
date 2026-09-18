@@ -127,7 +127,7 @@ class DatasetApiDocsTest extends TestCase {
             'responses' => ['200' => ['$ref' => '#/components/responses/200JsonOrCsvQueryOk']]
           ]
         ],
-        '/api/1/datastore/query/{identifier}' => [
+        '/api/1/datastore/query/{resourceId}' => [
           'get' => [
             'operationId' => 'datastore-resource-query-get',
             'parameters' => [0 => ['$ref' => '#/components/parameters/datastoreResourceIdentifier']],
