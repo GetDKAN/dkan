@@ -227,7 +227,7 @@
                 ],
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/datastoreUuid"
+                        "$ref": "#/components/parameters/datastoreResourceIdentifier"
                     }
                 ],
                 "responses": {
