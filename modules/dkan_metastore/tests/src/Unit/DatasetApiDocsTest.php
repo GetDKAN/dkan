@@ -46,7 +46,7 @@ class DatasetApiDocsTest extends TestCase {
     $expected_paths = [
       $dkanApiPath . '/api/1/metastore/schemas/dataset/items/123',
       $dkanApiPath . '/api/1/datastore/query/123/{index}',
-      $dkanApiPath . '/api/1/datastore/query/{distributionId}',
+      $dkanApiPath . '/api/1/datastore/query/{identifier}',
       $dkanApiPath . '/api/1/datastore/sql'
     ];
     foreach ($expected_paths as $path) {
@@ -78,8 +78,8 @@ class DatasetApiDocsTest extends TestCase {
             'required' => true,
             'schema' => ['type' => 'string'],
           ],
-          'datastoreDistributionUuid' => [
-            'name' => 'distributionId',
+          'datastoreResourceIdentifier' => [
+            'name' => 'identifier',
             'in' => 'path',
             'required' => true,
             'schema' => ['type' => 'string'],
@@ -127,10 +127,10 @@ class DatasetApiDocsTest extends TestCase {
             'responses' => ['200' => ['$ref' => '#/components/responses/200JsonOrCsvQueryOk']]
           ]
         ],
-        '/api/1/datastore/query/{distributionId}' => [
+        '/api/1/datastore/query/{resourceId}' => [
           'get' => [
             'operationId' => 'datastore-resource-query-get',
-            'parameters' => [0 => ['$ref' => '#/components/parameters/datastoreDistributionUuid']],
+            'parameters' => [0 => ['$ref' => '#/components/parameters/datastoreResourceIdentifier']],
             'responses' => ['200' => ['$ref' => '#/components/responses/200JsonOrCsvQueryOk']]
           ]
         ],

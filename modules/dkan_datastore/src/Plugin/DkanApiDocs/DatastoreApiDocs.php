@@ -21,18 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DatastoreApiDocs extends DkanApiDocsBase {
 
   /**
-   * The DKAN metastore service.
-   *
-   * @var \Drupal\dkan_metastore\Service
-   */
-  private $metastore;
-
-  /**
-   * Import info service.
-   */
-  private ImportInfo $importInfo;
-
-  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -56,12 +44,10 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
-    MetastoreService $metastore,
-    ImportInfo $importInfo,
+    private readonly MetastoreService $metastore,
+    private readonly ImportInfo $importInfo,
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
-    $this->metastore = $metastore;
-    $this->importInfo = $importInfo;
   }
 
   /**
@@ -134,21 +120,19 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    */
   private function setUpExamples(array $spec) {
     $exampleIds = $this->getExampleIdentifiers();
-    $spec["components"]["parameters"]["datastoreDistributionUuid"]["example"] = $exampleIds['distribution'];
+    $spec["components"]["parameters"]["datastoreResourceIdentifier"]["example"] = $exampleIds['resource'];
     $spec["components"]["parameters"]["datastoreDatasetUuid"]["example"] = $exampleIds['dataset'];
     $spec["components"]["parameters"]["datastoreDistributionIndex"]["example"] = $exampleIds['datasetDistributionIndex'];
     $spec["paths"]["/api/1/datastore/query"]["post"]["requestBody"]["content"]["application/json"]["example"]
-      = $this->queryExample($exampleIds['distribution']);
+      = $this->queryExample($exampleIds['resource']);
     $spec["paths"]["/api/1/datastore/query/download"]["post"]["requestBody"]["content"]["application/json"]["example"]
-      = $this->queryExample($exampleIds['distribution'], "csv");
-    $spec["paths"]["/api/1/datastore/query/{distributionId}"]["post"]["requestBody"]["content"]["application/json"]["example"]
+      = $this->queryExample($exampleIds['resource'], "csv");
+    $spec["paths"]["/api/1/datastore/query/{resourceId}"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample();
     $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample();
 
-    $spec['components']['parameters']['datastoreUuid']["example"] = $exampleIds['resource'];
-
-    $spec["paths"]["/api/1/datastore/sql"]["get"]["parameters"][0]["example"] = $this->sqlQueryExample($exampleIds['distribution']);
+    $spec["paths"]["/api/1/datastore/sql"]["get"]["parameters"][0]["example"] = $this->sqlQueryExample($exampleIds['resource']);
     return $spec;
   }
 
@@ -180,7 +164,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $ref = ['$ref' => "#/components/parameters/$propertyKey"];
       $spec["paths"]["/api/1/datastore/query"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/download"]["get"]["parameters"][] = $ref;
-      $spec["paths"]["/api/1/datastore/query/{distributionId}"]["get"]["parameters"][] = $ref;
+      $spec["paths"]["/api/1/datastore/query/{resourceId}"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["get"]["parameters"][] = $ref;
     }
 
@@ -307,8 +291,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     }
     return array_merge(
       [
-        'resource' => '00000000000000000000000000000000__0000000000__source',
-        'distribution' => "00000000-0000-0000-0000-000000000000",
+        'resource' => '00000000000000000000000000000000__0000000000',
         'dataset' => "00000000-0000-0000-0000-000000000000",
         'datasetDistributionIndex' => 0,
       ],
@@ -329,37 +312,23 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     if (!isset($dataset->{'$.distribution[0]'})) {
       return FALSE;
     }
-    foreach ($dataset->{'$[\'%Ref:distribution\']'} as $index => $distribution) {
-      if ($identifiers = $this->getIdentifiersFromDistribution($distribution)) {
-        $identifiers['dataset'] = $dataset->{'$.identifier'};
-        $identifiers['datasetDistributionIndex'] = (string) $index;
-        break;
+    $distributions = $dataset->{'$.distribution'};
+    if (is_array($distributions)) {
+      foreach ($distributions as $index => $distribution) {
+        $resource = is_array($distribution['%Ref:downloadURL']) ? ($distribution['%Ref:downloadURL'][0]['data'] ?? NULL) : NULL;
+        if ($resource) {
+          $resource_id = $resource['identifier'] . '__' . $resource['version'];
+          if ($this->resourceHasDatastore($resource_id)) {
+            return [
+              'resource' => $resource_id,
+              'dataset' => $dataset->{'$.identifier'},
+              'datasetDistributionIndex' => (string) $index,
+            ];
+          }
+        }
       }
     }
-    return $identifiers;
-  }
-
-  /**
-   * Get the identifiers array from a distribution array.
-   *
-   * @param array $distribution
-   *   A distribution extracted from a dataset item.
-   *
-   * @return false|array
-   *   An array of distribution and datastore IDs, or false.
-   */
-  private function getIdentifiersFromDistribution(array $distribution) {
-    if (!($resourceId = $distribution["data"]["%Ref:downloadURL"][0]["identifier"])) {
-      return FALSE;
-    }
-    if (!$this->resourceHasDatastore($resourceId)) {
-      return FALSE;
-    }
-    return [
-      'distribution' => $distribution["identifier"],
-      'datastore' => $resourceId,
-    ];
-
+    return FALSE;
   }
 
   /**
@@ -391,7 +360,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    */
   private function resourceHasDatastore($resourceId) {
     $resourceId = $this->removePerspective($resourceId);
-    $parts = explode("_", $resourceId);
+    $parts = explode("__", $resourceId);
     try {
       $import = $this->importInfo->getItem($parts[0], $parts[1]);
     }

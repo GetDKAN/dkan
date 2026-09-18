@@ -14,7 +14,7 @@ class DatasetApiDocs {
   const SPEC_PARAMETERS = [
     'datasetUuid',
     'showReferenceIds',
-    'datastoreDistributionUuid',
+    'datastoreResourceIdentifier',
     'datastoreQueryProperties',
     'datastoreQueryConditions',
     'datastoreQueryLimit',
@@ -113,8 +113,8 @@ class DatasetApiDocs {
     $datasetSpec['paths']["/api/1/datastore/query/$identifier/{index}"]
       = $this->getDatastoreIndexPath($fullSpec);
 
-    $datasetSpec['paths']['/api/1/datastore/query/{distributionId}'] =
-      $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{distributionId}'];
+    $datasetSpec['paths']['/api/1/datastore/query/{identifier}'] =
+      $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{resourceId}'];
 
     $datasetSpec['paths']['/api/1/datastore/sql'] =
       $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/sql'];
@@ -240,15 +240,15 @@ class DatasetApiDocs {
   private function alterDatastoreParameters(array &$spec, string $identifier) {
     $spec['components']['parameters']['datastoreDatasetUuid']['example'] = $identifier;
     foreach ($this->getDistributions($identifier) as $index => $dist) {
-      unset($spec['components']['parameters']['datastoreDistributionUuid']['example']);
-      $spec['components']['parameters']['datastoreDistributionUuid']['examples'][$dist['identifier']] = [
-        'value' => $dist['identifier'],
-        'summary' => $dist["data"]["title"] ?? $dist['identifier'],
+      unset($spec['components']['parameters']['datastoreResourceIdentifier']['example']);
+      $spec['components']['parameters']['datastoreResourceIdentifier']['examples'][$dist['identifier'] ?? "resource_$index"] = [
+        'value' => $dist['identifier'] ?? "resource_$index",
+        'summary' => $dist["data"]["title"] ?? $dist['title'] ?? ($dist['identifier'] ?? "Resource $index"),
       ];
       unset($spec['components']['parameters']['datastoreDistributionIndex']['example']);
       $spec['components']['parameters']['datastoreDistributionIndex']['examples']["index{$index}"] = [
         'value' => "$index",
-        'summary' => $dist["data"]["title"] ?? $dist['identifier'],
+        'summary' => $dist["data"]["title"] ?? $dist['title'] ?? ($dist['identifier'] ?? "Resource $index"),
       ];
     }
   }
@@ -287,11 +287,11 @@ class DatasetApiDocs {
    * Private.
    */
   private function modifySqlEndpoint($operations, $distribution) {
-    $distKey = $distribution['data']['title'] ?? $distribution['identifier'];
+    $distKey = $distribution['data']['title'] ?? $distribution['title'] ?? ($distribution['identifier'] ?? 'query');
     unset($operations['get']['parameters'][0]['example']);
     $operations['get']['parameters'][0]['examples'][$distKey] = [
-      "summary" => "Query distribution {$distribution['identifier']}",
-      "value" => "[SELECT * FROM {$distribution['identifier']}][LIMIT 2]",
+      "summary" => "Query resource " . ($distribution['identifier'] ?? $distKey),
+      "value" => "[SELECT * FROM " . ($distribution['identifier'] ?? 'resource_id') . "][LIMIT 2]",
     ];
     return $operations;
   }

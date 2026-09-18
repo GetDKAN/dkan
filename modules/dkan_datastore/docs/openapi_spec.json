@@ -1,19 +1,10 @@
 {
     "components": {
         "parameters": {
-            "datastoreUuid": {
-                "name": "identifier",
+            "datastoreResourceIdentifier": {
+                "name": "resourceId",
                 "in": "path",
-                "description": "A datastore id. Note: there is an inconsistency in this API that will be addressed in the future: The expected format is different from the format supplied in /api/1/datastore/imports.",
-                "required": true,
-                "schema": {
-                    "type": "string"
-                }
-            },
-            "datastoreDistributionUuid": {
-                "name": "distributionId",
-                "in": "path",
-                "description": "A distribution ID",
+                "description": "A datastore resource identifier (or distribution UUID, though the former is preferred and distribution UUID support may be deprecated in the future). To find the correct resource identifier for a dataset, refer to the metastore API response for the dataset (e.g., /api/1/metastore/schemas/dataset/items/{datasetId?show-reference-ids).",
                 "required": true,
                 "schema": {
                     "type": "string"
@@ -31,7 +22,7 @@
             "datastoreDistributionIndex": {
                 "name": "index",
                 "in": "path",
-                "description": "The index of a distribution in a dataset's distribution array. For instance, the first distribution in a dataset would have an index of \"0,\" the second would have \"1\", etc.",
+                "description": "The index of a distribution containing the desired resource, in a dataset's distribution array. For instance, the first distribution in a dataset would have an index of \"0,\" the second would have \"1\", etc.",
                 "required": true,
                 "schema": {
                     "type": "string"
@@ -186,7 +177,7 @@
                 }
             }
         },
-        "/api/1/datastore/imports/{identifier}": {
+        "/api/1/datastore/imports/{resourceId}": {
             "get": {
                 "operationId": "datastore-get",
                 "summary": "Datastore statistics",
@@ -194,7 +185,7 @@
                 "tags": ["Datastore: import"],
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/datastoreUuid"
+                        "$ref": "#/components/parameters/datastoreResourceIdentifier"
                     }
                 ],
                 "responses": {
@@ -227,7 +218,7 @@
             "delete": {
                 "operationId": "datastore-delete",
                 "summary": "Delete a datastore",
-                "description": "Delete one or more datastores. If the uuid parameter is that of a resource, delete that resource. If the uuid parameter is that of a dataset, delete all resources of that dataset.\n",
+                "description": "Delete one or more datastores. If the identifier parameter is that of a resource, delete that resource. If the identifier parameter is that of a dataset, delete all resources of that dataset.\n",
                 "tags": ["Datastore: import"],
                 "security": [
                     {
@@ -236,7 +227,7 @@
                 ],
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/datastoreUuid"
+                        "$ref": "#/components/parameters/datastoreResourceIdentifier"
                     }
                 ],
                 "responses": {
@@ -325,14 +316,14 @@
                 }
             }
         },
-        "/api/1/datastore/query/{distributionId}": {
+        "/api/1/datastore/query/{resourceId}": {
             "post": {
                 "operationId": "datastore-resource-query-post",
                 "summary": "Query a single datastore resource",
                 "tags": ["Datastore: query"],
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                        "$ref": "#/components/parameters/datastoreResourceIdentifier"
                     }
                 ],
                 "requestBody": {
@@ -357,7 +348,7 @@
                 "tags": ["Datastore: query"],
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                        "$ref": "#/components/parameters/datastoreResourceIdentifier"
                     }
                 ],
                 "responses": {
@@ -417,7 +408,7 @@
                 }
             }
         },
-        "/api/1/datastore/query/{distributionId}/download": {
+        "/api/1/datastore/query/{resourceId}/download": {
             "get": {
                 "operationId": "datastore-resource-query-download-get",
                 "summary": "Query a single datastore resource for file download",
@@ -425,7 +416,7 @@
                 "tags": ["Datastore: query"],
                 "parameters": [
                     {
-                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                        "$ref": "#/components/parameters/datastoreResourceIdentifier"
                     },
                     {
                         "in": "query",
@@ -490,7 +481,7 @@
                     {
                         "name": "query",
                         "in": "query",
-                        "description": "A SQL-like query.\n\nA `SELECT` using the `show_db_columns` parameter will make it easier to build queries against the data as\nit returns columns without spaces and in some cases, truncated names where the human readable column header\nis very long.\n\n`/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_UUID][LIMIT 1 OFFSET 0];&show_db_columns`\n\nYou can then build the `SELECT` part of the query. Do not use spaces between its arguments.\n\n`/api/1/datastore/sql?query=[SELECT a,b,c, FROM DATASTORE_UUID]`\n\n`WHERE` can use any column in the data.\n\n`/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_UUID][WHERE c = \"CCC\"];&show_db_columns`\n\n`LIMIT` and `OFFSET` allow you to get more than the 500 record limit, by using successive queries:\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"CCC\"][LIMIT 500 OFFSET 0];&show_db_columns`\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"DDD\"][LIMIT 500 OFFSET 500];&show_db_columns`\n\nNote: `SELECT`, `WHERE` and `LIMIT...OFFSET` clauses must each be included within brackets `[ ]`.\n",
+                        "description": "A SQL-like query.\n\nA `SELECT` using the `show_db_columns` parameter will make it easier to build queries against the data as\nit returns columns without spaces and in some cases, truncated names where the human readable column header\nis very long.\n\n`/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_ID][LIMIT 1 OFFSET 0];&show_db_columns`\n\nYou can then build the `SELECT` part of the query. Do not use spaces between its arguments.\n\n`/api/1/datastore/sql?query=[SELECT a,b,c, FROM DATASTORE_ID]`\n\n`WHERE` can use any column in the data.\n\n`/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_ID][WHERE c = \"CCC\"];&show_db_columns`\n\n`LIMIT` and `OFFSET` allow you to get more than the 500 record limit, by using successive queries:\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_ID][WHERE d = \"CCC\"][LIMIT 500 OFFSET 0];&show_db_columns`\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_ID][WHERE d = \"DDD\"][LIMIT 500 OFFSET 500];&show_db_columns`\n\nNote: `SELECT`, `WHERE` and `LIMIT...OFFSET` clauses must each be included within brackets `[ ]`.\n",
                         "required": true,
                         "schema": {
                             "type": "string"
