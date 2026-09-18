@@ -14,14 +14,14 @@ class ContentModerationHelper {
   /**
    * Content moderation info service.
    *
-   * @var ModerationInformationInterface
+   * @var \Drupal\content_moderation\ModerationInformationInterface
    */
   private readonly ModerationInformationInterface $moderationInformation;
 
   /**
    * Entity type manager service.
    *
-   * @var EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private readonly EntityTypeManagerInterface $entityTypeManager;
 

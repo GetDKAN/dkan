@@ -13,11 +13,11 @@ use Psr\Log\LoggerInterface;
  */
 class NodeData extends Data {
 
-  public const string ENTITY_TYPE = 'node';
+  public const ENTITY_TYPE = 'node';
 
-  public const string BUNDLE = 'data';
+  public const BUNDLE = 'data';
 
-  public const string BUNDLE_KEY = 'type';
+  public const BUNDLE_KEY = 'type';
 
   /**
    * NodeData constructor.
