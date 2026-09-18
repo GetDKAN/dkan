@@ -2,10 +2,12 @@
 
 namespace Drupal\dkan_metastore\Form;
 
+use Drupal\content_moderation\ContentModerationState;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
+use Drupal\dkan_metastore\ContentModeration\ContentModerationHelper;
 use Drupal\dkan_metastore\SchemaPropertiesHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -32,16 +34,30 @@ class DkanDataSettingsForm extends ConfigFormBase {
   private $routeBuilder;
 
   /**
+   * Content moderation helper service.
+   *
+   * @var \Drupal\dkan_metastore\ContentModeration\ContentModerationHelper
+   */
+  private ContentModerationHelper $contentModerationHelper;
+
+  /**
    * Constructs form.
    *
    * @param \Drupal\dkan_metastore\SchemaPropertiesHelper $schemaHelper
    *   The schema properties helper service.
    * @param \Drupal\Core\Routing\RouteBuilderInterface $routeBuilder
    *   The route builder service.
+   * @param \Drupal\dkan_metastore\ContentModeration\ContentModerationHelper $contentModerationHelper
+   *   Content moderation helper service.
    */
-  public function __construct(SchemaPropertiesHelper $schemaHelper, RouteBuilderInterface $routeBuilder) {
+  public function __construct(
+    SchemaPropertiesHelper $schemaHelper,
+    RouteBuilderInterface $routeBuilder,
+    ContentModerationHelper $contentModerationHelper,
+  ) {
     $this->schemaHelper = $schemaHelper;
     $this->routeBuilder = $routeBuilder;
+    $this->contentModerationHelper = $contentModerationHelper;
   }
 
   /**
@@ -50,7 +66,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.metastore.schema_properties_helper'),
-      $container->get('router.builder')
+      $container->get('router.builder'),
+      $container->get('dkan.metastore.content_moderation_helper'),
     );
   }
 
@@ -92,6 +109,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
     $form['html_allowed_html'] = $this->getHtmlAllowedHtml($config);
     $form['property_list'] = $this->getPropertyList($config);
     $form['orphan'] = $this->getOrphanCleanupFields($config);
+    $form['catalog_include_workflow_states'] = $this->getCatalogWorkflowStates($config);
 
     return parent::buildForm($form, $form_state);
   }
@@ -222,6 +240,43 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Builds the checkboxes for workflow states.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The metastore settings configuration.
+   *
+   * @return array
+   *   The form element array.
+   */
+  private function getCatalogWorkflowStates(Config $config) {
+    $options = [];
+    $default_value = [];
+    foreach ($this->contentModerationHelper->getWorkflowStates() as $state_name => $state) {
+      $label = $state->label();
+      if ($state instanceof ContentModerationState) {
+        if ($state->isPublishedState()) {
+          // If there is no config, the default value is all published states.
+          $default_value[] = $state_name;
+          $label .= ' (published)';
+        }
+      }
+      $options[$state_name] = $label;
+    }
+
+    // Default value should be the config, unless there isn't one.
+    $default_value =
+      $config->get('catalog_include_workflow_states') ?? $default_value;
+
+    return [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Workflow states to include in catalog data.json.'),
+      '#description' => $this->t('Select workflow states to include in the catalog data.json.'),
+      '#options' => $options,
+      '#default_value' => $default_value,
+    ];
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
@@ -235,6 +290,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       ->set('html_allowed_html', $form_state->getValue('html_allowed_html'))
       ->set('orphan.delete', $form_state->getValue('delete'))
       ->set('orphan.retain_for', $form_state->getValue('retain_for'))
+      ->set('catalog_include_workflow_states', array_filter($form_state->getValue('catalog_include_workflow_states')))
       ->save();
 
     // Rebuild routes, without clearing all caches.

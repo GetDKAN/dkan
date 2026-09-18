@@ -18,11 +18,13 @@ use Procrastinator\Result;
 class ImportInfoTest extends KernelTestBase {
 
   protected static $modules = [
+    'content_moderation',
     'node',
     'user',
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',
+    'workflows',
   ];
 
   /**

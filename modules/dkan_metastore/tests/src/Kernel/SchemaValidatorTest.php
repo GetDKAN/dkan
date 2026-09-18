@@ -14,6 +14,7 @@ use Drupal\KernelTests\KernelTestBase;
 class SchemaValidatorTest extends KernelTestBase {
 
   protected static $modules = [
+    'content_moderation',
     'dkan',
     'dkan_common',
     'dkan_metastore',

@@ -26,9 +26,11 @@ use Drupal\dkan_datastore\Service\PostImport;
 class PostImportTest extends KernelTestBase {
 
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',
+    'workflows',
   ];
 
   /**
