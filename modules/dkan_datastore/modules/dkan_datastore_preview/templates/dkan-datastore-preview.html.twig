@@ -1,0 +1,39 @@
+{#
+/**
+ * @file
+ * Template for a datastore data preview table.
+ *
+ * Available variables:
+ * - table: Render array for the data table.
+ * - pager: Render array for the pager.
+ * - page_size_form: Variables for the page size GET form (action, id,
+ *   param_name, sizes, current, hidden).
+ * - result_summary: Render array for the result count summary.
+ */
+#}
+<div class="dkan-datastore-preview">
+  <div class="dkan-datastore-preview__controls">
+    {% if page_size_form %}
+      <form method="get" action="{{ page_size_form.action }}" class="dkan-datastore-preview__page-size">
+        <label for="{{ page_size_form.id }}">{{ 'Show'|t }}</label>
+        <select id="{{ page_size_form.id }}" name="{{ page_size_form.param_name }}">
+          {% for size in page_size_form.sizes %}
+            <option value="{{ size }}"{{ size == page_size_form.current ? ' selected' }}>{{ size }}</option>
+          {% endfor %}
+        </select>
+        <span>{{ 'entries'|t }}</span>
+        {% for name, value in page_size_form.hidden %}
+          <input type="hidden" name="{{ name }}" value="{{ value }}" />
+        {% endfor %}
+        <button type="submit">{{ 'Apply'|t }}</button>
+      </form>
+    {% endif %}
+    {{ result_summary }}
+  </div>
+  <div class="dkan-datastore-preview__table-wrapper">
+    {{ table }}
+  </div>
+  <div class="dkan-datastore-preview__footer">
+    {{ pager }}
+  </div>
+</div>

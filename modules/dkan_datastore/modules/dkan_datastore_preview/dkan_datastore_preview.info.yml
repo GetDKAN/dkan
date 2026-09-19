@@ -1,0 +1,9 @@
+name: DKAN Datastore Preview
+description: Paginated, sortable HTML table previews of datastore data on dataset pages.
+type: module
+core_version_requirement: ^10.4 || ^11
+package: DKAN
+dependencies:
+  - dkan:dkan_common
+  - dkan:dkan_datastore
+  - dkan:dkan_metastore

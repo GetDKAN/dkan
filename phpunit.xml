@@ -13,6 +13,7 @@
             <directory>modules/dkan_common/tests</directory>
             <directory>modules/dkan_datastore/tests</directory>
             <directory>modules/dkan_datastore/modules/dkan_datastore_mysql_import/tests</directory>
+            <directory>modules/dkan_datastore/modules/dkan_datastore_preview/tests</directory>
             <directory>modules/dkan_js_frontend/tests</directory>
             <directory>modules/dkan_harvest/tests</directory>
             <directory>modules/dkan_metastore/tests</directory>
