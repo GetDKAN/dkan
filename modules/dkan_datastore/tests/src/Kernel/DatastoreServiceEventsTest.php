@@ -25,17 +25,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class DatastoreServiceEventsTest extends KernelTestBase implements EventSubscriberInterface {
 
-  protected $strictConfigSchema = FALSE;
-
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
-    'dkan_metastore',
     'dkan_datastore',
-    'node',
-    'user',
+    'dkan_metastore',
     'field',
-    'text',
+    'node',
     'system',
+    'text',
+    'user',
+    'workflows',
   ];
 
   /**

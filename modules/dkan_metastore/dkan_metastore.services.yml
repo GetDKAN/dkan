@@ -41,7 +41,7 @@ services:
       - '@config.factory'
       - '@file_system'
       - '@dkan.common.logger_channel'
-      - '@event_dispatcher'
+      - '@dkan.metastore.content_moderation_helper'
   Drupal\dkan_metastore\Storage\DataFactory: '@dkan.metastore.storage'
 
   dkan.metastore.referencer:
@@ -140,3 +140,9 @@ services:
     class: \Drupal\dkan_metastore\SchemaValidator
     arguments:
       - '@dkan.metastore.schema_retriever'
+
+  dkan.metastore.content_moderation_helper:
+    class: \Drupal\dkan_metastore\ContentModeration\ContentModerationHelper
+    arguments:
+      - '@content_moderation.moderation_information'
+      - '@entity_type.manager'

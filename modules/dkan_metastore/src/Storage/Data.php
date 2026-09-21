@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\dkan_metastore\ContentModeration\ContentModerationHelper;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreService;
 use Drupal\workflows\WorkflowInterface;
@@ -104,6 +105,13 @@ abstract class Data implements MetastoreEntityStorageInterface {
   private LoggerInterface $logger;
 
   /**
+   * Content moderation helper service.
+   *
+   * @var \Drupal\dkan_metastore\ContentModeration\ContentModerationHelper
+   */
+  private ContentModerationHelper $contentModerationHelper;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -112,6 +120,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     ConfigFactoryInterface $config_factory,
     FileSystemInterface $file_system,
     LoggerInterface $loggerChannel,
+    ContentModerationHelper $contentModerationHelper,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
@@ -119,6 +128,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $this->configFactory = $config_factory;
     $this->fileSystem = $file_system;
     $this->logger = $loggerChannel;
+    $this->contentModerationHelper = $contentModerationHelper;
   }
 
   /**
@@ -170,6 +180,28 @@ abstract class Data implements MetastoreEntityStorageInterface {
     return array_map(function ($entity) {
       return $entity->get($this->metadataField)->getString();
     }, array_values($this->entityStorage->loadMultiple($entityIds)));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function retrieveAllForCatalog(): array {
+    $moderated_ids = [];
+    // Listquerybase will give us all nodes where status=published by default.
+    if ($item_ids = $this->listQueryBase()->execute()) {
+      if ($visible_list = array_filter(
+        $this->configFactory->get('dkan_metastore.settings')
+          ->get('catalog_include_workflow_states')
+      )) {
+        $moderated_ids = $this->contentModerationHelper
+          ->entityIdsForWorkflowStates($visible_list, $item_ids);
+      }
+    }
+
+    // Load all the nodes and grab their metadata.
+    return array_map(function ($entity) {
+      return $entity->get($this->metadataField)->getString();
+    }, array_values($this->entityStorage->loadMultiple($moderated_ids ?? [])));
   }
 
   /**
