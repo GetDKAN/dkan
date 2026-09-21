@@ -20,7 +20,22 @@ use Drupal\node\NodeInterface;
 class Data implements MetastoreItemInterface {
 
   /**
-   * Node.
+   * The node field name for the metadata JSON string.
+   */
+  private const JSON_METADATA_FIELD = 'field_json_metadata';
+
+  /**
+   * The field name for determining the schema/data type of the node.
+   */
+  private const DATA_TYPE_FIELD = 'field_data_type';
+
+  /**
+   * The default data type for nodes that don't have one yet.
+   */
+  private const DEFAULT_DATA_TYPE = 'dataset';
+
+  /**
+   * The data node we're wrapping.
    *
    * @var \Drupal\Core\Entity\EntityInterface
    */
@@ -58,6 +73,12 @@ class Data implements MetastoreItemInterface {
     $this->node = $entity;
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
+
+    // If our node is a new creation or otherwise doesn't have a type yet, we
+    // provide it with a default one.
+    if ($this->node->get(self::DATA_TYPE_FIELD)->isEmpty()) {
+      $this->node->set(self::DATA_TYPE_FIELD, self::DEFAULT_DATA_TYPE);
+    }
   }
 
   /**
@@ -82,20 +103,10 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
-   *
-   * @todo Needing to call fix() on every method seems like a code smell.
-   */
-  protected function fix() {
-    $this->fixDataType();
-    $this->saveRawMetadata();
-  }
-
-  /**
    * Getter.
    */
   public function getModifiedDate() {
-    $this->fix();
+    $this->saveRawMetadata();
     // Use revision date because the latest revision date does not
     // match the node changed value when there are multiple drafts.
     return $this->node->getRevisionCreationTime();
@@ -105,7 +116,7 @@ class Data implements MetastoreItemInterface {
    * Getter.
    */
   public function getIdentifier() {
-    $this->fix();
+    $this->saveRawMetadata();
 
     return $this->node->uuid();
   }
@@ -114,7 +125,7 @@ class Data implements MetastoreItemInterface {
    * The unaltered version of the metadata.
    */
   public function getRawMetadata() {
-    $this->fix();
+    $this->saveRawMetadata();
     if (isset($this->node->rawMetadata)) {
       return json_decode($this->node->rawMetadata);
     }
@@ -124,31 +135,31 @@ class Data implements MetastoreItemInterface {
    * Protected.
    */
   public function getDataType() {
-    $this->fix();
+    $this->saveRawMetadata();
     return $this->node->get('field_data_type')->value;
   }
 
   /**
-   * Protected.
+   * {@inheritDoc}
    */
-  public function getMetaData() {
-    $this->fix();
-    return json_decode($this->node->get('field_json_metadata')->getString());
+  public function getMetadata() {
+    $this->saveRawMetadata();
+    return json_decode($this->node->get(self::JSON_METADATA_FIELD)->getString());
   }
 
   /**
    * Protected.
    */
   public function setMetadata($metadata) {
-    $this->fix();
-    $this->node->set('field_json_metadata', json_encode($metadata));
+    $this->saveRawMetadata();
+    $this->node->set(self::JSON_METADATA_FIELD, json_encode($metadata));
   }
 
   /**
    * Setter.
    */
   public function setIdentifier($identifier) {
-    $this->fix();
+    $this->saveRawMetadata();
     $this->node->set('uuid', $identifier);
   }
 
@@ -156,7 +167,7 @@ class Data implements MetastoreItemInterface {
    * Setter.
    */
   public function setTitle($title) {
-    $this->fix();
+    $this->saveRawMetadata();
     $this->node->set('title', $title);
   }
 
@@ -183,32 +194,26 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
-   */
-  private function fixDataType() {
-    if (empty($this->node->get('field_data_type')->getString())) {
-      $this->node->set('field_data_type', 'dataset');
-    }
-  }
-
-  /**
    * Protected.
    */
   public function getSchemaId() {
-    $this->fix();
+    $this->saveRawMetadata();
     return $this->getEntity()->get('field_data_type')->getString();
   }
 
   /**
-   * Private.
+   * Temporarily save the raw json metadata, for later use.
    *
-   * @todo Why do we do this?
+   * Protected so that we can mock it in tests.
+   *
+   * @see \Drupal\Tests\dkan_metastore\Controller\Kernel\MetastoreAccessManagerTest
+   *
+   * @todo The need to call saveRawMetadata() from every other method seems
+   *   like a code smell.
    */
-  private function saveRawMetadata() {
-    // Temporarily save the raw json metadata, for later use.
+  protected function saveRawMetadata() {
     if (!isset($this->node->rawMetadata)) {
-      $raw = $this->node->get('field_json_metadata')->value;
-      $this->node->rawMetadata = $raw;
+      $this->node->rawMetadata = $this->node->get(self::JSON_METADATA_FIELD)->value;
     }
   }
 

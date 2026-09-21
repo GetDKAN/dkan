@@ -99,9 +99,8 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // @todo Send MORE information.
     $event = new DatastoreTableCreateEvent($schema, $this->dataResource);
     $this->eventDispatcher->dispatch($event, self::EVENT_DATABASE_TABLE_CREATE);
-    $this->setSchema($event->getSchema());
 
-    parent::tableCreate($table_name, $this->getSchema());
+    parent::tableCreate($table_name, $event->getSchema());
   }
 
   /**
@@ -188,22 +187,32 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * {@inheritdoc}
+   * {@inheritDoc}
    */
+  #[\Override]
   public function setSchema($schema): void {
-    $fields = $schema['fields'];
-    $new_field = [
-      $this->primaryKey() =>
+    $schema['fields'] = array_merge(
       [
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+        $this->primaryKey() => [
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
       ],
-    ];
-    $fields = array_merge($new_field, $fields);
+      $schema['fields'] ?? [],
+    );
 
-    $schema['fields'] = $fields;
-    $schema['primary key'] = [$this->primaryKey()];
+    // Add our new field as primary key if there isn't one already.
+    if ((!isset($schema['primary key']))) {
+      $schema['primary key'] = [$this->primaryKey()];
+    }
+    // Add our new field as a unique key if there's already a primary key.
+    else {
+      $schema['unique keys'] = array_merge(
+        [$this->primaryKey() => [$this->primaryKey()]],
+        $schema['unique keys'] ?? [],
+      );
+    }
     parent::setSchema($schema);
   }
 

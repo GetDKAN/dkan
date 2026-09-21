@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @coversDefaultClass \Drupal\dkan_datastore\Storage\DatabaseTable
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  */
 class DatabaseTableTest extends KernelTestBase {

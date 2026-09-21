@@ -18,7 +18,7 @@ use Procrastinator\Result;
  * @covers \Drupal\dkan_datastore\DatastoreService
  * @coversDefaultClass \Drupal\dkan_datastore\DatastoreService
  *
- * @group datastore
+ * @group dkan_datastore
  * @group btb
  * @group functional
  * @group functional2

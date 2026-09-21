@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\ImportController
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  */
 class ImportControllerTest extends KernelTestBase {

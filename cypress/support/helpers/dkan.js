@@ -100,6 +100,27 @@ export function searchMetastore (params = {}) {
   return cy.request('GET', url)
 }
 
+// Poll the metastore search endpoint until the predicate returns true or the
+// timeout elapses. Useful when search-index updates are asynchronous (e.g.
+// after a moderation-state transition in CI).
+export function searchMetastoreUntil (params = {}, predicate, timeout = 15000) {
+  const interval = 2000
+  const param_string = (new URLSearchParams(params)).toString()
+  const url = getMetastoreSearchEndpoint() + '?' + param_string
+  const deadline = Date.now() + timeout
+
+  function attempt () {
+    return cy.request('GET', url).then((response) => {
+      if (predicate(response.body) || Date.now() >= deadline) {
+        return cy.wrap(response)
+      }
+      return cy.wait(interval).then(() => attempt())
+    })
+  }
+
+  return attempt()
+}
+
 export function generateMetastore (schema_id, identifier = null) {
   // Generate a unique metastore identifier if one was not supplied.
   identifier = identifier || generateMetastoreIdentifier()

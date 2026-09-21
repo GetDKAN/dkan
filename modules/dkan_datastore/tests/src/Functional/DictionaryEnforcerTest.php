@@ -6,7 +6,7 @@ namespace Drupal\Tests\dkan_datastore\Functional;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\dkan_common\Traits\GetDataTrait;
+use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use Drupal\dkan_datastore\Controller\ImportController;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * DictionaryEnforcer QueueWorker test.
  *
- * @group datastore
+ * @group dkan_datastore
  * @group functional
  * @group btb
  * @group functional1
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DictionaryEnforcerTest extends BrowserTestBase {
 
-  use GetDataTrait, QueueRunnerTrait;
+  use GetLocalDataTrait, QueueRunnerTrait;
 
   protected $defaultTheme = 'stark';
 
@@ -204,7 +204,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $this->assertInstanceOf(
       RootedJsonData::class,
       $dataset = $this->validMetadataFactory->get(
-        $this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE),
+        $this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl]),
         'dataset'
       )
     );
@@ -274,6 +274,9 @@ class DictionaryEnforcerTest extends BrowserTestBase {
         'index_a' => [
           'a',
           'd',
+        ],
+        'record_number' => [
+          'record_number'
         ],
       ],
       'fulltextIndexes' => [

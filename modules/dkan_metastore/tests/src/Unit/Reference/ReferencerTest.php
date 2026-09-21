@@ -37,7 +37,7 @@ use Symfony\Component\Mime\MimeTypeGuesserInterface;
  * @coversDefaultClass \Drupal\dkan_metastore\Reference\Referencer
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group unit
  */
 class ReferencerTest extends TestCase {
@@ -140,6 +140,7 @@ class ReferencerTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', FALSE)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getHost', 'test.test')
       ->add(ResourceMapper::class, 'register', TRUE, 'resource')

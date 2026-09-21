@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @coversDefaultClass \Drupal\dkan_metastore\Service\Uuid5
  * @package Drupal\Tests\dkan_metastore\Unit\Service
- * @group metastore
+ * @group dkan_metastore
  */
 class Uuid5Test extends TestCase {
 

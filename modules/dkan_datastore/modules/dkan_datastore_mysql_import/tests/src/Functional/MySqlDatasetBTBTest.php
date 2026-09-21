@@ -11,7 +11,7 @@ use Drupal\Tests\dkan\Functional\DatasetBTBTest;
  * we get the same tests, except with datastore_mysql_import enabled.
  *
  * @group dkan
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  * @group functional
  * @group functional1
  */

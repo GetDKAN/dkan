@@ -13,7 +13,7 @@ use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscoveryInterface;
  * @covers \Drupal\dkan_datastore\Service\ResourceProcessor\DictionaryEnforcer
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  */
 class DictionaryEnforcerTest extends KernelTestBase {

@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group unit
  */
 class MetastoreControllerTest extends TestCase {

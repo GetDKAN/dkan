@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @coversDefaultClass \Drupal\dkan_datastore\Service\Factory\ImportServiceFactory
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group unit
  */
 class ImportServiceFactoryTest extends TestCase {

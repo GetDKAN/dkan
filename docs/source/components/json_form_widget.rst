@@ -1,7 +1,7 @@
 JSON Form Widget
 ################
 
-As of DKAN 3.0, `JSON Form Widget <https://www.drupal.org/project/json_form_widget>`_ was removed from DKAN's ``modules/`` directory
+As of DKAN 3.0, the `JSON Form Widget module <https://www.drupal.org/project/json_form_widget>`_ was removed from DKAN's ``modules/`` directory
 and released as a standalone module on Drupal.org.
 
 However, that module's `README file <https://git.drupalcode.org/project/json_form_widget/-/blob/1.x/README.md?ref_type=heads>`_

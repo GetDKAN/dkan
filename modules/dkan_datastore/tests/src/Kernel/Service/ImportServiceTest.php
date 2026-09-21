@@ -15,7 +15,7 @@ use Symfony\Component\ErrorHandler\BufferingLogger;
  * @covers \Drupal\dkan_datastore\Service\ImportService
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group kernel
  */
 class ImportServiceTest extends KernelTestBase {

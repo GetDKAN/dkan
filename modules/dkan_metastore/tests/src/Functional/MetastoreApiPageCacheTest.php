@@ -12,7 +12,7 @@ use RootedData\RootedJsonData;
  * Metastore service API caching.
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group functional
  * @group btb
  * @group functional2

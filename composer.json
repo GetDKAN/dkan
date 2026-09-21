@@ -53,7 +53,8 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "tbachert/spi": true,
-            "drupal/core-composer-scaffold": true
+            "drupal/core-composer-scaffold": true,
+            "symfony/runtime": true
         }
     },
     "extra": {

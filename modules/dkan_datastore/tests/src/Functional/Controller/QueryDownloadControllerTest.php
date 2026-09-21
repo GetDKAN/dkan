@@ -5,7 +5,7 @@ namespace Drupal\Tests\dkan_datastore\Functional\Controller;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\dkan_metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\dkan_common\Traits\GetDataTrait;
+use Drupal\Tests\dkan_common\Traits\GetLocalDataTrait;
 use Drupal\Tests\dkan_common\Traits\QueueRunnerTrait;
 use RootedData\RootedJsonData;
 
@@ -13,14 +13,14 @@ use RootedData\RootedJsonData;
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\QueryDownloadController
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group functional
  * @group btb
  * @group functional3
  */
 class QueryDownloadControllerTest extends BrowserTestBase {
 
-  use GetDataTrait, QueueRunnerTrait;
+  use GetLocalDataTrait, QueueRunnerTrait;
 
   /**
    * Uploaded resource file destination.
@@ -65,7 +65,6 @@ class QueryDownloadControllerTest extends BrowserTestBase {
           $dataset_id,
           'Test ' . $dataset_id,
           [$resourceUrl],
-          TRUE
         ),
         'dataset'
       )
@@ -225,7 +224,6 @@ class QueryDownloadControllerTest extends BrowserTestBase {
           $dataset_id,
           'Test ' . $dataset_id,
           [$resourceUrl],
-          TRUE,
           'dkan://metastore/schemas/data-dictionary/items/' . $dict_id
         ),
         'dataset'

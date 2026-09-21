@@ -4,6 +4,8 @@ namespace Drupal\Tests\dkan_common\Traits;
 
 /**
  * Trait for getting data remote for tests.
+ *
+ * @deprecated Use GetLocalDataTrait instead.
  */
 trait GetDataTrait {
 

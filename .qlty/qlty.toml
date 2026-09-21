@@ -44,6 +44,7 @@ default = true
 
 [[plugin]]
 name = "php-codesniffer"
+version = "3.13.6"
 package_file = ".qlty/configs/composer.json"
 
 [runtimes.enabled]

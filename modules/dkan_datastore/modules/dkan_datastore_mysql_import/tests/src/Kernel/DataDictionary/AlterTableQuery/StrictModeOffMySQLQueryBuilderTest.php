@@ -13,7 +13,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\DataDictionary\AlterTableQuery\StrictModeOffMySQLQueryBuilder
  *
  * @group dkan
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  * @group kernel
  */
 class StrictModeOffMySQLQueryBuilderTest extends KernelTestBase {

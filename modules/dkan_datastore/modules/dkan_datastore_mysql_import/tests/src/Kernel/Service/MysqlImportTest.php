@@ -15,7 +15,7 @@ use Procrastinator\Result;
  * @coversDefaultClass \Drupal\dkan_datastore_mysql_import\Service\MysqlImport
  *
  * @group kernel
- * @group datastore_mysql_import
+ * @group dkan_datastore_mysql_import
  */
 class MysqlImportTest extends KernelTestBase {
 

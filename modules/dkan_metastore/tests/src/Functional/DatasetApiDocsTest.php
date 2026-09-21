@@ -8,7 +8,7 @@ use Drupal\Tests\BrowserTestBase;
  * @coversDefaultClass \Drupal\dkan_metastore\DatasetApiDocs
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group functional
  * @group btb
  * @group functional1

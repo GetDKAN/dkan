@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\AbstractQueryController
  *
  * @group dkan
- * @group datastore
+ * @group dkan_datastore
  * @group unit
  */
 class AbstractQueryControllerTest extends TestCase {

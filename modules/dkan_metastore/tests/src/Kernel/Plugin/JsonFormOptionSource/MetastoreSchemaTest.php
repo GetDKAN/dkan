@@ -13,7 +13,7 @@ use MockChain\Options;
 /**
  * Test coverage for MetastoreSchema plugin.
  *
- * @group metastore
+ * @group dkan_metastore
  * @coversDefaultClass \Drupal\dkan_metastore\Plugin\JsonFormOptionSource\MetastoreSchema
  */
 class MetastoreSchemaTest extends KernelTestBase {
