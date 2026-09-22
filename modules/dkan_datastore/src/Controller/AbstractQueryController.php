@@ -3,7 +3,9 @@
 namespace Drupal\dkan_datastore\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\JsonResponseTrait;
@@ -56,6 +58,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected StateInterface $state;
 
   /**
+   * Logger channel service.
+   */
+  protected LoggerChannelInterface $logger;
+
+  /**
    * Default API rows limit.
    *
    * @var int
@@ -71,12 +78,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     MetastoreApiResponse $metastoreApiResponse,
     ConfigFactoryInterface $configFactory,
     StateInterface $state,
+    LoggerChannelInterface $logger,
   ) {
     $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->configFactory = $configFactory;
     $this->state = $state;
+    $this->logger = $logger;
   }
 
   /**
@@ -89,6 +98,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $container->get('dkan.metastore.api_response'),
       $container->get('config.factory'),
       $container->get('state'),
+      $container->get('dkan.datastore.logger_channel'),
     );
   }
 
@@ -279,16 +289,21 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     try {
       return $this->queryService->runQuery($datastoreQuery);
     }
-    catch (\PDOException $e) {
-      switch ($e->getCode()) {
-        // @see https://dev.mysql.com/doc/mysql-errors/8.4/en/server-error-reference.html#error_er_too_many_user_connections
-        case 1203:
-          $http_exception = new ServiceUnavailableHttpException(self::DEGRADE_MODE_RETRY_AFTER, $e->getMessage());
-          return $this->getResponseFromException($http_exception, $http_exception->getStatusCode());
+    catch (DatabaseExceptionWrapper | \PDOException $e) {
+      // Log the error.
+      $this->logger->error($e->getMessage());
 
-        default:
-          throw $e;
-      }
+      // Create a new HttpException object so that getResponseFromException()
+      // can use its headers.
+      $http_exception = new ServiceUnavailableHttpException(
+        self::DEGRADE_MODE_RETRY_AFTER,
+        // Generic error message for public consumption.
+        'Service unavailable'
+      );
+      // @todo Modify getResponseFromException() to allow caching the response
+      //   for number of seconds in the retry-after header, so that future
+      //   requests never get this far until that time has expired.
+      return $this->getResponseFromException($http_exception, $http_exception->getStatusCode());
     }
     catch (HttpException $e) {
       return $this->getResponseFromException($e, $e->getStatusCode());
@@ -297,6 +312,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 404);
     }
     catch (\Exception $e) {
+      $this->logger->error($e->getMessage());
       $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
       return $this->getResponseFromException($e, $code);
     }
