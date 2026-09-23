@@ -58,10 +58,16 @@ trait JsonResponseTrait {
     $headers = ($e instanceof HttpException) ? $e->getHeaders() : [];
 
     $response = new CacheableJsonResponse((object) $body, $code, $headers);
+    $response->setCache([
+      'public' => TRUE,
+      'private' => FALSE,
+      'max_age' => AbstractQueryController::DEGRADE_MODE_RETRY_AFTER,
+      'last_modified' => new \DateTime(),
+    ]);
+
     $cacheable = new CacheableMetadata();
     $cacheable->setCacheMaxAge(AbstractQueryController::DEGRADE_MODE_RETRY_AFTER)
       ->setCacheTags(NodeDataFactory::getCacheTags());
-
     return $response->addCacheableDependency($cacheable);
   }
 
