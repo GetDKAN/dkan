@@ -2,6 +2,10 @@
 
 namespace Drupal\dkan_common;
 
+use Drupal\Core\Cache\CacheableJsonResponse;
+use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\dkan_datastore\Controller\AbstractQueryController;
+use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Opis\JsonSchema\Errors\ErrorFormatter;
 use RootedData\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,7 +56,13 @@ trait JsonResponseTrait {
       $body['data'] = $data;
     }
     $headers = ($e instanceof HttpException) ? $e->getHeaders() : [];
-    return $this->getResponse((object) $body, $code, $headers);
+
+    $response = new CacheableJsonResponse((object) $body, $code, $headers);
+    $cacheable = new CacheableMetadata();
+    $cacheable->setCacheMaxAge(AbstractQueryController::DEGRADE_MODE_RETRY_AFTER)
+      ->setCacheTags(NodeDataFactory::getCacheTags());
+
+    return $response->addCacheableDependency($cacheable);
   }
 
   /**
