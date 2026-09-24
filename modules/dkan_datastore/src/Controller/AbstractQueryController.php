@@ -36,66 +36,21 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   const DEGRADE_MODE_RETRY_AFTER = 120;
 
   /**
-   * Datastore query service.
-   */
-  protected QueryService $queryService;
-
-  /**
-   * DatasetInfo Service.
-   */
-  protected DatasetInfo $datasetInfo;
-
-  /**
-   * ConfigFactory object.
-   */
-  protected ConfigFactoryInterface $configFactory;
-
-  /**
-   * Metastore API response.
-   */
-  protected MetastoreApiResponse $metastoreApiResponse;
-
-  /**
-   * State service.
-   */
-  protected StateInterface $state;
-
-  /**
-   * Reference lookup service.
-   */
-  protected ReferenceLookup $referenceLookup;
-
-  /**
-   * Resource mapper service.
-   */
-  protected ResourceMapper $resourceMapper;
-
-  /**
    * Default API rows limit.
    *
    * @var int
    */
   protected const DEFAULT_ROWS_LIMIT = 500;
 
-  /**
-   * Api constructor.
-   */
   public function __construct(
-    QueryService $queryService,
-    DatasetInfo $datasetInfo,
-    MetastoreApiResponse $metastoreApiResponse,
-    ConfigFactoryInterface $configFactory,
-    StateInterface $state,
-    ReferenceLookup $referenceLookup,
-    ResourceMapper $resourceMapper,
+    protected QueryService $queryService,
+    protected DatasetInfo $datasetInfo,
+    protected MetastoreApiResponse $metastoreApiResponse,
+    protected ConfigFactoryInterface $configFactory,
+    protected StateInterface $state,
+    protected ReferenceLookup $referenceLookup,
+    protected ResourceMapper $resourceMapper,
   ) {
-    $this->queryService = $queryService;
-    $this->datasetInfo = $datasetInfo;
-    $this->metastoreApiResponse = $metastoreApiResponse;
-    $this->configFactory = $configFactory;
-    $this->state = $state;
-    $this->referenceLookup = $referenceLookup;
-    $this->resourceMapper = $resourceMapper;
   }
 
   /**
