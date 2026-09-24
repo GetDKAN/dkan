@@ -24,38 +24,14 @@ class ImportController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
   /**
-   * Datastore Service.
-   */
-  protected DatastoreService $datastoreService;
-
-  /**
-   * Metastore API response service.
-   */
-  protected MetastoreApiResponse $metastoreApiResponse;
-
-  /**
-   * Reference lookup service.
-   */
-  protected ReferenceLookup $referenceLookup;
-
-  /**
-   * Import info list service.
-   */
-  protected ImportInfoList $importInfoList;
-
-  /**
    * Api constructor.
    */
   public function __construct(
-    DatastoreService $datastoreService,
-    MetastoreApiResponse $metastoreApiResponse,
-    ReferenceLookup $referenceLookup,
-    ImportInfoList $importInfoList,
+    protected readonly DatastoreService $datastoreService,
+    protected readonly MetastoreApiResponse $metastoreApiResponse,
+    protected readonly ReferenceLookup $referenceLookup,
+    protected readonly ImportInfoList $importInfoList,
   ) {
-    $this->datastoreService = $datastoreService;
-    $this->metastoreApiResponse = $metastoreApiResponse;
-    $this->referenceLookup = $referenceLookup;
-    $this->importInfoList = $importInfoList;
   }
 
   /**

@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
 use Drupal\dkan_metastore\Exception\AlreadyRegistered;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -83,6 +84,46 @@ class ResourceMapper {
     $this->eventDispatcher->dispatch($event, self::EVENT_REGISTRATION);
 
     return TRUE;
+  }
+
+  /**
+   * Normalize a resource ID into full compound/unique identifier format.
+   *
+   * Accepts identifiers in the following forms:
+   * - <identifier>__<version>__<perspective>
+   * - <identifier>__<version>
+   * - <identifier> (resolved to latest source perspective revision)
+   *
+   * @param string $identifier
+   *   Resource identifier in any accepted format.
+   *
+   * @return string
+   *   Identifier in full compound format.
+   *
+   * @throws \Drupal\dkan_metastore\Exception\MissingObjectException
+   *   When identifier and version cannot be resolved.
+   */
+  public function normalizeIdentifier(string $identifier): string {
+    try {
+      $parts = DataResource::parseUniqueIdentifier($identifier);
+      return DataResource::buildUniqueIdentifier($parts['identifier'], $parts['version'], $parts['perspective']);
+    }
+    catch (\Exception) {
+    }
+
+    if (substr_count($identifier, '__') > 0) {
+      $parts = explode('__', $identifier);
+      if (count($parts) == 2) {
+        return DataResource::buildUniqueIdentifier((string) $parts[0], (string) $parts[1], DataResource::DEFAULT_SOURCE_PERSPECTIVE);
+      }
+    }
+
+    $resource = $this->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
+    if ($resource) {
+      return $resource->getUniqueIdentifier();
+    }
+
+    throw new MissingObjectException("Could not find identifier and version for {$identifier}");
   }
 
   /**

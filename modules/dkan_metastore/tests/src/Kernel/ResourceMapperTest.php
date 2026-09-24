@@ -4,9 +4,12 @@ namespace Drupal\Tests\dkan_metastore\Kernel;
 
 use Drupal\dkan_common\DataResource;
 use Drupal\dkan_datastore\Service\ResourceLocalizer;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
+ * Kernel tests for resource mapper.
+ *
  * @group dkan
  * @group metastore
  * @group kernel
@@ -16,11 +19,17 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class ResourceMapperTest extends KernelTestBase {
 
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'dkan_common',
     'dkan_metastore',
   ];
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp() : void {
     parent::setUp();
     $this->installEntitySchema('resource_mapping');
@@ -96,6 +105,65 @@ class ResourceMapperTest extends KernelTestBase {
       $this->assertTrue(TRUE);
     }
 
+  }
+
+  /**
+   * Test normalization of full resource identifier.
+   */
+  public function testNormalizeIdentifierFull(): void {
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $identifier = '5d41402abc4b2a76b9719d911017c592__1783014536__local_url';
+
+    // We don't need to interact with the resource mapper table, as the
+    // the normalizer should just return the identifier as-is.
+    $this->assertEquals($identifier, $mapper->normalizeIdentifier($identifier));
+  }
+
+  /**
+   * Test normalization of partial resource identifier.
+   */
+  public function testNormalizeIdentifierPartial(): void {
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
+    $identifier = '5d41402abc4b2a76b9719d911017c592__1783014536';
+    // We know this will just append the default perspective to the identifier.
+    $expected = '5d41402abc4b2a76b9719d911017c592__1783014536__source';
+
+    $this->assertEquals($expected, $mapper->normalizeIdentifier($identifier));
+  }
+
+  /**
+   * Test normalization of bare resource identifier via mapper lookup.
+   */
+  public function testNormalizeIdentifierBare(): void {
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
+
+    $resource = $this->getResource('hello');
+    $identifier = '5d41402abc4b2a76b9719d911017c592';
+    // Here we register a fake resource to test that the latest version is
+    // resolved and appended to a bare identifier.
+    $mapper->register($resource);
+
+    $expected = DataResource::buildUniqueIdentifier(
+      $identifier,
+      (string) $resource->getVersion(),
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE
+    );
+
+    $this->assertEquals($expected, $mapper->normalizeIdentifier($identifier));
+  }
+
+  /**
+   * Test that ::normalizeIdentifier throws exception for unknown identifiers.
+   */
+  public function testNormalizeIdentifierMissing(): void {
+    /** @var \Drupal\dkan_metastore\ResourceMapper $mapper */
+    $mapper = $this->container->get('dkan.metastore.resource_mapper');
+
+    $this->expectException(MissingObjectException::class);
+    $mapper->normalizeIdentifier('this-id-does-not-exist');
   }
 
   /**

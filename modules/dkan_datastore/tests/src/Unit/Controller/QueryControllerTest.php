@@ -12,10 +12,12 @@ use Drupal\dkan_datastore\Controller\QueryController;
 use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_datastore\Service\Query;
 use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
@@ -48,6 +50,9 @@ class QueryControllerTest extends TestCase {
    */
   private DataResource $resource;
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp(): void {
     parent::setUp();
     // Set cache services.
@@ -63,6 +68,9 @@ class QueryControllerTest extends TestCase {
     $this->resource = new DataResource(self::FILE_DIR . 'states_with_dupes.csv', 'text/csv');
   }
 
+  /**
+   * Test querying with JSON response.
+   */
   public function testQueryJson() {
     $data = json_encode([
       "resources" => [
@@ -114,6 +122,9 @@ class QueryControllerTest extends TestCase {
     $this->assertStringContainsString('Error retrieving published dataset', $result->getContent());
   }
 
+  /**
+   * Test querying with row ID property, should return error.
+   */
   public function testQueryRowIdProperty() {
     // Try simple string properties:
     $data = json_encode(["properties" => ["record_number", "state"]]);
@@ -151,6 +162,9 @@ class QueryControllerTest extends TestCase {
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
   }
 
+  /**
+   * Test querying with row ID sort.
+   */
   public function testQueryRowIdSort() {
     $data = json_encode([
       "sorts" => [
@@ -173,7 +187,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
-  // Make sure nothing fails with no resources.
+  /**
+   * Test querying with no resources specified.
+   */
   public function testQueryJsonNoResources() {
     $data = json_encode([
       "properties" => [
@@ -190,6 +206,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with invalid resources.
+   */
   public function testQueryInvalid() {
     $data = json_encode([
       "resources" => "nope",
@@ -201,6 +220,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with invalid JSON request.
+   */
   public function testResourceQueryInvalidJson() {
     $data = "{[";
 
@@ -210,6 +232,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with an invalid query structure.
+   */
   public function testResourceQueryInvalidQuery() {
     $data = json_encode([
       "conditions" => "nope",
@@ -220,6 +245,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with a join.
+   */
   public function testResourceQueryWithJoin() {
     $data = json_encode([
       "joins" => [
@@ -234,7 +262,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test querying with results set to true.
    */
   public function testResourceQueryJson() {
     $data = json_encode([
@@ -274,7 +302,67 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
+   * Test ::normalizeResourceIdentifier() branches via reflection.
    *
+   * @dataProvider normalizeResourceIdentifierProvider
+   */
+  public function testNormalizeResourceIdentifier(
+    string $input,
+    string $expected,
+    bool $mapperCalled,
+    ?string $mapperReturn = NULL,
+    bool $mapperThrows = FALSE,
+  ) {
+    $resourceMapper = $this->createMock(ResourceMapper::class);
+    $expects = $mapperCalled ? $this->once() : $this->never();
+    $normalizeIdentifierInvocation = $resourceMapper->expects($expects)
+      ->method('normalizeIdentifier');
+
+    if ($mapperCalled) {
+      if ($mapperThrows) {
+        $normalizeIdentifierInvocation->willThrowException(new MissingObjectException('No mapping found'));
+      }
+      else {
+        $normalizeIdentifierInvocation->with($input)->willReturn($mapperReturn);
+      }
+    }
+
+    $controller = $this->buildControllerForIdentifierNormalization($resourceMapper);
+    $method = new \ReflectionMethod($controller, 'normalizeResourceIdentifier');
+    $method->setAccessible(TRUE);
+
+    $this->assertEquals($expected, $method->invoke($controller, $input));
+  }
+
+  /**
+   * Data provider for testNormalizeResourceIdentifier.
+   */
+  public static function normalizeResourceIdentifierProvider(): array {
+    $mapped = '3a187a87dc6cd47c48b6b4c4785224b7__1789418951__source';
+
+    return [
+      'md5 mapped' => ['3a187a87dc6cd47c48b6b4c4785224b7', $mapped, TRUE, $mapped, FALSE],
+      'md5+version mapped' => ['3a187a87dc6cd47c48b6b4c4785224b7__1789418951', $mapped, TRUE, $mapped, FALSE],
+      'md5+version+perspective mapped' => [
+        '3a187a87dc6cd47c48b6b4c4785224b7__1789418951__source',
+        $mapped,
+        TRUE,
+        $mapped,
+        FALSE,
+      ],
+      'uuid passthrough' => [
+        '123e4567-e89b-12d3-a456-426614174000',
+        '123e4567-e89b-12d3-a456-426614174000',
+        FALSE,
+        NULL,
+        FALSE,
+      ],
+      'mapper exception fallback' => ['invalid-id', 'invalid-id', TRUE, NULL, TRUE],
+    ];
+  }
+
+  /**
+   * Test querying with multiple joins.
    */
   public function testResourceQueryJoins() {
     $data = json_encode([
@@ -301,7 +389,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test querying with joins specified.
    */
   public function testQueryCsv() {
     $data = json_encode([
@@ -325,7 +413,10 @@ class QueryControllerTest extends TestCase {
     $this->assertStringContainsString('data.csv', $result->headers->get('Content-Disposition'));
   }
 
-  private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
+  /**
+   * Helper method to get query result.
+   */
+  private function getQueryResult(string $data, $id = NULL, $index = NULL, $info = []) {
     $container = $this->getQueryContainer($info, TRUE, $index)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
@@ -338,6 +429,9 @@ class QueryControllerTest extends TestCase {
     return $webServiceApi->queryDatasetResource($id, $index, $request);
   }
 
+  /**
+   * Test querying a resource with CSV response.
+   */
   public function testResourceQueryCsv() {
     $data = json_encode([
       "properties" => [
@@ -357,7 +451,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
-
+  /**
+   * Test querying a resource with an expression and CSV response.
+   */
   public function testResourceExpressionQueryCsv() {
     $data = json_encode([
       "properties" => [
@@ -386,6 +482,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
+  /**
+   * Test retrieving the DKAN datastore query schema.
+   */
   public function testQuerySchema() {
     $container = $this->getQueryContainer()->getMock();
     $webServiceApi = QueryController::create($container);
@@ -397,7 +496,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test dataset ID + distribution index with wrong identifier.
    */
   public function testDistributionIndexWrongIdentifier() {
     $data = json_encode([
@@ -411,7 +510,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test dataset ID + distribution index with wrong index.
    */
   public function testDistributionIndexWrongIndex() {
     $data = json_encode([
@@ -427,7 +526,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test dataset ID + distribution index with correct index.
    */
   public function testDistributionIndex() {
     $data = json_encode([
@@ -443,7 +542,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test query CSV response cache headers.
    */
   public function testQueryCsvCacheHeaders() {
     $data = json_encode([
@@ -491,6 +590,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
+  /**
+   * Get a mock service container for testing.
+   */
   private function getQueryContainer(array $info = [], $mockMap = TRUE, $requestedIndex = NULL) {
 
     $resource_identifier = NULL;
@@ -505,6 +607,7 @@ class QueryControllerTest extends TestCase {
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
@@ -521,6 +624,7 @@ class QueryControllerTest extends TestCase {
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ResourceMapper::class, 'normalizeIdentifier', new MissingObjectException('No mapping found'))
       ->add(ReferenceLookup::class, 'getReferencers', [])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 500)
@@ -663,6 +767,27 @@ class QueryControllerTest extends TestCase {
     }
 
     return $storage;
+  }
+
+  /**
+   * Build a QueryController with lightweight mocked dependencies.
+   *
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
+   *   Resource mapper mock controlling normalization behavior.
+   *
+   * @return \Drupal\dkan_datastore\Controller\QueryController
+   *   Query controller instance.
+   */
+  private function buildControllerForIdentifierNormalization(ResourceMapper $resourceMapper): QueryController {
+    return new QueryController(
+      $this->createStub(Query::class),
+      $this->createStub(DatasetInfo::class),
+      $this->createStub(MetastoreApiResponse::class),
+      $this->createStub(ConfigFactoryInterface::class),
+      $this->createStub(State::class),
+      $this->createStub(ReferenceLookup::class),
+      $resourceMapper
+    );
   }
 
 }

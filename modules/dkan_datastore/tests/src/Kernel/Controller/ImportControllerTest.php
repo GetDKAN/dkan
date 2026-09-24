@@ -60,13 +60,11 @@ class ImportControllerTest extends KernelTestBase {
         return [];
       });
 
-    $ref_property = new \ReflectionProperty($controller, 'referenceLookup');
-    $ref_property->setAccessible(TRUE);
-    $ref_property->setValue($controller, $mock_lookup);
+    $this->container->set('dkan.metastore.reference_lookup', $mock_lookup);
+    $controller = ImportController::create($this->container);
 
     $ref_method = new \ReflectionMethod($controller, 'getDependencies');
     $ref_method->setAccessible(TRUE);
-
     $result = $ref_method->invokeArgs($controller, [$resource_id]);
 
     $this->assertIsArray($result);

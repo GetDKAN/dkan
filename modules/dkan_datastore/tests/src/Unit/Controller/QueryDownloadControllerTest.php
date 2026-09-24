@@ -13,10 +13,12 @@ use Drupal\dkan_datastore\Controller\QueryDownloadController;
 use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_datastore\Service\Query;
 use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
@@ -55,9 +57,12 @@ class QueryDownloadControllerTest extends TestCase {
    */
   private array $resources;
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp(): void {
     parent::setUp();
-    // Set cache services
+    // Set cache services.
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
       ->add('event_dispatcher', EventDispatcher::class)
@@ -76,6 +81,9 @@ class QueryDownloadControllerTest extends TestCase {
     $this->buffer = '';
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function tearDown(): void {
     parent::tearDown();
     $this->buffer = '';
@@ -84,7 +92,7 @@ class QueryDownloadControllerTest extends TestCase {
   /**
    * Helper function to compare output of streaming vs normal query controller.
    */
-  private function queryResultCompareCsv($data, $resource = NULL) {
+  private function queryResultCompareCsv(string $data, $resource = NULL) {
     $request = $this->mockRequest($data);
     $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
@@ -102,9 +110,9 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
-   * Helper function to compare output of json streaming vs normal query controller.
+   * Helper function to compare output of json streaming vs normal query.
    */
-  private function queryResultCompareJson($data, $resource = NULL) {
+  private function queryResultCompareJson(string $data, $resource = NULL) {
     $request = $this->mockRequest($data);
     $qController = QueryController::create($this->getQueryContainer(500)->getMock());
     $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
@@ -125,7 +133,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Test streaming of a CSV file from database.
    */
   public function testStreamedQueryCsv() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -133,7 +141,7 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-    ];
+    ]);
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareCsv($data);
   }
@@ -142,7 +150,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Test json stream.
    */
   public function testStreamedQueryJson() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -150,7 +158,7 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "json",
-    ];
+    ]);
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareJson($data);
   }
@@ -159,7 +167,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Test json stream w/o keys.
    */
   public function testStreamedQueryJsonNoKeys() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -168,7 +176,7 @@ class QueryDownloadControllerTest extends TestCase {
       ],
       "format" => "json",
       "keys" => "false",
-    ];
+    ]);
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareJson($data);
   }
@@ -177,9 +185,9 @@ class QueryDownloadControllerTest extends TestCase {
    * Test streaming of a CSV file from database.
    */
   public function testStreamedResourceQueryCsv() {
-    $data = [
+    $data = json_encode([
       "format" => "csv",
-    ];
+    ]);
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareCsv($data, "2");
   }
@@ -188,7 +196,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Test streaming of a CSV file from database.
    */
   public function testStreamedOtherSortCsv() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -207,7 +215,7 @@ class QueryDownloadControllerTest extends TestCase {
           'order' => 'desc',
         ],
       ],
-    ];
+    ]);
 
     // Need 2 json responses which get combined on output.
     $this->queryResultCompareCsv($data);
@@ -217,7 +225,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Test streaming of a CSV file from database.
    */
   public function testStreamedJoinCsv() {
-    $data = [
+    $data = json_encode([
       "schema" => TRUE,
       "resources" => [
         [
@@ -272,12 +280,12 @@ class QueryDownloadControllerTest extends TestCase {
           'order' => 'desc',
         ],
       ],
-    ];
+    ]);
     $this->queryResultCompareCsv($data);
   }
 
   /**
-   * Test CSV stream request with a limit higher than the datastore row limit setting.
+   * Test CSV stream request with a limit higher than datastore row limit.
    */
   public function testStreamedLimit() {
     $queryLimit = 75;
@@ -298,13 +306,14 @@ class QueryDownloadControllerTest extends TestCase {
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     ob_start(self::getBuffer(...));
-    /** @var \Symfony\Component\HttpFoundation\StreamedResponse $streamResponse */
+    /** @var \Ilbee\CSVResponse\CSVResponse|\Symfony\Component\HttpFoundation\JsonResponse $streamResponse */
     $streamResponse = $downloadController->query($request);
     $this->assertEquals(200, $streamResponse->getStatusCode());
     $streamResponse->sendContent();
     ob_get_clean();
     $streamedCsv = $this->buffer;
-    // Check that the CSV has the full queryLimit number of lines, plus header and final newline.
+    // Check that the CSV has the full queryLimit number of lines, plus header
+    // and final newline.
     $this->assertEquals(($queryLimit + 2), count(explode("\n", $streamedCsv)));
     // Check that the max-age header is correct.
     $this->assertEquals(3600, $streamResponse->getMaxAge());
@@ -318,7 +327,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Ensure that CSV header correct if columns specified.
    */
   public function testStreamedCsvSpecificColumns() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -327,7 +336,7 @@ class QueryDownloadControllerTest extends TestCase {
       ],
       "format" => "csv",
       "properties" => ["state", "year"],
-    ];
+    ]);
     $this->queryResultCompareCsv($data);
   }
 
@@ -335,7 +344,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Ensure that pagination and CSV header correct if resource-specific columns.
    */
   public function testStreamedCsvResourceColumns() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -353,17 +362,16 @@ class QueryDownloadControllerTest extends TestCase {
           "property" => "year",
         ],
       ],
-    ];
+    ]);
 
     $this->queryResultCompareCsv($data);
   }
-
 
   /**
    * Ensure that rowIds appear correctly if requested.
    */
   public function testStreamedCsvRowIds() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -372,7 +380,7 @@ class QueryDownloadControllerTest extends TestCase {
       ],
       "format" => "csv",
       "rowIds" => TRUE,
-    ];
+    ]);
 
     $this->queryResultCompareCsv($data);
   }
@@ -381,7 +389,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Check that a bad schema will return a CSV with an error message.
    */
   public function testStreamedBadSchema() {
-    $data = [
+    $data = json_encode([
       "resources" => [
         [
           "id" => $this->resources[2]->getIdentifier(),
@@ -389,7 +397,7 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-    ];
+    ]);
     $request = $this->mockRequest($data);
     $dController = QueryDownloadController::create($this->getQueryContainer(25)->getMock());
     ob_start(self::getBuffer(...));
@@ -454,6 +462,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
@@ -510,6 +519,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ResourceMapper::class, 'normalizeIdentifier', new MissingObjectException('No mapping found'))
       ->add(ReferenceLookup::class, 'getReferencers', [])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)
@@ -550,7 +560,7 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \Drupal\dkan_common\Storage\DatabaseTableInterface
    *   A database table storage class useable for datastore queries.
    */
-  public function mockDatastoreTable(DataResource $resource, $fields, $connection) {
+  public function mockDatastoreTable(DataResource $resource, array $fields, Connection $connection) {
 
     $storage = new SqliteDatabaseTable(
       $connection,
@@ -563,6 +573,7 @@ class QueryDownloadControllerTest extends TestCase {
     ]);
     $storage->setTable();
 
+    $types = [];
     foreach ($fields as $field) {
       $types[] = $field['type'];
     }
@@ -581,7 +592,7 @@ class QueryDownloadControllerTest extends TestCase {
         $values[] = $types[$key] == "int" ? $value : "'$value'";
         $valuesStr = implode(", ", $values);
       }
-      $connection->query("INSERT INTO `$table_name` VALUES ($valuesStr);");
+      $connection->query('INSERT INTO `' . $table_name . '` VALUES (' . ($valuesStr ?? '') . ');');
     }
 
     return $storage;
@@ -597,10 +608,16 @@ class QueryDownloadControllerTest extends TestCase {
     $this->buffer .= $buffer;
   }
 
+  /**
+   * Get the contents of the invalid JSON test file.
+   */
   private function getBadJson() {
     return file_get_contents(__DIR__ . "/../../../data/query/invalidJson.json");
   }
 
+  /**
+   * Get the contents of the sample query schema test file.
+   */
   private function getSampleSchema() {
     return file_get_contents(__DIR__ . "/../../../data/querySchema.json");
   }
