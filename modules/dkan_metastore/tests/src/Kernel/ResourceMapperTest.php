@@ -19,11 +19,17 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class ResourceMapperTest extends KernelTestBase {
 
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'dkan_common',
     'dkan_metastore',
   ];
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp() : void {
     parent::setUp();
     $this->installEntitySchema('resource_mapping');
