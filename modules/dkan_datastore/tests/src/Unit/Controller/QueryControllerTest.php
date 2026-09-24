@@ -16,6 +16,7 @@ use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\ResourceMapper;
 use Drupal\dkan_metastore\Storage\DataFactory;
 use Drupal\sqlite\Driver\Database\sqlite\Connection;
 use Drupal\sqlite\Driver\Database\sqlite\SqliteConnection;
@@ -48,6 +49,9 @@ class QueryControllerTest extends TestCase {
    */
   private DataResource $resource;
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp(): void {
     parent::setUp();
     // Set cache services.
@@ -63,6 +67,9 @@ class QueryControllerTest extends TestCase {
     $this->resource = new DataResource(self::FILE_DIR . 'states_with_dupes.csv', 'text/csv');
   }
 
+  /**
+   * Test querying with JSON response.
+   */
   public function testQueryJson() {
     $data = json_encode([
       "resources" => [
@@ -114,6 +121,9 @@ class QueryControllerTest extends TestCase {
     $this->assertStringContainsString('Error retrieving published dataset', $result->getContent());
   }
 
+  /**
+   * Test querying with row ID property, should return error.
+   */
   public function testQueryRowIdProperty() {
     // Try simple string properties:
     $data = json_encode(["properties" => ["record_number", "state"]]);
@@ -151,6 +161,9 @@ class QueryControllerTest extends TestCase {
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
   }
 
+  /**
+   * Test querying with row ID sort.
+   */
   public function testQueryRowIdSort() {
     $data = json_encode([
       "sorts" => [
@@ -173,7 +186,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
-  // Make sure nothing fails with no resources.
+  /**
+   * Test querying with no resources specified.
+   */
   public function testQueryJsonNoResources() {
     $data = json_encode([
       "properties" => [
@@ -190,6 +205,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with invalid resources.
+   */
   public function testQueryInvalid() {
     $data = json_encode([
       "resources" => "nope",
@@ -201,6 +219,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with invalid JSON request.
+   */
   public function testResourceQueryInvalidJson() {
     $data = "{[";
 
@@ -210,6 +231,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with an invalid query structure.
+   */
   public function testResourceQueryInvalidQuery() {
     $data = json_encode([
       "conditions" => "nope",
@@ -220,6 +244,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(400, $result->getStatusCode());
   }
 
+  /**
+   * Test querying with a join.
+   */
   public function testResourceQueryWithJoin() {
     $data = json_encode([
       "joins" => [
@@ -234,7 +261,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test querying with results set to true.
    */
   public function testResourceQueryJson() {
     $data = json_encode([
@@ -274,7 +301,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test querying with multiple joins.
    */
   public function testResourceQueryJoins() {
     $data = json_encode([
@@ -301,7 +328,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test querying with joins specified.
    */
   public function testQueryCsv() {
     $data = json_encode([
@@ -325,7 +352,10 @@ class QueryControllerTest extends TestCase {
     $this->assertStringContainsString('data.csv', $result->headers->get('Content-Disposition'));
   }
 
-  private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
+  /**
+   * Helper method to get query result.
+   */
+  private function getQueryResult(string $data, $id = NULL, $index = NULL, $info = []) {
     $container = $this->getQueryContainer($info, TRUE, $index)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
@@ -338,6 +368,9 @@ class QueryControllerTest extends TestCase {
     return $webServiceApi->queryDatasetResource($id, $index, $request);
   }
 
+  /**
+   * Test querying a resource with CSV response.
+   */
   public function testResourceQueryCsv() {
     $data = json_encode([
       "properties" => [
@@ -357,7 +390,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
-
+  /**
+   * Test querying a resource with an expression and CSV response.
+   */
   public function testResourceExpressionQueryCsv() {
     $data = json_encode([
       "properties" => [
@@ -386,6 +421,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
+  /**
+   * Test retrieving the DKAN datastore query schema.
+   */
   public function testQuerySchema() {
     $container = $this->getQueryContainer()->getMock();
     $webServiceApi = QueryController::create($container);
@@ -397,7 +435,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test dataset ID + distribution index with wrong identifier.
    */
   public function testDistributionIndexWrongIdentifier() {
     $data = json_encode([
@@ -411,7 +449,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test dataset ID + distribution index with wrong index.
    */
   public function testDistributionIndexWrongIndex() {
     $data = json_encode([
@@ -427,7 +465,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test dataset ID + distribution index with correct index.
    */
   public function testDistributionIndex() {
     $data = json_encode([
@@ -443,7 +481,7 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
-   *
+   * Test query CSV response cache headers.
    */
   public function testQueryCsvCacheHeaders() {
     $data = json_encode([
@@ -491,6 +529,9 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
+  /**
+   * Get a mock service container for testing.
+   */
   private function getQueryContainer(array $info = [], $mockMap = TRUE, $requestedIndex = NULL) {
 
     $resource_identifier = NULL;
@@ -505,6 +546,7 @@ class QueryControllerTest extends TestCase {
       ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
