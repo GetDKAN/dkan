@@ -13,6 +13,7 @@ use Drupal\dkan_datastore\Controller\QueryDownloadController;
 use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_datastore\Service\Query;
 use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
@@ -518,6 +519,7 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ResourceMapper::class, 'normalizeIdentifier', new MissingObjectException('No mapping found'))
       ->add(ReferenceLookup::class, 'getReferencers', [])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Query::class, "getQueryStorageMap", $storageMap)

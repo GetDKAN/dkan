@@ -624,6 +624,7 @@ class QueryControllerTest extends TestCase {
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ResourceMapper::class, 'normalizeIdentifier', new MissingObjectException('No mapping found'))
       ->add(ReferenceLookup::class, 'getReferencers', [])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 500)
