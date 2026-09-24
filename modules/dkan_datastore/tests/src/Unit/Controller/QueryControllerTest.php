@@ -12,6 +12,7 @@ use Drupal\dkan_datastore\Controller\QueryController;
 use Drupal\dkan_datastore\DatastoreService;
 use Drupal\dkan_datastore\Service\Query;
 use Drupal\dkan_datastore\Storage\SqliteDatabaseTable;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\NodeWrapper\Data;
 use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
@@ -298,6 +299,66 @@ class QueryControllerTest extends TestCase {
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(404, $result->getStatusCode());
     $this->assertStringContainsString('Error retrieving published dataset', $result->getContent());
+  }
+
+  /**
+   * Test ::normalizeResourceIdentifier() branches via reflection.
+   *
+   * @dataProvider normalizeResourceIdentifierProvider
+   */
+  public function testNormalizeResourceIdentifier(
+    string $input,
+    string $expected,
+    bool $mapperCalled,
+    ?string $mapperReturn = NULL,
+    bool $mapperThrows = FALSE,
+  ) {
+    $resourceMapper = $this->createMock(ResourceMapper::class);
+    $expects = $mapperCalled ? $this->once() : $this->never();
+    $normalizeIdentifierInvocation = $resourceMapper->expects($expects)
+      ->method('normalizeIdentifier');
+
+    if ($mapperCalled) {
+      if ($mapperThrows) {
+        $normalizeIdentifierInvocation->willThrowException(new MissingObjectException('No mapping found'));
+      }
+      else {
+        $normalizeIdentifierInvocation->with($input)->willReturn($mapperReturn);
+      }
+    }
+
+    $controller = $this->buildControllerForIdentifierNormalization($resourceMapper);
+    $method = new \ReflectionMethod($controller, 'normalizeResourceIdentifier');
+    $method->setAccessible(TRUE);
+
+    $this->assertEquals($expected, $method->invoke($controller, $input));
+  }
+
+  /**
+   * Data provider for testNormalizeResourceIdentifier.
+   */
+  public static function normalizeResourceIdentifierProvider(): array {
+    $mapped = '3a187a87dc6cd47c48b6b4c4785224b7__1789418951__source';
+
+    return [
+      'md5 mapped' => ['3a187a87dc6cd47c48b6b4c4785224b7', $mapped, TRUE, $mapped, FALSE],
+      'md5+version mapped' => ['3a187a87dc6cd47c48b6b4c4785224b7__1789418951', $mapped, TRUE, $mapped, FALSE],
+      'md5+version+perspective mapped' => [
+        '3a187a87dc6cd47c48b6b4c4785224b7__1789418951__source',
+        $mapped,
+        TRUE,
+        $mapped,
+        FALSE,
+      ],
+      'uuid passthrough' => [
+        '123e4567-e89b-12d3-a456-426614174000',
+        '123e4567-e89b-12d3-a456-426614174000',
+        FALSE,
+        NULL,
+        FALSE,
+      ],
+      'mapper exception fallback' => ['invalid-id', 'invalid-id', TRUE, NULL, TRUE],
+    ];
   }
 
   /**
@@ -705,6 +766,27 @@ class QueryControllerTest extends TestCase {
     }
 
     return $storage;
+  }
+
+  /**
+   * Build a QueryController with lightweight mocked dependencies.
+   *
+   * @param \Drupal\dkan_metastore\ResourceMapper $resourceMapper
+   *   Resource mapper mock controlling normalization behavior.
+   *
+   * @return \Drupal\dkan_datastore\Controller\QueryController
+   *   Query controller instance.
+   */
+  private function buildControllerForIdentifierNormalization(ResourceMapper $resourceMapper): QueryController {
+    return new QueryController(
+      $this->createStub(Query::class),
+      $this->createStub(DatasetInfo::class),
+      $this->createStub(MetastoreApiResponse::class),
+      $this->createStub(ConfigFactoryInterface::class),
+      $this->createStub(State::class),
+      $this->createStub(ReferenceLookup::class),
+      $resourceMapper
+    );
   }
 
 }

@@ -3,6 +3,7 @@
 namespace Drupal\dkan_datastore\Controller;
 
 use Drupal\Component\Uuid\Uuid;
+use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -11,8 +12,10 @@ use Drupal\Core\State\StateInterface;
 use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\ResourceMapper;
 use JsonSchema\Validator;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -63,6 +66,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected ReferenceLookup $referenceLookup;
 
   /**
+   * Resource mapper service.
+   */
+  protected ResourceMapper $resourceMapper;
+
+  /**
    * Default API rows limit.
    *
    * @var int
@@ -79,6 +87,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     ConfigFactoryInterface $configFactory,
     StateInterface $state,
     ReferenceLookup $referenceLookup,
+    ResourceMapper $resourceMapper,
   ) {
     $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
@@ -86,6 +95,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     $this->configFactory = $configFactory;
     $this->state = $state;
     $this->referenceLookup = $referenceLookup;
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -99,6 +109,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $container->get('config.factory'),
       $container->get('state'),
       $container->get('dkan.metastore.reference_lookup'),
+      $container->get('dkan.metastore.resource_mapper'),
     );
   }
 
@@ -137,7 +148,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * Query a single resource, identified by resource or distribution ID.
    *
    * @param string $identifier
-   *   The uuid of a resource.
+   *   A resource ID (or, alternatively, a distribution UUID).
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request object.
    *
@@ -145,8 +156,10 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json response.
    */
   public function queryResource(string $identifier, Request $request) {
+    $normalizedIdentifier = $this->normalizeResourceIdentifier($identifier);
+
     try {
-      $datastoreQuery = $this->buildDatastoreQuery($request, $identifier);
+      $datastoreQuery = $this->buildDatastoreQuery($request, $normalizedIdentifier);
     }
     catch (HttpException $e) {
       return $this->getResponseFromException($e, $e->getStatusCode());
@@ -155,7 +168,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 400);
     }
     $result = $this->runDatastoreQuery($datastoreQuery);
-    $dependencies = $this->resolveResourceDependencies($identifier);
+    $dependencies = $this->resolveResourceDependencies($this->resourceDependencyIdentifier($normalizedIdentifier));
 
     return ($result instanceof JsonResponse)
       ? $result
@@ -205,6 +218,48 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $dependencies['dataset'] = $datasetIds;
     }
     return $dependencies;
+  }
+
+  /**
+   * Reduce a resource identifier to md5__version for dependency lookups.
+   *
+   * @param string $identifier
+   *   Any accepted resource identifier representation.
+   *
+   * @return string
+   *   Canonical resource identifier for cache dependency resolution.
+   */
+  protected function resourceDependencyIdentifier(string $identifier): string {
+    try {
+      [$id, $version] = DataResource::getIdentifierAndVersion($identifier);
+      return (string) $id . '__' . (string) $version;
+    }
+    catch (\Exception) {
+      return $identifier;
+    }
+  }
+
+  /**
+   * Normalize route resource identifier when possible.
+   *
+   * @param string $identifier
+   *   Route identifier.
+   *
+   * @return string
+   *   Normalized identifier or original value.
+   */
+  protected function normalizeResourceIdentifier(string $identifier): string {
+    if (Uuid::isValid($identifier)) {
+      return $identifier;
+    }
+
+    try {
+      $normalized = $this->resourceMapper->normalizeIdentifier($identifier);
+      return is_string($normalized) && $normalized !== '' ? $normalized : $identifier;
+    }
+    catch (MissingObjectException $e) {
+      return $identifier;
+    }
   }
 
   /**

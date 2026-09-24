@@ -9,6 +9,7 @@ use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
 use Drupal\dkan_metastore\MetastoreApiResponse;
 use Drupal\dkan_metastore\Reference\ReferenceLookup;
+use Drupal\dkan_metastore\ResourceMapper;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\StreamedJsonResponse;
@@ -32,6 +33,7 @@ class QueryDownloadController extends AbstractQueryController {
     ConfigFactoryInterface $configFactory,
     StateInterface $state,
     ReferenceLookup $referenceLookup,
+    ResourceMapper $resourceMapper,
   ) {
     parent::__construct(
       $queryService,
@@ -39,7 +41,8 @@ class QueryDownloadController extends AbstractQueryController {
       $metastoreApiResponse,
       $configFactory,
       $state,
-      $referenceLookup
+      $referenceLookup,
+      $resourceMapper
     );
     // We do not want to cache streaming CSV content internally in Drupal,
     // because datasets can be very large. However, we do want CDNs to be able
