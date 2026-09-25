@@ -503,6 +503,7 @@ class DashboardForm extends FormBase {
     if ($moderation_class == 'hidden') {
       $moderation_class = 'published-hidden';
     }
+
     return [
       [
         'rowspan' => $resourceCount,
@@ -511,6 +512,7 @@ class DashboardForm extends FormBase {
           '#uuid' => $rev['uuid'],
           '#title' => $rev['title'],
           '#url' => Url::fromUri("internal:/dataset/$rev[uuid]"),
+          '#node_id' => $rev['node_id'],
         ],
       ],
       [
