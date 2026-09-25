@@ -58,6 +58,11 @@ class MetastoreApiResponse {
     if ($cacheMetadata = $this->getCacheMetadata($dependencies, $params)) {
       $response->addCacheableDependency($cacheMetadata);
     }
+    // Actively declare cacheable. Otherwise Drupal core will add 'no-cache'.
+    $response->headers->set(
+      'Cache-Control',
+      'public, max-age=3600, s-maxage=86400'
+    );
 
     return $response;
   }
