@@ -180,6 +180,12 @@ class MetastoreRevisionController implements ContainerInjectionInterface {
       $data = json_decode($request->getContent());
       $entity->set('moderation_state', $data->state);
       $entity->setRevisionLogMessage($data->message);
+      if ($entity->isNewRevision()) {
+        // Set revision creation time to the current time because
+        // revisions will reuse the previous revision's timestamp if not set.
+        $time = new \DateTimeImmutable();
+        $entity->setRevisionCreationTime($time->getTimestamp());
+      }
       $entity->save();
     }
     catch (\Exception $e) {
