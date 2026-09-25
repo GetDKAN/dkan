@@ -196,12 +196,28 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * React to a preReference to check if datastore update should be triggered.
    *
    * @param \Drupal\dkan_common\Events\Event $event
-   *   The event object containing the resource uuid.
+   *   The event object containing either a metastore item or payload object.
    */
   public function onPreReference(Event $event) {
+    $eventData = $event->getData();
+    $data = NULL;
+
+    // Incremental transition support: new payload shape includes the wrapped
+    // metastore item at $eventData->item.
+    if (is_object($eventData) && isset($eventData->item) && $eventData->item instanceof MetastoreItemInterface) {
+      $data = $eventData->item;
+    }
+    elseif ($eventData instanceof MetastoreItemInterface) {
+      // Backward compatibility with existing event payload shape.
+      $data = $eventData;
+    }
+
+    if (!$data) {
+      return;
+    }
+
     // Attempt to retrieve new and original revisions of metadata object.
-    $data = $event->getData();
-    $original = $data->getLatestRevision();
+    $original = method_exists($data, 'getLatestRevision') ? $data->getLatestRevision() : NULL;
     // Retrieve a list of metadata properties which, when changed, should
     // trigger a new metadata resource revision.
     $datastore_settings = $this->configFactory->get('dkan_datastore.settings');
@@ -211,15 +227,18 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     // of the wrapped node.
     // If a change was found in one of the triggering elements, change the
     // "new revision" flag to true in order to trigger a datastore update.
-    $rev = &drupal_static('metastore_resource_mapper_new_revision');
-    if (!empty($triggers) && $original instanceof MetastoreItemInterface &&
-      $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers)) {
-      // Update static to reflect that a new resource is needed.
-      $rev = 1;
-    }
-    else {
-      // Set static back to default value of false.
-      $rev = 0;
+    $should_create_new_resource_version = !empty($triggers) &&
+      $original instanceof MetastoreItemInterface &&
+      $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers);
+
+    // Legacy path: keep static signal for existing callers.
+    $rev = &\drupal_static('metastore_resource_mapper_new_revision');
+    $rev = $should_create_new_resource_version ? 1 : 0;
+
+    // New path: provide explicit decision on payload when available.
+    if (is_object($eventData)) {
+      $eventData->createNewResourceVersion = $should_create_new_resource_version;
+      $event->setData($eventData);
     }
   }
 
