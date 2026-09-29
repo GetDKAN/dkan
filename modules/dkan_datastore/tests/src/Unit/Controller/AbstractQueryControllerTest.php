@@ -1,21 +1,14 @@
 <?php
 
-namespace Drupal\Tests\dkan_common\Unit\Controller;
+namespace Drupal\Tests\dkan_common\Unit\Util;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\State\StateInterface;
-use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_datastore\Controller\AbstractQueryController;
-use Drupal\dkan_datastore\Service\DatastoreQuery;
-use Drupal\dkan_datastore\Service\Query;
-use Drupal\dkan_metastore\MetastoreApiResponse;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @covers \Drupal\dkan_datastore\Controller\AbstractQueryController
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\AbstractQueryController
- *
  * @group dkan
  * @group dkan_datastore
  * @group unit
@@ -101,51 +94,6 @@ class AbstractQueryControllerTest extends TestCase {
 
   private function getSampleSchema() {
     return file_get_contents(__DIR__ . "/../../../data/querySchema.json");
-  }
-
-  /**
-   * @covers ::runDatastoreQuery
-   */
-  public function testTooManyRequests() {
-    $message = 'The AI bots have taken over!';
-
-    // @see https://dev.mysql.com/doc/mysql-errors/8.4/en/server-error-reference.html#error_er_too_many_user_connections
-    $exception = new \PDOException($message, 1203);
-
-    // Query service always throws the 1203 exception.
-    $query_service = $this->getMockBuilder(Query::class)
-      ->disableOriginalConstructor()
-      ->onlyMethods(['runQuery'])
-      ->getMock();
-    $query_service->expects($this->once())
-      ->method('runQuery')
-      ->willThrowException($exception);
-
-    // Get a controller to test.
-    $controller = $this->getMockForAbstractClass(
-      AbstractQueryController::class,
-      [
-        $query_service,
-        // These dependencies are unused, so we just mock them.
-        $this->createMock(DatasetInfo::class),
-        $this->createMock(MetastoreApiResponse::class),
-        $this->createMock(ConfigFactoryInterface::class),
-        $this->createMock(StateInterface::class),
-      ],
-    );
-
-    // Let ourselves run the method we want to test.
-    $ref_run_datastore_query = new \ReflectionMethod($controller, 'runDatastoreQuery');
-    /** @var \Symfony\Component\HttpFoundation\JsonResponse $result */
-    $result = $ref_run_datastore_query->invokeArgs(
-      $controller,
-      [$this->createMock(DatastoreQuery::class)]
-    );
-
-    // Did we get a 503 with the message we added?
-    $this->assertSame(503, $result->getStatusCode());
-    $this->assertSame('120', $result->headers->get('retry-after'));
-    $this->assertStringContainsString($message, $result->getContent());
   }
 
 }

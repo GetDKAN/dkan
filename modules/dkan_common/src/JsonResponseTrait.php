@@ -2,10 +2,9 @@
 
 namespace Drupal\dkan_common;
 
+use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Cache\CacheableJsonResponse;
-use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\dkan_datastore\Controller\AbstractQueryController;
-use Drupal\dkan_metastore\NodeWrapper\NodeDataFactory;
 use Opis\JsonSchema\Errors\ErrorFormatter;
 use RootedData\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,7 +49,7 @@ trait JsonResponseTrait {
     $body = [
       'message' => $e->getMessage(),
       'status' => $code,
-      "timestamp" => date("c"),
+      'timestamp' => date('c'),
     ];
     if ($data = $this->getExceptionData($e)) {
       $body['data'] = $data;
@@ -58,17 +57,22 @@ trait JsonResponseTrait {
     $headers = ($e instanceof HttpException) ? $e->getHeaders() : [];
 
     $response = new CacheableJsonResponse((object) $body, $code, $headers);
-    $response->setCache([
-      'public' => TRUE,
-      'private' => FALSE,
-      'max_age' => AbstractQueryController::DEGRADE_MODE_RETRY_AFTER,
-      'last_modified' => new \DateTime(),
-    ]);
+    // Special case for 503, so that long, failed requests can be cached, but
+    // only for a short period of time.
+    if ($code === 503) {
+      $response->setCache([
+        'public' => TRUE,
+        'private' => FALSE,
+        'max_age' => AbstractQueryController::DEGRADE_MODE_RETRY_AFTER,
+        's_maxage' => AbstractQueryController::DEGRADE_MODE_RETRY_AFTER,
+        'last_modified' => new \DateTime(),
+      ]);
+    }
+    if ($e instanceof CacheableDependencyInterface) {
+      $response->addCacheableDependency($e);
+    }
 
-    $cacheable = new CacheableMetadata();
-    $cacheable->setCacheMaxAge(AbstractQueryController::DEGRADE_MODE_RETRY_AFTER)
-      ->setCacheTags(NodeDataFactory::getCacheTags());
-    return $response->addCacheableDependency($cacheable);
+    return $response;
   }
 
   /**

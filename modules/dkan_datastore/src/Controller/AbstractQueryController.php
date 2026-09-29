@@ -2,9 +2,11 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Http\Exception\CacheableServiceUnavailableHttpException;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\dkan_common\DatasetInfo;
@@ -294,15 +296,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $this->logger->error($e->getMessage());
 
       // Create a new HttpException object so that getResponseFromException()
-      // can use its headers.
-      $http_exception = new ServiceUnavailableHttpException(
+      // can use its headers and cacheable metadata.
+      $http_exception = new CacheableServiceUnavailableHttpException(
+        (new CacheableMetadata())
+          ->setCacheMaxAge(self::DEGRADE_MODE_RETRY_AFTER),
         self::DEGRADE_MODE_RETRY_AFTER,
         // Generic error message for public consumption.
         'Service unavailable'
       );
-      // @todo Modify getResponseFromException() to allow caching the response
-      //   for number of seconds in the retry-after header, so that future
-      //   requests never get this far until that time has expired.
       return $this->getResponseFromException($http_exception, $http_exception->getStatusCode());
     }
     catch (HttpException $e) {
