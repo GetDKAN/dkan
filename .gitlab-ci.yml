@@ -27,5 +27,6 @@ variables:
 #   SKIP_ESLINT: '1'
 #   OPT_IN_TEST_NEXT_MAJOR: '1'
 #   _CURL_TEMPLATES_REF: 'main'
+  DRUPAL_ROOT: '$CI_PROJECT_DIR/$_WEB_ROOT'
   _CSPELL_WORDS: 'dcat'
   _CSPELL_IGNORE_PATHS: 'schema'
