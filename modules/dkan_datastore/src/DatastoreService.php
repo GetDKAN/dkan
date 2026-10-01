@@ -278,7 +278,7 @@ class DatastoreService implements ContainerInjectionInterface {
     if ($storage = $this->getStorage($identifier, $version)) {
       $resource = NULL;
       // Check for the resource before sending the pre-drop event.
-      if ($resource = $this->resourceLocalizer->get($identifier, $version)) {
+      if ($resource = $this->resourceLocalizer->get($identifier, $version, ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, FALSE)) {
         // Dispatch the pre-drop event.
         $this->eventDispatcher->dispatch(
           new DatastorePreDropEvent($resource),
